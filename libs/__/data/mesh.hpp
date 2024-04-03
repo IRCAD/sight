@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/data/config.hpp>
+
 #include "data/array.hpp"
-#include "data/config.hpp"
 #include "data/exception.hpp"
 #include "data/factory/new.hpp"
 #include "data/iterator.hpp"
@@ -245,8 +246,8 @@ namespace sight::data
     }
  * @endcode
  */
-class DATA_CLASS_API mesh final : public object,
-                                  public core::memory::buffered
+class SIGHT_DATA_CLASS_API mesh final : public object,
+                                        public core::memory::buffered
 {
 public:
 
@@ -290,22 +291,22 @@ public:
     using signal_t = core::com::signal<void ()>;
 
     /// Key in m_signals map of signal m_sigVertexModified
-    DATA_API static const core::com::signals::key_t VERTEX_MODIFIED_SIG;
-    DATA_API static const core::com::signals::key_t POINT_COLORS_MODIFIED_SIG;
-    DATA_API static const core::com::signals::key_t CELL_COLORS_MODIFIED_SIG;
-    DATA_API static const core::com::signals::key_t POINT_NORMALS_MODIFIED_SIG;
-    DATA_API static const core::com::signals::key_t CELL_NORMALS_MODIFIED_SIG;
-    DATA_API static const core::com::signals::key_t POINT_TEX_COORDS_MODIFIED_SIG;
-    DATA_API static const core::com::signals::key_t CELL_TEX_COORDS_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t VERTEX_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t POINT_COLORS_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t CELL_COLORS_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t POINT_NORMALS_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t CELL_NORMALS_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t POINT_TEX_COORDS_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t CELL_TEX_COORDS_MODIFIED_SIG;
     /// @}
 
     /**
      * @brief Constructor
      */
-    DATA_API mesh();
+    SIGHT_DATA_API mesh();
 
     /// Destructor
-    DATA_API ~mesh() noexcept override = default;
+    SIGHT_DATA_API ~mesh() noexcept override = default;
 
     /**
      * @brief Allocate mesh memory
@@ -324,7 +325,7 @@ public:
      *
      * @throw Raise Exception if the memory can not be allocated.
      */
-    DATA_API std::size_t reserve(
+    SIGHT_DATA_API std::size_t reserve(
         mesh::size_t _nb_pts,
         mesh::size_t _nb_cells,
         cell_type_t _cell_type = cell_type_t::triangle,
@@ -346,7 +347,7 @@ public:
      *
      * @throw Raise Exception if the memory can not be allocated.
      */
-    DATA_API std::size_t resize(
+    SIGHT_DATA_API std::size_t resize(
         mesh::size_t _nb_pts,
         mesh::size_t _nb_cells,
         cell_type_t _cell_type = cell_type_t::triangle,
@@ -363,7 +364,7 @@ public:
      *
      * @throw Raise Exception if the memory can not be re-allocated.
      */
-    DATA_API bool shrink_to_fit();
+    SIGHT_DATA_API bool shrink_to_fit();
 
     /**
      * @brief Truncate the number of points and cells of a mesh.
@@ -374,12 +375,12 @@ public:
      *
      * @throw Raise Exception if the number of elements if higher than the allocated size.
      */
-    DATA_API void truncate(mesh::size_t _nb_pts, mesh::size_t _nb_cells);
+    SIGHT_DATA_API void truncate(mesh::size_t _nb_pts, mesh::size_t _nb_cells);
 
     /**
      * @brief Remove all data contained in the mesh. Memory is freed.
      */
-    DATA_API void clear();
+    SIGHT_DATA_API void clear();
 
     /// Clear corresponding array, memory is freed.
     template<mesh::attribute A>
@@ -410,7 +411,7 @@ public:
      * @return mesh data size in bytes
      * @note The allocated memory may be greater than the data size in bytes.
      */
-    DATA_API std::size_t size_in_bytes() const;
+    SIGHT_DATA_API std::size_t size_in_bytes() const;
 
     /**
      * @brief Get the amount of memory allocated in this mesh. May be bigger than getDataSizeInBytes().
@@ -418,7 +419,7 @@ public:
      * @return mesh data size in bytes
      * @note You can call shrinkToFit() to free extra memory.
      */
-    DATA_API std::size_t allocated_size_in_bytes() const;
+    SIGHT_DATA_API std::size_t allocated_size_in_bytes() const;
 
     /**
      *  @{
@@ -429,8 +430,8 @@ public:
      *
      * @throw Exception if the allocation failed
      */
-    DATA_API point_t push_point(const std::array<position_t, 3>& _p);
-    DATA_API point_t push_point(position_t _x, position_t _y, position_t _z);
+    SIGHT_DATA_API point_t push_point(const std::array<position_t, 3>& _p);
+    SIGHT_DATA_API point_t push_point(position_t _x, position_t _y, position_t _z);
     /// @}
     /**
      * @{
@@ -442,12 +443,12 @@ public:
      *
      * @throw Exception if the allocation failed
      */
-    DATA_API cell_t push_cell(point_t _id_pt);
-    DATA_API cell_t push_cell(point_t _id_p1, point_t _id_p2);
-    DATA_API cell_t push_cell(point_t _id_p1, point_t _id_p2, point_t _id_p3);
-    DATA_API cell_t push_cell(point_t _id_p1, point_t _id_p2, point_t _id_p3, point_t _id_p4);
-    DATA_API cell_t push_cell(const std::vector<point_t> _point_ids);
-    DATA_API cell_t push_cell(const point_t* _point_ids, std::size_t _nb_points);
+    SIGHT_DATA_API cell_t push_cell(point_t _id_pt);
+    SIGHT_DATA_API cell_t push_cell(point_t _id_p1, point_t _id_p2);
+    SIGHT_DATA_API cell_t push_cell(point_t _id_p1, point_t _id_p2, point_t _id_p3);
+    SIGHT_DATA_API cell_t push_cell(point_t _id_p1, point_t _id_p2, point_t _id_p3, point_t _id_p4);
+    SIGHT_DATA_API cell_t push_cell(const std::vector<point_t> _point_ids);
+    SIGHT_DATA_API cell_t push_cell(const point_t* _point_ids, std::size_t _nb_points);
     /// @}
 
     /**
@@ -459,7 +460,7 @@ public:
      * @param _p point coordinates
      * @throw Raise Exception if the id is out of bounds
      */
-    DATA_API void set_point(point_t _id, const std::array<position_t, 3>& _p);
+    SIGHT_DATA_API void set_point(point_t _id, const std::array<position_t, 3>& _p);
 
     /**
      * @brief Set a point coordinates.
@@ -469,7 +470,7 @@ public:
      * @see setPoint
      * @throw Raise Exception if the id is out of bounds
      */
-    DATA_API void set_point(point_t _id, position_t _x, position_t _y, position_t _z);
+    SIGHT_DATA_API void set_point(point_t _id, position_t _x, position_t _y, position_t _z);
 
     /**
      * @{
@@ -480,12 +481,12 @@ public:
      *
      * @throw Exception if the mesh is not correctly allocated (ie. the id is out of bounds)
      */
-    DATA_API void set_cell(cell_t _id, point_t _id_pt);
-    DATA_API void set_cell(cell_t _id, point_t _id_p1, point_t _id_p2);
-    DATA_API void set_cell(cell_t _id, point_t _id_p1, point_t _id_p2, point_t _id_p3);
-    DATA_API void set_cell(cell_t _id, point_t _id_p1, point_t _id_p2, point_t _id_p3, point_t _id_p4);
-    DATA_API void set_cell(cell_t _id, const std::vector<point_t>& _point_ids);
-    DATA_API void set_cell(cell_t _id, const point_t* _point_ids, std::size_t _nb_points);
+    SIGHT_DATA_API void set_cell(cell_t _id, point_t _id_pt);
+    SIGHT_DATA_API void set_cell(cell_t _id, point_t _id_p1, point_t _id_p2);
+    SIGHT_DATA_API void set_cell(cell_t _id, point_t _id_p1, point_t _id_p2, point_t _id_p3);
+    SIGHT_DATA_API void set_cell(cell_t _id, point_t _id_p1, point_t _id_p2, point_t _id_p3, point_t _id_p4);
+    SIGHT_DATA_API void set_cell(cell_t _id, const std::vector<point_t>& _point_ids);
+    SIGHT_DATA_API void set_cell(cell_t _id, const point_t* _point_ids, std::size_t _nb_points);
     /// @}
 
     /**
@@ -497,8 +498,8 @@ public:
      * @param _id point index
      * @param _c color
      */
-    DATA_API void set_point_color(point_t _id, const std::array<color_t, 4>& _c);
-    DATA_API void set_point_color(point_t _id, color_t _r, color_t _g, color_t _b, color_t _a);
+    SIGHT_DATA_API void set_point_color(point_t _id, const std::array<color_t, 4>& _c);
+    SIGHT_DATA_API void set_point_color(point_t _id, color_t _r, color_t _g, color_t _b, color_t _a);
     /// @}
     ///
     /**
@@ -510,8 +511,8 @@ public:
      * @param _id cell index
      * @param _c color
      */
-    DATA_API void set_cell_color(cell_t _id, const std::array<color_t, 4>& _c);
-    DATA_API void set_cell_color(cell_t _id, color_t _r, color_t _g, color_t _b, color_t _a);
+    SIGHT_DATA_API void set_cell_color(cell_t _id, const std::array<color_t, 4>& _c);
+    SIGHT_DATA_API void set_cell_color(cell_t _id, color_t _r, color_t _g, color_t _b, color_t _a);
     /// @}
 
     /**
@@ -523,8 +524,8 @@ public:
      * @param _id point index
      * @param _n normal
      */
-    DATA_API void set_point_normal(point_t _id, const std::array<normal_t, 3>& _n);
-    DATA_API void set_point_normal(point_t _id, normal_t _nx, normal_t _ny, normal_t _nz);
+    SIGHT_DATA_API void set_point_normal(point_t _id, const std::array<normal_t, 3>& _n);
+    SIGHT_DATA_API void set_point_normal(point_t _id, normal_t _nx, normal_t _ny, normal_t _nz);
     ///@}
     /**
      * @{
@@ -535,8 +536,8 @@ public:
      * @param _id cell index
      * @param _n normal
      */
-    DATA_API void set_cell_normal(cell_t _id, const std::array<normal_t, 3>& _n);
-    DATA_API void set_cell_normal(cell_t _id, normal_t _nx, normal_t _ny, normal_t _nz);
+    SIGHT_DATA_API void set_cell_normal(cell_t _id, const std::array<normal_t, 3>& _n);
+    SIGHT_DATA_API void set_cell_normal(cell_t _id, normal_t _nx, normal_t _ny, normal_t _nz);
     /// @}
     /**
      * @{
@@ -547,8 +548,8 @@ public:
      * @param _id point index
      * @param _t texCoord
      */
-    DATA_API void set_point_tex_coord(point_t _id, const std::array<texcoord_t, 2>& _t);
-    DATA_API void set_point_tex_coord(point_t _id, texcoord_t _u, texcoord_t _v);
+    SIGHT_DATA_API void set_point_tex_coord(point_t _id, const std::array<texcoord_t, 2>& _t);
+    SIGHT_DATA_API void set_point_tex_coord(point_t _id, texcoord_t _u, texcoord_t _v);
     /// @}
 
     /**
@@ -560,8 +561,8 @@ public:
      * @param _id cell index
      * @param _t texCoord
      */
-    DATA_API void set_cell_tex_coord(cell_t _id, const std::array<texcoord_t, 2>& _t);
-    DATA_API void set_cell_tex_coord(cell_t _id, texcoord_t _u, texcoord_t _v);
+    SIGHT_DATA_API void set_cell_tex_coord(cell_t _id, const std::array<texcoord_t, 2>& _t);
+    SIGHT_DATA_API void set_cell_tex_coord(cell_t _id, texcoord_t _u, texcoord_t _v);
     /// @}
 
     /**
@@ -598,20 +599,20 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const mesh& _other) const noexcept;
-    DATA_API bool operator!=(const mesh& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const mesh& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const mesh& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
@@ -620,7 +621,7 @@ protected:
 
     /// Add a lock on the mesh in the given vector to prevent from dumping the buffer on the disk
     /// This is needed for IBuffered interface implementation
-    DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const override;
+    SIGHT_DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const override;
 
 private:
 

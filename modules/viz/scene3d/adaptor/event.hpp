@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
 
@@ -58,7 +56,7 @@ namespace sight::module::viz::scene3d::adaptor
  *   - \b keys (optional, string): A space-separated list of keys to be clicked as key codes. Only valid with event
  *             types "keyPress" and "keyRelease". @see https://doc.qt.io/qt-5/qt.html#Key-enum
  */
-class MODULE_VIZ_SCENE3D_CLASS_API event final :
+class event final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::interactor::base
 {
@@ -68,7 +66,7 @@ public:
 
     event();
 
-    MODULE_VIZ_SCENE3D_API void mouse_move_event(
+    void mouse_move_event(
         mouse_button _button,
         modifier _mods,
         int _x,
@@ -76,19 +74,19 @@ public:
         int _dx,
         int _dy
     ) final;
-    MODULE_VIZ_SCENE3D_API void wheel_event(modifier _mods, double _angle_delta, int _x, int _y) final;
-    MODULE_VIZ_SCENE3D_API void button_release_event(mouse_button _button, modifier _mods, int _x, int _y) final;
-    MODULE_VIZ_SCENE3D_API void button_press_event(mouse_button _button, modifier _mods, int _x, int _y) final;
-    MODULE_VIZ_SCENE3D_API void button_double_press_event(mouse_button _button, modifier _mods, int _x, int _y) final;
-    MODULE_VIZ_SCENE3D_API void key_press_event(int _key, modifier _mods, int _mouse_x, int _mouse_y) final;
-    MODULE_VIZ_SCENE3D_API void key_release_event(int _key, modifier _mods, int _mouse_x, int _mouse_y) final;
-    MODULE_VIZ_SCENE3D_API void resize_event(int _width, int _height) final;
-    MODULE_VIZ_SCENE3D_API void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) final;
-    MODULE_VIZ_SCENE3D_API void pan_gesture_move_event(int _x, int _y, int _dx, int _dy) final;
-    MODULE_VIZ_SCENE3D_API void pan_gesture_release_event(int _x, int _y, int _dx, int _dy) final;
-    MODULE_VIZ_SCENE3D_API void long_tap_gesture_event(int _x, int _y) final;
+    void wheel_event(modifier _mods, double _angle_delta, int _x, int _y) final;
+    void button_release_event(mouse_button _button, modifier _mods, int _x, int _y) final;
+    void button_press_event(mouse_button _button, modifier _mods, int _x, int _y) final;
+    void button_double_press_event(mouse_button _button, modifier _mods, int _x, int _y) final;
+    void key_press_event(int _key, modifier _mods, int _mouse_x, int _mouse_y) final;
+    void key_release_event(int _key, modifier _mods, int _mouse_x, int _mouse_y) final;
+    void resize_event(int _width, int _height) final;
+    void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) final;
+    void pan_gesture_move_event(int _x, int _y, int _dx, int _dy) final;
+    void pan_gesture_release_event(int _x, int _y, int _dx, int _dy) final;
+    void long_tap_gesture_event(int _x, int _y) final;
 
-    MODULE_VIZ_SCENE3D_API static const core::com::signals::key_t TRIGGERED;
+    static const core::com::signals::key_t TRIGGERED;
     using triggered_signal_t = core::com::signal<void (sight::viz::scene3d::window_interactor::interaction_info)>;
 
 private:
@@ -108,10 +106,10 @@ private:
         std::optional<int> _key
     );
 
-    MODULE_VIZ_SCENE3D_API void configuring() final;
-    MODULE_VIZ_SCENE3D_API void starting() final;
-    MODULE_VIZ_SCENE3D_API void updating() final;
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void configuring() final;
+    void starting() final;
+    void updating() final;
+    void stopping() final;
 
     std::vector<filter> m_filters;
 };

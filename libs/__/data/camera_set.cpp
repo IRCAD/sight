@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -150,14 +150,14 @@ void camera_set::set_extrinsic_matrix(std::size_t _index, matrix4::sptr _matrix)
 
 //------------------------------------------------------------------------------
 
-DATA_API matrix4::csptr camera_set::get_extrinsic_matrix(std::size_t _index) const
+matrix4::csptr camera_set::get_extrinsic_matrix(std::size_t _index) const
 {
     return at(_index).second;
 }
 
 //------------------------------------------------------------------------------
 
-DATA_API matrix4::sptr camera_set::get_extrinsic_matrix(std::size_t _index)
+matrix4::sptr camera_set::get_extrinsic_matrix(std::size_t _index)
 {
     return at(_index).second;
 }

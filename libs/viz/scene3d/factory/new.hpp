@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
+
 #include "viz/scene3d/registry/detail.hpp"
 
 #include <string>
@@ -41,7 +42,7 @@ namespace factory
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
-VIZ_SCENE3D_API SPTR(viz::scene3d::window_interactor) make(
+SIGHT_VIZ_SCENE3D_API SPTR(viz::scene3d::window_interactor) make(
     const viz::scene3d::registry::key_t& _classname
 );
 
@@ -60,7 +61,7 @@ namespace offscreen_interactor_mgr_factory
 template<class CLASSNAME>
 SPTR(CLASSNAME) make(std::pair<unsigned int, unsigned int> _dims);
 
-VIZ_SCENE3D_API SPTR(viz::scene3d::window_interactor) make(
+SIGHT_VIZ_SCENE3D_API SPTR(viz::scene3d::window_interactor) make(
     const viz::scene3d::registry::key_t& _classname,
     std::pair<unsigned int, unsigned int> _dims
 );
@@ -79,7 +80,7 @@ namespace light_factory
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
-VIZ_SCENE3D_API SPTR(viz::scene3d::light_adaptor) make(
+SIGHT_VIZ_SCENE3D_API SPTR(viz::scene3d::light_adaptor) make(
     const viz::scene3d::registry::key_t& _classname
 );
 
@@ -98,7 +99,7 @@ namespace text_factory
 template<class CLASSNAME>
 SPTR(CLASSNAME) make(const SPTR(sight::viz::scene3d::layer) & _layer);
 
-VIZ_SCENE3D_API SPTR(viz::scene3d::text) make(
+SIGHT_VIZ_SCENE3D_API SPTR(viz::scene3d::text) make(
     const viz::scene3d::registry::key_t& _classname,
     const SPTR(sight::viz::scene3d::layer) & _layer
 );

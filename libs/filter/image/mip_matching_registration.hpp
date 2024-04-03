@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/image/config.hpp"
+#include <sight/filter/image/config.hpp>
+
 #include "filter/image/itk_image_caster.hpp"
 #include "filter/image/metric.hpp"
 #include "filter/image/resampler.hpp"

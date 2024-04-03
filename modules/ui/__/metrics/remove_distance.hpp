@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/__/config.hpp"
-
 #include <core/macros.hpp>
 
 #include <data/image.hpp>
@@ -66,7 +64,7 @@ namespace sight::module::ui::metrics
  * @subsection In-Out In-Out
  * - \b image [sight::data::image]: image containing the distance field.
  */
-class MODULE_UI_CLASS_API remove_distance final : public sight::ui::action
+class remove_distance final : public sight::ui::action
 {
 public:
 
@@ -74,24 +72,24 @@ public:
     SIGHT_DECLARE_SERVICE(remove_distance, sight::ui::action);
 
     /// Initialize slots.
-    MODULE_UI_API remove_distance() noexcept;
+    remove_distance() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_API ~remove_distance() noexcept override = default;
+    ~remove_distance() noexcept override = default;
 
 protected:
 
     /// Configures the action.
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
     /// Starts the action.
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
     /// Removes a distance chosen from a gui dialog.
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /// Stops the action.
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
 private:
 

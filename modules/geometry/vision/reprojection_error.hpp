@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/vision/config.hpp"
 
 #include <data/camera.hpp>
 #include <data/image.hpp>
@@ -75,7 +73,7 @@ namespace sight::module::geometry::vision
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API reprojection_error : public service::controller
+class reprojection_error : public service::controller
 {
 public:
 
@@ -84,11 +82,11 @@ public:
     /// Double changed signal type
     using error_computed_signal_t = core::com::signal<void (double)>;
 
-    MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t COMPUTE_SLOT;
-    MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
+    static const core::com::slots::key_t COMPUTE_SLOT;
+    static const core::com::slots::key_t SET_PARAMETER_SLOT;
 
-    MODULE_GEOMETRY_VISION_API reprojection_error();
-    MODULE_GEOMETRY_VISION_API ~reprojection_error() override = default;
+    reprojection_error();
+    ~reprojection_error() override = default;
 
     /// Connect MatrixTL::signals::PUSHED to COMPUTE_SLOT
     service::connections_t auto_connections() const override;
@@ -98,22 +96,22 @@ protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    MODULE_GEOMETRY_VISION_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    MODULE_GEOMETRY_VISION_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Updating method : This method is used to restart the service.
      */
-    MODULE_GEOMETRY_VISION_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    MODULE_GEOMETRY_VISION_API void stopping() override;
+    void stopping() override;
 
 private:
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/com/signal.hpp>
 #include <core/mt/types.hpp>
@@ -39,7 +39,7 @@ namespace sight::core::jobs
 /**
  * @brief This class is an interface for class managing job.
  */
-class CORE_CLASS_API base
+class SIGHT_CORE_CLASS_API base
 {
 public:
 
@@ -128,38 +128,38 @@ public:
      *
      * @param _name The name of the job.
      */
-    CORE_API base(std::string _name = "");
+    SIGHT_CORE_API base(std::string _name = "");
 
     /// Default destructor.
-    CORE_API virtual ~base();
+    SIGHT_CORE_API virtual ~base();
 
     /// Getter on the number of done work units.
-    CORE_API std::uint64_t get_done_work_units() const;
+    SIGHT_CORE_API std::uint64_t get_done_work_units() const;
 
     /// Getter on the total number of work units.
-    CORE_API std::uint64_t get_total_work_units() const;
+    SIGHT_CORE_API std::uint64_t get_total_work_units() const;
 
     /// Getter on the current State. @see State
-    CORE_API state get_state() const;
+    SIGHT_CORE_API state get_state() const;
 
     ///Getter on the name of the job.
-    CORE_API const std::string& name() const;
+    SIGHT_CORE_API const std::string& name() const;
 
     /// Getter on the log container
-    CORE_API logs get_logs() const;
+    SIGHT_CORE_API logs get_logs() const;
 
     /// Getter on cancelable, returns whether the job is cancelable.
-    CORE_API bool is_cancelable() const;
+    SIGHT_CORE_API bool is_cancelable() const;
 
     /// Setter on cancelable.
-    CORE_API void set_cancelable(bool _cancel);
+    SIGHT_CORE_API void set_cancelable(bool _cancel);
 
     /**
      * @brief Run the current job
      *
      * @return future on the current running job
      */
-    CORE_API shared_future run();
+    SIGHT_CORE_API shared_future run();
 
     /**
      * @brief Wait job execution ending.
@@ -168,21 +168,21 @@ public:
      * not running.
      *
      */
-    CORE_API void wait();
+    SIGHT_CORE_API void wait();
 
     /**
      * @brief Returns the job canceling status.
      *
      * @return A boolean: true if cancel have been requested.
      */
-    CORE_API bool cancel_requested() const;
+    SIGHT_CORE_API bool cancel_requested() const;
 
     /**
      * @brief Returns a callback on job canceling status.
      * This callback can only be used if the job is still instantiated.
      * @return A callback to check if the job have been requested.
      */
-    CORE_API cancel_request_callback cancel_requested_callback() const;
+    SIGHT_CORE_API cancel_request_callback cancel_requested_callback() const;
 
     /**
      * @brief Cancel the current job and call all available cancel callbacks
@@ -190,49 +190,49 @@ public:
      * @return  A future on the current running job or an empty future if the job
      * is canceled
      */
-    CORE_API virtual shared_future cancel();
+    SIGHT_CORE_API virtual shared_future cancel();
 
     /**
      * @brief Add cancel callback to sequence for cancel hook
      *
      * @param _callback cancel callback
      */
-    CORE_API void add_simple_cancel_hook(cancel_hook _callback);
+    SIGHT_CORE_API void add_simple_cancel_hook(cancel_hook _callback);
 
     /**
      * @brief Add cancel callback to sequence for cancel hook
      *
      * @param _callback job cancel callback, taking a base as parameter
      */
-    CORE_API void add_cancel_hook(job_cancel_hook _callback);
+    SIGHT_CORE_API void add_cancel_hook(job_cancel_hook _callback);
 
     /**
      * @brief Add job done work unit callback to sequence for done work hook
      *
      * @param _callback job done work unit callback, taking a base as parameter
      */
-    CORE_API void add_done_work_hook(done_work_hook _callback);
+    SIGHT_CORE_API void add_done_work_hook(done_work_hook _callback);
 
     /**
      * @brief Add job work unit callback to sequence for total work unit hook
      *
      * @param _callback job work unit callback, taking a base as parameter
      */
-    CORE_API void add_total_work_units_hook(total_work_units_hook _callback);
+    SIGHT_CORE_API void add_total_work_units_hook(total_work_units_hook _callback);
 
     /**
      * @brief Add job log callback to sequence for log hook
      *
      * @param _callback job log callback, taking a std::string message as parameter
      */
-    CORE_API void add_log_hook(log_hook _callback);
+    SIGHT_CORE_API void add_log_hook(log_hook _callback);
 
     /**
      * @brief Add job state callback to sequence for state hook
      *
      * @param _callback job state callback, taking a State as parameter
      */
-    CORE_API void add_state_hook(state_hook _callback);
+    SIGHT_CORE_API void add_state_hook(state_hook _callback);
 
     /**
      * @brief Log a message.
@@ -242,7 +242,7 @@ public:
      *
      * @param _message the message to log
      */
-    CORE_API void log(const std::string& _message);
+    SIGHT_CORE_API void log(const std::string& _message);
 
 protected:
 
@@ -256,25 +256,25 @@ protected:
     /**  @} */
 
     /// Run an instantiated job
-    CORE_API virtual shared_future run_impl() = 0;
+    SIGHT_CORE_API virtual shared_future run_impl() = 0;
 
     /// Finish the job: set state to finished or canceled.
-    CORE_API virtual void finish();
+    SIGHT_CORE_API virtual void finish();
 
     /// Finish the job without mutex lock: set the state to finished or canceled.
-    CORE_API void finish_no_lock();
+    SIGHT_CORE_API void finish_no_lock();
 
     /// Getter on the state without mutex lock
-    CORE_API state get_state_no_lock() const;
+    SIGHT_CORE_API state get_state_no_lock() const;
 
     /// Setter on the state
-    CORE_API void set_state(state _state);
+    SIGHT_CORE_API void set_state(state _state);
 
     /// Setter on the state without mutex lock
-    CORE_API void set_state_no_lock(state _state);
+    SIGHT_CORE_API void set_state_no_lock(state _state);
 
     /// Setter on done work units
-    CORE_API void done_work(std::uint64_t _units);
+    SIGHT_CORE_API void done_work(std::uint64_t _units);
 
     /**
      * @brief Setter on done work units
@@ -283,17 +283,17 @@ protected:
      * @param _units  new done work units
      * @param _lock   mutex to upgrade to write lock
      */
-    CORE_API void done_work(std::uint64_t _units, core::mt::read_to_write_lock& _lock);
+    SIGHT_CORE_API void done_work(std::uint64_t _units, core::mt::read_to_write_lock& _lock);
 
     /// Set done work units to total work units
-    CORE_API void done();
+    SIGHT_CORE_API void done();
 
     /**
      * @brief Setter on total work units.
      *
      * @param _units New total for work units.
      */
-    CORE_API void set_total_work_units(std::uint64_t _units);
+    SIGHT_CORE_API void set_total_work_units(std::uint64_t _units);
 
     /**
      * @brief Setter on total work units
@@ -302,49 +302,49 @@ protected:
      * @param _units new total work units
      * @param _lock mutex to upgrade to write lock
      */
-    CORE_API void set_total_work_units_upgrade_lock(std::uint64_t _units, core::mt::read_to_write_lock& _lock);
+    SIGHT_CORE_API void set_total_work_units_upgrade_lock(std::uint64_t _units, core::mt::read_to_write_lock& _lock);
 
     /**
      * @brief Add job cancel callback to sequence without mutex lock for cancel hook
      *
      * @param _callback job cancel callback, taking a base as parameter or not
      */
-    CORE_API void add_cancel_hook_no_lock(job_cancel_hook _callback);
+    SIGHT_CORE_API void add_cancel_hook_no_lock(job_cancel_hook _callback);
 
     /**
      * @brief Add job done work unit callback to sequence without mutex lock for done work hook
      *
      * @param _callback job done work unit callback, taking a base as parameter
      */
-    CORE_API void add_done_work_hook_no_lock(done_work_hook _callback);
+    SIGHT_CORE_API void add_done_work_hook_no_lock(done_work_hook _callback);
 
     /**
      * @brief Add job work unit callback to sequence without mutex lock for total work unit hook
      *
      * @param _callback job work unit callback, taking a base as parameter
      */
-    CORE_API void add_total_work_units_hook_no_lock(total_work_units_hook _callback);
+    SIGHT_CORE_API void add_total_work_units_hook_no_lock(total_work_units_hook _callback);
 
     /**
      * @brief Add job log callback to sequence without mutex lock for log hook
      *
      * @param _callback job log callback, taking a std::string message as parameter
      */
-    CORE_API void add_log_hook_no_lock(log_hook _callback);
+    SIGHT_CORE_API void add_log_hook_no_lock(log_hook _callback);
 
     /**
      * @brief Add cancel callback to sequence without mutex lock for state hook
      *
      * @param _callback cancel callback, taking a State as parameter
      */
-    CORE_API void add_state_hook_no_lock(state_hook _callback);
+    SIGHT_CORE_API void add_state_hook_no_lock(state_hook _callback);
 
     /**
      * @brief Add a message to the log sequence.
      *
      * @param _message the message to add to the sequence
      */
-    CORE_API void log_no_lock(const std::string& _message);
+    SIGHT_CORE_API void log_no_lock(const std::string& _message);
 
     /// Signal emitted when cancel has been requested
     SPTR(cancel_requested_signal) m_sig_cancel_requested;

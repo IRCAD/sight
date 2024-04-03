@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
+
 #include "ui/qt/series/selector_model.hpp"
 
 #include <QModelIndex>
@@ -35,7 +36,7 @@ namespace sight::ui::qt::series
 /**
  * @brief This selector represents the Series in a hierarchical view (Study/Patient->Series).
  */
-class UI_QT_CLASS_API_QT selector : public QTreeView
+class SIGHT_UI_QT_CLASS_API_QT selector : public QTreeView
 {
 Q_OBJECT
 
@@ -47,10 +48,10 @@ public:
     using series_vector_t = QVector<data::series::sptr>;
 
     /// Initializes the tree view.
-    UI_QT_API_QT selector(const std::string& _display_columns, QWidget* _parent = nullptr);
+    SIGHT_UI_QT_API_QT selector(const std::string& _display_columns, QWidget* _parent = nullptr);
 
     /// Destroys the selector.
-    UI_QT_API_QT ~selector() override = default;
+    SIGHT_UI_QT_API_QT ~selector() override = default;
 
     /// Clears all items in the tree.
     void clear();
@@ -60,28 +61,28 @@ public:
      * this study.
      * @param _series series to add in the tree.
      */
-    UI_QT_API_QT void add_series(data::series::sptr _series);
+    SIGHT_UI_QT_API_QT void add_series(data::series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
      * @param _series series to remove from the tree.
      */
-    UI_QT_API_QT void remove_series(data::series::sptr _series);
+    SIGHT_UI_QT_API_QT void remove_series(data::series::sptr _series);
 
     /// Returns the type of the item (SERIES or STUDY)
-    UI_QT_API_QT selector_model::item_t get_item_type(const QModelIndex& _index) const;
+    SIGHT_UI_QT_API_QT selector_model::item_t get_item_type(const QModelIndex& _index) const;
 
     /// Catches the delete key event and remove the selected items.
-    UI_QT_API_QT void keyPressEvent(QKeyEvent* _event) override;
+    SIGHT_UI_QT_API_QT void keyPressEvent(QKeyEvent* _event) override;
 
     /**
      * @brief Sets the specific icons for series in selector.
      * @param _series_icons map\<series classname, icon path\>
      */
-    UI_QT_API_QT void set_series_icons(const series_icon_t& _series_icons);
+    SIGHT_UI_QT_API_QT void set_series_icons(const series_icon_t& _series_icons);
 
     /// Allows removing items or not.
-    UI_QT_API_QT void allow_remove(bool _allowed);
+    SIGHT_UI_QT_API_QT void allow_remove(bool _allowed);
 
     /// Sets if the selector must be in insert mode.
     void set_insert_mode(bool _insert);
@@ -99,7 +100,7 @@ public:
     }
 
     /// Returns a meaningful preferred size for the selector.
-    UI_QT_API_QT QSize sizeHint() const override;
+    SIGHT_UI_QT_API_QT QSize sizeHint() const override;
 
 Q_SIGNALS:
 

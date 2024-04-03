@@ -37,21 +37,21 @@ public:
      * @param _tester The current tester
      * @param _check_box How to get the check box to toggle
      */
-    UI_TEST_API static void toggle(tester& _tester, const selector& _check_box);
+    SIGHT_UI_TEST_API static void toggle(tester& _tester, const selector& _check_box);
 
     /**
      * Check whether a check box is checked
      * @param _tester The current tester
      * @param _check_box How to get the check box to verify
      */
-    UI_TEST_API static void should_be_checked(tester& _tester, const selector& _check_box);
+    SIGHT_UI_TEST_API static void should_be_checked(tester& _tester, const selector& _check_box);
 
     /**
      * Check whether a check box isn't checked
      * @param _tester The current tester
      * @param _check_box How to get the check box to verify
      */
-    UI_TEST_API static void should_not_be_checked(tester& _tester, const selector& _check_box);
+    SIGHT_UI_TEST_API static void should_not_be_checked(tester& _tester, const selector& _check_box);
 };
 
 } // namespace sight::ui::testCore::helper

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/image/config.hpp"
+#include <sight/filter/image/config.hpp>
 
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
@@ -33,7 +33,7 @@ namespace sight::filter::image
 /**
  * @brief The flipper class
  */
-class FILTER_IMAGE_CLASS_API flipper
+class SIGHT_FILTER_IMAGE_CLASS_API flipper
 {
 public:
 
@@ -43,7 +43,7 @@ public:
      * @param _out_image    flipped image.
      * @param _in_flip_axes axes on which to flip the image.
      */
-    static FILTER_IMAGE_API void flip(
+    static SIGHT_FILTER_IMAGE_API void flip(
         const data::image::csptr& _in_image,
         const data::image::sptr& _out_image,
         const std::array<bool, 3>& _in_flip_axes

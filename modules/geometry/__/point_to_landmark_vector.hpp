@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/__/config.hpp"
 
 #include <data/landmarks.hpp>
 #include <data/matrix4.hpp>
@@ -72,7 +70,7 @@ namespace sight::module::geometry
  * - \b sameAxialSliceLabel: (optional) (std::string, default="Same axial slice") label to prefix the message sent in
  * the sameSlice signal.
  */
-class MODULE_GEOMETRY_CLASS_API point_to_landmark_vector final : public service::base
+class point_to_landmark_vector final : public service::base
 {
 public:
 
@@ -80,24 +78,24 @@ public:
     SIGHT_DECLARE_SERVICE(point_to_landmark_vector, service::base);
 
     /// Initializes signals.
-    MODULE_GEOMETRY_API point_to_landmark_vector() noexcept;
+    point_to_landmark_vector() noexcept;
 
     /// Destroys the service.
-    MODULE_GEOMETRY_API ~point_to_landmark_vector() noexcept override;
+    ~point_to_landmark_vector() noexcept override;
 
 protected:
 
     /// Gets parameters from composite.
-    MODULE_GEOMETRY_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void stopping() override;
+    void stopping() override;
 
     /// Computes the vector between a target and a point.
-    MODULE_GEOMETRY_API void updating() override;
+    void updating() override;
 
     /// Configures the service's parameters.
-    MODULE_GEOMETRY_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -105,7 +103,7 @@ protected:
      *
      * Connect data::landmarks::POINT_ADDED_SIG of s_LANDMARK_INPUT to service::slots::UPDATE
      */
-    MODULE_GEOMETRY_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

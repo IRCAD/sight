@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include "app/config.hpp"
+#include <sight/app/config.hpp>
+
 #include "app/helper/config_launcher.hpp"
 
 #include "service/controller.hpp"
@@ -93,17 +94,17 @@ namespace sight::app
  *                This slot only specifies which config will be started. Though to effectively start it a update is
  *                required.
  */
-class APP_CLASS_API multi_config_controller : public service::controller
+class SIGHT_APP_CLASS_API multi_config_controller : public service::controller
 {
 public:
 
-    struct APP_CLASS_API slots final
+    struct SIGHT_APP_CLASS_API slots final
     {
         using key_t = sight::core::com::slots::key_t;
         static inline const key_t SET_CONFIG = "set_config";
     };
 
-    struct APP_CLASS_API signals final
+    struct SIGHT_APP_CLASS_API signals final
     {
         using key_t           = sight::core::com::signals::key_t;
         using string_signal_t = sight::core::com::signal<void (std::string)>;
@@ -114,13 +115,13 @@ public:
     SIGHT_DECLARE_SERVICE(multi_config_controller, service::controller);
 
     /// Constructor. Does nothing.
-    APP_API multi_config_controller() noexcept;
+    SIGHT_APP_API multi_config_controller() noexcept;
 
     /// Destructor. Does nothing.
-    APP_API ~multi_config_controller() noexcept override = default;
+    SIGHT_APP_API ~multi_config_controller() noexcept override = default;
 
     /// SLOT: Allows changing the config to start
-    APP_API void set_config(sight::ui::parameter_t _val, std::string _key);
+    SIGHT_APP_API void set_config(sight::ui::parameter_t _val, std::string _key);
 
 protected:
 

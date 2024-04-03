@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <data/image.hpp>
 
@@ -39,9 +39,9 @@ namespace sight::viz::scene3d
  * @brief This binds a sight::data::image to a shared Ogre texture. It allows to share the GPU memory from multiple
  * callers that use the same image, and only update the GPU buffer when necessary.
  */
-class VIZ_SCENE3D_CLASS_API texture : public resource<data::image,
-                                                      Ogre::Texture,
-                                                      texture>
+class SIGHT_VIZ_SCENE3D_CLASS_API texture : public resource<data::image,
+                                                            Ogre::Texture,
+                                                            texture>
 {
 public:
 
@@ -49,17 +49,17 @@ public:
     /// it wraps the existing one.
     /// @param _image input image
     /// @param _suffix_id optional suffix to the object identifier, this allows to create different copies of the object
-    VIZ_SCENE3D_API texture(const data::image::csptr& _image, const std::string& _suffix_id = "");
-    VIZ_SCENE3D_API ~texture() override;
+    SIGHT_VIZ_SCENE3D_API texture(const data::image::csptr& _image, const std::string& _suffix_id = "");
+    SIGHT_VIZ_SCENE3D_API ~texture() override;
 
     /// Updates the TF texture according to the source image content, if any modification occurred since the last
     /// update.
-    VIZ_SCENE3D_API void update() override;
+    SIGHT_VIZ_SCENE3D_API void update() override;
 
-    VIZ_SCENE3D_API void set_dirty();
+    SIGHT_VIZ_SCENE3D_API void set_dirty();
 
     /// Binds the texture in the given texture unit state
-    VIZ_SCENE3D_API void bind(
+    SIGHT_VIZ_SCENE3D_API void bind(
         Ogre::TextureUnitState* _tex_unit,
         Ogre::TextureType _type,
         Ogre::TextureFilterOptions _filter_type,
@@ -67,7 +67,7 @@ public:
     ) const;
 
     /// Binds the texture in the given pass
-    VIZ_SCENE3D_API void bind(
+    SIGHT_VIZ_SCENE3D_API void bind(
         Ogre::Pass* _pass,
         const std::string& _sampler_name,
         std::optional<Ogre::TextureFilterOptions> _filter_type   = std::nullopt,
@@ -76,7 +76,7 @@ public:
     ) const;
 
     /// Binds the texture in the given pass and the given uniform
-    VIZ_SCENE3D_API void bind(
+    SIGHT_VIZ_SCENE3D_API void bind(
         Ogre::Pass* _pass,
         const std::string& _sampler_name,
         const std::string& _uniform_name,

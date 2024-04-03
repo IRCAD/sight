@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
+
 #include "io/__/reader/generic_object_reader.hpp"
 
 #include <core/location/single_file.hpp>
@@ -48,7 +49,7 @@ namespace sight::io::reader
  * Reads '.dic' files and converts them into a 'sight::data::structure_traits_dictionary'.
  * This is an ASCII file. The structure of each line is defined on the first line of this file.
  */
-class IO_CLASS_API dictionary_reader :
+class SIGHT_IO_CLASS_API dictionary_reader :
     public generic_object_reader<data::structure_traits_dictionary>,
     public core::location::single_file
 {
@@ -56,15 +57,15 @@ public:
 
     SIGHT_DECLARE_CLASS(dictionary_reader, generic_object_reader<data::structure_traits_dictionary>)
 
-    IO_API ~dictionary_reader() override = default;
+    SIGHT_IO_API ~dictionary_reader() override = default;
 
     /// Read the file with standard iostream API.
-    IO_API void read() override;
+    SIGHT_IO_API void read() override;
 
-    IO_API std::string extension() const override;
+    SIGHT_IO_API std::string extension() const override;
 
     /// Returns the default dictionary path ( file in rc directory path of fwDataIO library )
-    IO_API static std::filesystem::path get_default_dictionary_path();
+    SIGHT_IO_API static std::filesystem::path get_default_dictionary_path();
 };
 
 } // namespace sight::io::reader

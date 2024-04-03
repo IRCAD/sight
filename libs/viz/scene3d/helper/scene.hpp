@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
+
 #include "viz/scene3d/render.hpp"
 
 #include <OGRE/OgreSceneNode.h>
@@ -40,7 +41,7 @@ public:
      * @param[in] _scene_node scene manager
      * @return the Ogre scene node, null if not found
      */
-    VIZ_SCENE3D_API static Ogre::SceneNode* get_node_by_id(
+    SIGHT_VIZ_SCENE3D_API static Ogre::SceneNode* get_node_by_id(
         viz::scene3d::render::ogre_object_id_t _node_id,
         Ogre::SceneNode* _scene_node
     );
@@ -50,7 +51,7 @@ public:
      * @param _root_scene_node The node whose bounding box is to be computed
      * @return The bounding box of the node
      */
-    VIZ_SCENE3D_API static Ogre::AxisAlignedBox compute_bounding_box(const Ogre::SceneNode* _root_scene_node);
+    SIGHT_VIZ_SCENE3D_API static Ogre::AxisAlignedBox compute_bounding_box(const Ogre::SceneNode* _root_scene_node);
 
     /**
      * Computes the projection of the bounding box of the descendants of the provided node in screen space using the
@@ -60,7 +61,7 @@ public:
      * @return The projection of the bounding box in screen space as a pair, with the first element being the minimum
      * (top left) and the second element the maximum (bottom right).
      */
-    VIZ_SCENE3D_API static std::pair<Ogre::Vector2, Ogre::Vector2> compute_bounding_rect(
+    SIGHT_VIZ_SCENE3D_API static std::pair<Ogre::Vector2, Ogre::Vector2> compute_bounding_rect(
         const Ogre::Camera& _camera,
         const Ogre::SceneNode* _root_scene_node
     );
@@ -70,19 +71,19 @@ public:
      * @param _color_index  index in the color table
      * @return The generated color.
      */
-    VIZ_SCENE3D_API static Ogre::ColourValue generate_color(int _color_index);
+    SIGHT_VIZ_SCENE3D_API static Ogre::ColourValue generate_color(int _color_index);
 
     /**
      * @brief Gets the formatted string used to display the length of a distance.
      * @return The formatted string.
      */
-    VIZ_SCENE3D_API static std::string get_length(const Ogre::Vector3& _begin, const Ogre::Vector3& _end);
+    SIGHT_VIZ_SCENE3D_API static std::string get_length(const Ogre::Vector3& _begin, const Ogre::Vector3& _end);
 
     /**
      * @brief Return the image spacing as a vector.
      * @return The output vector.
      */
-    VIZ_SCENE3D_API static Ogre::Vector3 spacing_as_vector3(const sight::data::image::spacing_t& spacing);
+    SIGHT_VIZ_SCENE3D_API static Ogre::Vector3 spacing_as_vector3(const sight::data::image::spacing_t& spacing);
 };
 
 } // namespace sight::viz::scene3d::helper

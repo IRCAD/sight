@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/runtime/module_element.hpp"
 #include "core/runtime/types.hpp"
 
@@ -38,8 +39,8 @@ class module;
 /**
  * @brief   Defines the extension class.
  */
-class CORE_CLASS_API extension : public module_element,
-                                 public boost::noncopyable
+class SIGHT_CORE_CLASS_API extension : public module_element,
+                                       public boost::noncopyable
 {
 public:
 
@@ -63,21 +64,21 @@ public:
      *
      * @return  a string containing the extension identifier (may be empty)
      */
-    [[nodiscard]] CORE_API const std::string& identifier() const;
+    [[nodiscard]] SIGHT_CORE_API const std::string& identifier() const;
 
     /**
      * @brief   Retrieves the extension point identifier.
      *
      * @return  a string containing the extension point identifier
      */
-    [[nodiscard]] CORE_API const std::string& point() const;
+    [[nodiscard]] SIGHT_CORE_API const std::string& point() const;
 
     /**
      * @brief   Retrieves the extension point configuration.
      *
      * @return  a string containing the extension point configuration
      */
-    [[nodiscard]] CORE_API virtual const config_t& get_config() const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual const config_t& get_config() const = 0;
 
 private:
 

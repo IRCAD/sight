@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <core/macros.hpp>
 
@@ -37,7 +37,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief Helper used to write a DICOM file.
  */
-class IO_DICOM_CLASS_API file_writer
+class SIGHT_IO_DICOM_CLASS_API file_writer
 {
 public:
 
@@ -46,7 +46,7 @@ public:
      * @brief[in] filename Filename
      * @brief[in] writer GDCM writer
      */
-    IO_DICOM_API static void write(
+    SIGHT_IO_DICOM_API static void write(
         const std::filesystem::path& _filename,
         const SPTR(gdcm::Writer)& _writer
     );

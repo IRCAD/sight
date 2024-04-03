@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/dicom/config.hpp"
+#include "sight/filter/dicom/config.hpp"
 
 namespace sight::filter::dicom
 {
@@ -35,10 +35,10 @@ class plugin
 public:
 
     /// Constructor
-    FILTER_DICOM_API plugin();
+    SIGHT_FILTER_DICOM_API plugin();
 
     /// Destructor
-    FILTER_DICOM_API ~plugin() = default;
+    SIGHT_FILTER_DICOM_API ~plugin() = default;
 };
 
 } // namespace sight::filter::dicom

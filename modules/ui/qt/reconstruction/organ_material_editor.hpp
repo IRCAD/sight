@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <core/tools/failed.hpp>
 
@@ -54,8 +52,8 @@ namespace sight::module::ui::qt::reconstruction
  * @subsection In-Out In-Out
  * - \b reconstruction [sight::data::reconstruction]: reconstruction containing the material to update.
  */
-class MODULE_UI_QT_CLASS_API organ_material_editor : public QObject,
-                                                     public sight::ui::editor
+class organ_material_editor : public QObject,
+                              public sight::ui::editor
 {
 Q_OBJECT
 
@@ -64,10 +62,10 @@ public:
     SIGHT_DECLARE_SERVICE(organ_material_editor, sight::ui::editor);
 
     /// Creates the service.
-    MODULE_UI_QT_API organ_material_editor() noexcept;
+    organ_material_editor() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_QT_API ~organ_material_editor() noexcept override;
+    ~organ_material_editor() noexcept override;
 
 private:
 

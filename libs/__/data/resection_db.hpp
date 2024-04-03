@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/factory/new.hpp"
 #include "data/resection.hpp"
 
@@ -37,7 +38,7 @@ namespace sight::data
  *
  * @see     Resection
  */
-class DATA_CLASS_API resection_db final : public object
+class SIGHT_DATA_CLASS_API resection_db final : public object
 {
 public:
 
@@ -46,22 +47,22 @@ public:
     /**
      * @brief Constructor
      */
-    DATA_API resection_db();
+    SIGHT_DATA_API resection_db();
 
     /// Destructor
-    DATA_API ~resection_db() noexcept override = default;
+    SIGHT_DATA_API ~resection_db() noexcept override = default;
 
     using resection_container_t = std::vector<resection::sptr>;
 
     /**
      * @brief Get the number of resections
      */
-    DATA_API resection_container_t::size_type num_resections() const;
+    SIGHT_DATA_API resection_container_t::size_type num_resections() const;
 
     /**
      * @brief add resection
      */
-    DATA_API void add_resection(const resection::sptr& _resection);
+    SIGHT_DATA_API void add_resection(const resection::sptr& _resection);
 
     /**
      * @{
@@ -89,13 +90,13 @@ public:
     using safe_part_added_signal_t = core::com::signal<void ()>;
 
     /// Key in m_signals map of signal m_sigSafePartAdded
-    DATA_API static const core::com::signals::key_t SAFE_PART_ADDED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t SAFE_PART_ADDED_SIG;
 
     /// Type of signal when a resection is added
     using resection_added_signal_t = core::com::signal<void ()>;
 
     /// Key in m_signals map of signal m_sigResectionAdded
-    DATA_API static const core::com::signals::key_t RESECTION_ADDED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t RESECTION_ADDED_SIG;
 
     /**
      * @}
@@ -103,20 +104,20 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const resection_db& _other) const noexcept;
-    DATA_API bool operator!=(const resection_db& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const resection_db& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const resection_db& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

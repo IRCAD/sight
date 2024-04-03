@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "app/config.hpp"
+#include <sight/app/config.hpp>
 
 #include <app/config_manager.hpp>
 
@@ -39,7 +39,7 @@ namespace sight::app::parser
  * description.
  * @see     service::object_parser
  */
-class APP_CLASS_API composite : public service::object_parser
+class SIGHT_APP_CLASS_API composite : public service::object_parser
 {
 public:
 
@@ -57,15 +57,15 @@ public:
     ~composite() override
     = default;
 
-    APP_API void create_config(core::tools::object::sptr _obj) override;
+    SIGHT_APP_API void create_config(core::tools::object::sptr _obj) override;
 
-    APP_API void start_config() override;
+    SIGHT_APP_API void start_config() override;
 
-    APP_API void update_config() override;
+    SIGHT_APP_API void update_config() override;
 
-    APP_API void stop_config() override;
+    SIGHT_APP_API void stop_config() override;
 
-    APP_API void destroy_config() override;
+    SIGHT_APP_API void destroy_config() override;
 
 protected:
 
@@ -74,7 +74,7 @@ protected:
      *
      * Parse the composite configuration element to configure and add its objects.
      */
-    APP_API void updating() override;
+    SIGHT_APP_API void updating() override;
 
 private:
 

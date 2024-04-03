@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/container/widget.hpp"
 #include "ui/__/object.hpp"
 
@@ -32,7 +33,7 @@ namespace sight::ui::builder
 /**
  * @brief   Defines the interface class  for the container builder.
  */
-class UI_CLASS_API widget : public ui::object
+class SIGHT_UI_CLASS_API widget : public ui::object
 {
 public:
 
@@ -40,39 +41,39 @@ public:
 
     using registry_key_t = std::string;
 
-    UI_API const static registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API const static registry_key_t REGISTRY_KEY;
 
     /// Constructor. Do nothing.
-    UI_API widget();
+    SIGHT_UI_API widget();
 
     /// Destructor. Do nothing.
-    UI_API ~widget() override;
+    SIGHT_UI_API ~widget() override;
 
     /**
      * @brief Returns the builded menu bar.
      */
-    UI_API virtual ui::container::widget::sptr get_container();
+    SIGHT_UI_API virtual ui::container::widget::sptr get_container();
 
     /**
      * @brief Configure the layout before creation. Does nothing.
      */
-    UI_API virtual void initialize(const ui::config_t& _configuration);
+    SIGHT_UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Instantiate layout with parent container.
      * @pre layout must be initialized before.
      * @pre parent container must be instanced.
      */
-    UI_API virtual void create_container(ui::container::widget::sptr _parent) = 0;
+    SIGHT_UI_API virtual void create_container(ui::container::widget::sptr _parent) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_API virtual void destroy_container() = 0;
+    SIGHT_UI_API virtual void destroy_container() = 0;
 
     /// Replace parent container
-    UI_API virtual void set_parent(ui::container::widget::sptr _parent) = 0;
+    SIGHT_UI_API virtual void set_parent(ui::container::widget::sptr _parent) = 0;
 
 protected:
 

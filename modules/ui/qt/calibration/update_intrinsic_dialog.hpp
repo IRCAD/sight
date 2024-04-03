@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
@@ -39,7 +37,7 @@ namespace sight::module::ui::qt::calibration
  * leads to an automatic computation of the new calibration parameters. By validating the user entry, the calibration
  * will be updated.
  */
-class MODULE_UI_QT_CLASS_API update_intrinsic_dialog : public QDialog
+class update_intrinsic_dialog : public QDialog
 {
 Q_OBJECT;
 

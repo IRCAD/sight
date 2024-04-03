@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/image/config.hpp"
+#include <sight/filter/image/config.hpp>
+
 #include "filter/image/metric.hpp"
 
 #include <data/image.hpp>
@@ -39,7 +40,7 @@ namespace sight::filter::image
 /**
  * @brief Static class for automatic image registration. Uses the newer ITKv4 registration framework.
  */
-class FILTER_IMAGE_CLASS_API automatic_registration
+class SIGHT_FILTER_IMAGE_CLASS_API automatic_registration
 {
 public:
 
@@ -55,8 +56,8 @@ public:
 
     using iteration_callback_t = std::function<void ()>;
 
-    FILTER_IMAGE_API automatic_registration() noexcept;
-    FILTER_IMAGE_API virtual ~automatic_registration() noexcept;
+    SIGHT_FILTER_IMAGE_API automatic_registration() noexcept;
+    SIGHT_FILTER_IMAGE_API virtual ~automatic_registration() noexcept;
 
     /**
      * @brief find a rigid transform matching the reference image with the target image.
@@ -69,7 +70,7 @@ public:
      * @param[in] _min_step minimum step for used by optimizer for each iteration.
      * @param[in] _max_iterations the maximum number of iterations
      */
-    FILTER_IMAGE_API void register_image(
+    SIGHT_FILTER_IMAGE_API void register_image(
         const data::image::csptr& _target,
         const data::image::csptr& _reference,
         const data::matrix4::sptr& _trf,
@@ -81,31 +82,31 @@ public:
         iteration_callback_t _callback = nullptr
     );
 
-    FILTER_IMAGE_API void stop_registration();
+    SIGHT_FILTER_IMAGE_API void stop_registration();
 
     /// Current metric evaluated by the optimizer.
-    [[nodiscard]] FILTER_IMAGE_API real_t get_current_metric_value() const;
+    [[nodiscard]] SIGHT_FILTER_IMAGE_API real_t get_current_metric_value() const;
 
     /// Current set of parameters used to evaluate the metric in the optimizer.
-    [[nodiscard]] FILTER_IMAGE_API const optimizer_t::ParametersType& get_current_parameters() const;
+    [[nodiscard]] SIGHT_FILTER_IMAGE_API const optimizer_t::ParametersType& get_current_parameters() const;
 
     /// Gradient descent relaxation factor.
-    [[nodiscard]] FILTER_IMAGE_API real_t get_relaxation_factor() const;
+    [[nodiscard]] SIGHT_FILTER_IMAGE_API real_t get_relaxation_factor() const;
 
     /// Gradient descent learning rate.
-    [[nodiscard]] FILTER_IMAGE_API real_t get_learning_rate() const;
+    [[nodiscard]] SIGHT_FILTER_IMAGE_API real_t get_learning_rate() const;
 
     /// Gradient magnitude tolerance.
-    [[nodiscard]] FILTER_IMAGE_API real_t get_gradient_magnitude_tolerance() const;
+    [[nodiscard]] SIGHT_FILTER_IMAGE_API real_t get_gradient_magnitude_tolerance() const;
 
     /// Current optimizer iteration.
-    [[nodiscard]] FILTER_IMAGE_API itk::SizeValueType get_current_iteration() const;
+    [[nodiscard]] SIGHT_FILTER_IMAGE_API itk::SizeValueType get_current_iteration() const;
 
     /// Current multi-resolution level.
-    [[nodiscard]] FILTER_IMAGE_API itk::SizeValueType get_current_level() const;
+    [[nodiscard]] SIGHT_FILTER_IMAGE_API itk::SizeValueType get_current_level() const;
 
     /// Current registration result.
-    FILTER_IMAGE_API void get_current_matrix(const data::matrix4::sptr& _trf) const;
+    SIGHT_FILTER_IMAGE_API void get_current_matrix(const data::matrix4::sptr& _trf) const;
 
 private:
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
+#include "sight/modules/ui/qt/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -39,22 +39,22 @@ namespace sight::module::ui::qt
 /**
  * @brief   This class is called when the guiQt module is loaded.
  */
-class MODULE_UI_QT_CLASS_API plugin final : public core::runtime::plugin
+class SIGHT_MODULE_UI_QT_CLASS_API plugin final : public core::runtime::plugin
 {
 public:
 
     /**
      * @brief   destructor
      */
-    MODULE_UI_QT_API ~plugin() noexcept final = default;
+    SIGHT_MODULE_UI_QT_API ~plugin() noexcept final = default;
 
     // Overrides
-    MODULE_UI_QT_API void start() final;
+    SIGHT_MODULE_UI_QT_API void start() final;
 
     // Overrides
-    MODULE_UI_QT_API void stop() noexcept final;
+    SIGHT_MODULE_UI_QT_API void stop() noexcept final;
 
-    static MODULE_UI_QT_API int run() noexcept;
+    static SIGHT_MODULE_UI_QT_API int run() noexcept;
 
 private:
 

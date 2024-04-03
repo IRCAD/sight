@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <app/config_manager.hpp>
 
@@ -66,17 +64,17 @@ namespace sight::module::ui::qt::series
  *     - \b replace: name of the parameter to be replaced
  *     - \b by: specific value to replace for the parameter
  */
-class MODULE_UI_QT_CLASS_API viewer : public service::controller
+class viewer : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(viewer, service::controller);
 
     /// Constructor
-    MODULE_UI_QT_API viewer() = default;
+    viewer() = default;
 
     /// Destructor
-    MODULE_UI_QT_API ~viewer() noexcept override = default;
+    ~viewer() noexcept override = default;
 
 protected:
 
@@ -106,7 +104,7 @@ protected:
      * Connect Vector::ADDED_OBJECTS_SIG to this::service::slots::UPDATE
      * Connect Vector::REMOVED_OBJECTS_SIG to this::service::slots::UPDATE
      */
-    MODULE_UI_QT_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     void info(std::ostream& _sstream) override;
 

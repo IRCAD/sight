@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/image/config.hpp"
+#include <sight/filter/image/config.hpp>
 
 #include <data/matrix4.hpp>
 #include <data/vector.hpp>
@@ -35,7 +35,7 @@ namespace sight::filter::image
 /**
  * @brief Computes an 'average' matrix from a matrix list.
  */
-class FILTER_IMAGE_CLASS_API matrix_regressor
+class SIGHT_FILTER_IMAGE_CLASS_API matrix_regressor
 {
 public:
 
@@ -48,7 +48,7 @@ public:
      * @param _matrix_list list of matrix to 'average'.
      * @param _points list of points used for solving.
      */
-    FILTER_IMAGE_API matrix_regressor(const data::vector::csptr& _matrix_list, std::vector<point_t> _points);
+    SIGHT_FILTER_IMAGE_API matrix_regressor(const data::vector::csptr& _matrix_list, std::vector<point_t> _points);
 
     /**
      * @brief computes the matrix that best fits our matrix list.
@@ -62,7 +62,7 @@ public:
      * @param _max_iter the maximum number of iterations for the solver.
      * @return the 'average' matrix
      */
-    FILTER_IMAGE_API data::matrix4::sptr minimize(
+    SIGHT_FILTER_IMAGE_API data::matrix4::sptr minimize(
         const data::matrix4& _init_value,
         double _step_length     = 1.,
         double _step_tolerance  = 1e-2,

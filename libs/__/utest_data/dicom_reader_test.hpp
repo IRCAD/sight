@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,14 @@
 
 #pragma once
 
-#include "utest_data/config.hpp"
+#include <sight/utest_data/config.hpp>
 
 #include <data/image_series.hpp>
 
 namespace sight::utest_data
 {
 
-class UTEST_DATA_CLASS_API dicom_reader_test
+class SIGHT_UTEST_DATA_CLASS_API dicom_reader_test
 {
 public:
 
@@ -41,12 +41,12 @@ public:
      * This file is located here in the test database : "sight/Patient/Dicom/JMSGenou",
      * it represents a CT image of a knee ( 400 slices ).
      */
-    UTEST_DATA_API static bool check_series_jms_genou(const SPTR(data::image_series)& _series);
+    SIGHT_UTEST_DATA_API static bool check_series_jms_genou(const SPTR(data::image_series)& _series);
 
     /**
      * @brief This method is the same as checkSeriesJMSGenou but it checks trimmed strings instead of even sized strings
      */
-    UTEST_DATA_API static bool check_series_jms_genou_trimmed(const SPTR(data::image_series)& _series);
+    SIGHT_UTEST_DATA_API static bool check_series_jms_genou_trimmed(const SPTR(data::image_series)& _series);
 };
 
 } // namespace sight::utest_data

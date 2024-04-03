@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include "modules/io/bitmap/config.hpp"
-
 #include <core/com/signal.hpp>
 #include <core/jobs/base.hpp>
 
@@ -85,7 +83,7 @@ namespace sight::module::io::bitmap
  *       - \b "best": emphasis compression over speed
  *       - \b "fast": emphasis speed over compression (DEFAULT)
  */
-class MODULE_IO_BITMAP_CLASS_API writer final : public sight::io::service::writer
+class writer final : public sight::io::service::writer
 {
 public:
 
@@ -95,28 +93,28 @@ public:
 
     /// Trivial constructor / destructor
     /// @{
-    MODULE_IO_BITMAP_API writer() noexcept           = default;
-    MODULE_IO_BITMAP_API ~writer() noexcept override = default;
+    writer() noexcept           = default;
+    ~writer() noexcept override = default;
     /// @}
 
     /// Show a file selection dialog
-    MODULE_IO_BITMAP_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
 protected:
 
-    MODULE_IO_BITMAP_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
     /// Does nothing
-    MODULE_IO_BITMAP_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_IO_BITMAP_API void stopping() override;
+    void stopping() override;
 
     /// Parses the configuration
-    MODULE_IO_BITMAP_API void configuring() override;
+    void configuring() override;
 
     /// Write the image
-    MODULE_IO_BITMAP_API void updating() override;
+    void updating() override;
 
 private:
 

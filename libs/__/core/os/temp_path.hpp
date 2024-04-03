@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -37,7 +37,7 @@ namespace sight::core::os
  * The root path of all temporary directories is accessible through the static method shared_directory().
  * This directory will only be deleted at application exit.
  */
-class CORE_CLASS_API temp_path
+class SIGHT_CORE_CLASS_API temp_path
 {
 public:
 
@@ -68,14 +68,16 @@ public:
     /// Returns the root path of all temporary directories.
     /// This directory will only be deleted at application exit.
     /// @param _subdirectory_prefix if set, creates a subdirectory with the given prefix
-    CORE_API static std::filesystem::path shared_directory(const std::string& _subdirectory_prefix = std::string());
+    SIGHT_CORE_API static std::filesystem::path shared_directory(
+        const std::string& _subdirectory_prefix = std::string()
+    );
 
 protected:
 
     /// Constructor / Destructor
     /// @{
-    CORE_API temp_path(const std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> >& _path_and_stream);
-    CORE_API virtual ~temp_path() noexcept;
+    SIGHT_CORE_API temp_path(const std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> >& _path_and_stream);
+    SIGHT_CORE_API virtual ~temp_path() noexcept;
     /// @}
 
     /// Holds the ofstream if any. Will be closed at destruction.
@@ -138,17 +140,17 @@ inline const std::filesystem::path& temp_path::path() const noexcept
  * The temporary directory is automatically deleted when the instance is destroyed.
  *
  */
-class CORE_CLASS_API temp_dir final : public temp_path
+class SIGHT_CORE_CLASS_API temp_dir final : public temp_path
 {
 public:
 
     /// Constructor
     /// @param[in] _path Allows to specify a path, that will be deleted when the instance is destroyed.
     ///                 It is up to the user to ensure that the path is unique and not used elsewhere.
-    CORE_API temp_dir(const std::optional<std::filesystem::path>& _path = std::nullopt);
+    SIGHT_CORE_API temp_dir(const std::optional<std::filesystem::path>& _path = std::nullopt);
 
     /// Destructor
-    CORE_API ~temp_dir() noexcept override = default;
+    SIGHT_CORE_API ~temp_dir() noexcept override = default;
 
     /// Convenience operator
     inline bool operator==(const temp_dir& _other) const noexcept;
@@ -167,7 +169,7 @@ inline bool temp_dir::operator==(const temp_dir& _other) const noexcept
  * The temporary file is automatically deleted when the instance is destroyed.
  *
  */
-class CORE_CLASS_API temp_file final : public temp_path
+class SIGHT_CORE_CLASS_API temp_file final : public temp_path
 {
 public:
 
@@ -176,13 +178,13 @@ public:
     ///                     This is the safest way to avoid race conditions and possible security problems.
     /// @param[in] _path Allows to specify a path, that will be deleted when the instance is destroyed.
     ///                 It is up to the user to ensure that the path is unique and not used elsewhere.
-    CORE_API temp_file(
+    SIGHT_CORE_API temp_file(
         const std::optional<std::ios_base::openmode>& _openmode = std::nullopt,
         const std::optional<std::filesystem::path>& _path       = std::nullopt
     );
 
     /// Destructor
-    CORE_API ~temp_file() noexcept override = default;
+    SIGHT_CORE_API ~temp_file() noexcept override = default;
 
     /// Conversion operator
     inline operator std::ostream& ();
@@ -198,12 +200,12 @@ public:
     /// @}
 
     /// Returns an unique temporary file path. The file will be deleted when application exit.
-    CORE_API static std::filesystem::path unique_path();
+    SIGHT_CORE_API static std::filesystem::path unique_path();
 
     /// Returns an unique temporary file path and an ofstream. The stream will be closed and the file deleted when
     /// application exit.
     /// @param _openmode Open mode of the stream.
-    CORE_API static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > unique_stream(
+    SIGHT_CORE_API static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > unique_stream(
         const std::optional<std::ios_base::openmode>& _openmode = std::ios_base::out | std::ios_base::trunc
     );
 

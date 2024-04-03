@@ -21,8 +21,9 @@
 
 #pragma once
 
+#include <sight/service/config.hpp>
+
 #include "service/base.hpp"
-#include "service/config.hpp"
 #include "service/detail/service_connection.hpp"
 
 #include <core/com/helper/sig_slot_connection.hpp>

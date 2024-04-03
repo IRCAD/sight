@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "activity/config.hpp"
+#include <sight/activity/config.hpp>
+
 #include "activity/validator/object.hpp"
 
 #include <core/base.hpp>
@@ -33,20 +34,20 @@ namespace sight::activity::validator
 /**
  * @brief Defines a validator which checks that properties of given images are the same.
  */
-class ACTIVITY_CLASS_API image_properties : public validator::object
+class SIGHT_ACTIVITY_CLASS_API image_properties : public validator::object
 {
 public:
 
     SIGHT_DECLARE_CLASS(image_properties, validator::object)
 
     /// Destructor. Do nothing.
-    ACTIVITY_API ~image_properties() override = default;
+    SIGHT_ACTIVITY_API ~image_properties() override = default;
 
     /**
      * @brief Validates if the given images have the same properties (origin, spacing, ...)
      * @see activity::validator::base::validate
      */
-    ACTIVITY_API validator::return_t validate(
+    SIGHT_ACTIVITY_API validator::return_t validate(
         const activity::extension::activity_info& _activity_info,
         const CSPTR(data::vector)& _current_selection
     ) const override;
@@ -56,7 +57,7 @@ public:
      * @note Given object must be a Vector or Composite of ImageSeries (or images)
      * @see activity::validator::base::validate
      */
-    ACTIVITY_API validator::return_t validate(const CSPTR(data::object)& _current_object) const
+    SIGHT_ACTIVITY_API validator::return_t validate(const CSPTR(data::object)& _current_object) const
     override;
 };
 

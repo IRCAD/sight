@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/factory/new.hpp"
 #include "data/series.hpp"
 #include "data/types.hpp"
@@ -39,7 +40,7 @@ namespace sight::data
 /**
  * @brief Holds DICOM series.
  */
-class DATA_CLASS_API dicom_series final : public series
+class SIGHT_DATA_CLASS_API dicom_series final : public series
 {
 public:
 
@@ -50,48 +51,48 @@ public:
     using computed_tag_value_container_t = std::map<std::string, std::string>;
 
     /// Destroys the DICOM series.
-    DATA_API ~dicom_series() noexcept override = default;
+    SIGHT_DATA_API ~dicom_series() noexcept override = default;
 
     /**
      * @brief Adds a DICOM path.
      * @param _instance_index index of the instance.
      * @param _path the path.
      */
-    DATA_API void add_dicom_path(std::size_t _instance_index, const std::filesystem::path& _path);
+    SIGHT_DATA_API void add_dicom_path(std::size_t _instance_index, const std::filesystem::path& _path);
 
     /**
      * @brief Adds a binary buffer.
      * @param _instance_index index of the instance.
      * @param _buffer the buffer.
      */
-    DATA_API void add_binary(std::size_t _instance_index, const core::memory::buffer_object::sptr& _buffer);
+    SIGHT_DATA_API void add_binary(std::size_t _instance_index, const core::memory::buffer_object::sptr& _buffer);
 
     /**
      * @brief Gets if the instance is available on the local computer
      * @param _instance_index the instance to check.
      * @return True if the instance is available on the local computer
      */
-    DATA_API bool is_instance_available(std::size_t _instance_index) const;
+    SIGHT_DATA_API bool is_instance_available(std::size_t _instance_index) const;
 
     /**
      * @brief Adds a sop_classUID that is used by this series.
      * @param _sop_class_uid sop_classUID that must be added.
      */
-    DATA_API void addsop_class_uid(const std::string& _sop_class_uid);
+    SIGHT_DATA_API void addsop_class_uid(const std::string& _sop_class_uid);
 
     /**
      * @brief Adds a computed value to the specified tag.
      * @param _tag_name Name of the tag.
      * @param _value Computed value.
      */
-    DATA_API void add_computed_tag_value(const std::string& _tag_name, const std::string& _value);
+    SIGHT_DATA_API void add_computed_tag_value(const std::string& _tag_name, const std::string& _value);
 
     /**
      * @brief Gets if there is a computed value for the specified tag.
      * @param _tag_name Name of the tag.
      * @return True if there is a computed value for the tag.
      */
-    DATA_API bool has_computed_values(const std::string& _tag_name) const;
+    SIGHT_DATA_API bool has_computed_values(const std::string& _tag_name) const;
 
     /**
      * @brief Gets the number of instances in the series.
@@ -171,20 +172,20 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const dicom_series& _other) const noexcept;
-    DATA_API bool operator!=(const dicom_series& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const dicom_series& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const dicom_series& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

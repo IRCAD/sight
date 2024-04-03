@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include "modules/geometry/__/config.hpp"
-
 #include <data/matrix4.hpp>
 
 #include <service/filter.hpp>
@@ -62,7 +60,7 @@ namespace sight::module::geometry
  * - \b enabled: enable the filter, output = input, equivalent to weight = 1.0.
  *
  */
-class MODULE_GEOMETRY_CLASS_API weighted_mean_matrix final : public sight::service::filter
+class weighted_mean_matrix final : public sight::service::filter
 {
 public:
 
@@ -81,30 +79,30 @@ public:
     };
 
     /// Defines slots.
-    MODULE_GEOMETRY_API weighted_mean_matrix();
+    weighted_mean_matrix();
 
     /// Does nothing.
-    MODULE_GEOMETRY_API ~weighted_mean_matrix() final = default;
+    ~weighted_mean_matrix() final = default;
 
 protected:
 
     /// Configures the service.
-    MODULE_GEOMETRY_API void configuring(const config_t& _config) final;
+    void configuring(const config_t& _config) final;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void starting() final;
+    void starting() final;
 
     /// Computes the weighted mean of matrix
-    MODULE_GEOMETRY_API void updating() final;
+    void updating() final;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void stopping() final;
+    void stopping() final;
 
     /// Connects the input matrix modified to the update slot.
-    MODULE_GEOMETRY_API sight::service::connections_t auto_connections() const final;
+    sight::service::connections_t auto_connections() const final;
 
     /// Handles parameters (weight, enabled) updates.
-    MODULE_GEOMETRY_API void set_parameter(sight::ui::parameter_t _value, std::string _key);
+    void set_parameter(sight::ui::parameter_t _value, std::string _key);
 
 private:
 

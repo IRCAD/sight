@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/dialog/selector_base.hpp"
 
 namespace sight::ui::dialog
@@ -33,14 +34,14 @@ namespace sight::ui::dialog
  * Use the Delegate design pattern. The specific implementation selection is ensured by SIGHT_REGISTER_GUI.
  * The specific implementation are in fwGuiWX and fwGuiQT libraries
  */
-class UI_CLASS_API selector : public selector_base
+class SIGHT_UI_CLASS_API selector : public selector_base
 {
 public:
 
     SIGHT_DECLARE_CLASS(selector, ui::dialog::selector_base);
 
     /// will instantiate the concrete implementation
-    UI_API selector();
+    SIGHT_UI_API selector();
 
     /**
      * Constructor. Create a selector with the specified title, message and choices.
@@ -50,7 +51,7 @@ public:
      * @param _selections list of choices in the selector
      * @param _multiple allow multiple selections
      */
-    UI_API selector(
+    SIGHT_UI_API selector(
         const std::string& _title,
         const std::string& _message,
         std::vector<std::string> _selections,
@@ -58,22 +59,22 @@ public:
     );
 
     /// Sets the selector title.
-    UI_API void set_title(std::string _title) override;
+    SIGHT_UI_API void set_title(std::string _title) override;
 
     ///  The string list that can be chosen by the selector, which can be optionally preselected.
-    UI_API void set_choices_preset(choices_preset_t _choices) override;
+    SIGHT_UI_API void set_choices_preset(choices_preset_t _choices) override;
 
     /// Allows multiple selections (default = false).
-    UI_API void set_multiple(bool _multiple) override;
+    SIGHT_UI_API void set_multiple(bool _multiple) override;
 
     /// Show the selector and return the selection.
-    UI_API selections_t show() override;
+    SIGHT_UI_API selections_t show() override;
 
     /// Set the message
-    UI_API void set_message(const std::string& _msg) override;
+    SIGHT_UI_API void set_message(const std::string& _msg) override;
 
     /// Add a custom button to this dialog
-    UI_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
+    SIGHT_UI_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
 protected:
 

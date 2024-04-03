@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <core/tools/failed.hpp>
 
 #include <ui/__/action.hpp>
@@ -34,17 +32,17 @@ namespace sight::module::ui::qt
 /**
  * @brief   This action launch a browser on the url given in configuration.
  */
-class MODULE_UI_QT_CLASS_API launch_browser : public sight::ui::action
+class launch_browser : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(launch_browser, sight::ui::action);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API launch_browser() noexcept;
+    launch_browser() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~launch_browser() noexcept override;
+    ~launch_browser() noexcept override;
 
 protected:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "app/config.hpp"
+#include <sight/app/config.hpp>
 
 #include <service/object_parser.hpp>
 
@@ -34,7 +34,7 @@ namespace sight::app::parser
  * description.
  * @see     service::object_parser
  */
-class APP_CLASS_API transfer_function : public service::object_parser
+class SIGHT_APP_CLASS_API transfer_function : public service::object_parser
 {
 public:
 
@@ -77,7 +77,7 @@ public:
        @endcode
      *
      */
-    APP_API void create_config(core::tools::object::sptr _obj) override;
+    SIGHT_APP_API void create_config(core::tools::object::sptr _obj) override;
 
 protected:
 
@@ -87,7 +87,7 @@ protected:
      * Parse the configuration element to configure inputs and outputs and add
      * them in the process object.
      */
-    APP_API void updating() override;
+    SIGHT_APP_API void updating() override;
 };
 
 } // namespace sight::app::parser

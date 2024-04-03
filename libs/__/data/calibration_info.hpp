@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/image.hpp"
 #include "data/object.hpp"
 #include "data/point_list.hpp"
@@ -41,7 +42,7 @@ namespace sight::data
  * and the second one contains pointList
  *
  */
-class DATA_CLASS_API calibration_info final : public object
+class SIGHT_DATA_CLASS_API calibration_info final : public object
 {
 public:
 
@@ -55,16 +56,16 @@ public:
      * @name Signals API
      * @{
      */
-    DATA_API static const core::com::signals::key_t ADDED_RECORD_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t ADDED_RECORD_SIG;
     using added_record_signal_t = core::com::signal<void ()>;
 
-    DATA_API static const core::com::signals::key_t REMOVED_RECORD_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t REMOVED_RECORD_SIG;
     using removed_record_signal_t = core::com::signal<void ()>;
 
-    DATA_API static const core::com::signals::key_t RESET_RECORD_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t RESET_RECORD_SIG;
     using reset_record_signal_t = core::com::signal<void ()>;
 
-    DATA_API static const core::com::signals::key_t GET_RECORD_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t GET_RECORD_SIG;
     using get_record_signal_t = core::com::signal<void (std::size_t)>;
 
     /**
@@ -72,37 +73,37 @@ public:
      */
 
     ///Constructor
-    DATA_API calibration_info();
+    SIGHT_DATA_API calibration_info();
 
     ///Destructor
-    DATA_API ~calibration_info() noexcept override = default;
+    SIGHT_DATA_API ~calibration_info() noexcept override = default;
 
     /**
      * @brief add an Image and a pointList into calibration_info
      * @param[in] _img the new image
      * @param[in] _pl the corresponding point list
      */
-    DATA_API void add_record(const image::sptr& _img, const point_list::sptr& _pl);
+    SIGHT_DATA_API void add_record(const image::sptr& _img, const point_list::sptr& _pl);
 
     /**
      * @brief remove the desired record (both image and pointList)
      * @param[in] _idx index of the record to be removed
      */
-    DATA_API void remove_record(std::size_t _idx);
+    SIGHT_DATA_API void remove_record(std::size_t _idx);
 
     /// Reset all records
-    DATA_API void reset_records();
+    SIGHT_DATA_API void reset_records();
 
     ///Get all the images
     ///@{
-    DATA_API std::list<image::sptr> get_image_container();
-    DATA_API std::list<image::csptr> get_image_container() const;
+    SIGHT_DATA_API std::list<image::sptr> get_image_container();
+    SIGHT_DATA_API std::list<image::csptr> get_image_container() const;
     ///@}
 
     ///Get all the pointLists
     ///@{
-    DATA_API std::list<point_list::sptr> get_point_list_container();
-    DATA_API std::list<point_list::csptr> get_point_list_container() const;
+    SIGHT_DATA_API std::list<point_list::sptr> get_point_list_container();
+    SIGHT_DATA_API std::list<point_list::csptr> get_point_list_container() const;
     ///@}
 
     /**
@@ -112,7 +113,7 @@ public:
      * @return pointList corresponding to the image
      *
      */
-    DATA_API point_list::csptr get_point_list(const image::csptr& _img) const;
+    SIGHT_DATA_API point_list::csptr get_point_list(const image::csptr& _img) const;
 
     /**
      * @brief Get the image corresponding to the specified pointList, if the specified pointList is not found
@@ -120,7 +121,7 @@ public:
      * @param[in] _pl the pointList
      * @return image corresponding to the pointList
      */
-    DATA_API image::csptr get_image(const point_list::csptr& _pl) const;
+    SIGHT_DATA_API image::csptr get_image(const point_list::csptr& _pl) const;
 
     /**
      * @brief Get the image corresponding to the specified index, if the index is not found
@@ -129,27 +130,27 @@ public:
      * @return image corresponding to the index
      * @{
      */
-    DATA_API image::sptr get_image(std::size_t _idx);
-    DATA_API image::csptr get_image(std::size_t _idx) const;
+    SIGHT_DATA_API image::sptr get_image(std::size_t _idx);
+    SIGHT_DATA_API image::csptr get_image(std::size_t _idx) const;
     /// @}
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const calibration_info& _other) const noexcept;
-    DATA_API bool operator!=(const calibration_info& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const calibration_info& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const calibration_info& _other) const noexcept;
 
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/object.hpp"
 
 #include <boost/signals2.hpp>
@@ -39,8 +40,8 @@ namespace sight::ui::dialog
  * @note    inherits from boost::signals2::trackable to auto_disconnect if handler is destroyed before the notifier.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
  */
-class UI_CLASS_API progress_base : public ui::object,
-                                   public boost::signals2::trackable
+class SIGHT_UI_CLASS_API progress_base : public ui::object,
+                                         public boost::signals2::trackable
 {
 public:
 
@@ -50,21 +51,21 @@ public:
     using cancel_callback_t      = boost::function<void ()>;
 
     /// this *unique* key should  be used *for all* factory for specific location(qt,wx,...)
-    UI_API static const factory_registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const factory_registry_key_t REGISTRY_KEY;
 
-    UI_API ~progress_base() override;
-    UI_API progress_base();
+    SIGHT_UI_API ~progress_base() override;
+    SIGHT_UI_API progress_base();
 
     ///set the title for the dialog
-    UI_API virtual void set_title(const std::string& _title) = 0;
+    SIGHT_UI_API virtual void set_title(const std::string& _title) = 0;
 
     ///set the message for the dialog
-    UI_API virtual void set_message(const std::string& _msg) = 0;
+    SIGHT_UI_API virtual void set_message(const std::string& _msg) = 0;
 
     /// action called by core::tools::progress_adviser
-    UI_API virtual void operator()(float _percent, std::string _msg) = 0;
+    SIGHT_UI_API virtual void operator()(float _percent, std::string _msg) = 0;
 
-    UI_API virtual void set_cancel_callback(cancel_callback_t _callback);
+    SIGHT_UI_API virtual void set_cancel_callback(cancel_callback_t _callback);
 
     //------------------------------------------------------------------------------
 
@@ -95,7 +96,7 @@ public:
 
 protected:
 
-    UI_API virtual void cancel_pressed();
+    SIGHT_UI_API virtual void cancel_pressed();
 
     cancel_callback_t m_cancel_callback;
     bool m_canceled {false};

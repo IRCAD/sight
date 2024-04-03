@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/io/vtk/config.hpp" // Declaration of class and function export
+// Declaration of class and function export
 
 #include <io/__/service/reader.hpp> // Definition of abstract reader class
 
@@ -70,7 +70,7 @@ namespace sight::module::io::vtk
  * - \b file (optional): path of the image to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
  */
-class MODULE_IO_VTK_CLASS_API image_reader : public sight::io::service::reader
+class image_reader : public sight::io::service::reader
 {
 public:
 
@@ -86,12 +86,12 @@ public:
      *
      * This method is used to find the file path using a file selector.
      */
-    MODULE_IO_VTK_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
     /**
      * @brief Constructor. Do nothing.
      */
-    MODULE_IO_VTK_API image_reader() noexcept;
+    image_reader() noexcept;
 
     /**
      * @brief This method is used to load an vtk image using a file path.
@@ -99,7 +99,7 @@ public:
      * @param[out] _image new empty image that will contain image loaded, if reading process is a success.
      * @return bool \b true if the image loading is a success and \b false if it fails
      */
-    MODULE_IO_VTK_API static bool load_image(
+    static bool load_image(
         const std::filesystem::path& _vtk_file,
         std::shared_ptr<data::image> _image,
         const SPTR(job_created_signal_t)& _sig_job_created
@@ -107,16 +107,16 @@ public:
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
     /// Method called when the service is started, does nothing.
-    MODULE_IO_VTK_API void starting() override;
+    void starting() override;
 
     /// Method called when the service is stopped, does nothing.
-    MODULE_IO_VTK_API void stopping() override;
+    void stopping() override;
 
     /// Method called when the service is stopped, does nothing.
-    MODULE_IO_VTK_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Updating method execute the read process.
@@ -124,10 +124,10 @@ protected:
      * This method is used to update the service.
      * The image is read.
      */
-    MODULE_IO_VTK_API void updating() override;
+    void updating() override;
 
     /// Info method gives some informations on service.
-    MODULE_IO_VTK_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
 private:
 

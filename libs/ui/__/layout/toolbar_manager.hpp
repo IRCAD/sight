@@ -80,7 +80,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/container/menu.hpp"
 #include "ui/__/container/menu_item.hpp"
 #include "ui/__/container/toolbar.hpp"
@@ -96,7 +97,7 @@ namespace sight::ui::layout
 /**
  * @brief   Defines the toolbar layout manager for IHM.
  */
-class UI_CLASS_API toolbar_manager : public ui::object
+class SIGHT_UI_CLASS_API toolbar_manager : public ui::object
 {
 public:
 
@@ -137,64 +138,64 @@ public:
         int m_size {0};
     };
 
-    UI_API const static registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API const static registry_key_t REGISTRY_KEY;
 
     /// Constructor. Do nothing.
-    UI_API toolbar_manager() = default;
+    SIGHT_UI_API toolbar_manager() = default;
 
     /// Destructor. Do nothing.
-    UI_API ~toolbar_manager() override = default;
+    SIGHT_UI_API ~toolbar_manager() override = default;
 
     /**
      * @brief Returns the vector of menu_item managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::menu_item::sptr> get_menu_items();
+    SIGHT_UI_API virtual std::vector<ui::container::menu_item::sptr> get_menu_items();
 
     /**
      * @brief Returns the vector of menu managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::menu::sptr> get_menus();
+    SIGHT_UI_API virtual std::vector<ui::container::menu::sptr> get_menus();
 
     /**
      * @brief Returns the vector of widget managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::widget::sptr> get_containers();
+    SIGHT_UI_API virtual std::vector<ui::container::widget::sptr> get_containers();
 
     /**
      * @brief Initialize layout managers & parse configuration.
      */
-    UI_API virtual void initialize(const ui::config_t& _configuration);
+    SIGHT_UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Instantiate actions with parent toolbar.
      */
-    UI_API virtual void create_layout(ui::container::toolbar::sptr _parent, const std::string& _id) = 0;
+    SIGHT_UI_API virtual void create_layout(ui::container::toolbar::sptr _parent, const std::string& _id) = 0;
 
     /**
      * @brief Destroy local actions.
      * @pre services using this actions must be stopped before.
      */
-    UI_API virtual void destroy_layout() = 0;
+    SIGHT_UI_API virtual void destroy_layout() = 0;
 
     /**
      * @brief Set the action visibility.
      */
-    UI_API virtual void menu_item_set_visible(ui::container::menu_item::sptr, bool _is_visible) = 0;
+    SIGHT_UI_API virtual void menu_item_set_visible(ui::container::menu_item::sptr, bool _is_visible) = 0;
 
     /**
      * @brief Set the action enable or not.
      */
-    UI_API virtual void menu_item_set_enabled(ui::container::menu_item::sptr, bool _is_enabled) = 0;
+    SIGHT_UI_API virtual void menu_item_set_enabled(ui::container::menu_item::sptr, bool _is_enabled) = 0;
 
     /**
      * @brief Set the action checked or not.
      */
-    UI_API virtual void menu_item_set_checked(ui::container::menu_item::sptr, bool _is_checked) = 0;
+    SIGHT_UI_API virtual void menu_item_set_checked(ui::container::menu_item::sptr, bool _is_checked) = 0;
 
     /**
      * @brief Set the toolbar visibility.
      */
-    UI_API virtual void set_visible(bool _is_visible) = 0;
+    SIGHT_UI_API virtual void set_visible(bool _is_visible) = 0;
 
     /**
      * @brief Sets callbacks associate with toolbar items.
@@ -209,7 +210,7 @@ protected:
     /**
      * @brief Helper to destroy local actions.
      */
-    UI_API virtual void destroy_actions();
+    SIGHT_UI_API virtual void destroy_actions();
 
     /// All actions managed by this layout.
     std::vector<ui::container::menu_item::sptr> m_menu_items;

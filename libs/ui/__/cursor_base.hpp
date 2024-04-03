@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/object.hpp"
 
 namespace sight::ui
@@ -31,7 +32,7 @@ namespace sight::ui
 /**
  * @brief   Defines the generic cursor for IHM.
  */
-class UI_CLASS_API cursor_base : public ui::object
+class SIGHT_UI_CLASS_API cursor_base : public ui::object
 {
 public:
 
@@ -49,16 +50,16 @@ public:
     };
 
     /// Destructor. Do nothing.
-    UI_API ~cursor_base() override = default;
+    SIGHT_UI_API ~cursor_base() override = default;
 
     using factory_registry_key_t = std::string;
-    UI_API static const factory_registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const factory_registry_key_t REGISTRY_KEY;
 
     /// Set the cursor
-    UI_API virtual void set_cursor(state_t _cursor, bool _set_overriden_as_default = true) = 0;
+    SIGHT_UI_API virtual void set_cursor(state_t _cursor, bool _set_overriden_as_default = true) = 0;
 
     /// Set the default cursor
-    UI_API virtual void set_default_cursor() = 0;
+    SIGHT_UI_API virtual void set_default_cursor() = 0;
 };
 
 } // namespace sight::ui

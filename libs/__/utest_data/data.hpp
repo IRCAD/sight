@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,15 @@
 
 #pragma once
 
-#include "utest/exception.hpp"
+#include <sight/utest_data/config.hpp>
 
-#include "utest_data/config.hpp"
+#include "utest/exception.hpp"
 
 #include <filesystem>
 
 namespace sight::utest_data
 {
 
-UTEST_DATA_API std::filesystem::path dir();
+SIGHT_UTEST_DATA_API std::filesystem::path dir();
 
 } // namespace sight::utest_data

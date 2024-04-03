@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/session/config.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/jobs/base.hpp>
@@ -96,7 +94,7 @@ namespace sight::module::io::session
  * @see sight::io::session::session_reader
  */
 
-class MODULE_IO_SESSION_CLASS_API reader final : public sight::io::service::reader
+class reader final : public sight::io::service::reader
 {
 public:
 
@@ -112,29 +110,29 @@ public:
         inline static const signal_t SESSION_LOADING_FAILED = "sessionLoadingFailed";
     };
 
-    MODULE_IO_SESSION_API reader() noexcept;
+    reader() noexcept;
 
-    MODULE_IO_SESSION_API ~reader() noexcept override;
+    ~reader() noexcept override;
 
     /// Propose to read a session data file
-    MODULE_IO_SESSION_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
 protected:
 
     /// Does nothing
-    MODULE_IO_SESSION_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_IO_SESSION_API void stopping() override;
+    void stopping() override;
 
     /// Parses the configuration
-    MODULE_IO_SESSION_API void configuring() override;
+    void configuring() override;
 
     /// Read session data from filesystem
-    MODULE_IO_SESSION_API void updating() override;
+    void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_SESSION_API sight::io::service::path_type_t get_path_type() const override
+    sight::io::service::path_type_t get_path_type() const override
     {
         return sight::io::service::file;
     }

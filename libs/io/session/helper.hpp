@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "io/session/config.hpp"
+#include <sight/io/session/config.hpp>
 
 #include <core/crypto/base64.hpp>
 

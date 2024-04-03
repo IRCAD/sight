@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/io/zip/config.hpp>
+
 #include "io/zip/archive.hpp"
-#include "io/zip/config.hpp"
 
 #include <core/crypto/secure_string.hpp>
 
@@ -36,7 +37,7 @@ namespace sight::io::zip
  * @brief Class that allow writing an archive.
  *
  */
-class IO_ZIP_CLASS_API archive_reader : public archive
+class SIGHT_IO_ZIP_CLASS_API archive_reader : public archive
 {
 public:
 
@@ -50,12 +51,12 @@ public:
     archive_reader& operator=(archive_reader&&)      = delete;
 
     /// Destructor
-    IO_ZIP_API ~archive_reader() override = default;
+    SIGHT_IO_ZIP_API ~archive_reader() override = default;
 
     /// Shared factory. It uses a cache mechanism to return the same instance for the same _archive_path.
     /// @param _archive_path path of the archive file. The file will be kept opened as long as the instance leave.
     /// @param _format the format of the archive. @see sight::io::zip::archive::archiveFormat
-    IO_ZIP_API static archive_reader::uptr get(
+    SIGHT_IO_ZIP_API static archive_reader::uptr get(
         const std::filesystem::path& _archive_path,
         archive_format _format = archive_format::DEFAULT
     );
@@ -63,7 +64,7 @@ public:
     /// Returns an std::istream to read an archived file
     /// @param _file_path path of an archived file.
     /// @param _password the password needed to decrypt the file.
-    IO_ZIP_API virtual std::unique_ptr<std::istream> open_file(
+    SIGHT_IO_ZIP_API virtual std::unique_ptr<std::istream> open_file(
         const std::filesystem::path& _file_path,
         const core::crypto::secure_string& _password = ""
     )                                                = 0;
@@ -71,18 +72,18 @@ public:
     /// Extracts all the content of the archive in the specified folder
     /// @param _output_path the output folder
     /// @param _password the password needed to decrypt the file.
-    IO_ZIP_API virtual void extract_all_to(
+    SIGHT_IO_ZIP_API virtual void extract_all_to(
         const std::filesystem::path& _output_path,
         const core::crypto::secure_string& _password = ""
     )                                                = 0;
 
     /// Returns true for raw archive
-    [[nodiscard]] IO_ZIP_API virtual bool is_raw() const = 0;
+    [[nodiscard]] SIGHT_IO_ZIP_API virtual bool is_raw() const = 0;
 
 protected:
 
     /// Constructor
-    IO_ZIP_API archive_reader(const std::filesystem::path& _archive_path);
+    SIGHT_IO_ZIP_API archive_reader(const std::filesystem::path& _archive_path);
 };
 
 } // namespace sight::io::zip

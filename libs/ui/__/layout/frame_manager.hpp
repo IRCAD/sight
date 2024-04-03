@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/container/widget.hpp"
 #include "ui/__/object.hpp"
 
@@ -36,7 +37,7 @@ namespace sight::ui::layout
 /**
  * @brief   Defines an interface for managing a frame.
  */
-class UI_CLASS_API frame_manager : public ui::object
+class SIGHT_UI_CLASS_API frame_manager : public ui::object
 {
 public:
 
@@ -118,27 +119,27 @@ public:
     };
 
     /// Constructor. Do nothing.
-    UI_API frame_manager();
+    SIGHT_UI_API frame_manager();
 
     /// Destructor. Do nothing.
-    UI_API ~frame_manager() override = default;
+    SIGHT_UI_API ~frame_manager() override = default;
 
     /**
      * @brief Configure the layout before creation.
      */
-    UI_API virtual void initialize(const ui::config_t& _configuration);
+    SIGHT_UI_API virtual void initialize(const ui::config_t& _configuration);
 
-    UI_API static const registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const registry_key_t REGISTRY_KEY;
 
     /**
      * @brief Instantiate frame.
      */
-    UI_API virtual void create_frame() = 0;
+    SIGHT_UI_API virtual void create_frame() = 0;
 
     /**
      * @brief Destroy frame.
      */
-    UI_API virtual void destroy_frame() = 0;
+    SIGHT_UI_API virtual void destroy_frame() = 0;
 
     /// Return the frame container
     virtual ui::container::widget::sptr get_frame()
@@ -153,7 +154,7 @@ public:
     }
 
     using CloseCallback = std::function<void ()>;
-    UI_API virtual void set_close_callback(CloseCallback _fct);
+    SIGHT_UI_API virtual void set_close_callback(CloseCallback _fct);
 
 protected:
 
@@ -185,9 +186,9 @@ protected:
     ui::container::widget::sptr m_container;
     CloseCallback m_close_callback;
 
-    UI_API void read_config();
+    SIGHT_UI_API void read_config();
 
-    UI_API void write_config() const;
+    SIGHT_UI_API void write_config() const;
 
 private:
 

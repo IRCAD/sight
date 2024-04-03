@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/object.hpp"
 
 #include <string>
@@ -33,7 +34,7 @@ namespace sight::ui::dialog
 /**
  * @brief   Defines the generic input dialog box for IHM.
  */
-class UI_CLASS_API input_base : public ui::object
+class SIGHT_UI_CLASS_API input_base : public ui::object
 {
 public:
 
@@ -49,27 +50,27 @@ public:
     };
 
     /// Constructor. Do nothing.
-    UI_API input_base();
+    SIGHT_UI_API input_base();
     /// Destructor. Do nothing.
-    UI_API ~input_base() override;
+    SIGHT_UI_API ~input_base() override;
 
     using factory_registry_key_t = std::string;
-    UI_API static const factory_registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const factory_registry_key_t REGISTRY_KEY;
 
     /// Set the title of the input dialog
-    UI_API virtual void set_title(const std::string& _title) = 0;
+    SIGHT_UI_API virtual void set_title(const std::string& _title) = 0;
 
     /// Set the input text in the input field
-    UI_API virtual void set_input(const std::string& _text) = 0;
+    SIGHT_UI_API virtual void set_input(const std::string& _text) = 0;
 
     /// Get the input text in the input field
-    UI_API virtual std::pair<std::string, bool> get_input() = 0;
+    SIGHT_UI_API virtual std::pair<std::string, bool> get_input() = 0;
 
     /// Set the message
-    UI_API virtual void set_message(const std::string& _msg) = 0;
+    SIGHT_UI_API virtual void set_message(const std::string& _msg) = 0;
 
     /// Sets the echo mode used to display input field content
-    UI_API virtual void set_echo_mode(echo_mode _echo_mode) = 0;
+    SIGHT_UI_API virtual void set_echo_mode(echo_mode _echo_mode) = 0;
 };
 
 } // namespace sight::ui::dialog

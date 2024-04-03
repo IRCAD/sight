@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <QFrame>
 #include <QGridLayout>
@@ -40,7 +40,7 @@ namespace sight::ui::qt::widget
  * Then we can fold and unfold the section.
  *
  */
-class UI_QT_CLASS_API_QT collapsible_section : public QWidget
+class SIGHT_UI_QT_CLASS_API_QT collapsible_section : public QWidget
 {
 Q_OBJECT
 
@@ -55,17 +55,17 @@ public:
      * @param _animation_duration : the animation duration when the section fold/unfold.
      * @param _parent : the parent widget that will contain collapsible widget.
      */
-    UI_QT_API_QT collapsible_section(
+    SIGHT_UI_QT_API_QT collapsible_section(
         const QString& _title         = "",
         const int _animation_duration = DEFAULT_DURATION,
         QWidget* _parent              = 0
     );
 
     /// Set layout inside the collapsible section with the desired content.
-    UI_QT_API_QT void set_content_layout(QLayout* _content_layout);
+    SIGHT_UI_QT_API_QT void set_content_layout(QLayout* _content_layout);
 
     /// Set title next to the QToolButton.
-    UI_QT_API_QT void set_title(QString _title);
+    SIGHT_UI_QT_API_QT void set_title(QString _title);
 
     /**
      * @brief Update the height according to the contained data. If `_changing_content_while_unfolded`, the section
@@ -74,7 +74,7 @@ public:
      * @param _changing_content_while_unfolded : If the content changes dynamically while the collapsible section is
      * unfolded.
      */
-    UI_QT_API_QT void update_heights(bool _changing_content_while_unfolded);
+    SIGHT_UI_QT_API_QT void update_heights(bool _changing_content_while_unfolded);
 
 public Q_SLOTS:
 

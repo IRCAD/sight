@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
@@ -42,7 +42,7 @@ public:
      * @param _num_points[in] number of points
      * @param _num_components[in] number of components, must be 3 or 4
      */
-    VIZ_SCENE3D_API static void copy_colors(
+    SIGHT_VIZ_SCENE3D_API static void copy_colors(
         Ogre::RGBA* _dest,
         const std::uint8_t* _src,
         std::size_t _num_points,

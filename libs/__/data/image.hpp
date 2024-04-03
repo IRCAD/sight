@@ -170,8 +170,8 @@ class point_list;
    @endcode
  */
 /* *INDENT-ON* */
-class DATA_CLASS_API image : public virtual object,
-                             public core::memory::buffered
+class SIGHT_DATA_CLASS_API image : public virtual object,
+                                   public core::memory::buffered
 {
 public:
 
@@ -201,15 +201,15 @@ public:
     /**
      * @brief Constructor
      */
-    DATA_API image();
+    SIGHT_DATA_API image();
 
     /**
      * @brief Destructor
      */
-    DATA_API ~image() noexcept override = default;
+    SIGHT_DATA_API ~image() noexcept override = default;
 
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
-    DATA_API void copy_information(image::csptr _source);
+    SIGHT_DATA_API void copy_information(image::csptr _source);
 
     /// Get image spacing
     const spacing_t& spacing() const;
@@ -225,7 +225,7 @@ public:
     const image::size_t& size() const;
 
     /// Number of dimensions of the image (3 for 3D image)
-    DATA_API std::size_t num_dimensions() const;
+    SIGHT_DATA_API std::size_t num_dimensions() const;
 
     /** @{
      *  @brief Get/set preferred window center
@@ -242,13 +242,13 @@ public:
     /// @}
 
     /// Get the number of elements (ie: size[0]*size[1]*size[2]*nbComponents)
-    DATA_API std::size_t num_elements() const;
+    SIGHT_DATA_API std::size_t num_elements() const;
 
     /// Get the number of components of an image pixel
     std::size_t num_components() const;
 
     /// Get image type
-    DATA_API core::type type() const;
+    SIGHT_DATA_API core::type type() const;
 
     /// Get pixel format
     pixel_format pixel_format() const;
@@ -268,13 +268,17 @@ public:
      *
      * @return Allocated size in bytes
      */
-    DATA_API virtual std::size_t resize(const image::size_t& _size, const core::type& _type, enum pixel_format _format);
+    SIGHT_DATA_API virtual std::size_t resize(
+        const image::size_t& _size,
+        const core::type& _type,
+        enum pixel_format _format
+    );
     /// @}
 
     /// @brief return image size in bytes
-    DATA_API std::size_t size_in_bytes() const;
+    SIGHT_DATA_API std::size_t size_in_bytes() const;
     /// @brief return allocated image size in bytes
-    DATA_API std::size_t allocated_size_in_bytes() const;
+    SIGHT_DATA_API std::size_t allocated_size_in_bytes() const;
 
     /**
      * @name Signals
@@ -282,43 +286,43 @@ public:
      */
     /// Type of signal when image's buffer is added
     using buffer_modified_signal_t = core::com::signal<void ()>;
-    DATA_API static const core::com::signals::key_t BUFFER_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t BUFFER_MODIFIED_SIG;
 
     /// Type of signal when a landmark is added
     using landmark_added_signal_t = core::com::signal<void (std::shared_ptr<point>)>;
-    DATA_API static const core::com::signals::key_t LANDMARK_ADDED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_ADDED_SIG;
 
     /// Type of signal when a landmark is removed
     using landmark_removed_signal_t = core::com::signal<void (std::shared_ptr<point>)>;
-    DATA_API static const core::com::signals::key_t LANDMARK_REMOVED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_REMOVED_SIG;
 
     /// Type of signal when a distance is added
     using landmark_displayed_signal_t = core::com::signal<void (bool)>;
-    DATA_API static const core::com::signals::key_t LANDMARK_DISPLAYED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_DISPLAYED_SIG;
 
     /// Type of signal when a distance is added
     using distance_displayed_signal_t = core::com::signal<void (bool)>;
-    DATA_API static const core::com::signals::key_t DISTANCE_DISPLAYED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t DISTANCE_DISPLAYED_SIG;
 
     /// Type of signal when a distance is added
     using distance_added_signal_t = core::com::signal<void (std::shared_ptr<point_list>)>;
-    DATA_API static const core::com::signals::key_t DISTANCE_ADDED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t DISTANCE_ADDED_SIG;
 
     /// Type of signal when a distance is modified
     using distance_modified_signal_t = core::com::signal<void (SPTR(point_list))>;
-    DATA_API static const core::com::signals::key_t DISTANCE_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t DISTANCE_MODIFIED_SIG;
 
     /// Type of signal when a distance is removed
     using distance_removed_signal_t = core::com::signal<void (std::shared_ptr<const point_list>)>;
-    DATA_API static const core::com::signals::key_t DISTANCE_REMOVED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t DISTANCE_REMOVED_SIG;
 
     /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
     using slice_index_modified_signal_t = core::com::signal<void (int, int, int)>;
-    DATA_API static const core::com::signals::key_t SLICE_INDEX_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t SLICE_INDEX_MODIFIED_SIG;
 
     /// Type of signal when slice type is modified (from slice type, to slice type)
     using slice_type_modified_signal_t = core::com::signal<void (int, int)>;
-    DATA_API static const core::com::signals::key_t SLICE_TYPE_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t SLICE_TYPE_MODIFIED_SIG;
     /**
      * @}
      */
@@ -401,17 +405,17 @@ public:
      * Iterate through all the element of the buffer.
      * @{
      */
-    DATA_API iterator<char> begin();
-    DATA_API iterator<char> end();
-    DATA_API const_iterator<char> begin() const;
-    DATA_API const_iterator<char> end() const;
+    SIGHT_DATA_API iterator<char> begin();
+    SIGHT_DATA_API iterator<char> end();
+    SIGHT_DATA_API const_iterator<char> begin() const;
+    SIGHT_DATA_API const_iterator<char> end() const;
     /// @}
 
     ///
     /// @{
     /// Returns image buffer
-    DATA_API void* buffer();
-    DATA_API const void* buffer() const;
+    SIGHT_DATA_API void* buffer();
+    SIGHT_DATA_API const void* buffer() const;
     /// @}
 
     /**
@@ -426,7 +430,7 @@ public:
      * @param _format          Specify the ordering and the meaning of a pixel components
      * @param _policy          If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
-    DATA_API void set_buffer(
+    SIGHT_DATA_API void set_buffer(
         void* _buf,
         bool _take_ownership,
         const core::type& _type,
@@ -479,14 +483,14 @@ public:
      * @param _index offset of the pixel
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
-    DATA_API void* get_pixel(index_t _index);
+    SIGHT_DATA_API void* get_pixel(index_t _index);
 
     /**
      * @brief Return a pointer on a image pixel
      * @param _index offset of the pixel
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
-    DATA_API const void* get_pixel(index_t _index) const;
+    SIGHT_DATA_API const void* get_pixel(index_t _index) const;
 
     /**
      * @brief Set pixel value represented as a void* buffer
@@ -494,37 +498,37 @@ public:
      * @param _pix_buf  pixel value represented as a void* buffer
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
-    DATA_API void set_pixel(index_t _index, const buffer_t* _pix_buf);
+    SIGHT_DATA_API void set_pixel(index_t _index, const buffer_t* _pix_buf);
 
     /// Return the pixel value in a std::string
-    DATA_API std::string get_pixel_as_string(
+    SIGHT_DATA_API std::string get_pixel_as_string(
         index_t _x,
         index_t _y,
         index_t _z
     ) const;
 
     /// Return the buffer object
-    DATA_API core::memory::buffer_object::sptr get_buffer_object();
+    SIGHT_DATA_API core::memory::buffer_object::sptr get_buffer_object();
 
     /// Return the buffer object
-    DATA_API core::memory::buffer_object::csptr get_buffer_object() const;
+    SIGHT_DATA_API core::memory::buffer_object::csptr get_buffer_object() const;
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const image& _other) const noexcept;
-    DATA_API bool operator!=(const image& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const image& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const image& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
@@ -533,7 +537,7 @@ protected:
 
     /// Add a lock on the image in the given vector to prevent from dumping the buffer on the disk
     /// This is needed for IBuffered interface implementation
-    DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const override;
+    SIGHT_DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const override;
 
 private:
 
@@ -553,7 +557,7 @@ private:
      *
      * @return Allocated size in bytes
      */
-    DATA_API std::size_t resize(
+    SIGHT_DATA_API std::size_t resize(
         const image::size_t& _size,
         const core::type& _type,
         enum pixel_format _format,

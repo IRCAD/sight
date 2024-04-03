@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/container/menu.hpp"
 #include "ui/__/container/menubar.hpp"
 #include "ui/__/object.hpp"
@@ -37,7 +38,7 @@ namespace sight::ui::layout
 /**
  * @brief   Defines the menu bar layout manager for IHM.
  */
-class UI_CLASS_API menubar_manager : public ui::object
+class SIGHT_UI_CLASS_API menubar_manager : public ui::object
 {
 public:
 
@@ -45,18 +46,18 @@ public:
 
     using registry_key_t = std::string;
 
-    UI_API const static registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API const static registry_key_t REGISTRY_KEY;
 
     /// Constructor. Do nothing.
-    UI_API menubar_manager() = default;
+    SIGHT_UI_API menubar_manager() = default;
 
     /// Destructor. Do nothing.
-    UI_API ~menubar_manager() override = default;
+    SIGHT_UI_API ~menubar_manager() override = default;
 
     /**
      * @brief Returns the vector of menu managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::menu::sptr> get_menus();
+    SIGHT_UI_API virtual std::vector<ui::container::menu::sptr> get_menus();
 
     /**
      * @brief Initialize layout managers.
@@ -84,37 +85,37 @@ public:
      *   - \b name (mandatory) : give the name of the menu that will appear in the interface.
      */
 
-    UI_API virtual void initialize(const ui::config_t& _configuration);
+    SIGHT_UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Instantiate menu with parent menubar.
      * @pre layout must be initialized before.
      * @pre parent menubar must be instanced.
      */
-    UI_API virtual void create_layout(ui::container::menubar::sptr _parent, const std::string& _id) = 0;
+    SIGHT_UI_API virtual void create_layout(ui::container::menubar::sptr _parent, const std::string& _id) = 0;
 
     /**
      * @brief Destroy local menus.
      * @pre services using this menus must be stopped before.
      */
-    UI_API virtual void destroy_layout() = 0;
+    SIGHT_UI_API virtual void destroy_layout() = 0;
 
     /**
      * @brief Set the menu visibility.
      */
-    UI_API virtual void menu_is_visible(ui::container::menu::sptr, bool _is_visible) = 0;
+    SIGHT_UI_API virtual void menu_is_visible(ui::container::menu::sptr, bool _is_visible) = 0;
 
     /**
      * @brief Set the menu enable or not.
      */
-    UI_API virtual void menu_is_enabled(ui::container::menu::sptr, bool _is_enabled) = 0;
+    SIGHT_UI_API virtual void menu_is_enabled(ui::container::menu::sptr, bool _is_enabled) = 0;
 
 protected:
 
     /**
      * @brief Helper to destroy local sub views.
      */
-    UI_API virtual void destroy_menus();
+    SIGHT_UI_API virtual void destroy_menus();
 
     /// All sub containers managed by this layout.
     std::vector<ui::container::menu::sptr> m_menus;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <limits>
 #include <map>
@@ -32,28 +32,28 @@
 namespace sight::core
 {
 
-class CORE_CLASS_API type
+class SIGHT_CORE_CLASS_API type
 {
 public:
 
     constexpr type() = default;
-    CORE_API type(const std::string& _str);
+    SIGHT_CORE_API type(const std::string& _str);
 
     constexpr bool operator==(const type& _t) const;
     constexpr bool operator!=(const type& _t) const;
     constexpr bool operator<(const type& _t) const;
 
     /// Returns the size of the type
-    [[nodiscard]] CORE_API size_t size() const;
+    [[nodiscard]] SIGHT_CORE_API size_t size() const;
 
     /// Returns true is the type is signed
-    [[nodiscard]] CORE_API bool is_signed() const;
+    [[nodiscard]] SIGHT_CORE_API bool is_signed() const;
 
     /// Returns the name of the type in a string, i.e. "uint8" for UINT8
-    [[nodiscard]] CORE_API const std::string& name() const;
+    [[nodiscard]] SIGHT_CORE_API const std::string& name() const;
 
     /// Converts the value in parameter into a string according to this type
-    CORE_API std::string to_string(const void* _value) const;
+    SIGHT_CORE_API std::string to_string(const void* _value) const;
 
     /// Convert a static C++ type to a dynamic Type
     template<typename T>
@@ -230,7 +230,7 @@ constexpr type type::get<double>()
 
 //------------------------------------------------------------------------------
 
-CORE_API std::ostream& operator<<(std::ostream& _os, const sight::core::type& _type);
+SIGHT_CORE_API std::ostream& operator<<(std::ostream& _os, const sight::core::type& _type);
 
 inline constexpr type type::INT8  = type::type_t::in_t8;
 inline constexpr type type::INT16 = type::type_t::in_t16;

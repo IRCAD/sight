@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/dialog/input_base.hpp"
 
 namespace sight::ui::dialog
@@ -41,7 +42,7 @@ namespace sight::ui::dialog
    std::string inputText = inputDlg.getInput();
    @endcode
  */
-class UI_CLASS_API input final : public input_base
+class SIGHT_UI_CLASS_API input final : public input_base
 {
 public:
 
@@ -55,7 +56,7 @@ public:
      * @param _text the input text in the input field
      * @return Returns text in the input field
      */
-    UI_API static std::pair<std::string, bool> show_input_dialog(
+    SIGHT_UI_API static std::pair<std::string, bool> show_input_dialog(
         const std::string& _title,
         const std::string& _message,
         const std::string& _text = "",
@@ -73,7 +74,7 @@ public:
        std::string inputText = inputDlg.getInput();
        @endcode
      */
-    UI_API input();
+    SIGHT_UI_API input();
 
     /**
      * Constructor. Creates a input box with the specified title and message.
@@ -82,7 +83,7 @@ public:
      * @param _message Message of the input box
      * @param _text the input text in the input field
      */
-    UI_API input(
+    SIGHT_UI_API input(
         const std::string& _title,
         const std::string& _message,
         const std::string& _text = "",
@@ -90,22 +91,22 @@ public:
     );
 
     /// Destructor. Do nothing
-    UI_API ~input() override;
+    SIGHT_UI_API ~input() override;
 
     /// Set the title of the input dialog
-    UI_API void set_title(const std::string& _title) override;
+    SIGHT_UI_API void set_title(const std::string& _title) override;
 
     /// Set the message
-    UI_API void set_message(const std::string& _msg) override;
+    SIGHT_UI_API void set_message(const std::string& _msg) override;
 
     /// Sets the echo mode used to display input field content
-    UI_API void set_echo_mode(echo_mode _echo_mode) override;
+    SIGHT_UI_API void set_echo_mode(echo_mode _echo_mode) override;
 
     /// Set the input text in the input field
-    UI_API void set_input(const std::string& _text) override;
+    SIGHT_UI_API void set_input(const std::string& _text) override;
 
     /// Get the input text in the input field
-    UI_API std::pair<std::string, bool> get_input() override;
+    SIGHT_UI_API std::pair<std::string, bool> get_input() override;
 
 protected:
 

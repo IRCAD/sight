@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/base.hpp>
 #include <core/mt/types.hpp>
@@ -38,7 +38,7 @@ class object;
 /**
  * @brief   Defines ID for core::tools::object. It is used to associate ID with object.
  */
-class CORE_CLASS_API id
+class SIGHT_CORE_CLASS_API id
 {
 public:
 
@@ -59,15 +59,15 @@ public:
      * @return true iff the given id is recorded in fwID dictionary.
      * @note This method is thread-safe.
      */
-    CORE_API static bool exist(type _id);
+    SIGHT_CORE_API static bool exist(type _id);
 
     /**
      * @brief Retrieve the object attached to the given id. Return a null sptr if no correspondence exist.
      * @note This method is thread-safe.
      */
-    CORE_API static SPTR(core::tools::object) get_object(type _request_id);
+    SIGHT_CORE_API static SPTR(core::tools::object) get_object(type _request_id);
 
-    CORE_API virtual ~id();
+    SIGHT_CORE_API virtual ~id();
 
 protected:
 
@@ -76,7 +76,7 @@ protected:
      * @brief Return true if the object has an id set.
      * @note This method is thread-safe.
      */
-    CORE_API bool has_id() const;
+    SIGHT_CORE_API bool has_id() const;
 
     /**
      * @brief Returns the id of the object. If it is not set and the policy value is
@@ -87,20 +87,20 @@ protected:
      * @note We consider an object be constant whatever if its id is generated.
      * @note This method is thread-safe.
      */
-    CORE_API type get_id(policy _policy = policy::generate) const;
+    SIGHT_CORE_API type get_id(policy _policy = policy::generate) const;
 
     /**
      * @brief Set a newID  for the object, (newID must not exist in fwID), the oldest one is released.
      * @warning Cannot set a empty ID.
      * @note This method is thread-safe.
      */
-    CORE_API virtual void set_id(type _new_id); // cannot set a empty one
+    SIGHT_CORE_API virtual void set_id(type _new_id); // cannot set a empty one
 
     /**
      * @brief Release the id for the object.
      * @note This method is thread-safe
      */
-    CORE_API void reset_id();
+    SIGHT_CORE_API void reset_id();
 
     /**
      * @brief   Constructor : does nothing.

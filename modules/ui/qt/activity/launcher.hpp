@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <activity/extension/activity.hpp>
 #include <activity/message.hpp>
 
@@ -114,25 +112,25 @@ namespace sight::module::ui::qt::activity
  *       - \b type: type of series (data::image_series, data::model_series, ....)
  *       - \b id: identifier of the activity.
  */
-class MODULE_UI_QT_CLASS_API launcher : public sight::ui::action
+class launcher : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(launcher, sight::ui::action);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API launcher() noexcept;
+    launcher() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~launcher() noexcept override;
+    ~launcher() noexcept override;
 
     /**
      * @name Slot API
      * @{
      */
-    MODULE_UI_QT_API static const core::com::slots::key_t LAUNCH_SERIES_SLOT;
-    MODULE_UI_QT_API static const core::com::slots::key_t LAUNCH_ACTIVITY_SLOT;
-    MODULE_UI_QT_API static const core::com::slots::key_t UPDATE_STATE_SLOT;
+    static const core::com::slots::key_t LAUNCH_SERIES_SLOT;
+    static const core::com::slots::key_t LAUNCH_ACTIVITY_SLOT;
+    static const core::com::slots::key_t UPDATE_STATE_SLOT;
 
     /// @}
 
@@ -143,7 +141,7 @@ public:
     using activity_launched_signal_t = core::com::signal<void (sight::activity::message)>;
 
     /// Key in m_signals map of signal m_sigActivityLaunched
-    MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG;
+    static const core::com::signals::key_t ACTIVITY_LAUNCHED_SIG;
 
     /// @}
 
@@ -156,7 +154,7 @@ protected:
      * Connect Vector::ADDED_OBJECTS_SIG to this::UPDATE_STATE_SLOT
      * Connect Vector::REMOVED_OBJECTS_SIG to this::UPDATE_STATE_SLOT
      */
-    MODULE_UI_QT_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     ///This method launches the action::starting method.
     void starting() override;

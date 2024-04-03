@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/ui/qt/activity/data_view.hpp"
-#include "modules/ui/qt/config.hpp"
 
 #include <activity/extension/activity.hpp>
 
@@ -91,38 +90,38 @@ namespace sight::module::ui::qt::activity
  *   emptied and the signal 'canceled' is emitted.
 
  */
-class MODULE_UI_QT_CLASS_API wizard : public QObject,
-                                      public sight::ui::editor
+class wizard : public QObject,
+               public sight::ui::editor
 {
 public:
 
     SIGHT_DECLARE_SERVICE(wizard, sight::ui::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API wizard() noexcept;
+    wizard() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~wizard() noexcept override;
+    ~wizard() noexcept override;
 
     /**
      * @name Slot API
      * @{
      */
-    MODULE_UI_QT_API static const core::com::slots::key_t CREATE_ACTIVITY_SLOT;
-    MODULE_UI_QT_API static const core::com::slots::key_t UPDATE_ACTIVITY_SLOT;
+    static const core::com::slots::key_t CREATE_ACTIVITY_SLOT;
+    static const core::com::slots::key_t UPDATE_ACTIVITY_SLOT;
     /// @}
 
     /**
      * @name Signal API
      * @{
      */
-    MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_CREATED_SIG;
+    static const core::com::signals::key_t ACTIVITY_CREATED_SIG;
     using activity_created_signal_t = core::com::signal<void (data::activity::sptr)>;
 
-    MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_UPDATED_SIG;
+    static const core::com::signals::key_t ACTIVITY_UPDATED_SIG;
     using activity_updated_signal_t = core::com::signal<void (data::activity::sptr)>;
 
-    MODULE_UI_QT_API static const core::com::signals::key_t CANCELED_SIG;
+    static const core::com::signals::key_t CANCELED_SIG;
     using canceled_signal_t = core::com::signal<void ()>;
     /// @}
 

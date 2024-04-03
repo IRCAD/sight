@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/crypto/secure_string.hpp"
 
 #include <array>

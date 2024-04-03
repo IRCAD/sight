@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/exception.hpp"
 
 #include <exception>
@@ -34,19 +35,19 @@ namespace sight::core::tools
 /**
  * @brief   Implements a failed exception class
  */
-struct CORE_CLASS_API failed : public core::exception
+struct SIGHT_CORE_CLASS_API failed : public core::exception
 {
     /**
      * @brief       Constructor
      *
      * @param[in]   _message a string containing the failure message
      */
-    CORE_API failed(const std::string& _message) noexcept;
+    SIGHT_CORE_API failed(const std::string& _message) noexcept;
 
     /**
      * @brief   Destructor : do nothing.
      */
-    CORE_API ~failed() noexcept override;
+    SIGHT_CORE_API ~failed() noexcept override;
 };
 
 } // namespace sight::core::tools

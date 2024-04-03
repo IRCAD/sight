@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <filter/vision/config.hpp>
+#include <sight/filter/vision/config.hpp>
 
 #include <cmath>
 #include <cstddef>

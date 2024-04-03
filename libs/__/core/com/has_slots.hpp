@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,10 @@
 // define required by Slots.hxx
 #define FWCOM_HASSLOTS_HPP
 
+#include <sight/core/config.hpp>
+
 #include "core/com/slots.hpp"
 #include "core/com/util/convert_function_type.hpp"
-#include "core/config.hpp"
 #include "core/function.hpp"
 
 namespace sight::core::com
@@ -38,7 +39,7 @@ struct slot_base;
 /**
  * @brief   This class proposes a mapping between a key_t and a SlotBase.
  */
-class CORE_CLASS_API has_slots
+class SIGHT_CORE_CLASS_API has_slots
 {
 public:
 

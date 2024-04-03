@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/dimse/config.hpp"
 
 #include <core/com/slot.hpp>
 #include <core/mt/types.hpp>
@@ -49,31 +47,31 @@ namespace sight::module::io::dimse
     <service uid="progressBarController" type="sight::module::io::dimse::progress_bar_controller" />
    @endcode
  */
-class MODULE_IO_DIMSE_CLASS_API progress_bar_controller : public service::controller
+class progress_bar_controller : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(progress_bar_controller, service::controller);
 
     /// Initializes slots.
-    MODULE_IO_DIMSE_API progress_bar_controller() noexcept;
+    progress_bar_controller() noexcept;
 
     /// Destroys the service.
-    MODULE_IO_DIMSE_API ~progress_bar_controller() noexcept override;
+    ~progress_bar_controller() noexcept override;
 
 protected:
 
     /// Does nothing.
-    MODULE_IO_DIMSE_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_IO_DIMSE_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_IO_DIMSE_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing.
-    MODULE_IO_DIMSE_API void updating() override;
+    void updating() override;
 
 private:
 

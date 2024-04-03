@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
+
 #include "ui/qt/widget/toolbox.hpp"
 
 #include <core/base.hpp>
@@ -35,7 +36,7 @@ namespace sight::ui::qt::layout
 /**
  * @brief   Defines the toolbox layout manager.
  */
-class UI_QT_CLASS_API toolbox : public ui::layout::toolbox
+class SIGHT_UI_QT_CLASS_API toolbox : public ui::layout::toolbox
 {
 public:
 
@@ -45,20 +46,20 @@ public:
         ui::factory::make<toolbox>
     )
 
-    UI_QT_API ~toolbox() override = default;
+    SIGHT_UI_QT_API ~toolbox() override = default;
 
     /**
      * @brief Instantiate layout with parent container.
      * @pre layout must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API void create_layout(ui::container::widget::sptr _parent, const std::string& _id) override;
+    SIGHT_UI_QT_API void create_layout(ui::container::widget::sptr _parent, const std::string& _id) override;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_QT_API void destroy_layout() override;
+    SIGHT_UI_QT_API void destroy_layout() override;
 };
 
 } // namespace sight::ui::qt::layout

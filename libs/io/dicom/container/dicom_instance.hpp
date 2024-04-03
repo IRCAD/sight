@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <core/log/logger.hpp>
 #include <core/macros.hpp>
@@ -46,7 +46,7 @@ namespace sight::io::dicom::container
  * @brief This class defines a DICOM SOP instance. It is useful during the whole writing process.
  * This class allows to share data between module writers.
  */
-class IO_DICOM_CLASS_API dicom_instance
+class SIGHT_IO_DICOM_CLASS_API dicom_instance
 {
 public:
 
@@ -56,7 +56,7 @@ public:
     using sop_instance_uid_container_t = std::vector<std::string>;
 
     /// Constructor
-    IO_DICOM_API dicom_instance();
+    SIGHT_IO_DICOM_API dicom_instance();
 
     /**
      * @brief Constructor
@@ -64,7 +64,7 @@ public:
      * @param[in] _logger Logger
      * @param[in] _is_multi_files Set whether the instance must be split in several files or not
      */
-    IO_DICOM_API dicom_instance(
+    SIGHT_IO_DICOM_API dicom_instance(
         const CSPTR(data::series)& _series,
         SPTR(core::log::logger)_logger = nullptr,
         bool _is_multi_files           = true
@@ -75,16 +75,16 @@ public:
      * @param[in] _dicom_series DicomSeries from which the instance is created
      * @param[in] _logger Logger
      */
-    IO_DICOM_API dicom_instance(
+    SIGHT_IO_DICOM_API dicom_instance(
         const CSPTR(data::dicom_series)& _dicom_series,
         SPTR(core::log::logger)_logger = nullptr
     );
 
     /// Copy constructor
-    IO_DICOM_API dicom_instance(const dicom_instance& _dicom_instance);
+    SIGHT_IO_DICOM_API dicom_instance(const dicom_instance& _dicom_instance);
 
     /// Destructor
-    IO_DICOM_API virtual ~dicom_instance();
+    SIGHT_IO_DICOM_API virtual ~dicom_instance();
 
     /// Get the flag on multi-files state of an image series
     [[nodiscard]] bool get_is_multi_files() const

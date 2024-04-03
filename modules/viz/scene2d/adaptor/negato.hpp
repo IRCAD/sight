@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene2d/config.hpp"
 
 #include <data/helper/medical_image.hpp>
 
@@ -68,15 +66,15 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b orientation (optional, default axial): image orientation, axial, sagittal or frontal
  *    - \b changeSliceType (optional, default true): specify if the negato allow slice type events
  */
-class MODULE_VIZ_SCENE2D_CLASS_API negato : public sight::viz::scene2d::adaptor
+class negato : public sight::viz::scene2d::adaptor
 {
 public:
 
     SIGHT_DECLARE_SERVICE(negato, sight::viz::scene2d::adaptor);
 
-    MODULE_VIZ_SCENE2D_API negato() noexcept;
+    negato() noexcept;
 
-    MODULE_VIZ_SCENE2D_API ~negato() noexcept override;
+    ~negato() noexcept override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -87,22 +85,22 @@ public:
      * Connect image::SLICE_TYPE_MODIFIED_SIG to this::UPDATE_SLICE_TYPE_SLOT
      * Connect image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
      */
-    MODULE_VIZ_SCENE2D_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
 protected:
 
-    MODULE_VIZ_SCENE2D_API void configuring() override;
+    void configuring() override;
 
-    MODULE_VIZ_SCENE2D_API void starting() override;
+    void starting() override;
 
-    MODULE_VIZ_SCENE2D_API void updating() override;
+    void updating() override;
 
-    MODULE_VIZ_SCENE2D_API void stopping() override;
+    void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API void process_interaction(sight::viz::scene2d::data::event& _event) override;
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     /// Slot: updates the TF
-    MODULE_VIZ_SCENE2D_API void update_tf();
+    void update_tf();
 
 private:
 

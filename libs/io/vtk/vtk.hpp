@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/vtk/config.hpp"
+#include <sight/io/vtk/config.hpp>
 
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
@@ -44,8 +44,8 @@ struct type_translator
     using to_vtk_map_t   = std::map<core::type, int>;
     using from_vtk_map_t = std::map<int, core::type>;
 
-    IO_VTK_API static to_vtk_map_t::mapped_type translate(const to_vtk_map_t::key_type& _key);
-    IO_VTK_API static from_vtk_map_t::mapped_type translate(const from_vtk_map_t::key_type& _key);
+    SIGHT_IO_VTK_API static to_vtk_map_t::mapped_type translate(const to_vtk_map_t::key_type& _key);
+    SIGHT_IO_VTK_API static from_vtk_map_t::mapped_type translate(const from_vtk_map_t::key_type& _key);
 
     static const to_vtk_map_t TO_VTK;
     static const from_vtk_map_t FROM_VTK;
@@ -61,7 +61,7 @@ struct type_translator
  * allocate a new vtkImage from a data::image, vtkImage doesn't manage its buffer (the buffer is not copied)
  *
  */
-IO_VTK_API void to_vtk_image(data::image::csptr _data, vtkImageData* _dst);
+SIGHT_IO_VTK_API void to_vtk_image(data::image::csptr _data, vtkImageData* _dst);
 
 /*!
  * @brief Convert a vtkImageData* to a data::image::sptr.
@@ -71,7 +71,7 @@ IO_VTK_API void to_vtk_image(data::image::csptr _data, vtkImageData* _dst);
  *
  * Throw an exception if the conversion fails
  */
-IO_VTK_API void from_vtk_image(vtkImageData* _source, data::image::sptr _destination);
+SIGHT_IO_VTK_API void from_vtk_image(vtkImageData* _source, data::image::sptr _destination);
 
 /*!
  * @brief Configure a vtkImageImport* from a data::image::sptr.
@@ -79,7 +79,7 @@ IO_VTK_API void from_vtk_image(vtkImageData* _source, data::image::sptr _destina
  * @param[out] _p_image_import vtkImageImport*.
  * @param[in] _p_data_image data::image::sptr.
  */
-IO_VTK_API void configure_vtk_image_import(vtkImageImport* _p_image_import, data::image::csptr _p_data_image);
+SIGHT_IO_VTK_API void configure_vtk_image_import(vtkImageImport* _p_image_import, data::image::csptr _p_data_image);
 
 /*!
  * @brief Convert a data::matrix4::sptr to a vtkMatrix4x4*.
@@ -87,7 +87,7 @@ IO_VTK_API void configure_vtk_image_import(vtkImageImport* _p_image_import, data
  * @param[in] _transfo_matrix data::matrix4::sptr.
  * @return vtkPolyData*.
  */
-IO_VTK_API vtkSmartPointer<vtkMatrix4x4> to_vtk_matrix(data::matrix4::csptr _transfo_matrix);
+SIGHT_IO_VTK_API vtkSmartPointer<vtkMatrix4x4> to_vtk_matrix(data::matrix4::csptr _transfo_matrix);
 
 /*!
  * @brief Convert a vtkMatrix4x4* to a data::matrix4::sptr.
@@ -98,6 +98,6 @@ IO_VTK_API vtkSmartPointer<vtkMatrix4x4> to_vtk_matrix(data::matrix4::csptr _tra
  *
  * Returns \b true if the conversion is a success and \b false if it fails
  */
-IO_VTK_API bool from_vtk_matrix(vtkMatrix4x4* _matrix, data::matrix4::sptr _transfo_matrix);
+SIGHT_IO_VTK_API bool from_vtk_matrix(vtkMatrix4x4* _matrix, data::matrix4::sptr _transfo_matrix);
 
 } // namespace sight::io::vtk

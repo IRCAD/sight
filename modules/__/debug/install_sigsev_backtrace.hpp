@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/debug/config.hpp"
-
 namespace sight::module::debug
 {
 
@@ -31,6 +29,6 @@ namespace sight::module::debug
  * @brief Function installing  a callback which print the backtrace on a SIGSEV and SIGUSR1 signal
  * for posix only intern use only for this module.
  */
-MODULE_DEBUG_API void install_sigsev_backtrace();
+void install_sigsev_backtrace();
 
 } // namespace sight::module::debug

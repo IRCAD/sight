@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dimse/config.hpp"
+#include <sight/io/dimse/config.hpp>
 
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
@@ -39,22 +39,22 @@ namespace sight::io::dimse
 /**
  * @brief Reads DICOM series from pacs.
  */
-class IO_DIMSE_CLASS_API series_retriever : public core::base_object,
-                                            public DcmSCP
+class SIGHT_IO_DIMSE_CLASS_API series_retriever : public core::base_object,
+                                                  public DcmSCP
 {
 public:
 
     SIGHT_DECLARE_CLASS(series_retriever, io::dimse::series_retriever);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
+    SIGHT_IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
     using progress_callback_slot_t = core::com::slot<void (const std::string&, unsigned int, const std::string&)>;
 
     /// Constructor
-    IO_DIMSE_API series_retriever();
+    SIGHT_IO_DIMSE_API series_retriever();
 
     /// Destructor
-    IO_DIMSE_API ~series_retriever() override;
+    SIGHT_IO_DIMSE_API ~series_retriever() override;
 
     /**
      * @brief Initialize the connection
@@ -63,7 +63,7 @@ public:
      * @param[in] _timeout Connection timeout
      * @param[in] _progress_callback Progress callback
      */
-    IO_DIMSE_API void initialize(
+    SIGHT_IO_DIMSE_API void initialize(
         const std::string& _application_title,
         std::uint16_t _applicationport,
         int _timeout                                      = 3,
@@ -71,7 +71,7 @@ public:
     );
 
     /// Start the server
-    IO_DIMSE_API bool start();
+    SIGHT_IO_DIMSE_API bool start();
 
 protected:
 

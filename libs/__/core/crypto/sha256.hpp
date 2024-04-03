@@ -23,7 +23,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/crypto/secure_string.hpp"
 
 // Convenience macro to generate a pseudo random hash in a pseudo predictable way.
@@ -48,6 +49,6 @@ void hash(const secure_string& _message, std::array<unsigned char, HASH_SIZE>& _
 
 /// Compute a sha256 hash using openSSL and return the result as a secure_string
 /// @param _message the message to hash
-CORE_API secure_string hash(const secure_string& _message);
+SIGHT_CORE_API secure_string hash(const secure_string& _message);
 
 } // namespace sight::core::crypto

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/dicom/attribute.hpp"
 #include "data/dicom/sop.hpp"
 #include "data/factory/new.hpp"
@@ -55,7 +56,7 @@ namespace sight::data
 /**
  * @brief Holds series information.
  */
-class DATA_CLASS_API series : public virtual object
+class SIGHT_DATA_CLASS_API series : public virtual object
 {
 public:
 
@@ -63,174 +64,180 @@ public:
 
     /// Constructor / Destructor
     /// @{
-    DATA_API series();
-    DATA_API ~series() noexcept override;
+    SIGHT_DATA_API series();
+    SIGHT_DATA_API ~series() noexcept override;
     /// @}
 
     /// Getter/Setter of DICOM SOP Common Module related attributes
     /// @{
-    DATA_API dicom::sop::Keyword get_sop_keyword() const noexcept;
-    DATA_API void set_sop_keyword(dicom::sop::Keyword _keyword);
-    DATA_API std::string_view get_sop_class_name() const noexcept;
+    SIGHT_DATA_API dicom::sop::Keyword get_sop_keyword() const noexcept;
+    SIGHT_DATA_API void set_sop_keyword(dicom::sop::Keyword _keyword);
+    SIGHT_DATA_API std::string_view get_sop_class_name() const noexcept;
 
-    DATA_API std::string get_sop_instance_uid() const noexcept;
-    DATA_API void set_sop_instance_uid(const std::string& _sop_instance_uid);
+    SIGHT_DATA_API std::string get_sop_instance_uid() const noexcept;
+    SIGHT_DATA_API void set_sop_instance_uid(const std::string& _sop_instance_uid);
 
-    DATA_API std::string get_sop_class_uid() const noexcept;
-    DATA_API void set_sop_class_uid(const std::string& _sop_class_uid);
+    SIGHT_DATA_API std::string get_sop_class_uid() const noexcept;
+    SIGHT_DATA_API void set_sop_class_uid(const std::string& _sop_class_uid);
 
-    DATA_API std::string get_specific_character_set() const noexcept;
-    DATA_API void set_specific_character_set(const std::string& _specific_character_set);
+    SIGHT_DATA_API std::string get_specific_character_set() const noexcept;
+    SIGHT_DATA_API void set_specific_character_set(const std::string& _specific_character_set);
 
     /// Translate DICOM specific character set to something compatible with iconv/ICU/Qt
-    DATA_API std::string get_encoding() const noexcept;
+    SIGHT_DATA_API std::string get_encoding() const noexcept;
     /// @}
 
     /// Getter/Setter of DICOM General series Module related attributes
     /// @{
-    DATA_API std::string get_series_date() const noexcept;
-    DATA_API void set_series_date(const std::string& _series_date);
+    SIGHT_DATA_API std::string get_series_date() const noexcept;
+    SIGHT_DATA_API void set_series_date(const std::string& _series_date);
 
-    DATA_API std::string get_series_time() const noexcept;
-    DATA_API void set_series_time(const std::string& _series_time);
+    SIGHT_DATA_API std::string get_series_time() const noexcept;
+    SIGHT_DATA_API void set_series_time(const std::string& _series_time);
 
-    DATA_API std::string get_modality() const noexcept;
-    DATA_API void set_modality(const std::string& _modality);
+    SIGHT_DATA_API std::string get_modality() const noexcept;
+    SIGHT_DATA_API void set_modality(const std::string& _modality);
 
-    DATA_API std::string get_series_description() const noexcept;
-    DATA_API void set_series_description(const std::string& _series_description);
+    SIGHT_DATA_API std::string get_series_description() const noexcept;
+    SIGHT_DATA_API void set_series_description(const std::string& _series_description);
 
-    DATA_API std::vector<std::string> get_performing_physician_names() const noexcept;
-    DATA_API void set_performing_physician_names(const std::vector<std::string>& _performing_physician_names);
+    SIGHT_DATA_API std::vector<std::string> get_performing_physician_names() const noexcept;
+    SIGHT_DATA_API void set_performing_physician_names(const std::vector<std::string>& _performing_physician_names);
 
-    DATA_API std::string get_performing_physician_name() const noexcept;
-    DATA_API void set_performing_physician_name(const std::string& _performing_physician_name);
+    SIGHT_DATA_API std::string get_performing_physician_name() const noexcept;
+    SIGHT_DATA_API void set_performing_physician_name(const std::string& _performing_physician_name);
 
-    DATA_API std::string get_anatomical_orientation_type() const noexcept;
-    DATA_API void set_anatomical_orientation_type(const std::string& _anatomical_orientation_type);
+    SIGHT_DATA_API std::string get_anatomical_orientation_type() const noexcept;
+    SIGHT_DATA_API void set_anatomical_orientation_type(const std::string& _anatomical_orientation_type);
 
-    DATA_API std::string get_body_part_examined() const noexcept;
-    DATA_API void set_body_part_examined(const std::string& _body_part_examined);
+    SIGHT_DATA_API std::string get_body_part_examined() const noexcept;
+    SIGHT_DATA_API void set_body_part_examined(const std::string& _body_part_examined);
 
-    DATA_API std::string get_protocol_name() const noexcept;
-    DATA_API void set_protocol_name(const std::string& _protocol_name);
+    SIGHT_DATA_API std::string get_protocol_name() const noexcept;
+    SIGHT_DATA_API void set_protocol_name(const std::string& _protocol_name);
 
-    DATA_API std::string get_patient_position() const noexcept;
-    DATA_API void set_patient_position(const std::string& _patient_position);
+    SIGHT_DATA_API std::string get_patient_position() const noexcept;
+    SIGHT_DATA_API void set_patient_position(const std::string& _patient_position);
 
     /// Returns the patient position as human readable string
-    DATA_API std::string get_patient_position_string() const noexcept;
+    SIGHT_DATA_API std::string get_patient_position_string() const noexcept;
 
-    DATA_API std::string get_series_instance_uid() const noexcept;
-    DATA_API void set_series_instance_uid(const std::string& _series_instance_uid);
+    SIGHT_DATA_API std::string get_series_instance_uid() const noexcept;
+    SIGHT_DATA_API void set_series_instance_uid(const std::string& _series_instance_uid);
 
-    DATA_API std::optional<std::int32_t> get_series_number() const noexcept;
-    DATA_API void set_series_number(const std::optional<std::int32_t>& _series_number = std::nullopt);
+    SIGHT_DATA_API std::optional<std::int32_t> get_series_number() const noexcept;
+    SIGHT_DATA_API void set_series_number(const std::optional<std::int32_t>& _series_number = std::nullopt);
 
-    DATA_API std::string get_laterality() const noexcept;
-    DATA_API void set_laterality(const std::string& _laterality);
+    SIGHT_DATA_API std::string get_laterality() const noexcept;
+    SIGHT_DATA_API void set_laterality(const std::string& _laterality);
 
-    DATA_API std::string get_performed_procedure_step_start_date() const noexcept;
-    DATA_API void set_performed_procedure_step_start_date(const std::string& _performed_procedure_step_start_date);
+    SIGHT_DATA_API std::string get_performed_procedure_step_start_date() const noexcept;
+    SIGHT_DATA_API void set_performed_procedure_step_start_date(
+        const std::string& _performed_procedure_step_start_date
+    );
 
-    DATA_API std::string get_performed_procedure_step_start_time() const noexcept;
-    DATA_API void set_performed_procedure_step_start_time(const std::string& _performed_procedure_step_start_time);
+    SIGHT_DATA_API std::string get_performed_procedure_step_start_time() const noexcept;
+    SIGHT_DATA_API void set_performed_procedure_step_start_time(
+        const std::string& _performed_procedure_step_start_time
+    );
 
-    DATA_API std::string get_performed_procedure_step_end_date() const noexcept;
-    DATA_API void set_performed_procedure_step_end_date(const std::string& _performed_procedure_step_end_date);
+    SIGHT_DATA_API std::string get_performed_procedure_step_end_date() const noexcept;
+    SIGHT_DATA_API void set_performed_procedure_step_end_date(const std::string& _performed_procedure_step_end_date);
 
-    DATA_API std::string get_performed_procedure_step_end_time() const noexcept;
-    DATA_API void set_performed_procedure_step_end_time(const std::string& _performed_procedure_step_end_time);
+    SIGHT_DATA_API std::string get_performed_procedure_step_end_time() const noexcept;
+    SIGHT_DATA_API void set_performed_procedure_step_end_time(const std::string& _performed_procedure_step_end_time);
 
-    DATA_API std::string get_performed_procedure_step_id() const noexcept;
-    DATA_API void set_performed_procedure_step_id(const std::string& _performed_procedure_step_id);
+    SIGHT_DATA_API std::string get_performed_procedure_step_id() const noexcept;
+    SIGHT_DATA_API void set_performed_procedure_step_id(const std::string& _performed_procedure_step_id);
 
-    DATA_API std::string get_performed_procedure_step_description() const noexcept;
-    DATA_API void set_performed_procedure_step_description(const std::string& _performed_procedure_step_description);
+    SIGHT_DATA_API std::string get_performed_procedure_step_description() const noexcept;
+    SIGHT_DATA_API void set_performed_procedure_step_description(
+        const std::string& _performed_procedure_step_description
+    );
 
-    DATA_API std::string get_comments_on_the_performed_procedure_step() const noexcept;
-    DATA_API void set_comments_on_the_performed_procedure_step(
+    SIGHT_DATA_API std::string get_comments_on_the_performed_procedure_step() const noexcept;
+    SIGHT_DATA_API void set_comments_on_the_performed_procedure_step(
         const std::string& _comments_on_the_performed_procedure_step
     );
     /// @}
 
     /// Getter/Setter of DICOM General Equipment Module related attributes
     /// @{
-    DATA_API std::string get_institution_name() const noexcept;
-    DATA_API void set_institution_name(const std::string& _institution_name);
+    SIGHT_DATA_API std::string get_institution_name() const noexcept;
+    SIGHT_DATA_API void set_institution_name(const std::string& _institution_name);
     /// @}
 
     /// Getter/Setter of DICOM Patient Module related attributes
     /// @{
-    DATA_API std::string get_patient_name() const noexcept;
-    DATA_API void set_patient_name(const std::string& _patient_name);
+    SIGHT_DATA_API std::string get_patient_name() const noexcept;
+    SIGHT_DATA_API void set_patient_name(const std::string& _patient_name);
 
-    DATA_API std::string get_patient_id() const noexcept;
-    DATA_API void set_patient_id(const std::string& _patient_id);
+    SIGHT_DATA_API std::string get_patient_id() const noexcept;
+    SIGHT_DATA_API void set_patient_id(const std::string& _patient_id);
 
-    DATA_API std::string get_patient_birth_date() const noexcept;
-    DATA_API void set_patient_birth_date(const std::string& _patient_birth_date);
+    SIGHT_DATA_API std::string get_patient_birth_date() const noexcept;
+    SIGHT_DATA_API void set_patient_birth_date(const std::string& _patient_birth_date);
 
-    DATA_API std::string get_patient_sex() const noexcept;
-    DATA_API void set_patient_sex(const std::string& _patient_sex);
+    SIGHT_DATA_API std::string get_patient_sex() const noexcept;
+    SIGHT_DATA_API void set_patient_sex(const std::string& _patient_sex);
     /// @}
 
     /// Getter/Setter of DICOM General Study Module related attributes
     /// @{
-    DATA_API std::string get_study_date() const noexcept;
-    DATA_API void set_study_date(const std::string& _study_date);
+    SIGHT_DATA_API std::string get_study_date() const noexcept;
+    SIGHT_DATA_API void set_study_date(const std::string& _study_date);
 
-    DATA_API std::string get_study_time() const noexcept;
-    DATA_API void set_study_time(const std::string& _study_time);
+    SIGHT_DATA_API std::string get_study_time() const noexcept;
+    SIGHT_DATA_API void set_study_time(const std::string& _study_time);
 
-    DATA_API std::string get_referring_physician_name() const noexcept;
-    DATA_API void set_referring_physician_name(const std::string& _referring_physician_name);
+    SIGHT_DATA_API std::string get_referring_physician_name() const noexcept;
+    SIGHT_DATA_API void set_referring_physician_name(const std::string& _referring_physician_name);
 
-    DATA_API std::string get_study_description() const noexcept;
-    DATA_API void set_study_description(const std::string& _study_description);
+    SIGHT_DATA_API std::string get_study_description() const noexcept;
+    SIGHT_DATA_API void set_study_description(const std::string& _study_description);
 
-    DATA_API std::string get_study_instance_uid() const noexcept;
-    DATA_API void set_study_instance_uid(const std::string& _study_instance_uid);
+    SIGHT_DATA_API std::string get_study_instance_uid() const noexcept;
+    SIGHT_DATA_API void set_study_instance_uid(const std::string& _study_instance_uid);
 
-    DATA_API std::string get_study_id() const noexcept;
-    DATA_API void set_study_id(const std::string& _study_id);
+    SIGHT_DATA_API std::string get_study_id() const noexcept;
+    SIGHT_DATA_API void set_study_id(const std::string& _study_id);
     /// @}
 
     /// Getter/Setter of DICOM Patient Study Module related attributes
     /// @{
-    DATA_API std::string get_patient_age() const noexcept;
-    DATA_API void set_patient_age(const std::string& _patient_age);
+    SIGHT_DATA_API std::string get_patient_age() const noexcept;
+    SIGHT_DATA_API void set_patient_age(const std::string& _patient_age);
 
-    DATA_API std::optional<double> get_patient_size() const noexcept;
-    DATA_API void set_patient_size(const std::optional<double>& _patient_size = std::nullopt);
+    SIGHT_DATA_API std::optional<double> get_patient_size() const noexcept;
+    SIGHT_DATA_API void set_patient_size(const std::optional<double>& _patient_size = std::nullopt);
 
-    DATA_API std::optional<double> get_patient_weight() const noexcept;
-    DATA_API void set_patient_weight(const std::optional<double>& _patient_weight = std::nullopt);
+    SIGHT_DATA_API std::optional<double> get_patient_weight() const noexcept;
+    SIGHT_DATA_API void set_patient_weight(const std::optional<double>& _patient_weight = std::nullopt);
     /// @}
 
     /// Getter/Setter of DICOM General Image Module related attributes
     /// @{
-    DATA_API std::string get_acquisition_date(std::size_t _instance                                = 0) const;
-    DATA_API void set_acquisition_date(const std::string& _acquisition_date, std::size_t _instance = 0);
+    SIGHT_DATA_API std::string get_acquisition_date(std::size_t _instance                                = 0) const;
+    SIGHT_DATA_API void set_acquisition_date(const std::string& _acquisition_date, std::size_t _instance = 0);
 
-    DATA_API std::string get_acquisition_time(std::size_t _instance                                = 0) const;
-    DATA_API void set_acquisition_time(const std::string& _acquisition_time, std::size_t _instance = 0);
+    SIGHT_DATA_API std::string get_acquisition_time(std::size_t _instance                                = 0) const;
+    SIGHT_DATA_API void set_acquisition_time(const std::string& _acquisition_time, std::size_t _instance = 0);
 
-    DATA_API std::string get_content_time(std::size_t _instance                            = 0) const;
-    DATA_API void set_content_time(const std::string& _content_time, std::size_t _instance = 0);
+    SIGHT_DATA_API std::string get_content_time(std::size_t _instance                            = 0) const;
+    SIGHT_DATA_API void set_content_time(const std::string& _content_time, std::size_t _instance = 0);
 
-    DATA_API std::optional<std::int32_t> get_instance_number(std::size_t _instance = 0) const;
+    SIGHT_DATA_API std::optional<std::int32_t> get_instance_number(std::size_t _instance = 0) const;
 
-    DATA_API void set_instance_number(
+    SIGHT_DATA_API void set_instance_number(
         const std::optional<std::int32_t>& _instance_number = std::nullopt,
         std::size_t _instance                               = 0
     );
 
-    DATA_API std::optional<std::int32_t> get_acquisition_number(
+    SIGHT_DATA_API std::optional<std::int32_t> get_acquisition_number(
         std::size_t _instance = 0
     ) const;
 
-    DATA_API void set_acquisition_number(
+    SIGHT_DATA_API void set_acquisition_number(
         std::optional<std::int32_t> _acquisition_number = std::nullopt,
         std::size_t _instance                           = 0
     );
@@ -238,73 +245,75 @@ public:
 
     /// Getter/Setter of DICOM Contrast/Bolus Module related attributes
     /// @{
-    DATA_API std::string get_contrast_bolus_agent() const noexcept;
-    DATA_API void set_contrast_bolus_agent(const std::string& _contrast_bolus_agent);
+    SIGHT_DATA_API std::string get_contrast_bolus_agent() const noexcept;
+    SIGHT_DATA_API void set_contrast_bolus_agent(const std::string& _contrast_bolus_agent);
 
-    DATA_API std::string get_contrast_bolus_route() const noexcept;
-    DATA_API void set_contrast_bolus_route(const std::string& _contrast_bolus_route);
+    SIGHT_DATA_API std::string get_contrast_bolus_route() const noexcept;
+    SIGHT_DATA_API void set_contrast_bolus_route(const std::string& _contrast_bolus_route);
 
-    DATA_API std::optional<double> get_contrast_bolus_volume() const noexcept;
-    DATA_API void set_contrast_bolus_volume(const std::optional<double>& _contrast_bolus_volume = std::nullopt);
+    SIGHT_DATA_API std::optional<double> get_contrast_bolus_volume() const noexcept;
+    SIGHT_DATA_API void set_contrast_bolus_volume(const std::optional<double>& _contrast_bolus_volume = std::nullopt);
 
-    DATA_API std::string get_contrast_bolus_start_time() const noexcept;
-    DATA_API void set_contrast_bolus_start_time(const std::string& _contrast_bolus_start_time);
+    SIGHT_DATA_API std::string get_contrast_bolus_start_time() const noexcept;
+    SIGHT_DATA_API void set_contrast_bolus_start_time(const std::string& _contrast_bolus_start_time);
 
-    DATA_API std::string get_contrast_bolus_stop_time() const noexcept;
-    DATA_API void set_contrast_bolus_stop_time(const std::string& _contrast_bolus_stop_time);
+    SIGHT_DATA_API std::string get_contrast_bolus_stop_time() const noexcept;
+    SIGHT_DATA_API void set_contrast_bolus_stop_time(const std::string& _contrast_bolus_stop_time);
 
-    DATA_API std::optional<double> get_contrast_bolus_total_dose() const noexcept;
-    DATA_API void set_contrast_bolus_total_dose(const std::optional<double>& _contrast_bolus_total_dose = std::nullopt);
+    SIGHT_DATA_API std::optional<double> get_contrast_bolus_total_dose() const noexcept;
+    SIGHT_DATA_API void set_contrast_bolus_total_dose(
+        const std::optional<double>& _contrast_bolus_total_dose = std::nullopt
+    );
 
-    DATA_API std::vector<double> get_contrast_flow_rates() const noexcept;
-    DATA_API void set_contrast_flow_rates(const std::vector<double>& _contrast_flow_rates);
+    SIGHT_DATA_API std::vector<double> get_contrast_flow_rates() const noexcept;
+    SIGHT_DATA_API void set_contrast_flow_rates(const std::vector<double>& _contrast_flow_rates);
 
-    DATA_API std::string get_contrast_flow_rate() const noexcept;
-    DATA_API void set_contrast_flow_rate(const std::string& _contrast_flow_rates);
+    SIGHT_DATA_API std::string get_contrast_flow_rate() const noexcept;
+    SIGHT_DATA_API void set_contrast_flow_rate(const std::string& _contrast_flow_rates);
 
-    DATA_API std::vector<double> get_contrast_flow_durations() const noexcept;
-    DATA_API void set_contrast_flow_durations(const std::vector<double>& _contrast_flow_durations);
+    SIGHT_DATA_API std::vector<double> get_contrast_flow_durations() const noexcept;
+    SIGHT_DATA_API void set_contrast_flow_durations(const std::vector<double>& _contrast_flow_durations);
 
-    DATA_API std::string get_contrast_flow_duration() const noexcept;
-    DATA_API void set_contrast_flow_duration(const std::string& _contrast_flow_durations);
+    SIGHT_DATA_API std::string get_contrast_flow_duration() const noexcept;
+    SIGHT_DATA_API void set_contrast_flow_duration(const std::string& _contrast_flow_durations);
 
-    DATA_API std::string get_contrast_bolus_ingredient() const noexcept;
-    DATA_API void set_contrast_bolus_ingredient(const std::string& _contrast_bolus_ingredient);
+    SIGHT_DATA_API std::string get_contrast_bolus_ingredient() const noexcept;
+    SIGHT_DATA_API void set_contrast_bolus_ingredient(const std::string& _contrast_bolus_ingredient);
 
-    DATA_API std::optional<double> get_contrast_bolus_ingredient_concentration() const noexcept;
-    DATA_API void set_contrast_bolus_ingredient_concentration(
+    SIGHT_DATA_API std::optional<double> get_contrast_bolus_ingredient_concentration() const noexcept;
+    SIGHT_DATA_API void set_contrast_bolus_ingredient_concentration(
         const std::optional<double>& _contrast_bolus_ingredient_concentration = std::nullopt
     );
 
     /// Getter/Setter of DICOM Image Pixel Module
     /// @{
-    DATA_API std::optional<std::uint16_t> get_rows() const noexcept;
-    DATA_API virtual void set_rows(const std::optional<std::uint16_t>& _rows = std::nullopt);
+    SIGHT_DATA_API std::optional<std::uint16_t> get_rows() const noexcept;
+    SIGHT_DATA_API virtual void set_rows(const std::optional<std::uint16_t>& _rows = std::nullopt);
 
-    DATA_API std::optional<std::uint16_t> get_columns() const noexcept;
-    DATA_API virtual void set_columns(const std::optional<std::uint16_t>& _columns = std::nullopt);
+    SIGHT_DATA_API std::optional<std::uint16_t> get_columns() const noexcept;
+    SIGHT_DATA_API virtual void set_columns(const std::optional<std::uint16_t>& _columns = std::nullopt);
     /// @}
 
     /// Getter/Setter of DICOM VOI LUT Module Module related attributes
     /// @note Image also implements a getter/setter for this attribute that is overriden here
     /// @{
-    DATA_API virtual std::vector<double> window_center() const noexcept;
-    DATA_API virtual void set_window_center(const std::vector<double>& _window_centers);
+    SIGHT_DATA_API virtual std::vector<double> window_center() const noexcept;
+    SIGHT_DATA_API virtual void set_window_center(const std::vector<double>& _window_centers);
 
-    DATA_API virtual std::vector<double> window_width() const noexcept;
-    DATA_API virtual void set_window_width(const std::vector<double>& _window_widths);
+    SIGHT_DATA_API virtual std::vector<double> window_width() const noexcept;
+    SIGHT_DATA_API virtual void set_window_width(const std::vector<double>& _window_widths);
     /// @}
 
     /// Getter/Setter of DICOM Modality LUT Module
     /// @{
-    DATA_API std::optional<double> get_rescale_intercept(std::size_t _instance = 0) const noexcept;
-    DATA_API void set_rescale_intercept(
+    SIGHT_DATA_API std::optional<double> get_rescale_intercept(std::size_t _instance = 0) const noexcept;
+    SIGHT_DATA_API void set_rescale_intercept(
         const std::optional<double>& _rescale_intercept = std::nullopt,
         std::size_t _instance                           = 0
     );
 
-    DATA_API std::optional<double> get_rescale_slope(std::size_t _instance = 0) const noexcept;
-    DATA_API void set_rescale_slope(
+    SIGHT_DATA_API std::optional<double> get_rescale_slope(std::size_t _instance = 0) const noexcept;
+    SIGHT_DATA_API void set_rescale_slope(
         const std::optional<double>& _rescale_slope = std::nullopt,
         std::size_t _instance                       = 0
     );
@@ -313,78 +322,78 @@ public:
     /// Getter/Setter of DICOM Image Plane Module related attributes
     /// ...and Multi-frame Functional Groups Module
     /// @{
-    DATA_API std::vector<double> get_image_position_patient(std::size_t _instance = 0) const;
+    SIGHT_DATA_API std::vector<double> get_image_position_patient(std::size_t _instance = 0) const;
 
-    DATA_API void set_image_position_patient(
+    SIGHT_DATA_API void set_image_position_patient(
         const std::vector<double>& _image_position_patient,
         std::size_t _instance = 0
     );
 
-    DATA_API std::vector<double> get_image_orientation_patient(std::size_t _instance = 0) const;
+    SIGHT_DATA_API std::vector<double> get_image_orientation_patient(std::size_t _instance = 0) const;
 
-    DATA_API void set_image_orientation_patient(
+    SIGHT_DATA_API void set_image_orientation_patient(
         const std::vector<double>& _image_orientation_patient,
         std::size_t _instance = 0
     );
 
-    DATA_API std::optional<sight::data::matrix4> get_image_transform_patient(std::size_t _instance = 0) const;
+    SIGHT_DATA_API std::optional<sight::data::matrix4> get_image_transform_patient(std::size_t _instance = 0) const;
 
     // Dicom only stores x and y axis for the transformation, so we must make sure that the cross has the correct
     // orientation
-    DATA_API static bool check_image_transform_patient_validity(const sight::data::matrix4& _transform);
-    DATA_API void set_image_transform_patient(const sight::data::matrix4& _transform, std::size_t _instance = 0);
+    SIGHT_DATA_API static bool check_image_transform_patient_validity(const sight::data::matrix4& _transform);
+    SIGHT_DATA_API void set_image_transform_patient(const sight::data::matrix4& _transform, std::size_t _instance = 0);
 
-    DATA_API std::optional<double> get_slice_thickness() const noexcept;
-    DATA_API void set_slice_thickness(const std::optional<double>& _slice_thickness = std::nullopt);
+    SIGHT_DATA_API std::optional<double> get_slice_thickness() const noexcept;
+    SIGHT_DATA_API void set_slice_thickness(const std::optional<double>& _slice_thickness = std::nullopt);
     /// @}
 
     /// Getter/Setter of DICOM Multi-frame Functional Groups Module related attributes
     /// @{
-    DATA_API std::vector<double> get_image_position_volume(std::size_t _frame_index = 0) const;
+    SIGHT_DATA_API std::vector<double> get_image_position_volume(std::size_t _frame_index = 0) const;
 
-    DATA_API void set_image_position_volume(
+    SIGHT_DATA_API void set_image_position_volume(
         const std::vector<double>& _image_position_volume,
         std::size_t _frame_index = 0
     );
 
-    DATA_API std::vector<double> get_image_orientation_volume(std::size_t _frame_index = 0) const;
+    SIGHT_DATA_API std::vector<double> get_image_orientation_volume(std::size_t _frame_index = 0) const;
 
-    DATA_API void set_image_orientation_volume(
+    SIGHT_DATA_API void set_image_orientation_volume(
         const std::vector<double>& _image_orientation_volume,
         std::size_t _frame_index = 0
     );
 
-    DATA_API std::optional<std::string> get_frame_acquisition_date_time(std::size_t _frame_index = 0) const;
+    SIGHT_DATA_API std::optional<std::string> get_frame_acquisition_date_time(std::size_t _frame_index = 0) const;
 
-    DATA_API void set_frame_acquisition_date_time(
+    SIGHT_DATA_API void set_frame_acquisition_date_time(
         const std::optional<std::string>& _frame_acquisition_date_time = std::nullopt,
         std::size_t _frame_index                                       = 0
     );
 
-    DATA_API std::optional<std::chrono::system_clock::time_point> get_frame_acquisition_time_point(
+    SIGHT_DATA_API std::optional<std::chrono::system_clock::time_point> get_frame_acquisition_time_point(
         std::size_t _frame_index = 0
     ) const noexcept;
 
-    DATA_API void set_frame_acquisition_time_point(
+    SIGHT_DATA_API void set_frame_acquisition_time_point(
         const std::optional<std::chrono::system_clock::time_point>& _time_point = std::nullopt,
         std::size_t _frame_index                                                = 0
     );
 
-    DATA_API void set_frame_acquisition_time_point(
+    SIGHT_DATA_API void set_frame_acquisition_time_point(
         sight::core::clock::type _time_point,
         std::size_t _frame_index = 0
     );
 
-    DATA_API std::optional<std::string> get_frame_comments(std::size_t _frame_index = 0) const;
+    SIGHT_DATA_API std::optional<std::string> get_frame_comments(std::size_t _frame_index = 0) const;
 
-    DATA_API void set_frame_comments(
+    SIGHT_DATA_API void set_frame_comments(
         const std::optional<std::string>& _frame_comments = std::nullopt,
         std::size_t _frame_index                          = 0
     );
 
-    DATA_API std::optional<std::string> get_frame_label(std::size_t _frame_index = 0) const;
+    SIGHT_DATA_API std::optional<std::string> get_frame_label(std::size_t _frame_index = 0) const;
 
-    DATA_API void set_frame_label(
+    SIGHT_DATA_API void set_frame_label(
         const std::optional<std::string>& _frame_label = std::nullopt,
         std::size_t _frame_index                       = 0
     );
@@ -393,20 +402,20 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const series& _other) const noexcept;
-    DATA_API bool operator!=(const series& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const series& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const series& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
@@ -415,17 +424,17 @@ public:
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy from
     /// @{
-    DATA_API void copy_patient_module(const series::csptr& _source, std::size_t _instance                = 0);
-    DATA_API void copy_clinical_trial_subject_module(const series::csptr& _source, std::size_t _instance = 0);
-    DATA_API void copy_general_study_module(const series::csptr& _source, std::size_t _instance          = 0);
-    DATA_API void copy_patient_study_module(const series::csptr& _source, std::size_t _instance          = 0);
-    DATA_API void copy_clinical_trial_study_module(const series::csptr& _source, std::size_t _instance   = 0);
-    DATA_API void copy_general_series_module(const series::csptr& _source, std::size_t _instance         = 0);
-    DATA_API void copy_clinical_trial_series_module(const series::csptr& _source, std::size_t _instance  = 0);
-    DATA_API void copy_general_equipment_module(const series::csptr& _source, std::size_t _instance      = 0);
-    DATA_API void copy_frame_of_reference_module(const series::csptr& _source, std::size_t _instance     = 0);
-    DATA_API void copy_sop_common_module(const series::csptr& _source, std::size_t _instance             = 0);
-    DATA_API void copy_general_image_module(const series::csptr& _source, std::size_t _instance          = 0);
+    SIGHT_DATA_API void copy_patient_module(const series::csptr& _source, std::size_t _instance                = 0);
+    SIGHT_DATA_API void copy_clinical_trial_subject_module(const series::csptr& _source, std::size_t _instance = 0);
+    SIGHT_DATA_API void copy_general_study_module(const series::csptr& _source, std::size_t _instance          = 0);
+    SIGHT_DATA_API void copy_patient_study_module(const series::csptr& _source, std::size_t _instance          = 0);
+    SIGHT_DATA_API void copy_clinical_trial_study_module(const series::csptr& _source, std::size_t _instance   = 0);
+    SIGHT_DATA_API void copy_general_series_module(const series::csptr& _source, std::size_t _instance         = 0);
+    SIGHT_DATA_API void copy_clinical_trial_series_module(const series::csptr& _source, std::size_t _instance  = 0);
+    SIGHT_DATA_API void copy_general_equipment_module(const series::csptr& _source, std::size_t _instance      = 0);
+    SIGHT_DATA_API void copy_frame_of_reference_module(const series::csptr& _source, std::size_t _instance     = 0);
+    SIGHT_DATA_API void copy_sop_common_module(const series::csptr& _source, std::size_t _instance             = 0);
+    SIGHT_DATA_API void copy_general_image_module(const series::csptr& _source, std::size_t _instance          = 0);
     /// @}
 
     /// Value getter using given tag. The returned string is used as a Byte buffer and is not necessarily a string.
@@ -436,8 +445,15 @@ public:
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the values as a string
     /// @{
-    DATA_API std::string get_byte_value(std::uint16_t _group, std::uint16_t _element, std::size_t _instance = 0) const;
-    DATA_API std::string get_byte_value(dicom::attribute::Keyword _tag, std::size_t _instance               = 0) const;
+    SIGHT_DATA_API std::string get_byte_value(
+        std::uint16_t _group,
+        std::uint16_t _element,
+        std::size_t _instance = 0
+    ) const;
+    SIGHT_DATA_API std::string get_byte_value(
+        dicom::attribute::Keyword _tag,
+        std::size_t _instance = 0
+    ) const;
     /// @}
 
     /// Value setter using given tag. The string argument is used as a Byte buffer and is not necessarily a string.
@@ -451,14 +467,14 @@ public:
     /// @throw data::exception if value size is not correct
     /// @throw data::exception if instance index is out of bounds
     /// @{
-    DATA_API void set_byte_value(
+    SIGHT_DATA_API void set_byte_value(
         std::uint16_t _group,
         std::uint16_t _element,
         const std::string& _value,
         std::size_t _instance = 0
     );
 
-    DATA_API void set_byte_value(
+    SIGHT_DATA_API void set_byte_value(
         dicom::attribute::Keyword _tag,
         const std::string& _value,
         std::size_t _instance = 0
@@ -474,13 +490,16 @@ public:
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the values as a vector of strings
     /// @{
-    DATA_API std::vector<std::string> get_byte_values(
+    SIGHT_DATA_API std::vector<std::string> get_byte_values(
         std::uint16_t _group,
         std::uint16_t _element,
         std::size_t _instance = 0
     ) const;
 
-    DATA_API std::vector<std::string> get_byte_values(dicom::attribute::Keyword _tag, std::size_t _instance = 0) const;
+    SIGHT_DATA_API std::vector<std::string> get_byte_values(
+        dicom::attribute::Keyword _tag,
+        std::size_t _instance = 0
+    ) const;
     /// @}
 
     /// Values setter using given tag. Strings are joined using DICOM delimiter '\'.
@@ -491,14 +510,14 @@ public:
     /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @{
-    DATA_API void set_byte_values(
+    SIGHT_DATA_API void set_byte_values(
         std::uint16_t _group,
         std::uint16_t _element,
         const std::vector<std::string>& _values,
         std::size_t _instance = 0
     );
 
-    DATA_API void set_byte_values(
+    SIGHT_DATA_API void set_byte_values(
         dicom::attribute::Keyword _tag,
         const std::vector<std::string>& _values,
         std::size_t _instance = 0
@@ -513,13 +532,13 @@ public:
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the values as a string
     /// @{
-    DATA_API std::string get_string_value(
+    SIGHT_DATA_API std::string get_string_value(
         std::uint16_t _group,
         std::uint16_t _element,
         std::size_t _instance = 0
     ) const;
 
-    DATA_API std::string get_string_value(dicom::attribute::Keyword _tag, std::size_t _instance = 0) const;
+    SIGHT_DATA_API std::string get_string_value(dicom::attribute::Keyword _tag, std::size_t _instance = 0) const;
     /// @}
 
     /// Value setter using given tag. The string argument is converted to the right, depending of the VR.
@@ -533,14 +552,14 @@ public:
     /// @throw data::exception if value size is not correct
     /// @throw data::exception if instance index is out of bounds
     /// @{
-    DATA_API void set_string_value(
+    SIGHT_DATA_API void set_string_value(
         std::uint16_t _group,
         std::uint16_t _element,
         const std::string& _value,
         std::size_t _instance = 0
     );
 
-    DATA_API void set_string_value(
+    SIGHT_DATA_API void set_string_value(
         dicom::attribute::Keyword _tag,
         const std::string& _value,
         std::size_t _instance = 0
@@ -553,7 +572,7 @@ public:
     /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the private value as a string
-    DATA_API std::optional<std::string> get_private_value(
+    SIGHT_DATA_API std::optional<std::string> get_private_value(
         std::uint8_t _element,
         std::size_t _instance = 0
     ) const;
@@ -564,7 +583,7 @@ public:
     /// @param[in] _element private element number in the range of 0x10 to 0xFF
     /// @param[in] _instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
-    DATA_API void set_private_value(
+    SIGHT_DATA_API void set_private_value(
         const std::optional<std::string>& _value,
         std::uint8_t _element,
         std::size_t _instance = 0
@@ -576,7 +595,7 @@ public:
     ///                    The corresponding attribute will take element+0x01 as private element number.
     /// @param[in] _frame_index the frame index where to store the private tag.
     /// @return the private value as a string
-    DATA_API std::optional<std::string> get_multi_frame_private_value(
+    SIGHT_DATA_API std::optional<std::string> get_multi_frame_private_value(
         std::uint8_t _element,
         std::size_t _frame_index = 0
     ) const;
@@ -587,7 +606,7 @@ public:
     /// @param[in] _element private sequence element number in the range of 0x10 to 0xFF.
     ///                    The corresponding attribute will take element+0x01 as private element number.
     /// @param[in] _frame_index the frame index where to store the private tag.
-    DATA_API void set_multi_frame_private_value(
+    SIGHT_DATA_API void set_multi_frame_private_value(
         const std::optional<std::string>& _value,
         std::uint8_t _element,
         std::size_t _frame_index = 0
@@ -658,55 +677,55 @@ public:
     /// Convenience function to convert from / to DicomTypes values to string
     /// This may be used to configure reader/writer service
     /// @{
-    DATA_API static std::string dicom_types_to_string(DicomTypes _types) noexcept;
-    DATA_API static DicomTypes string_to_dicom_types(const std::string& _types) noexcept;
+    SIGHT_DATA_API static std::string dicom_types_to_string(DicomTypes _types) noexcept;
+    SIGHT_DATA_API static DicomTypes string_to_dicom_types(const std::string& _types) noexcept;
 
     using SopKeywords = std::set<dicom::sop::Keyword>;
-    DATA_API static SopKeywords dicom_types_to_sops(DicomTypes _types) noexcept;
-    DATA_API static DicomTypes sops_to_dicom_types(const SopKeywords& _sops) noexcept;
-    DATA_API static SopKeywords string_to_sops(const std::string& _sops) noexcept;
-    DATA_API static std::string sops_to_string(const SopKeywords& _sops) noexcept;
+    SIGHT_DATA_API static SopKeywords dicom_types_to_sops(DicomTypes _types) noexcept;
+    SIGHT_DATA_API static DicomTypes sops_to_dicom_types(const SopKeywords& _sops) noexcept;
+    SIGHT_DATA_API static SopKeywords string_to_sops(const std::string& _sops) noexcept;
+    SIGHT_DATA_API static std::string sops_to_string(const SopKeywords& _sops) noexcept;
     /// @}
 
     /// Returns the type of the series. For now, only "Image", "Model" and "Fiducials" are supported.
-    DATA_API dicom_t get_dicom_type() const noexcept;
-    DATA_API static dicom_t get_dicom_type(const std::string& _sop_class_uid) noexcept;
+    SIGHT_DATA_API dicom_t get_dicom_type() const noexcept;
+    SIGHT_DATA_API static dicom_t get_dicom_type(const std::string& _sop_class_uid) noexcept;
 
     /// DataSet getter/setter, needed for serialization.
     /// @{
-    DATA_API const gdcm::DataSet& get_data_set(std::size_t _instance                = 0) const;
-    DATA_API gdcm::DataSet& get_data_set(std::size_t _instance                      = 0);
-    DATA_API void set_data_set(const gdcm::DataSet& _dataset, std::size_t _instance = 0);
+    SIGHT_DATA_API const gdcm::DataSet& get_data_set(std::size_t _instance                = 0) const;
+    SIGHT_DATA_API gdcm::DataSet& get_data_set(std::size_t _instance                      = 0);
+    SIGHT_DATA_API void set_data_set(const gdcm::DataSet& _dataset, std::size_t _instance = 0);
     /// @}
 
     /// This is used when sorting DICOM files
-    DATA_API std::filesystem::path get_file(std::size_t _instance                    = 0) const;
-    DATA_API void set_file(const std::filesystem::path& _file, std::size_t _instance = 0);
-    DATA_API std::size_t num_instances() const noexcept;
+    SIGHT_DATA_API std::filesystem::path get_file(std::size_t _instance                    = 0) const;
+    SIGHT_DATA_API void set_file(const std::filesystem::path& _file, std::size_t _instance = 0);
+    SIGHT_DATA_API std::size_t num_instances() const noexcept;
 
     /// Utility function that sort instances according to a sorted map of instance index.
     /// @param[in] _sorted the sorted vector of instance.
-    DATA_API bool sort(const std::vector<std::size_t>& _sorted);
+    SIGHT_DATA_API bool sort(const std::vector<std::size_t>& _sorted);
 
     /// Returns true if the series is multi-frame.
-    DATA_API bool is_multi_frame() const noexcept;
+    SIGHT_DATA_API bool is_multi_frame() const noexcept;
 
     /// Returns the number of frames in the series.
-    DATA_API std::size_t num_frames() const noexcept;
+    SIGHT_DATA_API std::size_t num_frames() const noexcept;
 
     /// Helper function to convert a DICOM date time string to/from a std::chrono::system_clock::time_point
-    DATA_API static std::chrono::system_clock::time_point date_time_to_time_point(const std::string& _date_time);
+    SIGHT_DATA_API static std::chrono::system_clock::time_point date_time_to_time_point(const std::string& _date_time);
 
     /// Helper function to convert a std::chrono::system_clock::time_point to /from DICOM date time string
-    DATA_API static std::string time_point_to_date_time(const std::chrono::system_clock::time_point& _time_point);
+    SIGHT_DATA_API static std::string time_point_to_date_time(const std::chrono::system_clock::time_point& _time_point);
 
     /// Shrink the number of instances / frames to the given size.
     /// This is mainly an optimization and a bugfix when using GDCM to write a multi-frame DICOM file.
     /// @param _size
-    DATA_API void shrink_frames(std::size_t _size);
+    SIGHT_DATA_API void shrink_frames(std::size_t _size);
 
-    DATA_API void set_frame_landmarks(std::vector<data::landmarks::sptr> _landmarks, std::size_t _frame_index);
-    DATA_API std::vector<data::landmarks::sptr> get_frame_landmarks(std::size_t _frame_index);
+    SIGHT_DATA_API void set_frame_landmarks(std::vector<data::landmarks::sptr> _landmarks, std::size_t _frame_index);
+    SIGHT_DATA_API std::vector<data::landmarks::sptr> get_frame_landmarks(std::size_t _frame_index);
 
 protected:
 

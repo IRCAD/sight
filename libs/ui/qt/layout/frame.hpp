@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
+
 #include "ui/qt/container/widget.hpp"
 
 #include <core/base.hpp>
@@ -44,8 +45,8 @@ namespace sight::ui::qt::layout
 /**
  * @brief   Defines the frame manager.
  */
-class UI_QT_CLASS_API_QT frame : public QObject,
-                                 public ui::layout::frame_manager
+class SIGHT_UI_QT_CLASS_API_QT frame : public QObject,
+                                       public ui::layout::frame_manager
 {
 Q_OBJECT
 
@@ -53,17 +54,17 @@ public:
 
     SIGHT_DECLARE_CLASS(frame, ui::layout::frame_manager, ui::factory::make<frame>)
 
-    UI_QT_API_QT ~frame() override;
+    SIGHT_UI_QT_API_QT ~frame() override;
 
     /**
      * @brief Instantiate frame.
      */
-    UI_QT_API_QT void create_frame() override;
+    SIGHT_UI_QT_API_QT void create_frame() override;
 
     /**
      * @brief Destroy local frame with sub containers.
      */
-    UI_QT_API_QT void destroy_frame() override;
+    SIGHT_UI_QT_API_QT void destroy_frame() override;
 
 private Q_SLOTS:
 

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/zip/config.hpp"
+#include <sight/io/zip/config.hpp>
+
 #include "io/zip/read_archive.hpp"
 
 #include <core/macros.hpp>
@@ -36,7 +37,7 @@ namespace sight::io::zip
 /**
  * @brief   This class defines functions to read a file in a file system archive.
  */
-class IO_ZIP_CLASS_API read_dir_archive : public read_archive
+class SIGHT_IO_ZIP_CLASS_API read_dir_archive : public read_archive
 {
 public:
 
@@ -50,10 +51,10 @@ public:
     }
 
     /// Constructors. Initializes archive path.
-    IO_ZIP_API read_dir_archive(std::filesystem::path _archive);
+    SIGHT_IO_ZIP_API read_dir_archive(std::filesystem::path _archive);
 
     /// Destructor. Close automatically last input file stream.
-    IO_ZIP_API ~read_dir_archive() override;
+    SIGHT_IO_ZIP_API ~read_dir_archive() override;
 
     /**
      * @brief Returns input stream for the file in current archive.
@@ -62,12 +63,12 @@ public:
      *
      * @throw io::zip::exception::Read if file doesn't exist in archive.
      */
-    IO_ZIP_API SPTR(std::istream) get_file(const std::filesystem::path& _path) override;
+    SIGHT_IO_ZIP_API SPTR(std::istream) get_file(const std::filesystem::path& _path) override;
 
     /**
      * @brief Returns archive path.
      */
-    [[nodiscard]] IO_ZIP_API std::filesystem::path get_archive_path() const override;
+    [[nodiscard]] SIGHT_IO_ZIP_API std::filesystem::path get_archive_path() const override;
 
     //------------------------------------------------------------------------------
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 
 #include <core/tools/dispatcher.hpp>
 #include <core/tools/numeric_round_cast.hxx>
@@ -79,7 +79,7 @@ enum orientation_t
  * @param[in]   _p_img   image checked.
  * @return      true if the image is valid.
  */
-DATA_API bool check_image_validity(data::image::csptr _p_img);
+SIGHT_DATA_API bool check_image_validity(data::image::csptr _p_img);
 
 /**
  * @brief       Check if the image is valid.
@@ -89,7 +89,7 @@ DATA_API bool check_image_validity(data::image::csptr _p_img);
  * @param[in]   _p_img   image checked.
  * @return      true if the image is valid.
  */
-DATA_API bool check_image_validity(const data::image& _p_img);
+SIGHT_DATA_API bool check_image_validity(const data::image& _p_img);
 
 /**
  * @brief       Check if the image has slice index fields.
@@ -99,7 +99,7 @@ DATA_API bool check_image_validity(const data::image& _p_img);
  * @param       _p_img   image which must contains the field.
  * @return      true if the fields are added.
  */
-DATA_API bool check_image_slice_index(data::image::sptr _p_img);
+SIGHT_DATA_API bool check_image_slice_index(data::image::sptr _p_img);
 
 /**
  * @brief Checks if buf contains zero, from begin to begin + len
@@ -108,7 +108,7 @@ DATA_API bool check_image_slice_index(data::image::sptr _p_img);
  * @param _len unsigned int length, as begin+len.
  * @return boolean, true if null, false otherwise.
  */
-DATA_API bool is_buf_null(const data::image::buffer_t* _buf, unsigned int _len);
+SIGHT_DATA_API bool is_buf_null(const data::image::buffer_t* _buf, unsigned int _len);
 
 /**
  * @brief Return a buffer of image type's size, containing 'value' casted to image data type
@@ -139,7 +139,10 @@ void get_min_max(data::image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
  * @param _orientation : desired orientation
  * @return the current index as a std::int64_t.
  */
-DATA_API std::optional<std::int64_t> get_slice_index(const data::image& _image, const orientation_t& _orientation);
+SIGHT_DATA_API std::optional<std::int64_t> get_slice_index(
+    const data::image& _image,
+    const orientation_t& _orientation
+);
 
 /**
  * @brief Helper function to set current slice index on a medical image in a specific orientation (Axial, Sagittal,
@@ -149,7 +152,7 @@ DATA_API std::optional<std::int64_t> get_slice_index(const data::image& _image, 
  * @param _orientation : desired orientation.
  * @param _slice_count : current slice index to set as std::int64_t.
  */
-DATA_API void set_slice_index(
+SIGHT_DATA_API void set_slice_index(
     data::image& _image,
     const orientation_t& _orientation,
     std::int64_t _slice_count
@@ -161,7 +164,7 @@ DATA_API void set_slice_index(
  * @param _image : input image reference.
  * @return a data::point_list::sptr containing landmarks, pointer can be null.
  */
-DATA_API data::point_list::sptr get_landmarks(const data::image& _image);
+SIGHT_DATA_API data::point_list::sptr get_landmarks(const data::image& _image);
 
 /**
  * @brief Helper function to set landmarks in a medical image.
@@ -169,7 +172,7 @@ DATA_API data::point_list::sptr get_landmarks(const data::image& _image);
  * @param _image : input image reference.
  * @param _landmarks : landmarks pointer as data::point_list::sptr.
  */
-DATA_API void set_landmarks(data::image& _image, const data::point_list::sptr& _landmarks);
+SIGHT_DATA_API void set_landmarks(data::image& _image, const data::point_list::sptr& _landmarks);
 
 /**
  * @brief Helper function to get distances vector of a medical image.
@@ -177,7 +180,7 @@ DATA_API void set_landmarks(data::image& _image, const data::point_list::sptr& _
  * @param _image : input image reference.
  * @return a data::vector::sptr containing distances, pointer can be null.
  */
-DATA_API data::vector::sptr get_distances(const data::image& _image);
+SIGHT_DATA_API data::vector::sptr get_distances(const data::image& _image);
 
 /**
  * @brief Helper function to set distances in a medical image as a data::vector::sptr.
@@ -185,7 +188,7 @@ DATA_API data::vector::sptr get_distances(const data::image& _image);
  * @param _image : input image reference.
  * @param _distances : data::vector::sptr containing distances.
  */
-DATA_API void set_distances(data::image& _image, const data::vector::sptr& _distances);
+SIGHT_DATA_API void set_distances(data::image& _image, const data::vector::sptr& _distances);
 
 /**
  * @brief Helper function to get distance visibility on a medical image.
@@ -193,7 +196,7 @@ DATA_API void set_distances(data::image& _image, const data::vector::sptr& _dist
  * @param _image : input image reference.
  * @return boolean value (visible or not).
  */
-DATA_API bool get_distance_visibility(const data::image& _image);
+SIGHT_DATA_API bool get_distance_visibility(const data::image& _image);
 
 /**
  * @brief Helper function to set distance visibility on a medical image.
@@ -201,7 +204,7 @@ DATA_API bool get_distance_visibility(const data::image& _image);
  * @param _image : input image reference.
  * @param _visibility : boolean to represents if distance is visible or not.
  */
-DATA_API void set_distance_visibility(data::image& _image, bool _visibility);
+SIGHT_DATA_API void set_distance_visibility(data::image& _image, bool _visibility);
 
 /**
  * @brief Helper function to get landmarks visibility on a medical image.
@@ -209,7 +212,7 @@ DATA_API void set_distance_visibility(data::image& _image, bool _visibility);
  * @param _image : input image reference.
  * @return boolean value (visible or not).
  */
-DATA_API bool get_landmarks_visibility(const data::image& _image);
+SIGHT_DATA_API bool get_landmarks_visibility(const data::image& _image);
 
 /**
  * @brief Helper function to set landmarks visibility on a medical image.
@@ -217,7 +220,7 @@ DATA_API bool get_landmarks_visibility(const data::image& _image);
  * @param _image : input image reference.
  * @param _visibility : boolean to represents if landmarks are visible or not.
  */
-DATA_API void set_landmarks_visibility(data::image& _image, bool _visibility);
+SIGHT_DATA_API void set_landmarks_visibility(data::image& _image, bool _visibility);
 
 /**
  * @brief Helper to get comment on medical image.
@@ -225,7 +228,7 @@ DATA_API void set_landmarks_visibility(data::image& _image, bool _visibility);
  * @param _image : input image reference.
  * @return std::string the comment, can be empty.
  */
-DATA_API std::string get_comment(const data::image& _image);
+SIGHT_DATA_API std::string get_comment(const data::image& _image);
 
 /**
  * @brief Helper function to set comment on medical image.
@@ -233,7 +236,7 @@ DATA_API std::string get_comment(const data::image& _image);
  * @param _image : input image reference.
  * @param _comment : std::string comment to add.
  */
-DATA_API void set_comment(data::image& _image, const std::string& _comment);
+SIGHT_DATA_API void set_comment(data::image& _image, const std::string& _comment);
 
 /**
  * @brief Helper function to get label on a medical image.
@@ -241,7 +244,7 @@ DATA_API void set_comment(data::image& _image, const std::string& _comment);
  * @param _image : input image reference.
  * @return std::string the label, can be empty.
  */
-DATA_API std::string get_label(const data::image& _image);
+SIGHT_DATA_API std::string get_label(const data::image& _image);
 
 /**
  * @brief Helper function to set label on medical image.
@@ -249,21 +252,21 @@ DATA_API std::string get_label(const data::image& _image);
  * @param _image : input image reference.
  * @param _label : std::string the label.
  */
-DATA_API void set_label(data::image& _image, const std::string& _label);
+SIGHT_DATA_API void set_label(data::image& _image, const std::string& _label);
 
 /**
  * @brief Helper function to get the direction field from an image data.
  *
  * @param _image : input image reference.
  */
-DATA_API data::matrix4::sptr get_direction(const data::image& _image);
+SIGHT_DATA_API data::matrix4::sptr get_direction(const data::image& _image);
 
 /**
  * @brief Helper function to set the direction field from an image data.
  *
  * @param _image : input image reference.
  */
-DATA_API void set_direction(data::image& _image, data::matrix4::sptr _direction);
+SIGHT_DATA_API void set_direction(data::image& _image, data::matrix4::sptr _direction);
 
 // ------------------------------------------------------------------------------
 

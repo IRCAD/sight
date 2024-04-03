@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene2d/config.hpp"
 
 #include <service/macros.hpp>
 
@@ -58,27 +56,27 @@ namespace sight::module::viz::scene2d::adaptor
  * @section Slots Slots
  * -\b set_double_parameter(double, std::string): set the double parameters 'x' and 'y'
  */
-class MODULE_VIZ_SCENE2D_CLASS_API square : public sight::viz::scene2d::adaptor
+class square : public sight::viz::scene2d::adaptor
 {
 public:
 
     SIGHT_DECLARE_SERVICE(square, sight::viz::scene2d::adaptor);
 
-    MODULE_VIZ_SCENE2D_API square() noexcept;
-    MODULE_VIZ_SCENE2D_API ~square() noexcept override;
+    square() noexcept;
+    ~square() noexcept override;
 
 protected:
 
-    MODULE_VIZ_SCENE2D_API void configuring() override;
-    MODULE_VIZ_SCENE2D_API void starting() override;
-    MODULE_VIZ_SCENE2D_API void updating() override;
-    MODULE_VIZ_SCENE2D_API void stopping() override;
+    void configuring() override;
+    void starting() override;
+    void updating() override;
+    void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API void process_interaction(sight::viz::scene2d::data::event& _event) override;
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
-    MODULE_VIZ_SCENE2D_API void set_color(const std::string& _color);
-    MODULE_VIZ_SCENE2D_API bool coord_view_is_in_item(const sight::viz::scene2d::vec2d_t& _coord, QGraphicsItem* _item);
-    MODULE_VIZ_SCENE2D_API sight::viz::scene2d::vec2d_t coord_view_to_coord_item(
+    void set_color(const std::string& _color);
+    bool coord_view_is_in_item(const sight::viz::scene2d::vec2d_t& _coord, QGraphicsItem* _item);
+    sight::viz::scene2d::vec2d_t coord_view_to_coord_item(
         const sight::viz::scene2d::vec2d_t& _coord,
         QGraphicsItem* _item
     );

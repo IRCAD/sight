@@ -35,7 +35,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief This class contains helpers for DICOM Structured Reporting (SR).
  */
-class IO_DICOM_CLASS_API structured_report
+class SIGHT_IO_DICOM_CLASS_API structured_report
 {
 public:
 
@@ -43,7 +43,7 @@ public:
      * @brief Read a Structured Report
      * @param[in] _dataset Dataset from which the SR must be created
      */
-    IO_DICOM_API static SPTR(io::dicom::container::sr::dicom_sr_container_node)
+    SIGHT_IO_DICOM_API static SPTR(io::dicom::container::sr::dicom_sr_container_node)
     read_sr(const gdcm::DataSet& _dataset);
 
     /**
@@ -51,7 +51,7 @@ public:
      * @param[in] _root Root node
      * @param[in] _out Destination stream
      */
-    IO_DICOM_API static void dump_sr(
+    SIGHT_IO_DICOM_API static void dump_sr(
         const SPTR(io::dicom::container::sr::dicom_sr_node)& _root,
         std::ostream& _out = std::cout
     );
@@ -80,7 +80,7 @@ protected:
      * @param[in] _out Destination stream
      * @param[in] _index Node index
      */
-    IO_DICOM_API static void dump_sr_node(
+    SIGHT_IO_DICOM_API static void dump_sr_node(
         const SPTR(io::dicom::container::sr::dicom_sr_node)& _node,
         std::ostream& _out,
         int& _index

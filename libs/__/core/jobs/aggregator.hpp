@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/jobs/base.hpp"
 
 #include <core/macros.hpp>
@@ -44,7 +45,7 @@ namespace sight::core::jobs
 /**
  * @brief This class manages an aggregation of base.
  */
-class CORE_CLASS_API aggregator : public base
+class SIGHT_CORE_CLASS_API aggregator : public base
 {
 public:
 
@@ -61,14 +62,14 @@ public:
     /**  @} */
 
     /// Default constructor. The name is initialized with an empty string
-    CORE_API aggregator();
+    SIGHT_CORE_API aggregator();
 
     /**
      * @brief Constructor
      *
      * @param _name The job's name
      */
-    CORE_API aggregator(const std::string& _name);
+    SIGHT_CORE_API aggregator(const std::string& _name);
 
     /**
      * @brief Add an base to the aggregator
@@ -78,14 +79,14 @@ public:
      * @param _job the base to add to the aggregator
      * @param _weight added base's weight. Avoid values lower than 0.01
      */
-    CORE_API void add(const core::jobs::base::sptr& _job, double _weight = 1.);
+    SIGHT_CORE_API void add(const core::jobs::base::sptr& _job, double _weight = 1.);
 
     /**
      * @brief Retrieve sub job sequence of the aggregator
      *
      * @return The job aggregator container
      */
-    CORE_API job_seq get_sub_jobs();
+    SIGHT_CORE_API job_seq get_sub_jobs();
 
 protected:
 
@@ -94,7 +95,7 @@ protected:
      *
      * @return future of all the IJobs of the aggregator
      */
-    CORE_API shared_future run_impl() override;
+    SIGHT_CORE_API shared_future run_impl() override;
 
 private:
 

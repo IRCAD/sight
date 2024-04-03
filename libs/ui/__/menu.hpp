@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/detail/registry/menu.hpp"
 #include "ui/__/layout/menu_manager.hpp"
 
@@ -41,30 +42,30 @@ class menu;
 /**
  * @brief   Defines the service interface managing the menu.
  */
-class UI_CLASS_API menu : public service::base
+class SIGHT_UI_CLASS_API menu : public service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(menu, service::base);
 
     /// Method called when an action service is stopping
-    UI_API void action_service_stopping(std::string _action_srv_sid);
+    SIGHT_UI_API void action_service_stopping(std::string _action_srv_sid);
 
     /// Method called when an action service is starting
-    UI_API void action_service_starting(std::string _action_srv_sid);
+    SIGHT_UI_API void action_service_starting(std::string _action_srv_sid);
 
     /// Method called when the action service is activated
-    UI_API void action_service_set_checked(std::string _action_srv_sid, bool _is_checked);
+    SIGHT_UI_API void action_service_set_checked(std::string _action_srv_sid, bool _is_checked);
 
     /// Method called when the action service is executable
-    UI_API void action_service_set_enabled(std::string _action_srv_sid, bool _is_enabled);
+    SIGHT_UI_API void action_service_set_enabled(std::string _action_srv_sid, bool _is_enabled);
 
     /// Method called when the action service is visible
-    UI_API void action_service_set_visible(std::string _action_srv_sid, bool _is_visible);
+    SIGHT_UI_API void action_service_set_visible(std::string _action_srv_sid, bool _is_visible);
 
 protected:
 
-    UI_API ~menu() override = default;
+    SIGHT_UI_API ~menu() override = default;
 
     /**
      * @brief Initialize the layout and registry managers.
@@ -108,13 +109,13 @@ protected:
      *
      * @see ui::registry::menu::initialize(), ui::layout::menu_manager::initialize()
      */
-    UI_API void initialize();
+    SIGHT_UI_API void initialize();
 
     /// Create the layout and start the managed services.
-    UI_API void create();
+    SIGHT_UI_API void create();
 
     /// Destroy the layout and stop the managed services.
-    UI_API void destroy();
+    SIGHT_UI_API void destroy();
 
 private:
 

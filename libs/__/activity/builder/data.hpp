@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include <activity/config.hpp>
+#include <sight/activity/config.hpp>
+
 #include <activity/extension/activity.hpp>
 
 #include <data/object.hpp>
@@ -31,6 +32,9 @@ namespace sight::activity::detail::data
 
 //------------------------------------------------------------------------------
 
-ACTIVITY_API sight::data::object::sptr create(const std::string& _type, const activity::extension::config_t& _config);
+SIGHT_ACTIVITY_API sight::data::object::sptr create(
+    const std::string& _type,
+    const activity::extension::config_t& _config
+);
 
 } // namespace sight::activity::detail::data

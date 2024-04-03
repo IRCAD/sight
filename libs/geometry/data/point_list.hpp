@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "geometry/data/config.hpp"
+#include <sight/geometry/data/config.hpp>
 
 #include <data/array.hpp>
 #include <data/matrix4.hpp>
@@ -34,15 +34,15 @@ namespace sight::geometry::data
 /**
  * @brief Defines a helper to modify a sight::data::point_list.
  */
-class GEOMETRY_DATA_CLASS_API point_list
+class SIGHT_GEOMETRY_DATA_CLASS_API point_list
 {
 public:
 
     /// Constructor. Does nothing.
-    GEOMETRY_DATA_API point_list() = default;
+    SIGHT_GEOMETRY_DATA_API point_list() = default;
 
     /// Destructor. Does nothing.
-    GEOMETRY_DATA_API ~point_list() = default;
+    SIGHT_GEOMETRY_DATA_API ~point_list() = default;
 
     /**
      * @brief Computes the point-to-point distance between 2 pointlists
@@ -50,7 +50,7 @@ public:
      * @param[in] _point_list2 second point list
      * @return array of the size of one the pointlists (they must have the same size)
      */
-    GEOMETRY_DATA_API static sight::data::array::sptr compute_distance(
+    SIGHT_GEOMETRY_DATA_API static sight::data::array::sptr compute_distance(
         sight::data::point_list::sptr _point_list1,
         sight::data::point_list::sptr _point_list2
     );
@@ -60,7 +60,7 @@ public:
      * @param[in] _point_list pointlist to be transformed
      * @param[in] _matrix transformation to apply to each points in pointlist
      */
-    GEOMETRY_DATA_API static void transform(
+    SIGHT_GEOMETRY_DATA_API static void transform(
         sight::data::point_list::sptr& _point_list,
         const sight::data::matrix4::csptr& _matrix
     );
@@ -72,7 +72,7 @@ public:
      * @param[in] _point_list1 first pointlist
      * @param[in] _point_list2 pointlist that will be re-ordered
      */
-    GEOMETRY_DATA_API static void associate(
+    SIGHT_GEOMETRY_DATA_API static void associate(
         const sight::data::point_list::csptr& _point_list1,
         sight::data::point_list::sptr _point_list2
     );
@@ -84,7 +84,7 @@ public:
      * @param[in] _delta the maximum tolerance  between the reference point and the point to find
      * @return the removed point or nullptr if no point has been removed
      */
-    GEOMETRY_DATA_API static sight::data::point::sptr remove_closest_point(
+    SIGHT_GEOMETRY_DATA_API static sight::data::point::sptr remove_closest_point(
         const sight::data::point_list::sptr& _point_list,
         const sight::data::point::csptr& _point,
         float _delta

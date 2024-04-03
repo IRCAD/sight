@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/__/config.hpp"
 
 #include <data/matrix4.hpp>
 
@@ -57,7 +55,7 @@ namespace sight::module::geometry
  * - \b output [sight::data::matrix4]: Output matrix.
  *
  */
-class MODULE_GEOMETRY_CLASS_API switch_matrices : public service::controller
+class switch_matrices : public service::controller
 {
 public:
 
@@ -66,7 +64,7 @@ public:
     /**
      * @brief Constructor.
      */
-    MODULE_GEOMETRY_API switch_matrices() noexcept;
+    switch_matrices() noexcept;
 
     /**
      * @brief Destructor.
@@ -74,33 +72,33 @@ public:
     ~switch_matrices() noexcept override =
         default;
 
-    MODULE_GEOMETRY_API static const core::com::slots::key_t SWITCH_SLOT;
+    static const core::com::slots::key_t SWITCH_SLOT;
     using switch_slot_t = core::com::slot<void ()>;
 
-    MODULE_GEOMETRY_API static const core::com::slots::key_t SWITCH_TO_SLOT;
+    static const core::com::slots::key_t SWITCH_TO_SLOT;
     using switch_to_slot_t = core::com::slot<void (int)>;
 
 protected:
 
     /// This method is used to configure the service.
-    MODULE_GEOMETRY_API void configuring() override;
+    void configuring() override;
 
     /// This method is used to initialize the service.
-    MODULE_GEOMETRY_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void updating() override;
+    void updating() override;
 
     /// Switch to next Matrix
-    MODULE_GEOMETRY_API void switch_matrix();
+    void switch_matrix();
 
     /// Switch to Matrix "index"
-    MODULE_GEOMETRY_API void switch_to_matrix(int _index);
+    void switch_to_matrix(int _index);
 
-    MODULE_GEOMETRY_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

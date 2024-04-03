@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <ui/__/action_callback_base.hpp>
 
@@ -34,8 +34,8 @@ namespace sight::ui::qt
 /**
  * @brief   Defines the menu item callback.
  */
-class UI_QT_CLASS_API_QT action_callback : public QObject,
-                                           public ui::action_callback_base
+class SIGHT_UI_QT_CLASS_API_QT action_callback : public QObject,
+                                                 public ui::action_callback_base
 {
 Q_OBJECT
 
@@ -43,7 +43,7 @@ public:
 
     SIGHT_DECLARE_CLASS(action_callback, ui::action_callback_base, ui::factory::make<action_callback>);
 
-    UI_QT_API_QT ~action_callback() override = default;
+    SIGHT_UI_QT_API_QT ~action_callback() override = default;
 
 /**
  * @brief  Qt slot.

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/http/config.hpp"
+#include <sight/io/http/config.hpp>
+
 #include "io/http/exceptions/connection_refused.hpp"
 #include "io/http/exceptions/content_not_found.hpp"
 #include "io/http/exceptions/host_not_found.hpp"
@@ -46,7 +47,7 @@ struct http_response
 /**
  * @brief HTTP client using Qt Network.
  */
-class IO_HTTP_CLASS_API client_qt : public QObject
+class SIGHT_IO_HTTP_CLASS_API client_qt : public QObject
 {
 Q_OBJECT
 
@@ -56,35 +57,35 @@ public:
      * Constructor/Destructor
      * @{
      */
-    IO_HTTP_API client_qt();
-    IO_HTTP_API ~client_qt() override;
+    SIGHT_IO_HTTP_API client_qt();
+    SIGHT_IO_HTTP_API ~client_qt() override;
     /**  @} */
 
     /**
      * @brief Retrieves data over network
      * @param _request the request
      */
-    IO_HTTP_API QByteArray get(request::sptr _request);
+    SIGHT_IO_HTTP_API QByteArray get(request::sptr _request);
 
     /**
      * @brief Retrieves data over network
      * @param _request the request
      */
-    IO_HTTP_API std::string get_file(request::sptr _request);
+    SIGHT_IO_HTTP_API std::string get_file(request::sptr _request);
 
     /**
      * @brief Performs head request
      * @param _request the request
      * @return headers resulting of the request
      */
-    IO_HTTP_API request::headers_t head(request::sptr _request);
+    SIGHT_IO_HTTP_API request::headers_t head(request::sptr _request);
 
     /**
      * @brief Performs POST request
      * @param _request the request
      * @param _body The body content
      */
-    IO_HTTP_API QByteArray post(request::sptr _request, const QByteArray& _body);
+    SIGHT_IO_HTTP_API QByteArray post(request::sptr _request, const QByteArray& _body);
 
 public Q_SLOTS:
 

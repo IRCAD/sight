@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <data/series_set.hpp>
 
@@ -31,7 +31,7 @@ namespace sight::ui::qt::series
 {
 
 /// This class allows to display a DICOM series
-class UI_QT_CLASS_API_QT selector_dialog : public QDialog
+class SIGHT_UI_QT_CLASS_API_QT selector_dialog : public QDialog
 {
 Q_OBJECT
 
@@ -40,17 +40,17 @@ public:
     /// Initializes the selector dialog.
     /// @param _series_set the series to select.
     /// @param _parent the parent widget.
-    UI_QT_API_QT selector_dialog(
+    SIGHT_UI_QT_API_QT selector_dialog(
         data::series_set::csptr _series_set,
         const std::string& _displayed_column,
         QWidget* _parent = nullptr
     );
 
     /// Destroys the selector.
-    UI_QT_API_QT ~selector_dialog() noexcept override;
+    SIGHT_UI_QT_API_QT ~selector_dialog() noexcept override;
 
     /// Returns the selected series.
-    UI_QT_API_QT data::series_set::sptr get_selection() const;
+    SIGHT_UI_QT_API_QT data::series_set::sptr get_selection() const;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/vision/config.hpp"
 
 #include <data/camera.hpp>
 #include <data/image.hpp>
@@ -84,32 +82,32 @@ namespace sight::module::geometry::vision
  * - \b distortReprojection (optional, default="true"): whether the 'videoImage' is undistorted, in which case the
  *                                                      reprojected points should not be distorted.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API chessboard_reprojection final : public service::base
+class chessboard_reprojection final : public service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(chessboard_reprojection, service::base);
 
     ///Constructor
-    MODULE_GEOMETRY_VISION_API chessboard_reprojection();
+    chessboard_reprojection();
 
     ///Destructor
-    MODULE_GEOMETRY_VISION_API ~chessboard_reprojection() final;
+    ~chessboard_reprojection() final;
 
 protected:
 
     /// Configures the service.
-    MODULE_GEOMETRY_VISION_API void configuring() final;
+    void configuring() final;
 
     /// Does nothing.
-    MODULE_GEOMETRY_VISION_API void starting() final;
+    void starting() final;
 
     /// Reprojects the detected using the camera's intrinsics and the tranform. Computes the reprojection's RMSE.
     /// Writes the detected and reprojected points on the video image if there is one.
-    MODULE_GEOMETRY_VISION_API void updating() final;
+    void updating() final;
 
     /// Does nothing.
-    MODULE_GEOMETRY_VISION_API void stopping() final;
+    void stopping() final;
 
     /// Connects camera, transform and detected points modification to the update slot.
     service::connections_t auto_connections() const final;

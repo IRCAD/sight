@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <data/image.hpp>
 #include <data/transfer_function.hpp>
@@ -39,41 +39,41 @@ namespace sight::viz::scene3d::vr
 /**
  * @brief Summed area table of a 3D image.
  */
-class VIZ_SCENE3D_CLASS_API summed_area_table
+class SIGHT_VIZ_SCENE3D_CLASS_API summed_area_table
 {
 public:
 
     /// Constructor, creates an SAT with the given resolution.
-    VIZ_SCENE3D_API summed_area_table(
+    SIGHT_VIZ_SCENE3D_API summed_area_table(
         std::string _parent_id,
         Ogre::SceneManager* _scene_manager,
         float _size_ratio = 0.25F
     );
 
     /// Destructor, does nothing.
-    VIZ_SCENE3D_API ~summed_area_table();
+    SIGHT_VIZ_SCENE3D_API ~summed_area_table();
 
     /// Computes the SAT sequentially on the CPU based on the given image and TF.
-    VIZ_SCENE3D_API void compute_sequential(data::image::sptr _image, data::transfer_function::sptr _tf);
+    SIGHT_VIZ_SCENE3D_API void compute_sequential(data::image::sptr _image, data::transfer_function::sptr _tf);
 
     /// Computes the SAT using Hensley's recursive doubling algorithm.
-    VIZ_SCENE3D_API void compute_parallel(
+    SIGHT_VIZ_SCENE3D_API void compute_parallel(
         const texture::sptr& _img_texture,
         const viz::scene3d::transfer_function::sptr& _gpu_tf,
         float _sample_distance
     );
 
     /// Returns the texture holding the SAT.
-    [[nodiscard]] VIZ_SCENE3D_API Ogre::TexturePtr get_texture() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API Ogre::TexturePtr get_texture() const;
 
     /// Returns the texture used as a ping-pong buffer during SAT computation allowing it to be repurposed.
-    [[nodiscard]] VIZ_SCENE3D_API Ogre::TexturePtr get_spare_texture() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API Ogre::TexturePtr get_spare_texture() const;
 
     /// Updates the current size of the image according to the passed texture and updates the SAT
-    VIZ_SCENE3D_API void update_sat_from_texture(const texture::sptr& _img_texture);
+    SIGHT_VIZ_SCENE3D_API void update_sat_from_texture(const texture::sptr& _img_texture);
 
     /// Updates the SAT size ratio and updates the SAT.
-    VIZ_SCENE3D_API void update_sat_from_ratio(float _size_ratio);
+    SIGHT_VIZ_SCENE3D_API void update_sat_from_ratio(float _size_ratio);
 
 private:
 

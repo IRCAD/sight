@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/sample/config.hpp"
-
 #include <data/image.hpp>
 #include <data/transfer_function.hpp>
 
@@ -44,7 +42,7 @@ namespace sight::module::viz::sample
  * @subsection Input Input
  * - \b image [sight::data::image]: image to display.
  */
-class MODULE_VIZ_SAMPLE_CLASS_API image : public sight::ui::service
+class image : public sight::ui::service
 {
 public:
 
@@ -52,18 +50,18 @@ public:
     SIGHT_DECLARE_SERVICE(image, sight::ui::service);
 
     /// Creates the service.
-    MODULE_VIZ_SAMPLE_API image() noexcept;
+    image() noexcept;
 
     /// Destroys the service.
-    MODULE_VIZ_SAMPLE_API ~image() noexcept override;
+    ~image() noexcept override;
 
 protected:
 
     /// Checks if the input image is autoconnect.
-    MODULE_VIZ_SAMPLE_API void configuring() override;
+    void configuring() override;
 
     /// Registers and starts sub-services.
-    MODULE_VIZ_SAMPLE_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -73,13 +71,13 @@ protected:
      *
      * Connect data::image::MODIFIED_SIG to service::slots::UPDATE
      */
-    MODULE_VIZ_SAMPLE_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     /// Does nothing.
-    MODULE_VIZ_SAMPLE_API void updating() override;
+    void updating() override;
 
     /// Stops and unregisters sub-services.
-    MODULE_VIZ_SAMPLE_API void stopping() override;
+    void stopping() override;
 
 private:
 

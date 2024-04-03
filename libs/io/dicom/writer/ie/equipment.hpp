@@ -32,7 +32,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Equipment Information Entity class
  */
-class IO_DICOM_CLASS_API equipment : public io::dicom::writer::ie::information_entity<data::series>
+class SIGHT_IO_DICOM_CLASS_API equipment : public io::dicom::writer::ie::information_entity<data::series>
 {
 public:
 
@@ -45,7 +45,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API equipment(
+    SIGHT_IO_DICOM_API equipment(
         const SPTR(gdcm::Writer)& _writer,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::series::csptr& _series,
@@ -55,19 +55,19 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~equipment() override;
+    SIGHT_IO_DICOM_API ~equipment() override;
 
     /**
      * @brief Write General Equipment Module tags
      * @see PS 3.3 C.7.5.1
      */
-    IO_DICOM_API virtual void write_general_equipment_module();
+    SIGHT_IO_DICOM_API virtual void write_general_equipment_module();
 
     /**
      * @brief Write Enhanced General Equipment Module tags
      * @see PS 3.3 C.7.5.2
      */
-    IO_DICOM_API virtual void write_enhanced_general_equipment_module();
+    SIGHT_IO_DICOM_API virtual void write_enhanced_general_equipment_module();
 };
 
 } // namespace sight::io::dicom::writer::ie

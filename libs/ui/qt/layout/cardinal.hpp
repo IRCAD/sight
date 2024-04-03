@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
+
 #include "ui/qt/container/widget.hpp"
 
 #include <core/base.hpp>
@@ -41,7 +42,7 @@ namespace sight::ui::qt::layout
 /**
  * @brief   Defines the cardinal layout manager.
  */
-class UI_QT_CLASS_API cardinal final : public ui::layout::cardinal
+class SIGHT_UI_QT_CLASS_API cardinal final : public ui::layout::cardinal
 {
 public:
 
@@ -51,25 +52,25 @@ public:
         ui::factory::make<cardinal>
     )
 
-    UI_QT_API ~cardinal() final = default;
+    SIGHT_UI_QT_API ~cardinal() final = default;
 
     /**
      * @brief Instantiate layout with parent container.
      * @pre layout must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API void create_layout(ui::container::widget::sptr _parent, const std::string& _id) final;
+    SIGHT_UI_QT_API void create_layout(ui::container::widget::sptr _parent, const std::string& _id) final;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_QT_API void destroy_layout() final;
+    SIGHT_UI_QT_API void destroy_layout() final;
 
     /// Modify a layout element, depending of the key.
     /// @param _parameter The parameter of the action.
     /// @param _key The action to perform.
-    UI_QT_API void modify_layout(const ui::parameter_t& _parameter, const std::string& _key) final;
+    SIGHT_UI_QT_API void modify_layout(const ui::parameter_t& _parameter, const std::string& _key) final;
 
 private:
 

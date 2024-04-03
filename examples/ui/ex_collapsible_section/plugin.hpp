@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "ex_collapsible_section/config.hpp"
+#include "sight/ex_collapsible_section/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -29,18 +29,18 @@ namespace ex_collapsible_section
 {
 
 /// This class is started when the module is loaded.
-class EX_COLLAPSIBLE_SECTION_CLASS_API plugin : public sight::core::runtime::plugin
+class SIGHT_EX_COLLAPSIBLE_SECTION_CLASS_API plugin : public sight::core::runtime::plugin
 {
 public:
 
     /// Destroys the plugin.
-    EX_COLLAPSIBLE_SECTION_API ~plugin() noexcept override = default;
+    SIGHT_EX_COLLAPSIBLE_SECTION_API ~plugin() noexcept override = default;
 
     /// Adds the default worker.
-    EX_COLLAPSIBLE_SECTION_API void start() override;
+    SIGHT_EX_COLLAPSIBLE_SECTION_API void start() override;
 
     /// Does nothing here.
-    EX_COLLAPSIBLE_SECTION_API void stop() noexcept override;
+    SIGHT_EX_COLLAPSIBLE_SECTION_API void stop() noexcept override;
 };
 
 } // namespace ex_collapsible_section.

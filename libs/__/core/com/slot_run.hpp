@@ -48,7 +48,7 @@ struct slot_run;
  * @tparam A Slot's arguments types.
  */
 template<typename ... A>
-struct CORE_CLASS_API slot_run<void(A ...)>: slot_base
+struct SIGHT_CORE_CLASS_API slot_run<void(A ...)>: slot_base
 {
     /**
      * @name Typedefs

@@ -38,7 +38,7 @@ public:
      * @param _field How to get the field to fill
      * @param _text The text to put in the field
      */
-    UI_TEST_API static void fill(tester& _tester, const selector& _field, const std::string& _text);
+    SIGHT_UI_TEST_API static void fill(tester& _tester, const selector& _field, const std::string& _text);
 };
 
 }

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/timeline/base.hpp"
 #include "data/timeline/buffer.hpp"
 
@@ -37,7 +38,7 @@ namespace sight::data
  * @brief   This class defines a timeline of buffers. It implements basic features of the Timeline interface such as
  *          pushing or retrieving objects. Allocation must be done by inherited classes.
  */
-class DATA_CLASS_API buffer_tl : public timeline::base
+class SIGHT_DATA_CLASS_API buffer_tl : public timeline::base
 {
 public:
 
@@ -48,46 +49,46 @@ public:
     using buffer_pair_t = std::pair<timestamp_t, std::shared_ptr<timeline::buffer> >;
     using pool_t        = boost::pool<>;
 
-    DATA_API buffer_tl();
-    DATA_API ~buffer_tl() override;
+    SIGHT_DATA_API buffer_tl();
+    SIGHT_DATA_API ~buffer_tl() override;
 
     /// Check if the type of an object is compatible with this timeline
-    DATA_API virtual bool is_object_valid(const CSPTR(timeline::object)& _obj) const = 0;
+    SIGHT_DATA_API virtual bool is_object_valid(const CSPTR(timeline::object)& _obj) const = 0;
 
     /**
      * @brief Return the closest object to the given timestamp
      * @param _timestamp timestamp used to find the closest object
      * @param _direction direction to find the closest object (PAST, FUTURE, BOTH)
      */
-    DATA_API CSPTR(timeline::object) get_closest_object(
+    SIGHT_DATA_API CSPTR(timeline::object) get_closest_object(
         core::clock::type _timestamp,
         timeline::direction_t _direction = timeline::both
     ) const override;
 
     /// Return the object matching the specified timestamp, returns NULL if object is not found
-    DATA_API CSPTR(timeline::object) get_object(core::clock::type _timestamp)
+    SIGHT_DATA_API CSPTR(timeline::object) get_object(core::clock::type _timestamp)
     const override;
 
     /// Clear the timeline
-    DATA_API virtual void clear_timeline();
+    SIGHT_DATA_API virtual void clear_timeline();
 
     /// Push a buffer to the timeline
-    DATA_API void push_object(const SPTR(timeline::object)& _obj) override;
+    SIGHT_DATA_API void push_object(const SPTR(timeline::object)& _obj) override;
 
     /// Remove a buffer to the timeline
-    DATA_API SPTR(timeline::object) pop_object(timestamp_t _timestamp) override;
+    SIGHT_DATA_API SPTR(timeline::object) pop_object(timestamp_t _timestamp) override;
 
     /// Change a buffer timestamp to the timeline
-    DATA_API void modify_time(timestamp_t _timestamp, timestamp_t _new_timestamp) override;
+    SIGHT_DATA_API void modify_time(timestamp_t _timestamp, timestamp_t _new_timestamp) override;
 
     /// Change a buffer object to the specified timestamp
-    DATA_API void set_object(timestamp_t _timestamp, const SPTR(timeline::object)& _obj) override;
+    SIGHT_DATA_API void set_object(timestamp_t _timestamp, const SPTR(timeline::object)& _obj) override;
 
     /// Return the last object in the timeline
-    DATA_API CSPTR(timeline::object) get_newer_object() const;
+    SIGHT_DATA_API CSPTR(timeline::object) get_newer_object() const;
 
     /// Return the last timestamp in the timeline
-    DATA_API core::clock::type get_newer_timestamp() const;
+    SIGHT_DATA_API core::clock::type get_newer_timestamp() const;
 
     /// Change the maximum size of the timeline
     void set_maximum_size(std::size_t _maximum_size)
@@ -96,7 +97,7 @@ public:
     }
 
     /// Default Timeline Size
-    DATA_API static const std::size_t DEFAULT_TIMELINE_MAX_SIZE;
+    SIGHT_DATA_API static const std::size_t DEFAULT_TIMELINE_MAX_SIZE;
 
     /// Return true if the pool is allocated
     bool is_allocated() const
@@ -106,14 +107,14 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const buffer_tl& _other) const noexcept;
-    DATA_API bool operator!=(const buffer_tl& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const buffer_tl& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const buffer_tl& _other) const noexcept;
     /// @}
 
 protected:
 
     /// Allocate the pool buffer.
-    DATA_API void alloc_pool_size(std::size_t _size);
+    SIGHT_DATA_API void alloc_pool_size(std::size_t _size);
 
     ///Timeline
     timeline_t m_timeline;

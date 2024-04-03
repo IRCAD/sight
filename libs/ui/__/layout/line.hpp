@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/layout/view.hpp"
 
 #include <core/base.hpp>
@@ -35,7 +36,7 @@ namespace sight::ui::layout
 /**
  * @brief   Defines the base for line layout manager.
  */
-class UI_CLASS_API line : public view
+class SIGHT_UI_CLASS_API line : public view
 {
 public:
 
@@ -76,10 +77,10 @@ public:
     };
 
     /// Constructor. Do nothing.
-    UI_API line() = default;
+    SIGHT_UI_API line() = default;
 
     /// Destructor. Do nothing.
-    UI_API ~line() override = default;
+    SIGHT_UI_API ~line() override = default;
 
     /**
      * @brief Initialize Line layout manager before the creation of layout.
@@ -122,9 +123,9 @@ public:
      *   - \b backgroundColor (optional) : (hexa) background color.
      */
 
-    UI_API void initialize(const ui::config_t& _configuration) override;
+    SIGHT_UI_API void initialize(const ui::config_t& _configuration) override;
 
-    UI_API static const registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const registry_key_t REGISTRY_KEY;
 
     //------------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/http/config.hpp"
+#include <sight/io/http/config.hpp>
+
 #include "io/http/exceptions/base.hpp"
 
 namespace sight::io::http::exceptions
@@ -31,14 +32,14 @@ namespace sight::io::http::exceptions
 /**
  * @brief Implements exception for an HTTP connection refused.
  */
-class IO_HTTP_CLASS_API connection_refused : public sight::io::http::exceptions::base
+class SIGHT_IO_HTTP_CLASS_API connection_refused : public sight::io::http::exceptions::base
 {
 public:
 
     /**
      * @name Constructor/Destructor.
      * @{ */
-    IO_HTTP_API connection_refused(const std::string& _message);
+    SIGHT_IO_HTTP_API connection_refused(const std::string& _message);
     ~connection_refused() noexcept override;
     /**  @} */
 };

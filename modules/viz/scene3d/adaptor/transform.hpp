@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/render.hpp>
@@ -51,7 +49,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b transform (mandatory, string): Name of the Ogre Transform.
  * - \b parent (optional, string, default=""): Name of the parent Ogre Transform you want to attach to.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API transform final :
+class transform final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable
 {
@@ -63,18 +61,18 @@ public:
     SIGHT_DECLARE_SERVICE(transform, sight::viz::scene3d::adaptor);
 
     /// Creates the service.
-    MODULE_VIZ_SCENE3D_API transform() noexcept = default;
+    transform() noexcept = default;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~transform() noexcept final = default;
+    ~transform() noexcept final = default;
 
 protected:
 
     /// Retrieves id sets in the configurations.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Creates the Ogre::SceneNode corresponding to the associated transform matrix.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -82,13 +80,13 @@ protected:
      *
      * Connect data::object::MODIFIED_SIG of s_TRANSFORM_INOUT to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
     /// Updates m_transformNode from the data::matrix4.
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
 private:
 

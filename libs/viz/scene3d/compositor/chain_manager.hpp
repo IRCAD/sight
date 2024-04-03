@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "service/has_services.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
-#include "viz/scene3d/config.hpp"
+#include "service/has_services.hpp"
 
 #include <data/object.hpp>
 
@@ -49,8 +49,8 @@ namespace compositor
 /**
  * @brief   Manages the compositors in a layer view.
  */
-class VIZ_SCENE3D_CLASS_API chain_manager : boost::noncopyable,
-                                            public service::has_services
+class SIGHT_VIZ_SCENE3D_CLASS_API chain_manager : boost::noncopyable,
+                                                  public service::has_services
 {
 public:
 
@@ -60,23 +60,23 @@ public:
     using compositor_t       = std::pair<compositor_id_t, bool>;
     using compositor_chain_t = std::vector<compositor_t>;
 
-    VIZ_SCENE3D_API chain_manager(const SPTR(viz::scene3d::layer)& _layer);
-    VIZ_SCENE3D_API ~chain_manager() override;
+    SIGHT_VIZ_SCENE3D_API chain_manager(const SPTR(viz::scene3d::layer)& _layer);
+    SIGHT_VIZ_SCENE3D_API ~chain_manager() override;
 
     /// Inserts the new compositor in the compositor chain vector
-    VIZ_SCENE3D_API void add_available_compositor(compositor_id_t _compositor_name);
+    SIGHT_VIZ_SCENE3D_API void add_available_compositor(compositor_id_t _compositor_name);
     /// Clears the compositor chain
-    VIZ_SCENE3D_API void clear_compositor_chain();
+    SIGHT_VIZ_SCENE3D_API void clear_compositor_chain();
     /// Enables or disables the target compositor
-    VIZ_SCENE3D_API void update_compositor_state(compositor_id_t _compositor_name, bool _is_enabled);
+    SIGHT_VIZ_SCENE3D_API void update_compositor_state(compositor_id_t _compositor_name, bool _is_enabled);
 
-    VIZ_SCENE3D_API void set_compositor_chain(const std::vector<compositor_id_t>& _compositors);
+    SIGHT_VIZ_SCENE3D_API void set_compositor_chain(const std::vector<compositor_id_t>& _compositors);
 
-    VIZ_SCENE3D_API compositor_chain_t get_compositor_chain();
+    SIGHT_VIZ_SCENE3D_API compositor_chain_t get_compositor_chain();
 
     /// Name of the last compositor put in the compositor chain.
     /// This compositor is used to have a blend in order to get a correct final render
-    VIZ_SCENE3D_API static const compositor_id_t FINAL_CHAIN_COMPOSITOR;
+    SIGHT_VIZ_SCENE3D_API static const compositor_id_t FINAL_CHAIN_COMPOSITOR;
 
 private:
 

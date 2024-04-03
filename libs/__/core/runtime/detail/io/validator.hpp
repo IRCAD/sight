@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <libxml/tree.h>
 #include <libxml/xmlschemastypes.h>

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <core/location/single_folder.hpp>
 
@@ -66,8 +66,8 @@ class dicom_anonymizer;
  * If the DicomSeries contains the binaries of the DICOM files, the files are extracted (or zipped).
  * If the DicomSeries contains the paths of the DICOM files, a simple copy (or zip) is performed.
  */
-class IO_DICOM_CLASS_API dicom_series_writer : public io::writer::generic_object_writer<data::dicom_series>,
-                                               public core::location::single_folder
+class SIGHT_IO_DICOM_CLASS_API dicom_series_writer : public io::writer::generic_object_writer<data::dicom_series>,
+                                                     public core::location::single_folder
 {
 public:
 
@@ -80,19 +80,19 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Constructor. Does nothing
-    IO_DICOM_API dicom_series_writer();
+    SIGHT_IO_DICOM_API dicom_series_writer();
 
     /// Write the image series in DICOM format.
-    IO_DICOM_API void write() override;
+    SIGHT_IO_DICOM_API void write() override;
 
     /// Return an empty string
-    IO_DICOM_API std::string extension() const override;
+    SIGHT_IO_DICOM_API std::string extension() const override;
 
     /// Get job observer
-    IO_DICOM_API SPTR(core::jobs::base) get_job() const override;
+    SIGHT_IO_DICOM_API SPTR(core::jobs::base) get_job() const override;
 
     /// Defines optional anonymizer.
-    IO_DICOM_API void set_anonymizer(const SPTR(helper::dicom_anonymizer)& _anonymizer);
+    SIGHT_IO_DICOM_API void set_anonymizer(const SPTR(helper::dicom_anonymizer)& _anonymizer);
 
     /**
      * @brief Defines output archive for DICOM files.
@@ -100,7 +100,7 @@ public:
      * @param _archive Archive instance
      * @param _sub_path Path within archive where DICOM files are saved (only if an anonymizer instance is defined)
      */
-    IO_DICOM_API void set_output_archive(
+    SIGHT_IO_DICOM_API void set_output_archive(
         const SPTR(io::zip::write_archive)& _archive,
         const std::string& _sub_path = ""
     );

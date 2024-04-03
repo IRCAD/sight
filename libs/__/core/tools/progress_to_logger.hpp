@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/config.hpp>
+#include <sight/core/config.hpp>
 
 #include <boost/signals2.hpp>
 
@@ -36,7 +36,7 @@ namespace sight::core::tools
  * progress_adviser
  * and send the progress to the logging system ( SpyLog )
  */
-class CORE_CLASS_API progress_to_logger : public boost::signals2::trackable
+class SIGHT_CORE_CLASS_API progress_to_logger : public boost::signals2::trackable
 {
 public:
 
@@ -45,16 +45,16 @@ public:
      * @param[in] _prefix  allow to add a prefix in the formated log message
      * @param[in] _postfix  allow to add a postfix in the formated log message
      */
-    CORE_API progress_to_logger(std::string _prefix, std::string _postfix = " %");
+    SIGHT_CORE_API progress_to_logger(std::string _prefix, std::string _postfix = " %");
 
     /// default destructor, do nothing
-    CORE_API virtual ~progress_to_logger();
+    SIGHT_CORE_API virtual ~progress_to_logger();
 
     /**
      * @brief the handler effective code : send formated progress information to the log system SpyLog.
      * The formated ouput look like [prefix] msg percent [postfix]
      */
-    CORE_API void operator()(float _percent, const std::string& _msg);
+    SIGHT_CORE_API void operator()(float _percent, const std::string& _msg);
 
 protected:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <core/base.hpp>
 
@@ -34,19 +34,19 @@ namespace sight::ui::qt
 /**
  * @brief   Defines the generic cursor.
  */
-class UI_QT_CLASS_API cursor : public ui::cursor_base
+class SIGHT_UI_QT_CLASS_API cursor : public ui::cursor_base
 {
 public:
 
     SIGHT_DECLARE_CLASS(cursor, ui::cursor_base, ui::factory::make<cursor>);
 
-    UI_QT_API ~cursor() override = default;
+    SIGHT_UI_QT_API ~cursor() override = default;
 
     /// Set the cursor
-    UI_QT_API void set_cursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default = true) override;
+    SIGHT_UI_QT_API void set_cursor(ui::cursor_base::state_t _cursor, bool _set_overriden_as_default = true) override;
 
     /// Set the default cursor
-    UI_QT_API void set_default_cursor() override;
+    SIGHT_UI_QT_API void set_default_cursor() override;
 };
 
 } // namespace sight::ui::qt

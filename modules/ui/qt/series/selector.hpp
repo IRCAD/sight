@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
@@ -74,7 +72,7 @@ namespace sight::module::ui::qt::series
  *     - \b series (mandatory, string): series name, e.g. {data::image_series, data::model_series, ...}.
  *     - \b icon (mandatory, string): icon path.
  */
-class MODULE_UI_QT_CLASS_API selector final :
+class selector final :
     public QObject,
     public sight::ui::editor
 {
@@ -86,18 +84,18 @@ public:
     SIGHT_DECLARE_SERVICE(selector, sight::ui::editor);
 
     /// Creates the signal and slots.
-    MODULE_UI_QT_API selector();
+    selector();
 
     /// Destroys the service.
-    MODULE_UI_QT_API ~selector() noexcept override;
+    ~selector() noexcept override;
 
 protected:
 
     /// Configures the service according to the xml tags found.
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /// Creates container and add selector.
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -106,13 +104,13 @@ protected:
      * Connect data::series_set::ADDED_OBJECTS_SIG of s_SERIES_SET_INOUT to ADD_SERIES_SLOT
      * Connect data::series_set::REMOVED_OBJECTS_SIG of s_SERIES_SET_INOUT to REMOVE_SERIES_SLOT
      */
-    MODULE_UI_QT_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     /// Fills selector with the series contained in series_set.
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
     /// Destroys GUI.
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
 protected Q_SLOTS:
 

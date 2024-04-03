@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/layout/view.hpp"
 
 namespace sight::ui::layout
@@ -30,7 +31,7 @@ namespace sight::ui::layout
 /**
  * @brief   Defines the base for line layout manager.
  */
-class UI_CLASS_API overlay : public view
+class SIGHT_UI_CLASS_API overlay : public view
 {
 public:
 
@@ -92,7 +93,7 @@ public:
      *   - \b visible : Whether the widget should be shown on application start (default: true)
      */
 
-    UI_API void initialize(const ui::config_t& _configuration) override;
+    SIGHT_UI_API void initialize(const ui::config_t& _configuration) override;
 
     static inline std::string s_registry_key = "sight::ui::layout::overlay";
 

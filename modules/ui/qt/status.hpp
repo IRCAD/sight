@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <ui/__/editor.hpp>
 
@@ -79,18 +77,18 @@ namespace sight::module::ui::qt
  * - \b toggle_nth_green_red(int,bool): This slot allows to change the indicator color to green or red for the ith
  * status.
  */
-class MODULE_UI_QT_CLASS_API status : public QObject,
-                                      public sight::ui::editor
+class status : public QObject,
+               public sight::ui::editor
 {
 public:
 
     SIGHT_DECLARE_SERVICE(status, sight::ui::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API status() noexcept;
+    status() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~status() noexcept override = default;
+    ~status() noexcept override = default;
 
     struct slots
     {

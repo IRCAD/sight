@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <ui/__/dialog/message_base.hpp>
 
@@ -38,34 +38,34 @@ namespace sight::ui::qt::dialog
 /**
  * @brief Defines the generic message box.
  */
-class UI_QT_CLASS_API message : public ui::dialog::message_base
+class SIGHT_UI_QT_CLASS_API message : public ui::dialog::message_base
 {
 public:
 
     SIGHT_DECLARE_CLASS(message, ui::dialog::message_base, ui::factory::make<message>);
 
-    UI_QT_API ~message() override = default;
+    SIGHT_UI_QT_API ~message() override = default;
 
     /// Set the title of the message box
-    UI_QT_API void set_title(const std::string& _title) override;
+    SIGHT_UI_QT_API void set_title(const std::string& _title) override;
 
     /// Set the message
-    UI_QT_API void set_message(const std::string& _msg) override;
+    SIGHT_UI_QT_API void set_message(const std::string& _msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_QT_API void set_icon(message::icons _icon) override;
+    SIGHT_UI_QT_API void set_icon(message::icons _icon) override;
 
     /// Add a button (OK, YES_NO, CANCEL)
-    UI_QT_API void add_button(message::buttons _button) override;
+    SIGHT_UI_QT_API void add_button(message::buttons _button) override;
 
     /// Add a custom button to this dialog
-    UI_QT_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
+    SIGHT_UI_QT_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
     /// Set the default buttons
-    UI_QT_API void set_default_button(message::buttons _button) override;
+    SIGHT_UI_QT_API void set_default_button(message::buttons _button) override;
 
     /// Show the message box and return the clicked button.
-    UI_QT_API buttons show() override;
+    SIGHT_UI_QT_API buttons show() override;
 
 protected:
 

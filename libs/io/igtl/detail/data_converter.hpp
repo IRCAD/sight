@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/igtl/config.hpp"
+#include <sight/io/igtl/config.hpp>
+
 #include "io/igtl/detail/converter/base.hpp"
 
 #include <core/tools/failed.hpp>
@@ -40,24 +41,24 @@ namespace sight::io::igtl::detail
  * Every converter should register to this class, due to this pattern DataConverter is a singleton
  * and need to be called by DataConverter::getInstance()
  */
-class IO_IGTL_CLASS_API data_converter
+class SIGHT_IO_IGTL_CLASS_API data_converter
 {
 public:
 
     /// Constructor
-    IO_IGTL_API data_converter();
+    SIGHT_IO_IGTL_API data_converter();
 
     ///Typedef to a DataConverter::sptr
     using sptr = std::shared_ptr<data_converter>;
 
     ///Destructor
-    IO_IGTL_API ~data_converter();
+    SIGHT_IO_IGTL_API ~data_converter();
 
     ///Static method to access a instance of DataConverter (singleton)
-    IO_IGTL_API static data_converter::sptr get_instance();
+    SIGHT_IO_IGTL_API static data_converter::sptr get_instance();
 
     ///Static method called by the registry class to register a new converter
-    IO_IGTL_API static void register_converter(converter::base::sptr _c);
+    SIGHT_IO_IGTL_API static void register_converter(converter::base::sptr _c);
 
     ///Class Registry used by the macro to register new converter in the m_converters
     template<typename T>
@@ -75,12 +76,12 @@ public:
      * @brief convert a data::object to a ::igtl::MessageBase
      * @return a ::igtl::MessageBase smart pointer
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer from_fw_object(data::object::csptr _src) const;
+    [[nodiscard]] SIGHT_IO_IGTL_API ::igtl::MessageBase::Pointer from_fw_object(data::object::csptr _src) const;
 
     /**
      * @brief convert a ::igtl::MessageBase to a data::object
      */
-    [[nodiscard]] IO_IGTL_API data::object::sptr from_igtl_message(const ::igtl::MessageBase::Pointer _src) const;
+    [[nodiscard]] SIGHT_IO_IGTL_API data::object::sptr from_igtl_message(const ::igtl::MessageBase::Pointer _src) const;
 
     /**
      * @brief get status message
@@ -91,7 +92,7 @@ public:
      *
      * @return igtl message smart pointer
      */
-    static IO_IGTL_API ::igtl::MessageBase::Pointer get_status_message(
+    static SIGHT_IO_IGTL_API ::igtl::MessageBase::Pointer get_status_message(
         int _igtl_code,
         int _igtl_sub_code,
         const std::string& _err_msg
@@ -102,7 +103,7 @@ public:
      *
      * @return igtl message smart pointer contain igtl::CapabilityMessage with all supported types
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer get_capabilities_message() const;
+    [[nodiscard]] SIGHT_IO_IGTL_API ::igtl::MessageBase::Pointer get_capabilities_message() const;
 
 private:
 

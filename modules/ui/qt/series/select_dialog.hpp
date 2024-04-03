@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
@@ -62,7 +60,7 @@ namespace sight::module::ui::qt::series
  * - \b imageSeries [sight::data::image_series]: output image series extracted from the database series.
  * - \b image [sight::data::image]: output image extracted from the database series.
  */
-class MODULE_UI_QT_CLASS_API select_dialog : public service::controller
+class select_dialog : public service::controller
 {
 public:
 
@@ -75,24 +73,24 @@ public:
     SIGHT_DECLARE_SERVICE(select_dialog, service::controller);
 
     /// Constructor
-    MODULE_UI_QT_API select_dialog();
+    select_dialog();
 
     /// Destructor
-    MODULE_UI_QT_API ~select_dialog() override = default;
+    ~select_dialog() override = default;
 
 protected:
 
     /// Does nothing
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /// Configure the service
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /// Extract the object(s)
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
 private:
 

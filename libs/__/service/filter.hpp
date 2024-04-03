@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/service/config.hpp>
+
 #include "service/base.hpp"
-#include "service/config.hpp"
 
 #include <core/com/signals.hpp>
 
@@ -36,22 +37,22 @@ namespace sight::service
  * @section Signals Signals
  * - \b computed() : Emitted when something was computed.
  */
-class SERVICE_CLASS_API filter : public service::base
+class SIGHT_SERVICE_CLASS_API filter : public service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(filter, service::base);
 
-    SERVICE_API static const core::com::signals::key_t COMPUTED_SIG;
+    SIGHT_SERVICE_API static const core::com::signals::key_t COMPUTED_SIG;
     using computed_signal_t = core::com::signal<void ()>;
 
 protected:
 
     /// filter constructor.
-    SERVICE_API filter();
+    SIGHT_SERVICE_API filter();
 
     /// filter destructor.
-    SERVICE_API ~filter() override;
+    SIGHT_SERVICE_API ~filter() override;
 
     computed_signal_t::sptr m_sig_computed; ///< Signal emitted when operator is computed.
 };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
+
 #include "io/__/reader/generic_object_reader.hpp"
 
 #include <core/location/single_file.hpp>
@@ -41,20 +42,20 @@ namespace sight::io::reader
  *  Reads '.raw.gz' files and converts them into a 'sight::data::array'.
  *  The buffer is written in a file using zlib.
  */
-class IO_CLASS_API gz_array_reader : public generic_object_reader<data::array>,
-                                     public core::location::single_file
+class SIGHT_IO_CLASS_API gz_array_reader : public generic_object_reader<data::array>,
+                                           public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(gz_array_reader, generic_object_reader<data::array>)
 
-    IO_API ~gz_array_reader() override = default;
+    SIGHT_IO_API ~gz_array_reader() override = default;
 
     /// Reads the file using the zlib API.
-    IO_API void read() override;
+    SIGHT_IO_API void read() override;
 
     /// Defines extensions supported by this reader. Here: ".raw.gz"
-    IO_API std::string extension() const override;
+    SIGHT_IO_API std::string extension() const override;
 };
 
 } // namespace sight::io::reader

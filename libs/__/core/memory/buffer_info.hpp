@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/memory/buffer_allocation_policy.hpp"
 #include "core/memory/file_format.hpp"
 #include "core/memory/file_holder.hpp"
@@ -36,14 +37,14 @@
 namespace sight::core::memory
 {
 
-struct CORE_CLASS_API buffer_info
+struct SIGHT_CORE_CLASS_API buffer_info
 {
     using size_t       = std::size_t;
     using counter_type = std::weak_ptr<void>;
 
-    CORE_API buffer_info();
+    SIGHT_CORE_API buffer_info();
 
-    CORE_API void clear();
+    SIGHT_CORE_API void clear();
     //------------------------------------------------------------------------------
 
     std::int64_t lock_count() const

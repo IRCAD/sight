@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/__/config.hpp"
 
 #include <data/series_set.hpp>
 #include <data/vector.hpp>
@@ -51,34 +49,34 @@ namespace sight::module::ui::series
  * @subsection In-Out In-Out:
  * - \b seriesSet [sight::data::series_set]: series_set where to put the series.
  */
-class MODULE_UI_CLASS_API push_selection : public sight::ui::action
+class push_selection : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(push_selection, sight::ui::action);
 
     /// Constructor
-    MODULE_UI_API push_selection() noexcept;
+    push_selection() noexcept;
 
     /// Destructor
-    MODULE_UI_API ~push_selection() noexcept override;
+    ~push_selection() noexcept override;
 
 protected:
 
     /// Do nothing.
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
     /// Override
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
     /// Override
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
     /// Override
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /// Override
-    MODULE_UI_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
 private:
 

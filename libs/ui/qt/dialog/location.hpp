@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <core/base.hpp>
 
@@ -41,20 +41,20 @@ namespace sight::ui::qt::dialog
  * @brief   Defines the generic file/folder dialog.
  *
  */
-class UI_QT_CLASS_API location : public ui::dialog::location_base
+class SIGHT_UI_QT_CLASS_API location : public ui::dialog::location_base
 {
 public:
 
     SIGHT_DECLARE_CLASS(location, ui::dialog::location_base, ui::factory::make<location>);
 
-    UI_QT_API core::location::base::sptr show() override;
+    SIGHT_UI_QT_API core::location::base::sptr show() override;
 
-    UI_QT_API void set_type(location::types _type) override;
+    SIGHT_UI_QT_API void set_type(location::types _type) override;
 
-    UI_QT_API void set_option(location::options _option) override;
+    SIGHT_UI_QT_API void set_option(location::options _option) override;
 
     // Example ( addFilter("images","*.png *.jpg");
-    UI_QT_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
+    SIGHT_UI_QT_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
 
 protected:
 
@@ -66,7 +66,7 @@ protected:
     QString file_filters();
 
     /// Gets the current extension file selection
-    UI_QT_API std::string get_current_selection() const override;
+    SIGHT_UI_QT_API std::string get_current_selection() const override;
 
     std::string m_wildcard;
 };

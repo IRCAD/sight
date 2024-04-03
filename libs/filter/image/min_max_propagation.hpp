@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/image/config.hpp"
+#include <sight/filter/image/config.hpp>
+
 #include "filter/image/image_diff.hpp"
 
 #include <data/helper/medical_image.hpp>
@@ -36,7 +37,7 @@ namespace sight::filter::image
 /**
  * @brief Flood fills an image as long as the neighboring voxels are greater than the smallest seed value.
  */
-class FILTER_IMAGE_CLASS_API min_max_propagation
+class SIGHT_FILTER_IMAGE_CLASS_API min_max_propagation
 {
 public:
 
@@ -59,7 +60,7 @@ public:
      * @param[in,out] _out_image mask image containing the written values.
      * @param[in] _roi region of interest.
      */
-    FILTER_IMAGE_API min_max_propagation(
+    SIGHT_FILTER_IMAGE_API min_max_propagation(
         data::image::csptr _in_image,
         data::image::sptr _out_image,
         data::image::csptr _roi
@@ -75,7 +76,7 @@ public:
      * @param[in] _mode propagation mode (min, max, or minmax).
      * @return the differences in the image before and after propagation.
      */
-    FILTER_IMAGE_API image_diff propagate(
+    SIGHT_FILTER_IMAGE_API image_diff propagate(
         seeds_t& _seeds,
         data::image::buffer_t* _value,
         double _radius,

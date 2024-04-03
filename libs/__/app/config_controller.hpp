@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "app/config.hpp"
+#include <sight/app/config.hpp>
+
 #include "app/helper/config_launcher.hpp"
 
 #include "service/controller.hpp"
@@ -61,17 +62,17 @@ namespace sight::app
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter. The variable GENERIC_UID can be used as unique identifier when the configuration is launched.
  */
-class APP_CLASS_API config_controller : public service::controller
+class SIGHT_APP_CLASS_API config_controller : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(config_controller, service::controller);
 
     /// Constructor. Does nothing.
-    APP_API config_controller() noexcept;
+    SIGHT_APP_API config_controller() noexcept;
 
     /// Destructor. Does nothing.
-    APP_API ~config_controller() noexcept override = default;
+    SIGHT_APP_API ~config_controller() noexcept override = default;
 
 protected:
 

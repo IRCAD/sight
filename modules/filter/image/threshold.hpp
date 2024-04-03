@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <data/object.hpp>
 
@@ -59,27 +57,27 @@ namespace sight::module::filter::image
  * (Pixels with value lower than this value will be set to 0,
  * otherwise it will be set to the maximum value of the pixel type of the image.).
  */
-class MODULE_FILTER_IMAGE_CLASS_API threshold : public service::filter
+class threshold : public service::filter
 {
 public:
 
     SIGHT_DECLARE_SERVICE(threshold, sight::service::filter);
 
-    MODULE_FILTER_IMAGE_API threshold() noexcept;
+    threshold() noexcept;
 
-    MODULE_FILTER_IMAGE_API ~threshold() noexcept override;
+    ~threshold() noexcept override;
 
 protected:
 
-    MODULE_FILTER_IMAGE_API void starting() override;
+    void starting() override;
 
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void stopping() override;
 
     /// Configure the service.
-    MODULE_FILTER_IMAGE_API void configuring() override;
+    void configuring() override;
 
     /// Apply the threshold.
-    MODULE_FILTER_IMAGE_API void updating() override;
+    void updating() override;
 
 private:
 

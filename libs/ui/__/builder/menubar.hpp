@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/container/menubar.hpp"
 #include "ui/__/container/widget.hpp"
 #include "ui/__/object.hpp"
@@ -33,7 +34,7 @@ namespace sight::ui::builder
 /**
  * @brief   Defines the interface class  for the menubar builder.
  */
-class UI_CLASS_API menubar : public ui::object
+class SIGHT_UI_CLASS_API menubar : public ui::object
 {
 public:
 
@@ -41,36 +42,36 @@ public:
 
     using registry_key_t = std::string;
 
-    UI_API const static registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API const static registry_key_t REGISTRY_KEY;
 
     /// Constructor. Do nothing.
-    UI_API menubar() = default;
+    SIGHT_UI_API menubar() = default;
 
     /// Destructor. Do nothing.
-    UI_API ~menubar() override = default;
+    SIGHT_UI_API ~menubar() override = default;
 
     /**
      * @brief Returns the builded menu bar.
      */
-    UI_API virtual ui::container::menubar::sptr get_menu_bar();
+    SIGHT_UI_API virtual ui::container::menubar::sptr get_menu_bar();
 
     /**
      * @brief Configure the layout before creation.
      */
-    UI_API virtual void initialize(const ui::config_t& _configuration);
+    SIGHT_UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Instantiate layout with parent menubar.
      * @pre layout must be initialized before.
      * @pre parent menubar must be instanced.
      */
-    UI_API virtual void create_menu_bar(ui::container::widget::sptr _parent) = 0;
+    SIGHT_UI_API virtual void create_menu_bar(ui::container::widget::sptr _parent) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_API virtual void destroy_menu_bar() = 0;
+    SIGHT_UI_API virtual void destroy_menu_bar() = 0;
 
 protected:
 

@@ -38,7 +38,7 @@ public:
      * @param _combo_box How to get the combo box to modify
      * @param _text The text of the entry to be selected
      */
-    UI_TEST_API static void select(tester& _tester, const selector& _combo_box, const std::string& _text);
+    SIGHT_UI_TEST_API static void select(tester& _tester, const selector& _combo_box, const std::string& _text);
 
     /**
      * Check whether a combo box has the good value
@@ -46,7 +46,11 @@ public:
      * @param _combo_box How to get the combo box to check
      * @param _expected The text the combo box must have
      */
-    UI_TEST_API static void value_equals(tester& _tester, const selector& _combo_box, const std::string& _expected);
+    SIGHT_UI_TEST_API static void value_equals(
+        tester& _tester,
+        const selector& _combo_box,
+        const std::string& _expected
+    );
 };
 
 } // namespace sight::ui::testCore::helper

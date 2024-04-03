@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
@@ -55,31 +53,31 @@ namespace sight::module::filter::image
  * from world origin(0,0,0) to the image center (in mm).
  *
  */
-class MODULE_FILTER_IMAGE_CLASS_API image_center : public service::filter
+class image_center : public service::filter
 {
 public:
 
     SIGHT_DECLARE_SERVICE(image_center, service::filter);
 
     /// Constructor, does nothing.
-    MODULE_FILTER_IMAGE_API image_center() = default;
+    image_center() = default;
 
     /// Destructor, does nothing.
-    MODULE_FILTER_IMAGE_API ~image_center() override = default;
+    ~image_center() override = default;
 
 protected:
 
     /// Configure registration parameters.
-    MODULE_FILTER_IMAGE_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void starting() override;
+    void starting() override;
 
     /// Do the registration.
-    MODULE_FILTER_IMAGE_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Auto connections
@@ -87,7 +85,7 @@ protected:
      * - Update service when one of the two images is modified.
      * - Update service when the transform matrix is modified.
      */
-    MODULE_FILTER_IMAGE_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

@@ -40,7 +40,7 @@ public:
      * PI/2,
      *                  use QPointF(1/2., 0)
      */
-    UI_TEST_API static void rotate(tester& _tester, const selector& _scene, QPointF _rotation);
+    SIGHT_UI_TEST_API static void rotate(tester& _tester, const selector& _scene, QPointF _rotation);
 
     /**
      * Zooms the camera in the specified scene using the mouse wheel
@@ -52,7 +52,7 @@ public:
      * with
      *                     two mouse wheel steps, not making the image twice as large.
      */
-    UI_TEST_API static void zoom(tester& _tester, const selector& _scene, int _mouse_steps);
+    SIGHT_UI_TEST_API static void zoom(tester& _tester, const selector& _scene, int _mouse_steps);
 };
 
 } // namespace sight::ui::testCore::helper

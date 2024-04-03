@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "service/config.hpp"
+#include <sight/service/config.hpp>
 
 #include <core/tools/object.hpp>
 
@@ -35,7 +35,7 @@ namespace sight::service::extension
 
 /**
  */
-class SERVICE_CLASS_API service_config_info : public core::base_object
+class SIGHT_SERVICE_CLASS_API service_config_info : public core::base_object
 {
 public:
 
@@ -73,24 +73,24 @@ public:
     </extension>
    @endcode
  */
-class SERVICE_CLASS_API config : public core::base_object
+class SIGHT_SERVICE_CLASS_API config : public core::base_object
 {
 public:
 
     SIGHT_DECLARE_CLASS(config, core::base_object);
 
     /// Return the default global instance of config
-    SERVICE_API static config::sptr get_default();
+    SIGHT_SERVICE_API static config::sptr get_default();
 
-    SERVICE_API config()           = default;
-    SERVICE_API ~config() override = default;
+    SIGHT_SERVICE_API config()           = default;
+    SIGHT_SERVICE_API ~config() override = default;
 
     /**
      * @brief Parses module information to retrieve service declaration.
      * @warning This method must be launch only once. The same extension will not be parsed twice.
      * @note This method is thread safe.
      */
-    SERVICE_API void parse_plugin_infos();
+    SIGHT_SERVICE_API void parse_plugin_infos();
 
     /**
      * @brief Register a new service configuration
@@ -101,7 +101,7 @@ public:
      * @param _config   the registered config
      * @note This method is thread safe
      */
-    SERVICE_API void add_service_config_info(
+    SIGHT_SERVICE_API void add_service_config_info(
         const std::string& _config_id,
         const std::string& _service,
         const std::string& _desc,
@@ -112,7 +112,7 @@ public:
      * @brief Returns the configuration with the given id for the service with the given implementation
      * @note This method is thread safe
      */
-    SERVICE_API boost::property_tree::ptree get_service_config(
+    SIGHT_SERVICE_API boost::property_tree::ptree get_service_config(
         const std::string& _config_id,
         const std::string& _service_impl =
         ""
@@ -122,14 +122,14 @@ public:
      * @brief Returns the description of the given configuration name.
      * @note This method is thread safe
      */
-    SERVICE_API const std::string& get_config_desc(const std::string& _config_id) const;
+    SIGHT_SERVICE_API const std::string& get_config_desc(const std::string& _config_id) const;
 
     /**
      * @brief Returns a vector containing the names of the available config for the service with the given
      * implementation
      * @note This method is thread safe
      */
-    SERVICE_API std::vector<std::string> get_all_config_for_service(
+    SIGHT_SERVICE_API std::vector<std::string> get_all_config_for_service(
         std::string _service_impl,
         bool _matching_only = false
     ) const;
@@ -138,7 +138,7 @@ public:
      * @brief Clear the registry.
      * @note This method is thread safe.
      */
-    SERVICE_API void clear_registry();
+    SIGHT_SERVICE_API void clear_registry();
 
 protected:
 

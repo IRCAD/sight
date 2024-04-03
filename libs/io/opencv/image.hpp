@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/opencv/config.hpp"
+#include <sight/io/opencv/config.hpp>
 
 #include <data/image.hpp>
 
@@ -40,7 +40,7 @@ namespace sight::io::opencv
  * with a cv::Mat. This way every modification made to the buffer will be applied to the data::image, and you
  * don't need an extra stage to get back your modified image.
  */
-class IO_OPENCV_CLASS_API image
+class SIGHT_IO_OPENCV_CLASS_API image
 {
 public:
 
@@ -50,7 +50,7 @@ public:
      * The resulting cv::Mat does not allocate a new buffer and points to the buffer of the data::image.
      * That's why the source image is not const, because the _cvImage may alter the existing buffer.
      */
-    IO_OPENCV_API static cv::Mat move_to_cv(data::image::sptr& _image);
+    SIGHT_IO_OPENCV_API static cv::Mat move_to_cv(data::image::sptr& _image);
 
     /**
      * @brief Convert an image data into an OpenCV image.
@@ -58,20 +58,20 @@ public:
      * The resulting cv::Mat does not allocate a new buffer and points to the buffer of the data::image.
      * This is the const-overload of the above function. As such it returns a non-modifiable cv::Mat.
      */
-    IO_OPENCV_API static cv::Mat move_to_cv(const data::image::csptr& _image);
+    SIGHT_IO_OPENCV_API static cv::Mat move_to_cv(const data::image::csptr& _image);
 
     /**
      * @brief Copy an OpenCV image into our internal image data.
      * @warning The image's pixelFormat is not changed, openCV image does not give this information.
      */
-    IO_OPENCV_API static void copy_from_cv(data::image& _image, const cv::Mat& _cv_image);
+    SIGHT_IO_OPENCV_API static void copy_from_cv(data::image& _image, const cv::Mat& _cv_image);
 
     /**
      * @brief Copy an image data into an OpenCV image.
      *
      * @note The cvImage allocates its own buffer and has the ownership.
      */
-    IO_OPENCV_API static cv::Mat copy_to_cv(const data::image::csptr& _image);
+    SIGHT_IO_OPENCV_API static cv::Mat copy_to_cv(const data::image::csptr& _image);
 };
 
 } // namespace sight::io::opencv

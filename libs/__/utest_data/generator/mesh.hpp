@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "utest_data/config.hpp"
+#include <sight/utest_data/config.hpp>
 
 #include <core/base.hpp>
 
@@ -44,7 +44,7 @@ public:
      * @brief Generate a mesh.
      * @param _mesh mesh to generate
      */
-    UTEST_DATA_API static void generate_mesh(const data::mesh::sptr& _mesh);
+    SIGHT_UTEST_DATA_API static void generate_mesh(const data::mesh::sptr& _mesh);
 
     /**
      * @brief Generate a quad mesh.
@@ -54,7 +54,7 @@ public:
      * @param[out] _mesh data::mesh empty mesh structure to fill with quad cells.
      * @param[in]  _attributes attributes of the mesh (POINT_COLORS, point_normals, ...)
      */
-    UTEST_DATA_API static void generate_quad_mesh(
+    SIGHT_UTEST_DATA_API static void generate_quad_mesh(
         const data::mesh::sptr& _mesh,
         data::mesh::attribute _attributes = data::mesh::attribute::none
     );
@@ -67,7 +67,7 @@ public:
      * @param[out]  _mesh data::mesh empty mesh structure to fill with triangle cell.
      * @param[in]   _attributes attributes of the mesh (POINT_COLORS, point_normals, ...)
      */
-    UTEST_DATA_API static void generate_triangle_mesh(
+    SIGHT_UTEST_DATA_API static void generate_triangle_mesh(
         const data::mesh::sptr& _mesh,
         data::mesh::attribute _attributes = data::mesh::attribute::none
     );
@@ -80,7 +80,7 @@ public:
      * @param[out]  _mesh data::mesh empty mesh structure to fill with quad and triangle cells.
      * @param[in]   _attributes attributes of the mesh (POINT_COLORS, point_normals, ...)
      */
-    UTEST_DATA_API static void generate_triangle_quad_mesh(
+    SIGHT_UTEST_DATA_API static void generate_triangle_quad_mesh(
         const data::mesh::sptr& _mesh,
         data::mesh::attribute _attributes = data::mesh::attribute::none
     );

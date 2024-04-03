@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/vision/config.hpp"
 
 #include <data/matrix_tl.hpp>
 #include <data/point_list.hpp>
@@ -55,7 +53,7 @@ namespace sight::module::geometry::vision
  * @subsection In-Out In-Out
  * - \b pointList [sight::data::Pointlist]: marker position.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API marker_to_point : public service::controller
+class marker_to_point : public service::controller
 {
 public:
 
@@ -65,36 +63,36 @@ public:
      * @name Slots API
      * @{
      */
-    MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t ADD_POINT_SLOT;
+    static const core::com::slots::key_t ADD_POINT_SLOT;
 
-    MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t CLEAR_SLOT;
+    static const core::com::slots::key_t CLEAR_SLOT;
     ///@}
 
     /// Constructor
-    MODULE_GEOMETRY_VISION_API marker_to_point() noexcept;
+    marker_to_point() noexcept;
 
     /// Destructor
-    MODULE_GEOMETRY_VISION_API ~marker_to_point() noexcept override;
+    ~marker_to_point() noexcept override;
 
 protected:
 
     /// Does nothing
-    MODULE_GEOMETRY_VISION_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_VISION_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_VISION_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_VISION_API void stopping() override;
+    void stopping() override;
 
     /// Slot called to extract position from the latest matrix of the MatrixTL and push it in the pointList
-    MODULE_GEOMETRY_VISION_API void add_point();
+    void add_point();
 
     /// Slot called to clear the pointlist
-    MODULE_GEOMETRY_VISION_API void clear();
+    void clear();
 
     data::ptr<data::matrix_tl, data::access::in> m_matrix_tl {this, "matrixTL"};
     data::ptr<data::point_list, data::access::inout> m_point_list {this, "pointList"};

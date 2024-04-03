@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
+
 #include "ui/qt/container/widget.hpp"
 
 #include <core/base.hpp>
@@ -34,7 +35,7 @@ namespace sight::ui::qt::builder
 {
 
 /// This builder creates a slide widget. The slide widget can be displayed over all others widgets.
-class UI_QT_CLASS_API slideview : public ui::builder::slideview
+class SIGHT_UI_QT_CLASS_API slideview : public ui::builder::slideview
 {
 public:
 
@@ -45,13 +46,13 @@ public:
     )
 
     /// Destroyes the slide builder.
-    UI_QT_API ~slideview() override = default;
+    SIGHT_UI_QT_API ~slideview() override = default;
 
     /// Create the Qt container @ref ui::qt::widget::slide_bar.
-    UI_QT_API void create_container(ui::container::widget::sptr _parent) override;
+    SIGHT_UI_QT_API void create_container(ui::container::widget::sptr _parent) override;
 
     /// Destroyes the container.
-    UI_QT_API void destroy_container() override;
+    SIGHT_UI_QT_API void destroy_container() override;
 
 protected:
 

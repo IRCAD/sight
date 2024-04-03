@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/layout/view.hpp"
 
 #include <core/base.hpp>
@@ -36,7 +37,7 @@ namespace sight::ui::layout
 /**
  * @brief   Defines the base for cardinal layout manager.
  */
-class UI_CLASS_API tab : public view
+class SIGHT_UI_CLASS_API tab : public view
 {
 public:
 
@@ -65,10 +66,10 @@ public:
     };
 
     /// Constructor. Do nothing.
-    UI_API tab() = default;
+    SIGHT_UI_API tab() = default;
 
     /// Destructor. Do nothing.
-    UI_API ~tab() override = default;
+    SIGHT_UI_API ~tab() override = default;
 
     /**
      * @brief Initialize tab layout manager before the creation of layout.
@@ -102,9 +103,9 @@ public:
      *   - \b minHeight : minimal height of the view.
      *   - \b selected  {true | false}: define if the tab is the current one.
      */
-    UI_API void initialize(const ui::config_t& _configuration) override;
+    SIGHT_UI_API void initialize(const ui::config_t& _configuration) override;
 
-    UI_API static const registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const registry_key_t REGISTRY_KEY;
 
     //------------------------------------------------------------------------------
 

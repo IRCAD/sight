@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <core/tools/failed.hpp>
 
@@ -58,17 +56,17 @@ namespace sight::module::ui::qt::image
  * - \b displayAxisSelector : Allows to change the axis.
  * - \b displayStepButtons : Allows to change the slice index with step buttons.
  */
-class MODULE_UI_QT_CLASS_API slice_index_position_editor : public sight::ui::editor
+class slice_index_position_editor : public sight::ui::editor
 {
 public:
 
     SIGHT_DECLARE_SERVICE(slice_index_position_editor, sight::ui::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API slice_index_position_editor() noexcept;
+    slice_index_position_editor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~slice_index_position_editor() noexcept override = default;
+    ~slice_index_position_editor() noexcept override = default;
 
 protected:
 
@@ -113,22 +111,22 @@ protected:
      * Connect image::SLICE_TYPE_MODIFIED_SIG to this::UPDATE_SLICE_TYPE_SLOT
      * Connect image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
      */
-    MODULE_UI_QT_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     /// Overrides
-    MODULE_UI_QT_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     /// Update the editor slider from the image slice index.
-    MODULE_UI_QT_API void update_slice_index_from_img(const sight::data::image& _image);
+    void update_slice_index_from_img(const sight::data::image& _image);
 
     /// Update the editor slice type choice from the image slice type.
-    MODULE_UI_QT_API void update_slice_type_from_img(const orientation_t& _type);
+    void update_slice_type_from_img(const orientation_t& _type);
 
     /// This method is called when the slider is move. Notify the slice index is modified.
-    MODULE_UI_QT_API void slice_index_notification(int _index);
+    void slice_index_notification(int _index);
 
     /// This method is called when the slice type selected change. Notify the slice type is modified.
-    MODULE_UI_QT_API void slice_type_notification(int _type);
+    void slice_type_notification(int _type);
 
 private:
 

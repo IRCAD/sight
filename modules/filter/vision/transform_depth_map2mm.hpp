@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/vision/config.hpp"
 
 #include <data/camera_set.hpp>
 #include <data/image.hpp>
@@ -55,7 +53,7 @@ namespace sight::module::filter::vision
  * @subsection In-Out In-Out
  * - \b scaledDepth [sight::data::image]: scaled depth map.
  */
-class MODULE_FILTER_VISION_CLASS_API transform_depth_map2mm : public service::filter
+class transform_depth_map2mm : public service::filter
 {
 public:
 
@@ -64,26 +62,26 @@ public:
     /**
      * @brief transform_depth_map2mm constructor.
      */
-    MODULE_FILTER_VISION_API transform_depth_map2mm();
+    transform_depth_map2mm();
 
     /**
      * @brief transform_depth_map2mm destructor.
      */
-    MODULE_FILTER_VISION_API ~transform_depth_map2mm() override;
+    ~transform_depth_map2mm() override;
 
 protected:
 
     /// Do nothing
-    MODULE_FILTER_VISION_API void starting() override;
+    void starting() override;
 
     /// Do nothing
-    MODULE_FILTER_VISION_API void stopping() override;
+    void stopping() override;
 
     /// Do nothing
-    MODULE_FILTER_VISION_API void configuring() override;
+    void configuring() override;
 
     /// Apply the scale on the depth map
-    MODULE_FILTER_VISION_API void updating() override;
+    void updating() override;
 
 private:
 

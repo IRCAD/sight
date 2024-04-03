@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/pcl/config.hpp"
 
 #include <core/mt/types.hpp>
 #include <core/thread/timer.hpp>
@@ -76,31 +74,31 @@ namespace sight::module::io::pcl
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate (default: 30).
  */
-class MODULE_IO_PCL_CLASS_API frame_grabber : public sight::io::service::grabber
+class frame_grabber : public sight::io::service::grabber
 {
 public:
 
     SIGHT_DECLARE_SERVICE(frame_grabber, sight::io::service::grabber);
 
     /// Constructor. Do nothing.
-    MODULE_IO_PCL_API frame_grabber() noexcept;
+    frame_grabber() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_IO_PCL_API ~frame_grabber() noexcept override = default;
+    ~frame_grabber() noexcept override = default;
 
 protected:
 
     /// Initialize the layout and the camera.
-    MODULE_IO_PCL_API void starting() override;
+    void starting() override;
 
     /// Destroy the layout.
-    MODULE_IO_PCL_API void stopping() override;
+    void stopping() override;
 
     /// Do nothing.
-    MODULE_IO_PCL_API void updating() override;
+    void updating() override;
 
     /// Do nothing.
-    MODULE_IO_PCL_API void configuring() override;
+    void configuring() override;
 
     /// SLOT : Initialize and start camera (restart camera if is already started)
     void startCamera() override;

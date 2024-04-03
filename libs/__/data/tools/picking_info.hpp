@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2024 IRCAD France
  * Copyright (C) 2015-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 
 #include <core/clock.hpp>
 

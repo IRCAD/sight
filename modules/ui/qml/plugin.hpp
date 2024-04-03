@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/ui/qml/config.hpp"
+#include "sight/modules/ui/qml/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 namespace sight::module::ui::qml
@@ -31,22 +31,22 @@ namespace sight::module::ui::qml
 /**
  * @brief   This class is called when the guiQt module is loaded.
  */
-class MODULE_UI_QML_CLASS_API plugin : public core::runtime::plugin
+class SIGHT_MODULE_UI_QML_CLASS_API plugin : public core::runtime::plugin
 {
 public:
 
     /**
      * @brief   destructor
      */
-    MODULE_UI_QML_API ~plugin() noexcept override;
+    SIGHT_MODULE_UI_QML_API ~plugin() noexcept override;
 
     // Overrides
-    MODULE_UI_QML_API void start() override;
+    SIGHT_MODULE_UI_QML_API void start() override;
 
     // Overrides
-    MODULE_UI_QML_API void stop() noexcept override;
+    SIGHT_MODULE_UI_QML_API void stop() noexcept override;
 
-    static MODULE_UI_QML_API int run() noexcept;
+    static SIGHT_MODULE_UI_QML_API int run() noexcept;
 };
 
 } // namespace sight::module::ui::qml

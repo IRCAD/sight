@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
+
 #include "io/__/writer/registry/detail.hpp"
 
 #include <string>
@@ -38,7 +39,7 @@ namespace factory
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
-IO_API SPTR(io::writer::object_writer) make(const io::writer::registry::key_t& _classname);
+SIGHT_IO_API SPTR(io::writer::object_writer) make(const io::writer::registry::key_t& _classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make()

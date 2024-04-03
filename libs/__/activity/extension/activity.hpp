@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "activity/config.hpp"
+#include <sight/activity/config.hpp>
 
 #include <core/base_object.hpp>
 #include <core/mt/types.hpp>
@@ -55,12 +55,12 @@ namespace activity::extension
 
 using config_t = boost::property_tree::ptree;
 
-struct ACTIVITY_CLASS_API activity_config_param
+struct SIGHT_ACTIVITY_CLASS_API activity_config_param
 {
     activity_config_param()
     = default;
 
-    ACTIVITY_API activity_config_param(const config_t& _config);
+    SIGHT_ACTIVITY_API activity_config_param(const config_t& _config);
 
     //------------------------------------------------------------------------------
 
@@ -75,31 +75,31 @@ struct ACTIVITY_CLASS_API activity_config_param
 
 using activity_config_params_type = std::vector<activity_config_param>;
 
-struct ACTIVITY_CLASS_API activity_config
+struct SIGHT_ACTIVITY_CLASS_API activity_config
 {
     activity_config()
     = default;
 
-    ACTIVITY_API activity_config(const config_t& _config);
+    SIGHT_ACTIVITY_API activity_config(const config_t& _config);
 
     std::string id;
     activity_config_params_type parameters;
 };
 
-struct ACTIVITY_CLASS_API activity_requirement_key
+struct SIGHT_ACTIVITY_CLASS_API activity_requirement_key
 {
     activity_requirement_key()
     = default;
 
-    ACTIVITY_API activity_requirement_key(const config_t& _config);
+    SIGHT_ACTIVITY_API activity_requirement_key(const config_t& _config);
 
     std::string key;
 };
 
-struct ACTIVITY_CLASS_API activity_requirement
+struct SIGHT_ACTIVITY_CLASS_API activity_requirement
 {
-    ACTIVITY_API activity_requirement() = default;
-    ACTIVITY_API activity_requirement(const config_t& _config);
+    SIGHT_ACTIVITY_API activity_requirement() = default;
+    SIGHT_ACTIVITY_API activity_requirement(const config_t& _config);
 
     using key_t = std::vector<activity_requirement_key>;
 
@@ -209,17 +209,17 @@ struct ACTIVITY_CLASS_API activity_requirement
     </extension>
  * @endcode
  */
-struct ACTIVITY_CLASS_API activity_info
+struct SIGHT_ACTIVITY_CLASS_API activity_info
 {
     using requirements_t             = std::vector<activity_requirement>;
     using min_max_t                  = std::pair<unsigned int, unsigned int>;
     using requirements_min_max_count = std::map<std::string, min_max_t>;
     using data_count_t               = std::map<std::string, unsigned int>;
 
-    ACTIVITY_API activity_info() = default;
-    ACTIVITY_API activity_info(const SPTR(core::runtime::extension)& _ext);
+    SIGHT_ACTIVITY_API activity_info() = default;
+    SIGHT_ACTIVITY_API activity_info(const SPTR(core::runtime::extension)& _ext);
 
-    [[nodiscard]] ACTIVITY_API bool usable_with(data_count_t _data_count) const;
+    [[nodiscard]] SIGHT_ACTIVITY_API bool usable_with(data_count_t _data_count) const;
 
     std::string id;
     std::string title;
@@ -246,7 +246,7 @@ struct ACTIVITY_CLASS_API activity_info
  *
  * @see activity::extension::activity_info
  */
-class ACTIVITY_CLASS_API activity : public core::base_object
+class SIGHT_ACTIVITY_CLASS_API activity : public core::base_object
 {
 public:
 
@@ -255,67 +255,67 @@ public:
     SIGHT_DECLARE_CLASS(activity, core::base_object);
 
     /// Return the default global instance of Activity
-    ACTIVITY_API static activity::sptr get_default();
+    SIGHT_ACTIVITY_API static activity::sptr get_default();
 
     /// Destructor
-    ACTIVITY_API activity()           = default;
-    ACTIVITY_API ~activity() override = default;
+    SIGHT_ACTIVITY_API activity()           = default;
+    SIGHT_ACTIVITY_API ~activity() override = default;
 
     /**
      * @brief Parse module information to retrieve config parameters declaration
      * @warning This method must be launch only once. The same extension will not be parsed twice.
      * @note This method is thread safe.
      **/
-    ACTIVITY_API void parse_plugin_infos();
+    SIGHT_ACTIVITY_API void parse_plugin_infos();
     ///@}
 
     /**
      * @brief Get the parameters associated to extension id.
      * @note This method is thread safe.
      **/
-    ACTIVITY_API activity_info get_info(const std::string& _extension_id) const;
+    SIGHT_ACTIVITY_API activity_info get_info(const std::string& _extension_id) const;
 
     /**
      * @brief Tests if we have information about operator
      * @note This method is thread safe.
      */
-    ACTIVITY_API bool has_info(const std::string& _extension_id) const;
+    SIGHT_ACTIVITY_API bool has_info(const std::string& _extension_id) const;
 
     /**
      * @brief Get the number of vector objects in the same type.
      */
-    static ACTIVITY_API activity_info::data_count_t get_data_count(const CSPTR(data::vector)& _data);
+    static SIGHT_ACTIVITY_API activity_info::data_count_t get_data_count(const CSPTR(data::vector)& _data);
 
     /**
      * @brief Get all infos
      * @note This method is thread safe.
      */
-    ACTIVITY_API infos_t get_infos() const;
+    SIGHT_ACTIVITY_API infos_t get_infos() const;
 
     /**
      * @brief Get available activities for given data.
      * @note This method is thread safe.
      */
-    ACTIVITY_API infos_t get_infos(const CSPTR(data::vector)& _data) const;
+    SIGHT_ACTIVITY_API infos_t get_infos(const CSPTR(data::vector)& _data) const;
 
     /**
      * @brief Get all keys
      * @note This method is thread safe.
      */
-    ACTIVITY_API std::vector<std::string> get_keys() const;
+    SIGHT_ACTIVITY_API std::vector<std::string> get_keys() const;
 
     /**
      * @brief Clear the registry.
      * @note This method is thread safe.
      */
-    ACTIVITY_API void clear_registry();
+    SIGHT_ACTIVITY_API void clear_registry();
 
-    ACTIVITY_API std::tuple<activity_info, std::map<std::string, std::string> > get_info_and_replacement_map(
+    SIGHT_ACTIVITY_API std::tuple<activity_info, std::map<std::string, std::string> > get_info_and_replacement_map(
         const data::activity& _activity,
         const activity_config_params_type& _parameters = activity_config_params_type()
     ) const;
 
-    static ACTIVITY_API std::map<std::string, std::string> get_replacement_map(
+    static SIGHT_ACTIVITY_API std::map<std::string, std::string> get_replacement_map(
         const data::activity& _activity,
         const activity_info& _info,
         const activity_config_params_type& _parameters = activity_config_params_type()

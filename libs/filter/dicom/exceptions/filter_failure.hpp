@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/dicom/config.hpp"
+#include <sight/filter/dicom/config.hpp>
 
 #include <core/exception.hpp>
 
@@ -32,7 +32,7 @@ namespace sight::filter::dicom::exceptions
 /**
  * @brief filter_failure exceptions
  */
-class FILTER_DICOM_CLASS_API filter_failure : public core::exception
+class SIGHT_FILTER_DICOM_CLASS_API filter_failure : public core::exception
 {
 public:
 
@@ -40,10 +40,10 @@ public:
      * @brief Constructor
      * @param[in] _message Exception message
      */
-    FILTER_DICOM_API filter_failure(const std::string& _message);
+    SIGHT_FILTER_DICOM_API filter_failure(const std::string& _message);
 
     /// Destructor
-    FILTER_DICOM_API ~filter_failure() noexcept override;
+    SIGHT_FILTER_DICOM_API ~filter_failure() noexcept override;
 };
 
 } // namespace sight::filter::dicom::exceptions

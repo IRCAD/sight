@@ -24,7 +24,6 @@
 
 #include "modules/viz/scene3d/adaptor/material.hpp"
 #include "modules/viz/scene3d/adaptor/transform.hpp"
-#include "modules/viz/scene3d/config.hpp"
 
 #include <data/material.hpp>
 #include <data/mesh.hpp>
@@ -108,7 +107,7 @@ namespace sight::module::viz::scene3d::adaptor
  *  - \b queryFlags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *       match the flag.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API mesh final :
+class mesh final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable
 {
@@ -118,88 +117,88 @@ public:
     SIGHT_DECLARE_SERVICE(mesh, sight::viz::scene3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
-    MODULE_VIZ_SCENE3D_API mesh() noexcept;
+    mesh() noexcept;
 
     /// Destroys Ogre resources.
-    MODULE_VIZ_SCENE3D_API ~mesh() noexcept override;
+    ~mesh() noexcept override;
 
     /**
      * @brief Gets the associated material.
      * @return The material.
      */
-    MODULE_VIZ_SCENE3D_API data::material::sptr get_material() const;
+    data::material::sptr get_material() const;
 
     /**
      * @brief Sets the current material.
      * @param _material new material.
      */
-    MODULE_VIZ_SCENE3D_API void set_material(data::material::sptr _material);
+    void set_material(data::material::sptr _material);
 
     /**
      * @brief Sets the material template Name.
      * @param _material_name material name.
      */
-    MODULE_VIZ_SCENE3D_API void set_material_template_name(const std::string& _material_name);
+    void set_material_template_name(const std::string& _material_name);
 
     /**
      * @brief Enables/disables automatic reset on camera.
      * @param _auto_reset_camera use true to activate it.
      */
-    MODULE_VIZ_SCENE3D_API void set_auto_reset_camera(bool _auto_reset_camera);
+    void set_auto_reset_camera(bool _auto_reset_camera);
 
     /**
      * @brief Gets the associated entity.
      * @return The entity.
      */
-    MODULE_VIZ_SCENE3D_API Ogre::Entity* get_entity() const;
+    Ogre::Entity* get_entity() const;
 
     /**
      * @brief Gets the mesh visibility.
      * @return True if the mesh is visible.
      */
-    MODULE_VIZ_SCENE3D_API bool get_visibility() const;
+    bool get_visibility() const;
 
     /**
      * @brief Sets meshes vertex buffer to dynamic state (only has effect if called before service starting/update).
      * @param _is_dynamic use true to use dynamic vertex buffer.
      */
-    MODULE_VIZ_SCENE3D_API void set_dynamic_vertices(bool _is_dynamic);
+    void set_dynamic_vertices(bool _is_dynamic);
 
     /**
      * @brief Sets meshes and indices buffers to dynamic state (only has effect if called before service
      * starting/update).
      * @param _is_dynamic use true to use dynamic vertex and indices buffer.
      */
-    MODULE_VIZ_SCENE3D_API void set_dynamic(bool _is_dynamic);
+    void set_dynamic(bool _is_dynamic);
 
     /**
      * @brief Sets the query flag.
      * @param _query_flags value of the query flag.
      */
-    MODULE_VIZ_SCENE3D_API void set_query_flags(std::uint32_t _query_flags);
+    void set_query_flags(std::uint32_t _query_flags);
 
     /**
      * @brief Sets if the reconstruction is managed or not.
      * @param _is_reconstruction_managed use true if the reconstruction is managed.
      */
-    MODULE_VIZ_SCENE3D_API void set_is_reconstruction_managed(bool _is_reconstruction_managed);
+    void set_is_reconstruction_managed(bool _is_reconstruction_managed);
 
     /// Flags the r2vb objects as dirty and asks the render service to update.
-    MODULE_VIZ_SCENE3D_API void request_render() override;
+    void request_render() override;
 
     /**
      * @brief Sets the mesh visibility.
      * @param _visible the visibility status of the mesh.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
+    void set_visible(bool _visible) override;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    void configuring() override;
 
     /// Creates a Mesh in the Default Ogre resource group.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -211,13 +210,13 @@ protected:
      * Connect data::mesh::POINT_TEX_COORDS_MODIFIED_SIG to MODIFY_POINT_TEX_COORDS_SLOT
      * Connect data::mesh::MODIFIED_SIG to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    void stopping() override;
 
     /// Updates the mesh.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    void updating() override;
 
 private:
 

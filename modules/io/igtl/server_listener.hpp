@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "modules/io/igtl/config.hpp"
 #include "modules/io/igtl/network_listener.hpp"
 
 #include <data/object.hpp>
@@ -56,28 +55,28 @@ namespace sight::module::io::igtl
  * - \b objects [sight::data::object]: specified objects to listen.
  * They must have an attribute 'deviceName' to know the device-name used for this specific data.
  **/
-class MODULE_IO_IGTL_CLASS_API server_listener : public module::io::igtl::network_listener
+class server_listener : public module::io::igtl::network_listener
 {
 public:
 
     SIGHT_DECLARE_SERVICE(server_listener, module::io::igtl::network_listener);
 
     /// Constructor
-    MODULE_IO_IGTL_API server_listener();
+    server_listener();
 
     /// Destructor
-    MODULE_IO_IGTL_API ~server_listener() override;
+    ~server_listener() override;
 
 protected:
 
     /// Configure port and device name
-    MODULE_IO_IGTL_API void configuring() override;
+    void configuring() override;
 
     /// Start the server.
-    MODULE_IO_IGTL_API void starting() override;
+    void starting() override;
 
     /// Stop the server
-    MODULE_IO_IGTL_API void stopping() override;
+    void stopping() override;
 
 private:
 

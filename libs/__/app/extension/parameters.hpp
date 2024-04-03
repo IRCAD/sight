@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "app/config.hpp"
+#include <sight/app/config.hpp>
+
 #include "app/extension/config.hpp"
 
 #include <core/mt/types.hpp>
@@ -37,36 +38,36 @@ namespace sight::app::extension
  * @brief This class allows to register all the configuration parameters which has the point extension
  *        "sight::app::extension::parameters".
  */
-class APP_CLASS_API parameters : public core::base_object
+class SIGHT_APP_CLASS_API parameters : public core::base_object
 {
 public:
 
     SIGHT_DECLARE_CLASS(parameters, core::base_object);
 
     /// Return the default global instance of parameters
-    APP_API static parameters::sptr get_default();
+    SIGHT_APP_API static parameters::sptr get_default();
 
-    APP_API parameters();
-    APP_API ~parameters() override = default;
+    SIGHT_APP_API parameters();
+    SIGHT_APP_API ~parameters() override = default;
 
     /**
      * @brief Parse module information to retrieve config parameters declaration
      * @warning This method must be launch only once. The same extension will not be parsed twice.
      * @note This method is thread safe.
      **/
-    APP_API void parse_plugin_infos();
+    SIGHT_APP_API void parse_plugin_infos();
 
     /**
      * @brief Get the parameters associated to extension id.
      * @note This method is thread safe.
      **/
-    APP_API const field_adaptor_t& get_parameters(const std::string& _extension_id) const;
+    SIGHT_APP_API const field_adaptor_t& get_parameters(const std::string& _extension_id) const;
 
     /**
      * @brief Clear the registry.
      * @note This method is thread safe.
      */
-    APP_API void clear_registry();
+    SIGHT_APP_API void clear_registry();
 
 protected:
 

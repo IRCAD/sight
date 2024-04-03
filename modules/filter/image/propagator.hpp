@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <core/base.hpp>
 
@@ -83,32 +81,32 @@ namespace sight::module::filter::image
  * - \b mode (optional) : Propagation mode. Possible values are 'min', 'max' and 'minmax'. 'min' by default.
  * - \b orientation (optional) : The initial slice orientation. 'axial' by default.
  */
-class MODULE_FILTER_IMAGE_CLASS_API propagator : public service::filter,
-                                                 public ui::has_parameters
+class propagator : public service::filter,
+                   public ui::has_parameters
 {
 public:
 
     SIGHT_DECLARE_SERVICE(propagator, sight::service::filter);
 
     /// Initializes slots signals and member variables.
-    MODULE_FILTER_IMAGE_API propagator();
+    propagator();
 
     /// Destroys the service.
-    MODULE_FILTER_IMAGE_API ~propagator() override;
+    ~propagator() override;
 
 protected:
 
     ///Configures the services' parameters.
-    MODULE_FILTER_IMAGE_API void configuring() override;
+    void configuring() override;
 
     /// Initializes line drawer and propagator.
-    MODULE_FILTER_IMAGE_API void starting() override;
+    void starting() override;
 
     /// Destroys line drawer and propagator.
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void stopping() override;
 
     /// Recreates line drawer and propagator when the image has been modified.
-    MODULE_FILTER_IMAGE_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -118,19 +116,19 @@ protected:
      * Connect data::image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_IN to SET_ORIENTATION_SLOT
      * Connect data::image::SLICE_INDEX_MODIFIED_SIG of s_IMAGE_IN to s_RESET_DRAWING
      */
-    MODULE_FILTER_IMAGE_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     /// Sets overwrite mode. Key must be 'overwrite'.
-    MODULE_FILTER_IMAGE_API void set_bool_parameter(bool _val, std::string _key) override;
+    void set_bool_parameter(bool _val, std::string _key) override;
 
     /// Sets value. Key must be 'value'.
-    MODULE_FILTER_IMAGE_API void set_int_parameter(int _val, std::string _key) override;
+    void set_int_parameter(int _val, std::string _key) override;
 
     /// Sets radius. Key must be 'radius'.
-    MODULE_FILTER_IMAGE_API void set_double_parameter(double _val, std::string _key) override;
+    void set_double_parameter(double _val, std::string _key) override;
 
     /// Sets propagation mode. Key must be 'mode'.
-    MODULE_FILTER_IMAGE_API void set_enum_parameter(std::string _val, std::string _key) override;
+    void set_enum_parameter(std::string _val, std::string _key) override;
 
 private:
 

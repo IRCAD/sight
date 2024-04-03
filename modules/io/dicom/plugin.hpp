@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <sight/modules/io/dicom/config.hpp>
+
 #include <core/runtime/plugin.hpp>
 
 namespace sight::module::io::dicom
@@ -32,13 +34,13 @@ struct plugin : public core::runtime::plugin
     /**
      * @brief   destructor
      */
-    ~plugin() noexcept override;
+    ~plugin() noexcept override = default;
 
     // Overrides
-    void start() override;
+    SIGHT_MODULE_IO_DICOM_API void start() override;
 
     // Overrides
-    void stop() noexcept override;
+    SIGHT_MODULE_IO_DICOM_API void stop() noexcept override;
 };
 
 } // namespace sight::module::io::dicom

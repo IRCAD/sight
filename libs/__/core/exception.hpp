@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <stdexcept>
 #include <string>
@@ -30,13 +30,13 @@
 namespace sight::core
 {
 
-class CORE_CLASS_API exception : public std::runtime_error
+class SIGHT_CORE_CLASS_API exception : public std::runtime_error
 {
 public:
 
-    CORE_API exception(const std::string& _err);
+    SIGHT_CORE_API exception(const std::string& _err);
 
-    CORE_API ~exception() override = default;
+    SIGHT_CORE_API ~exception() override = default;
 };
 
 } //namespace sight::core

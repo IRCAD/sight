@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/http/config.hpp"
+#include <sight/io/http/config.hpp>
 
 #include <data/series_set.hpp>
 
@@ -49,7 +49,7 @@ namespace sight::io::http::helper
 /**
  * @brief Series Helper
  */
-class IO_HTTP_CLASS_API series
+class SIGHT_IO_HTTP_CLASS_API series
 {
 public:
 
@@ -61,13 +61,13 @@ public:
      * @brief Convert HTTP series response to data::dicom_series
      * @param[in] _answer HTTP responses from the PACS that must be converted
      */
-    IO_HTTP_API static DicomSeriesContainer to_fw_med_data(const QJsonObject& _answer);
+    SIGHT_IO_HTTP_API static DicomSeriesContainer to_fw_med_data(const QJsonObject& _answer);
 
     /**
      * @brief Convert std::vector< data::dicom_series > to series instance uid container
      * @param[in] _series Series vector used to extract the series instance uids
      */
-    IO_HTTP_API static InstanceUIDContainer to_series_instance_uid_container(DicomSeriesContainer _series);
+    SIGHT_IO_HTTP_API static InstanceUIDContainer to_series_instance_uid_container(DicomSeriesContainer _series);
 };
 
 } // namespace sight::io::http::helper

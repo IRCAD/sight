@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
@@ -40,7 +40,7 @@ namespace sight::core::tools
  * @param[in]   _date_str date in the string format YYYYMMDD (ie : 20090722)
  * @return      Date in the boost format
  */
-CORE_API boost::gregorian::date str_to_boost_date(const std::string& _date_str);
+SIGHT_CORE_API boost::gregorian::date str_to_boost_date(const std::string& _date_str);
 
 //------------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ CORE_API boost::gregorian::date str_to_boost_date(const std::string& _date_str);
  * @param[in]   _time_str time in the string format HHMMSS
  * @return      Time in the boost format
  */
-CORE_API boost::posix_time::time_duration str_to_boost_time(const std::string& _time_str);
+SIGHT_CORE_API boost::posix_time::time_duration str_to_boost_time(const std::string& _time_str);
 
 //------------------------------------------------------------------------------
 
@@ -59,7 +59,7 @@ CORE_API boost::posix_time::time_duration str_to_boost_time(const std::string& _
  * @param[in]   _time_str time in the string format HHMMSS (by default : "000000")
  * @return      Time in the boost format
  */
-CORE_API boost::posix_time::ptime str_to_boost_date_and_time(
+SIGHT_CORE_API boost::posix_time::ptime str_to_boost_date_and_time(
     const std::string& _date_str,
     const std::string& _time_str = "000000"
 );
@@ -71,7 +71,7 @@ CORE_API boost::posix_time::ptime str_to_boost_date_and_time(
  * @param[in]   _date_and_time time in the boost format
  * @return      Date in the string format YYYYMMDD
  */
-CORE_API std::string get_date(const boost::posix_time::ptime& _date_and_time);
+SIGHT_CORE_API std::string get_date(const boost::posix_time::ptime& _date_and_time);
 
 //------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ CORE_API std::string get_date(const boost::posix_time::ptime& _date_and_time);
  * @param[in]   _date_and_time time in the boost format
  * @return      Time in the string format HHMMSS
  */
-CORE_API std::string get_time(const boost::posix_time::ptime& _date_and_time);
+SIGHT_CORE_API std::string get_time(const boost::posix_time::ptime& _date_and_time);
 
 //------------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ CORE_API std::string get_time(const boost::posix_time::ptime& _date_and_time);
  * @brief       Return the current clock
  * @return      Time in the string format YYYY-mmm-DD HH:MM:SS
  */
-CORE_API std::string get_current_time();
+SIGHT_CORE_API std::string get_current_time();
 
 ///@}
 

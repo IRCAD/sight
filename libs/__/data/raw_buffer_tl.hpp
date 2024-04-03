@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/data/config.hpp>
+
 #include "data/buffer_tl.hpp"
-#include "data/config.hpp"
 #include "data/timeline/raw_buffer.hpp"
 
 #include <data/factory/new.hpp>
@@ -35,7 +36,7 @@ namespace sight::data
  * @brief   This class defines a timeline of buffers. It implements basic features of the Timeline interface such as
  *          pushing or retrieving objects. Allocation must be done by inherited classes.
  */
-class DATA_CLASS_API raw_buffer_tl : public buffer_tl
+class SIGHT_DATA_CLASS_API raw_buffer_tl : public buffer_tl
 {
 public:
 
@@ -49,45 +50,45 @@ public:
      * @param _timestamp timestamp used to find the closest buffer
      * @param _direction direction to find the closest buffer (PAST, FUTURE, BOTH)
      */
-    DATA_API virtual CSPTR(timeline::raw_buffer) get_closest_buffer(
+    SIGHT_DATA_API virtual CSPTR(timeline::raw_buffer) get_closest_buffer(
         core::clock::type _timestamp,
         timeline::direction_t _direction = timeline::both
     ) const;
 
     /// Return the buffer matching the specified timestamp, returns NULL if object is not found
-    DATA_API virtual CSPTR(timeline::raw_buffer) get_buffer(core::clock::type _timestamp)
+    SIGHT_DATA_API virtual CSPTR(timeline::raw_buffer) get_buffer(core::clock::type _timestamp)
     const;
 
     /// Initialize the size of the pool buffer.
-    DATA_API void init_pool_size(std::size_t _size);
+    SIGHT_DATA_API void init_pool_size(std::size_t _size);
 
     /**
      * @brief Return a new timeline::object with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    DATA_API SPTR(timeline::object) create_object(core::clock::type _timestamp) override;
+    SIGHT_DATA_API SPTR(timeline::object) create_object(core::clock::type _timestamp) override;
 
     /**
      * @brief Return a new buffer_t with the given timestamp.
      * @note This buffer memory is managed by the pool.
      * @warning This buffer is not registered in the timeline. You must call pushObject() to register it.
      */
-    DATA_API SPTR(timeline::raw_buffer) create_buffer(core::clock::type _timestamp);
+    SIGHT_DATA_API SPTR(timeline::raw_buffer) create_buffer(core::clock::type _timestamp);
 
     /// Check if the type of an object is compatible with this timeline
-    DATA_API bool is_object_valid(const CSPTR(timeline::object)& _obj) const override;
+    SIGHT_DATA_API bool is_object_valid(const CSPTR(timeline::object)& _obj) const override;
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

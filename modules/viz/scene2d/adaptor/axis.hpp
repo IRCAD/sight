@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene2d/config.hpp"
 
 #include <viz/scene2d/adaptor.hpp>
 
@@ -57,14 +55,14 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b opacity (optional, default=1.0): adaptor opacity (float)
  *    - \b color (optional, default black): color of the axis
  */
-class MODULE_VIZ_SCENE2D_CLASS_API axis : public sight::viz::scene2d::adaptor
+class axis : public sight::viz::scene2d::adaptor
 {
 public:
 
     SIGHT_DECLARE_SERVICE(axis, sight::viz::scene2d::adaptor);
 
-    MODULE_VIZ_SCENE2D_API axis() noexcept;
-    MODULE_VIZ_SCENE2D_API ~axis() noexcept override;
+    axis() noexcept;
+    ~axis() noexcept override;
 
 protected:
 
@@ -74,9 +72,9 @@ protected:
     void configuring() override;
 
     /// Manage the given events
-    MODULE_VIZ_SCENE2D_API void process_interaction(sight::viz::scene2d::data::event& _event) override;
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
-    MODULE_VIZ_SCENE2D_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

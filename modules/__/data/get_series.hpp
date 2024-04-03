@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/data/config.hpp"
 
 #include <core/base.hpp>
 
@@ -56,31 +54,31 @@ namespace sight::module::data
  * @subsection Output Output
  * - \b series [sight::data::series]: output series extracted from the database series.
  */
-class MODULE_DATA_CLASS_API get_series : public service::controller
+class get_series : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(get_series, service::controller);
 
     /// Constructor
-    MODULE_DATA_API get_series() = default;
+    get_series() = default;
 
     /// Destructor
-    MODULE_DATA_API ~get_series() override = default;
+    ~get_series() override = default;
 
 protected:
 
     /// Does nothing
-    MODULE_DATA_API void starting() override;
+    void starting() override;
 
     /// Configure the service
-    MODULE_DATA_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_DATA_API void stopping() override;
+    void stopping() override;
 
     /// Extract the object(s)
-    MODULE_DATA_API void updating() override;
+    void updating() override;
 
 private:
 

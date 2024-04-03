@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/ui/console/config.hpp"
+#include "sight/modules/ui/console/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -39,21 +39,21 @@ namespace sight::module::ui::console
 /**
  * @brief   This class is called when the console module is loaded.
  */
-class MODULE_UI_CONSOLE_CLASS_API plugin : public core::runtime::plugin
+class SIGHT_MODULE_UI_CONSOLE_CLASS_API plugin : public core::runtime::plugin
 {
 public:
 
     /// Destructor
-    MODULE_UI_CONSOLE_API ~plugin() noexcept override;
+    SIGHT_MODULE_UI_CONSOLE_API ~plugin() noexcept override;
 
     /// @override
-    MODULE_UI_CONSOLE_API void start() override;
+    SIGHT_MODULE_UI_CONSOLE_API void start() override;
 
     /// @override
-    MODULE_UI_CONSOLE_API void stop() noexcept override;
+    SIGHT_MODULE_UI_CONSOLE_API void stop() noexcept override;
 
     /// Run callback
-    static MODULE_UI_CONSOLE_API int run() noexcept;
+    static SIGHT_MODULE_UI_CONSOLE_API int run() noexcept;
 };
 
 } // namespace sight::module::ui::console

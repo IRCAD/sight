@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <activity/sequencer.hpp>
 
@@ -117,9 +115,9 @@ namespace sight::module::ui::qt::activity
  *
  * @todo listen the current activity data to notify when the next activity can be created
  */
-class MODULE_UI_QT_CLASS_API sequencer : public QObject,
-                                         public sight::ui::editor,
-                                         public sight::activity::sequencer
+class sequencer : public QObject,
+                  public sight::ui::editor,
+                  public sight::activity::sequencer
 {
 Q_OBJECT
 
@@ -128,12 +126,12 @@ public:
     SIGHT_DECLARE_SERVICE(sequencer, sight::ui::editor);
 
     /// Initialize signals and slots
-    MODULE_UI_QT_API sequencer() noexcept;
+    sequencer() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~sequencer() noexcept override = default;
+    ~sequencer() noexcept override = default;
 
-    struct MODULE_UI_QT_CLASS_API slots final
+    struct slots final
     {
         using key_t = sight::core::com::slots::key_t;
 
@@ -151,7 +149,7 @@ public:
         inline static const key_t SET_USER_WARNING     = "set_user_warning";
     };
 
-    struct MODULE_UI_QT_CLASS_API signals final
+    struct signals final
     {
         using key_t = sight::core::com::signals::key_t;
 
@@ -171,39 +169,39 @@ public:
     };
 
     /// Slot: Check if the next activities can be enabled
-    MODULE_UI_QT_API void check_next();
+    void check_next();
 
     /// Slot: Validate the next activities without enabling it. Emits nextValidated(true/false), next(In)Valid signals
-    MODULE_UI_QT_API void validate_next();
+    void validate_next();
 
     /// Slot: Create the next activity, emit 'dataRequired' signal if the activity require additional data
-    MODULE_UI_QT_API void next();
+    void next();
 
     /// Slot: Create the previous activity, emit 'dataRequired' signal if the activity require additional data
-    MODULE_UI_QT_API void previous();
+    void previous();
 
     /// Slot: Send the 'hasNext' and 'enablePrevious' signals for the current activity
-    MODULE_UI_QT_API void send_info() const;
+    void send_info() const;
 
     // Slot: Reset requirements of activities
     using sight::activity::sequencer::reset_requirements;
 
     /// Slot: Enables the user warning dialog about possible loss of un-validated data
     /// Does nothing if "warning_message" wasn't configured.
-    MODULE_UI_QT_API void enable_user_warning();
+    void enable_user_warning();
 
     /// Slot: Disables the user warning dialog about possible loss of un-validated data
     /// Does nothing if "warning_message" wasn't configured.
-    MODULE_UI_QT_API void disable_user_warning();
+    void disable_user_warning();
 
     /// Slot: Configures the user warning according to _state value.
     /// Does nothing if "warning_message" wasn't configured.
-    MODULE_UI_QT_API void set_user_warning(bool _state);
+    void set_user_warning(bool _state);
 
 public Q_SLOTS:
 
     /// Slot: create the activity at the given index, emit 'dataRequired' signal if the activity require additional data
-    MODULE_UI_QT_API void go_to(int _index);
+    void go_to(int _index);
 
 protected:
 

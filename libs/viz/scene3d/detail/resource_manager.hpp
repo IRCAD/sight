@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <core/lazy_instantiator.hpp>
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <data/string.hpp>
 
@@ -62,8 +60,8 @@ namespace sight::module::ui::qt
  * - \b color (optional, default="red") : needed color of the displayed label in a CSS style as names (ex: red),
  * rgb/rgba (ex: rgb(0,255,137,0.3)) or hexadecimal (ex: #355C66).
  */
-class MODULE_UI_QT_CLASS_API text_status final : public QObject,
-                                                 public sight::ui::editor
+class text_status final : public QObject,
+                          public sight::ui::editor
 {
 public:
 
@@ -71,10 +69,10 @@ public:
     SIGHT_DECLARE_SERVICE(text_status, sight::ui::editor);
 
     /// Initializes slots and member.
-    MODULE_UI_QT_API text_status();
+    text_status();
 
     /// Destroys the service.
-    MODULE_UI_QT_API ~text_status() override;
+    ~text_status() override;
 
 private:
 

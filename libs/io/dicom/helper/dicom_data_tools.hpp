@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_coded_attribute.hpp"
 #include "io/dicom/exception/failed.hpp"
 
@@ -41,7 +42,7 @@ namespace sight::io::dicom::helper
  * It implements many tag value getters/setters. It defines
  * also some tools for converting GDCM data to Sight data.
  */
-class IO_DICOM_CLASS_API dicom_data_tools
+class SIGHT_IO_DICOM_CLASS_API dicom_data_tools
 {
 public:
 
@@ -50,14 +51,14 @@ public:
      * @param[in] _type pixel type from a sight.
      * @return The pixel format (e.g: INT8, UINT16, ...)
      */
-    IO_DICOM_API static gdcm::PixelFormat get_pixel_type(const core::type& _type);
+    SIGHT_IO_DICOM_API static gdcm::PixelFormat get_pixel_type(const core::type& _type);
 
     /**
      * @brief Return the photometric interpretation of an acquisition.
      * @param[in] _image Image
      * @return The photometric interpretation (e.g: MONOCHROME2, RGB, ...)
      */
-    IO_DICOM_API static gdcm::PhotometricInterpretation get_photometric_interpretation(
+    SIGHT_IO_DICOM_API static gdcm::PhotometricInterpretation get_photometric_interpretation(
         const data::image::csptr& _image
     );
 
@@ -67,7 +68,7 @@ public:
      * @param[in] _representation_mode Surface representation mode.
      * @return Corresponding recommended presentation type.
      */
-    IO_DICOM_API static gdcm::Surface::VIEWType convert_to_presentation_type(
+    SIGHT_IO_DICOM_API static gdcm::Surface::VIEWType convert_to_presentation_type(
         data::material::representation_t _representation_mode
     );
 
@@ -76,7 +77,7 @@ public:
      * @param[in] _presentation_type Surface recommended presentation type.
      * @return Corresponding representation mode
      */
-    IO_DICOM_API static data::material::representation_t convert_to_representation_mode(
+    SIGHT_IO_DICOM_API static data::material::representation_t convert_to_representation_mode(
         gdcm::Surface::VIEWType _presentation_type
     );
 
@@ -86,7 +87,7 @@ public:
      * @param[in] _point 3D point
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API static std::size_t convert_point_to_frame_number(
+    SIGHT_IO_DICOM_API static std::size_t convert_point_to_frame_number(
         const data::image::csptr& _image,
         const data::point::csptr& _point
     );
@@ -97,7 +98,7 @@ public:
      * @param[in] _frame_number Frame number
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API static double convert_frame_number_to_z_coordinate(
+    SIGHT_IO_DICOM_API static double convert_frame_number_to_z_coordinate(
         const data::image::csptr& _image,
         std::size_t _frame_number
     );

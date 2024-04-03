@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_instance.hpp"
 
 #include <core/log/logger.hpp>
@@ -38,7 +39,7 @@ namespace sight::io::dicom::reader::tid
  * @brief TemplateID base class used to write templates
  */
 template<class DATATYPE>
-class IO_DICOM_CLASS_API template_id
+class SIGHT_IO_DICOM_CLASS_API template_id
 {
 public:
 
@@ -50,7 +51,7 @@ public:
      * @param[in] _object Sight data object
      * @param[in] _logger Logger
      */
-    IO_DICOM_API template_id(
+    SIGHT_IO_DICOM_API template_id(
         CSPTR(data::dicom_series)_dicom_series,
         SPTR(gdcm::Reader)_reader,
         SPTR(io::dicom::container::dicom_instance)_instance,
@@ -59,7 +60,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~template_id();
+    SIGHT_IO_DICOM_API virtual ~template_id();
 
 protected:
 

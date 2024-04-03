@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene2d/config.hpp"
 
 #include <viz/scene2d/adaptor.hpp>
 
@@ -60,7 +58,7 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b xSpacing (optional, default value: 10): Set the grid spacing (space between 2 consecutive lines) in x.
  *    - \b ySpacing (optional, default value: 10): Set the grid spacing (space between 2 consecutive lines) in y.
  */
-class MODULE_VIZ_SCENE2D_CLASS_API grid2d : public sight::viz::scene2d::adaptor
+class grid2d : public sight::viz::scene2d::adaptor
 {
 public:
 
@@ -70,29 +68,29 @@ public:
      * @name Slots API
      * @{
      */
-    MODULE_VIZ_SCENE2D_API static const core::com::slots::key_t SET_GRID_SPACING_SLOT;
+    static const core::com::slots::key_t SET_GRID_SPACING_SLOT;
     /** @} */
 
     /// Constructor, set the x and y spacing to 10
-    MODULE_VIZ_SCENE2D_API grid2d() noexcept;
+    grid2d() noexcept;
 
     /// Basic destructor, do nothing
-    MODULE_VIZ_SCENE2D_API ~grid2d() noexcept override;
+    ~grid2d() noexcept override;
 
 protected:
 
-    MODULE_VIZ_SCENE2D_API void configuring() override;
+    void configuring() override;
 
     /// Initialize the layer, set the pen style to DashLine and call the draw() function.
-    MODULE_VIZ_SCENE2D_API void starting() override;
+    void starting() override;
 
-    MODULE_VIZ_SCENE2D_API void updating() override;
+    void updating() override;
 
     /// Clean the lines vector and remove the layer from the scene.
-    MODULE_VIZ_SCENE2D_API void stopping() override;
+    void stopping() override;
 
     /// Manage the given events
-    MODULE_VIZ_SCENE2D_API void process_interaction(sight::viz::scene2d::data::event& _event) override;
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
 private:
 

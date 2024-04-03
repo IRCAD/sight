@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "activity/config.hpp"
+#include <sight/activity/config.hpp>
+
 #include "activity/launcher.hpp"
 
 #include <data/activity_set.hpp>
@@ -34,15 +35,15 @@ namespace sight::activity
 /**
  * @brief Base class for services that creates Activity instances sequentially.
  */
-class ACTIVITY_CLASS_API sequencer : public launcher
+class SIGHT_ACTIVITY_CLASS_API sequencer : public launcher
 {
 public:
 
     /// Constructor. Do nothing.
-    ACTIVITY_API sequencer() = default;
+    SIGHT_ACTIVITY_API sequencer() = default;
 
     /// Destructor. Do nothing.
-    ACTIVITY_API ~sequencer() override = default;
+    SIGHT_ACTIVITY_API ~sequencer() override = default;
 
 protected:
 
@@ -53,10 +54,10 @@ protected:
      *
      * @warning This method remove the activity that are not in the list of activity to launch
      */
-    ACTIVITY_API int parse_activities(data::activity_set& _activity_set);
+    SIGHT_ACTIVITY_API int parse_activities(data::activity_set& _activity_set);
 
     /// Store the data of the activity at the given index
-    ACTIVITY_API void store_activity_data(
+    SIGHT_ACTIVITY_API void store_activity_data(
         const data::activity_set& _activity_set,
         std::size_t _index,
         const data::composite::csptr& _overrides = nullptr
@@ -73,7 +74,7 @@ protected:
      * @param _slot slot to block in case the activity is created. It is useful if the service listen notification on
      * the activity_set
      */
-    ACTIVITY_API data::activity::sptr get_activity(
+    SIGHT_ACTIVITY_API data::activity::sptr get_activity(
         data::activity_set& _activity_set,
         std::size_t _index,
         const core::com::slot_base::sptr& _slot = nullptr
@@ -87,14 +88,14 @@ protected:
      * @param _activity_set ActivitySet containing all the activities
      * @param _index the activity in index and all the following will be removed
      */
-    ACTIVITY_API void remove_last_activities(data::activity_set& _activity_set, std::size_t _index);
+    SIGHT_ACTIVITY_API void remove_last_activities(data::activity_set& _activity_set, std::size_t _index);
 
     /**
      * @brief Reset all data created by activities (create="true", minOccurs="0") at index and beyond.
      *
      * This is used to clean activities when previous one changed their requirements.
      */
-    ACTIVITY_API void reset_requirements();
+    SIGHT_ACTIVITY_API void reset_requirements();
 
     /// List of the activity to create.
     std::vector<std::string> m_activity_ids;

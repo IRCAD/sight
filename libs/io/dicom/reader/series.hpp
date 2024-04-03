@@ -32,7 +32,7 @@ namespace sight::io::dicom::reader
 /**
  * @brief series class used to read series
  */
-class IO_DICOM_CLASS_API series
+class SIGHT_IO_DICOM_CLASS_API series
 {
 public:
 
@@ -42,17 +42,17 @@ public:
     using cancel_requested_callback = std::function<bool ()>;
 
     /// Constructor
-    IO_DICOM_API series();
+    SIGHT_IO_DICOM_API series();
 
     /// Destructor
-    IO_DICOM_API ~series();
+    SIGHT_IO_DICOM_API ~series();
 
     /**
      * @brief Read DICOM series
      * @param[in] _dicom_series DICOM series that shall be read
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API data::series::sptr read(const data::dicom_series::csptr& _dicom_series);
+    SIGHT_IO_DICOM_API data::series::sptr read(const data::dicom_series::csptr& _dicom_series);
 
     /// Get Logger
     [[nodiscard]] const core::log::logger::sptr& get_logger() const

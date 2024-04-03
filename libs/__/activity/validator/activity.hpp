@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "activity/config.hpp"
+#include <sight/activity/config.hpp>
+
 #include "activity/validator/base.hpp"
 
 #include <core/base.hpp>
@@ -44,14 +45,14 @@ namespace sight::activity::validator
  *
  * This validator allows to check if all the required data are valid for the activity.
  */
-class ACTIVITY_CLASS_API activity : public validator::base
+class SIGHT_ACTIVITY_CLASS_API activity : public validator::base
 {
 public:
 
     SIGHT_DECLARE_CLASS(activity, validator::base);
 
     /// Does nothing.
-    ACTIVITY_API return_t validate(
+    SIGHT_ACTIVITY_API return_t validate(
         const extension::activity_info& /*activity_info*/,
         const CSPTR(data::vector)&
         /*currentSelection*/
@@ -67,14 +68,14 @@ public:
      * @brief Performs the validation of the given activity data.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains detailed error.
      */
-    ACTIVITY_API virtual return_t validate(const CSPTR(data::activity)& _activity) const = 0;
+    SIGHT_ACTIVITY_API virtual return_t validate(const CSPTR(data::activity)& _activity) const = 0;
 
     /**
      * @brief Checks if all the required data are present in the activity.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains the list of missing
      *         (or not valid) data.
      */
-    static ACTIVITY_API return_t check_requirements(const CSPTR(data::activity)& _activity);
+    static SIGHT_ACTIVITY_API return_t check_requirements(const CSPTR(data::activity)& _activity);
 
     /**
      * @brief Calls the object validator if it is defined.
@@ -83,7 +84,7 @@ public:
      * @return pair <isValid, errorMsg> : errorMsg is empty if the object is valid else it contains the detailed error.
      * @see activity::validator::object
      */
-    static ACTIVITY_API return_t check_object(
+    static SIGHT_ACTIVITY_API return_t check_object(
         const CSPTR(data::object)& _object,
         const std::string& _validator_impl
     );

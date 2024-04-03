@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/core/config.hpp>
+
 #include "core/com/signals.hpp"
-#include "core/config.hpp"
 
 namespace sight::core::com
 {
@@ -33,7 +34,7 @@ struct signal_base;
 /**
  * @brief   This class proposes a mapping between a key_t and a SignalBase.
  */
-class CORE_CLASS_API has_signals
+class SIGHT_CORE_CLASS_API has_signals
 {
 public:
 

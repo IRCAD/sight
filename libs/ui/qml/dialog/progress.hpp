@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qml/config.hpp"
+#include <sight/ui/qml/config.hpp>
 
 #include <ui/__/dialog/progress_base.hpp>
 
@@ -38,8 +38,8 @@ namespace sight::ui::qml::dialog
 /**
  * @brief   This class allows us to select an acquisition in a patient data base.
  */
-class UI_QML_CLASS_API progress : public QObject,
-                                  public ui::dialog::progress_base
+class SIGHT_UI_QML_CLASS_API progress : public QObject,
+                                        public ui::dialog::progress_base
 {
 Q_OBJECT
 Q_PROPERTY(bool visible MEMBER m_visible)
@@ -50,23 +50,23 @@ public:
 
     SIGHT_DECLARE_CLASS(progress, ui::dialog::progress_base, ui::factory::make<progress>);
 
-    UI_QML_API progress(
+    SIGHT_UI_QML_API progress(
         const std::string& _title   = "Progression",
         const std::string& _message = std::string(86, ' ')
     );
 
-    UI_QML_API ~progress() override;
+    SIGHT_UI_QML_API ~progress() override;
 
     /// the operator to set the progress of the percentage
-    UI_QML_API void operator()(float _percent, std::string _msg) override;
+    SIGHT_UI_QML_API void operator()(float _percent, std::string _msg) override;
 
     /// override
-    UI_QML_API void set_title(const std::string& _title) override;
+    SIGHT_UI_QML_API void set_title(const std::string& _title) override;
 
     /// override
-    UI_QML_API void set_message(const std::string& _message) override;
+    SIGHT_UI_QML_API void set_message(const std::string& _message) override;
 
-    UI_QML_API void hide_cancel_button() override;
+    SIGHT_UI_QML_API void hide_cancel_button() override;
 
 Q_SIGNALS:
 

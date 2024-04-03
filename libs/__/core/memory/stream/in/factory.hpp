@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/macros.hpp>
 
@@ -31,7 +31,7 @@
 namespace sight::core::memory::stream::in
 {
 
-class CORE_CLASS_API factory
+class SIGHT_CORE_CLASS_API factory
 {
 public:
 

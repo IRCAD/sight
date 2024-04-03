@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
 
 #include <core/com/slots.hpp>
 
@@ -54,59 +54,59 @@ namespace sight::ui
  * - \b set_int3_parameter(int, int, int, std::string) : Receive three integer parameters along with the identifier.
  * - \b set_enum_parameter(std::string, std::string) : Receive an enum parameter along with the identifier.
  */
-class UI_CLASS_API has_parameters
+class SIGHT_UI_CLASS_API has_parameters
 {
 public:
 
-    UI_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
-    UI_API static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT;
-    UI_API static const core::com::slots::key_t SET_COLOR_PARAMETER_SLOT;
-    UI_API static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT;
-    UI_API static const core::com::slots::key_t SET_DOUBLE2_PARAMETER_SLOT;
-    UI_API static const core::com::slots::key_t SET_DOUBLE3_PARAMETER_SLOT;
-    UI_API static const core::com::slots::key_t SET_INT_PARAMETER_SLOT;
-    UI_API static const core::com::slots::key_t SET_INT2_PARAMETER_SLOT;
-    UI_API static const core::com::slots::key_t SET_INT3_PARAMETER_SLOT;
-    UI_API static const core::com::slots::key_t SET_ENUM_PARAMETER_SLOT;
+    SIGHT_UI_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
+    SIGHT_UI_API static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT;
+    SIGHT_UI_API static const core::com::slots::key_t SET_COLOR_PARAMETER_SLOT;
+    SIGHT_UI_API static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT;
+    SIGHT_UI_API static const core::com::slots::key_t SET_DOUBLE2_PARAMETER_SLOT;
+    SIGHT_UI_API static const core::com::slots::key_t SET_DOUBLE3_PARAMETER_SLOT;
+    SIGHT_UI_API static const core::com::slots::key_t SET_INT_PARAMETER_SLOT;
+    SIGHT_UI_API static const core::com::slots::key_t SET_INT2_PARAMETER_SLOT;
+    SIGHT_UI_API static const core::com::slots::key_t SET_INT3_PARAMETER_SLOT;
+    SIGHT_UI_API static const core::com::slots::key_t SET_ENUM_PARAMETER_SLOT;
 
 protected:
 
     /// Constructor. Create all default slots.
     /// @param _slots map of slots of the child class. For services, just pass the protected variable base::m_slots.
-    UI_API has_parameters(sight::core::com::slots& _slots);
+    SIGHT_UI_API has_parameters(sight::core::com::slots& _slots);
 
     /// Destructor. Do nothing.
-    UI_API virtual ~has_parameters();
+    SIGHT_UI_API virtual ~has_parameters();
 
     /// Slot: This method is used to set an boolean parameter.
-    UI_API virtual void set_parameter(sight::ui::parameter_t _val, std::string _key);
+    SIGHT_UI_API virtual void set_parameter(sight::ui::parameter_t _val, std::string _key);
 
     /// Slot: This method is used to set an boolean parameter.
-    UI_API virtual void set_bool_parameter(bool _val, std::string _key);
+    SIGHT_UI_API virtual void set_bool_parameter(bool _val, std::string _key);
 
     /// Slot: This method is used to set a color parameter.
-    UI_API virtual void set_color_parameter(std::array<std::uint8_t, 4> _color, std::string _key);
+    SIGHT_UI_API virtual void set_color_parameter(std::array<std::uint8_t, 4> _color, std::string _key);
 
     /// Slot: This method is used to set a double parameter.
-    UI_API virtual void set_double_parameter(double _val, std::string _key);
+    SIGHT_UI_API virtual void set_double_parameter(double _val, std::string _key);
 
     /// Slot: This method is used to set two double parameters.
-    UI_API virtual void set_double2_parameter(double _val0, double _val1, std::string _key);
+    SIGHT_UI_API virtual void set_double2_parameter(double _val0, double _val1, std::string _key);
 
     /// Slot: This method is used to set three double parameters.
-    UI_API virtual void set_double3_parameter(double _val0, double _val1, double _val2, std::string _key);
+    SIGHT_UI_API virtual void set_double3_parameter(double _val0, double _val1, double _val2, std::string _key);
 
     /// Slot: This method is used to set an integer parameter.
-    UI_API virtual void set_int_parameter(int _val, std::string _key);
+    SIGHT_UI_API virtual void set_int_parameter(int _val, std::string _key);
 
     /// Slot: This method is used to set two int parameters.
-    UI_API virtual void set_int2_parameter(int _val0, int _val1, std::string _key);
+    SIGHT_UI_API virtual void set_int2_parameter(int _val0, int _val1, std::string _key);
 
     /// Slot: This method is used to set three int parameters.
-    UI_API virtual void set_int3_parameter(int _val0, int _val1, int _val2, std::string _key);
+    SIGHT_UI_API virtual void set_int3_parameter(int _val0, int _val1, int _val2, std::string _key);
 
     /// Slot: This method is used to set an enum parameter.
-    UI_API virtual void set_enum_parameter(std::string _val, std::string _key);
+    SIGHT_UI_API virtual void set_enum_parameter(std::string _val, std::string _key);
 };
 
 } // namespace sight::ui

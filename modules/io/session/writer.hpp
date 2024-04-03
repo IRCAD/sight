@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/session/config.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/jobs/base.hpp>
@@ -97,7 +95,7 @@ namespace sight::module::io::session
  * @see sight::io::session::session_writer
  */
 
-class MODULE_IO_SESSION_CLASS_API writer final : public sight::io::service::writer
+class writer final : public sight::io::service::writer
 {
 public:
 
@@ -105,29 +103,29 @@ public:
 
     using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
 
-    MODULE_IO_SESSION_API writer() noexcept;
+    writer() noexcept;
 
-    MODULE_IO_SESSION_API ~writer() noexcept override;
+    ~writer() noexcept override;
 
     /// Propose to create a medical data file
-    MODULE_IO_SESSION_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
 protected:
 
     /// Parses the configuration
-    MODULE_IO_SESSION_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_IO_SESSION_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_IO_SESSION_API void stopping() override;
+    void stopping() override;
 
     /// Writes session data to filesystem
-    MODULE_IO_SESSION_API void updating() override;
+    void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_SESSION_API sight::io::service::path_type_t get_path_type() const override
+    sight::io::service::path_type_t get_path_type() const override
     {
         return sight::io::service::file;
     }

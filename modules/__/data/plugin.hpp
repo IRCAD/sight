@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/data/config.hpp"
+#include "sight/modules/data/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -32,18 +32,18 @@ namespace sight::module::data
 /**
  * @brief   This class is started when the module is loaded.
  */
-struct MODULE_DATA_CLASS_API plugin : public core::runtime::plugin
+struct SIGHT_MODULE_DATA_CLASS_API plugin : public core::runtime::plugin
 {
     /// Destructor. Do nothing.
-    MODULE_DATA_API ~plugin() noexcept override;
+    SIGHT_MODULE_DATA_API ~plugin() noexcept override;
 
     /**
      * @brief Overrides start method. Object declarations.
      */
-    MODULE_DATA_API void start() override;
+    SIGHT_MODULE_DATA_API void start() override;
 
     /// Overrides stop method. Do nothing
-    MODULE_DATA_API void stop() noexcept override;
+    SIGHT_MODULE_DATA_API void stop() noexcept override;
 };
 
 } // namespace sight::module::data

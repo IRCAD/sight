@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/service.hpp"
 
 #include <activity/extension/activity.hpp>
@@ -59,14 +60,14 @@ namespace sight::ui
  *        - \b replace: name of the parameter as defined in the config
  *        - \b by: defines the string that will replace the parameter name.
  */
-class UI_CLASS_API activity_view : public ui::service,
-                                   public activity::launcher
+class SIGHT_UI_CLASS_API activity_view : public ui::service,
+                                         public activity::launcher
 {
 public:
 
     SIGHT_DECLARE_CLASS(activity_view, ui::service);
 
-    UI_API static const core::com::slots::key_t LAUNCH_ACTIVITY_SLOT;
+    SIGHT_UI_API static const core::com::slots::key_t LAUNCH_ACTIVITY_SLOT;
 
 protected:
 
@@ -74,28 +75,28 @@ protected:
     using parameters_t = activity::extension::activity_config_params_type;
 
     /// Constructor. Do nothing.
-    UI_API activity_view();
+    SIGHT_UI_API activity_view();
 
     /// Destructor. Do nothing.
-    UI_API ~activity_view() override = default;
+    SIGHT_UI_API ~activity_view() override = default;
 
     /// Parses the configuration
-    UI_API void configuring() override;
+    SIGHT_UI_API void configuring() override;
 
     /**
      * @brief Slot: Launch the given activity in a new tab.
      * @note The same activity cannot be launch in two different tabs.
      */
-    UI_API virtual void launch_activity(data::activity::sptr _activity) = 0;
+    SIGHT_UI_API virtual void launch_activity(data::activity::sptr _activity) = 0;
 
     /**
      * @brief Check if the activity is valid by calling the activity validator.
      * @return Return true if the given activity is valid
      */
-    UI_API virtual bool validate_activity(data::activity::sptr _activity) const;
+    SIGHT_UI_API virtual bool validate_activity(data::activity::sptr _activity) const;
 
     /// Create the activity given in 'mainActivity' configuration
-    UI_API data::activity::sptr create_main_activity() const override;
+    SIGHT_UI_API data::activity::sptr create_main_activity() const override;
 
     /// Input data to pass to the configuration
     data::ptr_vector<data::object, data::access::inout> m_data {this, "data"};

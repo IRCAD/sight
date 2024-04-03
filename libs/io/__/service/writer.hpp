@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
+
 #include "io/__/service/io_types.hpp"
 
 #include <core/com/signal.hpp>
@@ -66,7 +67,7 @@ namespace sight::io::service
  * @li To write the object use update() method
  * @li Finally we must call stop() before deleting the service
  */
-class IO_CLASS_API writer : public sight::service::base
+class SIGHT_IO_CLASS_API writer : public sight::service::base
 {
 public:
 
@@ -86,16 +87,16 @@ public:
      * @{
      */
 
-    IO_API static const core::com::signals::key_t PREFIX_SET_SIG;
-    IO_API static const core::com::signals::key_t BASE_FOLDER_SET_SIG;
+    SIGHT_IO_API static const core::com::signals::key_t PREFIX_SET_SIG;
+    SIGHT_IO_API static const core::com::signals::key_t BASE_FOLDER_SET_SIG;
     using void_signal_t = core::com::signal<void ()>;
 
     /**
      * @name Slots API
      * @{
      */
-    IO_API static const core::com::slots::key_t SET_PREFIX;
-    IO_API static const core::com::slots::key_t SET_BASE_FOLDER;
+    SIGHT_IO_API static const core::com::slots::key_t SET_PREFIX;
+    SIGHT_IO_API static const core::com::slots::key_t SET_BASE_FOLDER;
     /// @}
 
     /**
@@ -104,7 +105,7 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    IO_API virtual void open_location_dialog() = 0;
+    SIGHT_IO_API virtual void open_location_dialog() = 0;
 
     /**
      * @brief This method must be implemented by concrete service writers
@@ -114,75 +115,75 @@ public:
      * A reader can support file and folder, or files and folder, but not
      * file and files ( because files include file concept ).
      */
-    IO_API virtual io::service::path_type_t get_path_type() const;
+    SIGHT_IO_API virtual io::service::path_type_t get_path_type() const;
 
     /**
      * @brief Returns the file path set by the user or set during service configuration
      * @pre exception if a file path is not defined  ( m_locations.empty() )
      * @pre exception if service does not support FILE mode
      */
-    IO_API std::filesystem::path get_file() const;
+    SIGHT_IO_API std::filesystem::path get_file() const;
 
     /**
      * @brief Sets file path
      * @pre exception if service does not support FILE mode
      */
-    IO_API void set_file(const std::filesystem::path& _file);
+    SIGHT_IO_API void set_file(const std::filesystem::path& _file);
 
     /**
      * @brief Returns file paths set by the user or set during service configuration
      * @pre exception if a file path is not defined ( m_locations.empty() )
      * @pre exception if service does not support FILES mode
      */
-    IO_API const io::service::locations_t& get_files() const;
+    SIGHT_IO_API const io::service::locations_t& get_files() const;
 
     /**
      * @brief Sets file paths
      * @pre exception if service does not support FILES mode
      */
-    IO_API void set_files(const io::service::locations_t& _files);
+    SIGHT_IO_API void set_files(const io::service::locations_t& _files);
 
     /**
      * @brief Returns folder path set by the user or set during service configuration
      * @pre exception if a folder path is not defined ( m_locations.empty() )
      * @pre exception if service does not support FOLDER mode
      */
-    IO_API std::filesystem::path get_folder() const;
+    SIGHT_IO_API std::filesystem::path get_folder() const;
 
     /**
      * @brief Clear any location set by the set_file/set_files/set_folder setter
      */
-    IO_API void clear_locations();
+    SIGHT_IO_API void clear_locations();
 
     /**
      * @brief Returns file/files/folder paths set by the user or set during service configuration
      * @pre exception if a file path is not defined ( m_locations.empty() )
      */
-    IO_API const io::service::locations_t& get_locations() const;
+    SIGHT_IO_API const io::service::locations_t& get_locations() const;
 
     /**
      * @brief Sets folder path
      * @pre exception if service does not support FOLDER mode
      */
-    IO_API void set_folder(const std::filesystem::path& _folder);
+    SIGHT_IO_API void set_folder(const std::filesystem::path& _folder);
 
     /**
      * @brief Slot: Inserts a path prefix generated via a signal sent to the service.
      *
      */
-    IO_API void set_prefix(std::string _prefix);
+    SIGHT_IO_API void set_prefix(std::string _prefix);
 
     /**
      * @brief Slot: Sets the output base folder.
      *
      */
-    IO_API virtual void set_base_folder(std::string _path);
+    SIGHT_IO_API virtual void set_base_folder(std::string _path);
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
-    IO_API bool has_location_defined() const;
+    SIGHT_IO_API bool has_location_defined() const;
 
     /// Returns if reading has been cancelled by user
-    IO_API bool has_failed() const;
+    SIGHT_IO_API bool has_failed() const;
 
     /// Convenience function to convert from DialogPolicy enum value to string
     constexpr static std::string_view dialog_policy_to_string(dialog_policy _policy) noexcept
@@ -225,9 +226,9 @@ public:
 
 protected:
 
-    IO_API writer() noexcept;
+    SIGHT_IO_API writer() noexcept;
 
-    IO_API ~writer() noexcept override;
+    SIGHT_IO_API ~writer() noexcept override;
 
     /**
      * @brief This method proposes to parse xml configuration to retrieve
@@ -264,7 +265,7 @@ protected:
        </service>
        @endcode
      */
-    IO_API void configuring() override;
+    SIGHT_IO_API void configuring() override;
 
     /**
      * @brief Title of the window that will open when the `open_location_dialog` slot is called

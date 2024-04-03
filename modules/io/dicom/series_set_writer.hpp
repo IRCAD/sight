@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/dicom/config.hpp"
-
 #include <io/__/service/writer.hpp>
 #include <io/dicom/writer/series.hpp>
 
@@ -54,7 +52,7 @@ namespace sight::module::io::dicom
  * @subsection Input Input
  * - \b data [sight::data::vector]: vector containing Series (ImageSeries or ModelSeries) to save in Dicom.
  */
-class MODULE_IO_DICOM_CLASS_API series_set_writer : public sight::io::service::writer
+class series_set_writer : public sight::io::service::writer
 {
 public:
 
@@ -63,32 +61,32 @@ public:
     /**
      * @brief Constructor
      */
-    MODULE_IO_DICOM_API series_set_writer() noexcept;
+    series_set_writer() noexcept;
 
     /**
      * @brief Destructor
      */
-    MODULE_IO_DICOM_API ~series_set_writer() noexcept override = default;
+    ~series_set_writer() noexcept override = default;
 
     /// Propose a directory selection where to save the DICOM files.
-    MODULE_IO_DICOM_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
 protected:
 
     /// Does nothing
-    MODULE_IO_DICOM_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_IO_DICOM_API void stopping() override;
+    void stopping() override;
 
     /// Configuring method. This method is used to configure the service.
-    MODULE_IO_DICOM_API void configuring() override;
+    void configuring() override;
 
     /// Write the ImageSeries in DICOM format.
-    MODULE_IO_DICOM_API void updating() override;
+    void updating() override;
 
     /// Return path type managed by the service, here FOLDER
-    MODULE_IO_DICOM_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
 private:
 

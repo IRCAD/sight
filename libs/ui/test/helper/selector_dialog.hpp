@@ -36,7 +36,7 @@ public:
      * @param _selection The item to be selected
      * @warning This method assumes that the selection dialog is already open.
      */
-    UI_TEST_API static void select(tester& _tester, const std::string& _selection);
+    SIGHT_UI_TEST_API static void select(tester& _tester, const std::string& _selection);
 };
 
 } // namespace sight::ui::testCore::helper

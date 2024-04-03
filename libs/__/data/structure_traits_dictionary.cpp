@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,7 +113,9 @@ structure_traits_dictionary::StructureTypeNameContainer structure_traits_diction
 
 //------------------------------------------------------------------------------
 
-DATA_API void structure_traits_dictionary::set_structure_traits_map(const structure_traits_map_t& _structure_traits_map)
+SIGHT_DATA_API void structure_traits_dictionary::set_structure_traits_map(
+    const structure_traits_map_t& _structure_traits_map
+)
 {
     m_structure_traits_map = _structure_traits_map;
 }

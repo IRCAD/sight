@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <functional>
 
@@ -37,22 +37,22 @@ namespace sight::viz::scene3d
  * /!\ DISCLAIMER: can not be used for parallel rendering as it is not supported by OGRE.
  * graphics workers should mainly be used to fill large gpu buffers in the background.
  */
-class VIZ_SCENE3D_CLASS_API graphics_worker
+class SIGHT_VIZ_SCENE3D_CLASS_API graphics_worker
 {
 public:
 
     using task_t = std::function<void ()>;
 
     /// Constructor, initializes the worker.
-    VIZ_SCENE3D_API graphics_worker()
+    SIGHT_VIZ_SCENE3D_API graphics_worker()
     = default;
 
     /// Destructor, clears all waiting tasks and waits on the one being executed.
-    VIZ_SCENE3D_API virtual ~graphics_worker()
+    SIGHT_VIZ_SCENE3D_API virtual ~graphics_worker()
     = default;
 
     /// Adds a task at the back of the worker's task queue.
-    VIZ_SCENE3D_API virtual void push_task(task_t _task) = 0;
+    SIGHT_VIZ_SCENE3D_API virtual void push_task(task_t _task) = 0;
 };
 
 //------------------------------------------------------------------------------

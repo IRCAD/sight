@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "utest_data/config.hpp"
+#include <sight/utest_data/config.hpp>
 
 #include <core/base.hpp>
 #include <core/type.hpp>
@@ -37,12 +37,12 @@ namespace sight::utest_data::generator
 /**
  * @brief   This class contains helper to generate images.
  */
-class UTEST_DATA_CLASS_API image
+class SIGHT_UTEST_DATA_CLASS_API image
 {
 public:
 
     /// Generate an image with random information (size, spacing, ...). Buffer is filled with random values.
-    UTEST_DATA_API static void generate_random_image(
+    SIGHT_UTEST_DATA_API static void generate_random_image(
         data::image::sptr _image,
         core::type _type,
         std::uint32_t _seed = 0
@@ -56,7 +56,7 @@ public:
     /// @param [in] _type image component type
     /// @param [in] _format image pixel format
     /// @param [in] _seed [optional] random seed used to generate the buffer. If not set, fill the buffer with 0.
-    UTEST_DATA_API static void generate_image(
+    SIGHT_UTEST_DATA_API static void generate_image(
         data::image::sptr _image,
         const data::image::size_t& _sizes             = {64, 64, 64},
         const data::image::spacing_t& _spacing        = {0, 0, 0},
@@ -67,10 +67,10 @@ public:
     );
 
     /// Fill image array with random value
-    UTEST_DATA_API static void randomize_image(data::image::sptr _image, std::uint32_t _seed = 0);
+    SIGHT_UTEST_DATA_API static void randomize_image(data::image::sptr _image, std::uint32_t _seed = 0);
 
     /// Fill array with random value
-    UTEST_DATA_API static void randomize_array(data::array::sptr _array, std::uint32_t _seed = 0);
+    SIGHT_UTEST_DATA_API static void randomize_array(data::array::sptr _array, std::uint32_t _seed = 0);
 };
 
 } // namespace sight::utest_data::generator

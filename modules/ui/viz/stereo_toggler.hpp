@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/viz/config.hpp"
 
 #include <core/com/signals.hpp>
 
@@ -52,31 +50,31 @@ namespace sight::module::ui::viz
  * interlaced image pairs.
  *
  */
-class MODULE_UI_VIZ_CLASS_API stereo_toggler : public sight::ui::action
+class stereo_toggler : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(stereo_toggler, sight::ui::action);
 
     /// Constructor.
-    MODULE_UI_VIZ_API stereo_toggler();
+    stereo_toggler();
 
     /// Destructor.
-    MODULE_UI_VIZ_API ~stereo_toggler() override;
+    ~stereo_toggler() override;
 
 protected:
 
     /// Configures the service.
-    MODULE_UI_VIZ_API void configuring() override;
+    void configuring() override;
 
     /// Starts the action service.
-    MODULE_UI_VIZ_API void starting() override;
+    void starting() override;
 
     /// Enables stereo if active, disables it otherwise.
-    MODULE_UI_VIZ_API void updating() override;
+    void updating() override;
 
     /// Stops the action service.
-    MODULE_UI_VIZ_API void stopping() override;
+    void stopping() override;
 
 private:
 

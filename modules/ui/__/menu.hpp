@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/__/config.hpp"
-
 #include <ui/__/menu.hpp>
 
 namespace sight::module::ui
@@ -32,17 +30,17 @@ namespace sight::module::ui
 /**
  * @brief   Defines the default menu for standard application
  */
-class MODULE_UI_CLASS_API menu : public sight::ui::menu
+class menu : public sight::ui::menu
 {
 public:
 
     SIGHT_DECLARE_SERVICE(menu, sight::ui::menu);
 
     /// Constructor. Do nothing.
-    MODULE_UI_API menu() noexcept;
+    menu() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_API ~menu() noexcept override;
+    ~menu() noexcept override;
 
 protected:
 
@@ -83,22 +81,22 @@ protected:
      *  @see sight::ui::menubar::initialize(),
      * sight::ui::layout::menu_manager::initialize()
      */
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Create the menu items and start the managed services.
      * @see sight::ui::menu::create()
      */
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Stop all actions and separator of this menu and remove menu to menubar
      * @see sight::ui::menu::destroy()
      */
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
     /// Updating service, do nothing.
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     ///@}
 };

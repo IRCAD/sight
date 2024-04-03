@@ -55,7 +55,7 @@ public:
      * @param _box_mtl_name             material used to display the box edges and faces.
      * @param _handle_mtl_name          material used to display the widget handles.
      */
-    VIZ_SCENE3D_API clipping_box(
+    SIGHT_VIZ_SCENE3D_API clipping_box(
         std::string _id,
         Ogre::SceneNode* _parent_scene_node,
         Ogre::Camera* _camera,
@@ -67,7 +67,7 @@ public:
     );
 
     /// Destructor.
-    VIZ_SCENE3D_API virtual ~clipping_box();
+    SIGHT_VIZ_SCENE3D_API virtual ~clipping_box();
 
     /// Find out if a movable object belongs to this widget.
     bool belongs_to_widget(const Ogre::MovableObject* _object) const;
@@ -81,10 +81,10 @@ public:
      * @param _screen_x cursor's horizontal position.
      * @param _screen_y cursor's vertical position.
      */
-    VIZ_SCENE3D_API void widget_picked(Ogre::MovableObject* _picked_widget, int _screen_x, int _screen_y);
+    SIGHT_VIZ_SCENE3D_API void widget_picked(Ogre::MovableObject* _picked_widget, int _screen_x, int _screen_y);
 
     /// Drops the currently selected widget.
-    VIZ_SCENE3D_API void widget_released();
+    SIGHT_VIZ_SCENE3D_API void widget_released();
 
     /**
      * @brief Translates the clipping box along the screen's axes.
@@ -96,7 +96,7 @@ public:
      *
      * @return whether the box was selected and moved.
      */
-    VIZ_SCENE3D_API bool move_clipping_box(int _x, int _y, int _dx, int _dy);
+    SIGHT_VIZ_SCENE3D_API bool move_clipping_box(int _x, int _y, int _dx, int _dy);
 
     /**
      * @brief Scales the clipping box.
@@ -107,22 +107,22 @@ public:
      *
      * @return whether the box was selected and scaled.
      */
-    VIZ_SCENE3D_API bool scale_clipping_box(int _x, int _y, int _dy);
+    SIGHT_VIZ_SCENE3D_API bool scale_clipping_box(int _x, int _y, int _dy);
 
     /// Returns whether the widgets are visible or hidden.
-    [[nodiscard]] VIZ_SCENE3D_API bool get_visibility() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API bool get_visibility() const;
 
     /// Hides or shows the widget.
-    VIZ_SCENE3D_API void set_visibility(bool _visibility);
+    SIGHT_VIZ_SCENE3D_API void set_visibility(bool _visibility);
 
     /// Returns the axis aligned coordinates of the clipping widget in volume image space.
-    [[nodiscard]] VIZ_SCENE3D_API Ogre::AxisAlignedBox get_clipping_box() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API Ogre::AxisAlignedBox get_clipping_box() const;
 
     /// Returns the clipping box transform in world space.
-    [[nodiscard]] VIZ_SCENE3D_API Ogre::Matrix4 get_clipping_transform() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API Ogre::Matrix4 get_clipping_transform() const;
 
     /// Sets the clipping cube from the input transform.
-    VIZ_SCENE3D_API void update_from_transform(const Ogre::Matrix4& _clipping_mx);
+    SIGHT_VIZ_SCENE3D_API void update_from_transform(const Ogre::Matrix4& _clipping_mx);
 
 private:
 

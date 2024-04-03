@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/vision/config.hpp"
 
 #include <data/camera_set.hpp>
 #include <data/image.hpp>
@@ -68,7 +66,7 @@ namespace sight::module::filter::vision
  *
  * @subsection Configuration Configuration
  */
-class MODULE_FILTER_VISION_CLASS_API point_cloud_from_depth_map : public service::filter
+class point_cloud_from_depth_map : public service::filter
 {
 public:
 
@@ -77,12 +75,12 @@ public:
     /**
      * @brief point_cloud_from_depth_map constructor.
      */
-    MODULE_FILTER_VISION_API point_cloud_from_depth_map() noexcept;
+    point_cloud_from_depth_map() noexcept;
 
     /**
      * @brief point_cloud_from_depth_map destructor.
      */
-    MODULE_FILTER_VISION_API ~point_cloud_from_depth_map() noexcept override;
+    ~point_cloud_from_depth_map() noexcept override;
 
 protected:
 
@@ -91,28 +89,28 @@ protected:
      *
      * @throw core::tools::failed
      */
-    MODULE_FILTER_VISION_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Stops the service
      *
      * @throw core::tools::failed
      */
-    MODULE_FILTER_VISION_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Configures the service
      *
      * @throw core::tools::failed
      */
-    MODULE_FILTER_VISION_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Does nothing
      *
      * @throw core::tools::failed
      */
-    MODULE_FILTER_VISION_API void updating() override;
+    void updating() override;
 
 private:
 
@@ -120,7 +118,7 @@ private:
      * @name Slots API
      * @{
      */
-    MODULE_FILTER_VISION_API static const core::com::slots::key_t SET_DEPTH_RANGE;
+    static const core::com::slots::key_t SET_DEPTH_RANGE;
     /** @} */
 
     /// SLOT: update the depth range

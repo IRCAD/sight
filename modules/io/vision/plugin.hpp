@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <core/runtime/plugin.hpp>
+#include <sight/modules/io/vision/config.hpp>
 
-#include <modules/io/vision/config.hpp>
+#include <core/runtime/plugin.hpp>
 
 namespace sight::module::io::vision
 {
@@ -41,13 +41,13 @@ struct plugin : public core::runtime::plugin
      * @exception core::runtime::RuntimeException.
      * This method is used by runtime in order to initialize the module.
      */
-    void start() override;
+    SIGHT_MODULE_IO_VISION_API void start() override;
 
     /**
      * @brief Stop method.
      * This method is used by runtime in order to close the module.
      */
-    void stop() noexcept override;
+    SIGHT_MODULE_IO_VISION_API void stop() noexcept override;
 };
 
 } // namespace sight::module::io::vision

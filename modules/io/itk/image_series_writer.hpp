@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/itk/config.hpp"
 
 #include <io/__/service/writer.hpp>
 
@@ -50,38 +48,38 @@ namespace sight::module::io::itk
  * define
  * the path.
  */
-class MODULE_IO_ITK_CLASS_API image_series_writer : public sight::io::service::writer
+class image_series_writer : public sight::io::service::writer
 {
 public:
 
     SIGHT_DECLARE_SERVICE(image_series_writer, sight::io::service::writer);
 
-    MODULE_IO_ITK_API image_series_writer() noexcept;
+    image_series_writer() noexcept;
 
-    MODULE_IO_ITK_API ~image_series_writer() noexcept override;
+    ~image_series_writer() noexcept override;
 
 protected:
 
     /// Override
-    MODULE_IO_ITK_API void starting() override;
+    void starting() override;
 
     /// Override
-    MODULE_IO_ITK_API void stopping() override;
+    void stopping() override;
 
     /// Override
-    MODULE_IO_ITK_API void configuring() override;
+    void configuring() override;
 
     /// Override
-    MODULE_IO_ITK_API void updating() override;
+    void updating() override;
 
     /// Override
-    MODULE_IO_ITK_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     /// Configure using GUI.
-    MODULE_IO_ITK_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
     /// Return managed file type, here FILE
-    MODULE_IO_ITK_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 };
 
 } // namespace sight::module::io::itk

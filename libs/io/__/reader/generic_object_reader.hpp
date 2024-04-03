@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
+
 #include "io/__/reader/object_reader.hpp"
 
 namespace sight::io::reader

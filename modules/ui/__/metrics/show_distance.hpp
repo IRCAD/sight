@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/__/config.hpp"
 
 #include <data/image.hpp>
 
@@ -47,7 +45,7 @@ namespace sight::module::ui::metrics
  * @subsection In-Out In-Out
  * - \b image [sight::data::image]: image containing the distances.
  */
-class MODULE_UI_CLASS_API show_distance final : public sight::ui::action
+class show_distance final : public sight::ui::action
 {
 public:
 
@@ -55,16 +53,16 @@ public:
     SIGHT_DECLARE_SERVICE(show_distance, sight::ui::action);
 
     /// Initialize slots.
-    MODULE_UI_API show_distance() noexcept;
+    show_distance() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_API ~show_distance() noexcept override;
+    ~show_distance() noexcept override;
 
 protected:
 
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -72,13 +70,13 @@ protected:
      *
      * Connect data::image::DISTANCE_DISPLAYED_SIG of s_IMAGE_INOUT to SHOW_DISTANCE_SLOT
      */
-    MODULE_UI_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     /// Shows or hides distances.
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /// Stops the action.
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
 private:
 

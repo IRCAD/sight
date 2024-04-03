@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <ui/__/dialog/selector_base.hpp>
 
@@ -39,31 +39,31 @@ namespace sight::ui::qt::dialog
 /**
  * @brief   Allows choosing an element among several selections.
  */
-class UI_QT_CLASS_API selector : public ui::dialog::selector_base
+class SIGHT_UI_QT_CLASS_API selector : public ui::dialog::selector_base
 {
 public:
 
     SIGHT_DECLARE_CLASS(selector, ui::dialog::selector_base, ui::factory::make<selector>);
 
-    UI_QT_API ~selector() override = default;
+    SIGHT_UI_QT_API ~selector() override = default;
 
     /// The string list that can be chosen by the selector.
-    UI_QT_API void set_choices_preset(choices_preset_t _selections) override;
+    SIGHT_UI_QT_API void set_choices_preset(choices_preset_t _selections) override;
 
     /// Sets the selector title.
-    UI_QT_API void set_title(std::string _title) override;
+    SIGHT_UI_QT_API void set_title(std::string _title) override;
 
     /// Allows multiple selections (default = false).
-    UI_QT_API void set_multiple(bool _multiple) override;
+    SIGHT_UI_QT_API void set_multiple(bool _multiple) override;
 
     /// Show the selector and return the selection.
-    UI_QT_API selections_t show() override;
+    SIGHT_UI_QT_API selections_t show() override;
 
     /// Set the message
-    UI_QT_API void set_message(const std::string& _msg) override;
+    SIGHT_UI_QT_API void set_message(const std::string& _msg) override;
 
     /// Add a custom button to this dialog
-    UI_QT_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
+    SIGHT_UI_QT_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
 private:
 

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/factory/new.hpp"
 #include "data/image.hpp"
 #include "data/material.hpp"
@@ -40,7 +41,7 @@ namespace sight::data
  *
  * A reconstruction is represented by a mesh, a material and an image (mask).
  */
-class DATA_CLASS_API reconstruction final : public object
+class SIGHT_DATA_CLASS_API reconstruction final : public object
 {
 public:
 
@@ -51,13 +52,13 @@ public:
     /**
      * @brief Constructor
      */
-    DATA_API reconstruction();
+    SIGHT_DATA_API reconstruction();
 
     /// Destructor
-    DATA_API ~reconstruction() noexcept override = default;
+    SIGHT_DATA_API ~reconstruction() noexcept override = default;
 
     /// Constant to inform that mask volume has not been computed yet.
-    DATA_API static const double NO_COMPUTED_MASK_VOLUME;
+    SIGHT_DATA_API static const double NO_COMPUTED_MASK_VOLUME;
 
     /**
      * @{
@@ -122,33 +123,33 @@ public:
     using mesh_changed_signal_t = core::com::signal<void (mesh::sptr)>;
 
     /// Key in m_signals map of signal m_sigMeshModified
-    DATA_API static const core::com::signals::key_t MESH_CHANGED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t MESH_CHANGED_SIG;
 
     /// Type of signal when mesh is modified
     using visibility_modified_signal_t = core::com::signal<void (bool)>;
 
     /// Key in m_signals map of signal m_sigVisibilityModified
-    DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
 /**
  * @}
  */
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const reconstruction& _other) const noexcept;
-    DATA_API bool operator!=(const reconstruction& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const reconstruction& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const reconstruction& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

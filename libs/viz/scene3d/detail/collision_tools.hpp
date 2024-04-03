@@ -50,7 +50,7 @@
 ******************************************************************************************/
 // cspell: enable
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <Ogre.h>
 

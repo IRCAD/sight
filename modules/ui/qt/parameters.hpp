@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <ui/__/editor.hpp>
 #include <ui/__/parameter.hpp>
 
@@ -142,8 +140,8 @@ namespace sight::module::ui::qt
  * - \b min_width (optional, int) Minimum width, in device coordinates. @todo Support relative widget size.
  * - \b min_height (optional, int) Minimum height, in device coordinates. @todo Support relative widget size.
  */
-class MODULE_UI_QT_CLASS_API parameters : public QObject,
-                                          public sight::ui::editor
+class parameters : public QObject,
+                   public sight::ui::editor
 {
 Q_OBJECT
 
@@ -241,22 +239,22 @@ public:
     using int_widget    = scalar_widget<int>;
     using double_widget = scalar_widget<double>;
 
-    MODULE_UI_QT_API parameters() noexcept;
+    parameters() noexcept;
 
     /// Destructor. Does nothing
     ~parameters() noexcept override = default;
 
     /// Configure the editor.
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /// Initializes Qt input widgets for parameters according to xml configuration
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /// This method launches the editor::stopping method
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /// This method is used to update services. Does nothing
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
 private Q_SLOTS:
 

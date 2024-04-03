@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/itk/config.hpp"
+#include <sight/io/itk/config.hpp>
 
 #include <data/matrix4.hpp>
 
@@ -34,7 +34,7 @@ namespace sight::io::itk::helper
 /**
  * @brief Helper class to convert Sight Matrix4 to itk Matrix and the other way around.
  */
-class IO_ITK_CLASS_API transform
+class SIGHT_IO_ITK_CLASS_API transform
 {
 public:
 
@@ -45,14 +45,14 @@ public:
      * @param _in_trf input data::matrix4
      * @return Pointer to a itk::Matrix<double, 4, 4>
      */
-    IO_ITK_API static matrix_t convert_to_itk(const data::matrix4::csptr& _in_trf);
+    SIGHT_IO_ITK_API static matrix_t convert_to_itk(const data::matrix4::csptr& _in_trf);
 
     /**
      * @brief convert an itk::Transform<double, 4, 4> to a Sight one
      * @param _in_trf Const Pointer to a itk::Transform<double, 4,4>
      * @param _out_trf output data::matrix4 (needs to be allocated before)
      */
-    IO_ITK_API static void convert_from_itk(
+    SIGHT_IO_ITK_API static void convert_from_itk(
         const matrix_t& _in_trf,
         data::matrix4::sptr& _out_trf
     );

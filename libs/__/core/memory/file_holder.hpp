@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/macros.hpp>
 
@@ -33,14 +33,14 @@ namespace sight::core::memory
 
 struct file_auto_delete;
 
-class CORE_CLASS_API file_holder
+class SIGHT_CORE_CLASS_API file_holder
 {
 public:
 
     file_holder()
     = default;
 
-    CORE_API file_holder(const std::filesystem::path& _file, bool _autodelete = false);
+    SIGHT_CORE_API file_holder(const std::filesystem::path& _file, bool _autodelete = false);
 
     operator std::filesystem::path() const
     {

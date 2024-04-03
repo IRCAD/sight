@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "geometry/vision/config.hpp"
+#include <sight/geometry/vision/config.hpp>
 
 #include <data/matrix4.hpp>
 #include <data/point_list.hpp>
@@ -49,7 +49,7 @@ using error_and_points_t = std::pair<double, std::vector<cv::Point2f> >;
  * @return std::pair< double, std::vector< cv::Point2f > >, first element is the arithmetical root-squared mean error
  * and the second element is a vector of reprojected 2d points (for display purpose)
  */
-GEOMETRY_VISION_API error_and_points_t compute_reprojection_error(
+SIGHT_GEOMETRY_VISION_API error_and_points_t compute_reprojection_error(
     const std::vector<cv::Point3f>& _object_points,
     const std::vector<cv::Point2f>& _image_points,
     const cv::Mat& _rvecs,
@@ -67,7 +67,7 @@ GEOMETRY_VISION_API error_and_points_t compute_reprojection_error(
  * @param _flag: cv::solvePnP method to use
  * @return cv::Mat (4x4 with float values) corresponding to the camera pose
  */
-GEOMETRY_VISION_API cv::Matx44f camera_pose_monocular(
+SIGHT_GEOMETRY_VISION_API cv::Matx44f camera_pose_monocular(
     const std::vector<cv::Point3f>& _object_points,
     const std::vector<cv::Point2f>& _image_points,
     const cv::Mat _camera_matrix,
@@ -88,7 +88,7 @@ GEOMETRY_VISION_API cv::Matx44f camera_pose_monocular(
  * @param _t: translation vector from camera1 to camera2
  * @return
  */
-GEOMETRY_VISION_API cv::Matx44f camera_pose_stereo(
+SIGHT_GEOMETRY_VISION_API cv::Matx44f camera_pose_stereo(
     const std::vector<cv::Point3f>& _object_points,
     const cv::Mat& _camera_matrix1,
     const cv::Mat& _dist_coeffs1,
@@ -108,7 +108,7 @@ GEOMETRY_VISION_API cv::Matx44f camera_pose_stereo(
  * tip of the attached passive pointing device
  * @param _center_matrix corresponding to the center of the computed sphere used to calibrate the pointing tool
  */
-GEOMETRY_VISION_API void calibrate_pointing_tool(
+SIGHT_GEOMETRY_VISION_API void calibrate_pointing_tool(
     const sight::data::vector::csptr _matrices_vector,
     sight::data::matrix4::sptr _calibration_matrix,
     sight::data::matrix4::sptr _center_matrix
@@ -126,7 +126,7 @@ GEOMETRY_VISION_API void calibrate_pointing_tool(
  *
  * @return List of detected chessboard points. nullptr if detection failed.
  */
-GEOMETRY_VISION_API sight::data::point_list::sptr detect_chessboard(
+SIGHT_GEOMETRY_VISION_API sight::data::point_list::sptr detect_chessboard(
     const cv::Mat& _img,
     std::size_t _x_dim,
     std::size_t _y_dim,

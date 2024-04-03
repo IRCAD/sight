@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/vtk/config.hpp"
 
 #include <data/image_series.hpp>
 
@@ -62,7 +60,7 @@ namespace sight::module::io::vtk
  * - \b data [sight::data::image_series]: ImageSeries containing read image
  *
  */
-class MODULE_IO_VTK_CLASS_API image_series_reader : public sight::io::service::reader
+class image_series_reader : public sight::io::service::reader
 {
 public:
 
@@ -71,7 +69,7 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    MODULE_IO_VTK_API image_series_reader() noexcept;
+    image_series_reader() noexcept;
 
     ~image_series_reader() noexcept override =
         default;
@@ -81,32 +79,32 @@ public:
     /**
      * @brief Configure the image path.
      */
-    MODULE_IO_VTK_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
     /**
      * @brief Starting method.
      *
      * This method is used to initialize the service.
      */
-    MODULE_IO_VTK_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Stopping method.
      *
      * The stopping method is empty for this service.
      */
-    MODULE_IO_VTK_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Configuring method.
      *
      * The configuring method only calls the configuring method from the base class
      */
-    MODULE_IO_VTK_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Updating method.
@@ -114,14 +112,14 @@ protected:
      * This method is used to update the service.
      * The image is read.
      */
-    MODULE_IO_VTK_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Info method.
      *
      * This method is used to give informations about the service.
      */
-    MODULE_IO_VTK_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
 private:
 

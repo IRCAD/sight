@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/io/realsense/config.hpp"
+#include "sight/modules/io/realsense/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -32,18 +32,18 @@ namespace sight::module::io::realsense
 /**
  * @brief   This class is started when the modules are loaded.
  */
-struct MODULE_IO_REALSENSE_CLASS_API plugin : public core::runtime::plugin
+struct SIGHT_MODULE_IO_REALSENSE_CLASS_API plugin : public core::runtime::plugin
 {
     /**
      * @brief   destructor
      */
-    MODULE_IO_REALSENSE_API ~plugin() noexcept override;
+    SIGHT_MODULE_IO_REALSENSE_API ~plugin() noexcept override;
 
     // Overrides
-    MODULE_IO_REALSENSE_API void start() override;
+    SIGHT_MODULE_IO_REALSENSE_API void start() override;
 
     // Overrides
-    MODULE_IO_REALSENSE_API void stop() noexcept override;
+    SIGHT_MODULE_IO_REALSENSE_API void stop() noexcept override;
 };
 
 } // namespace sight::module::io::realsense

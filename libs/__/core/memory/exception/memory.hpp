@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/exception.hpp>
 
@@ -32,7 +32,7 @@ namespace sight::core::memory::exception
 /**
  * @brief   Implements an exception class for fwMemory
  */
-struct CORE_CLASS_API memory : core::exception
+struct SIGHT_CORE_CLASS_API memory : core::exception
 {
     memory(const std::string& _err) :
         core::exception(_err)

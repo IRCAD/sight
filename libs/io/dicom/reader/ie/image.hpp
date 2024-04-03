@@ -33,7 +33,7 @@ namespace sight::io::dicom::reader::ie
 /**
  * @brief image Information Entity class
  */
-class IO_DICOM_CLASS_API image : public io::dicom::reader::ie::information_entity<data::image>
+class SIGHT_IO_DICOM_CLASS_API image : public io::dicom::reader::ie::information_entity<data::image>
 {
 public:
 
@@ -47,7 +47,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API image(
+    SIGHT_IO_DICOM_API image(
         const CSPTR(data::dicom_series)& _dicom_series,
         const SPTR(gdcm::Reader)& _reader,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
@@ -58,25 +58,25 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~image() override;
+    SIGHT_IO_DICOM_API ~image() override;
 
     /**
      * @brief Read image Plane Module tags
      * @see PS 3.3 C.7.6.2
      */
-    IO_DICOM_API virtual void read_image_plane_module();
+    SIGHT_IO_DICOM_API virtual void read_image_plane_module();
 
     /**
      * @brief Read image Pixel Module tags
      * @see PS 3.3 C.7.6.3
      */
-    IO_DICOM_API virtual void read_image_pixel_module();
+    SIGHT_IO_DICOM_API virtual void read_image_pixel_module();
 
     /**
      * @brief Read VOI LUT Module tags
      * @see PS 3.3 C.11.2
      */
-    IO_DICOM_API virtual void read_voilut_module();
+    SIGHT_IO_DICOM_API virtual void read_voilut_module();
 
     /// Enable buffer rotation
     void set_buffer_rotation_enabled(bool _enabled)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "service/config.hpp"
+#include <sight/service/config.hpp>
 
 #include <service/base.hpp>
 
@@ -32,7 +32,7 @@ namespace sight::service
 /**
  * @brief   synchronizer service synchronize objects from timelines
  */
-class SERVICE_CLASS_API synchronizer : public service::base
+class SIGHT_SERVICE_CLASS_API synchronizer : public service::base
 {
 public:
 
@@ -41,12 +41,12 @@ public:
     /**
      * @brief Constructor.
      */
-    SERVICE_API synchronizer() noexcept;
+    SIGHT_SERVICE_API synchronizer() noexcept;
 
     /**
      * @brief Destructor.
      */
-    SERVICE_API ~synchronizer() noexcept override;
+    SIGHT_SERVICE_API ~synchronizer() noexcept override;
 };
 
 } //namespace sight::service

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/ui/__/config.hpp"
+#include "sight/modules/ui/__/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -33,12 +33,12 @@ namespace sight::module::ui
  * @brief   This class is called when the gui module is loaded.
  */
 
-class MODULE_UI_CLASS_API plugin : public core::runtime::plugin
+class SIGHT_MODULE_UI_CLASS_API plugin : public core::runtime::plugin
 {
 public:
 
     ///@brief  Destructor. Do nothing.
-    MODULE_UI_API ~plugin() noexcept override = default;
+    SIGHT_MODULE_UI_API ~plugin() noexcept override = default;
 
     /**
      * @brief This method is used by runtime to initialize the module.
@@ -48,12 +48,12 @@ public:
      * Register first basic services of type action, editor and view.
      * Secondly, verifies if the command line and profile.xml are well formed and starts the wxWidgets IHM.
      */
-    MODULE_UI_API void start() override;
+    SIGHT_MODULE_UI_API void start() override;
 
     /**
      * @brief This method is used by runtime to close the module. Do nothing.
      */
-    MODULE_UI_API void stop() noexcept override;
+    SIGHT_MODULE_UI_API void stop() noexcept override;
 };
 
 } // namespace sight::module::ui

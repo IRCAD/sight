@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/dicom/config.hpp"
+#include <sight/filter/dicom/config.hpp>
+
 #include "filter/dicom/sorter/base.hpp"
 
 #include <data/dicom_series.hpp>
@@ -35,32 +36,32 @@ namespace sight::filter::dicom::sorter
 /**
  * @brief filter that uses a tag to sort the instances.
  */
-class FILTER_DICOM_CLASS_API tag_value_sorter : public base
+class SIGHT_FILTER_DICOM_CLASS_API tag_value_sorter : public base
 {
 public:
 
     SIGHT_DECLARE_CLASS(tag_value_sorter, base, sight::filter::dicom::factory::make<tag_value_sorter>);
 
     /// Constructor
-    FILTER_DICOM_API tag_value_sorter();
+    SIGHT_FILTER_DICOM_API tag_value_sorter();
 
     /// Destructor
-    FILTER_DICOM_API ~tag_value_sorter() override;
+    SIGHT_FILTER_DICOM_API ~tag_value_sorter() override;
 
     /// Override
-    FILTER_DICOM_API dicom_series_container_t apply(
+    SIGHT_FILTER_DICOM_API dicom_series_container_t apply(
         const data::dicom_series::sptr& _series,
         const core::log::logger::sptr& _logger
     ) const override;
 
     /// Return the name of the filter
-    FILTER_DICOM_API std::string get_name() const override;
+    SIGHT_FILTER_DICOM_API std::string get_name() const override;
 
     /// Return the description of the filter
-    FILTER_DICOM_API std::string get_description() const override;
+    SIGHT_FILTER_DICOM_API std::string get_description() const override;
 
     /// Return true if a configuration is required
-    FILTER_DICOM_API bool is_configuration_required() const override;
+    SIGHT_FILTER_DICOM_API bool is_configuration_required() const override;
 
     /**
      * @brief Tag used to sort instances

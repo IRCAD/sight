@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/__/config.hpp"
 
 #include <app/helper/config_launcher.hpp>
 
@@ -71,23 +69,23 @@ namespace sight::module::ui
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter. The variable GENERIC_UID can be used as unique identifier when the configuration is launched.
  */
-class MODULE_UI_CLASS_API config_launcher : public sight::ui::action
+class config_launcher : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(config_launcher, sight::ui::action);
 
     /// Constructor. Do nothing.
-    MODULE_UI_API config_launcher() noexcept;
+    config_launcher() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_API ~config_launcher() noexcept override;
+    ~config_launcher() noexcept override;
 
     /// Set the action service is activated/disable.
-    MODULE_UI_API void set_checked(bool _is_checked) override;
+    void set_checked(bool _is_checked) override;
 
     // Launched signal key
-    MODULE_UI_API static const core::com::signals::key_t LAUNCHED_SIG;
+    static const core::com::signals::key_t LAUNCHED_SIG;
 
 protected:
 

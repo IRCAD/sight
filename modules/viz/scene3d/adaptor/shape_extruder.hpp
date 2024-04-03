@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/viz/scene3d/adaptor/material.hpp"
-#include "modules/viz/scene3d/config.hpp"
 
 #include <core/com/signals.hpp>
 
@@ -82,7 +81,7 @@ namespace sight::module::viz::scene3d::adaptor
  * click after last points
  * otherwise the slot validate() should be called (through a button, or connected to another signal).
  */
-class MODULE_VIZ_SCENE3D_CLASS_API shape_extruder final :
+class shape_extruder final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::interactor::base,
     private service::notifier
@@ -109,24 +108,24 @@ public:
     SIGHT_DECLARE_SERVICE(shape_extruder, sight::viz::scene3d::adaptor);
 
     /// Initializes the slot and the signal.
-    MODULE_VIZ_SCENE3D_API shape_extruder() noexcept;
+    shape_extruder() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~shape_extruder() noexcept final = default;
+    ~shape_extruder() noexcept final = default;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Creates Ogre resources and materials.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /// Destroys all Ogre resources.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
 private:
 

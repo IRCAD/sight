@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/base_object.hpp>
 
@@ -33,7 +33,7 @@ namespace sight::core::com
  * @brief Base class for Slot connection implementation.
  * This class is for internal use purpose.
  */
-struct CORE_CLASS_API slot_connection_base : core::base_object
+struct SIGHT_CORE_CLASS_API slot_connection_base : core::base_object
 {
     /**
      * @name Typedefs

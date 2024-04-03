@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/container/menu.hpp"
 #include "ui/__/container/menu_item.hpp"
 #include "ui/__/menu_item_callback.hpp"
@@ -41,7 +42,7 @@ namespace sight::ui::layout
 /**
  * @brief   Defines the menu layout manager for IHM.
  */
-class UI_CLASS_API menu_manager : public ui::object
+class SIGHT_UI_CLASS_API menu_manager : public ui::object
 {
 public:
 
@@ -80,20 +81,20 @@ public:
         bool m_is_menu {false};
     };
 
-    UI_API const static registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API const static registry_key_t REGISTRY_KEY;
 
     /// Destructor. Do nothing.
-    UI_API ~menu_manager() override = default;
+    SIGHT_UI_API ~menu_manager() override = default;
 
     /**
      * @brief Returns the vector of menu_item managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::menu_item::sptr> get_menu_items();
+    SIGHT_UI_API virtual std::vector<ui::container::menu_item::sptr> get_menu_items();
 
     /**
      * @brief Returns the vector of menu managed by this layout.
      */
-    UI_API virtual std::vector<ui::container::menu::sptr> get_menus();
+    SIGHT_UI_API virtual std::vector<ui::container::menu::sptr> get_menus();
 
     /**
      * @brief Initialize layout managers.
@@ -136,33 +137,33 @@ public:
      *  - \b name (mandatory) : give the name of the menu that will appear in the interface.
      * - \<separator/\> : allow to divide the menu by part (draw a line).
      */
-    UI_API virtual void initialize(const ui::config_t& _configuration);
+    SIGHT_UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Instantiate actions with parent menu.
      */
-    UI_API virtual void create_layout(ui::container::menu::sptr _parent, const std::string& _id) = 0;
+    SIGHT_UI_API virtual void create_layout(ui::container::menu::sptr _parent, const std::string& _id) = 0;
 
     /**
      * @brief Destroy local actions.
      * @pre services using this actions must be stopped before.
      */
-    UI_API virtual void destroy_layout() = 0;
+    SIGHT_UI_API virtual void destroy_layout() = 0;
 
     /**
      * @brief Set the action visibility.
      */
-    UI_API virtual void menu_item_set_visible(ui::container::menu_item::sptr, bool _is_visible) = 0;
+    SIGHT_UI_API virtual void menu_item_set_visible(ui::container::menu_item::sptr, bool _is_visible) = 0;
 
     /**
      * @brief Set the action enable or not.
      */
-    UI_API virtual void menu_item_set_enabled(ui::container::menu_item::sptr, bool _is_enabled) = 0;
+    SIGHT_UI_API virtual void menu_item_set_enabled(ui::container::menu_item::sptr, bool _is_enabled) = 0;
 
     /**
      * @brief Set the action checked or not.
      */
-    UI_API virtual void menu_item_set_checked(ui::container::menu_item::sptr, bool _is_checked) = 0;
+    SIGHT_UI_API virtual void menu_item_set_checked(ui::container::menu_item::sptr, bool _is_checked) = 0;
 
     /**
      * @brief Sets callbacks associate with menu items.
@@ -177,7 +178,7 @@ protected:
     /**
      * @brief Helper to destroy local actions.
      */
-    UI_API virtual void destroy_actions();
+    SIGHT_UI_API virtual void destroy_actions();
 
     /// All actions managed by this layout.
     std::vector<ui::container::menu_item::sptr> m_menu_items;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/trackball_interactor.hpp>
@@ -52,7 +50,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
  * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API trackball_camera final : public sight::viz::scene3d::adaptor
+class trackball_camera final : public sight::viz::scene3d::adaptor
 {
 public:
 
@@ -60,24 +58,24 @@ public:
     SIGHT_DECLARE_SERVICE(trackball_camera, sight::viz::scene3d::adaptor);
 
     /// Constructor.
-    MODULE_VIZ_SCENE3D_API trackball_camera() noexcept = default;
+    trackball_camera() noexcept = default;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~trackball_camera() noexcept final = default;
+    ~trackball_camera() noexcept final = default;
 
 protected:
 
     /// Configures the layer and the interaction priority.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Adds trackball interactions to the layer.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /// Updates the service. Unused here.
-    MODULE_VIZ_SCENE3D_API void updating() noexcept final;
+    void updating() noexcept final;
 
     /// Removes trackball interactions from the layer.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
 private:
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/base.hpp>
 
@@ -37,7 +37,7 @@ namespace sight::core::memory
  * Converts string to number of bytes and vice-versa. This class is also able to
  * manage conversions between units standards (IEC, SI)
  */
-class CORE_CLASS_API byte_size
+class SIGHT_CORE_CLASS_API byte_size
 {
 public:
 
@@ -47,21 +47,21 @@ public:
         iec
     };
 
-    CORE_API static constexpr std::uint64_t BYTES = 1;
+    SIGHT_CORE_API static constexpr std::uint64_t BYTES = 1;
 
     // SI units
-    CORE_API static constexpr std::uint64_t KB = 1000LL;
-    CORE_API static constexpr std::uint64_t MB = 1000000LL;
-    CORE_API static constexpr std::uint64_t GB = 1000000000LL;
-    CORE_API static constexpr std::uint64_t TB = 1000000000000LL;
-    CORE_API static constexpr std::uint64_t PB = 1000000000000000LL;
+    SIGHT_CORE_API static constexpr std::uint64_t KB = 1000LL;
+    SIGHT_CORE_API static constexpr std::uint64_t MB = 1000000LL;
+    SIGHT_CORE_API static constexpr std::uint64_t GB = 1000000000LL;
+    SIGHT_CORE_API static constexpr std::uint64_t TB = 1000000000000LL;
+    SIGHT_CORE_API static constexpr std::uint64_t PB = 1000000000000000LL;
 
     // IEC units
-    CORE_API static constexpr std::uint64_t KI_B = 1LL << 10;
-    CORE_API static constexpr std::uint64_t MI_B = 1LL << 20;
-    CORE_API static constexpr std::uint64_t GI_B = 1LL << 30;
-    CORE_API static constexpr std::uint64_t TI_B = 1LL << 40;
-    CORE_API static constexpr std::uint64_t PI_B = 1LL << 50;
+    SIGHT_CORE_API static constexpr std::uint64_t KI_B = 1LL << 10;
+    SIGHT_CORE_API static constexpr std::uint64_t MI_B = 1LL << 20;
+    SIGHT_CORE_API static constexpr std::uint64_t GI_B = 1LL << 30;
+    SIGHT_CORE_API static constexpr std::uint64_t TI_B = 1LL << 40;
+    SIGHT_CORE_API static constexpr std::uint64_t PI_B = 1LL << 50;
 
     using size_t = std::uint64_t;
     using unit_t = std::uint64_t;
@@ -69,13 +69,13 @@ public:
     /**
      * @brief Default constructor
      */
-    CORE_API byte_size();
+    SIGHT_CORE_API byte_size();
 
     /**
      * @brief Build a byte_size object from given size and unit
      * @{
      */
-    CORE_API byte_size(size_t _size, unit_t _unit = BYTES);
+    SIGHT_CORE_API byte_size(size_t _size, unit_t _unit = BYTES);
     template<typename T>
     byte_size(T _size, unit_t _unit = BYTES)
     {
@@ -87,12 +87,12 @@ public:
     /**
      * @brief Build a byte_size object from given size and unit
      */
-    CORE_API byte_size(double _size, unit_t _unit = BYTES);
+    SIGHT_CORE_API byte_size(double _size, unit_t _unit = BYTES);
 
     /**
      * @brief Build a byte_size object from given string
      */
-    CORE_API byte_size(const std::string& _size);
+    SIGHT_CORE_API byte_size(const std::string& _size);
 
     /**
      * @brief Convert this size to a string with specified unit
@@ -101,7 +101,7 @@ public:
      *
      * @return std::string representing the size
      */
-    [[nodiscard]] CORE_API std::string get_size_as_string(unit_t _unit = BYTES) const;
+    [[nodiscard]] SIGHT_CORE_API std::string get_size_as_string(unit_t _unit = BYTES) const;
     /**
      * @brief Convert this size to a human readable string in the required
      * Convert this size to a human readable string in the required standard.
@@ -112,7 +112,7 @@ public:
      *
      * @return std::string representing the size
      */
-    [[nodiscard]] CORE_API std::string get_human_readable_size(standard_type _standard = iec) const;
+    [[nodiscard]] SIGHT_CORE_API std::string get_human_readable_size(standard_type _standard = iec) const;
 
     /**
      * @brief Returns size in bytes.
@@ -126,7 +126,7 @@ public:
      * @brief Build a byte_size object from given size and unit
      * @{
      */
-    CORE_API void set_size(size_t _size, unit_t _unit = BYTES);
+    SIGHT_CORE_API void set_size(size_t _size, unit_t _unit = BYTES);
     //------------------------------------------------------------------------------
 
     template<typename T>
@@ -140,15 +140,15 @@ public:
     /**
      * @brief Build a byte_size object from given size and unit
      */
-    CORE_API void set_size(double _size, unit_t _unit = BYTES);
+    SIGHT_CORE_API void set_size(double _size, unit_t _unit = BYTES);
     /**
      * @brief Build a byte_size object from given string
      */
-    CORE_API void set_size(const std::string& _size);
+    SIGHT_CORE_API void set_size(const std::string& _size);
 
-    CORE_API byte_size& operator=(size_t _size);
-    CORE_API byte_size& operator=(double _size);
-    CORE_API byte_size& operator=(const std::string& _size);
+    SIGHT_CORE_API byte_size& operator=(size_t _size);
+    SIGHT_CORE_API byte_size& operator=(double _size);
+    SIGHT_CORE_API byte_size& operator=(const std::string& _size);
     //------------------------------------------------------------------------------
 
     template<typename T>
@@ -167,8 +167,8 @@ public:
         return get_human_readable_size();
     }
 
-    CORE_API static bool parse_size(const std::string& _s, std::uint64_t& _size);
-    CORE_API static std::string unit_to_string(unit_t _unit);
+    SIGHT_CORE_API static bool parse_size(const std::string& _s, std::uint64_t& _size);
+    SIGHT_CORE_API static std::string unit_to_string(unit_t _unit);
 
 protected:
 

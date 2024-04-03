@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/memory/config.hpp"
-
 #include <core/memory/buffer_object.hpp>
 
 #include <service/controller.hpp>
@@ -44,34 +42,34 @@ namespace sight::module::memory
  * @subsection In-Out In-Out
  * - \b target [sight::data::object]: object to dump lock.
  */
-class MODULE_MEMORY_CLASS_API lock_dump : public service::controller
+class lock_dump : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(lock_dump, sight::service::controller);
 
     /// Constructor. Does nothing
-    MODULE_MEMORY_API lock_dump() noexcept;
+    lock_dump() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_MEMORY_API ~lock_dump() noexcept override;
+    ~lock_dump() noexcept override;
 
 protected:
 
     /// Uses data::ObjectLock to dump lock the associated data
-    MODULE_MEMORY_API void starting() override;
+    void starting() override;
 
     /// Dump unlock the associated data
-    MODULE_MEMORY_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing
-    MODULE_MEMORY_API void updating() override;
+    void updating() override;
 
     /// Does nothing
-    MODULE_MEMORY_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     /// Does nothing
-    MODULE_MEMORY_API void configuring() override;
+    void configuring() override;
 
 private:
 

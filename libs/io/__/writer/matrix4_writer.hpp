@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
+
 #include "io/__/writer/generic_object_writer.hpp"
 
 #include <core/location/single_file.hpp>
@@ -39,7 +40,7 @@ namespace sight::io::writer
  * Writes 'sight::data::matrix4' into a '.trf' file.
  * This is an ascii file which contains matrix 4x4 values
  */
-class IO_CLASS_API matrix4_writer :
+class SIGHT_IO_CLASS_API matrix4_writer :
     public generic_object_writer<data::matrix4>,
     public core::location::single_file
 {
@@ -48,13 +49,13 @@ public:
     SIGHT_DECLARE_CLASS(matrix4_writer, generic_object_writer<data::matrix4>)
 
     /// Destructor. Does nothing.
-    IO_API ~matrix4_writer() override = default;
+    SIGHT_IO_API ~matrix4_writer() override = default;
 
     /// Writes the file using the standard iostream API.
-    IO_API void write() override;
+    SIGHT_IO_API void write() override;
 
     /// Defines the extensions supported by this writer. Here: ".trf"
-    IO_API std::string extension() const override;
+    SIGHT_IO_API std::string extension() const override;
 };
 
 } // namespace sight::io::writer

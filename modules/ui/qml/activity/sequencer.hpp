@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qml/config.hpp"
 
 #include <activity/sequencer.hpp>
 
@@ -87,8 +85,8 @@ namespace sight::module::ui::qml::activity
  *  @subsubsection In-Out In-Out
  * - \b activity_set [sight::data::activity_set]: used to store the Activity of the managed activities
  */
-class MODULE_UI_QML_CLASS_API sequencer : public sight::ui::qml::editor,
-                                          public sight::activity::sequencer
+class sequencer : public sight::ui::qml::editor,
+                  public sight::activity::sequencer
 {
 Q_OBJECT
 Q_PROPERTY(QStringList activityIds MEMBER m_activity_list)
@@ -98,11 +96,11 @@ public:
     SIGHT_DECLARE_SERVICE(sequencer, sight::ui::qml::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QML_API sequencer();
+    sequencer();
 
     /// Destructor. Do nothing.
 
-    MODULE_UI_QML_API ~sequencer() override;
+    ~sequencer() override;
 
     /**
      * @name Signals API

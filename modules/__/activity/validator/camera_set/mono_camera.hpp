@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/activity/config.hpp"
-
 #include <activity/validator/object.hpp>
 
 namespace sight::module::activity::validator::camera_set
@@ -33,7 +31,7 @@ namespace sight::module::activity::validator::camera_set
  * @brief Defines a validator which checks if the current CameraSet contains one and only one Camera and is
  *        calibrated.
  */
-class MODULE_ACTIVITY_CLASS_API mono_camera : public sight::activity::validator::object
+class mono_camera : public sight::activity::validator::object
 {
 public:
 
@@ -42,15 +40,14 @@ public:
         sight::activity::validator::object,
         sight::activity::validator::factory::make<mono_camera>
     )
-
     /// Destructor. Do nothing.
-    MODULE_ACTIVITY_API ~mono_camera() override = default;
+    ~mono_camera() override = default;
 
     /**
      * @brief Checks if the current CameraSet contains one and only one Camera and is calibrated.
      * @see module::activity::validator::base::validate
      */
-    MODULE_ACTIVITY_API sight::activity::validator::return_t validate(const CSPTR(data::object)& _current_object) const
+    sight::activity::validator::return_t validate(const CSPTR(data::object)& _current_object) const
     override;
 };
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <data/mesh.hpp>
 #include <data/reconstruction.hpp>
@@ -35,7 +35,7 @@ namespace sight::io::dicom::container
 /**
  * @brief This class defines one surface mesh item in order to transform into DICOM/Sight form.
  */
-class IO_DICOM_CLASS_API dicom_surface
+class SIGHT_IO_DICOM_CLASS_API dicom_surface
 {
 public:
 
@@ -57,7 +57,7 @@ public:
      * @brief Constructor
      * @param[in] _reconstruction Source reconstruction
      */
-    IO_DICOM_API dicom_surface(const data::reconstruction::csptr& _reconstruction);
+    SIGHT_IO_DICOM_API dicom_surface(const data::reconstruction::csptr& _reconstruction);
 
     /**
      * @brief Constructor
@@ -67,7 +67,7 @@ public:
      * @param[in] _cell_buffer_size Cells buffer size
      * @param[in] _normal_buffer Normals buffer
      */
-    IO_DICOM_API dicom_surface(
+    SIGHT_IO_DICOM_API dicom_surface(
         const data::mesh::position_t* _point_buffer,
         data::mesh::size_t _point_buffer_size,
         const dicom_cell_value_t* _cell_buffer,
@@ -76,27 +76,27 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~dicom_surface();
+    SIGHT_IO_DICOM_API ~dicom_surface();
 
     /// Convert DicomSurface container to Sight Mesh
-    IO_DICOM_API data::mesh::sptr convert_to_data();
+    SIGHT_IO_DICOM_API data::mesh::sptr convert_to_data();
 
     /// Return point coordinates buffer
-    [[nodiscard]] IO_DICOM_API const dicom_point_buffer_t& get_point_buffer() const;
+    [[nodiscard]] SIGHT_IO_DICOM_API const dicom_point_buffer_t& get_point_buffer() const;
     /// Return cell buffer
-    [[nodiscard]] IO_DICOM_API const dicom_cell_buffer_t& get_cell_buffer() const;
+    [[nodiscard]] SIGHT_IO_DICOM_API const dicom_cell_buffer_t& get_cell_buffer() const;
 
     /// Return normal buffer
-    [[nodiscard]] IO_DICOM_API const dicom_normal_buffer_t& get_normal_buffer() const;
+    [[nodiscard]] SIGHT_IO_DICOM_API const dicom_normal_buffer_t& get_normal_buffer() const;
 
     /// Return point coordinates buffer size
-    [[nodiscard]] IO_DICOM_API std::size_t get_point_buffer_size() const;
+    [[nodiscard]] SIGHT_IO_DICOM_API std::size_t get_point_buffer_size() const;
 
     /// Return cell buffer size
-    [[nodiscard]] IO_DICOM_API std::size_t get_cell_buffer_size() const;
+    [[nodiscard]] SIGHT_IO_DICOM_API std::size_t get_cell_buffer_size() const;
 
     /// Return normal buffer size
-    [[nodiscard]] IO_DICOM_API std::size_t get_normal_buffer_size() const;
+    [[nodiscard]] SIGHT_IO_DICOM_API std::size_t get_normal_buffer_size() const;
 
 private:
 

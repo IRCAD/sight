@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/memory/buffer_info.hpp"
 #include "core/memory/file_holder.hpp"
 
@@ -77,7 +78,7 @@ key()
  * A dump policy is used to trigger memory freeing process. The restore process
  * is always triggers when a lock is requested on a dumped buffer.
  */
-class CORE_CLASS_API buffer_manager : public core::base_object
+class SIGHT_CORE_CLASS_API buffer_manager : public core::base_object
 {
 public:
 
@@ -127,14 +128,14 @@ public:
      *
      * @param _buffer_ptr BufferObject's buffer pointer.
      */
-    CORE_API virtual std::shared_future<void> register_buffer(buffer_ptr_t _buffer_ptr);
+    SIGHT_CORE_API virtual std::shared_future<void> register_buffer(buffer_ptr_t _buffer_ptr);
 
     /**
      * @brief Hook called when a BufferObject is destroyed
      *
      * @param _buffer_ptr BufferObject's buffer pointer.
      */
-    CORE_API virtual std::shared_future<void> unregister_buffer(buffer_ptr_t _buffer_ptr);
+    SIGHT_CORE_API virtual std::shared_future<void> unregister_buffer(buffer_ptr_t _buffer_ptr);
 
     /**
      * @brief Hook called when an allocation is requested from a BufferObject
@@ -143,7 +144,7 @@ public:
      * @param _size requested size for allocation
      * @param _policy BufferObject's allocation policy
      */
-    CORE_API virtual std::shared_future<void> allocate_buffer(
+    SIGHT_CORE_API virtual std::shared_future<void> allocate_buffer(
         buffer_ptr_t _buffer_ptr,
         size_t _size,
         const core::memory::buffer_allocation_policy::sptr& _policy
@@ -157,7 +158,7 @@ public:
      * @param _size requested size for allocation
      * @param _policy BufferObject's allocation policy
      */
-    CORE_API virtual std::shared_future<void> set_buffer(
+    SIGHT_CORE_API virtual std::shared_future<void> set_buffer(
         buffer_ptr_t _buffer_ptr,
         buffer_t _buffer,
         size_t _size,
@@ -170,14 +171,14 @@ public:
      * @param _buffer_ptr BufferObject's buffer pointer
      * @param _new_size requested size for reallocation
      */
-    CORE_API virtual std::shared_future<void> reallocate_buffer(buffer_ptr_t _buffer_ptr, size_t _new_size);
+    SIGHT_CORE_API virtual std::shared_future<void> reallocate_buffer(buffer_ptr_t _buffer_ptr, size_t _new_size);
 
     /**
      * @brief Hook called when a destruction is requested from a BufferObject
      *
      * @param _buffer_ptr BufferObject's buffer pointer
      */
-    CORE_API virtual std::shared_future<void> destroy_buffer(buffer_ptr_t _buffer_ptr);
+    SIGHT_CORE_API virtual std::shared_future<void> destroy_buffer(buffer_ptr_t _buffer_ptr);
 
     /**
      * @brief Hook called when a request to swap two BufferObject contents is made
@@ -185,7 +186,7 @@ public:
      * @param _buf_a First BufferObject's buffer
      * @param _buf_b Second BufferObject's buffer
      */
-    CORE_API virtual std::shared_future<void> swap_buffer(buffer_ptr_t _buf_a, buffer_ptr_t _buf_b);
+    SIGHT_CORE_API virtual std::shared_future<void> swap_buffer(buffer_ptr_t _buf_a, buffer_ptr_t _buf_b);
 
     /**
      * @brief Hook called when a BufferObject is locked
@@ -194,7 +195,7 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    CORE_API virtual std::shared_future<SPTR(void)> lock_buffer(const_buffer_ptr_t _buffer_ptr);
+    SIGHT_CORE_API virtual std::shared_future<SPTR(void)> lock_buffer(const_buffer_ptr_t _buffer_ptr);
 
     /**
      * @brief Hook called when a BufferObject lock is released
@@ -203,12 +204,12 @@ public:
      *
      * @return false if the BufferManager supported the action
      */
-    CORE_API virtual std::shared_future<bool> unlock_buffer(const_buffer_ptr_t _buffer_ptr);
+    SIGHT_CORE_API virtual std::shared_future<bool> unlock_buffer(const_buffer_ptr_t _buffer_ptr);
 
     /**
      * @brief returns BufferManager status string
      */
-    CORE_API virtual std::shared_future<std::string> to_string() const;
+    SIGHT_CORE_API virtual std::shared_future<std::string> to_string() const;
 
     /**
      * @brief Dump/restore a buffer
@@ -219,8 +220,8 @@ public:
      *
      * @return true on success
      * @{ */
-    CORE_API std::shared_future<bool> dump_buffer(const_buffer_ptr_t _buffer_ptr);
-    CORE_API std::shared_future<bool> restore_buffer(const_buffer_ptr_t _buffer_ptr);
+    SIGHT_CORE_API std::shared_future<bool> dump_buffer(const_buffer_ptr_t _buffer_ptr);
+    SIGHT_CORE_API std::shared_future<bool> restore_buffer(const_buffer_ptr_t _buffer_ptr);
     /**  @} */
 
     /**
@@ -234,12 +235,12 @@ public:
      *
      * @return true on success
      * @{ */
-    CORE_API std::shared_future<bool> write_buffer(
+    SIGHT_CORE_API std::shared_future<bool> write_buffer(
         const_buffer_t _buffer,
         size_t _size,
         std::filesystem::path& _path
     );
-    CORE_API std::shared_future<bool> read_buffer(
+    SIGHT_CORE_API std::shared_future<bool> read_buffer(
         buffer_t _buffer,
         size_t _size,
         std::filesystem::path& _path
@@ -261,30 +262,30 @@ public:
      *
      * @return
      */
-    CORE_API std::shared_future<buffer_info_map_t> get_buffer_infos() const;
+    SIGHT_CORE_API std::shared_future<buffer_info_map_t> get_buffer_infos() const;
 
     /**
      * @brief Returns managed buffers statistics
      */
-    CORE_API std::shared_future<buffer_stats> get_buffer_stats() const;
-    CORE_API static buffer_stats compute_buffer_stats(const buffer_info_map_t& _buffer_info);
+    SIGHT_CORE_API std::shared_future<buffer_stats> get_buffer_stats() const;
+    SIGHT_CORE_API static buffer_stats compute_buffer_stats(const buffer_info_map_t& _buffer_info);
 
     /**
      * @brief Sets the dump policy
      */
-    CORE_API void set_dump_policy(const SPTR(core::memory::policy::base)& _policy);
+    SIGHT_CORE_API void set_dump_policy(const SPTR(core::memory::policy::base)& _policy);
 
     /**
      * @brief Returns the dump policy
      */
-    CORE_API SPTR(core::memory::policy::base) get_dump_policy() const;
+    SIGHT_CORE_API SPTR(core::memory::policy::base) get_dump_policy() const;
 
     /**
      * @brief Returns stream info
      */
-    CORE_API std::shared_future<stream_info> get_stream_info(const_buffer_ptr_t _buffer_ptr) const;
+    SIGHT_CORE_API std::shared_future<stream_info> get_stream_info(const_buffer_ptr_t _buffer_ptr) const;
 
-    CORE_API std::shared_future<void> set_istream_factory(
+    SIGHT_CORE_API std::shared_future<void> set_istream_factory(
         buffer_ptr_t _buffer_ptr,
         const SPTR(core::memory::stream::in::factory)& _factory,
         size_t _size,
@@ -293,14 +294,14 @@ public:
         const core::memory::buffer_allocation_policy::sptr& _policy
     );
 
-    CORE_API loading_mode_type get_loading_mode() const;
-    CORE_API void set_loading_mode(loading_mode_type _mode);
+    SIGHT_CORE_API loading_mode_type get_loading_mode() const;
+    SIGHT_CORE_API void set_loading_mode(loading_mode_type _mode);
 
     /**
      * @brief Returns the current BufferManager instance
      * @note This method is thread-safe.
      */
-    CORE_API static buffer_manager::sptr get();
+    SIGHT_CORE_API static buffer_manager::sptr get();
 
     //------------------------------------------------------------------------------
 
@@ -354,8 +355,8 @@ protected:
      *
      * Used by public dump/restoreBuffer methods
      * @{ */
-    CORE_API bool dump_buffer(buffer_info& _info, buffer_ptr_t _buffer_ptr);
-    CORE_API bool restore_buffer(buffer_info& _info, buffer_ptr_t _buffer_ptr, size_t _size = 0);
+    SIGHT_CORE_API bool dump_buffer(buffer_info& _info, buffer_ptr_t _buffer_ptr);
+    SIGHT_CORE_API bool restore_buffer(buffer_info& _info, buffer_ptr_t _buffer_ptr, size_t _size = 0);
     /**  @} */
 
     SPTR(updated_signal_t) m_updated_sig;

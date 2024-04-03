@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "activity/config.hpp"
+#include <sight/activity/config.hpp>
+
 #include "activity/validator/base.hpp"
 
 #include <core/base.hpp>
@@ -43,14 +44,14 @@ namespace sight::activity::validator
  * This validator works on one type of data. The validated data can be a single data, or a Vector or a Composite
  * containing multiple data of the same type.
  */
-class ACTIVITY_CLASS_API object : public validator::base
+class SIGHT_ACTIVITY_CLASS_API object : public validator::base
 {
 public:
 
     SIGHT_DECLARE_CLASS(object, validator::base);
 
     /// Does nothing.
-    ACTIVITY_API return_t validate(
+    SIGHT_ACTIVITY_API return_t validate(
         const extension::activity_info& /*activity_info*/,
         const CSPTR(data::vector)&
         /*currentSelection*/
@@ -66,7 +67,7 @@ public:
      * @brief Performs the validation of the given data.
      * @note  This data could be a single data, or a Vector or a Composite of one type of data.
      */
-    ACTIVITY_API virtual return_t validate(const CSPTR(data::object)& _current_data) const = 0;
+    SIGHT_ACTIVITY_API virtual return_t validate(const CSPTR(data::object)& _current_data) const = 0;
 };
 
 } // namespace sight::activity::validator

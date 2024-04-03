@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
+
 #include "viz/scene3d/interactor/base.hpp"
 #include "viz/scene3d/layer.hpp"
 
@@ -40,7 +41,7 @@ namespace sight::viz::scene3d::interactor
  * Moves the camera around a set of predefined positions.
  *
  */
-class VIZ_SCENE3D_CLASS_API predefined_position_interactor final : public sight::viz::scene3d::interactor::base
+class SIGHT_VIZ_SCENE3D_CLASS_API predefined_position_interactor final : public sight::viz::scene3d::interactor::base
 {
 public:
 
@@ -54,7 +55,7 @@ public:
     };
 
     /// Initializes the interractor.
-    VIZ_SCENE3D_API predefined_position_interactor(
+    SIGHT_VIZ_SCENE3D_API predefined_position_interactor(
         SPTR(layer)_layer                                   = nullptr,
         bool _layer_order_dependant                         = true,
         std::vector<predefined_position_t> _positions       = {},
@@ -64,7 +65,7 @@ public:
     );
 
     /// Destroys the trackball.
-    VIZ_SCENE3D_API ~predefined_position_interactor() override;
+    SIGHT_VIZ_SCENE3D_API ~predefined_position_interactor() override;
 
     /**
      * @brief Moves the camera according to the pressed button.
@@ -79,7 +80,7 @@ public:
      *
      * @todo set to final when the vr interactor is deleted.
      */
-    VIZ_SCENE3D_API void mouse_move_event(
+    SIGHT_VIZ_SCENE3D_API void mouse_move_event(
         mouse_button _button,
         modifier /*_mods*/,
         int _x,
@@ -92,7 +93,7 @@ public:
      * @brief Moves the camera towards or away from the focus point.
      * @param _delta distance that the wheel is rotated, in eighths of a degree.
      */
-    VIZ_SCENE3D_API void wheel_event(modifier /*_mods*/, double _delta, int /*x*/, int /*y*/) override;
+    SIGHT_VIZ_SCENE3D_API void wheel_event(modifier /*_mods*/, double _delta, int /*x*/, int /*y*/) override;
 
     /**
      * @brief Moves the camera towards or away the central point.
@@ -100,7 +101,7 @@ public:
      * @param _center_x the width coordinate of the center of the pinch
      * @param _center_y the height coordinate of the center of the pinch
      */
-    VIZ_SCENE3D_API void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) override;
+    SIGHT_VIZ_SCENE3D_API void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) override;
 
     /**
      * @brief Defines camera actions when the keyboard is pressed.
@@ -110,35 +111,35 @@ public:
      * @param _mouse_x the mouse's width position at the time of the key press.
      * @param _mouse_y the mouse's height position at the time of the key press.
      */
-    VIZ_SCENE3D_API void key_press_event(int _key, modifier /*_mods*/, int _mouse_x, int _mouse_y) override;
+    SIGHT_VIZ_SCENE3D_API void key_press_event(int _key, modifier /*_mods*/, int _mouse_x, int _mouse_y) override;
 
     /**
      * @brief Recomputes the camera's aspect ratio when the render window is resized.
      */
-    VIZ_SCENE3D_API void resize_event(int /*_width*/, int /*_height*/) override;
+    SIGHT_VIZ_SCENE3D_API void resize_event(int /*_width*/, int /*_height*/) override;
 
     /// Recomputes the mouse's scale and focus point from the updated scene length.
-    VIZ_SCENE3D_API void set_scene_length(float _scene_length) override;
+    SIGHT_VIZ_SCENE3D_API void set_scene_length(float _scene_length) override;
 
     /// SLOT: Sets a parameter value with its key.
-    VIZ_SCENE3D_API void set_parameter(ui::parameter_t _value, std::string _key);
+    SIGHT_VIZ_SCENE3D_API void set_parameter(ui::parameter_t _value, std::string _key);
 
     ///SLOT: Goes to the next predefined position (return to first one after the latest).
-    VIZ_SCENE3D_API void next_position();
+    SIGHT_VIZ_SCENE3D_API void next_position();
     ///SLOT: Goes to the previous predefined position (return to last one after the first).
-    VIZ_SCENE3D_API void previous_position();
+    SIGHT_VIZ_SCENE3D_API void previous_position();
 
     /// Enables/disables the mouse rotation.
-    VIZ_SCENE3D_API void inline set_mouse_rotation(bool _enable);
+    SIGHT_VIZ_SCENE3D_API void inline set_mouse_rotation(bool _enable);
 
     /// Returns current state of mouse rotation.
-    VIZ_SCENE3D_API bool inline mouse_rotation() const;
+    SIGHT_VIZ_SCENE3D_API bool inline mouse_rotation() const;
 
-    VIZ_SCENE3D_API void inline set_transform(const Ogre::Matrix4& _mat);
+    SIGHT_VIZ_SCENE3D_API void inline set_transform(const Ogre::Matrix4& _mat);
 
-    VIZ_SCENE3D_API Ogre::Matrix4 inline transform() const;
+    SIGHT_VIZ_SCENE3D_API Ogre::Matrix4 inline transform() const;
 
-    VIZ_SCENE3D_API Ogre::Quaternion inline transform_quaternion() const;
+    SIGHT_VIZ_SCENE3D_API Ogre::Quaternion inline transform_quaternion() const;
 
 private:
 

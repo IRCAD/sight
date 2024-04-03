@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/navigation/optics/config.hpp"
-
 #include <data/camera.hpp>
 #include <data/image.hpp>
 #include <data/marker_map.hpp>
@@ -90,7 +88,7 @@ namespace sight::module::navigation::optics
  *  - \b cornerRefinement: if true, corner refinement by subpixel will be activated
  *  not.
  */
-class MODULE_NAVIGATION_OPTICS_CLASS_API aruco_tracker : public service::tracker
+class aruco_tracker : public service::tracker
 {
 public:
 
@@ -105,16 +103,16 @@ public:
      */
 
     /// Key in m_signals map of signal m_sigDetectionDone
-    MODULE_NAVIGATION_OPTICS_API static const core::com::signals::key_t DETECTION_DONE_SIG;
+    static const core::com::signals::key_t DETECTION_DONE_SIG;
 
     /// Signal always emitted with boolean true if a least a maker from id list is found, false otherwise.
-    MODULE_NAVIGATION_OPTICS_API static const core::com::signals::key_t MARKER_DETECTED_SIG;
+    static const core::com::signals::key_t MARKER_DETECTED_SIG;
     /** @} */
     /**
      * @name Slots API
      * @{
      */
-    MODULE_NAVIGATION_OPTICS_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
+    static const core::com::slots::key_t SET_PARAMETER_SLOT;
     /** @} */
 
     using marker_id_t        = std::vector<int>;
@@ -123,12 +121,12 @@ public:
     /**
      * @brief Constructor.
      */
-    MODULE_NAVIGATION_OPTICS_API aruco_tracker() noexcept;
+    aruco_tracker() noexcept;
 
     /**
      * @brief Destructor.
      */
-    MODULE_NAVIGATION_OPTICS_API ~aruco_tracker() noexcept override;
+    ~aruco_tracker() noexcept override;
 
 protected:
 
@@ -140,25 +138,25 @@ protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    MODULE_NAVIGATION_OPTICS_API void configuring(const config_t& _config) override;
+    void configuring(const config_t& _config) override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    MODULE_NAVIGATION_OPTICS_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Updating method : This method does nothing
      */
-    MODULE_NAVIGATION_OPTICS_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    MODULE_NAVIGATION_OPTICS_API void stopping() override;
+    void stopping() override;
 
     /// Detect marker
-    MODULE_NAVIGATION_OPTICS_API void tracking(core::clock::type& _timestamp) override;
+    void tracking(core::clock::type& _timestamp) override;
 
 private:
 

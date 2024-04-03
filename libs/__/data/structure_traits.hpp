@@ -41,7 +41,7 @@ namespace sight::data
  *  - [optional] a native ROI expression : ex. inter(world(type(Skin)),not(class(Organ)))
  *  - [optional] a native geometric ROI expression
  */
-class DATA_CLASS_API structure_traits final : public object
+class SIGHT_DATA_CLASS_API structure_traits final : public object
 {
 public:
 
@@ -80,10 +80,10 @@ public:
     /**
      * @brief Constructor
      */
-    DATA_API structure_traits();
+    SIGHT_DATA_API structure_traits();
 
     /// Destructor. Does nothing.
-    DATA_API ~structure_traits() noexcept override = default;
+    SIGHT_DATA_API ~structure_traits() noexcept override = default;
 
     /**
      * @{
@@ -178,20 +178,20 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const structure_traits& _other) const noexcept;
-    DATA_API bool operator!=(const structure_traits& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const structure_traits& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const structure_traits& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

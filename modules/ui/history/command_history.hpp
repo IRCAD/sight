@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/history/config.hpp"
 
 #include <core/base.hpp>
 
@@ -63,31 +61,31 @@ namespace sight::module::ui::history
  * - \b maxMemory (optional) : The maximum amount of memory (in bytes) used available to store commands.
  * Unlimited by default.
  */
-class MODULE_UI_HISTORY_CLASS_API command_history : public service::base
+class command_history : public service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(command_history, service::base);
 
     /// Constructor.
-    MODULE_UI_HISTORY_API command_history();
+    command_history();
 
     /// Destructor.
-    MODULE_UI_HISTORY_API ~command_history() override;
+    ~command_history() override;
 
 protected:
 
     /// Set memory and command boundaries.
-    MODULE_UI_HISTORY_API void configuring() override;
+    void configuring() override;
 
     /// Notify if undo or redo are possible.
-    MODULE_UI_HISTORY_API void starting() override;
+    void starting() override;
 
     /// Notify if undo or redo are possible.
-    MODULE_UI_HISTORY_API void updating() override;
+    void updating() override;
 
     /// Clears the history.
-    MODULE_UI_HISTORY_API void stopping() override;
+    void stopping() override;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/image/config.hpp"
+#include <sight/filter/image/config.hpp>
 
 #include <data/image.hpp>
 #include <data/point_list.hpp>
@@ -33,10 +33,10 @@ namespace sight::filter::image
 {
 
 /// Labels filter without template.
-FILTER_IMAGE_API data::image::sptr labeling(data::image::sptr _image, unsigned int _num_labels);
+SIGHT_FILTER_IMAGE_API data::image::sptr labeling(data::image::sptr _image, unsigned int _num_labels);
 
 /// Labels filter with centroids.
-FILTER_IMAGE_API void compute_centroids(
+SIGHT_FILTER_IMAGE_API void compute_centroids(
     data::image::sptr _image,
     std::vector<data::point_list::sptr> _point_list_centroids,
     std::vector<std::vector<std::size_t> > _point_list_labels

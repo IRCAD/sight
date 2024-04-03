@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <QAnimationGroup>
 #include <QPointer>
@@ -33,7 +33,7 @@ namespace sight::ui::qt::widget
 {
 
 /// speed_dial is a button which shows other buttons when clicked
-class UI_QT_CLASS_API_QT speed_dial : public QPushButton
+class SIGHT_UI_QT_CLASS_API_QT speed_dial : public QPushButton
 {
 Q_OBJECT
 Q_PROPERTY(int spacing MEMBER m_spacing READ spacing WRITE set_spacing)
@@ -52,19 +52,19 @@ public:
     static inline constexpr int DEFAULT_SPACING            = 10;
     static inline constexpr int DEFAULT_ANIMATION_DURATION = 250;
 
-    UI_QT_API_QT explicit speed_dial(
+    SIGHT_UI_QT_API_QT explicit speed_dial(
         direction _direction    = direction::down,
         int _spacing            = DEFAULT_SPACING,
         int _animation_duration = DEFAULT_ANIMATION_DURATION,
         QWidget* _parent        = nullptr
     );
-    UI_QT_API_QT ~speed_dial() override = default;
+    SIGHT_UI_QT_API_QT ~speed_dial() override = default;
 
-    UI_QT_API_QT void set_direction(direction _direction);
-    [[nodiscard]] UI_QT_API_QT direction direction() const;
-    UI_QT_API_QT void set_spacing(int _spacing);
-    [[nodiscard]] UI_QT_API_QT int spacing() const;
-    UI_QT_API_QT void set_animation_duration(int _duration);
+    SIGHT_UI_QT_API_QT void set_direction(direction _direction);
+    [[nodiscard]] SIGHT_UI_QT_API_QT direction direction() const;
+    SIGHT_UI_QT_API_QT void set_spacing(int _spacing);
+    [[nodiscard]] SIGHT_UI_QT_API_QT int spacing() const;
+    SIGHT_UI_QT_API_QT void set_animation_duration(int _duration);
     //------------------------------------------------------------------------------
 
     template<typename R, typename P>
@@ -73,20 +73,20 @@ public:
         set_animation_duration(std::chrono::milliseconds(_animation_duration).count());
     }
 
-    [[nodiscard]] UI_QT_API_QT int animation_duration() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT int animation_duration() const;
 
     /// Make the button invisible
-    UI_QT_API_QT void fold();
+    SIGHT_UI_QT_API_QT void fold();
     /// Make the button visible
-    UI_QT_API_QT void unfold();
+    SIGHT_UI_QT_API_QT void unfold();
     /// Make the button invisible if they are visible or visible if they are not
-    UI_QT_API_QT void toggle_fold();
-    [[nodiscard]] UI_QT_API_QT bool is_folded() const;
+    SIGHT_UI_QT_API_QT void toggle_fold();
+    [[nodiscard]] SIGHT_UI_QT_API_QT bool is_folded() const;
 
     /// Provide a new list of actions to be managed by the speed dial.
-    UI_QT_API_QT void update_actions(std::vector<QWidget*> _actions);
+    SIGHT_UI_QT_API_QT void update_actions(std::vector<QWidget*> _actions);
     /// Get the list of the actions managed by the speed dial.
-    [[nodiscard]] UI_QT_API_QT const std::vector<QWidget*>& actions() const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT const std::vector<QWidget*>& actions() const;
 
     /// An event filter to listen to size changes of the actions and size changes and position changes of one of the
     /// ancestor of the speed dial. If either of these events happen, the positions of the actions must be updated.

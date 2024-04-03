@@ -23,7 +23,7 @@
 #pragma once
 
 #include "io/igtl/client.hpp"
-#include "io/igtl/config.hpp"
+#include <sight/io/igtl/config.hpp>
 #include "io/igtl/network.hpp"
 // Patched header.
 #include "io/igtl/patch/igtlSocket.h"
@@ -45,7 +45,7 @@ namespace sight::io::igtl
  *
  * @brief a network server class use igtl::ServerSocket
  */
-class IO_IGTL_CLASS_API server : public io::igtl::network
+class SIGHT_IO_IGTL_CLASS_API server : public io::igtl::network
 {
 public:
 
@@ -54,70 +54,70 @@ public:
     /**
      * @brief constructor
      */
-    IO_IGTL_API server();
+    SIGHT_IO_IGTL_API server();
 
     /**
      * @brief destructor
      */
-    IO_IGTL_API ~server() override;
+    SIGHT_IO_IGTL_API ~server() override;
 
     /**
      * @brief method to start the server on a port
      *
      * @param[in] _port the port to listen
      */
-    IO_IGTL_API void start(std::uint16_t _port);
+    SIGHT_IO_IGTL_API void start(std::uint16_t _port);
 
     /**
      * @brief method to wait a connection
      *
      * @param[in] _msec time to wait in millisecond
      */
-    IO_IGTL_API client::sptr wait_for_connection(int _msec = 0);
+    SIGHT_IO_IGTL_API client::sptr wait_for_connection(int _msec = 0);
 
     /**
      * @brief method to stop the server
      */
-    IO_IGTL_API void stop();
+    SIGHT_IO_IGTL_API void stop();
 
     /**
      * @brief method to test if the server started
      */
-    IO_IGTL_API bool started() const;
+    SIGHT_IO_IGTL_API bool started() const;
 
     /**
      * @brief method to broadcast to all client the obj
      */
-    IO_IGTL_API void broadcast(const data::object::csptr& _obj);
+    SIGHT_IO_IGTL_API void broadcast(const data::object::csptr& _obj);
 
     /**
      * @brief method to broadcast to all client a msg
      */
-    IO_IGTL_API void broadcast(::igtl::MessageBase::Pointer _msg);
+    SIGHT_IO_IGTL_API void broadcast(::igtl::MessageBase::Pointer _msg);
 
     /**
      * @brief get the port
      *
      * @return the port listened by server instance
      */
-    IO_IGTL_API std::uint16_t get_port() const;
+    SIGHT_IO_IGTL_API std::uint16_t get_port() const;
 
     /**
      * @brief method to run server and start event loop of server
      */
-    IO_IGTL_API void run_server();
+    SIGHT_IO_IGTL_API void run_server();
 
     /**
      * @brief method to have the current number of clients
      */
-    IO_IGTL_API std::size_t num_clients() const;
+    SIGHT_IO_IGTL_API std::size_t num_clients() const;
 
     /**
      * @brief method to receive all headers of all connected clients
      *
      * @return vector of igl::MessageHeader::Pointer
      */
-    IO_IGTL_API std::vector< ::igtl::MessageHeader::Pointer> receive_headers();
+    SIGHT_IO_IGTL_API std::vector< ::igtl::MessageHeader::Pointer> receive_headers();
 
     /** @brief receive body pack of a specific connected client
      *
@@ -126,7 +126,7 @@ public:
      *
      *  @return Message
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer receive_body(
+    SIGHT_IO_IGTL_API ::igtl::MessageBase::Pointer receive_body(
         ::igtl::MessageHeader::Pointer _header,
         unsigned int _client
     );
@@ -136,12 +136,12 @@ public:
      *
      * @return a vector of smart pointer of fwData object
      */
-    IO_IGTL_API std::vector<data::object::sptr> receive_objects(std::vector<std::string>& _device_names);
+    SIGHT_IO_IGTL_API std::vector<data::object::sptr> receive_objects(std::vector<std::string>& _device_names);
 
     /**
      * @brief set the device name when a message is sent
      */
-    IO_IGTL_API void set_message_device_name(const std::string& _device_name);
+    SIGHT_IO_IGTL_API void set_message_device_name(const std::string& _device_name);
 
     /// Sets the receive timeout in ms.
     inline void set_receive_timeout(std::optional<unsigned int> _timeout);

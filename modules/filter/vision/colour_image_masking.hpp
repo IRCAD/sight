@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/vision/config.hpp"
 
 #include <data/frame_tl.hpp>
 #include <data/image.hpp>
@@ -83,7 +81,7 @@ namespace sight::module::filter::vision
  * - \b HSV (optional) : values in HSV defined by <lower>(default: 0,0,0) and <upper> (default: 255,255,255) tags
  * allowing to compute automatically the mask during the foreground color model learning step
  */
-class MODULE_FILTER_VISION_CLASS_API colour_image_masking final : public service::filter
+class colour_image_masking final : public service::filter
 {
 public:
 
@@ -91,10 +89,10 @@ public:
     SIGHT_DECLARE_SERVICE(colour_image_masking, sight::service::filter);
 
     /// Initializes the slots and member variables.
-    MODULE_FILTER_VISION_API colour_image_masking() noexcept;
+    colour_image_masking() noexcept;
 
     /// Destroys the service.
-    MODULE_FILTER_VISION_API ~colour_image_masking() noexcept override;
+    ~colour_image_masking() noexcept override;
 
     /// Defines auto connection for this service (update slot) to the frame timeline (objectPushed)
     service::connections_t auto_connections() const override;
@@ -102,16 +100,16 @@ public:
 protected:
 
     /// Initializes segmentation method parameters.
-    MODULE_FILTER_VISION_API void configuring() override;
+    void configuring() override;
 
     /// Initializes the colour image masker.
-    MODULE_FILTER_VISION_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_FILTER_VISION_API void stopping() override;
+    void stopping() override;
 
     /// Computes the image mask on a frame.
-    MODULE_FILTER_VISION_API void updating() override;
+    void updating() override;
 
 private:
 

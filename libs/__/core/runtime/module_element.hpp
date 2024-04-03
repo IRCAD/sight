@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <memory>
 
@@ -39,7 +39,7 @@ namespace sight::core::runtime
 /**
  * @brief   Implements the base class for all element managed by a module.
  */
-class CORE_CLASS_API module_element
+class SIGHT_CORE_CLASS_API module_element
 {
 public:
 
@@ -50,7 +50,7 @@ public:
      *
      * @return  a pointer to a module instance
      */
-    [[nodiscard]] CORE_API std::shared_ptr<module> get_module() const;
+    [[nodiscard]] SIGHT_CORE_API std::shared_ptr<module> get_module() const;
 
     /**
      * @brief   Tells if the element is enabled or not.
@@ -63,7 +63,7 @@ public:
      *
      * @return  true or false
      */
-    [[nodiscard]] CORE_API bool enabled() const;
+    [[nodiscard]] SIGHT_CORE_API bool enabled() const;
 
     /**
      * @brief       Set if the element is enabled or not.
@@ -72,7 +72,7 @@ public:
      *
      * @param[in]   _enable To know if module element is enabled
      */
-    CORE_API void set_enable(bool _enable);
+    SIGHT_CORE_API void set_enable(bool _enable);
 
 protected:
 
@@ -85,7 +85,7 @@ protected:
      * @post    The module isn't null.
      * @see     core::runtime::module::get_loading_module()
      */
-    CORE_API module_element();
+    SIGHT_CORE_API module_element();
 
     /**
      * @brief       Constructor
@@ -93,7 +93,7 @@ protected:
      * @post        The module isn't null.
      * @param[in]   _module  a shared pointer to the managing module
      */
-    CORE_API module_element(std::shared_ptr<module> _module);
+    SIGHT_CORE_API module_element(std::shared_ptr<module> _module);
 
 private:
 

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/helper/encoding.hpp"
 
 #include <core/log/logger.hpp>
@@ -36,7 +37,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief This class contains helpers to handle GDCM data reading.
  */
-class IO_DICOM_CLASS_API dicom_data_reader
+class SIGHT_IO_DICOM_CLASS_API dicom_data_reader
 {
 public:
 

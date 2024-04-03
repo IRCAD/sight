@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/video/config.hpp"
 
 #include <data/frame_tl.hpp>
 
@@ -50,40 +48,40 @@ namespace sight::module::io::video
  * @subsection Input Input
  * - \b data [sight::data::frame_tl]: timeline containing the frame to save.
  */
-class MODULE_IO_VIDEO_CLASS_API video_writer : public sight::io::service::writer
+class video_writer : public sight::io::service::writer
 {
 public:
 
     SIGHT_DECLARE_SERVICE(video_writer, sight::io::service::writer);
 
     /// Constructor.
-    MODULE_IO_VIDEO_API video_writer() noexcept;
+    video_writer() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_IO_VIDEO_API ~video_writer() noexcept override;
+    ~video_writer() noexcept override;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    MODULE_IO_VIDEO_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Display a location dialog allowing to select the video file to save
-    MODULE_IO_VIDEO_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
     /// Return file type (io::service::FILE)
-    MODULE_IO_VIDEO_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
 protected:
 
     /// Does nothing
-    MODULE_IO_VIDEO_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_IO_VIDEO_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_IO_VIDEO_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing
-    MODULE_IO_VIDEO_API void updating() override;
+    void updating() override;
 
 private:
 

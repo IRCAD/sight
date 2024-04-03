@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/text.hpp>
@@ -52,7 +50,7 @@ class PostWindowRenderListener;
  * - \b color (optional, hexadecimal, default=#FFFFFF): stats' text color
  * - \b fontSize (optional, unsigned int, default=12): stats font size in points.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API render_stats final : public sight::viz::scene3d::adaptor
+class render_stats final : public sight::viz::scene3d::adaptor
 {
 public:
 
@@ -60,24 +58,24 @@ public:
     SIGHT_DECLARE_SERVICE(render_stats, sight::viz::scene3d::adaptor);
 
     /// Creates the adaptor.
-    MODULE_VIZ_SCENE3D_API render_stats() noexcept;
+    render_stats() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~render_stats() noexcept final;
+    ~render_stats() noexcept final;
 
 protected:
 
     /// Configures stats color and size.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Initializes the overlay text displaying the stats.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /// Destroys the overlay text.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
 private:
 

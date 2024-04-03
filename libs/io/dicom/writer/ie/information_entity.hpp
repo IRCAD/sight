@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_instance.hpp"
 
 #include <core/log/logger.hpp>
@@ -40,7 +41,7 @@ namespace sight::io::dicom::writer::ie
  * @brief InformationEntity base class used to write modules
  */
 template<class DATATYPE>
-class IO_DICOM_CLASS_API information_entity
+class SIGHT_IO_DICOM_CLASS_API information_entity
 {
 public:
 
@@ -56,7 +57,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API information_entity(
+    SIGHT_IO_DICOM_API information_entity(
         SPTR(gdcm::Writer)_writer,
         SPTR(io::dicom::container::dicom_instance)_instance,
         CSPTR(DATATYPE)_object,
@@ -66,7 +67,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~information_entity();
+    SIGHT_IO_DICOM_API virtual ~information_entity();
 
 protected:
 

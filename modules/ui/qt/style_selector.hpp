@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <service/controller.hpp>
 
@@ -68,17 +66,17 @@ namespace sight::module::ui::qt
         <service uid="..." type="sight::module::ui::qt::style_selector" />
    @endcode
  */
-class MODULE_UI_QT_CLASS_API style_selector : public service::controller
+class style_selector : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(style_selector, sight::service::controller);
 
     /// Constructor, initializes slots.
-    MODULE_UI_QT_API style_selector() noexcept;
+    style_selector() noexcept;
 
     /// Destructor, clears the position map.
-    MODULE_UI_QT_API ~style_selector() noexcept override;
+    ~style_selector() noexcept override;
 
 protected:
 
@@ -87,22 +85,22 @@ protected:
      */
 
     /// Does nothing.
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Starts and setups the service by parsing rc folder to find availble themes.
      */
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Does nothing
      */
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Does nothing.
      */
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
 private:
 

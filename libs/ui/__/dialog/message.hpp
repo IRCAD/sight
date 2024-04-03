@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/dialog/message_base.hpp"
 
 #include <core/base.hpp>
@@ -34,7 +35,7 @@ namespace sight::ui::dialog
  * @brief   Defines the generic message box for IHM.
  * Use the Delegate design pattern.
  */
-class UI_CLASS_API message : public ui::dialog::message_base
+class SIGHT_UI_CLASS_API message : public ui::dialog::message_base
 {
 public:
 
@@ -48,14 +49,14 @@ public:
      * @param _icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      * @return Returns the button enum value corresponding to the pressed button
      */
-    UI_API static message::buttons show(
+    SIGHT_UI_API static message::buttons show(
         const std::string& _title,
         const std::string& _message,
         message::icons _icon = info
     );
 
     /// Constructor. Create the implementation of the specific message box
-    UI_API message();
+    SIGHT_UI_API message();
 
     /**
      * Constructor
@@ -65,31 +66,31 @@ public:
      * @param _message Message of the message box
      * @param _icon Icon of the message box (CRITICAL, WARNING, INFO or QUESTION)
      */
-    UI_API message(const std::string& _title, const std::string& _message, message::icons _icon = info);
+    SIGHT_UI_API message(const std::string& _title, const std::string& _message, message::icons _icon = info);
 
     /// Destructor. Do nothing
-    UI_API ~message() override;
+    SIGHT_UI_API ~message() override;
 
     /// Set the title of the message box
-    UI_API void set_title(const std::string& _title) override;
+    SIGHT_UI_API void set_title(const std::string& _title) override;
 
     /// Set the message
-    UI_API void set_message(const std::string& _msg) override;
+    SIGHT_UI_API void set_message(const std::string& _msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_API void set_icon(message::icons _icon) override;
+    SIGHT_UI_API void set_icon(message::icons _icon) override;
 
     /// Add a button (OK, YES_NO, YES, NO, CANCEL)
-    UI_API void add_button(message::buttons _button) override;
+    SIGHT_UI_API void add_button(message::buttons _button) override;
 
     /// Set the default button
-    UI_API void set_default_button(message::buttons _button) override;
+    SIGHT_UI_API void set_default_button(message::buttons _button) override;
 
     /// Add a custom button to this dialog
-    UI_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
+    SIGHT_UI_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
     /// Show the message box and return the clicked button.
-    UI_API message::buttons show() override;
+    SIGHT_UI_API message::buttons show() override;
 
 protected:
 

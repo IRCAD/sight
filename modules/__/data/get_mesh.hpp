@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/data/config.hpp"
 
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
@@ -66,31 +64,31 @@ namespace sight::module::data
  * - \b matching (optional) : regex to match the organ name, that can be used for instance when you have several
  * organs with the same structure type. type cannot be applied to an index constraint.
  */
-class MODULE_DATA_CLASS_API get_mesh : public service::controller
+class get_mesh : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(get_mesh, service::controller);
 
     /// Constructor
-    MODULE_DATA_API get_mesh() = default;
+    get_mesh() = default;
 
     /// Destructor
-    MODULE_DATA_API ~get_mesh() override = default;
+    ~get_mesh() override = default;
 
 protected:
 
     /// Does nothing
-    MODULE_DATA_API void starting() override;
+    void starting() override;
 
     /// Configure the service
-    MODULE_DATA_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_DATA_API void stopping() override;
+    void stopping() override;
 
     /// Extract the object(s)
-    MODULE_DATA_API void updating() override;
+    void updating() override;
 
 private:
 

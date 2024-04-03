@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/image/config.hpp"
+#include <sight/filter/image/config.hpp>
 
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
@@ -35,7 +35,7 @@ namespace sight::filter::image
 /**
  * @brief The resampler class
  */
-class FILTER_IMAGE_CLASS_API resampler
+class SIGHT_FILTER_IMAGE_CLASS_API resampler
 {
 public:
 
@@ -46,7 +46,7 @@ public:
      * @param[in] _trf          transform applied to the input.
      * @param[in] _parameters   set the desired origin, spacing and size.
      */
-    static FILTER_IMAGE_API void resample(
+    static SIGHT_FILTER_IMAGE_API void resample(
         const data::image::csptr& _in_image,
         const data::image::sptr& _out_image,
         const data::matrix4::csptr& _trf,
@@ -62,7 +62,7 @@ public:
      * @param _output_spacing desired sampling rate.
      * @return resampled image.
      */
-    static FILTER_IMAGE_API data::image::sptr resample(
+    static SIGHT_FILTER_IMAGE_API data::image::sptr resample(
         const data::image::csptr& _img,
         const data::matrix4::csptr& _trf,
         const data::image::spacing_t& _output_spacing

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/igtl/config.hpp"
+#include <sight/io/igtl/config.hpp>
 
 #include <igtlMessageBase.h>
 
@@ -43,7 +43,7 @@ namespace sight::io::igtl::detail
  *
  * @brief a OpenIGTLink message which you can store raw data
  */
-class IO_IGTL_CLASS_API raw_message : public ::igtl::MessageBase
+class SIGHT_IO_IGTL_CLASS_API raw_message : public ::igtl::MessageBase
 {
 public:
 
@@ -56,41 +56,41 @@ public:
     igtlTypeMacro(RawMessage, ::igtl::MessageBase);
 
     /// Constructor
-    IO_IGTL_API raw_message(std::string const& _body_type);
+    SIGHT_IO_IGTL_API raw_message(std::string const& _body_type);
 
     /// Destructor
-    IO_IGTL_API ~raw_message() override;
+    SIGHT_IO_IGTL_API ~raw_message() override;
 
     /**
      * @brief append a string to raw data
      */
-    IO_IGTL_API void append(const raw_data_t& _content);
+    SIGHT_IO_IGTL_API void append(const raw_data_t& _content);
 
     /**
      * @brief append bytes to raw data
      */
-    IO_IGTL_API void append(const char* _data, std::size_t _size);
+    SIGHT_IO_IGTL_API void append(const char* _data, std::size_t _size);
 
     /**
      * @brief get immutable message
      *
      * @return a immutable byte vector
      */
-    IO_IGTL_API raw_data_t const& get_message() const;
+    SIGHT_IO_IGTL_API raw_data_t const& get_message() const;
 
     /**
      * @brief get mutable message
      *
      * @return a mutable byte vector
      */
-    IO_IGTL_API raw_data_t& get_message();
+    SIGHT_IO_IGTL_API raw_data_t& get_message();
 
     /**
      * @brief create a new igtl smart pointer to a raw message
      *
      * @return igtl smart pointer to a raw message
      */
-    IO_IGTL_API static raw_message::Pointer New(std::string const& _body_type);
+    SIGHT_IO_IGTL_API static raw_message::Pointer New(std::string const& _body_type);
 
 private:
 

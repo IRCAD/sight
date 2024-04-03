@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/dicom/config.hpp"
+#include <sight/filter/dicom/config.hpp>
+
 #include "filter/dicom/filter.hpp"
 
 #include <data/dicom_series.hpp>
@@ -33,7 +34,7 @@ namespace sight::filter::dicom::composite
 /**
  * @brief Base class for Dicom instance composite filter.
  */
-class FILTER_DICOM_CLASS_API base : public sight::filter::dicom::filter
+class SIGHT_FILTER_DICOM_CLASS_API base : public sight::filter::dicom::filter
 {
 public:
 
@@ -42,13 +43,13 @@ public:
     using filter_container_t = std::vector<sight::filter::dicom::filter::sptr>;
 
     /// Destructor
-    FILTER_DICOM_API ~base() override;
+    SIGHT_FILTER_DICOM_API ~base() override;
 
     /// Return filter type
-    FILTER_DICOM_API filter_t get_filter_type() const override;
+    SIGHT_FILTER_DICOM_API filter_t get_filter_type() const override;
 
     /// Override
-    FILTER_DICOM_API dicom_series_container_t apply(
+    SIGHT_FILTER_DICOM_API dicom_series_container_t apply(
         const data::dicom_series::sptr& _series,
         const core::log::logger::sptr& _logger
     ) const override;
@@ -58,28 +59,28 @@ public:
      * If an exception is thrown, it is ignored and the next filter is applied.
      * @return Returns one or more Dicom Instance Group
      */
-    FILTER_DICOM_API dicom_series_container_t forced_apply(
+    SIGHT_FILTER_DICOM_API dicom_series_container_t forced_apply(
         const data::dicom_series::sptr& _series,
         const core::log::logger::sptr& _logger
     ) const;
 
     /// Add a filter to the composite
-    FILTER_DICOM_API void add_child(
+    SIGHT_FILTER_DICOM_API void add_child(
         const sight::filter::dicom::filter::sptr& _filter
     );
 
     /// Remove a filter from the composite
-    FILTER_DICOM_API void remove_child(
+    SIGHT_FILTER_DICOM_API void remove_child(
         const sight::filter::dicom::filter::sptr& _filter
     );
 
     /// Return composite container
-    FILTER_DICOM_API filter_container_t& get_children();
+    SIGHT_FILTER_DICOM_API filter_container_t& get_children();
 
 protected:
 
     /// Constructor
-    FILTER_DICOM_API base();
+    SIGHT_FILTER_DICOM_API base();
 
     /// filter container
     filter_container_t m_filter_container;

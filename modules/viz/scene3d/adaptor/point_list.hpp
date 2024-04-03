@@ -24,7 +24,6 @@
 
 #include "modules/viz/scene3d/adaptor/material.hpp"
 #include "modules/viz/scene3d/adaptor/transform.hpp"
-#include "modules/viz/scene3d/config.hpp"
 
 #include <data/material.hpp>
 #include <data/point_list.hpp>
@@ -98,7 +97,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): true_t font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API point_list final :
+class point_list final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable
 {
@@ -108,18 +107,18 @@ public:
     SIGHT_DECLARE_SERVICE(point_list, sight::viz::scene3d::adaptor);
 
     /// Creates the adaptor, sets default parameters and initializes necessary members.
-    MODULE_VIZ_SCENE3D_API point_list() noexcept;
+    point_list() noexcept;
 
     /// Destroys Ogre resource.
-    MODULE_VIZ_SCENE3D_API ~point_list() noexcept final;
+    ~point_list() noexcept final;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Creates a mesh in the default Ogre resource group.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -131,19 +130,19 @@ protected:
      * Connect data::mesh::VERTEX_MODIFIED_SIG of s_MESH_INPUT to service::slots::UPDATE
      * Connect data::mesh::MODIFIED_SIG of s_MESH_INPUT to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
     /// Updates the generated mesh.
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
     /**
      * @brief Sets the point list visibility.
      * @param _visible the visibility status of the point list.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
+    void set_visible(bool _visible) final;
 
 private:
 

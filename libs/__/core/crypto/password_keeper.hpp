@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/crypto/obfuscated_string.hpp>
 #include <core/crypto/secure_string.hpp>
@@ -32,7 +32,7 @@ namespace sight::core::crypto
 {
 
 /// Class designed to hold and check in a somewhat secure way a global password and "instance" passwords.
-class CORE_CLASS_API password_keeper final
+class SIGHT_CORE_CLASS_API password_keeper final
 {
 public:
 
@@ -63,44 +63,47 @@ public:
     password_keeper& operator=(password_keeper&&)      = delete;
 
     /// Default constructor
-    CORE_API password_keeper() noexcept;
+    SIGHT_CORE_API password_keeper() noexcept;
 
     /// Default destructor
-    CORE_API ~password_keeper() noexcept;
+    SIGHT_CORE_API ~password_keeper() noexcept;
 
     /// Gets the global password hash
-    CORE_API static core::crypto::secure_string get_global_password_hash();
+    SIGHT_CORE_API static core::crypto::secure_string get_global_password_hash();
 
     /// Gets the global password
-    CORE_API static core::crypto::secure_string get_global_password();
+    SIGHT_CORE_API static core::crypto::secure_string get_global_password();
 
     /// Sets the global password
     /// @param _password the new global password
-    CORE_API static void set_global_password(const core::crypto::secure_string& _password, bool _restart_logger = true);
+    SIGHT_CORE_API static void set_global_password(
+        const core::crypto::secure_string& _password,
+        bool _restart_logger = true
+    );
 
     /// Returns true if the password matches
     /// @param _password the password to verify against global stored password
-    CORE_API static bool check_global_password(const core::crypto::secure_string& _password);
+    SIGHT_CORE_API static bool check_global_password(const core::crypto::secure_string& _password);
 
     /// Reset the global password
-    CORE_API static void reset_global_password();
+    SIGHT_CORE_API static void reset_global_password();
 
     /// Gets the password
-    [[nodiscard]] CORE_API core::crypto::secure_string get_password_hash() const;
+    [[nodiscard]] SIGHT_CORE_API core::crypto::secure_string get_password_hash() const;
 
     /// Gets the password
-    [[nodiscard]] CORE_API core::crypto::secure_string get_password() const;
+    [[nodiscard]] SIGHT_CORE_API core::crypto::secure_string get_password() const;
 
     /// Reset the password
-    CORE_API void reset_password();
+    SIGHT_CORE_API void reset_password();
 
     /// Sets the password
     /// @param _password the new password
-    CORE_API void set_password(const core::crypto::secure_string& _password);
+    SIGHT_CORE_API void set_password(const core::crypto::secure_string& _password);
 
     /// Returns true if the password matches
     /// @param _password the password to verify against stored password
-    [[nodiscard]] CORE_API bool check_password(const core::crypto::secure_string& _password) const;
+    [[nodiscard]] SIGHT_CORE_API bool check_password(const core::crypto::secure_string& _password) const;
 
     /// Convenience function to convert from password_policy enum value to string
     constexpr static std::string_view password_policy_to_string(password_policy _policy) noexcept
@@ -214,7 +217,7 @@ public:
     }
 
     /// Returns a pseudo-random password
-    CORE_API static secure_string get_pseudo_password_hash(const secure_string& _salt) noexcept;
+    SIGHT_CORE_API static secure_string get_pseudo_password_hash(const secure_string& _salt) noexcept;
 
 private:
 

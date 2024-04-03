@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/opencv/config.hpp"
+#include <sight/io/opencv/config.hpp>
 
 #include <data/point_list.hpp>
 
@@ -34,18 +34,21 @@ namespace sight::io::opencv
 /**
  * @brief Point and point list conversion methods.
  */
-class IO_OPENCV_CLASS_API point_list
+class SIGHT_IO_OPENCV_CLASS_API point_list
 {
 public:
 
     /// Copy the first two coordinates of the Sight point to the OpenCV point.
-    IO_OPENCV_API static void copy_to_cv(const data::point::csptr& _src, cv::Point2d& _dst);
+    SIGHT_IO_OPENCV_API static void copy_to_cv(const data::point::csptr& _src, cv::Point2d& _dst);
 
     /// Copy a Sight 2D point list to OpenCV.
-    IO_OPENCV_API static void copy_to_cv(const data::point_list::csptr& _src, std::vector<cv::Point2d>& _dst);
+    SIGHT_IO_OPENCV_API static void copy_to_cv(const data::point_list::csptr& _src, std::vector<cv::Point2d>& _dst);
 
     /// Convert OpenCV points to a Sight point list.
-    IO_OPENCV_API static void copy_from_cv(const std::vector<cv::Point2d>& _src, const data::point_list::sptr& _dst);
+    SIGHT_IO_OPENCV_API static void copy_from_cv(
+        const std::vector<cv::Point2d>& _src,
+        const data::point_list::sptr& _dst
+    );
 };
 
 } //namespace sight::io::opencv

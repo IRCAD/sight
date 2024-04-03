@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/__/config.hpp"
 
 #include <core/base.hpp>
 
@@ -59,28 +57,28 @@ namespace sight::module::geometry
  * - \b output [sight::data::matrix4]: Output matrix.
  */
 
-class MODULE_GEOMETRY_CLASS_API concatenate_matrices : public service::controller
+class concatenate_matrices : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(concatenate_matrices, sight::service::controller);
 
-    MODULE_GEOMETRY_API concatenate_matrices() noexcept = default;
-    ~concatenate_matrices() noexcept override           = default;
+    concatenate_matrices() noexcept           = default;
+    ~concatenate_matrices() noexcept override = default;
 
 protected:
 
     /// This method is used to configure the service.
-    MODULE_GEOMETRY_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void stopping() override;
+    void stopping() override;
 
     /// Concatenates the matrices
-    MODULE_GEOMETRY_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -88,7 +86,7 @@ protected:
      *
      * Connect Matrix4::MODIFIED_SIG to this::service::slots::UPDATE
      */
-    MODULE_GEOMETRY_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_coded_attribute.hpp"
 
 #include <gdcmAttribute.h>
@@ -36,7 +37,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief This class contains helpers to write information into GDCM datasets.
  */
-class IO_DICOM_CLASS_API dicom_data_writer
+class SIGHT_IO_DICOM_CLASS_API dicom_data_writer
 {
 public:
 

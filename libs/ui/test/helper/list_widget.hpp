@@ -38,7 +38,7 @@ public:
      * @param _list How to get the list widget to check
      * @param _count The number of element the list widget should have
      */
-    UI_TEST_API static void count_equals(tester& _tester, const selector& _list, int _count);
+    SIGHT_UI_TEST_API static void count_equals(tester& _tester, const selector& _list, int _count);
 
     /**
      * Sets the row of the specified index as current in a list widget
@@ -46,7 +46,7 @@ public:
      * @param _list How to get the list widget to set
      * @param _index The index of the new current row
      */
-    UI_TEST_API static void set_current_row(tester& _tester, const selector& _list, int _index);
+    SIGHT_UI_TEST_API static void set_current_row(tester& _tester, const selector& _list, int _index);
 
     /**
      * Sets the row which has the specified text as current in a list widget
@@ -54,7 +54,7 @@ public:
      * @param _list How to get the list widget to set
      * @param _text The text of the new current row
      */
-    UI_TEST_API static void set_current_text(tester& _tester, const selector& _list, const std::string& _text);
+    SIGHT_UI_TEST_API static void set_current_text(tester& _tester, const selector& _list, const std::string& _text);
 };
 
 } // namespace sight::ui::testCore::helper

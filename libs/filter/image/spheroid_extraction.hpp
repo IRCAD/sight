@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #if HAS_ITK_REVIEW_MODULE
 
-#include "filter/image/config.hpp"
+#include <sight/filter/image/config.hpp>
 
 #include <data/image.hpp>
 #include <data/point_list.hpp>
@@ -35,7 +35,7 @@ namespace sight::filter::image
 /**
  * @brief Detects sphere-like features in images.
  */
-class FILTER_IMAGE_CLASS_API spheroid_extraction
+class SIGHT_FILTER_IMAGE_CLASS_API spheroid_extraction
 {
 public:
 
@@ -49,7 +49,7 @@ public:
      * @param[in] _elongationMax maximum elongation to recognize a sphere, perfect spheres have an elongation of one.
      * @return detected spheres' center
      */
-    FILTER_IMAGE_API static data::point_list::sptr extract(
+    SIGHT_FILTER_IMAGE_API static data::point_list::sptr extract(
         const data::image::csptr& _image,
         double _threshold,
         double _radiusMin,

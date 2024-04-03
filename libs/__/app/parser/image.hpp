@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "app/config.hpp"
+#include <sight/app/config.hpp>
 
 #include <service/object_parser.hpp>
 
@@ -41,13 +41,13 @@ namespace sight::app::parser
    @endcode
  * @see     service::object_parser
  */
-class APP_CLASS_API image : public service::object_parser
+class SIGHT_APP_CLASS_API image : public service::object_parser
 {
 public:
 
     SIGHT_DECLARE_SERVICE(image, service::object_parser);
 
-    APP_API void create_config(core::tools::object::sptr _obj) override;
+    SIGHT_APP_API void create_config(core::tools::object::sptr _obj) override;
 };
 
 } // namespace sight::app::parser

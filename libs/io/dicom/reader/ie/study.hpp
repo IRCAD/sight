@@ -32,7 +32,7 @@ namespace sight::io::dicom::reader::ie
 /**
  * @brief Study Information Entity class
  */
-class IO_DICOM_CLASS_API study : public io::dicom::reader::ie::information_entity<data::series>
+class SIGHT_IO_DICOM_CLASS_API study : public io::dicom::reader::ie::information_entity<data::series>
 {
 public:
 
@@ -46,7 +46,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API study(
+    SIGHT_IO_DICOM_API study(
         const CSPTR(data::dicom_series)& _dicom_series,
         const SPTR(gdcm::Reader)& _reader,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
@@ -57,19 +57,19 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~study() override;
+    SIGHT_IO_DICOM_API ~study() override;
 
     /**
      * @brief Read General Study Module tags
      * @see PS 3.3 C.7.2.1
      */
-    IO_DICOM_API virtual void read_general_study_module();
+    SIGHT_IO_DICOM_API virtual void read_general_study_module();
 
     /**
      * @brief Read Patient Study Module tags
      * @see PS 3.3 C.7.2.2
      */
-    IO_DICOM_API virtual void read_patient_study_module();
+    SIGHT_IO_DICOM_API virtual void read_patient_study_module();
 };
 
 } // namespace sight::io::dicom::reader::ie

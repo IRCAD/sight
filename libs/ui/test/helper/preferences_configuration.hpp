@@ -36,7 +36,7 @@ public:
      * @param _values The values to be set
      * @warning This method assumes that the preferences configuration window is already open.
      */
-    UI_TEST_API static void fill(tester& _tester, const std::map<std::string, std::string>& _values);
+    SIGHT_UI_TEST_API static void fill(tester& _tester, const std::map<std::string, std::string>& _values);
 };
 
 } // namespace sight::ui::testCore::helper

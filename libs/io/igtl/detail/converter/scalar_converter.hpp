@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ namespace sight::io::igtl::detail::converter
  * @brief class to manage conversion between data::integer of Float and igtl::RawMessage
  */
 template<typename ScalarType, typename fw_data_object_t>
-class IO_IGTL_CLASS_API scalar_converter : public base
+class SIGHT_IO_IGTL_CLASS_API scalar_converter : public base
 {
 public:
 
@@ -132,8 +132,8 @@ protected:
     const std::string m_igtl_type;
 };
 
-class IO_IGTL_CLASS_API int_converter : public scalar_converter<int,
-                                                                data::integer>
+class SIGHT_IO_IGTL_CLASS_API int_converter : public scalar_converter<int,
+                                                                      data::integer>
 {
 public:
 
@@ -159,8 +159,8 @@ public:
     }
 };
 
-class IO_IGTL_CLASS_API float_converter : public scalar_converter<float,
-                                                                  data::real>
+class SIGHT_IO_IGTL_CLASS_API float_converter : public scalar_converter<float,
+                                                                        data::real>
 {
 public:
 

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_instance.hpp"
 #include "io/dicom/exception/failed.hpp"
 
@@ -41,9 +42,9 @@ namespace sight::io::dicom::writer
  * It defines needs of data storage and delegates writing to appropriate tools.
  * It manages all related data of one patient.
  */
-class IO_DICOM_CLASS_API series : public io::writer::generic_object_writer<data::series>,
-                                  public core::location::single_folder,
-                                  public core::tools::progress_adviser
+class SIGHT_IO_DICOM_CLASS_API series : public io::writer::generic_object_writer<data::series>,
+                                        public core::location::single_folder,
+                                        public core::tools::progress_adviser
 {
 public:
 
@@ -64,7 +65,7 @@ public:
     using dicom_instance_map_t = std::map<std::string, std::shared_ptr<io::dicom::container::dicom_instance> >;
 
     /// Destructor
-    IO_DICOM_API ~series() override = default;
+    SIGHT_IO_DICOM_API ~series() override = default;
 
     /**
      * @brief Load and start appropriate writing tools.
@@ -73,13 +74,13 @@ public:
      * @note Currently, it handles image, SR and RT document writing.
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API void write() override;
+    SIGHT_IO_DICOM_API void write() override;
 
     /**
      * Override
      * @brief Do nothing
      */
-    IO_DICOM_API std::string extension() const override;
+    SIGHT_IO_DICOM_API std::string extension() const override;
 
     /// Get Fiducials Export Mode
     const fiducials_export_mode& get_fiducials_export_mode() const

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/crypto/secure_string.hpp"
 
 #include <filesystem>
@@ -64,12 +65,15 @@ public:
     /// Adds a console sink to the logger from the given output stream.
     /// @param _os The output stream to use.
     /// @param _level The minimum level to log.
-    static CORE_API void add_console_log(std::ostream& _os = std::clog, level_t _level = sl_trace);
+    static SIGHT_CORE_API void add_console_log(std::ostream& _os = std::clog, level_t _level = sl_trace);
 
     /// Adds a file sink to the logger.
     /// @param _log_file The path to the log file.
     /// @param _level The minimum level to log.
-    static CORE_API void add_file_log(const std::filesystem::path& _log_file = LOG_FILE, level_t _level = sl_trace);
+    static SIGHT_CORE_API void add_file_log(
+        const std::filesystem::path& _log_file = LOG_FILE,
+        level_t _level                         = sl_trace
+    );
 
     /// Adds an encrypted file sink to the logger. It will start a separated detached child process that will perform
     /// the encryption. The real file name will have an extension suffix with an index counter which will be incremented
@@ -79,7 +83,7 @@ public:
     /// @param _level The minimum level to log.
     /// @param _password The password to use to encrypt the log.
     /// @param _ask_password If true, the password will be asked to the user.
-    CORE_API void start_encrypted_logger(
+    SIGHT_CORE_API void start_encrypted_logger(
         const std::filesystem::path& _log_archive    = ENCRYPTED_LOG_FILE,
         level_t _level                               = sl_trace,
         const core::crypto::secure_string& _password = "",
@@ -90,13 +94,13 @@ public:
     /// the logging.
     /// @param _log_archive The archive name "template".
     /// @param _level The minimum level to log.
-    CORE_API void start_logger(
+    SIGHT_CORE_API void start_logger(
         const std::filesystem::path& _log_archive = LOG_FILE,
         level_t _level                            = sl_trace
     );
 
     /// Close the current logger.
-    CORE_API void stop_logger();
+    SIGHT_CORE_API void stop_logger();
 
     /// Change the password used for log file encryption. It will close the current encrypted file and open a new one
     /// named with an incremented index counter (like in `log.1.sight`, `log.2.sight`, ...), depending of the original
@@ -104,7 +108,7 @@ public:
     /// Has no effect if the log file is not encrypted.
     /// @param _password the new password
     /// @param _old_password the old password
-    CORE_API void change_log_password(
+    SIGHT_CORE_API void change_log_password(
         const core::crypto::secure_string& _password,
         const core::crypto::secure_string& _old_password = ""
     );
@@ -116,7 +120,7 @@ public:
     /// @param[in] _relocate_previous_logs if true, the previous log files will be merged into a new log in the new
     /// path.
     /// @param[in] _old_password the old password, if relevant. This will allow decrypting the previous log files.
-    CORE_API void relocate_log(
+    SIGHT_CORE_API void relocate_log(
         const std::filesystem::path& _new_path,
         const core::crypto::secure_string& _password     = "",
         bool _relocate_previous_logs                     = false,
@@ -124,33 +128,33 @@ public:
     );
 
     /// Returns true if the current log file is encrypted. IE if there is a child sightlog process running.
-    CORE_API bool is_log_encrypted() const;
+    SIGHT_CORE_API bool is_log_encrypted() const;
 
     /// Returns true if the current log file is encrypted. IE if there is a child sightlog process running.
-    CORE_API std::filesystem::path get_current_log_path() const;
+    SIGHT_CORE_API std::filesystem::path get_current_log_path() const;
 
-    static CORE_API void trace(const std::string& _mes, const char* _file = nullptr, int _line = -1);
+    static SIGHT_CORE_API void trace(const std::string& _mes, const char* _file = nullptr, int _line = -1);
 
-    static CORE_API void debug(const std::string& _mes, const char* _file = nullptr, int _line = -1);
+    static SIGHT_CORE_API void debug(const std::string& _mes, const char* _file = nullptr, int _line = -1);
 
-    static CORE_API void info(const std::string& _mes, const char* _file = nullptr, int _line = -1);
+    static SIGHT_CORE_API void info(const std::string& _mes, const char* _file = nullptr, int _line = -1);
 
-    static CORE_API void warn(const std::string& _mes, const char* _file = nullptr, int _line = -1);
+    static SIGHT_CORE_API void warn(const std::string& _mes, const char* _file = nullptr, int _line = -1);
 
-    static CORE_API void error(const std::string& _mes, const char* _file = nullptr, int _line = -1);
+    static SIGHT_CORE_API void error(const std::string& _mes, const char* _file = nullptr, int _line = -1);
 
-    static CORE_API void fatal(const std::string& _mes, const char* _file = nullptr, int _line = -1);
+    static SIGHT_CORE_API void fatal(const std::string& _mes, const char* _file = nullptr, int _line = -1);
 
     /// Returns the singleton instance.
-    static CORE_API spy_logger& get();
+    static SIGHT_CORE_API spy_logger& get();
 
     /// Returns the path of the current sightlog executable.
-    static CORE_API std::filesystem::path get_logger_path();
+    static SIGHT_CORE_API std::filesystem::path get_logger_path();
 
 private:
 
-    CORE_API spy_logger();
-    CORE_API ~spy_logger();
+    SIGHT_CORE_API spy_logger();
+    SIGHT_CORE_API ~spy_logger();
 
     class spy_logger_impl;
     std::unique_ptr<spy_logger_impl> m_pimpl;

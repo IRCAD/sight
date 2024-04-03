@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qml/config.hpp"
+#include <sight/ui/qml/config.hpp>
 
 #include <QGuiApplication>
 
@@ -32,15 +32,15 @@ namespace sight::ui::qml
 /**
  * @brief   Defines the Qml application.
  */
-class UI_QML_CLASS_API app : public QGuiApplication
+class SIGHT_UI_QML_CLASS_API app : public QGuiApplication
 {
 Q_OBJECT
 
 public:
 
-    UI_QML_API app(int& _argc, char** _argv);
+    SIGHT_UI_QML_API app(int& _argc, char** _argv);
 
-    UI_QML_API bool notify(QObject* _receiver, QEvent* _e) override;
+    SIGHT_UI_QML_API bool notify(QObject* _receiver, QEvent* _e) override;
 
 public Q_SLOTS:
 

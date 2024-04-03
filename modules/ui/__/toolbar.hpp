@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/__/config.hpp"
-
 #include <core/base.hpp>
 
 #include <ui/__/toolbar.hpp>
@@ -34,17 +32,17 @@ namespace sight::module::ui
 /**
  * @brief   Defines the default toolbar for standard application
  */
-class MODULE_UI_CLASS_API toolbar : public sight::ui::toolbar
+class toolbar : public sight::ui::toolbar
 {
 public:
 
     SIGHT_DECLARE_SERVICE(toolbar, sight::ui::toolbar);
 
     /// Constructor. Do nothing.
-    MODULE_UI_API toolbar() noexcept;
+    toolbar() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_API ~toolbar() noexcept override;
+    ~toolbar() noexcept override;
 
 protected:
 
@@ -60,18 +58,18 @@ protected:
      * @brief Create the toolbar
      * @see sight::ui::toolbar::create()
      */
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
     /**
      * @brief This method remove the tools situated in the tool_bar.
      * @see sight::ui::toolbar::destroy()
      */
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Configuring method allows to create a toolbar with several actions.
@@ -119,12 +117,12 @@ protected:
      *  @see sight::ui::toolbar::initialize(),
      * sight::ui::layout::toolbar_manager::initialize()
      */
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief This method is used to give information about the service. Do nothing.
      */
-    MODULE_UI_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     ///@}
 };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/viz/config.hpp"
 
 #include <core/com/helper/sig_slot_connection.hpp>
 
@@ -52,7 +50,7 @@ namespace sight::module::ui::viz
  * @subsection In-Out In-Out:
  * - \b reconstruction [sight::data::reconstruction]: reconstruction whose paremeters should be edited.
  */
-class MODULE_UI_VIZ_CLASS_API shader_parameter_editor : public sight::ui::editor
+class shader_parameter_editor : public sight::ui::editor
 {
 public:
 
@@ -64,24 +62,24 @@ public:
     using editor_map_t            = std::map<object_classname_t, editor_implementation_t>;
 
     /// Constructor.
-    MODULE_UI_VIZ_API shader_parameter_editor() noexcept;
+    shader_parameter_editor() noexcept;
 
     /// Destructor. Destroy UI
-    MODULE_UI_VIZ_API ~shader_parameter_editor() noexcept override;
+    ~shader_parameter_editor() noexcept override;
 
 protected:
 
     /// Initialize the container
-    MODULE_UI_VIZ_API void configuring() override;
+    void configuring() override;
 
     /// Start the service, slot connections, widget initialization .
-    MODULE_UI_VIZ_API void starting() override;
+    void starting() override;
 
     /// Destroy the service and the container.
-    MODULE_UI_VIZ_API void stopping() override;
+    void stopping() override;
 
     /// Update the interface.
-    MODULE_UI_VIZ_API void updating() override;
+    void updating() override;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/service.hpp"
 
 #include <core/tools/failed.hpp>
@@ -35,7 +36,7 @@ namespace sight::ui
 /**
  * @brief Defines the service interface managing the editor service which create their own container.
  */
-class UI_CLASS_API dialog_editor : public service::base
+class SIGHT_UI_CLASS_API dialog_editor : public service::base
 {
 public:
 

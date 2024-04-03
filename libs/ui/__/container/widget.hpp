@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/object.hpp"
 
 namespace sight::ui::container
@@ -32,18 +33,18 @@ namespace sight::ui::container
  * @brief   Defines the generic container for IHM.
  *
  */
-class UI_CLASS_API widget : public ui::object
+class SIGHT_UI_CLASS_API widget : public ui::object
 {
 public:
 
     SIGHT_DECLARE_CLASS(widget, ui::object);
 
-    UI_API virtual void clean()              = 0;
-    UI_API virtual void destroy_container()  = 0;
-    UI_API virtual bool is_shown_on_screen() = 0;
+    SIGHT_UI_API virtual void clean()              = 0;
+    SIGHT_UI_API virtual void destroy_container()  = 0;
+    SIGHT_UI_API virtual bool is_shown_on_screen() = 0;
 
-    UI_API virtual void set_visible(bool _is_visible) = 0;
-    UI_API virtual void set_enabled(bool _is_enabled) = 0;
+    SIGHT_UI_API virtual void set_visible(bool _is_visible) = 0;
+    SIGHT_UI_API virtual void set_enabled(bool _is_enabled) = 0;
 };
 
 } // namespace sight::ui::container

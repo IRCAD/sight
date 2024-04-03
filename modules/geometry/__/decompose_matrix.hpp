@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/__/config.hpp"
 
 #include <geometry/data/matrix4.hpp>
 
@@ -54,7 +52,7 @@ namespace sight::module::geometry
  * - \b scale [sight::data::matrix4] (optional): scaling matrix.
  *
  */
-class MODULE_GEOMETRY_CLASS_API decompose_matrix : public sight::service::filter
+class decompose_matrix : public sight::service::filter
 {
 public:
 
@@ -63,7 +61,7 @@ public:
     /**
      * @brief Constructor.
      */
-    MODULE_GEOMETRY_API decompose_matrix() noexcept;
+    decompose_matrix() noexcept;
 
     /**
      * @brief Destructor.
@@ -74,16 +72,16 @@ public:
 protected:
 
     /// This method is used to configure the service.
-    MODULE_GEOMETRY_API void configuring() override;
+    void configuring() override;
 
     /// This method is used to initialize the service.
-    MODULE_GEOMETRY_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -91,7 +89,7 @@ protected:
      *
      * Connect Object::MODIFIED_SIG to service::slots::UPDATE
      */
-    MODULE_GEOMETRY_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     static constexpr std::string_view SOURCE_INPUT      = "source";
     static constexpr std::string_view TRANSLATION_INOUT = "translation";

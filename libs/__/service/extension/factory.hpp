@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "service/config.hpp"
+#include <sight/service/config.hpp>
 
 #include <core/mt/types.hpp>
 #include <core/runtime/module.hpp>
@@ -46,7 +46,7 @@ namespace extension
  * The factory is a registry of all the services. It allows to retrieve the informations necessary to
  * instantiate the services.
  */
-class SERVICE_CLASS_API factory : public core::base_object // NOLINT(bugprone-forward-declaration-namespace)
+class SIGHT_SERVICE_CLASS_API factory : public core::base_object // NOLINT(bugprone-forward-declaration-namespace)
 {
 public:
 
@@ -61,62 +61,62 @@ public:
     SIGHT_DECLARE_CLASS(factory, core::base_object);
 
     /// Return the unique Instance, create it if required at first access
-    SERVICE_API static factory::sptr get();
+    SIGHT_SERVICE_API static factory::sptr get();
 
     /// Parse module information to retrieve service declaration
-    SERVICE_API void parse_plugin_infos();
+    SIGHT_SERVICE_API void parse_plugin_infos();
 
-    SERVICE_API void add_service_factory(
+    SIGHT_SERVICE_API void add_service_factory(
         factoryType _factory,
         const std::string& _simpl,
         const std::string& _stype
     );
 
-    SERVICE_API void add_object_factory(
+    SIGHT_SERVICE_API void add_object_factory(
         const std::string& _simpl,
         const std::string& _oimpl
     );
 
     /// Create a service from a factory type
-    SERVICE_API SPTR(base) create(const std::string& _srv_impl) const;
+    SIGHT_SERVICE_API SPTR(base) create(const std::string& _srv_impl) const;
 
-    SERVICE_API void clear_factory();
+    SIGHT_SERVICE_API void clear_factory();
 
     /// return a vector of service implementation
-    SERVICE_API std::vector<std::string> get_implementation_id_from_object_and_type(
+    SIGHT_SERVICE_API std::vector<std::string> get_implementation_id_from_object_and_type(
         const std::string& _object,
         const std::string& _type
     ) const;
 
     /// return the default service implementation for an object
-    SERVICE_API std::string get_default_implementation_id_from_object_and_type(
+    SIGHT_SERVICE_API std::string get_default_implementation_id_from_object_and_type(
         const std::string& _object,
         const std::string& _type
     ) const;
 
     /// return the objects registered for a given service.
-    SERVICE_API const std::vector<std::string>& get_service_objects(const std::string& _srv_impl) const;
+    SIGHT_SERVICE_API const std::vector<std::string>& get_service_objects(const std::string& _srv_impl) const;
 
     /// return the service description.
-    SERVICE_API std::string get_service_description(const std::string& _srv_impl) const;
+    SIGHT_SERVICE_API std::string get_service_description(const std::string& _srv_impl) const;
 
     /// return the service capabilities.
-    SERVICE_API std::string get_service_tags(const std::string& _srv_impl) const;
+    SIGHT_SERVICE_API std::string get_service_tags(const std::string& _srv_impl) const;
 
     /// Check if the service with given object and implementation is valid
-    SERVICE_API bool check_service_validity(const std::string& _object, const std::string& _srv_impl) const;
+    SIGHT_SERVICE_API bool check_service_validity(const std::string& _object, const std::string& _srv_impl) const;
 
     /**
      * @brief Check whether an object (object) supports service of type srvType
      * @return true if service type supported
      */
-    SERVICE_API bool support(const std::string& _object, const std::string& _srv_type);
+    SIGHT_SERVICE_API bool support(const std::string& _object, const std::string& _srv_type);
 
     /**
      * @brief Check whether an object (object) supports service of type srvType and implementation srvImpl
      * @return true if service type supported
      */
-    SERVICE_API bool support(
+    SIGHT_SERVICE_API bool support(
         const std::string& _object,
         const std::string& _srv_type,
         const std::string& _srv_impl
@@ -125,7 +125,7 @@ public:
     /**
      * @brief returns the registered factory keys.
      */
-    SERVICE_API virtual key_vector_t get_factory_keys() const;
+    SIGHT_SERVICE_API virtual key_vector_t get_factory_keys() const;
 
 private:
 

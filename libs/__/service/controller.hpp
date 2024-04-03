@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/service/config.hpp>
+
 #include "service/base.hpp"
-#include "service/config.hpp"
 
 namespace sight::service
 {
@@ -32,7 +33,7 @@ namespace sight::service
  * @brief   This interface defines control service API.
  * Does nothing particularly, can be considered as a default service type to be implemented by unclassified services.
  */
-class SERVICE_CLASS_API controller : public service::base
+class SIGHT_SERVICE_CLASS_API controller : public service::base
 {
 public:
 
@@ -41,10 +42,10 @@ public:
 protected:
 
     ///@brief controller constructor. Do nothing.
-    SERVICE_API controller();
+    SIGHT_SERVICE_API controller();
 
     ///@brief controller destructor. Do nothing.
-    SERVICE_API ~controller() override;
+    SIGHT_SERVICE_API ~controller() override;
 };
 
 } // namespace sight::service

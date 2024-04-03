@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/qml/config.hpp"
+#include <sight/ui/qml/config.hpp>
+
 #include "ui/qml/dialog/standard_button.hpp"
 
 #include <ui/__/dialog/message_base.hpp>
@@ -38,8 +39,8 @@ namespace sight::ui::qml::dialog
 /**
  * @brief Defines the generic message box for IHM.
  */
-class UI_QML_CLASS_API message : public QObject,
-                                 public ui::dialog::message_base
+class SIGHT_UI_QML_CLASS_API message : public QObject,
+                                       public ui::dialog::message_base
 {
 Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message NOTIFY message_changed)
@@ -49,30 +50,30 @@ public:
 
     SIGHT_DECLARE_CLASS(message, ui::dialog::message_base, ui::factory::make<message>);
 
-    UI_QML_API message();
+    SIGHT_UI_QML_API message();
 
-    UI_QML_API ~message() override;
+    SIGHT_UI_QML_API ~message() override;
 
     /// Set the title of the message box
-    UI_QML_API void set_title(const std::string& _title) override;
+    SIGHT_UI_QML_API void set_title(const std::string& _title) override;
 
     /// Set the message
-    UI_QML_API void set_message(const std::string& _msg) override;
+    SIGHT_UI_QML_API void set_message(const std::string& _msg) override;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_QML_API void set_icon(message::icons _icon) override;
+    SIGHT_UI_QML_API void set_icon(message::icons _icon) override;
 
     /// Add a button (OK, YES_NO, CANCEL)
-    UI_QML_API void add_button(message::buttons _button) override;
+    SIGHT_UI_QML_API void add_button(message::buttons _button) override;
 
     /// Add a custom button to this dialog
-    UI_QML_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
+    SIGHT_UI_QML_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
     /// Set the default buttons
-    UI_QML_API void set_default_button(message::buttons _button) override;
+    SIGHT_UI_QML_API void set_default_button(message::buttons _button) override;
 
     /// Show the message box and return the clicked button.
-    UI_QML_API buttons show() override;
+    SIGHT_UI_QML_API buttons show() override;
 
 Q_SIGNALS:
 
@@ -106,8 +107,8 @@ private:
     message::buttons m_clicked {message::nobutton};
 
     /// Setter to QProperty and emit signal
-    UI_QML_API void emit_buttons(standard_button* /*standardButton*/);
-    UI_QML_API void emit_icon(const QUrl& _icon_path);
+    SIGHT_UI_QML_API void emit_buttons(standard_button* /*standardButton*/);
+    SIGHT_UI_QML_API void emit_icon(const QUrl& _icon_path);
 };
 
 } // namespace sight::ui::qml::dialog

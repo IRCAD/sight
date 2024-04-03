@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/core/config.hpp>
+
 #include <core/base.hpp>
-#include <core/config.hpp>
 
 #include <boost/signals2.hpp>
 
@@ -43,7 +44,7 @@ namespace sight::core::tools
  * boost::signal with a signature
  * ( float, std::string ) and returning nothing.
  */
-class CORE_CLASS_API progress_adviser : public boost::signals2::trackable
+class SIGHT_CORE_CLASS_API progress_adviser : public boost::signals2::trackable
 {
 public:
 
@@ -56,18 +57,18 @@ public:
                                                          // accepting a float as argument percent
                                                          // string for information
 
-    CORE_API progress_adviser();
-    CORE_API virtual ~progress_adviser();
+    SIGHT_CORE_API progress_adviser();
+    SIGHT_CORE_API virtual ~progress_adviser();
 
     /*
      * @brief append a new handler ( a functor accepting a float as argument an returning void)
      * @param[in] handler can be either  a function or functor or boost::signal with a signature( float, std::string )
      * and returning nothing
      */
-    CORE_API void add_handler(const progress_handler& _handler);
+    SIGHT_CORE_API void add_handler(const progress_handler& _handler);
 
     /// notify modification for all handler
-    CORE_API void notify_progress(float _percent, const std::string& _msg = "") const;
+    SIGHT_CORE_API void notify_progress(float _percent, const std::string& _msg = "") const;
 
 protected:
 

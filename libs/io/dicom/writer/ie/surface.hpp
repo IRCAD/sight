@@ -37,7 +37,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Surface Information Entity class
  */
-class IO_DICOM_CLASS_API surface : public io::dicom::writer::ie::information_entity<data::model_series>
+class SIGHT_IO_DICOM_CLASS_API surface : public io::dicom::writer::ie::information_entity<data::model_series>
 {
 public:
 
@@ -50,7 +50,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API surface(
+    SIGHT_IO_DICOM_API surface(
         const SPTR(gdcm::Writer)& _writer,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         SPTR(io::dicom::container::dicom_instance)_image_instance,
@@ -61,26 +61,26 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~surface() override;
+    SIGHT_IO_DICOM_API ~surface() override;
 
     /**
      * @brief Load Segmented Property Registry
      * @param[in] _filepath Path to the registry CSV file
      * @return True on success
      */
-    IO_DICOM_API bool load_segmented_property_registry(const std::filesystem::path& _filepath);
+    SIGHT_IO_DICOM_API bool load_segmented_property_registry(const std::filesystem::path& _filepath);
 
     /**
      * @brief Write SOP Common Module tags
      * @see PS 3.3 C.12.1
      */
-    IO_DICOM_API virtual void write_sop_common_module();
+    SIGHT_IO_DICOM_API virtual void write_sop_common_module();
 
     /**
      * @brief Write Surface Segmentation Module tags
      * @see PS 3.3 C.8.23.1 & PS 3.3 C.27.1
      */
-    IO_DICOM_API virtual void write_surface_segmentation_and_surface_mesh_modules();
+    SIGHT_IO_DICOM_API virtual void write_surface_segmentation_and_surface_mesh_modules();
 
 protected:
 
@@ -92,7 +92,7 @@ protected:
      * @param[in] _segment GDCM segment
      * @param[in] _segment_number Segment number
      */
-    IO_DICOM_API virtual void write_segment_sequence(
+    SIGHT_IO_DICOM_API virtual void write_segment_sequence(
         const CSPTR(data::reconstruction)& _reconstruction,
         gdcm::Item& _segment_item,
         const gdcm::SmartPointer<gdcm::Segment>& _segment,
@@ -106,7 +106,7 @@ protected:
      * @param[in] _surface GDCM surface
      * @param[in] _segment_number Associated segment number
      */
-    IO_DICOM_API virtual void write_surface_sequence(
+    SIGHT_IO_DICOM_API virtual void write_surface_sequence(
         const CSPTR(data::reconstruction)& _reconstruction,
         gdcm::Item& _surface_item,
         const gdcm::SmartPointer<gdcm::Surface>& _surface,

@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/dicomweb/config.hpp"
-
 #include <data/series_set.hpp>
 
 #include <io/http/client_qt.hpp>
@@ -64,8 +62,8 @@ namespace sight::module::io::dicomweb
  *  (for example <server>%HOSTNAME%:%PORT%</server>)
 
  */
-class MODULE_IO_DICOMWEB_CLASS_API query_editor : public QObject,
-                                                  public sight::ui::editor
+class query_editor : public QObject,
+                     public sight::ui::editor
 {
 Q_OBJECT;
 
@@ -74,24 +72,24 @@ public:
     SIGHT_DECLARE_SERVICE(query_editor, sight::ui::editor);
 
     /// Constructor
-    MODULE_IO_DICOMWEB_API query_editor() noexcept;
+    query_editor() noexcept;
 
     /// Destructor
-    MODULE_IO_DICOMWEB_API ~query_editor() noexcept override;
+    ~query_editor() noexcept override;
 
 protected:
 
     /// Gets the configurations.
-    MODULE_IO_DICOMWEB_API void configuring() override;
+    void configuring() override;
 
     /// Creates the widgets & connect the signals.
-    MODULE_IO_DICOMWEB_API void starting() override;
+    void starting() override;
 
     /// Disconnect the signals and destroy the widgets.
-    MODULE_IO_DICOMWEB_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing.
-    MODULE_IO_DICOMWEB_API void updating() override;
+    void updating() override;
 
 private Q_SLOTS:
 

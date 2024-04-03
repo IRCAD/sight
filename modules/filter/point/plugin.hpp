@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/filter/point/config.hpp"
+#include "sight/modules/filter/point/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -32,16 +32,16 @@ namespace sight::module::filter::point
 /**
  * @brief   This class is started when the module is loaded.
  */
-struct MODULE_FILTER_POINT_CLASS_API plugin : public core::runtime::plugin
+struct SIGHT_MODULE_FILTER_POINT_CLASS_API plugin : public core::runtime::plugin
 {
     /// Destructor
-    MODULE_FILTER_POINT_API ~plugin() noexcept override;
+    SIGHT_MODULE_FILTER_POINT_API ~plugin() noexcept override;
 
     /// Overrides
-    MODULE_FILTER_POINT_API void start() override;
+    SIGHT_MODULE_FILTER_POINT_API void start() override;
 
     /// Overrides
-    MODULE_FILTER_POINT_API void stop() noexcept override;
+    SIGHT_MODULE_FILTER_POINT_API void stop() noexcept override;
 };
 
 } // namespace sight::module::filter::point

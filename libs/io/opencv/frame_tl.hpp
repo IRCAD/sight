@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/opencv/config.hpp"
+#include <sight/io/opencv/config.hpp>
 
 #include <data/frame_tl.hpp>
 
@@ -40,7 +40,7 @@ namespace sight::io::opencv
  * image with a cv::Mat. This way every modification made to the buffer will be applied to the data::frame_tl
  * buffer, and you don't need an extra stage to get back your modified image.
  */
-class IO_OPENCV_CLASS_API frame_tl
+class SIGHT_IO_OPENCV_CLASS_API frame_tl
 {
 public:
 
@@ -50,7 +50,7 @@ public:
      * The resulting cv::Mat does not allocate a new buffer and points to the data::frame_tl::buffer_t.
      * That's why the source buffer is not const, because the _cvImage may alter the existing buffer.
      */
-    IO_OPENCV_API static void move_to_cv(
+    SIGHT_IO_OPENCV_API static void move_to_cv(
         const data::frame_tl::csptr& _timeline,
         data::frame_tl::buffer_t::element_t* _buffer,
         cv::Mat& _cv_image
@@ -62,7 +62,7 @@ public:
      * The resulting cv::Mat does not allocate a new buffer and points to the data::frame_tl::buffer_t.
      * The returned cvMat is const because the input buffer is const as well.
      */
-    IO_OPENCV_API static cv::Mat move_to_cv(
+    SIGHT_IO_OPENCV_API static cv::Mat move_to_cv(
         const data::frame_tl::csptr& _timeline,
         const data::frame_tl::buffer_t::element_t* _buffer
     );
@@ -70,7 +70,7 @@ public:
     /**
      * @brief Copy a OpenCV image into our internal image data.
      */
-    IO_OPENCV_API static void copy_from_cv(
+    SIGHT_IO_OPENCV_API static void copy_from_cv(
         const data::frame_tl::csptr& _timeline,
         data::frame_tl::buffer_t::element_t* _buffer,
         const cv::Mat& _cv_image
@@ -81,7 +81,7 @@ public:
      *
      * @note The cvImage allocates its own buffer and has the ownership.
      */
-    IO_OPENCV_API static void copy_to_cv(
+    SIGHT_IO_OPENCV_API static void copy_to_cv(
         const data::frame_tl::csptr& _timeline,
         const data::frame_tl::buffer_t::element_t* _buffer,
         cv::Mat& _cv_image

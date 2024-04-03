@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/igtl/config.hpp"
+#include <sight/io/igtl/config.hpp>
 #include "io/igtl/network.hpp"
 // Patched header.
 #include "io/igtl/patch/igtlSocket.h"
@@ -43,7 +43,7 @@ namespace sight::io::igtl
  *
  * @brief A Network client using igtl::ClientSocket can send fwData primitive
  */
-class IO_IGTL_CLASS_API client : public io::igtl::network
+class SIGHT_IO_IGTL_CLASS_API client : public io::igtl::network
 {
 public:
 
@@ -52,18 +52,18 @@ public:
     /**
      * @brief default constructor
      */
-    IO_IGTL_API client();
+    SIGHT_IO_IGTL_API client();
 
     /**
      * @brief Constructor take a igtl::ClientSocket used only by server class.
      *        You should not use this constructor, use default constructor instead
      */
-    IO_IGTL_API client(::igtl::ClientSocket::Pointer _socket);
+    SIGHT_IO_IGTL_API client(::igtl::ClientSocket::Pointer _socket);
 
     /**
      * @brief Destructor if a connection is opened the destructor close it
      */
-    IO_IGTL_API ~client() override;
+    SIGHT_IO_IGTL_API ~client() override;
 
     /**
      * @brief method to connect client to a server by using hostname and port
@@ -71,19 +71,19 @@ public:
      * @param[in] _addr ip or hostname
      * @param[in] _port port of server
      */
-    IO_IGTL_API void connect(const std::string& _addr, std::uint16_t _port);
+    SIGHT_IO_IGTL_API void connect(const std::string& _addr, std::uint16_t _port);
 
     /**
      * @brief method to disconnect client
      */
-    IO_IGTL_API void disconnect();
+    SIGHT_IO_IGTL_API void disconnect();
 
     /**
      * @brief method to check if the client is connected
      *
      * @return a boolean to say if the client is connected or not
      */
-    [[nodiscard]] IO_IGTL_API bool is_connected() const;
+    [[nodiscard]] SIGHT_IO_IGTL_API bool is_connected() const;
 
 private:
 

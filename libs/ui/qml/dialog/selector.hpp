@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qml/config.hpp"
+#include <sight/ui/qml/config.hpp>
 
 #include <ui/__/dialog/selector_base.hpp>
 
@@ -40,8 +40,8 @@ namespace sight::ui::qml::dialog
 /**
  * @brief   selector allowing the choice of an element among severals (_selections)
  */
-class UI_QML_CLASS_API selector : public QObject,
-                                  public ui::dialog::selector_base
+class SIGHT_UI_QML_CLASS_API selector : public QObject,
+                                        public ui::dialog::selector_base
 {
 Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message NOTIFY message_changed)
@@ -50,26 +50,26 @@ public:
 
     SIGHT_DECLARE_CLASS(selector, ui::dialog::selector_base, ui::factory::make<selector>);
 
-    UI_QML_API selector()           = default;
-    UI_QML_API ~selector() override = default;
+    SIGHT_UI_QML_API selector()           = default;
+    SIGHT_UI_QML_API ~selector() override = default;
 
     /// The string list that can be chosen by the selector.
-    UI_QML_API void set_choices_preset(choices_preset_t _selections) override;
+    SIGHT_UI_QML_API void set_choices_preset(choices_preset_t _selections) override;
 
     /// Sets the selector title.
-    UI_QML_API void set_title(std::string _title) override;
+    SIGHT_UI_QML_API void set_title(std::string _title) override;
 
     /// Allows multiple selections (default = false).
-    UI_QML_API void set_multiple(bool _multiple) override;
+    SIGHT_UI_QML_API void set_multiple(bool _multiple) override;
 
     /// Show the selector and return the selection.
-    UI_QML_API selections_t show() override;
+    SIGHT_UI_QML_API selections_t show() override;
 
     /// Set the message
-    UI_QML_API void set_message(const std::string& _msg) override;
+    SIGHT_UI_QML_API void set_message(const std::string& _msg) override;
 
     /// unimplemented
-    UI_QML_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
+    SIGHT_UI_QML_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
 Q_SIGNALS:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "sight/modules/memory/config.hpp"
+
 #include <core/runtime/plugin.hpp>
 
 namespace sight::module::memory
@@ -35,10 +37,10 @@ public:
     ~plugin() noexcept override;
 
     /// This method is used by runtime to initialize the module.
-    void start() override;
+    SIGHT_MODULE_MEMORY_API void start() override;
 
     /// This method is used by runtime to stop the module.
-    void stop() noexcept override;
+    SIGHT_MODULE_MEMORY_API void stop() noexcept override;
 };
 
 } // namespace sight::module::memory

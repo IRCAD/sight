@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ struct slot_run;
  * Template parameter T must always be void.
  */
 template<typename R, typename ... A>
-struct CORE_CLASS_API signal<R(A ...)>: signal_base
+struct SIGHT_CORE_CLASS_API signal<R(A ...)>: signal_base
 {
     /**
      * @name Typedefs

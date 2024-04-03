@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <core/base.hpp>
 #include <core/tools/object.hpp>
@@ -41,7 +41,7 @@ namespace sight::ui::qt::container
 /**
  * @brief   Defines the Qt menu item bar container.
  */
-class UI_QT_CLASS_API menu_item : public ui::container::menu_item
+class SIGHT_UI_QT_CLASS_API menu_item : public ui::container::menu_item
 {
 public:
 
@@ -51,13 +51,13 @@ public:
         ui::factory::make<menu_item>
     )
 
-    UI_QT_API ~menu_item() noexcept override = default;
+    SIGHT_UI_QT_API ~menu_item() noexcept override = default;
 
-    UI_QT_API void clean() override;
-    UI_QT_API void destroy_container() override;
+    SIGHT_UI_QT_API void clean() override;
+    SIGHT_UI_QT_API void destroy_container() override;
 
-    UI_QT_API virtual void set_qt_menu_item(QAction* _menu_item);
-    UI_QT_API virtual QAction* get_qt_menu_item();
+    SIGHT_UI_QT_API virtual void set_qt_menu_item(QAction* _menu_item);
+    SIGHT_UI_QT_API virtual QAction* get_qt_menu_item();
 
 private:
 

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_coded_attribute.hpp"
 
 #include <core/macros.hpp>
@@ -35,7 +36,7 @@ namespace sight::io::dicom::container::sr
 /**
  * @brief This class defines a node in a SR document
  */
-class IO_DICOM_CLASS_API dicom_sr_node
+class SIGHT_IO_DICOM_CLASS_API dicom_sr_node
 {
 public:
 
@@ -45,16 +46,16 @@ public:
      * @brief Write the SR node in the dataset
      * @param[in] _dataset Destination dataset
      */
-    IO_DICOM_API virtual void write(gdcm::DataSet& _dataset) const;
+    SIGHT_IO_DICOM_API virtual void write(gdcm::DataSet& _dataset) const;
 
     /**
      * @brief Add a sub node
      * @param[in] _node Node that must be added
      */
-    IO_DICOM_API void add_sub_node(const SPTR(dicom_sr_node)& _node);
+    SIGHT_IO_DICOM_API void add_sub_node(const SPTR(dicom_sr_node)& _node);
 
     /// Dump operator
-    IO_DICOM_API friend std::ostream& operator<<(std::ostream& _os, const dicom_sr_node& _node)
+    SIGHT_IO_DICOM_API friend std::ostream& operator<<(std::ostream& _os, const dicom_sr_node& _node)
     {
         _node.print(_os);
         return _os;

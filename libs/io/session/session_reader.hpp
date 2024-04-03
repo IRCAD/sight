@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "io/session/config.hpp"
+#include <sight/io/session/config.hpp>
 
 #include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
@@ -58,7 +58,7 @@ using deserializer_t = std::function<data::object::sptr(
  * depending of the type of data to serialize.
  *
  */
-class IO_SESSION_CLASS_API session_reader final :
+class SIGHT_IO_SESSION_CLASS_API session_reader final :
     public io::reader::object_reader,
     public core::location::single_file
 {
@@ -73,38 +73,41 @@ public:
     session_reader& operator=(session_reader&&)      = delete;
 
     /// Constructor
-    IO_SESSION_API session_reader();
+    SIGHT_IO_SESSION_API session_reader();
 
     /// Default destructor
-    IO_SESSION_API ~session_reader() override;
+    SIGHT_IO_SESSION_API ~session_reader() override;
 
     /// Read the session from archive.
-    IO_SESSION_API void read() override;
+    SIGHT_IO_SESSION_API void read() override;
 
     /// Defines extension supported by this reader ".zip"
-    IO_SESSION_API std::string extension() const override;
+    SIGHT_IO_SESSION_API std::string extension() const override;
 
     /// Sets the password
     /// @param _password the new password
-    IO_SESSION_API void set_password(const core::crypto::secure_string& _password);
+    SIGHT_IO_SESSION_API void set_password(const core::crypto::secure_string& _password);
 
     /// Sets the encryption policy
     /// @param _policy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
-    IO_SESSION_API void set_encryption_policy(core::crypto::password_keeper::encryption_policy _policy);
+    SIGHT_IO_SESSION_API void set_encryption_policy(core::crypto::password_keeper::encryption_policy _policy);
 
     /// Set archive format
     /// @param _archive_format how files are stored in the archive: @see sight::io::zip::archive::archiveFormat
-    IO_SESSION_API void set_archive_format(zip::archive::archive_format _archive_format);
+    SIGHT_IO_SESSION_API void set_archive_format(zip::archive::archive_format _archive_format);
 
     /// Set a deserialization function for an object
     /// @param _class_name the name of the object to serialize
     /// @param _deserializer the function pointer to the deserialization function
-    IO_SESSION_API void set_custom_deserializer(const std::string& _class_name, deserializer_t _deserializer = nullptr);
+    SIGHT_IO_SESSION_API void set_custom_deserializer(
+        const std::string& _class_name,
+        deserializer_t _deserializer = nullptr
+    );
 
     /// Set a default deserialization function for an object
     /// @param _class_name the name of the object to serialize
     /// @param _deserializer the function pointer to the deserialization function
-    IO_SESSION_API static void set_deserializer(
+    SIGHT_IO_SESSION_API static void set_deserializer(
         const std::string& _class_name,
         deserializer_t _deserializer = nullptr
     );
@@ -112,7 +115,7 @@ public:
     /// Return the registered deserialization function for an object
     /// @param _class_name the name of the object to deserialize
     /// @return the function pointer to the deserialization function
-    IO_SESSION_API static deserializer_t deserializer(const std::string& _class_name);
+    SIGHT_IO_SESSION_API static deserializer_t deserializer(const std::string& _class_name);
 
 private:
 

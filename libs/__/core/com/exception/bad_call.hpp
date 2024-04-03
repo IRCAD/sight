@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/exception.hpp>
 
@@ -32,7 +32,7 @@ namespace sight::core::com::exception
 /// Bad call exception.
 struct bad_call : core::exception
 {
-    CORE_API bad_call(const std::string& _err);
+    SIGHT_CORE_API bad_call(const std::string& _err);
 };
 
 } // namespace sight::core::com::exception

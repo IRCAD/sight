@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/__/config.hpp"
-
 #include <core/com/signal.hpp>
 #include <core/com/slots.hpp>
 #include <core/jobs/base.hpp>
@@ -49,7 +47,7 @@ namespace sight::module::ui
  * @brief   Service displaying a progress bar.
  */
 
-class MODULE_UI_CLASS_API job_bar : public sight::ui::dialog_editor
+class job_bar : public sight::ui::dialog_editor
 {
 public:
 
@@ -61,38 +59,38 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    MODULE_UI_API job_bar() noexcept;
+    job_bar() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    MODULE_UI_API ~job_bar() noexcept override = default;
+    ~job_bar() noexcept override = default;
 
 protected:
 
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    MODULE_UI_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     /**
      * @brief This method emit a signal.
      */
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /**
      * @brief This method is used to configure the service.
      */
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief showJob slot's method
      */
-    MODULE_UI_API virtual void show_job(core::jobs::base::sptr _job);
+    virtual void show_job(core::jobs::base::sptr _job);
 
     using progress_dialogs = std::set<std::shared_ptr<sight::ui::dialog::progress> >;
     progress_dialogs m_progress_dialogs;

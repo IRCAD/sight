@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/runtime/module.hpp"
 
 #include <filesystem>
@@ -37,7 +38,7 @@ namespace sight::core::runtime
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path working_path() noexcept;
+SIGHT_CORE_API std::filesystem::path working_path() noexcept;
 
 /**
  * @brief   Retrieve the filesystem valid path of resources of a module.
@@ -46,7 +47,7 @@ CORE_API std::filesystem::path working_path() noexcept;
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path get_module_resource_path(const std::string& _module_identifier) noexcept;
+SIGHT_CORE_API std::filesystem::path get_module_resource_path(const std::string& _module_identifier) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the module having the specified identifier.
@@ -56,7 +57,7 @@ CORE_API std::filesystem::path get_module_resource_path(const std::string& _modu
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path get_module_resource_file_path(
+SIGHT_CORE_API std::filesystem::path get_module_resource_file_path(
     const std::string& _module_identifier,
     const std::filesystem::path& _path
 ) noexcept;
@@ -70,7 +71,7 @@ CORE_API std::filesystem::path get_module_resource_file_path(
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path get_module_resource_file_path(const std::filesystem::path& _path) noexcept;
+SIGHT_CORE_API std::filesystem::path get_module_resource_file_path(const std::filesystem::path& _path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path whose first element is a library identifier.
@@ -81,7 +82,7 @@ CORE_API std::filesystem::path get_module_resource_file_path(const std::filesyst
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path get_library_resource_file_path(const std::filesystem::path& _path) noexcept;
+SIGHT_CORE_API std::filesystem::path get_library_resource_file_path(const std::filesystem::path& _path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a resource path
@@ -101,7 +102,7 @@ CORE_API std::filesystem::path get_library_resource_file_path(const std::filesys
  *
  * @return  a system valid path or an empty path if nothing is found
  */
-CORE_API std::filesystem::path get_resource_file_path(const std::filesystem::path& _path) noexcept;
+SIGHT_CORE_API std::filesystem::path get_resource_file_path(const std::filesystem::path& _path) noexcept;
 
 /**
  * @brief   Retrieve a filesystem valid path for a path relative to the specified module.
@@ -111,7 +112,7 @@ CORE_API std::filesystem::path get_resource_file_path(const std::filesystem::pat
  *
  * @return  a system valid path
  */
-CORE_API std::filesystem::path get_module_resource_path(
+SIGHT_CORE_API std::filesystem::path get_module_resource_path(
     std::shared_ptr<module> _module,
     const std::filesystem::path& _path
 ) noexcept;
@@ -121,6 +122,6 @@ CORE_API std::filesystem::path get_module_resource_path(
  *
  * @return  set of valid system paths
  */
-CORE_API std::set<std::filesystem::path> get_binaries_paths() noexcept;
+SIGHT_CORE_API std::set<std::filesystem::path> get_binaries_paths() noexcept;
 
 } // namespace sight::core::runtime

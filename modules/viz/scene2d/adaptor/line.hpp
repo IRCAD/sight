@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene2d/config.hpp"
 
 #include <viz/scene2d/adaptor.hpp>
 
@@ -51,30 +49,30 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b zValue (optional, default=0): z value of the layer
  *    - \b color (optional, default black): color of the line
  */
-class MODULE_VIZ_SCENE2D_CLASS_API line : public sight::viz::scene2d::adaptor
+class line : public sight::viz::scene2d::adaptor
 {
 public:
 
     SIGHT_DECLARE_SERVICE(line, sight::viz::scene2d::adaptor);
 
     /// Basic constructor, do nothing.
-    MODULE_VIZ_SCENE2D_API line() noexcept;
+    line() noexcept;
 
     /// Basic destructor, do nothing.
-    MODULE_VIZ_SCENE2D_API ~line() noexcept override;
+    ~line() noexcept override;
 
 protected:
 
-    MODULE_VIZ_SCENE2D_API void configuring() override;
+    void configuring() override;
 
     /// Initialize the layer and call the draw() function.
-    MODULE_VIZ_SCENE2D_API void starting() override;
+    void starting() override;
 
     /// Do nothing.
-    MODULE_VIZ_SCENE2D_API void updating() override;
+    void updating() override;
 
     /// Remove the layer from the scene.
-    MODULE_VIZ_SCENE2D_API void stopping() override;
+    void stopping() override;
 
 private:
 

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_instance.hpp"
 
 #include <data/object.hpp>
@@ -38,7 +39,7 @@ namespace sight::io::dicom::writer::tid
  * @brief TemplateID base class used to write templates
  */
 template<class DATATYPE>
-class IO_DICOM_CLASS_API template_id
+class SIGHT_IO_DICOM_CLASS_API template_id
 {
 public:
 
@@ -48,14 +49,14 @@ public:
      * @param[in] _instance DICOM instance used to share informations between modules
      * @param[in] _object Sight data object
      */
-    IO_DICOM_API template_id(
+    SIGHT_IO_DICOM_API template_id(
         SPTR(gdcm::Writer)_writer,
         SPTR(io::dicom::container::dicom_instance)_instance,
         CSPTR(DATATYPE)_object
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~template_id();
+    SIGHT_IO_DICOM_API virtual ~template_id();
 
 protected:
 

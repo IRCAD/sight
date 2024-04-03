@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/viz/config.hpp"
 
 #include <core/com/signals.hpp>
 
@@ -52,31 +50,31 @@ namespace sight::module::ui::viz
  *   - \b current: select the screen on which the application is currently displayed.
  *   - \b neighbor: select a neighboring screen if there is one.
  */
-class MODULE_UI_VIZ_CLASS_API screen_selector final : public sight::ui::action
+class screen_selector final : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(screen_selector, sight::ui::action);
 
     /// Constructor.
-    MODULE_UI_VIZ_API screen_selector();
+    screen_selector();
 
     /// Destructor.
-    MODULE_UI_VIZ_API ~screen_selector() final;
+    ~screen_selector() final;
 
 protected:
 
     /// Configures the selection mode.
-    MODULE_UI_VIZ_API void configuring() final;
+    void configuring() final;
 
     /// Starts the action service.
-    MODULE_UI_VIZ_API void starting() final;
+    void starting() final;
 
     /// Selects a screen based on the selection mode.
-    MODULE_UI_VIZ_API void updating() final;
+    void updating() final;
 
     /// Stops the action service.
-    MODULE_UI_VIZ_API void stopping() final;
+    void stopping() final;
 
 private:
 

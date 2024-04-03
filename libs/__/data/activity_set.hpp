@@ -28,7 +28,7 @@ namespace sight::data
 {
 
 /// This class is an activity container
-class DATA_CLASS_API activity_set final : public data::container<sequenced_set<std::shared_ptr<activity> > >
+class SIGHT_DATA_CLASS_API activity_set final : public data::container<sequenced_set<std::shared_ptr<activity> > >
 {
 public:
 
@@ -36,7 +36,7 @@ public:
 
     /// Destructor / Assignment operators
     /// @{
-    DATA_API ~activity_set() noexcept override = default;
+    SIGHT_DATA_API ~activity_set() noexcept override = default;
 
     /// This will enable common collection constructors / assignment operators
     using container<activity_set::container_t>::container;
@@ -45,20 +45,20 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const activity_set& _other) const noexcept;
-    DATA_API bool operator!=(const activity_set& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const activity_set& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const activity_set& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

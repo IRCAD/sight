@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/__/config.hpp"
 
 #include <ui/__/action.hpp>
 
@@ -47,7 +45,7 @@ namespace sight::module::ui::io
  * @subsection Configuration Configuration:
  * - \b dialogTitle (optional): title of the dialog.
  */
-class MODULE_UI_CLASS_API folder_selector : public sight::ui::action
+class folder_selector : public sight::ui::action
 {
 public:
 
@@ -61,22 +59,22 @@ public:
     static const core::com::signals::key_t FOLDER_SELECTED_SIG;
     /// @}
 
-    MODULE_UI_API folder_selector() noexcept;
-    MODULE_UI_API ~folder_selector() noexcept override;
+    folder_selector() noexcept;
+    ~folder_selector() noexcept override;
 
 protected:
 
     /// Do nothing
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
     /// Do nothing.
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
     /// Show the dialog and send the signal with the chosen directory
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /// Do nothing.
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
 private:
 

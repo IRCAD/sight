@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "service/config.hpp"
+#include <sight/service/config.hpp>
 
 #include <core/macros.hpp>
 
@@ -38,7 +38,7 @@ class base;
 /**
  * @brief   Interface for objects that need to manage services.
  */
-class SERVICE_CLASS_API has_services
+class SIGHT_SERVICE_CLASS_API has_services
 {
 public:
 
@@ -54,22 +54,22 @@ public:
      * @brief Return a specific registered service
      * @param[in] _id Identifier of the service
      */
-    [[nodiscard]] SERVICE_API CSPTR(service::base) get_registered_service(const core::tools::id::type& _id) const;
+    [[nodiscard]] SIGHT_SERVICE_API CSPTR(service::base) get_registered_service(const core::tools::id::type& _id) const;
 
 protected:
 
     /// Constructor
-    SERVICE_API has_services() noexcept;
+    SIGHT_SERVICE_API has_services() noexcept;
 
     /// Destructor
-    SERVICE_API virtual ~has_services() noexcept;
+    SIGHT_SERVICE_API virtual ~has_services() noexcept;
 
     /**
      * @brief Register a new service linked to this service
      * @param[in] _impl_type Type of the service
      * @param[in] _id Optional identifier of the service
      */
-    SERVICE_API SPTR(service::base) register_service(
+    SIGHT_SERVICE_API SPTR(service::base) register_service(
         const std::string& _impl_type,
         const std::string& _id = ""
     );
@@ -86,19 +86,19 @@ protected:
      * @brief Unregister a specific service
      * @param _id Identifier of the service
      */
-    SERVICE_API void unregister_service(const core::tools::id::type& _id);
+    SIGHT_SERVICE_API void unregister_service(const core::tools::id::type& _id);
 
     /**
      * @brief Unregister a specific service
      * @param _service Pointer to the service
      */
-    SERVICE_API void unregister_service(const service::base::sptr& _service);
+    SIGHT_SERVICE_API void unregister_service(const service::base::sptr& _service);
 
     /**
      * @brief Unregister all services linked to this service, optionally matches only a given type of services
      * @param _impl_type Optional type of the services to unregister
      */
-    SERVICE_API void unregister_services(const std::string& _impl_type = "");
+    SIGHT_SERVICE_API void unregister_services(const std::string& _impl_type = "");
 
 private:
 

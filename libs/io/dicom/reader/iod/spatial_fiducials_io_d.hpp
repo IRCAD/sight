@@ -30,7 +30,7 @@ namespace sight::io::dicom::reader::iod
 /**
  * @brief SpatialFiducialsIOD class used to read Spatial Fiducials IODs
  */
-class IO_DICOM_CLASS_API spatial_fiducials_iod : public io::dicom::reader::iod::information_object_definition
+class SIGHT_IO_DICOM_CLASS_API spatial_fiducials_iod : public io::dicom::reader::iod::information_object_definition
 {
 public:
 
@@ -42,7 +42,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API spatial_fiducials_iod(
+    SIGHT_IO_DICOM_API spatial_fiducials_iod(
         const data::dicom_series::csptr& _dicom_series,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         const core::log::logger::sptr& _logger = nullptr,
@@ -51,14 +51,14 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~spatial_fiducials_iod() override;
+    SIGHT_IO_DICOM_API ~spatial_fiducials_iod() override;
 
     /**
      * @brief Read a DICOM File
      * @param[in,out] _series Series that must be enriched
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API void read(data::series::sptr _series) override;
+    SIGHT_IO_DICOM_API void read(data::series::sptr _series) override;
 };
 
 } // namespace sight::io::dicom::reader::iod

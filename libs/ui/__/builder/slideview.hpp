@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/container/widget.hpp"
 #include "ui/__/object.hpp"
 
@@ -52,13 +53,13 @@ namespace sight::ui::builder
  * - \b styleSheet (optional, string, default=""): style of the widget (see Qt style sheets
  * http://doc.qt.io/qt-5/stylesheet-examples.html).
  */
-class UI_CLASS_API slideview : public ui::object
+class SIGHT_UI_CLASS_API slideview : public ui::object
 {
 public:
 
     SIGHT_DECLARE_CLASS(slideview, ui::object);
 
-    UI_API const static std::string REGISTRY_KEY;
+    SIGHT_UI_API const static std::string REGISTRY_KEY;
 
     /// Defines the horizontal alignment of the widget.
     enum h_alignment
@@ -84,22 +85,22 @@ public:
     };
 
     /// Creates the slide view builder.
-    UI_API slideview() = default;
+    SIGHT_UI_API slideview() = default;
 
     /// Destroyes the builder.
-    UI_API ~slideview() override = default;
+    SIGHT_UI_API ~slideview() override = default;
 
     /// Returns the generic container.
-    UI_API virtual ui::container::widget::sptr get_container() const;
+    SIGHT_UI_API virtual ui::container::widget::sptr get_container() const;
 
     /// Parses the configuration.
-    UI_API virtual void initialize(const ui::config_t& _config);
+    SIGHT_UI_API virtual void initialize(const ui::config_t& _config);
 
     /// Creates the container.
-    UI_API virtual void create_container(ui::container::widget::sptr _parent) = 0;
+    SIGHT_UI_API virtual void create_container(ui::container::widget::sptr _parent) = 0;
 
     /// Destroys the container.
-    UI_API virtual void destroy_container() = 0;
+    SIGHT_UI_API virtual void destroy_container() = 0;
 
 protected:
 

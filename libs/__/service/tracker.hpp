@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "service/config.hpp"
+#include <sight/service/config.hpp>
 
 #include <core/clock.hpp>
 
@@ -53,21 +53,21 @@ namespace sight::service
  * - \b dropObj(optional, default=true) : defines if the tracker should drop few objects from the timeline (and always
  *   get the last one) or not.
  */
-class SERVICE_CLASS_API tracker : public service::base
+class SIGHT_SERVICE_CLASS_API tracker : public service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(tracker, service::base);
 
-    SERVICE_API static const core::com::slots::key_t TRACK_SLOT;
-    SERVICE_API static const core::com::slots::key_t START_TRACKING_SLOT;
-    SERVICE_API static const core::com::slots::key_t STOP_TRACKING_SLOT;
+    SIGHT_SERVICE_API static const core::com::slots::key_t TRACK_SLOT;
+    SIGHT_SERVICE_API static const core::com::slots::key_t START_TRACKING_SLOT;
+    SIGHT_SERVICE_API static const core::com::slots::key_t STOP_TRACKING_SLOT;
 
-    SERVICE_API static constexpr std::string_view TIMELINE_INPUT = "timeline";
-    SERVICE_API static constexpr std::string_view FRAME_INOUT    = "frame";
+    SIGHT_SERVICE_API static constexpr std::string_view TIMELINE_INPUT = "timeline";
+    SIGHT_SERVICE_API static constexpr std::string_view FRAME_INOUT    = "frame";
 
     /// Defines the auto-connection between the timeline and the 'track' slot
-    SERVICE_API service::connections_t auto_connections() const override;
+    SIGHT_SERVICE_API service::connections_t auto_connections() const override;
 
     /// Return true if the tracking is started.
     bool is_tracking() const
@@ -90,13 +90,13 @@ public:
 protected:
 
     ///@brief tracker constructor. Do nothing.
-    SERVICE_API tracker();
+    SIGHT_SERVICE_API tracker();
 
     ///@brief tracker destructor. Do nothing.
-    SERVICE_API ~tracker() override;
+    SIGHT_SERVICE_API ~tracker() override;
 
-    SERVICE_API void configuring() override;
-    SERVICE_API void configuring(const config_t& _config) override;
+    SIGHT_SERVICE_API void configuring() override;
+    SIGHT_SERVICE_API void configuring(const config_t& _config) override;
 
     /**
      * @brief This method calls tracking.
@@ -104,19 +104,19 @@ protected:
      * @warning If tracking is stopped, this method does nothing.
      * @note You should connect this method to the input timeline
      */
-    SERVICE_API virtual void track(core::clock::type _timestamp);
+    SIGHT_SERVICE_API virtual void track(core::clock::type _timestamp);
 
     /// start the tracking
-    SERVICE_API virtual void start_tracking();
+    SIGHT_SERVICE_API virtual void start_tracking();
 
     /// stop the tracking
-    SERVICE_API virtual void stop_tracking();
+    SIGHT_SERVICE_API virtual void stop_tracking();
 
     /**
      * @brief process the tracking
      * @param[in,out] _timestamp the timestamp of the processes object of the timeline
      */
-    SERVICE_API virtual void tracking(core::clock::type& _timestamp) = 0;
+    SIGHT_SERVICE_API virtual void tracking(core::clock::type& _timestamp) = 0;
 
     /// timestamp of the last tracking
     core::clock::type m_last_timestamp {0};

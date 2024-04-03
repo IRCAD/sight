@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include <ui/test/config.hpp>
+#include <sight/ui/test/config.hpp>
+
 #include <ui/test/tester.hpp>
 
 #include <string>
@@ -53,8 +54,8 @@ public:
      *
      * @{
      */
-    UI_TEST_API selector(const char* _object_name);
-    UI_TEST_API selector(const std::string& _object_name);
+    SIGHT_UI_TEST_API selector(const char* _object_name);
+    SIGHT_UI_TEST_API selector(const std::string& _object_name);
     /// @}
 
     /**
@@ -62,14 +63,14 @@ public:
      *
      * @param _object_name The objectName of the object to be selected
      */
-    UI_TEST_API static selector from_main(const std::string& _object_name);
+    SIGHT_UI_TEST_API static selector from_main(const std::string& _object_name);
 
     /**
      * Create a selector to select an object from the current dialog window.
      *
      * @param _object_name The objectName of the object to be selected
      */
-    UI_TEST_API static selector from_dialog(const std::string& _object_name);
+    SIGHT_UI_TEST_API static selector from_dialog(const std::string& _object_name);
 
     /**
      * Create a selector to select an object via its parent.
@@ -77,24 +78,24 @@ public:
      * @param _parent_name The objectName of the parent of the object to be selected
      * @param _child_name The objectName of the object to be selected
      */
-    UI_TEST_API static selector from_parent(const std::string& _parent_name, const std::string& _child_name);
+    SIGHT_UI_TEST_API static selector from_parent(const std::string& _parent_name, const std::string& _child_name);
 
     /**
      * Create a selector to select an object via the current graphic component.
      *
      * @param _object_name The objectName of the object to be selected
      */
-    UI_TEST_API static selector from_current(const std::string& _object_name);
+    SIGHT_UI_TEST_API static selector from_current(const std::string& _object_name);
 
     /**
      * Create a selector to select the current component graphic component.
      */
-    UI_TEST_API static selector current();
+    SIGHT_UI_TEST_API static selector current();
 
     /**
      * Create a selector to select the current dialog window.
      */
-    UI_TEST_API static selector dialog();
+    SIGHT_UI_TEST_API static selector dialog();
 
     /**
      * Sets the timeout associated with the selection.
@@ -103,7 +104,7 @@ public:
      *
      * @returns A copy of this
      */
-    UI_TEST_API selector with_timeout(int _timeout) const;
+    SIGHT_UI_TEST_API selector with_timeout(int _timeout) const;
 
     /**
      * Adds a new condition for the object to meet
@@ -112,7 +113,7 @@ public:
      *
      * @returns A copy of this
      */
-    UI_TEST_API selector with_condition(std::function<bool(QObject*)> _condition) const;
+    SIGHT_UI_TEST_API selector with_condition(std::function<bool(QObject*)> _condition) const;
 
     /**
      * selects the desired object.
@@ -121,7 +122,7 @@ public:
      *
      * @post The current tester's current graphic component is the desired object if it was found.
      */
-    UI_TEST_API void select(tester& _tester) const;
+    SIGHT_UI_TEST_API void select(tester& _tester) const;
 
     /**
      * Returns the description of the object
@@ -130,18 +131,18 @@ public:
      *
      * @returns The description of the object
      */
-    UI_TEST_API std::string get_description(const tester& _tester) const;
+    SIGHT_UI_TEST_API std::string get_description(const tester& _tester) const;
 
     //------------------------------------------------------------------------------
 
-    UI_TEST_API enum type type() const
+    SIGHT_UI_TEST_API enum type type() const
     {
         return m_type;
     }
 
     //------------------------------------------------------------------------------
 
-    UI_TEST_API Data data() const
+    SIGHT_UI_TEST_API Data data() const
     {
         return m_data;
     }

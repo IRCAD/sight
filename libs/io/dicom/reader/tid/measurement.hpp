@@ -42,7 +42,7 @@ namespace sight::io::dicom::reader::tid
  * @brief Measurement TID
  * @see TID 300
  */
-class IO_DICOM_CLASS_API measurement : public io::dicom::reader::tid::template_id<data::image>
+class SIGHT_IO_DICOM_CLASS_API measurement : public io::dicom::reader::tid::template_id<data::image>
 {
 public:
 
@@ -54,7 +54,7 @@ public:
      * @param[in] _image Sight data object
      * @param[in] _logger Logger
      */
-    IO_DICOM_API measurement(
+    SIGHT_IO_DICOM_API measurement(
         const CSPTR(data::dicom_series)& _dicom_series,
         const SPTR(gdcm::Reader)& _reader,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
@@ -63,13 +63,13 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~measurement() override;
+    SIGHT_IO_DICOM_API ~measurement() override;
 
     /**
      * @brief Read a measurement node
      * @param[in] _node Node that must be read
      */
-    IO_DICOM_API virtual void read_node(const SPTR(io::dicom::container::sr::dicom_sr_node)& _node);
+    SIGHT_IO_DICOM_API virtual void read_node(const SPTR(io::dicom::container::sr::dicom_sr_node)& _node);
 
 protected:
 

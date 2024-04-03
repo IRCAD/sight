@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "app/config.hpp"
+#include <sight/app/config.hpp>
+
 #include "app/config_manager.hpp"
 
 #include "service/base.hpp"
@@ -36,7 +37,7 @@ namespace sight::app::helper
 /**
  * @brief This class provides few methods to manage config (parsing, starting, stopping...).
  */
-class APP_CLASS_API config_launcher final
+class SIGHT_APP_CLASS_API config_launcher final
 {
 public:
 
@@ -48,7 +49,7 @@ public:
      * @param _config The config to parse.
      * @param _service Related service.
      */
-    APP_API void parse_config(
+    SIGHT_APP_API void parse_config(
         const service::config_t& _config,
         const service::base::sptr& _service
     );
@@ -58,13 +59,13 @@ public:
      * @param _srv  service to connect with config root object.
      * @param _opt_replace_map optional replace map used to replace patterns (concatenated with parsed parameter).
      */
-    APP_API void start_config(
+    SIGHT_APP_API void start_config(
         service::base::sptr _srv,
         const field_adaptor_t& _opt_replace_map = field_adaptor_t()
     );
 
     /// Stops/destroys config and disconnect connection with config root object.
-    APP_API void stop_config();
+    SIGHT_APP_API void stop_config();
 
     /**
      * @brief Gets the running status of the configuration.
@@ -75,7 +76,7 @@ public:
         return m_config_is_running;
     }
 
-    APP_API void set_config(const std::string& _key);
+    SIGHT_APP_API void set_config(const std::string& _key);
     const std::string& config() const;
 
 private:

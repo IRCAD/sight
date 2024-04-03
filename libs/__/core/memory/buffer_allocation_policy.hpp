@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/memory/exception/memory.hpp"
 
 #include <core/base.hpp>
@@ -30,7 +31,7 @@
 namespace sight::core::memory
 {
 
-class CORE_CLASS_API buffer_allocation_policy
+class SIGHT_CORE_CLASS_API buffer_allocation_policy
 {
 public:
 
@@ -38,57 +39,57 @@ public:
     using size_type = std::size_t;
     using buffer_t  = void*;
 
-    CORE_API virtual void allocate(buffer_t& _buffer, size_type _size)   = 0;
-    CORE_API virtual void reallocate(buffer_t& _buffer, size_type _size) = 0;
-    CORE_API virtual void destroy(buffer_t& _buffer)                     = 0;
+    SIGHT_CORE_API virtual void allocate(buffer_t& _buffer, size_type _size)   = 0;
+    SIGHT_CORE_API virtual void reallocate(buffer_t& _buffer, size_type _size) = 0;
+    SIGHT_CORE_API virtual void destroy(buffer_t& _buffer)                     = 0;
 
-    CORE_API virtual ~buffer_allocation_policy()
+    SIGHT_CORE_API virtual ~buffer_allocation_policy()
     = default;
 };
 
-class CORE_CLASS_API buffer_malloc_policy : public buffer_allocation_policy
+class SIGHT_CORE_CLASS_API buffer_malloc_policy : public buffer_allocation_policy
 {
 public:
 
-    CORE_API void allocate(
+    SIGHT_CORE_API void allocate(
         buffer_t& _buffer,
         buffer_allocation_policy::size_type _size
     ) override;
-    CORE_API void reallocate(
+    SIGHT_CORE_API void reallocate(
         buffer_t& _buffer,
         buffer_allocation_policy::size_type _size
     ) override;
-    CORE_API void destroy(buffer_t& _buffer) override;
+    SIGHT_CORE_API void destroy(buffer_t& _buffer) override;
 };
 
-class CORE_CLASS_API buffer_new_policy : public buffer_allocation_policy
+class SIGHT_CORE_CLASS_API buffer_new_policy : public buffer_allocation_policy
 {
 public:
 
-    CORE_API void allocate(
+    SIGHT_CORE_API void allocate(
         buffer_t& _buffer,
         buffer_allocation_policy::size_type _size
     ) override;
-    CORE_API void reallocate(
+    SIGHT_CORE_API void reallocate(
         buffer_t& _buffer,
         buffer_allocation_policy::size_type _size
     ) override;
-    CORE_API void destroy(buffer_t& _buffer) override;
+    SIGHT_CORE_API void destroy(buffer_t& _buffer) override;
 };
 
-class CORE_CLASS_API buffer_no_alloc_policy : public buffer_allocation_policy
+class SIGHT_CORE_CLASS_API buffer_no_alloc_policy : public buffer_allocation_policy
 {
 public:
 
-    CORE_API void allocate(
+    SIGHT_CORE_API void allocate(
         buffer_t& _buffer,
         buffer_allocation_policy::size_type _size
     ) override;
-    CORE_API void reallocate(
+    SIGHT_CORE_API void reallocate(
         buffer_t& _buffer,
         buffer_allocation_policy::size_type _size
     ) override;
-    CORE_API void destroy(buffer_t& _buffer) override;
+    SIGHT_CORE_API void destroy(buffer_t& _buffer) override;
 };
 
 } // namespace sight::core::memory

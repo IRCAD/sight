@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/vtk/config.hpp"
 
 #include <io/__/service/writer.hpp>
 
@@ -69,7 +67,7 @@ namespace sight::module::io::vtk
  * - \b file (optional): path of the image to save, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
  */
-class MODULE_IO_VTK_CLASS_API image_series_writer : public sight::io::service::writer
+class image_series_writer : public sight::io::service::writer
 {
 public:
 
@@ -78,7 +76,7 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    MODULE_IO_VTK_API image_series_writer() noexcept;
+    image_series_writer() noexcept;
 
     ~image_series_writer() noexcept override =
         default;
@@ -88,32 +86,32 @@ public:
     /**
      * @brief Configure the image path.
      */
-    MODULE_IO_VTK_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
     /**
      * @brief Starting method.
      *
      * This method is used to initialize the service.
      */
-    MODULE_IO_VTK_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Stopping method.
      *
      * The stopping method is empty for this service.
      */
-    MODULE_IO_VTK_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Configuring method.
      *
      * The configuring method only calls the configuring method from the base class
      */
-    MODULE_IO_VTK_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Updating method.
@@ -121,14 +119,14 @@ protected:
      * This method is used to update the service.
      * The image is read.
      */
-    MODULE_IO_VTK_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Info method.
      *
      * This method is used to give informations about the service.
      */
-    MODULE_IO_VTK_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
 private:
 

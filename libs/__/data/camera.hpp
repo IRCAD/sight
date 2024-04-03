@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/factory/new.hpp"
 #include "data/object.hpp"
 
@@ -43,7 +44,7 @@ namespace sight::data
 /**
  * @brief   This class defines a camera object.
  */
-class DATA_CLASS_API camera : public object
+class SIGHT_DATA_CLASS_API camera : public object
 {
 public:
 
@@ -100,25 +101,25 @@ public:
     };
 
     /// Default constructor.
-    DATA_API camera();
-    DATA_API camera(const camera& _cam);
+    SIGHT_DATA_API camera();
+    SIGHT_DATA_API camera(const camera& _cam);
 
     /// Destructor
-    DATA_API ~camera() noexcept override = default;
+    SIGHT_DATA_API ~camera() noexcept override = default;
 
-    DATA_API static enum pixel_format pixel_format(const std::string& _name);
+    SIGHT_DATA_API static enum pixel_format pixel_format(const std::string& _name);
 
-    DATA_API static std::string get_pixel_format_name(enum pixel_format _format);
+    SIGHT_DATA_API static std::string get_pixel_format_name(enum pixel_format _format);
 
     /**@name Signals API
      * @{
      */
     /// Signal when camera is calibrated
-    DATA_API static const core::com::signals::key_t INTRINSIC_CALIBRATED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t INTRINSIC_CALIBRATED_SIG;
     using intrinsic_calibrated_signal_t = core::com::signal<void ()>;
 
     /// Signal when camera id is modified
-    DATA_API static const core::com::signals::key_t ID_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t ID_MODIFIED_SIG;
     using id_modified_signal_t = core::com::signal<void (std::string)>;
     /** @} */
 
@@ -195,7 +196,7 @@ public:
     }
 
     /// Sets the distortion coefficient
-    DATA_API void set_distortion_coefficient(double _k1, double _k2, double _p1, double _p2, double _k3);
+    SIGHT_DATA_API void set_distortion_coefficient(double _k1, double _k2, double _p1, double _p2, double _k3);
 
     /**
      * @name Getters / Setters
@@ -344,20 +345,20 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const camera& _other) const noexcept;
-    DATA_API bool operator!=(const camera& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const camera& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const camera& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

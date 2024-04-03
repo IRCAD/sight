@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/exception.hpp"
 #include "data/factory/new.hpp"
 #include "data/iterator.hpp"
@@ -148,8 +149,8 @@ namespace sight::data
    @endcode
  */
 /* *INDENT-ON* */
-class DATA_CLASS_API array final : public object,
-                                   public core::memory::buffered
+class SIGHT_DATA_CLASS_API array final : public object,
+                                         public core::memory::buffered
 {
 public:
 
@@ -171,9 +172,9 @@ public:
     /**
      * @brief Constructor
      */
-    DATA_API array();
+    SIGHT_DATA_API array();
 
-    DATA_API ~array() override;
+    SIGHT_DATA_API ~array() override;
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -194,7 +195,7 @@ public:
      *
      * @throw Exception
      */
-    DATA_API std::size_t resize(const size_t& _size, const core::type& _type, bool _reallocate = true);
+    SIGHT_DATA_API std::size_t resize(const size_t& _size, const core::type& _type, bool _reallocate = true);
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -216,13 +217,13 @@ public:
      *
      * @throw Exception
      */
-    DATA_API std::size_t resize(const size_t& _size, bool _reallocate = true);
+    SIGHT_DATA_API std::size_t resize(const size_t& _size, bool _reallocate = true);
 
     /**
      * @brief Clear this array.
      * Size and type are reset, buffer is released.
      */
-    DATA_API void clear();
+    SIGHT_DATA_API void clear();
 
     /**
      * @brief Test whether array is empty
@@ -230,7 +231,7 @@ public:
      * @return Returns whether array is empty, ie. this->size() is an empty
      * vector.
      */
-    DATA_API bool empty() const;
+    SIGHT_DATA_API bool empty() const;
 
     /**
      * @brief Get the size of one element of the array,
@@ -238,63 +239,63 @@ public:
      *
      * @return One array element size in bytes.
      */
-    DATA_API std::size_t element_size_in_bytes() const;
+    SIGHT_DATA_API std::size_t element_size_in_bytes() const;
 
     /**
      * @brief Get the number of elements of type <getType()> in the array
      *
      * @return number of array elements
      */
-    DATA_API std::size_t num_elements() const;
+    SIGHT_DATA_API std::size_t num_elements() const;
 
     /**
      * @brief Getter for the array view size
      *
      * @return  array view size in bytes.
      */
-    DATA_API std::size_t size_in_bytes() const;
+    SIGHT_DATA_API std::size_t size_in_bytes() const;
 
     /**
      * @brief Getter for the array size
      *
      * @return vector of size lengths in each dimension
      */
-    DATA_API const size_t& size() const;
+    SIGHT_DATA_API const size_t& size() const;
 
     /**
      * @brief Getter for the array strides
      *
      * @return vector of steps in each dimension for array walking
      */
-    DATA_API const offset_t& get_strides() const;
+    SIGHT_DATA_API const offset_t& get_strides() const;
 
     /**
      * @brief Getter for number of dimensions, ie. size().size()
      *
      * @return array's number of dimensions
      */
-    DATA_API std::size_t num_dimensions() const;
+    SIGHT_DATA_API std::size_t num_dimensions() const;
 
     /**
      * @brief Set array's buffer ownership
      *
      * @param _own New ownership value
      */
-    DATA_API void set_is_buffer_owner(bool _own);
+    SIGHT_DATA_API void set_is_buffer_owner(bool _own);
 
     /**
      * @brief Getter for array's buffer ownership
      *
      * @return Current array buffer ownership
      */
-    DATA_API bool get_is_buffer_owner() const;
+    SIGHT_DATA_API bool get_is_buffer_owner() const;
 
     /**
      * @brief Getter for array's type
      *
      * @return Type of array
      */
-    DATA_API core::type type() const;
+    SIGHT_DATA_API core::type type() const;
 
     /**
      * @brief Compute strides for given parameters
@@ -302,7 +303,7 @@ public:
      * @param _size         array size
      * @param _size_of_type size of a component
      */
-    DATA_API static offset_t compute_strides(size_t _size, std::size_t _size_of_type);
+    SIGHT_DATA_API static offset_t compute_strides(size_t _size, std::size_t _size_of_type);
 
     /// Return buffer object
     ///@{
@@ -314,7 +315,7 @@ public:
     void set_buffer_object(const core::memory::buffer_object::sptr& _buffer_obj);
 
     /// Exchanges the content of the array with the content of _source.
-    DATA_API void swap(array::sptr _source) noexcept;
+    SIGHT_DATA_API void swap(array::sptr _source) noexcept;
 
     template<typename T>
     using iterator = array_iterator<T>;
@@ -384,8 +385,8 @@ public:
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl()).
      * @{
      */
-    DATA_API void* buffer();
-    DATA_API const void* buffer() const;
+    SIGHT_DATA_API void* buffer();
+    SIGHT_DATA_API const void* buffer() const;
     ///@}
 
     /**
@@ -400,7 +401,7 @@ public:
      * @param _policy         If the array takes ownership of the buffer, specifies the buffer allocation policy.
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl()).
      */
-    DATA_API void set_buffer(
+    SIGHT_DATA_API void set_buffer(
         void* _buf,
         bool _take_ownership,
         const array::size_t& _size,
@@ -477,28 +478,28 @@ public:
      * @note These functions lock the buffer for dump (see lock()).
      * @{
      */
-    DATA_API iterator<char> begin();
-    DATA_API iterator<char> end();
-    DATA_API const_iterator<char> begin() const;
-    DATA_API const_iterator<char> end() const;
+    SIGHT_DATA_API iterator<char> begin();
+    SIGHT_DATA_API iterator<char> end();
+    SIGHT_DATA_API const_iterator<char> begin() const;
+    SIGHT_DATA_API const_iterator<char> end() const;
     /// @}
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const array& _other) const noexcept;
-    DATA_API bool operator!=(const array& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const array& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const array& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
@@ -514,7 +515,7 @@ protected:
      * @param _take_ownership if true, the array will manage allocation and destroy the buffer when needed.
      * @param _policy If the array takes ownership of the buffer, specifies the buffer allocation policy.
      */
-    DATA_API void set_buffer(
+    SIGHT_DATA_API void set_buffer(
         void* _buf,
         bool _take_ownership                                 = false,
         core::memory::buffer_allocation_policy::sptr _policy = std::make_shared<core::memory::buffer_malloc_policy>()
@@ -527,8 +528,8 @@ protected:
      * @return buffer item pointer
      * @{
      */
-    DATA_API char* get_buffer_ptr(const array::index_t& _id);
-    DATA_API const char* get_buffer_ptr(const array::index_t& _id) const;
+    SIGHT_DATA_API char* get_buffer_ptr(const array::index_t& _id);
+    SIGHT_DATA_API const char* get_buffer_ptr(const array::index_t& _id) const;
     ///@}
 
     /**
@@ -536,11 +537,11 @@ protected:
      * @param _id Item array index
      * @return buffer offset
      */
-    DATA_API std::size_t get_buffer_offset(const array::index_t& _id) const;
+    SIGHT_DATA_API std::size_t get_buffer_offset(const array::index_t& _id) const;
 
     /// Add a lock on the array in the given vector to prevent from dumping the buffer on the disk
     /// This is needed for IBuffered interface implementation
-    DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const override;
+    SIGHT_DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const override;
 
     /// Not implemented
     array(const array&);

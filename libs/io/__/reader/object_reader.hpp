@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
+
 #include "io/__/reader/factory/new.hpp"
 #include "io/__/reader/registry/detail.hpp"
 
@@ -46,7 +47,7 @@ namespace sight::io::reader
  * the method read. Reading modifies the object given in parameter with the
  * method set_object.
  */
-class IO_CLASS_API object_reader : public core::base_object
+class SIGHT_IO_CLASS_API object_reader : public core::base_object
 {
 public:
 
@@ -77,7 +78,7 @@ public:
      *
      * This method (re)inits the object given in parameter of set_object method.
      */
-    IO_API virtual void read() = 0;
+    SIGHT_IO_API virtual void read() = 0;
 
     /**
      * @brief m_object setter.
@@ -85,7 +86,7 @@ public:
      * @note m_object is saved in class with a weakptr
      * @note This object can be get with the method get_object()
      */
-    IO_API virtual void set_object(core::tools::object::sptr _p_object);
+    SIGHT_IO_API virtual void set_object(core::tools::object::sptr _p_object);
 
     /**
      * @brief m_object getter.
@@ -93,17 +94,17 @@ public:
      * @return m_object
      * @note m_object is saved in reader with a weakptr
      */
-    IO_API virtual core::tools::object::sptr get_object() const;
+    SIGHT_IO_API virtual core::tools::object::sptr get_object() const;
 
-    IO_API virtual std::string extension() const = 0;
+    SIGHT_IO_API virtual std::string extension() const = 0;
 
     /**
      * @brief Requests reader abortion.
      */
-    IO_API void cancel() const;
+    SIGHT_IO_API void cancel() const;
 
     /// Returns the internal job
-    IO_API virtual SPTR(core::jobs::base) get_job() const
+    SIGHT_IO_API virtual SPTR(core::jobs::base) get_job() const
     {
         return nullptr;
     }
@@ -111,7 +112,7 @@ public:
 protected:
 
     /// Destructor. Does nothing.
-    IO_API ~object_reader() override = default;
+    SIGHT_IO_API ~object_reader() override = default;
 
     /**
      * @brief Object result of reading process.

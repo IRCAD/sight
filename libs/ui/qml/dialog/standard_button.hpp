@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qml/config.hpp"
+#include <sight/ui/qml/config.hpp>
 
 #include <QObject>
 #include <QVector>
@@ -35,7 +35,7 @@ namespace sight::ui::qml::dialog
 /**
  * @brief The enum to setup the button mask for StandardButtons
  */
-class UI_QML_CLASS_API standard_button : public QObject
+class SIGHT_UI_QML_CLASS_API standard_button : public QObject
 {
 Q_OBJECT
 Q_PROPERTY(button_list button MEMBER m_button WRITE set_button READ get_button NOTIFY button_changed)
@@ -68,15 +68,15 @@ public:
     };
     Q_ENUM(button_list)
 
-    UI_QML_API standard_button();
+    SIGHT_UI_QML_API standard_button();
 
-    UI_QML_API ~standard_button() override;
+    SIGHT_UI_QML_API ~standard_button() override;
 
     /// Set the button mask
-    UI_QML_API void set_button(button_list _button);
+    SIGHT_UI_QML_API void set_button(button_list _button);
 
     /// Get the button mask
-    UI_QML_API const button_list& get_button();
+    SIGHT_UI_QML_API const button_list& get_button();
 
 Q_SIGNALS:
 

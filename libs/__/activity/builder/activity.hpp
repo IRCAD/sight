@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/activity/config.hpp>
+
 #include "activity/builder/base.hpp"
-#include "activity/config.hpp"
 
 namespace sight::activity::builder
 {
@@ -31,7 +32,7 @@ namespace sight::activity::builder
 /**
  * @brief Defines the default builder for the data Activity.
  */
-class ACTIVITY_CLASS_API activity : public sight::activity::builder::base
+class SIGHT_ACTIVITY_CLASS_API activity : public sight::activity::builder::base
 {
 public:
 
@@ -40,7 +41,7 @@ public:
     using registry_key_t = std::string;
 
     /// Destructor. Do nothing.
-    ACTIVITY_API virtual ~activity() = default;
+    SIGHT_ACTIVITY_API virtual ~activity() = default;
 
     /**
      * @brief Build an Activity with required data present in currentSelection and defined in configuration.
@@ -50,7 +51,7 @@ public:
      * @param[in] _current_selection a vector which contains current selected data.
      * @return Activity or null
      */
-    ACTIVITY_API virtual data::activity::sptr build_data(
+    SIGHT_ACTIVITY_API virtual data::activity::sptr build_data(
         const sight::activity::extension::activity_info& _activity_info,
         const CSPTR(data::vector)& _current_selection
     ) const override;

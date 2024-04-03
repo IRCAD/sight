@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/dicomweb/config.hpp"
-
 #include <core/memory/buffer_object.hpp>
 
 #include <data/vector.hpp>
@@ -61,7 +59,7 @@ namespace sight::module::io::dicomweb
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
  * @note : hostname and port of this service are from the preference settings.
  */
-class MODULE_IO_DICOMWEB_CLASS_API series_pusher : public service::controller
+class series_pusher : public service::controller
 {
 public:
 
@@ -69,32 +67,32 @@ public:
 
     using dicom_series_container_t = std::vector<std::shared_ptr<const data::series> >;
 
-    MODULE_IO_DICOMWEB_API static const core::com::slots::key_t DISPLAY_SLOT;
+    static const core::com::slots::key_t DISPLAY_SLOT;
     using display_message_slot_t = core::com::slot<void (const std::string&, bool)>;
 
     /**
      * @brief Constructor
      */
-    MODULE_IO_DICOMWEB_API series_pusher() noexcept;
+    series_pusher() noexcept;
 
     /**
      * @brief Destructor
      */
-    MODULE_IO_DICOMWEB_API ~series_pusher() noexcept override;
+    ~series_pusher() noexcept override;
 
 protected:
 
     /// Gets the configuration.
-    MODULE_IO_DICOMWEB_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_IO_DICOMWEB_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_IO_DICOMWEB_API void stopping() override;
+    void stopping() override;
 
     /// Checks the configuration and push the series.
-    MODULE_IO_DICOMWEB_API void updating() override;
+    void updating() override;
 
 private:
 

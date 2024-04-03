@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
 #include <core/tools/failed.hpp>
@@ -41,8 +39,8 @@ namespace sight::module::ui::qt::video
 /**
  * @brief   This editor allows to draw a slider. It is designed to be used with frame_grabber to browse a video.
  */
-class MODULE_UI_QT_CLASS_API slider : public QObject,
-                                      public sight::ui::editor
+class slider : public QObject,
+               public sight::ui::editor
 {
 Q_OBJECT
 
@@ -51,16 +49,16 @@ public:
     SIGHT_DECLARE_SERVICE(slider, sight::ui::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API slider() noexcept;
+    slider() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~slider() noexcept override = default;
+    ~slider() noexcept override = default;
 
     /**@name Signals API
      * @{
      */
 
-    MODULE_UI_QT_API static const core::com::signals::key_t POSITION_CHANGED_SIG;
+    static const core::com::signals::key_t POSITION_CHANGED_SIG;
     using position_changed_signal_t = core::com::signal<void (int64_t)>;
 
     /** @} */
@@ -70,10 +68,10 @@ public:
      * @{
      */
 
-    MODULE_UI_QT_API static const core::com::slots::key_t SET_POSITION_SLIDER_SLOT;
+    static const core::com::slots::key_t SET_POSITION_SLIDER_SLOT;
     using change_position_slot_t = core::com::slot<void (int64_t)>;
 
-    MODULE_UI_QT_API static const core::com::slots::key_t SET_DURATION_SLIDER_SLOT;
+    static const core::com::slots::key_t SET_DURATION_SLIDER_SLOT;
     using change_duration_slot_t = core::com::slot<void (int64_t)>;
 
     ///@}

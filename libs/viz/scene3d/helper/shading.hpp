@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <data/material.hpp>
 #include <data/mesh.hpp>
@@ -54,32 +54,32 @@ public:
      * @brief Returns true if the given technique computes a pixel color.
      * @param[in] _tech Ogre technique
      */
-    VIZ_SCENE3D_API static bool is_color_technique(const Ogre::Technique& _tech);
+    SIGHT_VIZ_SCENE3D_API static bool is_color_technique(const Ogre::Technique& _tech);
 
     /**
      * @brief Returns true if the given technique is used for a peel pass in a depth peeling.
      * @param[in] _tech Ogre technique
      */
-    VIZ_SCENE3D_API static bool is_peel_technique(const Ogre::Technique& _tech);
+    SIGHT_VIZ_SCENE3D_API static bool is_peel_technique(const Ogre::Technique& _tech);
 
     /**
      * @brief Returns true if the given technique is used in a geometric pass (as opposed to a fullscreen pass).
      * @param[in] _tech Ogre technique
      */
-    VIZ_SCENE3D_API static bool is_geometric_technique(const Ogre::Technique& _tech);
+    SIGHT_VIZ_SCENE3D_API static bool is_geometric_technique(const Ogre::Technique& _tech);
 
     /**
      * @brief Returns true if the given technique is used in a depth-only pass.
      * @param[in] _tech Ogre technique
      */
-    VIZ_SCENE3D_API static bool is_depth_only_technique(const Ogre::Technique& _tech);
+    SIGHT_VIZ_SCENE3D_API static bool is_depth_only_technique(const Ogre::Technique& _tech);
 
     /**
      * @brief Constructs a suffix to use in vertex and fragment programs names.
      * @param[in] _diffuse_texture is diffuse texture bound ?
      * @param[in] _vertex_color is vertex color enabled ?
      */
-    VIZ_SCENE3D_API static std::string get_permutation(
+    SIGHT_VIZ_SCENE3D_API static std::string get_permutation(
         data::material::shading_t _mode,
         bool _diffuse_texture,
         bool _vertex_color
@@ -92,7 +92,7 @@ public:
      * @param[in] _vertex_color is vertex color enabled ?
      * @param[in] _has_primitive_color is primitive color enabled bound ?
      */
-    VIZ_SCENE3D_API static std::string get_r2_vb_geometry_program_name(
+    SIGHT_VIZ_SCENE3D_API static std::string get_r2_vb_geometry_program_name(
         data::mesh::cell_type_t _primitive_type,
         bool _diffuse_texture,
         bool _vertex_color,
@@ -107,7 +107,7 @@ public:
      * @param[in] _name name of the program
      * @param[in] _permutation new permutation to use
      */
-    VIZ_SCENE3D_API static std::string set_permutation_in_program_name(
+    SIGHT_VIZ_SCENE3D_API static std::string set_permutation_in_program_name(
         const std::string& _name,
         const std::string& _permutation
     );
@@ -123,7 +123,7 @@ public:
      * @param[in] _tech new suffix to use
      * @todo Fix this comment
      */
-    VIZ_SCENE3D_API static std::string set_technique_in_program_name(
+    SIGHT_VIZ_SCENE3D_API static std::string set_technique_in_program_name(
         const std::string& _name,
         const std::string& _tech
     );
@@ -134,7 +134,7 @@ public:
      * @param[in] _material Ogre material
      * @return vector of constants, each element is a tuple with the constant name its definition and the shader type.
      */
-    VIZ_SCENE3D_API static shader_constants_t find_material_constants(Ogre::Material& _material);
+    SIGHT_VIZ_SCENE3D_API static shader_constants_t find_material_constants(Ogre::Material& _material);
 
     /**
      * @brief Create a Sight data that can be used to interact with a shader parameter.
@@ -145,7 +145,7 @@ public:
      * constants
      * @return vector of constants, each element is a tuple with the constant name, its definition and the shader type.
      */
-    VIZ_SCENE3D_API static shader_constants_t find_shader_constants(
+    SIGHT_VIZ_SCENE3D_API static shader_constants_t find_shader_constants(
         Ogre::GpuProgramParametersSharedPtr _params,
         Ogre::GpuProgramType _shader_type,
         bool _enable_light_constants = false
@@ -157,7 +157,7 @@ public:
      * @param[in] _type type of the shader parameter
      * @param[in] _value value of the shader parameter
      */
-    VIZ_SCENE3D_API static SPTR(data::object) create_object_from_shader_parameter(
+    SIGHT_VIZ_SCENE3D_API static SPTR(data::object) create_object_from_shader_parameter(
         Ogre::GpuConstantType _type,
         constant_value_t _value
     );
@@ -172,7 +172,7 @@ public:
      * @param[in] _shader_type shader type (vertex, fragment or geometry)
      * @param[in] _base_name name of the base gpu program
      */
-    VIZ_SCENE3D_API static Ogre::GpuProgramPtr create_program_from(
+    SIGHT_VIZ_SCENE3D_API static Ogre::GpuProgramPtr create_program_from(
         const std::string& _name,
         const std::string& _source_file_name,
         const gpu_program_parameters_t& _parameters,

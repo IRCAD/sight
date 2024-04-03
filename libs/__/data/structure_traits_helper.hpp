@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/structure_traits.hpp"
 
 #include <boost/bimap/bimap.hpp>
@@ -33,17 +34,17 @@ namespace sight::data
 /**
  * @brief This class defines some helper for the structure traits.
  */
-class DATA_CLASS_API structure_traits_helper
+class SIGHT_DATA_CLASS_API structure_traits_helper
 {
 public:
 
     using class_translator_t = boost::bimaps::bimap<data::structure_traits::structure_class, std::string>;
     /// Map to translate structure class (string vs enum)
-    DATA_API static const class_translator_t CLASSTRANSLATOR;
+    SIGHT_DATA_API static const class_translator_t CLASSTRANSLATOR;
 
     using category_translator_t = boost::bimaps::bimap<data::structure_traits::category, std::string>;
     /// Map to translate structure categories (string vs enum)
-    DATA_API static const category_translator_t CATEGORYTRANSLATOR;
+    SIGHT_DATA_API static const category_translator_t CATEGORYTRANSLATOR;
 };
 
 } // namespace sight::data

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
+
 #include "viz/scene3d/texture.hpp"
 #include "viz/scene3d/vr/summed_area_table.hpp"
 
@@ -34,7 +35,7 @@ namespace sight::viz::scene3d::vr
 /**
  * @brief Computes the illumination volume for extinction based shading.
  */
-class VIZ_SCENE3D_CLASS_API illum_ambient_occlusion_sat final
+class SIGHT_VIZ_SCENE3D_CLASS_API illum_ambient_occlusion_sat final
 {
 public:
 
@@ -60,7 +61,7 @@ public:
     };
 
     /// Initializes the illumination volume with the give dimensions.
-    VIZ_SCENE3D_API illum_ambient_occlusion_sat(
+    SIGHT_VIZ_SCENE3D_API illum_ambient_occlusion_sat(
         std::string _parent_id,
         Ogre::SceneManager* _scene_manager,
         bool _ao                                    = false,
@@ -68,41 +69,41 @@ public:
         std::optional<sat_parameters_t> _parameters = {});
 
     /// Destructor, does nothing.
-    VIZ_SCENE3D_API ~illum_ambient_occlusion_sat();
+    SIGHT_VIZ_SCENE3D_API ~illum_ambient_occlusion_sat();
 
     /// Computes a new SAT with a different resolution given by the size ratio.
-    VIZ_SCENE3D_API void update_sat_from_ratio(float _sat_size_ratio);
+    SIGHT_VIZ_SCENE3D_API void update_sat_from_ratio(float _sat_size_ratio);
 
     /// Recomputes the illumination volume using the current SAT.
-    VIZ_SCENE3D_API void update_volume_illumination();
+    SIGHT_VIZ_SCENE3D_API void update_volume_illumination();
 
     /// Recomputes the SAT and the illumination volume when the image or the TF changed.
-    VIZ_SCENE3D_API void sat_update(
+    SIGHT_VIZ_SCENE3D_API void sat_update(
         const texture::sptr& _img,
         const viz::scene3d::transfer_function::sptr& _tf,
         float _sample_distance
     );
 
     /// Ambient occlusion / color bleeding usage setter
-    VIZ_SCENE3D_API void set_ao(bool _ao);
+    SIGHT_VIZ_SCENE3D_API void set_ao(bool _ao);
 
     /// Soft shadows usage setter.
-    VIZ_SCENE3D_API void set_shadows(bool _shadows);
+    SIGHT_VIZ_SCENE3D_API void set_shadows(bool _shadows);
 
     /// Shells number setter.
-    VIZ_SCENE3D_API void set_nb_shells(unsigned _nb_shells);
+    SIGHT_VIZ_SCENE3D_API void set_nb_shells(unsigned _nb_shells);
 
     /// Shell radius setter.
-    VIZ_SCENE3D_API void set_shell_radius(unsigned _shell_radius);
+    SIGHT_VIZ_SCENE3D_API void set_shell_radius(unsigned _shell_radius);
 
     /// Cone angle setter.
-    VIZ_SCENE3D_API void set_cone_angle(float _cone_angle);
+    SIGHT_VIZ_SCENE3D_API void set_cone_angle(float _cone_angle);
 
     /// Cone samples number setter.
-    VIZ_SCENE3D_API void set_samples_along_cone(unsigned _samples_along_cone);
+    SIGHT_VIZ_SCENE3D_API void set_samples_along_cone(unsigned _samples_along_cone);
 
     ///@brief Parameters
-    [[nodiscard]] VIZ_SCENE3D_API const sat_parameters_t& parameters() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API const sat_parameters_t& parameters() const;
 
     ///@brief Returns the texture used to store the illumination volume.
     [[nodiscard]] const Ogre::TexturePtr& get_illumination_volume() const;

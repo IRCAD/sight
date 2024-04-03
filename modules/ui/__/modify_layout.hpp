@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/__/config.hpp"
-
 #include <service/base.hpp>
 
 #include <ui/__/action.hpp>
@@ -36,7 +34,7 @@ namespace sight::module::ui
 /**
  * @brief This action is used to modify the layout configuration.
  */
-class MODULE_UI_CLASS_API modify_layout : public sight::ui::action
+class modify_layout : public sight::ui::action
 {
 public:
 
@@ -45,12 +43,12 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    MODULE_UI_API modify_layout() noexcept = default;
+    modify_layout() noexcept = default;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    MODULE_UI_API ~modify_layout() noexcept override = default;
+    ~modify_layout() noexcept override = default;
 
 protected:
 
@@ -65,12 +63,12 @@ protected:
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    MODULE_UI_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     /**
      * @brief This method starts-updates or stops the specified services
      */
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /**
      * @brief This method is used to configure the service parameters: specifies which views to show/hide/mode.
@@ -100,11 +98,11 @@ protected:
      *
      * The action in the menu/toolbar must be checkable (style="check").
      */
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
 private:
 

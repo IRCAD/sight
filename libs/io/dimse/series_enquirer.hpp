@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dimse/config.hpp"
+#include <sight/io/dimse/config.hpp>
 
 #include <core/base_object.hpp>
 #include <core/com/slot.hpp>
@@ -62,7 +62,7 @@ namespace sight::io::dimse
     seriesEnquirer->disconnect();
    @endcode
  */
-class IO_DIMSE_CLASS_API series_enquirer :
+class SIGHT_IO_DIMSE_CLASS_API series_enquirer :
     public core::base_object,
     protected DcmSCU
 {
@@ -71,7 +71,7 @@ public:
     SIGHT_DECLARE_CLASS(series_enquirer, io::dimse::series_enquirer, std::make_shared<series_enquirer>);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
+    SIGHT_IO_DIMSE_API static const core::com::slots::key_t PROGRESS_CALLBACK_SLOT;
 
     using progress_callback_slot_t = core::com::slot<void (const std::string&, unsigned int, const std::string&)>;
 
@@ -82,10 +82,10 @@ public:
     using dataset_container_t = std::vector<std::shared_ptr<const DcmDataset> >;
 
     /// Initializes members.
-    IO_DIMSE_API series_enquirer();
+    SIGHT_IO_DIMSE_API series_enquirer();
 
     /// Destroyes the instance.
-    IO_DIMSE_API ~series_enquirer() override;
+    SIGHT_IO_DIMSE_API ~series_enquirer() override;
 
     /**
      * @brief Initializes the connection.
@@ -96,7 +96,7 @@ public:
      * @param _move_application_title The move application title.
      * @param _progress_callback The progress callback.
      */
-    IO_DIMSE_API void initialize(
+    SIGHT_IO_DIMSE_API void initialize(
         const std::string& _application_title,
         const std::string& _peer_host_name,
         std::uint16_t _peer_port,
@@ -106,37 +106,37 @@ public:
     );
 
     /// Initializes the network and negotiates association.
-    IO_DIMSE_API bool connect();
+    SIGHT_IO_DIMSE_API bool connect();
 
     /// Return true if there is an existing association
-    IO_DIMSE_API bool is_connected_to_pacs() const;
+    SIGHT_IO_DIMSE_API bool is_connected_to_pacs() const;
 
     /// Assembles and send C-ECHO request.
-    IO_DIMSE_API bool ping_pacs();
+    SIGHT_IO_DIMSE_API bool ping_pacs();
 
     /// Releases association.
-    IO_DIMSE_API void disconnect();
+    SIGHT_IO_DIMSE_API void disconnect();
 
     /**
      * @brief Finds series by patient name.
      * @param _name The patient name.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList<QRResponse*> find_series_by_patient_name(const std::string& _name);
+    SIGHT_IO_DIMSE_API OFList<QRResponse*> find_series_by_patient_name(const std::string& _name);
 
     /**
      * @brief Finds series by patient UID.
      * @param _uid The patient UID.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList<QRResponse*> find_series_by_patient_uid(const std::string& _uid);
+    SIGHT_IO_DIMSE_API OFList<QRResponse*> find_series_by_patient_uid(const std::string& _uid);
 
     /**
      * @brief Finds series by birthdate.
      * @param _birth_date birthdate of the series.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList<QRResponse*> find_series_by_patient_birth_date(const std::string& _birth_date);
+    SIGHT_IO_DIMSE_API OFList<QRResponse*> find_series_by_patient_birth_date(const std::string& _birth_date);
 
     /**
      * @brief Finds series by study date.
@@ -146,28 +146,31 @@ public:
      *
      * @pre _fromDate and _toDate must match the format YYYYMMDD.
      */
-    IO_DIMSE_API OFList<QRResponse*> find_series_by_date(const std::string& _from_date, const std::string& _to_date);
+    SIGHT_IO_DIMSE_API OFList<QRResponse*> find_series_by_date(
+        const std::string& _from_date,
+        const std::string& _to_date
+    );
 
     /**
      * @brief Finds series by series UID.
      * @param _uid The series UID.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList<QRResponse*> find_series_by_uid(const std::string& _uid);
+    SIGHT_IO_DIMSE_API OFList<QRResponse*> find_series_by_uid(const std::string& _uid);
 
     /**
      * @brief Finds series by modality.
      * @param _modality The modality.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList<QRResponse*> find_series_by_modality(const std::string& _modality);
+    SIGHT_IO_DIMSE_API OFList<QRResponse*> find_series_by_modality(const std::string& _modality);
 
     /**
      * @brief Finds series by description.
      * @param _description The description.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList<QRResponse*> find_series_by_description(const std::string& _description);
+    SIGHT_IO_DIMSE_API OFList<QRResponse*> find_series_by_description(const std::string& _description);
 
     /**
      * @brief Finds SOPInstanceUID of the specified instance.
@@ -175,7 +178,7 @@ public:
      * @param _instance_number The instance number.
      * @return The SOPInstanceUID corresponding to the instanceNumber.
      */
-    IO_DIMSE_API std::string find_sop_instance_uid(
+    SIGHT_IO_DIMSE_API std::string find_sop_instance_uid(
         const std::string& _series_instance_uid,
         unsigned int _instance_number
     );
@@ -184,20 +187,20 @@ public:
      * @brief Pulls series using C-MOVE requests.
      * @param _instance_uid_container The series instance UID container.
      */
-    IO_DIMSE_API void pull_series_using_move_retrieve_method(InstanceUIDContainer _instance_uid_container);
+    SIGHT_IO_DIMSE_API void pull_series_using_move_retrieve_method(InstanceUIDContainer _instance_uid_container);
 
     /**
      * @brief Pulls series using C-GET requests.
      * @param _instance_uid_container The series instance UID container.
      */
-    IO_DIMSE_API void pull_series_using_get_retrieve_method(InstanceUIDContainer _instance_uid_container);
+    SIGHT_IO_DIMSE_API void pull_series_using_get_retrieve_method(InstanceUIDContainer _instance_uid_container);
 
     /**
      * @brief Pulls instance using C-MOVE requests.
      * @param _series_instance_uid The series instance UID.
      * @param _sop_instance_uid The sOP Instance UID.
      */
-    IO_DIMSE_API void pull_instance_using_move_retrieve_method(
+    SIGHT_IO_DIMSE_API void pull_instance_using_move_retrieve_method(
         const std::string& _series_instance_uid,
         const std::string& _sop_instance_uid
     );
@@ -207,7 +210,7 @@ public:
      * @param _series_instance_uid The series instance UID.
      * @param _sop_instance_uid The sOP Instance UID.
      */
-    IO_DIMSE_API void pull_instance_using_get_retrieve_method(
+    SIGHT_IO_DIMSE_API void pull_instance_using_get_retrieve_method(
         const std::string& _series_instance_uid,
         const std::string& _sop_instance_uid
     );
@@ -216,13 +219,13 @@ public:
      * @brief Pushs instances using C-STORE requests.
      * @param _path_container The instance paths container.
      */
-    IO_DIMSE_API void push_series(const instance_path_container_t& _path_container);
+    SIGHT_IO_DIMSE_API void push_series(const instance_path_container_t& _path_container);
 
     /**
      * @brief Pushs instances using C-STORE requests.
      * @param _dataset_container The dICOM dataset container.
      */
-    IO_DIMSE_API void push_series(const dataset_container_t& _dataset_container);
+    SIGHT_IO_DIMSE_API void push_series(const dataset_container_t& _dataset_container);
 
 protected:
 
@@ -231,35 +234,35 @@ protected:
      * @param _dataset The request dataset.
      * @return The dcmtk response list.
      */
-    IO_DIMSE_API OFList<QRResponse*> send_find_request(DcmDataset _dataset);
+    SIGHT_IO_DIMSE_API OFList<QRResponse*> send_find_request(DcmDataset _dataset);
 
     /**
      * @brief Sends a C-MOVE Request.
      * @param _dataset The request dataset.
      * @return OFTrue on success.
      */
-    IO_DIMSE_API OFCondition send_move_request(DcmDataset _dataset);
+    SIGHT_IO_DIMSE_API OFCondition send_move_request(DcmDataset _dataset);
 
     /**
      * @brief Sends a C-GET Request.
      * @param _dataset The request dataset.
      * @return OFTrue on success.
      */
-    IO_DIMSE_API OFCondition send_get_request(DcmDataset _dataset);
+    SIGHT_IO_DIMSE_API OFCondition send_get_request(DcmDataset _dataset);
 
     /**
      * @brief Sends a C-STORE Request.
      * @param _path The file path.
      * @return OFTrue on success.
      */
-    IO_DIMSE_API OFCondition send_store_request(const std::filesystem::path& _path);
+    SIGHT_IO_DIMSE_API OFCondition send_store_request(const std::filesystem::path& _path);
 
     /**
      * @brief Sends a C-STORE Request.
      * @param _dataset The dicom dataset.
      * @return OFTrue on success.
      */
-    IO_DIMSE_API OFCondition send_store_request(const CSPTR(DcmDataset)& _dataset);
+    SIGHT_IO_DIMSE_API OFCondition send_store_request(const CSPTR(DcmDataset)& _dataset);
 
     /**
      * @brief Handles a C-MOVE response.
@@ -268,7 +271,7 @@ protected:
      * @param _wait_for_next_response
      * @return
      */
-    IO_DIMSE_API OFCondition handleMOVEResponse(
+    SIGHT_IO_DIMSE_API OFCondition handleMOVEResponse(
         T_ASC_PresentationContextID _pres_id,
         RetrieveResponse* _response,
         OFBool& _wait_for_next_response
@@ -279,7 +282,7 @@ protected:
      * @param _incoming_object
      * @return
      */
-    IO_DIMSE_API OFCondition handleSTORERequest(
+    SIGHT_IO_DIMSE_API OFCondition handleSTORERequest(
         T_ASC_PresentationContextID /*presID*/,
         DcmDataset* _incoming_object,
         OFBool& /*continueCGETSession*/,
@@ -291,7 +294,7 @@ protected:
      * @brief Finds uncompressed presentation context.
      * @param _sop_class The sOP class which needs the presentation context.
      */
-    IO_DIMSE_API Uint8 find_uncompressed_pc(const OFString& _sop_class);
+    SIGHT_IO_DIMSE_API Uint8 find_uncompressed_pc(const OFString& _sop_class);
 
 private:
 

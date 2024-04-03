@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/debug/config.hpp"
-
 #include <ui/__/action.hpp>
 
 #include <QDialog>
@@ -37,17 +35,17 @@ namespace sight::module::ui::debug::action
 /**
  * @brief  Implements an action that show module information.
  */
-class MODULE_UI_DEBUG_CLASS_API components_tree : public sight::ui::action
+class components_tree : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(components_tree, sight::ui::action);
 
     /// Does nothing
-    MODULE_UI_DEBUG_API components_tree() noexcept;
+    components_tree() noexcept;
 
     /// Does nothing
-    MODULE_UI_DEBUG_API ~components_tree() noexcept override;
+    ~components_tree() noexcept override;
 
 protected:
 

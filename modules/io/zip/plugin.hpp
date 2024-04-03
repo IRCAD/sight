@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "sight/modules/io/zip/config.hpp"
+
 #include <core/runtime/plugin.hpp>
 
 namespace sight::module::io::zip
@@ -32,8 +34,8 @@ public:
 
     ~plugin() noexcept override;
 
-    void start() override;
-    void stop() noexcept override;
+    SIGHT_MODULE_IO_ZIP_API void start() override;
+    SIGHT_MODULE_IO_ZIP_API void stop() noexcept override;
 };
 
 } // namespace sight::module::io::zip

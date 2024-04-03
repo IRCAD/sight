@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/dicom/config.hpp"
 
 #include <data/string.hpp>
 
@@ -53,7 +51,7 @@ namespace sight::module::ui::dicom
  *  - \b addSelection
  *      - \b filter (mandatory) : Name of the filter to include/exclude to the choice list of the selector.
  */
-class MODULE_UI_DICOM_CLASS_API filter_selector_dialog : public sight::ui::dialog_editor
+class filter_selector_dialog : public sight::ui::dialog_editor
 {
 public:
 
@@ -64,18 +62,18 @@ public:
      *
      * By default, the filter_selector_dialog::m_filtersAreExcluded is set to true.
      */
-    MODULE_UI_DICOM_API filter_selector_dialog();
+    filter_selector_dialog();
 
     /// Destructor. Do nothing.
-    MODULE_UI_DICOM_API ~filter_selector_dialog() noexcept override;
+    ~filter_selector_dialog() noexcept override;
 
 protected:
 
     ///Starts the service. Do nothing.
-    MODULE_UI_DICOM_API void starting() override;
+    void starting() override;
 
     /// Stops the service. Do nothing.
-    MODULE_UI_DICOM_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief   This method initializes class member parameters from configuration elements.
@@ -83,14 +81,14 @@ protected:
      * The method verifies if the configuration is well written and retrieves user parameter values.
      * Thanks to this method, filter_selector_dialog::m_selectedFilters value is up to date.
      **/
-    MODULE_UI_DICOM_API void configuring() override;
+    void configuring() override;
 
     /// Create a dialog box to provide the user different available filters for the FilterSelector associated objects.
     /// Then, the selected filter is applied.
-    MODULE_UI_DICOM_API void updating() override;
+    void updating() override;
 
     /// Gives the name of the class. Do nothing.
-    MODULE_UI_DICOM_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
 private:
 

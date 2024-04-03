@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qml/config.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/com/signals.hpp>
@@ -88,7 +86,7 @@ namespace sight::module::ui::qml::reconstruction
  * @subsection In-Out In-Out
  * - \b reconstruction [sight::data::reconstruction]: reconstruction that will be updated
  */
-class MODULE_UI_QML_CLASS_API representation_editor : public sight::ui::qml::editor
+class representation_editor : public sight::ui::qml::editor
 {
 Q_OBJECT
 
@@ -97,10 +95,10 @@ public:
     SIGHT_DECLARE_SERVICE(representation_editor, sight::ui::qml::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QML_API representation_editor() noexcept;
+    representation_editor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QML_API ~representation_editor() noexcept override;
+    ~representation_editor() noexcept override;
 
 Q_SIGNALS:
 

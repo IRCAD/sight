@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/__/config.hpp"
 
 #include <ui/__/action.hpp>
 
@@ -54,7 +52,7 @@ namespace sight::module::ui::com
  * @see action::initialize
  */
 
-class MODULE_UI_CLASS_API timestamp_signal : public sight::ui::action
+class timestamp_signal : public sight::ui::action
 {
 public:
 
@@ -67,29 +65,29 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    MODULE_UI_API timestamp_signal() noexcept;
+    timestamp_signal() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    MODULE_UI_API ~timestamp_signal() noexcept override = default;
+    ~timestamp_signal() noexcept override = default;
 
 protected:
 
     /// Configures the service
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
     /// Register the action and check if the action is executable.
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
     /// Unregister the action.
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
     /// Emit the signal
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /// Give information about the class. Do nothing.
-    MODULE_UI_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     /// Whether to use system clock or high resolution clock
     /// to compute the timestamp.

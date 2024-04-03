@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/layer.hpp>
@@ -52,7 +50,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b width (optional, float, default=1.f): new viewport width relatively to the window.
  * - \b height (optional, float, default=1.f): new viewport height relatively to the window.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API resize_viewport final : public sight::viz::scene3d::adaptor
+class resize_viewport final : public sight::viz::scene3d::adaptor
 {
 public:
 
@@ -60,24 +58,24 @@ public:
     SIGHT_DECLARE_SERVICE(resize_viewport, sight::viz::scene3d::adaptor);
 
     /// Initializes slots.
-    MODULE_VIZ_SCENE3D_API resize_viewport() noexcept;
+    resize_viewport() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~resize_viewport() noexcept final = default;
+    ~resize_viewport() noexcept final = default;
 
 protected:
 
     /// Configures the new viewport's dimensions.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Starts the adaptor, records the initial viewport dimensions.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /// Updates the adaptor. Unused here.
-    MODULE_VIZ_SCENE3D_API void updating() noexcept final;
+    void updating() noexcept final;
 
     /// Stops the adaptor. Unused here.
-    MODULE_VIZ_SCENE3D_API void stopping() noexcept final;
+    void stopping() noexcept final;
 
 private:
 

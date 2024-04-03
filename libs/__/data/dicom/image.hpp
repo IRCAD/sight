@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 
 #include <core/type.hpp>
 
@@ -34,7 +34,7 @@ namespace sight::data::dicom
 /**
  * @brief DICOM image Helper
  */
-class DATA_CLASS_API image
+class SIGHT_DATA_CLASS_API image
 {
 public:
 
@@ -48,7 +48,7 @@ public:
      * @param[in] _rescale_slope Rescale slope
      * @param[in] _rescale_intercept Rescale intercept
      */
-    DATA_API image(
+    SIGHT_DATA_API image(
         std::uint16_t _samples_per_pixel,
         std::uint16_t _bits_allocated,
         std::uint16_t _bits_stored,
@@ -59,18 +59,18 @@ public:
     );
 
     /// Destructor
-    DATA_API virtual ~image();
+    SIGHT_DATA_API virtual ~image();
 
     /// Find image Type
-    [[nodiscard]] DATA_API core::type find_image_type_from_min_max_values() const;
+    [[nodiscard]] SIGHT_DATA_API core::type find_image_type_from_min_max_values() const;
 
 protected:
 
     /// Return minimum possible value of the pixel
-    [[nodiscard]] DATA_API int64_t get_pixel_min() const;
+    [[nodiscard]] SIGHT_DATA_API int64_t get_pixel_min() const;
 
     /// Return maximum possible value of the pixel
-    [[nodiscard]] DATA_API int64_t get_pixel_max() const;
+    [[nodiscard]] SIGHT_DATA_API int64_t get_pixel_max() const;
 
     /// Samples per pixel
     std::uint16_t m_samples_per_pixel;

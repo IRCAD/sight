@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "sight/modules/debug/config.hpp"
+
 #include <core/runtime/plugin.hpp>
 
 namespace sight::module::debug
@@ -34,10 +36,10 @@ struct plugin : public core::runtime::plugin
     ~plugin() noexcept override;
 
     // Install a callback which print the backtrace on a SIGSEV and SIGUSR1 signal
-    void start() override;
+    SIGHT_MODULE_DEBUG_API void start() override;
 
     // Overrides
-    void stop() noexcept override;
+    SIGHT_MODULE_DEBUG_API void stop() noexcept override;
 };
 
 } // namespace sight::module::debug

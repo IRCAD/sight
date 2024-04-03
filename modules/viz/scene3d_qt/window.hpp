@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/scene3d_qt/config.hpp"
 #include "modules/viz/scene3d_qt/open_gl_context.hpp"
 
 #include <viz/scene3d/layer.hpp>

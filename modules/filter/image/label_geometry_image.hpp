@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/filter/image/config.hpp"
-
 #include <data/image.hpp>
 #include <data/point_list.hpp>
 
@@ -67,7 +65,7 @@ namespace sight::module::filter::image
  * - \b clusters: Must contains a group a clusters.
  * - \b cluster: Contains a list of std::size_t labels value.
  */
-class MODULE_FILTER_IMAGE_CLASS_API label_geometry_image final : public service::filter
+class label_geometry_image final : public service::filter
 {
 public:
 
@@ -75,24 +73,24 @@ public:
     SIGHT_DECLARE_SERVICE(label_geometry_image, service::filter);
 
     /// Initializes slots.
-    MODULE_FILTER_IMAGE_API label_geometry_image();
+    label_geometry_image();
 
     /// Destroys the service.
-    MODULE_FILTER_IMAGE_API ~label_geometry_image() override;
+    ~label_geometry_image() override;
 
 protected:
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void starting() override;
+    void starting() override;
 
     /// Configures the service.
-    MODULE_FILTER_IMAGE_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void stopping() override;
 
     /// Compute centroids.
-    MODULE_FILTER_IMAGE_API void updating() override;
+    void updating() override;
 
 private:
 

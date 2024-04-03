@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/activity/config.hpp"
+#include "sight/modules/activity/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -32,18 +32,18 @@ namespace sight::module::activity
 /**
  *
  */
-struct MODULE_ACTIVITY_CLASS_API plugin : public core::runtime::plugin
+struct SIGHT_MODULE_ACTIVITY_CLASS_API plugin : public core::runtime::plugin
 {
     /**
      * @brief   destructor
      */
-    MODULE_ACTIVITY_API ~plugin() noexcept override;
+    SIGHT_MODULE_ACTIVITY_API ~plugin() noexcept override;
 
     // Overrides
-    MODULE_ACTIVITY_API void start() override;
+    SIGHT_MODULE_ACTIVITY_API void start() override;
 
     // Overrides
-    MODULE_ACTIVITY_API void stop() noexcept override;
+    SIGHT_MODULE_ACTIVITY_API void stop() noexcept override;
 };
 
 } // namespace sight::module::activity

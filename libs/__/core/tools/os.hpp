@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/exception.hpp"
 
 #include <filesystem>
@@ -39,7 +40,7 @@ namespace sight::core::tools::os
  *
  * @return The environment variable content if it exists, else an empty string
  */
-CORE_API std::string get_env(const std::string& _name, bool* _ok = nullptr);
+SIGHT_CORE_API std::string get_env(const std::string& _name, bool* _ok = nullptr);
 
 /**
  * @brief Returns a environment variable value
@@ -47,7 +48,7 @@ CORE_API std::string get_env(const std::string& _name, bool* _ok = nullptr);
  * @param _name environment variable 'name'
  * @param _default_value Value returned if variable 'name' doesn't exist
  */
-CORE_API std::string get_env(const std::string& _name, const std::string& _default_value);
+SIGHT_CORE_API std::string get_env(const std::string& _name, const std::string& _default_value);
 
 /**
  * @brief   Return the users's application config directory
@@ -60,7 +61,7 @@ CORE_API std::string get_env(const std::string& _name, const std::string& _defau
  * the path. Under unix, XDG conventions are respected.
  * For example, the UserConfigDir under linux will be "~/.local/share/company/appName"
  */
-CORE_API std::filesystem::path get_user_data_dir(
+SIGHT_CORE_API std::filesystem::path get_user_data_dir(
     const std::string& _app_name = "",
     bool _create_directory       = true,
     const std::string& _company  = "sight"
@@ -77,7 +78,7 @@ CORE_API std::filesystem::path get_user_data_dir(
  * the path. Under unix, XDG conventions are respected.
  * For example, the UserConfigDir under linux will be "~/.config/company/appName"
  */
-CORE_API std::filesystem::path get_user_config_dir(
+SIGHT_CORE_API std::filesystem::path get_user_config_dir(
     const std::string& _app_name = "",
     bool _create_directory       = true,
     const std::string& _company  = "sight"
@@ -94,7 +95,7 @@ CORE_API std::filesystem::path get_user_config_dir(
  * the path. Under unix, XDG conventions are respected.
  * For example, the UserCacheDir under linux will be "~/.cache/company/appName"
  */
-CORE_API std::filesystem::path get_user_cache_dir(
+SIGHT_CORE_API std::filesystem::path get_user_cache_dir(
     const std::string& _app_name = "",
     bool _create_directory       = true,
     const std::string& _company  = "sight"
@@ -109,6 +110,6 @@ CORE_API std::filesystem::path get_user_cache_dir(
  * @return path to the library on the filesystem
  * @throw core::exception if the library could not be found (not loaded for instance)
  */
-CORE_API std::filesystem::path get_shared_library_path(const std::string& _lib_name);
+SIGHT_CORE_API std::filesystem::path get_shared_library_path(const std::string& _lib_name);
 
 } // namespace sight::core::tools::os

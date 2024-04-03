@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ class slot;
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
-class CORE_CLASS_API slot<R(A ...)>: public slot_call<R(A ...)>
+class SIGHT_CORE_CLASS_API slot<R(A ...)>: public slot_call<R(A ...)>
 {
 public:
 
@@ -54,7 +54,7 @@ public:
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
-class CORE_CLASS_API slot<std::function<R(A ...)> >: public slot<R(A ...)>
+class SIGHT_CORE_CLASS_API slot<std::function<R(A ...)> >: public slot<R(A ...)>
 {
 public:
 
@@ -93,7 +93,7 @@ protected:
 //-----------------------------------------------------------------------------
 
 template<typename R, typename ... A>
-class CORE_CLASS_API slot<slot<R(A ...)> >: public slot<std::function<R(A ...)> >
+class SIGHT_CORE_CLASS_API slot<slot<R(A ...)> >: public slot<std::function<R(A ...)> >
 {
 public:
 

@@ -35,7 +35,7 @@ namespace sight::io::dicom::reader::tid
  * @brief Fiducial TID
  * @see TID t1tt3 FIXME: Set the final TID
  */
-class IO_DICOM_CLASS_API fiducial : public io::dicom::reader::tid::template_id<data::image>
+class SIGHT_IO_DICOM_CLASS_API fiducial : public io::dicom::reader::tid::template_id<data::image>
 {
 public:
 
@@ -47,7 +47,7 @@ public:
      * @param[in] _image Sight data object
      * @param[in] _logger Logger
      */
-    IO_DICOM_API fiducial(
+    SIGHT_IO_DICOM_API fiducial(
         const CSPTR(data::dicom_series)& _dicom_series,
         const SPTR(gdcm::Reader)& _reader,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
@@ -56,13 +56,13 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~fiducial() override;
+    SIGHT_IO_DICOM_API ~fiducial() override;
 
     /**
      * @brief Read a fiducial node
      * @param[in] _node Node that must be read
      */
-    IO_DICOM_API virtual void read_node(const SPTR(io::dicom::container::sr::dicom_sr_node)& _node);
+    SIGHT_IO_DICOM_API virtual void read_node(const SPTR(io::dicom::container::sr::dicom_sr_node)& _node);
 
 protected:
 

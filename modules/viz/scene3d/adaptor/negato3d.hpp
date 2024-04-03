@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/config.hpp"
-
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
 #include <viz/scene3d/picking_cross.hpp>
@@ -85,7 +83,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b border (optional, bool, default=true): allows to display plane borders.
  * - \b visible (optional, bool, default=true): set the initial visibility of the 3D negato.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API negato3d final :
+class negato3d final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable,
     public sight::viz::scene3d::interactor::base
@@ -98,18 +96,18 @@ public:
     SIGHT_DECLARE_SERVICE(negato3d, sight::viz::scene3d::adaptor);
 
     /// Creates slots.
-    MODULE_VIZ_SCENE3D_API negato3d() noexcept;
+    negato3d() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~negato3d() noexcept override;
+    ~negato3d() noexcept override;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    void configuring() override;
 
     /// Starts the service.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -120,19 +118,19 @@ protected:
      * Connect data::image::MODIFIED_SIG of SLICE_TYPE_MODIFIED_SIG to SLICETYPE_SLOT
      * Connect data::image::MODIFIED_SIG of SLICE_INDEX_MODIFIED_SIG to SLICEINDEX_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Requests rendering of the scene.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    void updating() override;
 
     /// Stops the service, disconnects connections.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Sets the negato visibility.
      * @param _visible the visibility status of the negato.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
+    void set_visible(bool _visible) override;
 
 private:
 

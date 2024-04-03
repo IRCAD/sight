@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/container/toolbar.hpp"
 #include "ui/__/container/widget.hpp"
 #include "ui/__/object.hpp"
@@ -33,7 +34,7 @@ namespace sight::ui::builder
 /**
  * @brief   Defines the interface class  for the toolbar builder.
  */
-class UI_CLASS_API toolbar : public ui::object
+class SIGHT_UI_CLASS_API toolbar : public ui::object
 {
 public:
 
@@ -41,7 +42,7 @@ public:
 
     using registry_key_t = std::string;
 
-    UI_API const static registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API const static registry_key_t REGISTRY_KEY;
 
     enum alignment
     {
@@ -52,15 +53,15 @@ public:
     };
 
     /// Constructor. Do nothing.
-    UI_API toolbar();
+    SIGHT_UI_API toolbar();
 
     /// Destructor. Do nothing.
-    UI_API ~toolbar() override = default;
+    SIGHT_UI_API ~toolbar() override = default;
 
     /**
      * @brief Returns the builded tool bar.
      */
-    UI_API virtual ui::container::toolbar::sptr get_tool_bar();
+    SIGHT_UI_API virtual ui::container::toolbar::sptr get_tool_bar();
 
     /**
      * @brief Initialize the tool bar.
@@ -77,20 +78,20 @@ public:
      *  - \<toolBitmapSize height= "50" width="50"/\> : give the size of the icon.
      */
 
-    UI_API virtual void initialize(const ui::config_t& _configuration);
+    SIGHT_UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Instantiate layout with parent toolbar.
      * @pre layout must be initialized before.
      * @pre parent toolbar must be instanced.
      */
-    UI_API virtual void create_tool_bar(ui::container::widget::sptr _parent) = 0;
+    SIGHT_UI_API virtual void create_tool_bar(ui::container::widget::sptr _parent) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_API virtual void destroy_tool_bar() = 0;
+    SIGHT_UI_API virtual void destroy_tool_bar() = 0;
 
 protected:
 

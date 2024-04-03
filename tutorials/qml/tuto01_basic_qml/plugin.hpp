@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "tuto01_basic_qml/config.hpp"
+#include "sight/tuto01_basic_qml/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -32,21 +32,21 @@ namespace tuto01_basic_qml
 /**
  * @brief   This class is started when the module is loaded.
  */
-class TUTO01_BASIC_QML_CLASS_API plugin : public sight::core::runtime::plugin
+class SIGHT_TUTO01_BASIC_QML_CLASS_API plugin : public sight::core::runtime::plugin
 {
 public:
 
     /// Constructor.
-    TUTO01_BASIC_QML_API plugin() noexcept;
+    SIGHT_TUTO01_BASIC_QML_API plugin() noexcept;
 
     /// Destructor. Do nothing.
-    TUTO01_BASIC_QML_API ~plugin() noexcept override;
+    SIGHT_TUTO01_BASIC_QML_API ~plugin() noexcept override;
 
     /// Overrides start method. .
-    TUTO01_BASIC_QML_API void start() override;
+    SIGHT_TUTO01_BASIC_QML_API void start() override;
 
     /// Overrides stop method. Do nothing
-    TUTO01_BASIC_QML_API void stop() noexcept override;
+    SIGHT_TUTO01_BASIC_QML_API void stop() noexcept override;
 };
 
 } // namespace tuto01_basic_qml

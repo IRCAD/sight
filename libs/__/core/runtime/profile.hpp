@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/base.hpp>
 
@@ -36,7 +36,7 @@ namespace sight::core::runtime
 /**
  * @brief   Implements a module set profile.
  */
-class CORE_CLASS_API profile : public core::base_object
+class SIGHT_CORE_CLASS_API profile : public core::base_object
 {
 public:
 
@@ -45,19 +45,19 @@ public:
 
     SIGHT_DECLARE_CLASS(profile, base_object);
 
-    CORE_API ~profile() override;
+    SIGHT_CORE_API ~profile() override;
 
     ///  Starts the profile.
-    CORE_API virtual void start() = 0;
+    SIGHT_CORE_API virtual void start() = 0;
 
     ///  Stops the profile.
-    CORE_API virtual void stop() = 0;
+    SIGHT_CORE_API virtual void stop() = 0;
 
     /// Run the profile.
-    CORE_API virtual int run() = 0;
+    SIGHT_CORE_API virtual int run() = 0;
 
     /// Define the callback to be called when running the profile
-    CORE_API virtual void set_run_callback(run_callback_type _callback) = 0;
+    SIGHT_CORE_API virtual void set_run_callback(run_callback_type _callback) = 0;
 
     /// Get profile m_filePath
     std::filesystem::path get_file_path() const
@@ -112,8 +112,8 @@ public:
         return m_params;
     }
 
-    CORE_API void set_params(const params_container& _params);
-    CORE_API void set_params(int _argc, char** _argv);
+    SIGHT_CORE_API void set_params(const params_container& _params);
+    SIGHT_CORE_API void set_params(int _argc, char** _argv);
 
     /**
      * @brief Returns internal arg count.
@@ -140,7 +140,7 @@ protected:
     /**
      * @brief   Constructor : does nothing.
      */
-    CORE_API profile();
+    SIGHT_CORE_API profile();
 
 private:
 
@@ -156,6 +156,6 @@ private:
 /**
  * @brief       Get current profile.
  */
-CORE_API core::runtime::profile::sptr get_current_profile();
+SIGHT_CORE_API core::runtime::profile::sptr get_current_profile();
 
 } // namespace sight::core::runtime

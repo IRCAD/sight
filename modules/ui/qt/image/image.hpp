@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <ui/__/editor.hpp>
 
@@ -49,8 +47,8 @@ namespace sight::module::ui::qt::image
  * - \b width (optional): width of the image in pixels.
  * - \b height (optional): height of the image in pixels.
  */
-class MODULE_UI_QT_CLASS_API image : public QObject,
-                                     public sight::ui::editor
+class image : public QObject,
+              public sight::ui::editor
 {
 Q_OBJECT
 
@@ -59,10 +57,10 @@ public:
     SIGHT_DECLARE_SERVICE(image, sight::ui::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API image() noexcept;
+    image() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~image() noexcept override;
+    ~image() noexcept override;
 
 protected:
 
@@ -72,20 +70,20 @@ protected:
     /**
      * @brief This method launches the editor::starting method.
      */
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /**
      * @brief This method launches the editor::stopping method.
      */
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
     /// This method is used to configure the class parameters.
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
 /** @} */
 

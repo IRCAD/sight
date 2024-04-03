@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/viz/config.hpp"
 
 #include <ui/__/editor.hpp>
 
@@ -51,8 +49,8 @@ namespace sight::module::ui::viz
 /**
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
  */
-class MODULE_UI_VIZ_CLASS_API core_compositor_editor : public QObject,
-                                                       public sight::ui::editor
+class core_compositor_editor : public QObject,
+                               public sight::ui::editor
 {
 Q_OBJECT
 
@@ -61,10 +59,10 @@ public:
     SIGHT_DECLARE_SERVICE(core_compositor_editor, sight::ui::editor);
 
     /// Constructor.
-    MODULE_UI_VIZ_API core_compositor_editor() noexcept;
+    core_compositor_editor() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_VIZ_API ~core_compositor_editor() noexcept override;
+    ~core_compositor_editor() noexcept override;
 
 protected:
 
@@ -77,19 +75,19 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    MODULE_UI_VIZ_API void configuring() override;
+    void configuring() override;
 
     /// FILL ME.
-    MODULE_UI_VIZ_API void starting() override;
+    void starting() override;
 
     /// FILL ME.
-    MODULE_UI_VIZ_API void stopping() override;
+    void stopping() override;
 
     /// FILL ME.
-    MODULE_UI_VIZ_API void updating() override;
+    void updating() override;
 
     /// FILL ME.
-    MODULE_UI_VIZ_API void refresh_renderers();
+    void refresh_renderers();
 
     std::vector<sight::viz::scene3d::layer::wptr> m_layers;
     sight::viz::scene3d::layer::wptr m_current_layer;

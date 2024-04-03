@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/vtk/config.hpp"
-
 #include <data/mesh.hpp>
 
 #include <io/__/service/reader.hpp>
@@ -74,7 +72,7 @@ namespace sight::module::io::vtk
  * - \b file (optional): path of the files to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
  */
-class MODULE_IO_VTK_CLASS_API series_set_reader : public sight::io::service::reader
+class series_set_reader : public sight::io::service::reader
 {
 public:
 
@@ -83,7 +81,7 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    MODULE_IO_VTK_API series_set_reader() noexcept;
+    series_set_reader() noexcept;
 
     ~series_set_reader() noexcept
     {
@@ -97,32 +95,32 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    MODULE_IO_VTK_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
 protected:
 
-    MODULE_IO_VTK_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
     /**
      * @brief Starting method.
      *
      * This method is used to initialize the service.
      */
-    MODULE_IO_VTK_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Stopping method.
      *
      * The stopping method is empty for this service.
      */
-    MODULE_IO_VTK_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Configuring method.
      *
      * The configuring method only calls the configuring method from the base class
      */
-    MODULE_IO_VTK_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Updating method.
@@ -130,7 +128,7 @@ protected:
      * This method is used to update the service.
      * The image is read.
      */
-    MODULE_IO_VTK_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Info method.
@@ -138,7 +136,7 @@ protected:
      * This method is used to give
      * informations about the service.
      */
-    MODULE_IO_VTK_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
 private:
 

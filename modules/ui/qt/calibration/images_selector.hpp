@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <core/clock.hpp>
 #include <core/com/slot.hpp>
@@ -62,8 +60,8 @@ namespace sight::module::ui::qt::calibration
  * @subsection In-Out In-Out:
  * - \b key2 [sight::data::vector]: vector containing extracted images.
  */
-class MODULE_UI_QT_CLASS_API images_selector : public QObject,
-                                               public sight::ui::editor
+class images_selector : public QObject,
+                        public sight::ui::editor
 {
 Q_OBJECT;
 
@@ -72,49 +70,49 @@ public:
     SIGHT_DECLARE_SERVICE(images_selector, sight::ui::editor);
 
     /// Constructor.
-    MODULE_UI_QT_API images_selector() noexcept;
+    images_selector() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_QT_API ~images_selector() noexcept override;
+    ~images_selector() noexcept override;
 
     /**
      * @name Slots API
      * @{
      */
-    MODULE_UI_QT_API static const core::com::slots::key_t ADD_SLOT;
+    static const core::com::slots::key_t ADD_SLOT;
     using add_slot_t = core::com::slot<void (core::clock::type)>;
 
-    MODULE_UI_QT_API static const core::com::slots::key_t REMOVE_SLOT;
+    static const core::com::slots::key_t REMOVE_SLOT;
     using remove_slot_t = core::com::slot<void ()>;
 
-    MODULE_UI_QT_API static const core::com::slots::key_t RESET_SLOT;
+    static const core::com::slots::key_t RESET_SLOT;
     using reset_slot_type = core::com::slot<void ()>;
     ///@}
 
 protected:
 
     /// Configure the editor.
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /// Initialize the widgets.
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /// destroy the widgets.
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /// FILL ME.
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
 protected:
 
     /// Slot: called when the user presses the remove acquisition button.
-    MODULE_UI_QT_API void remove();
+    void remove();
 
     /// Slot: called when the user presses the reset button.
-    MODULE_UI_QT_API void reset();
+    void reset();
 
     /// Slot: to add an image in the vector.
-    MODULE_UI_QT_API void add(core::clock::type _timestamp);
+    void add(core::clock::type _timestamp);
 
 private:
 

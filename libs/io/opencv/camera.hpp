@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/opencv/config.hpp"
+#include <sight/io/opencv/config.hpp>
 
 #include <data/camera.hpp>
 
@@ -34,12 +34,12 @@ namespace sight::io::opencv
 /**
  * @brief camera calibration conversion methods.
  */
-class IO_OPENCV_CLASS_API camera
+class SIGHT_IO_OPENCV_CLASS_API camera
 {
 public:
 
     /// Copy the intrinsic matrix, the image size and the distortion coefficients from a Sight camera.
-    IO_OPENCV_API static std::tuple<cv::Mat, cv::Size, cv::Mat> copy_to_cv(const data::camera::csptr& _src);
+    SIGHT_IO_OPENCV_API static std::tuple<cv::Mat, cv::Size, cv::Mat> copy_to_cv(const data::camera::csptr& _src);
 };
 
 } // namespace sight::io::opencv

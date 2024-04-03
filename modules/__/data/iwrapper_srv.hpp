@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/data/config.hpp"
-
 #include <service/base.hpp>
 
 namespace sight::module::data
@@ -33,17 +31,17 @@ namespace sight::module::data
  * @brief The purpose of this service is to wrap messages incoming to the object to new messages.
  */
 
-class MODULE_DATA_CLASS_API i_wrapper_srv : public service::base
+class i_wrapper_srv : public service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(i_wrapper_srv, service::base);
 
     ///@brief IWrapperSrv constructor. Do nothing.
-    MODULE_DATA_API i_wrapper_srv();
+    i_wrapper_srv();
 
     ///@brief IWrapperSrv destructor. Do nothing.
-    MODULE_DATA_API ~i_wrapper_srv() override;
+    ~i_wrapper_srv() override;
 };
 
 } // namespace sight::module::data

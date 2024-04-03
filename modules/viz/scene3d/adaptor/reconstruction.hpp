@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/viz/scene3d/adaptor/mesh.hpp"
-#include "modules/viz/scene3d/config.hpp"
 
 #include <core/com/slot.hpp>
 
@@ -71,7 +70,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b queryFlags (optional, unit32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *      match the flag.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API reconstruction final :
+class reconstruction final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable
 {
@@ -81,42 +80,42 @@ public:
     SIGHT_DECLARE_SERVICE(reconstruction, sight::viz::scene3d::adaptor);
 
     /// Initialise slots.
-    MODULE_VIZ_SCENE3D_API reconstruction() noexcept;
+    reconstruction() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~reconstruction() noexcept final = default;
+    ~reconstruction() noexcept final = default;
 
     /**
      * @brief Enables/disables automatic reset on camera.
      * @param _auto_reset_camera use true to activate it.
      */
-    MODULE_VIZ_SCENE3D_API void set_auto_reset_camera(bool _auto_reset_camera);
+    void set_auto_reset_camera(bool _auto_reset_camera);
 
     /**
      * @brief Sets the material template Name.
      * @param _material_name material name.
      */
-    MODULE_VIZ_SCENE3D_API void set_material_template_name(const std::string& _material_name);
+    void set_material_template_name(const std::string& _material_name);
 
     /**
      * @brief Sets the query flag.
      * @param _query_flags value of the query flag.
      */
-    MODULE_VIZ_SCENE3D_API void set_query_flags(std::uint32_t _query_flags);
+    void set_query_flags(std::uint32_t _query_flags);
 
     /**
      * @brief Gets the mesh adaptor.
      * @return The mesh adaptor.
      */
-    MODULE_VIZ_SCENE3D_API module::viz::scene3d::adaptor::mesh::sptr get_mesh_adaptor();
+    module::viz::scene3d::adaptor::mesh::sptr get_mesh_adaptor();
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Creates the mesh service.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -125,19 +124,19 @@ protected:
      * Connect data::reconstruction::MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to CHANGE_MESH_SLOT
      * Connect data::reconstruction::VISIBILITY_MODIFIED_SIG of s_RECONSTRUCTION_INPUT to VISIBILITY_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
     /// Stops and unregisters created services.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
     /// Updates the mesh adaptor according to the reconstruction or creates it if it hasn't been yet.
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /**
      * @brief Sets the reconstruction visibility.
      * @param _visible the visibility status of the reconstruction.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
+    void set_visible(bool _visible) final;
 
 private:
 

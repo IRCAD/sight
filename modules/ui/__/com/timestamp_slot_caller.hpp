@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/__/config.hpp"
 
 #include <ui/__/action.hpp>
 
@@ -45,14 +43,14 @@ namespace sight::module::ui::com
  * - \b hasSlotsId : fwId of the has_slots (usually a service)
  * - \b slot_key : the identifier of the slot in the has_slots
  */
-class MODULE_UI_CLASS_API timestamp_slot_caller : public sight::ui::action
+class timestamp_slot_caller : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(timestamp_slot_caller, sight::ui::action);
 
-    MODULE_UI_API timestamp_slot_caller()           = default;
-    MODULE_UI_API ~timestamp_slot_caller() override = default;
+    timestamp_slot_caller()           = default;
+    ~timestamp_slot_caller() override = default;
 
 protected:
 
@@ -61,16 +59,16 @@ protected:
     using slot_info_container_t = std::vector<slot_info_t>;
 
     /// Does nothing
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
     /// Configures the service
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
     /// This method run the specified slots.
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /// vector representing slots
     slot_info_container_t m_slot_infos;

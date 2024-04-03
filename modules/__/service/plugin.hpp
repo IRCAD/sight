@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "sight/modules/service/config.hpp"
+
 #include <core/runtime/plugin.hpp>
 
 namespace sight::module::service
@@ -30,16 +32,16 @@ namespace sight::module::service
 /**
  * @brief   This class is started when the module is loaded.
  */
-struct plugin : public core::runtime::plugin
+struct SIGHT_MODULE_SERVICE_CLASS_API plugin : public core::runtime::plugin
 {
     /// Destructor. Do nothing.
     ~plugin() noexcept override = default;
 
     /// Overrides start method. Service declarations (services declared in 'service' library ).
-    void start() override;
+    SIGHT_MODULE_SERVICE_API void start() override;
 
     /// Overrides stop method. Do nothing
-    void stop() noexcept override;
+    SIGHT_MODULE_SERVICE_API void stop() noexcept override;
 };
 
 } // namespace sight::module::service

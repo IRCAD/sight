@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_instance.hpp"
 #include "io/dicom/writer/iod/information_object_definition.hpp"
 
@@ -32,7 +33,7 @@ namespace sight::io::dicom::writer::iod
 /**
  * @brief CTMRImageIOD class used to write CTImage and MRImage DICOM files
  */
-class IO_DICOM_CLASS_API ctmr_image_iod : public io::dicom::writer::iod::information_object_definition
+class SIGHT_IO_DICOM_CLASS_API ctmr_image_iod : public io::dicom::writer::iod::information_object_definition
 {
 public:
 
@@ -44,7 +45,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API ctmr_image_iod(
+    SIGHT_IO_DICOM_API ctmr_image_iod(
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         const std::filesystem::path& _destination_path,
         const core::log::logger::sptr& _logger = nullptr,
@@ -53,10 +54,10 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~ctmr_image_iod() override;
+    SIGHT_IO_DICOM_API ~ctmr_image_iod() override;
 
     /// Write DICOM file
-    IO_DICOM_API void write(const data::series::csptr& _series) override;
+    SIGHT_IO_DICOM_API void write(const data::series::csptr& _series) override;
 };
 
 } // namespace sight::io::dicom::writer::iod

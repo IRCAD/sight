@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
 
 #include <core/factory_registry.hpp>
 #include <core/macros.hpp>
@@ -41,7 +41,7 @@ using key_t = std::string;
 
 using type = core::factory_registry<std::shared_ptr<io::writer::object_writer>(), key_t>;
 
-IO_API SPTR(type) get();
+SIGHT_IO_API SPTR(type) get();
 
 } // namespace registry
 

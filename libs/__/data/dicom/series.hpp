@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 
 #include <core/macros.hpp>
 
@@ -47,7 +47,7 @@ namespace sight::data::dicom
 /**
  * @brief DICOM series Helper
  */
-class DATA_CLASS_API series
+class SIGHT_DATA_CLASS_API series
 {
 public:
 
@@ -55,13 +55,13 @@ public:
      * @brief Convert a dicom_series to an image_series
      * @param[in] _series dicom_series that must be converted
      */
-    DATA_API static SPTR(data::image_series) convert_to_image_series(const CSPTR(data::dicom_series) & _series);
+    SIGHT_DATA_API static SPTR(data::image_series) convert_to_image_series(const CSPTR(data::dicom_series) & _series);
 
     /**
      * @brief Convert a dicom_series to a model_series
      * @param[in] _series dicom_series that must be converted
      */
-    DATA_API static SPTR(data::model_series) convert_to_model_series(const CSPTR(data::dicom_series) & _series);
+    SIGHT_DATA_API static SPTR(data::model_series) convert_to_model_series(const CSPTR(data::dicom_series) & _series);
 };
 
 } // namespace sight::data::dicom

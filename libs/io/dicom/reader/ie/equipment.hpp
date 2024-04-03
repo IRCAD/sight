@@ -32,7 +32,7 @@ namespace sight::io::dicom::reader::ie
 /**
  * @brief Equipment Information Entity class
  */
-class IO_DICOM_CLASS_API equipment : public io::dicom::reader::ie::information_entity<data::series>
+class SIGHT_IO_DICOM_CLASS_API equipment : public io::dicom::reader::ie::information_entity<data::series>
 {
 public:
 
@@ -46,7 +46,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API equipment(
+    SIGHT_IO_DICOM_API equipment(
         const CSPTR(data::dicom_series)& _dicom_series,
         const SPTR(gdcm::Reader)& _reader,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
@@ -57,13 +57,13 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~equipment() override;
+    SIGHT_IO_DICOM_API ~equipment() override;
 
     /**
      * @brief Read General Equipment Module tags
      * @see PS 3.3 C.7.5.1
      */
-    IO_DICOM_API virtual void read_general_equipment_module();
+    SIGHT_IO_DICOM_API virtual void read_general_equipment_module();
 };
 
 } // namespace sight::io::dicom::reader::ie

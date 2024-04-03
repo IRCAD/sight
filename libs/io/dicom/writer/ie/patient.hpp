@@ -32,7 +32,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Patient Information Entity class
  */
-class IO_DICOM_CLASS_API patient : public io::dicom::writer::ie::information_entity<data::series>
+class SIGHT_IO_DICOM_CLASS_API patient : public io::dicom::writer::ie::information_entity<data::series>
 {
 public:
 
@@ -45,7 +45,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API patient(
+    SIGHT_IO_DICOM_API patient(
         const SPTR(gdcm::Writer)& _writer,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::series::csptr& _series,
@@ -55,13 +55,13 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~patient() override;
+    SIGHT_IO_DICOM_API ~patient() override;
 
     /**
      * @brief Write Patient Module tags
      * @see PS 3.3 C.7.1.1
      */
-    IO_DICOM_API virtual void write_patient_module();
+    SIGHT_IO_DICOM_API virtual void write_patient_module();
 };
 
 } // namespace sight::io::dicom::writer::ie

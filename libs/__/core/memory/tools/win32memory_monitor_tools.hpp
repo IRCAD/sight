@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #ifdef _WIN32
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <cstdint>
 
@@ -34,29 +34,29 @@ namespace sight::core::memory
 namespace tools
 {
 
-class CORE_CLASS_API win32memory_monitor_tools
+class SIGHT_CORE_CLASS_API win32memory_monitor_tools
 {
 public:
 
-    CORE_API win32memory_monitor_tools();
+    SIGHT_CORE_API win32memory_monitor_tools();
 
-    CORE_API ~win32memory_monitor_tools();
+    SIGHT_CORE_API ~win32memory_monitor_tools();
 
-    CORE_API static std::uint64_t estimate_free_mem();
+    SIGHT_CORE_API static std::uint64_t estimate_free_mem();
 
-    CORE_API static void print_process_memory_information();
+    SIGHT_CORE_API static void print_process_memory_information();
 
-    CORE_API static void print_system_memory_information();
+    SIGHT_CORE_API static void print_system_memory_information();
 
-    CORE_API static void print_memory_information();
+    SIGHT_CORE_API static void print_memory_information();
 
-    CORE_API static std::uint64_t get_total_system_memory();
+    SIGHT_CORE_API static std::uint64_t get_total_system_memory();
 
-    CORE_API static std::uint64_t get_used_system_memory();
+    SIGHT_CORE_API static std::uint64_t get_used_system_memory();
 
-    CORE_API static std::uint64_t get_free_system_memory();
+    SIGHT_CORE_API static std::uint64_t get_free_system_memory();
 
-    CORE_API static std::uint64_t get_used_process_memory();
+    SIGHT_CORE_API static std::uint64_t get_used_process_memory();
 };
 
 } // namespace tools

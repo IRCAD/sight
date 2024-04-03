@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 
 #include <data/color.hpp>
 #include <data/material.hpp>
@@ -47,7 +47,7 @@ public:
      * @param _model_series Model series where the mesh must be added.
      * @param _rec Reconstruction that must be added
      */
-    DATA_API static void add_reconstruction(
+    SIGHT_DATA_API static void add_reconstruction(
         const data::model_series::sptr& _model_series,
         const data::reconstruction::sptr& _rec
     );
@@ -62,7 +62,7 @@ public:
      * @param _visible Visibility flag of the reconstruction.
      * @return Output reconstruction.
      */
-    DATA_API static data::reconstruction::sptr create_reconstruction_from_mesh(
+    SIGHT_DATA_API static data::reconstruction::sptr create_reconstruction_from_mesh(
         const data::mesh::sptr& _mesh,
         const std::string& _organ_name,
         const std::string& _structure_type,
@@ -81,7 +81,7 @@ public:
      * @param _mode Representation mode of the material of the reconstruction.
      * @param _visible Visibility flag of the reconstruction.
      */
-    DATA_API static void add_mesh(
+    SIGHT_DATA_API static void add_mesh(
         const data::model_series::sptr& _model_series,
         const data::mesh::sptr& _mesh,
         const std::string& _organ_name,

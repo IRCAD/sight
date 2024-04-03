@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/exception/failed.hpp"
 
 #include <core/location/multiple_files.hpp>
@@ -54,10 +55,10 @@ namespace reader
 /**
  * @brief This class adds patient(s) from DICOM file(s) to data::series_set.
  */
-class IO_DICOM_CLASS_API series_set : public sight::io::reader::generic_object_reader<data::series_set>,
-                                      public core::location::single_folder,
-                                      public core::location::multiple_files,
-                                      public core::com::has_signals
+class SIGHT_IO_DICOM_CLASS_API series_set : public sight::io::reader::generic_object_reader<data::series_set>,
+                                            public core::location::single_folder,
+                                            public core::location::multiple_files,
+                                            public core::com::has_signals
 {
 public:
 
@@ -72,20 +73,20 @@ public:
     using supported_sop_class_container_t = std::vector<std::string>;
 
     /// Constructor
-    IO_DICOM_API series_set();
+    SIGHT_IO_DICOM_API series_set();
 
     /// Destructor
-    IO_DICOM_API ~series_set() override = default;
+    SIGHT_IO_DICOM_API ~series_set() override = default;
 
     /// Reads DICOM data from configured path and fills series_set object
-    IO_DICOM_API void read() override;
+    SIGHT_IO_DICOM_API void read() override;
 
     /**
      * @brief Reads DICOM data from DicomSeries and fills series_set object
      * @param[in] _dicom_series_set series_set containing DicomSeries that must be read
      * @param[in] _notifier Service used to notify changes in series_set
      */
-    IO_DICOM_API void read_from_dicom_series_set(
+    SIGHT_IO_DICOM_API void read_from_dicom_series_set(
         const data::series_set::csptr& _dicom_series_set,
         const sight::service::base::sptr& _notifier = sight::service::base::sptr()
     );
@@ -93,13 +94,13 @@ public:
     /**
      * @brief Reads DICOM data from configured path and fills series_set object with DicomSeries
      */
-    IO_DICOM_API void read_dicom_series();
+    SIGHT_IO_DICOM_API void read_dicom_series();
 
     /// Return true if a dicomdir file can be read.
-    IO_DICOM_API bool is_dicom_dir_available();
+    SIGHT_IO_DICOM_API bool is_dicom_dir_available();
 
     /// Return DicomSeries container
-    IO_DICOM_API dicom_series_container_t& get_dicom_series();
+    SIGHT_IO_DICOM_API dicom_series_container_t& get_dicom_series();
 
     /// Get Set whether the reader must use the dicomdir file or not
     const bool& get_dicomdir_activated() const
@@ -150,7 +151,7 @@ public:
     }
 
     /// Getter for reader's job
-    IO_DICOM_API SPTR(core::jobs::base) get_job() const override;
+    SIGHT_IO_DICOM_API SPTR(core::jobs::base) get_job() const override;
 
     /// Enable buffer rotation
     void set_buffer_rotation_enabled(bool _enabled)

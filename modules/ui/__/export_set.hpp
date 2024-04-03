@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/__/config.hpp"
 
 #include <data/set.hpp>
 
@@ -55,7 +53,7 @@ namespace sight::module::ui
  * - \b data [sight::data::object]: Source object to export.
  * - \b container [sight::data::set]: Target set where the object should be exported.
  */
-class MODULE_UI_CLASS_API export_set : public sight::ui::exporter<data::set>
+class export_set : public sight::ui::exporter<data::set>
 {
 public:
 

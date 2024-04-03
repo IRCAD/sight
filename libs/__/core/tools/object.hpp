@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/tools/id.hpp"
 
 #include <core/base.hpp>
@@ -32,8 +33,8 @@ namespace sight::core::tools
 /**
  * @brief   Define Base class for Sight objects and services
  */
-class CORE_CLASS_API object : public core::base_object,
-                              protected core::tools::id
+class SIGHT_CORE_CLASS_API object : public core::base_object,
+                                    protected core::tools::id
 {
 public:
 
@@ -52,19 +53,19 @@ public:
     using core::tools::id::set_id;
     using core::tools::id::reset_id;
 
-    CORE_API object() = default;
-    CORE_API ~object() override;
+    SIGHT_CORE_API object() = default;
+    SIGHT_CORE_API ~object() override;
 
     /// Returns the uuid of the current instance
-    CORE_API std::string get_uuid() const;
+    SIGHT_CORE_API std::string get_uuid() const;
 
     /// Sets the uuid of the current instance
     /// @param _force force use of new uuid even if already used.
-    CORE_API void set_uuid(const std::string& _uuid, bool _force = false);
+    SIGHT_CORE_API void set_uuid(const std::string& _uuid, bool _force = false);
 
     /// Retrieves the object associated with an uuid
     /// @param _uuid the uuid of the object to retrieve
-    CORE_API static object::sptr from_uuid(const std::string& _uuid);
+    SIGHT_CORE_API static object::sptr from_uuid(const std::string& _uuid);
 };
 
 } // namespace sight::core::tools

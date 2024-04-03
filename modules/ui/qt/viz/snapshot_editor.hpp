@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <core/com/signal.hpp>
 #include <core/com/signals.hpp>
 #include <core/tools/failed.hpp>
@@ -44,8 +42,8 @@ namespace sight::module::ui::qt::viz
  * Send a 'snapped' signal containing the filename used to save the snapshot.
  * @note You need to connect the 'snapped' signal to one visuVTKAdaptor::Snapshot to save the file.
  */
-class MODULE_UI_QT_CLASS_API snapshot_editor : public QObject,
-                                               public sight::ui::editor
+class snapshot_editor : public QObject,
+                        public sight::ui::editor
 {
 Q_OBJECT
 
@@ -54,10 +52,10 @@ public:
     SIGHT_DECLARE_SERVICE(snapshot_editor, sight::ui::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API snapshot_editor() noexcept;
+    snapshot_editor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~snapshot_editor() noexcept override;
+    ~snapshot_editor() noexcept override;
 
 protected:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/data/config.hpp"
 
 #include <service/controller.hpp>
 
@@ -61,7 +59,7 @@ namespace sight::module::data
  * - \b mode (optional) : The service can copy the data either when starting ("copyOnStart") or when
  * updating ("copyOnUpdate" - default).
  */
-class MODULE_DATA_CLASS_API copy final : public service::controller
+class copy final : public service::controller
 {
 public:
 
@@ -69,24 +67,24 @@ public:
     SIGHT_DECLARE_SERVICE(copy, service::controller);
 
     /// Creates the service.
-    MODULE_DATA_API copy() = default;
+    copy() = default;
 
     /// Destroys the service.
-    MODULE_DATA_API ~copy() final = default;
+    ~copy() final = default;
 
 protected:
 
     //// Configures the service
-    MODULE_DATA_API void configuring() final;
+    void configuring() final;
 
     /// Calls copy() if the mode if START.
-    MODULE_DATA_API void starting() final;
+    void starting() final;
 
     /// Calls copy() if the mode if UPDATE.
-    MODULE_DATA_API void updating() final;
+    void updating() final;
 
     /// Sets the output to null.
-    MODULE_DATA_API void stopping() final;
+    void stopping() final;
 
 private:
 

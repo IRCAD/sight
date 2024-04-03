@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include "modules/io/bitmap/config.hpp"
-
 #include <core/com/signal.hpp>
 #include <core/jobs/base.hpp>
 
@@ -83,7 +81,7 @@ namespace sight::module::io::bitmap
  *          - \b "always": always show the location dialog / extension change dialog
  * - \b gpu_required (optional): returns an error if GPU support is not enabled.
  */
-class MODULE_IO_BITMAP_CLASS_API reader final : public sight::io::service::reader
+class reader final : public sight::io::service::reader
 {
 public:
 
@@ -93,28 +91,28 @@ public:
 
     /// Trivial constructor / destructor
     /// @{
-    MODULE_IO_BITMAP_API reader() noexcept           = default;
-    MODULE_IO_BITMAP_API ~reader() noexcept override = default;
+    reader() noexcept           = default;
+    ~reader() noexcept override = default;
     /// @}
 
     /// Show a file selection dialog
-    MODULE_IO_BITMAP_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
 protected:
 
-    MODULE_IO_BITMAP_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
     /// Does nothing
-    MODULE_IO_BITMAP_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_IO_BITMAP_API void stopping() override;
+    void stopping() override;
 
     /// Parses the configuration
-    MODULE_IO_BITMAP_API void configuring() override;
+    void configuring() override;
 
     /// Write the image
-    MODULE_IO_BITMAP_API void updating() override;
+    void updating() override;
 
 private:
 

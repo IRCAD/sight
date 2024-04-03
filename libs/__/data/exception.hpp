@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "core/exception.hpp"
+#include <sight/data/config.hpp>
 
-#include "data/config.hpp"
+#include "core/exception.hpp"
 
 #include <exception>
 #include <string>
@@ -35,7 +35,7 @@ namespace sight::data
 /**
  * @brief   Implements data exception class.
  */
-class DATA_CLASS_API exception : public core::exception
+class SIGHT_DATA_CLASS_API exception : public core::exception
 {
 public:
 
@@ -44,12 +44,12 @@ public:
      *
      * @param[in]   _message a string containing the failure message
      */
-    DATA_API exception(const std::string& _message) noexcept;
+    SIGHT_DATA_API exception(const std::string& _message) noexcept;
 
     /**
      * @brief   Destructor : do nothing.
      */
-    DATA_API ~exception() noexcept override = default;
+    SIGHT_DATA_API ~exception() noexcept override = default;
 };
 
 } // namespace sight::data

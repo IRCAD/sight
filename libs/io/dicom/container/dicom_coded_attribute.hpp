@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <gdcmSegmentHelper.h>
 
@@ -38,7 +38,7 @@ namespace sight::io::dicom::container
  * Coding Scheme Version and Code Meaning.
  * See DICOM PS 3.3 - Table 8.8-1a. Basic Code Sequence Macro Attributes
  */
-class IO_DICOM_CLASS_API dicom_coded_attribute
+class SIGHT_IO_DICOM_CLASS_API dicom_coded_attribute
 {
 public:
 
@@ -49,7 +49,7 @@ public:
      * @param[in] _code_meaning Code Meaning (0008,0104)
      * @param[in] _coding_scheme_version Coding Scheme Version (0003,0103)
      */
-    IO_DICOM_API dicom_coded_attribute(
+    SIGHT_IO_DICOM_API dicom_coded_attribute(
         std::string _code_value               = "",
         std::string _coding_scheme_designator = "",
         std::string _code_meaning             = "",
@@ -57,16 +57,16 @@ public:
     );
 
     /// Returns true if the attribute is empty
-    [[nodiscard]] IO_DICOM_API bool is_empty() const;
+    [[nodiscard]] SIGHT_IO_DICOM_API bool is_empty() const;
 
     /**
      * @brief Comparison operators overloading
      * @{ */
-    IO_DICOM_API bool operator==(const dicom_coded_attribute& _other) const;
+    SIGHT_IO_DICOM_API bool operator==(const dicom_coded_attribute& _other) const;
     /**  @} */
 
     /// Dump operator
-    IO_DICOM_API friend std::ostream& operator<<(std::ostream& _os, const dicom_coded_attribute& _attribute)
+    SIGHT_IO_DICOM_API friend std::ostream& operator<<(std::ostream& _os, const dicom_coded_attribute& _attribute)
     {
         _os << "\\\"" << _attribute.m_code_value << "\\\" ";
         _os << "\\\"" << _attribute.m_coding_scheme_designator << "\\\" ";
@@ -124,7 +124,7 @@ public:
     }
 
     /// Convert entry to GDCM format
-    [[nodiscard]] IO_DICOM_API gdcm::SegmentHelper::BasicCodedEntry to_gdcm_format() const;
+    [[nodiscard]] SIGHT_IO_DICOM_API gdcm::SegmentHelper::BasicCodedEntry to_gdcm_format() const;
 
 private:
 

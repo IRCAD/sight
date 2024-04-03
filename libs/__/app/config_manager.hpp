@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "app/config.hpp"
+#include <sight/app/config.hpp>
+
 #include "app/extension/config.hpp"
 
 #include <core/tools/object.hpp>
@@ -38,8 +39,8 @@ namespace sight::app
  * @brief This class provides an interface to manage configurations template.
  * @deprecated This class is no longer supported, use app::config_manager.
  */
-class APP_CLASS_API config_manager : public core::tools::object,
-                                     public service::manager
+class SIGHT_APP_CLASS_API config_manager : public core::tools::object,
+                                           public service::manager
 {
 public:
 
@@ -48,12 +49,12 @@ public:
     SIGHT_DECLARE_CLASS(config_manager, core::tools::object);
 
     /// Destructor. Do nothing.
-    APP_API ~config_manager() override = default;
+    SIGHT_APP_API ~config_manager() override = default;
 
     /// Return a new config_manager implementation. Should be used for all the config_manager of the
     /// application,
     /// except the first one which must be explicitly called.
-    APP_API static SPTR(config_manager) make();
+    SIGHT_APP_API static SPTR(config_manager) make();
 
     /// Return state
     bool is_created() const;
@@ -70,40 +71,40 @@ public:
      * @param _replace_fields the associations between the value and the pattern to replace in the config.
      * @param _auto_prefix_id prefix every id with the name of the configuration .
      */
-    APP_API virtual void set_config(
+    SIGHT_APP_API virtual void set_config(
         const std::string& _config_id,
         const field_adaptor_t& _replace_fields = field_adaptor_t(),
         bool _auto_prefix_id                   = true
     )                                          = 0;
 
     /// Get config root
-    APP_API virtual data::object::sptr get_config_root() const = 0;
+    SIGHT_APP_API virtual data::object::sptr get_config_root() const = 0;
 
     /// Calls methods : create, start then update.
-    APP_API virtual void launch() = 0;
+    SIGHT_APP_API virtual void launch() = 0;
 
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
-    APP_API virtual void stop_and_destroy() = 0;
+    SIGHT_APP_API virtual void stop_and_destroy() = 0;
 
     /// Creates objects and services from config
-    APP_API virtual void create() = 0;
+    SIGHT_APP_API virtual void create() = 0;
 
     /// Starts services specified in config
-    APP_API virtual void start() = 0;
+    SIGHT_APP_API virtual void start() = 0;
 
     /// Updates services specified in config
-    APP_API virtual void update() = 0;
+    SIGHT_APP_API virtual void update() = 0;
 
     /// Stops services specified in config
-    APP_API virtual void stop() = 0;
+    SIGHT_APP_API virtual void stop() = 0;
 
     /// Destroys services specified in config
-    APP_API virtual void destroy() = 0;
+    SIGHT_APP_API virtual void destroy() = 0;
 
 protected:
 
     /// Constructor. Does nothing.
-    APP_API config_manager() = default;
+    SIGHT_APP_API config_manager() = default;
 
     enum config_state
     {

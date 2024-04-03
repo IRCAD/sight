@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "activity/config.hpp"
+#include <sight/activity/config.hpp>
+
 #include "activity/validator/activity.hpp"
 
 #include <core/base.hpp>
@@ -35,17 +36,17 @@ namespace sight::activity::validator
  *
  * It checks if all the required data are present and if the appConfig parameters are found.
  */
-class ACTIVITY_CLASS_API default_activity : public validator::activity
+class SIGHT_ACTIVITY_CLASS_API default_activity : public validator::activity
 {
 public:
 
     SIGHT_DECLARE_CLASS(default_activity, validator::activity)
 
     /// Destructor. Do nothing.
-    ACTIVITY_API ~default_activity() override = default;
+    SIGHT_ACTIVITY_API ~default_activity() override = default;
 
     /// Checks if all the required data are present and if the appConfig parameters are found.
-    ACTIVITY_API validator::return_t validate(
+    SIGHT_ACTIVITY_API validator::return_t validate(
         const CSPTR(data::activity)& _activity
     ) const override;
 };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/qt3d/config.hpp"
+#include <sight/viz/qt3d/config.hpp>
+
 #include "viz/qt3d/factory/new.hpp"
 #include "viz/qt3d/registry/detail.hpp"
 
@@ -46,7 +47,7 @@ namespace sight::viz::qt3d
  * @brief Defines an abstract class to manage Qt3D RenderWindow in a qt container.
  *
  */
-class VIZ_QT3D_CLASS_API window_interactor : public sight::core::base_object
+class SIGHT_VIZ_QT3D_CLASS_API window_interactor : public sight::core::base_object
 {
 public:
 
@@ -71,21 +72,21 @@ public:
 
     using factory_registry_key_t = std::string;
 
-    VIZ_QT3D_API static const factory_registry_key_t REGISTRY_KEY;
+    SIGHT_VIZ_QT3D_API static const factory_registry_key_t REGISTRY_KEY;
 
-    VIZ_QT3D_API static window_interactor::sptr create_manager();
+    SIGHT_VIZ_QT3D_API static window_interactor::sptr create_manager();
 
     /// Constructor. Do nothing.
-    VIZ_QT3D_API window_interactor();
+    SIGHT_VIZ_QT3D_API window_interactor();
 
     /// Destructor. Do nothing.
-    VIZ_QT3D_API ~window_interactor() override;
+    SIGHT_VIZ_QT3D_API ~window_interactor() override;
 
     /// Creates an interactor and installs it in window.
-    VIZ_QT3D_API virtual void create_container(ui::container::widget::sptr _parent) = 0;
+    SIGHT_VIZ_QT3D_API virtual void create_container(ui::container::widget::sptr _parent) = 0;
 
     /// Converts 3DView to QWidget and attach it to the container.
-    VIZ_QT3D_API virtual void set_3d_view(Qt3DExtras::Qt3DWindow* _3d_view) = 0;
+    SIGHT_VIZ_QT3D_API virtual void set_3d_view(Qt3DExtras::Qt3DWindow* _3d_view) = 0;
 
     /// Set the render service using the renderwindow_interactor
     virtual void set_render_service(service::base::sptr _srv)

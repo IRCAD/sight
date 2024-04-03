@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,6 @@
 
 #include "camera.hpp"
 
-#include "modules/ui/qt/config.hpp"
-
 #include <core/macros.hpp>
 
 #include <QCameraInfo>
@@ -48,22 +46,22 @@ namespace sight::module::ui::qt::video
 /**
  * @brief The camera_device_dlg class displays a QDialog to choose camera device.
  */
-class MODULE_UI_QT_CLASS_API camera_device_dlg : public QDialog
+class camera_device_dlg : public QDialog
 {
 Q_OBJECT;
 
 public:
 
     /// constructor
-    MODULE_UI_QT_API camera_device_dlg(std::string _xml_resolution = "");
+    camera_device_dlg(std::string _xml_resolution = "");
 
     /// destructor
-    MODULE_UI_QT_API ~camera_device_dlg() override = default;
+    ~camera_device_dlg() override = default;
 
-    MODULE_UI_QT_API bool get_selected_camera(SPTR(data::camera) & _camera, std::string& _resolution_xml_option);
+    bool get_selected_camera(SPTR(data::camera) & _camera, std::string& _resolution_xml_option);
     // filter the list of supported resolution to extract the lowest, highest and medium resolution in relation to
     // `resolutionType`
-    MODULE_UI_QT_API QSize get_resolution(
+    QSize get_resolution(
         const std::string& _resolution_xml_option,
         const QList<QSize>& _supported_resolutions
     );

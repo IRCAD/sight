@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/timeline/buffer.hpp"
 
 namespace sight::data::timeline
@@ -35,35 +36,35 @@ namespace sight::data::timeline
  *          Note that the size of an element is not determined by dividing the size of the buffer by the maximum
  *          number of elements. Thus it is possible to have objects bigger
  */
-class DATA_CLASS_API generic_object_base : public data::timeline::buffer
+class SIGHT_DATA_CLASS_API generic_object_base : public data::timeline::buffer
 {
 public:
 
     /// Destructor
-    DATA_API ~generic_object_base() override;
+    SIGHT_DATA_API ~generic_object_base() override;
 
     /// Return the number of elements present in the object
-    [[nodiscard]] DATA_API unsigned int get_present_element_num() const;
+    [[nodiscard]] SIGHT_DATA_API unsigned int get_present_element_num() const;
 
     /// Tell if an element is present at the given index
-    [[nodiscard]] DATA_API bool is_present(unsigned int _index) const;
+    [[nodiscard]] SIGHT_DATA_API bool is_present(unsigned int _index) const;
 
     /// Return the raw presence mask
-    [[nodiscard]] DATA_API uint64_t get_mask() const;
+    [[nodiscard]] SIGHT_DATA_API uint64_t get_mask() const;
 
     /// Return the maximum number of elements in the buffer
-    [[nodiscard]] DATA_API unsigned int get_max_element_num() const;
+    [[nodiscard]] SIGHT_DATA_API unsigned int get_max_element_num() const;
 
     /// Return the size of element in the buffer
-    [[nodiscard]] DATA_API std::size_t get_element_size() const;
+    [[nodiscard]] SIGHT_DATA_API std::size_t get_element_size() const;
 
     /// Make a copy of this buffer
-    DATA_API void deep_copy(const data::timeline::object& _other) override;
+    SIGHT_DATA_API void deep_copy(const data::timeline::object& _other) override;
 
 protected:
 
     /// Constructor
-    DATA_API generic_object_base(
+    SIGHT_DATA_API generic_object_base(
         unsigned int _max_element_num,
         core::clock::type _timestamp = 0,
         buffer_data_t _buffer        = nullptr,

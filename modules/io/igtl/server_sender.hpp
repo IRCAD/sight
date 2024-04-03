@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "modules/io/igtl/config.hpp"
 #include "modules/io/igtl/network_sender.hpp"
 
 #include <data/object.hpp>
@@ -57,28 +56,28 @@ namespace sight::module::io::igtl
  * They must have an attribute 'deviceName' to know the device-name used for this specific data.
  **/
 
-class MODULE_IO_IGTL_CLASS_API server_sender : public module::io::igtl::network_sender
+class server_sender : public module::io::igtl::network_sender
 {
 public:
 
     SIGHT_DECLARE_SERVICE(server_sender, module::io::igtl::network_sender);
 
     /// Constructor
-    MODULE_IO_IGTL_API server_sender();
+    server_sender();
 
     /// Destructor
-    MODULE_IO_IGTL_API ~server_sender() override;
+    ~server_sender() override;
 
 protected:
 
     /// Configure port and device name
-    MODULE_IO_IGTL_API void configuring() override;
+    void configuring() override;
 
     /// Start the server.
-    MODULE_IO_IGTL_API void starting() override;
+    void starting() override;
 
     /// Stop the server
-    MODULE_IO_IGTL_API void stopping() override;
+    void stopping() override;
 
 private:
 

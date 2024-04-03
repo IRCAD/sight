@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 
 #include <data/image.hpp>
 
@@ -34,7 +34,7 @@ namespace sight::data::helper
  * @brief Helper class used to compute an image histogram.
  *
  */
-class DATA_CLASS_API histogram
+class SIGHT_DATA_CLASS_API histogram
 {
 public:
 
@@ -46,10 +46,10 @@ public:
     }
 
     /// Computes the number of pixels for every intensity
-    DATA_API void compute();
+    SIGHT_DATA_API void compute();
 
     /// Samples the histogram given a bin width
-    [[nodiscard]] DATA_API histogram_t sample(size_t _bin_width) const;
+    [[nodiscard]] SIGHT_DATA_API histogram_t sample(size_t _bin_width) const;
 
     [[nodiscard]] double max() const;
     [[nodiscard]] double min() const;

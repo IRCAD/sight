@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "modules/io/igtl/config.hpp"
 #include "modules/io/igtl/network_listener.hpp"
 
 #include <data/matrix_tl.hpp>
@@ -67,25 +66,25 @@ namespace sight::module::io::igtl
  * @note : hostname, port and deviceName of this service can be a value or a nameKey from preference settings
    (for example <server>%HOSTNAME%:%PORT%</server>, <deviceName>%DEVICE_NAME%</deviceName>)
  */
-class MODULE_IO_IGTL_CLASS_API tdata_listener : public module::io::igtl::network_listener
+class tdata_listener : public module::io::igtl::network_listener
 {
 public:
 
     SIGHT_DECLARE_SERVICE(tdata_listener, module::io::igtl::network_listener);
 
-    MODULE_IO_IGTL_API tdata_listener()           = default;
-    MODULE_IO_IGTL_API ~tdata_listener() override = default;
+    tdata_listener()           = default;
+    ~tdata_listener() override = default;
 
 protected:
 
     /// Configure port, hostname and device name
-    MODULE_IO_IGTL_API void configuring() override;
+    void configuring() override;
 
     /// Start the client and try to connect to the server specify in configuration
-    MODULE_IO_IGTL_API void starting() override;
+    void starting() override;
 
     /// Disconnect the client from the server
-    MODULE_IO_IGTL_API void stopping() override;
+    void stopping() override;
 
 private:
 

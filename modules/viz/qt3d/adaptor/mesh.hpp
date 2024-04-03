@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/qt3d/config.hpp"
 
 #include <viz/qt3d/adaptor.hpp>
 #include <viz/qt3d/data/mesh.hpp>
@@ -57,7 +55,7 @@ namespace sight::module::viz::qt3d::adaptor
  *        Must be set according to ::visuQt3D::material materialName property
  *        to retrieve the material managed by the adaptor.
  */
-class MODULE_VIZ_QT3D_CLASS_API mesh : public sight::viz::qt3d::adaptor
+class mesh : public sight::viz::qt3d::adaptor
 {
 public:
 
@@ -65,18 +63,18 @@ public:
     SIGHT_DECLARE_SERVICE(mesh, sight::viz::qt3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
-    MODULE_VIZ_QT3D_API mesh() noexcept;
+    mesh() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_QT3D_API ~mesh() noexcept override;
+    ~mesh() noexcept override;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_QT3D_API void configuring() override;
+    void configuring() override;
 
     /// Starts the adaptor.
-    MODULE_VIZ_QT3D_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -85,19 +83,19 @@ protected:
      * Connect data::image::MODIFIED_SIG of s_MESH_INOUT to service::slots::UPDATE.
      * Connect data::image::VERTEX_MODIFIED_SIG of s_MESH_INOUT to MODIFY_VERTICES_SLOT.
      */
-    MODULE_VIZ_QT3D_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Updates the mesh.
-    MODULE_VIZ_QT3D_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_VIZ_QT3D_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Sets whether the mesh is to be seen or not.
      * @param _visible the visibility status of the mesh.
      */
-    MODULE_VIZ_QT3D_API void set_visible(bool _visible) override;
+    void set_visible(bool _visible) override;
 
 private:
 

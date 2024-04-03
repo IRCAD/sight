@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "utest_data/config.hpp"
+#include <sight/utest_data/config.hpp>
 
 #include <core/base.hpp>
 
@@ -49,38 +49,38 @@ class object
 public:
 
     /// Creates a color with random values
-    UTEST_DATA_API static data::color::sptr randomize_color();
+    SIGHT_UTEST_DATA_API static data::color::sptr randomize_color();
 
     /// Creates a TransferFunction with random values and specified nbPoints, window and level
-    UTEST_DATA_API static data::transfer_function::sptr create_tf_color(
+    SIGHT_UTEST_DATA_API static data::transfer_function::sptr create_tf_color(
         unsigned char _nb_points,
         double _window,
         double _level
     );
 
     /// Creates a TransferFunction with few values
-    UTEST_DATA_API static data::transfer_function::sptr create_tf_color();
+    SIGHT_UTEST_DATA_API static data::transfer_function::sptr create_tf_color();
 
     /// Creates a StructureTraitsDictionary with many organs
-    UTEST_DATA_API static data::structure_traits_dictionary::sptr create_structure_traits_dictionary();
+    SIGHT_UTEST_DATA_API static data::structure_traits_dictionary::sptr create_structure_traits_dictionary();
 
     /// Creates a structure_traits representing the liver
-    UTEST_DATA_API static data::structure_traits::sptr create_structure_traits();
+    SIGHT_UTEST_DATA_API static data::structure_traits::sptr create_structure_traits();
 
     /// Creates a Material with ambient and diffuse color.
-    UTEST_DATA_API static data::material::sptr create_material();
+    SIGHT_UTEST_DATA_API static data::material::sptr create_material();
 
     /// Creates a ResectionDB containing one Resection.
-    UTEST_DATA_API static data::resection_db::sptr generate_resection_db();
+    SIGHT_UTEST_DATA_API static data::resection_db::sptr generate_resection_db();
 
     /// Creates a Resection with 2 planes, 1 input Reconstruction and 1 output Reconstruction.
-    UTEST_DATA_API static data::resection::sptr generate_resection();
+    SIGHT_UTEST_DATA_API static data::resection::sptr generate_resection();
 
     /// Creates a Point with random coordinates.
-    UTEST_DATA_API static data::point::sptr generate_point();
+    SIGHT_UTEST_DATA_API static data::point::sptr generate_point();
 
     /// Creates a Plane with random points.
-    UTEST_DATA_API static data::plane::sptr generate_plane();
+    SIGHT_UTEST_DATA_API static data::plane::sptr generate_plane();
 };
 
 } // namespace sight::utest_data::generator

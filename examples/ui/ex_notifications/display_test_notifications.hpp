@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ex_notifications/config.hpp"
+#include <sight/ex_notifications/config.hpp>
 
 #include <service/notifier.hpp>
 
@@ -50,7 +50,7 @@ namespace ex_notifications
  *   - Values for 'type' key : INFO, SUCCESS, FAILURE.
  * - \b set_bool_parameterbool _val, std::string _key): call this slot when changing "m_usenotifier" behavior.
  */
-class EX_NOTIFICATIONS_CLASS_API display_test_notifications final :
+class SIGHT_EX_NOTIFICATIONS_CLASS_API display_test_notifications final :
     public sight::ui::action,
     public sight::service::notifier
 {
@@ -61,18 +61,18 @@ public:
     /// Constructor/Destructor
     /// @{
     /// Initializes slot.
-    EX_NOTIFICATIONS_API display_test_notifications() noexcept;
-    EX_NOTIFICATIONS_API ~display_test_notifications() noexcept override = default;
+    SIGHT_EX_NOTIFICATIONS_API display_test_notifications() noexcept;
+    SIGHT_EX_NOTIFICATIONS_API ~display_test_notifications() noexcept override = default;
     /// @}
 
     /// Slot: This method is used to set an enum parameter.
-    EX_NOTIFICATIONS_API void set_enum_parameter(std::string _val, std::string _key);
+    SIGHT_EX_NOTIFICATIONS_API void set_enum_parameter(std::string _val, std::string _key);
 
     /// Slot: This method is used to set a bool parameter.
-    EX_NOTIFICATIONS_API void set_bool_parameter(bool _val, std::string _key);
+    SIGHT_EX_NOTIFICATIONS_API void set_bool_parameter(bool _val, std::string _key);
 
     /// Slot: This method is used to set a bool parameter.
-    EX_NOTIFICATIONS_API void close_channel1();
+    SIGHT_EX_NOTIFICATIONS_API void close_channel1();
 
 protected:
 

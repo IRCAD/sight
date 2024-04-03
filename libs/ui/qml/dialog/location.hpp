@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qml/config.hpp"
+#include <sight/ui/qml/config.hpp>
 
 #include <core/base.hpp>
 
@@ -39,8 +39,8 @@ namespace sight::ui::qml::dialog
  * @brief   Defines the generic file/folder dialog for IHM.
  *
  */
-class UI_QML_CLASS_API location : public QObject,
-                                  public ui::dialog::location_base
+class SIGHT_UI_QML_CLASS_API location : public QObject,
+                                        public ui::dialog::location_base
 {
 Q_OBJECT
 Q_PROPERTY(QString filterSelected MEMBER m_filter_selected)
@@ -50,16 +50,16 @@ public:
     SIGHT_DECLARE_CLASS(location, ui::dialog::location_base, ui::factory::make<location>);
 
     /// show the locationDialog to the user and wait selection from the user
-    UI_QML_API core::location::base::sptr show() override;
+    SIGHT_UI_QML_API core::location::base::sptr show() override;
 
     /// Set the type of locationDialog to open (multi selection, folder selection...)
-    UI_QML_API void set_type(location::types _type) override;
+    SIGHT_UI_QML_API void set_type(location::types _type) override;
 
     /// Set the type of locationDialog to open (read, write...)
-    UI_QML_API void set_option(location::options _option) override;
+    SIGHT_UI_QML_API void set_option(location::options _option) override;
 
     /// Set the extension of locationDialog to open example: addFilter("images","*.png *.jpg");
-    UI_QML_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
+    SIGHT_UI_QML_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
 
 protected Q_SLOTS:
 

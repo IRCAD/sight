@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/viz/config.hpp"
 
 #include <ui/__/editor.hpp>
 #include <ui/qt/container/widget.hpp>
@@ -46,39 +44,39 @@ namespace sight::module::ui::viz
        </service>
        @endcode
  */
-class MODULE_UI_VIZ_CLASS_API compositor_parameter_editor : public sight::ui::editor
+class compositor_parameter_editor : public sight::ui::editor
 {
 public:
 
     SIGHT_DECLARE_SERVICE(compositor_parameter_editor, sight::ui::editor);
 
     /// Constructor.
-    MODULE_UI_VIZ_API compositor_parameter_editor() noexcept;
+    compositor_parameter_editor() noexcept;
 
     /// Destructor. Destroy UI
-    MODULE_UI_VIZ_API ~compositor_parameter_editor() noexcept override;
+    ~compositor_parameter_editor() noexcept override;
 
     /**
      * @name Slots API
      * @{
      */
     /// Slot: update the interface.
-    MODULE_UI_VIZ_API static const core::com::slots::key_t UPDATE_COMPOSITOR_SLOT;
+    static const core::com::slots::key_t UPDATE_COMPOSITOR_SLOT;
 /** @} */
 
 protected:
 
     /// Configure the editor to associate with each object type
-    MODULE_UI_VIZ_API void configuring() override;
+    void configuring() override;
 
     /// Start the service, slot connections, widget initialization .
-    MODULE_UI_VIZ_API void starting() override;
+    void starting() override;
 
     /// Destroy the service and the container.
-    MODULE_UI_VIZ_API void stopping() override;
+    void stopping() override;
 
     /// Update the interface.
-    MODULE_UI_VIZ_API void updating() override;
+    void updating() override;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <string>
 
@@ -32,7 +32,7 @@ namespace sight::core::tools
 /**
  * @brief   Management of UUID on objects.
  */
-class CORE_CLASS_API uuid
+class SIGHT_CORE_CLASS_API uuid
 {
 public:
 
@@ -40,7 +40,7 @@ public:
      * @brief   Return a new extended UUID;
      * @note This method is thread-safe.
      */
-    CORE_API static std::string generate();
+    SIGHT_CORE_API static std::string generate();
 };
 
 } // namespace sight::core::tools

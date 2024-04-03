@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qml/config.hpp"
+#include <sight/ui/qml/config.hpp>
 
 #include <core/base.hpp>
 
@@ -47,8 +47,8 @@ namespace sight::ui::qml::dialog
    std::string inputText = inputDlg.getInput();
    @endcode
  */
-class UI_QML_CLASS_API input : public QObject,
-                               public ui::dialog::input_base
+class SIGHT_UI_QML_CLASS_API input : public QObject,
+                                     public ui::dialog::input_base
 {
 Q_OBJECT
 Q_ENUM(echo_mode)
@@ -61,22 +61,22 @@ public:
 
     SIGHT_DECLARE_CLASS(input, ui::dialog::input_base, ui::factory::make<input>);
 
-    UI_QML_API ~input() override = default;
+    SIGHT_UI_QML_API ~input() override = default;
 
     /// Set the title of the message box
-    UI_QML_API void set_title(const std::string& _title) override;
+    SIGHT_UI_QML_API void set_title(const std::string& _title) override;
 
     /// Set the message
-    UI_QML_API void set_message(const std::string& _msg) override;
+    SIGHT_UI_QML_API void set_message(const std::string& _msg) override;
 
     /// Sets the echo mode used to display input field content
-    UI_QML_API void set_echo_mode(input::echo_mode _echo_mode) override;
+    SIGHT_UI_QML_API void set_echo_mode(input::echo_mode _echo_mode) override;
 
     /// Set the input text in the input field
-    UI_QML_API void set_input(const std::string& _text) override;
+    SIGHT_UI_QML_API void set_input(const std::string& _text) override;
 
     /// Get the input text in the input field
-    UI_QML_API std::pair<std::string, bool> get_input() override;
+    SIGHT_UI_QML_API std::pair<std::string, bool> get_input() override;
 
 Q_SIGNALS:
 

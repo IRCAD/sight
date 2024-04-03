@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <QApplication>
 
@@ -32,15 +32,15 @@ namespace sight::ui::qt
 /**
  * @brief   Defines the Qt application.
  */
-class UI_QT_CLASS_API_QT app : public QApplication
+class SIGHT_UI_QT_CLASS_API_QT app : public QApplication
 {
 Q_OBJECT
 
 public:
 
-    UI_QT_API_QT app(int& _argc, char** _argv, bool _gui_enabled);
+    SIGHT_UI_QT_API_QT app(int& _argc, char** _argv, bool _gui_enabled);
 
-    UI_QT_API_QT bool notify(QObject* _receiver, QEvent* _e) override;
+    SIGHT_UI_QT_API_QT bool notify(QObject* _receiver, QEvent* _e) override;
 
 public Q_SLOTS:
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <data/helper/medical_image.hpp>
 
@@ -50,7 +50,7 @@ namespace sight::viz::scene3d
 /**
  * @brief Manages a plane mesh on which a slice texture will be applied.
  */
-class VIZ_SCENE3D_CLASS_API plane
+class SIGHT_VIZ_SCENE3D_CLASS_API plane
 {
 public:
 
@@ -77,7 +77,7 @@ public:
      * @param _display_other_planes display a line indicating the location of the two other planes.
      * @param _entity_opacity opacity of the entity.
      */
-    VIZ_SCENE3D_API plane(
+    SIGHT_VIZ_SCENE3D_API plane(
         const core::tools::id::type& _negato_id,
         Ogre::SceneNode* _parent_scene_node,
         Ogre::SceneManager* _scene_manager,
@@ -89,13 +89,13 @@ public:
     );
 
     /// Cleans ogre resources.
-    VIZ_SCENE3D_API ~plane();
+    SIGHT_VIZ_SCENE3D_API ~plane();
 
     /**
      * @brief Instantiates the plane mesh and entity.
      * @param _enable_transparency used true to enable the opacity.
      */
-    VIZ_SCENE3D_API void update(
+    SIGHT_VIZ_SCENE3D_API void update(
         orientation_mode _orientation,
         const Ogre::Vector3& _spacing,
         const Ogre::Vector3& _origin,
@@ -108,7 +108,7 @@ public:
      *     - in 3D, it will also move the scene node in space.
      * @param _slices_index the image slices indexes.
      */
-    VIZ_SCENE3D_API void change_slice(const std::array<float, 3>& _slices_index);
+    SIGHT_VIZ_SCENE3D_API void change_slice(const std::array<float, 3>& _slices_index);
 
     /**
      * @brief Sets the plane's opacity.
@@ -116,37 +116,37 @@ public:
      *
      * @pre _f must fit between 0 and 1.
      */
-    VIZ_SCENE3D_API void set_entity_opacity(float _f);
+    SIGHT_VIZ_SCENE3D_API void set_entity_opacity(float _f);
 
     /**
      * @brief Shows/hides the plane in the scene.
      * @param _visible use true to show the plane.
      */
-    VIZ_SCENE3D_API void set_visible(bool _visible);
+    SIGHT_VIZ_SCENE3D_API void set_visible(bool _visible);
 
     /**
      * @brief Adds or updates the texture containing the transfer function data in the negato passes.
      * @param _tf_texture the TF texture.
      */
-    VIZ_SCENE3D_API void set_tf_data(const viz::scene3d::transfer_function& _tf_texture);
+    SIGHT_VIZ_SCENE3D_API void set_tf_data(const viz::scene3d::transfer_function& _tf_texture);
 
     /// Gets the image axis orthogonal to the plane.
-    [[nodiscard]] VIZ_SCENE3D_API orientation_mode get_orientation_mode() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API orientation_mode get_orientation_mode() const;
 
     /// Gets the movable object created by this class.
-    [[nodiscard]] VIZ_SCENE3D_API const Ogre::MovableObject* get_movable_object() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API const Ogre::MovableObject* get_movable_object() const;
 
     /**
      * @brief Sets the picking flags.
      * @param _flags the flags use for the picking.
      */
-    VIZ_SCENE3D_API void set_query_flags(std::uint32_t _flags);
+    SIGHT_VIZ_SCENE3D_API void set_query_flags(std::uint32_t _flags);
 
     /// Sets this object's render queue group and render priority.
-    VIZ_SCENE3D_API void set_render_queuer_group_and_priority(std::uint8_t _group_id, std::uint16_t _priority);
+    SIGHT_VIZ_SCENE3D_API void set_render_queuer_group_and_priority(std::uint8_t _group_id, std::uint16_t _priority);
 
     /// Compute two cross lines that intersect at the given position, according to the plane orientation.
-    VIZ_SCENE3D_API std::array<Ogre::Vector3, 4> compute_cross(
+    SIGHT_VIZ_SCENE3D_API std::array<Ogre::Vector3, 4> compute_cross(
         const Ogre::Vector3& _center,
         const Ogre::Vector3& _image_origin
     ) const;

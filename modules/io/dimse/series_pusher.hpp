@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/dimse/config.hpp"
-
 #include <data/vector.hpp>
 
 #include <io/dimse/data/pacs_configuration.hpp>
@@ -62,7 +60,7 @@ namespace sight::module::io::dimse
  * - \b pacsConfig [sight::io::dimse::data::pacs_configuration]: PACS configuration data.
  * - \b selectedSeries [sight::data::vector]: List of DICOM series to push to the PACS.
  */
-class MODULE_IO_DIMSE_CLASS_API series_pusher : public service::controller
+class series_pusher : public service::controller
 {
 public:
 
@@ -70,7 +68,7 @@ public:
 
     using dicom_series_container_t = std::vector<std::shared_ptr<const data::series> >;
 
-    MODULE_IO_DIMSE_API static const core::com::slots::key_t DISPLAY_SLOT;
+    static const core::com::slots::key_t DISPLAY_SLOT;
     using display_message_slot_t = core::com::slot<void (const std::string&, bool)>;
 
     /// Signal to start the progress (bar id)
@@ -88,29 +86,29 @@ public:
     /**
      * @brief Constructor
      */
-    MODULE_IO_DIMSE_API series_pusher() noexcept;
+    series_pusher() noexcept;
 
     /**
      * @brief Destructor
      */
-    MODULE_IO_DIMSE_API ~series_pusher() noexcept override;
+    ~series_pusher() noexcept override;
 
 protected:
 
     /// Does nothing.
-    MODULE_IO_DIMSE_API void configuring() override;
+    void configuring() override;
 
     /// Override
-    MODULE_IO_DIMSE_API void starting() override;
+    void starting() override;
 
     /// Override
-    MODULE_IO_DIMSE_API void stopping() override;
+    void stopping() override;
 
     /// Override
-    MODULE_IO_DIMSE_API void updating() override;
+    void updating() override;
 
     /// Override
-    MODULE_IO_DIMSE_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
 protected:
 
@@ -118,17 +116,17 @@ protected:
      * @brief Check whether some series are already on the PACS
      * @return True if the series must be pushed
      */
-    MODULE_IO_DIMSE_API bool check_series_on_pacs();
+    bool check_series_on_pacs();
 
     /// Pull Series
-    MODULE_IO_DIMSE_API void push_series();
+    void push_series();
 
     /**
      * @brief Display a message
      * @param[in] _message Message to display
      * @param[in] _error True if the message is an error messsage
      */
-    static MODULE_IO_DIMSE_API void display_message(const std::string& _message, bool _error);
+    static void display_message(const std::string& _message, bool _error);
 
     /**
      * @brief Progress callback
@@ -136,7 +134,7 @@ protected:
      * @param[in] _instance_number Instance number
      * @param[in] _file_path File path
      */
-    MODULE_IO_DIMSE_API void progress_callback(
+    void progress_callback(
         const std::string& _series_instance_uid,
         unsigned int _instance_number,
         const std::string& _file_path

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
 
 #include <service/base.hpp>
 
@@ -84,7 +84,7 @@ class action;
  *   - \b message not mandatory : if not empty the message is shown in dialog box.
  *   - \b defaultButton (optional) (default defined by the gui backend): dialog default button (true or false)
  */
-class UI_CLASS_API action : public sight::service::base
+class SIGHT_UI_CLASS_API action : public sight::service::base
 {
 public:
 
@@ -161,37 +161,37 @@ public:
      */
 
     /// Method called when the action service is stopping
-    UI_API void action_service_stopping();
+    SIGHT_UI_API void action_service_stopping();
 
     /// Method called when the action service is starting
-    UI_API void action_service_starting();
+    SIGHT_UI_API void action_service_starting();
 
     /// Checks or unchecks the action service.
-    UI_API virtual void set_checked(bool _checked);
+    SIGHT_UI_API virtual void set_checked(bool _checked);
 
     /// Sets the action service executable or not.
-    [[nodiscard]] UI_API bool checked() const;
+    [[nodiscard]] SIGHT_UI_API bool checked() const;
 
     /// Enables or disables the action service.
-    UI_API void set_enabled(bool _enabled);
+    SIGHT_UI_API void set_enabled(bool _enabled);
 
     /// Sets the action service executable or not.
-    [[nodiscard]] UI_API bool enabled() const;
+    [[nodiscard]] SIGHT_UI_API bool enabled() const;
 
     /// Shows or hides the action.
-    UI_API void set_visible(bool _is_visible);
+    SIGHT_UI_API void set_visible(bool _is_visible);
 
     /// Shows the action.
-    UI_API void show();
+    SIGHT_UI_API void show();
 
     /// Hides the action.
-    UI_API void hide();
+    SIGHT_UI_API void hide();
 
     /// Returns true if action is visible
-    [[nodiscard]] UI_API bool visible() const;
+    [[nodiscard]] SIGHT_UI_API bool visible() const;
 
     /// Returns true if the active state is inverted.
-    [[nodiscard]] UI_API bool inverted() const;
+    [[nodiscard]] SIGHT_UI_API bool inverted() const;
 
     /**
      * @brief Confirms that the action must be executed.
@@ -201,15 +201,15 @@ public:
      *
      * @return true if user click on 'true' button.
      */
-    UI_API bool confirm_action();
+    SIGHT_UI_API bool confirm_action();
 
 protected:
 
-    UI_API action();
-    UI_API ~action() override;
+    SIGHT_UI_API action();
+    SIGHT_UI_API ~action() override;
 
     /// Initializes the action. This should be called in the configuring() method in derived classes.
-    UI_API void initialize();
+    SIGHT_UI_API void initialize();
 
 private:
 

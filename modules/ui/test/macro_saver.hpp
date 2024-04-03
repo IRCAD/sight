@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/test/config.hpp"
-
 #include <ui/test/helper/select.hpp>
 
 #include <QEvent>
@@ -320,14 +318,14 @@ struct interaction_helper_api : public post_interaction
 };
 
 /// Class which captures interactions to save them as a GuiTester-compatible GUI test C++ source file
-class MODULE_UI_TEST_CLASS_API macro_saver : public QObject
+class macro_saver : public QObject
 {
 Q_OBJECT
 
 public:
 
     // Constructor. Does nothing.
-    MODULE_UI_TEST_API macro_saver() = default;
+    macro_saver() = default;
 
     /**
      * @brief Method used by Qt when an infected widget receives an event.
@@ -346,10 +344,10 @@ public:
      *
      * @param _o The widget to infect
      */
-    MODULE_UI_TEST_API void infect(QObject* _o);
+    void infect(QObject* _o);
 
     /// Saves the user interactions as GuiTester-compatible GUI test C++ source files named GuiTest.cpp and GuiTest.hpp
-    MODULE_UI_TEST_API void save();
+    void save();
 
 private:
 

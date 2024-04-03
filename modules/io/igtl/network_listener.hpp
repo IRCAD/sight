@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/igtl/config.hpp"
-
 #include <core/com/signal.hpp>
 
 #include <service/controller.hpp>
@@ -32,7 +30,7 @@ namespace sight::module::io::igtl
 {
 
 /// Interface providing behavior of network listeners, if you want create a new network listener you must be inherit.
-class MODULE_IO_IGTL_CLASS_API network_listener : public service::controller
+class network_listener : public service::controller
 {
 public:
 
@@ -40,21 +38,21 @@ public:
     SIGHT_DECLARE_SERVICE(network_listener, service::controller);
 
     /// Initializes signals.
-    MODULE_IO_IGTL_API network_listener();
+    network_listener();
 
     /// Destroys the interface.
-    MODULE_IO_IGTL_API ~network_listener() override;
+    ~network_listener() override;
 
 protected:
 
     /// Defines the signal's name emitted when service is connected.
-    MODULE_IO_IGTL_API static const core::com::signals::key_t CONNECTED_SIGNAL;
+    static const core::com::signals::key_t CONNECTED_SIGNAL;
 
     /// Defines the signal's name emitted when service is disconnected.
-    MODULE_IO_IGTL_API static const core::com::signals::key_t DISCONNECTED_SIGNAL;
+    static const core::com::signals::key_t DISCONNECTED_SIGNAL;
 
     /// Does nothing.
-    MODULE_IO_IGTL_API void updating() override;
+    void updating() override;
 
     /// Defines the signal emitted when service is connected.
     using connected_signal_t = core::com::signal<void ()>;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 namespace sight::core
 {
@@ -43,17 +43,17 @@ using type = double;
 /**
  * @return EPOCH time in microseconds
  */
-CORE_API type get_time_in_micro_sec();
+SIGHT_CORE_API type get_time_in_micro_sec();
 
 /**
  * @return EPOCH time in milliseconds
  */
-CORE_API type get_time_in_milli_sec();
+SIGHT_CORE_API type get_time_in_milli_sec();
 
 /**
  * @return EPOCH time in seconds
  */
-CORE_API type get_time_in_sec();
+SIGHT_CORE_API type get_time_in_sec();
 
 } //namespace clock
 

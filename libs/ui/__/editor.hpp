@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/service.hpp"
 
 #include <core/tools/failed.hpp>
@@ -35,7 +36,7 @@ namespace sight::ui
 /**
  * @brief Defines the service interface managing the editor service for object.
  */
-class UI_CLASS_API editor : public ui::service
+class SIGHT_UI_CLASS_API editor : public ui::service
 {
 public:
 

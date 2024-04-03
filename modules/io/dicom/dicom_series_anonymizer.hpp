@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/dicom/config.hpp"
 
 #include <data/vector.hpp>
 
@@ -63,7 +61,7 @@ namespace sight::module::io::dicom
  * - \b seriesSet [sight::data::series_set]: series_set where the dicom series comes from.
  * - \b selectedSeries [sight::data::vector]: List of DICOM series to be anonymized.
  */
-class MODULE_IO_DICOM_CLASS_API dicom_series_anonymizer : public service::controller
+class dicom_series_anonymizer : public service::controller
 {
 public:
 
@@ -72,30 +70,30 @@ public:
     SIGHT_DECLARE_SERVICE(dicom_series_anonymizer, service::controller);
 
     /// Constructor
-    MODULE_IO_DICOM_API dicom_series_anonymizer() noexcept;
+    dicom_series_anonymizer() noexcept;
 
     /// Destructor
-    MODULE_IO_DICOM_API ~dicom_series_anonymizer() noexcept override;
+    ~dicom_series_anonymizer() noexcept override;
 
 protected:
 
     /// Do nothing.
-    MODULE_IO_DICOM_API void configuring() override;
+    void configuring() override;
 
     /// Override
-    MODULE_IO_DICOM_API void starting() override;
+    void starting() override;
 
     /// Override
-    MODULE_IO_DICOM_API void stopping() override;
+    void stopping() override;
 
     /// Override
-    MODULE_IO_DICOM_API void updating() override;
+    void updating() override;
 
     /// Override
-    MODULE_IO_DICOM_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     /// Override
-    MODULE_IO_DICOM_API void anonymize(sight::data::vector& _vector);
+    void anonymize(sight::data::vector& _vector);
 
     /// Signal emitted when a job is created
     SPTR(job_created_signal_t) m_sig_job_created;

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <ui/__/dialog/logger_base.hpp>
 
@@ -40,8 +40,8 @@ namespace sight::ui::qt::dialog
 /**
  * @brief   Defines a dialog showing log information.
  */
-class UI_QT_CLASS_API_QT logger : public QDialog,
-                                  public ui::dialog::logger_base
+class SIGHT_UI_QT_CLASS_API_QT logger : public QDialog,
+                                        public ui::dialog::logger_base
 {
 Q_OBJECT
 
@@ -50,30 +50,30 @@ public:
     SIGHT_DECLARE_CLASS(logger, ui::dialog::logger_base, ui::factory::make<logger>);
 
     /// Destructor
-    UI_QT_API_QT ~logger() override = default;
+    SIGHT_UI_QT_API_QT ~logger() override = default;
 
     /**
      * @brief Set the dialog title.
      * @param[in] _title Dialog title
      */
-    UI_QT_API_QT void set_title(const std::string& _title) override;
+    SIGHT_UI_QT_API_QT void set_title(const std::string& _title) override;
 
     /**
      * @brief Set the dialog message.
      * @param[in] _message Dialog message
      */
-    UI_QT_API_QT void set_message(const std::string& _message) override;
+    SIGHT_UI_QT_API_QT void set_message(const std::string& _message) override;
 
     /**
      * @brief Set the dialog logger.
      * @param[in] _logger Dialog logger
      */
-    UI_QT_API_QT void set_logger(const core::log::logger::sptr& _logger) override;
+    SIGHT_UI_QT_API_QT void set_logger(const core::log::logger::sptr& _logger) override;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button
      */
-    UI_QT_API_QT bool show() override;
+    SIGHT_UI_QT_API_QT bool show() override;
 
 protected Q_SLOTS:
 

@@ -32,7 +32,7 @@ namespace sight::io::dicom::reader::ie
 /**
  * @brief Spatial Fiducials Information Entity class
  */
-class IO_DICOM_CLASS_API spatial_fiducials : public io::dicom::reader::ie::information_entity<data::image>
+class SIGHT_IO_DICOM_CLASS_API spatial_fiducials : public io::dicom::reader::ie::information_entity<data::image>
 {
 public:
 
@@ -46,7 +46,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API spatial_fiducials(
+    SIGHT_IO_DICOM_API spatial_fiducials(
         const CSPTR(data::dicom_series)& _dicom_series,
         const SPTR(gdcm::Reader)& _reader,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
@@ -57,7 +57,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~spatial_fiducials() override;
+    SIGHT_IO_DICOM_API ~spatial_fiducials() override;
 
     /**
      * @brief Read image landmarks from dataset

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/opencv/config.hpp"
+#include <sight/io/opencv/config.hpp>
 
 #include <data/matrix4.hpp>
 
@@ -34,7 +34,7 @@ namespace sight::io::opencv
 /**
  * @brief The matrix helper class contains static method to convert data::matrix4 to opencv Mat.
  */
-class IO_OPENCV_CLASS_API matrix
+class SIGHT_IO_OPENCV_CLASS_API matrix
 {
 public:
 
@@ -43,28 +43,28 @@ public:
      * @param _src [cv::Matx44f]: OpenCV 4x4 double matrix.
      * @param _dst [data::matrix4::sptr]: TransformationMatrix (need to be initialized).
      */
-    IO_OPENCV_API static void copy_from_cv(const cv::Matx44d& _src, data::matrix4::sptr& _dst);
+    SIGHT_IO_OPENCV_API static void copy_from_cv(const cv::Matx44d& _src, data::matrix4::sptr& _dst);
 
     /**
      * @brief copyToCv: copies values from Sight Matrix4 to OpenCV structure.
      * @param _src [data::matrix4::csptr]: Sight matrix to be copied.
      * @param _dst [cv::Matx44d]: OpenCV 4x4 double matrix.
      */
-    IO_OPENCV_API static void copy_to_cv(const data::matrix4::csptr& _src, cv::Matx44d& _dst);
+    SIGHT_IO_OPENCV_API static void copy_to_cv(const data::matrix4::csptr& _src, cv::Matx44d& _dst);
 
     /**
      * @brief copy_from_cv: copies values from OpenCV structure to Sight data.
      * @param _src [cv::Matx44f]: OpenCV 4x4 float matrix.
      * @param _dst [data::matrix4::sptr]: TransformationMatrix (need to be initialized).
      */
-    IO_OPENCV_API static void copy_from_cv(const cv::Matx44f& _src, data::matrix4::sptr& _dst);
+    SIGHT_IO_OPENCV_API static void copy_from_cv(const cv::Matx44f& _src, data::matrix4::sptr& _dst);
 
     /**
      * @brief copyToCv: copies values from Sight Matrix4 to OpenCV structure.
      * @param _src [data::matrix4::csptr]: Sight matrix to be copied.
      * @param _dst [cv::Matx44f]: OpenCV 4x4 float matrix.
      */
-    IO_OPENCV_API static void copy_to_cv(const data::matrix4::csptr& _src, cv::Matx44f& _dst);
+    SIGHT_IO_OPENCV_API static void copy_to_cv(const data::matrix4::csptr& _src, cv::Matx44f& _dst);
 
     /**
      * @brief copy_from_cv: copies values from OpenCV structure (rotation & translation matrix) to Sight data.
@@ -72,7 +72,7 @@ public:
      * @param _tvec [cv::Mat]: OpenCV 1x3 translation vector (cast in CV_64F).
      * @param _dst [data::matrix4::sptr]: TransformationMatrix (need to be initialized).
      */
-    IO_OPENCV_API static void copy_from_cv(
+    SIGHT_IO_OPENCV_API static void copy_from_cv(
         const cv::Mat& _rvec,
         const cv::Mat& _tvec,
         data::matrix4::sptr& _dst
@@ -84,7 +84,7 @@ public:
      * @param _rvec [cv::Mat]: OpenCV 1x3 rotation vector of type CV_64F.
      * @param _tvec [cv::Mat]: OpenCV 1x3 translation vector of type CV_64F.
      */
-    IO_OPENCV_API static void copy_to_cv(
+    SIGHT_IO_OPENCV_API static void copy_to_cv(
         const data::matrix4::csptr& _src,
         cv::Mat& _rvec,
         cv::Mat& _tvec
@@ -95,14 +95,14 @@ public:
      * @param _src [cv::Mat] OpenCV 4x4 matrix (cast in CV_64F).
      * @param _dst [data::matrix4::sptr]:TransformationMatrix (need to be initialized).
      */
-    IO_OPENCV_API static void copy_from_cv(const cv::Mat& _src, data::matrix4::sptr& _dst);
+    SIGHT_IO_OPENCV_API static void copy_from_cv(const cv::Mat& _src, data::matrix4::sptr& _dst);
 
     /**
      * @brief copyToCv: copies values from Sight Matrix4 to OpenCV structure.
      * @param _src [data::matrix4::csptr]: Sight matrix to be copied.
      * @param _dst [cv::Mat]: OpenCV 4x4 matrix of type CV_64F.
      */
-    IO_OPENCV_API static void copy_to_cv(const data::matrix4::csptr& _src, cv::Mat& _dst);
+    SIGHT_IO_OPENCV_API static void copy_to_cv(const data::matrix4::csptr& _src, cv::Mat& _dst);
 };
 
 } //namespace sight::io::opencv

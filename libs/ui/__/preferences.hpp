@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
 
 #include <core/crypto/password_keeper.hpp>
 #include <core/exception.hpp>
@@ -41,7 +41,7 @@ namespace sight::ui
 
 /// Simple exception class thrown when preferences have been disabled or because of they cannot be enabled due to errors
 /// like corrupted preferences files
-class UI_CLASS_API preferences_disabled : public core::exception
+class SIGHT_UI_CLASS_API preferences_disabled : public core::exception
 {
 public:
 
@@ -54,7 +54,7 @@ public:
 };
 
 /// Subclass of preferences_disabled, thrown when trying to open an encrypted file with a wrong password
-class UI_CLASS_API bad_password : public preferences_disabled
+class SIGHT_UI_CLASS_API bad_password : public preferences_disabled
 {
 public:
 
@@ -177,7 +177,7 @@ public:
  * @endcode
  *
  */
-class UI_CLASS_API preferences final
+class SIGHT_UI_CLASS_API preferences final
 {
 public:
 
@@ -186,11 +186,11 @@ public:
     /// Constructor
     /// It will load the default preference file if not already done and throw 'preferences_disabled' exception in case
     /// of error or when disabled (or BadPassword, if we use encryption and the password is not the good one)
-    UI_API preferences();
+    SIGHT_UI_API preferences();
 
     /// Destructor
     /// It will save the preferences, if they have been modified
-    UI_API ~preferences();
+    SIGHT_UI_API ~preferences();
 
     /// Returns the preference associated with the given key/path
     /// @param _key the key/path of the preference.
@@ -326,34 +326,34 @@ public:
     }
 
     /// Remove one value from the preferences
-    static UI_API void erase(const std::string& _key);
+    static SIGHT_UI_API void erase(const std::string& _key);
 
     /// Remove all preferences
-    static UI_API void clear();
+    static SIGHT_UI_API void clear();
 
     /// Enable / disable the preferences system. All functions will throw a preferences_disabled, if disabled
-    UI_API static void set_enabled(bool _enable);
+    SIGHT_UI_API static void set_enabled(bool _enable);
 
     /// Enable / disable loading/saving from the filesystem.
-    UI_API static void ignore_filesystem(bool _ignore);
+    SIGHT_UI_API static void ignore_filesystem(bool _ignore);
 
     /// Set a password and enable encryption
-    UI_API static void set_password(const core::crypto::secure_string& _password);
+    SIGHT_UI_API static void set_password(const core::crypto::secure_string& _password);
 
     /// Set the password policy
     /// @param _policy @see sight::core::crypto::password_keeper::password_policy
-    UI_API static void set_password_policy(core::crypto::password_keeper::password_policy _policy);
+    SIGHT_UI_API static void set_password_policy(core::crypto::password_keeper::password_policy _policy);
 
     /// Set the encryption policy
     /// @param _policy @see sight::core::crypto::password_keeper::encryption_policy
-    UI_API static void set_encryption_policy(core::crypto::password_keeper::encryption_policy _policy);
+    SIGHT_UI_API static void set_encryption_policy(core::crypto::password_keeper::encryption_policy _policy);
 
     /// If true, the application will be terminated in case of password error
-    UI_API static void exit_on_password_error(bool _exit);
+    SIGHT_UI_API static void exit_on_password_error(bool _exit);
 
     /// Password dialog customization
     /// @{
-    struct UI_CLASS_API password_dialog_strings final
+    struct SIGHT_UI_CLASS_API password_dialog_strings final
     {
         std::optional<std::string> title {std::nullopt};
         std::optional<std::string> message {std::nullopt};
@@ -369,33 +369,33 @@ public:
         std::optional<std::string> cancel_fatal_message {std::nullopt};
     };
 
-    UI_API static void set_password_dialog_strings(const password_dialog_strings& _strings);
+    SIGHT_UI_API static void set_password_dialog_strings(const password_dialog_strings& _strings);
     /// @}
 
     /// Set a custom password validator
-    UI_API static void set_password_validator(
+    SIGHT_UI_API static void set_password_validator(
         std::function<std::pair<bool, std::string>(const sight::core::crypto::secure_string&)> _validator
     );
 
 private:
 
     /// Throws a preferences_disabled if preferences management is disabled
-    UI_API static void throw_if_disabled();
+    SIGHT_UI_API static void throw_if_disabled();
 
     /// Guard the preference tree
-    UI_API static std::shared_mutex s_preferences_mutex;
+    SIGHT_UI_API static std::shared_mutex s_preferences_mutex;
 
     /// Contains the preference tree
-    UI_API static std::unique_ptr<boost::property_tree::ptree> s_preferences;
+    SIGHT_UI_API static std::unique_ptr<boost::property_tree::ptree> s_preferences;
 
     /// True if the preferences has been modified
-    UI_API static bool s_is_preferences_modified;
+    SIGHT_UI_API static bool s_is_preferences_modified;
 
     /// preferences can be disabled globally
-    UI_API static bool s_is_enabled;
+    SIGHT_UI_API static bool s_is_enabled;
 
     /// If true, the preferences won't be loaded/saved from the filesystem
-    UI_API static bool s_ignore_filesystem;
+    SIGHT_UI_API static bool s_ignore_filesystem;
 };
 
 } // namespace sight::ui

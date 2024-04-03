@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/object.hpp"
 
 #include <array>
@@ -37,7 +38,7 @@ namespace sight::data
  * coherency checks between the markers, so you could have one marker with one point, another one with four points,
  * etc...
  */
-class DATA_CLASS_API marker_map final : public object
+class SIGHT_DATA_CLASS_API marker_map final : public object
 {
 public:
 
@@ -50,42 +51,42 @@ public:
     /**
      * @brief Destructor
      */
-    DATA_API ~marker_map() noexcept override = default;
+    SIGHT_DATA_API ~marker_map() noexcept override = default;
 
     /// Returns a marker given its identifier, null_ptr if not found
-    DATA_API const marker_t* get_marker(const key_t& _id) const;
+    SIGHT_DATA_API const marker_t* get_marker(const key_t& _id) const;
 
     /// Returns a marker given its identifier, null_ptr if not found
-    DATA_API marker_t* get_marker(const key_t& _id);
+    SIGHT_DATA_API marker_t* get_marker(const key_t& _id);
 
     /// Returns a marker given its index in the container, asserts if not found
-    DATA_API const marker_t& get_marker(std::size_t _index) const;
+    SIGHT_DATA_API const marker_t& get_marker(std::size_t _index) const;
 
     /// Returns a marker given its index in the container, asserts if not found
-    DATA_API marker_t& get_marker(std::size_t _index);
+    SIGHT_DATA_API marker_t& get_marker(std::size_t _index);
 
     /// Returns the number of markers in the container
-    DATA_API std::size_t count() const;
+    SIGHT_DATA_API std::size_t count() const;
 
     /// Adds a new marker in the container
-    DATA_API void set_marker(const key_t& _id, const marker_t& _marker);
+    SIGHT_DATA_API void set_marker(const key_t& _id, const marker_t& _marker);
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const marker_map& _other) const noexcept;
-    DATA_API bool operator!=(const marker_map& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const marker_map& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const marker_map& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/viz/config.hpp"
-
 #include <service/base.hpp>
 
 #include <viz/scene3d/parameter_adaptor.hpp>
@@ -42,7 +40,7 @@ public:
      * @param[in] _param_srv editor service.
      * @param[inout] _connections helper that stores connections between the editor and the adaptors.
      */
-    MODULE_UI_VIZ_API static service::config_t create_config(
+    static service::config_t create_config(
         const sight::viz::scene3d::parameter_adaptor::csptr& _adaptor,
         const service::base::csptr& _param_srv,
         core::com::helper::sig_slot_connection& _connections

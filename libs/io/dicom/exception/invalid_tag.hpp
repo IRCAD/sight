@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <core/exception.hpp>
 
@@ -32,7 +32,7 @@ namespace sight::io::dicom::exception
 /**
  * @brief InvalidTag exception
  */
-class IO_DICOM_CLASS_API invalid_tag : public core::exception
+class SIGHT_IO_DICOM_CLASS_API invalid_tag : public core::exception
 {
 public:
 
@@ -40,10 +40,10 @@ public:
      * @brief Constructor
      * @param[in] _message Exception message
      */
-    IO_DICOM_API invalid_tag(const std::string& _message);
+    SIGHT_IO_DICOM_API invalid_tag(const std::string& _message);
 
     /// Destructor
-    IO_DICOM_API ~invalid_tag() noexcept override;
+    SIGHT_IO_DICOM_API ~invalid_tag() noexcept override;
 };
 
 } // namespace sight::io::dicom::exception

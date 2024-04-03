@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/__/config.hpp"
 
 #include <ui/__/action.hpp>
 #include <ui/__/parameter.hpp>
@@ -57,7 +55,7 @@ namespace sight::module::ui
  *   - \b checked: the value used in parameterChanged signal on setChecked(true)
  *   - \b unchecked: the value used in parameterChanged signal on setChecked(false)
  */
-class MODULE_UI_CLASS_API action final : public sight::ui::action
+class action final : public sight::ui::action
 {
 public:
 
@@ -72,19 +70,19 @@ public:
 
     SIGHT_DECLARE_SERVICE(action, sight::ui::action);
 
-    MODULE_UI_API action() noexcept        = default;
-    MODULE_UI_API ~action() noexcept final = default;
+    action() noexcept        = default;
+    ~action() noexcept final = default;
 
 protected:
 
-    MODULE_UI_API void configuring() final;
+    void configuring() final;
 
-    MODULE_UI_API void starting() final;
+    void starting() final;
 
-    MODULE_UI_API void stopping() final;
+    void stopping() final;
 
     /// Emits the clicked signal
-    MODULE_UI_API void updating() final;
+    void updating() final;
 
 private:
 

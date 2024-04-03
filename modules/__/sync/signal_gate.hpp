@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/sync/config.hpp"
 
 #include <core/com/helper/sig_slot_connection.hpp>
 
@@ -50,7 +48,7 @@ namespace sight::module::sync
  * @subsection Configuration Configuration
  *  - \b signal: list of signals to wait for
  */
-class MODULE_SYNC_CLASS_API signal_gate : public service::controller
+class signal_gate : public service::controller
 {
 public:
 
@@ -60,16 +58,16 @@ public:
      * @name Signals API
      * @{
      */
-    MODULE_SYNC_API static const core::com::signals::key_t ALL_RECEIVED_SIG;
+    static const core::com::signals::key_t ALL_RECEIVED_SIG;
     using all_received_signal_t = core::com::signal<void ()>;
     using received_signal_t     = core::com::slot<void ()>;
     /** @} */
 
     /// Constructor
-    MODULE_SYNC_API signal_gate();
+    signal_gate();
 
     /// Destructor
-    MODULE_SYNC_API ~signal_gate() override;
+    ~signal_gate() override;
 
     /// Slot: called when one of the signals is called
     void received(std::size_t _index);
@@ -77,16 +75,16 @@ public:
 protected:
 
     /// Does nothing
-    MODULE_SYNC_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_SYNC_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_SYNC_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing
-    MODULE_SYNC_API void updating() override;
+    void updating() override;
 
 private:
 

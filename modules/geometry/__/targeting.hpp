@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/__/config.hpp"
 
 #include <data/landmarks.hpp>
 #include <data/matrix4.hpp>
@@ -65,7 +63,7 @@ namespace sight::module::geometry
  * - \b label (optional): (std::string) name of the landmark group
  * - \b width (optional): (int) width of the background image in pixels. The image should have the same width and height
  */
-class MODULE_GEOMETRY_CLASS_API targeting final : public service::base
+class targeting final : public service::base
 {
 public:
 
@@ -73,24 +71,24 @@ public:
     SIGHT_DECLARE_SERVICE(targeting, service::base);
 
     /// Initializes member variables and slots.
-    MODULE_GEOMETRY_API targeting() noexcept;
+    targeting() noexcept;
 
     /// Destroys the service.
-    MODULE_GEOMETRY_API ~targeting() noexcept override;
+    ~targeting() noexcept override;
 
 protected:
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void stopping() override;
+    void stopping() override;
 
     /// Updates the position of the landmark on the crosshair.
-    MODULE_GEOMETRY_API void updating() override;
+    void updating() override;
 
     /// Configures the service parameters.
-    MODULE_GEOMETRY_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -98,7 +96,7 @@ protected:
      *
      * Connect data::object::MODIFIED_SIG of s_MATRIX_INPUT to service::slots::UPDATE
      */
-    MODULE_GEOMETRY_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <core/com/signals.hpp>
 #include <core/com/slot.hpp>
@@ -63,7 +61,7 @@ namespace sight::module::viz::scene3d::adaptor
  *  - \b useAlpha (optional, bool, default=true) : whether or not the alpha channel is used
  *  - \b dynamic (optional, bool, default=false) : whether or not the texture is updated frequently
  */
-class MODULE_VIZ_SCENE3D_CLASS_API texture final : public sight::viz::scene3d::adaptor
+class texture final : public sight::viz::scene3d::adaptor
 {
 public:
 
@@ -71,36 +69,36 @@ public:
     SIGHT_DECLARE_SERVICE(texture, sight::viz::scene3d::adaptor);
 
     /// Defines the keys of the slot @ref textureSwapped().
-    MODULE_VIZ_SCENE3D_API static const core::com::signals::key_t TEXTURE_SWAPPED_SIG;
+    static const core::com::signals::key_t TEXTURE_SWAPPED_SIG;
 
     /// Creates the adaptor and the signal.
-    MODULE_VIZ_SCENE3D_API texture() noexcept;
+    texture() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~texture() noexcept final = default;
+    ~texture() noexcept final = default;
 
     /// Gets the Ogre texture.
-    MODULE_VIZ_SCENE3D_API Ogre::TexturePtr get_texture() const;
+    Ogre::TexturePtr get_texture() const;
 
     /// Gets the textures name.
-    MODULE_VIZ_SCENE3D_API std::string get_texture_name() const;
+    std::string get_texture_name() const;
 
     /// Sets the texture name.
-    MODULE_VIZ_SCENE3D_API void set_texture_name(std::string _tex_name);
+    void set_texture_name(std::string _tex_name);
 
     /// Gets if 1.0 is used as the alpha value.
-    MODULE_VIZ_SCENE3D_API bool get_use_alpha() const;
+    bool get_use_alpha() const;
 
     /// Return true if a valid image is stored in this texture
-    MODULE_VIZ_SCENE3D_API bool is_valid() const;
+    bool is_valid() const;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Creates the managed Ogre texture.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -109,13 +107,13 @@ protected:
      * Connect data::image::BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to service::slots::UPDATE
      * Connect data::image::BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
     /// Updates the attached texture.
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /// Destroys Ogre resources.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
 private:
 

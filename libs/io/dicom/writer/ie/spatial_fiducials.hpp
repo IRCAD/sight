@@ -33,7 +33,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Spatial Fiducials Information Entity class
  */
-class IO_DICOM_CLASS_API spatial_fiducials : public io::dicom::writer::ie::information_entity<data::image>
+class SIGHT_IO_DICOM_CLASS_API spatial_fiducials : public io::dicom::writer::ie::information_entity<data::image>
 {
 public:
 
@@ -46,7 +46,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API spatial_fiducials(
+    SIGHT_IO_DICOM_API spatial_fiducials(
         const SPTR(gdcm::Writer)& _writer,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::image::csptr& _series,
@@ -56,25 +56,25 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~spatial_fiducials() override;
+    SIGHT_IO_DICOM_API ~spatial_fiducials() override;
 
     /**
      * @brief Write Spatial Fiducials Module tags
      * @see PS 3.3 C.21.2
      */
-    IO_DICOM_API virtual void write_spatial_fiducials_module();
+    SIGHT_IO_DICOM_API virtual void write_spatial_fiducials_module();
 
     /**
      * @brief Write Common Instance Reference Module tags
      * @see PS 3.3 C.12.2
      */
-    IO_DICOM_API virtual void write_common_instance_reference_module();
+    SIGHT_IO_DICOM_API virtual void write_common_instance_reference_module();
 
     /**
      * @brief Write SOP Common Module tags
      * @see PS 3.3 C.12.1
      */
-    IO_DICOM_API virtual void write_sop_common_module();
+    SIGHT_IO_DICOM_API virtual void write_sop_common_module();
 
 protected:
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/igtl/config.hpp"
+#include <sight/io/igtl/config.hpp>
 
 #include <boost/type_traits/is_arithmetic.hpp>
 
@@ -56,7 +56,7 @@ union ConvertData
  * @brief utility class to convert bytes to scalar and scalar to bytes
  */
 template<typename T>
-class IO_IGTL_CLASS_API scalar_to_bytes
+class SIGHT_IO_IGTL_CLASS_API scalar_to_bytes
 {
 public:
 

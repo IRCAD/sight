@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <data/point_list.hpp>
 
@@ -80,7 +78,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): true_t font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API video final : public sight::viz::scene3d::adaptor
+class video final : public sight::viz::scene3d::adaptor
 {
 public:
 
@@ -88,18 +86,18 @@ public:
     SIGHT_DECLARE_SERVICE(video, sight::viz::scene3d::adaptor);
 
     /// Creates the adaptor an initialize slots.
-    MODULE_VIZ_SCENE3D_API video() noexcept;
+    video() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~video() noexcept final = default;
+    ~video() noexcept final = default;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Creates the Ogre texture and mapper used to show the video frame.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -111,19 +109,19 @@ protected:
      * Connect data::transfer_function::POINTS_MODIFIED_SIG of s_TF_INPUT to UPDATE_TF_SLOT
      * Connect data::transfer_function::WINDOWING_MODIFIED_SIG of s_TF_INPUT to UPDATE_TF_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
     /// Updates the frame from the current image.
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /// Removes the actor from the renderer
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
     /**
      * @brief Sets the video visibility.
      * @param _visible the visibility status of the video.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
+    void set_visible(bool _visible) final;
 
 private:
 

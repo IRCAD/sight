@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/http/config.hpp"
+#include <sight/io/http/config.hpp>
 
 #include <core/base.hpp>
 
@@ -34,7 +34,7 @@ namespace sight::io::http
 /**
  * @brief HTTP request.
  */
-class IO_HTTP_CLASS_API request : public core::base_object
+class SIGHT_IO_HTTP_CLASS_API request : public core::base_object
 {
 public:
 
@@ -47,12 +47,12 @@ public:
     /**
      * @name Constructor/Destructor
      * @{ */
-    IO_HTTP_API request();
+    SIGHT_IO_HTTP_API request();
 
     /**
      * @brief Construct a new Request with given url.
      */
-    IO_HTTP_API request(std::string _url);
+    SIGHT_IO_HTTP_API request(std::string _url);
 
     ~request() override
     = default;
@@ -66,32 +66,32 @@ public:
      *
      * @return  the newly created Request object
      */
-    IO_HTTP_API static request::sptr New(const std::string& _url);
+    SIGHT_IO_HTTP_API static request::sptr New(const std::string& _url);
 
     /**
      * @brief add element in the request header
      */
-    IO_HTTP_API void add_header(const std::string& _key, const std::string& _value);
+    SIGHT_IO_HTTP_API void add_header(const std::string& _key, const std::string& _value);
 
     /**
      *@brief headers setter.
      */
-    IO_HTTP_API void set_headers(const headers_t& _headers);
+    SIGHT_IO_HTTP_API void set_headers(const headers_t& _headers);
 
     /**
      *@brief headers getter.
      */
-    IO_HTTP_API const headers_t& get_headers() const;
+    SIGHT_IO_HTTP_API const headers_t& get_headers() const;
 
     /**
      * @brief return current url
      */
-    IO_HTTP_API const std::string& get_url() const;
+    SIGHT_IO_HTTP_API const std::string& get_url() const;
 
     /**
      * @brief set current url
      */
-    IO_HTTP_API void set_url(const std::string& _url);
+    SIGHT_IO_HTTP_API void set_url(const std::string& _url);
 
 private:
 

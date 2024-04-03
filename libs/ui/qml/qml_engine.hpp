@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qml/config.hpp"
+#include <sight/ui/qml/config.hpp>
 
 #include <core/macros.hpp>
 
@@ -50,24 +50,27 @@ public:
     ~qml_engine();
 
     /// Return the QmlEngine singleton
-    UI_QML_API static SPTR(qml_engine) get_default();
+    SIGHT_UI_QML_API static SPTR(qml_engine) get_default();
 
     /**
      * @brief Load and launch the qml component as the root component
      * @see Use getRootObjects() to get the main objects.
      */
-    UI_QML_API void load_main_component(const std::filesystem::path& _file);
+    SIGHT_UI_QML_API void load_main_component(const std::filesystem::path& _file);
 
     /**
      * @brief Load a new component inside the engine to add a new root component
      * Add a context in which the component will be created instead of the root context
      */
-    UI_QML_API QObject* create_component(const std::filesystem::path& _file, QSharedPointer<QQmlContext>& _context);
+    SIGHT_UI_QML_API QObject* create_component(
+        const std::filesystem::path& _file,
+        QSharedPointer<QQmlContext>& _context
+    );
 
     /**
      * @brief Load a new component inside the engine to add a new root component
      */
-    UI_QML_API QObject* create_component(const std::filesystem::path& _file);
+    SIGHT_UI_QML_API QObject* create_component(const std::filesystem::path& _file);
 
     /**
      * @brief Define the path as a directory where the engine searches for installed modules in a URL-based directory
@@ -95,10 +98,10 @@ public:
      *
      * @see http://doc.qt.io/qt-5/qtqml-syntax-directoryimports.html
      */
-    UI_QML_API void import_module_path(const std::filesystem::path& _path);
+    SIGHT_UI_QML_API void import_module_path(const std::filesystem::path& _path);
 
     /// Returns a list of all the root objects instantiated by the QQmlApplicationEngine
-    UI_QML_API QList<QObject*> get_root_objects();
+    SIGHT_UI_QML_API QList<QObject*> get_root_objects();
 
     /**
      * @brief Returns the engine's root context.
@@ -108,7 +111,7 @@ public:
      * Additional data that should only be available to a subset of component instances should be added to sub-contexts
      * parented to the root context.
      */
-    UI_QML_API QQmlContext* get_root_context();
+    SIGHT_UI_QML_API QQmlContext* get_root_context();
 
 private:
 

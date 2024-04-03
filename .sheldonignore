@@ -1,8 +1,8 @@
 /3rd-party
-/libs/core/data/dicom/Attribute.*
-/libs/core/data/dicom/Sop.*
-/libs/core/data/test/tu/dicom/AttributeTest.*
-/libs/core/data/test/tu/dicom/SopTest.*
+/libs/__/data/dicom/attribute.*
+/libs/__/data/dicom/sop.*
+/libs/__/data/test/tu/dicom/attribute_test.*
+/libs/__/data/test/tu/dicom/sop_test.*
 /libs/io/igtl/patch/
 /libs/io/itk/patched_itk_compiler_detection.h
 /libs/io/itk/compilers/

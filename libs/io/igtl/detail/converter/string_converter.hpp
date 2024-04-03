@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,51 +32,53 @@ namespace sight::io::igtl::detail::converter
  *
  * @brief class to manage conversion between data::string and igtl::StringMessage
  */
-class IO_IGTL_CLASS_API string_converter :
+class SIGHT_IO_IGTL_CLASS_API string_converter :
     public base
 {
 public:
 
     /// Constructor
-    IO_IGTL_API string_converter();
+    SIGHT_IO_IGTL_API string_converter();
 
     /// Destructor
-    IO_IGTL_API ~string_converter() override;
+    SIGHT_IO_IGTL_API ~string_converter() override;
 
     /**
      * @brief convert a igtl::StringMessage to a data::string
      *
      * @return an data::string converted from an igtl::StringMessage
      */
-    [[nodiscard]] IO_IGTL_API data::object::sptr from_igtl_message(::igtl::MessageBase::Pointer _src) const override;
+    [[nodiscard]] SIGHT_IO_IGTL_API data::object::sptr from_igtl_message(::igtl::MessageBase::Pointer _src) const
+    override;
 
     /**
      * @brief convert a data::string to a igtl::StringMessage
      *
      * @return an data::string converted from an igtl::StringMessage
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer from_fw_data_object(data::object::csptr _src) const override;
+    [[nodiscard]] SIGHT_IO_IGTL_API ::igtl::MessageBase::Pointer from_fw_data_object(data::object::csptr _src) const
+    override;
 
     /**
      * @brief create new StringConverter
      *
      * @return a smart pointer to a StringConverter
      */
-    IO_IGTL_API static base::sptr New();
+    SIGHT_IO_IGTL_API static base::sptr New();
 
     /**
      * @brief get the igtlType supported for conversion
      *
      * @return the igtlType supported for conversion
      */
-    [[nodiscard]] IO_IGTL_API std::string const& get_igtl_type() const override;
+    [[nodiscard]] SIGHT_IO_IGTL_API std::string const& get_igtl_type() const override;
 
     /**
      * @brief get the fwData object type supported for conversion
      *
      * @return the fwData Object type supported for conversion
      */
-    [[nodiscard]] IO_IGTL_API std::string const& get_fw_data_object_type() const override;
+    [[nodiscard]] SIGHT_IO_IGTL_API std::string const& get_fw_data_object_type() const override;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/menu_item_callback.hpp"
 
 #include <core/base.hpp>
@@ -33,7 +34,7 @@ namespace sight::ui
 /**
  * @brief   Defines the menu item callback.
  */
-class UI_CLASS_API action_callback_base : public ui::menu_item_callback
+class SIGHT_UI_CLASS_API action_callback_base : public ui::menu_item_callback
 {
 public:
 
@@ -44,24 +45,24 @@ public:
     /**
      * @brief  Sets service ID updated in executed method.
      */
-    UI_API virtual void set_sid(std::string _sid);
+    SIGHT_UI_API virtual void set_sid(std::string _sid);
 
     /**
      * @brief  Called method when callback is executed.
      */
-    UI_API void execute() override;
+    SIGHT_UI_API void execute() override;
 
     /**
      * @brief  Called method when callback is checked.
      */
-    UI_API virtual void check(bool _checked);
+    SIGHT_UI_API virtual void check(bool _checked);
 
-    UI_API static const registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const registry_key_t REGISTRY_KEY;
 
 protected:
 
-    UI_API action_callback_base()           = default;
-    UI_API ~action_callback_base() override = default;
+    SIGHT_UI_API action_callback_base()           = default;
+    SIGHT_UI_API ~action_callback_base() override = default;
 
 private:
 

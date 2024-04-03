@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <QGraphicsView>
 #include <QParallelAnimationGroup>
@@ -31,23 +31,23 @@
 namespace sight::ui::qt::widget
 {
 
-class UI_QT_CLASS_API_QT accordion_menu : public QWidget
+class SIGHT_UI_QT_CLASS_API_QT accordion_menu : public QWidget
 {
 public:
 
-    UI_QT_API_QT accordion_menu(QWidget* _parent, Qt::Orientation _orientation);
-    UI_QT_API_QT explicit accordion_menu(QToolBar* _tool_bar);
-    UI_QT_API_QT ~accordion_menu() override = default;
+    SIGHT_UI_QT_API_QT accordion_menu(QWidget* _parent, Qt::Orientation _orientation);
+    SIGHT_UI_QT_API_QT explicit accordion_menu(QToolBar* _tool_bar);
+    SIGHT_UI_QT_API_QT ~accordion_menu() override = default;
 
-    UI_QT_API_QT void fold();
-    UI_QT_API_QT void unfold();
-    UI_QT_API_QT void set_folded(bool _folded);
-    UI_QT_API_QT void set_unfolded(bool _unfolded);
-    UI_QT_API_QT void toggle_fold();
-    [[nodiscard]] UI_QT_API_QT bool is_folded() const;
+    SIGHT_UI_QT_API_QT void fold();
+    SIGHT_UI_QT_API_QT void unfold();
+    SIGHT_UI_QT_API_QT void set_folded(bool _folded);
+    SIGHT_UI_QT_API_QT void set_unfolded(bool _unfolded);
+    SIGHT_UI_QT_API_QT void toggle_fold();
+    [[nodiscard]] SIGHT_UI_QT_API_QT bool is_folded() const;
 
-    UI_QT_API_QT void add_widget(QWidget* _w);
-    UI_QT_API_QT void update();
+    SIGHT_UI_QT_API_QT void add_widget(QWidget* _w);
+    SIGHT_UI_QT_API_QT void update();
 
     bool eventFilter(QObject* _o, QEvent* _e) override;
 

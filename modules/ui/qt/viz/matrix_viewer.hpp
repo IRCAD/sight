@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <data/matrix4.hpp>
 
@@ -56,18 +54,18 @@ namespace sight::module::ui::qt::viz
  * - \b title (optional): defines the displayed title on top of the matrix viewer (default: matrix).
  */
 
-class MODULE_UI_QT_CLASS_API matrix_viewer : public QObject,
-                                             public sight::ui::editor
+class matrix_viewer : public QObject,
+                      public sight::ui::editor
 {
 public:
 
     SIGHT_DECLARE_SERVICE(matrix_viewer, sight::ui::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API matrix_viewer() noexcept;
+    matrix_viewer() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~matrix_viewer() noexcept override;
+    ~matrix_viewer() noexcept override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -75,21 +73,21 @@ public:
      *
      * Connect Matrix4::MODIFIED_SIG to this::service::slots::UPDATE
      */
-    MODULE_UI_QT_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 protected:
 
     /// Configures the title of the matrix viewer
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /// Initializes the layout of the matrix viewer
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /// Destroys the layout
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /// Updates the matrix values to display
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
 private:
 

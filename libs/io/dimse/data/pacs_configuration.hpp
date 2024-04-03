@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dimse/config.hpp"
+#include <sight/io/dimse/config.hpp>
 
 #include <data/factory/new.hpp>
 #include <data/object.hpp>
@@ -33,14 +33,14 @@ namespace sight::io::dimse::data
 /**
  * @brief   This class defines a Pacs configuration.
  */
-class IO_DIMSE_CLASS_API pacs_configuration : public sight::data::object
+class SIGHT_IO_DIMSE_CLASS_API pacs_configuration : public sight::data::object
 {
 public:
 
     SIGHT_DECLARE_CLASS(pacs_configuration, sight::data::object, sight::data::factory::make<pacs_configuration>);
 
     /// Destructor
-    IO_DIMSE_API ~pacs_configuration() noexcept override = default;
+    SIGHT_IO_DIMSE_API ~pacs_configuration() noexcept override = default;
 
     /**
      * @brief Retrieve Method
@@ -181,7 +181,7 @@ protected:
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    IO_DIMSE_API void shallow_copy(const sight::data::object::csptr& _source) override;
+    SIGHT_IO_DIMSE_API void shallow_copy(const sight::data::object::csptr& _source) override;
 
     /// Local application title
     std::string m_local_application_title;

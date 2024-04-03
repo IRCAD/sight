@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
+
 #include "viz/scene3d/layer.hpp"
 
 #include <OgreCompositor.h>
@@ -33,14 +34,14 @@ namespace sight::viz::scene3d::vr
 /**
  * @brief Creates a compositor to compute volume ray entry points.
  */
-class VIZ_SCENE3D_CLASS_API ray_entry_compositor
+class SIGHT_VIZ_SCENE3D_CLASS_API ray_entry_compositor
 {
 public:
 
     using uptr = std::unique_ptr<ray_entry_compositor>;
 
     /// Construstor. Creates the ogre compositor.
-    VIZ_SCENE3D_API ray_entry_compositor(
+    SIGHT_VIZ_SCENE3D_API ray_entry_compositor(
         std::string _compositor_name,
         std::uint8_t _rq_group,
         compositor::core::stereo_mode_t _stereo_mode,
@@ -48,10 +49,10 @@ public:
     );
 
     /// Destructor. Deletes the created compositor.
-    VIZ_SCENE3D_API virtual ~ray_entry_compositor();
+    SIGHT_VIZ_SCENE3D_API virtual ~ray_entry_compositor();
 
     /// Returns the created compositor's name.
-    [[nodiscard]] VIZ_SCENE3D_API const std::string& get_name() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API const std::string& get_name() const;
 
 private:
 

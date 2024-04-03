@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 
 #include <data/has_data.hpp>
 #include <data/mt/shared_ptr.hpp>
@@ -45,11 +45,11 @@ class has_data;
  *
  * It provides an abstract assignment method, whatever the type and access type of the data.
  */
-class DATA_CLASS_API base_ptr
+class SIGHT_DATA_CLASS_API base_ptr
 {
 public:
 
-    DATA_API base_ptr(
+    SIGHT_DATA_API base_ptr(
         has_data* _holder,
         std::string_view _key,
         bool _auto_connect,
@@ -57,7 +57,7 @@ public:
         access _access,
         std::optional<std::size_t> _index = std::nullopt
     );
-    DATA_API virtual ~base_ptr();
+    SIGHT_DATA_API virtual ~base_ptr();
 
     [[nodiscard]] std::string_view key() const;
     [[nodiscard]] bool auto_connect() const;
@@ -65,7 +65,7 @@ public:
     [[nodiscard]] enum access access() const;
 
     // Generic getter
-    DATA_API virtual sight::data::object::csptr get() = 0;
+    SIGHT_DATA_API virtual sight::data::object::csptr get() = 0;
 
 protected:
 
@@ -73,7 +73,7 @@ protected:
     friend class has_data;
 
     /// Internal setter of the pointer
-    DATA_API virtual void set(
+    SIGHT_DATA_API virtual void set(
         const sight::data::object::sptr& _obj,
         std::optional<bool> _auto_connect,
         std::optional<bool> _optional,
@@ -81,7 +81,10 @@ protected:
         bool _signal                      = false
     )                                     = 0;
 
-    DATA_API virtual void set_deferred_id(const std::string& _id, std::optional<std::size_t> _index = std::nullopt) = 0;
+    SIGHT_DATA_API virtual void set_deferred_id(
+        const std::string& _id,
+        std::optional<std::size_t> _index = std::nullopt
+    )                                     = 0;
 
     has_data* m_holder {nullptr};
     std::string_view m_key;

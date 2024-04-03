@@ -34,12 +34,12 @@ namespace sight::viz::scene3d::interactor
 {
 
 /// Picks VR widgets and updates clipping cube.
-class VIZ_SCENE3D_CLASS_API clipping_box_interactor final : public base
+class SIGHT_VIZ_SCENE3D_CLASS_API clipping_box_interactor final : public base
 {
 public:
 
     /// Creates the widget.
-    VIZ_SCENE3D_API clipping_box_interactor(
+    SIGHT_VIZ_SCENE3D_API clipping_box_interactor(
         SPTR(layer)_layer,
         bool _layer_order_dependant,
         const std::string& _id,
@@ -51,10 +51,10 @@ public:
     ) noexcept;
 
     /// Destroys the widget.
-    VIZ_SCENE3D_API ~clipping_box_interactor() noexcept final = default;
+    SIGHT_VIZ_SCENE3D_API ~clipping_box_interactor() noexcept final = default;
 
     /// Interacts with the widget if it was previously picked, behaves like a trackball otherwise.
-    VIZ_SCENE3D_API void mouse_move_event(
+    SIGHT_VIZ_SCENE3D_API void mouse_move_event(
         mouse_button /*button*/,
         modifier /*_mods*/,
         int /*x*/,
@@ -64,7 +64,7 @@ public:
     ) final;
 
     /// Ends all interactions with the widget.
-    VIZ_SCENE3D_API void button_release_event(
+    SIGHT_VIZ_SCENE3D_API void button_release_event(
         mouse_button /*_button*/,
         modifier /*_mods*/,
         int /*_x*/,
@@ -72,20 +72,25 @@ public:
     ) final;
 
     /// Picks the object at the (x,y) position on a left click, scales or translates the widget otherwise.
-    VIZ_SCENE3D_API void button_press_event(mouse_button /*button*/, modifier /*_mods*/, int /*x*/, int /*y*/) final;
+    SIGHT_VIZ_SCENE3D_API void button_press_event(
+        mouse_button /*button*/,
+        modifier /*_mods*/,
+        int /*x*/,
+        int /*y*/
+    ) final;
 
     /// Scales the widget.
     /// @param _scale_factor distance of the fingers
     /// @param _center_x the width coordinate of the center of the pinch
     /// @param _center_y the height coordinate of the center of the pinch
-    VIZ_SCENE3D_API void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) final;
+    SIGHT_VIZ_SCENE3D_API void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) final;
 
     /// Ends all interactions with the widget.
     /// @param _x current width coordinate.
     /// @param _y current height coordinate.
     /// @param _dx the width displacement since the last event.
     /// @param _dy the height displacement since the last event.
-    VIZ_SCENE3D_API void pan_gesture_move_event(int _x, int _y, int _dx, int _dy) final;
+    SIGHT_VIZ_SCENE3D_API void pan_gesture_move_event(int _x, int _y, int _dx, int _dy) final;
 
     /**
      * @brief Listens to pan gesture release events.
@@ -94,19 +99,19 @@ public:
      * @param _dx width displacement of the finger since the last event.
      * @param _dy height displacement of the finger since the last event.
      */
-    VIZ_SCENE3D_API void pan_gesture_release_event(int _x, int _y, int _dx, int _dy) final;
+    SIGHT_VIZ_SCENE3D_API void pan_gesture_release_event(int _x, int _y, int _dx, int _dy) final;
 
     /// Sets the visibility of the box widget.
-    VIZ_SCENE3D_API void set_box_visibility(bool _visibility);
+    SIGHT_VIZ_SCENE3D_API void set_box_visibility(bool _visibility);
 
     /// Retrieves the positions of the box in model space.
-    [[nodiscard]] VIZ_SCENE3D_API Ogre::AxisAlignedBox get_clipping_box() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API Ogre::AxisAlignedBox get_clipping_box() const;
 
     /// Retrieves the current clipping transform.
-    [[nodiscard]] VIZ_SCENE3D_API Ogre::Matrix4 get_clipping_transform() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API Ogre::Matrix4 get_clipping_transform() const;
 
     /// Sets the current clipping box positions from the input transform.
-    VIZ_SCENE3D_API void update_from_transform(const Ogre::Matrix4& _clipping_trf);
+    SIGHT_VIZ_SCENE3D_API void update_from_transform(const Ogre::Matrix4& _clipping_trf);
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/zip/config.hpp"
+#include <sight/io/zip/config.hpp>
 
 #include <core/macros.hpp>
 
@@ -32,7 +32,7 @@ namespace sight::io::zip
 {
 
 /// Class that allow reading and writing an archive.
-class IO_ZIP_CLASS_API archive
+class SIGHT_IO_ZIP_CLASS_API archive
 {
 public:
 
@@ -46,7 +46,7 @@ public:
     archive& operator=(archive&&)      = delete;
 
     /// Destructor
-    IO_ZIP_API virtual ~archive();
+    SIGHT_IO_ZIP_API virtual ~archive();
 
     /// Enum to define
     enum class archive_format : uint8_t
@@ -110,7 +110,7 @@ public:
 protected:
 
     /// Constructor
-    IO_ZIP_API archive(const std::filesystem::path& _archive_path);
+    SIGHT_IO_ZIP_API archive(const std::filesystem::path& _archive_path);
 
 private:
 

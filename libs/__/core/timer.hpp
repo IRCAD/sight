@@ -22,9 +22,10 @@
 
 #pragma once
 
+#include <sight/core/config.hpp>
+
 #include "core/base_object.hpp"
 #include "core/clock.hpp"
-#include "core/config.hpp"
 
 namespace sight::core
 {
@@ -34,7 +35,7 @@ namespace sight::core
  * Timer is able to measure the elapsed time with a few micro-seconds.
  * accuracy, on Linux, Mac OS and Windows
  */
-class CORE_CLASS_API timer : public base_object
+class SIGHT_CORE_CLASS_API timer : public base_object
 {
 public:
 
@@ -44,21 +45,21 @@ public:
      * @name Constructor/Destructor
      * @{ */
 
-    CORE_API timer();
-    CORE_API ~timer() override;
+    SIGHT_CORE_API timer();
+    SIGHT_CORE_API ~timer() override;
 
     /**  @} */
 
     /**
      * @brief Start the timer.
      */
-    CORE_API void start();
+    SIGHT_CORE_API void start();
 
     /**
      * @brief Stop the timer.
      * stop() will not reset the timer.
      */
-    CORE_API void stop();
+    SIGHT_CORE_API void stop();
 
     /**
      * @brief Reset the timer and leave it in the same state it was (started or stopped).
@@ -66,7 +67,7 @@ public:
      * @param _initial_value Initial value in microseconds from which the timer
      * will start to count.
      */
-    CORE_API void reset(clock::type _initial_value = 0.);
+    SIGHT_CORE_API void reset(clock::type _initial_value = 0.);
 
     /**
      * @name Elapsed time
@@ -78,17 +79,17 @@ public:
     /**
      * @return Elapsed time in seconds
      */
-    CORE_API core::clock::type get_elapsed_time_in_sec();
+    SIGHT_CORE_API core::clock::type get_elapsed_time_in_sec();
 
     /**
      * @return Elapsed time in milliseconds
      */
-    CORE_API core::clock::type get_elapsed_time_in_milli_sec();
+    SIGHT_CORE_API core::clock::type get_elapsed_time_in_milli_sec();
 
     /**
      * @return Elapsed time in microseconds
      */
-    CORE_API core::clock::type get_elapsed_time_in_micro_sec();
+    SIGHT_CORE_API core::clock::type get_elapsed_time_in_micro_sec();
 
 /**  @} */
 

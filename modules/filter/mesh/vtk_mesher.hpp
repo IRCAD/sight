@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/mesh/config.hpp"
 
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
@@ -56,24 +54,24 @@ namespace sight::module::filter::mesh
  * - \b threshold : This value is used for threshold of the image means that Pixels below threshold value are converted
  *      to black (bit value of zero), and pixels above the threshold value are converted to white (a bit value of one).
  */
-class MODULE_FILTER_MESH_CLASS_API vtk_mesher : public service::filter
+class vtk_mesher : public service::filter
 {
 public:
 
     SIGHT_DECLARE_SERVICE(vtk_mesher, sight::service::filter);
 
-    MODULE_FILTER_MESH_API vtk_mesher() noexcept;
-    MODULE_FILTER_MESH_API ~vtk_mesher() noexcept override = default;
+    vtk_mesher() noexcept;
+    ~vtk_mesher() noexcept override = default;
 
 protected:
 
-    MODULE_FILTER_MESH_API void starting() override;
+    void starting() override;
 
-    MODULE_FILTER_MESH_API void stopping() override;
+    void stopping() override;
 
-    MODULE_FILTER_MESH_API void configuring() override;
+    void configuring() override;
 
-    MODULE_FILTER_MESH_API void updating() override;
+    void updating() override;
 
 private:
 

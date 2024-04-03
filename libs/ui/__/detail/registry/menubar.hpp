@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/container/menu.hpp"
 #include "ui/__/container/menubar.hpp"
 #include "ui/__/object.hpp"

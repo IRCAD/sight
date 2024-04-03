@@ -21,8 +21,9 @@
 
 #pragma once
 
+#include <sight/service/config.hpp>
+
 #include "service/base.hpp"
-#include "service/config.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/com/signals.hpp>
@@ -35,7 +36,7 @@ namespace sight::service
 {
 
 /// Defines Notification type
-struct SERVICE_CLASS_API notification final
+struct SIGHT_SERVICE_CLASS_API notification final
 {
     // Notification Type (changes Qss style).
     enum type
@@ -90,15 +91,15 @@ struct SERVICE_CLASS_API notification final
  *     - \b uid: The uid that identify the channel. All notification request that use the same channel, will share the
  *               same notification dialog widget
  */
-class SERVICE_CLASS_API notifier
+class SIGHT_SERVICE_CLASS_API notifier
 {
 public:
 
-    SERVICE_API notifier(core::com::signals& _signals) noexcept;
+    SIGHT_SERVICE_API notifier(core::com::signals& _signals) noexcept;
     virtual ~notifier() noexcept = default;
 
     /// Defines signals for notifier
-    struct SERVICE_CLASS_API signals final
+    struct SIGHT_SERVICE_CLASS_API signals final
     {
         using notification_t = core::com::signal<void (notification)>;
         static inline const core::com::signals::key_t NOTIFIED = "notified";
@@ -112,7 +113,7 @@ protected:
     /// Emits notification signal
     /// @param[in] _notification
     /// @{
-    SERVICE_API void notify(notification _notification) const;
+    SIGHT_SERVICE_API void notify(notification _notification) const;
     inline void notify(
         enum notification::type _type,
         std::string _message,
@@ -125,10 +126,10 @@ protected:
     /// @}
 
     /// Emits close channel signal
-    SERVICE_API void close_notification(std::string _channel) const;
+    SIGHT_SERVICE_API void close_notification(std::string _channel) const;
 
     /// Method to call to configure notification "channels"
-    SERVICE_API void initialize(const service::config_t& _config);
+    SIGHT_SERVICE_API void initialize(const service::config_t& _config);
 
     /// Signal emitted when notify() is called
     const signals::notification_t::sptr m_notified_sig {std::make_shared<signals::notification_t>()};

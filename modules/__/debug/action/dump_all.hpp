@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,25 +22,23 @@
 
 #pragma once
 
-#include "modules/debug/config.hpp"
-
 #include <ui/__/action.hpp>
 
 namespace sight::module::debug::action
 {
 
 /// Implements an action that dump all buffer (if possible)
-class MODULE_DEBUG_CLASS_API dump_all : public sight::ui::action
+class dump_all : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(dump_all, sight::ui::action);
 
     /// Does nothing
-    MODULE_DEBUG_API dump_all() noexcept;
+    dump_all() noexcept;
 
     /// Does nothing
-    MODULE_DEBUG_API ~dump_all() noexcept override;
+    ~dump_all() noexcept override;
 
 protected:
 

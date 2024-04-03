@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/scene3d_qt/config.hpp"
 #include "modules/viz/scene3d_qt/window.hpp"
 
 #include <core/base.hpp>
@@ -45,8 +44,8 @@ namespace sight::module::viz::scene3d_qt
 {
 
 /// Defines a class to manage a render window.
-class MODULE_VIZ_SCENE3D_QT_CLASS_API window_interactor final : public QObject,
-                                                                public sight::viz::scene3d::window_interactor
+class window_interactor final : public QObject,
+                                public sight::viz::scene3d::window_interactor
 {
 Q_OBJECT
 
@@ -55,56 +54,56 @@ public:
     SIGHT_DECLARE_CLASS(window_interactor, sight::viz::scene3d::window_interactor);
 
     /// Destroys the window container.
-    MODULE_VIZ_SCENE3D_QT_API ~window_interactor() final;
+    ~window_interactor() final;
 
     /// Renders immediately the frame.
-    MODULE_VIZ_SCENE3D_QT_API void render_now() final;
+    void render_now() final;
 
     /// Renders the frame as soon as possible.
-    MODULE_VIZ_SCENE3D_QT_API void request_render() final;
+    void request_render() final;
 
     /**
      * @brief Creates the container that holds the QtWidget.
      * @param _parent the parent container of the widget.
      * @param _fullscreen enable the fullscreen.
      */
-    MODULE_VIZ_SCENE3D_QT_API void create_container(
+    void create_container(
         ui::container::widget::sptr _parent,
         bool _fullscreen,
         const std::string& _service_id
     ) final;
 
     /// Connects the widget and the render signals and slots.
-    MODULE_VIZ_SCENE3D_QT_API void connect_to_container() final;
+    void connect_to_container() final;
 
     /// Disconnects the widget and the render signals and slots.
-    MODULE_VIZ_SCENE3D_QT_API void disconnect_interactor() final;
+    void disconnect_interactor() final;
 
     /// Returns the unique identifier of the widget.
-    MODULE_VIZ_SCENE3D_QT_API int get_widget_id() const final;
+    int get_widget_id() const final;
 
     /// Returns current frame number of the render window.
-    MODULE_VIZ_SCENE3D_QT_API int get_frame_id() const final;
+    int get_frame_id() const final;
 
     /// Makes the OpenGL context as current one on this thread against this window.
-    MODULE_VIZ_SCENE3D_QT_API void make_current() final;
+    void make_current() final;
 
     /// Returns a nullptr. This is due to the fact that this manager doesn't write to a texture.
-    MODULE_VIZ_SCENE3D_QT_API Ogre::TexturePtr get_render_texture() final;
+    Ogre::TexturePtr get_render_texture() final;
 
     /// Creates a worker able to handle resources from the window's OpenGL context.
-    MODULE_VIZ_SCENE3D_QT_API sight::viz::scene3d::graphics_worker* create_graphics_worker() final;
+    sight::viz::scene3d::graphics_worker* create_graphics_worker() final;
 
     /// Gets the vertical logical DPI of the monitor on which the window is displayed.
     /// The logical DPI takes accessibility features and desktop zoom into account and is used for font rendering.
-    MODULE_VIZ_SCENE3D_QT_API float get_logical_dots_per_inch() const final;
+    float get_logical_dots_per_inch() const final;
 
     /**
      * @brief Sets the fullscreen or windowed rendering mode.
      * @param _fullscreen whether to render in fullscreen mode. Use windowed mode otherwise.
      * @param _screen_number index of the screen on which to render in fullscreen mode.
      */
-    MODULE_VIZ_SCENE3D_QT_API void set_fullscreen(bool _fullscreen, int _screen_number) final;
+    void set_fullscreen(bool _fullscreen, int _screen_number) final;
 
     QWidget* get_qt_widget() const;
 

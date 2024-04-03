@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/matrix/config.hpp"
 
 #include <data/matrix_tl.hpp>
 
@@ -66,55 +64,55 @@ namespace sight::module::io::matrix
  *                     box will be shown. In this case, for practical reasons, the recording will start when setting a
  *                     baseFolder.
  */
-class MODULE_IO_MATRIX_CLASS_API matrix_writer : public sight::io::service::writer
+class matrix_writer : public sight::io::service::writer
 {
 public:
 
     SIGHT_DECLARE_SERVICE(matrix_writer, sight::io::service::writer);
 
     /// Constructor.
-    MODULE_IO_MATRIX_API matrix_writer() noexcept;
+    matrix_writer() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_IO_MATRIX_API ~matrix_writer() noexcept override;
+    ~matrix_writer() noexcept override;
 
     /// Defines auto connection for this service (saveFrame()) to the frame timeline (objectPushed)
-    MODULE_IO_MATRIX_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Display a location dialog allowing to select the video file to save
-    MODULE_IO_MATRIX_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
     /// Return file type (io::service::FOLDER)
-    MODULE_IO_MATRIX_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
     /// SLOT: Save current matrices.
-    MODULE_IO_MATRIX_API void save_matrix(core::clock::type _timestamp);
+    void save_matrix(core::clock::type _timestamp);
 
     /// SLOT: Write matrices in csv file
-    MODULE_IO_MATRIX_API void write(core::clock::type _timestamp);
+    void write(core::clock::type _timestamp);
 
     /// SLOT: Start recording
-    MODULE_IO_MATRIX_API void start_record();
+    void start_record();
 
     /// SLOT: Stop recording
-    MODULE_IO_MATRIX_API void stop_record();
+    void stop_record();
 
     /// SLOT: Change base folder
-    MODULE_IO_MATRIX_API void set_base_folder(std::string _path) override;
+    void set_base_folder(std::string _path) override;
 
 protected:
 
     /// Does nothing
-    MODULE_IO_MATRIX_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_IO_MATRIX_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_IO_MATRIX_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing
-    MODULE_IO_MATRIX_API void updating() override;
+    void updating() override;
 
 private:
 

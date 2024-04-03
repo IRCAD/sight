@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <core/base.hpp>
 
@@ -60,7 +58,7 @@ namespace sight::module::filter::image
  * @subsection In-Out In-Out
  * - \b optimalMatrix [sight::data::matrix4]: The optimal matrix.
  */
-class MODULE_FILTER_IMAGE_CLASS_API matrix_regressor : public service::filter
+class matrix_regressor : public service::filter
 {
 public:
 
@@ -68,24 +66,24 @@ public:
     SIGHT_DECLARE_SERVICE(matrix_regressor, service::filter);
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API matrix_regressor();
+    matrix_regressor();
 
     /// Destroys the service.
-    MODULE_FILTER_IMAGE_API ~matrix_regressor() override;
+    ~matrix_regressor() override;
 
 protected:
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void starting() override;
+    void starting() override;
 
     /// Compute the optimal matrix.
-    MODULE_FILTER_IMAGE_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -98,7 +96,7 @@ protected:
      * Connect data::point_list::POINT_REMOVED_SIG of s_POINT_LIST_IN to service::slots::UPDATE
      * Connect data::point_list::MODIFIED_SIG of s_POINT_LIST_IN to service::slots::UPDATE
      */
-    MODULE_FILTER_IMAGE_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

@@ -33,7 +33,7 @@
 #include <thread>
 #include <filesystem>
 
-#include "ui/test/config.hpp"
+#include <sight/ui/test/config.hpp>
 
 #include "interaction.hpp"
 
@@ -45,7 +45,7 @@ class test_event : public QEvent
 {
 public:
 
-    UI_TEST_API test_event(std::function<void()> _f);
+    SIGHT_UI_TEST_API test_event(std::function<void()> _f);
     std::function<void()> function();
 
 private:
@@ -72,19 +72,19 @@ public:
 };
 
 /// A function which always return true, ignoring its parameter.
-UI_TEST_API bool always_true(QObject* /*unused*/);
+SIGHT_UI_TEST_API bool always_true(QObject* /*unused*/);
 
 /// The main class of the GUI test library, which allows creating GUI tests.
-class UI_TEST_CLASS_API tester
+class SIGHT_UI_TEST_CLASS_API tester
 {
 public:
 
-    class UI_TEST_CLASS_API backtrace_lock
+    class SIGHT_UI_TEST_CLASS_API backtrace_lock
     {
     public:
 
-        UI_TEST_API backtrace_lock(tester& _tester);
-        UI_TEST_API ~backtrace_lock();
+        SIGHT_UI_TEST_API backtrace_lock(tester& _tester);
+        SIGHT_UI_TEST_API ~backtrace_lock();
 
     private:
 
@@ -92,10 +92,10 @@ public:
     };
 
     /// Constructor. Initializes the test name.
-    UI_TEST_API tester(std::string _test_name, bool _verbose_mode = false);
+    SIGHT_UI_TEST_API tester(std::string _test_name, bool _verbose_mode = false);
 
     /// Destructor. Joins the thread.
-    UI_TEST_API ~tester();
+    SIGHT_UI_TEST_API ~tester();
 
     /**
      * @brief Stores a graphic component as the new current graphic component.
@@ -117,7 +117,7 @@ public:
         std::function<bool(T)> _condition = always_true,
         int _timeout                      = DEFAULT_TIMEOUT
     );
-    UI_TEST_API void take(
+    SIGHT_UI_TEST_API void take(
         const std::string& _component_description,
         std::function<QObject* ()> _graphic_component,
         std::function<bool(QObject*)> _condition = always_true,
@@ -131,7 +131,7 @@ public:
      * @param _component_description The description of the new graphic component. Used in failure messages.
      * @param _graphic_component The new graphic component.
      */
-    UI_TEST_API void take(const std::string& _component_description, QObject* _graphic_component);
+    SIGHT_UI_TEST_API void take(const std::string& _component_description, QObject* _graphic_component);
 
     /**
      * @brief Stores a graphic component as the new current graphic component.
@@ -142,14 +142,14 @@ public:
      *
      * @{
      */
-    UI_TEST_API void take(
+    SIGHT_UI_TEST_API void take(
         const std::string& _component_description,
         QObject* _parent,
         const std::string& _object_name,
         std::function<bool(QObject*)> _condition = always_true,
         int _timeout                             = DEFAULT_TIMEOUT
     );
-    UI_TEST_API void take(
+    SIGHT_UI_TEST_API void take(
         const std::string& _component_description,
         const std::string& _object_name,
         std::function<bool(QObject*)> _condition = always_true,
@@ -165,7 +165,7 @@ public:
      * @warning The interaction must be allocated on the heap. Guitester will take care of freeing the interaction, it
      * is unsafe to try to access the interaction after this method is called.
      */
-    UI_TEST_API void interact(std::unique_ptr<interaction>&& _interaction);
+    SIGHT_UI_TEST_API void interact(std::unique_ptr<interaction>&& _interaction);
 
     /**
      * @brief Check if the assertion is true.
@@ -184,7 +184,7 @@ public:
         std::function<bool(T)> _result,
         int _timeout = DEFAULT_TIMEOUT
     );
-    UI_TEST_API void doubt(
+    SIGHT_UI_TEST_API void doubt(
         const std::string& _result_description,
         std::function<bool(QObject*)> _result,
         int _timeout = DEFAULT_TIMEOUT
@@ -212,7 +212,7 @@ public:
         std::function<bool(T)> _condition = always_true,
         int _timeout                      = DEFAULT_TIMEOUT
     );
-    UI_TEST_API void yields(
+    SIGHT_UI_TEST_API void yields(
         const std::string& _component_description,
         std::function<QObject* (QObject*)> _graphic_component,
         std::function<bool(QObject*)> _condition = always_true,
@@ -267,7 +267,7 @@ public:
         std::function<bool(T)> _condition = always_true,
         int _timeout                      = DEFAULT_TIMEOUT
     );
-    UI_TEST_API void maybe_take(
+    SIGHT_UI_TEST_API void maybe_take(
         const std::string& _component_description,
         std::function<QObject* ()> _graphic_component,
         std::function<bool(QObject*)> _condition = always_true,
@@ -286,7 +286,7 @@ public:
      */
     template<typename T>
     void do_something(std::function<void(T)> _f);
-    UI_TEST_API void do_something(std::function<void(QObject*)> _f);
+    SIGHT_UI_TEST_API void do_something(std::function<void(QObject*)> _f);
     /// @}
 
     /**
@@ -300,14 +300,14 @@ public:
      */
     template<typename T>
     void do_something_asynchronously(std::function<void(T)> _f);
-    UI_TEST_API void do_something_asynchronously(std::function<void(QObject*)> _f);
+    SIGHT_UI_TEST_API void do_something_asynchronously(std::function<void(QObject*)> _f);
     /// @}
 
     /**
      * @brief Takes a screenshot of the current graphic component
      * @param _path Where to save the screenshot
      */
-    UI_TEST_API void take_screenshot(const std::filesystem::path& _path);
+    SIGHT_UI_TEST_API void take_screenshot(const std::filesystem::path& _path);
 
     /**
      * @brief Starts the test.
@@ -319,7 +319,7 @@ public:
      *
      * @pre @ref init was called.
      */
-    UI_TEST_API void start(std::function<void()> _f);
+    SIGHT_UI_TEST_API void start(std::function<void()> _f);
 
     /**
      * @brief Check if the specified component doesn't exist or exists but is hidden, the test fails else.
@@ -333,7 +333,7 @@ public:
      *
      * @warning The current graphic component becomes undefined after the call of this method.
      */
-    UI_TEST_API void should_be_hidden(
+    SIGHT_UI_TEST_API void should_be_hidden(
         const std::string& _component_description,
         std::function<QWidget* ()> _graphic_component,
         std::function<bool(QWidget*)> _condition = always_true,
@@ -351,7 +351,7 @@ public:
      *
      * @return Is the component present?
      */
-    UI_TEST_API void should_be_present(
+    SIGHT_UI_TEST_API void should_be_present(
         const std::string& _component_description,
         std::function<QWidget* ()> _graphic_component,
         std::function<bool(QWidget*)> _condition = always_true,
@@ -363,7 +363,7 @@ public:
      *
      * @return Is there a current component?
      */
-    UI_TEST_API bool exists();
+    SIGHT_UI_TEST_API bool exists();
 
     /**
      * @brief Check if the current component is castable to a given type.
@@ -389,7 +389,7 @@ public:
      *
      * @returns The main window
      */
-    UI_TEST_API QWidget* get_main_window();
+    SIGHT_UI_TEST_API QWidget* get_main_window();
 
     /**
      * @brief Returns the failure message.
@@ -398,23 +398,23 @@ public:
      *
      * @pre failed() must return false.
      */
-    [[nodiscard]] UI_TEST_API std::string get_failure_message() const;
+    [[nodiscard]] SIGHT_UI_TEST_API std::string get_failure_message() const;
 
     /**
      * @brief Returns true if the test failed and false otherwise.
      *
      * @returns Did the test fail?
      */
-    [[nodiscard]] UI_TEST_API bool failed() const;
+    [[nodiscard]] SIGHT_UI_TEST_API bool failed() const;
 
-    [[nodiscard]] UI_TEST_API backtrace_lock add_in_backtrace(const std::string& _description);
+    [[nodiscard]] SIGHT_UI_TEST_API backtrace_lock add_in_backtrace(const std::string& _description);
 
     /**
      * @brief Returns the description associated to the current graphic component.
      *
      * @returns Current graphic component description
      */
-    [[nodiscard]] UI_TEST_API std::string get_description() const;
+    [[nodiscard]] SIGHT_UI_TEST_API std::string get_description() const;
 
     /**
      * @brief Properly initializes Guitester.
@@ -422,7 +422,7 @@ public:
      * an environment variable so that the remainder of the library knows that GUI tests are running (for now, only
      * needed to show up the Qt file dialog instead of the native one).
      */
-    UI_TEST_API static void init();
+    SIGHT_UI_TEST_API static void init();
 
     /**
      * @brief Helper method that returns the associated widget of a QAction.
@@ -433,7 +433,7 @@ public:
      *
      * @note For convenience, if action is nullptr, this method returns nullptr.
      */
-    UI_TEST_API static QWidget* get_widget_from_action(QAction* _action);
+    SIGHT_UI_TEST_API static QWidget* get_widget_from_action(QAction* _action);
 
     /**
      * @brief Move the mouse on a component, alternative to QTest::mouseMove as a workaround to QTBUG-5232.
@@ -446,14 +446,14 @@ public:
      *
      * @{
      */
-    UI_TEST_API static void mouse_move(
+    SIGHT_UI_TEST_API static void mouse_move(
         QWidget* _component,
         QPoint _pos                      = QPoint(),
         int _delay                       = -1,
         Qt::MouseButton _button          = Qt::NoButton,
         Qt::KeyboardModifiers _modifiers = Qt::NoModifier
     );
-    UI_TEST_API static void mouse_move(
+    SIGHT_UI_TEST_API static void mouse_move(
         QWindow* _component,
         QPoint _pos                      = QPoint(),
         int _delay                       = -1,
@@ -473,7 +473,7 @@ public:
      * images and compare the resized images.
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
-    UI_TEST_API static double compare_images_pixel_perfect(QImage _a, QImage _b, bool _strict = false);
+    SIGHT_UI_TEST_API static double compare_images_pixel_perfect(QImage _a, QImage _b, bool _strict = false);
 
     /**
      * @brief Compare images using the Mean Square Error.
@@ -486,7 +486,7 @@ public:
      * images and compare the resized images.
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
-    UI_TEST_API static double compare_images_mse(QImage _a, QImage _b, bool _strict = false);
+    SIGHT_UI_TEST_API static double compare_images_mse(QImage _a, QImage _b, bool _strict = false);
 
     /**
      * @brief Compare images by computing the cosine of the angle between the matrices of the two images.
@@ -499,7 +499,7 @@ public:
      * images and compare the resized images.
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
-    UI_TEST_API static double compare_images_cosine(QImage _a, QImage _b, bool _strict = false);
+    SIGHT_UI_TEST_API static double compare_images_cosine(QImage _a, QImage _b, bool _strict = false);
 
     /**
      * @brief Compare images by computing an histogram.
@@ -509,7 +509,7 @@ public:
      * @param _b    second image to compare
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
-    UI_TEST_API static double compare_images_histogram(const QImage& _a, const QImage& _b);
+    SIGHT_UI_TEST_API static double compare_images_histogram(const QImage& _a, const QImage& _b);
 
     /**
      * @brief Compare images by computing Spearman's correlation coefficient of the two matrices of the two images.
@@ -518,7 +518,7 @@ public:
      * @param _b    second image to compare
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
-    UI_TEST_API static double compare_images_correlation(QImage _a, QImage _b, bool _strict = false);
+    SIGHT_UI_TEST_API static double compare_images_correlation(QImage _a, QImage _b, bool _strict = false);
 
     /**
      * @brief Compare images by using the MSE on normalized, scaled-down, rotated and flipped version of the images.
@@ -528,7 +528,7 @@ public:
      * @param _b    second image to compare
      * @returns a real between 0 (totally different images) and 1 (identical images)
      */
-    UI_TEST_API static double compare_images_voodoo(const QImage& _a, const QImage& _b);
+    SIGHT_UI_TEST_API static double compare_images_voodoo(const QImage& _a, const QImage& _b);
 
     /**
      * @brief Respectively returns the center, the left, the right, the top and the bottom of a widget.
@@ -538,11 +538,11 @@ public:
      *
      * @{
      */
-    UI_TEST_API static QPoint center_of(const QWidget* _widget);
-    UI_TEST_API static QPoint left_of(const QWidget* _widget);
-    UI_TEST_API static QPoint right_of(const QWidget* _widget);
-    UI_TEST_API static QPoint top_of(const QWidget* _widget);
-    UI_TEST_API static QPoint bottom_of(const QWidget* _widget);
+    SIGHT_UI_TEST_API static QPoint center_of(const QWidget* _widget);
+    SIGHT_UI_TEST_API static QPoint left_of(const QWidget* _widget);
+    SIGHT_UI_TEST_API static QPoint right_of(const QWidget* _widget);
+    SIGHT_UI_TEST_API static QPoint top_of(const QWidget* _widget);
+    SIGHT_UI_TEST_API static QPoint bottom_of(const QWidget* _widget);
     /// @}
 
     /**
@@ -550,7 +550,7 @@ public:
      * @details Equals to the value of the IMAGE_OUTPUT_PATH environment variable, or the system temporary folder (such
      * as /tmp on UNIXes) if this environment variable is empty.
      */
-    UI_TEST_API static std::filesystem::path get_image_output_path();
+    SIGHT_UI_TEST_API static std::filesystem::path get_image_output_path();
 
     /**
      * @brief Returns a dummy touch screen to emulate touch events
@@ -562,13 +562,16 @@ public:
 
 private:
 
-    static UI_TEST_API void fail(const std::string& _message);
+    static SIGHT_UI_TEST_API void fail(const std::string& _message);
     std::string generate_failure_message();
 
     static QVector<QVector<QVector<double> > > compute_histogram(const QImage& _img);
     static QImage normalize(QImage _img);
     static QImage voodooize(const QImage& _img);
-    UI_TEST_API static bool wait_for_asynchronously(std::function<bool()> _predicate, int _timeout = DEFAULT_TIMEOUT);
+    SIGHT_UI_TEST_API static bool wait_for_asynchronously(
+        std::function<bool()> _predicate,
+        int _timeout = DEFAULT_TIMEOUT
+    );
 
     QPointer<QObject> m_graphic_component = nullptr;
     std::string m_component_description;

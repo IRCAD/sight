@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/viz/scene3d/adaptor/material.hpp"
-#include "modules/viz/scene3d/config.hpp"
 
 #include <core/com/slot.hpp>
 
@@ -71,7 +70,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b fontSize (optional, unsigned int, default=16): label font size in points.
  * - \b name (optional, string): displayed name of the axis (default empty).
  */
-class MODULE_VIZ_SCENE3D_CLASS_API axis final :
+class axis final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable
 {
@@ -81,30 +80,30 @@ public:
     SIGHT_DECLARE_SERVICE(axis, sight::viz::scene3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
-    MODULE_VIZ_SCENE3D_API axis() noexcept;
+    axis() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~axis() noexcept override = default;
+    ~axis() noexcept override = default;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    void configuring() override;
 
     /// Creates manual objects in the default ogre resource group.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    void starting() override;
 
     /// Sends a render request.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    void updating() override;
 
     /// Deletes ogre's resources.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Sets the axis visibility.
      * @param _visible the visibility status of the axis.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
+    void set_visible(bool _visible) override;
 
 private:
 

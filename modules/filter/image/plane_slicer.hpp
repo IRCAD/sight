@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
@@ -71,24 +69,24 @@ namespace sight::module::filter::image
  *    - \b orientation (mandatory, values=axial|sagital|frontal): image orientation, determines the slicing plane axes.
  */
 
-class MODULE_FILTER_IMAGE_CLASS_API plane_slicer : public service::filter
+class plane_slicer : public service::filter
 {
 public:
 
     SIGHT_DECLARE_SERVICE(plane_slicer, service::filter);
 
     /// Constructor.
-    MODULE_FILTER_IMAGE_API plane_slicer() noexcept;
+    plane_slicer() noexcept;
 
     /// Destructor.
-    MODULE_FILTER_IMAGE_API ~plane_slicer() noexcept override;
+    ~plane_slicer() noexcept override;
 
 protected:
 
-    MODULE_FILTER_IMAGE_API void configuring() override;
-    MODULE_FILTER_IMAGE_API void starting() override;
-    MODULE_FILTER_IMAGE_API void updating() override;
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void configuring() override;
+    void starting() override;
+    void updating() override;
+    void stopping() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals.
@@ -100,7 +98,7 @@ protected:
      * Connect imageExtent::SLICE_TYPE_MODIFIED_SIG to this::service::slots::UPDATE
      * Connect axes::MODIFIED_SIG to this::service::slots::UPDATE
      */
-    MODULE_FILTER_IMAGE_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

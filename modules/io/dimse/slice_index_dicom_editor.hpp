@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/dimse/config.hpp"
-
 #include <core/thread/timer.hpp>
 #include <core/thread/worker.hpp>
 
@@ -73,7 +71,7 @@ namespace sight::module::io::dimse
  * - \b dicomReader (mandatory, string): reader type to use.
  * - \b readerConfig (optional, string, default=""): configuration for the DICOM Reader.
  */
-class MODULE_IO_DIMSE_CLASS_API slice_index_dicom_editor final :
+class slice_index_dicom_editor final :
     public QObject,
     public sight::ui::editor,
     public sight::service::has_services,
@@ -87,18 +85,18 @@ public:
     SIGHT_DECLARE_SERVICE(slice_index_dicom_editor, sight::ui::editor);
 
     /// Creates the service.
-    MODULE_IO_DIMSE_API slice_index_dicom_editor() noexcept;
+    slice_index_dicom_editor() noexcept;
 
     /// Destroys the service.
-    MODULE_IO_DIMSE_API ~slice_index_dicom_editor() noexcept override = default;
+    ~slice_index_dicom_editor() noexcept override = default;
 
 protected:
 
     /// Configures the service.
-    MODULE_IO_DIMSE_API void configuring(const config_t& _config) override;
+    void configuring(const config_t& _config) override;
 
     /// Creates the slider.
-    MODULE_IO_DIMSE_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -106,13 +104,13 @@ protected:
      *
      * Connect data::dicom_series::MODIFIED_SIG of s_DICOMSERIES_INOUT to service::slots::UPDATE
      */
-    MODULE_IO_DIMSE_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Updates slider informations and retrieve the image.
-    MODULE_IO_DIMSE_API void updating() override;
+    void updating() override;
 
     /// Destroys the slider.
-    MODULE_IO_DIMSE_API void stopping() override;
+    void stopping() override;
 
 private Q_SLOTS:
 

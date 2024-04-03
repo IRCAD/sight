@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_instance.hpp"
 #include "io/dicom/writer/iod/information_object_definition.hpp"
 
@@ -34,7 +35,7 @@ namespace sight::io::dicom::writer::iod
 /**
  * @brief SurfaceSegmentationIOD class used to write Surface Segmentation DICOM files
  */
-class IO_DICOM_CLASS_API surface_segmentation_iod : public io::dicom::writer::iod::information_object_definition
+class SIGHT_IO_DICOM_CLASS_API surface_segmentation_iod : public io::dicom::writer::iod::information_object_definition
 {
 public:
 
@@ -47,7 +48,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API surface_segmentation_iod(
+    SIGHT_IO_DICOM_API surface_segmentation_iod(
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         SPTR(io::dicom::container::dicom_instance)_image_instance,
         const std::filesystem::path& _destination_path,
@@ -57,10 +58,10 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~surface_segmentation_iod() override;
+    SIGHT_IO_DICOM_API ~surface_segmentation_iod() override;
 
     /// Write DICOM file
-    IO_DICOM_API void write(const data::series::csptr& _series) override;
+    SIGHT_IO_DICOM_API void write(const data::series::csptr& _series) override;
 
 protected:
 

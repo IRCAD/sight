@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/sample/config.hpp"
 
 #include <core/com/helper/sig_slot_connection.hpp>
 #include <core/macros.hpp>
@@ -54,38 +52,38 @@ namespace sight::module::viz::sample
  * @subsection Input Input
  * - \b mesh [sight::data::mesh]: mesh to display.
  */
-class MODULE_VIZ_SAMPLE_CLASS_API mesh : public sight::ui::service
+class mesh : public sight::ui::service
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(mesh, sight::ui::service);
 
-    MODULE_VIZ_SAMPLE_API static const core::com::slots::key_t UPDATE_CAM_POSITION_SLOT;
+    static const core::com::slots::key_t UPDATE_CAM_POSITION_SLOT;
 
-    MODULE_VIZ_SAMPLE_API static const core::com::signals::key_t CAM_UPDATED_SIG;
+    static const core::com::signals::key_t CAM_UPDATED_SIG;
 
     using cam_updated_signal_t = core::com::signal<void (data::matrix4::sptr)>;
 
     /// Creates slots and the signal.
-    MODULE_VIZ_SAMPLE_API mesh() noexcept;
+    mesh() noexcept;
 
     /// Destroys the service.
-    MODULE_VIZ_SAMPLE_API ~mesh() noexcept override = default;
+    ~mesh() noexcept override = default;
 
 private:
 
     /// Checks if the input mesh is autoconnect.
-    MODULE_VIZ_SAMPLE_API void configuring() override;
+    void configuring() override;
 
     /// Registers and starts sub-services.
-    MODULE_VIZ_SAMPLE_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_VIZ_SAMPLE_API void updating() override;
+    void updating() override;
 
     /// Stops and unregisters sub-services.
-    MODULE_VIZ_SAMPLE_API void stopping() override;
+    void stopping() override;
 
 private:
 

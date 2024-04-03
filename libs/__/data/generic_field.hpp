@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/factory/new.hpp"
 #include "data/generic_field_base.hpp"
 
@@ -43,7 +44,7 @@ namespace sight::data
  * @see     data::real data::real, data::boolean, data::integer
  */
 template<typename T>
-class DATA_CLASS_API generic_field : public generic_field_base
+class SIGHT_DATA_CLASS_API generic_field : public generic_field_base
 {
 public:
 

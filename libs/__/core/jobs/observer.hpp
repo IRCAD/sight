@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/jobs/base.hpp"
 
 #include <cstdint>
@@ -34,7 +35,7 @@ namespace sight::core::jobs
 /**
  * @brief This class manages a job.
  */
-class CORE_CLASS_API observer : public base
+class SIGHT_CORE_CLASS_API observer : public base
 {
 public:
 
@@ -54,7 +55,7 @@ public:
      * @param _name         The job name
      * @param _work_units   Number of work units to reach to complete the job
      */
-    CORE_API observer(const std::string& _name, std::uint64_t _work_units = 100);
+    SIGHT_CORE_API observer(const std::string& _name, std::uint64_t _work_units = 100);
 
     /**
      * @name Exposed base methods
@@ -68,14 +69,14 @@ public:
     /**
      * @brief Call for finishing observer progress
      */
-    CORE_API void finish() override;
+    SIGHT_CORE_API void finish() override;
 
     /**
      * @brief return a progress Callback function.
      * This function takes work units in parameter.
      * @warning This callback can only be used if the job is still instantiated.
      */
-    CORE_API progress_callback_t progress_callback();
+    SIGHT_CORE_API progress_callback_t progress_callback();
 
 protected:
 
@@ -87,7 +88,7 @@ protected:
      *
      * @return future of the task
      */
-    CORE_API shared_future run_impl() override;
+    SIGHT_CORE_API shared_future run_impl() override;
 
     /// Task type
     using packaged_task = std::packaged_task<void ()>;

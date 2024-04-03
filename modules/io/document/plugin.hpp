@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,23 +22,25 @@
 
 #pragma once
 
+#include "sight/modules/io/document/config.hpp"
+
 #include <core/runtime/plugin.hpp>
 
 namespace sight::module::io::document
 {
 
-struct plugin : public core::runtime::plugin
+struct SIGHT_MODULE_IO_DOCUMENT_CLASS_API plugin : public core::runtime::plugin
 {
     /**
      * @brief   destructor
      */
-    ~plugin() noexcept override;
+    SIGHT_MODULE_IO_DOCUMENT_API ~plugin() noexcept override;
 
     // Overrides
-    void start() override;
+    SIGHT_MODULE_IO_DOCUMENT_API void start() override;
 
     // Overrides
-    void stop() noexcept override;
+    SIGHT_MODULE_IO_DOCUMENT_API void stop() noexcept override;
 };
 
 } // namespace sight::module::io::document

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qml/config.hpp"
+#include <sight/ui/qml/config.hpp>
 
 #include <ui/__/dialog/pulse_progress_base.hpp>
 
@@ -36,8 +36,8 @@ namespace sight::ui::qml::dialog
 /**
  * @brief   This class allows us to show a pulse progress bar.
  */
-class UI_QML_CLASS_API pulse_progress : public QObject,
-                                        public ui::dialog::pulse_progress_base
+class SIGHT_UI_QML_CLASS_API pulse_progress : public QObject,
+                                              public ui::dialog::pulse_progress_base
 {
 Q_OBJECT
 Q_PROPERTY(QString message MEMBER m_message NOTIFY message_changed)
@@ -50,15 +50,15 @@ public:
         ui::factory::make<pulse_progress>
     )
 
-    UI_QML_API ~pulse_progress() override = default;
+    SIGHT_UI_QML_API ~pulse_progress() override = default;
 
     /// override
-    UI_QML_API void set_title(const std::string& _title) override;
+    SIGHT_UI_QML_API void set_title(const std::string& _title) override;
 
     /// override
-    UI_QML_API void set_message(const std::string& _message) override;
+    SIGHT_UI_QML_API void set_message(const std::string& _message) override;
 
-    UI_QML_API void show() override;
+    SIGHT_UI_QML_API void show() override;
 
 Q_SIGNALS:
 

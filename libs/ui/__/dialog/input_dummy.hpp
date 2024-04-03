@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,23 +28,23 @@
 namespace sight::ui::dialog
 {
 
-class UI_CLASS_API input_dummy : public sight::ui::dialog::input_base
+class SIGHT_UI_CLASS_API input_dummy : public sight::ui::dialog::input_base
 {
 public:
 
     SIGHT_DECLARE_CLASS(input_dummy, sight::ui::dialog::input_base);
 
-    UI_API ~input_dummy() override = default;
-    UI_API void set_title(const std::string& _title) override;
-    UI_API void set_message(const std::string& _msg) override;
-    UI_API void set_echo_mode(echo_mode _echo_mode) override;
-    UI_API void set_input(const std::string& _text) override;
+    SIGHT_UI_API ~input_dummy() override = default;
+    SIGHT_UI_API void set_title(const std::string& _title) override;
+    SIGHT_UI_API void set_message(const std::string& _msg) override;
+    SIGHT_UI_API void set_echo_mode(echo_mode _echo_mode) override;
+    SIGHT_UI_API void set_input(const std::string& _text) override;
 
-    UI_API std::pair<std::string, bool> get_input() override;
+    SIGHT_UI_API std::pair<std::string, bool> get_input() override;
 
-    UI_API static void push_input(const std::string& _input);
+    SIGHT_UI_API static void push_input(const std::string& _input);
 
-    UI_API static bool clear();
+    SIGHT_UI_API static bool clear();
 
 private:
 

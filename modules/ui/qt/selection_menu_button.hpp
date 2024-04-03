@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <core/tools/failed.hpp>
 
@@ -77,8 +75,8 @@ namespace sight::module::ui::qt
  * - \b enable(): This slot allows to enable the button
  * - \b disable(): This slots allows to disable the button
  */
-class MODULE_UI_QT_CLASS_API selection_menu_button : public QObject,
-                                                     public sight::ui::editor
+class selection_menu_button : public QObject,
+                              public sight::ui::editor
 {
 Q_OBJECT
 
@@ -86,8 +84,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(selection_menu_button, sight::ui::editor);
 
-    MODULE_UI_QT_API selection_menu_button() noexcept;
-    MODULE_UI_QT_API ~selection_menu_button() noexcept override = default;
+    selection_menu_button() noexcept;
+    ~selection_menu_button() noexcept override = default;
 
 protected:
 

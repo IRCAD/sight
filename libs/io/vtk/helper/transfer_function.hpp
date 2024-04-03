@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/vtk/config.hpp"
+#include <sight/io/vtk/config.hpp>
 
 #include <data/transfer_function.hpp>
 
@@ -35,7 +35,7 @@ namespace sight::io::vtk::helper
 /**
  * @brief   Helper to manage vtk data from data::transfer_function.
  */
-class IO_VTK_CLASS_API transfer_function
+class SIGHT_IO_VTK_CLASS_API transfer_function
 {
 public:
 
@@ -47,7 +47,7 @@ public:
      * @param[in] _size lookup table size
      * @param[out] _lt vtkLookupTable
      */
-    IO_VTK_API static void to_vtk_lookup_table(
+    SIGHT_IO_VTK_API static void to_vtk_lookup_table(
         data::transfer_function::csptr _tf,
         vtkSmartPointer<vtkLookupTable> _lt,
         bool _allow_transparency = false,
@@ -63,7 +63,7 @@ public:
      * @param[out] _lt vtkLookupTable
      *
      */
-    IO_VTK_API static void to_bw_vtk_lookup_table(
+    SIGHT_IO_VTK_API static void to_bw_vtk_lookup_table(
         double _range_min,
         double _range_max,
         vtkSmartPointer<vtkLookupTable> _lt,

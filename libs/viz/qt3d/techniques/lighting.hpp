@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/qt3d/config.hpp"
+#include <sight/viz/qt3d/config.hpp>
 
 #include <QPointer>
 #include <QTechnique>
@@ -42,7 +42,7 @@ namespace sight::viz::qt3d::techniques
 /**
  * @brief Manages a lighting technique.
  */
-class VIZ_QT3D_CLASS_API lighting : public Qt3DRender::QTechnique
+class SIGHT_VIZ_QT3D_CLASS_API lighting : public Qt3DRender::QTechnique
 {
 Q_OBJECT
 
@@ -63,37 +63,37 @@ public:
     };
 
     /// Constructs a lighting rendering technique.
-    VIZ_QT3D_API lighting();
+    SIGHT_VIZ_QT3D_API lighting();
 
     /// Destroys the technique.
-    VIZ_QT3D_API ~lighting() override;
+    SIGHT_VIZ_QT3D_API ~lighting() override;
 
     /// @returns light position value.
-    VIZ_QT3D_API QVector3D get_light_position();
+    SIGHT_VIZ_QT3D_API QVector3D get_light_position();
 
     /// @returns light intensity value.
-    VIZ_QT3D_API QVector3D get_light_intensity();
+    SIGHT_VIZ_QT3D_API QVector3D get_light_intensity();
 
     /// @returns light mode.
-    VIZ_QT3D_API lighting_mode get_lighting_mode();
+    SIGHT_VIZ_QT3D_API lighting_mode get_lighting_mode();
 
     /// Updates light position.
-    VIZ_QT3D_API void set_light_position(QVector3D _light_position);
+    SIGHT_VIZ_QT3D_API void set_light_position(QVector3D _light_position);
 
     /// Updates light intensity.
-    VIZ_QT3D_API void set_light_intensity(QVector3D _light_intensity);
+    SIGHT_VIZ_QT3D_API void set_light_intensity(QVector3D _light_intensity);
 
     /// Updates light intensity.
-    VIZ_QT3D_API void set_lighting_mode(lighting_mode _lighting_mode);
+    SIGHT_VIZ_QT3D_API void set_lighting_mode(lighting_mode _lighting_mode);
 
     /// Enables/Disables cells normals visualization.
-    VIZ_QT3D_API Q_INVOKABLE void enable_cells_normals(bool _is_enable);
+    SIGHT_VIZ_QT3D_API Q_INVOKABLE void enable_cells_normals(bool _is_enable);
 
     /// Enables/Disables normals visualization.
-    VIZ_QT3D_API Q_INVOKABLE void show_normals(bool _is_enable);
+    SIGHT_VIZ_QT3D_API Q_INVOKABLE void show_normals(bool _is_enable);
 
     /// Modifies raster mode (SURFACE, POINT, LINE, EDGE).
-    VIZ_QT3D_API Q_INVOKABLE void update_raster_mode(int _raster_mode);
+    SIGHT_VIZ_QT3D_API Q_INVOKABLE void update_raster_mode(int _raster_mode);
 
 Q_SIGNALS:
 

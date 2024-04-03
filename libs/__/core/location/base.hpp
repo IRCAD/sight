@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/macros.hpp"
 
 namespace sight::core::location
@@ -32,7 +33,7 @@ namespace sight::core::location
  * @brief Abstract base class to define a location (file path, directory, archive) that can be used in Sight reader /
  * writer
  */
-class CORE_CLASS_API base
+class SIGHT_CORE_CLASS_API base
 {
 public:
 

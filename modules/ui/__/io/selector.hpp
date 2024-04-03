@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/__/config.hpp"
-
 #include <core/com/signal.hpp>
 #include <core/com/slot.hpp>
 #include <core/jobs/base.hpp>
@@ -74,7 +72,7 @@ namespace sight::module::ui::io
  *      - \b id (mandatory) : the id of the configuration to use.
  *      - \b service (mandatory) :  the name of the service.
  */
-class MODULE_UI_CLASS_API selector : public sight::ui::dialog_editor
+class selector : public sight::ui::dialog_editor
 {
 public:
 
@@ -98,25 +96,25 @@ public:
      *
      * By default, the selector::m_mode is defined as reader_mode, and selector::m_servicesAreExcluded as true.
      */
-    MODULE_UI_API selector();
+    selector();
 
     /// Destructor. Do nothing.
-    MODULE_UI_API ~selector() noexcept override;
+    ~selector() noexcept override;
 
     /**
      * @brief This method allows to configure the service in reader or writer mode (set selector::m_mode).
      *
      *@param[in] _mode the value can be selector::reader_mode or selector::writer_mode.
      */
-    MODULE_UI_API void set_io_mode(io_mode _mode);
+    void set_io_mode(io_mode _mode);
 
 protected:
 
     ///Starts the service. Do nothing.
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
     /// Stops the service. Do nothing.
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief   This method initializes class member parameters from configuration elements.
@@ -124,14 +122,14 @@ protected:
      * The method verifies if the configuration is well written and retrieves user parameter values.
      * Thanks to this method, selector::m_selectedServices value is up to date.
      **/
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
     /// Create a dialogue box to provide the user different available readers (writer) for the IOSelector associated
     // objects. Then, the selected reader (writer) is executed.
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /// Gives the name of the class. Do nothing.
-    MODULE_UI_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
 private:
 

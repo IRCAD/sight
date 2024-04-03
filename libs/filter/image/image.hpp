@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/image/config.hpp"
+#include <sight/filter/image/config.hpp>
 
 #include <core/base.hpp>
 #include <core/type.hpp>
@@ -38,13 +38,13 @@ namespace sight::filter::image
  *
  * set input image voxel to zero where roi voxel value is zero
  */
-FILTER_IMAGE_API void apply_roi(data::image::sptr _image, data::image::sptr _roi);
+SIGHT_FILTER_IMAGE_API void apply_roi(data::image::sptr _image, data::image::sptr _roi);
 
 /**
  * @brief Check if 'imgRoiApplied' is the result of 'roi' Applied to 'image'
  *
  */
-FILTER_IMAGE_API bool is_roi_applied(
+SIGHT_FILTER_IMAGE_API bool is_roi_applied(
     data::image::sptr _image,
     data::image::sptr _roi,
     data::image::sptr _img_roi_applied

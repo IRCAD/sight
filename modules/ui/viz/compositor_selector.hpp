@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/viz/config.hpp"
 
 #include <ui/__/editor.hpp>
 
@@ -45,8 +43,8 @@ namespace sight::module::ui::viz
 /**
  * @brief   Allows to select an Ogre Compositor and apply it to a layer
  */
-class MODULE_UI_VIZ_CLASS_API compositor_selector : public QObject,
-                                                    public sight::ui::editor
+class compositor_selector : public QObject,
+                            public sight::ui::editor
 {
 Q_OBJECT
 
@@ -63,15 +61,15 @@ public:
     using init_layer_slot_t = core::com::slot<void (sight::viz::scene3d::layer::sptr)>;
 
     /// Slot: Populate the list of available compositors for the selected layer
-    MODULE_UI_VIZ_API static const core::com::slots::key_t INIT_COMPOSITOR_LIST_SLOT;
+    static const core::com::slots::key_t INIT_COMPOSITOR_LIST_SLOT;
 
     /** @} */
 
     /// Constructor.
-    MODULE_UI_VIZ_API compositor_selector() noexcept;
+    compositor_selector() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_VIZ_API ~compositor_selector() noexcept override;
+    ~compositor_selector() noexcept override;
 
 protected:
 
@@ -84,16 +82,16 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    MODULE_UI_VIZ_API void configuring() override;
+    void configuring() override;
 
     /// Sets the connections and the UI elements
-    MODULE_UI_VIZ_API void starting() override;
+    void starting() override;
 
     /// Destroys the connections and cleans the container
-    MODULE_UI_VIZ_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing
-    MODULE_UI_VIZ_API void updating() override;
+    void updating() override;
 
 private Q_SLOTS:
 

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_instance.hpp"
 #include "io/dicom/writer/iod/information_object_definition.hpp"
 
@@ -32,7 +33,7 @@ namespace sight::io::dicom::writer::iod
 /**
  * @brief ComprehensiveSRIOD class used to write Enhanced Structured Report DICOM files
  */
-class IO_DICOM_CLASS_API comprehensive_sriod : public io::dicom::writer::iod::information_object_definition
+class SIGHT_IO_DICOM_CLASS_API comprehensive_sriod : public io::dicom::writer::iod::information_object_definition
 {
 public:
 
@@ -45,7 +46,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API comprehensive_sriod(
+    SIGHT_IO_DICOM_API comprehensive_sriod(
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         const std::filesystem::path& _destination_path,
         bool _use_3d_sr                        = false,
@@ -55,10 +56,10 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~comprehensive_sriod() override;
+    SIGHT_IO_DICOM_API ~comprehensive_sriod() override;
 
     /// Write DICOM file
-    IO_DICOM_API void write(const data::series::csptr& _series) override;
+    SIGHT_IO_DICOM_API void write(const data::series::csptr& _series) override;
 
 protected:
 

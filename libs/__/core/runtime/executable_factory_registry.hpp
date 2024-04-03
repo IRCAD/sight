@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <memory>
 
@@ -41,7 +41,7 @@ class executable_factory;
  *
  *
  */
-struct CORE_CLASS_API executable_factory_registry
+struct SIGHT_CORE_CLASS_API executable_factory_registry
 {
     /**
      * @brief       Constructor
@@ -49,7 +49,7 @@ struct CORE_CLASS_API executable_factory_registry
      * @param[in]   _factory a shared pointer to an executable factory instance to manage
      * @pre         Loading module exists.
      */
-    CORE_API executable_factory_registry(std::shared_ptr<executable_factory> _factory);
+    SIGHT_CORE_API executable_factory_registry(std::shared_ptr<executable_factory> _factory);
 };
 
 } // namespace sight::core::runtime

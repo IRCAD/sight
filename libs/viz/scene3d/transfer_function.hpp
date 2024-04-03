@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <data/transfer_function.hpp>
 
@@ -38,9 +38,9 @@ namespace sight::viz::scene3d
  * @brief This binds a sight::data::transfer_function to a shared Ogre texture. It allows to share the GPU memory from
  * multiple callers that use the same object, and only update the GPU buffer when necessary.
  */
-class VIZ_SCENE3D_CLASS_API transfer_function : public resource<data::transfer_function,
-                                                                Ogre::Texture,
-                                                                transfer_function>
+class SIGHT_VIZ_SCENE3D_CLASS_API transfer_function : public resource<data::transfer_function,
+                                                                      Ogre::Texture,
+                                                                      transfer_function>
 {
 public:
 
@@ -48,11 +48,14 @@ public:
     /// new one, otherwise it wraps the existing one.
     /// @param _tf input transfer function
     /// @param _suffix_id optional suffix to the object identifier, this allows to create different copies of the object
-    VIZ_SCENE3D_API transfer_function(const data::transfer_function::csptr& _tf, const std::string& _suffix_id = "");
-    VIZ_SCENE3D_API ~transfer_function();
+    SIGHT_VIZ_SCENE3D_API transfer_function(
+        const data::transfer_function::csptr& _tf,
+        const std::string& _suffix_id = ""
+    );
+    SIGHT_VIZ_SCENE3D_API ~transfer_function();
 
     /// Update the TF texture according to the transfer function data.
-    VIZ_SCENE3D_API void update() override;
+    SIGHT_VIZ_SCENE3D_API void update() override;
 
     /// Bind the texture and the uniforms in a given pass
     template<class GPU_PARAMETERS>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/viz/config.hpp"
-
 #include <ui/__/editor.hpp>
 
 #include <viz/scene3d/compositor/chain_manager.hpp>
@@ -41,8 +39,8 @@ namespace sight::module::ui::viz
 /**
  * @brief   Allows to select the stereo mode of an Ogre Compositor
  */
-class MODULE_UI_VIZ_CLASS_API stereo_selector : public QObject,
-                                                public sight::ui::editor
+class stereo_selector : public QObject,
+                        public sight::ui::editor
 {
 Q_OBJECT
 
@@ -51,10 +49,10 @@ public:
     SIGHT_DECLARE_SERVICE(stereo_selector, sight::ui::editor);
 
     /// Constructor.
-    MODULE_UI_VIZ_API stereo_selector() noexcept;
+    stereo_selector() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_VIZ_API ~stereo_selector() noexcept override;
+    ~stereo_selector() noexcept override;
 
 protected:
 
@@ -67,16 +65,16 @@ protected:
        @endcode
      * - \b Parameter : parameter description.
      */
-    MODULE_UI_VIZ_API void configuring() override;
+    void configuring() override;
 
     /// Sets the connections and the UI elements
-    MODULE_UI_VIZ_API void starting() override;
+    void starting() override;
 
     /// Destroys the connections and cleans the container
-    MODULE_UI_VIZ_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing
-    MODULE_UI_VIZ_API void updating() override;
+    void updating() override;
 
 private Q_SLOTS:
 

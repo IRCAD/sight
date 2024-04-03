@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,6 @@
 namespace sight::core::runtime::io::profile_reader
 {
 
-CORE_API std::shared_ptr<core::runtime::profile> create_profile(const std::filesystem::path& _path);
+SIGHT_CORE_API std::shared_ptr<core::runtime::profile> create_profile(const std::filesystem::path& _path);
 
 } // namespace sight::core::runtime::io::profile_reader

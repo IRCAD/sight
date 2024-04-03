@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "modules/io/igtl/config.hpp"
 #include "modules/io/igtl/network_sender.hpp"
 
 #include <io/igtl/client.hpp>
@@ -52,32 +51,32 @@ namespace sight::module::io::igtl
  * @note : hostname and port of this service can be a value or a nameKey from preference settings
    (for example <server>%HOSTNAME%:%PORT%</server>)
  */
-class MODULE_IO_IGTL_CLASS_API client_sender : public module::io::igtl::network_sender
+class client_sender : public module::io::igtl::network_sender
 {
 public:
 
     SIGHT_DECLARE_SERVICE(client_sender, module::io::igtl::network_sender);
 
     /// Constructor
-    MODULE_IO_IGTL_API client_sender();
+    client_sender();
 
     /// Destructor
-    MODULE_IO_IGTL_API ~client_sender() override;
+    ~client_sender() override;
 
 protected:
 
     /// Configures the service.
-    MODULE_IO_IGTL_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief start the client and try to connect to the server specify in configuration
      */
-    MODULE_IO_IGTL_API void starting() override;
+    void starting() override;
 
     /**
      * @brief disconnect the client from the server
      */
-    MODULE_IO_IGTL_API void stopping() override;
+    void stopping() override;
 
 private:
 

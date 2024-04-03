@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <sight/modules/viz/scene3d_test/config.hpp>
+
 #include <core/runtime/plugin.hpp>
 
 #include <OgreRoot.h>
@@ -40,10 +42,10 @@ public:
     ~plugin() noexcept override;
 
     /// Instantiates Ogre Root.
-    void start() override;
+    SIGHT_MODULE_VIZ_SCENE3D_TEST_API void start() override;
 
     /// Overrides stop method. Do nothing
-    void stop() noexcept override;
+    SIGHT_MODULE_VIZ_SCENE3D_TEST_API void stop() noexcept override;
 
 private:
 

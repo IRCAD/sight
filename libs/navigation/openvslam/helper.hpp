@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "navigation/openvslam/config.hpp"
+#include <sight/navigation/openvslam/config.hpp>
+
 #include "navigation/openvslam/openvslam_config.hpp"
 
 #include <data/camera.hpp>
@@ -36,7 +37,7 @@ namespace sight::navigation::openvslam
 /**
  * @brief The Helper class
  */
-class NAVIGATION_OPENVSLAM_CLASS_API helper
+class SIGHT_NAVIGATION_OPENVSLAM_CLASS_API helper
 {
 public:
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <core/exception.hpp>
 #include <core/macros.hpp>
@@ -46,7 +46,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief Helper class for encoding management.
  */
-class IO_DICOM_CLASS_API encoding
+class SIGHT_IO_DICOM_CLASS_API encoding
 {
 public:
 
@@ -59,7 +59,7 @@ public:
      * @throw boost::locale::conv::invalid_charset_error
      * @return converted string in utf-8 format
      */
-    IO_DICOM_API static std::string convert_string(
+    SIGHT_IO_DICOM_API static std::string convert_string(
         const std::string& _source,
         const std::string& _defined_charset_term,
         const SPTR(core::log::logger)& _logger = nullptr

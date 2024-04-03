@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/vtk/config.hpp"
+#include <sight/io/vtk/config.hpp>
 
 #include <core/location/multiple_files.hpp>
 
@@ -48,7 +48,7 @@ namespace sight::io::vtk
  *
  * Read VTK Mesh or image files using the VTK lib, convert to ModelSeries or ImageSeries and push to series_set.
  */
-class IO_VTK_CLASS_API series_set_reader :
+class SIGHT_IO_VTK_CLASS_API series_set_reader :
     public io::reader::generic_object_reader<data::series_set>,
     public core::location::multiple_files
 {
@@ -62,16 +62,16 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
-    IO_VTK_API series_set_reader();
+    SIGHT_IO_VTK_API series_set_reader();
 
     /// @brief Destructor.
-    IO_VTK_API ~series_set_reader() override = default;
+    SIGHT_IO_VTK_API ~series_set_reader() override = default;
 
     /// @brief Reading operator.
-    IO_VTK_API void read() override;
+    SIGHT_IO_VTK_API void read() override;
 
     /// @return ".vtk"
-    IO_VTK_API std::string extension() const override;
+    SIGHT_IO_VTK_API std::string extension() const override;
 
     //------------------------------------------------------------------------------
 
@@ -81,7 +81,7 @@ public:
     }
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::base) get_job() const override;
+    SIGHT_IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 

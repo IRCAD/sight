@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <core/macros.hpp>
 
@@ -43,7 +43,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief This class contains helpers to search dicom files on filesystem.
  */
-class IO_DICOM_CLASS_API dicom_search
+class SIGHT_IO_DICOM_CLASS_API dicom_search
 {
 public:
 
@@ -55,7 +55,7 @@ public:
      * it is a DICOM file
      * @param[in] _file_lookup_observer lookup observer
      */
-    IO_DICOM_API static void search_recursively(
+    SIGHT_IO_DICOM_API static void search_recursively(
         const std::filesystem::path& _dir_path,
         std::vector<std::filesystem::path>& _dicom_files,
         bool _check_is_dicom,

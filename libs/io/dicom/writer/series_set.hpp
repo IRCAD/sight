@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/writer/series.hpp"
 
 #include <core/location/single_folder.hpp>
@@ -42,9 +43,9 @@ namespace writer
 /**
  * @brief   This class manages patient writing, in DICOM file format.
  */
-class IO_DICOM_CLASS_API series_set : public io::writer::generic_object_writer<data::series_set>,
-                                      public core::location::single_folder,
-                                      public core::tools::progress_adviser
+class SIGHT_IO_DICOM_CLASS_API series_set : public io::writer::generic_object_writer<data::series_set>,
+                                            public core::location::single_folder,
+                                            public core::tools::progress_adviser
 {
 public:
 
@@ -55,21 +56,21 @@ public:
     );
 
     /// Constructor
-    IO_DICOM_API series_set();
+    SIGHT_IO_DICOM_API series_set();
 
     /// Destructor
-    IO_DICOM_API ~series_set() override = default;
+    SIGHT_IO_DICOM_API ~series_set() override = default;
 
     /**
      * @brief Manage writing tools to save every series.
      */
-    IO_DICOM_API void write() override;
+    SIGHT_IO_DICOM_API void write() override;
 
     /**
      * Override
      * @brief Do nothing
      */
-    IO_DICOM_API std::string extension() const override;
+    SIGHT_IO_DICOM_API std::string extension() const override;
 
     /// Get Fiducials Export Mode
     const io::dicom::writer::series::fiducials_export_mode& get_fiducials_export_mode() const

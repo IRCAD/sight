@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <data/image.hpp>
 
@@ -50,27 +48,27 @@ namespace sight::module::filter::image
  * - \b result [sight::data::image]: substract image.
  */
 
-class MODULE_FILTER_IMAGE_CLASS_API images_substract final : public service::filter
+class images_substract final : public service::filter
 {
 public:
 
     SIGHT_DECLARE_SERVICE(images_substract, sight::service::filter);
 
-    MODULE_FILTER_IMAGE_API images_substract()           = default;
-    MODULE_FILTER_IMAGE_API ~images_substract() override = default;
+    images_substract()           = default;
+    ~images_substract() override = default;
 
 protected:
 
-    MODULE_FILTER_IMAGE_API void configuring() override;
+    void configuring() override;
 
     /// Overrides
-    MODULE_FILTER_IMAGE_API void starting() override;
+    void starting() override;
 
     /// Overrides
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void stopping() override;
 
     /// Overrides
-    MODULE_FILTER_IMAGE_API void updating() override;
+    void updating() override;
 
 private:
 

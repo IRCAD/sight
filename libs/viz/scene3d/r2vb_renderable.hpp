@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/viz/scene3d/config.hpp>
+
 #include "viz/scene3d/adaptor.hpp"
-#include "viz/scene3d/config.hpp"
 
 #include <data/mesh.hpp>
 
@@ -44,12 +45,12 @@ namespace sight::viz::scene3d
  * This objects holds a reference to the object used as input for the render-to-vertex-buffer process.
  * It also contains the output vertex buffer, that is used to be displayed like a "regular" object.
  */
-class VIZ_SCENE3D_CLASS_API r2vb_renderable : public Ogre::SimpleRenderable
+class SIGHT_VIZ_SCENE3D_CLASS_API r2vb_renderable : public Ogre::SimpleRenderable
 {
 public:
 
     /// Create a new instance of r2vb_renderable
-    VIZ_SCENE3D_API static r2vb_renderable* make(
+    SIGHT_VIZ_SCENE3D_API static r2vb_renderable* make(
         const std::string& _name,
         Ogre::SubEntity* _source_object,
         Ogre::SceneManager* _scene_manager,
@@ -57,12 +58,12 @@ public:
         const std::string& _mtl_name
     );
 
-    VIZ_SCENE3D_API r2vb_renderable(const Ogre::String& _name);
-    VIZ_SCENE3D_API ~r2vb_renderable() override;
+    SIGHT_VIZ_SCENE3D_API r2vb_renderable(const Ogre::String& _name);
+    SIGHT_VIZ_SCENE3D_API ~r2vb_renderable() override;
 
     /// Set the maximum number of vertices in output, and adjust the size of the output buffer accordingly.
     /// It also updates the vertex declaration of the output buffer
-    VIZ_SCENE3D_API void set_output_settings(
+    SIGHT_VIZ_SCENE3D_API void set_output_settings(
         std::size_t _vertex_count,
         bool _has_color,
         bool _has_tex_coord,
@@ -70,31 +71,31 @@ public:
     );
 
     /** @copydoc SimpleRenderable::_updateRenderQueue. */
-    VIZ_SCENE3D_API void _updateRenderQueue(Ogre::RenderQueue* _queue) override;
+    SIGHT_VIZ_SCENE3D_API void _updateRenderQueue(Ogre::RenderQueue* _queue) override;
 
     /** @copydoc SimpleRenderable::getMovableType. */
-    VIZ_SCENE3D_API const Ogre::String& getMovableType() const override;
+    SIGHT_VIZ_SCENE3D_API const Ogre::String& getMovableType() const override;
 
     /** @copydoc SimpleRenderable::getRenderOperation. */
-    VIZ_SCENE3D_API void getRenderOperation(Ogre::RenderOperation& _op) override;
+    SIGHT_VIZ_SCENE3D_API void getRenderOperation(Ogre::RenderOperation& _op) override;
 
     /// Delegate to the subentity.
-    VIZ_SCENE3D_API Ogre::Real getBoundingRadius() const override;
+    SIGHT_VIZ_SCENE3D_API Ogre::Real getBoundingRadius() const override;
 
     /// @copydoc Renderable::getSquaredViewDepth
-    VIZ_SCENE3D_API Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const override;
+    SIGHT_VIZ_SCENE3D_API Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const override;
 
     /// Return the parent mesh.
-    VIZ_SCENE3D_API virtual const Ogre::MeshPtr& get_mesh() const;
+    SIGHT_VIZ_SCENE3D_API virtual const Ogre::MeshPtr& get_mesh() const;
 
     /// Mark the output vertex buffer as dirty, the r2vb process will be run on next update
-    VIZ_SCENE3D_API void set_dirty();
+    SIGHT_VIZ_SCENE3D_API void set_dirty();
 
     /// Runs the R2VB process.
-    VIZ_SCENE3D_API void manual_update();
+    SIGHT_VIZ_SCENE3D_API void manual_update();
 
     /// Set the material used to process the geometry pass.
-    VIZ_SCENE3D_API void set_render_to_buffer_material(const std::string& _mtl_name);
+    SIGHT_VIZ_SCENE3D_API void set_render_to_buffer_material(const std::string& _mtl_name);
 
     viz::scene3d::adaptor::wptr m_material_adaptor;
 

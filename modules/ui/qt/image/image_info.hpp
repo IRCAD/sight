@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <core/tools/failed.hpp>
 
@@ -58,8 +56,8 @@ namespace sight::module::ui::qt::image
  * @subsection Input Input
  * - \b image [sight::data::image]: image used to retrieve the pixel value.
  */
-class MODULE_UI_QT_CLASS_API image_info : public QObject,
-                                          public sight::ui::editor
+class image_info : public QObject,
+                   public sight::ui::editor
 {
 Q_OBJECT
 
@@ -67,9 +65,9 @@ public:
 
     SIGHT_DECLARE_SERVICE(image_info, sight::ui::editor);
 
-    MODULE_UI_QT_API image_info() noexcept;
+    image_info() noexcept;
 
-    MODULE_UI_QT_API ~image_info() noexcept override;
+    ~image_info() noexcept override;
 
 protected:
 

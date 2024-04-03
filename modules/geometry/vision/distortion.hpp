@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/vision/config.hpp"
 
 #include <data/camera.hpp>
 #include <data/image.hpp>
@@ -75,7 +73,7 @@ namespace sight::module::geometry::vision
  * @subsection Configuration Configuration:
  * - \b mode(optional) : "distort" or "undistort" the output image (default: "distort").
  */
-class MODULE_GEOMETRY_VISION_CLASS_API distortion : public service::filter
+class distortion : public service::filter
 {
 public:
 
@@ -85,35 +83,35 @@ public:
      * @name Slots API
      * @{
      */
-    MODULE_GEOMETRY_VISION_API static const core::com::slots::key_t CHANGE_STATE_SLOT;
+    static const core::com::slots::key_t CHANGE_STATE_SLOT;
     using change_state_slot_t = core::com::slot<void ()>;
     ///@}
 
     /// Constructor.
-    MODULE_GEOMETRY_VISION_API distortion() noexcept;
+    distortion() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_GEOMETRY_VISION_API ~distortion() noexcept override;
+    ~distortion() noexcept override;
 
     /**
      * @brief Connect data::image::MODIFIED_SIG to service::slots::UPDATE
      * and data::image::BUFFER_MODIFIED_SIG to service::slots::UPDATE
      */
-    MODULE_GEOMETRY_VISION_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
 protected:
 
     /// Does nothing
-    MODULE_GEOMETRY_VISION_API void configuring() override;
+    void configuring() override;
 
     /// Retrieve the camera.
-    MODULE_GEOMETRY_VISION_API void starting() override;
+    void starting() override;
 
     /// Do nothing.
-    MODULE_GEOMETRY_VISION_API void stopping() override;
+    void stopping() override;
 
     /// Distort the image.
-    MODULE_GEOMETRY_VISION_API void updating() override;
+    void updating() override;
 
 private:
 

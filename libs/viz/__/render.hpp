@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/__/config.hpp"
+#include <sight/viz/__/config.hpp>
 
 #include <core/tools/failed.hpp>
 
@@ -45,7 +45,7 @@ namespace sight::viz
  *
  */
 
-class VIZ_CLASS_API render : public ui::service
+class SIGHT_VIZ_CLASS_API render : public ui::service
 {
 public:
 
@@ -56,12 +56,12 @@ protected:
     /**
      * @brief   Constructor. Initialize default values.
      */
-    VIZ_API render() noexcept;
+    SIGHT_VIZ_API render() noexcept;
 
     /**
      * @brief   Destructor. Do nothing.
      */
-    VIZ_API ~render() noexcept override;
+    SIGHT_VIZ_API ~render() noexcept override;
 };
 
 } // namespace sight::viz

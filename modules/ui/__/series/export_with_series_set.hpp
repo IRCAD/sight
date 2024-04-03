@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/__/config.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/com/slot.hpp>
@@ -89,7 +87,7 @@ namespace series
     </extension>
     @endcode
  */
-class MODULE_UI_CLASS_API export_with_series_set : public sight::ui::action
+class export_with_series_set : public sight::ui::action
 {
 public:
 
@@ -103,9 +101,9 @@ public:
     using forward_job_slot_t   = core::com::slot<void (std::shared_ptr<core::jobs::base>)>;
     /// @}
 
-    MODULE_UI_API export_with_series_set() noexcept;
+    export_with_series_set() noexcept;
 
-    MODULE_UI_API ~export_with_series_set() noexcept override = default;
+    ~export_with_series_set() noexcept override = default;
 
 protected:
 

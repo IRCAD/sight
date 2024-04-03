@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/object.hpp"
 
 #include <core/location/base.hpp>
@@ -36,7 +37,7 @@ namespace sight::ui::dialog
 /**
  * @brief   Defines the generic file/folder selector dialog for IHM.
  */
-class UI_CLASS_API location_base : public ui::object
+class SIGHT_UI_CLASS_API location_base : public ui::object
 {
 public:
 
@@ -60,36 +61,36 @@ public:
     using factory_registry_key_t = std::string;
 
     /// this *unique* key should  be used *for all* factory for specific location(qt,wx,...)
-    UI_API static const factory_registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const factory_registry_key_t REGISTRY_KEY;
 
-    UI_API static const std::string SOFTWARE_UI;
-    UI_API static const std::string DLG_DEFAULT_FILE;
-    UI_API static const std::string DLG_DEFAULT_DIRECTORY;
+    SIGHT_UI_API static const std::string SOFTWARE_UI;
+    SIGHT_UI_API static const std::string DLG_DEFAULT_FILE;
+    SIGHT_UI_API static const std::string DLG_DEFAULT_DIRECTORY;
 
-    UI_API ~location_base() override;
+    SIGHT_UI_API ~location_base() override;
 
-    UI_API location_base();
+    SIGHT_UI_API location_base();
 
     /// set the title for the dialog
-    UI_API virtual void set_title(const std::string& _title);
+    SIGHT_UI_API virtual void set_title(const std::string& _title);
 
     /// returns the title for the dialog
-    UI_API virtual const std::string& get_title();
+    SIGHT_UI_API virtual const std::string& get_title();
 
     /// set the initial location for the dialog
-    UI_API virtual void set_default_location(core::location::base::sptr _loc);
+    SIGHT_UI_API virtual void set_default_location(core::location::base::sptr _loc);
 
     /// get the default location for the dialog (from preferences or specified by user)
-    UI_API virtual core::location::base::sptr get_default_location();
+    SIGHT_UI_API virtual core::location::base::sptr get_default_location();
 
     /// save the specified default location for the dialog in preferences (if available)
-    UI_API virtual void save_default_location(core::location::base::sptr _loc);
+    SIGHT_UI_API virtual void save_default_location(core::location::base::sptr _loc);
 
     /// set the type of location for the dialog (SINGLE_FILE, FOLDER, MULTI_FILES)
-    UI_API virtual void set_type(types _type) = 0;
+    SIGHT_UI_API virtual void set_type(types _type) = 0;
 
     /// allow to set option to the file dialog mode=READ/WRITE , check=FILE_MUST_EXIST
-    UI_API virtual void set_option(options _option) = 0;
+    SIGHT_UI_API virtual void set_option(options _option) = 0;
 
     /**
      * @brief specify some filtering when browsing files:
@@ -97,26 +98,26 @@ public:
      * @param[in] _wildcard_list a string of extension (glob syntax) separated by spaces
      * example : addFilter("images","*.png *.jpg")
      */
-    UI_API virtual void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) = 0;
+    SIGHT_UI_API virtual void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) = 0;
 
     /**
      * Display the dialog
      * @return the ILocation selected or null sptr if user cancel the operation
      */
-    UI_API virtual core::location::base::sptr show() = 0;
+    SIGHT_UI_API virtual core::location::base::sptr show() = 0;
 
     /// Gets the current extension file selection
-    UI_API virtual std::string get_current_selection() const = 0;
+    SIGHT_UI_API virtual std::string get_current_selection() const = 0;
 
     /// Helpers that splits the extension getCurrentSelection()
     /// @return a vector of selected extensions
-    UI_API std::vector<std::string> get_selected_extensions() const;
+    SIGHT_UI_API std::vector<std::string> get_selected_extensions() const;
 
 protected:
 
-    UI_API void read_config();
+    SIGHT_UI_API void read_config();
 
-    UI_API void write_config();
+    SIGHT_UI_API void write_config();
 
 private:
 

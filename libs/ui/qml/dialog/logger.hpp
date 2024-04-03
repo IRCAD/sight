@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qml/config.hpp"
+#include <sight/ui/qml/config.hpp>
 
 #include <ui/__/dialog/logger_base.hpp>
 
@@ -39,8 +39,8 @@ namespace sight::ui::qml::dialog
 /**
  * @brief   logger allowing the choice of an element among severals (_selections)
  */
-class UI_QML_CLASS_API logger : public QObject,
-                                public ui::dialog::logger_base
+class SIGHT_UI_QML_CLASS_API logger : public QObject,
+                                      public ui::dialog::logger_base
 {
 Q_OBJECT
 Q_PROPERTY(QUrl hidden MEMBER m_hidden WRITE emit_hidden NOTIFY hidden_changed)
@@ -52,31 +52,31 @@ public:
 
     SIGHT_DECLARE_CLASS(logger, ui::dialog::logger_base, ui::factory::make<logger>);
 
-    UI_QML_API logger()           = default;
-    UI_QML_API ~logger() override = default;
+    SIGHT_UI_QML_API logger()           = default;
+    SIGHT_UI_QML_API ~logger() override = default;
 
     /**
      * @brief Set the dialog title.
      * @param[in] _title Dialog title
      */
-    UI_QML_API void set_title(const std::string& _title) override;
+    SIGHT_UI_QML_API void set_title(const std::string& _title) override;
 
     /**
      * @brief Set the dialog message.
      * @param[in] _message Dialog message
      */
-    UI_QML_API void set_message(const std::string& _message) override;
+    SIGHT_UI_QML_API void set_message(const std::string& _message) override;
 
     /**
      * @brief Set the dialog logger.
      * @param[in] _logger Dialog logger
      */
-    UI_QML_API void set_logger(const core::log::logger::sptr& _logger) override;
+    SIGHT_UI_QML_API void set_logger(const core::log::logger::sptr& _logger) override;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button
      */
-    UI_QML_API bool show() override;
+    SIGHT_UI_QML_API bool show() override;
 
 Q_SIGNALS:
 
@@ -113,10 +113,10 @@ private:
     QUrl m_shown;
 
     /// Setter to QProperty and emit signal
-    UI_QML_API void emit_hidden(const QUrl& /*hidden*/);
-    UI_QML_API void emit_icon(const QUrl& /*path*/);
-    UI_QML_API void emit_message(const QString& /*message*/);
-    UI_QML_API void emit_shown(const QUrl& /*shown*/);
+    SIGHT_UI_QML_API void emit_hidden(const QUrl& /*hidden*/);
+    SIGHT_UI_QML_API void emit_icon(const QUrl& /*path*/);
+    SIGHT_UI_QML_API void emit_message(const QString& /*message*/);
+    SIGHT_UI_QML_API void emit_shown(const QUrl& /*shown*/);
 };
 
 } // namespace sight::ui::qml::dialog

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <data/image.hpp>
 #include <data/mesh.hpp>
@@ -66,7 +64,7 @@ namespace sight::module::filter::image
  * @subsection In-Out In-Out
  * - \b mask [sight::data::image]: resulting mask. Cropped regions are zeroed and full regions are marked with 255.
  */
-class MODULE_FILTER_IMAGE_CLASS_API image_extruder final : public service::filter
+class image_extruder final : public service::filter
 {
 public:
 
@@ -74,10 +72,10 @@ public:
     SIGHT_DECLARE_SERVICE(image_extruder, sight::service::filter);
 
     /// Initializes the slot.
-    MODULE_FILTER_IMAGE_API image_extruder();
+    image_extruder();
 
     /// Destroys the service.
-    MODULE_FILTER_IMAGE_API ~image_extruder() override;
+    ~image_extruder() override;
 
 private:
 

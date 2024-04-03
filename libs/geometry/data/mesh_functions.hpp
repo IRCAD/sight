@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "geometry/data/config.hpp"
+#include <sight/geometry/data/config.hpp>
+
 #include "geometry/data/types.hpp"
 
 #include <core/base.hpp>
@@ -39,7 +40,7 @@ namespace sight::geometry::data
 /**
  * @brief
  */
-GEOMETRY_DATA_API bool is_inclosed_volume(
+SIGHT_GEOMETRY_DATA_API bool is_inclosed_volume(
     const fw_vertex_position& _vertex,
     const fw_vertex_index& _vertex_index,
     const fw_vec3d& _p
@@ -57,7 +58,7 @@ GEOMETRY_DATA_API bool is_inclosed_volume(
  *
  */
 //cspell: enable
-GEOMETRY_DATA_API bool intersect_triangle(
+SIGHT_GEOMETRY_DATA_API bool intersect_triangle(
     fw_vec3d _orig,
     fw_vec3d _dir,
     fw_vec3d _vert0,
@@ -69,9 +70,9 @@ GEOMETRY_DATA_API bool intersect_triangle(
 );
 
 /// test whatever a vertex is duplicated or not
-GEOMETRY_DATA_API bool is_borderless_surface(const fw_vertex_index& _vertex_index);
+SIGHT_GEOMETRY_DATA_API bool is_borderless_surface(const fw_vertex_index& _vertex_index);
 
-GEOMETRY_DATA_API void find_border_edges(
+SIGHT_GEOMETRY_DATA_API void find_border_edges(
     const fw_vertex_index& _vertex_index,
     std::vector<std::vector<std::pair<int,
                                       int> > >& _contours
@@ -81,12 +82,12 @@ GEOMETRY_DATA_API void find_border_edges(
  * @brief Closes the surface if necessary
  * @return True if container mesh is changed
  */
-GEOMETRY_DATA_API bool close_surface(fw_vertex_position& _vertex, fw_vertex_index& _vertex_index);
+SIGHT_GEOMETRY_DATA_API bool close_surface(fw_vertex_position& _vertex, fw_vertex_index& _vertex_index);
 
 /**
  * remove orphan vertices (i.e not used in _vertexIndex), _vertexIndex is reordered according to vertex suppressions
  */
-GEOMETRY_DATA_API bool remove_orphan_vertices(fw_vertex_position& _vertex, fw_vertex_index& _vertex_index);
+SIGHT_GEOMETRY_DATA_API bool remove_orphan_vertices(fw_vertex_position& _vertex, fw_vertex_index& _vertex_index);
 
 //-----------------------------------------------------------------------------
 

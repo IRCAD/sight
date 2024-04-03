@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "app/config.hpp"
+#include <sight/app/config.hpp>
+
 #include "app/config_manager.hpp"
 #include "app/helper/config.hpp"
 

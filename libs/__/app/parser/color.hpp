@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "app/config.hpp"
+#include <sight/app/config.hpp>
 
 #include <core/tools/object.hpp>
 
@@ -44,7 +44,7 @@ namespace sight::app::parser
  * @subsection Configuration Configuration
  * - \b value (optional, hexadecimal, default=#FFFFFF): color sets to the data.
  */
-class APP_CLASS_API color final : public service::object_parser
+class SIGHT_APP_CLASS_API color final : public service::object_parser
 {
 public:
 
@@ -52,10 +52,10 @@ public:
     SIGHT_DECLARE_SERVICE(color, service::object_parser);
 
     /// Does nothing.
-    APP_API color() = default;
+    SIGHT_APP_API color() = default;
 
     /// Does nothing.
-    APP_API ~color() override = default;
+    SIGHT_APP_API ~color() override = default;
 
 private:
 

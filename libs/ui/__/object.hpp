@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/factory.hpp"
 #include "ui/__/factory/new.hpp"
 
@@ -38,7 +39,7 @@ using config_t = boost::property_tree::ptree;
 /**
  * @brief Base class for all fwGui's classes
  */
-class UI_CLASS_API object : public sight::core::base_object
+class SIGHT_UI_CLASS_API object : public sight::core::base_object
 {
 public:
 

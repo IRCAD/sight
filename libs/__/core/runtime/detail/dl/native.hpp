@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/runtime/runtime_exception.hpp"
 
 #include <filesystem>

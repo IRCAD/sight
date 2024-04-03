@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/runtime/extension.hpp"
 
 #include <libxml/tree.h>

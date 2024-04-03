@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/scene2d/config.hpp"
-
 #include <data/transfer_function.hpp>
 
 #include <viz/scene2d/adaptor.hpp>
@@ -72,8 +70,8 @@ namespace sight::module::viz::scene2d::adaptor
  *    - \b opacity (optional, default="1.0"): opacity of the gradient.
  *    - \b interactive (optional, true/false, default="false"): enables interactions.
  */
-class MODULE_VIZ_SCENE2D_CLASS_API transfer_function : public QObject,
-                                                       public sight::viz::scene2d::adaptor
+class transfer_function : public QObject,
+                          public sight::viz::scene2d::adaptor
 {
 Q_OBJECT
 
@@ -82,10 +80,10 @@ public:
     SIGHT_DECLARE_SERVICE(transfer_function, sight::viz::scene2d::adaptor);
 
     /// Creates the adaptor.
-    MODULE_VIZ_SCENE2D_API transfer_function() noexcept;
+    transfer_function() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE2D_API ~transfer_function() noexcept override;
+    ~transfer_function() noexcept override;
 
 protected:
 

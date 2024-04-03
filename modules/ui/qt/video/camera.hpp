@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/tools/failed.hpp>
@@ -101,8 +99,8 @@ namespace sight::module::ui::qt::video
  *`configuredDevice()` signal with your grabber's `startCamera` slot.
  */
 
-class MODULE_UI_QT_CLASS_API camera final : public QObject,
-                                            public sight::ui::editor
+class camera final : public QObject,
+                     public sight::ui::editor
 {
 Q_OBJECT
 
@@ -111,10 +109,10 @@ public:
     SIGHT_DECLARE_SERVICE(camera, sight::ui::editor);
 
     /// Initialize signals and slots.
-    MODULE_UI_QT_API camera();
+    camera();
 
     /// Destroys the service.
-    MODULE_UI_QT_API ~camera() noexcept override = default;
+    ~camera() noexcept override = default;
 
     // Key saved in the preference file
     static const std::string RESOLUTION_PREF_KEY;

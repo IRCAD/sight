@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
+
 #include "ui/qt/container/menubar.hpp"
 
 #include <core/base.hpp>
@@ -37,7 +38,7 @@ namespace sight::ui::qt::layout
 /**
  * @brief   Defines the menu bar layout manager for the GUI.
  */
-class UI_QT_CLASS_API menubar : public ui::layout::menubar_manager
+class SIGHT_UI_QT_CLASS_API menubar : public ui::layout::menubar_manager
 {
 public:
 
@@ -47,30 +48,30 @@ public:
         ui::factory::make<menubar>
     )
 
-    UI_QT_API ~menubar() override = default;
+    SIGHT_UI_QT_API ~menubar() override = default;
 
     /**
      * @brief Instantiate menu with parent menubar.
      * @pre layout must be initialized before.
      * @pre parent menubar must be instanced.
      */
-    UI_QT_API void create_layout(ui::container::menubar::sptr _parent, const std::string& _id) override;
+    SIGHT_UI_QT_API void create_layout(ui::container::menubar::sptr _parent, const std::string& _id) override;
 
     /**
      * @brief Destroy local menus.
      * @pre services using this menus must be stopped before.
      */
-    UI_QT_API void destroy_layout() override;
+    SIGHT_UI_QT_API void destroy_layout() override;
 
     /**
      * @brief Set the menu visibility.
      */
-    UI_QT_API void menu_is_visible(ui::container::menu::sptr _menu, bool _is_visible) override;
+    SIGHT_UI_QT_API void menu_is_visible(ui::container::menu::sptr _menu, bool _is_visible) override;
 
     /**
      * @brief Set the menu enable or not.
      */
-    UI_QT_API void menu_is_enabled(ui::container::menu::sptr _menu, bool _is_enabled) override;
+    SIGHT_UI_QT_API void menu_is_enabled(ui::container::menu::sptr _menu, bool _is_enabled) override;
 
 protected:
 

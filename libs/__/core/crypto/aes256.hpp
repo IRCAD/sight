@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/crypto/secure_string.hpp"
 
 namespace sight::core::crypto
@@ -31,16 +32,16 @@ namespace sight::core::crypto
 /// @param _message encrypted message
 /// @param _password password to use to decrypt the message
 /// @returns decrypted message
-CORE_API std::string decrypt(const std::string& _message, const secure_string& _password);
-CORE_API secure_string decrypt(const secure_string& _message, const secure_string& _password);
-CORE_API secure_string decrypt(const char* _message, const secure_string& _password);
+SIGHT_CORE_API std::string decrypt(const std::string& _message, const secure_string& _password);
+SIGHT_CORE_API secure_string decrypt(const secure_string& _message, const secure_string& _password);
+SIGHT_CORE_API secure_string decrypt(const char* _message, const secure_string& _password);
 
 /// Encrypt a message using AES256 algorithm
 /// @param _message clear message
 /// @param _password password to use to encrypt the message
 /// @returns encrypted message
-CORE_API std::string encrypt(const std::string& _message, const secure_string& _password);
-CORE_API secure_string encrypt(const secure_string& _message, const secure_string& _password);
-CORE_API secure_string encrypt(const char* _message, const secure_string& _password);
+SIGHT_CORE_API std::string encrypt(const std::string& _message, const secure_string& _password);
+SIGHT_CORE_API secure_string encrypt(const secure_string& _message, const secure_string& _password);
+SIGHT_CORE_API secure_string encrypt(const char* _message, const secure_string& _password);
 
 } // namespace sight::core::crypto

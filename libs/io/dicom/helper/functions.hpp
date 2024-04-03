@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <string>
 
@@ -33,7 +33,7 @@ namespace sight::io::dicom::helper
  * @brief Generates a random Dicom Patient ID using GDCM.
  * It must be at most 64 char long and non null.
  */
-IO_DICOM_API std::string generate_patient_id();
+SIGHT_IO_DICOM_API std::string generate_patient_id();
 
 /**
  * @brief Generates a random Dicom Study Instance UID using current time.
@@ -41,6 +41,6 @@ IO_DICOM_API std::string generate_patient_id();
  *
  * FIXME : According to Dicom, the Study Instance UID must identify a study from time and location.
  */
-IO_DICOM_API std::string generate_study_instance_uid();
+SIGHT_IO_DICOM_API std::string generate_study_instance_uid();
 
 } // namespace sight::io::dicom::helper

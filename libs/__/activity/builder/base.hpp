@@ -22,9 +22,10 @@
 
 #pragma once
 
+#include <sight/activity/config.hpp>
+
 #include "activity/builder/factory/new.hpp"
 #include "activity/builder/registry/detail.hpp"
-#include "activity/config.hpp"
 #include "activity/extension/activity.hpp"
 
 #include <core/base.hpp>
@@ -44,7 +45,7 @@ namespace sight::activity::builder
 /**
  * @brief Base class for all activity builder's classes.
  */
-class ACTIVITY_CLASS_API base : public core::base_object
+class SIGHT_ACTIVITY_CLASS_API base : public core::base_object
 {
 public:
 
@@ -78,14 +79,14 @@ public:
      * @param[in] _current_selection a vector which contains current selected data.
      * @return specific data Activity for the specified Activity.
      */
-    ACTIVITY_API virtual data::activity::sptr build_data(
+    SIGHT_ACTIVITY_API virtual data::activity::sptr build_data(
         const activity::extension::activity_info& _activity_info,
         const CSPTR(data::vector)& _current_selection
     ) const = 0;
 
 protected:
 
-    ACTIVITY_API virtual SPTR(data::vector) type(
+    SIGHT_ACTIVITY_API virtual SPTR(data::vector) type(
         const CSPTR(data::vector) & _current_selection,
         const std::string& _type
     ) const;

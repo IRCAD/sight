@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
+
 #include "io/__/writer/factory/new.hpp"
 #include "io/__/writer/registry/detail.hpp"
 
@@ -46,7 +47,7 @@ namespace sight::io::writer
  *
  * @todo Remove m_extension of this class. It must be deprecated.
  */
-class IO_CLASS_API object_writer : public core::base_object
+class SIGHT_IO_CLASS_API object_writer : public core::base_object
 {
 public:
 
@@ -77,7 +78,7 @@ public:
      *
      * This method write the object given in parameter of set_object method.
      */
-    IO_API virtual void write() = 0;
+    SIGHT_IO_API virtual void write() = 0;
 
     /**
      * @brief m_object setter.
@@ -85,14 +86,14 @@ public:
      * @note m_object is saved in class as a weakptr
      * @note This object can be get with the method get_object()
      */
-    IO_API virtual void set_object(core::tools::object::csptr _object);
+    SIGHT_IO_API virtual void set_object(core::tools::object::csptr _object);
 
     /**
      * @brief m_object getter.
      *
      * @return m_object
      */
-    IO_API virtual core::tools::object::csptr get_object() const;
+    SIGHT_IO_API virtual core::tools::object::csptr get_object() const;
 
     /**
      * @brief Return the default filename extension can be dynamic.
@@ -101,12 +102,12 @@ public:
      * The extension can be empty (for a repository for example) or must return a string BEGINNING WITH A DOT
      * by default be empty
      */
-    IO_API virtual std::string extension() const = 0;
+    SIGHT_IO_API virtual std::string extension() const = 0;
 
     /**
      * @brief Requests writer abortion.
      */
-    IO_API virtual void cancel();
+    SIGHT_IO_API virtual void cancel();
 
     /// Returns the internal job, nullptr by default
     virtual SPTR(core::jobs::base) get_job() const
@@ -117,7 +118,7 @@ public:
 protected:
 
     /// Destructor. Do nothing.
-    IO_API ~object_writer() override = default;
+    SIGHT_IO_API ~object_writer() override = default;
 
     /**
      * @brief Object to write on filesystem by the process.

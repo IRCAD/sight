@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/dicom/config.hpp"
+#include <sight/filter/dicom/config.hpp>
+
 #include "filter/dicom/exceptions/filter_failure.hpp"
 #include "filter/dicom/factory/new.hpp"
 #include "filter/dicom/registry/detail.hpp"
@@ -38,7 +39,7 @@ namespace sight::filter::dicom
 /**
  * @brief Base class for Dicom instance filter.
  */
-class FILTER_DICOM_CLASS_API filter : public core::tools::object
+class SIGHT_FILTER_DICOM_CLASS_API filter : public core::tools::object
 {
 public:
 
@@ -76,39 +77,39 @@ public:
     };
 
     /// Destructor
-    FILTER_DICOM_API ~filter() override;
+    SIGHT_FILTER_DICOM_API ~filter() override;
 
     /**
      * @brief Apply the filter
      * @return Returns one or more Dicom Instance Group
      */
-    FILTER_DICOM_API virtual dicom_series_container_t apply(
+    SIGHT_FILTER_DICOM_API virtual dicom_series_container_t apply(
         const data::dicom_series::sptr& _series,
         const core::log::logger::sptr& _logger
     ) const = 0;
 
     /// Return the name of the filter
-    FILTER_DICOM_API virtual std::string get_name() const = 0;
+    SIGHT_FILTER_DICOM_API virtual std::string get_name() const = 0;
 
     /// Return the description of the filter
-    FILTER_DICOM_API virtual std::string get_description() const = 0;
+    SIGHT_FILTER_DICOM_API virtual std::string get_description() const = 0;
 
     /// Return filter type
-    FILTER_DICOM_API virtual filter_t get_filter_type() const = 0;
+    SIGHT_FILTER_DICOM_API virtual filter_t get_filter_type() const = 0;
 
     /// Return true if a configuration is required
-    FILTER_DICOM_API virtual bool is_configuration_required() const;
+    SIGHT_FILTER_DICOM_API virtual bool is_configuration_required() const;
 
     /// Return true if the filter is configurable using GUI
-    FILTER_DICOM_API virtual bool is_configurable_with_gui() const;
+    SIGHT_FILTER_DICOM_API virtual bool is_configurable_with_gui() const;
 
     /// Configure the filter using GUI dialog
-    FILTER_DICOM_API virtual void configure_with_gui();
+    SIGHT_FILTER_DICOM_API virtual void configure_with_gui();
 
 protected:
 
     /// Constructor
-    FILTER_DICOM_API filter();
+    SIGHT_FILTER_DICOM_API filter();
 };
 
 } // namespace sight::filter::dicom

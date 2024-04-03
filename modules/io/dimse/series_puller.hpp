@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/dimse/config.hpp"
-
 #include <data/dicom_series.hpp>
 #include <data/series_set.hpp>
 #include <data/vector.hpp>
@@ -70,9 +68,9 @@ namespace sight::module::io::dimse
  * - \b dicomReader (mandatory, string): reader type to use.
  * - \b readerConfig (optional, string, default=""): configuration for the DICOM Reader.
  */
-class MODULE_IO_DIMSE_CLASS_API series_puller final : public service::controller,
-                                                      public service::has_services,
-                                                      private service::notifier
+class series_puller final : public service::controller,
+                            public service::has_services,
+                            private service::notifier
 {
 public:
 
@@ -80,24 +78,24 @@ public:
     SIGHT_DECLARE_SERVICE(series_puller, sight::service::controller);
 
     /// Creates the service and slots.
-    MODULE_IO_DIMSE_API series_puller() noexcept;
+    series_puller() noexcept;
 
     /// Destroys the service.
-    MODULE_IO_DIMSE_API ~series_puller() noexcept override = default;
+    ~series_puller() noexcept override = default;
 
 protected:
 
     /// Configures the service.
-    MODULE_IO_DIMSE_API void configuring() override;
+    void configuring() override;
 
     /// Creates the DICOM reader.
-    MODULE_IO_DIMSE_API void starting() override;
+    void starting() override;
 
     /// Stops the DICOM reader.
-    MODULE_IO_DIMSE_API void stopping() override;
+    void stopping() override;
 
     /// Pulls series.
-    MODULE_IO_DIMSE_API void updating() override;
+    void updating() override;
 
 private:
 
@@ -107,7 +105,7 @@ private:
      *
      * Connects data::series_set::REMOVED_OBJECTS_SIG of s_SERIES_SET_INOUT to REMOVE_SERIES_SLOT (removeSeries)
      */
-    MODULE_IO_DIMSE_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     using dicom_series_container_t  = data::series_set::container_t;
     using read_dicom_slot_t         = core::com::slot<void (dicom_series_container_t)>;

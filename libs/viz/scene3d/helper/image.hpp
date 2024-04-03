@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <data/image.hpp>
 
@@ -38,7 +38,7 @@ public:
      * @brief Compute the bounding box of an image mask.
      * @param _mask[in] mask
      */
-    static VIZ_SCENE3D_API Ogre::AxisAlignedBox compute_bounding_box_from_mask(const data::image::csptr _mask);
+    static SIGHT_VIZ_SCENE3D_API Ogre::AxisAlignedBox compute_bounding_box_from_mask(const data::image::csptr _mask);
 };
 
 } // namespace sight::viz::scene3d::helper

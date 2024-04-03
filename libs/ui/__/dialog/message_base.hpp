@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/object.hpp"
 
 #include <string>
@@ -33,7 +34,7 @@ namespace sight::ui::dialog
 /**
  * @brief   Defines the generic message box for IHM.
  */
-class UI_CLASS_API message_base : public ui::object
+class SIGHT_UI_CLASS_API message_base : public ui::object
 {
 public:
 
@@ -63,33 +64,33 @@ public:
     };
 
     /// Constructor. Do nothing.
-    UI_API message_base();
+    SIGHT_UI_API message_base();
     /// Destructor. Do nothing.
-    UI_API ~message_base() override;
+    SIGHT_UI_API ~message_base() override;
 
     using factory_registry_key_t = std::string;
-    UI_API static const factory_registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const factory_registry_key_t REGISTRY_KEY;
 
     /// Set the title of the message box
-    UI_API virtual void set_title(const std::string& _title) = 0;
+    SIGHT_UI_API virtual void set_title(const std::string& _title) = 0;
 
     /// Set the message
-    UI_API virtual void set_message(const std::string& _msg) = 0;
+    SIGHT_UI_API virtual void set_message(const std::string& _msg) = 0;
 
     /// Set the icon (CRITICAL, WARNING, INFO or QUESTION)
-    UI_API virtual void set_icon(icons _icon) = 0;
+    SIGHT_UI_API virtual void set_icon(icons _icon) = 0;
 
     /// Add a button (OK, YES_NO, YES, NO, CANCEL, RETRY)
-    UI_API virtual void add_button(buttons _button) = 0;
+    SIGHT_UI_API virtual void add_button(buttons _button) = 0;
 
     /// Set the default button
-    UI_API virtual void set_default_button(buttons _button) = 0;
+    SIGHT_UI_API virtual void set_default_button(buttons _button) = 0;
 
     /// Add a custom button to this dialog
-    UI_API virtual void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) = 0;
+    SIGHT_UI_API virtual void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) = 0;
 
     /// Show the message box and return the clicked button.
-    UI_API virtual buttons show() = 0;
+    SIGHT_UI_API virtual buttons show() = 0;
 };
 
 } // namespace sight::ui::dialog

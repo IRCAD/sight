@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/itk/config.hpp"
 
 #include <core/macros.hpp>
 
@@ -68,15 +66,15 @@ namespace sight::module::io::itk
  * - \b file (optional): path of the images to load, if it not defined, 'open_location_dialog()' should be called to
  * define the path.
  */
-class MODULE_IO_ITK_CLASS_API series_set_reader : public sight::io::service::reader
+class series_set_reader : public sight::io::service::reader
 {
 public:
 
     SIGHT_DECLARE_SERVICE(series_set_reader, sight::io::service::reader);
 
-    MODULE_IO_ITK_API series_set_reader() noexcept = default;
+    series_set_reader() noexcept = default;
 
-    MODULE_IO_ITK_API ~series_set_reader() noexcept override = default;
+    ~series_set_reader() noexcept override = default;
 
 protected:
 
@@ -94,17 +92,17 @@ protected:
     void configuring() override;
 
     /// Reads inr files specified by user (configure or open_location_dialog) and pushes them into series_set.
-    MODULE_IO_ITK_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Configure the inr files path.
      *
      * This method is used to find the inr files path using a files selector.
      */
-    MODULE_IO_ITK_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
     /// Returns managed file type, here FILES
-    MODULE_IO_ITK_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
 private:
 

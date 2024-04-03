@@ -325,7 +325,6 @@ if(WIN32)
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/template_exe.bat.in"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/setpath.bat.in"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/windows_fixup.cmake.in"
-              "${CMAKE_SOURCE_DIR}/cmake/install/windows/generate_headers.cmake"
         DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/windows
         COMPONENT dev
     )

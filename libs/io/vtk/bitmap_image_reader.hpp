@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/vtk/config.hpp"
+#include <sight/io/vtk/config.hpp>
 
 #include <core/location/single_file.hpp>
 
@@ -62,22 +62,22 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     //! @brief Constructor.
-    IO_VTK_API bitmap_image_reader();
+    SIGHT_IO_VTK_API bitmap_image_reader();
 
     //! @brief Destructor.
-    IO_VTK_API ~bitmap_image_reader() override;
+    SIGHT_IO_VTK_API ~bitmap_image_reader() override;
 
     //! @brief Reading operator.
-    IO_VTK_API void read() override;
+    SIGHT_IO_VTK_API void read() override;
 
     /// @return The available file extensions for loading bitmap images.
-    IO_VTK_API std::string extension() const override;
+    SIGHT_IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::base) get_job() const override;
+    SIGHT_IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
     /// @return A vector of the available bitmap extensions for the vtkImageReader2 class
-    IO_VTK_API static void get_available_extensions(std::vector<std::string>& _ext);
+    SIGHT_IO_VTK_API static void get_available_extensions(std::vector<std::string>& _ext);
 
 private:
 

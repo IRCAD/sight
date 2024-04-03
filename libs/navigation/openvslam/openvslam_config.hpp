@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "navigation/openvslam/config.hpp"
+#include <sight/navigation/openvslam/config.hpp>
 
 namespace sight::navigation::openvslam
 {
@@ -30,7 +30,7 @@ namespace sight::navigation::openvslam
 /**
  * @brief Handles Openvslam orb parameters.
  */
-struct NAVIGATION_OPENVSLAM_CLASS_API orb_params
+struct SIGHT_NAVIGATION_OPENVSLAM_CLASS_API orb_params
 {
     /// Maximum number of key points.
     unsigned int max_num_key_pts = 2000;
@@ -47,7 +47,7 @@ struct NAVIGATION_OPENVSLAM_CLASS_API orb_params
 /**
  * @brief Handles Openvslam Initializer parameters (only used for monocular).
  */
-struct NAVIGATION_OPENVSLAM_CLASS_API init_params
+struct SIGHT_NAVIGATION_OPENVSLAM_CLASS_API init_params
 {
     /// Number of Ransac Iterations.
     unsigned int num_ransac_iterations = 100;
@@ -66,7 +66,7 @@ struct NAVIGATION_OPENVSLAM_CLASS_API init_params
 /**
  * @brief Handles Openvslam tracking parameters.
  */
-struct NAVIGATION_OPENVSLAM_CLASS_API tracking_params
+struct SIGHT_NAVIGATION_OPENVSLAM_CLASS_API tracking_params
 {
     /// Depth threshold
     double true_depth_thr = 40.0;

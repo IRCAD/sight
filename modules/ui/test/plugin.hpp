@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,19 +23,19 @@
 
 #include "macro_saver.hpp"
 
-#include "modules/ui/test/config.hpp"
+#include "sight/modules/ui/test/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
 namespace sight::module::ui::test
 {
 
-class MODULE_UI_TEST_CLASS_API plugin : public core::runtime::plugin
+class SIGHT_MODULE_UI_TEST_CLASS_API plugin : public core::runtime::plugin
 {
 public:
 
-    MODULE_UI_TEST_API void start() noexcept override;
-    MODULE_UI_TEST_API void stop() noexcept override;
+    SIGHT_MODULE_UI_TEST_API void start() noexcept override;
+    SIGHT_MODULE_UI_TEST_API void stop() noexcept override;
 
 private:
 

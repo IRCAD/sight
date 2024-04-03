@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/qt3d/config.hpp"
-
 #include <core/base.hpp>
 
 #include <ui/__/container/widget.hpp>
@@ -51,8 +49,8 @@ namespace sight::module::viz::qt3d
 {
 
 /// Defines a class to manage a render window.
-class MODULE_VIZ_QT3D_CLASS_API window_interactor final : public QObject,
-                                                          public sight::viz::qt3d::window_interactor
+class window_interactor final : public QObject,
+                                public sight::viz::qt3d::window_interactor
 {
 Q_OBJECT
 
@@ -61,14 +59,14 @@ public:
     SIGHT_DECLARE_CLASS(window_interactor, sight::viz::qt3d::window_interactor);
 
     /// Destroys the window container.
-    MODULE_VIZ_QT3D_API ~window_interactor() final = default;
+    ~window_interactor() final = default;
     /**
      * @brief Creates the container that holds the QtWidget.
      * @param _parent the parent container of the widget.
      */
-    MODULE_VIZ_QT3D_API void create_container(ui::container::widget::sptr _parent) final;
+    void create_container(ui::container::widget::sptr _parent) final;
 
-    MODULE_VIZ_QT3D_API void set_3d_view(Qt3DExtras::Qt3DWindow* _3d_view) final;
+    void set_3d_view(Qt3DExtras::Qt3DWindow* _3d_view) final;
 
 private:
 

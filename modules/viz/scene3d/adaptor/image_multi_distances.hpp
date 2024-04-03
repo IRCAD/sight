@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <data/point_list.hpp>
 
@@ -97,10 +95,10 @@ public:
     SIGHT_DECLARE_SERVICE(image_multi_distances, sight::viz::scene3d::adaptor);
 
     /// Initialize slots.
-    MODULE_VIZ_SCENE3D_API image_multi_distances() noexcept;
+    image_multi_distances() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~image_multi_distances() noexcept override = default;
+    ~image_multi_distances() noexcept override = default;
 
     /**
      * @brief Retrieves the picked distance and stores the result in m_pickedData.
@@ -108,14 +106,14 @@ public:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_API void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) override;
+    void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) override;
 
     /**
      * @brief Moves a distance stored in m_pickedData.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_API void mouse_move_event(
+    void mouse_move_event(
         mouse_button /*_button*/,
         modifier _mod,
         int _x,
@@ -125,7 +123,7 @@ public:
     ) override;
 
     /// Resets m_pickedData.
-    MODULE_VIZ_SCENE3D_API void button_release_event(
+    void button_release_event(
         mouse_button _button,
         modifier _mod,
         int _x,
@@ -133,21 +131,21 @@ public:
     ) override;
 
     /// catch escape to go out of add distance mode
-    MODULE_VIZ_SCENE3D_API void key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/) final;
+    void key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/) final;
 
     /// catch the mouse leaving the widget
-    MODULE_VIZ_SCENE3D_API void leave_event() final;
+    void leave_event() final;
 
     /// catch the mouse entering the widget
-    MODULE_VIZ_SCENE3D_API void enter_event() final;
+    void enter_event() final;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    void configuring() override;
 
     /// Adds the interactor to the layer and creates the material.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -156,19 +154,19 @@ protected:
      * Connect data::image::DISTANCE_DISPLAYED_SIG to UPDATE_VISIBILITY_SLOT
      * Connect data::image::MODIFIED_SIG to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     /// Updates materials and all distances.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    void updating() override;
 
     /// Removes the interactor from the layer and destroys Ogre resources.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Sets distances visibility.
      * @param _visible the visibility status of distances.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
+    void set_visible(bool _visible) override;
 
 private:
 

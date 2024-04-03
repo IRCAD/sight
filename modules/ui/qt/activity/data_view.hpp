@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <activity/extension/activity.hpp>
 
 #include <data/activity.hpp>
@@ -40,14 +38,14 @@ namespace sight::module::ui::qt::activity
 /**
  * @brief This class displays a tab widget allowing to select the required data to create an activity.
  */
-class MODULE_UI_QT_CLASS_API data_view : public QTabWidget
+class data_view : public QTabWidget
 {
 Q_OBJECT;
 
 public:
 
     /// Identifier of the role UID in the series tree item.
-    MODULE_UI_QT_API static const int UID_ROLE;
+    static const int UID_ROLE;
 
     using object_icon_map_t = std::map<std::string, std::string>;
 
@@ -91,10 +89,10 @@ public:
      * @brief Creates the tabbed widget.
      * @param _parent the parent of this widget.
      */
-    MODULE_UI_QT_API data_view(QWidget* _parent = nullptr);
+    data_view(QWidget* _parent = nullptr);
 
     /// Destroys the tabbed widget.
-    MODULE_UI_QT_API ~data_view() override;
+    ~data_view() override;
 
     /**
      * @brief Creates all tabs from an activity information.
@@ -104,13 +102,13 @@ public:
      *
      * @param _info the struct containing the activity configuration.
      */
-    MODULE_UI_QT_API void fill_information(const sight::activity::extension::activity_info& _info);
+    void fill_information(const sight::activity::extension::activity_info& _info);
 
     /**
      * @brief Creates all tabs from an activity.
      * @param _activity the activity.
      */
-    MODULE_UI_QT_API void fill_information(const data::activity::sptr& _activity);
+    void fill_information(const data::activity::sptr& _activity);
 
     /**
      * @brief Checks if all the required data are selected and fill activity data composite.
@@ -123,7 +121,7 @@ public:
      * @param _activity activity to fill with the selected data.
      * @param[out] _error_msg it will contain the error information if the data are not correct.
      */
-    MODULE_UI_QT_API bool check_and_compute_data(
+    bool check_and_compute_data(
         const data::activity::sptr& _activity,
         std::string& _error_msg
     );
@@ -134,7 +132,7 @@ public:
      * @param[out] _error_msg it will contain the error information if the data are not correct.
      * @return return the data if it is correct, else return a nullptr and errorMsg contains detailled error.
      */
-    MODULE_UI_QT_API data::object::sptr check_data(std::size_t _index, std::string& _error_msg);
+    data::object::sptr check_data(std::size_t _index, std::string& _error_msg);
 
     /**
      * @brief Sets the IO selector configuration used to import data.
@@ -155,7 +153,7 @@ public:
     }
 
     /// Removes all the widget tabs.
-    MODULE_UI_QT_API virtual void clear();
+    virtual void clear();
 
     /**
      * @brief Sets the map that defines the icon associated to an object.

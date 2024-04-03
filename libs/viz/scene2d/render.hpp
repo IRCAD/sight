@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/scene2d/config.hpp"
+#include <sight/viz/scene2d/config.hpp>
+
 #include "viz/scene2d/data/axis.hpp"
 #include "viz/scene2d/data/event.hpp"
 #include "viz/scene2d/data/viewport.hpp"
@@ -86,7 +87,7 @@ class adaptor;
  *   - \b uid: set the adaptor uid
  *
  */
-class VIZ_SCENE2D_CLASS_API render : public viz::render
+class SIGHT_VIZ_SCENE2D_CLASS_API render : public viz::render
 {
 public:
 
@@ -94,56 +95,56 @@ public:
 
     /// Constructor, set coordinates m_sceneStart to (-100, -100), m_sceneWidth to (200, 200) and add new handle events
     ///  ADDED_KEYS, REMOVED_KEYS and CHANGED_KEYS.
-    VIZ_SCENE2D_API render() noexcept;
+    SIGHT_VIZ_SCENE2D_API render() noexcept;
 
     /// Basic destructor, do nothing.
-    VIZ_SCENE2D_API ~render() noexcept override;
+    SIGHT_VIZ_SCENE2D_API ~render() noexcept override;
 
     /// Get the scene.
-    VIZ_SCENE2D_API QGraphicsScene* get_scene() const;
+    SIGHT_VIZ_SCENE2D_API QGraphicsScene* get_scene() const;
 
     /// Get the view.
-    VIZ_SCENE2D_API graphics_view* get_view() const;
+    SIGHT_VIZ_SCENE2D_API graphics_view* get_view() const;
 
     /// Get the axis.
-    VIZ_SCENE2D_API scene2d::data::axis::sptr get_axis(const std::string& _id) const;
+    SIGHT_VIZ_SCENE2D_API scene2d::data::axis::sptr get_axis(const std::string& _id) const;
 
     /// If the event hasn't been accepted yet, call the adaptor processInteraction function.
-    VIZ_SCENE2D_API void dispatch_interaction(scene2d::data::event& _event);
+    SIGHT_VIZ_SCENE2D_API void dispatch_interaction(scene2d::data::event& _event);
 
     /// Returns true if given coordinates are contained in the view of the scene
-    VIZ_SCENE2D_API bool contains(const scene2d::vec2d_t& _coord) const;
+    SIGHT_VIZ_SCENE2D_API bool contains(const scene2d::vec2d_t& _coord) const;
 
     /** @brief Compute the viewport coordinates mapped to scene coordinates.
      * @param _coord input viewport coordinates
      * @param _clip clip the returned coordinates to the size of the scene
      * @return scene coordinates
      */
-    VIZ_SCENE2D_API scene2d::vec2d_t map_to_scene(const scene2d::vec2d_t& _coord, bool _clip = false) const;
+    SIGHT_VIZ_SCENE2D_API scene2d::vec2d_t map_to_scene(const scene2d::vec2d_t& _coord, bool _clip = false) const;
 
     /// Returns what happens to scene's aspect ratio on view resize events
-    VIZ_SCENE2D_API Qt::AspectRatioMode get_aspect_ratio_mode() const;
+    SIGHT_VIZ_SCENE2D_API Qt::AspectRatioMode get_aspect_ratio_mode() const;
 
     /// Update scene size from items bounding rect, this bounding can be enlarged with ratioPercent parameter
-    VIZ_SCENE2D_API void update_scene_size(float _ratio_percent = 0);
+    SIGHT_VIZ_SCENE2D_API void update_scene_size(float _ratio_percent = 0);
 
 protected:
 
     /// Get configuration options from XML
-    VIZ_SCENE2D_API void configuring() override;
+    SIGHT_VIZ_SCENE2D_API void configuring() override;
 
     /// Call startContext to set the scene, the viewport and the view,
     /// and add'em to the widget and start the adaptors
     /// contained in the adaptors id vector of the ObjectsID2AdaptorIDVector map.
-    VIZ_SCENE2D_API void starting() override;
+    SIGHT_VIZ_SCENE2D_API void starting() override;
 
     /// Do nothing.
-    VIZ_SCENE2D_API void updating() override;
+    SIGHT_VIZ_SCENE2D_API void updating() override;
 
     /// Stop all the adaptors attached to the render related composite,
     /// stop all those attached to the objects contained
     /// by the render related composite, clear the maps and call stopContext().
-    VIZ_SCENE2D_API void stopping() override;
+    SIGHT_VIZ_SCENE2D_API void stopping() override;
 
 private:
 

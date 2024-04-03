@@ -35,8 +35,8 @@ namespace sight::data
  *
  * Our convention is a row-major representation.
  */
-class DATA_CLASS_API matrix4 final : public data::container<std::array<double,
-                                                                       16> >
+class SIGHT_DATA_CLASS_API matrix4 final : public data::container<std::array<double,
+                                                                             16> >
 {
 public:
 
@@ -45,17 +45,17 @@ public:
     /**
      * @brief Default constructor
      */
-    DATA_API matrix4();
-    DATA_API matrix4(std::initializer_list<value_type> _init_list);
+    SIGHT_DATA_API matrix4();
+    SIGHT_DATA_API matrix4(std::initializer_list<value_type> _init_list);
 
     //! @brief destructor
-    DATA_API ~matrix4() noexcept override = default;
+    SIGHT_DATA_API ~matrix4() noexcept override = default;
 
     /// This will enable common collection constructors / assignment operators
     using container<matrix4::container_t>::container;
     using container<matrix4::container_t>::operator=;
 
-    DATA_API matrix4& operator=(std::initializer_list<value_type> _init_list);
+    SIGHT_DATA_API matrix4& operator=(std::initializer_list<value_type> _init_list);
 
     /**
      * @{
@@ -87,13 +87,13 @@ public:
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

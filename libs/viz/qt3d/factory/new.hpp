@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/qt3d/config.hpp"
+#include <sight/viz/qt3d/config.hpp>
+
 #include "viz/qt3d/registry/detail.hpp"
 
 #include <string>
@@ -38,7 +39,7 @@ namespace factory
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
-VIZ_QT3D_API SPTR(viz::qt3d::window_interactor) make(
+SIGHT_VIZ_QT3D_API SPTR(viz::qt3d::window_interactor) make(
     const viz::qt3d::registry::key_t& _classname
 );
 

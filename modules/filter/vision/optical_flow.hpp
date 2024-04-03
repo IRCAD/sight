@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/vision/config.hpp"
 
 #include <data/frame_tl.hpp>
 
@@ -64,7 +62,7 @@ namespace sight::module::filter::vision
  * to keep a good balance between computation time and feature tracking quality (default 3,6),
  *  usually you don't need to change the value.
  */
-class MODULE_FILTER_VISION_CLASS_API optical_flow : public service::controller
+class optical_flow : public service::controller
 {
 public:
 
@@ -74,27 +72,27 @@ public:
     using no_motion_signal_t = core::com::signal<void ()>;
 
     /// Constructor
-    MODULE_FILTER_VISION_CLASS_API optical_flow() noexcept;
+    optical_flow() noexcept;
 
     /// Destructor
-    MODULE_FILTER_VISION_CLASS_API ~optical_flow() noexcept override;
+    ~optical_flow() noexcept override;
 
     /// Connects ::arData:FrameTL::signals::PUSHED to service::slots::UPDATE
-    MODULE_FILTER_VISION_CLASS_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
 protected:
 
     /// Does nothing.
-    MODULE_FILTER_VISION_CLASS_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_VISION_CLASS_API void starting() override;
+    void starting() override;
 
     /// Computes Optical flow.
-    MODULE_FILTER_VISION_CLASS_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_FILTER_VISION_CLASS_API void stopping() override;
+    void stopping() override;
 
 private:
 

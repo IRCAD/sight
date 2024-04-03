@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/vision/config.hpp"
-
 #include <io/__/service/writer.hpp>
 
 #include <string>
@@ -50,37 +48,37 @@ namespace sight::module::io::vision
  * - \b format (optional, values=.jpeg|.ppm|.png|.bmp|.tiff, default=.tiff): output file format.
  * - \b folder (optional): directory in which the files should be written.
  */
-class MODULE_IO_VISION_CLASS_API calibration_images_writer : public sight::io::service::writer
+class calibration_images_writer : public sight::io::service::writer
 {
 public:
 
     SIGHT_DECLARE_SERVICE(calibration_images_writer, sight::io::service::writer);
 
     /// Constructor.
-    MODULE_IO_VISION_API calibration_images_writer() noexcept;
+    calibration_images_writer() noexcept;
 
     /// Destructor.
-    MODULE_IO_VISION_API ~calibration_images_writer() noexcept override;
+    ~calibration_images_writer() noexcept override;
 
     /// Configures the folder path.
-    MODULE_IO_VISION_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
 protected:
 
     /// Returns the folder path type.
-    MODULE_IO_VISION_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
     /// Configures the output file format.
-    MODULE_IO_VISION_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_IO_VISION_API void starting() override;
+    void starting() override;
 
     /// Writes the images to the folder if it has been defined.
-    MODULE_IO_VISION_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_IO_VISION_API void stopping() override;
+    void stopping() override;
 
 private:
 

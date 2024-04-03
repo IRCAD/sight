@@ -37,21 +37,21 @@ public:
      * @param _tester The current tester
      * @param _button How to get the button to be clicked
      */
-    UI_TEST_API static void push(tester& _tester, const selector& _button);
+    SIGHT_UI_TEST_API static void push(tester& _tester, const selector& _button);
 
     /**
      * Click on a button in a menu bar
      * @param _tester The current tester
      * @param _button How to get the menu bar button to be clicked
      */
-    UI_TEST_API static void push_menu_bar_item(tester& _tester, const selector& _button);
+    SIGHT_UI_TEST_API static void push_menu_bar_item(tester& _tester, const selector& _button);
 
     /**
      * Wait for a button to be clickable
      * @param _tester The current tester
      * @param _button How to get the button to wait
      */
-    UI_TEST_API static void wait_for_clickability(
+    SIGHT_UI_TEST_API static void wait_for_clickability(
         tester& _tester,
         const selector& _button
     );

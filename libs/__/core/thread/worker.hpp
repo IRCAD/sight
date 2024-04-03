@@ -30,7 +30,7 @@
 #include <core/base.hpp>
 #include <core/clock.hpp>
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 namespace sight::core::thread
 {
@@ -38,7 +38,7 @@ namespace sight::core::thread
 using thread_id_t = std::thread::id;
 
 /// Returns the current thread id
-CORE_API thread_id_t get_current_thread_id();
+SIGHT_CORE_API thread_id_t get_current_thread_id();
 
 class timer; // NOLINT(bugprone-forward-declaration-namespace)
 
@@ -46,7 +46,7 @@ class timer; // NOLINT(bugprone-forward-declaration-namespace)
  * @brief   This class creates and manages a task loop.
  * The default implementation create a loop in a new thread.
  */
-class CORE_CLASS_API worker : public core::base_object
+class SIGHT_CORE_CLASS_API worker : public core::base_object
 {
 public:
 
@@ -62,7 +62,7 @@ public:
     = default;
 
     /// Waits for the last task to be processed and stops the loop
-    CORE_API virtual void stop() = 0;
+    SIGHT_CORE_API virtual void stop() = 0;
 
     /// Requests invocation of the given task handler and returns immediately.
     virtual void post(task_t _handler) = 0;
@@ -82,10 +82,10 @@ public:
     std::shared_future<R> post_task(CALLABLE _f);
 
     /// Returns the worker's thread id
-    CORE_API virtual thread_id_t get_thread_id() const = 0;
+    SIGHT_CORE_API virtual thread_id_t get_thread_id() const = 0;
 
     /// Creates and returns a core::thread::timer running in this Worker
-    CORE_API virtual SPTR(core::thread::timer) create_timer() = 0;
+    SIGHT_CORE_API virtual SPTR(core::thread::timer) create_timer() = 0;
 
     /**
      * @brief Returns a std::shared_future associated with the execution of Worker's loop
@@ -106,7 +106,7 @@ public:
      * @warning Qt implementation processes all Qt and Worker pending events, be careful.
      * @warning WxWidgets version is not yet implemented.
      */
-    CORE_API virtual void process_tasks(period_t _maxtime) = 0;
+    SIGHT_CORE_API virtual void process_tasks(period_t _maxtime) = 0;
 
     /**
      * @brief Processes all worker pending tasks for the calling thread
@@ -114,11 +114,11 @@ public:
      * You can call this function occasionally when your program is busy performing a long operation.
      * @warning WxWidgets version is not yet implemented.
      */
-    CORE_API virtual void process_tasks() = 0;
+    SIGHT_CORE_API virtual void process_tasks() = 0;
 
     /// Creates and returns a new instance of Worker default implementation
     /// (boost::Asio).
-    CORE_API static SPTR(worker) make();
+    SIGHT_CORE_API static SPTR(worker) make();
 
 protected:
 
@@ -139,7 +139,7 @@ using worker_key_type = std::string;
  * @param _key name of the worker thread
  * @note This method is thread safe.
  */
-CORE_API core::thread::worker::sptr get_worker(const worker_key_type& _key);
+SIGHT_CORE_API core::thread::worker::sptr get_worker(const worker_key_type& _key);
 
 /**
  * @brief Registers a worker.
@@ -148,27 +148,27 @@ CORE_API core::thread::worker::sptr get_worker(const worker_key_type& _key);
  * @param _worker pointer to the worker thread
  * @note This method is thread safe.
  */
-CORE_API void add_worker(const worker_key_type& _key, core::thread::worker::sptr _worker);
+SIGHT_CORE_API void add_worker(const worker_key_type& _key, core::thread::worker::sptr _worker);
 
 /**
  * @brief Stops and unregisters a worker
  * @param _key name of the worker thread
  * @note This method is thread safe.
  */
-CORE_API void remove_worker(const worker_key_type& _key);
+SIGHT_CORE_API void remove_worker(const worker_key_type& _key);
 
 /**
  * @brief Stops and unregisters a worker
  * @param _worker pointer to the worker thread
  * @note This method is thread safe.
  */
-CORE_API void remove_worker(core::thread::worker::sptr _worker);
+SIGHT_CORE_API void remove_worker(core::thread::worker::sptr _worker);
 
 /**
  * @brief Get the default registered worker
  * @note This method is thread safe.
  */
-CORE_API core::thread::worker::sptr get_default_worker();
+SIGHT_CORE_API core::thread::worker::sptr get_default_worker();
 
 /**
  * @brief Set the default registered worker.
@@ -181,7 +181,7 @@ CORE_API core::thread::worker::sptr get_default_worker();
  * @note This method is thread safe.
  * @throw sight::core::exception if the worker is null or if the previous default worker is already in use.
  */
-CORE_API void set_default_worker(core::thread::worker::sptr _worker);
+SIGHT_CORE_API void set_default_worker(core::thread::worker::sptr _worker);
 
 /**
  * @brief Reset the default registered worker.
@@ -191,7 +191,7 @@ CORE_API void set_default_worker(core::thread::worker::sptr _worker);
  *
  * @note This method is thread safe.
  */
-CORE_API void reset_default_worker();
+SIGHT_CORE_API void reset_default_worker();
 
 } // namespace sight::core::thread
 

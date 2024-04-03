@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/parameter_adaptor.hpp>
 
@@ -68,7 +66,7 @@ class CompositorListener;
  * - \b shaderType (optional, string, default=""): the type of the shader (vertex, geometry, fragment). Default to
  *      fragment.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API compositor_parameter final : public sight::viz::scene3d::parameter_adaptor
+class compositor_parameter final : public sight::viz::scene3d::parameter_adaptor
 {
 public:
 
@@ -76,30 +74,30 @@ public:
     SIGHT_DECLARE_SERVICE(compositor_parameter, sight::viz::scene3d::parameter_adaptor);
 
     /// Creates the adaptor.
-    MODULE_VIZ_SCENE3D_API compositor_parameter() noexcept;
+    compositor_parameter() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~compositor_parameter() noexcept override = default;
+    ~compositor_parameter() noexcept override = default;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    void configuring() override;
 
     /// Creates the compositor listener.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    void starting() override;
 
     /// Sets the parameter as dirty.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    void updating() override;
 
     /// Removes the compositor listener.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Sets the compositor status.
      * @param _enable the status of the compositor.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _enable) override;
+    void set_visible(bool _enable) override;
 
 private:
 

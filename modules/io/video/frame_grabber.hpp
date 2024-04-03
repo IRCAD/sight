@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/video/config.hpp"
 
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
@@ -107,33 +105,33 @@ namespace sight::module::io::video
  * It will have not effects if reading a video or if a timestamp can be deduced from images filenames
  * (ex. img_642752427.jpg).
  */
-class MODULE_IO_VIDEO_CLASS_API frame_grabber : public sight::io::service::grabber
+class frame_grabber : public sight::io::service::grabber
 {
 public:
 
     SIGHT_DECLARE_SERVICE(frame_grabber, sight::io::service::grabber);
 
     /// Constructor. Do nothing.
-    MODULE_IO_VIDEO_API frame_grabber() noexcept;
+    frame_grabber() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_IO_VIDEO_API ~frame_grabber() noexcept override;
+    ~frame_grabber() noexcept override;
 
-    MODULE_IO_VIDEO_API void set_parameter(ui::parameter_t _value, std::string _key) override;
+    void set_parameter(ui::parameter_t _value, std::string _key) override;
 
 protected:
 
     /// Initialize the layout and the camera.
-    MODULE_IO_VIDEO_API void starting() override;
+    void starting() override;
 
     /// Destroy the layout.
-    MODULE_IO_VIDEO_API void stopping() override;
+    void stopping() override;
 
     /// Do nothing.
-    MODULE_IO_VIDEO_API void updating() override;
+    void updating() override;
 
     /// Do nothing.
-    MODULE_IO_VIDEO_API void configuring() override;
+    void configuring() override;
 
     /// SLOT : Initialize and start camera (restart camera if is already started).
     void start_camera() override;

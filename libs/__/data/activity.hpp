@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/data/config.hpp>
+
 #include "data/composite.hpp"
-#include "data/config.hpp"
 #include "data/factory/new.hpp"
 
 namespace sight::data
@@ -32,7 +33,7 @@ namespace sight::data
 /**
  * @brief Holds activity information.
  */
-class DATA_CLASS_API activity final : public data::composite
+class SIGHT_DATA_CLASS_API activity final : public data::composite
 {
 public:
 
@@ -42,8 +43,8 @@ public:
 
     /// Constructor / Destructor
     /// @{
-    DATA_API activity() = default;
-    DATA_API ~activity() noexcept override = default;
+    SIGHT_DATA_API activity() = default;
+    SIGHT_DATA_API ~activity() noexcept override = default;
     /// @}
 
     /// Gets the activity configuration ID.
@@ -54,20 +55,20 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const activity& _other) const noexcept;
-    DATA_API bool operator!=(const activity& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const activity& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const activity& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache  cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

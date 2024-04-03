@@ -36,7 +36,7 @@ public:
      * @param _path The file to be selected
      * @warning This method assumes that the file dialog is already open.
      */
-    UI_TEST_API static void fill(tester& _tester, const std::filesystem::path& _path);
+    SIGHT_UI_TEST_API static void fill(tester& _tester, const std::filesystem::path& _path);
 };
 
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/base_object.hpp>
 
@@ -35,7 +35,7 @@ namespace sight::core::log
  * @brief Log
  * @brief Log class used to retrieve information to the user
  */
-class CORE_CLASS_API log : public core::base_object
+class SIGHT_CORE_CLASS_API log : public core::base_object
 {
 public:
 
@@ -47,10 +47,10 @@ public:
     };
 
     /// Constructor
-    CORE_API log(level_t _level, std::string _message);
+    SIGHT_CORE_API log(level_t _level, std::string _message);
 
     /// Destructor
-    CORE_API ~log() override;
+    SIGHT_CORE_API ~log() override;
 
     /// Set Log level
     void set_level(level_t _level)

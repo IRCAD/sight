@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "io/session/config.hpp"
+#include <sight/io/session/config.hpp>
 
 #include <core/crypto/password_keeper.hpp>
 #include <core/crypto/secure_string.hpp>
@@ -58,8 +58,8 @@ using serializer_t = std::function<void (
  *
  */
 
-class IO_SESSION_CLASS_API session_writer final : public io::writer::object_writer,
-                                                  public core::location::single_file
+class SIGHT_IO_SESSION_CLASS_API session_writer final : public io::writer::object_writer,
+                                                        public core::location::single_file
 {
 public:
 
@@ -72,43 +72,43 @@ public:
     session_writer& operator=(session_writer&&)      = delete;
 
     /// Use default destructor
-    IO_SESSION_API ~session_writer() override;
+    SIGHT_IO_SESSION_API ~session_writer() override;
 
     /// Constructor
-    IO_SESSION_API session_writer();
+    SIGHT_IO_SESSION_API session_writer();
 
     /// Write the file
-    IO_SESSION_API void write() override;
+    SIGHT_IO_SESSION_API void write() override;
 
     /// Defines extension supported by this writer ".zip"
-    IO_SESSION_API std::string extension() const override;
+    SIGHT_IO_SESSION_API std::string extension() const override;
 
     /// Sets the password
     /// @param _password the new password
-    IO_SESSION_API void set_password(const core::crypto::secure_string& _password);
+    SIGHT_IO_SESSION_API void set_password(const core::crypto::secure_string& _password);
 
     /// Sets the encryption policy
     /// @param _policy the encryption policy: @see sight::io::session::password_keeper::encryption_policy
-    IO_SESSION_API void set_encryption_policy(core::crypto::password_keeper::encryption_policy _policy);
+    SIGHT_IO_SESSION_API void set_encryption_policy(core::crypto::password_keeper::encryption_policy _policy);
 
     /// Set archive format
     /// @param _archive_format how files are stored in the archive: @see sight::io::zip::archive::archiveFormat
-    IO_SESSION_API void set_archive_format(zip::archive::archive_format _archive_format);
+    SIGHT_IO_SESSION_API void set_archive_format(zip::archive::archive_format _archive_format);
 
     /// Set a serialization function for an object
     /// @param _class_name the name of the object to serialize
     /// @param _serializer the function pointer to the serialization function
-    IO_SESSION_API void set_custom_serializer(const std::string& _class_name, serializer_t _serializer = nullptr);
+    SIGHT_IO_SESSION_API void set_custom_serializer(const std::string& _class_name, serializer_t _serializer = nullptr);
 
     /// Set a default serialization function for an object
     /// @param _class_name the name of the object to serialize
     /// @param _serializer the function pointer to the serialization function
-    IO_SESSION_API static void set_serializer(const std::string& _class_name, serializer_t _serializer = nullptr);
+    SIGHT_IO_SESSION_API static void set_serializer(const std::string& _class_name, serializer_t _serializer = nullptr);
 
     /// Return the registered serialization function for an object
     /// @param _class_name the name of the object to serialize
     /// @return the function pointer to the serialization function
-    IO_SESSION_API static serializer_t serializer(const std::string& _class_name);
+    SIGHT_IO_SESSION_API static serializer_t serializer(const std::string& _class_name);
 
 private:
 

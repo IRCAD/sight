@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,25 +22,23 @@
 
 #pragma once
 
-#include "modules/debug/config.hpp"
-
 #include <ui/__/action.hpp>
 
 namespace sight::module::debug::action
 {
 
 /// Increase or decrease the memory consumption by storing a new image, use to experiment dump process
-class MODULE_DEBUG_CLASS_API memory_consumption : public sight::ui::action
+class memory_consumption : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(memory_consumption, sight::ui::action);
 
     /// Does nothing
-    MODULE_DEBUG_API memory_consumption() noexcept;
+    memory_consumption() noexcept;
 
     /// Does nothing
-    MODULE_DEBUG_API ~memory_consumption() noexcept override;
+    ~memory_consumption() noexcept override;
 
 protected:
 

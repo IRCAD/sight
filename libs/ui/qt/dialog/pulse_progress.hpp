@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <ui/__/dialog/pulse_progress_base.hpp>
 
@@ -41,7 +41,7 @@ namespace sight::ui::qt::dialog
 /**
  * @brief   Allows to show a pulse progress bar.
  */
-class UI_QT_CLASS_API pulse_progress : public ui::dialog::pulse_progress_base
+class SIGHT_UI_QT_CLASS_API pulse_progress : public ui::dialog::pulse_progress_base
 {
 public:
 
@@ -51,19 +51,19 @@ public:
         ui::factory::make<pulse_progress>
     )
 
-    UI_QT_API pulse_progress();
-    UI_QT_API ~pulse_progress() override;
+    SIGHT_UI_QT_API pulse_progress();
+    SIGHT_UI_QT_API ~pulse_progress() override;
 
     /// override
-    UI_QT_API void set_title(const std::string& _title) override;
+    SIGHT_UI_QT_API void set_title(const std::string& _title) override;
 
     /// override
-    UI_QT_API void set_message(const std::string& _message) override;
+    SIGHT_UI_QT_API void set_message(const std::string& _message) override;
 
     /// override
-    UI_QT_API void set_cancellable(bool _cancellable) override;
+    SIGHT_UI_QT_API void set_cancellable(bool _cancellable) override;
 
-    UI_QT_API void show() override;
+    SIGHT_UI_QT_API void show() override;
 
 protected:
 

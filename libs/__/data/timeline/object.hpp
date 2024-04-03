@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 
 #include <core/clock.hpp>
 #include <core/mt/types.hpp>
@@ -36,18 +36,18 @@ namespace sight::data::timeline
  * @brief   This class defines a TimeLine object. Such an object is intended to be managed by a Timeline implementation.
  *          Use Timeline::createObject() to allocate a new object.
  */
-class DATA_CLASS_API object
+class SIGHT_DATA_CLASS_API object
 {
 public:
 
     /// Constructor
-    DATA_API object(core::clock::type _timestamp = 0);
+    SIGHT_DATA_API object(core::clock::type _timestamp = 0);
 
     /// Destructor
-    DATA_API virtual ~object();
+    SIGHT_DATA_API virtual ~object();
 
     /// Define deep copy
-    DATA_API virtual void deep_copy(const object& _source);
+    SIGHT_DATA_API virtual void deep_copy(const object& _source);
 
     /// Return timestamp
     [[nodiscard]] core::clock::type get_timestamp() const
@@ -57,8 +57,8 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const object& _other) const noexcept;
-    DATA_API bool operator!=(const object& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const object& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const object& _other) const noexcept;
     /// @}
 
 protected:

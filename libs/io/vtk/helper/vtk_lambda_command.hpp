@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #pragma once
 
-#include "io/vtk/config.hpp"
+#include <sight/io/vtk/config.hpp>
 
 #include <vtkCommand.h>
 
@@ -36,7 +36,7 @@ namespace sight::io::vtk::helper
 /**
  * @brief Allows use of vtkCommand with lambdas
  */
-class IO_VTK_CLASS_API vtk_lambda_command : public vtkCommand
+class SIGHT_IO_VTK_CLASS_API vtk_lambda_command : public vtkCommand
 {
 public:
 
@@ -56,7 +56,7 @@ public:
      * @brief vtkCommand::Execute implementation
      */
     // NOLINTNEXTLINE(google-runtime-int)
-    IO_VTK_API void Execute(vtkObject* _caller, unsigned long _eid, void* _call_data) override;
+    SIGHT_IO_VTK_API void Execute(vtkObject* _caller, unsigned long _eid, void* _call_data) override;
 
     /**
      * @brief Sets callback

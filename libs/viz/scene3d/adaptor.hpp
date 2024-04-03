@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
+
 #include "viz/scene3d/render.hpp"
 
 #include <service/base.hpp>
@@ -54,7 +55,7 @@ namespace sight::viz::scene3d
  * @subsection Configuration Configuration:
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
-class VIZ_SCENE3D_CLASS_API adaptor :
+class SIGHT_VIZ_SCENE3D_CLASS_API adaptor :
     public service::base,
     public service::has_services
 {
@@ -63,45 +64,45 @@ friend class render;
 public:
 
     /// Configuration helper string that stores "config.<xmlattr>."
-    VIZ_SCENE3D_API static const std::string CONFIG;
+    SIGHT_VIZ_SCENE3D_API static const std::string CONFIG;
 
     /// Generates default methods.
     SIGHT_DECLARE_CLASS(adaptor, service::base);
 
     /// Sets the layer ID.
-    VIZ_SCENE3D_API void set_layer_id(const std::string& _id);
+    SIGHT_VIZ_SCENE3D_API void set_layer_id(const std::string& _id);
 
     /// @returns the layer ID of this adaptor.
-    VIZ_SCENE3D_API const std::string& layer_id() const;
+    SIGHT_VIZ_SCENE3D_API const std::string& layer_id() const;
 
     /// @returns the layer where this adaptor is attached.
-    VIZ_SCENE3D_API viz::scene3d::layer::sptr layer() const;
+    SIGHT_VIZ_SCENE3D_API viz::scene3d::layer::sptr layer() const;
 
     /// Sets the render service using this adaptor.
-    VIZ_SCENE3D_API void set_render_service(render::sptr _service);
+    SIGHT_VIZ_SCENE3D_API void set_render_service(render::sptr _service);
 
     /// @returns the render service using this adaptor
-    VIZ_SCENE3D_API render::sptr render_service() const;
+    SIGHT_VIZ_SCENE3D_API render::sptr render_service() const;
 
     /**
      * @brief SLOT: sets the visibility of the adaptor.
      * @param _is_visible the visibility status.
      * @see setVisible(bool)
      */
-    VIZ_SCENE3D_API void update_visibility(bool _is_visible);
+    SIGHT_VIZ_SCENE3D_API void update_visibility(bool _is_visible);
 
 protected:
 
-    VIZ_SCENE3D_API static const core::com::slots::key_t UPDATE_VISIBILITY_SLOT;
-    VIZ_SCENE3D_API static const core::com::slots::key_t TOGGLE_VISIBILITY_SLOT;
-    VIZ_SCENE3D_API static const core::com::slots::key_t SHOW_SLOT;
-    VIZ_SCENE3D_API static const core::com::slots::key_t HIDE_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t UPDATE_VISIBILITY_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t TOGGLE_VISIBILITY_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SHOW_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t HIDE_SLOT;
 
     /// Initializes slots.
-    VIZ_SCENE3D_API adaptor() noexcept;
+    SIGHT_VIZ_SCENE3D_API adaptor() noexcept;
 
     /// Destroys the adaptor.
-    VIZ_SCENE3D_API ~adaptor() noexcept override = default;
+    SIGHT_VIZ_SCENE3D_API ~adaptor() noexcept override = default;
 
     /**
      * @brief Write information in a stream.
@@ -109,34 +110,34 @@ protected:
      * This method is used by operator<<(std::ostream & _sstream, base& _service)
      * to avoid declaration of << by all services.
      */
-    VIZ_SCENE3D_API void info(std::ostream& _sstream) override;
+    SIGHT_VIZ_SCENE3D_API void info(std::ostream& _sstream) override;
 
     /// Parses common adaptor parameters.
-    VIZ_SCENE3D_API void configure_params();
+    SIGHT_VIZ_SCENE3D_API void configure_params();
 
     /// Registers the adaptor into its render service.
-    VIZ_SCENE3D_API void initialize();
+    SIGHT_VIZ_SCENE3D_API void initialize();
 
     /**
      * @brief Gets the Ogre SceneManager
      * @return Ogre default scene manager
      */
-    VIZ_SCENE3D_API Ogre::SceneManager* get_scene_manager();
+    SIGHT_VIZ_SCENE3D_API Ogre::SceneManager* get_scene_manager();
 
     /// Asks the render service to update rendering.
-    VIZ_SCENE3D_API virtual void request_render();
+    SIGHT_VIZ_SCENE3D_API virtual void request_render();
 
     /// SLOT: toggles the visibility of the adaptor.
-    VIZ_SCENE3D_API void toggle_visibility();
+    SIGHT_VIZ_SCENE3D_API void toggle_visibility();
 
     /// SLOT: shows the adaptor.
-    VIZ_SCENE3D_API void show();
+    SIGHT_VIZ_SCENE3D_API void show();
 
     /// SLOT: hides the adaptor.
-    VIZ_SCENE3D_API void hide();
+    SIGHT_VIZ_SCENE3D_API void hide();
 
     /// Sets the visibility of the adaptor.
-    VIZ_SCENE3D_API virtual void set_visible(bool _visible);
+    SIGHT_VIZ_SCENE3D_API virtual void set_visible(bool _visible);
 
     /// Defines the layer ID:
     std::string m_layer_id;

@@ -23,8 +23,6 @@
 
 #include "data/fiducials_series.hpp"
 
-#include "modules/viz/scene3d_qt/config.hpp"
-
 #include <data/point_list.hpp>
 
 #include <geometry/data/point_list.hpp>
@@ -106,12 +104,12 @@ public:
     SIGHT_DECLARE_SERVICE(shape, sight::viz::scene3d::adaptor);
 
     /// Initialize slots.
-    MODULE_VIZ_SCENE3D_QT_API shape() noexcept;
+    shape() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_QT_API ~shape() noexcept override = default;
+    ~shape() noexcept override = default;
 
-    struct MODULE_VIZ_SCENE3D_QT_CLASS_API slots final
+    struct slots final
     {
         using key_t = sight::core::com::slots::key_t;
 
@@ -129,14 +127,14 @@ public:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_QT_API void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) override;
+    void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) override;
 
     /**
      * @brief Moves a shape stored in m_pickedData.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_QT_API void mouse_move_event(
+    void mouse_move_event(
         mouse_button _button,
         modifier _mod,
         int _x,
@@ -146,7 +144,7 @@ public:
     ) override;
 
     /// Resets m_pickedData.
-    MODULE_VIZ_SCENE3D_QT_API void button_release_event(
+    void button_release_event(
         mouse_button _button,
         modifier _mod,
         int _x,
@@ -154,7 +152,7 @@ public:
     ) override;
 
     /// catch escape to go out of add shape mode
-    MODULE_VIZ_SCENE3D_QT_API void key_press_event(
+    void key_press_event(
         int _key,
         modifier _mods,
         int _mouseX,
@@ -162,36 +160,36 @@ public:
     ) final;
 
     /// Hides the contextual menu when the mouse wheel is used
-    MODULE_VIZ_SCENE3D_QT_API void wheel_event(modifier _mods, double _angleDelta, int _x, int _y) final;
+    void wheel_event(modifier _mods, double _angleDelta, int _x, int _y) final;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_QT_API void configuring() override;
+    void configuring() override;
 
     /// Adds the interactor to the layer and creates the material.
-    MODULE_VIZ_SCENE3D_QT_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      *
      * Connect data::image::MODIFIED_SIG to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_QT_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     /// Updates materials and all shapes.
-    MODULE_VIZ_SCENE3D_QT_API void updating() override;
+    void updating() override;
 
     /// Removes the interactor from the layer and destroys Ogre resources.
-    MODULE_VIZ_SCENE3D_QT_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Sets shapes visibility.
      * @param _visible the visibility status of shapes.
      */
-    MODULE_VIZ_SCENE3D_QT_API void set_visible(bool _visible) override;
+    void set_visible(bool _visible) override;
 
-    MODULE_VIZ_SCENE3D_QT_API void set_visible(std::string _id, bool _visible);
+    void set_visible(std::string _id, bool _visible);
 
 private:
 

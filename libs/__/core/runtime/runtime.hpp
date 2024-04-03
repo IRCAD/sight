@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/runtime/extension.hpp"
 #include "core/runtime/module.hpp"
 
@@ -41,19 +42,19 @@ class module;
 /**
  * @brief   Initializes Sight runtime and discovers default modules.
  */
-CORE_API void init();
+SIGHT_CORE_API void init();
 
 /**
  * @brief   Shutdown Sight runtime, which means unload all loaded modules.
  */
-CORE_API void shutdown();
+SIGHT_CORE_API void shutdown();
 
 /**
  * @brief   Loads all modules that can be found in the specified directory.
  *
  * @param   _directory   a path to the directory to explore for modules
  */
-CORE_API void add_modules(const std::filesystem::path& _directory);
+SIGHT_CORE_API void add_modules(const std::filesystem::path& _directory);
 
 /**
  * @brief   Retrieves the module with the given identifier and version
@@ -62,14 +63,14 @@ CORE_API void add_modules(const std::filesystem::path& _directory);
  *
  * @return  a shared pointer to the found module, or empty when none
  */
-CORE_API std::shared_ptr<module> find_module(const std::string& _identifier);
+SIGHT_CORE_API std::shared_ptr<module> find_module(const std::string& _identifier);
 
 /**
  * @brief   Retrieves all modules
  *
  * @return  a set of all modules
  */
-CORE_API std::set<std::shared_ptr<module> > modules();
+SIGHT_CORE_API std::set<std::shared_ptr<module> > modules();
 
 /**
  * @brief   Load a module.
@@ -78,14 +79,14 @@ CORE_API std::set<std::shared_ptr<module> > modules();
  *
  * @return  a shared pointer to the found module, or empty when it is not found
  */
-CORE_API std::shared_ptr<module> load_module(const std::string& _identifier);
+SIGHT_CORE_API std::shared_ptr<module> load_module(const std::string& _identifier);
 
 /**
  * @brief   Starts the module specified by the given identifier.
  *
  * @param   _identifier  a string containing a module identifier
  */
-CORE_API void start_module(const std::string& _identifier);
+SIGHT_CORE_API void start_module(const std::string& _identifier);
 
 /**
  * @brief   Unload a module.
@@ -94,7 +95,7 @@ CORE_API void start_module(const std::string& _identifier);
  *
  * @return  a shared pointer to the found module, or empty when it is not found
  */
-CORE_API void unload_module(const std::string& _identifier);
+SIGHT_CORE_API void unload_module(const std::string& _identifier);
 
 /**
  * @brief   Load a library.
@@ -103,7 +104,7 @@ CORE_API void unload_module(const std::string& _identifier);
  *
  * @return  success
  */
-CORE_API bool load_library(const std::string& _identifier);
+SIGHT_CORE_API bool load_library(const std::string& _identifier);
 
 /**
  * @brief   Retrieve the extension having the specified identifier.
@@ -112,14 +113,14 @@ CORE_API bool load_library(const std::string& _identifier);
  *
  * @return  a shared pointer to the found extension or null if none
  */
-CORE_API std::shared_ptr<extension> find_extension(const std::string& _identifier);
+SIGHT_CORE_API std::shared_ptr<extension> find_extension(const std::string& _identifier);
 
 /// Returns extensions extending the _extension_pt extension point
-CORE_API std::vector<std::shared_ptr<core::runtime::extension> > get_all_extensions_for_point(
+SIGHT_CORE_API std::vector<std::shared_ptr<core::runtime::extension> > get_all_extensions_for_point(
     std::string _extension_pt
 );
 
 /// Utility function used to trim leading '::' in identifiers of modules, services, objects, extensions, etc...
-CORE_API std::string filter_id(const std::string& _identifier);
+SIGHT_CORE_API std::string filter_id(const std::string& _identifier);
 
 } // namespace sight::core::runtime

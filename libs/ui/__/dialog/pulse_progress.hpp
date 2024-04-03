@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/dialog/pulse_progress_base.hpp"
 
 #include <core/base.hpp>
@@ -35,7 +36,7 @@ namespace sight::ui::dialog
  * Use the Delegate design pattern. The specific implementation selection is ensured by SIGHT_REGISTER_GUI.
  * The specific implementation are in fwGuiWX and fwGuiQT libraries
  */
-class UI_CLASS_API pulse_progress : public pulse_progress_base
+class SIGHT_UI_CLASS_API pulse_progress : public pulse_progress_base
 {
 public:
 
@@ -49,7 +50,7 @@ public:
     }
 
     /// will instantiate the concrete implementation
-    UI_API pulse_progress(
+    SIGHT_UI_API pulse_progress(
         const std::string& _title,
         Stuff _stuff,
         const std::string& _msg                                         = std::string(),
@@ -58,16 +59,16 @@ public:
     );
 
     ///set the title for the dialog
-    UI_API void set_title(const std::string& _title) override;
+    SIGHT_UI_API void set_title(const std::string& _title) override;
 
     ///set the message for the dialog
-    UI_API void set_message(const std::string& _message) override;
+    SIGHT_UI_API void set_message(const std::string& _message) override;
 
     ///allow to cancel the dialog
-    UI_API void set_cancellable(bool _cancellable) override;
+    SIGHT_UI_API void set_cancellable(bool _cancellable) override;
 
     ///show the pulse progress dialog
-    UI_API void show() override;
+    SIGHT_UI_API void show() override;
 
 protected:
 

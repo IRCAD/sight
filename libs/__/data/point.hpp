@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/factory/new.hpp"
 #include "data/object.hpp"
 
@@ -34,7 +35,7 @@ namespace sight::data
 /**
  * @brief   This class define a 3D point.
  */
-class DATA_CLASS_API point final : public object
+class SIGHT_DATA_CLASS_API point final : public object
 {
 public:
 
@@ -44,15 +45,15 @@ public:
     SIGHT_DECLARE_CLASS(point, object);
 
     /// point factory
-    DATA_API point(float _x, float _y   = 0.F, float _z = 0.F);
-    DATA_API point(double _x, double _y = 0., double _z = 0.);
-    DATA_API point(const point_coord_array_t& _coord);
-    DATA_API point(const point::sptr& _p);
+    SIGHT_DATA_API point(float _x, float _y   = 0.F, float _z = 0.F);
+    SIGHT_DATA_API point(double _x, double _y = 0., double _z = 0.);
+    SIGHT_DATA_API point(const point_coord_array_t& _coord);
+    SIGHT_DATA_API point(const point::sptr& _p);
 
-    DATA_API point();
+    SIGHT_DATA_API point();
 
     /// Destructor
-    DATA_API ~point() noexcept override = default;
+    SIGHT_DATA_API ~point() noexcept override = default;
 
     /// @brief get/set point coordinates
     /// @{
@@ -61,26 +62,26 @@ public:
     void set_coord(const point_coord_array_t& _v_coord);
     /// @}
 
-    DATA_API std::string get_label() const;
+    SIGHT_DATA_API std::string get_label() const;
 
-    DATA_API void set_label(const std::string& _label);
+    SIGHT_DATA_API void set_label(const std::string& _label);
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const point& _other) const noexcept;
-    DATA_API bool operator!=(const point& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const point& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const point& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
@@ -112,7 +113,7 @@ inline void point::set_coord(const point_coord_array_t& _v_coord)
     this->m_v_coord = _v_coord;
 }
 
-DATA_API std::ostream& operator<<(std::ostream& _out, const point& _p);
+SIGHT_DATA_API std::ostream& operator<<(std::ostream& _out, const point& _p);
 
 //-----------------------------------------------------------------------------
 

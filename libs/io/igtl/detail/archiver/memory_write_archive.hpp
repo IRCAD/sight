@@ -28,7 +28,7 @@
 typedef SSIZE_T ssize_t;
 #endif
 
-#include "io/igtl/config.hpp"
+#include <sight/io/igtl/config.hpp>
 
 #include <io/zip/write_archive.hpp>
 #include <io/zip/exception/write.hpp>
@@ -102,17 +102,17 @@ protected:
  *
  * @brief MemoryWriteArchive is a memory archive writer
  */
-class IO_IGTL_CLASS_API memory_write_archive : public io::zip::write_archive
+class SIGHT_IO_IGTL_CLASS_API memory_write_archive : public io::zip::write_archive
 {
 public:
 
     using sptr = std::shared_ptr<memory_write_archive>;
 
     /// Constructor
-    IO_IGTL_API memory_write_archive(std::vector<char>& _buffer);
+    SIGHT_IO_IGTL_API memory_write_archive(std::vector<char>& _buffer);
 
     /// Destructor
-    IO_IGTL_API ~memory_write_archive() override;
+    SIGHT_IO_IGTL_API ~memory_write_archive() override;
 
     /**
      * @brief create new entry in archive and return output stream for this memory file
@@ -120,7 +120,7 @@ public:
      * @param[in] _path file in archive
      * @return output stream of memory entry archive
      */
-    IO_IGTL_API SPTR(std::ostream) create_file(const std::filesystem::path& _path) override;
+    SIGHT_IO_IGTL_API SPTR(std::ostream) create_file(const std::filesystem::path& _path) override;
 
     /**
      * @brief Write source file in memory archive
@@ -129,7 +129,7 @@ public:
      * @param[in] _path file in archive
      * @throw io::zip::exception::Write when file cannot be opened
      */
-    IO_IGTL_API void put_file(
+    SIGHT_IO_IGTL_API void put_file(
         const std::filesystem::path& _source_file,
         const std::filesystem::path& _path
     ) override;
@@ -139,17 +139,17 @@ public:
      *
      * @param[in] _path folder to create in memory archive in reality it create nothing
      */
-    IO_IGTL_API bool create_dir(const std::filesystem::path& _path) override;
+    SIGHT_IO_IGTL_API bool create_dir(const std::filesystem::path& _path) override;
 
     /**
      * @return archive path
      */
-    [[nodiscard]] IO_IGTL_API std::filesystem::path get_archive_path() const override;
+    [[nodiscard]] SIGHT_IO_IGTL_API std::filesystem::path get_archive_path() const override;
 
     /**
      * @brief write all data stored in archive
      */
-    IO_IGTL_API void write_archive();
+    SIGHT_IO_IGTL_API void write_archive();
 
 public:
 

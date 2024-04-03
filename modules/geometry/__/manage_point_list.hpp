@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/__/config.hpp"
 
 #include <data/point.hpp>
 #include <data/tools/picking_info.hpp>
@@ -66,7 +64,7 @@ namespace sight::module::geometry
  * - \b label (optional, bool, default=false): add an ID label to added points.
  * - \b tolerance (optional, float, default=10.0): the tolerance used to remove a point.
  */
-class MODULE_GEOMETRY_CLASS_API manage_point_list final : public service::controller
+class manage_point_list final : public service::controller
 {
 public:
 
@@ -74,10 +72,10 @@ public:
     SIGHT_DECLARE_SERVICE(manage_point_list, sight::service::controller);
 
     /// Initialize slots.
-    MODULE_GEOMETRY_API manage_point_list() noexcept;
+    manage_point_list() noexcept;
 
     /// Destroys the service.
-    MODULE_GEOMETRY_API ~manage_point_list() noexcept final;
+    ~manage_point_list() noexcept final;
 
 private:
 

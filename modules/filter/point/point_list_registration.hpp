@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/point/config.hpp"
 
 #include <core/com/slot.hpp>
 
@@ -63,7 +61,7 @@ namespace sight::module::filter::point
  * - \b mode (optional, values=rigid|similarity|affine, default=rigid): registration mode.
  *
  */
-class MODULE_FILTER_POINT_CLASS_API point_list_registration : public service::registerer
+class point_list_registration : public service::registerer
 {
 public:
 
@@ -73,7 +71,7 @@ public:
      * @name Slots API
      * @{
      */
-    MODULE_FILTER_POINT_API static const core::com::slots::key_t CHANGE_MODE;
+    static const core::com::slots::key_t CHANGE_MODE;
     ///@}
 
     /**
@@ -84,14 +82,14 @@ public:
     using error_computed_signal_t = core::com::signal<void (double)>;
     ///@}
 
-    MODULE_FILTER_POINT_API point_list_registration();
+    point_list_registration();
 
-    MODULE_FILTER_POINT_API ~point_list_registration() override;
+    ~point_list_registration() override;
 
 protected:
 
     /// Register a point list slot
-    MODULE_FILTER_POINT_API void compute_registration(core::clock::type _timestamp) override;
+    void compute_registration(core::clock::type _timestamp) override;
 
     /// Registration Mode (default: RIGID)
     enum registration_mode_t
@@ -102,16 +100,16 @@ protected:
     };
 
     /// Configures the service
-    MODULE_FILTER_POINT_API void configuring() override;
+    void configuring() override;
 
     /// Do nothing
-    MODULE_FILTER_POINT_API void starting() override;
+    void starting() override;
 
     /// Do nothing
-    MODULE_FILTER_POINT_API void stopping() override;
+    void stopping() override;
 
     /// Perform the registration
-    MODULE_FILTER_POINT_API void updating() override;
+    void updating() override;
 
 private:
 

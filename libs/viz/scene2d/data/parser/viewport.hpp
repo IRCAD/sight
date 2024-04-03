@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene2d/config.hpp"
+#include <sight/viz/scene2d/config.hpp>
 
 #include <service/object_parser.hpp>
 
@@ -45,7 +45,7 @@ namespace sight::viz::scene2d::data::parser
  * - \b width: set the width of the viewport
  * - \b height: set the height of the viewport
  */
-class VIZ_SCENE2D_CLASS_API viewport final : public service::object_parser
+class SIGHT_VIZ_SCENE2D_CLASS_API viewport final : public service::object_parser
 {
 public:
 
@@ -56,7 +56,7 @@ public:
      * @brief Parse a viewport XML configuration.
      * @param _obj viewport in which apply the configuration.
      */
-    VIZ_SCENE2D_API void create_config(core::tools::object::sptr _obj) override;
+    SIGHT_VIZ_SCENE2D_API void create_config(core::tools::object::sptr _obj) override;
 };
 
 } // namespace sight::viz::scene2d::data::parser

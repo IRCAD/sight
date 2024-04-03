@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/itk/config.hpp"
 
 #include <core/macros.hpp>
 
@@ -57,17 +55,17 @@ namespace sight::module::io::itk
  * - \b file (optional): path of the image to load, if it is not defined, 'open_location_dialog()' should be called to
  * define the path.
  */
-class MODULE_IO_ITK_CLASS_API image_reader : public sight::io::service::reader
+class image_reader : public sight::io::service::reader
 {
 public:
 
     SIGHT_DECLARE_SERVICE(image_reader, sight::io::service::reader);
 
-    MODULE_IO_ITK_API image_reader() noexcept;
+    image_reader() noexcept;
 
-    MODULE_IO_ITK_API ~image_reader() noexcept override;
+    ~image_reader() noexcept override;
 
-    MODULE_IO_ITK_API static bool load_image(const std::filesystem::path& _img_file, const SPTR(data::image)& _img);
+    static bool load_image(const std::filesystem::path& _img_file, const SPTR(data::image)& _img);
 
 protected:
 
@@ -82,19 +80,19 @@ protected:
     }
 
     /// Override
-    MODULE_IO_ITK_API void configuring() override;
+    void configuring() override;
 
     /// Override
-    MODULE_IO_ITK_API void updating() override;
+    void updating() override;
 
     /// Override
-    MODULE_IO_ITK_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     /// Configure using GUI.
-    MODULE_IO_ITK_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
     /// Return managed file type, here FILE
-    MODULE_IO_ITK_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
 private:
 };

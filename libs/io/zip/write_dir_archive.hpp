@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/zip/config.hpp"
+#include <sight/io/zip/config.hpp>
+
 #include "io/zip/write_archive.hpp"
 
 #include <core/macros.hpp>
@@ -36,7 +37,7 @@ namespace sight::io::zip
 /**
  * @brief   This class defines functions to write a file in a file system archive.
  */
-class IO_ZIP_CLASS_API write_dir_archive : public write_archive
+class SIGHT_IO_ZIP_CLASS_API write_dir_archive : public write_archive
 {
 public:
 
@@ -50,10 +51,10 @@ public:
     }
 
     /// Constructors. Initializes archive path and creates archive directories if doesn't exist.
-    IO_ZIP_API write_dir_archive(std::filesystem::path _archive);
+    SIGHT_IO_ZIP_API write_dir_archive(std::filesystem::path _archive);
 
     /// Destructor. Flush and close last output file stream.
-    IO_ZIP_API ~write_dir_archive() override;
+    SIGHT_IO_ZIP_API ~write_dir_archive() override;
 
     /**
      * @brief Creates a new file entry in archive and returns output stream for this file.
@@ -62,7 +63,7 @@ public:
      *
      * @note Creates all parent directories of the path in archive.
      */
-    IO_ZIP_API SPTR(std::ostream) create_file(const std::filesystem::path& _path) override;
+    SIGHT_IO_ZIP_API SPTR(std::ostream) create_file(const std::filesystem::path& _path) override;
 
     /**
      * @brief Writes source file in archive. If possible, creates hard link otherwise copy source file in archive.
@@ -71,7 +72,7 @@ public:
      *
      * @note Do nothing if destinationFile already exists in archive.
      */
-    IO_ZIP_API void put_file(
+    SIGHT_IO_ZIP_API void put_file(
         const std::filesystem::path& _source_file,
         const std::filesystem::path& _destination_file
     ) override;
@@ -80,12 +81,12 @@ public:
      * @brief Creates a folder in archive.
      * @param _path folder to create in archive.
      */
-    IO_ZIP_API bool create_dir(const std::filesystem::path& _path) override;
+    SIGHT_IO_ZIP_API bool create_dir(const std::filesystem::path& _path) override;
 
     /**
      * @brief Returns archive path.
      */
-    [[nodiscard]] IO_ZIP_API std::filesystem::path get_archive_path() const override;
+    [[nodiscard]] SIGHT_IO_ZIP_API std::filesystem::path get_archive_path() const override;
 
 protected:
 

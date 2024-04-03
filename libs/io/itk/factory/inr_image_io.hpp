@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/itk/config.hpp"
+#include <sight/io/itk/config.hpp>
 
 #include <itkImageIOBase.h>
 
@@ -36,7 +36,7 @@ namespace itk
  * \brief Class that defines how to read/write in the InrImage file format.
  * @todo RGB and vector images.
  */
-class IO_ITK_CLASS_API inr_image_io : public ImageIOBase
+class SIGHT_IO_ITK_CLASS_API inr_image_io : public ImageIOBase
 {
 public:
 
@@ -85,8 +85,8 @@ public:
 
 protected:
 
-    IO_ITK_API inr_image_io();
-    IO_ITK_API ~inr_image_io() override;
+    SIGHT_IO_ITK_API inr_image_io();
+    SIGHT_IO_ITK_API ~inr_image_io() override;
     void PrintSelf(std::ostream& _os, Indent _indent) const override;
 
 private:

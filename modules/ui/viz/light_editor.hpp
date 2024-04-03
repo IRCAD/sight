@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/viz/config.hpp"
-
 #include <ui/__/editor.hpp>
 
 #include <viz/scene3d/light_adaptor.hpp>
@@ -52,8 +50,8 @@ namespace sight::module::ui::viz
  * @code{.xml}
  *  <service uid=light_editorUid" type="module::ui::viz::light_editor" />
  */
-class MODULE_UI_VIZ_CLASS_API light_editor : public QObject,
-                                             public sight::ui::editor
+class light_editor : public QObject,
+                     public sight::ui::editor
 {
 Q_OBJECT
 
@@ -62,24 +60,24 @@ public:
     SIGHT_DECLARE_SERVICE(light_editor, sight::ui::editor);
 
     /// Creates the service.
-    MODULE_UI_VIZ_API light_editor() noexcept;
+    light_editor() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_VIZ_API ~light_editor() noexcept override;
+    ~light_editor() noexcept override;
 
 private:
 
     /// Configures the service.
-    MODULE_UI_VIZ_API void configuring() final;
+    void configuring() final;
 
     /// Sets the connections and the UI elements.
-    MODULE_UI_VIZ_API void starting() final;
+    void starting() final;
 
     /// Does nothing.
-    MODULE_UI_VIZ_API void updating() final;
+    void updating() final;
 
     /// Destroys the connections and cleans the container.
-    MODULE_UI_VIZ_API void stopping() final;
+    void stopping() final;
 
     /**
      * @brief Gets the current light node.

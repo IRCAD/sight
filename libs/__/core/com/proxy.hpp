@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/base.hpp>
 #include <core/com/signal_base.hpp>
@@ -40,7 +40,7 @@ namespace sight::core::com
  *
  * @note All the signals registered in a Proxy's channel are connected to all slots registered in the same channel.
  */
-class CORE_CLASS_API proxy
+class SIGHT_CORE_CLASS_API proxy
 {
 public:
 
@@ -48,25 +48,25 @@ public:
     using channel_key_type = std::string;
 
     /// Constructor, does nothing
-    CORE_API proxy() = default;
+    SIGHT_CORE_API proxy() = default;
 
     /// Destructor, does nothing
-    CORE_API ~proxy();
+    SIGHT_CORE_API ~proxy();
 
     /// Returns an instance of Proxy.
-    CORE_API static proxy::sptr get();
+    SIGHT_CORE_API static proxy::sptr get();
 
     /// Registers a signal in the channel. It will be connected to all slots in the channel.
-    CORE_API void connect(channel_key_type _channel, core::com::signal_base::sptr _signal);
+    SIGHT_CORE_API void connect(channel_key_type _channel, core::com::signal_base::sptr _signal);
 
     /// Registers a slot in the channel. It will be connected to all signals in the channel.
-    CORE_API void connect(channel_key_type _channel, core::com::slot_base::sptr _slot);
+    SIGHT_CORE_API void connect(channel_key_type _channel, core::com::slot_base::sptr _slot);
 
     /// Unregisters the signal. Disconnects it from the slots in channel
-    CORE_API void disconnect(channel_key_type _channel, core::com::signal_base::sptr _signal);
+    SIGHT_CORE_API void disconnect(channel_key_type _channel, core::com::signal_base::sptr _signal);
 
     /// Unregisters the slot. Disconnects it from the signals in channel
-    CORE_API void disconnect(channel_key_type _channel, core::com::slot_base::sptr _slot);
+    SIGHT_CORE_API void disconnect(channel_key_type _channel, core::com::slot_base::sptr _slot);
 
 private:
 

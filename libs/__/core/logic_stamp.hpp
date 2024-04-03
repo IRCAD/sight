@@ -31,7 +31,7 @@ namespace sight::core
 /**
  * @brief Provides a Logical timestamp system.
  */
-class CORE_CLASS_API logic_stamp : public base_object
+class SIGHT_CORE_CLASS_API logic_stamp : public base_object
 {
 public:
 
@@ -54,7 +54,7 @@ public:
     /**
      * @brief Increment global Logical counter and copy it to this LogicStamp.
      */
-    CORE_API void modified();
+    SIGHT_CORE_API void modified();
 
     /**
      * @return LogicStamp's current value

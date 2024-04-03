@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qml/config.hpp"
 
 #include <activity/launcher.hpp>
 
@@ -95,8 +93,8 @@ namespace sight::module::ui::qml::activity
  * - \n activityIdsList: identifiers of the activities to launch
  * - \n activityNameList: name of the activities to launch, that will be displays in the stepper
  */
-class MODULE_UI_QML_CLASS_API view : public sight::ui::qml::editor,
-                                     public sight::activity::launcher
+class view : public sight::ui::qml::editor,
+             public sight::activity::launcher
 {
 Q_OBJECT
 
@@ -105,11 +103,11 @@ public:
     SIGHT_DECLARE_SERVICE(view, sight::ui::qml::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QML_API view();
+    view();
 
     /// Destructor. Do nothing.
 
-    MODULE_UI_QML_API ~view() override = default;
+    ~view() override = default;
 
     /// Signal emited when the activity is launched
     using activity_launched_signal_t = core::com::signal<void ()>;

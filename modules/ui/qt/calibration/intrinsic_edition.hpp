@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/ui/qt/calibration/update_intrinsic_dialog.hpp"
-#include "modules/ui/qt/config.hpp"
 
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
@@ -56,8 +55,8 @@ namespace sight::module::ui::qt::calibration
  * @subsection In-Out In-Out
  * - \b camera [sight::data::camera]: camera on which the intrinsic parameters will be modified.
  */
-class MODULE_UI_QT_CLASS_API intrinsic_edition : public QObject,
-                                                 public service::base
+class intrinsic_edition : public QObject,
+                          public service::base
 {
 Q_OBJECT;
 
@@ -68,32 +67,32 @@ public:
     /**
      * @brief Constructor.
      */
-    MODULE_UI_QT_API intrinsic_edition();
+    intrinsic_edition();
 
     /**
      * @brief Destructor.
      */
-    MODULE_UI_QT_API ~intrinsic_edition() override;
+    ~intrinsic_edition() override;
 
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
 private Q_SLOTS:
 

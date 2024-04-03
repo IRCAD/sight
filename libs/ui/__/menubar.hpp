@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/container/widget.hpp"
 #include "ui/__/layout/menubar_manager.hpp"
 
@@ -40,22 +41,22 @@ class menubar;
 /**
  * @brief   Defines the service interface managing the menu bar.
  */
-class UI_CLASS_API menubar : public service::base
+class SIGHT_UI_CLASS_API menubar : public service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(menubar, service::base);
 
     /// Method called when a menu service is stopping
-    UI_API void menu_service_stopping(std::string _menu_srv_sid);
+    SIGHT_UI_API void menu_service_stopping(std::string _menu_srv_sid);
 
     /// Method called when a menu service is starting
-    UI_API void menu_service_starting(std::string _menu_srv_sid);
+    SIGHT_UI_API void menu_service_starting(std::string _menu_srv_sid);
 
 protected:
 
-    UI_API menubar()           = default;
-    UI_API ~menubar() override = default;
+    SIGHT_UI_API menubar()           = default;
+    SIGHT_UI_API ~menubar() override = default;
 
     /**
      * @brief Initialize the layout and registry managers.
@@ -89,13 +90,13 @@ protected:
      *  @see ui::registry::menubar::initialize(),
      *::ui::layout::menubar_manager::initialize()
      */
-    UI_API void initialize();
+    SIGHT_UI_API void initialize();
 
     /// Create the layout and start the managed services.
-    UI_API void create();
+    SIGHT_UI_API void create();
 
     /// Destroy the layout and stop the managed services.
-    UI_API void destroy();
+    SIGHT_UI_API void destroy();
 
 private:
 

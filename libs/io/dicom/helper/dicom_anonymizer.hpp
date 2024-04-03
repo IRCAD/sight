@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/helper/tags.hpp"
 
 #include <core/macros.hpp>
@@ -54,17 +55,17 @@ namespace sight::io::dicom::helper
  * @brief This class contains helpers to anonymize dicom files on filesystem.
  *        Anonymization is performed according to the DICOM standard - Part 15 - Annex E - Basic Profile
  */
-class IO_DICOM_CLASS_API dicom_anonymizer
+class SIGHT_IO_DICOM_CLASS_API dicom_anonymizer
 {
 public:
 
     SIGHT_DECLARE_CLASS(dicom_anonymizer);
 
     /// Constructor
-    IO_DICOM_API dicom_anonymizer();
+    SIGHT_IO_DICOM_API dicom_anonymizer();
 
     /// Destructor
-    IO_DICOM_API virtual ~dicom_anonymizer();
+    SIGHT_IO_DICOM_API virtual ~dicom_anonymizer();
 
     /// Map used to maintain UID consistency
     using uid_map = std::map<std::string, std::string>;
@@ -73,37 +74,37 @@ public:
     using exception_tag_map_t = std::map<gdcm::Tag, std::string>;
 
     /// Anonymize a folder containing Dicom files
-    IO_DICOM_API void anonymize(const std::filesystem::path& _dir_path);
+    SIGHT_IO_DICOM_API void anonymize(const std::filesystem::path& _dir_path);
 
-    IO_DICOM_API void anonymize(std::istream& _input_stream, std::ostream& _output_stream);
+    SIGHT_IO_DICOM_API void anonymize(std::istream& _input_stream, std::ostream& _output_stream);
 
     /// Add an exceptional value for a tag
-    IO_DICOM_API void add_exception_tag(uint16_t _group, uint16_t _element, const std::string& _value = "");
+    SIGHT_IO_DICOM_API void add_exception_tag(uint16_t _group, uint16_t _element, const std::string& _value = "");
 
     /**
      * @brief Copy a directory recursively.
      * @param _input Input file
      * @param _output Output file
      */
-    IO_DICOM_API static void copy_directory(
+    SIGHT_IO_DICOM_API static void copy_directory(
         const std::filesystem::path& _input,
         const std::filesystem::path& _output
     );
 
     /// Get job observer
-    [[nodiscard]] IO_DICOM_API SPTR(core::jobs::base) get_job() const;
+    [[nodiscard]] SIGHT_IO_DICOM_API SPTR(core::jobs::base) get_job() const;
 
     /// Return next file index
-    IO_DICOM_API unsigned int get_next_index();
+    SIGHT_IO_DICOM_API unsigned int get_next_index();
 
     /// Reset file index to 0
-    IO_DICOM_API void reset_index();
+    SIGHT_IO_DICOM_API void reset_index();
 
     /// The removed tag will not be process by anonymization tag
-    IO_DICOM_API void remove_anonymize_tag(const gdcm::Tag& _tag);
+    SIGHT_IO_DICOM_API void remove_anonymize_tag(const gdcm::Tag& _tag);
 
     /// Set Reference date for shifting
-    IO_DICOM_API void set_reference_date(const boost::gregorian::date& _reference_date);
+    SIGHT_IO_DICOM_API void set_reference_date(const boost::gregorian::date& _reference_date);
 
     /**
      * @brief Add a date tag that must be shifted.
@@ -112,25 +113,25 @@ public:
      *
      * @note The shift is done from Jan 1, 1900.
      */
-    IO_DICOM_API void add_shift_date_tag(const gdcm::Tag& _tag);
+    SIGHT_IO_DICOM_API void add_shift_date_tag(const gdcm::Tag& _tag);
 
     /**
      * @brief Tells the anonymizer to do not anonymize the given private tag.
      *
      * @param _tag private tag to be preserved from anonymization
      */
-    IO_DICOM_API void preserve_private_tag(const gdcm::Tag& _tag);
+    SIGHT_IO_DICOM_API void preserve_private_tag(const gdcm::Tag& _tag);
 
     /**
      * @name Access tags according to their associated action code
      * @{ */
     using tag_container_t = std::set<gdcm::Tag>;
-    IO_DICOM_API const tag_container_t& get_action_code_d_tags();
-    IO_DICOM_API const tag_container_t& get_action_code_z_tags();
-    IO_DICOM_API const tag_container_t& get_action_code_x_tags();
-    IO_DICOM_API const tag_container_t& get_action_code_k_tags();
-    IO_DICOM_API const tag_container_t& get_action_code_c_tags();
-    IO_DICOM_API const tag_container_t& get_action_code_u_tags();
+    SIGHT_IO_DICOM_API const tag_container_t& get_action_code_d_tags();
+    SIGHT_IO_DICOM_API const tag_container_t& get_action_code_z_tags();
+    SIGHT_IO_DICOM_API const tag_container_t& get_action_code_x_tags();
+    SIGHT_IO_DICOM_API const tag_container_t& get_action_code_k_tags();
+    SIGHT_IO_DICOM_API const tag_container_t& get_action_code_c_tags();
+    SIGHT_IO_DICOM_API const tag_container_t& get_action_code_u_tags();
 /**  @} */
 
 private:

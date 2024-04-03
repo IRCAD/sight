@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "activity/config.hpp"
+#include <sight/activity/config.hpp>
+
 #include "activity/extension/activity.hpp"
 #include "activity/validator/factory/new.hpp"
 #include "activity/validator/registry/detail.hpp"
@@ -49,7 +50,7 @@ using return_t = std::pair<bool, std::string>;
 /**
  * @brief Base class for all activity validator's classes.
  */
-class ACTIVITY_CLASS_API base : public core::base_object
+class SIGHT_ACTIVITY_CLASS_API base : public core::base_object
 {
 public:
 
@@ -83,7 +84,7 @@ public:
      *
      * @see validator::return_t
      */
-    ACTIVITY_API virtual return_t validate(
+    SIGHT_ACTIVITY_API virtual return_t validate(
         const activity::extension::activity_info& _activity_info,
         const CSPTR(data::vector)& _current_selection
     ) const = 0;

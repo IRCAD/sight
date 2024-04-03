@@ -27,7 +27,7 @@
 namespace sight::data::helper
 {
 
-class DATA_CLASS_API fiducials_series
+class SIGHT_DATA_CLASS_API fiducials_series
 {
 public:
 
@@ -36,14 +36,14 @@ public:
      * @param _fiducial fiducial to convert.
      * @return a point list.
      */
-    DATA_API static data::point_list::sptr to_point_list(const data::fiducials_series::fiducial& _fiducial);
+    SIGHT_DATA_API static data::point_list::sptr to_point_list(const data::fiducials_series::fiducial& _fiducial);
 
     /**
      * Get all the fiducials satisfying one or several features.
      * @param _fiducial_set The fiducial set whose fiducials must be filtered
      * @return The list of fiducial whose shape type is point
      */
-    [[nodiscard]] DATA_API static std::vector<data::fiducials_series::fiducial> filter_fiducials(
+    [[nodiscard]] SIGHT_DATA_API static std::vector<data::fiducials_series::fiducial> filter_fiducials(
         const data::fiducials_series::fiducial_set& _fiducial_set,
         const std::optional<data::fiducials_series::shape> _shape  = std::nullopt,
         const std::optional<std::int32_t> _referenced_frame_number = std::nullopt

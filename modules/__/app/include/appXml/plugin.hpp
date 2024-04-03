@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2024 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "module_app/config.hpp"
+#include "sight/module_app/config.hpp"
 
 #include <app/config_manager.hpp>
 
@@ -34,21 +34,21 @@ namespace sight::module::app
 /**
  * @brief   This class is started when the module is loaded.
  */
-class MODULE_APPXML_CLASS_API plugin : public core::runtime::plugin
+class SIGHT_MODULE_APPXML_CLASS_API plugin : public core::runtime::plugin
 {
 public:
 
     /// Constructor.
-    MODULE_APPXML_API plugin() noexcept;
+    SIGHT_MODULE_APPXML_API plugin() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_APPXML_API ~plugin() noexcept;
+    SIGHT_MODULE_APPXML_API ~plugin() noexcept;
 
     /// Overrides start method. .
-    MODULE_APPXML_API void start() override;
+    SIGHT_MODULE_APPXML_API void start() override;
 
     /// Overrides stop method. Do nothing
-    MODULE_APPXML_API void stop() noexcept override;
+    SIGHT_MODULE_APPXML_API void stop() noexcept override;
 
 private:
 

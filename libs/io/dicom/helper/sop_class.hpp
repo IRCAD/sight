@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <core/base.hpp>
 
@@ -35,7 +35,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief sop_class tools
  */
-class IO_DICOM_CLASS_API sop_class
+class SIGHT_IO_DICOM_CLASS_API sop_class
 {
 public:
 
@@ -45,7 +45,7 @@ public:
      * @return SOP Class Name according to UID
      * @note If the UID is not registered, the function returns the UID
      */
-    IO_DICOM_API static std::string get_sop_class_name(const std::string& _sop_class_uid);
+    SIGHT_IO_DICOM_API static std::string get_sop_class_name(const std::string& _sop_class_uid);
 
     /**
      * @brief Returns whether the SOP Class is hazardous or not
@@ -55,7 +55,7 @@ public:
      * the anonymization process (like pictures, pdf report, etc.)
      * @note If the UID is not registered, the function returns true
      */
-    IO_DICOM_API static bool is_hazardous_sop_class(const std::string& _sop_class_uid);
+    SIGHT_IO_DICOM_API static bool is_hazardous_sop_class(const std::string& _sop_class_uid);
 
 private:
 

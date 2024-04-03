@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/qt3d/config.hpp"
+#include <sight/viz/qt3d/config.hpp>
 
 #include <core/factory_registry.hpp>
 #include <core/macros.hpp>
@@ -40,7 +40,7 @@ namespace registry
 using key_t = std::string;
 using type  = sight::core::factory_registry<std::shared_ptr<sight::viz::qt3d::window_interactor>(), key_t>;
 
-VIZ_QT3D_API SPTR(type) get();
+SIGHT_VIZ_QT3D_API SPTR(type) get();
 
 } // namespace registry.
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <core/macros.hpp>
 
@@ -65,7 +65,7 @@ namespace sight::io::dicom::helper
  * - It can be used to complete DicomSeries that have been created using the
  *   DicomDir helper (using complete function).
  */
-class IO_DICOM_CLASS_API dicom_series
+class SIGHT_IO_DICOM_CLASS_API dicom_series
 {
 public:
 
@@ -73,10 +73,10 @@ public:
     using dicom_series_container_t = std::vector<std::shared_ptr<data::dicom_series> >;
 
     /// Constructor
-    IO_DICOM_API dicom_series() noexcept = default;
+    SIGHT_IO_DICOM_API dicom_series() noexcept = default;
 
     /// Destructor
-    IO_DICOM_API ~dicom_series() noexcept = default;
+    SIGHT_IO_DICOM_API ~dicom_series() noexcept = default;
 
     /**
      * @brief Read DicomSeries from paths.
@@ -85,7 +85,7 @@ public:
      * @param[in] _complete_series_observer complete series observer
      * @return container containing DicomSeries
      */
-    static IO_DICOM_API dicom_series_container_t read(
+    static SIGHT_IO_DICOM_API dicom_series_container_t read(
         filename_container_t& _filenames,
         const SPTR(core::jobs::observer)& _reader_observer          = nullptr,
         const SPTR(core::jobs::observer)& _complete_series_observer = nullptr
@@ -95,7 +95,7 @@ public:
      * @param[in,out] _series_container List of DicomSeries that must be completed with information
      * @param[in] _complete_series_observer complete series observer
      */
-    static IO_DICOM_API void complete(
+    static SIGHT_IO_DICOM_API void complete(
         dicom_series_container_t& _series_container,
         const SPTR(core::jobs::observer)& _complete_series_observer
     );

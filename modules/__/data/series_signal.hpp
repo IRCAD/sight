@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/data/config.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/com/signals.hpp>
@@ -73,22 +71,22 @@ namespace sight::module::data
  *    - \b mode: 'include' or 'exclude'. Defines if the series is notified (include) or not (exclude).
  *    - \b id: id of the activity
  */
-class MODULE_DATA_CLASS_API series_signal : public service::controller
+class series_signal : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(series_signal, service::controller);
 
     /// Constructor. Do nothing.
-    MODULE_DATA_API series_signal() noexcept;
+    series_signal() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_DATA_API ~series_signal() noexcept override;
+    ~series_signal() noexcept override;
 
-    MODULE_DATA_API static const core::com::slots::key_t REPORT_SERIES_SLOT;
+    static const core::com::slots::key_t REPORT_SERIES_SLOT;
 
     using series_added_signal_t = core::com::signal<void (sight::data::series::sptr)>;
-    MODULE_DATA_API static const core::com::signals::key_t SERIES_ADDED_SIG;
+    static const core::com::signals::key_t SERIES_ADDED_SIG;
 
 protected:
 
@@ -111,7 +109,7 @@ protected:
      * Connect Vector::ADDED_OBJECTS_SIG to this::UPDATE_STATE_SLOT
      * Connect Vector::REMOVED_OBJECTS_SIG to this::UPDATE_STATE_SLOT
      */
-    MODULE_DATA_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
 private:
 

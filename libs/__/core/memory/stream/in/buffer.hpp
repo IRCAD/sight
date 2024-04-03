@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/memory/stream/in/factory.hpp"
 
 #include <core/macros.hpp>
@@ -32,7 +33,7 @@
 namespace sight::core::memory::stream::in
 {
 
-class CORE_CLASS_API buffer : public factory
+class SIGHT_CORE_CLASS_API buffer : public factory
 {
 public:
 
@@ -44,7 +45,7 @@ public:
 
 protected:
 
-    CORE_API SPTR(std::istream) get() override;
+    SIGHT_CORE_API SPTR(std::istream) get() override;
 
     void* m_buf;
     std::size_t m_size;

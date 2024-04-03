@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ static int calculate_size(coord _configured_size, int _parent_size)
 }
 
 /// Event filter which resizes the overlay if its parent size changed
-class UI_QT_CLASS_API_QT overlay_resize_filter : public QObject
+class overlay_resize_filter : public QObject
 {
 private:
 

@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/scene3d_qt/config.hpp"
-
 #include <QOpenGLContext>
 
 #include <memory>

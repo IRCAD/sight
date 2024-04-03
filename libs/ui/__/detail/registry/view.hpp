@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/container/menubar.hpp"
 #include "ui/__/container/toolbar.hpp"
 #include "ui/__/container/widget.hpp"
@@ -47,7 +48,7 @@ namespace detail::registry
  * @brief   Defines the generic view manager for IHM.
  *
  */
-class UI_CLASS_API view : public ui::object
+class SIGHT_UI_CLASS_API view : public ui::object
 {
 public:
 
@@ -55,20 +56,20 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static UI_API sptr make(const std::string& _sid)
+    static SIGHT_UI_API sptr make(const std::string& _sid)
     {
         return std::make_shared<view>(_sid);
     }
 
     /// Constructor.
-    UI_API view(std::string _sid);
+    SIGHT_UI_API view(std::string _sid);
 
     /// Destructor. Do nothing
-    UI_API ~view() override;
+    SIGHT_UI_API ~view() override;
 
-    UI_API virtual SPTR(ui::container::widget) get_parent();
+    SIGHT_UI_API virtual SPTR(ui::container::widget) get_parent();
 
-    UI_API virtual void set_parent(std::string _wid);
+    SIGHT_UI_API virtual void set_parent(std::string _wid);
 
     /**
      * @brief Initialize managers.
@@ -125,7 +126,7 @@ public:
      * @throw core::exception if the configuration element does not start with <registry>
      *
      */
-    UI_API virtual void initialize(const ui::config_t& _configuration);
+    SIGHT_UI_API virtual void initialize(const ui::config_t& _configuration);
 
     /**
      * @brief Starting view manager.
@@ -134,37 +135,37 @@ public:
      * @pre view must be initialized before.
      * @pre sub containers must be instanced before.
      */
-    UI_API virtual void manage(std::vector<SPTR(ui::container::widget)> _sub_views);
+    SIGHT_UI_API virtual void manage(std::vector<SPTR(ui::container::widget)> _sub_views);
 
     /**
      * @brief Register menu bar.
      * If start="true" in configuration the menu bar services will be started.
      */
-    UI_API virtual void manage_menu_bar(SPTR(ui::container::menubar) _menu_bar);
+    SIGHT_UI_API virtual void manage_menu_bar(SPTR(ui::container::menubar) _menu_bar);
 
     /**
      * @brief Register tool bar.
      * If start="true" in configuration the tool bar services will be started.
      */
-    UI_API virtual void manage_tool_bar(SPTR(ui::container::toolbar) _tool_bar);
+    SIGHT_UI_API virtual void manage_tool_bar(SPTR(ui::container::toolbar) _tool_bar);
 
     /**
      * @brief Stopping view manager.
      * All services managed in local subviews will be stopped.
      */
-    UI_API virtual void unmanage();
+    SIGHT_UI_API virtual void unmanage();
 
     /**
      * @brief Stopping view manager.
      * tool_bar service will be stopped.
      */
-    UI_API virtual void unmanage_tool_bar();
+    SIGHT_UI_API virtual void unmanage_tool_bar();
 
     /**
      * @brief Stopping view manager.
      * menu_bar service will be stopped.
      */
-    UI_API virtual void unmanage_menu_bar();
+    SIGHT_UI_API virtual void unmanage_menu_bar();
 
 protected:
 

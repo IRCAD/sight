@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_instance.hpp"
 
 #include <core/log/logger.hpp>
@@ -47,7 +48,7 @@ namespace sight::io::dicom::reader::ie
  * @brief InformationEntity base class used to read modules
  */
 template<class DATATYPE>
-class IO_DICOM_CLASS_API information_entity
+class SIGHT_IO_DICOM_CLASS_API information_entity
 {
 public:
 
@@ -64,7 +65,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API information_entity(
+    SIGHT_IO_DICOM_API information_entity(
         CSPTR(data::dicom_series)_dicom_series,
         SPTR(gdcm::Reader)_reader,
         SPTR(io::dicom::container::dicom_instance)_instance,
@@ -75,7 +76,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~information_entity();
+    SIGHT_IO_DICOM_API virtual ~information_entity();
 
 protected:
 

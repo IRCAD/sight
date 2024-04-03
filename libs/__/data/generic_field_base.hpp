@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/object.hpp"
 
 #include <core/base.hpp>
@@ -36,20 +37,20 @@ namespace sight::data
 /**
  * @brief generic_field_base define common operation on simple data.
  */
-class DATA_CLASS_API generic_field_base : public object
+class SIGHT_DATA_CLASS_API generic_field_base : public object
 {
 public:
 
     SIGHT_DECLARE_CLASS(generic_field_base, object);
 
-    DATA_API friend std::ostream& operator<<(std::ostream& /*_os*/, const generic_field_base& /*lf*/);
+    SIGHT_DATA_API friend std::ostream& operator<<(std::ostream& /*_os*/, const generic_field_base& /*lf*/);
 
-    DATA_API virtual std::string to_string() const               = 0;
-    DATA_API virtual void from_string(const std::string& _value) = 0;
+    SIGHT_DATA_API virtual std::string to_string() const               = 0;
+    SIGHT_DATA_API virtual void from_string(const std::string& _value) = 0;
 
 private:
 
-    DATA_API virtual std::ostream& to_o_stream(std::ostream& _os) const = 0;
+    SIGHT_DATA_API virtual std::ostream& to_o_stream(std::ostream& _os) const = 0;
 };
 
 } // namespace sight::data

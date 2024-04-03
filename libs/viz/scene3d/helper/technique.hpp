@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreTechnique.h>
@@ -42,7 +42,7 @@ public:
      * @param[inout] _mtl material to which the technique is added
      * @return the newly created technique
      */
-    static VIZ_SCENE3D_API Ogre::Technique* copy_to_material(
+    static SIGHT_VIZ_SCENE3D_API Ogre::Technique* copy_to_material(
         const Ogre::Technique* _tech,
         const std::string& _scheme_name,
         Ogre::Material* _mtl

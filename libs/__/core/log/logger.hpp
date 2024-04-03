@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/log/log.hpp"
 
 #include <core/tools/object.hpp>
@@ -35,7 +36,7 @@ namespace sight::core::log
 /**
  * @brief Logger class used to store logs
  */
-class CORE_CLASS_API logger : public core::tools::object
+class SIGHT_CORE_CLASS_API logger : public core::tools::object
 {
 public:
 
@@ -48,53 +49,53 @@ public:
     using const_reverse_iterator_type = log_container_t::const_reverse_iterator;
 
     /// Constructor
-    CORE_API logger();
+    SIGHT_CORE_API logger();
 
     /// Destructor
-    CORE_API ~logger() override;
+    SIGHT_CORE_API ~logger() override;
 
     /**
      * @brief Add information log into the logger
      * @param[in] _message Log message
      */
-    CORE_API void information(const std::string& _message);
+    SIGHT_CORE_API void information(const std::string& _message);
 
     /**
      * @brief Add warning log into the logger
      * @param[in] _message Log message
      */
-    CORE_API void warning(const std::string& _message);
+    SIGHT_CORE_API void warning(const std::string& _message);
 
     /**
      * @brief Add critical log into the logger
      * @param[in] _message Log message
      */
-    CORE_API void critical(const std::string& _message);
+    SIGHT_CORE_API void critical(const std::string& _message);
 
     /**
      * @brief Return the log matching the specified index
      * @param[in] _index Log's index
      */
-    CORE_API core::log::log get_log(unsigned int _index);
+    SIGHT_CORE_API core::log::log get_log(unsigned int _index);
 
     /// Returns the number of logs
-    CORE_API std::size_t count() const;
+    SIGHT_CORE_API std::size_t count() const;
 
     /**
      * @brief Return the number of logs matching the specified level
      * @param[in] _level Log level
      */
-    CORE_API std::size_t count(core::log::log::level_t _level) const;
+    SIGHT_CORE_API std::size_t count(core::log::log::level_t _level) const;
 
     /**
      * @brief Sort logs according to log levels
      */
-    CORE_API void sort();
+    SIGHT_CORE_API void sort();
 
     /**
      * @brief Clear logs
      */
-    CORE_API void clear();
+    SIGHT_CORE_API void clear();
 
     /// Return whether the logger contains logs or not
     bool empty() const

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/registry/detail.hpp"
 
 #include <string>
@@ -35,7 +36,7 @@ class object;
 namespace factory
 {
 
-DATA_API SPTR(data::object) make(const data::registry::key_t& _classname);
+SIGHT_DATA_API SPTR(data::object) make(const data::registry::key_t& _classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME) make()

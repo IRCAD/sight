@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
+
 #include "io/__/reader/generic_object_reader.hpp"
 
 #include <core/location/single_file.hpp>
@@ -38,7 +39,7 @@ namespace sight::io::reader
  *
  * Reads '.trf' files and converts them into a 'sight::data::matrix4'.
  */
-class IO_CLASS_API matrix4_reader :
+class SIGHT_IO_CLASS_API matrix4_reader :
     public generic_object_reader<data::matrix4>,
     public core::location::single_file
 {
@@ -47,13 +48,13 @@ public:
     SIGHT_DECLARE_CLASS(matrix4_reader, generic_object_reader<data::matrix4>)
 
     /// Destructor. Does nothing.
-    IO_API ~matrix4_reader() override = default;
+    SIGHT_IO_API ~matrix4_reader() override = default;
 
     /// Reads the file using standard iostream API.
-    IO_API void read() override;
+    SIGHT_IO_API void read() override;
 
     /// Defines the extensions supported by this reader. Here: ".trf"
-    IO_API std::string extension() const override;
+    SIGHT_IO_API std::string extension() const override;
 };
 
 } // namespace sight::io::reader

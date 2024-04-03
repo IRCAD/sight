@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/vision/config.hpp"
 
 #include <data/camera.hpp>
 #include <data/matrix4.hpp>
@@ -67,35 +65,35 @@ namespace sight::module::geometry::vision
  * - \b shift (optional): shift back pointList2d with cx/cy, this can be used to compensate a "shifted" camera (that
  * uses calibration matrix) in a 3dScene (default: "false").
  */
-class MODULE_GEOMETRY_VISION_CLASS_API solve_pn_p : public service::registerer
+class solve_pn_p : public service::registerer
 {
 public:
 
     SIGHT_DECLARE_SERVICE(solve_pn_p, sight::service::registerer);
 
     /// Constructor.
-    MODULE_GEOMETRY_VISION_API solve_pn_p() noexcept = default;
+    solve_pn_p() noexcept = default;
 
     /// Destructor.
-    MODULE_GEOMETRY_VISION_API ~solve_pn_p() noexcept override = default;
+    ~solve_pn_p() noexcept override = default;
 
     /**
      * @brief computeRegistration: compute the camera pose from 'pointList2d' and corresponding 'pointList3d'.
      * Update 'matrix' with the camera pose (or object pose if 'inverse' is "true")
      * @param _timestamp: not used by the method.
      */
-    MODULE_GEOMETRY_VISION_API void compute_registration(core::clock::type _timestamp) override;
+    void compute_registration(core::clock::type _timestamp) override;
 
 protected:
 
     /// configures the service
-    MODULE_GEOMETRY_VISION_API void configuring() override;
+    void configuring() override;
     /// starts the service and call initialize()
-    MODULE_GEOMETRY_VISION_API void starting() override;
+    void starting() override;
     /// does nothing
-    MODULE_GEOMETRY_VISION_API void stopping() override;
+    void stopping() override;
     /// calls computeRegistration with fake timestamp.
-    MODULE_GEOMETRY_VISION_API void updating() override;
+    void updating() override;
 
 private:
 

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/dicom/config.hpp"
+#include <sight/filter/dicom/config.hpp>
+
 #include "filter/dicom/filter.hpp"
 
 #include <data/dicom_series.hpp>
@@ -33,7 +34,7 @@ namespace sight::filter::dicom::helper
 /**
  * @brief filter Helper
  */
-class FILTER_DICOM_CLASS_API filter
+class SIGHT_FILTER_DICOM_CLASS_API filter
 {
 public:
 
@@ -45,7 +46,7 @@ public:
      * @param[in] _filter filter that must be applied
      * @return Return true if errors have been ignored
      */
-    FILTER_DICOM_API static bool apply_filter(
+    SIGHT_FILTER_DICOM_API static bool apply_filter(
         dicom_series_container_t& _dicom_series_container,
         sight::filter::dicom::filter::sptr _filter,
         bool _forced_apply                     = false,

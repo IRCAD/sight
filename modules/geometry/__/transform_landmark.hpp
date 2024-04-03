@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/__/config.hpp"
 
 #include <data/landmarks.hpp>
 #include <data/matrix4.hpp>
@@ -63,7 +61,7 @@ namespace sight::module::geometry
  * @subsection Configuration Configuration:
  * - \b label (optional): (std::string) name of the landmark group
  */
-class MODULE_GEOMETRY_CLASS_API transform_landmark final : public service::base
+class transform_landmark final : public service::base
 {
 public:
 
@@ -71,31 +69,31 @@ public:
     SIGHT_DECLARE_SERVICE(transform_landmark, service::base);
 
     /// Initializes signals.
-    MODULE_GEOMETRY_API transform_landmark() noexcept;
+    transform_landmark() noexcept;
 
     /// Destroys the service.
-    MODULE_GEOMETRY_API ~transform_landmark() noexcept override;
+    ~transform_landmark() noexcept override;
 
 protected:
 
     /// Gets the input matrix.
-    MODULE_GEOMETRY_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void stopping() override;
+    void stopping() override;
 
     /// Applies the transform to the landmark.
-    MODULE_GEOMETRY_API void updating() override;
+    void updating() override;
 
     /// This method is used to configure the service parameters.
-    MODULE_GEOMETRY_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
      */
-    MODULE_GEOMETRY_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

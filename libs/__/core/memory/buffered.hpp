@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/memory/buffer_object.hpp"
 
 namespace sight::core::memory
@@ -31,7 +32,7 @@ namespace sight::core::memory
 /**
  * @brief Defines the interface to implement to allow locking of data that use a BufferObject
  */
-class CORE_CLASS_API buffered
+class SIGHT_CORE_CLASS_API buffered
 {
 public:
 
@@ -48,7 +49,7 @@ protected:
     /// Implementation of the interface must allocate a core::memory::buffer_object::lock_t and store it into the
     /// parameter
     /// @param _locks The vector of locks to store the new lock
-    CORE_API virtual void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const = 0;
+    SIGHT_CORE_API virtual void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const = 0;
 };
 
 } // namespace sight::core::memory

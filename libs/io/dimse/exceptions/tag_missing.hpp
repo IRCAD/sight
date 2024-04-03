@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dimse/config.hpp"
+#include <sight/io/dimse/config.hpp>
+
 #include "io/dimse/exceptions/base.hpp"
 
 namespace sight::io::dimse::exceptions
@@ -31,7 +32,7 @@ namespace sight::io::dimse::exceptions
 /**
  * @brief TagMissing exceptions
  */
-class IO_DIMSE_CLASS_API tag_missing : public sight::io::dimse::exceptions::base
+class SIGHT_IO_DIMSE_CLASS_API tag_missing : public sight::io::dimse::exceptions::base
 {
 public:
 
@@ -39,10 +40,10 @@ public:
      * @brief Constructor
      * @param[in] _message Exception message
      */
-    IO_DIMSE_API tag_missing(const std::string& _message);
+    SIGHT_IO_DIMSE_API tag_missing(const std::string& _message);
 
     /// Destructor
-    IO_DIMSE_API ~tag_missing() noexcept override;
+    SIGHT_IO_DIMSE_API ~tag_missing() noexcept override;
 };
 
 } // namespace sight::io::dimse::exceptions

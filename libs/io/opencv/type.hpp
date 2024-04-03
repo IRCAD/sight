@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,22 +22,22 @@
 
 #pragma once
 
-#include "io/opencv/config.hpp"
+#include <sight/io/opencv/config.hpp>
 
 #include <core/type.hpp>
 
 namespace sight::io::opencv
 {
 
-class IO_OPENCV_CLASS_API type
+class SIGHT_IO_OPENCV_CLASS_API type
 {
 public:
 
     /// Returns an OpenCV format given a Sight pixel type and a number of components
-    IO_OPENCV_API static std::int32_t to_cv(core::type _type, std::size_t _num_components);
+    SIGHT_IO_OPENCV_API static std::int32_t to_cv(core::type _type, std::size_t _num_components);
 
     /// Returns a Sight pixel type and a number of components given an OpenCV format
-    IO_OPENCV_API static std::pair<core::type, std::uint8_t> from_cv(std::int32_t _cv_type);
+    SIGHT_IO_OPENCV_API static std::pair<core::type, std::uint8_t> from_cv(std::int32_t _cv_type);
 };
 
 } // namespace sight::io::opencv

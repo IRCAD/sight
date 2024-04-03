@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/__/config.hpp"
 
 #include <data/matrix4.hpp>
 #include <data/vector.hpp>
@@ -79,7 +77,7 @@ namespace sight::module::geometry
  * @subsection Output Output:
  * - \b vector [sight::data::vector]: vector containing matrices
  */
-class MODULE_GEOMETRY_CLASS_API matrix_list final : public service::base
+class matrix_list final : public service::base
 {
 public:
 
@@ -87,24 +85,24 @@ public:
     SIGHT_DECLARE_SERVICE(matrix_list, service::base);
 
     /// Initializes signals.
-    MODULE_GEOMETRY_API matrix_list() noexcept;
+    matrix_list() noexcept;
 
     /// Destroys the service.
-    MODULE_GEOMETRY_API ~matrix_list() noexcept override;
+    ~matrix_list() noexcept override;
 
 protected:
 
     /// Gets parameters from composite.
-    MODULE_GEOMETRY_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void stopping() override;
+    void stopping() override;
 
     /// Stores computed matrices from input vector into a list of strings.
-    MODULE_GEOMETRY_API void updating() override;
+    void updating() override;
 
     /// This method is used to configure the service parameters.
-    MODULE_GEOMETRY_API void configuring() override;
+    void configuring() override;
 
 private:
 

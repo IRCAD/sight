@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
 
 #include <io/__/service/grabber.hpp>
 
@@ -33,7 +33,7 @@ namespace sight::io::service
  * @brief   This interface defines the RGBD grabber service API.
  *          Must be implemented for services that grabs RGBD camera frames.
  */
-class IO_CLASS_API rgbd_grabber : public io::service::grabber
+class SIGHT_IO_CLASS_API rgbd_grabber : public io::service::grabber
 {
 public:
 
@@ -47,10 +47,10 @@ public:
     /** @} */
 
     /// Constructor.
-    IO_API rgbd_grabber() noexcept = default;
+    SIGHT_IO_API rgbd_grabber() noexcept = default;
 
     /// Destructor.
-    IO_API ~rgbd_grabber() noexcept override = default;
+    SIGHT_IO_API ~rgbd_grabber() noexcept override = default;
 
 protected:
 

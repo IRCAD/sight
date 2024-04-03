@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/viz/scene3d/adaptor/material.hpp"
-#include "modules/viz/scene3d/config.hpp"
 
 #include <core/com/slot.hpp>
 
@@ -66,7 +65,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b color (optional, hexadecimal, default=#FFFFFF): color of the vector.
  * - \b visible (optional, bool, default=true): visibility of the vector.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API vector final :
+class vector final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable
 {
@@ -76,30 +75,30 @@ public:
     SIGHT_DECLARE_SERVICE(vector, sight::viz::scene3d::adaptor);
 
     /// Initialise slots.
-    MODULE_VIZ_SCENE3D_API vector() noexcept;
+    vector() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~vector() noexcept final = default;
+    ~vector() noexcept final = default;
 
 protected:
 
     /// Configures the adaptor
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Initialize the main node and the material.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /// Deletes resources.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
     /// Create with the specified length the vector.
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /**
      * @brief Sets the vector visibility.
      * @param _visible the visibility status of the vector.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
+    void set_visible(bool _visible) final;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,22 +22,22 @@
 
 #pragma once
 
-#include "viz/scene2d/config.hpp"
+#include <sight/viz/scene2d/config.hpp>
 
 #include <QPen>
 
 namespace sight::viz::scene2d::data
 {
 
-class VIZ_SCENE2D_CLASS_API init_qt_pen
+class SIGHT_VIZ_SCENE2D_CLASS_API init_qt_pen
 {
 public:
 
     /// Set a pen a color.
-    VIZ_SCENE2D_API static void set_pen_color(QPen& _pen, std::string _color);
+    SIGHT_VIZ_SCENE2D_API static void set_pen_color(QPen& _pen, std::string _color);
 
     /// Set a pen a color with opacity.
-    VIZ_SCENE2D_API static void set_pen_color(QPen& _pen, std::string _color, float _opacity);
+    SIGHT_VIZ_SCENE2D_API static void set_pen_color(QPen& _pen, std::string _color, float _opacity);
 };
 
 } // namespace sight::viz::scene2d::data

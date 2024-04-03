@@ -41,7 +41,7 @@ namespace sight::io::dicom::writer::tid
  * @brief Measurement TID
  * @see TID 300
  */
-class IO_DICOM_CLASS_API measurement : public io::dicom::writer::tid::template_id<data::image>
+class SIGHT_IO_DICOM_CLASS_API measurement : public io::dicom::writer::tid::template_id<data::image>
 {
 public:
 
@@ -51,21 +51,21 @@ public:
      * @param[in] _instance DICOM instance used to share informations between modules
      * @param[in] _image Image data
      */
-    IO_DICOM_API measurement(
+    SIGHT_IO_DICOM_API measurement(
         const SPTR(gdcm::Writer)& _writer,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::image::csptr& _image
     );
 
     /// Destructor
-    IO_DICOM_API ~measurement() override;
+    SIGHT_IO_DICOM_API ~measurement() override;
 
     /**
      * @brief Create nodes according to the template
      * @param[in] _parent Parent node
      * @param[in] _use_s_coord_3d True if we must write SCOORD3D, false if we must write SCOORD
      */
-    IO_DICOM_API virtual void create_nodes(
+    SIGHT_IO_DICOM_API virtual void create_nodes(
         const SPTR(io::dicom::container::sr::dicom_sr_node)& _parent,
         bool _use_s_coord_3d = true
     );

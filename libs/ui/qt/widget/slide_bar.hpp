@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <QApplication>
 #include <QWidget>
@@ -31,7 +31,7 @@ namespace sight::ui::qt::widget
 {
 
 /// This class allows to display a slide widget. The slide widget can be displayed over all others widgets.
-class UI_QT_CLASS_API_QT slide_bar : public QWidget
+class SIGHT_UI_QT_CLASS_API_QT slide_bar : public QWidget
 {
 Q_OBJECT
 
@@ -77,7 +77,7 @@ public:
      * @param _animatable defines if the animation is enable.
      * @param _animatable_alignment defines the animation direction.
      */
-    UI_QT_API_QT slide_bar(
+    SIGHT_UI_QT_API_QT slide_bar(
         QWidget* _parent,
         h_alignment _h_align,
         v_alignment _v_align,
@@ -95,13 +95,13 @@ public:
     );
 
     /// Destroyes the widget.
-    UI_QT_API_QT ~slide_bar() override;
+    SIGHT_UI_QT_API_QT ~slide_bar() override;
 
     /// Updates the widget position relative of the parent.
-    UI_QT_API_QT void update_position();
+    SIGHT_UI_QT_API_QT void update_position();
 
     /// Sets the widget visibility.
-    UI_QT_API_QT void setVisible(bool _visible) override;
+    SIGHT_UI_QT_API_QT void setVisible(bool _visible) override;
 
     /// Gets if the widget is shown.
     [[nodiscard]] inline bool is_shown() const;

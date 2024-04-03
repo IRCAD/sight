@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/config.hpp"
-
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/graphics_worker.hpp>
 #include <viz/scene3d/interactor/clipping_box_interactor.hpp>
@@ -117,7 +115,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b transform (optional, string, default=""): transform applied to the adaptor's scene node.
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API volume_render final :
+class volume_render final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable
 {
@@ -127,10 +125,10 @@ public:
     SIGHT_DECLARE_SERVICE(volume_render, sight::viz::scene3d::adaptor);
 
     /// Creates slots.
-    MODULE_VIZ_SCENE3D_API volume_render() noexcept;
+    volume_render() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~volume_render() noexcept override;
+    ~volume_render() noexcept override;
 
 protected:
 
@@ -212,10 +210,10 @@ protected:
     };
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring(const config_t& _config) override;
+    void configuring(const config_t& _config) override;
 
     /// Starts the service and initializes scene objects.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -225,19 +223,19 @@ protected:
      * Connect data::image::BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to BUFFER_IMAGE_SLOT
      * Connect data::image::MODIFIED_SIG of s_CLIPPING_MATRIX_INOUT to UPDATE_CLIPPING_BOX_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    void updating() override;
 
     /// Cleans up scene objects.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Sets the volume visibility.
      * @param _visible the visibility status of the volume.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
+    void set_visible(bool _visible) override;
 
     ///@brief Configuration loaded.
     config_data_t m_config {};

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <core/base.hpp>
 #include <core/tools/object.hpp>
@@ -44,16 +44,16 @@ namespace sight::ui::qt::container
  *
  */
 
-class UI_QT_CLASS_API widget : public ui::container::widget
+class SIGHT_UI_QT_CLASS_API widget : public ui::container::widget
 {
 public:
 
     SIGHT_DECLARE_CLASS(widget, ui::container::widget, ui::factory::make<widget>);
 
-    UI_QT_API ~widget() noexcept override;
+    SIGHT_UI_QT_API ~widget() noexcept override;
 
-    UI_QT_API virtual void set_qt_container(QWidget* _container);
-    UI_QT_API virtual QWidget* get_qt_container() const;
+    SIGHT_UI_QT_API virtual void set_qt_container(QWidget* _container);
+    SIGHT_UI_QT_API virtual QWidget* get_qt_container() const;
 
     /**
      * @brief Assign a layout to the container widget. Previous layout and its children are deleted and the container
@@ -61,14 +61,14 @@ public:
      *
      * @param _layout   The layout to set on the container widget
      */
-    UI_QT_API virtual void set_layout(QLayout* _layout);
+    SIGHT_UI_QT_API virtual void set_layout(QLayout* _layout);
 
-    UI_QT_API void clean() override;
-    UI_QT_API void destroy_container() override;
-    UI_QT_API bool is_shown_on_screen() override;
+    SIGHT_UI_QT_API void clean() override;
+    SIGHT_UI_QT_API void destroy_container() override;
+    SIGHT_UI_QT_API bool is_shown_on_screen() override;
 
-    UI_QT_API void set_visible(bool _is_visible) override;
-    UI_QT_API void set_enabled(bool _is_enabled) override;
+    SIGHT_UI_QT_API void set_visible(bool _is_visible) override;
+    SIGHT_UI_QT_API void set_enabled(bool _is_enabled) override;
 
 private:
 

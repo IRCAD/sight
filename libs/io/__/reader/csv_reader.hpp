@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
 
 #include <filesystem>
 #include <fstream>
@@ -37,7 +37,7 @@ namespace sight::io::reader
  * @brief Read CSV file and returns parsed tokens.
  * The input file is supposed to use comma separator, but another separator can be used when reading file.
  */
-class IO_CLASS_API csv_reader
+class SIGHT_IO_CLASS_API csv_reader
 {
 public:
 
@@ -46,10 +46,10 @@ public:
      *
      * @param _csv_path the stream to read
      */
-    IO_API csv_reader(const std::filesystem::path& _csv_path);
+    SIGHT_IO_API csv_reader(const std::filesystem::path& _csv_path);
 
     /// Destructor
-    IO_API virtual ~csv_reader();
+    SIGHT_IO_API virtual ~csv_reader();
 
     /// Containers to store parsed tokens.
     using token_container_t = std::vector<std::string>;
@@ -58,7 +58,7 @@ public:
      * @brief Returns whether end of file has been reached or not.
      *
      */
-    IO_API bool eof() const;
+    SIGHT_IO_API bool eof() const;
 
     /**
      * @brief Returns tokens on next line to read, using comma separator
@@ -68,7 +68,7 @@ public:
      *
      * @return tokens found on next line separated with given characters
      */
-    IO_API token_container_t get_line(const std::string& _separator = ",");
+    SIGHT_IO_API token_container_t get_line(const std::string& _separator = ",");
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,7 @@ namespace sight::service
  * @brief Create a service of type serviceType
  * @return a pointer to the new service
  */
-SERVICE_API service::base::sptr add(const std::string& _impl_type, const std::string& _id = "");
+SIGHT_SERVICE_API service::base::sptr add(const std::string& _impl_type, const std::string& _id = "");
 
 /**
  * @brief Create a service of type serviceType
@@ -78,7 +78,7 @@ inline void remove(const SPTR(service::base)& _srv)
  *
 
  */
-SERVICE_API service::base::sptr get(std::string _uid);
+SIGHT_SERVICE_API service::base::sptr get(std::string _uid);
 
 //------------------------------------------------------------------------------
 

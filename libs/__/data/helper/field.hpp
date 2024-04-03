@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 
 #include <data/object.hpp>
 
@@ -32,15 +32,15 @@ namespace sight::data::helper
 /**
  * @brief   Defines a helper to modify field on a data::object and create a message notifying this modification.
  */
-class DATA_CLASS_API field
+class SIGHT_DATA_CLASS_API field
 {
 public:
 
     /// Constructor. Initialize parameters.
-    DATA_API field(data::object::sptr _object);
+    SIGHT_DATA_API field(data::object::sptr _object);
 
     /// Destructor. Call notify if changes has been made.
-    DATA_API ~field();
+    SIGHT_DATA_API ~field();
 
     /**
      * @brief Returns a pointer of corresponding field. If field did not exist, it is set to defaultValue if
@@ -56,18 +56,18 @@ public:
      * @brief Register field with specified name. If the name does already exist, the matching field will be replaced.
      * * @deprecated use addOrSwap() instead
      */
-    DATA_API void set_field(const data::object::field_name_t& _name, data::object::sptr _obj);
+    SIGHT_DATA_API void set_field(const data::object::field_name_t& _name, data::object::sptr _obj);
 
     /**
      * @brief Replace the field map content.
      */
-    DATA_API void set_fields(const data::object::field_map_t& _new_fields);
+    SIGHT_DATA_API void set_fields(const data::object::field_map_t& _new_fields);
 
     /**
      * @brief Removes field with specified name.
      * @deprecated use remove() instead
      */
-    DATA_API void remove_field(const data::object::field_name_t& _name);
+    SIGHT_DATA_API void remove_field(const data::object::field_name_t& _name);
 
     /**
      * @brief Add a field in the object.
@@ -77,7 +77,7 @@ public:
      * @throw data::exception if the field already exists
      * Prepare the message to announce the modification.
      */
-    DATA_API void add(const data::object::field_name_t& _name, data::object::sptr _obj);
+    SIGHT_DATA_API void add(const data::object::field_name_t& _name, data::object::sptr _obj);
 
     /**
      * @brief Replace a field in the object.
@@ -88,7 +88,7 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void swap(const data::object::field_name_t& _name, data::object::sptr _obj);
+    SIGHT_DATA_API void swap(const data::object::field_name_t& _name, data::object::sptr _obj);
 
     /**
      * @brief Add or replace a field in the object.
@@ -97,7 +97,7 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void add_or_swap(const data::object::field_name_t& _name, data::object::sptr _obj);
+    SIGHT_DATA_API void add_or_swap(const data::object::field_name_t& _name, data::object::sptr _obj);
 
     /**
      * @brief Remove a field from the object.
@@ -107,21 +107,21 @@ public:
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void remove(const data::object::field_name_t& _name);
+    SIGHT_DATA_API void remove(const data::object::field_name_t& _name);
 
     /**
      * @brief Clear all fields in the object.
      *
      * Prepare the message to announce the modification.
      */
-    DATA_API void clear();
+    SIGHT_DATA_API void clear();
 
     /// Send the built message and clear the internal maps
-    DATA_API void notify();
+    SIGHT_DATA_API void notify();
 
 protected:
 
-    DATA_API void build_message(
+    SIGHT_DATA_API void build_message(
         const data::object::field_map_t& _old_fields,
         const data::object::field_map_t& _new_fields
     );

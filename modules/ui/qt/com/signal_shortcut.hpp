@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <service/base.hpp>
 
@@ -47,8 +45,8 @@ namespace sight::module::ui::qt::com
  * @section Signals Signals
  * - \b activated(): This signal is emitted when the shortcut is received.
  */
-class MODULE_UI_QT_CLASS_API signal_shortcut : public QObject,
-                                               public service::base
+class signal_shortcut : public QObject,
+                        public service::base
 {
 Q_OBJECT
 
@@ -60,10 +58,10 @@ public:
     using activated_shortcut_signal_t = core::com::signal<void ()>;
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API signal_shortcut() noexcept;
+    signal_shortcut() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~signal_shortcut() noexcept override;
+    ~signal_shortcut() noexcept override;
 
 protected:
 
@@ -72,22 +70,22 @@ protected:
      */
 
     /// This method configures the service
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief This method enables the eventFilter
      */
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /**
      * @brief This method deletes the eventFilter
      */
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief This method does nothing.
      */
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
 private Q_SLOTS:
 

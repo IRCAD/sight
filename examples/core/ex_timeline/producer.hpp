@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ex_timeline/config.hpp"
+#include <sight/ex_timeline/config.hpp>
 
 #include "message_tl.hpp"
 
@@ -59,14 +59,14 @@ namespace ex_timeline
  * - \b period : time between two messages, in milliseconds.
  * - \b timelineSize (optional): maximum number of messages inside the timeline.
  */
-class EX_TIMELINE_CLASS_API producer : public sight::service::base
+class SIGHT_EX_TIMELINE_CLASS_API producer : public sight::service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(producer, sight::service::base);
 
-    EX_TIMELINE_API producer() noexcept           = default;
-    EX_TIMELINE_API ~producer() noexcept override = default;
+    SIGHT_EX_TIMELINE_API producer() noexcept           = default;
+    SIGHT_EX_TIMELINE_API ~producer() noexcept override = default;
 
 protected:
 

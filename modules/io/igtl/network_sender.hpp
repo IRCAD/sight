@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/igtl/config.hpp"
-
 #include <data/object.hpp>
 
 #include <service/controller.hpp>
@@ -32,7 +30,7 @@ namespace sight::module::io::igtl
 {
 
 /// Interface providing behavior of network senders, if you want create a new network sender you must be inherit.
-class MODULE_IO_IGTL_CLASS_API network_sender : public service::controller
+class network_sender : public service::controller
 {
 public:
 
@@ -40,24 +38,24 @@ public:
     SIGHT_DECLARE_SERVICE(network_sender, service::controller);
 
     /// Initializes signals.
-    MODULE_IO_IGTL_API network_sender();
+    network_sender();
 
     /// Destroys the interface.
-    MODULE_IO_IGTL_API ~network_sender() override;
+    ~network_sender() override;
 
 protected:
 
     /// Defines the signal's name emitted when service is connected.
-    MODULE_IO_IGTL_API static const core::com::signals::key_t CONNECTED_SIGNAL;
+    static const core::com::signals::key_t CONNECTED_SIGNAL;
 
     /// Defines the signal's name emitted when service is disconnected.
-    MODULE_IO_IGTL_API static const core::com::signals::key_t DISCONNECTED_SIGNAL;
+    static const core::com::signals::key_t DISCONNECTED_SIGNAL;
 
     /**
      * @brief Sends input objects
      * @pre The service must be started.
      */
-    MODULE_IO_IGTL_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -65,13 +63,13 @@ protected:
      *
      * Connect data::object::MODIFIED_SIG to service::slots::UPDATE.
      */
-    MODULE_IO_IGTL_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     /**
      * @brief Sends the obj at the specified index.
      * @pre the configuration group must exists.
      */
-    MODULE_IO_IGTL_API virtual void send_object(const data::object::csptr& _obj, std::size_t _index) = 0;
+    virtual void send_object(const data::object::csptr& _obj, std::size_t _index) = 0;
 
     /// Defines the signal emitted when service is connected.
     using connected_signal_t = core::com::signal<void ()>;

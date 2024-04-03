@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,9 @@
 #ifndef _UICALIBRATION_PLUGIN_HPP_
 #define UICALIBRATION_PLUGIN_HPP
 
-#include <core/runtime/plugin.hpp>
+#include <sight/modules/ui/qt/config.hpp>
 
-#include <modules/ui/qt/config.hpp>
+#include <core/runtime/plugin.hpp>
 
 namespace sight::module::ui::qt::calibration
 {

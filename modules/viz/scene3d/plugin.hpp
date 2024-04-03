@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/config.hpp"
+#include <sight/modules/viz/scene3d/config.hpp>
 
 #include <core/runtime/plugin.hpp>
 
@@ -35,7 +35,7 @@ namespace sight::module::viz::scene3d
  * @brief Allows to redirect Ogre logs on Sight logs
  * We need this class to be declared outside to export DLL symbols on Windows.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API sight_ogre_listener final : public Ogre::LogListener
+class SIGHT_MODULE_VIZ_SCENE3D_CLASS_API sight_ogre_listener final : public Ogre::LogListener
 {
 public:
 
@@ -46,7 +46,7 @@ public:
     /**
      * @brief Set Ogre log on Sight log depending on it's LogLevel.
      */
-    MODULE_VIZ_SCENE3D_API void messageLogged(
+    SIGHT_MODULE_VIZ_SCENE3D_API void messageLogged(
         const Ogre::String& _message,
         Ogre::LogMessageLevel _lml,
         bool /*maskDebug*/,
@@ -56,7 +56,7 @@ public:
 };
 
 /// This class is started when the module is loaded.
-class MODULE_VIZ_SCENE3D_CLASS_API plugin final : public core::runtime::plugin
+class SIGHT_MODULE_VIZ_SCENE3D_CLASS_API plugin final : public core::runtime::plugin
 {
 public:
 
@@ -64,10 +64,10 @@ public:
     ~plugin() noexcept override;
 
     /// Creates the Ogre log manager.
-    MODULE_VIZ_SCENE3D_API void start() override;
+    SIGHT_MODULE_VIZ_SCENE3D_API void start() override;
 
     /// Stops the plugin, destroys Ogre resources.
-    MODULE_VIZ_SCENE3D_API void stop() noexcept override;
+    SIGHT_MODULE_VIZ_SCENE3D_API void stop() noexcept override;
 
 private:
 

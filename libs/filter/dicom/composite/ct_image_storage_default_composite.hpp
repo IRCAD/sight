@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/filter/dicom/config.hpp>
+
 #include "filter/dicom/composite/base.hpp"
-#include "filter/dicom/config.hpp"
 
 #include <data/dicom_series.hpp>
 
@@ -33,7 +34,7 @@ namespace sight::filter::dicom::composite
 /**
  * @brief Default filter used to read CTImageStorage SOP class.
  */
-class FILTER_DICOM_CLASS_API ct_image_storage_default_composite : public base
+class SIGHT_FILTER_DICOM_CLASS_API ct_image_storage_default_composite : public base
 {
 public:
 
@@ -44,16 +45,16 @@ public:
     );
 
     /// Constructor
-    FILTER_DICOM_API ct_image_storage_default_composite();
+    SIGHT_FILTER_DICOM_API ct_image_storage_default_composite();
 
     /// Destructor
-    FILTER_DICOM_API ~ct_image_storage_default_composite() override;
+    SIGHT_FILTER_DICOM_API ~ct_image_storage_default_composite() override;
 
     /// Return the name of the filter
-    FILTER_DICOM_API std::string get_name() const override;
+    SIGHT_FILTER_DICOM_API std::string get_name() const override;
 
     /// Return the description of the filter
-    FILTER_DICOM_API std::string get_description() const override;
+    SIGHT_FILTER_DICOM_API std::string get_description() const override;
 
 protected:
 

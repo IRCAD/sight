@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <data/color.hpp>
 #include <data/image.hpp>
@@ -68,14 +68,14 @@ namespace sight::viz::scene3d
 /**
  * @brief Provide some Ogre general functions for Sight
  */
-class VIZ_SCENE3D_CLASS_API utils
+class SIGHT_VIZ_SCENE3D_CLASS_API utils
 {
 public:
 
     /**
      *  @brief Registers Ogre Plugins to load upon root creation.
      */
-    VIZ_SCENE3D_API static void add_plugins(const std::vector<std::string>& _plugins);
+    SIGHT_VIZ_SCENE3D_API static void add_plugins(const std::vector<std::string>& _plugins);
 
     /**
      * @brief utils::add_resources_path
@@ -84,23 +84,23 @@ public:
      *        In this case, you can call this method in the plugin.cpp file of this module
      * @param _path Relative path to the resource.cfg file from a specific module
      */
-    VIZ_SCENE3D_API static void add_resources_path(const std::string& _path);
+    SIGHT_VIZ_SCENE3D_API static void add_resources_path(const std::string& _path);
 
     /**
      * @brief getOgreRoot
      * @return OgreRoot, if it doesn't exist initialise Ogre Root and default Ogre behavior
      */
-    VIZ_SCENE3D_API static Ogre::Root* get_ogre_root();
+    SIGHT_VIZ_SCENE3D_API static Ogre::Root* get_ogre_root();
 
     /**
      * @brief destroy the OgreRoot
      */
-    VIZ_SCENE3D_API static void destroy_ogre_root();
+    SIGHT_VIZ_SCENE3D_API static void destroy_ogre_root();
 
     /**
      * @brief Convert an Ogre texture into a Sight image data
      */
-    VIZ_SCENE3D_API static void convert_from_ogre_texture(
+    SIGHT_VIZ_SCENE3D_API static void convert_from_ogre_texture(
         Ogre::TexturePtr _texture,
         const data::image::sptr _image_fw,
         bool _flip = false
@@ -111,13 +111,13 @@ public:
      * @param _image_fw The Sight image
      * @return Pixel format of a data::image
      */
-    VIZ_SCENE3D_API static Ogre::PixelFormat get_pixel_format_ogre(const data::image& _image_fw);
+    SIGHT_VIZ_SCENE3D_API static Ogre::PixelFormat get_pixel_format_ogre(const data::image& _image_fw);
 
     /**
      * @brief get the image pixel format from an Ogre pixel format
      * @param _format Pixel format of Ogre
      */
-    VIZ_SCENE3D_API static std::pair<core::type, enum data::image::pixel_format> get_pixel_format_from_ogre(
+    SIGHT_VIZ_SCENE3D_API static std::pair<core::type, enum data::image::pixel_format> get_pixel_format_from_ogre(
         Ogre::PixelFormat _format
     );
     /**
@@ -125,7 +125,7 @@ public:
      * @param _format Pixel format
      * @return The window that should be used to scale pixel values
      */
-    VIZ_SCENE3D_API static Ogre::Vector2 get_texture_window(core::type _format);
+    SIGHT_VIZ_SCENE3D_API static Ogre::Vector2 get_texture_window(core::type _format);
 
     /**
      * @brief allocateTexture
@@ -139,7 +139,7 @@ public:
      * @param[in] _dynamic true if the image has to be modified frequently
      * @return
      */
-    VIZ_SCENE3D_API static void allocate_texture(
+    SIGHT_VIZ_SCENE3D_API static void allocate_texture(
         Ogre::Texture* _texture,
         std::size_t _width,
         std::size_t _height,
@@ -154,25 +154,27 @@ public:
      * @param[in] _ogre_color Color to convert into a Sight color
      * @return The converted Sight color
      */
-    VIZ_SCENE3D_API static data::color::sptr from_ogre_color(const Ogre::ColourValue& _ogre_color);
+    SIGHT_VIZ_SCENE3D_API static data::color::sptr from_ogre_color(const Ogre::ColourValue& _ogre_color);
 
     /// Creates an ogre matrix from a Sight matrix.
-    VIZ_SCENE3D_API static Ogre::Matrix4 to_ogre_matrix(const data::matrix4::csptr& _tm3d);
+    SIGHT_VIZ_SCENE3D_API static Ogre::Matrix4 to_ogre_matrix(const data::matrix4::csptr& _tm3d);
 
     /// Copies an ogre matrix to a Sight matrix.
-    VIZ_SCENE3D_API static void from_ogre_matrix(const Ogre::Matrix4& _mx, const data::matrix4::sptr& _tm3d);
+    SIGHT_VIZ_SCENE3D_API static void from_ogre_matrix(const Ogre::Matrix4& _mx, const data::matrix4::sptr& _tm3d);
 
     /// Copies the image's spacing and origin into Ogre vectors.
-    VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convert_spacing_and_origin(
+    SIGHT_VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convert_spacing_and_origin(
         const data::image::csptr& _img
     );
 
     /// Copies the image's spacing and origin into Ogre vectors.
     /// Version with const reference of image
-    VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convert_spacing_and_origin(const data::image& _img);
+    SIGHT_VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convert_spacing_and_origin(
+        const data::image& _img
+    );
 
     /// Converts world coordinates to slices indexes of _image if possible, thrown an exception if not.
-    VIZ_SCENE3D_API static Ogre::Vector3i world_to_slices(const data::image& _image, const Ogre::Vector3& _world);
+    SIGHT_VIZ_SCENE3D_API static Ogre::Vector3i world_to_slices(const data::image& _image, const Ogre::Vector3& _world);
 
     /**
      * @brief Pick an object from a screen-space position.
@@ -182,7 +184,7 @@ public:
      * @param _layer scene manager where to pick objects from.
      * @return Object and intersection.
      */
-    VIZ_SCENE3D_API static std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > pick_object(
+    SIGHT_VIZ_SCENE3D_API static std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > pick_object(
         int _x,
         int _y,
         std::uint32_t _query_mask,
@@ -197,7 +199,7 @@ public:
      * @param _spacing image spacing.
      * @return True if an object has been selected.
      */
-    VIZ_SCENE3D_API static std::string pick_image(
+    SIGHT_VIZ_SCENE3D_API static std::string pick_image(
         const data::image& _image,
         const Ogre::Vector3& _position,
         const Ogre::Vector3& _origin,

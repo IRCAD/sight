@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "geometry/data/config.hpp"
+#include <sight/geometry/data/config.hpp>
+
 #include "geometry/data/types.hpp"
 
 #include <core/base.hpp>
@@ -53,7 +54,7 @@ namespace sight::geometry::data
    t1 = [-d1.(p1-p2) + d2.(p1-p2) * (d1.d2)]/delta
    @endverbatim
  */
-GEOMETRY_DATA_API bool get_closest_points(
+SIGHT_GEOMETRY_DATA_API bool get_closest_points(
     const fw_line& _ray1,
     const fw_line& _ray2,
     fw_vec3d& _point_on_this,
@@ -66,7 +67,7 @@ GEOMETRY_DATA_API bool get_closest_points(
  *  @param [in]  _point point to be projected
  *  @return closest point of the line if an intersection is found.
  */
-GEOMETRY_DATA_API fw_vec3d get_closest_point(const fw_line& _ray, const fw_vec3d& _point);
+SIGHT_GEOMETRY_DATA_API fw_vec3d get_closest_point(const fw_line& _ray, const fw_vec3d& _point);
 
 /**
  * @brief Compute the projection of a point in a given direction and test if this intersection is inside a given radius.
@@ -75,7 +76,7 @@ GEOMETRY_DATA_API fw_vec3d get_closest_point(const fw_line& _ray, const fw_vec3d
  *  @param [in]  _point point to be projected
  *  @return closest point of the line if an intersection is found.
  */
-GEOMETRY_DATA_API bool intersect(const fw_line& _ray, double _radius, const fw_vec3d& _point);
+SIGHT_GEOMETRY_DATA_API bool intersect(const fw_line& _ray, double _radius, const fw_vec3d& _point);
 
 /**
  * @brief Compute the closest points between two rays and test these points lie inside a sphere of a given radius.
@@ -86,7 +87,7 @@ GEOMETRY_DATA_API bool intersect(const fw_line& _ray, double _radius, const fw_v
  *  @param [in]  _point point to be projected
  *  @return closest point of the line if an intersection is found.
  */
-GEOMETRY_DATA_API bool intersect(
+SIGHT_GEOMETRY_DATA_API bool intersect(
     const fw_line& _line,
     double _radius,
     const fw_vec3d& _origin,
@@ -106,7 +107,7 @@ GEOMETRY_DATA_API bool intersect(
  *  @param [out] _front true if the dot product of the plane normal and ths positive Z axis (0,0,1) is positive.
  *  @return true if an intersection is found.
  */
-GEOMETRY_DATA_API bool intersect(
+SIGHT_GEOMETRY_DATA_API bool intersect(
     const fw_line& _line,
     const fw_vec3d& _v1,
     const fw_vec3d& _v2,

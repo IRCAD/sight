@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <QFormLayout>
 #include <QObject>
@@ -95,36 +95,36 @@ public:
     QWidget* widget;
 };
 
-class UI_QT_CLASS_API_QT toolbox : public QFrame
+class SIGHT_UI_QT_CLASS_API_QT toolbox : public QFrame
 {
 Q_OBJECT
 
 public:
 
-    UI_QT_API_QT toolbox(QWidget* _parent = nullptr);
-    UI_QT_API_QT ~toolbox() override;
+    SIGHT_UI_QT_API_QT toolbox(QWidget* _parent = nullptr);
+    SIGHT_UI_QT_API_QT ~toolbox() override;
 
-    UI_QT_API_QT int add_item(QWidget* _widget, const QString& _text);
-    UI_QT_API_QT int insert_item(int _index, QWidget* _widget, const QString& _text);
+    SIGHT_UI_QT_API_QT int add_item(QWidget* _widget, const QString& _text);
+    SIGHT_UI_QT_API_QT int insert_item(int _index, QWidget* _widget, const QString& _text);
 
-    UI_QT_API_QT void remove_item(int _index);
+    SIGHT_UI_QT_API_QT void remove_item(int _index);
 
-    UI_QT_API_QT void set_item_enabled(int _index, bool _enabled);
-    [[nodiscard]] UI_QT_API_QT bool is_item_enabled(int _index) const;
+    SIGHT_UI_QT_API_QT void set_item_enabled(int _index, bool _enabled);
+    [[nodiscard]] SIGHT_UI_QT_API_QT bool is_item_enabled(int _index) const;
 
-    UI_QT_API_QT void set_item_text(int _index, const QString& _text);
-    [[nodiscard]] UI_QT_API_QT QString item_text(int _index) const;
+    SIGHT_UI_QT_API_QT void set_item_text(int _index, const QString& _text);
+    [[nodiscard]] SIGHT_UI_QT_API_QT QString item_text(int _index) const;
 
-    UI_QT_API_QT void set_item_tool_tip(int _index, const QString& _tool_tip);
-    [[nodiscard]] UI_QT_API_QT QString item_tool_tip(int _index) const;
+    SIGHT_UI_QT_API_QT void set_item_tool_tip(int _index, const QString& _tool_tip);
+    [[nodiscard]] SIGHT_UI_QT_API_QT QString item_tool_tip(int _index) const;
 
-    [[nodiscard]] UI_QT_API_QT QWidget* widget(int _index) const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT QWidget* widget(int _index) const;
 
-    UI_QT_API_QT int index_of(QWidget* _widget) const;
-    [[nodiscard]] UI_QT_API_QT int count() const;
+    SIGHT_UI_QT_API_QT int index_of(QWidget* _widget) const;
+    [[nodiscard]] SIGHT_UI_QT_API_QT int count() const;
 
-    UI_QT_API_QT void collapse_item(int _index);
-    UI_QT_API_QT void expand_item(int _index);
+    SIGHT_UI_QT_API_QT void collapse_item(int _index);
+    SIGHT_UI_QT_API_QT void expand_item(int _index);
 
 protected:
 

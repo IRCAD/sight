@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/factory/new.hpp"
 #include "data/registry/detail.hpp"
 
@@ -54,8 +55,8 @@ class locked_ptr;
  * An object containing a field name "dummy" corresponds to having a labeledObject with label "dummy" and
  * containing a specific object. When accessing to this object with get_field("dummy") we get the specific object
  */
-class DATA_CLASS_API object : public core::tools::object,
-                              public core::com::has_signals
+class SIGHT_DATA_CLASS_API object : public core::tools::object,
+                                    public core::com::has_signals
 {
 public:
 
@@ -87,20 +88,20 @@ public:
     using modified_signal_t = core::com::signal<void ()>;
 
     /// Key in m_signals map of signal m_sigModified
-    DATA_API static const core::com::signals::key_t MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t MODIFIED_SIG;
 
     using fields_container_t = std::map<std::string, object::sptr>;
     /// Type of signal when objects are added
     using added_fields_signal_t = core::com::signal<void (fields_container_t)>;
-    DATA_API static const core::com::signals::key_t ADDED_FIELDS_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t ADDED_FIELDS_SIG;
 
     /// Type of signal when objects are changed (newObjects, oldObjects)
     using changed_fields_signal_t = core::com::signal<void (fields_container_t, fields_container_t)>;
-    DATA_API static const core::com::signals::key_t CHANGED_FIELDS_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t CHANGED_FIELDS_SIG;
 
     /// Type of signal when objects are removed
     using removed_fields_signal_t = core::com::signal<void (fields_container_t)>;
-    DATA_API static const core::com::signals::key_t REMOVED_FIELDS_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t REMOVED_FIELDS_SIG;
     /**
      * @}
      */
@@ -117,7 +118,7 @@ public:
      * @param[in] _default_value Default value
      * @return defaultValue if field is not found
      */
-    DATA_API object::sptr get_field(
+    SIGHT_DATA_API object::sptr get_field(
         const field_name_t& _name,
         object::sptr _default_value = object::sptr()
     ) const;
@@ -152,41 +153,41 @@ public:
     /**
      * @brief Returns fields map.
      */
-    DATA_API const field_map_t& get_fields() const;
+    SIGHT_DATA_API const field_map_t& get_fields() const;
 
     /**
      * @brief Returns vector of field names.
      */
-    DATA_API field_name_vector_t get_field_names() const;
+    SIGHT_DATA_API field_name_vector_t get_field_names() const;
 
     /**
      * @brief Register field with specified name. If the name does already exist, the matching field will be replaced.
      * @param[in] _name field name
      * @param[in] _obj  field
      */
-    DATA_API void set_field(const field_name_t& _name, object::sptr _obj);
+    SIGHT_DATA_API void set_field(const field_name_t& _name, object::sptr _obj);
 
     /**
      * @brief Replace the field map content.
      */
-    DATA_API void set_fields(const field_map_t& _field_map);
+    SIGHT_DATA_API void set_fields(const field_map_t& _field_map);
 
     /**
      * @brief Removes field with specified name.
      * @param[in] _name field name
      */
-    DATA_API void remove_field(const field_name_t& _name);
+    SIGHT_DATA_API void remove_field(const field_name_t& _name);
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API virtual void shallow_copy(const object::csptr& _source);
+    SIGHT_DATA_API virtual void shallow_copy(const object::csptr& _source);
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API virtual void deep_copy(
+    SIGHT_DATA_API virtual void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     );
@@ -195,7 +196,7 @@ public:
      * @brief return a copy of the source. if source is a null pointer, return a null pointer.
      * @{
      */
-    DATA_API static object::sptr copy(
+    SIGHT_DATA_API static object::sptr copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     );
@@ -219,12 +220,12 @@ public:
         return m_mutex;
     }
 
-    DATA_API ~object() noexcept override = default;
+    SIGHT_DATA_API ~object() noexcept override = default;
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const object& _other) const noexcept;
-    DATA_API bool operator!=(const object& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const object& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const object& _other) const noexcept;
     /// @}
 
     /// Accessors
@@ -238,7 +239,7 @@ public:
 
 protected:
 
-    DATA_API object();
+    SIGHT_DATA_API object();
 
     /// Description allows to distinguish between different instances of the same class
     std::string m_description;
@@ -258,7 +259,7 @@ private:
     friend class sight::data::mt::locked_ptr;
 
     /// Increments the last modified timestamp
-    DATA_API inline void set_modified() noexcept;
+    SIGHT_DATA_API inline void set_modified() noexcept;
 };
 
 template<typename DATA_TYPE>

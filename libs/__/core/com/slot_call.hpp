@@ -46,7 +46,7 @@ struct slot_call;
  * @tparam A Slot's arguments types.
  */
 template<typename R, typename ... A>
-struct CORE_CLASS_API slot_call<R(A ...)>: slot_run<void(A ...)>
+struct SIGHT_CORE_CLASS_API slot_call<R(A ...)>: slot_run<void(A ...)>
 {
     /**
      * @name Typedefs

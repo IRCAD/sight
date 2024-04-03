@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <service/controller.hpp>
 #include <service/notifier.hpp>
 
@@ -98,28 +96,28 @@ namespace sight::module::ui::qt
  *                   allow closing of permanent notification
  *
  */
-class MODULE_UI_QT_CLASS_API notifier final : public service::controller
+class notifier final : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(notifier, service::controller);
 
     /// Constructor, initializes position map & slots.
-    MODULE_UI_QT_API notifier() noexcept;
+    notifier() noexcept;
 
     /// Destructor, clears the position map.
-    MODULE_UI_QT_API ~notifier() noexcept override = default;
+    ~notifier() noexcept override = default;
 
     /// Slot: This method is used to set an enum parameter.
-    MODULE_UI_QT_API void set_enum_parameter(std::string _val, std::string _key);
+    void set_enum_parameter(std::string _val, std::string _key);
 
     /// Slot: pops a notification.
     /// @param _notification notification.
-    MODULE_UI_QT_API void pop(service::notification _notification);
+    void pop(service::notification _notification);
 
     /// Slot: close a notification identified by the channel name.
     /// @param _channel notification channel.
-    MODULE_UI_QT_API void close_notification(std::string _channel);
+    void close_notification(std::string _channel);
 
 protected:
 
@@ -128,22 +126,22 @@ protected:
      */
 
     /// This method configures the service
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Starts and setups the service optionally gets the parent container SID/WID if set.
      */
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Stops & clears the service
      */
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief This method does nothing.
      */
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
 private:
 

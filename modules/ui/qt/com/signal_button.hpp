@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2024 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <core/tools/failed.hpp>
 
@@ -83,8 +81,8 @@ namespace sight::module::ui::qt::com
  * - \b iconWidth (optional, unsigned, default=0): icon width.
  * - \b iconHeight (optional, unsigned, default=0): icon height.
  */
-class MODULE_UI_QT_CLASS_API signal_button : public QObject,
-                                             public sight::ui::editor
+class signal_button : public QObject,
+                      public sight::ui::editor
 {
 Q_OBJECT
 
@@ -94,24 +92,24 @@ public:
     SIGHT_DECLARE_SERVICE(signal_button, sight::ui::editor);
 
     /// Creates signals and slots.
-    MODULE_UI_QT_API signal_button() noexcept;
+    signal_button() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_QT_API ~signal_button() noexcept override;
+    ~signal_button() noexcept override;
 
 protected:
 
     /// Configures the class parameters.
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /// Launches the editor::starting method.
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     ///Does nothing.
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
     /// Launches the editor::stopping method.
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
 private Q_SLOTS:
 

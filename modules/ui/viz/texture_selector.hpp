@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/viz/config.hpp"
 
 #include <data/reconstruction.hpp>
 
@@ -49,8 +47,8 @@ namespace sight::module::ui::viz
  * @subsection In-Out In-Out:
  * - \b reconstruction [sight::data::reconstruction]: reconstruction where the texture should be applied.
  */
-class MODULE_UI_VIZ_CLASS_API texture_selector : public QObject,
-                                                 public sight::ui::editor
+class texture_selector : public QObject,
+                         public sight::ui::editor
 {
 Q_OBJECT
 
@@ -58,8 +56,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(texture_selector, sight::ui::editor);
 
-    MODULE_UI_VIZ_API texture_selector() noexcept;
-    MODULE_UI_VIZ_API ~texture_selector() noexcept override;
+    texture_selector() noexcept;
+    ~texture_selector() noexcept override;
 
 protected:
 
@@ -70,16 +68,16 @@ protected:
         </service>
        @endcode
      */
-    MODULE_UI_VIZ_API void configuring() override;
+    void configuring() override;
 
     /// Start the service. Create UI
-    MODULE_UI_VIZ_API void starting() override;
+    void starting() override;
 
     /// Stop the service. Delete UI
-    MODULE_UI_VIZ_API void stopping() override;
+    void stopping() override;
 
     /// Do nothing
-    MODULE_UI_VIZ_API void updating() override;
+    void updating() override;
 
 protected Q_SLOTS:
 

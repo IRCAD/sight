@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dimse/config.hpp"
+#include <sight/io/dimse/config.hpp>
 
 #include <core/exception.hpp>
 
@@ -32,7 +32,7 @@ namespace sight::io::dimse::exceptions
 /**
  * @brief Base class of fwPacsIO exceptions
  */
-class IO_DIMSE_CLASS_API base : public core::exception
+class SIGHT_IO_DIMSE_CLASS_API base : public core::exception
 {
 public:
 
@@ -40,10 +40,10 @@ public:
      * @brief Constructor
      * @param[in] _message Exception message
      */
-    IO_DIMSE_API base(const std::string& _message);
+    SIGHT_IO_DIMSE_API base(const std::string& _message);
 
     /// Destructor
-    IO_DIMSE_API ~base() noexcept override;
+    SIGHT_IO_DIMSE_API ~base() noexcept override;
 };
 
 } // namespace sight::io::dimse::exceptions

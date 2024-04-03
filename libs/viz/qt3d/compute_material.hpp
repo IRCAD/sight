@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "viz/qt3d/config.hpp"
+#include <sight/viz/qt3d/config.hpp>
 
 #include <QMaterial>
 
@@ -51,7 +51,7 @@ class frame_graph;
 /**
  * @brief This class creates a compute shader that changes a quad mesh to a triangle mesh.
  */
-class VIZ_QT3D_CLASS_API compute_material : public Qt3DRender::QMaterial
+class SIGHT_VIZ_QT3D_CLASS_API compute_material : public Qt3DRender::QMaterial
 {
 Q_OBJECT
 
@@ -61,19 +61,19 @@ Q_PROPERTY(Qt3DRender::QBuffer* buffer READ get_index_buffer WRITE set_index_buf
 public:
 
     /// Creates the compute shader.
-    VIZ_QT3D_API compute_material(Qt3DCore::QNode* _parent = nullptr);
+    SIGHT_VIZ_QT3D_API compute_material(Qt3DCore::QNode* _parent = nullptr);
 
     /// Destroy the material.
-    VIZ_QT3D_API ~compute_material() override;
+    SIGHT_VIZ_QT3D_API ~compute_material() override;
 
     /// Sets the index buffer of the mesh.
-    VIZ_QT3D_API void set_index_buffer(Qt3DRender::QBuffer* _buffer);
+    SIGHT_VIZ_QT3D_API void set_index_buffer(Qt3DRender::QBuffer* _buffer);
 
     /// Gets the index buffer of the mesh.
-    VIZ_QT3D_API Qt3DRender::QBuffer* get_index_buffer();
+    SIGHT_VIZ_QT3D_API Qt3DRender::QBuffer* get_index_buffer();
 
     /// Adds the material to the given frame graph and sets the work group of the compute shader.
-    VIZ_QT3D_API void update_frame_graph(viz::qt3d::core::frame_graph* _frame_graph, int _number_of_cells);
+    SIGHT_VIZ_QT3D_API void update_frame_graph(viz::qt3d::core::frame_graph* _frame_graph, int _number_of_cells);
 
 Q_SIGNALS:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/viz/config.hpp"
 
 #include <ui/__/editor.hpp>
 
@@ -58,7 +56,7 @@ namespace sight::module::ui::viz
  * @code{.xml}
  *  <service uid="light_selectorUid" type="sight::module::ui::viz::light_selector" />
  */
-class MODULE_UI_VIZ_CLASS_API light_selector final :
+class light_selector final :
     public QObject,
     public sight::ui::editor
 {
@@ -70,24 +68,24 @@ public:
     SIGHT_DECLARE_SERVICE(light_selector, sight::ui::editor);
 
     /// Initializes signals and slots.
-    MODULE_UI_VIZ_API light_selector() noexcept;
+    light_selector() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_VIZ_API ~light_selector() noexcept override;
+    ~light_selector() noexcept override;
 
 protected:
 
     /// Configures the service.
-    MODULE_UI_VIZ_API void configuring() override;
+    void configuring() override;
 
     /// Sets the connections and the UI elements.
-    MODULE_UI_VIZ_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_UI_VIZ_API void updating() override;
+    void updating() override;
 
     /// Destroys the connections and cleans the container.
-    MODULE_UI_VIZ_API void stopping() override;
+    void stopping() override;
 
 private Q_SLOTS:
 

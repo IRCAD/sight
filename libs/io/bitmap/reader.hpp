@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,9 @@
 
 #pragma once
 
-#include "backend.hpp"
+#include <sight/io/bitmap/config.hpp>
 
-#include "io/bitmap/config.hpp"
+#include "backend.hpp"
 
 #include <core/location/single_file.hpp>
 #include <core/tools/progress_adviser.hpp>
@@ -55,9 +55,9 @@ namespace sight::io::bitmap
  * The performance should still be better than VTK or even OpenCV because of direct API calls and avoided unneeded
  * buffer copy.
  */
-class IO_BITMAP_CLASS_API reader final : public io::reader::generic_object_reader<data::image>,
-                                         public core::location::single_file,
-                                         public core::tools::progress_adviser
+class SIGHT_IO_BITMAP_CLASS_API reader final : public io::reader::generic_object_reader<data::image>,
+                                               public core::location::single_file,
+                                               public core::tools::progress_adviser
 {
 public:
 
@@ -76,18 +76,18 @@ public:
     reader& operator=(reader&&)      = delete;
 
     /// Constructor/Destructor
-    IO_BITMAP_API reader();
-    IO_BITMAP_API ~reader() override;
+    SIGHT_IO_BITMAP_API reader();
+    SIGHT_IO_BITMAP_API ~reader() override;
 
     /// Main writing method from generic_object_reader
-    IO_BITMAP_API void read() override;
+    SIGHT_IO_BITMAP_API void read() override;
 
     /// Specialized writing method that allows to specify the backend and the mode (Fast or Best compression)
     /// @arg backend: the backend to use. Can be LIBJPEG, LIBTIFF, LIBPNG, OPENJPEG or, if available, NVJPEG and
     ///      NVJPEG2K. DEFAULT is LIBTIFF and ANY will guess using the file extension. "*J2K" variant are
     ///      JPEG2000 "stream", without normal meta-data and is only useful for DICOM
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
-    IO_BITMAP_API void read(backend _backend);
+    SIGHT_IO_BITMAP_API void read(backend _backend);
 
     /// Specialized writing method that allows to write to a ostream
     /// @arg ostream: the stream to write to. It is up to the user to open it.
@@ -95,14 +95,14 @@ public:
     ///      NVJPEG2K. DEFAULT is LIBTIFF. "*_J2K" variant are
     ///      JPEG2000 "stream", without normal meta-data and is only useful for DICOM
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
-    IO_BITMAP_API void read(
+    SIGHT_IO_BITMAP_API void read(
         std::istream& _istream,
         backend _backend = backend::libtiff
     );
 
     /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid
     /// @return an extension as string
-    [[nodiscard]] IO_BITMAP_API std::string extension() const override;
+    [[nodiscard]] SIGHT_IO_BITMAP_API std::string extension() const override;
 
 private:
 

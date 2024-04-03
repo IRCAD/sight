@@ -22,10 +22,11 @@
 
 #pragma once
 
+#include <sight/viz/scene3d/config.hpp>
+
 #include "data/image.hpp"
 #include "data/transfer_function.hpp"
 
-#include "viz/scene3d/config.hpp"
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/transfer_function.hpp"
 #include "viz/scene3d/utils.hpp"
@@ -48,7 +49,7 @@ namespace sight::viz::scene3d::vr
 /**
  * @brief Interface for volume renderers.
  */
-class VIZ_SCENE3D_CLASS_API volume_renderer
+class SIGHT_VIZ_SCENE3D_CLASS_API volume_renderer
 {
 public:
 
@@ -73,7 +74,7 @@ public:
     using cube_edge_list_t = std::array<std::pair<unsigned int, unsigned int>, 12>;
 
     /// Maps each cube faces to 4 vertex indices.
-    VIZ_SCENE3D_API static inline const cube_face_positions_map_t CUBE_FACES =
+    SIGHT_VIZ_SCENE3D_API static inline const cube_face_positions_map_t CUBE_FACES =
     {
         {volume_renderer::z_positive, {{3, 4, 1, 0}}},
         {volume_renderer::z_negative, {{2, 5, 7, 6}}},
@@ -84,10 +85,10 @@ public:
     };
 
     /// Image local and texture coordinates /!\ The order matters to our intersection algorithm.
-    VIZ_SCENE3D_API static const std::array<Ogre::Vector3, 8> IMAGE_POSITIONS;
+    SIGHT_VIZ_SCENE3D_API static const std::array<Ogre::Vector3, 8> IMAGE_POSITIONS;
 
     /// List of vertex indices pairs that make an edge.
-    VIZ_SCENE3D_API static constexpr cube_edge_list_t CUBE_EDGES =
+    SIGHT_VIZ_SCENE3D_API static constexpr cube_edge_list_t CUBE_EDGES =
     {
         {
             {0, 1}, {1, 4}, {4, 3}, {3, 0},
@@ -126,7 +127,7 @@ public:
      * @param _with_buffer (optional)     Enable buffering for the textures updates. Default is false.
      * @param _preintegration (optional)  Enable preintegration. Default is false.
      */
-    VIZ_SCENE3D_API volume_renderer(
+    SIGHT_VIZ_SCENE3D_API volume_renderer(
         std::string _parent_id,
         Ogre::SceneManager* _scene_manager,
         Ogre::SceneNode* _volume_node,
@@ -139,55 +140,58 @@ public:
     );
 
     /// Destructor, does nothing.
-    VIZ_SCENE3D_API virtual ~volume_renderer();
+    SIGHT_VIZ_SCENE3D_API virtual ~volume_renderer();
 
     ///@brief Update the renderer. Base implementation only updates the samples.
-    VIZ_SCENE3D_API virtual void update(const data::transfer_function::csptr& _tf) = 0;
+    SIGHT_VIZ_SCENE3D_API virtual void update(const data::transfer_function::csptr& _tf) = 0;
 
     /// Called when the image being rendered is modified.
-    VIZ_SCENE3D_API virtual void update_image(data::image::csptr _image, data::transfer_function::csptr _tf) = 0;
+    SIGHT_VIZ_SCENE3D_API virtual void update_image(data::image::csptr _image, data::transfer_function::csptr _tf) = 0;
 
     /// @brief Loads the 3D texture onto the GPU.
-    VIZ_SCENE3D_API virtual void load_image();
+    SIGHT_VIZ_SCENE3D_API virtual void load_image();
 
     /// @brief Loads the mask onto the GPU.
-    VIZ_SCENE3D_API virtual void load_mask();
+    SIGHT_VIZ_SCENE3D_API virtual void load_mask();
 
     /// Called when the transfer function is updated.
-    VIZ_SCENE3D_API virtual void update_volume_tf(const data::transfer_function::csptr&) = 0;
+    SIGHT_VIZ_SCENE3D_API virtual void update_volume_tf(const data::transfer_function::csptr&) = 0;
 
     /// Sets the number of samples per view ray.
-    VIZ_SCENE3D_API virtual void set_sampling(uint16_t _nb_samples, const data::transfer_function::csptr& _tf) = 0;
+    SIGHT_VIZ_SCENE3D_API virtual void set_sampling(
+        uint16_t _nb_samples,
+        const data::transfer_function::csptr& _tf
+    ) = 0;
 
     /// Sets/unsets pre-integrated rendering.
-    VIZ_SCENE3D_API virtual void set_pre_integrated_rendering(bool _pre_integrated_rendering) = 0;
+    SIGHT_VIZ_SCENE3D_API virtual void set_pre_integrated_rendering(bool _pre_integrated_rendering) = 0;
 
     ///@brief Returns 'true' if preintegration is used, 'false' otherwise.
-    [[nodiscard]] VIZ_SCENE3D_API bool preintegration() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API bool preintegration() const;
 
     /// Computes image positions.
-    VIZ_SCENE3D_API virtual void clip_image(const Ogre::AxisAlignedBox& _clipping_box);
+    SIGHT_VIZ_SCENE3D_API virtual void clip_image(const Ogre::AxisAlignedBox& _clipping_box);
 
     /// Returns the sampling rate.
-    [[nodiscard]] VIZ_SCENE3D_API float sampling_distance() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API float sampling_distance() const;
 
     ///@brief Returns the current camera information in use.
-    [[nodiscard]] VIZ_SCENE3D_API const camera_info_t& camera_info() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API const camera_info_t& camera_info() const;
 
     /// Called when the size of the viewport changes.
-    VIZ_SCENE3D_API virtual void resize_viewport(int _w, int _h);
+    SIGHT_VIZ_SCENE3D_API virtual void resize_viewport(int _w, int _h);
 
 protected:
 
     /// Scale the volume based on the image's spacing and move it to the image origin.
-    VIZ_SCENE3D_API void scale_translate_cube(
+    SIGHT_VIZ_SCENE3D_API void scale_translate_cube(
         const data::image::spacing_t& _spacing,
         const data::image::origin_t& _origin
     );
 
     /// Updates the sampling distance according to the current camera plane and slice number. Also updates
     /// m_cameraPlane.
-    VIZ_SCENE3D_API void update_sample_distance();
+    SIGHT_VIZ_SCENE3D_API void update_sample_distance();
 
     /// ID of this object's parent.
     const std::string m_parent_id;

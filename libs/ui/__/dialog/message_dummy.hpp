@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,21 +28,21 @@
 namespace sight::ui::dialog
 {
 
-class UI_CLASS_API message_dummy : public message_base
+class SIGHT_UI_CLASS_API message_dummy : public message_base
 {
 public:
 
-    UI_API void set_title(const std::string& _title) override;
-    UI_API void set_message(const std::string& _msg) override;
-    UI_API void set_icon(icons _icon) override;
-    UI_API void add_button(buttons _button) override;
-    UI_API void set_default_button(buttons _button) override;
-    UI_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
+    SIGHT_UI_API void set_title(const std::string& _title) override;
+    SIGHT_UI_API void set_message(const std::string& _msg) override;
+    SIGHT_UI_API void set_icon(icons _icon) override;
+    SIGHT_UI_API void add_button(buttons _button) override;
+    SIGHT_UI_API void set_default_button(buttons _button) override;
+    SIGHT_UI_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
-    UI_API buttons show() override;
+    SIGHT_UI_API buttons show() override;
 
-    UI_API static void push_action(buttons _action);
-    UI_API static bool clear();
+    SIGHT_UI_API static void push_action(buttons _action);
+    SIGHT_UI_API static bool clear();
 
 private:
 

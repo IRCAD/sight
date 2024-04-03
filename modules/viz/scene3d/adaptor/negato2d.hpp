@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/config.hpp"
-
 #include <core/com/signal.hpp>
 
 #include <data/helper/medical_image.hpp>
@@ -80,7 +78,7 @@ namespace sight::module::viz::scene3d::adaptor
  *      was specified in the transform adaptor.
  * * - \b interactive (optional, bool, default=false): enables interactions on the negato.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API negato2d final :
+class negato2d final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable,
     public sight::viz::scene3d::interactor::base
@@ -93,19 +91,19 @@ public:
     SIGHT_DECLARE_SERVICE(negato2d, sight::viz::scene3d::adaptor);
 
     /// Creates the service and initializes slots.
-    MODULE_VIZ_SCENE3D_API negato2d() noexcept;
+    negato2d() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~negato2d() noexcept final = default;
+    ~negato2d() noexcept final = default;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Instantiates the texture, material, pass and texture unit state.
     /// Sets the connection between attached data and the received slot.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -116,19 +114,19 @@ protected:
      * Connect data::image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to SLICETYPE_SLOT
      * Connect data::image::SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to SLICEINDEX_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
     /// Uploads the input image into the texture buffer and recomputes the negato geometry.
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /// Disconnects the attached data from the received slot.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
     /**
      * @brief Sets the negato visibility.
      * @param _visible the visibility status of the negato.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
+    void set_visible(bool _visible) final;
 
 private:
 

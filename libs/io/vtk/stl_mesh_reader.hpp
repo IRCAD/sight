@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/vtk/config.hpp"
+#include <sight/io/vtk/config.hpp>
 
 #include <core/location/single_file.hpp>
 
@@ -48,8 +48,8 @@ namespace sight::io::vtk
  *
  */
 
-class IO_VTK_CLASS_API stl_mesh_reader : public reader::generic_object_reader<data::mesh>,
-                                         public core::location::single_file
+class SIGHT_IO_VTK_CLASS_API stl_mesh_reader : public reader::generic_object_reader<data::mesh>,
+                                               public core::location::single_file
 {
 public:
 
@@ -61,19 +61,19 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
-    IO_VTK_API stl_mesh_reader();
+    SIGHT_IO_VTK_API stl_mesh_reader();
 
     /// @brief Destructor.
-    IO_VTK_API ~stl_mesh_reader() override;
+    SIGHT_IO_VTK_API ~stl_mesh_reader() override;
 
     /// @brief Reading operator.
-    IO_VTK_API void read() override;
+    SIGHT_IO_VTK_API void read() override;
 
     /// @return ".stl"
-    IO_VTK_API std::string extension() const override;
+    SIGHT_IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::base) get_job() const override;
+    SIGHT_IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 

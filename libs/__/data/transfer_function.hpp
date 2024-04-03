@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/container.hpp"
 
 #include <core/type.hpp>
@@ -34,7 +35,7 @@
 namespace sight::data
 {
 
-class DATA_CLASS_API transfer_function_base
+class SIGHT_DATA_CLASS_API transfer_function_base
 {
 public:
 
@@ -55,26 +56,26 @@ public:
         linear,
         nearest
     };
-    DATA_API virtual ~transfer_function_base() = default;
+    SIGHT_DATA_API virtual ~transfer_function_base() = default;
 
     /// Scale the intensity value from the transfer function space to the window space.
-    [[nodiscard]] DATA_API value_t map_value_to_window(value_t _value) const;
+    [[nodiscard]] SIGHT_DATA_API value_t map_value_to_window(value_t _value) const;
 
     /// Scale the intensity value from the window space space to the transfer function.
-    [[nodiscard]] DATA_API value_t map_value_from_window(value_t _value) const;
+    [[nodiscard]] SIGHT_DATA_API value_t map_value_from_window(value_t _value) const;
 
     /// Gets the nearest color of a value, taking into account the window range
-    [[nodiscard]] DATA_API color_t sample_nearest(value_t _value) const;
+    [[nodiscard]] SIGHT_DATA_API color_t sample_nearest(value_t _value) const;
 
     /// Gets the color for a value (the color is computed with a linear interpolation), taking into account the window
     /// range
-    [[nodiscard]] DATA_API color_t sample_linear(value_t _value) const;
+    [[nodiscard]] SIGHT_DATA_API color_t sample_linear(value_t _value) const;
 
     /// Gets the min/max of the window level.
-    [[nodiscard]] DATA_API min_max_t window_min_max() const;
+    [[nodiscard]] SIGHT_DATA_API min_max_t window_min_max() const;
 
     /// Sets the min/max of the window level.
-    DATA_API void set_window_min_max(const min_max_t& _min_max);
+    SIGHT_DATA_API void set_window_min_max(const min_max_t& _min_max);
 
     /// Gets the level.
     [[nodiscard]] value_t level() const;
@@ -83,18 +84,18 @@ public:
     [[nodiscard]] value_t window() const;
 
     /// Sets the level.
-    DATA_API virtual void set_level(value_t _value) = 0;
+    SIGHT_DATA_API virtual void set_level(value_t _value) = 0;
 
     /// Sets the window.
-    DATA_API virtual void set_window(value_t _value) = 0;
+    SIGHT_DATA_API virtual void set_window(value_t _value) = 0;
 
     /// Gets the first and last point values of the tf data.
-    [[nodiscard]] DATA_API virtual min_max_t min_max() const = 0;
+    [[nodiscard]] SIGHT_DATA_API virtual min_max_t min_max() const = 0;
 
     /// Gets the interpolated color of the TF for a value, taking into account the window range
     /// @param _value input value in the curve
     /// @param _mode  interpolation mode, if not specified, use the mode specified by setInterpolationMode()
-    [[nodiscard]] DATA_API virtual color_t sample(
+    [[nodiscard]] SIGHT_DATA_API virtual color_t sample(
         value_t _value,
         std::optional<enum interpolation_mode> _mode = std::nullopt
     ) const                                          = 0;
@@ -110,9 +111,9 @@ public:
  * @brief Stores a transfer function properties. A list of points associating a value to a RGBA color, and windowing
  * parameters which simplifies the scaling of the function.
  */
-class DATA_CLASS_API transfer_function_piece final : public container_wrapper<std::map<transfer_function_base::value_t,
-                                                                                       transfer_function_base::color_t> >,
-                                                     public transfer_function_base
+class SIGHT_DATA_CLASS_API transfer_function_piece final : public container_wrapper<std::map<transfer_function_base::value_t,
+                                                                                             transfer_function_base::color_t> >,
+                                                           public transfer_function_base
 {
 public:
 
@@ -120,7 +121,7 @@ public:
 
     using container_wrapper<data_t>::container_wrapper;
 
-    DATA_API ~transfer_function_piece() final = default;
+    SIGHT_DATA_API ~transfer_function_piece() final = default;
 
     static transfer_function_piece::sptr make();
 
@@ -133,18 +134,18 @@ public:
     transfer_function_piece& operator=(const transfer_function_piece& _other);
 
     /// Sets the level.
-    DATA_API void set_level(value_t _value) final;
+    SIGHT_DATA_API void set_level(value_t _value) final;
 
     /// Sets the window.
-    DATA_API void set_window(value_t _value) final;
+    SIGHT_DATA_API void set_window(value_t _value) final;
 
     /// Gets the first and last point values of the tf data.
-    [[nodiscard]] DATA_API min_max_t min_max() const final;
+    [[nodiscard]] SIGHT_DATA_API min_max_t min_max() const final;
 
     /// Gets the interpolated color of the TF for a value, taking into account the window range
     /// @param _value input value in the curve
     /// @param _mode  interpolation mode, if not specified, use the mode specified by setInterpolationMode()
-    [[nodiscard]] DATA_API color_t sample(
+    [[nodiscard]] SIGHT_DATA_API color_t sample(
         value_t _value,
         std::optional<enum interpolation_mode> _mode = std::nullopt
     ) const final;
@@ -184,8 +185,8 @@ private:
  * The function is composed of individual pieces that can be accessed and edited independently thanks to the pieces()
  * function that returns a vector of transfer_function_piece.
  */
-class DATA_CLASS_API transfer_function final : public object,
-                                               public transfer_function_base
+class SIGHT_DATA_CLASS_API transfer_function final : public object,
+                                                     public transfer_function_base
 {
 public:
 
@@ -206,24 +207,24 @@ public:
 
     /// Constructors / Destructor / Assignment operators
     /// @{
-    DATA_API transfer_function();
-    DATA_API ~transfer_function() final = default;
+    SIGHT_DATA_API transfer_function();
+    SIGHT_DATA_API ~transfer_function() final = default;
     /// @}
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const transfer_function& _other) const noexcept;
-    DATA_API bool operator!=(const transfer_function& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const transfer_function& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const transfer_function& _other) const noexcept;
     /// @}
 
     /// Sets the defaults transfer function name.
-    DATA_API static const std::string DEFAULT_TF_NAME;
+    SIGHT_DATA_API static const std::string DEFAULT_TF_NAME;
 
     /// Creates a default TF.
-    DATA_API static transfer_function::sptr create_default_tf();
+    SIGHT_DATA_API static transfer_function::sptr create_default_tf();
 
     /// Creates a default TF according to the pixel type.
-    DATA_API static transfer_function::sptr create_default_tf(core::type _type);
+    SIGHT_DATA_API static transfer_function::sptr create_default_tf(core::type _type);
 
     /**
      * Merges a range of transfer functions into one.
@@ -231,7 +232,7 @@ public:
      * @param _src Source transfer function.
      * @pre None of the pieces of _src must be nullptr.
      */
-    DATA_API
+    SIGHT_DATA_API
     static void merge(
         sight::data::transfer_function& _dst,
         const sight::data::transfer_function& _src
@@ -257,21 +258,21 @@ public:
     [[nodiscard]] bool empty() const;
 
     /// Recompute the window parameters by taking the minimum and the maximum of the pieces.
-    DATA_API void fit_window();
+    SIGHT_DATA_API void fit_window();
 
     /// Sets the level of the transfer function and its pieces.
-    DATA_API void set_level(value_t _value) final;
+    SIGHT_DATA_API void set_level(value_t _value) final;
 
     /// Sets the window of the transfer function and its pieces.
-    DATA_API void set_window(value_t _value) final;
+    SIGHT_DATA_API void set_window(value_t _value) final;
 
     /// Gets the first and last point values of the tf data.
-    [[nodiscard]] DATA_API min_max_t min_max() const final;
+    [[nodiscard]] SIGHT_DATA_API min_max_t min_max() const final;
 
     /// Gets the interpolated color of the TF for a value, taking into account the window range
     /// @param _value input value in the curve
     /// @param _mode  interpolation mode, if not specified, use the mode specified by setInterpolationMode()
-    [[nodiscard]] DATA_API color_t sample(
+    [[nodiscard]] SIGHT_DATA_API color_t sample(
         value_t _value,
         std::optional<interpolation_mode_t> _mode = std::nullopt
     ) const final;
@@ -280,23 +281,23 @@ public:
     /// @{
     /// Defines the type of signal sent when points are modified.
     using points_modified_signal_t = core::com::signal<void ()>;
-    DATA_API static const core::com::signals::key_t POINTS_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t POINTS_MODIFIED_SIG;
 
     /// Defines the type of signal sent when window-level is modified (window, level).
     using windowing_modified_signal_t = core::com::signal<void (value_t, value_t)>;
-    DATA_API static const core::com::signals::key_t WINDOWING_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t WINDOWING_MODIFIED_SIG;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) final;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) final;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) final;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <data/composite.hpp>
 #include <data/matrix4.hpp>
@@ -59,8 +57,8 @@ namespace sight::module::ui::qt::model
  * - \b modelSeries [sight::data::model_series]: modelSeries to modify.
  * - \b composite [sight::data::composite]: composite.
  */
-class MODULE_UI_QT_CLASS_API organ_transformation : public QObject,
-                                                    public sight::ui::editor
+class organ_transformation : public QObject,
+                             public sight::ui::editor
 {
 Q_OBJECT
 
@@ -69,17 +67,17 @@ public:
     SIGHT_DECLARE_SERVICE(organ_transformation, sight::ui::editor);
 
     /// constructor
-    MODULE_UI_QT_API organ_transformation() noexcept;
+    organ_transformation() noexcept;
     /// destructor
-    MODULE_UI_QT_API ~organ_transformation() noexcept override;
+    ~organ_transformation() noexcept override;
 
 protected:
 
-    MODULE_UI_QT_API void configuring() override;
-    MODULE_UI_QT_API void starting() override;
-    MODULE_UI_QT_API void stopping() override;
-    MODULE_UI_QT_API void updating() override;
-    MODULE_UI_QT_API void info(std::ostream& _stream) override;
+    void configuring() override;
+    void starting() override;
+    void stopping() override;
+    void updating() override;
+    void info(std::ostream& _stream) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -93,7 +91,7 @@ protected:
      * Connect Composite::REMOVED_OBJECTS_SIG to this::service::slots::UPDATE
      * Connect Composite::CHANGED_OBJECTS_SIG to this::service::slots::UPDATE
      */
-    MODULE_UI_QT_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private Q_SLOTS:
 

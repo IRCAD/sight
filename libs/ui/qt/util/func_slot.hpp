@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <QObject>
 
@@ -31,13 +31,13 @@
 namespace sight::ui::qt::util
 {
 
-class UI_QT_CLASS_API_QT func_slot : public QObject
+class SIGHT_UI_QT_CLASS_API_QT func_slot : public QObject
 {
 Q_OBJECT
 
 public:
 
-    UI_QT_API_QT func_slot();
+    SIGHT_UI_QT_API_QT func_slot();
 
     template<typename CALLABLE>
     func_slot(CALLABLE _c) :

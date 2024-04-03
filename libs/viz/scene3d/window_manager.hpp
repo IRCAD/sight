@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <core/base.hpp>
 #include <core/lazy_instantiator.hpp>
@@ -38,7 +38,7 @@ namespace sight::viz::scene3d
  * The problem is that the OpenGLRenderSystem we use, somehow, needs the first window created to be deleted last.
  * This class allows to differ the deletion of the first created window.
  */
-class VIZ_SCENE3D_CLASS_API window_manager : public core::base_object
+class SIGHT_VIZ_SCENE3D_CLASS_API window_manager : public core::base_object
 {
 public:
 
@@ -47,25 +47,25 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// Registers an Ogre window.
-    VIZ_SCENE3D_API void add(Ogre::RenderWindow* _window);
+    SIGHT_VIZ_SCENE3D_API void add(Ogre::RenderWindow* _window);
 
     /// Unregisters an Ogre window.
-    VIZ_SCENE3D_API void remove(Ogre::RenderWindow* _window);
+    SIGHT_VIZ_SCENE3D_API void remove(Ogre::RenderWindow* _window);
 
     /// Gets an Ogre window.
-    VIZ_SCENE3D_API Ogre::RenderWindow* get(const std::string& _name) const;
+    SIGHT_VIZ_SCENE3D_API Ogre::RenderWindow* get(const std::string& _name) const;
 
     /**
      * @brief Gets the unique instance of this class.
      * @return the singleton instance.
      */
-    VIZ_SCENE3D_API static viz::scene3d::window_manager::sptr get();
+    SIGHT_VIZ_SCENE3D_API static viz::scene3d::window_manager::sptr get();
 
     /**
      * @brief Returns true if there is at least one window.
      * @@return true if at least one window is registered.
      */
-    VIZ_SCENE3D_API bool has_window();
+    SIGHT_VIZ_SCENE3D_API bool has_window();
 
 private:
 

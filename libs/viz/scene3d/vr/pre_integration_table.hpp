@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <data/image.hpp>
 #include <data/transfer_function.hpp>
@@ -43,32 +43,32 @@ class pre_integration_table
 public:
 
     /// Constructor, does nothing.
-    VIZ_SCENE3D_API pre_integration_table();
+    SIGHT_VIZ_SCENE3D_API pre_integration_table();
 
     /// Destructor, does nothing.
-    VIZ_SCENE3D_API ~pre_integration_table();
+    SIGHT_VIZ_SCENE3D_API ~pre_integration_table();
 
     /// Initializes the texture resource.
-    VIZ_SCENE3D_API void create_texture(const std::string& _parent_id);
+    SIGHT_VIZ_SCENE3D_API void create_texture(const std::string& _parent_id);
 
     /// Destroy the texture
-    VIZ_SCENE3D_API void remove_texture();
+    SIGHT_VIZ_SCENE3D_API void remove_texture();
 
     /// Sets the table resolution based on the new image and recomputes it.
-    VIZ_SCENE3D_API void image_update(
+    SIGHT_VIZ_SCENE3D_API void image_update(
         const data::image::csptr& _img,
         const data::transfer_function::csptr& _tf,
         float _sampling_rate
     );
 
     /// Computes the table based on the given TF and slice distance.
-    VIZ_SCENE3D_API void tf_update(const data::transfer_function::csptr& _tf, float _sample_distance);
+    SIGHT_VIZ_SCENE3D_API void tf_update(const data::transfer_function::csptr& _tf, float _sample_distance);
 
     /// Get the texture holding the pre-integration table.
-    [[nodiscard]] VIZ_SCENE3D_API inline Ogre::TexturePtr get_texture() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API inline Ogre::TexturePtr get_texture() const;
 
     /// Returns the image value interval.
-    [[nodiscard]] VIZ_SCENE3D_API inline std::pair<int, int> get_min_max() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API inline std::pair<int, int> get_min_max() const;
 
 private:
 

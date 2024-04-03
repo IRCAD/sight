@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2024 IRCAD France
  * Copyright (C) 2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "activity/config.hpp"
+#include <sight/activity/config.hpp>
+
 #include "activity/extension/activity.hpp"
 
 #include <data/activity.hpp>
@@ -33,19 +34,19 @@ namespace sight::activity
 /**
  * @brief Activity information sent by signal to launch new activities in a tab.
  */
-class ACTIVITY_CLASS_API message
+class SIGHT_ACTIVITY_CLASS_API message
 {
 public:
 
     using parameters_t = activity::extension::activity_config_params_type;
 
-    ACTIVITY_API message(
+    SIGHT_ACTIVITY_API message(
         const data::activity::sptr& _activity,
         const activity::extension::activity_info& _info,
         const parameters_t& _parameters
     );
 
-    ACTIVITY_API virtual ~message()
+    SIGHT_ACTIVITY_API virtual ~message()
     = default;
 
     /// Return if the activity can be closed

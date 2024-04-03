@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/data/config.hpp"
 
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
@@ -57,31 +55,31 @@ namespace sight::module::data
  * - \b extrinsic [sight::data::matrix4]: define the extrinsic matrix data.
  */
 
-class MODULE_DATA_CLASS_API get_camera : public service::controller
+class get_camera : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(get_camera, service::controller);
 
     /// Constructor
-    MODULE_DATA_API get_camera() = default;
+    get_camera() = default;
 
     /// Destructor
-    MODULE_DATA_API ~get_camera() override = default;
+    ~get_camera() override = default;
 
 protected:
 
     /// Does nothing
-    MODULE_DATA_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_DATA_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_DATA_API void stopping() override;
+    void stopping() override;
 
     /// Extract an image
-    MODULE_DATA_API void updating() override;
+    void updating() override;
 
 private:
 

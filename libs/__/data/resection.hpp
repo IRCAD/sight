@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/factory/new.hpp"
 #include "data/plane_list.hpp"
 #include "data/reconstruction.hpp"
@@ -38,7 +39,7 @@ namespace sight::data
 /**
  * @brief This class defines a resection.
  */
-class DATA_CLASS_API resection final : public object
+class SIGHT_DATA_CLASS_API resection final : public object
 {
 public:
 
@@ -50,10 +51,10 @@ public:
     /**
      * @brief Constructor
      */
-    DATA_API resection();
+    SIGHT_DATA_API resection();
 
     /// Destructor
-    DATA_API ~resection() noexcept override = default;
+    SIGHT_DATA_API ~resection() noexcept override = default;
 
     /**
      * @{
@@ -124,33 +125,33 @@ public:
     using reconstruction_added_signal_t = core::com::signal<void ()>;
 
     /// Key in m_signals map of signal m_sigReconstructionAdded
-    DATA_API static const core::com::signals::key_t RECONSTRUCTION_ADDED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t RECONSTRUCTION_ADDED_SIG;
 
     /// Type of signal when the resection visibility is modified
     using visibility_modified_signal_t = core::com::signal<void ()>;
 
     /// Key in m_signals map of signal m_sigVisibilityModified
-    DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
     /**
      * @}
      */
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const resection& _other) const noexcept;
-    DATA_API bool operator!=(const resection& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const resection& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const resection& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

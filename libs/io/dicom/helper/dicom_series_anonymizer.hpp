@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/helper/dicom_anonymizer.hpp"
 #include "io/dicom/helper/dicom_series_writer.hpp"
 #include "io/dicom/reader/series_set.hpp"
@@ -43,29 +44,29 @@ namespace sight::io::dicom::helper
 /**
  * @brief This class contains helpers to anonymize DicomSeries
  */
-class IO_DICOM_CLASS_API dicom_series_anonymizer
+class SIGHT_IO_DICOM_CLASS_API dicom_series_anonymizer
 {
 public:
 
     SIGHT_DECLARE_CLASS(dicom_series_anonymizer);
 
     /// Constructor
-    IO_DICOM_API dicom_series_anonymizer();
+    SIGHT_IO_DICOM_API dicom_series_anonymizer();
 
     /// Destructor
-    IO_DICOM_API virtual ~dicom_series_anonymizer();
+    SIGHT_IO_DICOM_API virtual ~dicom_series_anonymizer();
 
     /// Anonymize the DicomSeries (modify the current object)
-    IO_DICOM_API void anonymize(const data::dicom_series::sptr& _source);
+    SIGHT_IO_DICOM_API void anonymize(const data::dicom_series::sptr& _source);
 
     /// Anonymize the DicomSeries (doesn't modify the current object)
-    IO_DICOM_API void anonymize(
+    SIGHT_IO_DICOM_API void anonymize(
         const data::dicom_series::sptr& _source,
         const data::dicom_series::sptr& _destination
     );
 
     /// Get job observer
-    [[nodiscard]] IO_DICOM_API SPTR(core::jobs::aggregator) get_job() const;
+    [[nodiscard]] SIGHT_IO_DICOM_API SPTR(core::jobs::aggregator) get_job() const;
 
 protected:
 

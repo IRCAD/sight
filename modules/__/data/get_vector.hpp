@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/data/config.hpp"
 
 #include <data/vector.hpp>
 
@@ -52,31 +50,31 @@ namespace sight::module::data
  * @subsection Output Output
  * - \b series [sight::data::object]: output object extracted from the vector.
  */
-class MODULE_DATA_CLASS_API get_vector : public service::controller
+class get_vector : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(get_vector, service::controller);
 
     /// Constructor
-    MODULE_DATA_API get_vector() = default;
+    get_vector() = default;
 
     /// Destructor
-    MODULE_DATA_API ~get_vector() override = default;
+    ~get_vector() override = default;
 
 protected:
 
     /// Does nothing
-    MODULE_DATA_API void starting() override;
+    void starting() override;
 
     /// Configure the service
-    MODULE_DATA_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_DATA_API void stopping() override;
+    void stopping() override;
 
     /// Extract the object(s)
-    MODULE_DATA_API void updating() override;
+    void updating() override;
 
 private:
 

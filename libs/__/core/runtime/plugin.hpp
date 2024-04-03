@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #pragma once
 
-#include "core/config.hpp"
 #include "core/runtime/executable.hpp"
+
+#include "sight/core/config.hpp"
 
 #include <core/macros.hpp>
 #include <core/runtime/utils/generic_executable_factory_registry.hpp>
@@ -37,11 +38,11 @@ namespace sight::core::runtime
  * This class is intended to be sub-classed. The plugin::start and plugin::stop
  * function must be implemented.
  */
-class CORE_CLASS_API plugin : public executable
+class SIGHT_CORE_CLASS_API plugin : public executable
 {
 public:
 
-    [[nodiscard]] CORE_API std::shared_ptr<module> get_module() const noexcept override;
+    [[nodiscard]] SIGHT_CORE_API std::shared_ptr<module> get_module() const noexcept override;
 
     /**
      * @brief   Notifies the plugin about its start.
@@ -55,7 +56,7 @@ public:
 
 protected:
 
-    CORE_API void set_module(std::shared_ptr<module> _module) noexcept override;
+    SIGHT_CORE_API void set_module(std::shared_ptr<module> _module) noexcept override;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/video/config.hpp"
 
 #include <core/com/helper/sig_slot_connection.hpp>
 
@@ -105,18 +103,18 @@ namespace sight::module::io::video
  *  - \b gui
  *      - \b title (optional) : title of the grabber selector window.
  */
-class MODULE_IO_VIDEO_CLASS_API grabber_proxy : public sight::io::service::grabber,
-                                                public service::has_services
+class grabber_proxy : public sight::io::service::grabber,
+                      public service::has_services
 {
 public:
 
     SIGHT_DECLARE_SERVICE(grabber_proxy, sight::io::service::grabber);
 
     /// Constructor. Initialize slots and signals
-    MODULE_IO_VIDEO_API grabber_proxy() noexcept;
+    grabber_proxy() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_IO_VIDEO_API ~grabber_proxy() noexcept override;
+    ~grabber_proxy() noexcept override;
 
     /// Internal wrapper holding slots keys.
     struct slots
@@ -140,16 +138,16 @@ public:
 protected:
 
     /// Does nothing.
-    MODULE_IO_VIDEO_API void starting() final;
+    void starting() final;
 
     /// Stop the underlying grabber, destroy it, and empty the input FrameTl.
-    MODULE_IO_VIDEO_API void stopping() final;
+    void stopping() final;
 
     /// Does nothing.
-    MODULE_IO_VIDEO_API void updating() final;
+    void updating() final;
 
     /// Parses the XML configuration of the service.
-    MODULE_IO_VIDEO_API void configuring() final;
+    void configuring() final;
 
     /**
      * @name Slots methods
@@ -157,46 +155,46 @@ protected:
      * @{
      */
     /// Initialize and start camera (restart camera if is already started).
-    MODULE_IO_VIDEO_API void start_camera() final;
+    void start_camera() final;
 
     /// Initialize and start camera (restart camera if is already started).
-    MODULE_IO_VIDEO_API void start_target_camera(std::string _impl);
+    void start_target_camera(std::string _impl);
 
     /// Stop camera.
-    MODULE_IO_VIDEO_API void stop_camera() final;
+    void stop_camera() final;
 
     /// Pause camera.
-    MODULE_IO_VIDEO_API void pause_camera() final;
+    void pause_camera() final;
 
     /// Enable/disable loop in video.
-    MODULE_IO_VIDEO_API void toggle_loop_mode() final;
+    void toggle_loop_mode() final;
 
     /// Set the new position in the video.
-    MODULE_IO_VIDEO_API void set_position(std::int64_t _position) final;
+    void set_position(std::int64_t _position) final;
 
     /// Get the previous image in frame by frame mode.
-    MODULE_IO_VIDEO_API void previous_image() override;
+    void previous_image() override;
 
     /// Get the next image in frame by frame mode.
-    MODULE_IO_VIDEO_API void next_image() override;
+    void next_image() override;
 
     /// Set step used on readPrevious/readNext slots.
-    MODULE_IO_VIDEO_API void set_step(int _step, std::string _key) override;
+    void set_step(int _step, std::string _key) override;
 
     /// Sets internal parameters values.
-    MODULE_IO_VIDEO_API void set_parameter(ui::parameter_t _value, std::string _key) final;
+    void set_parameter(ui::parameter_t _value, std::string _key) final;
 
     /// SLOT: Requests the grabber internal settings.
-    MODULE_IO_VIDEO_API void request_settings() final;
+    void request_settings() final;
 
     /// SLOT: Calls optimization functions defined in the grabber (e.g. hardware related).
-    MODULE_IO_VIDEO_API void optimize() final;
+    void optimize() final;
 
     /// SLOT: Adds a region of interest center.
-    MODULE_IO_VIDEO_API void add_roi_center(sight::data::point::sptr _p) final;
+    void add_roi_center(sight::data::point::sptr _p) final;
 
     /// SLOT: Removes a region of interest center.
-    MODULE_IO_VIDEO_API void remove_roi_center(sight::data::point::sptr _p) final;
+    void remove_roi_center(sight::data::point::sptr _p) final;
 /** @} */
 
 private:

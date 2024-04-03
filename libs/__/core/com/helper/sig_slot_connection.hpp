@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/com/connection.hpp>
 #include <core/com/has_signals.hpp>
@@ -38,7 +38,7 @@ namespace sight::core::com::helper
 /**
  * @brief  This class provides few tools to ease connect/disconnect between a signal emitter and a slot receiver.
  */
-class CORE_CLASS_API sig_slot_connection
+class SIGHT_CORE_CLASS_API sig_slot_connection
 {
 public:
 
@@ -46,13 +46,13 @@ public:
     using key_connections_t = std::vector<key_connection_t>;
 
     /// Constructor, do nothing
-    CORE_API sig_slot_connection();
+    SIGHT_CORE_API sig_slot_connection();
 
     /// Destructor, call disconnect()
-    CORE_API virtual ~sig_slot_connection();
+    SIGHT_CORE_API virtual ~sig_slot_connection();
 
     /// Connect signal to slot, and register this new connection in  m_connections
-    CORE_API void connect(
+    SIGHT_CORE_API void connect(
         const core::com::has_signals::csptr& _has_signals,
         core::com::signals::signal_key_type _signal_key,
         const core::com::has_slots::csptr& _has_slots,
@@ -60,17 +60,17 @@ public:
     );
 
     /// Connect signals to slots, and register these new connections in  m_connections
-    CORE_API void connect(
+    SIGHT_CORE_API void connect(
         const core::com::has_signals::csptr& _has_signals,
         const core::com::has_slots::csptr& _has_slots,
         const key_connections_t& _key_connections
     );
 
     /// Add a connection
-    CORE_API void add_connection(core::com::connection _connection);
+    SIGHT_CORE_API void add_connection(core::com::connection _connection);
 
     /// Disconnect all registered connections and clear m_connections
-    CORE_API void disconnect();
+    SIGHT_CORE_API void disconnect();
 
 protected:
 

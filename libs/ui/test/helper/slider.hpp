@@ -48,8 +48,8 @@ public:
      * @param _times The number of times the slider must be moved
      * @{
      */
-    UI_TEST_API static void move(tester& _tester, const selector& _slider, position _position, int _times);
-    UI_TEST_API static void move(tester& _tester, const selector& _slider, position _position);
+    SIGHT_UI_TEST_API static void move(tester& _tester, const selector& _slider, position _position, int _times);
+    SIGHT_UI_TEST_API static void move(tester& _tester, const selector& _slider, position _position);
     /// @}
 
     /**
@@ -58,7 +58,7 @@ public:
      * @param _slider How to get the slider to be setted
      * @param _value The new value of the slider
      */
-    UI_TEST_API static void set(tester& _tester, const selector& _slider, int _value);
+    SIGHT_UI_TEST_API static void set(tester& _tester, const selector& _slider, int _value);
 };
 
 } // namespace sight::ui::testCore::helper

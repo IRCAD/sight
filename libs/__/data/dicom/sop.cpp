@@ -55,922 +55,922 @@ inline static const Sop<keyword>& get()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API const Keyword Sop<Keyword::ComputedRadiographyImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::ComputedRadiographyImageStorage>::s_keyword =
     Keyword::ComputedRadiographyImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::ComputedRadiographyImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::ComputedRadiographyImageStorage>::s_name =
     "Computed Radiography Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::ComputedRadiographyImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ComputedRadiographyImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::ComputedRadiographyImageStorage>::s_iod = "Computed Radiography Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ComputedRadiographyImageStorage>::s_iod = "Computed Radiography Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::DigitalXRayImageStorageForPresentation>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::DigitalXRayImageStorageForPresentation>::s_keyword =
     Keyword::DigitalXRayImageStorageForPresentation;
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalXRayImageStorageForPresentation>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalXRayImageStorageForPresentation>::s_name =
     "Digital X-Ray Image Storage - For Presentation";
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalXRayImageStorageForPresentation>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalXRayImageStorageForPresentation>::s_uid =
     "1.2.840.10008.5.1.4.1.1.1.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalXRayImageStorageForPresentation>::s_iod = "Digital X-Ray Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalXRayImageStorageForPresentation>::s_iod = "Digital X-Ray Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::DigitalXRayImageStorageForProcessing>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::DigitalXRayImageStorageForProcessing>::s_keyword =
     Keyword::DigitalXRayImageStorageForProcessing;
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalXRayImageStorageForProcessing>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalXRayImageStorageForProcessing>::s_name =
     "Digital X-Ray Image Storage - For Processing";
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalXRayImageStorageForProcessing>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalXRayImageStorageForProcessing>::s_uid =
     "1.2.840.10008.5.1.4.1.1.1.1.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalXRayImageStorageForProcessing>::s_iod = "Digital X-Ray Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalXRayImageStorageForProcessing>::s_iod = "Digital X-Ray Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::DigitalMammographyXRayImageStorageForPresentation>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::DigitalMammographyXRayImageStorageForPresentation>::s_keyword =
     Keyword::DigitalMammographyXRayImageStorageForPresentation;
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalMammographyXRayImageStorageForPresentation>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalMammographyXRayImageStorageForPresentation>::s_name =
     "Digital Mammography X-Ray Image Storage - For Presentation";
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalMammographyXRayImageStorageForPresentation>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalMammographyXRayImageStorageForPresentation>::s_uid =
     "1.2.840.10008.5.1.4.1.1.1.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalMammographyXRayImageStorageForPresentation>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalMammographyXRayImageStorageForPresentation>::s_iod =
     "Digital Mammography X-Ray Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::DigitalMammographyXRayImageStorageForProcessing>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::DigitalMammographyXRayImageStorageForProcessing>::s_keyword =
     Keyword::DigitalMammographyXRayImageStorageForProcessing;
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalMammographyXRayImageStorageForProcessing>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalMammographyXRayImageStorageForProcessing>::s_name =
     "Digital Mammography X-Ray Image Storage - For Processing";
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalMammographyXRayImageStorageForProcessing>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalMammographyXRayImageStorageForProcessing>::s_uid =
     "1.2.840.10008.5.1.4.1.1.1.2.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalMammographyXRayImageStorageForProcessing>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalMammographyXRayImageStorageForProcessing>::s_iod =
     "Digital Mammography X-Ray Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::DigitalIntraOralXRayImageStorageForPresentation>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::DigitalIntraOralXRayImageStorageForPresentation>::s_keyword =
     Keyword::DigitalIntraOralXRayImageStorageForPresentation;
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalIntraOralXRayImageStorageForPresentation>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalIntraOralXRayImageStorageForPresentation>::s_name =
     "Digital Intra-Oral X-Ray Image Storage - For Presentation";
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalIntraOralXRayImageStorageForPresentation>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalIntraOralXRayImageStorageForPresentation>::s_uid =
     "1.2.840.10008.5.1.4.1.1.1.3";
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalIntraOralXRayImageStorageForPresentation>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalIntraOralXRayImageStorageForPresentation>::s_iod =
     "Digital Intra-Oral X-Ray Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::DigitalIntraOralXRayImageStorageForProcessing>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::DigitalIntraOralXRayImageStorageForProcessing>::s_keyword =
     Keyword::DigitalIntraOralXRayImageStorageForProcessing;
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalIntraOralXRayImageStorageForProcessing>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalIntraOralXRayImageStorageForProcessing>::s_name =
     "Digital Intra-Oral X-Ray Image Storage - For Processing";
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalIntraOralXRayImageStorageForProcessing>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalIntraOralXRayImageStorageForProcessing>::s_uid =
     "1.2.840.10008.5.1.4.1.1.1.3.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::DigitalIntraOralXRayImageStorageForProcessing>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DigitalIntraOralXRayImageStorageForProcessing>::s_iod =
     "Digital Intra-Oral X-Ray Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EncapsulatedPDFStorage>::s_keyword = Keyword::EncapsulatedPDFStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EncapsulatedPDFStorage>::s_keyword = Keyword::EncapsulatedPDFStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedPDFStorage>::s_name = "Encapsulated PDF Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedPDFStorage>::s_name = "Encapsulated PDF Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedPDFStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.104.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedPDFStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.104.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedPDFStorage>::s_iod = "Encapsulated PDF IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedPDFStorage>::s_iod = "Encapsulated PDF IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EncapsulatedCDAStorage>::s_keyword = Keyword::EncapsulatedCDAStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EncapsulatedCDAStorage>::s_keyword = Keyword::EncapsulatedCDAStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedCDAStorage>::s_name = "Encapsulated CDA Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedCDAStorage>::s_name = "Encapsulated CDA Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedCDAStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.104.2";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedCDAStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.104.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedCDAStorage>::s_iod = "Encapsulated CDA IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedCDAStorage>::s_iod = "Encapsulated CDA IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EncapsulatedSTLStorage>::s_keyword = Keyword::EncapsulatedSTLStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EncapsulatedSTLStorage>::s_keyword = Keyword::EncapsulatedSTLStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedSTLStorage>::s_name = "Encapsulated STL Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedSTLStorage>::s_name = "Encapsulated STL Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedSTLStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.104.3";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedSTLStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.104.3";
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedSTLStorage>::s_iod = "Encapsulated STL IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedSTLStorage>::s_iod = "Encapsulated STL IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EncapsulatedOBJStorage>::s_keyword = Keyword::EncapsulatedOBJStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EncapsulatedOBJStorage>::s_keyword = Keyword::EncapsulatedOBJStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedOBJStorage>::s_name = "Encapsulated OBJ Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedOBJStorage>::s_name = "Encapsulated OBJ Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedOBJStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.104.4";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedOBJStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.104.4";
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedOBJStorage>::s_iod = "Encapsulated OBJ IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedOBJStorage>::s_iod = "Encapsulated OBJ IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EncapsulatedMTLStorage>::s_keyword = Keyword::EncapsulatedMTLStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EncapsulatedMTLStorage>::s_keyword = Keyword::EncapsulatedMTLStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedMTLStorage>::s_name = "Encapsulated MTL Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedMTLStorage>::s_name = "Encapsulated MTL Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedMTLStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.104.5";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedMTLStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.104.5";
 template<>
-DATA_API const std::string_view Sop<Keyword::EncapsulatedMTLStorage>::s_iod = "Encapsulated MTL IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EncapsulatedMTLStorage>::s_iod = "Encapsulated MTL IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::XRayAngiographicImageStorage>::s_keyword = Keyword::XRayAngiographicImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::XRayAngiographicImageStorage>::s_keyword = Keyword::XRayAngiographicImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::XRayAngiographicImageStorage>::s_name = "X-Ray Angiographic Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRayAngiographicImageStorage>::s_name = "X-Ray Angiographic Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::XRayAngiographicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.12.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRayAngiographicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.12.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::XRayAngiographicImageStorage>::s_iod = "X-Ray Angiographic Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRayAngiographicImageStorage>::s_iod = "X-Ray Angiographic Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EnhancedXAImageStorage>::s_keyword = Keyword::EnhancedXAImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EnhancedXAImageStorage>::s_keyword = Keyword::EnhancedXAImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedXAImageStorage>::s_name = "Enhanced XA Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedXAImageStorage>::s_name = "Enhanced XA Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedXAImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.12.1.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedXAImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.12.1.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedXAImageStorage>::s_iod = "Enhanced XA Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedXAImageStorage>::s_iod = "Enhanced XA Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::XRayRadiofluoroscopicImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::XRayRadiofluoroscopicImageStorage>::s_keyword =
     Keyword::XRayRadiofluoroscopicImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::XRayRadiofluoroscopicImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRayRadiofluoroscopicImageStorage>::s_name =
     "X-Ray Radiofluoroscopic Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::XRayRadiofluoroscopicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.12.2";
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRayRadiofluoroscopicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.12.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::XRayRadiofluoroscopicImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRayRadiofluoroscopicImageStorage>::s_iod =
     "X-Ray Radiofluoroscopic Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EnhancedXRFImageStorage>::s_keyword = Keyword::EnhancedXRFImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EnhancedXRFImageStorage>::s_keyword = Keyword::EnhancedXRFImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedXRFImageStorage>::s_name = "Enhanced XRF Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedXRFImageStorage>::s_name = "Enhanced XRF Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedXRFImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.12.2.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedXRFImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.12.2.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedXRFImageStorage>::s_iod = "Enhanced XRF Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedXRFImageStorage>::s_iod = "Enhanced XRF Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::PositronEmissionTomographyImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::PositronEmissionTomographyImageStorage>::s_keyword =
     Keyword::PositronEmissionTomographyImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::PositronEmissionTomographyImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::PositronEmissionTomographyImageStorage>::s_name =
     "Positron Emission Tomography Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::PositronEmissionTomographyImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::PositronEmissionTomographyImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.128";
 template<>
-DATA_API const std::string_view Sop<Keyword::PositronEmissionTomographyImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::PositronEmissionTomographyImageStorage>::s_iod =
     "Positron Emission Tomography Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::LegacyConvertedEnhancedPETImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::LegacyConvertedEnhancedPETImageStorage>::s_keyword =
     Keyword::LegacyConvertedEnhancedPETImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedPETImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedPETImageStorage>::s_name =
     "Legacy Converted Enhanced PET Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedPETImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedPETImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.128.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedPETImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedPETImageStorage>::s_iod =
     "Legacy Converted Enhanced PET Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::XRay3DAngiographicImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::XRay3DAngiographicImageStorage>::s_keyword =
     Keyword::XRay3DAngiographicImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::XRay3DAngiographicImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRay3DAngiographicImageStorage>::s_name =
     "X-Ray 3D Angiographic Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::XRay3DAngiographicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.13.1.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRay3DAngiographicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.13.1.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::XRay3DAngiographicImageStorage>::s_iod = "X-Ray 3D Angiographic Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRay3DAngiographicImageStorage>::s_iod = "X-Ray 3D Angiographic Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::XRay3DCraniofacialImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::XRay3DCraniofacialImageStorage>::s_keyword =
     Keyword::XRay3DCraniofacialImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::XRay3DCraniofacialImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRay3DCraniofacialImageStorage>::s_name =
     "X-Ray 3D Craniofacial Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::XRay3DCraniofacialImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.13.1.2";
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRay3DCraniofacialImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.13.1.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::XRay3DCraniofacialImageStorage>::s_iod = "X-Ray 3D Craniofacial Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRay3DCraniofacialImageStorage>::s_iod = "X-Ray 3D Craniofacial Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::BreastTomosynthesisImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::BreastTomosynthesisImageStorage>::s_keyword =
     Keyword::BreastTomosynthesisImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::BreastTomosynthesisImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::BreastTomosynthesisImageStorage>::s_name =
     "Breast Tomosynthesis Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::BreastTomosynthesisImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.13.1.3";
+SIGHT_DATA_API const std::string_view Sop<Keyword::BreastTomosynthesisImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.13.1.3";
 template<>
-DATA_API const std::string_view Sop<Keyword::BreastTomosynthesisImageStorage>::s_iod = "Breast Tomosynthesis Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::BreastTomosynthesisImageStorage>::s_iod = "Breast Tomosynthesis Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::BreastProjectionXRayImageStorageForPresentation>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::BreastProjectionXRayImageStorageForPresentation>::s_keyword =
     Keyword::BreastProjectionXRayImageStorageForPresentation;
 template<>
-DATA_API const std::string_view Sop<Keyword::BreastProjectionXRayImageStorageForPresentation>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::BreastProjectionXRayImageStorageForPresentation>::s_name =
     "Breast Projection X-Ray Image Storage - For Presentation";
 template<>
-DATA_API const std::string_view Sop<Keyword::BreastProjectionXRayImageStorageForPresentation>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::BreastProjectionXRayImageStorageForPresentation>::s_uid =
     "1.2.840.10008.5.1.4.1.1.13.1.4";
 template<>
-DATA_API const std::string_view Sop<Keyword::BreastProjectionXRayImageStorageForPresentation>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::BreastProjectionXRayImageStorageForPresentation>::s_iod =
     "Breast Projection X-Ray Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::BreastProjectionXRayImageStorageForProcessing>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::BreastProjectionXRayImageStorageForProcessing>::s_keyword =
     Keyword::BreastProjectionXRayImageStorageForProcessing;
 template<>
-DATA_API const std::string_view Sop<Keyword::BreastProjectionXRayImageStorageForProcessing>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::BreastProjectionXRayImageStorageForProcessing>::s_name =
     "Breast Projection X-Ray Image Storage - For Processing";
 template<>
-DATA_API const std::string_view Sop<Keyword::BreastProjectionXRayImageStorageForProcessing>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::BreastProjectionXRayImageStorageForProcessing>::s_uid =
     "1.2.840.10008.5.1.4.1.1.13.1.5";
 template<>
-DATA_API const std::string_view Sop<Keyword::BreastProjectionXRayImageStorageForProcessing>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::BreastProjectionXRayImageStorageForProcessing>::s_iod =
     "Breast Projection X-Ray Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EnhancedPETImageStorage>::s_keyword = Keyword::EnhancedPETImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EnhancedPETImageStorage>::s_keyword = Keyword::EnhancedPETImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedPETImageStorage>::s_name = "Enhanced PET Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedPETImageStorage>::s_name = "Enhanced PET Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedPETImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.130";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedPETImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.130";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedPETImageStorage>::s_iod = "Enhanced PET Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedPETImageStorage>::s_iod = "Enhanced PET Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::BasicStructuredDisplayStorage>::s_keyword = Keyword::BasicStructuredDisplayStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::BasicStructuredDisplayStorage>::s_keyword = Keyword::BasicStructuredDisplayStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::BasicStructuredDisplayStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::BasicStructuredDisplayStorage>::s_name =
     "Basic Structured Display Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::BasicStructuredDisplayStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.131";
+SIGHT_DATA_API const std::string_view Sop<Keyword::BasicStructuredDisplayStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.131";
 template<>
-DATA_API const std::string_view Sop<Keyword::BasicStructuredDisplayStorage>::s_iod = "Basic Structured Display IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::BasicStructuredDisplayStorage>::s_iod = "Basic Structured Display IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForPresentation>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForPresentation>::s_keyword =
     Keyword::IntravascularOpticalCoherenceTomographyImageStorageForPresentation;
 template<>
-DATA_API const std::string_view Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForPresentation>::s_name
+SIGHT_DATA_API const std::string_view Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForPresentation>::s_name
     =
         "Intravascular Optical Coherence Tomography Image Storage - For Presentation";
 template<>
-DATA_API const std::string_view Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForPresentation>::s_uid
+SIGHT_DATA_API const std::string_view Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForPresentation>::s_uid
     =
         "1.2.840.10008.5.1.4.1.1.14.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForPresentation>::s_iod
+SIGHT_DATA_API const std::string_view Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForPresentation>::s_iod
     =
         "Intravascular Optical Coherence Tomography Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForProcessing>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForProcessing>::s_keyword =
     Keyword::IntravascularOpticalCoherenceTomographyImageStorageForProcessing;
 template<>
-DATA_API const std::string_view Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForProcessing>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForProcessing>::s_name =
     "Intravascular Optical Coherence Tomography Image Storage - For Processing";
 template<>
-DATA_API const std::string_view Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForProcessing>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForProcessing>::s_uid =
     "1.2.840.10008.5.1.4.1.1.14.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForProcessing>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::IntravascularOpticalCoherenceTomographyImageStorageForProcessing>::s_iod =
     "Intravascular Optical Coherence Tomography Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::CTImageStorage>::s_keyword = Keyword::CTImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::CTImageStorage>::s_keyword = Keyword::CTImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::CTImageStorage>::s_name = "CT Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::CTImageStorage>::s_name = "CT Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::CTImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.2";
+SIGHT_DATA_API const std::string_view Sop<Keyword::CTImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::CTImageStorage>::s_iod = "CT Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::CTImageStorage>::s_iod = "CT Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EnhancedCTImageStorage>::s_keyword = Keyword::EnhancedCTImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EnhancedCTImageStorage>::s_keyword = Keyword::EnhancedCTImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedCTImageStorage>::s_name = "Enhanced CT Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedCTImageStorage>::s_name = "Enhanced CT Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedCTImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.2.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedCTImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.2.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedCTImageStorage>::s_iod = "Enhanced CT Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedCTImageStorage>::s_iod = "Enhanced CT Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::LegacyConvertedEnhancedCTImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::LegacyConvertedEnhancedCTImageStorage>::s_keyword =
     Keyword::LegacyConvertedEnhancedCTImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedCTImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedCTImageStorage>::s_name =
     "Legacy Converted Enhanced CT Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedCTImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedCTImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.2.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedCTImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedCTImageStorage>::s_iod =
     "Legacy Converted Enhanced CT Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::NuclearMedicineImageStorage>::s_keyword = Keyword::NuclearMedicineImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::NuclearMedicineImageStorage>::s_keyword = Keyword::NuclearMedicineImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::NuclearMedicineImageStorage>::s_name = "Nuclear Medicine Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::NuclearMedicineImageStorage>::s_name = "Nuclear Medicine Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::NuclearMedicineImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.20";
+SIGHT_DATA_API const std::string_view Sop<Keyword::NuclearMedicineImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.20";
 template<>
-DATA_API const std::string_view Sop<Keyword::NuclearMedicineImageStorage>::s_iod = "Nuclear Medicine Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::NuclearMedicineImageStorage>::s_iod = "Nuclear Medicine Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::UltrasoundMultiFrameImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::UltrasoundMultiFrameImageStorage>::s_keyword =
     Keyword::UltrasoundMultiFrameImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::UltrasoundMultiFrameImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::UltrasoundMultiFrameImageStorage>::s_name =
     "Ultrasound Multi-frame Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::UltrasoundMultiFrameImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.3.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::UltrasoundMultiFrameImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.3.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::UltrasoundMultiFrameImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::UltrasoundMultiFrameImageStorage>::s_iod =
     "Ultrasound Multi-frame Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::ParametricMapStorage>::s_keyword = Keyword::ParametricMapStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::ParametricMapStorage>::s_keyword = Keyword::ParametricMapStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::ParametricMapStorage>::s_name = "Parametric Map Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ParametricMapStorage>::s_name = "Parametric Map Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::ParametricMapStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.30";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ParametricMapStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.30";
 template<>
-DATA_API const std::string_view Sop<Keyword::ParametricMapStorage>::s_iod = "Parametric Map IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ParametricMapStorage>::s_iod = "Parametric Map IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::MRImageStorage>::s_keyword = Keyword::MRImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::MRImageStorage>::s_keyword = Keyword::MRImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::MRImageStorage>::s_name = "MR Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::MRImageStorage>::s_name = "MR Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::MRImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.4";
+SIGHT_DATA_API const std::string_view Sop<Keyword::MRImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.4";
 template<>
-DATA_API const std::string_view Sop<Keyword::MRImageStorage>::s_iod = "MR Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::MRImageStorage>::s_iod = "MR Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EnhancedMRImageStorage>::s_keyword = Keyword::EnhancedMRImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EnhancedMRImageStorage>::s_keyword = Keyword::EnhancedMRImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedMRImageStorage>::s_name = "Enhanced MR Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedMRImageStorage>::s_name = "Enhanced MR Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedMRImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.4.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedMRImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.4.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedMRImageStorage>::s_iod = "Enhanced MR Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedMRImageStorage>::s_iod = "Enhanced MR Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EnhancedMRColorImageStorage>::s_keyword = Keyword::EnhancedMRColorImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EnhancedMRColorImageStorage>::s_keyword = Keyword::EnhancedMRColorImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedMRColorImageStorage>::s_name = "Enhanced MR Color Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedMRColorImageStorage>::s_name = "Enhanced MR Color Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedMRColorImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.4.3";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedMRColorImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.4.3";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedMRColorImageStorage>::s_iod = "Enhanced MR Color Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedMRColorImageStorage>::s_iod = "Enhanced MR Color Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::LegacyConvertedEnhancedMRImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::LegacyConvertedEnhancedMRImageStorage>::s_keyword =
     Keyword::LegacyConvertedEnhancedMRImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedMRImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedMRImageStorage>::s_name =
     "Legacy Converted Enhanced MR Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedMRImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedMRImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.4.4";
 template<>
-DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedMRImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::LegacyConvertedEnhancedMRImageStorage>::s_iod =
     "Legacy Converted Enhanced MR Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::RTImageStorage>::s_keyword = Keyword::RTImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::RTImageStorage>::s_keyword = Keyword::RTImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::RTImageStorage>::s_name = "RT Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::RTImageStorage>::s_name = "RT Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::RTImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.481.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::RTImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.481.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::RTImageStorage>::s_iod = "RT Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::RTImageStorage>::s_iod = "RT Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::RTDoseStorage>::s_keyword = Keyword::RTDoseStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::RTDoseStorage>::s_keyword = Keyword::RTDoseStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::RTDoseStorage>::s_name = "RT Dose Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::RTDoseStorage>::s_name = "RT Dose Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::RTDoseStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.481.2";
+SIGHT_DATA_API const std::string_view Sop<Keyword::RTDoseStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.481.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::RTDoseStorage>::s_iod = "RT Dose IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::RTDoseStorage>::s_iod = "RT Dose IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EnhancedRTImageStorage>::s_keyword = Keyword::EnhancedRTImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EnhancedRTImageStorage>::s_keyword = Keyword::EnhancedRTImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedRTImageStorage>::s_name = "Enhanced RT Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedRTImageStorage>::s_name = "Enhanced RT Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedRTImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.481.23";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedRTImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.481.23";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedRTImageStorage>::s_iod = "Enhanced RT Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedRTImageStorage>::s_iod = "Enhanced RT Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EnhancedContinuousRTImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::EnhancedContinuousRTImageStorage>::s_keyword =
     Keyword::EnhancedContinuousRTImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedContinuousRTImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedContinuousRTImageStorage>::s_name =
     "Enhanced Continuous RT Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedContinuousRTImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedContinuousRTImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.481.24";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedContinuousRTImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedContinuousRTImageStorage>::s_iod =
     "Enhanced Continuous RT Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::UltrasoundImageStorage>::s_keyword = Keyword::UltrasoundImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::UltrasoundImageStorage>::s_keyword = Keyword::UltrasoundImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::UltrasoundImageStorage>::s_name = "Ultrasound Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::UltrasoundImageStorage>::s_name = "Ultrasound Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::UltrasoundImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.6.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::UltrasoundImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.6.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::UltrasoundImageStorage>::s_iod = "Ultrasound Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::UltrasoundImageStorage>::s_iod = "Ultrasound Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EnhancedUSVolumeStorage>::s_keyword = Keyword::EnhancedUSVolumeStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EnhancedUSVolumeStorage>::s_keyword = Keyword::EnhancedUSVolumeStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedUSVolumeStorage>::s_name = "Enhanced US Volume Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedUSVolumeStorage>::s_name = "Enhanced US Volume Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedUSVolumeStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.6.2";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedUSVolumeStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.6.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedUSVolumeStorage>::s_iod = "Enhanced US Volume IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedUSVolumeStorage>::s_iod = "Enhanced US Volume IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::PhotoacousticImageStorage>::s_keyword = Keyword::PhotoacousticImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::PhotoacousticImageStorage>::s_keyword = Keyword::PhotoacousticImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::PhotoacousticImageStorage>::s_name = "Photoacoustic Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::PhotoacousticImageStorage>::s_name = "Photoacoustic Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::PhotoacousticImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.6.3";
+SIGHT_DATA_API const std::string_view Sop<Keyword::PhotoacousticImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.6.3";
 template<>
-DATA_API const std::string_view Sop<Keyword::PhotoacousticImageStorage>::s_iod = "Photoacoustic Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::PhotoacousticImageStorage>::s_iod = "Photoacoustic Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::SpatialFiducialsStorage>::s_keyword = Keyword::SpatialFiducialsStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::SpatialFiducialsStorage>::s_keyword = Keyword::SpatialFiducialsStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::SpatialFiducialsStorage>::s_name = "Spatial Fiducials Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SpatialFiducialsStorage>::s_name = "Spatial Fiducials Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::SpatialFiducialsStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.66.2";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SpatialFiducialsStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.66.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::SpatialFiducialsStorage>::s_iod = "Spatial Fiducials IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SpatialFiducialsStorage>::s_iod = "Spatial Fiducials IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::SegmentationStorage>::s_keyword = Keyword::SegmentationStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::SegmentationStorage>::s_keyword = Keyword::SegmentationStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::SegmentationStorage>::s_name = "Segmentation Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SegmentationStorage>::s_name = "Segmentation Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::SegmentationStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.66.4";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SegmentationStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.66.4";
 template<>
-DATA_API const std::string_view Sop<Keyword::SegmentationStorage>::s_iod = "Segmentation IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SegmentationStorage>::s_iod = "Segmentation IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::SurfaceSegmentationStorage>::s_keyword = Keyword::SurfaceSegmentationStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::SurfaceSegmentationStorage>::s_keyword = Keyword::SurfaceSegmentationStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::SurfaceSegmentationStorage>::s_name = "Surface Segmentation Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SurfaceSegmentationStorage>::s_name = "Surface Segmentation Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::SurfaceSegmentationStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.66.5";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SurfaceSegmentationStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.66.5";
 template<>
-DATA_API const std::string_view Sop<Keyword::SurfaceSegmentationStorage>::s_iod = "Surface Segmentation IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SurfaceSegmentationStorage>::s_iod = "Surface Segmentation IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::SurfaceScanMeshStorage>::s_keyword = Keyword::SurfaceScanMeshStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::SurfaceScanMeshStorage>::s_keyword = Keyword::SurfaceScanMeshStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::SurfaceScanMeshStorage>::s_name = "Surface Scan Mesh Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SurfaceScanMeshStorage>::s_name = "Surface Scan Mesh Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::SurfaceScanMeshStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.68.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SurfaceScanMeshStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.68.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::SurfaceScanMeshStorage>::s_iod = "Surface Scan Mesh IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SurfaceScanMeshStorage>::s_iod = "Surface Scan Mesh IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::SurfaceScanPointCloudStorage>::s_keyword = Keyword::SurfaceScanPointCloudStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::SurfaceScanPointCloudStorage>::s_keyword = Keyword::SurfaceScanPointCloudStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::SurfaceScanPointCloudStorage>::s_name = "Surface Scan Point Cloud Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SurfaceScanPointCloudStorage>::s_name = "Surface Scan Point Cloud Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::SurfaceScanPointCloudStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.68.2";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SurfaceScanPointCloudStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.68.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::SurfaceScanPointCloudStorage>::s_iod = "Surface Scan Point Cloud IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SurfaceScanPointCloudStorage>::s_iod = "Surface Scan Point Cloud IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::SecondaryCaptureImageStorage>::s_keyword = Keyword::SecondaryCaptureImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::SecondaryCaptureImageStorage>::s_keyword = Keyword::SecondaryCaptureImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::SecondaryCaptureImageStorage>::s_name = "Secondary Capture Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SecondaryCaptureImageStorage>::s_name = "Secondary Capture Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::SecondaryCaptureImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.7";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SecondaryCaptureImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.7";
 template<>
-DATA_API const std::string_view Sop<Keyword::SecondaryCaptureImageStorage>::s_iod = "Secondary Capture Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SecondaryCaptureImageStorage>::s_iod = "Secondary Capture Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::MultiFrameSingleBitSecondaryCaptureImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::MultiFrameSingleBitSecondaryCaptureImageStorage>::s_keyword =
     Keyword::MultiFrameSingleBitSecondaryCaptureImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::MultiFrameSingleBitSecondaryCaptureImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MultiFrameSingleBitSecondaryCaptureImageStorage>::s_name =
     "Multi-frame Single Bit Secondary Capture Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::MultiFrameSingleBitSecondaryCaptureImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MultiFrameSingleBitSecondaryCaptureImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.7.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::MultiFrameSingleBitSecondaryCaptureImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MultiFrameSingleBitSecondaryCaptureImageStorage>::s_iod =
     "Multi-frame Single Bit Secondary Capture Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage>::s_keyword =
     Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage>::s_name =
     "Multi-frame Grayscale Byte Secondary Capture Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.7.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage>::s_iod =
     "Multi-frame Grayscale Byte Secondary Capture Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::MultiFrameGrayscaleWordSecondaryCaptureImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::MultiFrameGrayscaleWordSecondaryCaptureImageStorage>::s_keyword =
     Keyword::MultiFrameGrayscaleWordSecondaryCaptureImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::MultiFrameGrayscaleWordSecondaryCaptureImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MultiFrameGrayscaleWordSecondaryCaptureImageStorage>::s_name =
     "Multi-frame Grayscale Word Secondary Capture Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::MultiFrameGrayscaleWordSecondaryCaptureImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MultiFrameGrayscaleWordSecondaryCaptureImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.7.3";
 template<>
-DATA_API const std::string_view Sop<Keyword::MultiFrameGrayscaleWordSecondaryCaptureImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MultiFrameGrayscaleWordSecondaryCaptureImageStorage>::s_iod =
     "Multi-frame Grayscale Word Secondary Capture Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::MultiFrameTrueColorSecondaryCaptureImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::MultiFrameTrueColorSecondaryCaptureImageStorage>::s_keyword =
     Keyword::MultiFrameTrueColorSecondaryCaptureImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::MultiFrameTrueColorSecondaryCaptureImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MultiFrameTrueColorSecondaryCaptureImageStorage>::s_name =
     "Multi-frame True Color Secondary Capture Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::MultiFrameTrueColorSecondaryCaptureImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MultiFrameTrueColorSecondaryCaptureImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.7.4";
 template<>
-DATA_API const std::string_view Sop<Keyword::MultiFrameTrueColorSecondaryCaptureImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MultiFrameTrueColorSecondaryCaptureImageStorage>::s_iod =
     "Multi-frame True Color Secondary Capture Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::VLEndoscopicImageStorage>::s_keyword = Keyword::VLEndoscopicImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::VLEndoscopicImageStorage>::s_keyword = Keyword::VLEndoscopicImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::VLEndoscopicImageStorage>::s_name = "VL Endoscopic Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLEndoscopicImageStorage>::s_name = "VL Endoscopic Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::VLEndoscopicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.77.1.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLEndoscopicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.77.1.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::VLEndoscopicImageStorage>::s_iod = "VL Endoscopic Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLEndoscopicImageStorage>::s_iod = "VL Endoscopic Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::VideoEndoscopicImageStorage>::s_keyword = Keyword::VideoEndoscopicImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::VideoEndoscopicImageStorage>::s_keyword = Keyword::VideoEndoscopicImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::VideoEndoscopicImageStorage>::s_name = "Video Endoscopic Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VideoEndoscopicImageStorage>::s_name = "Video Endoscopic Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::VideoEndoscopicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.77.1.1.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VideoEndoscopicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.77.1.1.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::VideoEndoscopicImageStorage>::s_iod = "Video Endoscopic Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VideoEndoscopicImageStorage>::s_iod = "Video Endoscopic Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::VLMicroscopicImageStorage>::s_keyword = Keyword::VLMicroscopicImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::VLMicroscopicImageStorage>::s_keyword = Keyword::VLMicroscopicImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::VLMicroscopicImageStorage>::s_name = "VL Microscopic Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLMicroscopicImageStorage>::s_name = "VL Microscopic Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::VLMicroscopicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.77.1.2";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLMicroscopicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.77.1.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::VLMicroscopicImageStorage>::s_iod = "VL Microscopic Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLMicroscopicImageStorage>::s_iod = "VL Microscopic Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::VideoMicroscopicImageStorage>::s_keyword = Keyword::VideoMicroscopicImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::VideoMicroscopicImageStorage>::s_keyword = Keyword::VideoMicroscopicImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::VideoMicroscopicImageStorage>::s_name = "Video Microscopic Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VideoMicroscopicImageStorage>::s_name = "Video Microscopic Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::VideoMicroscopicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.77.1.2.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VideoMicroscopicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.77.1.2.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::VideoMicroscopicImageStorage>::s_iod = "Video Microscopic Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VideoMicroscopicImageStorage>::s_iod = "Video Microscopic Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::VLSlideCoordinatesMicroscopicImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::VLSlideCoordinatesMicroscopicImageStorage>::s_keyword =
     Keyword::VLSlideCoordinatesMicroscopicImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::VLSlideCoordinatesMicroscopicImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLSlideCoordinatesMicroscopicImageStorage>::s_name =
     "VL Slide-Coordinates Microscopic Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::VLSlideCoordinatesMicroscopicImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLSlideCoordinatesMicroscopicImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.77.1.3";
 template<>
-DATA_API const std::string_view Sop<Keyword::VLSlideCoordinatesMicroscopicImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLSlideCoordinatesMicroscopicImageStorage>::s_iod =
     "VL Slide-Coordinates Microscopic Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::VLPhotographicImageStorage>::s_keyword = Keyword::VLPhotographicImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::VLPhotographicImageStorage>::s_keyword = Keyword::VLPhotographicImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::VLPhotographicImageStorage>::s_name = "VL Photographic Image Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLPhotographicImageStorage>::s_name = "VL Photographic Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::VLPhotographicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.77.1.4";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLPhotographicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.77.1.4";
 template<>
-DATA_API const std::string_view Sop<Keyword::VLPhotographicImageStorage>::s_iod = "VL Photographic Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLPhotographicImageStorage>::s_iod = "VL Photographic Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::VideoPhotographicImageStorage>::s_keyword = Keyword::VideoPhotographicImageStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::VideoPhotographicImageStorage>::s_keyword = Keyword::VideoPhotographicImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::VideoPhotographicImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::VideoPhotographicImageStorage>::s_name =
     "Video Photographic Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::VideoPhotographicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.77.1.4.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VideoPhotographicImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.77.1.4.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::VideoPhotographicImageStorage>::s_iod = "Video Photographic Image IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::VideoPhotographicImageStorage>::s_iod = "Video Photographic Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::OphthalmicPhotography8BitImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::OphthalmicPhotography8BitImageStorage>::s_keyword =
     Keyword::OphthalmicPhotography8BitImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicPhotography8BitImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicPhotography8BitImageStorage>::s_name =
     "Ophthalmic Photography 8 Bit Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicPhotography8BitImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicPhotography8BitImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.77.1.5.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicPhotography8BitImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicPhotography8BitImageStorage>::s_iod =
     "Ophthalmic Photography 8 Bit Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::OphthalmicPhotography16BitImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::OphthalmicPhotography16BitImageStorage>::s_keyword =
     Keyword::OphthalmicPhotography16BitImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicPhotography16BitImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicPhotography16BitImageStorage>::s_name =
     "Ophthalmic Photography 16 Bit Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicPhotography16BitImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicPhotography16BitImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.77.1.5.2";
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicPhotography16BitImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicPhotography16BitImageStorage>::s_iod =
     "Ophthalmic Photography 16 Bit Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::OphthalmicTomographyImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::OphthalmicTomographyImageStorage>::s_keyword =
     Keyword::OphthalmicTomographyImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicTomographyImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicTomographyImageStorage>::s_name =
     "Ophthalmic Tomography Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicTomographyImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicTomographyImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.77.1.5.4";
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicTomographyImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicTomographyImageStorage>::s_iod =
     "Ophthalmic Tomography Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage>::s_keyword =
     Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage>::s_name
+SIGHT_DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage>::s_name
     =
         "Wide field Ophthalmic Photography Stereographic Projection Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.77.1.5.5";
 template<>
-DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage>::s_iod =
     "Wide field Ophthalmic Photography Stereographic Projection Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage>::s_keyword =
     Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage>::s_name =
     "Wide field Ophthalmic Photography 3D Coordinates Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.77.1.5.6";
 template<>
-DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage>::s_iod =
     "Wide field Ophthalmic Photography 3D Coordinates Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage>::s_keyword =
     Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage>::s_name =
     "Ophthalmic Optical Coherence Tomography En Face Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.77.1.5.7";
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage>::s_iod =
     "Ophthalmic Optical Coherence Tomography En Face Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage>::s_keyword =
     Keyword::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage>::s_name =
     "Ophthalmic Optical Coherence Tomography B-scan Volume Analysis Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.77.1.5.8";
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage>::s_iod =
     "Ophthalmic Optical Coherence Tomography B-scan Volume Analysis IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::VLWholeSlideMicroscopyImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::VLWholeSlideMicroscopyImageStorage>::s_keyword =
     Keyword::VLWholeSlideMicroscopyImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::VLWholeSlideMicroscopyImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLWholeSlideMicroscopyImageStorage>::s_name =
     "VL Whole Slide Microscopy Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::VLWholeSlideMicroscopyImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLWholeSlideMicroscopyImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.77.1.6";
 template<>
-DATA_API const std::string_view Sop<Keyword::VLWholeSlideMicroscopyImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::VLWholeSlideMicroscopyImageStorage>::s_iod =
     "VL Whole Slide Microscopy Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::DermoscopicPhotographyImageStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::DermoscopicPhotographyImageStorage>::s_keyword =
     Keyword::DermoscopicPhotographyImageStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::DermoscopicPhotographyImageStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DermoscopicPhotographyImageStorage>::s_name =
     "Dermoscopic Photography Image Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::DermoscopicPhotographyImageStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DermoscopicPhotographyImageStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.77.1.7";
 template<>
-DATA_API const std::string_view Sop<Keyword::DermoscopicPhotographyImageStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::DermoscopicPhotographyImageStorage>::s_iod =
     "Dermoscopic Photography Image IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::SpectaclePrescriptionReportStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::SpectaclePrescriptionReportStorage>::s_keyword =
     Keyword::SpectaclePrescriptionReportStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::SpectaclePrescriptionReportStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::SpectaclePrescriptionReportStorage>::s_name =
     "Spectacle Prescription Report Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::SpectaclePrescriptionReportStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::SpectaclePrescriptionReportStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.78.6";
 template<>
-DATA_API const std::string_view Sop<Keyword::SpectaclePrescriptionReportStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::SpectaclePrescriptionReportStorage>::s_iod =
     "Spectacle Prescription Report IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::MacularGridThicknessAndVolumeReportStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::MacularGridThicknessAndVolumeReportStorage>::s_keyword =
     Keyword::MacularGridThicknessAndVolumeReportStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::MacularGridThicknessAndVolumeReportStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MacularGridThicknessAndVolumeReportStorage>::s_name =
     "Macular Grid Thickness and Volume Report Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::MacularGridThicknessAndVolumeReportStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MacularGridThicknessAndVolumeReportStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.79.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::MacularGridThicknessAndVolumeReportStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::MacularGridThicknessAndVolumeReportStorage>::s_iod =
     "Macular Grid Thickness and Volume Report IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::OphthalmicThicknessMapStorage>::s_keyword = Keyword::OphthalmicThicknessMapStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::OphthalmicThicknessMapStorage>::s_keyword = Keyword::OphthalmicThicknessMapStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicThicknessMapStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicThicknessMapStorage>::s_name =
     "Ophthalmic Thickness Map Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicThicknessMapStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.81.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicThicknessMapStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.81.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::OphthalmicThicknessMapStorage>::s_iod = "Ophthalmic Thickness Map IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::OphthalmicThicknessMapStorage>::s_iod = "Ophthalmic Thickness Map IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::CornealTopographyMapStorage>::s_keyword = Keyword::CornealTopographyMapStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::CornealTopographyMapStorage>::s_keyword = Keyword::CornealTopographyMapStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::CornealTopographyMapStorage>::s_name = "Corneal Topography Map Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::CornealTopographyMapStorage>::s_name = "Corneal Topography Map Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::CornealTopographyMapStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.82.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::CornealTopographyMapStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.82.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::CornealTopographyMapStorage>::s_iod = "Corneal Topography Map IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::CornealTopographyMapStorage>::s_iod = "Corneal Topography Map IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::BasicTextSRStorage>::s_keyword = Keyword::BasicTextSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::BasicTextSRStorage>::s_keyword = Keyword::BasicTextSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::BasicTextSRStorage>::s_name = "Basic Text SR Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::BasicTextSRStorage>::s_name = "Basic Text SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::BasicTextSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.11";
+SIGHT_DATA_API const std::string_view Sop<Keyword::BasicTextSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.11";
 template<>
-DATA_API const std::string_view Sop<Keyword::BasicTextSRStorage>::s_iod = "Basic Text SR IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::BasicTextSRStorage>::s_iod = "Basic Text SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EnhancedSRStorage>::s_keyword = Keyword::EnhancedSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::EnhancedSRStorage>::s_keyword = Keyword::EnhancedSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedSRStorage>::s_name = "Enhanced SR Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedSRStorage>::s_name = "Enhanced SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.22";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.22";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedSRStorage>::s_iod = "Enhanced SR IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedSRStorage>::s_iod = "Enhanced SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::ComprehensiveSRStorage>::s_keyword = Keyword::ComprehensiveSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::ComprehensiveSRStorage>::s_keyword = Keyword::ComprehensiveSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::ComprehensiveSRStorage>::s_name = "Comprehensive SR Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ComprehensiveSRStorage>::s_name = "Comprehensive SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::ComprehensiveSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.33";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ComprehensiveSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.33";
 template<>
-DATA_API const std::string_view Sop<Keyword::ComprehensiveSRStorage>::s_iod = "Comprehensive SR IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ComprehensiveSRStorage>::s_iod = "Comprehensive SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::Comprehensive3DSRStorage>::s_keyword = Keyword::Comprehensive3DSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::Comprehensive3DSRStorage>::s_keyword = Keyword::Comprehensive3DSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::Comprehensive3DSRStorage>::s_name = "Comprehensive 3D SR Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::Comprehensive3DSRStorage>::s_name = "Comprehensive 3D SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::Comprehensive3DSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.34";
+SIGHT_DATA_API const std::string_view Sop<Keyword::Comprehensive3DSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.34";
 template<>
-DATA_API const std::string_view Sop<Keyword::Comprehensive3DSRStorage>::s_iod = "Comprehensive 3D SR IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::Comprehensive3DSRStorage>::s_iod = "Comprehensive 3D SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::ExtensibleSRStorage>::s_keyword = Keyword::ExtensibleSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::ExtensibleSRStorage>::s_keyword = Keyword::ExtensibleSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::ExtensibleSRStorage>::s_name = "Extensible SR Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ExtensibleSRStorage>::s_name = "Extensible SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::ExtensibleSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.35";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ExtensibleSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.35";
 template<>
-DATA_API const std::string_view Sop<Keyword::ExtensibleSRStorage>::s_iod = "Extensible SR IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ExtensibleSRStorage>::s_iod = "Extensible SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::ProcedureLogStorage>::s_keyword = Keyword::ProcedureLogStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::ProcedureLogStorage>::s_keyword = Keyword::ProcedureLogStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::ProcedureLogStorage>::s_name = "Procedure Log Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ProcedureLogStorage>::s_name = "Procedure Log Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::ProcedureLogStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.40";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ProcedureLogStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.40";
 template<>
-DATA_API const std::string_view Sop<Keyword::ProcedureLogStorage>::s_iod = "Procedure Log IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ProcedureLogStorage>::s_iod = "Procedure Log IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::MammographyCADSRStorage>::s_keyword = Keyword::MammographyCADSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::MammographyCADSRStorage>::s_keyword = Keyword::MammographyCADSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::MammographyCADSRStorage>::s_name = "Mammography CAD SR Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::MammographyCADSRStorage>::s_name = "Mammography CAD SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::MammographyCADSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.50";
+SIGHT_DATA_API const std::string_view Sop<Keyword::MammographyCADSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.50";
 template<>
-DATA_API const std::string_view Sop<Keyword::MammographyCADSRStorage>::s_iod = "Mammography CAD SR IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::MammographyCADSRStorage>::s_iod = "Mammography CAD SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::KeyObjectSelectionDocumentStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::KeyObjectSelectionDocumentStorage>::s_keyword =
     Keyword::KeyObjectSelectionDocumentStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::KeyObjectSelectionDocumentStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::KeyObjectSelectionDocumentStorage>::s_name =
     "Key Object Selection Document Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::KeyObjectSelectionDocumentStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::KeyObjectSelectionDocumentStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.88.59";
 template<>
-DATA_API const std::string_view Sop<Keyword::KeyObjectSelectionDocumentStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::KeyObjectSelectionDocumentStorage>::s_iod =
     "Key Object Selection Document IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::ChestCADSRStorage>::s_keyword = Keyword::ChestCADSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::ChestCADSRStorage>::s_keyword = Keyword::ChestCADSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::ChestCADSRStorage>::s_name = "Chest CAD SR Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ChestCADSRStorage>::s_name = "Chest CAD SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::ChestCADSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.65";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ChestCADSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.65";
 template<>
-DATA_API const std::string_view Sop<Keyword::ChestCADSRStorage>::s_iod = "Chest CAD SR IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ChestCADSRStorage>::s_iod = "Chest CAD SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::XRayRadiationDoseSRStorage>::s_keyword = Keyword::XRayRadiationDoseSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::XRayRadiationDoseSRStorage>::s_keyword = Keyword::XRayRadiationDoseSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::XRayRadiationDoseSRStorage>::s_name = "X-Ray Radiation Dose SR Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRayRadiationDoseSRStorage>::s_name = "X-Ray Radiation Dose SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::XRayRadiationDoseSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.67";
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRayRadiationDoseSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.67";
 template<>
-DATA_API const std::string_view Sop<Keyword::XRayRadiationDoseSRStorage>::s_iod = "X-Ray Radiation Dose SR IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::XRayRadiationDoseSRStorage>::s_iod = "X-Ray Radiation Dose SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::RadiopharmaceuticalRadiationDoseSRStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::RadiopharmaceuticalRadiationDoseSRStorage>::s_keyword =
     Keyword::RadiopharmaceuticalRadiationDoseSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::RadiopharmaceuticalRadiationDoseSRStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::RadiopharmaceuticalRadiationDoseSRStorage>::s_name =
     "Radiopharmaceutical Radiation Dose SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::RadiopharmaceuticalRadiationDoseSRStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::RadiopharmaceuticalRadiationDoseSRStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.88.68";
 template<>
-DATA_API const std::string_view Sop<Keyword::RadiopharmaceuticalRadiationDoseSRStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::RadiopharmaceuticalRadiationDoseSRStorage>::s_iod =
     "Radiopharmaceutical Radiation Dose SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::ColonCADSRStorage>::s_keyword = Keyword::ColonCADSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::ColonCADSRStorage>::s_keyword = Keyword::ColonCADSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::ColonCADSRStorage>::s_name = "Colon CAD SR Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ColonCADSRStorage>::s_name = "Colon CAD SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::ColonCADSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.69";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ColonCADSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.69";
 template<>
-DATA_API const std::string_view Sop<Keyword::ColonCADSRStorage>::s_iod = "Colon CAD SR IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ColonCADSRStorage>::s_iod = "Colon CAD SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::ImplantationPlanSRStorage>::s_keyword = Keyword::ImplantationPlanSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::ImplantationPlanSRStorage>::s_keyword = Keyword::ImplantationPlanSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::ImplantationPlanSRStorage>::s_name = "Implantation Plan SR Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ImplantationPlanSRStorage>::s_name = "Implantation Plan SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::ImplantationPlanSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.70";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ImplantationPlanSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.70";
 template<>
-DATA_API const std::string_view Sop<Keyword::ImplantationPlanSRStorage>::s_iod = "Implantation Plan SR Document IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::ImplantationPlanSRStorage>::s_iod = "Implantation Plan SR Document IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::AcquisitionContextSRStorage>::s_keyword = Keyword::AcquisitionContextSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::AcquisitionContextSRStorage>::s_keyword = Keyword::AcquisitionContextSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::AcquisitionContextSRStorage>::s_name = "Acquisition Context SR Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::AcquisitionContextSRStorage>::s_name = "Acquisition Context SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::AcquisitionContextSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.71";
+SIGHT_DATA_API const std::string_view Sop<Keyword::AcquisitionContextSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.71";
 template<>
-DATA_API const std::string_view Sop<Keyword::AcquisitionContextSRStorage>::s_iod = "Acquisition Context SR IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::AcquisitionContextSRStorage>::s_iod = "Acquisition Context SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::SimplifiedAdultEchoSRStorage>::s_keyword = Keyword::SimplifiedAdultEchoSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::SimplifiedAdultEchoSRStorage>::s_keyword = Keyword::SimplifiedAdultEchoSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::SimplifiedAdultEchoSRStorage>::s_name = "Simplified Adult Echo SR Storage";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SimplifiedAdultEchoSRStorage>::s_name = "Simplified Adult Echo SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::SimplifiedAdultEchoSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.72";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SimplifiedAdultEchoSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.72";
 template<>
-DATA_API const std::string_view Sop<Keyword::SimplifiedAdultEchoSRStorage>::s_iod = "Simplified Adult Echo SR IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::SimplifiedAdultEchoSRStorage>::s_iod = "Simplified Adult Echo SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::PatientRadiationDoseSRStorage>::s_keyword = Keyword::PatientRadiationDoseSRStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::PatientRadiationDoseSRStorage>::s_keyword = Keyword::PatientRadiationDoseSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::PatientRadiationDoseSRStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::PatientRadiationDoseSRStorage>::s_name =
     "Patient Radiation Dose SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::PatientRadiationDoseSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.73";
+SIGHT_DATA_API const std::string_view Sop<Keyword::PatientRadiationDoseSRStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.88.73";
 template<>
-DATA_API const std::string_view Sop<Keyword::PatientRadiationDoseSRStorage>::s_iod = "Patient Radiation Dose SR IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::PatientRadiationDoseSRStorage>::s_iod = "Patient Radiation Dose SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::PlannedImagingAgentAdministrationSRStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::PlannedImagingAgentAdministrationSRStorage>::s_keyword =
     Keyword::PlannedImagingAgentAdministrationSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::PlannedImagingAgentAdministrationSRStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::PlannedImagingAgentAdministrationSRStorage>::s_name =
     "Planned Imaging Agent Administration SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::PlannedImagingAgentAdministrationSRStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::PlannedImagingAgentAdministrationSRStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.88.74";
 template<>
-DATA_API const std::string_view Sop<Keyword::PlannedImagingAgentAdministrationSRStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::PlannedImagingAgentAdministrationSRStorage>::s_iod =
     "Planned Imaging Agent Administration SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::PerformedImagingAgentAdministrationSRStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::PerformedImagingAgentAdministrationSRStorage>::s_keyword =
     Keyword::PerformedImagingAgentAdministrationSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::PerformedImagingAgentAdministrationSRStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::PerformedImagingAgentAdministrationSRStorage>::s_name =
     "Performed Imaging Agent Administration SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::PerformedImagingAgentAdministrationSRStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::PerformedImagingAgentAdministrationSRStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.88.75";
 template<>
-DATA_API const std::string_view Sop<Keyword::PerformedImagingAgentAdministrationSRStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::PerformedImagingAgentAdministrationSRStorage>::s_iod =
     "Performed Imaging Agent Administration SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::EnhancedXRayRadiationDoseSRStorage>::s_keyword =
+SIGHT_DATA_API const Keyword Sop<Keyword::EnhancedXRayRadiationDoseSRStorage>::s_keyword =
     Keyword::EnhancedXRayRadiationDoseSRStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedXRayRadiationDoseSRStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedXRayRadiationDoseSRStorage>::s_name =
     "Enhanced X-Ray Radiation Dose SR Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedXRayRadiationDoseSRStorage>::s_uid =
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedXRayRadiationDoseSRStorage>::s_uid =
     "1.2.840.10008.5.1.4.1.1.88.76";
 template<>
-DATA_API const std::string_view Sop<Keyword::EnhancedXRayRadiationDoseSRStorage>::s_iod =
+SIGHT_DATA_API const std::string_view Sop<Keyword::EnhancedXRayRadiationDoseSRStorage>::s_iod =
     "Enhanced X-Ray Radiation Dose SR IOD";
 template<>
-DATA_API const Keyword Sop<Keyword::GenericImplantTemplateStorage>::s_keyword = Keyword::GenericImplantTemplateStorage;
+SIGHT_DATA_API const Keyword Sop<Keyword::GenericImplantTemplateStorage>::s_keyword = Keyword::GenericImplantTemplateStorage;
 template<>
-DATA_API const std::string_view Sop<Keyword::GenericImplantTemplateStorage>::s_name =
+SIGHT_DATA_API const std::string_view Sop<Keyword::GenericImplantTemplateStorage>::s_name =
     "Generic Implant Template Storage";
 template<>
-DATA_API const std::string_view Sop<Keyword::GenericImplantTemplateStorage>::s_uid = "1.2.840.10008.5.1.4.43.1";
+SIGHT_DATA_API const std::string_view Sop<Keyword::GenericImplantTemplateStorage>::s_uid = "1.2.840.10008.5.1.4.43.1";
 template<>
-DATA_API const std::string_view Sop<Keyword::GenericImplantTemplateStorage>::s_iod = "Generic Implant Template IOD";
+SIGHT_DATA_API const std::string_view Sop<Keyword::GenericImplantTemplateStorage>::s_iod = "Generic Implant Template IOD";
 
 //------------------------------------------------------------------------------
 

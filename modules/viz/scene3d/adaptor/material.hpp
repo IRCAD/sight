@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/viz/scene3d/adaptor/texture.hpp"
-#include "modules/viz/scene3d/config.hpp"
 
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
@@ -88,7 +87,7 @@ namespace sight::module::viz::scene3d::adaptor
  *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
  *      representation mode as in data::material.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API material final : public sight::viz::scene3d::material_adaptor
+class material final : public sight::viz::scene3d::material_adaptor
 {
 public:
 
@@ -99,27 +98,27 @@ public:
      * @name Slots API
      * @{
      */
-    MODULE_VIZ_SCENE3D_API static const core::com::slots::key_t UPDATE_FIELD_SLOT;
-    MODULE_VIZ_SCENE3D_API static const core::com::slots::key_t SWAP_TEXTURE_SLOT;
-    MODULE_VIZ_SCENE3D_API static const core::com::slots::key_t ADD_TEXTURE_SLOT;
-    MODULE_VIZ_SCENE3D_API static const core::com::slots::key_t REMOVE_TEXTURE_SLOT;
+    static const core::com::slots::key_t UPDATE_FIELD_SLOT;
+    static const core::com::slots::key_t SWAP_TEXTURE_SLOT;
+    static const core::com::slots::key_t ADD_TEXTURE_SLOT;
+    static const core::com::slots::key_t REMOVE_TEXTURE_SLOT;
     /** @} */
 
     /**
      * @name In-Out In-Out API
      * @{
      */
-    MODULE_VIZ_SCENE3D_API static const std::string MATERIAL_INOUT;
+    static const std::string MATERIAL_INOUT;
     /** @} */
 
     /// Initializes slots.
-    MODULE_VIZ_SCENE3D_API material() noexcept;
+    material() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~material() noexcept override = default;
+    ~material() noexcept override = default;
 
     /// Configures the adaptor without using the XML configuration.
-    MODULE_VIZ_SCENE3D_API void configure(
+    void configure(
         const std::string& _id,
         const std::string& _name,
         sight::viz::scene3d::render::sptr _service,
@@ -129,42 +128,42 @@ public:
     ) override;
 
     /// Gets Ogre associated material.
-    MODULE_VIZ_SCENE3D_API Ogre::MaterialPtr get_material() override;
+    Ogre::MaterialPtr get_material() override;
 
     /// Gets material name.
-    MODULE_VIZ_SCENE3D_API std::string get_material_name() const override;
+    std::string get_material_name() const override;
 
     /// Retrieves the associated texture name.
-    MODULE_VIZ_SCENE3D_API void set_texture_name(const std::string& _texture_name) override;
+    void set_texture_name(const std::string& _texture_name) override;
 
     /// Sets material name.
-    MODULE_VIZ_SCENE3D_API void set_material_name(const std::string& _material_name) override;
+    void set_material_name(const std::string& _material_name) override;
 
     /// Sets material template name.
-    MODULE_VIZ_SCENE3D_API void set_material_template_name(const std::string& _material_name) override;
+    void set_material_template_name(const std::string& _material_name) override;
 
     /// Tells if there is a texture currently bound.
-    MODULE_VIZ_SCENE3D_API bool has_diffuse_texture() const override;
+    bool has_diffuse_texture() const override;
 
     /// Gets the shading mode.
-    MODULE_VIZ_SCENE3D_API const std::string& get_shading_mode() const override;
+    const std::string& get_shading_mode() const override;
 
     /// Sets the shading mode.
-    MODULE_VIZ_SCENE3D_API void set_shading_mode(const std::string& _shading_mode) override;
+    void set_shading_mode(const std::string& _shading_mode) override;
 
     /// Set the renderable object.
-    MODULE_VIZ_SCENE3D_API void set_r2_vb_object(sight::viz::scene3d::r2vb_renderable* _r2vb_object) override;
+    void set_r2_vb_object(sight::viz::scene3d::r2vb_renderable* _r2vb_object) override;
 
     /// Gets the internal material code.
-    MODULE_VIZ_SCENE3D_API sight::viz::scene3d::material* get_material_fw() const override;
+    sight::viz::scene3d::material* get_material_fw() const override;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    void configuring() override;
 
     /// Creates the material.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -176,13 +175,13 @@ protected:
      * Connect data::material::ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to ADD_TEXTURE_SLOT
      * Connect data::material::REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to REMOVE_TEXTURE_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Updates fixed function pipeline parameters.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    void updating() override;
 
     /// Release Ogre resources.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    void stopping() override;
 
 private:
 

@@ -38,7 +38,11 @@ public:
      * @param _label How to get the label to check
      * @param _expected The expected content of the tooltip
      */
-    UI_TEST_API static void tool_tip_matches(tester& _tester, const selector& _label, const std::string& _expected);
+    SIGHT_UI_TEST_API static void tool_tip_matches(
+        tester& _tester,
+        const selector& _label,
+        const std::string& _expected
+    );
 
     /**
      * Check whether the label contains the expected substring.
@@ -46,7 +50,7 @@ public:
      * @param _label How to get the label to check
      * @param _expected The substring expected to be contained in the label
      */
-    UI_TEST_API static void contain(tester& _tester, const selector& _label, const std::string& _expected);
+    SIGHT_UI_TEST_API static void contain(tester& _tester, const selector& _label, const std::string& _expected);
 
     /**
      * Check whether the label exactly matches the expected result.
@@ -54,7 +58,7 @@ public:
      * @param _label How to get the label to check
      * @param _expected The expected content of the label
      */
-    UI_TEST_API static void exactly_match(tester& _tester, const selector& _label, const std::string& _expected);
+    SIGHT_UI_TEST_API static void exactly_match(tester& _tester, const selector& _label, const std::string& _expected);
 
     /**
      * Check whether the label is equal to the number with a tolerance.
@@ -65,7 +69,7 @@ public:
      * @param _re A regexp describing how to find the number to be checked in the label, it should be the first capture
      *            group.
      */
-    UI_TEST_API static void equal(
+    SIGHT_UI_TEST_API static void equal(
         tester& _tester,
         const selector& _label,
         double _expected,
@@ -78,7 +82,7 @@ public:
      * @param _tester The current tester
      * @param _label_name The objectName of the label
      */
-    UI_TEST_API static std::string get(tester& _tester, const selector& _label_name);
+    SIGHT_UI_TEST_API static std::string get(tester& _tester, const selector& _label_name);
 };
 
 } // namespace sight::ui::testCore::helper

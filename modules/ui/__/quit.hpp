@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/__/config.hpp"
-
 #include <service/base.hpp>
 
 #include <ui/__/action.hpp>
@@ -34,7 +32,7 @@ namespace sight::module::ui
 /**
  * @brief   This action tries to close the window and reset root object.
  */
-class MODULE_UI_CLASS_API quit : public sight::ui::action
+class quit : public sight::ui::action
 {
 public:
 
@@ -43,12 +41,12 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    MODULE_UI_API quit() noexcept;
+    quit() noexcept;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    MODULE_UI_API ~quit() noexcept override;
+    ~quit() noexcept override;
 
 protected:
 
@@ -56,21 +54,21 @@ protected:
      * @brief This method is used to configure the service parameters: specifies which services must be started or
      * stopped
      */
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief This method tries to close the window and reset root object.
      */
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /*
      * @brief This method gives information about the class.
      */
-    MODULE_UI_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 };
 
 } // namespace sight::module::ui

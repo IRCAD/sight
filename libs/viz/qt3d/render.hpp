@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/qt3d/config.hpp"
+#include <sight/viz/qt3d/config.hpp>
+
 #include "viz/qt3d/window_interactor.hpp"
 
 #include <viz/__/render.hpp>
@@ -67,34 +68,34 @@ class generic_scene;
  *    - \b adaptor (optional)
  *      - \b uid (mandatory): the identifier of the adaptor
  */
-class VIZ_QT3D_CLASS_API render final : public viz::render
+class SIGHT_VIZ_QT3D_CLASS_API render final : public viz::render
 {
 public:
 
     SIGHT_DECLARE_SERVICE(render, viz::render);
 
     /// Creates the service.
-    VIZ_QT3D_API render();
+    SIGHT_VIZ_QT3D_API render();
 
     /// Destroys the service.
-    VIZ_QT3D_API ~render() override;
+    SIGHT_VIZ_QT3D_API ~render() override;
 
     /// @returns the scene instantiated by this service.
-    VIZ_QT3D_API sight::viz::qt3d::core::generic_scene* get_scene();
+    SIGHT_VIZ_QT3D_API sight::viz::qt3d::core::generic_scene* get_scene();
 
 protected:
 
     /// Configures the render service.
-    VIZ_QT3D_API void configuring() override;
+    SIGHT_VIZ_QT3D_API void configuring() override;
 
     /// Creates a rendering context and instantiates a Qt3D generic scene.
-    VIZ_QT3D_API void starting() override;
+    SIGHT_VIZ_QT3D_API void starting() override;
 
     /// Does nothing.
-    VIZ_QT3D_API void updating() override;
+    SIGHT_VIZ_QT3D_API void updating() override;
 
     /// Destroys the service.
-    VIZ_QT3D_API void stopping() override;
+    SIGHT_VIZ_QT3D_API void stopping() override;
 
 private:
 

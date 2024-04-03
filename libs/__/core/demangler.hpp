@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <string>
 #include <typeinfo>
@@ -35,7 +35,7 @@ namespace sight::core
  *
  * @warning get_classname() use on fundamentals types (int, float, ...) will give a bad result ( ex: \::int )
  */
-class CORE_CLASS_API demangler
+class SIGHT_CORE_CLASS_API demangler
 {
 public:
 
@@ -48,14 +48,14 @@ public:
      *
      * @param _t Typeinfo to demangle
      */
-    CORE_API demangler(const std::type_info& _t);
+    SIGHT_CORE_API demangler(const std::type_info& _t);
 
     /**
      * @brief Constructor from a std::string
      *
      * @param _s string to demangle
      */
-    CORE_API demangler(std::string _s);
+    SIGHT_CORE_API demangler(std::string _s);
 
     /**
      * @brief Constructor from any type
@@ -71,7 +71,7 @@ public:
     /**
      * @brief Destructor
      */
-    CORE_API virtual ~demangler();
+    SIGHT_CORE_API virtual ~demangler();
 
     /**  @} */
 
@@ -80,14 +80,14 @@ public:
      *
      * @return demangled class name only
      */
-    [[nodiscard]] CORE_API std::string get_leaf_classname() const;
+    [[nodiscard]] SIGHT_CORE_API std::string get_leaf_classname() const;
 
     /**
      * @brief Returns "::some::long::namespace::Object" from "::some::long::namespace::Object"
      *
      * @return demangled class name with all namespaces from root
      */
-    [[nodiscard]] CORE_API std::string get_classname() const;
+    [[nodiscard]] SIGHT_CORE_API std::string get_classname() const;
 
 protected:
 

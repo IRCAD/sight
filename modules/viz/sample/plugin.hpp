@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/viz/sample/config.hpp"
+#include "sight/modules/viz/sample/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -30,7 +30,7 @@ namespace sight::module::viz::sample
 {
 
 /// This class is started when the module is loaded.
-class MODULE_VIZ_SAMPLE_CLASS_API plugin final : public core::runtime::plugin
+class SIGHT_MODULE_VIZ_SAMPLE_CLASS_API plugin final : public core::runtime::plugin
 {
 public:
 
@@ -38,10 +38,10 @@ public:
     ~plugin() noexcept override;
 
     /// Creates the Ogre log manager.
-    MODULE_VIZ_SAMPLE_API void start() override;
+    SIGHT_MODULE_VIZ_SAMPLE_API void start() override;
 
     /// Stops the plugin, destroys Ogre resources.
-    MODULE_VIZ_SAMPLE_API void stop() noexcept override;
+    SIGHT_MODULE_VIZ_SAMPLE_API void stop() noexcept override;
 };
 
 } // namespace sight::module::viz::sample.

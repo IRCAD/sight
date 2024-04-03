@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/filter/image/config.hpp>
+
 #include "filter/image/bresenham_line.hpp"
-#include "filter/image/config.hpp"
 #include "filter/image/image_diff.hpp"
 
 #include <data/image.hpp>
@@ -36,14 +37,14 @@ namespace sight::filter::image
 /**
  * @brief Draws lines with a given thickness in a 3D image slice.
  */
-class FILTER_IMAGE_CLASS_API line_drawer
+class SIGHT_FILTER_IMAGE_CLASS_API line_drawer
 {
 public:
 
     using coordinates_t = bresenham_line::coordinates_t;
 
     /// Constructor, instantiates a drawer with an image and a region of interest.
-    FILTER_IMAGE_API line_drawer(data::image::sptr _img, data::image::csptr _roi);
+    SIGHT_FILTER_IMAGE_API line_drawer(data::image::sptr _img, data::image::csptr _roi);
 
     /**
      * @brief Draws a line in an image slice.
@@ -55,7 +56,7 @@ public:
      * @param[in] _overwrite overwrite mode, don't overwrite existing pixels if not set.
      * @return The differences in the image before and after drawing.
      */
-    FILTER_IMAGE_API image_diff draw(
+    SIGHT_FILTER_IMAGE_API image_diff draw(
         bresenham_line::Orientation _orientation,
         const coordinates_t& _start_coord,
         const coordinates_t& _end_coord,

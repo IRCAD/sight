@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/dimse/config.hpp"
 
 #include <io/dimse/data/pacs_configuration.hpp>
 
@@ -67,7 +65,7 @@ namespace sight::module::io::dimse
  * - \b retrieveMethod (mandatory, GET/MOVE): Retrieve method protocol.
  * - \b preferenceKey (mandatory, string): Key used to store all these values in preferences.
  */
-class MODULE_IO_DIMSE_CLASS_API pacs_configuration_initializer : public service::controller
+class pacs_configuration_initializer : public service::controller
 {
 public:
 
@@ -75,18 +73,18 @@ public:
     SIGHT_DECLARE_SERVICE(pacs_configuration_initializer, service::controller);
 
     /// Creates the service.
-    MODULE_IO_DIMSE_API pacs_configuration_initializer() noexcept;
+    pacs_configuration_initializer() noexcept;
 
     /// Destroyes the service.
-    MODULE_IO_DIMSE_API ~pacs_configuration_initializer() noexcept override;
+    ~pacs_configuration_initializer() noexcept override;
 
 protected:
 
     /// Configures members.
-    MODULE_IO_DIMSE_API void configuring() override;
+    void configuring() override;
 
     /// Retrieves the PACS configuration from preferences.
-    MODULE_IO_DIMSE_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -95,17 +93,17 @@ protected:
      * Connect sight::io::dimse::data::pacs_configuration::MODIFIED_SIG of s_CONFIG_INOUT to
      *::module::io::dimse::pacs_configuration_initializer::service::slots::UPDATE.
      */
-    MODULE_IO_DIMSE_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
     /// Stores the PACS configuration into preferences.
-    MODULE_IO_DIMSE_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Updates preferences.
      *
      * @see updating()
      */
-    MODULE_IO_DIMSE_API void stopping() override;
+    void stopping() override;
 
 private:
 

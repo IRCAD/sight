@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,9 @@
 
 #pragma once
 
-#include "tester.hpp"
+#include <sight/ui/test/config.hpp>
 
-#include "ui/test/config.hpp"
+#include "tester.hpp"
 
 #include <core/runtime/profile/profile.hpp>
 
@@ -35,23 +35,23 @@
 namespace sight::ui::test
 {
 
-class UI_TEST_CLASS_API base : public CPPUNIT_NS::TestFixture
+class SIGHT_UI_TEST_CLASS_API base : public CPPUNIT_NS::TestFixture
 {
 public:
 
-    UI_TEST_API void setUp() override;
+    SIGHT_UI_TEST_API void setUp() override;
 
 protected:
 
-    UI_TEST_API void start(
+    SIGHT_UI_TEST_API void start(
         const std::string& _test_name,
         std::function<void(tester&)> _test,
         bool _verbose_mode = false
     );
 
-    UI_TEST_API virtual std::filesystem::path get_profile_path() = 0;
+    SIGHT_UI_TEST_API virtual std::filesystem::path get_profile_path() = 0;
 
-    UI_TEST_API static void compare_images(const std::filesystem::path& _a, const std::filesystem::path& _b);
+    SIGHT_UI_TEST_API static void compare_images(const std::filesystem::path& _a, const std::filesystem::path& _b);
 
 private:
 

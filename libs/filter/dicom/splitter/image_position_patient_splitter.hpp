@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/dicom/config.hpp"
+#include <sight/filter/dicom/config.hpp>
+
 #include "filter/dicom/splitter/base.hpp"
 
 #include <data/dicom_series.hpp>
@@ -34,7 +35,7 @@ namespace sight::filter::dicom::splitter
  * @brief filter that uses the ImagePositionPatient tag to split the instances.
  * For this filter to work properly, the instances must already be sorted.
  */
-class FILTER_DICOM_CLASS_API image_position_patient_splitter : public base
+class SIGHT_FILTER_DICOM_CLASS_API image_position_patient_splitter : public base
 {
 public:
 
@@ -45,18 +46,18 @@ public:
     );
 
     /// Destructor
-    FILTER_DICOM_API ~image_position_patient_splitter() override = default;
+    SIGHT_FILTER_DICOM_API ~image_position_patient_splitter() override = default;
 
     /// Override
-    FILTER_DICOM_API dicom_series_container_t apply(
+    SIGHT_FILTER_DICOM_API dicom_series_container_t apply(
         const data::dicom_series::sptr& _series,
         const core::log::logger::sptr& _logger
     ) const override;
     /// Return the name of the filter
-    FILTER_DICOM_API std::string get_name() const override;
+    SIGHT_FILTER_DICOM_API std::string get_name() const override;
 
     /// Return the description of the filter
-    FILTER_DICOM_API std::string get_description() const override;
+    SIGHT_FILTER_DICOM_API std::string get_description() const override;
 
 protected:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <data/matrix4.hpp>
 #include <data/mesh.hpp>
@@ -70,7 +68,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b textureAlpha (optional, bool, default=false): generates alpha value for the texture if the image contains only
  * 1 or 3 channels. It may be slower.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API mesh_list final : public sight::viz::scene3d::adaptor
+class mesh_list final : public sight::viz::scene3d::adaptor
 {
 public:
 
@@ -78,18 +76,18 @@ public:
     SIGHT_DECLARE_SERVICE(mesh_list, sight::viz::scene3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
-    MODULE_VIZ_SCENE3D_API mesh_list() noexcept;
+    mesh_list() noexcept;
 
     /// Destroys the service.
-    MODULE_VIZ_SCENE3D_API ~mesh_list() noexcept override;
+    ~mesh_list() noexcept override;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    void configuring() override;
 
     /// Initializes the adaptor.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposal to connect service slots to associated object signals.
@@ -97,20 +95,20 @@ protected:
      *
      * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INOUT to ADD_MESH_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    void updating() override;
 
     /// Unregisters all services.
     /// @see clear()
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Sets the list visibility.
      * @param _visible the visibility status of the list.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
+    void set_visible(bool _visible) override;
 
 private:
 

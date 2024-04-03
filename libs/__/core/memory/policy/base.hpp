@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/memory/buffer_info.hpp"
 #include "core/memory/buffer_manager.hpp"
 #include "core/memory/policy/factory/new.hpp"
@@ -35,7 +36,7 @@ namespace sight::core::memory::policy
 /**
  * @brief Defines the memory dump policy interface
  */
-class CORE_CLASS_API base : public core::base_object
+class SIGHT_CORE_CLASS_API base : public core::base_object
 {
 public:
 

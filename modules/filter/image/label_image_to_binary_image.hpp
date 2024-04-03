@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <data/image.hpp>
 
@@ -66,7 +64,7 @@ namespace sight::module::filter::image
  * - \b config (optional):
  *     - \b labelsField (optional): name of the field holding the list of labels to add to the mask.
  */
-class MODULE_FILTER_IMAGE_CLASS_API label_image_to_binary_image final : public service::filter
+class label_image_to_binary_image final : public service::filter
 {
 public:
 
@@ -74,24 +72,24 @@ public:
     SIGHT_DECLARE_SERVICE(label_image_to_binary_image, service::filter);
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_CLASS_API label_image_to_binary_image();
+    label_image_to_binary_image();
 
     /// Destroys the service.
-    MODULE_FILTER_IMAGE_CLASS_API ~label_image_to_binary_image() override;
+    ~label_image_to_binary_image() override;
 
 protected:
 
     /// Configures this service.
-    MODULE_FILTER_IMAGE_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void starting() override;
+    void starting() override;
 
     /// Computes the mask from the labeled image.
-    MODULE_FILTER_IMAGE_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -100,7 +98,7 @@ protected:
      * Connect data::image::BUFFER_MODIFIED_SIG of s_LABEL_IMAGE_INPUT to service::slots::UPDATE
      * Connect data::image::MODIFIED_SIG of s_LABEL_IMAGE_INPUT to service::slots::UPDATE
      */
-    MODULE_FILTER_IMAGE_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

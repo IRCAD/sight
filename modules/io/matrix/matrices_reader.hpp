@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/matrix/config.hpp"
 
 #include <core/thread/timer.hpp>
 
@@ -86,23 +84,23 @@ namespace sight::module::io::matrix
  * - \b loop (optional): specifies if the reader loops over the file or not (default: false)
  */
 
-class MODULE_IO_MATRIX_CLASS_API matrices_reader : public sight::io::service::reader
+class matrices_reader : public sight::io::service::reader
 {
 public:
 
     SIGHT_DECLARE_SERVICE(matrices_reader, sight::io::service::reader);
 
     /// Constructor.
-    MODULE_IO_MATRIX_API matrices_reader() noexcept;
+    matrices_reader() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_IO_MATRIX_API ~matrices_reader() noexcept override;
+    ~matrices_reader() noexcept override;
 
     /// Display a location dialog allowing to select the video file to save
-    MODULE_IO_MATRIX_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
     /// Return file type (io::service::FILE)
-    MODULE_IO_MATRIX_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
     /**
      * @brief The TimeStampedMatrices structure handle a list of matrices and the associated timestamp.
@@ -118,16 +116,16 @@ public:
 protected:
 
     /// Does nothing
-    MODULE_IO_MATRIX_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_IO_MATRIX_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_IO_MATRIX_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing
-    MODULE_IO_MATRIX_API void updating() override;
+    void updating() override;
 
 private:
 

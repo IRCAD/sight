@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/igtl/config.hpp"
+#include <sight/io/igtl/config.hpp>
 // Patched header.
 #include "io/igtl/patch/igtlSocket.h"
 
@@ -43,19 +43,19 @@ namespace sight::io::igtl
  *
  * @brief a interface for client and server classes
  */
-class IO_IGTL_CLASS_API network
+class SIGHT_IO_IGTL_CLASS_API network
 {
 public:
 
     /**
      * @brief default constructor
      */
-    IO_IGTL_API network();
+    SIGHT_IO_IGTL_API network();
 
     /**
      * @brief Destructor if a connection is opened the destructor close it
      */
-    IO_IGTL_API virtual ~network();
+    SIGHT_IO_IGTL_API virtual ~network();
 
     /**
      * @brief generic method to receive object the type of the object is determined by response header
@@ -63,7 +63,7 @@ public:
      *
      * @return a smart pointer of fwData object
      */
-    IO_IGTL_API data::object::sptr receive_object(std::string& _device_name);
+    SIGHT_IO_IGTL_API data::object::sptr receive_object(std::string& _device_name);
 
     /**
      * @brief generic method to receive object
@@ -73,7 +73,7 @@ public:
      *
      * @return a smart pointer of fwData object
      */
-    IO_IGTL_API data::object::sptr receive_object(std::string& _device_name, double& _timestamp);
+    SIGHT_IO_IGTL_API data::object::sptr receive_object(std::string& _device_name, double& _timestamp);
 
     /**
      * @brief generic method to send a object the type of object is determined by classname
@@ -81,13 +81,13 @@ public:
      *        a sigpipe signal
      * @param[in] _dest object to send
      */
-    IO_IGTL_API bool send_object(const data::object::csptr& _dest);
+    SIGHT_IO_IGTL_API bool send_object(const data::object::csptr& _dest);
 
     /**
      * @brief generic method to send a igtl Msg, this method is useful for redirect message
      * @param[in] _msg message to send
      */
-    IO_IGTL_API bool send_msg(::igtl::MessageBase::Pointer _msg);
+    SIGHT_IO_IGTL_API bool send_msg(::igtl::MessageBase::Pointer _msg);
 
     /**
      * @brief receive header
@@ -95,7 +95,7 @@ public:
      * @return header
      */
 
-    IO_IGTL_API ::igtl::MessageHeader::Pointer receive_header();
+    SIGHT_IO_IGTL_API ::igtl::MessageHeader::Pointer receive_header();
 
     /** @brief receive body pack
      *
@@ -103,27 +103,27 @@ public:
      *  @throw igtl::exception on error (network error or timeout).
      *  @return Message
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer receive_body(::igtl::MessageHeader::Pointer _header);
+    SIGHT_IO_IGTL_API ::igtl::MessageBase::Pointer receive_body(::igtl::MessageHeader::Pointer _header);
 
     /**
      * @brief get socket
      *
      * @return socket
      */
-    [[nodiscard]] IO_IGTL_API ::igtl::Socket::Pointer get_socket() const;
+    [[nodiscard]] SIGHT_IO_IGTL_API ::igtl::Socket::Pointer get_socket() const;
 
     /**
      * @brief add a new authorized device name
      * @param[in] _device_name the device name to add
      */
-    IO_IGTL_API void add_authorized_device(const std::string& _device_name);
+    SIGHT_IO_IGTL_API void add_authorized_device(const std::string& _device_name);
 
     /**
      * @brief get filteringByDeviceName (true if activated, false otherwise)
      *
      * @return boolean
      */
-    [[nodiscard]] IO_IGTL_API bool get_filtering_by_device_name() const;
+    [[nodiscard]] SIGHT_IO_IGTL_API bool get_filtering_by_device_name() const;
 
     /**
      * @brief activate/desactivate the filtering by device name
@@ -131,19 +131,19 @@ public:
      *
      * @param[in] _filtering
      */
-    IO_IGTL_API void set_filtering_by_device_name(bool _filtering);
+    SIGHT_IO_IGTL_API void set_filtering_by_device_name(bool _filtering);
 
     /**
      * @brief set the device name when a message is sent
      */
-    IO_IGTL_API void set_device_name_out(const std::string& _device_name);
+    SIGHT_IO_IGTL_API void set_device_name_out(const std::string& _device_name);
 
     /**
      * @brief get the device name when a message is sent
      *
      * return std::string
      */
-    [[nodiscard]] IO_IGTL_API std::string get_device_name_out() const;
+    [[nodiscard]] SIGHT_IO_IGTL_API std::string get_device_name_out() const;
 
 protected:
 

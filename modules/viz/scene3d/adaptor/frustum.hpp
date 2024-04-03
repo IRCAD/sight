@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/viz/scene3d/adaptor/material.hpp"
-#include "modules/viz/scene3d/config.hpp"
 
 #include <data/camera.hpp>
 #include <data/material.hpp>
@@ -64,7 +63,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b color (optional, hexadecimal, default=0xFF0000): frustum's color
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API frustum final :
+class frustum final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable
 {
@@ -74,18 +73,18 @@ public:
     SIGHT_DECLARE_SERVICE(frustum, sight::viz::scene3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
-    MODULE_VIZ_SCENE3D_API frustum() noexcept;
+    frustum() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~frustum() noexcept override;
+    ~frustum() noexcept override;
 
 protected:
 
     /// Configures.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    void configuring() override;
 
     /// Manually creates a frustum.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -94,19 +93,19 @@ protected:
      * Connect data::camera::INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to CALIBRATE_SLOT
      * Connect data::camera::MODIFIED_SIG of s_CAMERA_INPUT to CALIBRATE_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Deletes the frustum.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    void stopping() override;
 
     /// Checks if the camera has changed, and updates it if it has.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Sets the frustum visibility.
      * @param _visible the visibility status of the frustum.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
+    void set_visible(bool _visible) override;
 
 private:
 

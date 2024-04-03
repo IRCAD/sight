@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/image//config.hpp"
+#include <sight/filter/image//config.hpp>
 
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
@@ -34,7 +34,7 @@ namespace sight::filter::image
  * @brief Static class to compute Bresenham lines in 3D images.
  *
  */
-class FILTER_IMAGE_CLASS_API bresenham_line
+class SIGHT_FILTER_IMAGE_CLASS_API bresenham_line
 {
 public:
 
@@ -48,7 +48,7 @@ public:
     using path_t = std::vector<coordinates_t>;
 
     /// Computes a Bresenham line in a 3D image slice.
-    FILTER_IMAGE_API static path_t draw(
+    SIGHT_FILTER_IMAGE_API static path_t draw(
         Orientation _orientation,
         const coordinates_t& _start_coord,
         const coordinates_t& _end_coord

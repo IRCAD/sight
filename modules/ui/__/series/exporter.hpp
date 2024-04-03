@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/__/config.hpp"
 
 #include <data/series.hpp>
 #include <data/series_set.hpp>
@@ -56,7 +54,7 @@ namespace sight::module::ui::series
  * - \b data [sight::data::series]: Source series to export.
  * - \b container [sight::data::series_set]: Target series database where the series should be exported.
  */
-class MODULE_UI_CLASS_API exporter : public sight::ui::exporter<data::series_set>
+class exporter : public sight::ui::exporter<data::series_set>
 {
 public:
 

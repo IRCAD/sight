@@ -32,7 +32,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief series Information Entity class
  */
-class IO_DICOM_CLASS_API series : public io::dicom::writer::ie::information_entity<data::series>
+class SIGHT_IO_DICOM_CLASS_API series : public io::dicom::writer::ie::information_entity<data::series>
 {
 public:
 
@@ -45,7 +45,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API series(
+    SIGHT_IO_DICOM_API series(
         const SPTR(gdcm::Writer)& _writer,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::series::csptr& _series,
@@ -55,31 +55,31 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~series() override;
+    SIGHT_IO_DICOM_API ~series() override;
 
     /**
      * @brief Write General series Module tags
      * @see PS 3.3 C.7.3.1
      */
-    IO_DICOM_API virtual void write_general_series_module();
+    SIGHT_IO_DICOM_API virtual void write_general_series_module();
 
     /**
      * @brief Write Segmentation series Module tags
      * @see PS 3.3 C.8.20.1
      */
-    IO_DICOM_API virtual void write_segmentation_series_module();
+    SIGHT_IO_DICOM_API virtual void write_segmentation_series_module();
 
     /**
      * @brief Write SR Document series Module tags
      * @see PS 3.3 C.17.1
      */
-    IO_DICOM_API virtual void write_sr_document_series_module();
+    SIGHT_IO_DICOM_API virtual void write_sr_document_series_module();
 
     /**
      * @brief Write Spatial Fiducials series Module tags
      * @see PS 3.3 C.21.1
      */
-    IO_DICOM_API virtual void write_spatial_fiducials_series_module();
+    SIGHT_IO_DICOM_API virtual void write_spatial_fiducials_series_module();
 };
 
 } // namespace sight::io::dicom::writer::ie

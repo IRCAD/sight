@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <data/model_series.hpp>
 
@@ -81,7 +79,7 @@ namespace sight::module::viz::scene3d::adaptor
  *      tag is not present, the visibility will be set by the value of the modelSeries field. If the tag is present,
  *      the visibility is set by the value of this tag.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API model_series final :
+class model_series final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable
 {
@@ -91,18 +89,18 @@ public:
     SIGHT_DECLARE_SERVICE(model_series, sight::viz::scene3d::adaptor);
 
     /// Initialisa slots.
-    MODULE_VIZ_SCENE3D_API model_series() noexcept;
+    model_series() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~model_series() noexcept final = default;
+    ~model_series() noexcept final = default;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Starts the service and updates it.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -115,19 +113,19 @@ protected:
      * Connect data::model_series::REMOVED_FIELDS_SIG to CHANGE_FIELD_SLOT
      * Connect data::model_series::CHANGED_FIELDS_SIG to CHANGE_FIELD_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
     /// Redraws all (stops then restarts sub services).
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /// Closes connections and unregisters service.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
     /**
      * @brief Sets the model series visibility.
      * @param _visible the visibility status of the model series.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
+    void set_visible(bool _visible) final;
 
 private:
 

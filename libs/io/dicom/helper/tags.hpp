@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <gdcmTag.h>
 
@@ -41,7 +41,7 @@ namespace sight::io::dicom::helper
  *
  * @return a gdcm::Tag instance
  */
-IO_DICOM_API gdcm::Tag get_gdcm_tag(const std::string& _group, const std::string& _element);
+SIGHT_IO_DICOM_API gdcm::Tag get_gdcm_tag(const std::string& _group, const std::string& _element);
 
 /**
  * @brief List of private GDCM tags type
@@ -65,6 +65,6 @@ using private_tag_vec_t = std::vector<gdcm::Tag>;
  *
  * @return a list of gdcm::PrivateTag instances
  */
-IO_DICOM_API private_tag_vec_t load_private_tags(const std::filesystem::path& _tags_path);
+SIGHT_IO_DICOM_API private_tag_vec_t load_private_tags(const std::filesystem::path& _tags_path);
 
 } // namespace sight::io::dicom::helper

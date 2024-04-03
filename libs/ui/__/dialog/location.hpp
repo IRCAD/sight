@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/dialog/location_base.hpp"
 
 #include <core/base.hpp>
@@ -36,29 +37,29 @@ namespace sight::ui::dialog
  * Use the Delegate design pattern. The specific implementation selection is ensured by SIGHT_REGISTER_GUI.
  * The specific implementation are in fwGuiWX and fwGuiQT libraries.
  */
-class UI_CLASS_API location : public location_base
+class SIGHT_UI_CLASS_API location : public location_base
 {
 public:
 
     SIGHT_DECLARE_CLASS(location, ui::dialog::location_base);
 
     /// Will instantiate the concrete implementation
-    UI_API location();
+    SIGHT_UI_API location();
 
-    UI_API ~location() override;
+    SIGHT_UI_API ~location() override;
 
     /**
      * @brief Display the dialog
      * @return the ILocation selected or null sptr if user cancel the operation
      */
-    UI_API core::location::base::sptr show() override;
+    SIGHT_UI_API core::location::base::sptr show() override;
 
     /// allow to set option to the file dialog mode=READ/WRITE, check=FILE_MUST_EXIST
-    UI_API void set_option(location::options _option)
+    SIGHT_UI_API void set_option(location::options _option)
     override;
 
     /// Set the type of location for the dialog (SINGLE_FILE, FOLDER, MULTI_FILES)
-    UI_API void set_type(location::types _type) override;
+    SIGHT_UI_API void set_type(location::types _type) override;
 
     /**
      * @brief specify some filtering when browsing files:
@@ -66,25 +67,25 @@ public:
      * @param[in] _wildcard_list a string of extension (glob syntax) separated by spaces
      * example : addFilter("images","*.png *.jpg")
      */
-    UI_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
+    SIGHT_UI_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
 
     /// Set the title for the dialog
-    UI_API void set_title(const std::string& _title) override;
+    SIGHT_UI_API void set_title(const std::string& _title) override;
 
     /// Returns the title for the dialog
-    UI_API const std::string& get_title() override;
+    SIGHT_UI_API const std::string& get_title() override;
 
     /// Set the initial location for the dialog
-    UI_API void set_default_location(core::location::base::sptr _loc) override;
+    SIGHT_UI_API void set_default_location(core::location::base::sptr _loc) override;
 
     /// Gets the default location for the dialog (from preferences or specified by user)
-    UI_API core::location::base::sptr get_default_location() override;
+    SIGHT_UI_API core::location::base::sptr get_default_location() override;
 
     /// Save the specified default location for the dialog in preferences (if available)
-    UI_API void save_default_location(core::location::base::sptr _loc) override;
+    SIGHT_UI_API void save_default_location(core::location::base::sptr _loc) override;
 
     /// Gets the current extension file selection
-    UI_API std::string get_current_selection() const override;
+    SIGHT_UI_API std::string get_current_selection() const override;
 
 protected:
 

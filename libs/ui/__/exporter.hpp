@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
 
 #include <core/com/slots.hpp>
 
@@ -34,7 +34,7 @@ namespace sight::ui
 
 /// This is the base class for Export actions that allow to export a data to a container.
 template<class C>
-class MODULE_UI_CLASS_API exporter : public sight::ui::action
+class exporter : public sight::ui::action
 {
 public:
 

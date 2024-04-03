@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/com/slots.hpp>
@@ -55,35 +53,35 @@ namespace sight::module::filter::image
  * @subsection Output Output:
  * - \b target [sight::data::image]: New flipped image.
  */
-class MODULE_FILTER_IMAGE_CLASS_API flip : public service::filter
+class flip : public service::filter
 {
 public:
 
     SIGHT_DECLARE_SERVICE(flip, sight::service::filter);
 
-    MODULE_FILTER_IMAGE_API static const core::com::slots::key_t FLIP_AXIS_X_SLOT;
-    MODULE_FILTER_IMAGE_API static const core::com::slots::key_t FLIP_AXIS_Y_SLOT;
-    MODULE_FILTER_IMAGE_API static const core::com::slots::key_t FLIP_AXIS_Z_SLOT;
+    static const core::com::slots::key_t FLIP_AXIS_X_SLOT;
+    static const core::com::slots::key_t FLIP_AXIS_Y_SLOT;
+    static const core::com::slots::key_t FLIP_AXIS_Z_SLOT;
 
     /// Constructor, does nothing.
-    MODULE_FILTER_IMAGE_API flip();
+    flip();
 
     /// Destructor, does nothing.
-    MODULE_FILTER_IMAGE_API ~flip() override;
+    ~flip() override;
 
 protected:
 
     /// Configures the service.
-    MODULE_FILTER_IMAGE_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void stopping() override;
 
     /// Apply the flip operator.
-    MODULE_FILTER_IMAGE_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Signal-slot auto-connection proposals
@@ -91,7 +89,7 @@ protected:
      * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
      * Connect image::BUFFER_MODIFIED_SIG to this::service::slots::UPDATE
      */
-    MODULE_FILTER_IMAGE_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

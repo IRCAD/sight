@@ -38,7 +38,11 @@ public:
      * @param _label How to get the label to check
      * @param _expected The expected content of the tooltip
      */
-    UI_TEST_API static void tool_tip_matches(tester& _tester, const selector& _label, const std::string& _expected);
+    SIGHT_UI_TEST_API static void tool_tip_matches(
+        tester& _tester,
+        const selector& _label,
+        const std::string& _expected
+    );
 };
 
 } // namespace sight::ui::testCore::helper

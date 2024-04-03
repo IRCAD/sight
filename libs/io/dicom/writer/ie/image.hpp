@@ -32,7 +32,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief image Information Entity class
  */
-class IO_DICOM_CLASS_API image : public io::dicom::writer::ie::information_entity<data::image>
+class SIGHT_IO_DICOM_CLASS_API image : public io::dicom::writer::ie::information_entity<data::image>
 {
 public:
 
@@ -45,7 +45,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API image(
+    SIGHT_IO_DICOM_API image(
         const SPTR(gdcm::Writer)& _writer,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::image::csptr& _image,
@@ -55,77 +55,77 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~image() override;
+    SIGHT_IO_DICOM_API ~image() override;
 
     /**
      * @brief Write General image Module tags
      * @see PS 3.3 C.7.6.1
      */
-    IO_DICOM_API virtual void write_general_image_module();
+    SIGHT_IO_DICOM_API virtual void write_general_image_module();
 
     /**
      * @brief Write General image Module specific tags
      * @see PS 3.3 C.7.6.1
      * @param[in] _instance_number Instance number
      */
-    IO_DICOM_API virtual void write_general_image_module_specific_tags(unsigned int _instance_number);
+    SIGHT_IO_DICOM_API virtual void write_general_image_module_specific_tags(unsigned int _instance_number);
 
     /**
      * @brief Write image Plane Module tags
      * @see PS 3.3 C.7.6.2
      */
-    IO_DICOM_API virtual void write_image_plane_module();
+    SIGHT_IO_DICOM_API virtual void write_image_plane_module();
 
     /**
      * @brief Write image Plane Module tags
      * @see PS 3.3 C.7.6.2
      * @param[in] _instance_number Instance number
      */
-    IO_DICOM_API virtual void write_image_plane_module_specific_tags(unsigned int _instance_number);
+    SIGHT_IO_DICOM_API virtual void write_image_plane_module_specific_tags(unsigned int _instance_number);
 
     /**
      * @brief Write image Pixel Module tags
      * @see PS 3.3 C.7.6.3
      */
-    IO_DICOM_API virtual void write_image_pixel_module();
+    SIGHT_IO_DICOM_API virtual void write_image_pixel_module();
 
     /**
      * @brief Write image Pixel Module specific tags
      * @see PS 3.3 C.7.6.3
      * @param[in] _instance_number Instance number
      */
-    IO_DICOM_API virtual void write_image_pixel_module_specific_tags(unsigned int _instance_number);
+    SIGHT_IO_DICOM_API virtual void write_image_pixel_module_specific_tags(unsigned int _instance_number);
 
     /**
      * @brief Write VOI LUT Module tags
      * @see PS 3.3 C.11.2
      */
-    IO_DICOM_API virtual void write_voilut_module();
+    SIGHT_IO_DICOM_API virtual void write_voilut_module();
 
     /**
      * @brief Write SOP Common Module tags
      * @see PS 3.3 C.12.1
      */
-    IO_DICOM_API virtual void write_sop_common_module();
+    SIGHT_IO_DICOM_API virtual void write_sop_common_module();
 
     /**
      * @brief Write SOP Common Module specific tags
      * @see PS 3.3 C.12.1
      * @param[in] _instance_number Instance number
      */
-    IO_DICOM_API virtual void write_sop_common_module_specific_tags(unsigned int _instance_number);
+    SIGHT_IO_DICOM_API virtual void write_sop_common_module_specific_tags(unsigned int _instance_number);
 
     /**
      * @brief Write CT image Module tags
      * @see PS 3.3 C.8.2.1
      */
-    IO_DICOM_API virtual void write_ct_image_module();
+    SIGHT_IO_DICOM_API virtual void write_ct_image_module();
 
     /**
      * @brief Write MR image Module tags
      * @see PS 3.3 C.8.3.1
      */
-    IO_DICOM_API virtual void write_mr_image_module();
+    SIGHT_IO_DICOM_API virtual void write_mr_image_module();
 };
 
 } // namespace sight::io::dicom::writer::ie

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 // used to view the content of the Ogre Compositor Chain
 #include <OGRE/OgreCompositorInstance.h>
@@ -39,19 +39,19 @@ namespace sight::viz::scene3d::compositor
 {
 
 // Here we add the class derivated from the Ogre Listener
-class VIZ_SCENE3D_CLASS_API sao_listener : public Ogre::CompositorInstance::Listener
+class SIGHT_VIZ_SCENE3D_CLASS_API sao_listener : public Ogre::CompositorInstance::Listener
 {
 public:
 
-    VIZ_SCENE3D_API sao_listener() = delete;
+    SIGHT_VIZ_SCENE3D_API sao_listener() = delete;
 
-    VIZ_SCENE3D_API sao_listener(Ogre::Viewport* _vp) :
+    SIGHT_VIZ_SCENE3D_API sao_listener(Ogre::Viewport* _vp) :
         m_viewport(_vp)
     {
     }
 
     /// Method called before a render_target operation involving a material to set dynamically the material parameters.
-    VIZ_SCENE3D_API void notifyMaterialRender(Ogre::uint32 _pass_id, Ogre::MaterialPtr& _mat) override;
+    SIGHT_VIZ_SCENE3D_API void notifyMaterialRender(Ogre::uint32 _pass_id, Ogre::MaterialPtr& _mat) override;
 
 private:
 

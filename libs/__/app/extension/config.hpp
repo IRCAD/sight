@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "app/config.hpp"
+#include <sight/app/config.hpp>
 
 #include "service/extension/config.hpp"
 
@@ -46,7 +46,7 @@ namespace extension
 
 /**
  */
-class APP_CLASS_API app_info : public core::base_object
+class SIGHT_APP_CLASS_API app_info : public core::base_object
 {
 public:
 
@@ -71,28 +71,28 @@ public:
  * @brief This class allows to register all the configuration which has the point extension
  *        "sight::app::extension::config".
  */
-class APP_CLASS_API config : public core::base_object
+class SIGHT_APP_CLASS_API config : public core::base_object
 {
 public:
 
     SIGHT_DECLARE_CLASS(config, core::base_object);
 
-    APP_API config();
-    APP_API ~config() override = default;
+    SIGHT_APP_API config();
+    SIGHT_APP_API ~config() override = default;
 
     /**
      * @brief Parses module information to retrieve configuration declaration.
      * @warning This method must be launch only once. The same extension will not be parsed twice.
      * @note This method is thread safe.
      */
-    APP_API void parse_plugin_infos();
+    SIGHT_APP_API void parse_plugin_infos();
 
     /**
      * @brief Parses module information to retrieve configuration declaration.
      * @warning This method must be launch only once. The same extension will not be parsed twice.
      * @note This method is thread safe.
      */
-    APP_API void parse_plugin_infos(
+    SIGHT_APP_API void parse_plugin_infos(
         const std::vector<std::shared_ptr<core::runtime::extension> >& _extensions
     );
 
@@ -105,7 +105,7 @@ public:
      * @param _config the registered config.
      * @note This method is thread safe
      */
-    APP_API void addapp_info(
+    SIGHT_APP_API void addapp_info(
         const std::string& _config_id,
         const std::string& _group,
         const std::string& _desc,
@@ -120,7 +120,7 @@ public:
      * @param _replace_fields associations between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
-    APP_API core::runtime::config_t get_adapted_template_config(
+    SIGHT_APP_API core::runtime::config_t get_adapted_template_config(
         const std::string& _config_id,
         const field_adaptor_t _replace_fields,
         bool _auto_prefix_id
@@ -132,7 +132,7 @@ public:
      * @param _replace_fields composite of association between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
-    APP_API core::runtime::config_t get_adapted_template_config(
+    SIGHT_APP_API core::runtime::config_t get_adapted_template_config(
         const std::string& _config_id,
         data::composite::csptr _replace_fields,
         bool _auto_prefix_id
@@ -143,34 +143,34 @@ public:
      * @brief Retrieves the module from the config id
      * @param _config_id the config identifier
      */
-    APP_API std::shared_ptr<core::runtime::module> get_module(const std::string& _config_id);
+    SIGHT_APP_API std::shared_ptr<core::runtime::module> get_module(const std::string& _config_id);
 
     /**
      * @brief Return all configurations ( standard and template ) register in the registry.
      * @note This method is thread safe.
      */
-    APP_API std::vector<std::string> get_all_configs() const;
+    SIGHT_APP_API std::vector<std::string> get_all_configs() const;
 
     /**
      * @brief Return all configurations with specified group.
      * @note This method is thread safe.
      */
-    APP_API std::vector<std::string> get_configs_from_group(const std::string& _group) const;
+    SIGHT_APP_API std::vector<std::string> get_configs_from_group(const std::string& _group) const;
 
     /**
      * @brief Clear the registry.
      * @note This method is thread safe.
      */
-    APP_API void clear_registry();
+    SIGHT_APP_API void clear_registry();
 
     /**
      * @brief Create an unique identifier
      * @note This method is thread safe.
      */
-    APP_API static std::string get_unique_identifier(const std::string& _service_uid = "");
+    SIGHT_APP_API static std::string get_unique_identifier(const std::string& _service_uid = "");
 
     /// Return an instance of config.
-    APP_API static config::sptr get_default();
+    SIGHT_APP_API static config::sptr get_default();
 
 protected:
 

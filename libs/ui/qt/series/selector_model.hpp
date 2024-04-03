@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <data/series.hpp>
 
@@ -38,7 +38,7 @@ namespace sight::ui::qt::series
 /**
  * @brief This class represents the selector Model.
  */
-class UI_QT_CLASS_API_QT selector_model : public QStandardItemModel
+class SIGHT_UI_QT_CLASS_API_QT selector_model : public QStandardItemModel
 {
 Q_OBJECT
 
@@ -65,29 +65,29 @@ public:
     using QStandardItemModel::removeRows;
 
     /// Initializes the model.
-    UI_QT_API_QT selector_model(
+    SIGHT_UI_QT_API_QT selector_model(
         const std::string& _display_columns,
         QWidget* _parent   = nullptr,
         bool _allow_remove = false
     );
 
     /// Destroys the selector.
-    UI_QT_API_QT ~selector_model() override = default;
+    SIGHT_UI_QT_API_QT ~selector_model() override = default;
 
     /**
      * @brief Add the Series in the tree. If the associated study already exist in the tree, the series is added to
      * this study.
      */
-    UI_QT_API_QT void add_series(data::series::sptr _series);
+    SIGHT_UI_QT_API_QT void add_series(data::series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
      * @param _series series to remove from the tree.
      */
-    UI_QT_API_QT void remove_series(data::series::sptr _series);
+    SIGHT_UI_QT_API_QT void remove_series(data::series::sptr _series);
 
     /// Clears all items in the model.
-    UI_QT_API_QT void clear();
+    SIGHT_UI_QT_API_QT void clear();
 
     /// Returns item flags with non editable flag
     Qt::ItemFlags flags(const QModelIndex& _index) const override
@@ -96,29 +96,29 @@ public:
     }
 
     /// Returns the type of the item (SERIES or STUDY) associated to the ITEM_TYPE role.
-    UI_QT_API_QT item_t get_item_type(const QModelIndex& _index);
+    SIGHT_UI_QT_API_QT item_t get_item_type(const QModelIndex& _index);
 
     /**
      * @brief Returns the index in the same row as the given index and at the specified column.
      * @param _index index used to get the associated row.
      * @param _column the column of the index to return.
      */
-    UI_QT_API_QT QModelIndex get_index(const QModelIndex& _index, int _column);
+    SIGHT_UI_QT_API_QT QModelIndex get_index(const QModelIndex& _index, int _column);
 
     /// Removes the rows given by the indexes.
-    UI_QT_API_QT void removeRows(const QModelIndexList _indexes);
+    SIGHT_UI_QT_API_QT void removeRows(const QModelIndexList _indexes);
 
     /// Returns the series item representing the series.
-    UI_QT_API_QT QStandardItem* find_series_item(data::series::sptr _series);
+    SIGHT_UI_QT_API_QT QStandardItem* find_series_item(data::series::sptr _series);
 
     /// Returns the item representing the study.
-    UI_QT_API_QT QStandardItem* find_study_item(data::series::sptr _series);
+    SIGHT_UI_QT_API_QT QStandardItem* find_study_item(data::series::sptr _series);
 
     /**
      * @brief Sets the specific icons for series in selector.
      * @param _series_icons map\<series classname, icon path\>
      */
-    UI_QT_API_QT void set_series_icons(const series_icon_t& _series_icons);
+    SIGHT_UI_QT_API_QT void set_series_icons(const series_icon_t& _series_icons);
 
     /// Sets if the selector must be in insert mode.
     void set_insert_mode(bool _insert);

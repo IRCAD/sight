@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/memory/buffer_info.hpp"
 #include "core/memory/policy/base.hpp"
 #include "core/memory/policy/factory/new.hpp"
@@ -39,54 +40,54 @@ namespace sight::core::memory::policy
  * used when no automatic memory management is wanted. Memory will be dumped on
  * demand.
  */
-class CORE_CLASS_API never_dump : public core::memory::policy::base
+class SIGHT_CORE_CLASS_API never_dump : public core::memory::policy::base
 {
 public:
 
     SIGHT_DECLARE_CLASS(never_dump, core::memory::policy::base);
 
-    CORE_API void allocation_request(
+    SIGHT_CORE_API void allocation_request(
         buffer_info& _info,
         core::memory::buffer_manager::const_buffer_ptr_t _buffer,
         buffer_info::size_t _size
     ) override;
 
-    CORE_API void set_request(
+    SIGHT_CORE_API void set_request(
         buffer_info& _info,
         core::memory::buffer_manager::const_buffer_ptr_t _buffer,
         buffer_info::size_t _size
     ) override;
 
-    CORE_API void reallocate_request(
+    SIGHT_CORE_API void reallocate_request(
         buffer_info& _info,
         core::memory::buffer_manager::const_buffer_ptr_t _buffer,
         buffer_info::size_t _new_size
     ) override;
 
-    CORE_API void destroy_request(
+    SIGHT_CORE_API void destroy_request(
         buffer_info& _info,
         core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
 
-    CORE_API void lock_request(
+    SIGHT_CORE_API void lock_request(
         buffer_info& _info,
         core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
-    CORE_API void unlock_request(
-        buffer_info& _info,
-        core::memory::buffer_manager::const_buffer_ptr_t _buffer
-    ) override;
-
-    CORE_API void dump_success(
-        buffer_info& _info,
-        core::memory::buffer_manager::const_buffer_ptr_t _buffer
-    ) override;
-    CORE_API void restore_success(
+    SIGHT_CORE_API void unlock_request(
         buffer_info& _info,
         core::memory::buffer_manager::const_buffer_ptr_t _buffer
     ) override;
 
-    CORE_API void refresh() override;
+    SIGHT_CORE_API void dump_success(
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer
+    ) override;
+    SIGHT_CORE_API void restore_success(
+        buffer_info& _info,
+        core::memory::buffer_manager::const_buffer_ptr_t _buffer
+    ) override;
+
+    SIGHT_CORE_API void refresh() override;
 
     //------------------------------------------------------------------------------
 
@@ -97,7 +98,7 @@ public:
         return false;
     }
 
-    CORE_API std::string get_param(const std::string& _name, bool* _ok = nullptr) const override;
+    SIGHT_CORE_API std::string get_param(const std::string& _name, bool* _ok = nullptr) const override;
 
     //------------------------------------------------------------------------------
 

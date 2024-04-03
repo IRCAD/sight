@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "app/config.hpp"
+#include <sight/app/config.hpp>
 
 #include "core/com/helper/proxy_connections.hpp"
 
@@ -133,7 +133,7 @@ public:
      * @param _cfg configuration element containing "<connect>" tags
      * @param _obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
-    APP_API static connection_info parse_connections(
+    SIGHT_APP_API static connection_info parse_connections(
         const core::runtime::config_t& _cfg,
         const CSPTR(core::tools::object)& _obj =
         CSPTR(core::tools::object)()
@@ -145,7 +145,7 @@ public:
      *
      * @param _connection_cfg configuration element containing "<connect>" tags
      */
-    APP_API static core::com::helper::proxy_connections parse_connections2(
+    SIGHT_APP_API static core::com::helper::proxy_connections parse_connections2(
         const core::runtime::config_t& _connection_cfg,
         const std::string& _err_msg_head,
         std::function<std::string()> _generate_channel_name_fn
@@ -158,30 +158,30 @@ public:
      * @param _helper sig_slot_connection helper to connect signals and slots
      * @param _obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
-    APP_API static void create_connections(
+    SIGHT_APP_API static void create_connections(
         const core::runtime::config_t& _cfg,
         core::com::helper::sig_slot_connection& _helper,
         const CSPTR(core::tools::object)& _obj = CSPTR(core::tools::object)()
     );
 
     /// Disconnects all proxies associated to objectKey
-    APP_API static void disconnect_proxies(
+    SIGHT_APP_API static void disconnect_proxies(
         const std::string& _object_key,
         config::proxy_connections_map_t& _proxy_map
     );
 
     /// Parse a service and return a service configuration
-    APP_API static app::detail::service_config parse_service(
+    SIGHT_APP_API static app::detail::service_config parse_service(
         const boost::property_tree::ptree& _srv_elem,
         const std::string& _err_msg_head
     );
 
-    APP_API static std::pair<bool, bool> get_object_key_attrs(
+    SIGHT_APP_API static std::pair<bool, bool> get_object_key_attrs(
         const std::string& _service_type,
         const std::string& _key
     );
 
-    APP_API static void clear_props();
+    SIGHT_APP_API static void clear_props();
 };
 
 } // namespace sight::app::helper

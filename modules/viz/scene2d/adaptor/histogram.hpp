@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene2d/config.hpp"
 
 #include <data/helper/histogram.hpp>
 #include <data/image.hpp>
@@ -65,23 +63,23 @@ namespace sight::module::viz::scene2d::adaptor
  *      - \b labelColor (optional, default="#FFFFFFFF"): color of the cursor label
  *      - \b fontSize (optional, default="8"): size of the font used to display the current cursor value.
  */
-class MODULE_VIZ_SCENE2D_CLASS_API histogram : public sight::viz::scene2d::adaptor
+class histogram : public sight::viz::scene2d::adaptor
 {
 public:
 
     SIGHT_DECLARE_SERVICE(histogram, sight::viz::scene2d::adaptor);
 
-    MODULE_VIZ_SCENE2D_API histogram() noexcept;
-    MODULE_VIZ_SCENE2D_API ~histogram() noexcept override;
+    histogram() noexcept;
+    ~histogram() noexcept override;
 
 protected:
 
-    MODULE_VIZ_SCENE2D_API void configuring() override;
-    MODULE_VIZ_SCENE2D_API void starting() override;
-    MODULE_VIZ_SCENE2D_API void updating() override;
-    MODULE_VIZ_SCENE2D_API void stopping() override;
+    void configuring() override;
+    void starting() override;
+    void updating() override;
+    void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API void process_interaction(sight::viz::scene2d::data::event& _event) override;
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -89,7 +87,7 @@ protected:
      *
      * Connect histogram::MODIFIED_SIG to this::service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE2D_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Ratio used for vertical scaling
     static constexpr double SCALE      = 1.1;

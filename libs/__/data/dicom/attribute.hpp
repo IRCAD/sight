@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 
 #include <cstdint>
 #include <string_view>
@@ -2271,7 +2271,7 @@ enum class VM : std::uint8_t
     _SIZE
 };
 
-struct DATA_CLASS_API IAttribute
+struct SIGHT_DATA_CLASS_API IAttribute
 {
     constexpr IAttribute(
         const Keyword& keyword,
@@ -2313,25 +2313,25 @@ struct DATA_CLASS_API IAttribute
 };
 
 template<Keyword>
-struct DATA_CLASS_API Attribute final : public IAttribute
+struct SIGHT_DATA_CLASS_API Attribute final : public IAttribute
 {
     constexpr Attribute() noexcept :
         IAttribute(s_keyword, s_group, s_element, s_name, s_vr, s_vm)
     {
     }
 
-    DATA_API static const Keyword s_keyword;
-    DATA_API static const std::uint16_t s_group;
-    DATA_API static const std::uint16_t s_element;
-    DATA_API static const std::string_view s_name;
-    DATA_API static const VR s_vr;
-    DATA_API static const VM s_vm;
+    SIGHT_DATA_API static const Keyword s_keyword;
+    SIGHT_DATA_API static const std::uint16_t s_group;
+    SIGHT_DATA_API static const std::uint16_t s_element;
+    SIGHT_DATA_API static const std::string_view s_name;
+    SIGHT_DATA_API static const VR s_vr;
+    SIGHT_DATA_API static const VM s_vm;
 };
 
 /// @return a static const reference to an Attribute
 /// @{
-DATA_API const IAttribute& get(Keyword keyword);
-DATA_API const IAttribute& get(std::uint16_t group, std::uint16_t element);
+SIGHT_DATA_API const IAttribute& get(Keyword keyword);
+SIGHT_DATA_API const IAttribute& get(std::uint16_t group, std::uint16_t element);
 /// @}
 
 } // namespace sight::data::dicom::attribute

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/__/config.hpp"
 
 #include <core/base.hpp>
 #include <core/clock.hpp>
@@ -85,31 +83,31 @@ namespace sight::module::ui::video
  *   |            |
  *    ------------
  **/
-class MODULE_UI_CLASS_API image_picker : public service::controller
+class image_picker : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(image_picker, service::controller);
 
     /// Creates the video reference map..
-    MODULE_UI_API image_picker() noexcept;
+    image_picker() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_API ~image_picker() noexcept override;
+    ~image_picker() noexcept override;
 
 protected:
 
     /// Does nothing.
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
 private:
 

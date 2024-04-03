@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/thread/worker.hpp"
 
 #include <core/mt/types.hpp>
@@ -39,7 +40,7 @@ namespace sight::core::thread
  *
  * Timer's function must be set before starting the timer.
  */
-class CORE_CLASS_API timer : public core::base_object
+class SIGHT_CORE_CLASS_API timer : public core::base_object
 {
 public:
 
@@ -51,18 +52,18 @@ public:
     using time_duration_t = std::chrono::duration<double>;
     /**  @} */
 
-    CORE_API ~timer() override = default;
+    SIGHT_CORE_API ~timer() override = default;
 
     /// Starts or restarts the timer.
-    CORE_API virtual void start() = 0;
+    SIGHT_CORE_API virtual void start() = 0;
 
     /// Stops the timer and cancel all pending operations.
-    CORE_API virtual void stop()
+    SIGHT_CORE_API virtual void stop()
     {
     }
 
     /// Sets time duration.
-    CORE_API virtual void set_duration(time_duration_t _duration) = 0;
+    SIGHT_CORE_API virtual void set_duration(time_duration_t _duration) = 0;
 
     /// Sets the function to be triggered when time duration expires.
     template<typename F>
@@ -88,7 +89,7 @@ protected:
      * @brief Constructs a Timer.
      * By default, a the Timer mode is repetitive.
      */
-    CORE_API timer();
+    SIGHT_CORE_API timer();
 
     /// Copy constructor forbidden.
     timer(const timer&);
@@ -97,7 +98,7 @@ protected:
     timer& operator=(const timer&);
 
     /// This method is triggered when Timer's function is changed.
-    CORE_API virtual void updated_function()
+    SIGHT_CORE_API virtual void updated_function()
     {
     }
 

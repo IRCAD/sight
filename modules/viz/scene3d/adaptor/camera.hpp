@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/viz/scene3d/adaptor/transform.hpp"
-#include "modules/viz/scene3d/config.hpp"
 
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
@@ -68,7 +67,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection InOut InOut
  * - \b transform [sight::data::matrix4]: transform matrix for the camera.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API camera final : public sight::viz::scene3d::adaptor
+class camera final : public sight::viz::scene3d::adaptor
 {
 public:
 
@@ -76,18 +75,18 @@ public:
     SIGHT_DECLARE_SERVICE(camera, sight::viz::scene3d::adaptor);
 
     /// Creates the adaptor and initialize slots.
-    MODULE_VIZ_SCENE3D_API camera() noexcept;
+    camera() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~camera() noexcept override;
+    ~camera() noexcept override;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    void configuring() override;
 
     /// Installs layer connections and calibrates the camera if it exists.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -98,13 +97,13 @@ protected:
      * Connect data::camera_set::MODIFIED_SIG of s_CAMERA_SET_INPUT to CALIBRATE_SLOT
      * Connect data::camera_set::EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SET_INPUT to CALIBRATE_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Sets the camera's transform.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    void updating() override;
 
     /// Removes layer connections.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    void stopping() override;
 
 private:
 

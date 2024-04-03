@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/dicom/config.hpp"
+#include <sight/filter/dicom/config.hpp>
+
 #include "filter/dicom/filter.hpp"
 
 #include <data/dicom_series.hpp>
@@ -33,22 +34,22 @@ namespace sight::filter::dicom::splitter
 /**
  * @brief Base class for Dicom instance splitter.
  */
-class FILTER_DICOM_CLASS_API base : public sight::filter::dicom::filter
+class SIGHT_FILTER_DICOM_CLASS_API base : public sight::filter::dicom::filter
 {
 public:
 
     SIGHT_DECLARE_CLASS(base, sight::filter::dicom::filter);
 
     /// Destructor
-    FILTER_DICOM_API ~base() override;
+    SIGHT_FILTER_DICOM_API ~base() override;
 
     /// Return filter type
-    FILTER_DICOM_API filter_t get_filter_type() const override;
+    SIGHT_FILTER_DICOM_API filter_t get_filter_type() const override;
 
 protected:
 
     /// Constructor
-    FILTER_DICOM_API base();
+    SIGHT_FILTER_DICOM_API base();
 };
 
 } // namespace sight::filter::dicom::splitter

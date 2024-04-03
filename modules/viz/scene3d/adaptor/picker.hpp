@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/mesh_picker_interactor.hpp>
@@ -51,7 +49,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): filters out entities with mismatching flags when picking.
  * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API picker final : public sight::viz::scene3d::adaptor
+class picker final : public sight::viz::scene3d::adaptor
 {
 public:
 
@@ -59,24 +57,24 @@ public:
     SIGHT_DECLARE_SERVICE(picker, sight::viz::scene3d::adaptor);
 
     /// Initializes the adaptor.
-    MODULE_VIZ_SCENE3D_API picker() noexcept;
+    picker() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~picker() noexcept final = default;
+    ~picker() noexcept final = default;
 
 protected:
 
     /// Configures the picker's query mask and priority.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Creates the interactor and adds it to the layer.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /// Updates the service. Doesn't do anything here.
-    MODULE_VIZ_SCENE3D_API void updating() noexcept final;
+    void updating() noexcept final;
 
     /// Destroys the interactor and removes it from the layer.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
 
 #include <service/base.hpp>
 
@@ -137,20 +137,20 @@ class slideview;
  *
  *
  */
-class UI_CLASS_API service : public sight::service::base
+class SIGHT_UI_CLASS_API service : public sight::service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(service, service::base);
 
-    UI_API SPTR(ui::container::widget) get_container();
+    SIGHT_UI_API SPTR(ui::container::widget) get_container();
 
-    UI_API void set_parent(std::string _wid);
+    SIGHT_UI_API void set_parent(std::string _wid);
 
     /// @name Slots
     /// @{
 
-    struct UI_CLASS_API slots : public sight::service::slots
+    struct SIGHT_UI_CLASS_API slots : public sight::service::slots
     {
         using key_t = sight::core::com::slots::key_t;
 
@@ -167,41 +167,41 @@ public:
     };
 
     /// SLOT: enable/disable the container
-    UI_API virtual void set_enabled(bool _is_enabled);
+    SIGHT_UI_API virtual void set_enabled(bool _is_enabled);
 
     /// SLOT: enable/disable the container using parameter_t (only testing bool alternative).
-    UI_API virtual void set_enabled_by_parameter(ui::parameter_t);
+    SIGHT_UI_API virtual void set_enabled_by_parameter(ui::parameter_t);
 
     /// SLOT: enable the container
-    UI_API virtual void enable();
+    SIGHT_UI_API virtual void enable();
 
     /// SLOT: disable the container
-    UI_API virtual void disable();
+    SIGHT_UI_API virtual void disable();
 
     /// SLOT: show/hide the container
-    UI_API virtual void set_visible(bool _is_visible);
+    SIGHT_UI_API virtual void set_visible(bool _is_visible);
 
     /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
-    UI_API virtual void set_visible_by_parameter(ui::parameter_t);
+    SIGHT_UI_API virtual void set_visible_by_parameter(ui::parameter_t);
 
     /// SLOT: show the container
-    UI_API virtual void show();
+    SIGHT_UI_API virtual void show();
 
     /// SLOT: hide the container
-    UI_API virtual void hide();
+    SIGHT_UI_API virtual void hide();
 
     /// SLOT: show the container if it is hidden or hide it if it is shown
-    UI_API void toggle_visibility();
+    SIGHT_UI_API void toggle_visibility();
 
     /// SLOT: modify a layout element, depending of the key. Forwarded to the view layout manager.
-    UI_API virtual void modify_layout(ui::parameter_t _parameter, std::string _key);
+    SIGHT_UI_API virtual void modify_layout(ui::parameter_t _parameter, std::string _key);
 
     /// @}
 
 protected:
 
-    UI_API service();
-    UI_API ~service() override = default;
+    SIGHT_UI_API service();
+    SIGHT_UI_API ~service() override = default;
 
     /**
      * @brief Initialize managers.
@@ -209,17 +209,17 @@ protected:
        @see ui::registry::view::initialize(), ui::layout::view::initialize(),
      *::ui::builder::toolbar::initialize()
      */
-    UI_API void initialize();
+    SIGHT_UI_API void initialize();
 
     /**
      * @brief Creates view, sub-views and toolbar containers. Manages sub-views and toobar services.
      *
      * @pre Parent container must be registered.
      */
-    UI_API void create();
+    SIGHT_UI_API void create();
 
     /// Stops sub-views and toobar services. Destroys view, sub-views and toolbar containers.
-    UI_API void destroy();
+    SIGHT_UI_API void destroy();
 
 private:
 

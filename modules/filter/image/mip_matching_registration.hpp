@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
@@ -59,7 +57,7 @@ namespace sight::module::filter::image
  * - \b transform [sight::data::matrix4]: initial registration. The computed registration will be
  *   concatenated to the initial registration matrix.
  */
-class MODULE_FILTER_IMAGE_CLASS_API mip_matching_registration : public service::registerer
+class mip_matching_registration : public service::registerer
 {
 public:
 
@@ -68,11 +66,11 @@ public:
     /**
      * @brief Constructor
      */
-    MODULE_FILTER_IMAGE_API mip_matching_registration() noexcept;
+    mip_matching_registration() noexcept;
     /**
      * @brief Destructor
      */
-    MODULE_FILTER_IMAGE_API ~mip_matching_registration() noexcept override;
+    ~mip_matching_registration() noexcept override;
 
 protected:
 
@@ -81,33 +79,33 @@ protected:
      *
      * @throw core::tools::failed
      */
-    MODULE_FILTER_IMAGE_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Stops the service.
      *
      * @throw core::tools::failed
      */
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Configures the service.
      *
      * @throw core::tools::failed
      */
-    MODULE_FILTER_IMAGE_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Compute the registration.
      *
      * @throw core::tools::failed
      */
-    MODULE_FILTER_IMAGE_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Compute the registration by calling the `update` slot. The timestamp parameter is discarded.
      */
-    MODULE_FILTER_IMAGE_API void compute_registration(core::clock::type _timestamp) override;
+    void compute_registration(core::clock::type _timestamp) override;
 
 private:
 

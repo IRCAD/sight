@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "service/config.hpp"
+#include <sight/service/config.hpp>
 
 #include <service/base.hpp>
 
@@ -33,7 +33,7 @@ namespace sight::service
  * @brief This interface defines generator service API.
  * Must be implemented for services that generate data.
  */
-class SERVICE_CLASS_API generator : public service::base
+class SIGHT_SERVICE_CLASS_API generator : public service::base
 {
 public:
 
@@ -42,10 +42,10 @@ public:
 protected:
 
     /// Does nothing.
-    SERVICE_API generator();
+    SIGHT_SERVICE_API generator();
 
     /// Destroys the interface.
-    SERVICE_API ~generator() override;
+    SIGHT_SERVICE_API ~generator() override;
 };
 
 } // namespace sight::service

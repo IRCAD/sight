@@ -32,7 +32,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Frame Of Reference Information Entity class
  */
-class IO_DICOM_CLASS_API frame_of_reference : public io::dicom::writer::ie::information_entity<data::series>
+class SIGHT_IO_DICOM_CLASS_API frame_of_reference : public io::dicom::writer::ie::information_entity<data::series>
 {
 public:
 
@@ -45,7 +45,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API frame_of_reference(
+    SIGHT_IO_DICOM_API frame_of_reference(
         const SPTR(gdcm::Writer)& _writer,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::series::csptr& _series,
@@ -55,13 +55,13 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~frame_of_reference() override;
+    SIGHT_IO_DICOM_API ~frame_of_reference() override;
 
     /**
      * @brief Write Frame of Reference Module tags
      * @see PS 3.3 C.7.4.1
      */
-    IO_DICOM_API virtual void write_frame_of_reference_module();
+    SIGHT_IO_DICOM_API virtual void write_frame_of_reference_module();
 };
 
 } // namespace sight::io::dicom::writer::ie

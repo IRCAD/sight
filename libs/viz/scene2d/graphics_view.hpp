@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/scene2d/config.hpp"
+#include <sight/viz/scene2d/config.hpp>
+
 #include "viz/scene2d/data/event.hpp"
 #include "viz/scene2d/data/viewport.hpp"
 
@@ -36,40 +37,40 @@ namespace sight::viz::scene2d
 
 class render;
 
-class VIZ_SCENE2D_CLASS_API graphics_view : public QGraphicsView
+class SIGHT_VIZ_SCENE2D_CLASS_API graphics_view : public QGraphicsView
 {
 Q_OBJECT
 
 public:
 
-    VIZ_SCENE2D_API graphics_view(QGraphicsScene* _scene, QWidget* _widget);
+    SIGHT_VIZ_SCENE2D_API graphics_view(QGraphicsScene* _scene, QWidget* _widget);
 
     /// Events
 
-    VIZ_SCENE2D_API void keyPressEvent(QKeyEvent* _event) override;
+    SIGHT_VIZ_SCENE2D_API void keyPressEvent(QKeyEvent* _event) override;
 
-    VIZ_SCENE2D_API void keyReleaseEvent(QKeyEvent* _event) override;
+    SIGHT_VIZ_SCENE2D_API void keyReleaseEvent(QKeyEvent* _event) override;
 
-    VIZ_SCENE2D_API void resizeEvent(QResizeEvent* _event) override;
+    SIGHT_VIZ_SCENE2D_API void resizeEvent(QResizeEvent* _event) override;
 
-    VIZ_SCENE2D_API void mouseReleaseEvent(QMouseEvent* _event) override;
+    SIGHT_VIZ_SCENE2D_API void mouseReleaseEvent(QMouseEvent* _event) override;
 
-    VIZ_SCENE2D_API void mousePressEvent(QMouseEvent* _event) override;
+    SIGHT_VIZ_SCENE2D_API void mousePressEvent(QMouseEvent* _event) override;
 
-    VIZ_SCENE2D_API void mouseMoveEvent(QMouseEvent* _event) override;
+    SIGHT_VIZ_SCENE2D_API void mouseMoveEvent(QMouseEvent* _event) override;
 
-    VIZ_SCENE2D_API void mouseDoubleClickEvent(QMouseEvent* _event) override;
+    SIGHT_VIZ_SCENE2D_API void mouseDoubleClickEvent(QMouseEvent* _event) override;
 
-    VIZ_SCENE2D_API void wheelEvent(QWheelEvent* _event) override;
+    SIGHT_VIZ_SCENE2D_API void wheelEvent(QWheelEvent* _event) override;
 
-    VIZ_SCENE2D_API void enterEvent(QEvent* _event) override;
-    VIZ_SCENE2D_API void leaveEvent(QEvent* _event) override;
+    SIGHT_VIZ_SCENE2D_API void enterEvent(QEvent* _event) override;
+    SIGHT_VIZ_SCENE2D_API void leaveEvent(QEvent* _event) override;
 
-    VIZ_SCENE2D_API QSize sizeHint() const override;
+    SIGHT_VIZ_SCENE2D_API QSize sizeHint() const override;
 
-    VIZ_SCENE2D_API void update_from_viewport(const scene2d::data::viewport& _viewport);
+    SIGHT_VIZ_SCENE2D_API void update_from_viewport(const scene2d::data::viewport& _viewport);
 
-    VIZ_SCENE2D_API void set_scene_render(SPTR(viz::scene2d::render) _scene_render);
+    SIGHT_VIZ_SCENE2D_API void set_scene_render(SPTR(viz::scene2d::render) _scene_render);
 
 protected:
 

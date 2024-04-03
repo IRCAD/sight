@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "io/bitmap/config.hpp"
+#include <sight/io/bitmap/config.hpp>
 
 #include <data/container.hpp>
 
@@ -45,17 +45,17 @@ enum class backend : std::uint8_t
 /// Return the extension associated with the given backend
 /// @arg backend: the selected backend
 /// @return one or more extension as string set
-[[nodiscard]] IO_BITMAP_API data::sequenced_set<std::string> extensions(backend _backend);
+[[nodiscard]] SIGHT_IO_BITMAP_API data::sequenced_set<std::string> extensions(backend _backend);
 
 /// Returns the label and the wildcard to use in file open dialog to filter input
 /// @arg backend: the selected backend
 /// @return default filter to use with the given backend
-[[nodiscard]] IO_BITMAP_API std::pair<std::string, std::string> wildcard_filter(backend _backend);
+[[nodiscard]] SIGHT_IO_BITMAP_API std::pair<std::string, std::string> wildcard_filter(backend _backend);
 
 /// @return true is nvJPEG is available (support built in AND CUDA capable GPU available)
-[[nodiscard]] IO_BITMAP_API bool nv_jpeg();
+[[nodiscard]] SIGHT_IO_BITMAP_API bool nv_jpeg();
 
 /// @return true is nv_jpeg_2k is available (support built in AND CUDA capable GPU available)
-[[nodiscard]] IO_BITMAP_API bool nv_jpeg_2k();
+[[nodiscard]] SIGHT_IO_BITMAP_API bool nv_jpeg_2k();
 
 } // namespace sight::io::bitmap

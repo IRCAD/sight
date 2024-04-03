@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,8 +22,6 @@
 #pragma once
 
 #include "core/macros.hpp"
-
-#include "modules/ui/qt/config.hpp"
 
 #include "ui/__/service.hpp"
 
@@ -68,7 +66,7 @@ namespace sight::module::ui::qt
  *      - shortcut (string, default=""): The shortcut associated to the action. If unspecified, no shortcuts are
  *                                       created.
  */
-class MODULE_UI_QT_CLASS_API icon_speed_dial : public sight::ui::service
+class icon_speed_dial : public sight::ui::service
 {
 public:
 

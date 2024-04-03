@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include "modules/sync/config.hpp"
-
 #include <core/thread/timer.hpp>
 
 #include <data/frame_tl.hpp>
@@ -130,7 +128,7 @@ namespace sight::module::sync
  * - \b tolerance : defines the maximum distance between two frames (default: 500).
  *      If a timeline exceeds this tolerance it will not be synchronized (default: true).
  */
-class MODULE_SYNC_CLASS_API synchronizer final : public service::synchronizer
+class synchronizer final : public service::synchronizer
 {
 public:
 
@@ -196,12 +194,12 @@ public:
     /**
      * @brief Constructor.
      */
-    MODULE_SYNC_API synchronizer();
+    synchronizer();
 
     /**
      * @brief Destructor.
      */
-    MODULE_SYNC_API ~synchronizer() final = default;
+    ~synchronizer() final = default;
 
     /**
      * @brief Return proposals to connect service slots to associated object signals,
@@ -209,45 +207,45 @@ public:
      *
      * Connect data::timeline::signals::CLEARED to RESET_TIMELINE
      */
-    MODULE_SYNC_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
 protected:
 
     /**
      * @brief This method is used to configure the service.
      */
-    MODULE_SYNC_API void configuring() final;
+    void configuring() final;
 
     /**
      * @brief This method is used to start the service.
      */
-    MODULE_SYNC_API void starting() final;
+    void starting() final;
 
     /**
      * @brief This method is used to stop the service.
      */
-    MODULE_SYNC_API void stopping() final;
+    void stopping() final;
 
     /**
      * @brief Called when new objects are pushed into the timeline.
      */
-    MODULE_SYNC_API void updating() final;
+    void updating() final;
 
     /**
      * @brief SLOT: Synchronizes the TLs, fill the output variables, and send notifications
      */
-    MODULE_SYNC_API void synchronize();
+    void synchronize();
 
     /// Triggers a synchronization if the service is unlocked
-    MODULE_SYNC_API void try_sync();
+    void try_sync();
 
     /// Unlocks the service, which will honor the next synchronization when calling try_sync()
-    MODULE_SYNC_API void request_sync();
+    void request_sync();
 
     /**
      * @brief SLOT: Resets the last timestamp stored
      */
-    MODULE_SYNC_API void reset_timeline();
+    void reset_timeline();
 
     /**
      * @brief SLOT: Changes the association between a frame timeline, its element index and the outputVar
@@ -256,7 +254,7 @@ protected:
      * @param _element_index    the element index in the configuration
      * @param _output_var_index the output var to update
      */
-    MODULE_SYNC_API void set_frame_binding(
+    void set_frame_binding(
         std::size_t _tl_index,
         unsigned int _element_index,
         std::size_t _output_var_index
@@ -269,7 +267,7 @@ protected:
      * @param _element_index    the element index in the configuration
      * @param _output_var_index the output var to update
      */
-    MODULE_SYNC_API void set_matrix_binding(
+    void set_matrix_binding(
         std::size_t _tl_index,
         unsigned int _element_index,
         std::size_t _output_var_index
@@ -292,7 +290,7 @@ protected:
      * @param _val : value to set. Should be a positive value.
      * where i is the index of the timeline in the input vector
      */
-    MODULE_SYNC_API void set_delay(int _val, std::string _key);
+    void set_delay(int _val, std::string _key);
 
 private:
 

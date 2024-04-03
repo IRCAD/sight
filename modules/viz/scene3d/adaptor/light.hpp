@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/viz/scene3d/adaptor/transform.hpp"
-#include "modules/viz/scene3d/config.hpp"
 
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
@@ -71,7 +70,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b thetaOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around x axis.
  * - \b phiOffset (optional, float, default=0.0): angle in degrees defining the rotation of the light around y axis.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API light final : public sight::viz::scene3d::light_adaptor
+class light final : public sight::viz::scene3d::light_adaptor
 {
 public:
 
@@ -79,116 +78,116 @@ public:
     SIGHT_DECLARE_SERVICE(light, sight::viz::scene3d::light_adaptor);
 
     /// Creates the service.
-    MODULE_VIZ_SCENE3D_API light() noexcept;
+    light() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~light() noexcept final = default;
+    ~light() noexcept final = default;
 
     /**
      * @brief Gets the name of the light.
      * @return The name of the light.
      */
-    MODULE_VIZ_SCENE3D_API const std::string& get_name() const final;
+    const std::string& get_name() const final;
 
     /**
      * @brief Sets the name of the light.
      * @param _name the new light name.
      */
-    MODULE_VIZ_SCENE3D_API void set_name(const std::string& _name) final;
+    void set_name(const std::string& _name) final;
 
     /**
      * @brief Gets the type of the light.
      * @return The light type.
      */
-    MODULE_VIZ_SCENE3D_API Ogre::Light::LightTypes type() const final;
+    Ogre::Light::LightTypes type() const final;
 
     /**
      * @brief Sets the type of the light.
      * @param _type the new light type.
      */
-    MODULE_VIZ_SCENE3D_API void set_type(Ogre::Light::LightTypes _type) final;
+    void set_type(Ogre::Light::LightTypes _type) final;
 
     /**
      * @brief Gets the diffuse color of the light.
      * @return The light diffuse color.
      */
-    MODULE_VIZ_SCENE3D_API Ogre::ColourValue get_diffuse_color() const final;
+    Ogre::ColourValue get_diffuse_color() const final;
 
     /**
      * @brief Sets the diffuse color of the light.
      * @param _diffuse_color the new light diffuse color.
      */
-    MODULE_VIZ_SCENE3D_API void set_diffuse_color(Ogre::ColourValue _diffuse_color) final;
+    void set_diffuse_color(Ogre::ColourValue _diffuse_color) final;
 
     /**
      * @brief Gets the specular color of the light.
      * @return The light specular color.
      */
-    MODULE_VIZ_SCENE3D_API Ogre::ColourValue get_specular_color() const final;
+    Ogre::ColourValue get_specular_color() const final;
 
     /**
      * @brief Sets the specular color of the light.
      * @param _specular_color the new light specular color.
      */
-    MODULE_VIZ_SCENE3D_API void set_specular_color(Ogre::ColourValue _specular_color) final;
+    void set_specular_color(Ogre::ColourValue _specular_color) final;
 
     /**
      * @brief Gets the light activation state.
      * @return The light activation state.
      */
-    MODULE_VIZ_SCENE3D_API bool is_switched_on() const final;
+    bool is_switched_on() const final;
 
     /**
      * @brief Sets the light activation state.
      * @param _on the light new activation state.
      */
-    MODULE_VIZ_SCENE3D_API void switch_on(bool _on) final;
+    void switch_on(bool _on) final;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around x axis.
      * @return The theta offset of the light.
      */
-    MODULE_VIZ_SCENE3D_API float get_theta_offset() const final;
+    float get_theta_offset() const final;
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around x axis.
      * @param _theta_offset the value of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    MODULE_VIZ_SCENE3D_API void set_theta_offset(float _theta_offset) final;
+    void set_theta_offset(float _theta_offset) final;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around y axis.
      * @return The phi of the light.
      */
-    MODULE_VIZ_SCENE3D_API float get_phi_offset() const final;
+    float get_phi_offset() const final;
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around y axis.
      * @param _phi_offset the phi of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    MODULE_VIZ_SCENE3D_API void set_phi_offset(float _phi_offset) final;
+    void set_phi_offset(float _phi_offset) final;
 
     /**
      * @brief Enables the light visual feedback.
      * @param _enable the visual feedback visibility state.
      */
-    MODULE_VIZ_SCENE3D_API void enable_visual_feedback(bool _enable) final;
+    void enable_visual_feedback(bool _enable) final;
 
     /**
      * @brief Indicates if the visual feedback is enabled.
      * @return True if the visual feedback is activated.
      */
-    MODULE_VIZ_SCENE3D_API bool is_visual_feedback_on() const final;
+    bool is_visual_feedback_on() const final;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Adds a new light to the scene manager.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -197,13 +196,13 @@ protected:
      * Connect data::color::MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to service::slots::UPDATE
      * Connect data::color::MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
     /// Updates the light position and orientation.
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /// Removes the light from the scene manager.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
 private:
 

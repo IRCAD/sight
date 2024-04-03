@@ -38,7 +38,7 @@ namespace sight::data
 /**
  * @brief   This class defines a timeline of images.
  */
-class DATA_CLASS_API frame_tl final : public generic_tl<uint8_t>
+class SIGHT_DATA_CLASS_API frame_tl final : public generic_tl<uint8_t>
 {
 public:
 
@@ -58,13 +58,13 @@ public:
     /**
      * @brief Constructor
      */
-    DATA_API frame_tl();
+    SIGHT_DATA_API frame_tl();
 
     /// Destructor
-    DATA_API ~frame_tl() noexcept override = default;
+    SIGHT_DATA_API ~frame_tl() noexcept override = default;
 
     /// Initializes the size of the pool buffer.
-    DATA_API void init_pool_size(
+    SIGHT_DATA_API void init_pool_size(
         std::size_t _width,
         std::size_t _height,
         const core::type& _type,
@@ -104,20 +104,20 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const frame_tl& _other) const noexcept;
-    DATA_API bool operator!=(const frame_tl& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const frame_tl& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const frame_tl& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
@@ -125,7 +125,7 @@ public:
 private:
 
     /// Forbid the use of this inherited method.
-    DATA_API void init_pool_size(unsigned int _max_element_num) override;
+    SIGHT_DATA_API void init_pool_size(unsigned int _max_element_num) override;
 
     /// frame width
     std::size_t m_width {0};

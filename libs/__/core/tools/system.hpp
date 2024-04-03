@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <filesystem>
 #include <string>
@@ -33,25 +33,25 @@ namespace sight::core::tools
 /**
  * @brief Provide useful low-level system/os functions (pid, file move / rename).
  */
-class CORE_CLASS_API system
+class SIGHT_CORE_CLASS_API system
 {
 public:
 
     /**
      *  @brief  Returns the pid of the current process
      */
-    CORE_API static int get_pid() noexcept;
+    SIGHT_CORE_API static int get_pid() noexcept;
 
     /**
      * @brief   Test if process is Active
      * @return  true if the process is running
      */
-    CORE_API static bool is_process_running(int _pid) noexcept;
+    SIGHT_CORE_API static bool is_process_running(int _pid) noexcept;
 
     /**
      * @brief   Terminate a process
      */
-    CORE_API static void kill_process(int _pid) noexcept;
+    SIGHT_CORE_API static void kill_process(int _pid) noexcept;
 
     /**
      * @brief renames file or folder, use std::filesystem::rename first, use a copy-remove scenario if rename fails.
@@ -60,7 +60,7 @@ public:
      * @param _force remove the destination in all cases.
      * @throws std::filesystem_error if it fails.
      */
-    CORE_API static void robust_rename(
+    SIGHT_CORE_API static void robust_rename(
         const std::filesystem::path& _from,
         const std::filesystem::path& _to,
         bool _force = false

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/navigation/calibration/config.hpp"
+#include "sight/modules/navigation/calibration/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -42,14 +42,14 @@ struct plugin : public core::runtime::plugin
      * @exception core::runtime::RuntimeException.
      * This method is used by runtime in order to initialize the module.
      */
-    void start() override;
+    SIGHT_MODULE_NAVIGATION_CALIBRATION_API void start() override;
 
     /**
      * @brief Stop method.
      *
      * This method is used by runtime in order to close the module.
      */
-    void stop() noexcept override;
+    SIGHT_MODULE_NAVIGATION_CALIBRATION_API void stop() noexcept override;
 };
 
 } // namespace sight::module::navigation::calibration

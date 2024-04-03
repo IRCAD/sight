@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/container/menu.hpp"
 #include "ui/__/container/menu_item.hpp"
 #include "ui/__/container/menubar.hpp"
@@ -51,22 +52,22 @@ using action_to_parent_map_type = std::map<std::string, parent_sids_t>;
 /**
  * @brief Registers container associate with service ID.
  */
-UI_API void register_sid_container(std::string _sid, ui::container::widget::sptr _container);
+SIGHT_UI_API void register_sid_container(std::string _sid, ui::container::widget::sptr _container);
 
 /**
  * @brief Unregisters container associate with service ID.
  */
-UI_API void unregister_sid_container(std::string _sid);
+SIGHT_UI_API void unregister_sid_container(std::string _sid);
 
 /**
  * @brief Returns widget associate with service ID, null if  not found.
  */
-UI_API ui::container::widget::sptr get_sid_container(std::string _sid);
+SIGHT_UI_API ui::container::widget::sptr get_sid_container(std::string _sid);
 
 /**
  * @brief Verifies if a SID exists in the global SID container.
  */
-UI_API bool has_sid_container(std::string _sid);
+SIGHT_UI_API bool has_sid_container(std::string _sid);
 
 ///@}
 
@@ -80,22 +81,22 @@ UI_API bool has_sid_container(std::string _sid);
 /**
  * @brief Registers container associate with window ID.
  */
-UI_API void register_wid_container(std::string _wid, ui::container::widget::sptr _container);
+SIGHT_UI_API void register_wid_container(std::string _wid, ui::container::widget::sptr _container);
 
 /**
  * @brief Unregisters container associate with window ID.
  */
-UI_API void unregister_wid_container(std::string _wid);
+SIGHT_UI_API void unregister_wid_container(std::string _wid);
 
 /**
  * @brief Returns widget associate with window ID, null if  not found.
  */
-UI_API ui::container::widget::sptr get_wid_container(std::string _wid);
+SIGHT_UI_API ui::container::widget::sptr get_wid_container(std::string _wid);
 
 /**
  * @brief Verifies if a WID exists in the global WID container.
  */
-UI_API bool has_wid_container(std::string _wid);
+SIGHT_UI_API bool has_wid_container(std::string _wid);
 
 ///@}
 
@@ -109,16 +110,16 @@ UI_API bool has_wid_container(std::string _wid);
 /**
  * @brief Registers menubar associate with service ID.
  */
-UI_API void register_sid_menu_bar(std::string _sid, ui::container::menubar::sptr _menu_bar);
+SIGHT_UI_API void register_sid_menu_bar(std::string _sid, ui::container::menubar::sptr _menu_bar);
 
 /**
  * @brief Unregisters menubar associate with service ID.
  */
-UI_API void unregister_sid_menu_bar(std::string _sid);
+SIGHT_UI_API void unregister_sid_menu_bar(std::string _sid);
 /**
  * @brief Returns menubar associate with service ID.
  */
-UI_API ui::container::menubar::sptr get_sid_menu_bar(std::string _sid);
+SIGHT_UI_API ui::container::menubar::sptr get_sid_menu_bar(std::string _sid);
 ///@}
 
 //-----------------------------------------------------------------------------
@@ -131,16 +132,16 @@ UI_API ui::container::menubar::sptr get_sid_menu_bar(std::string _sid);
 /**
  * @brief Registers toolbar associate with service ID.
  */
-UI_API void register_sid_tool_bar(std::string _sid, ui::container::toolbar::sptr _tool_bar);
+SIGHT_UI_API void register_sid_tool_bar(std::string _sid, ui::container::toolbar::sptr _tool_bar);
 
 /**
  * @brief Unregisters toolbar associate with service ID.
  */
-UI_API void unregister_sid_tool_bar(std::string _sid);
+SIGHT_UI_API void unregister_sid_tool_bar(std::string _sid);
 /**
  * @brief Returns toolbar associate with service ID.
  */
-UI_API ui::container::toolbar::sptr get_sid_tool_bar(std::string _sid);
+SIGHT_UI_API ui::container::toolbar::sptr get_sid_tool_bar(std::string _sid);
 ///@}
 
 //-----------------------------------------------------------------------------
@@ -153,16 +154,16 @@ UI_API ui::container::toolbar::sptr get_sid_tool_bar(std::string _sid);
 /**
  * @brief Registers menu associate with service ID.
  */
-UI_API void register_sid_menu(std::string _sid, ui::container::menu::sptr _menu);
+SIGHT_UI_API void register_sid_menu(std::string _sid, ui::container::menu::sptr _menu);
 
 /**
  * @brief Unregisters menu associate with service ID.
  */
-UI_API void unregister_sid_menu(std::string _sid);
+SIGHT_UI_API void unregister_sid_menu(std::string _sid);
 /**
  * @brief Returns menu associate with service ID.
  */
-UI_API ui::container::menu::sptr get_sid_menu(std::string _sid);
+SIGHT_UI_API ui::container::menu::sptr get_sid_menu(std::string _sid);
 ///@}
 
 //-----------------------------------------------------------------------------
@@ -175,42 +176,42 @@ UI_API ui::container::menu::sptr get_sid_menu(std::string _sid);
 /**
  * @brief Registers action sid associated with a parent sid.
  */
-UI_API void register_action_sid_to_parent_sid(std::string _action_sid, std::string _parent_sid);
+SIGHT_UI_API void register_action_sid_to_parent_sid(std::string _action_sid, std::string _parent_sid);
 
 /**
  * @brief Unregisters action sid associated with a parent sid.
  */
-UI_API void unregister_action_sid_to_parent_sid(std::string _action_sid, std::string _parent_sid);
+SIGHT_UI_API void unregister_action_sid_to_parent_sid(std::string _action_sid, std::string _parent_sid);
 
 /**
  * @brief Method called when the action service is stopping.
  * Call parent service actionServiceStopping() method
  */
-UI_API void action_service_stopping(std::string _action_sid);
+SIGHT_UI_API void action_service_stopping(std::string _action_sid);
 
 /**
  * @brief Method called when the action service is starting.
  * Call parent service actionServiceStarting() method
  */
-UI_API void action_service_starting(std::string _action_sid);
+SIGHT_UI_API void action_service_starting(std::string _action_sid);
 
 /**
  * @brief Method called when the action service is activated or not.
  * Call parent service actionServiceSetChecked() method
  */
-UI_API void action_service_set_checked(std::string _action_sid, bool _is_checked);
+SIGHT_UI_API void action_service_set_checked(std::string _action_sid, bool _is_checked);
 
 /**
  * @brief Method called when the action service is executable or not.
  * Call parent service actionServiceSetEnabled() method
  */
-UI_API void action_service_set_enabled(std::string _action_sid, bool _is_enabled);
+SIGHT_UI_API void action_service_set_enabled(std::string _action_sid, bool _is_enabled);
 
 /**
  * @brief Method called when the action service is visible or not.
  * Call parent service actionServiceSetVisible() method
  */
-UI_API void action_service_set_visible(std::string _action_sid, bool _is_visible);
+SIGHT_UI_API void action_service_set_visible(std::string _action_sid, bool _is_visible);
 ///@}
 
 } // namespace sight::ui::registry

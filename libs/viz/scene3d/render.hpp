@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
+
 #include "viz/scene3d/layer.hpp"
 #include "viz/scene3d/utils.hpp"
 #include "viz/scene3d/window_interactor.hpp"
@@ -125,7 +126,7 @@ class layer;
  *    - \b adaptor
  *      - \b uid (mandatory): the identifier of the adaptor.
  */
-class VIZ_SCENE3D_CLASS_API render final : public viz::render
+class SIGHT_VIZ_SCENE3D_CLASS_API render final : public viz::render
 {
 public:
 
@@ -164,67 +165,67 @@ public:
     using layer_map_t = std::map<scene_id_t, std::shared_ptr<viz::scene3d::layer> >;
 
     /// Contains the slot name that computes the parameters to reset the camera.
-    VIZ_SCENE3D_API static const core::com::slots::key_t COMPUTE_CAMERA_ORIG_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t COMPUTE_CAMERA_ORIG_SLOT;
 
     /// Contains the slot name that resets all layers camera.
-    VIZ_SCENE3D_API static const core::com::slots::key_t RESET_CAMERAS_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t RESET_CAMERAS_SLOT;
 
     /// Contains the slot name that request the picker to do a ray cast according to the passed position.
-    VIZ_SCENE3D_API static const core::com::slots::key_t DO_RAY_CAST_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t DO_RAY_CAST_SLOT;
 
     /// Contains the slot name that requests a rendering.
-    VIZ_SCENE3D_API static const core::com::slots::key_t REQUEST_RENDER_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t REQUEST_RENDER_SLOT;
 
     /// Contains the slot name that requests a rendering.
-    VIZ_SCENE3D_API static const core::com::slots::key_t RENDER_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t RENDER_SLOT;
 
     /// Contains the slot name that disables fullscreen rendering if it was enabled.
-    VIZ_SCENE3D_API static const core::com::slots::key_t DISABLE_FULLSCREEN;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t DISABLE_FULLSCREEN;
 
     /// Contains the slot name that enables fullscreen rendering on a specific screen.
-    VIZ_SCENE3D_API static const core::com::slots::key_t ENABLE_FULLSCREEN;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t ENABLE_FULLSCREEN;
 
     /// Contains the slot name that enables the manual rendering mode.
-    VIZ_SCENE3D_API static const core::com::slots::key_t SET_MANUAL_MODE;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_MANUAL_MODE;
 
     /// Contains the slot name that enables the automatic rendering mode.
-    VIZ_SCENE3D_API static const core::com::slots::key_t SET_AUTO_MODE;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_AUTO_MODE;
 
     /// Defines the layer ID of the background.
-    VIZ_SCENE3D_API static const std::string OGREBACKGROUNDID;
+    SIGHT_VIZ_SCENE3D_API static const std::string OGREBACKGROUNDID;
 
     /// Initializes slots.
-    VIZ_SCENE3D_API render() noexcept;
+    SIGHT_VIZ_SCENE3D_API render() noexcept;
 
     /// Destroys the service.
-    VIZ_SCENE3D_API ~render() noexcept override;
+    SIGHT_VIZ_SCENE3D_API ~render() noexcept override;
 
     /// Sets this render service as the current OpenGL context.
-    VIZ_SCENE3D_API void make_current();
+    SIGHT_VIZ_SCENE3D_API void make_current();
 
     /// Requests a render from the Ogre render engine.
-    VIZ_SCENE3D_API void request_render();
+    SIGHT_VIZ_SCENE3D_API void request_render();
 
     /// @returns true if the scene is shown on screen.
-    VIZ_SCENE3D_API bool is_shown_on_screen();
+    SIGHT_VIZ_SCENE3D_API bool is_shown_on_screen();
 
     /// @returns the scene manager corresponding to the sceneID.
-    VIZ_SCENE3D_API Ogre::SceneManager* get_scene_manager(const std::string& _scene_id);
+    SIGHT_VIZ_SCENE3D_API Ogre::SceneManager* get_scene_manager(const std::string& _scene_id);
 
     /// @returns the layer corresponding to the sceneID.
-    VIZ_SCENE3D_API viz::scene3d::layer::sptr layer(const std::string& _scene_id);
+    SIGHT_VIZ_SCENE3D_API viz::scene3d::layer::sptr layer(const std::string& _scene_id);
 
     /// @returns this render layers.
-    VIZ_SCENE3D_API layer_map_t get_layers();
+    SIGHT_VIZ_SCENE3D_API layer_map_t get_layers();
 
     /// @returns m_interactorManager.
-    VIZ_SCENE3D_API viz::scene3d::window_interactor::sptr get_interactor_manager() const;
+    SIGHT_VIZ_SCENE3D_API viz::scene3d::window_interactor::sptr get_interactor_manager() const;
 
     /// Resets camera parameters with the actual global bounding box.
-    VIZ_SCENE3D_API void reset_camera_coordinates(const std::string& _layer_id);
+    SIGHT_VIZ_SCENE3D_API void reset_camera_coordinates(const std::string& _layer_id);
 
     /// Resets all layers camera parameters with the actual global bounding box.
-    VIZ_SCENE3D_API void reset_cameras();
+    SIGHT_VIZ_SCENE3D_API void reset_cameras();
 
     template<class T>
     std::vector<SPTR(T)> get_adaptors() const;
@@ -235,16 +236,16 @@ public:
 protected:
 
     /// Configures adaptors and connections.
-    VIZ_SCENE3D_API void starting() override;
+    SIGHT_VIZ_SCENE3D_API void starting() override;
 
     /// Stops all adaptors
-    VIZ_SCENE3D_API void stopping() override;
+    SIGHT_VIZ_SCENE3D_API void stopping() override;
 
     /// Configures the adaptor.
-    VIZ_SCENE3D_API void configuring() override;
+    SIGHT_VIZ_SCENE3D_API void configuring() override;
 
     /// Does nothing.
-    VIZ_SCENE3D_API void updating() override;
+    SIGHT_VIZ_SCENE3D_API void updating() override;
 
 private:
 

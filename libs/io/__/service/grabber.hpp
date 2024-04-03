@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
 
 #include <core/jobs/base.hpp>
 
@@ -68,8 +68,8 @@ namespace sight::io::service
  * - \b add_roi_center(sight::data::point::sptr): Adds a new region fo interest center.
  * - \b remove_roi_center(sight::data::point::sptr): Removes a region of interest via its center.
  */
-class IO_CLASS_API grabber : public sight::service::base,
-                             public sight::service::notifier
+class SIGHT_IO_CLASS_API grabber : public sight::service::base,
+                                   public sight::service::notifier
 {
 public:
 
@@ -79,51 +79,51 @@ public:
      * @name Slots API
      * @{
      */
-    IO_API static const core::com::slots::key_t START_CAMERA_SLOT;
-    IO_API static const core::com::slots::key_t STOP_CAMERA_SLOT;
-    IO_API static const core::com::slots::key_t PAUSE_CAMERA_SLOT;
-    IO_API static const core::com::slots::key_t PLAY_PAUSE_CAMERA_SLOT;
-    IO_API static const core::com::slots::key_t SELECT_CAMERA_SLOT;
-    IO_API static const core::com::slots::key_t LOOP_VIDEO_SLOT;
-    IO_API static const core::com::slots::key_t SET_POSITION_VIDEO_SLOT;
-    IO_API static const core::com::slots::key_t PRESENT_SLOT;
-    IO_API static const core::com::slots::key_t PREVIOUS_IMAGE_SLOT;
-    IO_API static const core::com::slots::key_t NEXT_IMAGE_SLOT;
-    IO_API static const core::com::slots::key_t SET_STEP_SLOT;
-    IO_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
-    IO_API static const core::com::slots::key_t REQUEST_SETTINGS_SLOT;
-    IO_API static const core::com::slots::key_t OPTIMIZE_SLOT;
-    IO_API static const core::com::slots::key_t ADD_ROI_CENTER_SLOT;
-    IO_API static const core::com::slots::key_t REMOVE_ROI_CENTER_SLOT;
-    IO_API static const core::com::slots::key_t FORWARD_FPS_CHANGED_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t START_CAMERA_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t STOP_CAMERA_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t PAUSE_CAMERA_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t PLAY_PAUSE_CAMERA_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t SELECT_CAMERA_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t LOOP_VIDEO_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t SET_POSITION_VIDEO_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t PRESENT_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t PREVIOUS_IMAGE_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t NEXT_IMAGE_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t SET_STEP_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t SET_PARAMETER_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t REQUEST_SETTINGS_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t OPTIMIZE_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t ADD_ROI_CENTER_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t REMOVE_ROI_CENTER_SLOT;
+    SIGHT_IO_API static const core::com::slots::key_t FORWARD_FPS_CHANGED_SLOT;
     ///@}
 
     /**
      * @name Signals API
      * @{
      */
-    IO_API static const core::com::signals::key_t POSITION_MODIFIED_SIG;
+    SIGHT_IO_API static const core::com::signals::key_t POSITION_MODIFIED_SIG;
     using position_modified_signal_t = core::com::signal<void (int64_t)>;
 
-    IO_API static const core::com::signals::key_t DURATION_MODIFIED_SIG;
+    SIGHT_IO_API static const core::com::signals::key_t DURATION_MODIFIED_SIG;
     using duration_modified_signal_t = core::com::signal<void (int64_t)>;
 
-    IO_API static const core::com::signals::key_t FRAME_PRESENTED_SIG;
+    SIGHT_IO_API static const core::com::signals::key_t FRAME_PRESENTED_SIG;
     using frame_presented_signal_t = core::com::signal<void ()>;
 
-    IO_API static const core::com::signals::key_t CAMERA_STARTED_SIG;
+    SIGHT_IO_API static const core::com::signals::key_t CAMERA_STARTED_SIG;
     using camera_started_signal_t = core::com::signal<void ()>;
 
-    IO_API static const core::com::signals::key_t CAMERA_STOPPED_SIG;
+    SIGHT_IO_API static const core::com::signals::key_t CAMERA_STOPPED_SIG;
     using camera_stopped_signal_t = core::com::signal<void ()>;
 
-    IO_API static const core::com::signals::key_t PARAMETER_CHANGED_SIG;
+    SIGHT_IO_API static const core::com::signals::key_t PARAMETER_CHANGED_SIG;
     using parameter_changed_t = core::com::signal<void (ui::parameter_t, std::string)>;
 
-    IO_API static const core::com::signals::key_t JOB_CREATED_SIG;
+    SIGHT_IO_API static const core::com::signals::key_t JOB_CREATED_SIG;
     using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
 
-    IO_API static const core::com::signals::key_t FPS_CHANGED_SIG;
+    SIGHT_IO_API static const core::com::signals::key_t FPS_CHANGED_SIG;
     using fps_changed_signal_t = sight::core::com::signal<void (double)>;
     /** @} */
 
@@ -137,70 +137,70 @@ public:
     /**
      * @brief Constructor.
      */
-    IO_API grabber() noexcept;
+    SIGHT_IO_API grabber() noexcept;
 
     /**
      * @brief Destructor.
      */
-    IO_API ~grabber() noexcept override = default;
+    SIGHT_IO_API ~grabber() noexcept override = default;
 
     /**
      * @brief API for starting a camera. Needs to be reimplemented in child classes.
      */
-    IO_API virtual void start_camera() = 0;
+    SIGHT_IO_API virtual void start_camera() = 0;
 
     /**
      * @brief API for stopping a camera. Needs to be reimplemented in child classes.
      */
-    IO_API virtual void stop_camera() = 0;
+    SIGHT_IO_API virtual void stop_camera() = 0;
 
     /**
      * @brief API for pausing a camera. Needs to be reimplemented in child classes.
      */
-    IO_API virtual void pause_camera() = 0;
+    SIGHT_IO_API virtual void pause_camera() = 0;
 
     /**
      * @brief API for enable/disable the loop mode in video. Needs to be reimplemented in child classes.
      */
-    IO_API virtual void toggle_loop_mode() = 0;
+    SIGHT_IO_API virtual void toggle_loop_mode() = 0;
 
     /**
      * @brief API for setting a new position in the video. Needs to be reimplemented in child classes
      */
-    IO_API virtual void set_position(int64_t _position) = 0;
+    SIGHT_IO_API virtual void set_position(int64_t _position) = 0;
 
     /**
      * @brief API to get the previous image in frame by frame mode.
      */
-    IO_API virtual void previous_image();
+    SIGHT_IO_API virtual void previous_image();
 
     /**
      * @brief API to get the next image in frame by frame mode.
      */
-    IO_API virtual void next_image();
+    SIGHT_IO_API virtual void next_image();
 
     /**
      * @brief API to set step used on readPrevious/readNext slots in frame by frame mode.
      */
-    IO_API virtual void set_step(int _step, std::string _key);
+    SIGHT_IO_API virtual void set_step(int _step, std::string _key);
 
     /// SLOT: Requests the grabber internal settings.
-    IO_API virtual void request_settings();
+    SIGHT_IO_API virtual void request_settings();
 
     /// SLOT: Calls optimization functions defined in the grabber (e.g. hardware related function).
-    IO_API virtual void optimize();
+    SIGHT_IO_API virtual void optimize();
 
     /// SLOT: Adds a region of interest center.
-    IO_API virtual void add_roi_center(sight::data::point::sptr _p);
+    SIGHT_IO_API virtual void add_roi_center(sight::data::point::sptr _p);
 
     /// SLOT: Removes a region of interest center.
-    IO_API virtual void remove_roi_center(sight::data::point::sptr _p);
+    SIGHT_IO_API virtual void remove_roi_center(sight::data::point::sptr _p);
 
     /// SLOT: Sets a parameter value with its key.
-    IO_API virtual void set_parameter(ui::parameter_t _value, std::string _key);
+    SIGHT_IO_API virtual void set_parameter(ui::parameter_t _value, std::string _key);
 
     /// SLOT: Forward FPS data
-    IO_API virtual void forward_fps_changed(double _fps);
+    SIGHT_IO_API virtual void forward_fps_changed(double _fps);
 
 protected:
 
@@ -208,12 +208,12 @@ protected:
      * @brief Helper function intended to be used in derived services. Clears the supplied timeline, emits the cleared
      * signal, pushes a black frame and emits the object pushed signal.
      */
-    IO_API static void clear_timeline(data::frame_tl& _tl);
+    SIGHT_IO_API static void clear_timeline(data::frame_tl& _tl);
 
     /**
      * @brief sets the current start state of the grabber.
      */
-    IO_API void set_start_state(bool _state);
+    SIGHT_IO_API void set_start_state(bool _state);
     bool started() const;
 
     data::ptr<data::frame_tl, data::access::inout> m_frame {this, FRAMETL_INOUT};
@@ -224,7 +224,7 @@ private:
      * @brief Pauses or unpauses camera if it is started, if not, it starts it. This slot shouldn't be used when play
      * or pause slots are used, this is why we add a boolean state, to ensure correct interaction with a GUI element.
      */
-    IO_API void play_pause_camera();
+    SIGHT_IO_API void play_pause_camera();
 
     /// Determines whether the grabber has been started, note : this does not mean it is playing, as it could be paused.
     bool m_is_started {false};

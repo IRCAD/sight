@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/dicom/config.hpp"
+#include <sight/filter/dicom/config.hpp>
+
 #include "filter/dicom/sorter/tag_value_sorter.hpp"
 
 #include <data/dicom_series.hpp>
@@ -33,7 +34,7 @@ namespace sight::filter::dicom::sorter
 /**
  * @brief filter that uses the InstanceNumber tag to sort the instances.
  */
-class FILTER_DICOM_CLASS_API instance_number_sorter : public sight::filter::dicom::sorter::tag_value_sorter
+class SIGHT_FILTER_DICOM_CLASS_API instance_number_sorter : public sight::filter::dicom::sorter::tag_value_sorter
 {
 public:
 
@@ -44,19 +45,19 @@ public:
     );
 
     /// Constructor
-    FILTER_DICOM_API instance_number_sorter();
+    SIGHT_FILTER_DICOM_API instance_number_sorter();
 
     /// Destructor
-    FILTER_DICOM_API ~instance_number_sorter() override;
+    SIGHT_FILTER_DICOM_API ~instance_number_sorter() override;
 
     /// Return the name of the filter
-    FILTER_DICOM_API std::string get_name() const override;
+    SIGHT_FILTER_DICOM_API std::string get_name() const override;
 
     /// Return the description of the filter
-    FILTER_DICOM_API std::string get_description() const override;
+    SIGHT_FILTER_DICOM_API std::string get_description() const override;
 
     /// Return true if a configuration is required
-    FILTER_DICOM_API bool is_configuration_required() const override;
+    SIGHT_FILTER_DICOM_API bool is_configuration_required() const override;
 
 protected:
 

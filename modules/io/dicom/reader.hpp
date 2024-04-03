@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/dicom/config.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/jobs/base.hpp>
@@ -72,7 +70,7 @@ namespace sight::module::io::dicom
  * @see sight::io::dicom::Reader
  */
 
-class MODULE_IO_DICOM_CLASS_API reader final : public sight::io::service::reader
+class reader final : public sight::io::service::reader
 {
 public:
 
@@ -80,29 +78,29 @@ public:
 
     using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
 
-    MODULE_IO_DICOM_API reader() noexcept;
+    reader() noexcept;
 
-    MODULE_IO_DICOM_API ~reader() noexcept;
+    ~reader() noexcept;
 
     /// Propose to read a session data file
-    MODULE_IO_DICOM_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
 protected:
 
     /// Does nothing
-    MODULE_IO_DICOM_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_IO_DICOM_API void stopping() override;
+    void stopping() override;
 
     /// Parses the configuration
-    MODULE_IO_DICOM_API void configuring() override;
+    void configuring() override;
 
     /// Read DICOM data from filesystem
-    MODULE_IO_DICOM_API void updating() override;
+    void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_DICOM_API sight::io::service::path_type_t get_path_type() const override
+    sight::io::service::path_type_t get_path_type() const override
     {
         return sight::io::service::folder;
     }

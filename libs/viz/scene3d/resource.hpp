@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2024 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <viz/scene3d/detail/resource_manager.hpp>
 
@@ -35,7 +35,7 @@ namespace sight::viz::scene3d
  * @brief Represents and manages a transfer function from a GPU point of view
  */
 template<class OBJECT, class RESOURCE, class IMPL>
-class VIZ_SCENE3D_CLASS_API resource : public boost::noncopyable
+class SIGHT_VIZ_SCENE3D_CLASS_API resource : public boost::noncopyable
 {
 public:
 

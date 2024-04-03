@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <core/macros.hpp>
 
@@ -41,7 +41,7 @@ namespace sight::io::dicom::helper
 /**
  * @brief Fiducial helper.
  */
-class IO_DICOM_CLASS_API fiducial
+class SIGHT_IO_DICOM_CLASS_API fiducial
 {
 public:
 
@@ -49,19 +49,19 @@ public:
      * @brief Return true if the series contains at least one image containing landmarks.
      * @param[in] _series_set series_set where to look for landmarks
      */
-    IO_DICOM_API static bool contains_landmarks(const SPTR(data::series_set)& _series_set);
+    SIGHT_IO_DICOM_API static bool contains_landmarks(const SPTR(data::series_set)& _series_set);
 
     /**
      * @brief Return true if the series contains at least one image containing distances.
      * @param[in] _series_set series_set where to look for distances
      */
-    IO_DICOM_API static bool contains_distances(const SPTR(data::series_set)& _series_set);
+    SIGHT_IO_DICOM_API static bool contains_distances(const SPTR(data::series_set)& _series_set);
 
     /**
      * @brief Return true if the series contains at least one image containing 3D distances.
      * @param[in] _series_set series_set where to look for 3D distances
      */
-    IO_DICOM_API static bool contains_3d_distances(const SPTR(data::series_set)& _series_set);
+    SIGHT_IO_DICOM_API static bool contains_3d_distances(const SPTR(data::series_set)& _series_set);
 };
 
 } // namespace sight::io::dicom::helper

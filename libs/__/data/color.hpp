@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/factory/new.hpp"
 #include "data/object.hpp"
 
@@ -35,7 +36,7 @@ namespace sight::data
  * @brief   This class defines color object.
  */
 
-class DATA_CLASS_API color final : public object
+class SIGHT_DATA_CLASS_API color final : public object
 {
 public:
 
@@ -44,11 +45,11 @@ public:
 
     SIGHT_DECLARE_CLASS(color, object);
 
-    DATA_API color();
-    DATA_API color(color_t _red, color_t _green = 1.F, color_t _blue = 1.F, color_t _alpha = 1.F);
+    SIGHT_DATA_API color();
+    SIGHT_DATA_API color(color_t _red, color_t _green = 1.F, color_t _blue = 1.F, color_t _alpha = 1.F);
 
     /// Destructor
-    DATA_API ~color() noexcept override = default;
+    SIGHT_DATA_API ~color() noexcept override = default;
 
     /** Get/Set the array of color values (red, green, blue, alpha).
      *  @name color_array_t accessor
@@ -60,7 +61,7 @@ public:
 
     ///@{
     /// Set RGBA color
-    DATA_API void set_rgba(
+    SIGHT_DATA_API void set_rgba(
         color_t _red,
         color_t _green,
         color_t _blue,
@@ -69,44 +70,44 @@ public:
 
     ///@brief set RGBA from hexadecimal format (\#ffffff)
     ///@param[in] _hexa_color c hexadecimal format (\#ffffff)
-    DATA_API void set_rgba(const std::string& _hexa_color);
+    SIGHT_DATA_API void set_rgba(const std::string& _hexa_color);
     ///@}
 
     /** @name color attributes accessor
      *  @brief Get editable reference to color attributes
      *  @{
      */
-    DATA_API color_t& red();
-    DATA_API color_t& green();
-    DATA_API color_t& blue();
-    DATA_API color_t& alpha();
+    SIGHT_DATA_API color_t& red();
+    SIGHT_DATA_API color_t& green();
+    SIGHT_DATA_API color_t& blue();
+    SIGHT_DATA_API color_t& alpha();
     /// @}
 
     /**@brief Get read-only reference to color attributes
      * @{
      */
-    DATA_API const color_t& red() const;
-    DATA_API const color_t& green() const;
-    DATA_API const color_t& blue() const;
-    DATA_API const color_t& alpha() const;
+    SIGHT_DATA_API const color_t& red() const;
+    SIGHT_DATA_API const color_t& green() const;
+    SIGHT_DATA_API const color_t& blue() const;
+    SIGHT_DATA_API const color_t& alpha() const;
     //@}
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const color& _other) const noexcept;
-    DATA_API bool operator!=(const color& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const color& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const color& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

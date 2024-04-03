@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/qt3d/config.hpp"
+#include <sight/viz/qt3d/config.hpp>
 
 #include <QClearBuffers>
 #include <QFrameGraphNode>
@@ -47,7 +47,7 @@ namespace sight::viz::qt3d::core
  * The framegraph specifies how the scene will be rendered.
  * This class contains a basic framegraph performing a forward rendering after clearing buffers if specified.
  */
-class VIZ_QT3D_CLASS_API_QT frame_graph : public Qt3DRender::QFrameGraphNode
+class SIGHT_VIZ_QT3D_CLASS_API_QT frame_graph : public Qt3DRender::QFrameGraphNode
 {
 /// These typedefs are used for Q_PROPERTY, the macro doesn't work with namespaces.
 using q_entity        = Qt3DCore::QEntity;
@@ -72,37 +72,37 @@ Q_PROPERTY(
 public:
 
     /// Constructs the framegraph.
-    VIZ_QT3D_API_QT frame_graph(Qt3DCore::QNode* _parent = nullptr);
+    SIGHT_VIZ_QT3D_API_QT frame_graph(Qt3DCore::QNode* _parent = nullptr);
 
     /// Destructs the framegraph.
-    VIZ_QT3D_API_QT ~frame_graph() override;
+    SIGHT_VIZ_QT3D_API_QT ~frame_graph() override;
 
     /// @returns the camera this framegraph is associated to.
-    [[nodiscard]] VIZ_QT3D_API_QT Qt3DCore::QEntity* get_camera() const;
+    [[nodiscard]] SIGHT_VIZ_QT3D_API_QT Qt3DCore::QEntity* get_camera() const;
 
     /// @returns the framegraph's clear color.
-    [[nodiscard]] VIZ_QT3D_API_QT QColor get_clear_color() const;
+    [[nodiscard]] SIGHT_VIZ_QT3D_API_QT QColor get_clear_color() const;
 
     /// @returns the buffers to clear before rendering.
-    [[nodiscard]] VIZ_QT3D_API_QT Qt3DRender::QClearBuffers::BufferType get_buffers_to_clear() const;
+    [[nodiscard]] SIGHT_VIZ_QT3D_API_QT Qt3DRender::QClearBuffers::BufferType get_buffers_to_clear() const;
 
     /// Gets the camera selector.
-    VIZ_QT3D_API_QT Qt3DRender::QCameraSelector* get_camera_selector();
+    SIGHT_VIZ_QT3D_API_QT Qt3DRender::QCameraSelector* get_camera_selector();
 
     /// Updates the framegraph's camera.
-    VIZ_QT3D_API_QT void set_camera(Qt3DCore::QEntity* _camera);
+    SIGHT_VIZ_QT3D_API_QT void set_camera(Qt3DCore::QEntity* _camera);
 
     /// Sets color used to clear the scene before rendering.
-    VIZ_QT3D_API_QT void set_clear_color(const QColor& _color);
+    SIGHT_VIZ_QT3D_API_QT void set_clear_color(const QColor& _color);
 
     /// Sets the buffers to clear before rendering.
-    VIZ_QT3D_API_QT void set_buffers_to_clear(Qt3DRender::QClearBuffers::BufferType _buffers);
+    SIGHT_VIZ_QT3D_API_QT void set_buffers_to_clear(Qt3DRender::QClearBuffers::BufferType _buffers);
 
     /// Gets all nodes attached to the frame graph.
-    VIZ_QT3D_API_QT QVector<Qt3DRender::QFrameGraphNode*> get_all_nodes();
+    SIGHT_VIZ_QT3D_API_QT QVector<Qt3DRender::QFrameGraphNode*> get_all_nodes();
 
     /// Adds a node to the frame graph.
-    VIZ_QT3D_API_QT void add_node(Qt3DRender::QFrameGraphNode* _node, Qt3DRender::QFrameGraphNode* _parent);
+    SIGHT_VIZ_QT3D_API_QT void add_node(Qt3DRender::QFrameGraphNode* _node, Qt3DRender::QFrameGraphNode* _parent);
 
 Q_SIGNALS:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qml/config.hpp"
-
 #include <data/model_series.hpp>
 
 #include <QAbstractListModel>
@@ -35,7 +33,7 @@ namespace sight::module::ui::qml::model
 /**
  * @brief   Model to manage the ModelSeries organs in Qml TableView.
  */
-class MODULE_UI_QML_CLASS_API organ_list_model : public QAbstractListModel
+class organ_list_model : public QAbstractListModel
 {
 Q_OBJECT
 
@@ -49,26 +47,26 @@ public:
     };
 
     /// Constructor. Do nothing.
-    MODULE_UI_QML_API organ_list_model() noexcept;
+    organ_list_model() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QML_API ~organ_list_model() noexcept override;
+    ~organ_list_model() noexcept override;
 
     /// Return the number of rows under the given parent.
-    [[nodiscard]] MODULE_UI_QML_API int rowCount(const QModelIndex& _parent = QModelIndex()) const override;
+    [[nodiscard]] int rowCount(const QModelIndex& _parent = QModelIndex()) const override;
 
     /// Return the data stored under the given role for the item referred to by the index.
-    [[nodiscard]] MODULE_UI_QML_API QVariant data(
+    [[nodiscard]] QVariant data(
         const QModelIndex& _index,
         int _role = Qt::DisplayRole
     ) const override;
 
-    MODULE_UI_QML_API void update_model_series(const data::model_series::sptr& _model_series);
+    void update_model_series(const data::model_series::sptr& _model_series);
 
 protected:
 
     /// Expose the role names, so that they can be accessed via QML
-    [[nodiscard]] MODULE_UI_QML_API QHash<int, QByteArray> roleNames() const override;
+    [[nodiscard]] QHash<int, QByteArray> roleNames() const override;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/viz/scene3d/adaptor/material.hpp"
-#include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/transformable.hpp>
@@ -52,7 +51,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b depth (optional, float): value of depth (z) where marker will be positioned, greater value to zoom-in , lower
  * to zoom-out.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API orientation_marker final :
+class orientation_marker final :
     public sight::viz::scene3d::adaptor
 {
 public:
@@ -61,30 +60,30 @@ public:
     SIGHT_DECLARE_SERVICE(orientation_marker, sight::viz::scene3d::adaptor);
 
     /// Constructor
-    MODULE_VIZ_SCENE3D_API orientation_marker() noexcept = default;
+    orientation_marker() noexcept = default;
 
     /// Destructor
-    MODULE_VIZ_SCENE3D_API ~orientation_marker() noexcept final = default;
+    ~orientation_marker() noexcept final = default;
 
 protected:
 
     /// Configures the service's parameters
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Initializes and starts child services
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /// Updates internal matrix from the input transform
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /// Unregisters child services
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
     /// Sets the visibility of the adaptor
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) final;
+    void set_visible(bool _visible) final;
 
     /// Connects input matrix MODIFIED to UPDATE slot.
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
 private:
 

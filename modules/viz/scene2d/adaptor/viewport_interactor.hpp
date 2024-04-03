@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/scene2d/config.hpp"
-
 #include <viz/scene2d/adaptor.hpp>
 
 namespace sight::module::viz::scene2d::adaptor
@@ -40,29 +38,29 @@ namespace sight::module::viz::scene2d::adaptor
    @endcode
  *
  */
-class MODULE_VIZ_SCENE2D_CLASS_API viewport_interactor : public sight::viz::scene2d::adaptor
+class viewport_interactor : public sight::viz::scene2d::adaptor
 {
 public:
 
     SIGHT_DECLARE_SERVICE(viewport_interactor, sight::viz::scene2d::adaptor);
 
-    MODULE_VIZ_SCENE2D_API viewport_interactor() noexcept;
+    viewport_interactor() noexcept;
 
-    MODULE_VIZ_SCENE2D_API ~viewport_interactor() noexcept override;
+    ~viewport_interactor() noexcept override;
 
 protected:
 
-    MODULE_VIZ_SCENE2D_API void configuring() override;
+    void configuring() override;
 
-    MODULE_VIZ_SCENE2D_API void starting() override;
+    void starting() override;
 
-    MODULE_VIZ_SCENE2D_API void updating() override;
+    void updating() override;
 
-    MODULE_VIZ_SCENE2D_API void stopping() override;
+    void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API void process_interaction(sight::viz::scene2d::data::event& _event) override;
+    void process_interaction(sight::viz::scene2d::data::event& _event) override;
 
-    MODULE_VIZ_SCENE2D_API void zoom(bool _zoom_in);
+    void zoom(bool _zoom_in);
 
 private:
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "geometry/eigen/config.hpp"
+#include <sight/geometry/eigen/config.hpp>
 
 #include <data/matrix4.hpp>
 
@@ -43,48 +43,48 @@ using EigenMatrix = Eigen::Matrix<double, 4, 4, Eigen::RowMajor>;
  * @param _mat : the eigen matrix
  * @return a pointer to a data::matrix4
  */
-GEOMETRY_EIGEN_API data::matrix4::sptr from_eigen(const Eigen::Matrix4f& _mat);
+SIGHT_GEOMETRY_EIGEN_API data::matrix4::sptr from_eigen(const Eigen::Matrix4f& _mat);
 
 /**
  * @brief Convert from an Eigen double 4x4 Matrix to a data::matrix4
  * @param _mat : the eigen matrix
  * @return a pointer to a data::matrix4
  */
-GEOMETRY_EIGEN_API data::matrix4::sptr from_eigen(const Eigen::Matrix4d& _mat);
+SIGHT_GEOMETRY_EIGEN_API data::matrix4::sptr from_eigen(const Eigen::Matrix4d& _mat);
 
 /**
  * @brief Transform a eigen 4x4 matrix to a rvec tvec representation
  * @param _mat : input matrix
  * @return std::pair of Eigen::Vector3d (see rvec_tvec_t)
  */
-GEOMETRY_EIGEN_API rvec_tvec_t eigen_mat_to_rvec_tvec(const Eigen::Matrix4d& _mat);
+SIGHT_GEOMETRY_EIGEN_API rvec_tvec_t eigen_mat_to_rvec_tvec(const Eigen::Matrix4d& _mat);
 
 /**
  * @brief Transform rvec tvec representation to a eigen 4x4 matrix
  * @param _mat : input data::matrix4
  * @return std::pair of Eigen::Vector3d (see rvec_tvec_t)
  */
-GEOMETRY_EIGEN_API rvec_tvec_t f4s_mat_to_rvec_tvec(const data::matrix4::csptr _mat);
+SIGHT_GEOMETRY_EIGEN_API rvec_tvec_t f4s_mat_to_rvec_tvec(const data::matrix4::csptr _mat);
 /**
  * @brief toEigen
  * @param _farray of float (16 values)
  * @return eigen Matrix (double)
  */
-GEOMETRY_EIGEN_API EigenMatrix to_eigen(const std::array<float, 16>& _farray);
+SIGHT_GEOMETRY_EIGEN_API EigenMatrix to_eigen(const std::array<float, 16>& _farray);
 
 /**
  * @brief toEigen
  * @param _farray of double (16 values)
  * @return eigen Matrix (double)
  */
-GEOMETRY_EIGEN_API EigenMatrix to_eigen(const std::array<double, 16>& _farray);
+SIGHT_GEOMETRY_EIGEN_API EigenMatrix to_eigen(const std::array<double, 16>& _farray);
 
 /**
  * @brief Transform rvec tvec representation to a eigen 4x4 matrix
  * @param _farray input matrix
  * @return std::pair of Eigen::Vector3d (see rvec_tvec_t)
  */
-GEOMETRY_EIGEN_API rvec_tvec_t float16_to_rvec_tvec(const std::array<float, 16>& _farray);
+SIGHT_GEOMETRY_EIGEN_API rvec_tvec_t float16_to_rvec_tvec(const std::array<float, 16>& _farray);
 
 /**
  * @brief Transform a data::matrix4::sptr to a eigen 4x4 matrix

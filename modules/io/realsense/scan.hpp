@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/realsense/config.hpp"
 
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
@@ -176,7 +174,7 @@ namespace sight::module::io::realsense
  * - \b recordFile (optional): path & filename where recording will be saved.
  */
 
-class MODULE_IO_REALSENSE_CLASS_API scan : public sight::io::service::rgbd_grabber
+class scan : public sight::io::service::rgbd_grabber
 {
 public:
 
@@ -192,26 +190,26 @@ public:
     typedef core::com::signal<void (void)> file_played_signal_t;
 
     /// Constructor. Initializes signals/slots.
-    MODULE_IO_REALSENSE_API scan() noexcept;
+    scan() noexcept;
 
     /// Destructor. Calls stopCamera()
-    MODULE_IO_REALSENSE_API ~scan() noexcept override;
+    ~scan() noexcept override;
     ///SLOT: When "parameter_t" parameter changes
-    MODULE_IO_REALSENSE_API void set_parameter(ui::parameter_t value, std::string key) override;
+    void set_parameter(ui::parameter_t value, std::string key) override;
 
 protected:
 
     /// Starts the service, get the timelines and set the outputs.
-    MODULE_IO_REALSENSE_API void starting() override;
+    void starting() override;
 
     /// Shutdowns the streams by calling stopCamera().
-    MODULE_IO_REALSENSE_API void stopping() override;
+    void stopping() override;
 
     /// Restarts the service (stopCamera() & startCamera()).
-    MODULE_IO_REALSENSE_API void updating() override;
+    void updating() override;
 
     /// Parses the configuration.
-    MODULE_IO_REALSENSE_API void configuring() override;
+    void configuring() override;
 
 private:
 

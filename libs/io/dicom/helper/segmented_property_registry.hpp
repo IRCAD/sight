@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_coded_attribute.hpp"
 
 #include <data/object.hpp>
@@ -51,7 +52,7 @@ namespace sight::io::dicom::helper
  * - Anatomic Region
  * - Anatomic Region Modifiers
  */
-class IO_DICOM_CLASS_API segmented_property_registry
+class SIGHT_IO_DICOM_CLASS_API segmented_property_registry
 {
 public:
 
@@ -59,7 +60,7 @@ public:
     using entry_t = std::array<std::string, 5>;
 
     /// Constructor
-    IO_DICOM_API segmented_property_registry();
+    SIGHT_IO_DICOM_API segmented_property_registry();
 
     /**
      * @brief Read an extract registry values from a CSV file
@@ -75,7 +76,7 @@ public:
      * @param[in] _omit_first_line If set to 'true', the first line of the file is omitted
      * @param[in] _logger Logger used to display errors
      */
-    IO_DICOM_API bool read_segmented_property_registry_file(
+    SIGHT_IO_DICOM_API bool read_segmented_property_registry_file(
         const std::filesystem::path& _filepath,
         bool _omit_first_line                  = false,
         const SPTR(core::log::logger)& _logger = nullptr
@@ -95,42 +96,44 @@ public:
      * @param[in] _omit_first_line If set to 'true', the first line of the file is omitted
      * @param[in] _logger Logger used to display errors
      */
-    IO_DICOM_API bool read_segmented_property_registry_file(
+    SIGHT_IO_DICOM_API bool read_segmented_property_registry_file(
         std::istream& _csv_stream,
         bool _omit_first_line                  = false,
         const SPTR(core::log::logger)& _logger = nullptr
     );
 
     /// Returns whether the registry is empty or not
-    [[nodiscard]] IO_DICOM_API bool empty() const;
+    [[nodiscard]] SIGHT_IO_DICOM_API bool empty() const;
 
     /// Returns the number of entries
-    [[nodiscard]] IO_DICOM_API std::size_t count() const;
+    [[nodiscard]] SIGHT_IO_DICOM_API std::size_t count() const;
 
     /// Clear the registry
-    IO_DICOM_API void clear();
+    SIGHT_IO_DICOM_API void clear();
 
     /**
      * @brief Check if there is an entry for the corresponding structure type
      * @param[in] _structure_type Structure type
      */
-    [[nodiscard]] IO_DICOM_API bool has_entry(const std::string& _structure_type) const;
+    [[nodiscard]] SIGHT_IO_DICOM_API bool has_entry(const std::string& _structure_type) const;
 
     /**
      * @brief Returns matching entry for the corresponding structure type
      * @param[in] _structure_type Structure type
      */
-    [[nodiscard]] IO_DICOM_API entry_t get_entry(const std::string& _structure_type) const;
+    [[nodiscard]] SIGHT_IO_DICOM_API entry_t get_entry(const std::string& _structure_type) const;
 
     /**
      * @brief Getters for entry's attributes
      * @param[in] _structure_type Structure type
      * @{ */
-    [[nodiscard]] IO_DICOM_API std::string get_property_type(const std::string& _structure_type) const;
-    [[nodiscard]] IO_DICOM_API std::string get_property_category(const std::string& _structure_type) const;
-    [[nodiscard]] IO_DICOM_API std::string get_property_type_modifiers(const std::string& _structure_type) const;
-    [[nodiscard]] IO_DICOM_API std::string get_anatomic_region(const std::string& _structure_type) const;
-    [[nodiscard]] IO_DICOM_API std::string get_anatomic_region_modifiers(const std::string& _structure_type) const;
+    [[nodiscard]] SIGHT_IO_DICOM_API std::string get_property_type(const std::string& _structure_type) const;
+    [[nodiscard]] SIGHT_IO_DICOM_API std::string get_property_category(const std::string& _structure_type) const;
+    [[nodiscard]] SIGHT_IO_DICOM_API std::string get_property_type_modifiers(const std::string& _structure_type) const;
+    [[nodiscard]] SIGHT_IO_DICOM_API std::string get_anatomic_region(const std::string& _structure_type) const;
+    [[nodiscard]] SIGHT_IO_DICOM_API std::string get_anatomic_region_modifiers(
+        const std::string& _structure_type
+    ) const;
     /**  @} */
 
     /**
@@ -142,7 +145,7 @@ public:
      * @param[in] _anatomic_region Anatomic Region
      * @param[in] _anatomic_region_modifiers Anatomic Region Modifiers
      */
-    [[nodiscard]] IO_DICOM_API std::string get_structure_type(
+    [[nodiscard]] SIGHT_IO_DICOM_API std::string get_structure_type(
         const std::string& _property_type,
         const std::string& _property_category,
         const std::string& _property_type_modifiers,

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/vision/config.hpp"
 
 #include <data/calibration_info.hpp>
 #include <data/camera.hpp>
@@ -57,7 +55,7 @@ namespace sight::module::geometry::vision
  * @subsection Configuration Configuration:
  * - \b board : preference key to defines the number of square in 2 dimensions of the chessboard.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API open_cv_intrinsic : public sight::geometry::vision::i_calibration
+class open_cv_intrinsic : public sight::geometry::vision::i_calibration
 {
 public:
 
@@ -67,24 +65,24 @@ public:
     SIGHT_DECLARE_SERVICE(open_cv_intrinsic, sight::geometry::vision::i_calibration);
 
     /// Constructor.
-    MODULE_GEOMETRY_VISION_API open_cv_intrinsic() noexcept;
+    open_cv_intrinsic() noexcept;
 
     /// Destructor.
-    MODULE_GEOMETRY_VISION_API ~open_cv_intrinsic() noexcept override;
+    ~open_cv_intrinsic() noexcept override;
 
 protected:
 
     /// Configures the service.
-    MODULE_GEOMETRY_VISION_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_VISION_API void starting() override;
+    void starting() override;
 
     /// Computes intrinsic calibration
-    MODULE_GEOMETRY_VISION_API void updating() override;
+    void updating() override;
 
     /// Removes connections
-    MODULE_GEOMETRY_VISION_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief SLOT: update the chessboard size.

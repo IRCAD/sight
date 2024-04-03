@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <app/config_manager.hpp>
 
 #include <core/com/slot.hpp>
@@ -68,17 +66,17 @@ namespace sight::module::ui::qt::calibration
  *   an external window.
  * - \b stopConfig() : Stop the displayed configuration.
  */
-class MODULE_UI_QT_CLASS_API display_calibration_info : public service::controller
+class display_calibration_info : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(display_calibration_info, service::controller);
 
     /// Constructor. Does nothing.
-    MODULE_UI_QT_API display_calibration_info() noexcept;
+    display_calibration_info() noexcept;
 
     /// Destructor. Does nothing.
-    MODULE_UI_QT_API ~display_calibration_info() noexcept override;
+    ~display_calibration_info() noexcept override;
 
 protected:
 

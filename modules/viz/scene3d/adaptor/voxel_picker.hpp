@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <data/helper/medical_image.hpp>
 
@@ -68,7 +66,7 @@ namespace sight::module::viz::scene3d::adaptor
  *                                          In 3D, the ray intersects each slices and returns the nearest one.
  * - \b moveOnPick (optional, bool, default=false): move image slices indexes on the picked position.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API voxel_picker final :
+class voxel_picker final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::interactor::base
 {
@@ -78,24 +76,24 @@ public:
     SIGHT_DECLARE_SERVICE(voxel_picker, sight::viz::scene3d::adaptor);
 
     /// Initializes the adaptor.
-    MODULE_VIZ_SCENE3D_API voxel_picker() noexcept;
+    voxel_picker() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~voxel_picker() noexcept final = default;
+    ~voxel_picker() noexcept final = default;
 
     /// Runs a picking query when a mouse button is pressed.
-    MODULE_VIZ_SCENE3D_API void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) final;
+    void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) final;
 
     /// Runs a picking query when a mouse button is released.
-    MODULE_VIZ_SCENE3D_API void button_release_event(mouse_button _button, modifier _mod, int _x, int _y) final;
+    void button_release_event(mouse_button _button, modifier _mod, int _x, int _y) final;
 
 protected:
 
     /// Configures the picker.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Adds the interactor to the layer.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -103,13 +101,13 @@ protected:
      *
      * Connect data::image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to SLICETYPE_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void updating() noexcept final;
+    void updating() noexcept final;
 
     /// Removes the interactor from the layer.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,23 +41,23 @@ namespace sight::service
  * added to the object (see core::tools::object). The New() method on the related child is invoked, therefore
  * allowing to build tree like composite object which services.
  */
-class SERVICE_CLASS_API object_parser : public service::base
+class SIGHT_SERVICE_CLASS_API object_parser : public service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(object_parser, service::base);
 
-    SERVICE_API void set_object_config(const service::config_t& _cfg_elem);
+    SIGHT_SERVICE_API void set_object_config(const service::config_t& _cfg_elem);
 
-    SERVICE_API virtual void create_config(core::tools::object::sptr _obj);
+    SIGHT_SERVICE_API virtual void create_config(core::tools::object::sptr _obj);
 
-    SERVICE_API virtual void start_config();
+    SIGHT_SERVICE_API virtual void start_config();
 
-    SERVICE_API virtual void update_config();
+    SIGHT_SERVICE_API virtual void update_config();
 
-    SERVICE_API virtual void stop_config();
+    SIGHT_SERVICE_API virtual void stop_config();
 
-    SERVICE_API virtual void destroy_config();
+    SIGHT_SERVICE_API virtual void destroy_config();
 
     service::config_t m_cfg;
 
@@ -66,27 +66,27 @@ protected:
     /**
      * @brief Constructor. Does nothing.
      */
-    SERVICE_API object_parser() = default;
+    SIGHT_SERVICE_API object_parser() = default;
 
     /**
      * @brief Destructor. Does nothing.
      */
-    SERVICE_API ~object_parser() override = default;
+    SIGHT_SERVICE_API ~object_parser() override = default;
 
     /**
      * @brief Does nothing
      */
-    SERVICE_API void starting() override;
+    SIGHT_SERVICE_API void starting() override;
 
     /**
      * @brief Does nothing
      */
-    SERVICE_API void stopping() override;
+    SIGHT_SERVICE_API void stopping() override;
 
     /**
      * @brief Does nothing
      */
-    SERVICE_API void configuring() override;
+    SIGHT_SERVICE_API void configuring() override;
 
     /**
      * @brief Parse the XML configuration
@@ -94,7 +94,7 @@ protected:
      * both
      *       specific compositions and this generic one
      */
-    SERVICE_API void updating() override;
+    SIGHT_SERVICE_API void updating() override;
 };
 
 } // namespace sight::service

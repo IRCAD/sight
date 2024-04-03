@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene2d/config.hpp"
+#include <sight/viz/scene2d/config.hpp>
 
 #include <map>
 #include <string>
@@ -38,7 +38,7 @@ namespace registry
 using adaptor_registry_t = std::map<std::string, std::string>;
 
 /// Returns map containing adaptor-render association
-VIZ_SCENE2D_API adaptor_registry_t& get_adaptor_registry();
+SIGHT_VIZ_SCENE2D_API adaptor_registry_t& get_adaptor_registry();
 
 } // namespace registry
 

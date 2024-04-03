@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "activity/config.hpp"
+#include <sight/activity/config.hpp>
+
 #include "activity/validator/base.hpp"
 
 namespace sight::activity::validator
@@ -31,19 +32,19 @@ namespace sight::activity::validator
 /**
  * @brief Defines a validator which checks that given series refer to the same study.
  */
-class ACTIVITY_CLASS_API related_study : public activity::validator::base
+class SIGHT_ACTIVITY_CLASS_API related_study : public activity::validator::base
 {
 public:
 
     SIGHT_DECLARE_CLASS(related_study, activity::validator::base);
 
     /// Destructor. Do nothing.
-    ACTIVITY_API ~related_study() override = default;
+    SIGHT_ACTIVITY_API ~related_study() override = default;
 
     /**
      * @see activity::validator::base::validate
      */
-    ACTIVITY_API validator::return_t validate(
+    SIGHT_ACTIVITY_API validator::return_t validate(
         const activity::extension::activity_info& _activity_info,
         const CSPTR(data::vector)& _current_selection
     ) const override;

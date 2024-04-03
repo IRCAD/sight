@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/memory/buffer_allocation_policy.hpp"
 #include "core/memory/buffer_manager.hpp"
 
@@ -58,7 +59,7 @@ class factory;
  * NOT ENSURE* that an other user of this buffer object are not
  * changing/modifying the buffer.
  */
-class CORE_CLASS_API buffer_object : public sight::core::base_object
+class SIGHT_CORE_CLASS_API buffer_object : public sight::core::base_object
 {
 public:
 
@@ -171,14 +172,14 @@ public:
      *
      * Register the buffer to an existing buffer manager.
      */
-    CORE_API buffer_object(bool _auto_delete = false);
+    SIGHT_CORE_API buffer_object(bool _auto_delete = false);
 
     /**
      * @brief buffer_object destructor
      *
      * unregister the buffer from the buffer manager.
      */
-    CORE_API ~buffer_object() override;
+    SIGHT_CORE_API ~buffer_object() override;
 
     /**
      * @brief Buffer allocation
@@ -190,7 +191,7 @@ public:
      * @param _policy Buffer allocation policy, default is Malloc policy
      *
      */
-    CORE_API virtual void allocate(
+    SIGHT_CORE_API virtual void allocate(
         size_t _size,
         const core::memory::buffer_allocation_policy::sptr& _policy =
         std::make_shared<core::memory::buffer_malloc_policy>()
@@ -206,7 +207,7 @@ public:
      * @param _size New buffer size
      *
      */
-    CORE_API virtual void reallocate(size_t _size);
+    SIGHT_CORE_API virtual void reallocate(size_t _size);
 
     /**
      * @brief Buffer deallocation
@@ -215,7 +216,7 @@ public:
      * The destruction may have been hooked by the buffer manager.
      *
      */
-    CORE_API virtual void destroy();
+    SIGHT_CORE_API virtual void destroy();
 
     /**
      * @brief Buffer setter
@@ -227,7 +228,7 @@ public:
      * @param _policy External buffer allocation policy, default is Malloc policy
      *
      */
-    CORE_API virtual void set_buffer(
+    SIGHT_CORE_API virtual void set_buffer(
         core::memory::buffer_manager::buffer_t _buffer,
         size_t _size,
         const core::memory::buffer_allocation_policy::sptr& _policy =
@@ -240,14 +241,14 @@ public:
      *
      * @return Lock on the buffer_object
      */
-    CORE_API virtual lock_t lock();
+    SIGHT_CORE_API virtual lock_t lock();
 
     /**
      * @brief Return a const lock on the buffer_object
      *
      * @return ConstLock on the buffer_object
      */
-    CORE_API virtual const_lock_t lock() const;
+    SIGHT_CORE_API virtual const_lock_t lock() const;
 
     /**
      * @brief Returns the buffer's size
@@ -297,9 +298,9 @@ public:
     }
 
     /// Exchanges the content of the buffer_object with the content of _source.
-    CORE_API void swap(const buffer_object::sptr& _source) noexcept;
+    SIGHT_CORE_API void swap(const buffer_object::sptr& _source) noexcept;
 
-    CORE_API buffer_manager::stream_info get_stream_info() const;
+    SIGHT_CORE_API buffer_manager::stream_info get_stream_info() const;
 
     /**
      * @brief Set a stream factory for the buffer manager
@@ -311,7 +312,7 @@ public:
      * @param _format file format (RAW,RAWZ,OTHER), if sourceFile is provided
      * @param _policy Buffer allocation policy
      */
-    CORE_API void set_istream_factory(
+    SIGHT_CORE_API void set_istream_factory(
         const SPTR(core::memory::stream::in::factory)& _factory,
         size_t _size,
         const std::filesystem::path& _source_file                   = "",
@@ -321,8 +322,8 @@ public:
 
     /// Equality comparison operators
     /// @{
-    CORE_API bool operator==(const buffer_object& _other) const noexcept;
-    CORE_API bool operator!=(const buffer_object& _other) const noexcept;
+    SIGHT_CORE_API bool operator==(const buffer_object& _other) const noexcept;
+    SIGHT_CORE_API bool operator!=(const buffer_object& _other) const noexcept;
 
     /// @}
 

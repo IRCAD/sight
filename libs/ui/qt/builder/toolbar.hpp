@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
+
 #include "ui/qt/container/widget.hpp"
 
 #include <core/base.hpp>
@@ -38,26 +39,26 @@ namespace sight::ui::qt::builder
  * @brief   Defines a tool bar.
  *
  */
-class UI_QT_CLASS_API toolbar : public ui::builder::toolbar
+class SIGHT_UI_QT_CLASS_API toolbar : public ui::builder::toolbar
 {
 public:
 
     SIGHT_DECLARE_CLASS(toolbar, ui::builder::toolbar, ui::factory::make<toolbar>);
 
-    UI_QT_API ~toolbar() override = default;
+    SIGHT_UI_QT_API ~toolbar() override = default;
 
     /**
      * @brief Instantiate layout with parent toolbar.
      * @pre layout must be initialized before.
      * @pre parent toolbar must be instanced.
      */
-    UI_QT_API void create_tool_bar(ui::container::widget::sptr _parent) override;
+    SIGHT_UI_QT_API void create_tool_bar(ui::container::widget::sptr _parent) override;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_QT_API void destroy_tool_bar() override;
+    SIGHT_UI_QT_API void destroy_tool_bar() override;
 
 protected:
 

@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/filter/mesh//config.hpp"
-
 #include <data/mesh.hpp>
 
 #include <service/generator.hpp>
@@ -70,7 +68,7 @@ namespace sight::module::filter::mesh::generator
  * @subsection In-Out In-Out:
  * - \b mesh [sight::data::mesh]: generated mesh.
  */
-class MODULE_FILTER_MESH_CLASS_API needle final : public sight::service::generator
+class needle final : public sight::service::generator
 {
 public:
 
@@ -78,24 +76,24 @@ public:
     SIGHT_DECLARE_SERVICE(needle, sight::service::generator);
 
     /// Initializes slots.
-    MODULE_FILTER_MESH_API needle() noexcept;
+    needle() noexcept;
 
     /// Destroys the service.
-    MODULE_FILTER_MESH_API ~needle() noexcept override;
+    ~needle() noexcept override;
 
 protected:
 
     /// Configures the service's parameters.
-    MODULE_FILTER_MESH_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_MESH_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_FILTER_MESH_API void stopping() override;
+    void stopping() override;
 
     /// Generate the cylinder.
-    MODULE_FILTER_MESH_API void updating() override;
+    void updating() override;
 
 private:
 

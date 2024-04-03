@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <activity/extension/activity.hpp>
 #include <activity/message.hpp>
 
@@ -91,8 +89,8 @@ namespace sight::module::ui::qt::activity
  * @subsection Configuration Configuration:
  *  - \b document (optional, default="true") : sets the document mode of the tab bar.
  */
-class MODULE_UI_QT_CLASS_API dynamic_view : public QObject,
-                                            public sight::ui::activity_view
+class dynamic_view : public QObject,
+                     public sight::ui::activity_view
 {
 Q_OBJECT
 
@@ -101,16 +99,16 @@ public:
     SIGHT_DECLARE_SERVICE(dynamic_view, sight::ui::activity_view);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API dynamic_view() noexcept;
+    dynamic_view() noexcept;
 
     /// Destructor. Do nothing.
 
-    MODULE_UI_QT_API ~dynamic_view() noexcept override;
+    ~dynamic_view() noexcept override;
 
     using activity_selected_signal_t = core::com::signal<void (data::object::sptr)>;
-    MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_SELECTED_SIG;
+    static const core::com::signals::key_t ACTIVITY_SELECTED_SIG;
     using nothing_selected_signal_t = core::com::signal<void ()>;
-    MODULE_UI_QT_API static const core::com::signals::key_t NOTHING_SELECTED_SIG;
+    static const core::com::signals::key_t NOTHING_SELECTED_SIG;
 
 protected:
 

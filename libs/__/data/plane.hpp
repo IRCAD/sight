@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/factory/new.hpp"
 #include "data/point.hpp"
 
@@ -38,7 +39,7 @@ namespace sight::data
  * @brief   This class defines a plane defined by tree points.
  * @see     Point
  */
-class DATA_CLASS_API plane final : public object
+class SIGHT_DATA_CLASS_API plane final : public object
 {
 public:
 
@@ -49,13 +50,13 @@ public:
     /**
      * @brief Constructor
      */
-    DATA_API plane();
+    SIGHT_DATA_API plane();
 
     /// Destructor
-    DATA_API ~plane() noexcept override = default;
+    SIGHT_DATA_API ~plane() noexcept override = default;
 
     /// Re-initialize the plane with 3 points
-    DATA_API void set_value(
+    SIGHT_DATA_API void set_value(
         point::sptr _point1,
         point::sptr _point2,
         point::sptr _point3
@@ -82,27 +83,27 @@ public:
      */
     /// Signal emitted when plane is selected/deselected
     using selected_signal_t = core::com::signal<void (bool)>;
-    DATA_API static const core::com::signals::key_t SELECTED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t SELECTED_SIG;
 /**
  * @}
  */
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const plane& _other) const noexcept;
-    DATA_API bool operator!=(const plane& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const plane& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const plane& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

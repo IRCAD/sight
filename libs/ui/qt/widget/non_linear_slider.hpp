@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,38 +21,38 @@
 
 #pragma once
 
-#include <ui/qt/config.hpp>
+#include <sight/ui/qt/config.hpp>
 
 #include <QSlider>
 
 namespace sight::ui::qt::widget
 {
 
-class UI_QT_CLASS_API_QT non_linear_slider : public QWidget
+class SIGHT_UI_QT_CLASS_API_QT non_linear_slider : public QWidget
 {
 Q_OBJECT
 
 public:
 
-    UI_QT_API_QT non_linear_slider(QWidget* _parent = nullptr);
+    SIGHT_UI_QT_API_QT non_linear_slider(QWidget* _parent = nullptr);
 
-    UI_QT_API_QT void set_orientation(Qt::Orientation _orientation);
+    SIGHT_UI_QT_API_QT void set_orientation(Qt::Orientation _orientation);
 
-    UI_QT_API_QT void set_values(const std::vector<int>& _values);
-    UI_QT_API_QT void set_value(int _value);
+    SIGHT_UI_QT_API_QT void set_values(const std::vector<int>& _values);
+    SIGHT_UI_QT_API_QT void set_value(int _value);
 
-    UI_QT_API_QT void set_tracking(bool _tracking);
+    SIGHT_UI_QT_API_QT void set_tracking(bool _tracking);
 
-    UI_QT_API_QT int value();
-    UI_QT_API_QT std::size_t index();
+    SIGHT_UI_QT_API_QT int value();
+    SIGHT_UI_QT_API_QT std::size_t index();
 
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
 
 Q_SIGNALS:
 
-    UI_QT_API_QT void value_changed(int _value);
-    UI_QT_API_QT void range_changed(int _min, int _max);
+    SIGHT_UI_QT_API_QT void value_changed(int _value);
+    SIGHT_UI_QT_API_QT void range_changed(int _min, int _max);
 
 protected:
 

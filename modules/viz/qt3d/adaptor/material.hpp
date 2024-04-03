@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/qt3d/config.hpp"
 
 #include <data/material.hpp>
 
@@ -53,7 +51,7 @@ namespace sight::module::viz::qt3d::adaptor
  * @subsection Configuration Configuration:
  * - \b materialName : used by other adaptors in the scene to retrieve the material handled by this adaptor.
  */
-class MODULE_VIZ_QT3D_CLASS_API material : public sight::viz::qt3d::adaptor
+class material : public sight::viz::qt3d::adaptor
 {
 public:
 
@@ -61,27 +59,27 @@ public:
     SIGHT_DECLARE_SERVICE(material, sight::viz::qt3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
-    MODULE_VIZ_QT3D_API material() noexcept;
+    material() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_QT3D_API ~material() noexcept override;
+    ~material() noexcept override;
 
     /// Updates associated material.
-    MODULE_VIZ_QT3D_API void set_material(sight::viz::qt3d::data::material* _material);
+    void set_material(sight::viz::qt3d::data::material* _material);
 
     /// @returns associated material.
-    MODULE_VIZ_QT3D_API sight::viz::qt3d::data::material* get_material();
+    sight::viz::qt3d::data::material* get_material();
 
     /// @returns material name.
-    MODULE_VIZ_QT3D_API std::string get_material_name();
+    std::string get_material_name();
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_QT3D_API void configuring() override;
+    void configuring() override;
 
     /// Starts the adaptor.
-    MODULE_VIZ_QT3D_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -90,13 +88,13 @@ protected:
      * Connect data::image::MODIFIED_SIG of s_MESH_INOUT to service::slots::UPDATE.
      * Connect data::image::VERTEX_MODIFIED_SIG of s_MESH_INOUT to MODIFY_VERTICES_SLOT.
      */
-    MODULE_VIZ_QT3D_API service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const override;
 
     /// Updates the material.
-    MODULE_VIZ_QT3D_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_VIZ_QT3D_API void stopping() override;
+    void stopping() override;
 
 private:
 

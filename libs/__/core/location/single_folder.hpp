@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace sight::core::location
 {
 
 /// Class to define a location that holds a single directory path
-class CORE_CLASS_API single_folder : public base
+class SIGHT_CORE_CLASS_API single_folder : public base
 {
 public:
 

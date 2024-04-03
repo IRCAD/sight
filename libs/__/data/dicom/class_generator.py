@@ -213,12 +213,12 @@ def write_attribute_hpp() -> None:
             f"        I{g_attribute_class_name}(s_keyword, s_group, s_element, s_name, s_vr, s_vm)\n"
             "    {\n"
             "    }\n\n"
-            f"    DATA_API static const Keyword s_keyword;\n"
-            "    DATA_API static const std::uint16_t s_group;\n"
-            "    DATA_API static const std::uint16_t s_element;\n"
-            "    DATA_API static const std::string_view s_name;\n"
-            "    DATA_API static const VR s_vr;\n"
-            "    DATA_API static const VM s_vm;\n"
+            f"    SIGHT_DATA_API static const Keyword s_keyword;\n"
+            "    SIGHT_DATA_API static const std::uint16_t s_group;\n"
+            "    SIGHT_DATA_API static const std::uint16_t s_element;\n"
+            "    SIGHT_DATA_API static const std::string_view s_name;\n"
+            "    SIGHT_DATA_API static const VR s_vr;\n"
+            "    SIGHT_DATA_API static const VM s_vm;\n"
             "};\n\n"
         )
 
@@ -226,8 +226,8 @@ def write_attribute_hpp() -> None:
         attribute_hpp.write(
             f"/// @return a static const reference to an {g_attribute_class_name}\n"
             "/// @{\n"
-            f"DATA_API const I{g_attribute_class_name}& get(Keyword keyword);\n"
-            f"DATA_API const I{g_attribute_class_name}& get(std::uint16_t group, std::uint16_t element);\n"
+            f"SIGHT_DATA_API const I{g_attribute_class_name}& get(Keyword keyword);\n"
+            f"SIGHT_DATA_API const I{g_attribute_class_name}& get(std::uint16_t group, std::uint16_t element);\n"
             "/// @}\n\n"
         )
 
@@ -269,12 +269,12 @@ def write_attribute_cpp() -> None:
             uint16_tag = tag_to_uint16(tag)
 
             attribute_cpp.write(
-                f"template<> DATA_API const Keyword {g_attribute_class_name}<Keyword::{attribute.keyword}>::s_keyword = Keyword::{attribute.keyword};\n"
-                f"template<> DATA_API const std::uint16_t {g_attribute_class_name}<Keyword::{attribute.keyword}>::s_group = {uint16_tag.group};\n"
-                f"template<> DATA_API const std::uint16_t {g_attribute_class_name}<Keyword::{attribute.keyword}>::s_element = {uint16_tag.element};\n"
-                f"template<> DATA_API const std::string_view {g_attribute_class_name}<Keyword::{attribute.keyword}>::s_name = \"{attribute.name}\";\n"
-                f"template<> DATA_API const VR {g_attribute_class_name}<Keyword::{attribute.keyword}>::s_vr = VR::{attribute.vr};\n"
-                f"template<> DATA_API const VM {g_attribute_class_name}<Keyword::{attribute.keyword}>::s_vm = VM::{attribute.vm};\n"
+                f"template<> SIGHT_DATA_API const Keyword {g_attribute_class_name}<Keyword::{attribute.keyword}>::s_keyword = Keyword::{attribute.keyword};\n"
+                f"template<> SIGHT_DATA_API const std::uint16_t {g_attribute_class_name}<Keyword::{attribute.keyword}>::s_group = {uint16_tag.group};\n"
+                f"template<> SIGHT_DATA_API const std::uint16_t {g_attribute_class_name}<Keyword::{attribute.keyword}>::s_element = {uint16_tag.element};\n"
+                f"template<> SIGHT_DATA_API const std::string_view {g_attribute_class_name}<Keyword::{attribute.keyword}>::s_name = \"{attribute.name}\";\n"
+                f"template<> SIGHT_DATA_API const VR {g_attribute_class_name}<Keyword::{attribute.keyword}>::s_vr = VR::{attribute.vr};\n"
+                f"template<> SIGHT_DATA_API const VM {g_attribute_class_name}<Keyword::{attribute.keyword}>::s_vm = VM::{attribute.vm};\n"
             )
 
         attribute_cpp.write(
@@ -439,10 +439,10 @@ def write_sop_hpp() -> None:
             f"        I{g_sop_class_name}(s_keyword, s_name, s_uid, s_iod)\n"
             "    {\n"
             "    }\n\n"
-            f"    DATA_API static const Keyword s_keyword;\n"
-            "    DATA_API static const std::string_view s_name;\n"
-            "    DATA_API static const std::string_view s_uid;\n"
-            "    DATA_API static const std::string_view s_iod;\n"
+            f"    SIGHT_DATA_API static const Keyword s_keyword;\n"
+            "    SIGHT_DATA_API static const std::string_view s_name;\n"
+            "    SIGHT_DATA_API static const std::string_view s_uid;\n"
+            "    SIGHT_DATA_API static const std::string_view s_iod;\n"
             "};\n\n"
         )
 
@@ -450,11 +450,11 @@ def write_sop_hpp() -> None:
         sop_hpp.write(
             f"/// @return a static const reference to an {g_sop_class_name}\n"
             "/// @{\n"
-            f"DATA_API const I{g_sop_class_name}& get(Keyword keyword);\n"
-            f"DATA_API const I{g_sop_class_name}& get(const std::string_view& uid);\n"
+            f"SIGHT_DATA_API const I{g_sop_class_name}& get(Keyword keyword);\n"
+            f"SIGHT_DATA_API const I{g_sop_class_name}& get(const std::string_view& uid);\n"
             "/// @}\n\n"
             "/// convert a uid directly to a keyword\n"
-            "DATA_API const Keyword& keyword(const std::string_view& uid) noexcept;\n\n"
+            "SIGHT_DATA_API const Keyword& keyword(const std::string_view& uid) noexcept;\n\n"
         )
 
         sop_hpp.write(generate_footer(namespace=g_sop_class_name.lower()))
@@ -494,10 +494,10 @@ def write_sop_cpp() -> None:
             sop = dicom_parser.g_filtered_sops[uid]
             iod = dicom_parser.g_filtered_iods[sop.iod.keyword]
             sop_cpp.write(
-                f"template<> DATA_API const Keyword {g_sop_class_name}<Keyword::{uid.keyword}>::s_keyword = Keyword::{uid.keyword};\n"
-                f"template<> DATA_API const std::string_view {g_sop_class_name}<Keyword::{uid.keyword}>::s_name = \"{uid.name}\";\n"
-                f"template<> DATA_API const std::string_view {g_sop_class_name}<Keyword::{uid.keyword}>::s_uid = \"{uid.value}\";\n"
-                f"template<> DATA_API const std::string_view {g_sop_class_name}<Keyword::{uid.keyword}>::s_iod = \"{iod.name}\";\n"
+                f"template<> SIGHT_DATA_API const Keyword {g_sop_class_name}<Keyword::{uid.keyword}>::s_keyword = Keyword::{uid.keyword};\n"
+                f"template<> SIGHT_DATA_API const std::string_view {g_sop_class_name}<Keyword::{uid.keyword}>::s_name = \"{uid.name}\";\n"
+                f"template<> SIGHT_DATA_API const std::string_view {g_sop_class_name}<Keyword::{uid.keyword}>::s_uid = \"{uid.value}\";\n"
+                f"template<> SIGHT_DATA_API const std::string_view {g_sop_class_name}<Keyword::{uid.keyword}>::s_iod = \"{iod.name}\";\n"
             )
 
         sop_cpp.write(

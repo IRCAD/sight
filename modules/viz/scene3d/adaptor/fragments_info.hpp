@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
 
@@ -56,7 +54,7 @@ namespace sight::module::viz::scene3d::adaptor
  *      if the layer is resized the snaphot will be resized.
  * - \b flip (optional): flip result images, default: false.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API fragments_info final :
+class fragments_info final :
     public sight::viz::scene3d::adaptor,
     public Ogre::RenderTargetListener
 {
@@ -66,30 +64,30 @@ public:
     SIGHT_DECLARE_SERVICE(fragments_info, sight::viz::scene3d::adaptor);
 
     /// Initializes the adaptor.
-    MODULE_VIZ_SCENE3D_API fragments_info() noexcept;
+    fragments_info() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~fragments_info() noexcept override = default;
+    ~fragments_info() noexcept override = default;
 
     /// Resizes the global render target
-    MODULE_VIZ_SCENE3D_API void resize_viewport();
+    void resize_viewport();
 
     /// Calls updating(). This is called right after the layer render target has been rendered.
-    MODULE_VIZ_SCENE3D_API void postRenderTargetUpdate(const Ogre::RenderTargetEvent& /*evt*/) override;
+    void postRenderTargetUpdate(const Ogre::RenderTargetEvent& /*evt*/) override;
 
 protected:
 
     /// Configures the layer and retrieves the size of the output image.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    void configuring() override;
 
     /// Initializes adaptor and connection to layer signals.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    void starting() override;
 
     /// Updates the service. Convert render target texture to data::image.
-    MODULE_VIZ_SCENE3D_API void updating() noexcept override;
+    void updating() noexcept override;
 
     /// Destroys adaptor, only calls module::viz::scene3d::adaptor::destroyCompositor().
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    void stopping() override;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/image/config.hpp"
+#include <sight/filter/image/config.hpp>
 
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
@@ -47,7 +47,7 @@ namespace sight::filter::image
  * @pre Input meshes must have cells with 3 or 4 points.
  * @warning The image and meshes must be used without transformation matrices in 3D scene, no matrices are used here.
  */
-class FILTER_IMAGE_CLASS_API image_extruder final
+class SIGHT_FILTER_IMAGE_CLASS_API image_extruder final
 {
 public:
 
@@ -60,7 +60,7 @@ public:
      * @warning No data are locked here, it must be done before.
      * @warning No signals are sent here, it must be done after.
      */
-    static FILTER_IMAGE_API void extrude(
+    static SIGHT_FILTER_IMAGE_API void extrude(
         const data::image::sptr& _image,
         const data::mesh::csptr& _mesh,
         const data::matrix4::csptr& _transform

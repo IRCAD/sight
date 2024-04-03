@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/dicom/config.hpp"
-
 #include <core/base.hpp>
 
 #include <data/series_set.hpp>
@@ -62,8 +60,8 @@ namespace sight::module::ui::dicom
  * - \b target [sight::data::series_set]: series_set where to put the selection.
  */
 
-class MODULE_UI_DICOM_CLASS_API filter_selection_editor : public QObject,
-                                                          public sight::ui::editor
+class filter_selection_editor : public QObject,
+                                public sight::ui::editor
 {
 Q_OBJECT;
 
@@ -76,68 +74,68 @@ public:
     /**
      * @brief Constructor
      */
-    MODULE_UI_DICOM_API filter_selection_editor() noexcept;
+    filter_selection_editor() noexcept;
 
     /**
      * @brief Destructor
      */
-    MODULE_UI_DICOM_API ~filter_selection_editor() noexcept override;
+    ~filter_selection_editor() noexcept override;
 
 private Q_SLOTS:
 
     /// Slot called when a new filter type is selected in the context menu
-    MODULE_UI_DICOM_API void add_filter(int _filter_type_index);
+    void add_filter(int _filter_type_index);
 
     /// Slot called when the add filter button is pressed
-    MODULE_UI_DICOM_API void add_filter_at_the_end();
+    void add_filter_at_the_end();
 
     /// Slot called when the remove filter button is pressed
-    MODULE_UI_DICOM_API void remove_filter();
+    void remove_filter();
 
     /// Slot called when a new filter is selected
-    MODULE_UI_DICOM_API void update_button_status(int _filter_index);
+    void update_button_status(int _filter_index);
 
     /// Slot called when the configure filter button is pressed
-    MODULE_UI_DICOM_API void configure_filter();
+    void configure_filter();
 
     /// Slot called when the split filter button is pressed
-    MODULE_UI_DICOM_API void split_filter();
+    void split_filter();
 
     /// Slot called when the apply filters button is pressed
-    MODULE_UI_DICOM_API void apply_filters();
+    void apply_filters();
 
     /// Slot used to display the context menu on a filter
-    MODULE_UI_DICOM_API void show_context_menu_for_selected_filter(const QPoint& _pos);
+    void show_context_menu_for_selected_filter(const QPoint& _pos);
 
     /// Slot used to display a warning when ignore errors checkbox is checked
-    static MODULE_UI_DICOM_API void on_force_checked(int _state);
+    static void on_force_checked(int _state);
 
 protected:
 
     /// Do nothing.
-    MODULE_UI_DICOM_API void configuring() override;
+    void configuring() override;
 
     /// Override
-    MODULE_UI_DICOM_API void starting() override;
+    void starting() override;
 
     /// Override
-    MODULE_UI_DICOM_API void stopping() override;
+    void stopping() override;
 
     /// Override
-    MODULE_UI_DICOM_API void updating() override;
+    void updating() override;
 
     /// Override
-    MODULE_UI_DICOM_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     /// Fill the combobox with the list of available filters
-    MODULE_UI_DICOM_API void fill_available_filters();
+    void fill_available_filters();
 
     /**
      * @brief Create and add a filter in a specific position
      * @param[in] _filter_type_index filter type index in the combobox
      * @param[in] _position Position in the list
      */
-    MODULE_UI_DICOM_API void add_filter(int _filter_type_index, int _position);
+    void add_filter(int _filter_type_index, int _position);
 
     /**
      * @brief Sort filters

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "geometry/vision/config.hpp"
+#include <sight/geometry/vision/config.hpp>
 
 #include <service/base.hpp>
 
@@ -32,17 +32,17 @@ namespace sight::geometry::vision
 /**
  * @brief   ICalibration is an interface API for calibration services.
  */
-class GEOMETRY_VISION_CLASS_API i_calibration : public service::base
+class SIGHT_GEOMETRY_VISION_CLASS_API i_calibration : public service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(i_calibration, service::base);
 
     /// Constructor.
-    GEOMETRY_VISION_API i_calibration() noexcept;
+    SIGHT_GEOMETRY_VISION_API i_calibration() noexcept;
 
     /// Destructor.
-    GEOMETRY_VISION_API ~i_calibration() noexcept override;
+    SIGHT_GEOMETRY_VISION_API ~i_calibration() noexcept override;
 };
 
 } // namespace sight::geometry::vision

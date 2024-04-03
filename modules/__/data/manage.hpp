@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/data/config.hpp"
 
 #include <data/object.hpp>
 
@@ -101,17 +99,17 @@ namespace sight::module::data
  * - \b compositeKey (optional, only used if the target object in a Composite) : key of the object in the composite
  * - \b field (optional) : name of the field
  */
-class MODULE_DATA_CLASS_API manage : public service::controller
+class manage : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(manage, sight::service::controller);
 
     /// Constructor.  Do nothing.
-    MODULE_DATA_API manage() noexcept;
+    manage() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_DATA_API ~manage() noexcept override;
+    ~manage() noexcept override;
 
     /**
      * @name Slots
@@ -131,16 +129,16 @@ public:
 protected:
 
     /// Configures the service.
-    MODULE_DATA_API void configuring() override;
+    void configuring() override;
 
     /// Implements starting method derived from base. Do nothing.
-    MODULE_DATA_API void starting() override;
+    void starting() override;
 
     /// Implements stopping method derived from base. Do nothing.
-    MODULE_DATA_API void stopping() override;
+    void stopping() override;
 
     /// Implements updating method derived from base. Do nothing.
-    MODULE_DATA_API void updating() override;
+    void updating() override;
 
     /**
      * @name Slots

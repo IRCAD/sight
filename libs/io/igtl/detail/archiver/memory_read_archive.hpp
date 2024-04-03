@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/igtl/config.hpp"
+#include <sight/io/igtl/config.hpp>
 
 #include <core/macros.hpp>
 
@@ -51,17 +51,17 @@ using buffer_cs_ptr = std::shared_ptr<const std::vector<char> >;
  *
  * @brief MemoryReadArchive is a memory archive reader
  */
-class IO_IGTL_CLASS_API memory_read_archive : public io::zip::read_archive
+class SIGHT_IO_IGTL_CLASS_API memory_read_archive : public io::zip::read_archive
 {
 public:
 
     using sptr = std::shared_ptr<memory_read_archive>;
 
     /// constructor
-    IO_IGTL_API memory_read_archive(const char* _buffer, std::size_t _size);
+    SIGHT_IO_IGTL_API memory_read_archive(const char* _buffer, std::size_t _size);
 
     /// destructor
-    IO_IGTL_API ~memory_read_archive() override;
+    SIGHT_IO_IGTL_API ~memory_read_archive() override;
 
     /**
      * @brief Returns input stream for the file in current archive (zip).
@@ -71,14 +71,14 @@ public:
      * @throw io::zip::exception::Read if file doesn't exist in archive.
      * @throw io::zip::exception::Read if cannot retrieve file in archive.
      */
-    IO_IGTL_API SPTR(std::istream) get_file(const std::filesystem::path& _path) override;
+    SIGHT_IO_IGTL_API SPTR(std::istream) get_file(const std::filesystem::path& _path) override;
 
     /**
      * @brief Returns archive path.
      *
      * @return the archive path
      */
-    [[nodiscard]] IO_IGTL_API std::filesystem::path get_archive_path() const override;
+    [[nodiscard]] SIGHT_IO_IGTL_API std::filesystem::path get_archive_path() const override;
 
     /**
      * @brief clone the instance

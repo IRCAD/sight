@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/com/signals.hpp>
@@ -91,7 +89,7 @@ namespace sight::module::ui::qt::model
  *      The attribute 'view' is optional and has the following values:
  *  - positive: a numeric value is displayed only if it is positive. Otherwise, 'Unknown' is displayed.
  */
-class MODULE_UI_QT_CLASS_API model_series_list final :
+class model_series_list final :
     public QObject,
     public sight::ui::editor
 {
@@ -103,10 +101,10 @@ public:
     SIGHT_DECLARE_SERVICE(model_series_list, sight::ui::editor);
 
     /// Initializes the slot and signals.
-    MODULE_UI_QT_API model_series_list() noexcept;
+    model_series_list() noexcept;
 
     /// Cleans ressources.
-    MODULE_UI_QT_API ~model_series_list() noexcept final = default;
+    ~model_series_list() noexcept final = default;
 
 protected:
 

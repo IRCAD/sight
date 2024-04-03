@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <data/image.hpp>
 
@@ -50,7 +48,7 @@ namespace sight::module::filter::image
  * @subsection Output Output
  * - \b outputImage [sight::data::image]: result of operation 'AND' between input image and mask
  */
-class MODULE_FILTER_IMAGE_CLASS_API bitwise_and final : public sight::service::filter
+class bitwise_and final : public sight::service::filter
 {
 public:
 
@@ -58,24 +56,24 @@ public:
     SIGHT_DECLARE_SERVICE(bitwise_and, sight::service::filter);
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API bitwise_and();
+    bitwise_and();
 
     /// Destroys the service.
-    MODULE_FILTER_IMAGE_API ~bitwise_and() override;
+    ~bitwise_and() override;
 
 protected:
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void stopping() override;
 
     /// Performs bitwise operation between mask and image.
-    MODULE_FILTER_IMAGE_API void updating() override;
+    void updating() override;
 
     static constexpr std::string_view OUTPUTIMAGE_OUT = "outputImage";
 

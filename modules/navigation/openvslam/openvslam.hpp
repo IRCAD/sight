@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/navigation/openvslam/config.hpp"
-
 #include <core/com/signal.hpp>
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
@@ -143,18 +141,18 @@ namespace sight::module::navigation::openvslam
  *   started and to save it when tracking is stopped. If this option is not specified or if the file is not found when
  *   starting the tracking, an empty map will be created instead.
  */
-class MODULE_NAVIGATION_OPENVSLAM_CLASS_API openvslam final : public service::tracker,
-                                                              private service::notifier
+class openvslam final : public service::tracker,
+                        private service::notifier
 {
 public:
 
     SIGHT_DECLARE_SERVICE(openvslam, service::tracker);
 
     /// Constructor. Initializes signals and slots.
-    MODULE_NAVIGATION_OPENVSLAM_API openvslam() noexcept;
+    openvslam() noexcept;
 
     /// Destructor. Stops the service if started.
-    MODULE_NAVIGATION_OPENVSLAM_API ~openvslam() noexcept final;
+    ~openvslam() noexcept final;
 
     /**
      * @name Tracking Mode : Openvslam can be used with 3 mode.
@@ -162,7 +160,7 @@ public:
      * - \b STEREO: Use a stereovision system.(NOT IMPLEMENTED)
      * - \b DEPTH : Use a RGB-D sensor. (NOT IMPLEMENTED)
      */
-    enum class MODULE_NAVIGATION_OPENVSLAM_API tracking_mode
+    enum class tracking_mode
     {
         mono = 0,
         stereo,
@@ -172,16 +170,16 @@ public:
 protected:
 
     /// Configures the service by parsing XML.
-    MODULE_NAVIGATION_OPENVSLAM_API void configuring(const config_t& _config) final;
+    void configuring(const config_t& _config) final;
 
     /// Retrieves input data.
-    MODULE_NAVIGATION_OPENVSLAM_API void starting() final;
+    void starting() final;
 
     /// Shutdown the openvslam system & reset output.
-    MODULE_NAVIGATION_OPENVSLAM_API void stopping() final;
+    void stopping() final;
 
     /// Does nothing.
-    MODULE_NAVIGATION_OPENVSLAM_API void updating() final;
+    void updating() final;
 
 private:
 

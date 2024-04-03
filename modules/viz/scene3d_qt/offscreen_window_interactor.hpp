@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/scene3d_qt/config.hpp"
-
 #include <viz/scene3d/window_interactor.hpp>
 
 #include <QOffscreenSurface>
@@ -35,7 +33,7 @@ namespace sight::module::viz::scene3d_qt
 {
 
 /// Defines a class to manage an offscreen render window that renders in an Ogre texture.
-class MODULE_VIZ_SCENE3D_QT_CLASS_API offscreen_window_interactor final :
+class offscreen_window_interactor final :
     public sight::viz::scene3d::window_interactor
 {
 public:
@@ -47,52 +45,52 @@ public:
      * @param _width width of the render window.
      * @param _height height of the render window.
      */
-    MODULE_VIZ_SCENE3D_QT_API offscreen_window_interactor(
+    offscreen_window_interactor(
         unsigned int _width,
         unsigned int _height
     );
 
     /// Destroys the render window.
-    MODULE_VIZ_SCENE3D_QT_API ~offscreen_window_interactor() final;
+    ~offscreen_window_interactor() final;
 
     /// Renders immediately the frame in the render window.
-    MODULE_VIZ_SCENE3D_QT_API void render_now() override;
+    void render_now() override;
 
     /// Renders immediately the frame in the render window.
-    MODULE_VIZ_SCENE3D_QT_API void request_render() override;
+    void request_render() override;
 
     /// Creates the render window in the global OpenGL context, @see module::viz::scene3d_qt::OpenGLContext.
-    MODULE_VIZ_SCENE3D_QT_API void create_container(ui::container::widget::sptr /*_parent*/,
-                                                    bool /*fullscreen*/,
-                                                    const std::string& /*id*/) override;
+    void create_container(ui::container::widget::sptr /*_parent*/,
+                          bool /*fullscreen*/,
+                          const std::string& /*id*/) override;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_QT_API void connect_to_container() override;
+    void connect_to_container() override;
 
     /// Deletes the render window and the render texture.
-    MODULE_VIZ_SCENE3D_QT_API void disconnect_interactor() override;
+    void disconnect_interactor() override;
 
     /// Returns the unique identifier of the widget.
-    MODULE_VIZ_SCENE3D_QT_API int get_widget_id() const override;
+    int get_widget_id() const override;
 
     /// Returns current frame number of the render window.
-    MODULE_VIZ_SCENE3D_QT_API int get_frame_id() const override;
+    int get_frame_id() const override;
 
     /// Makes the OpenGL context as current one on this thread against this window.
-    MODULE_VIZ_SCENE3D_QT_API void make_current() override;
+    void make_current() override;
 
     /// Gets the Ogre render target.
-    MODULE_VIZ_SCENE3D_QT_API Ogre::RenderTarget* get_render_target();
+    Ogre::RenderTarget* get_render_target();
 
     /// Gets the Ogre render texture attached to the render target.
-    MODULE_VIZ_SCENE3D_QT_API Ogre::TexturePtr get_render_texture() override;
+    Ogre::TexturePtr get_render_texture() override;
 
     /// Creates a worker able to handle resources from the window's OpenGL context.
-    MODULE_VIZ_SCENE3D_QT_API sight::viz::scene3d::graphics_worker* create_graphics_worker() override;
+    sight::viz::scene3d::graphics_worker* create_graphics_worker() override;
 
     /// Returns a DPI of 220 to permit offscreen font rendering.
     /// @warning Doesn't make much sense when not rendering on a screen.
-    MODULE_VIZ_SCENE3D_QT_API float get_logical_dots_per_inch() const override
+    float get_logical_dots_per_inch() const override
     {
         // Return this value which is kind of common for HiDPI monitors.
         return 220;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/vision/config.hpp"
 
 #include <io/__/service/writer.hpp>
 
@@ -76,45 +74,45 @@ namespace sight::module::io::vision
     </opencv_storage>
  * @endcode
  */
-class MODULE_IO_VISION_CLASS_API open_cv_writer : public sight::io::service::writer
+class open_cv_writer : public sight::io::service::writer
 {
 public:
 
     SIGHT_DECLARE_SERVICE(open_cv_writer, sight::io::service::writer);
 
     ///Constructor
-    MODULE_IO_VISION_API open_cv_writer();
+    open_cv_writer();
 
     //Destructor
-    MODULE_IO_VISION_API ~open_cv_writer() override;
+    ~open_cv_writer() override;
 
 protected:
 
     /// configure the service using GUI.
-    MODULE_IO_VISION_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
     /**
      * @brief Prompt a dialog to define file location.
      * @return boolean if a location has been choosen
      */
-    MODULE_IO_VISION_API virtual bool define_location_gui();
+    virtual bool define_location_gui();
 
     /**
      * @brief Configures the service.
      */
-    MODULE_IO_VISION_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_IO_VISION_API void starting() override;
+    void starting() override;
 
     /// Computes intrinsic calibration
-    MODULE_IO_VISION_API void updating() override;
+    void updating() override;
 
     /// Removes connections
-    MODULE_IO_VISION_API void stopping() override;
+    void stopping() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_VISION_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 };
 
 } //namespace sight::module::io::vision

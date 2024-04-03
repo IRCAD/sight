@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/ui/history/config.hpp>
+
 #include "ui/history/command.hpp"
-#include "ui/history/config.hpp"
 
 #include <data/image.hpp>
 
@@ -33,24 +34,24 @@
 namespace sight::ui::history
 {
 
-class UI_HISTORY_CLASS_API image_diff_command : public command
+class SIGHT_UI_HISTORY_CLASS_API image_diff_command : public command
 {
 public:
 
     /// Constructor, uses an image and a change list for that image.
-    UI_HISTORY_API image_diff_command(const data::image::sptr& _img, filter::image::image_diff _diff);
+    SIGHT_UI_HISTORY_API image_diff_command(const data::image::sptr& _img, filter::image::image_diff _diff);
 
     /// The diff size.
-    [[nodiscard]] UI_HISTORY_API std::size_t size() const override;
+    [[nodiscard]] SIGHT_UI_HISTORY_API std::size_t size() const override;
 
     /// Apply diff.
-    UI_HISTORY_API bool redo() override;
+    SIGHT_UI_HISTORY_API bool redo() override;
 
     /// Revert diff.
-    UI_HISTORY_API bool undo() override;
+    SIGHT_UI_HISTORY_API bool undo() override;
 
     /// Returns "image_diff".
-    [[nodiscard]] UI_HISTORY_API std::string get_description() const override;
+    [[nodiscard]] SIGHT_UI_HISTORY_API std::string get_description() const override;
 
 private:
 

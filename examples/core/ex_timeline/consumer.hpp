@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ex_timeline/config.hpp"
+#include <sight/ex_timeline/config.hpp>
 
 #include "message_tl.hpp"
 
@@ -66,16 +66,16 @@ namespace ex_timeline
  * - \b period (optional): time between two messages display, in milliseconds.
  */
 
-class EX_TIMELINE_CLASS_API consumer : public sight::service::base
+class SIGHT_EX_TIMELINE_CLASS_API consumer : public sight::service::base
 {
 public:
 
-    EX_TIMELINE_API static const sight::core::com::slots::key_t CONSUME_SLOT;
+    SIGHT_EX_TIMELINE_API static const sight::core::com::slots::key_t CONSUME_SLOT;
 
     SIGHT_DECLARE_SERVICE(consumer, sight::service::base);
 
-    EX_TIMELINE_API consumer() noexcept;
-    EX_TIMELINE_API ~consumer() noexcept override;
+    SIGHT_EX_TIMELINE_API consumer() noexcept;
+    SIGHT_EX_TIMELINE_API ~consumer() noexcept override;
 
 protected:
 

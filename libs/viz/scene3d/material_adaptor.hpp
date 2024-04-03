@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/material.hpp>
@@ -34,7 +34,7 @@ namespace sight::viz::scene3d
 {
 
 /// This adaptor adapts a data::material, allowing to tweak material parameters.
-class VIZ_SCENE3D_CLASS_API material_adaptor : public sight::viz::scene3d::adaptor
+class SIGHT_VIZ_SCENE3D_CLASS_API material_adaptor : public sight::viz::scene3d::adaptor
 {
 public:
 
@@ -48,11 +48,11 @@ public:
     static inline const std::string_view MATERIAL_INOUT = "material";
     /** @} */
 
-    VIZ_SCENE3D_CLASS_API material_adaptor() noexcept           = default;
-    VIZ_SCENE3D_CLASS_API ~material_adaptor() noexcept override = default;
+    SIGHT_VIZ_SCENE3D_CLASS_API material_adaptor() noexcept           = default;
+    SIGHT_VIZ_SCENE3D_CLASS_API ~material_adaptor() noexcept override = default;
 
     /// Configures the adaptor without using the XML configuration.
-    VIZ_SCENE3D_CLASS_API virtual void configure(
+    SIGHT_VIZ_SCENE3D_CLASS_API virtual void configure(
         const std::string& _id,
         const std::string& _name,
         sight::viz::scene3d::render::sptr _service,
@@ -62,34 +62,34 @@ public:
     )                                    = 0;
 
     /// Gets Ogre associated material.
-    VIZ_SCENE3D_CLASS_API virtual Ogre::MaterialPtr get_material() = 0;
+    SIGHT_VIZ_SCENE3D_CLASS_API virtual Ogre::MaterialPtr get_material() = 0;
 
     /// Gets material name.
-    VIZ_SCENE3D_CLASS_API virtual std::string get_material_name() const = 0;
+    SIGHT_VIZ_SCENE3D_CLASS_API virtual std::string get_material_name() const = 0;
 
     /// Retrieves the associated texture name.
-    VIZ_SCENE3D_CLASS_API virtual void set_texture_name(const std::string& _texture_name) = 0;
+    SIGHT_VIZ_SCENE3D_CLASS_API virtual void set_texture_name(const std::string& _texture_name) = 0;
 
     /// Sets material name.
-    VIZ_SCENE3D_CLASS_API virtual void set_material_name(const std::string& _material_name) = 0;
+    SIGHT_VIZ_SCENE3D_CLASS_API virtual void set_material_name(const std::string& _material_name) = 0;
 
     /// Sets material template name.
-    VIZ_SCENE3D_CLASS_API virtual void set_material_template_name(const std::string& _material_name) = 0;
+    SIGHT_VIZ_SCENE3D_CLASS_API virtual void set_material_template_name(const std::string& _material_name) = 0;
 
     /// Tells if there is a texture currently bound.
-    VIZ_SCENE3D_CLASS_API virtual bool has_diffuse_texture() const = 0;
+    SIGHT_VIZ_SCENE3D_CLASS_API virtual bool has_diffuse_texture() const = 0;
 
     /// Gets the shading mode.
-    VIZ_SCENE3D_CLASS_API virtual const std::string& get_shading_mode() const = 0;
+    SIGHT_VIZ_SCENE3D_CLASS_API virtual const std::string& get_shading_mode() const = 0;
 
     /// Sets the shading mode.
-    VIZ_SCENE3D_CLASS_API virtual void set_shading_mode(const std::string& _shading_mode) = 0;
+    SIGHT_VIZ_SCENE3D_CLASS_API virtual void set_shading_mode(const std::string& _shading_mode) = 0;
 
     /// Set the renderable object.
-    VIZ_SCENE3D_CLASS_API virtual void set_r2_vb_object(sight::viz::scene3d::r2vb_renderable* _r2vb_object) = 0;
+    SIGHT_VIZ_SCENE3D_CLASS_API virtual void set_r2_vb_object(sight::viz::scene3d::r2vb_renderable* _r2vb_object) = 0;
 
     /// Gets the internal material code.
-    VIZ_SCENE3D_CLASS_API virtual sight::viz::scene3d::material* get_material_fw() const = 0;
+    SIGHT_VIZ_SCENE3D_CLASS_API virtual sight::viz::scene3d::material* get_material_fw() const = 0;
 };
 
 } // namespace sight::viz::scene3d.

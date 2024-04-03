@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_coded_attribute.hpp"
 #include "io/dicom/container/sr/dicom_sr_node.hpp"
 
@@ -34,12 +35,12 @@ namespace sight::io::dicom::container::sr
 /**
  * @brief This class defines an IMAGE node in a SR document
  */
-class IO_DICOM_CLASS_API dicom_sr_image_node : public io::dicom::container::sr::dicom_sr_node
+class SIGHT_IO_DICOM_CLASS_API dicom_sr_image_node : public io::dicom::container::sr::dicom_sr_node
 {
 public:
 
     /// Constructor
-    IO_DICOM_API dicom_sr_image_node(
+    SIGHT_IO_DICOM_API dicom_sr_image_node(
         const dicom_coded_attribute& _coded_attribute,
         const std::string& _relationship,
         std::string _sop_class_uid,
@@ -48,13 +49,13 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~dicom_sr_image_node() override;
+    SIGHT_IO_DICOM_API ~dicom_sr_image_node() override;
 
     /**
      * @brief Write the SR node in the dataset
      * @param[in] _dataset Destination dataset
      */
-    IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
+    SIGHT_IO_DICOM_API void write(gdcm::DataSet& _dataset) const override;
 
     /// Get SOP Class UID
     [[nodiscard]] const std::string& get_sop_class_uid() const

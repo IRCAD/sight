@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "utest/config.hpp"
+#include <sight/utest/config.hpp>
 
 namespace sight::utest
 {
@@ -30,17 +30,17 @@ namespace sight::utest
 /// This allows filtering unstable or too slow unit tests that may give accurate results
 /// when executed manually but inaccurate in a CI context.
 /// This should be considered as a last ressort workaround, if the test could not be fixed
-class UTEST_CLASS_API filter
+class SIGHT_UTEST_CLASS_API filter
 {
 public:
 
     /// Returns true if we should ignore "slow" tests
     /// Use SIGHT_IGNORE_SLOW_TESTS environment variable
-    UTEST_API static bool ignore_slow_tests();
+    SIGHT_UTEST_API static bool ignore_slow_tests();
 
     /// Returns true if we should ignore "unstable" tests
     /// Use SIGHT_IGNORE_UNSTABLE_TESTS environment variable
-    UTEST_API static bool ignore_unstable_tests();
+    SIGHT_UTEST_API static bool ignore_unstable_tests();
 };
 
 } // namespace sight::utest

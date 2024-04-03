@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
@@ -53,7 +53,7 @@ namespace helper
 
 class dicom_anonymizer;
 
-class IO_DICOM_CLASS_API dicom_series_set_writer :
+class SIGHT_IO_DICOM_CLASS_API dicom_series_set_writer :
     public io::writer::generic_object_writer<data::series_set>,
     public core::location::single_folder,
     public core::location::single_file
@@ -70,24 +70,24 @@ public:
     /**
      * @brief Constructor/Destructor
      * @{ */
-    IO_DICOM_API dicom_series_set_writer();
-    IO_DICOM_API ~dicom_series_set_writer() override = default;
+    SIGHT_IO_DICOM_API dicom_series_set_writer();
+    SIGHT_IO_DICOM_API ~dicom_series_set_writer() override = default;
     /**  @} */
 
     /// Return an empty string
-    IO_DICOM_API std::string extension() const override;
+    SIGHT_IO_DICOM_API std::string extension() const override;
 
     /// Get job aggregator
-    IO_DICOM_API SPTR(core::jobs::aggregator) get_aggregator();
+    SIGHT_IO_DICOM_API SPTR(core::jobs::aggregator) get_aggregator();
 
     /// Set anonymizer (if anonymization required)
-    IO_DICOM_API void set_anonymizer(const SPTR(helper::dicom_anonymizer)& _anonymizer);
+    SIGHT_IO_DICOM_API void set_anonymizer(const SPTR(helper::dicom_anonymizer)& _anonymizer);
 
     /// Write the image series in DICOM format.
-    IO_DICOM_API void write() override;
+    SIGHT_IO_DICOM_API void write() override;
 
     /// Set Producer
-    IO_DICOM_API void set_producer(std::string _producer);
+    SIGHT_IO_DICOM_API void set_producer(std::string _producer);
 
 private:
 

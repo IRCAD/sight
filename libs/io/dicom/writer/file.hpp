@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
 
 #include <core/jobs/job.hpp>
 #include <core/location/single_file.hpp>
@@ -35,10 +35,10 @@
 namespace sight::io::dicom::writer
 {
 
-class IO_DICOM_CLASS_API file final : public sight::io::writer::generic_object_writer<data::series_set>,
-                                      public core::location::single_folder,
-                                      public core::location::single_file,
-                                      public core::tools::progress_adviser
+class SIGHT_IO_DICOM_CLASS_API file final : public sight::io::writer::generic_object_writer<data::series_set>,
+                                            public core::location::single_folder,
+                                            public core::location::single_file,
+                                            public core::tools::progress_adviser
 {
 public:
 
@@ -57,24 +57,24 @@ public:
     file& operator=(file&&)      = delete;
 
     /// Constructor/Destructor
-    IO_DICOM_API file();
-    IO_DICOM_API ~file() noexcept override;
+    SIGHT_IO_DICOM_API file();
+    SIGHT_IO_DICOM_API ~file() noexcept override;
 
     /// Main writing method from generic_object_writer
-    IO_DICOM_API void write() override;
+    SIGHT_IO_DICOM_API void write() override;
 
     /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid
     /// @return an extension as string
-    [[nodiscard]] IO_DICOM_API std::string extension() const override;
+    [[nodiscard]] SIGHT_IO_DICOM_API std::string extension() const override;
 
     /// Set/get the current job
-    IO_DICOM_API core::jobs::base::sptr get_job() const override;
-    IO_DICOM_API void set_job(core::jobs::job::sptr _job);
+    SIGHT_IO_DICOM_API core::jobs::base::sptr get_job() const override;
+    SIGHT_IO_DICOM_API void set_job(core::jobs::job::sptr _job);
 
     /// Allow to force the use of a cpu backend, even if SIGHT_ENABLE_NVJPEG2K is set.
     /// This can be useful in case of an unit test executed on a machine without GPU.
     /// @arg force: true to force CPU backend, false to use GPU and throw an exception if not available
-    IO_DICOM_API void force_cpu(bool _force);
+    SIGHT_IO_DICOM_API void force_cpu(bool _force);
 
     /// Allowed transfer syntax. The default will depends of the SOP classes.
     /// @note All transfer syntaxes are not supported by all SOP classes.
@@ -97,7 +97,7 @@ public:
 
     /// Set the transfer syntax to use when writing the DICOM file
     /// @param _transfer_syntax the transfer syntax
-    IO_DICOM_API void set_transfer_syntax(transfer_syntax _transfer_syntax);
+    SIGHT_IO_DICOM_API void set_transfer_syntax(transfer_syntax _transfer_syntax);
 
 private:
 

@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/scene2d/config.hpp"
-
 #include <data/image.hpp>
 #include <data/transfer_function.hpp>
 
@@ -82,7 +80,7 @@ namespace sight::module::viz::scene2d::adaptor
  *
  * @pre This adaptor is intended to be used with a module::viz::scene2d::adaptor::ViewportUpdater adaptor.
  */
-class MODULE_VIZ_SCENE2D_CLASS_API viewport_range_selector : public sight::viz::scene2d::adaptor
+class viewport_range_selector : public sight::viz::scene2d::adaptor
 {
 public:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <core/macros.hpp>
 
@@ -41,7 +41,7 @@ namespace sight::ui::qt::dialog
 {
 
 /// Creates an auto-movable container.
-class UI_QT_CLASS_API_QT widget : public QWidget
+class SIGHT_UI_QT_CLASS_API_QT widget : public QWidget
 {
 Q_OBJECT
 
@@ -111,7 +111,7 @@ private:
 };
 
 /// Creates a clickable QLabel.
-class UI_QT_CLASS_API_QT clickable_q_label : public QLabel
+class SIGHT_UI_QT_CLASS_API_QT clickable_q_label : public QLabel
 {
 Q_OBJECT
 
@@ -259,32 +259,32 @@ private:
    @endcode
  *
  */
-class UI_QT_CLASS_API notification : public ui::dialog::notification_base
+class SIGHT_UI_QT_CLASS_API notification : public ui::dialog::notification_base
 {
 public:
 
     SIGHT_DECLARE_CLASS(notification, ui::dialog::notification_base, ui::factory::make<notification>)
 
     /// Destroys the dialog.
-    UI_QT_API ~notification() override = default;
+    SIGHT_UI_QT_API ~notification() override = default;
 
     /// Shows the notification relative to the active window.
-    UI_QT_API void show() override;
+    SIGHT_UI_QT_API void show() override;
 
     /**
      * @brief Returns whether the popup is displayed or not.
      * @return boolean (true is visible, false otherwise).
      */
-    UI_QT_API bool is_visible() const override;
+    SIGHT_UI_QT_API bool is_visible() const override;
 
     /// Closes the popup (use a fadeout effect).
-    UI_QT_API void close() const override;
+    SIGHT_UI_QT_API void close() const override;
 
     /// Move the notification to the lower index
-    UI_QT_API void move_down() override;
+    SIGHT_UI_QT_API void move_down() override;
 
     /// Resize the dialog
-    UI_QT_API void set_size(std::array<int, 2> _size) override;
+    SIGHT_UI_QT_API void set_size(std::array<int, 2> _size) override;
 
 private:
 

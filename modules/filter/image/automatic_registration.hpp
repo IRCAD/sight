@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
@@ -78,32 +76,32 @@ namespace sight::module::filter::image
  * NormalizedCorrelation : works when the intensity values are within a linear transform from each other.
  * MutualInformation : most generic metric, based on entropy. Can match images with different modalities.
  */
-class MODULE_FILTER_IMAGE_CLASS_API automatic_registration : public service::filter,
-                                                             public ui::has_parameters
+class automatic_registration : public service::filter,
+                               public ui::has_parameters
 {
 public:
 
     SIGHT_DECLARE_SERVICE(automatic_registration, service::filter);
 
     /// Constructor, does nothing.
-    MODULE_FILTER_IMAGE_API automatic_registration();
+    automatic_registration();
 
     /// Destructor, does nothing.
-    MODULE_FILTER_IMAGE_API ~automatic_registration() override;
+    ~automatic_registration() override;
 
 protected:
 
     /// Configure registration parameters.
-    MODULE_FILTER_IMAGE_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void starting() override;
+    void starting() override;
 
     /// Do the registration.
-    MODULE_FILTER_IMAGE_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Auto connections
@@ -111,7 +109,7 @@ protected:
      * - Update service when one of the two images is modified.
      * - Update service when the transform matrix is modified.
      */
-    MODULE_FILTER_IMAGE_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

@@ -32,7 +32,7 @@ namespace sight::core
  * @brief Provides a timestamp and an expiry system.
  *
  */
-class CORE_CLASS_API time_stamp : public base_object
+class SIGHT_CORE_CLASS_API time_stamp : public base_object
 {
 public:
 
@@ -46,12 +46,12 @@ public:
     /**
      * @brief Update the timestamp to the current EPOCH time
      */
-    CORE_API void modified();
+    SIGHT_CORE_API void modified();
 
     /**
      * @return TimeStamp's current value
      */
-    CORE_API time_stamp_type get_time_stamp() const
+    SIGHT_CORE_API time_stamp_type get_time_stamp() const
     {
         return this->m_modified_time;
     }
@@ -61,7 +61,7 @@ public:
      *
      * @param _ts TimeStamp to compare to
      */
-    CORE_API bool operator>(const time_stamp& _ts) const
+    SIGHT_CORE_API bool operator>(const time_stamp& _ts) const
     {
         return this->m_modified_time > _ts.m_modified_time;
     }
@@ -71,7 +71,7 @@ public:
      *
      * @param _ts TimeStamp to compare to
      */
-    CORE_API bool operator<(const time_stamp& _ts) const
+    SIGHT_CORE_API bool operator<(const time_stamp& _ts) const
     {
         return this->m_modified_time < _ts.m_modified_time;
     }
@@ -79,7 +79,7 @@ public:
     /**
      * @brief Cast operator for TimeStamp.
      */
-    CORE_API operator time_stamp_type() const
+    SIGHT_CORE_API operator time_stamp_type() const
     {
         return this->m_modified_time;
     }
@@ -89,7 +89,7 @@ public:
      *
      * @param _period Period in milliseconds
      */
-    CORE_API void set_life_period(time_stamp_type _period)
+    SIGHT_CORE_API void set_life_period(time_stamp_type _period)
     {
         m_life_period = _period;
     }
@@ -99,7 +99,7 @@ public:
      *
      * @return TimeStamp life period
      */
-    CORE_API time_stamp_type get_life_period() const
+    SIGHT_CORE_API time_stamp_type get_life_period() const
     {
         return m_life_period;
     }
@@ -110,7 +110,7 @@ public:
      * @return True if more than m_lifePeriod milliseconds are elapsed from
      * TimeStamp value
      */
-    CORE_API bool period_expired() const
+    SIGHT_CORE_API bool period_expired() const
     {
         return (core::clock::get_time_in_milli_sec() - this->m_modified_time) > m_life_period;
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/vision/config.hpp"
 
 #include <data/calibration_info.hpp>
 #include <data/image.hpp>
@@ -75,7 +73,7 @@ namespace sight::module::geometry::vision
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the scaling factor to be applied to the input image.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API chess_board_detector : public service::controller
+class chess_board_detector : public service::controller
 {
 public:
 
@@ -88,27 +86,27 @@ public:
     using chessboard_found_signal_t = core::com::signal<void ()>;
 
     /// Constructor
-    MODULE_GEOMETRY_VISION_API chess_board_detector() noexcept;
+    chess_board_detector() noexcept;
 
     /// Destructor
-    MODULE_GEOMETRY_VISION_API ~chess_board_detector() noexcept override;
+    ~chess_board_detector() noexcept override;
 
 protected:
 
     /// Configures the service.
-    MODULE_GEOMETRY_VISION_API void configuring() override;
+    void configuring() override;
 
     /// Initializes the chessboard size from the preferences.
-    MODULE_GEOMETRY_VISION_API void starting() override;
+    void starting() override;
 
     /// Tries to detect chessboards in all input images.
-    MODULE_GEOMETRY_VISION_API void updating() override;
+    void updating() override;
 
     /// Clears the detected points.
-    MODULE_GEOMETRY_VISION_API void stopping() override;
+    void stopping() override;
 
     /// Returns proposals to update the service when the input image is modified.
-    MODULE_GEOMETRY_VISION_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

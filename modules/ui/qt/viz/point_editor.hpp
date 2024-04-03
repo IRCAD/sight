@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <core/tools/failed.hpp>
 
 #include <data/point.hpp>
@@ -41,8 +39,8 @@ namespace sight::module::ui::qt::viz
 /**
  * @brief   point_editor service allows to display point information.
  */
-class MODULE_UI_QT_CLASS_API point_editor : public QObject,
-                                            public sight::ui::editor
+class point_editor : public QObject,
+                     public sight::ui::editor
 {
 Q_OBJECT
 
@@ -51,10 +49,10 @@ public:
     SIGHT_DECLARE_SERVICE(point_editor, sight::ui::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API point_editor() noexcept;
+    point_editor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~point_editor() noexcept override;
+    ~point_editor() noexcept override;
 
 protected:
 

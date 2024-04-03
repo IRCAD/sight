@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/dimse/config.hpp"
 
 #include <core/thread/worker.hpp>
 
@@ -70,7 +68,7 @@ namespace sight::module::io::dimse
  * - \b width (optional, unsigned int, default=20): width of the icon used in the search button.
  * - \b height (optional, unsigned int, default=20): height of the icon used in the search button.
  */
-class MODULE_IO_DIMSE_CLASS_API query_editor final :
+class query_editor final :
     public QObject,
     public sight::ui::editor,
     private sight::service::notifier
@@ -83,24 +81,24 @@ public:
     SIGHT_DECLARE_SERVICE(query_editor, sight::ui::editor);
 
     /// Creates the service.
-    MODULE_IO_DIMSE_API query_editor() noexcept;
+    query_editor() noexcept;
 
     /// Destroyes the service.
-    MODULE_IO_DIMSE_API ~query_editor() noexcept override = default;
+    ~query_editor() noexcept override = default;
 
 protected:
 
     /// Configures the editor.
-    MODULE_IO_DIMSE_API void configuring() override;
+    void configuring() override;
 
     /// Creates the GUI and connects widget to updateSeriesSet(const data::series_set::container_t&).
-    MODULE_IO_DIMSE_API void starting() override;
+    void starting() override;
 
     /// Executes a query with last settings.
-    MODULE_IO_DIMSE_API void updating() override;
+    void updating() override;
 
     /// Destroys the GUI and disconnect signals.
-    MODULE_IO_DIMSE_API void stopping() override;
+    void stopping() override;
 
 private:
 

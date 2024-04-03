@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <OgreMaterialManager.h>
 
@@ -35,18 +35,18 @@ namespace sight::viz::scene3d::compositor::listener
  * @brief Listener used in mixed surface/volume rendering.
  * Creates volume entry point computation techniques for meshes.
  */
-class VIZ_SCENE3D_CLASS_API ray_exit_depth_listener final : public Ogre::MaterialManager::Listener
+class SIGHT_VIZ_SCENE3D_CLASS_API ray_exit_depth_listener final : public Ogre::MaterialManager::Listener
 {
 public:
 
     /// Constructor.
-    VIZ_SCENE3D_API ray_exit_depth_listener() = default;
+    SIGHT_VIZ_SCENE3D_API ray_exit_depth_listener() = default;
 
     /// Destructor.
-    VIZ_SCENE3D_API ~ray_exit_depth_listener() final = default;
+    SIGHT_VIZ_SCENE3D_API ~ray_exit_depth_listener() final = default;
 
     /// Called when an entry point scheme isn't found, creates the missing technique.
-    VIZ_SCENE3D_API Ogre::Technique* handleSchemeNotFound(
+    SIGHT_VIZ_SCENE3D_API Ogre::Technique* handleSchemeNotFound(
         std::uint16_t _scheme_index,
         const Ogre::String& _scheme_name,
         Ogre::Material* _original_material,

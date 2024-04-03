@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/navigation/openvslam/config.hpp"
+#include "sight/modules/navigation/openvslam/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -32,20 +32,20 @@ namespace sight::module::navigation::openvslam
 /**
  * @brief   This class is started when the modules are loaded.
  */
-class MODULE_NAVIGATION_OPENVSLAM_CLASS_API plugin final : public core::runtime::plugin
+class SIGHT_MODULE_NAVIGATION_OPENVSLAM_CLASS_API plugin final : public core::runtime::plugin
 {
 public:
 
     /**
      * @brief destructor
      */
-    MODULE_NAVIGATION_OPENVSLAM_API ~plugin() noexcept final;
+    SIGHT_MODULE_NAVIGATION_OPENVSLAM_API ~plugin() noexcept final;
 
     // Overrides
-    MODULE_NAVIGATION_OPENVSLAM_API void start() noexcept final;
+    SIGHT_MODULE_NAVIGATION_OPENVSLAM_API void start() noexcept final;
 
     // Overrides
-    MODULE_NAVIGATION_OPENVSLAM_API void stop() noexcept final;
+    SIGHT_MODULE_NAVIGATION_OPENVSLAM_API void stop() noexcept final;
 };
 
 } // namespace sight::module::navigation::openvslam

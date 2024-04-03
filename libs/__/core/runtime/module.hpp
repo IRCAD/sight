@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <core/base.hpp>
 
@@ -44,7 +44,7 @@ class runtime;
  * @brief   Defines the module class.
  *
  */
-class CORE_CLASS_API module
+class SIGHT_CORE_CLASS_API module
 {
 public:
 
@@ -58,42 +58,42 @@ public:
      *
      * @return  a string containing the module identifier
      */
-    [[nodiscard]] CORE_API virtual const std::string& identifier() const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual const std::string& identifier() const = 0;
 
     /**
      * @brief   Retrieves the library name if it exists.
      *
      * @return  a path representing the module location, can be empty if no library is set
      */
-    [[nodiscard]] CORE_API virtual std::string get_library_name() const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual std::string get_library_name() const = 0;
 
     /**
      * @brief   Retrieves the module location.
      *
      * @return  a path representing the module location
      */
-    [[nodiscard]] CORE_API virtual const std::filesystem::path& get_library_location() const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual const std::filesystem::path& get_library_location() const = 0;
 
     /**
      * @brief   Retrieves the module location.
      *
      * @return  a path representing the module location
      */
-    [[nodiscard]] CORE_API virtual const std::filesystem::path& get_resources_location() const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual const std::filesystem::path& get_resources_location() const = 0;
 
     /**
      * @brief   Retrieves the class representing the module executable part.
      *
      * @return  a string containing the module's plugin class
      */
-    [[nodiscard]] CORE_API virtual std::string get_class() const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual std::string get_class() const = 0;
 
     /**
      * @brief   Retrieves the plugin instance for the specified module identifier.
      *
      * @return  a shared pointer to a plugin instance or null if the module has not been started.
      */
-    [[nodiscard]] CORE_API virtual SPTR(plugin) get_plugin() const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual SPTR(plugin) get_plugin() const = 0;
 
     /**
      * @brief       Retrieves the value of the given parameter
@@ -101,18 +101,18 @@ public:
      * @param[in]   _identifier  a string containing a parameter identifier
      * @return      a string containing the parameter value
      */
-    [[nodiscard]] CORE_API virtual std::string get_parameter_value(const std::string& _identifier) const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual std::string get_parameter_value(const std::string& _identifier) const = 0;
 
     /**
      * @brief   Tells if a parameter exists.
      * @param   _name   name of parameter to test
      * @return  true or false
      */
-    [[nodiscard]] CORE_API virtual bool has_parameter(const std::string& _name) const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual bool has_parameter(const std::string& _name) const = 0;
     /**
      * @brief   Returns the list of extensions contained in this module.
      */
-    [[nodiscard]] CORE_API virtual extension_container extensions() const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual extension_container extensions() const = 0;
 
     /**
      * @name        State Management
@@ -123,13 +123,13 @@ public:
      *
      * @remark  The module must be enabled to be able to start.
      */
-    CORE_API virtual void start()                          = 0;
-    CORE_API virtual void stop()                           = 0;
-    [[nodiscard]] CORE_API virtual bool is_started() const = 0;
+    SIGHT_CORE_API virtual void start()                          = 0;
+    SIGHT_CORE_API virtual void stop()                           = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual bool is_started() const = 0;
     /**
      * @brief   Tells if the module is enabled.
      */
-    [[nodiscard]] CORE_API virtual bool enabled() const = 0;
+    [[nodiscard]] SIGHT_CORE_API virtual bool enabled() const = 0;
     //@}
 };
 

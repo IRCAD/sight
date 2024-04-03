@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene3d/config.hpp"
 
 #include <data/landmarks.hpp>
 
@@ -78,7 +76,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b updateTransform: Update adaptor using the input transformation,
  * this slot is called automatically if auto_connect="true".
  */
-class MODULE_VIZ_SCENE3D_CLASS_API predefined_camera final : public sight::viz::scene3d::adaptor
+class predefined_camera final : public sight::viz::scene3d::adaptor
 {
 public:
 
@@ -96,24 +94,24 @@ public:
     SIGHT_DECLARE_SERVICE(predefined_camera, sight::viz::scene3d::adaptor);
 
     /// Constructor.
-    MODULE_VIZ_SCENE3D_API predefined_camera() noexcept;
+    predefined_camera() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~predefined_camera() noexcept final = default;
+    ~predefined_camera() noexcept final = default;
 
 protected:
 
     /// Configures the layer and the interaction priority.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Adds trackball interactions to the layer.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /// Updates the service. Unused here.
-    MODULE_VIZ_SCENE3D_API void updating() noexcept final;
+    void updating() noexcept final;
 
     /// Removes trackball interactions from the layer.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
 private:
 

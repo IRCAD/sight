@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -761,7 +761,7 @@ bool mesh::operator!=(const mesh& _other) const noexcept
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::sptr mesh::get_array<iterator::point::xyz>()
+SIGHT_DATA_API data::array::sptr mesh::get_array<iterator::point::xyz>()
 {
     return m_points[static_cast<std::size_t>(point_attribute::position)];
 }
@@ -769,7 +769,7 @@ DATA_API data::array::sptr mesh::get_array<iterator::point::xyz>()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::sptr mesh::get_array<iterator::point::nxyz>()
+SIGHT_DATA_API data::array::sptr mesh::get_array<iterator::point::nxyz>()
 {
     return m_points[static_cast<std::size_t>(point_attribute::normals)];
 }
@@ -777,7 +777,7 @@ DATA_API data::array::sptr mesh::get_array<iterator::point::nxyz>()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::sptr mesh::get_array<iterator::point::uv>()
+SIGHT_DATA_API data::array::sptr mesh::get_array<iterator::point::uv>()
 {
     return m_points[static_cast<std::size_t>(point_attribute::tex_coords)];
 }
@@ -785,7 +785,7 @@ DATA_API data::array::sptr mesh::get_array<iterator::point::uv>()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::sptr mesh::get_array<iterator::point::rgba>()
+SIGHT_DATA_API data::array::sptr mesh::get_array<iterator::point::rgba>()
 {
     return m_points[static_cast<std::size_t>(point_attribute::colors)];
 }
@@ -793,7 +793,7 @@ DATA_API data::array::sptr mesh::get_array<iterator::point::rgba>()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::sptr mesh::get_array<iterator::cell::point>()
+SIGHT_DATA_API data::array::sptr mesh::get_array<iterator::cell::point>()
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::index)];
 }
@@ -801,7 +801,7 @@ DATA_API data::array::sptr mesh::get_array<iterator::cell::point>()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::sptr mesh::get_array<iterator::cell::line>()
+SIGHT_DATA_API data::array::sptr mesh::get_array<iterator::cell::line>()
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::index)];
 }
@@ -809,7 +809,7 @@ DATA_API data::array::sptr mesh::get_array<iterator::cell::line>()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::sptr mesh::get_array<iterator::cell::triangle>()
+SIGHT_DATA_API data::array::sptr mesh::get_array<iterator::cell::triangle>()
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::index)];
 }
@@ -817,7 +817,7 @@ DATA_API data::array::sptr mesh::get_array<iterator::cell::triangle>()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::sptr mesh::get_array<iterator::cell::quad>()
+SIGHT_DATA_API data::array::sptr mesh::get_array<iterator::cell::quad>()
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::index)];
 }
@@ -825,7 +825,7 @@ DATA_API data::array::sptr mesh::get_array<iterator::cell::quad>()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::sptr mesh::get_array<iterator::cell::tetra>()
+SIGHT_DATA_API data::array::sptr mesh::get_array<iterator::cell::tetra>()
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::index)];
 }
@@ -833,7 +833,7 @@ DATA_API data::array::sptr mesh::get_array<iterator::cell::tetra>()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::sptr mesh::get_array<iterator::cell::nxyz>()
+SIGHT_DATA_API data::array::sptr mesh::get_array<iterator::cell::nxyz>()
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::normals)];
 }
@@ -841,7 +841,7 @@ DATA_API data::array::sptr mesh::get_array<iterator::cell::nxyz>()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::sptr mesh::get_array<iterator::cell::uv>()
+SIGHT_DATA_API data::array::sptr mesh::get_array<iterator::cell::uv>()
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::tex_coords)];
 }
@@ -849,7 +849,7 @@ DATA_API data::array::sptr mesh::get_array<iterator::cell::uv>()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::sptr mesh::get_array<iterator::cell::rgba>()
+SIGHT_DATA_API data::array::sptr mesh::get_array<iterator::cell::rgba>()
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::colors)];
 }
@@ -859,7 +859,7 @@ DATA_API data::array::sptr mesh::get_array<iterator::cell::rgba>()
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::csptr mesh::get_array<iterator::point::xyz>() const
+SIGHT_DATA_API data::array::csptr mesh::get_array<iterator::point::xyz>() const
 {
     return m_points[static_cast<std::size_t>(point_attribute::position)];
 }
@@ -867,7 +867,7 @@ DATA_API data::array::csptr mesh::get_array<iterator::point::xyz>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::csptr mesh::get_array<iterator::point::nxyz>() const
+SIGHT_DATA_API data::array::csptr mesh::get_array<iterator::point::nxyz>() const
 {
     return m_points[static_cast<std::size_t>(point_attribute::normals)];
 }
@@ -875,7 +875,7 @@ DATA_API data::array::csptr mesh::get_array<iterator::point::nxyz>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::csptr mesh::get_array<iterator::point::uv>() const
+SIGHT_DATA_API data::array::csptr mesh::get_array<iterator::point::uv>() const
 {
     return m_points[static_cast<std::size_t>(point_attribute::tex_coords)];
 }
@@ -883,7 +883,7 @@ DATA_API data::array::csptr mesh::get_array<iterator::point::uv>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::csptr mesh::get_array<iterator::point::rgba>() const
+SIGHT_DATA_API data::array::csptr mesh::get_array<iterator::point::rgba>() const
 {
     return m_points[static_cast<std::size_t>(point_attribute::colors)];
 }
@@ -891,7 +891,7 @@ DATA_API data::array::csptr mesh::get_array<iterator::point::rgba>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::csptr mesh::get_array<iterator::cell::point>() const
+SIGHT_DATA_API data::array::csptr mesh::get_array<iterator::cell::point>() const
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::index)];
 }
@@ -899,7 +899,7 @@ DATA_API data::array::csptr mesh::get_array<iterator::cell::point>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::csptr mesh::get_array<iterator::cell::line>() const
+SIGHT_DATA_API data::array::csptr mesh::get_array<iterator::cell::line>() const
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::index)];
 }
@@ -907,7 +907,7 @@ DATA_API data::array::csptr mesh::get_array<iterator::cell::line>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::csptr mesh::get_array<iterator::cell::triangle>() const
+SIGHT_DATA_API data::array::csptr mesh::get_array<iterator::cell::triangle>() const
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::index)];
 }
@@ -915,7 +915,7 @@ DATA_API data::array::csptr mesh::get_array<iterator::cell::triangle>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::csptr mesh::get_array<iterator::cell::quad>() const
+SIGHT_DATA_API data::array::csptr mesh::get_array<iterator::cell::quad>() const
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::index)];
 }
@@ -923,7 +923,7 @@ DATA_API data::array::csptr mesh::get_array<iterator::cell::quad>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::csptr mesh::get_array<iterator::cell::tetra>() const
+SIGHT_DATA_API data::array::csptr mesh::get_array<iterator::cell::tetra>() const
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::index)];
 }
@@ -931,7 +931,7 @@ DATA_API data::array::csptr mesh::get_array<iterator::cell::tetra>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::csptr mesh::get_array<iterator::cell::nxyz>() const
+SIGHT_DATA_API data::array::csptr mesh::get_array<iterator::cell::nxyz>() const
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::normals)];
 }
@@ -939,7 +939,7 @@ DATA_API data::array::csptr mesh::get_array<iterator::cell::nxyz>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::csptr mesh::get_array<iterator::cell::uv>() const
+SIGHT_DATA_API data::array::csptr mesh::get_array<iterator::cell::uv>() const
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::tex_coords)];
 }
@@ -947,7 +947,7 @@ DATA_API data::array::csptr mesh::get_array<iterator::cell::uv>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API data::array::csptr mesh::get_array<iterator::cell::rgba>() const
+SIGHT_DATA_API data::array::csptr mesh::get_array<iterator::cell::rgba>() const
 {
     return m_cells[static_cast<std::size_t>(cell_attribute::colors)];
 }
@@ -955,7 +955,7 @@ DATA_API data::array::csptr mesh::get_array<iterator::cell::rgba>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API std::size_t mesh::num_elements<iterator::point::xyz>() const
+SIGHT_DATA_API std::size_t mesh::num_elements<iterator::point::xyz>() const
 {
     return num_points();
 }
@@ -963,7 +963,7 @@ DATA_API std::size_t mesh::num_elements<iterator::point::xyz>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API std::size_t mesh::num_elements<iterator::point::nxyz>() const
+SIGHT_DATA_API std::size_t mesh::num_elements<iterator::point::nxyz>() const
 {
     return num_points();
 }
@@ -971,7 +971,7 @@ DATA_API std::size_t mesh::num_elements<iterator::point::nxyz>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API std::size_t mesh::num_elements<iterator::point::uv>() const
+SIGHT_DATA_API std::size_t mesh::num_elements<iterator::point::uv>() const
 {
     return num_points();
 }
@@ -979,7 +979,7 @@ DATA_API std::size_t mesh::num_elements<iterator::point::uv>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API std::size_t mesh::num_elements<iterator::point::rgba>() const
+SIGHT_DATA_API std::size_t mesh::num_elements<iterator::point::rgba>() const
 {
     return num_points();
 }
@@ -987,7 +987,7 @@ DATA_API std::size_t mesh::num_elements<iterator::point::rgba>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API std::size_t mesh::num_elements<iterator::cell::point>() const
+SIGHT_DATA_API std::size_t mesh::num_elements<iterator::cell::point>() const
 {
     return num_cells();
 }
@@ -995,7 +995,7 @@ DATA_API std::size_t mesh::num_elements<iterator::cell::point>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API std::size_t mesh::num_elements<iterator::cell::line>() const
+SIGHT_DATA_API std::size_t mesh::num_elements<iterator::cell::line>() const
 {
     return num_cells();
 }
@@ -1003,7 +1003,7 @@ DATA_API std::size_t mesh::num_elements<iterator::cell::line>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API std::size_t mesh::num_elements<iterator::cell::triangle>() const
+SIGHT_DATA_API std::size_t mesh::num_elements<iterator::cell::triangle>() const
 {
     return num_cells();
 }
@@ -1011,7 +1011,7 @@ DATA_API std::size_t mesh::num_elements<iterator::cell::triangle>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API std::size_t mesh::num_elements<iterator::cell::quad>() const
+SIGHT_DATA_API std::size_t mesh::num_elements<iterator::cell::quad>() const
 {
     return num_cells();
 }
@@ -1019,7 +1019,7 @@ DATA_API std::size_t mesh::num_elements<iterator::cell::quad>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API std::size_t mesh::num_elements<iterator::cell::tetra>() const
+SIGHT_DATA_API std::size_t mesh::num_elements<iterator::cell::tetra>() const
 {
     return num_cells();
 }
@@ -1027,7 +1027,7 @@ DATA_API std::size_t mesh::num_elements<iterator::cell::tetra>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API std::size_t mesh::num_elements<iterator::cell::nxyz>() const
+SIGHT_DATA_API std::size_t mesh::num_elements<iterator::cell::nxyz>() const
 {
     return num_cells();
 }
@@ -1035,7 +1035,7 @@ DATA_API std::size_t mesh::num_elements<iterator::cell::nxyz>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API std::size_t mesh::num_elements<iterator::cell::uv>() const
+SIGHT_DATA_API std::size_t mesh::num_elements<iterator::cell::uv>() const
 {
     return num_cells();
 }
@@ -1043,7 +1043,7 @@ DATA_API std::size_t mesh::num_elements<iterator::cell::uv>() const
 //------------------------------------------------------------------------------
 
 template<>
-DATA_API std::size_t mesh::num_elements<iterator::cell::rgba>() const
+SIGHT_DATA_API std::size_t mesh::num_elements<iterator::cell::rgba>() const
 {
     return num_cells();
 }

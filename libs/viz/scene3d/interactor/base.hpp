@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <sight/viz/scene3d/config.hpp>
+
 #include <core/com/has_signals.hpp>
 #include <core/com/signal.hpp>
 #include <core/com/signals.hpp>
@@ -30,7 +32,6 @@
 
 #include <data/tools/picking_info.hpp>
 
-#include <viz/scene3d/config.hpp>
 #include <viz/scene3d/factory/new.hpp>
 
 #include <OGRE/Ogre.h>
@@ -47,7 +48,7 @@ namespace interactor
 /**
  * @brief Interface implementation for all the interaction with the mouse
  */
-class VIZ_SCENE3D_CLASS_API base
+class SIGHT_VIZ_SCENE3D_CLASS_API base
 {
 public:
 
@@ -80,13 +81,13 @@ public:
      * @param _layer the layer on which the interator work.
      * @param _layer_order_dependant define if the interaction must take into account above layers.
      */
-    VIZ_SCENE3D_API base(SPTR(layer)_layer = nullptr, bool _layer_order_dependant = true);
+    SIGHT_VIZ_SCENE3D_API base(SPTR(layer)_layer = nullptr, bool _layer_order_dependant = true);
 
     /// Destroys the interactor.
-    VIZ_SCENE3D_API virtual ~base();
+    SIGHT_VIZ_SCENE3D_API virtual ~base();
 
     /// Sets the scene's length, that is the length of the scene's bounding cube.
-    VIZ_SCENE3D_API virtual void set_scene_length(float _scene_length);
+    SIGHT_VIZ_SCENE3D_API virtual void set_scene_length(float _scene_length);
 
     /**
      * @brief Listens to mouse move events when one of the mouse buttons is pressed.
@@ -97,7 +98,7 @@ public:
      * @param _dx width displacement of the mouse since the last event.
      * @param _dy height displacement of the mouse since the last event.
      */
-    VIZ_SCENE3D_API virtual void mouse_move_event(
+    SIGHT_VIZ_SCENE3D_API virtual void mouse_move_event(
         mouse_button _button,
         modifier _mods,
         int _x,
@@ -114,7 +115,7 @@ public:
      * @param _x width coordinate of the mouse.
      * @param _y height coordinate of the mouse.
      */
-    VIZ_SCENE3D_API virtual void wheel_event(modifier _mods, double _angle_delta, int _x, int _y);
+    SIGHT_VIZ_SCENE3D_API virtual void wheel_event(modifier _mods, double _angle_delta, int _x, int _y);
 
     /**
      * @brief Listens to mouse move buttons being released.
@@ -123,7 +124,7 @@ public:
      * @param _x width coordinate of the mouse.
      * @param _y height coordinate of the mouse.
      */
-    VIZ_SCENE3D_API virtual void button_release_event(mouse_button _button, modifier _mods, int _x, int _y);
+    SIGHT_VIZ_SCENE3D_API virtual void button_release_event(mouse_button _button, modifier _mods, int _x, int _y);
 
     /**
      * @brief Listens to mouse move buttons being pressed.
@@ -132,7 +133,7 @@ public:
      * @param _x width coordinate of the mouse.
      * @param _y height coordinate of the mouse.
      */
-    VIZ_SCENE3D_API virtual void button_press_event(mouse_button _button, modifier _mods, int _x, int _y);
+    SIGHT_VIZ_SCENE3D_API virtual void button_press_event(mouse_button _button, modifier _mods, int _x, int _y);
 
     /**
      * @brief Listens to mouse buttons being double pressed.
@@ -141,7 +142,7 @@ public:
      * @param _x width coordinate of the mouse.
      * @param _y height coordinate of the mouse.
      */
-    VIZ_SCENE3D_API virtual void button_double_press_event(mouse_button _button, modifier _mods, int _x, int _y);
+    SIGHT_VIZ_SCENE3D_API virtual void button_double_press_event(mouse_button _button, modifier _mods, int _x, int _y);
 
     /**
      * @brief Listens to keyboard keys being pressed.
@@ -150,7 +151,7 @@ public:
      * @param _mouse_x width coordinate of the mouse at the time of the event.
      * @param _mouse_y height coordinate of the mouse at the time of the event.
      */
-    VIZ_SCENE3D_API virtual void key_press_event(int _key, modifier _mods, int _mouse_x, int _mouse_y);
+    SIGHT_VIZ_SCENE3D_API virtual void key_press_event(int _key, modifier _mods, int _mouse_x, int _mouse_y);
 
     /**
      * @brief Listens to keyboard keys being released.
@@ -159,17 +160,17 @@ public:
      * @param _mouse_x width coordinate of the mouse at the time of the event.
      * @param _mouse_y height coordinate of the mouse at the time of the event.
      */
-    VIZ_SCENE3D_API virtual void key_release_event(int _key, modifier _mods, int _mouse_x, int _mouse_y);
+    SIGHT_VIZ_SCENE3D_API virtual void key_release_event(int _key, modifier _mods, int _mouse_x, int _mouse_y);
 
     /**
      * @brief Called when the mouse leaves the widget
      */
-    VIZ_SCENE3D_API virtual void leave_event();
+    SIGHT_VIZ_SCENE3D_API virtual void leave_event();
 
     /**
      * @brief Called when the mouse enters the widget
      */
-    VIZ_SCENE3D_API virtual void enter_event();
+    SIGHT_VIZ_SCENE3D_API virtual void enter_event();
 
     /**
      * @brief Checks if the cursor is inside a layer's viewport.
@@ -178,15 +179,15 @@ public:
      * @param _layer layer on which to check the cursor's belonging.
      * @param _layer_order_dependant define if interaction must take into account above layers.
      */
-    VIZ_SCENE3D_API static bool is_in_layer(int _mouse_x, int _mouse_y, SPTR(layer) _layer,
-                                            bool _layer_order_dependant);
+    SIGHT_VIZ_SCENE3D_API static bool is_in_layer(int _mouse_x, int _mouse_y, SPTR(layer) _layer,
+                                                  bool _layer_order_dependant);
 
     /**
      * @brief Listen to render window resize events.
      * @param _width the render window's new width.
      * @param _height the render window's new height.
      */
-    VIZ_SCENE3D_API virtual void resize_event(int _width, int _height);
+    SIGHT_VIZ_SCENE3D_API virtual void resize_event(int _width, int _height);
 
     /**
      * @brief Listens to pinch gesture events.
@@ -195,7 +196,7 @@ public:
      * @param _center_x the width coordinate of the center of the pinch
      * @param _center_y the height coordinate of the center of the pinch
      */
-    VIZ_SCENE3D_API virtual void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y);
+    SIGHT_VIZ_SCENE3D_API virtual void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y);
 
     /**
      * @brief Listens to pan gesture move events.
@@ -204,7 +205,7 @@ public:
      * @param _dx width displacement of the finger since the last event.
      * @param _dy height displacement of the finger since the last event.
      */
-    VIZ_SCENE3D_API virtual void pan_gesture_move_event(int _x, int _y, int _dx, int _dy);
+    SIGHT_VIZ_SCENE3D_API virtual void pan_gesture_move_event(int _x, int _y, int _dx, int _dy);
 
     /**
      * @brief Listens to pan gesture release events.
@@ -213,14 +214,14 @@ public:
      * @param _dx width displacement of the finger since the last event.
      * @param _dy height displacement of the finger since the last event.
      */
-    VIZ_SCENE3D_API virtual void pan_gesture_release_event(int _x, int _y, int _dx, int _dy);
+    SIGHT_VIZ_SCENE3D_API virtual void pan_gesture_release_event(int _x, int _y, int _dx, int _dy);
 
     /**
      * @brief Listens to long tap gesture events.
      * @param _x the width coordinate of the finger
      * @param _y the height coordinate of the finger
      */
-    VIZ_SCENE3D_API virtual void long_tap_gesture_event(int _x, int _y);
+    SIGHT_VIZ_SCENE3D_API virtual void long_tap_gesture_event(int _x, int _y);
 
 protected:
 

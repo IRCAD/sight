@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/viz/scene3d/config.hpp>
+
 #include "viz/scene3d/adaptor.hpp"
-#include "viz/scene3d/config.hpp"
 
 #include <viz/scene3d/texture.hpp>
 
@@ -33,7 +34,7 @@ namespace sight::viz::scene3d
 /**
  * @brief   Base interface containing common code to upload shader parameters from Sight data.
  */
-class VIZ_SCENE3D_CLASS_API parameter_adaptor : public sight::viz::scene3d::adaptor
+class SIGHT_VIZ_SCENE3D_CLASS_API parameter_adaptor : public sight::viz::scene3d::adaptor
 {
 public:
 
@@ -44,36 +45,36 @@ public:
      * @{
      */
 
-    VIZ_SCENE3D_API static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::slots::key_t SET_COLOR_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::slots::key_t SET_DOUBLE2_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::slots::key_t SET_DOUBLE3_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::slots::key_t SET_INT_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::slots::key_t SET_INT2_PARAMETER_SLOT;
-    VIZ_SCENE3D_API static const core::com::slots::key_t SET_INT3_PARAMETER_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_BOOL_PARAMETER_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_COLOR_PARAMETER_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_DOUBLE_PARAMETER_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_DOUBLE2_PARAMETER_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_DOUBLE3_PARAMETER_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_INT_PARAMETER_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_INT2_PARAMETER_SLOT;
+    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_INT3_PARAMETER_SLOT;
 
     ///@}
 
-    VIZ_SCENE3D_API static constexpr std::string_view PARAMETER_INOUT = "parameter";
+    SIGHT_VIZ_SCENE3D_API static constexpr std::string_view PARAMETER_INOUT = "parameter";
 
     /// Constructor.
-    VIZ_SCENE3D_API parameter_adaptor() noexcept;
+    SIGHT_VIZ_SCENE3D_API parameter_adaptor() noexcept;
 
     /// Destructor. Does nothing
-    VIZ_SCENE3D_API ~parameter_adaptor() noexcept override;
+    SIGHT_VIZ_SCENE3D_API ~parameter_adaptor() noexcept override;
 
     /// Set the shaderType by passing the value of the shader_enum_t of this adaptor.
-    VIZ_SCENE3D_API void set_shader_type(Ogre::GpuProgramType _shader_type);
+    SIGHT_VIZ_SCENE3D_API void set_shader_type(Ogre::GpuProgramType _shader_type);
 
     /// Set the name of the parameter m_paramName.
-    VIZ_SCENE3D_API void set_param_name(const std::string& _param_name);
+    SIGHT_VIZ_SCENE3D_API void set_param_name(const std::string& _param_name);
 
     /// Get the name of the parameter m_paramName.
-    VIZ_SCENE3D_API const std::string& get_param_name() const;
+    SIGHT_VIZ_SCENE3D_API const std::string& get_param_name() const;
 
     /// Get the name of the parameter m_paramName.
-    VIZ_SCENE3D_API const std::string& get_default_value() const;
+    SIGHT_VIZ_SCENE3D_API const std::string& get_default_value() const;
 
     /// Inform that the parameter value has changed. Its value will be uploaded on next update
     void set_dirty();
@@ -81,22 +82,22 @@ public:
 protected:
 
     /// Configure the adaptor
-    VIZ_SCENE3D_API void configuring() override;
+    SIGHT_VIZ_SCENE3D_API void configuring() override;
 
     /// Updates the shader parameter values and requests a render of the scene.
-    VIZ_SCENE3D_API void updating() override;
+    SIGHT_VIZ_SCENE3D_API void updating() override;
 
     /// Clear the mesh pointer.
-    VIZ_SCENE3D_API void stopping() override;
+    SIGHT_VIZ_SCENE3D_API void stopping() override;
 
     /// Set the parameter for a given technique
-    VIZ_SCENE3D_API virtual bool set_parameter(Ogre::Technique& _technique);
+    SIGHT_VIZ_SCENE3D_API virtual bool set_parameter(Ogre::Technique& _technique);
 
     /// Set the material to update
-    VIZ_SCENE3D_API void set_material(const Ogre::MaterialPtr& _material);
+    SIGHT_VIZ_SCENE3D_API void set_material(const Ogre::MaterialPtr& _material);
 
     /// Connect the input parameter modified signal to this service update slot.
-    VIZ_SCENE3D_API service::connections_t auto_connections() const override;
+    SIGHT_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
 
 private:
 

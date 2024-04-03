@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/igtl/config.hpp"
+#include <sight/io/igtl/config.hpp>
+
 #include "io/igtl/detail/exception/conversion.hpp"
 
 #include <core/tools/failed.hpp>
@@ -39,7 +40,7 @@ namespace sight::io::igtl::detail
 /**
  * @brief MessageFactory contains static function to create and registrate igtl messages in the factory (s_creators).
  */
-class IO_IGTL_CLASS_API message_factory
+class SIGHT_IO_IGTL_CLASS_API message_factory
 {
 public:
 
@@ -54,16 +55,16 @@ public:
      * @return the map of equivalence between a string device type igtl and a
      * method to create the appropiate message
      */
-    static IO_IGTL_API creator_container_t init_factory();
+    static SIGHT_IO_IGTL_API creator_container_t init_factory();
     /**
      * @brief create create a message with the type specified in parameter
      * @param[in] _type
      * @return a smart pointer to a igtl message
      */
-    static IO_IGTL_API ::igtl::MessageBase::Pointer create(std::string const& _type);
+    static SIGHT_IO_IGTL_API ::igtl::MessageBase::Pointer create(std::string const& _type);
 
     /// Map of equivalence between a device type and igtl message creator method
-    static IO_IGTL_API creator_container_t s_creators;
+    static SIGHT_IO_IGTL_API creator_container_t s_creators;
 
     /**
      * @struct MessageMaker

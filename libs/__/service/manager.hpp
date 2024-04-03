@@ -21,10 +21,11 @@
 
 #pragma once
 
+#include <sight/service/config.hpp>
+
 #include "core/com/helper/proxy_connections.hpp"
 
 #include "service/base.hpp"
-#include "service/config.hpp"
 
 namespace sight::service
 {
@@ -33,7 +34,7 @@ namespace sight::service
  * @brief   Utility class used to give access to internal services mechanism for classes that manage services, like
  * application managers. The methods exposed here should not be visible in the public API.
  */
-class SERVICE_CLASS_API manager
+class SIGHT_SERVICE_CLASS_API manager
 {
 public:
 
@@ -48,7 +49,7 @@ public:
      * @param[in] _auto_connect if true, the service will be connected to the object's signals
      * @param[in] _optional if true, the service can be started even if the objet is not present
      */
-    SERVICE_API static void set_object(
+    SIGHT_SERVICE_API static void set_object(
         service::base::sptr& _srv,
         data::object::sptr _obj,
         std::string_view _key,
@@ -65,7 +66,7 @@ public:
      * @param[in] _key key of the object
      * @param[in] _index index of the data in the group
      */
-    SERVICE_API static void reset_object(
+    SIGHT_SERVICE_API static void reset_object(
         service::base::sptr& _srv,
         std::string_view _key,
         std::optional<std::size_t> _index
@@ -79,7 +80,7 @@ public:
      * @param[in] _id label of the object
      * @param[in] _index index of the data in the group
      */
-    SERVICE_API static void set_deferred_id(
+    SIGHT_SERVICE_API static void set_deferred_id(
         service::base::sptr& _srv,
         std::string_view _key,
         const std::string& _id,
@@ -87,32 +88,32 @@ public:
     );
 
     /// Add connections to a service
-    SERVICE_API static void add_connection(
+    SIGHT_SERVICE_API static void add_connection(
         service::base::sptr& _srv,
         const core::com::helper::proxy_connections& _proxy
     );
 
     /// Connects the service with its data
-    SERVICE_API static void auto_connect(service::base::sptr& _srv);
+    SIGHT_SERVICE_API static void auto_connect(service::base::sptr& _srv);
 
     /// Disconnects the service from its data
-    SERVICE_API static void auto_disconnect(service::base::sptr& _srv);
+    SIGHT_SERVICE_API static void auto_disconnect(service::base::sptr& _srv);
 
     /// Connects a slot to the signal used to notify about newly deferred objects
-    SERVICE_API static core::com::connection connect_register_out(const core::com::slot_base::sptr& _slot);
+    SIGHT_SERVICE_API static core::com::connection connect_register_out(const core::com::slot_base::sptr& _slot);
 
     /// Disconnect a slot to the signal used to notify about newly deferred objects
-    SERVICE_API static core::com::connection connect_unregister_out(const core::com::slot_base::sptr& _slot);
+    SIGHT_SERVICE_API static core::com::connection connect_unregister_out(const core::com::slot_base::sptr& _slot);
 
     /// Notify about a newly deferred object
-    SERVICE_API static void notify_register_out(data::object::sptr, const std::string&);
+    SIGHT_SERVICE_API static void notify_register_out(data::object::sptr, const std::string&);
 
     /// Notify about a destroyed deferred object
-    SERVICE_API static void notify_unregister_out(data::object::sptr, const std::string&);
+    SIGHT_SERVICE_API static void notify_unregister_out(data::object::sptr, const std::string&);
 
     /// Returns the information about the required object key
     //// @return a pair of booleans to indicate if the object is auto_connected and optional
-    SERVICE_API static std::pair<bool, bool> get_object_key_attrs(
+    SIGHT_SERVICE_API static std::pair<bool, bool> get_object_key_attrs(
         const service::base::sptr& _srv,
         const std::string& _key
     );

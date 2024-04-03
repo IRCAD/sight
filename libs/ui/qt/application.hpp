@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <core/base.hpp>
 
@@ -34,7 +34,7 @@ namespace sight::ui::qt
 /**
  * @brief   Gives access to the qml application part.
  */
-class UI_QT_CLASS_API application : public ui::application
+class SIGHT_UI_QT_CLASS_API application : public ui::application
 {
 public:
 
@@ -42,7 +42,7 @@ public:
     = default;
 
     /// Tells the application to exit with a returncode
-    UI_QT_API void exit(int _return_code = 0, bool _async = true) override;
+    SIGHT_UI_QT_API void exit(int _return_code = 0, bool _async = true) override;
 };
 
 } // namespace sight::ui::qt

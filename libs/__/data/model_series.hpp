@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/dicom_series.hpp"
 #include "data/factory/new.hpp"
 #include "data/reconstruction.hpp"
@@ -43,8 +44,8 @@ namespace sight::data
 /**
  * @brief Holds models series.
  */
-class DATA_CLASS_API model_series final : public series,
-                                          public has_fiducials
+class SIGHT_DATA_CLASS_API model_series final : public series,
+                                                public has_fiducials
 {
 public:
 
@@ -55,10 +56,10 @@ public:
     /**
      * @brief Creates the models series.
      */
-    DATA_API model_series();
+    SIGHT_DATA_API model_series();
 
     /// Destroys the models series.
-    DATA_API ~model_series() noexcept override = default;
+    SIGHT_DATA_API ~model_series() noexcept override = default;
 
     /// Gets the reconstruction container use to store mesh, material and image mask.
     const reconstruction_vector_t& get_reconstruction_db() const;
@@ -78,37 +79,37 @@ public:
      */
     /// Defines the type of signal sent when a reconstruction is added.
     using reconstructions_added_signal_t = core::com::signal<void (reconstruction_vector_t)>;
-    DATA_API static const core::com::signals::key_t RECONSTRUCTIONS_ADDED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t RECONSTRUCTIONS_ADDED_SIG;
 
     /// Defines the type of signal sent when a reconstruction is removed.
     using reconstructions_removed_signal_t = core::com::signal<void (reconstruction_vector_t)>;
-    DATA_API static const core::com::signals::key_t RECONSTRUCTIONS_REMOVED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t RECONSTRUCTIONS_REMOVED_SIG;
 /**
  * @}
  */
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const model_series& _other) const noexcept;
-    DATA_API bool operator!=(const model_series& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const model_series& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const model_series& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-    DATA_API fiducials_series::csptr get_fiducials() const;
-    DATA_API fiducials_series::sptr get_fiducials();
+    SIGHT_DATA_API fiducials_series::csptr get_fiducials() const;
+    SIGHT_DATA_API fiducials_series::sptr get_fiducials();
 
 protected:
 

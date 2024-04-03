@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ex_timeline/config.hpp"
+#include "sight/ex_timeline/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 #include <core/thread/worker.hpp>
@@ -35,18 +35,18 @@ namespace ex_timeline
 {
 
 /// This class is started when the module is loaded.
-class EX_TIMELINE_CLASS_API plugin : public sight::core::runtime::plugin
+class SIGHT_EX_TIMELINE_CLASS_API plugin : public sight::core::runtime::plugin
 {
 public:
 
     /// Destroys the plugin.
-    EX_TIMELINE_API ~plugin() noexcept override;
+    SIGHT_EX_TIMELINE_API ~plugin() noexcept override;
 
     /// Adds the default worker.
-    EX_TIMELINE_API void start() override;
+    SIGHT_EX_TIMELINE_API void start() override;
 
     /// Does nothing here.
-    EX_TIMELINE_API void stop() noexcept override;
+    SIGHT_EX_TIMELINE_API void stop() noexcept override;
 
 private:
 

@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/dicom/config.hpp"
-
 #include <core/com/slot.hpp>
 
 #include <data/dicom_series.hpp>
@@ -94,8 +92,8 @@ namespace sight::module::ui::dicom
  * - \b dicomReader Reader type to use.
  * - \b readerConfig Optional configuration for the DICOM Reader.
  */
-class MODULE_UI_DICOM_CLASS_API slice_index_dicom_editor : public QObject,
-                                                           public sight::ui::editor
+class slice_index_dicom_editor : public QObject,
+                                 public sight::ui::editor
 {
 Q_OBJECT;
 
@@ -103,53 +101,53 @@ public:
 
     SIGHT_DECLARE_SERVICE(slice_index_dicom_editor, sight::ui::editor);
 
-    MODULE_UI_DICOM_API static const core::com::slots::key_t READ_IMAGE_SLOT;
+    static const core::com::slots::key_t READ_IMAGE_SLOT;
     using read_image_slot_t = core::com::slot<void (std::size_t)>;
 
-    MODULE_UI_DICOM_API static const core::com::slots::key_t DISPLAY_MESSAGE_SLOT;
+    static const core::com::slots::key_t DISPLAY_MESSAGE_SLOT;
     using display_message_slot_t = core::com::slot<void (const std::string&)>;
 
     /**
      * @brief Constructor
      */
-    MODULE_UI_DICOM_API slice_index_dicom_editor() noexcept;
+    slice_index_dicom_editor() noexcept;
 
     /**
      * @brief Destructor
      */
-    MODULE_UI_DICOM_API ~slice_index_dicom_editor() noexcept override;
+    ~slice_index_dicom_editor() noexcept override;
 
 protected:
 
     /// Configuring method. This method is used to configure the service.
-    MODULE_UI_DICOM_API void configuring() override;
+    void configuring() override;
 
     /// Override
-    MODULE_UI_DICOM_API void starting() override;
+    void starting() override;
 
     /// Override
-    MODULE_UI_DICOM_API void stopping() override;
+    void stopping() override;
 
     /// Override
-    MODULE_UI_DICOM_API void updating() override;
+    void updating() override;
 
     /// Override
-    MODULE_UI_DICOM_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     /// Function called when a new slice must be displayed
-    MODULE_UI_DICOM_API void trigger_new_slice();
+    void trigger_new_slice();
 
     /**
      * @brief Read the selected image
      * @param[in] _selected_slice_index Selected slice of the image that must be read
      */
-    MODULE_UI_DICOM_API void read_image(std::size_t _selected_slice_index);
+    void read_image(std::size_t _selected_slice_index);
 
     /**
      * @brief Display error message
      * @param[in] _message Message that must be displayed
      */
-    static MODULE_UI_DICOM_API void display_error_message(const std::string& _message);
+    static void display_error_message(const std::string& _message);
 
 private Q_SLOTS:
 
@@ -157,7 +155,7 @@ private Q_SLOTS:
      * @brief Slot called when the slider is moved
      * @param[in] _value Slider value
      */
-    MODULE_UI_DICOM_API void change_slice_index(int _value);
+    void change_slice_index(int _value);
 
 private:
 

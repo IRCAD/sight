@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/config.hpp"
-
 #include <data/helper/medical_image.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
@@ -72,8 +70,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b margin (optional, default=0.1): margin to the border of the viewport, in percentage of the highest of width
  *  or height.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API negato2d_camera final : public sight::viz::scene3d::adaptor,
-                                                           public sight::viz::scene3d::interactor::base
+class negato2d_camera final : public sight::viz::scene3d::adaptor,
+                              public sight::viz::scene3d::interactor::base
 {
 public:
 
@@ -81,10 +79,10 @@ public:
     SIGHT_DECLARE_SERVICE(negato2d_camera, sight::viz::scene3d::adaptor);
 
     /// Creates the service and initializes slots.
-    MODULE_VIZ_SCENE3D_API negato2d_camera() noexcept;
+    negato2d_camera() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~negato2d_camera() noexcept override = default;
+    ~negato2d_camera() noexcept override = default;
 
     /**
      * @brief Moving along slices (SHIFT to speed-up) or Zooms in the scene at the current cursor position.
@@ -92,7 +90,7 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void wheel_event(modifier /*_modifier*/, double _delta, int _x, int _y) final;
+    void wheel_event(modifier /*_modifier*/, double _delta, int _x, int _y) final;
 
     /**
      * @brief Zooms in the scene at the current cursor position.
@@ -100,7 +98,7 @@ public:
      * @param _center_x the width coordinate of the center of the pinch
      * @param _center_y the height coordinate of the center of the pinch
      */
-    MODULE_VIZ_SCENE3D_API void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) final;
+    void pinch_gesture_event(double _scale_factor, int _center_x, int _center_y) final;
 
     /**
      * @brief Moves the camera along the projection plane.
@@ -109,7 +107,7 @@ public:
      * @param _dx width displacement of the finger since the last event.
      * @param _dy height displacement of the finger since the last event.
      */
-    MODULE_VIZ_SCENE3D_API void pan_gesture_move_event(int _x, int _y, int _dx, int _dy) final;
+    void pan_gesture_move_event(int _x, int _y, int _dx, int _dy) final;
 
     /**
      * @brief Ends Moving the camera along the projection plane.
@@ -118,7 +116,7 @@ public:
      * @param _dx width displacement of the finger since the last event.
      * @param _dy height displacement of the finger since the last event.
      */
-    MODULE_VIZ_SCENE3D_API void pan_gesture_release_event(int _x, int _y, int _dx, int _dy) final;
+    void pan_gesture_release_event(int _x, int _y, int _dx, int _dy) final;
 
     /**
      * @brief Interacts with the negato if it was picked by pressing any mouse button.
@@ -132,7 +130,7 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void mouse_move_event(
+    void mouse_move_event(
         sight::viz::scene3d::interactor::base::mouse_button _button,
         modifier /*_mods*/,
         int _x,
@@ -148,7 +146,7 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void button_press_event(
+    void button_press_event(
         sight::viz::scene3d::interactor::base::mouse_button _button,
         modifier /*_mods*/,
         int _x,
@@ -161,7 +159,7 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void button_release_event(
+    void button_release_event(
         sight::viz::scene3d::interactor::base::mouse_button _button,
         modifier /*_mods*/,
         int _x,
@@ -174,15 +172,15 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void key_press_event(int _key, modifier /*_mods*/, int _x, int _y) final;
+    void key_press_event(int _key, modifier /*_mods*/, int _x, int _y) final;
 
 protected:
 
     /// Configures the layer, interaction priority and camera orientation.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Adds negato camera interactions to the layer.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -192,13 +190,13 @@ protected:
      * Connect data::image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to CHANGE_ORIENTATION_SLOT
      * Connect data::image::SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to MOVE_BACK_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::connections_t auto_connections() const final;
+    service::connections_t auto_connections() const final;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void updating() noexcept final;
+    void updating() noexcept final;
 
     /// Removes negato camera interactions from the layer.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
 private:
 

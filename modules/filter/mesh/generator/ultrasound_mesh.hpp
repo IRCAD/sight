@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/mesh/config.hpp"
 
 #include <core/macros.hpp>
 
@@ -73,7 +71,7 @@ namespace sight::module::filter::mesh::generator
  * - \b angle (optional, default=60) : angle of the US beam.
  * - \b deltaDepth (optional, default=50) : delta depth of the US plane.
  */
-class MODULE_FILTER_MESH_CLASS_API ultrasound_mesh final : public service::generator
+class ultrasound_mesh final : public service::generator
 {
 public:
 
@@ -81,24 +79,24 @@ public:
     SIGHT_DECLARE_SERVICE(ultrasound_mesh, service::base);
 
     /// Create slots.
-    MODULE_FILTER_MESH_API ultrasound_mesh() noexcept;
+    ultrasound_mesh() noexcept;
 
     /// Destroys the service.
-    MODULE_FILTER_MESH_API ~ultrasound_mesh() override;
+    ~ultrasound_mesh() override;
 
 protected:
 
     /// Configures the service.
-    MODULE_FILTER_MESH_API void configuring(const config_t& _config) override;
+    void configuring(const config_t& _config) override;
 
     /// Generate the mesh.
-    MODULE_FILTER_MESH_API void starting() override;
+    void starting() override;
 
     /// Generate and update the mesh.
-    MODULE_FILTER_MESH_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_FILTER_MESH_API void stopping() override;
+    void stopping() override;
 
 private:
 

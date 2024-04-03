@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <core/com/signals.hpp>
 #include <core/com/slots.hpp>
 #include <core/tools/failed.hpp>
@@ -125,8 +123,8 @@ namespace sight::module::ui::qt
  * - \b max (optional, int/double, default=999999/1000000.0): maximum value allowed in the field.
  * - \b separator (optional, list, default=','): the separator for the list type
  */
-class MODULE_UI_QT_CLASS_API preferences_configuration final : public QObject,
-                                                               public sight::ui::action
+class preferences_configuration final : public QObject,
+                                        public sight::ui::action
 {
 Q_OBJECT
 
@@ -136,27 +134,27 @@ public:
     SIGHT_DECLARE_SERVICE(preferences_configuration, sight::ui::action);
 
     /// Initializes the signal.
-    MODULE_UI_QT_API preferences_configuration() noexcept;
+    preferences_configuration() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_QT_API ~preferences_configuration() noexcept override;
+    ~preferences_configuration() noexcept override;
 
 protected:
 
     /// Configures the service.
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /// Gets the preference composite.
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /// Shows a dialog to configure preferences declared in xml.
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing.
-    MODULE_UI_QT_API void request_values();
+    void request_values();
 
 private Q_SLOTS:
 

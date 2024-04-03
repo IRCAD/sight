@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/viz/scene3d/adaptor/material.hpp"
-#include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/transformable.hpp>
@@ -66,7 +65,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b dashed (optional, bool, default=false): display a dashed line instead of a solid line
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API line final :
+class line final :
     public sight::viz::scene3d::adaptor,
     public sight::viz::scene3d::transformable
 {
@@ -76,30 +75,30 @@ public:
     SIGHT_DECLARE_SERVICE(line, sight::viz::scene3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
-    MODULE_VIZ_SCENE3D_API line() noexcept;
+    line() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~line() noexcept override;
+    ~line() noexcept override;
 
 protected:
 
     /// Configures the adaptor
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    void configuring() override;
 
     /// Creates a mesh in the Default Ogre resource group
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    void starting() override;
 
     /// Checks if the data::mesh has changed, and updates it if it has.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    void updating() override;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Sets the line visibility.
      * @param _visible the visibility status of the line.
      */
-    MODULE_VIZ_SCENE3D_API void set_visible(bool _visible) override;
+    void set_visible(bool _visible) override;
 
 private:
 

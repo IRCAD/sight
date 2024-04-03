@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/data/config.hpp"
 
 #include "service/controller.hpp"
 
@@ -47,17 +45,17 @@ namespace sight::module::data
  * @subsection Output Output
  * - \b object [sight::data::object]: Object used to register/unregister the object given by the slots.
  */
-class MODULE_DATA_CLASS_API select_object : public service::controller
+class select_object : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(select_object, service::controller);
 
     /// Constructor.  Do nothing.
-    MODULE_DATA_API select_object() noexcept;
+    select_object() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_DATA_API ~select_object() noexcept override;
+    ~select_object() noexcept override;
 
     /**
      * @name Slots
@@ -70,19 +68,19 @@ public:
 protected:
 
     /// Configures the service.
-    MODULE_DATA_API void configuring() override;
+    void configuring() override;
 
     /// Implements starting method derived from base. Do nothing.
-    MODULE_DATA_API void starting() override;
+    void starting() override;
 
     /// Implements stopping method derived from base. Do nothing.
-    MODULE_DATA_API void stopping() override;
+    void stopping() override;
 
     /// Implements updating method derived from base. Do nothing.
-    MODULE_DATA_API void updating() override;
+    void updating() override;
 
     /// Implements info method derived from base. Print classname.
-    MODULE_DATA_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     /**
      * @name Slots

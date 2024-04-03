@@ -48,7 +48,7 @@ namespace sight::service
  * The API of ObjectService should not be directly invoked,
  * service/op methods (i.e. add, get,...) should be used instead
  */
-class SERVICE_CLASS_API object_service : public core::base_object
+class object_service : public core::base_object
 {
 public:
 
@@ -58,21 +58,21 @@ public:
     using service_vector_t = std::set<SPTR(service::base)>;
 
     /// Return some informations contain in the registry
-    SERVICE_API std::string get_registry_information() const;
+    std::string get_registry_information() const;
 
     /**
      * @brief Register the service alone
      *
      * @param _service Service to add to the OSR
      */
-    SERVICE_API void register_service(service::base::sptr _service);
+    void register_service(service::base::sptr _service);
 
     /**
      * @brief Remove the service (service) from the m_container
      *
      * @param _service Service whose key should be removed
      */
-    SERVICE_API void unregister_service(service::base::sptr _service);
+    void unregister_service(service::base::sptr _service);
 
     /**
      * @name Some useful getters
@@ -93,7 +93,7 @@ public:
      * @brief Return registered services matching serviceType
      * @note Invoke get_services( data::object::sptr , const std::string & ) for each registered object
      */
-    SERVICE_API service_vector_t get_services(const std::string& _service_type) const;
+    service_vector_t get_services(const std::string& _service_type) const;
 
     //@}
 

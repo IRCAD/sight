@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/crypto/secure_string.hpp"
 
 #include <string>
@@ -32,15 +33,15 @@ namespace sight::core::crypto
 /// Decode a base64 message
 /// @param _message encoded message
 /// @returns decoded message
-CORE_API secure_string from_base64(const secure_string& _message);
+SIGHT_CORE_API secure_string from_base64(const secure_string& _message);
 
-CORE_API std::string from_base64(const std::string& _message);
+SIGHT_CORE_API std::string from_base64(const std::string& _message);
 
 /// Encode a message to base64
 /// @param _message clear message
 /// @returns encoded message
-CORE_API secure_string to_base64(const secure_string& _message);
+SIGHT_CORE_API secure_string to_base64(const secure_string& _message);
 
-CORE_API std::string to_base64(const std::string& _message);
+SIGHT_CORE_API std::string to_base64(const std::string& _message);
 
 } // namespace sight::core::crypto

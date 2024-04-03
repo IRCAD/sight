@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "geometry/data/config.hpp"
+#include <sight/geometry/data/config.hpp>
 
 #include <data/matrix4.hpp>
 #include <data/point.hpp>
@@ -37,7 +37,7 @@ namespace sight::geometry::data
  * @param[in] _input Input matrix
  * @param[out] _output Inverted matrix.
  */
-GEOMETRY_DATA_API bool invert(
+SIGHT_GEOMETRY_DATA_API bool invert(
     const sight::data::matrix4& _input,
     sight::data::matrix4& _output
 );
@@ -48,7 +48,7 @@ GEOMETRY_DATA_API bool invert(
  * @param[in] _trf_b Second matrix.
  * @param[out] _output Output matrix.
  */
-GEOMETRY_DATA_API void multiply(
+SIGHT_GEOMETRY_DATA_API void multiply(
     const sight::data::matrix4& _trf_a,
     const sight::data::matrix4& _trf_b,
     sight::data::matrix4& _output
@@ -58,7 +58,7 @@ GEOMETRY_DATA_API void multiply(
  * @brief Set the matrix to identity.
  * @param[in,out] _trf Matrix we want to set to identity.
  */
-GEOMETRY_DATA_API void identity(sight::data::matrix4& _trf);
+SIGHT_GEOMETRY_DATA_API void identity(sight::data::matrix4& _trf);
 
 /**
  * @brief Multiply a point and a matrix.
@@ -66,7 +66,7 @@ GEOMETRY_DATA_API void identity(sight::data::matrix4& _trf);
  * @param[in] _input Input point.
  * @param[out] _output Output point.
  */
-GEOMETRY_DATA_API void multiply(
+SIGHT_GEOMETRY_DATA_API void multiply(
     const sight::data::matrix4& _trf,
     const sight::data::point& _input,
     sight::data::point& _output
@@ -78,7 +78,7 @@ GEOMETRY_DATA_API void multiply(
  * @param[in] _epsilon Precision of the test (default 1e-12)
  * @return boolean value: true if the matrix is identity, false otherwise.
  */
-GEOMETRY_DATA_API bool is_identity(
+SIGHT_GEOMETRY_DATA_API bool is_identity(
     const sight::data::matrix4& _trf,
     double _epsilon = 1e-12
 );

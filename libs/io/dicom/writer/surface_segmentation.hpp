@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_instance.hpp"
 #include "io/dicom/exception/failed.hpp"
 
@@ -48,7 +49,7 @@ namespace sight::io::dicom::writer
 /**
  * @brief This class handles DICOM Surface Segmentation files writing.
  */
-class IO_DICOM_CLASS_API surface_segmentation :
+class SIGHT_IO_DICOM_CLASS_API surface_segmentation :
     public io::writer::generic_object_writer<data::model_series>,
     public core::location::single_file
 {
@@ -61,22 +62,22 @@ public:
     );
 
     /// Constructor
-    IO_DICOM_API surface_segmentation();
+    SIGHT_IO_DICOM_API surface_segmentation();
 
     /// Destructor
-    IO_DICOM_API ~surface_segmentation() override;
+    SIGHT_IO_DICOM_API ~surface_segmentation() override;
 
     /// Load and start appropriate writing tools.
-    IO_DICOM_API void write() override;
+    SIGHT_IO_DICOM_API void write() override;
 
     /// Does nothing
-    IO_DICOM_API std::string extension() const override;
+    SIGHT_IO_DICOM_API std::string extension() const override;
 
     /// Returns logger
-    IO_DICOM_API SPTR(core::log::logger) get_logger() const;
+    SIGHT_IO_DICOM_API SPTR(core::log::logger) get_logger() const;
 
     /// Getter for writer's job
-    IO_DICOM_API SPTR(core::jobs::base) get_job() const override;
+    SIGHT_IO_DICOM_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
+
 #include "ui/qt/container/widget.hpp"
 
 #include <ui/__/dialog/progress_base.hpp>
@@ -51,8 +52,8 @@ namespace sight::ui::qt::dialog
  * @note Do not inherit from fwProgressDialog but embed a fwProgressDialog because this former is not copyable.
  * @todo progress is not commented.
  */
-class UI_QT_CLASS_API_QT progress : public QObject,
-                                    public ui::dialog::progress_base
+class SIGHT_UI_QT_CLASS_API_QT progress : public QObject,
+                                          public ui::dialog::progress_base
 {
 Q_OBJECT
 
@@ -60,22 +61,22 @@ public:
 
     SIGHT_DECLARE_CLASS(progress, ui::dialog::progress_base, ui::factory::make<progress>);
 
-    UI_QT_API_QT progress(
+    SIGHT_UI_QT_API_QT progress(
         const std::string& _title   = "Progression",
         const std::string& _message = std::string(86, ' ')
     );
 
-    UI_QT_API_QT ~progress() override;
+    SIGHT_UI_QT_API_QT ~progress() override;
 
-    UI_QT_API_QT void operator()(float _percent, std::string _msg) override;
-
-    /// override
-    UI_QT_API_QT void set_title(const std::string& _title) override;
+    SIGHT_UI_QT_API_QT void operator()(float _percent, std::string _msg) override;
 
     /// override
-    UI_QT_API_QT void set_message(const std::string& _message) override;
+    SIGHT_UI_QT_API_QT void set_title(const std::string& _title) override;
 
-    UI_QT_API_QT void hide_cancel_button() override;
+    /// override
+    SIGHT_UI_QT_API_QT void set_message(const std::string& _message) override;
+
+    SIGHT_UI_QT_API_QT void hide_cancel_button() override;
 
 protected Q_SLOTS:
 

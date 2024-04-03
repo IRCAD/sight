@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <data/material.hpp>
 #include <data/mesh.hpp>
@@ -36,29 +36,29 @@ namespace sight::viz::scene3d
 /**
  * @brief   Manages a generic material
  */
-class VIZ_SCENE3D_CLASS_API material
+class SIGHT_VIZ_SCENE3D_CLASS_API material
 {
 public:
 
     using uptr = std::unique_ptr<material>;
 
     /// Name of the default used as a base for the instance created by this adaptor
-    VIZ_SCENE3D_API static const std::string DEFAULT_MATERIAL_TEMPLATE_NAME;
+    SIGHT_VIZ_SCENE3D_API static const std::string DEFAULT_MATERIAL_TEMPLATE_NAME;
 
     /// Constructor
-    VIZ_SCENE3D_API material(const std::string& _name, const std::string& _template_name);
+    SIGHT_VIZ_SCENE3D_API material(const std::string& _name, const std::string& _template_name);
 
     /// Destructor
-    VIZ_SCENE3D_API ~material();
+    SIGHT_VIZ_SCENE3D_API ~material();
 
     /// Updates material options mode (standard, point normals or cells normals)
-    VIZ_SCENE3D_API void update_options_mode(int _options_mode);
+    SIGHT_VIZ_SCENE3D_API void update_options_mode(int _options_mode);
 
     /// Updates material polygon mode (surface, point or wireframe)
-    VIZ_SCENE3D_API void update_polygon_mode(int _polygon_mode);
+    SIGHT_VIZ_SCENE3D_API void update_polygon_mode(int _polygon_mode);
 
     /// Update material shading mode (flat/phong)
-    VIZ_SCENE3D_API void update_shading_mode(
+    SIGHT_VIZ_SCENE3D_API void update_shading_mode(
         data::material::shading_t _shading_mode,
         int _num_lights,
         bool _has_diffuse_texture,
@@ -66,7 +66,7 @@ public:
     );
 
     /// Update material color
-    VIZ_SCENE3D_API void update_rgba_mode(data::material::sptr _sight_material);
+    SIGHT_VIZ_SCENE3D_API void update_rgba_mode(data::material::sptr _sight_material);
 
     void set_has_mesh_normal(bool _has_mesh_normal);
     void set_has_uv(bool _has_uv);
@@ -80,13 +80,13 @@ public:
     void set_mesh_size(float _size);
 
     /// Set the diffuse texture
-    VIZ_SCENE3D_API void set_diffuse_texture(const Ogre::TexturePtr& _texture);
+    SIGHT_VIZ_SCENE3D_API void set_diffuse_texture(const Ogre::TexturePtr& _texture);
 
     /// Set the material template used
-    VIZ_SCENE3D_API void set_template(const std::string& _template_name);
+    SIGHT_VIZ_SCENE3D_API void set_template(const std::string& _template_name);
 
     /// Return the name of the material instance
-    VIZ_SCENE3D_API std::string name() const;
+    SIGHT_VIZ_SCENE3D_API std::string name() const;
 
 private:
 

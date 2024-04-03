@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include "viz/scene3d/compositor/types.hpp"
 
@@ -41,7 +41,7 @@ namespace sight::viz::scene3d::compositor
 /**
  * Manages principal compositor for a layer's 3D scene
  */
-class VIZ_SCENE3D_CLASS_API core //TODO : Manage occlusion query
+class SIGHT_VIZ_SCENE3D_CLASS_API core //TODO : Manage occlusion query
     //    The current commented lines in this class are standing for occlusion query
     // purposes
     //public Ogre::FrameListener,
@@ -61,33 +61,33 @@ public:
     using sptr = std::shared_ptr<core>;
 
     /// Default Compositor, one per "default" layer
-    VIZ_SCENE3D_API core(Ogre::Viewport* _viewport);
+    SIGHT_VIZ_SCENE3D_API core(Ogre::Viewport* _viewport);
 
     /// Destructor of default compositor
-    VIZ_SCENE3D_API ~core();
+    SIGHT_VIZ_SCENE3D_API ~core();
 
     /// Return the OIT selected
-    VIZ_SCENE3D_API transparency_technique get_transparency_technique();
+    SIGHT_VIZ_SCENE3D_API transparency_technique get_transparency_technique();
 
     /// Return the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
-    [[nodiscard]] VIZ_SCENE3D_API int get_transparency_depth() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API int get_transparency_depth() const;
 
     /// Set the OIT desired
     /// Deactivate OIT compositor
-    VIZ_SCENE3D_API bool set_transparency_technique(transparency_technique _technique);
+    SIGHT_VIZ_SCENE3D_API bool set_transparency_technique(transparency_technique _technique);
 
     /// Set the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
     /// Deactivate OIT compositor
-    VIZ_SCENE3D_API void set_transparency_depth(int _depth);
+    SIGHT_VIZ_SCENE3D_API void set_transparency_depth(int _depth);
 
     /// Set the stereo mode. Keep in mind that OIT techniques disable stereo for now.
-    VIZ_SCENE3D_API void set_stereo_mode(stereo_mode_t _stereo_mode);
+    SIGHT_VIZ_SCENE3D_API void set_stereo_mode(stereo_mode_t _stereo_mode);
 
     /// Return the enabled stereo mode.
-    [[nodiscard]] VIZ_SCENE3D_API stereo_mode_t get_stereo_mode() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API stereo_mode_t get_stereo_mode() const;
 
     /// Re/check OIT compositor
-    VIZ_SCENE3D_API void update();
+    SIGHT_VIZ_SCENE3D_API void update();
 
 private:
 
@@ -96,24 +96,24 @@ private:
     //                                      const Ogre::LightList* pLightList, bool suppressRenderStateChanges);
 
     /// Set number of ping pong peels for Depth Peeling compositor
-    VIZ_SCENE3D_API void set_transparency_depth_of_depth_peeling(int _depth);
+    SIGHT_VIZ_SCENE3D_API void set_transparency_depth_of_depth_peeling(int _depth);
 
     /// Set number of ping pong peels for Dual Depth Peeling compositor
-    VIZ_SCENE3D_API void set_transparency_depth_of_dual_depth_peeling(int _depth);
+    SIGHT_VIZ_SCENE3D_API void set_transparency_depth_of_dual_depth_peeling(int _depth);
 
     /// Set number of Depth Peeling ping pong peels for Hybrid Transparency compositor
     /// - other peels computed with Weighted Blended OIT
-    VIZ_SCENE3D_API void set_transparency_depth_of_hybrid_transparency(int _depth);
+    SIGHT_VIZ_SCENE3D_API void set_transparency_depth_of_hybrid_transparency(int _depth);
 
     /// Setup Default compositor (without OIT)
-    VIZ_SCENE3D_API void setup_default_transparency();
+    SIGHT_VIZ_SCENE3D_API void setup_default_transparency();
 
     /// Setup OIT current compositor
-    VIZ_SCENE3D_API void setup_transparency();
+    SIGHT_VIZ_SCENE3D_API void setup_transparency();
 
-    //VIZ_SCENE3D_API void setupQueries();
+    //SIGHT_VIZ_SCENE3D_API void setupQueries();
 
-    //VIZ_SCENE3D_API virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+    //SIGHT_VIZ_SCENE3D_API virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 
     //int m_transparencyTechniqueMaxDepth;
 

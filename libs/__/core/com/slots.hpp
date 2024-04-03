@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,8 @@
 
 #define FWCOM_SLOTS_HPP
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/macros.hpp"
 #include "core/thread/worker.hpp"
 
@@ -50,7 +51,7 @@ class slot;
 /**
  * @brief   This class proposes a storage for slots.
  */
-class CORE_CLASS_API slots
+class SIGHT_CORE_CLASS_API slots
 {
 public:
 
@@ -58,14 +59,14 @@ public:
     using slot_key_type        = key_t;
     using slot_key_container_t = std::vector<key_t>;
 
-    CORE_API slots()          = default;
-    CORE_API virtual ~slots() = default;
+    SIGHT_CORE_API slots()          = default;
+    SIGHT_CORE_API virtual ~slots() = default;
 
     /// Copy constructor forbidden
     slots& operator=(const slots&) = delete;
 
     /// Registers SlotBase in m_slots
-    CORE_API slots& operator()(const key_t& _key, const SPTR(slot_base)& _slot);
+    SIGHT_CORE_API slots& operator()(const key_t& _key, const SPTR(slot_base)& _slot);
 
     /// Registers Slot  in m_slots (defined here to avoid compiler error C2244)
     template<typename R, typename ... A>
@@ -76,13 +77,13 @@ public:
     }
 
     /// Returns the SlotBase associated to the key, if key does not exist, the ptr is null
-    CORE_API SPTR(slot_base) operator[](const key_t& _key) const;
+    SIGHT_CORE_API SPTR(slot_base) operator[](const key_t& _key) const;
 
     /// Assigns the worker to all slots stored in m_slots
-    CORE_API void set_worker(const SPTR(core::thread::worker)& _worker);
+    SIGHT_CORE_API void set_worker(const SPTR(core::thread::worker)& _worker);
 
     /// Returns all key_t registered in m_slots
-    [[nodiscard]] CORE_API slot_key_container_t get_slot_keys() const;
+    [[nodiscard]] SIGHT_CORE_API slot_key_container_t get_slot_keys() const;
 
 protected:
 

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/http/config.hpp"
+#include <sight/io/http/config.hpp>
 
 #include <core/exception.hpp>
 
@@ -32,7 +32,7 @@ namespace sight::io::http::exceptions
 /**
  * @brief Base class of fwNetworkIO Exception
  */
-class IO_HTTP_CLASS_API base : public core::exception
+class SIGHT_IO_HTTP_CLASS_API base : public core::exception
 {
 public:
 
@@ -40,7 +40,7 @@ public:
      * @brief Constructor
      * @param[in] _message Exception message
      */
-    IO_HTTP_API base(const std::string& _message);
+    SIGHT_IO_HTTP_API base(const std::string& _message);
 
     /// Destructor
     ~base() noexcept override;

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <data/camera.hpp>
 
@@ -40,9 +40,12 @@ public:
      * @param _camera[in] camera where to get the projection matrix
      * @param _angle[in] shear angle
      */
-    static VIZ_SCENE3D_API Ogre::Matrix4 compute_frustum_shear_transform(const Ogre::Camera& _camera, float _angle);
+    static SIGHT_VIZ_SCENE3D_API Ogre::Matrix4 compute_frustum_shear_transform(
+        const Ogre::Camera& _camera,
+        float _angle
+    );
 
-    static VIZ_SCENE3D_API Ogre::Matrix4 compute_projection_matrix(
+    static SIGHT_VIZ_SCENE3D_API Ogre::Matrix4 compute_projection_matrix(
         const data::camera& _calibration,
         float _width,
         float _height,
@@ -58,7 +61,7 @@ public:
      *
      * @return screen position relatively to the viewport.
      */
-    static VIZ_SCENE3D_API Ogre::Vector2 convert_from_window_to_viewport_space(
+    static SIGHT_VIZ_SCENE3D_API Ogre::Vector2 convert_from_window_to_viewport_space(
         const Ogre::Camera& _camera,
         int _render_window_x,
         int _render_window_y
@@ -70,7 +73,7 @@ public:
      * @param _screen_pos screen position (u, v, w).
      * @return view space coordinates (x, y, z).
      */
-    static VIZ_SCENE3D_API Ogre::Vector3 convert_screen_space_to_view_space(
+    static SIGHT_VIZ_SCENE3D_API Ogre::Vector3 convert_screen_space_to_view_space(
         const Ogre::Camera& _camera,
         const Ogre::Vector3& _screen_pos
     );
@@ -81,7 +84,7 @@ public:
      * @param _ndc_pos NDC coordinates (3 components).
      * @return the view space coordinates (x, y, z).
      */
-    static VIZ_SCENE3D_API Ogre::Vector3 convert_ndc_to_view_space(
+    static SIGHT_VIZ_SCENE3D_API Ogre::Vector3 convert_ndc_to_view_space(
         const Ogre::Camera& _camera,
         const Ogre::Vector3& _ndc_pos
     );
@@ -92,7 +95,7 @@ public:
      * @param _world_pos world position (x, y, z).
      * @return screen space coordinates in pixels (x, y).
      */
-    static VIZ_SCENE3D_API Ogre::Vector2 convert_world_space_to_screen_space(
+    static SIGHT_VIZ_SCENE3D_API Ogre::Vector2 convert_world_space_to_screen_space(
         const Ogre::Camera& _camera,
         const Ogre::Vector3& _world_pos
     );
@@ -101,7 +104,7 @@ public:
      * @brief Gets the normalized camera direction vector.
      * @return A vector representing the camera direction
      */
-    static VIZ_SCENE3D_API Ogre::Vector3 get_cam_direction(const Ogre::Camera* _cam);
+    static SIGHT_VIZ_SCENE3D_API Ogre::Vector3 get_cam_direction(const Ogre::Camera* _cam);
 };
 
 } // namespace sight::viz::scene3d::helper

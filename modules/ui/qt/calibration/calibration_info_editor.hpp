@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <data/calibration_info.hpp>
 #include <data/point_list.hpp>
@@ -56,8 +54,8 @@ namespace sight::module::ui::qt::calibration
  * - \b calInfo1 [sight::data::calibration_info]: calibration information for first camera.
  * - \b calInfo2 [sight::data::calibration_info] (optional): calibration information for optional second camera.
  */
-class MODULE_UI_QT_CLASS_API calibration_info_editor : public QObject,
-                                                       public sight::ui::editor
+class calibration_info_editor : public QObject,
+                                public sight::ui::editor
 {
 Q_OBJECT;
 
@@ -69,62 +67,62 @@ public:
      * @name Slots API
      * @{
      */
-    MODULE_UI_QT_API static const core::com::slots::key_t REMOVE_SLOT;
-    MODULE_UI_QT_API static const core::com::slots::key_t RESET_SLOT;
-    MODULE_UI_QT_API static const core::com::slots::key_t GET_SELECTION_SLOT;
+    static const core::com::slots::key_t REMOVE_SLOT;
+    static const core::com::slots::key_t RESET_SLOT;
+    static const core::com::slots::key_t GET_SELECTION_SLOT;
     ///@}
 
     /**
      * @brief Constructor.
      */
-    MODULE_UI_QT_API calibration_info_editor() noexcept;
+    calibration_info_editor() noexcept;
 
     /**
      * @brief Destructor.
      */
-    MODULE_UI_QT_API ~calibration_info_editor() noexcept override =
+    ~calibration_info_editor() noexcept override =
         default;
 
 protected:
 
     /// Initializes the editor
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Slot: removes the current selected image.
      */
-    MODULE_UI_QT_API void remove();
+    void remove();
 
     /**
      * @brief Slot:clears all the calibration information.
      */
-    MODULE_UI_QT_API void reset();
+    void reset();
 
     /**
      * @brief Slot: emits the CalibrationInfo signal 'getRecord(index)' with the current selection index.
      */
-    MODULE_UI_QT_API void get_selection();
+    void get_selection();
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      */
-    MODULE_UI_QT_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private Q_SLOTS:
 

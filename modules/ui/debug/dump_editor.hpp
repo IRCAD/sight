@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/debug/config.hpp"
 
 #include <core/com/connection.hpp>
 #include <core/memory/buffer_manager.hpp>
@@ -54,8 +52,8 @@ namespace sight::module::ui::debug
 /**
  * @brief   Editor to dump or restore selected buffer.
  */
-class MODULE_UI_DEBUG_CLASS_API dump_editor : public QObject,
-                                              public sight::ui::editor
+class dump_editor : public QObject,
+                    public sight::ui::editor
 {
 Q_OBJECT
 
@@ -64,10 +62,10 @@ public:
     SIGHT_DECLARE_SERVICE(dump_editor, sight::ui::editor);
 
     /// Constructor. Does nothing.
-    MODULE_UI_DEBUG_API dump_editor() noexcept;
+    dump_editor() noexcept;
 
     /// Destructor. Does nothing.
-    MODULE_UI_DEBUG_API ~dump_editor() noexcept override;
+    ~dump_editor() noexcept override;
 
 protected:
 

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/layout/view.hpp"
 
 #include <core/base.hpp>
@@ -35,7 +36,7 @@ namespace sight::ui::layout
 /**
  * @brief   Defines the base for line layout manager.
  */
-class UI_CLASS_API toolbox : public view
+class SIGHT_UI_CLASS_API toolbox : public view
 {
 public:
 
@@ -66,10 +67,10 @@ public:
     };
 
     /// Constructor. Do nothing.
-    UI_API toolbox();
+    SIGHT_UI_API toolbox();
 
     /// Destructor. Do nothing.
-    UI_API ~toolbox() override;
+    SIGHT_UI_API ~toolbox() override;
 
     /**
      * @brief Initialize Line layout manager before the creation of layout.
@@ -107,9 +108,9 @@ public:
      *   - \b expanded  {true |false } : define if the view is expanded or not.
      *   - \b useScrollBar  {true | false} : define if the view use scrollbar or not.
      */
-    UI_API void initialize(const ui::config_t& _configuration) override;
+    SIGHT_UI_API void initialize(const ui::config_t& _configuration) override;
 
-    UI_API static const registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const registry_key_t REGISTRY_KEY;
 
 protected:
 

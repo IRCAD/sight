@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/memory/config.hpp"
 
 #include <core/memory/policy/base.hpp>
 #include <core/tools/failed.hpp>
@@ -49,26 +47,26 @@ namespace sight::module::memory
    </service>
  * @endcode
  */
-class MODULE_MEMORY_CLASS_API dump_policy : public service::controller
+class dump_policy : public service::controller
 {
 public:
 
     SIGHT_DECLARE_SERVICE(dump_policy, sight::service::controller);
 
-    MODULE_MEMORY_API dump_policy();
+    dump_policy();
 
-    MODULE_MEMORY_API ~dump_policy() override;
+    ~dump_policy() override;
 
-    MODULE_MEMORY_API void configuring() override;
-
-    /// Overrides
-    MODULE_MEMORY_API void starting() override;
+    void configuring() override;
 
     /// Overrides
-    MODULE_MEMORY_API void stopping() override;
+    void starting() override;
 
     /// Overrides
-    MODULE_MEMORY_API void updating() override;
+    void stopping() override;
+
+    /// Overrides
+    void updating() override;
 
 protected:
 

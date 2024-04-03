@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/service/config.hpp>
+
 #include "service/base.hpp"
-#include "service/config.hpp"
 
 namespace sight::service
 {
@@ -35,7 +36,7 @@ namespace sight::service
  * @section Slots Slots
  * - \b compute_registration(core::clock::type) : Compute the registration matrix.
  */
-class SERVICE_CLASS_API registerer : public service::base
+class SIGHT_SERVICE_CLASS_API registerer : public service::base
 {
 public:
 
@@ -45,23 +46,23 @@ public:
      * @name Slots API
      * @{
      */
-    SERVICE_API static const core::com::slots::key_t COMPUTE_REGISTRATION_SLOT;
+    SIGHT_SERVICE_API static const core::com::slots::key_t COMPUTE_REGISTRATION_SLOT;
     ///@}
 
     /**
      * @brief Constructor.
      */
-    SERVICE_API registerer() noexcept;
+    SIGHT_SERVICE_API registerer() noexcept;
 
     /**
      * @brief Destructor.
      */
-    SERVICE_API ~registerer() noexcept override;
+    SIGHT_SERVICE_API ~registerer() noexcept override;
 
 protected:
 
     /// Register matrix slot
-    SERVICE_API virtual void compute_registration(core::clock::type _timestamp) = 0;
+    SIGHT_SERVICE_API virtual void compute_registration(core::clock::type _timestamp) = 0;
 };
 
 } // namespace sight::service

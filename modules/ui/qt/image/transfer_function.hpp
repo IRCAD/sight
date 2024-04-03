@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <data/composite.hpp>
 #include <data/image.hpp>
@@ -84,8 +82,8 @@ namespace sight::module::ui::qt::image
  * - \b iconWidth (optional, default="16"): icon width.
  * - \b iconHeight (optional, default="16"): icon height.
  */
-class MODULE_UI_QT_CLASS_API transfer_function final : public QObject,
-                                                       public sight::ui::editor
+class transfer_function final : public QObject,
+                                public sight::ui::editor
 {
 Q_OBJECT
 
@@ -95,31 +93,31 @@ public:
     SIGHT_DECLARE_SERVICE(module::ui::qt::image::transfer_function, sight::ui::editor);
 
     /// Creates the editor.
-    MODULE_UI_QT_API transfer_function();
+    transfer_function();
 
     /// Destroyes the editor.
-    MODULE_UI_QT_API ~transfer_function() noexcept override = default;
+    ~transfer_function() noexcept override = default;
 
 private:
 
     /// Configures the editor.
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /// Creates container and the UI.
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
     /// Destroys the UI.
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief
      * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
      * Connect image::BUFFER_MODIFIED_SIG to this::UPDATE_BUFFER_SLOT
      */
-    MODULE_UI_QT_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
     /**
      * @brief Checks if the composite contains the specified key.

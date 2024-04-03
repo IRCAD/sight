@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/__/config.hpp"
+#include <sight/io/__/config.hpp>
+
 #include "io/__/writer/generic_object_writer.hpp"
 
 #include <core/location/single_file.hpp>
@@ -39,21 +40,21 @@ namespace sight::io::writer
  * Writes 'sight::data::array' into a '.raw.gz' file.
  * The buffer is written in a file using zlib.
  */
-class IO_CLASS_API gz_array_writer : public generic_object_writer<data::array>,
-                                     public core::location::single_file
+class SIGHT_IO_CLASS_API gz_array_writer : public generic_object_writer<data::array>,
+                                           public core::location::single_file
 {
 public:
 
     SIGHT_DECLARE_CLASS(gz_array_writer, generic_object_writer<data::array>)
 
     /// Destructor. Does nothing.
-    IO_API ~gz_array_writer() override = default;
+    SIGHT_IO_API ~gz_array_writer() override = default;
 
     /// Writes the file using zlib API.
-    IO_API void write() override;
+    SIGHT_IO_API void write() override;
 
     /// Defines the extensions supported by this writer. Here: ".raw.gz"
-    IO_API std::string extension() const override;
+    SIGHT_IO_API std::string extension() const override;
 };
 
 } // namespace sight::io::writer

@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/runtime/module_element.hpp"
 #include "core/runtime/runtime_exception.hpp"
 
@@ -42,7 +43,7 @@ namespace sight::core::runtime
  * @brief   Defines the abstract executable factory class.
  *
  */
-class CORE_CLASS_API executable_factory : public module_element
+class SIGHT_CORE_CLASS_API executable_factory : public module_element
 {
 public:
 
@@ -51,12 +52,12 @@ public:
      *
      * @param[in]   _type    a string containing a type identifier
      */
-    CORE_API executable_factory(const std::string& _type);
+    SIGHT_CORE_API executable_factory(const std::string& _type);
 
     /**
      * @brief   Destructor : does nothing
      */
-    CORE_API ~executable_factory() override;
+    SIGHT_CORE_API ~executable_factory() override;
 
     /**
      * @brief   Creates an executable object instance.
@@ -70,7 +71,7 @@ public:
      *
      * @return  a string containing an executable type
      */
-    [[nodiscard]] CORE_API std::string type() const;
+    [[nodiscard]] SIGHT_CORE_API std::string type() const;
 
 private:
 

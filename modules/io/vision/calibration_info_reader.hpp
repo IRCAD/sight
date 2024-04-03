@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/vision/config.hpp"
 
 #include <io/__/service/reader.hpp>
 
@@ -51,37 +49,37 @@ namespace sight::module::io::vision
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the (optional) scaling factor to be applied to the input image.
  */
-class MODULE_IO_VISION_CLASS_API calibration_info_reader : public sight::io::service::reader
+class calibration_info_reader : public sight::io::service::reader
 {
 public:
 
     SIGHT_DECLARE_SERVICE(calibration_info_reader, sight::io::service::reader);
 
     /// Constructor.
-    MODULE_IO_VISION_API calibration_info_reader() noexcept;
+    calibration_info_reader() noexcept;
 
     /// Destructor.
-    MODULE_IO_VISION_API ~calibration_info_reader() noexcept override;
+    ~calibration_info_reader() noexcept override;
 
     /// Configures the folder path.
-    MODULE_IO_VISION_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
 protected:
 
     /// Returns the folder path type.
-    MODULE_IO_VISION_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
     /// Configures the output file format and the chessboard preference keys.
-    MODULE_IO_VISION_API void configuring() override;
+    void configuring() override;
 
     /// Updates the chessboard parameters from the preferences.
-    MODULE_IO_VISION_API void starting() override;
+    void starting() override;
 
     /// Loads the images and attempts to detect a chessboard.
-    MODULE_IO_VISION_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_IO_VISION_API void stopping() override;
+    void stopping() override;
 
 private:
 

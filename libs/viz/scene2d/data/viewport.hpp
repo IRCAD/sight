@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene2d/config.hpp"
+#include <sight/viz/scene2d/config.hpp>
 
 #include <data/exception.hpp>
 #include <data/object.hpp>
@@ -35,7 +35,7 @@ namespace sight::viz::scene2d::data
 /**
  * @brief Manage the current viewport of the fwRenderQt.
  */
-class VIZ_SCENE2D_CLASS_API viewport : public sight::data::object
+class SIGHT_VIZ_SCENE2D_CLASS_API viewport : public sight::data::object
 {
 public:
 
@@ -65,20 +65,20 @@ public:
 
     /// Equality comparison operators
     /// @{
-    VIZ_SCENE2D_API bool operator==(const viewport& _other) const noexcept;
-    VIZ_SCENE2D_API bool operator!=(const viewport& _other) const noexcept;
+    SIGHT_VIZ_SCENE2D_API bool operator==(const viewport& _other) const noexcept;
+    SIGHT_VIZ_SCENE2D_API bool operator!=(const viewport& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    VIZ_SCENE2D_API void shallow_copy(const sight::data::object::csptr& _source) override;
+    SIGHT_VIZ_SCENE2D_API void shallow_copy(const sight::data::object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    VIZ_SCENE2D_API void deep_copy(
+    SIGHT_VIZ_SCENE2D_API void deep_copy(
         const sight::data::object::csptr& _source,
         const std::unique_ptr<sight::data::object::deep_copy_cache_t>& _cache = std::make_unique<sight::data::object::deep_copy_cache_t>()
     )

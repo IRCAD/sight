@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/__/config.hpp"
-
 #include <core/tools/failed.hpp>
 
 #include <ui/__/frame.hpp>
@@ -34,17 +32,17 @@ namespace sight::module::ui
 /**
  * @brief Defines the default frame for standard application.
  */
-class MODULE_UI_CLASS_API frame : public sight::ui::frame
+class frame : public sight::ui::frame
 {
 public:
 
     SIGHT_DECLARE_SERVICE(frame, sight::ui::frame);
 
     /// Constructor. Do nothing.
-    MODULE_UI_API frame() noexcept;
+    frame() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_API ~frame() noexcept override;
+    ~frame() noexcept override;
 
 protected:
 
@@ -56,29 +54,29 @@ protected:
      * @brief This method is used to configure the class parameters.
      * @see sight::ui::frame::initialize()
      */
-    MODULE_UI_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Register a view with defined id.
      * @see sight::ui::frame::create()
      */
-    MODULE_UI_API void starting() override;
+    void starting() override;
 
     /**
      * @brief This method remove the view in the frame.
      * @see sight::ui::frame::destroy()
      */
-    MODULE_UI_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief This method is used to update services. Do nothing.
      */
-    MODULE_UI_API void updating() override;
+    void updating() override;
 
     /**
      * @brief This method gives information about the class. Do nothing.
      */
-    MODULE_UI_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
     ///@}
 };
 

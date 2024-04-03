@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/dicom/config.hpp"
+#include <sight/filter/dicom/config.hpp>
+
 #include "filter/dicom/sorter/base.hpp"
 
 #include <data/dicom_series.hpp>
@@ -34,7 +35,7 @@ namespace sight::filter::dicom::sorter
  * @brief filter that uses the ImagepositionPatient tag to sort the instances.
  * The position increases along the direction given by cross product of the ImageOrientationPatient vectors.
  */
-class FILTER_DICOM_CLASS_API image_position_patient_sorter : public base
+class SIGHT_FILTER_DICOM_CLASS_API image_position_patient_sorter : public base
 {
 public:
 
@@ -44,20 +45,20 @@ public:
         sight::filter::dicom::factory::make<image_position_patient_sorter>
     );
 
-    FILTER_DICOM_API image_position_patient_sorter()           = default;
-    FILTER_DICOM_API ~image_position_patient_sorter() override = default;
+    SIGHT_FILTER_DICOM_API image_position_patient_sorter()           = default;
+    SIGHT_FILTER_DICOM_API ~image_position_patient_sorter() override = default;
 
     /// Override
-    FILTER_DICOM_API dicom_series_container_t apply(
+    SIGHT_FILTER_DICOM_API dicom_series_container_t apply(
         const data::dicom_series::sptr& _series,
         const core::log::logger::sptr& _logger
     ) const override;
 
     /// Return the name of the filter
-    FILTER_DICOM_API std::string get_name() const override;
+    SIGHT_FILTER_DICOM_API std::string get_name() const override;
 
     /// Return the description of the filter
-    FILTER_DICOM_API std::string get_description() const override;
+    SIGHT_FILTER_DICOM_API std::string get_description() const override;
 
 protected:
 

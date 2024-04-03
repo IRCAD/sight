@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/factory/new.hpp"
 #include "data/object.hpp"
 #include "data/plane.hpp"
@@ -39,7 +40,7 @@ namespace sight::data
  * @brief   This class defines a list of planes.
  * @see     Point
  */
-class DATA_CLASS_API plane_list final : public object
+class SIGHT_DATA_CLASS_API plane_list final : public object
 {
 public:
 
@@ -50,10 +51,10 @@ public:
     /**
      * @brief Constructor
      */
-    DATA_API plane_list();
+    SIGHT_DATA_API plane_list();
 
     /// Destructor
-    DATA_API ~plane_list() noexcept override = default;
+    SIGHT_DATA_API ~plane_list() noexcept override = default;
 
     /** @{
      *  @brief get/set container of all planes
@@ -69,35 +70,35 @@ public:
      */
     /// Signal emitted when a plane is added
     using plane_added_signal_t = core::com::signal<void (plane::sptr)>;
-    DATA_API static const core::com::signals::key_t PLANE_ADDED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t PLANE_ADDED_SIG;
 
     /// Signal emitted when a plane is removed
     using plane_removed_signal_t = core::com::signal<void (plane::sptr)>;
-    DATA_API static const core::com::signals::key_t PLANE_REMOVED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t PLANE_REMOVED_SIG;
 
     /// Signal emitted when the visibility changed
     using visibility_modified_signal_t = core::com::signal<void (bool)>;
-    DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t VISIBILITY_MODIFIED_SIG;
 /**
  * @}
  */
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const plane_list& _other) const noexcept;
-    DATA_API bool operator!=(const plane_list& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const plane_list& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const plane_list& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

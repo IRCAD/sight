@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
@@ -56,8 +54,8 @@ namespace sight::module::ui::qt::calibration
  * @subsection Slots Slots
  * - \b updateInformations(): Updates the informations of the intrinsic calibration.
  */
-class MODULE_UI_QT_CLASS_API camera_information_editor : public QObject,
-                                                         public sight::ui::editor
+class camera_information_editor : public QObject,
+                                  public sight::ui::editor
 {
 Q_OBJECT;
 
@@ -71,32 +69,32 @@ public:
     /**
      * @brief Constructor.
      */
-    MODULE_UI_QT_API camera_information_editor() noexcept;
+    camera_information_editor() noexcept;
 
     /**
      * @brief Destructor.
      */
-    MODULE_UI_QT_API ~camera_information_editor() noexcept override =
+    ~camera_information_editor() noexcept override =
         default;
 
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    MODULE_UI_QT_API void updating() override
+    void updating() override
     {
     }
 

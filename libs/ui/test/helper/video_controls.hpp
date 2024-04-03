@@ -36,7 +36,7 @@ public:
      * @param _controls_name The objectName of the video controls interface
      * @param _path The path of the video file to be loaded
      */
-    UI_TEST_API static void load(
+    SIGHT_UI_TEST_API static void load(
         tester& _tester,
         const std::string& _controls_name,
         const std::filesystem::path& _path
@@ -47,35 +47,35 @@ public:
      * @param _tester The current tester
      * @param _controls_name The objectName of the video controls interface
      */
-    UI_TEST_API static void start(tester& _tester, const std::string& _controls_name);
+    SIGHT_UI_TEST_API static void start(tester& _tester, const std::string& _controls_name);
 
     /**
      * Pause the video being played using the video controls interface.
      * @param _tester The current tester
      * @param _controls_name The objectName of the video controls interface
      */
-    UI_TEST_API static void pause(tester& _tester, const std::string& _controls_name);
+    SIGHT_UI_TEST_API static void pause(tester& _tester, const std::string& _controls_name);
 
     /**
      * Play the video being played using the video controls interface.
      * @param _tester The current tester
      * @param _controls_name The objectName of the video controls interface
      */
-    UI_TEST_API static void play(tester& _tester, const std::string& _controls_name);
+    SIGHT_UI_TEST_API static void play(tester& _tester, const std::string& _controls_name);
 
     /**
      * Stop the video being played using the video controls interface.
      * @param _tester The current tester
      * @param _controls_name The objectName of the video controls interface
      */
-    UI_TEST_API static void stop(tester& _tester, const std::string& _controls_name);
+    SIGHT_UI_TEST_API static void stop(tester& _tester, const std::string& _controls_name);
 
     /**
      * Loop the video being played using the video controls interface.
      * @param _tester The current tester
      * @param _controls_name The objectName of the video controls interface
      */
-    UI_TEST_API static void loop(tester& _tester, const std::string& _controls_name);
+    SIGHT_UI_TEST_API static void loop(tester& _tester, const std::string& _controls_name);
 };
 
 }

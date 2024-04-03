@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <app/helper/config_launcher.hpp>
 
@@ -81,8 +79,8 @@ namespace sight::module::ui::qt::calibration
  * module::ui::action::config_launcher
  *
  */
-class MODULE_UI_QT_CLASS_API camera_config_launcher : public QObject,
-                                                      public sight::ui::editor
+class camera_config_launcher : public QObject,
+                               public sight::ui::editor
 {
 Q_OBJECT
 
@@ -91,10 +89,10 @@ public:
     SIGHT_DECLARE_SERVICE(camera_config_launcher, sight::ui::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API camera_config_launcher() noexcept;
+    camera_config_launcher() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~camera_config_launcher() noexcept override;
+    ~camera_config_launcher() noexcept override;
 
 protected:
 

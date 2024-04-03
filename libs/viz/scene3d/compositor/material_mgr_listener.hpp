@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <OgreMaterialManager.h>
 
@@ -32,7 +32,7 @@ namespace sight::viz::scene3d::compositor
 /**
  * @brief Generates transparency techniques at runtime.
  */
-class VIZ_SCENE3D_CLASS_API material_mgr_listener : public Ogre::MaterialManager::Listener
+class SIGHT_VIZ_SCENE3D_CLASS_API material_mgr_listener : public Ogre::MaterialManager::Listener
 {
 public:
 

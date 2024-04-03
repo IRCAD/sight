@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/data/config.hpp>
+
 #include "data/buffer_tl.hpp"
-#include "data/config.hpp"
 #include "data/timeline/generic_object.hpp"
 
 namespace sight::data

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/history/config.hpp"
+#include <sight/ui/history/config.hpp>
 
 #include <memory>
 #include <string>
@@ -33,7 +33,7 @@ namespace sight::ui::history
 /**
  * @brief The base class for commands.
  */
-class UI_HISTORY_CLASS_API command
+class SIGHT_UI_HISTORY_CLASS_API command
 {
 public:
 
@@ -42,28 +42,28 @@ public:
     /**
      * @brief Virtual destructor.
      */
-    UI_HISTORY_API virtual ~command()
+    SIGHT_UI_HISTORY_API virtual ~command()
     = default;
 
     /**
      * @brief Retrieves the memory footprint of the command.
      */
-    [[nodiscard]] UI_HISTORY_API virtual std::size_t size() const = 0;
+    [[nodiscard]] SIGHT_UI_HISTORY_API virtual std::size_t size() const = 0;
 
     /**
      * @brief Used to implement the redo operation.
      */
-    UI_HISTORY_API virtual bool redo() = 0;
+    SIGHT_UI_HISTORY_API virtual bool redo() = 0;
 
     /**
      * @brief Used to implement the undo operation.
      */
-    UI_HISTORY_API virtual bool undo() = 0;
+    SIGHT_UI_HISTORY_API virtual bool undo() = 0;
 
     /**
      * @brief Return an optional description of the command.
      */
-    [[nodiscard]] UI_HISTORY_API virtual std::string get_description() const
+    [[nodiscard]] SIGHT_UI_HISTORY_API virtual std::string get_description() const
     {
         return "";
     }

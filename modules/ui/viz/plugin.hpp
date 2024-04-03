@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/ui/viz/config.hpp"
+#include "sight/modules/ui/viz/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -32,18 +32,18 @@ namespace sight::module::ui::viz
 /**
  * @brief   This class is started when the module is loaded.
  */
-struct MODULE_UI_VIZ_CLASS_API plugin : public core::runtime::plugin
+struct SIGHT_MODULE_UI_VIZ_CLASS_API plugin : public core::runtime::plugin
 {
     /**
      * @brief   destructor
      */
-    MODULE_UI_VIZ_API ~plugin() noexcept override;
+    SIGHT_MODULE_UI_VIZ_API ~plugin() noexcept override;
 
     // Overrides
-    MODULE_UI_VIZ_API void start() override;
+    SIGHT_MODULE_UI_VIZ_API void start() override;
 
     // Overrides
-    MODULE_UI_VIZ_API void stop() noexcept override;
+    SIGHT_MODULE_UI_VIZ_API void stop() noexcept override;
 };
 
 } // namespace sight::module::ui::viz

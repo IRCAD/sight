@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "tuto13_mesh_generator_cpp/config.hpp"
+#include "sight/tuto13_mesh_generator_cpp/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -30,18 +30,18 @@ namespace tuto13_mesh_generator_cpp
 {
 
 /// This class is started when the module is loaded.
-class TUTO13_MESH_GENERATOR_CPP_CLASS_API plugin final : public sight::core::runtime::plugin
+class SIGHT_TUTO13_MESH_GENERATOR_CPP_CLASS_API plugin final : public sight::core::runtime::plugin
 {
 public:
 
     /// Destroys the plugin.
-    TUTO13_MESH_GENERATOR_CPP_API ~plugin() noexcept override;
+    SIGHT_TUTO13_MESH_GENERATOR_CPP_API ~plugin() noexcept override;
 
     /// Starts the plugin, does nothing here.
-    TUTO13_MESH_GENERATOR_CPP_API void start() override;
+    SIGHT_TUTO13_MESH_GENERATOR_CPP_API void start() override;
 
     /// Stops the plugin, does nothing here.
-    TUTO13_MESH_GENERATOR_CPP_API void stop() noexcept override;
+    SIGHT_TUTO13_MESH_GENERATOR_CPP_API void stop() noexcept override;
 };
 
 } // namespace tuto13_mesh_generator_cpp.

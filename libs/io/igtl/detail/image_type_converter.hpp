@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/igtl/config.hpp"
+#include <sight/io/igtl/config.hpp>
+
 #include "io/igtl/detail/exception/conversion.hpp"
 
 #include <core/tools/failed.hpp>
@@ -37,7 +38,7 @@ namespace sight::io::igtl::detail
 /**
  * @brief Utility class for image type conversion between igtl data and fwData
  */
-class IO_IGTL_CLASS_API image_type_converter
+class SIGHT_IO_IGTL_CLASS_API image_type_converter
 {
 public:
 

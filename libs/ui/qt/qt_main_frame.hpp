@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <QMainWindow>
 #include <QPointer>
@@ -36,7 +36,7 @@ namespace sight::ui::qt
  * @brief defines the Qt main frame.
  *
  */
-class UI_QT_CLASS_API_QT qt_main_frame : public QMainWindow
+class SIGHT_UI_QT_CLASS_API_QT qt_main_frame : public QMainWindow
 {
 Q_OBJECT
 
@@ -45,13 +45,13 @@ public:
     /**
      * @brief Constructor.
      */
-    UI_QT_API_QT qt_main_frame() noexcept;
+    SIGHT_UI_QT_API_QT qt_main_frame() noexcept;
 
     /// @brief Destructor.
-    UI_QT_API_QT ~qt_main_frame() noexcept override;
+    SIGHT_UI_QT_API_QT ~qt_main_frame() noexcept override;
 
     using CloseCallback = std::function<void ()>;
-    UI_QT_API_QT void set_close_callback(CloseCallback _fct);
+    SIGHT_UI_QT_API_QT void set_close_callback(CloseCallback _fct);
 
 protected:
 

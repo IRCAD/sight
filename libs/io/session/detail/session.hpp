@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "io/session/config.hpp"
+#include <sight/io/session/config.hpp>
 
 #include <core/crypto/obfuscated_string.hpp>
 #include <core/crypto/password_keeper.hpp>
@@ -35,7 +35,7 @@ namespace sight::io::session::detail
 {
 
 /// Interface to define a location that holds what is needed to de/serialize a session.
-class IO_SESSION_CLASS_API session : public core::location::base
+class SIGHT_IO_SESSION_CLASS_API session : public core::location::base
 {
 public:
 
@@ -70,10 +70,10 @@ public:
 protected:
 
     /// Constructor
-    IO_SESSION_API session() = default;
+    SIGHT_IO_SESSION_API session() = default;
 
     /// Destructor
-    IO_SESSION_API ~session() override = default;
+    SIGHT_IO_SESSION_API ~session() override = default;
 };
 
 //------------------------------------------------------------------------------

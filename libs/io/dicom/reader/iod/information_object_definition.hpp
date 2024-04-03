@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "io/dicom/config.hpp"
+#include <sight/io/dicom/config.hpp>
+
 #include "io/dicom/container/dicom_instance.hpp"
 #include "io/dicom/exception/failed.hpp"
 
@@ -40,7 +41,7 @@ namespace sight::io::dicom::reader::iod
 /**
  * @brief InformationObjectDefinition base class used to read DICOM IODs
  */
-class IO_DICOM_CLASS_API information_object_definition
+class SIGHT_IO_DICOM_CLASS_API information_object_definition
 {
 public:
 
@@ -55,7 +56,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API information_object_definition(
+    SIGHT_IO_DICOM_API information_object_definition(
         data::dicom_series::csptr _dicom_series,
         SPTR(io::dicom::container::dicom_instance)_instance,
         core::log::logger::sptr _logger   = nullptr,
@@ -64,14 +65,14 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~information_object_definition();
+    SIGHT_IO_DICOM_API virtual ~information_object_definition();
 
     /**
      * @brief Read a DICOM File
      * @param[in,out] _series Series that must be enriched
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API virtual void read(data::series::sptr _series) = 0;
+    SIGHT_IO_DICOM_API virtual void read(data::series::sptr _series) = 0;
 
 protected:
 

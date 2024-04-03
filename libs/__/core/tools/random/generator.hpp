@@ -91,6 +91,6 @@ void fill_container(
 }
 
 /// This is a thread safe "std::rand" implementation
-CORE_API int safe_rand(bool _reset = false);
+SIGHT_CORE_API int safe_rand(bool _reset = false);
 
 } // namespace sight::core::tools::random

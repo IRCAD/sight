@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/image/config.hpp"
 
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
@@ -55,31 +53,31 @@ namespace sight::module::filter::image
  * @subsection In-Out In-Out
  * - \b imageOut [sight::data::image]: New resampled image.
  */
-class MODULE_FILTER_IMAGE_CLASS_API resampler : public service::filter
+class resampler : public service::filter
 {
 public:
 
     SIGHT_DECLARE_SERVICE(resampler, service::filter);
 
     /// Constructor, does nothing.
-    MODULE_FILTER_IMAGE_API resampler();
+    resampler();
 
     /// Destructor, does nothing.
-    MODULE_FILTER_IMAGE_API ~resampler() override;
+    ~resampler() override;
 
 protected:
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_FILTER_IMAGE_API void stopping() override;
+    void stopping() override;
 
     /// Apply the transform and resample.
-    MODULE_FILTER_IMAGE_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Auto connections
@@ -88,7 +86,7 @@ protected:
      * - Update service when the transform matrix is modified.
      * - Update service when the target image is modified.
      */
-    MODULE_FILTER_IMAGE_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ex_notifications/config.hpp"
+#include "sight/ex_notifications/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -35,18 +35,18 @@ namespace ex_notifications
 {
 
 /// This class is started when the module is loaded.
-class EX_NOTIFICATIONS_CLASS_API plugin : public sight::core::runtime::plugin
+class SIGHT_EX_NOTIFICATIONS_CLASS_API plugin : public sight::core::runtime::plugin
 {
 public:
 
     /// Destroys the plugin.
-    EX_NOTIFICATIONS_API ~plugin() noexcept override;
+    SIGHT_EX_NOTIFICATIONS_API ~plugin() noexcept override;
 
     /// Adds the default worker.
-    EX_NOTIFICATIONS_API void start() override;
+    SIGHT_EX_NOTIFICATIONS_API void start() override;
 
     /// Does nothing here.
-    EX_NOTIFICATIONS_API void stop() noexcept override;
+    SIGHT_EX_NOTIFICATIONS_API void stop() noexcept override;
 };
 
 } // namespace ex_notifications

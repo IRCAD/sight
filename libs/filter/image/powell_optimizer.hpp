@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/image/config.hpp"
+#include <sight/filter/image/config.hpp>
 
 #include <itkPowellOptimizerv4.h>
 
@@ -36,7 +36,7 @@ namespace sight::filter::image
  *
  * This class is wrapper for ITK's Powell optimizer.
  */
-class FILTER_IMAGE_CLASS_API powell_optimizer
+class SIGHT_FILTER_IMAGE_CLASS_API powell_optimizer
 {
 public:
 
@@ -54,7 +54,7 @@ public:
      * @param _step_length first and maximum step length.
      * @param _maximum_iterations maximum number of iterations allowed.
      */
-    FILTER_IMAGE_API powell_optimizer(
+    SIGHT_FILTER_IMAGE_API powell_optimizer(
         const optimized_function_t& _f,
         double _step_tolerance,
         double _value_tolerance,
@@ -67,7 +67,7 @@ public:
      * @param _init_parameters initial set of values to evaluate.
      * @return the set of parameters at the end of the optimization process.
      */
-    FILTER_IMAGE_API function_parameters_t optimize(const function_parameters_t& _init_parameters);
+    SIGHT_FILTER_IMAGE_API function_parameters_t optimize(const function_parameters_t& _init_parameters);
 
 private:
 

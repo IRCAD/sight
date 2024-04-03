@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/generic_tl.hpp"
 #include "data/generic_tl.hxx"
 #include "data/timeline/generic_object.hpp"
@@ -36,8 +37,8 @@ namespace sight::data
 /**
  * @brief   This class defines a timeline that stores groups of markers.
  */
-class DATA_CLASS_API marker_tl : public data::generic_tl<std::array<float,
-                                                                    8> >
+class SIGHT_DATA_CLASS_API marker_tl : public data::generic_tl<std::array<float,
+                                                                          8> >
 {
 public:
 
@@ -46,7 +47,7 @@ public:
     /**
      * @brief Constructor
      */
-    DATA_API marker_tl() :
+    SIGHT_DATA_API marker_tl() :
         data::generic_tl<std::array<float, 8> >()
     {
     }

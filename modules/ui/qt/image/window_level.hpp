@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <core/tools/failed.hpp>
 
@@ -81,8 +79,8 @@ namespace sight::module::ui::qt::image
  * - \b enableSquareTF(optional, default="true"): if 'true', enables the button to switch between current TF and square
  * TF.
  */
-class MODULE_UI_QT_CLASS_API window_level final : public QObject,
-                                                  public sight::ui::editor
+class window_level final : public QObject,
+                           public sight::ui::editor
 {
 Q_OBJECT
 
@@ -91,10 +89,10 @@ public:
     SIGHT_DECLARE_SERVICE(window_level, sight::ui::editor);
 
     /// Initialize signals and slots.
-    MODULE_UI_QT_API window_level() noexcept;
+    window_level() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_QT_API ~window_level() noexcept override;
+    ~window_level() noexcept override;
 
 protected:
 
@@ -117,16 +115,16 @@ protected:
      * Connect data::image::MODIFIED_SIG to module::ui::qt::image::window_level::service::slots::UPDATE
      * Connect image::BUFFER_MODIFIED_SIG to module::ui::qt::image::window_level::service::slots::UPDATE
      */
-    MODULE_UI_QT_API connections_t auto_connections() const final;
+    connections_t auto_connections() const final;
 
     /**
      * @brief Adds informations about this service into the stream.
      * @param _sstream Stream where stores information.
      */
-    MODULE_UI_QT_API void info(std::ostream& _sstream) final;
+    void info(std::ostream& _sstream) final;
 
     /// Slot: Updates the slider position
-    MODULE_UI_QT_API void update_tf();
+    void update_tf();
 
 protected Q_SLOTS:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qml/config.hpp"
+#include <sight/ui/qml/config.hpp>
 
 #include <service/base.hpp>
 
@@ -39,8 +39,8 @@ namespace sight::ui::qml
     qmlRegisterType<MyEditor>("myBundle", versionMajor, versionMinor, "MyEditor");
    @endcode
  */
-class UI_QML_CLASS_API_QT editor : public QObject,
-                                   public service::base
+class SIGHT_UI_QML_CLASS_API_QT editor : public QObject,
+                                         public service::base
 {
 Q_OBJECT
 
@@ -49,10 +49,10 @@ public:
     SIGHT_DECLARE_SERVICE(editor, service::base);
 
     /// Constructor. Do nothing.
-    UI_QML_API_QT editor() noexcept;
+    SIGHT_UI_QML_API_QT editor() noexcept;
 
     /// Destructor. Do nothing.
-    UI_QML_API_QT ~editor() noexcept override;
+    SIGHT_UI_QML_API_QT ~editor() noexcept override;
 
 Q_SIGNALS:
 
@@ -65,10 +65,10 @@ Q_SIGNALS:
 protected:
 
     /// call updating and emit 'started' qt signal
-    UI_QML_API_QT void starting() override;
+    SIGHT_UI_QML_API_QT void starting() override;
 
     /// emit 'stopped' qt signal
-    UI_QML_API_QT void stopping() override;
+    SIGHT_UI_QML_API_QT void stopping() override;
 };
 
 } // namespace sight::ui::qml

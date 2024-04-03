@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/core/config.hpp>
+
 #include "core/base.hpp"
-#include "core/config.hpp"
 #include "core/runtime/detail/extension.hpp"
 #include "core/runtime/executable_factory.hpp"
 #include "core/runtime/plugin.hpp"

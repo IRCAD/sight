@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/image/config.hpp"
+#include <sight/filter/image/config.hpp>
 
 #include <data/image.hpp>
 
@@ -32,7 +32,7 @@ namespace sight::filter::image
 /**
  * @brief Class memorizing pixel changes in an image.
  */
-class FILTER_IMAGE_CLASS_API image_diff
+class SIGHT_FILTER_IMAGE_CLASS_API image_diff
 {
 public:
 
@@ -44,53 +44,53 @@ public:
     };
 
     /// Constructor.
-    FILTER_IMAGE_API explicit image_diff(std::size_t _image_element_size = 0, std::size_t _reserved_elements = 0);
+    SIGHT_FILTER_IMAGE_API explicit image_diff(std::size_t _image_element_size = 0, std::size_t _reserved_elements = 0);
 
     /// Destructor
-    FILTER_IMAGE_API ~image_diff() = default;
+    SIGHT_FILTER_IMAGE_API ~image_diff() = default;
 
     /// Copy constructor
-    FILTER_IMAGE_API image_diff(const image_diff& _other) = default;
+    SIGHT_FILTER_IMAGE_API image_diff(const image_diff& _other) = default;
 
     /// Move constructor
-    FILTER_IMAGE_API image_diff(image_diff&& _other) noexcept = default;
+    SIGHT_FILTER_IMAGE_API image_diff(image_diff&& _other) noexcept = default;
 
     /// Copy assignement.
-    FILTER_IMAGE_API image_diff& operator=(const image_diff& _other) = default;
+    SIGHT_FILTER_IMAGE_API image_diff& operator=(const image_diff& _other) = default;
 
     /// Move assignement.
-    FILTER_IMAGE_API image_diff& operator=(image_diff&& _other) noexcept = default;
+    SIGHT_FILTER_IMAGE_API image_diff& operator=(image_diff&& _other) noexcept = default;
 
     /// Concatenate two diffs.
-    FILTER_IMAGE_API void add_diff(const image_diff& _diff);
+    SIGHT_FILTER_IMAGE_API void add_diff(const image_diff& _diff);
 
     /// Append a new pixel diff.
-    FILTER_IMAGE_API void add_diff(
+    SIGHT_FILTER_IMAGE_API void add_diff(
         data::image::index_t _index,
         const data::image::buffer_t* _old_value,
         const data::image::buffer_t* _new_value
     );
 
     /// Write the new values in the image.
-    FILTER_IMAGE_API void apply_diff(const data::image::sptr& _img) const;
+    SIGHT_FILTER_IMAGE_API void apply_diff(const data::image::sptr& _img) const;
 
     /// Write the old value back in the image.
-    FILTER_IMAGE_API void revert_diff(const data::image::sptr& _img) const;
+    SIGHT_FILTER_IMAGE_API void revert_diff(const data::image::sptr& _img) const;
 
     /// Return the amount of memory actually used by the elements.
-    [[nodiscard]] FILTER_IMAGE_API std::size_t size() const;
+    [[nodiscard]] SIGHT_FILTER_IMAGE_API std::size_t size() const;
 
     /// Returns the number of stored pixel diffs.
-    [[nodiscard]] FILTER_IMAGE_API std::size_t num_elements() const;
+    [[nodiscard]] SIGHT_FILTER_IMAGE_API std::size_t num_elements() const;
 
     /// Set the number of elements to 0.
-    FILTER_IMAGE_API void clear();
+    SIGHT_FILTER_IMAGE_API void clear();
 
     /// Reallocate the buffer to fit the actual size of the container.
-    FILTER_IMAGE_API void shrink();
+    SIGHT_FILTER_IMAGE_API void shrink();
 
     /// Returns the element at the given index
-    [[nodiscard]] FILTER_IMAGE_API element_t get_element(std::size_t _index) const;
+    [[nodiscard]] SIGHT_FILTER_IMAGE_API element_t get_element(std::size_t _index) const;
 
     /// Returns the image index from the element at the given index
     [[nodiscard]] inline data::image::index_t get_element_diff_index(std::size_t _elt_index) const;

@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <activity/extension/activity.hpp>
 #include <activity/message.hpp>
 
@@ -68,8 +66,8 @@ namespace sight::module::ui::qt::activity
  *      (exclude).
  *    - \b id: id of the activity
  */
-class MODULE_UI_QT_CLASS_API selector : public QObject,
-                                        public sight::ui::editor
+class selector : public QObject,
+                 public sight::ui::editor
 {
 Q_OBJECT
 
@@ -78,19 +76,19 @@ public:
     SIGHT_DECLARE_SERVICE(selector, sight::ui::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API selector() noexcept;
+    selector() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~selector() noexcept override;
+    ~selector() noexcept override;
 
     /**
      * @name Signals API
      * @{
      */
-    MODULE_UI_QT_API static const core::com::signals::key_t ACTIVITY_ID_SELECTED_SIG;
+    static const core::com::signals::key_t ACTIVITY_ID_SELECTED_SIG;
     using activity_id_selected_signal_t = core::com::signal<void (std::string)>;
 
-    MODULE_UI_QT_API static const core::com::signals::key_t LOAD_REQUESTED_SIG;
+    static const core::com::signals::key_t LOAD_REQUESTED_SIG;
     using load_requested_signal_t = core::com::signal<void ()>;
 
     /// @}

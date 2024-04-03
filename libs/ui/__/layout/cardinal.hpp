@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/layout/view.hpp"
 
 #include <core/base.hpp>
@@ -36,7 +37,7 @@ namespace sight::ui::layout
 /**
  * @brief   Defines the base for cardinal layout manager.
  */
-class UI_CLASS_API cardinal : public view
+class SIGHT_UI_CLASS_API cardinal : public view
 {
 public:
 
@@ -77,8 +78,8 @@ public:
         std::string m_qss_key;
     };
 
-    UI_API cardinal()           = default;
-    UI_API ~cardinal() override = default;
+    SIGHT_UI_API cardinal()           = default;
+    SIGHT_UI_API ~cardinal() override = default;
 
     /**
      * @brief Initializes cardinal layout manager. Must be called before the layout creation.
@@ -117,9 +118,9 @@ public:
      *   - \b backgroundColor (optional) : (hexadecimal format starting with "#") background color.
      */
 
-    UI_API void initialize(const ui::config_t& _configuration) override;
+    SIGHT_UI_API void initialize(const ui::config_t& _configuration) override;
 
-    UI_API static const registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const registry_key_t REGISTRY_KEY;
 
 protected:
 

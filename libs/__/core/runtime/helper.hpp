@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/runtime/extension.hpp"
 
 #include <core/base.hpp>
@@ -69,7 +70,7 @@ T get_ptree_value(const boost::property_tree::ptree& _tree, const std::string& _
 namespace property_tree
 {
 
-CORE_API std::string to_string(const boost::property_tree::ptree& _pt);
+SIGHT_CORE_API std::string to_string(const boost::property_tree::ptree& _pt);
 
 }
 

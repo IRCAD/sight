@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/dicom_series.hpp"
 #include "data/factory/new.hpp"
 #include "data/image.hpp"
@@ -45,9 +46,9 @@ namespace sight::data
 /**
  * @brief Holds a medical images data.
  */
-class DATA_CLASS_API image_series final : public image,
-                                          public series,
-                                          public has_fiducials
+class SIGHT_DATA_CLASS_API image_series final : public image,
+                                                public series,
+                                                public has_fiducials
 {
 public:
 
@@ -56,10 +57,10 @@ public:
     /**
      * @brief Creates the series.
      */
-    DATA_API image_series();
+    SIGHT_DATA_API image_series();
 
     /// Destroys the series.
-    DATA_API ~image_series() noexcept override = default;
+    SIGHT_DATA_API ~image_series() noexcept override = default;
 
     /// Gets the DICOM reference used to generate valid Dicom Segmentation.
     dicom_series::csptr get_dicom_reference() const;
@@ -71,36 +72,36 @@ public:
     /// @note the definition is in Series.cpp
     /// @note Image also implements a getter/setter for this attribute that is overriden here
     /// @{
-    DATA_API void set_window_center(const std::vector<double>& _window_centers) override;
-    DATA_API std::vector<double> window_center() const noexcept override;
-    DATA_API void set_window_width(const std::vector<double>& _window_widths) override;
-    DATA_API std::vector<double> window_width() const noexcept override;
+    SIGHT_DATA_API void set_window_center(const std::vector<double>& _window_centers) override;
+    SIGHT_DATA_API std::vector<double> window_center() const noexcept override;
+    SIGHT_DATA_API void set_window_width(const std::vector<double>& _window_widths) override;
+    SIGHT_DATA_API std::vector<double> window_width() const noexcept override;
     /// @}
 
     /// Getter/Setter of DICOM Image Pixel Module
     /// @note the definition is in Series.cpp
     /// @note Image also somewhat implements a getter/setter for this attribute
     /// @{
-    DATA_API void set_rows(const std::optional<std::uint16_t>& _rows       = std::nullopt) override;
-    DATA_API void set_columns(const std::optional<std::uint16_t>& _columns = std::nullopt) override;
+    SIGHT_DATA_API void set_rows(const std::optional<std::uint16_t>& _rows       = std::nullopt) override;
+    SIGHT_DATA_API void set_columns(const std::optional<std::uint16_t>& _columns = std::nullopt) override;
     /// @}
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const image_series& _other) const noexcept;
-    DATA_API bool operator!=(const image_series& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const image_series& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const image_series& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
@@ -120,11 +121,11 @@ public:
      *
      * @return Allocated size in bytes
      */
-    DATA_API std::size_t resize(const size_t& _size, const core::type& _type, enum pixel_format _format) override;
+    SIGHT_DATA_API std::size_t resize(const size_t& _size, const core::type& _type, enum pixel_format _format) override;
     /// @}
 
-    DATA_API fiducials_series::csptr get_fiducials() const;
-    DATA_API fiducials_series::sptr get_fiducials();
+    SIGHT_DATA_API fiducials_series::csptr get_fiducials() const;
+    SIGHT_DATA_API fiducials_series::sptr get_fiducials();
 
 private:
 

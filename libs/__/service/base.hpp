@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "service/config.hpp"
+#include <sight/service/config.hpp>
+
 #include "service/factory/new.hpp"
 
 #include <core/com/has_signals.hpp>
@@ -79,27 +80,27 @@ struct signals
 };
 
 /// Helper to define the connections between a service and its data.
-struct SERVICE_CLASS_API connections_t
+struct SIGHT_SERVICE_CLASS_API connections_t
 {
     using key_connection_pair_t = std::pair<core::com::signals::key_t, core::com::slots::key_t>;
     using key_connections_t     = std::vector<key_connection_pair_t>;
     using key_connections_map_t = std::map<std::string_view, key_connections_t>;
 
     connections_t() = default;
-    SERVICE_API connections_t(
+    SIGHT_SERVICE_API connections_t(
         std::initializer_list<std::tuple<const std::string_view, core::com::signals::key_t,
                                          core::com::slots::key_t> > _init
     );
 
-    SERVICE_API void push(
+    SIGHT_SERVICE_API void push(
         std::string_view _key,
         const core::com::signals::key_t& _sig,
         const core::com::slots::key_t& _slot
     );
-    [[nodiscard]] SERVICE_API key_connections_map_t::const_iterator find(std::string_view _key) const;
-    [[nodiscard]] SERVICE_API key_connections_map_t::const_iterator end() const;
-    [[nodiscard]] SERVICE_API bool empty() const;
-    [[nodiscard]] SERVICE_API std::size_t size() const;
+    [[nodiscard]] SIGHT_SERVICE_API key_connections_map_t::const_iterator find(std::string_view _key) const;
+    [[nodiscard]] SIGHT_SERVICE_API key_connections_map_t::const_iterator end() const;
+    [[nodiscard]] SIGHT_SERVICE_API bool empty() const;
+    [[nodiscard]] SIGHT_SERVICE_API std::size_t size() const;
 
     private:
 
@@ -124,10 +125,10 @@ struct SERVICE_CLASS_API connections_t
  * - \b stop() : Stop the service.
  * - \b swap_key(const key_t&, data::object::sptr) : Swap the object at the given key with the object in parameter.
  */
-class SERVICE_CLASS_API base : public core::tools::object,
-                               public core::com::has_slots,
-                               public core::com::has_signals,
-                               public data::has_data
+class SIGHT_SERVICE_CLASS_API base : public core::tools::object,
+                                     public core::com::has_slots,
+                                     public core::com::has_signals,
+                                     public data::has_data
 {
 public:
 
@@ -189,8 +190,8 @@ public:
     using shared_future_t = std::shared_future<void>;
 
     /// Sets a worker to all service slots
-    SERVICE_API void set_worker(SPTR(core::thread::worker) _worker);
-    SERVICE_API SPTR(core::thread::worker) worker() const;
+    SIGHT_SERVICE_API void set_worker(SPTR(core::thread::worker) _worker);
+    SIGHT_SERVICE_API SPTR(core::thread::worker) worker() const;
     //@}
 
     /**
@@ -204,10 +205,10 @@ public:
      * @param[in] _ptree property tree
      * @post m_configurationState == UNCONFIGURED
      */
-    SERVICE_API void set_config(const config_t& _ptree);
+    SIGHT_SERVICE_API void set_config(const config_t& _ptree);
 
     /// Return the service configuration
-    SERVICE_API const base::config_t& get_config() const;
+    SIGHT_SERVICE_API const base::config_t& get_config() const;
 
     //@}
 
@@ -222,20 +223,20 @@ public:
      * @post m_configurationState == CONFIGURED
      * @param[in] _ptree property tree
      */
-    SERVICE_API void configure(const config_t& _ptree);
+    SIGHT_SERVICE_API void configure(const config_t& _ptree);
 
     /**
      * @brief Invoke configuring() if m_globalState == STOPPED. Does nothing otherwise.
      * @pre m_configurationState == UNCONFIGURED
      * @post m_configurationState == CONFIGURED
      */
-    SERVICE_API void configure();
+    SIGHT_SERVICE_API void configure();
 
     /**
      * @brief Invoke starting() if m_globalState == STOPPED. Does nothing otherwise.
      * @post m_globalState == STARTED
      */
-    SERVICE_API shared_future_t start();
+    SIGHT_SERVICE_API shared_future_t start();
 
     /**
      * @brief Invoke stopping() if m_globalState == STARTED. Does nothing otherwise. Stops all observations.
@@ -243,13 +244,13 @@ public:
      * @post m_globalState == STOPPED
      *
      */
-    SERVICE_API shared_future_t stop();
+    SIGHT_SERVICE_API shared_future_t stop();
 
     /**
      * @brief Invoke updating() if m_globalState == STARTED. Does nothing otherwise.
      * @pre m_globalState == STARTED
      */
-    SERVICE_API shared_future_t update();
+    SIGHT_SERVICE_API shared_future_t update();
 
     /**
      * @brief Associate the service to another object
@@ -257,7 +258,7 @@ public:
      * @param[in] _obj change object at given key to _obj
      * @pre m_globalState == STARTED
      */
-    SERVICE_API shared_future_t swap_key(std::string_view _key, data::object::sptr _obj);
+    SIGHT_SERVICE_API shared_future_t swap_key(std::string_view _key, data::object::sptr _obj);
     //@}
 
     /**
@@ -267,19 +268,19 @@ public:
     //@{
 
     /// Return the global process status
-    SERVICE_API global_status status() const noexcept;
+    SIGHT_SERVICE_API global_status status() const noexcept;
 
     /// Return the configuration process status
-    SERVICE_API configuration_status config_status() const noexcept;
+    SIGHT_SERVICE_API configuration_status config_status() const noexcept;
 
     /// Test if the service is started or not
-    SERVICE_API bool started() const noexcept;
+    SIGHT_SERVICE_API bool started() const noexcept;
 
     /// Test if the service is stopped or not
-    SERVICE_API bool stopped() const noexcept;
+    SIGHT_SERVICE_API bool stopped() const noexcept;
 
     /// Return the update process status
-    SERVICE_API updating_status updating_status() const noexcept;
+    SIGHT_SERVICE_API updating_status updating_status() const noexcept;
 
     //@}
 
@@ -294,13 +295,13 @@ public:
      * @see base::operator<<(std::ostream & _ostream, base& _service)
      * @note Invoke base::info( std::ostream )
      */
-    SERVICE_API friend std::ostream& operator<<(std::ostream& _sstream, base& _service);
+    SIGHT_SERVICE_API friend std::ostream& operator<<(std::ostream& _sstream, base& _service);
     //@}
 
 protected:
 
-    SERVICE_API base();
-    SERVICE_API ~base() override;
+    SIGHT_SERVICE_API base();
+    SIGHT_SERVICE_API ~base() override;
 
     /**
      * @name Interface to override
@@ -309,19 +310,19 @@ protected:
     //@{
 
     /// Implementation of the service initialization. For example : installs a button in a frame and show the frame.
-    SERVICE_API virtual void starting() = 0;
+    SIGHT_SERVICE_API virtual void starting() = 0;
 
     /// Implementation of the service deinitialization. Always invoked before destroying a service.
-    SERVICE_API virtual void stopping() = 0;
+    SIGHT_SERVICE_API virtual void stopping() = 0;
 
     /// Configures the service before starting. Apply the configuration to service.
-    SERVICE_API virtual void configuring();
+    SIGHT_SERVICE_API virtual void configuring();
 
     /// Configures the service before starting. Apply the configuration to service.
-    SERVICE_API virtual void configuring(const config_t&);
+    SIGHT_SERVICE_API virtual void configuring(const config_t&);
 
     /// Performs some processing.
-    SERVICE_API virtual void updating() = 0;
+    SIGHT_SERVICE_API virtual void updating() = 0;
 
     /**
      * @brief Swap the service from an associated object to another object.
@@ -338,7 +339,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated objects signals,
      * this method is used for obj/srv auto connection
      */
-    SERVICE_API virtual connections_t auto_connections() const;
+    SIGHT_SERVICE_API virtual connections_t auto_connections() const;
 
     /**
      * @brief Write information in a stream.
@@ -346,16 +347,16 @@ protected:
      * This method is used by operator<<(std::ostream & _sstream, base& _service)
      * to avoid declaration of << by all services.
      */
-    SERVICE_API virtual void info(std::ostream& _sstream);
+    SIGHT_SERVICE_API virtual void info(std::ostream& _sstream);
     //@}
 
 private:
 
     /// Notify about a newly deferred object
-    SERVICE_API void notify_register_out(data::object::sptr, const std::string&) override;
+    SIGHT_SERVICE_API void notify_register_out(data::object::sptr, const std::string&) override;
 
     /// Notify about a destroyed deferred object
-    SERVICE_API void notify_unregister_out(data::object::sptr, const std::string&) override;
+    SIGHT_SERVICE_API void notify_unregister_out(data::object::sptr, const std::string&) override;
 
     friend class manager;
     friend class detail::service;

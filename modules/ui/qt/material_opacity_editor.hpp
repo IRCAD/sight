@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <data/material.hpp>
 
@@ -55,8 +53,8 @@ namespace sight::module::ui::qt
  * - \b label (optional, default="Material opacity : "): label of the slider.
  */
 
-class MODULE_UI_QT_CLASS_API material_opacity_editor : public QObject,
-                                                       public sight::ui::editor
+class material_opacity_editor : public QObject,
+                                public sight::ui::editor
 {
 Q_OBJECT
 
@@ -65,7 +63,7 @@ public:
     SIGHT_DECLARE_SERVICE(material_opacity_editor, sight::ui::editor);
 
     /// Destroys the service.
-    MODULE_UI_QT_API ~material_opacity_editor() noexcept override = default;
+    ~material_opacity_editor() noexcept override = default;
 
 private:
 

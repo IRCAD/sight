@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,9 @@
 
 #define FWCOM_SLOTBASE_HPP
 
+#include <sight/core/config.hpp>
+
 #include "core/com/util/convert_function_type.hpp"
-#include "core/config.hpp"
 #include "core/thread/worker.hpp"
 
 #include <core/base_object.hpp>
@@ -65,7 +66,7 @@ struct slot_connection_base;
 /**
  * @brief Base class for Slot implementations.
  */
-struct CORE_CLASS_API slot_base : virtual core::base_object
+struct SIGHT_CORE_CLASS_API slot_base : virtual core::base_object
 {
     /**
      * @name typedefs
@@ -127,7 +128,7 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
     template<typename A1>
     void run(A1 _a1) const;
 
-    CORE_API void run() const;
+    SIGHT_CORE_API void run() const;
     /**  @} */
 
     /**
@@ -167,7 +168,7 @@ struct CORE_CLASS_API slot_base : virtual core::base_object
     template<typename A1>
     void_shared_future_type async_run(A1 _a1) const;
 
-    CORE_API void_shared_future_type async_run() const;
+    SIGHT_CORE_API void_shared_future_type async_run() const;
     /**  @} */
 
     /**

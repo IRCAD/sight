@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/__/config.hpp"
 
 #include <data/landmarks.hpp>
 #include <data/matrix4.hpp>
@@ -75,7 +73,7 @@ namespace sight::module::geometry
  *    - \b unit: unit of the distance computed by this service
  *    - \b precision: precision of the displayed distance
  */
-class MODULE_GEOMETRY_CLASS_API point_to_landmark_distance final : public service::base
+class point_to_landmark_distance final : public service::base
 {
 public:
 
@@ -83,24 +81,24 @@ public:
     SIGHT_DECLARE_SERVICE(point_to_landmark_distance, service::base);
 
     /// Initializes signals and slots.
-    MODULE_GEOMETRY_API point_to_landmark_distance() noexcept;
+    point_to_landmark_distance() noexcept;
 
     /// Destroys the service.
-    MODULE_GEOMETRY_API ~point_to_landmark_distance() noexcept override;
+    ~point_to_landmark_distance() noexcept override;
 
 protected:
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void stopping() override;
+    void stopping() override;
 
     /// Generates and updates the mesh.
-    MODULE_GEOMETRY_API void updating() override;
+    void updating() override;
 
     /// Configures the service's parameters.
-    MODULE_GEOMETRY_API void configuring() override;
+    void configuring() override;
 
 private:
 

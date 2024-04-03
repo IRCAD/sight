@@ -47,7 +47,7 @@ namespace sight::io::dicom::reader::ie
  * Currently, the template is TID 1400 (taken from PS 3.16) for distances
  * and based on TID 320 (taken from PS 3.16) for landmarks.
  */
-class IO_DICOM_CLASS_API document : public io::dicom::reader::ie::information_entity<data::image>
+class SIGHT_IO_DICOM_CLASS_API document : public io::dicom::reader::ie::information_entity<data::image>
 {
 public:
 
@@ -61,7 +61,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API document(
+    SIGHT_IO_DICOM_API document(
         const CSPTR(data::dicom_series)& _dicom_series,
         const SPTR(gdcm::Reader)& _reader,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
@@ -72,13 +72,13 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~document() override;
+    SIGHT_IO_DICOM_API ~document() override;
 
     /**
      * @brief Read the Structured Report
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API void read_sr();
+    SIGHT_IO_DICOM_API void read_sr();
 };
 
 } // namespace sight::io::dicom::reader::ie

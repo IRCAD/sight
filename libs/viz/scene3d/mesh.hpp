@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
+
 #include "viz/scene3d/material.hpp"
 
 #include <data/mesh.hpp>
@@ -38,7 +39,7 @@ class r2vb_renderable;
 /**
  * @brief   Manages a generic mesh
  */
-class VIZ_SCENE3D_CLASS_API mesh
+class SIGHT_VIZ_SCENE3D_CLASS_API mesh
 {
 public:
 
@@ -54,10 +55,10 @@ public:
     };
 
     /// Constructor
-    VIZ_SCENE3D_API mesh(const std::string& _name);
+    SIGHT_VIZ_SCENE3D_API mesh(const std::string& _name);
 
     /// Destructor
-    VIZ_SCENE3D_API ~mesh();
+    SIGHT_VIZ_SCENE3D_API ~mesh();
 
     /**
      * @brief Adds the given buffer semantic if it does not exist, and allocate it if necessary.
@@ -77,37 +78,37 @@ public:
     );
 
     /// Set meshes vertex buffer to dynamic state (only has effect if called before service starting/update)
-    VIZ_SCENE3D_API void set_dynamic_vertices(bool _is_dynamic);
+    SIGHT_VIZ_SCENE3D_API void set_dynamic_vertices(bool _is_dynamic);
     /// Set meshes and indices buffers to dynamic state (only has effect if called before service starting/update)
-    VIZ_SCENE3D_API void set_dynamic(bool _is_dynamic);
+    SIGHT_VIZ_SCENE3D_API void set_dynamic(bool _is_dynamic);
 
-    VIZ_SCENE3D_API void set_visible(bool _visible);
-    VIZ_SCENE3D_API void update_mesh(const data::mesh::csptr& _mesh, bool _points_only = false);
-    VIZ_SCENE3D_API void update_mesh(const data::point_list::csptr& _point_list);
-    VIZ_SCENE3D_API std::pair<bool, std::vector<r2vb_renderable*> > update_r2_vb(
+    SIGHT_VIZ_SCENE3D_API void set_visible(bool _visible);
+    SIGHT_VIZ_SCENE3D_API void update_mesh(const data::mesh::csptr& _mesh, bool _points_only = false);
+    SIGHT_VIZ_SCENE3D_API void update_mesh(const data::point_list::csptr& _point_list);
+    SIGHT_VIZ_SCENE3D_API std::pair<bool, std::vector<r2vb_renderable*> > update_r2_vb(
         const data::mesh::csptr& _mesh,
         Ogre::SceneManager& _scene_mgr,
         const std::string& _material_name
     );
 
     /// Updates the vertices position
-    VIZ_SCENE3D_API void update_vertices(const data::mesh::csptr& _mesh);
+    SIGHT_VIZ_SCENE3D_API void update_vertices(const data::mesh::csptr& _mesh);
     /// Updates the vertices position
-    VIZ_SCENE3D_API void update_vertices(const data::point_list::csptr& _mesh);
+    SIGHT_VIZ_SCENE3D_API void update_vertices(const data::point_list::csptr& _mesh);
     /// Updates the vertices colors.
-    VIZ_SCENE3D_API void update_colors(const data::mesh::csptr& _mesh);
+    SIGHT_VIZ_SCENE3D_API void update_colors(const data::mesh::csptr& _mesh);
     /// Updates the vertices texture coordinates.
-    VIZ_SCENE3D_API void update_tex_coords(const data::mesh::csptr& _mesh);
+    SIGHT_VIZ_SCENE3D_API void update_tex_coords(const data::mesh::csptr& _mesh);
     /// Erase the mesh data, called when the configuration change (new layer, etc...), to simplify modifications.
-    VIZ_SCENE3D_API void clear_mesh(Ogre::SceneManager& _scene_mgr);
+    SIGHT_VIZ_SCENE3D_API void clear_mesh(Ogre::SceneManager& _scene_mgr);
 
-    VIZ_SCENE3D_API void update_material(viz::scene3d::material* _material, bool _is_r2_vb) const;
+    SIGHT_VIZ_SCENE3D_API void update_material(viz::scene3d::material* _material, bool _is_r2_vb) const;
 
-    [[nodiscard]] VIZ_SCENE3D_API bool has_color_layer_changed(const data::mesh::csptr& _mesh) const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API bool has_color_layer_changed(const data::mesh::csptr& _mesh) const;
 
-    VIZ_SCENE3D_API Ogre::Entity* create_entity(Ogre::SceneManager& _scene_mgr);
+    SIGHT_VIZ_SCENE3D_API Ogre::Entity* create_entity(Ogre::SceneManager& _scene_mgr);
 
-    VIZ_SCENE3D_API void invalidate_r2_vb();
+    SIGHT_VIZ_SCENE3D_API void invalidate_r2_vb();
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/vtk/config.hpp"
+#include <sight/io/vtk/config.hpp>
 
 #include <core/location/single_file.hpp>
 
@@ -47,7 +47,7 @@ namespace sight::io::vtk
  * @brief Writes a Mesh in .ply format using VTK library.
  */
 
-class IO_VTK_CLASS_API ply_mesh_writer :
+class SIGHT_IO_VTK_CLASS_API ply_mesh_writer :
     public writer::generic_object_writer<data::mesh>,
     public core::location::single_file
 {
@@ -61,19 +61,19 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
     /// @brief Constructor.
-    IO_VTK_API ply_mesh_writer();
+    SIGHT_IO_VTK_API ply_mesh_writer();
 
     /// @brief Destructor.
-    IO_VTK_API ~ply_mesh_writer() override;
+    SIGHT_IO_VTK_API ~ply_mesh_writer() override;
 
     /// @brief Reading operator.
-    IO_VTK_API void write() override;
+    SIGHT_IO_VTK_API void write() override;
 
     /// @return ".ply"
-    IO_VTK_API std::string extension() const override;
+    SIGHT_IO_VTK_API std::string extension() const override;
 
     /// @return internal job
-    IO_VTK_API SPTR(core::jobs::base) get_job() const override;
+    SIGHT_IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
 private:
 

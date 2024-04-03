@@ -33,7 +33,7 @@ namespace sight::io::dicom::writer::ie
 /**
  * @brief Document Information Entity class
  */
-class IO_DICOM_CLASS_API document : public io::dicom::writer::ie::information_entity<data::image>
+class SIGHT_IO_DICOM_CLASS_API document : public io::dicom::writer::ie::information_entity<data::image>
 {
 public:
 
@@ -46,7 +46,7 @@ public:
      * @param[in] _progress Progress callback
      * @param[in] _cancel Cancel requested callback
      */
-    IO_DICOM_API document(
+    SIGHT_IO_DICOM_API document(
         const SPTR(gdcm::Writer)& _writer,
         const SPTR(io::dicom::container::dicom_instance)& _instance,
         const data::image::csptr& _image,
@@ -57,25 +57,25 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~document() override;
+    SIGHT_IO_DICOM_API ~document() override;
 
     /**
      * @brief Write SR Document General Module tags
      * @see PS 3.3 C.17.2
      */
-    IO_DICOM_API virtual void write_sr_document_general_module();
+    SIGHT_IO_DICOM_API virtual void write_sr_document_general_module();
 
     /**
      * @brief Write SR Document Content Module tags
      * @see PS 3.3 C.17.3
      */
-    IO_DICOM_API virtual void write_sr_document_content_module();
+    SIGHT_IO_DICOM_API virtual void write_sr_document_content_module();
 
     /**
      * @brief Write SOP Common Module tags
      * @see PS 3.3 C.12.1
      */
-    IO_DICOM_API void write_sop_common_module();
+    SIGHT_IO_DICOM_API void write_sop_common_module();
 
 protected:
 

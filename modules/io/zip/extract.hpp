@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/zip/config.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/jobs/base.hpp>
@@ -50,7 +48,7 @@ namespace sight::module::io::zip
  * @see sight::io::zip::archive_reader
  */
 
-class MODULE_IO_ZIP_CLASS_API extract final : public sight::io::service::reader
+class extract final : public sight::io::service::reader
 {
 public:
 
@@ -58,29 +56,29 @@ public:
 
     using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
 
-    MODULE_IO_ZIP_API extract() noexcept;
+    extract() noexcept;
 
-    MODULE_IO_ZIP_API ~extract() noexcept override;
+    ~extract() noexcept override;
 
     /// Propose to read an archive
-    MODULE_IO_ZIP_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
 protected:
 
     /// Does nothing
-    MODULE_IO_ZIP_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_IO_ZIP_API void stopping() override;
+    void stopping() override;
 
     /// Parses the configuration
-    MODULE_IO_ZIP_API void configuring() override;
+    void configuring() override;
 
     /// Extract an archive to the specified directory
-    MODULE_IO_ZIP_API void updating() override;
+    void updating() override;
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_ZIP_API sight::io::service::path_type_t get_path_type() const override
+    sight::io::service::path_type_t get_path_type() const override
     {
         return sight::io::service::file;
     }

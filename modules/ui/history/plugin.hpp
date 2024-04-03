@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/ui/history/config.hpp"
+#include "sight/modules/ui/history/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -32,16 +32,16 @@ namespace sight::module::ui::history
 /**
  * @brief This class starts when the module is loaded.
  */
-struct MODULE_UI_HISTORY_CLASS_API plugin : public core::runtime::plugin
+struct SIGHT_MODULE_UI_HISTORY_CLASS_API plugin : public core::runtime::plugin
 {
     /// Destructor. Do nothing.
-    MODULE_UI_HISTORY_API ~plugin() noexcept override;
+    SIGHT_MODULE_UI_HISTORY_API ~plugin() noexcept override;
 
     /// Overrides start method. Does nothing.
-    MODULE_UI_HISTORY_API void start() override;
+    SIGHT_MODULE_UI_HISTORY_API void start() override;
 
     /// Overrides stop method. Does nothing.
-    MODULE_UI_HISTORY_API void stop() noexcept override;
+    SIGHT_MODULE_UI_HISTORY_API void stop() noexcept override;
 };
 
 } // namespace sight::module::ui::history

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,14 +21,15 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/exception.hpp"
 
 namespace sight::core::runtime
 {
 
 /// Exception thrown when the application is exiting
-class CORE_CLASS_API exit_exception : public core::exception
+class SIGHT_CORE_CLASS_API exit_exception : public core::exception
 {
 public:
 

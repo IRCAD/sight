@@ -22,9 +22,10 @@
 
 #pragma once
 
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/builder/menubar.hpp"
 #include "ui/__/builder/toolbar.hpp"
-#include "ui/__/config.hpp"
 #include "ui/__/container/widget.hpp"
 #include "ui/__/detail/registry/view.hpp"
 #include "ui/__/layout/frame_manager.hpp"
@@ -90,14 +91,14 @@ class view;
  * - The menubar section isn't mandatory.
 
  */
-class UI_CLASS_API frame : public service::base
+class SIGHT_UI_CLASS_API frame : public service::base
 {
 public:
 
     SIGHT_DECLARE_SERVICE(frame, service::base);
 
     /// Get widget defined for progress bar
-    UI_API static ui::container::widget::sptr get_progress_widget();
+    SIGHT_UI_API static ui::container::widget::sptr get_progress_widget();
 
     /**
      * @name Signals
@@ -130,8 +131,8 @@ public:
 
 protected:
 
-    UI_API frame();
-    UI_API ~frame() override = default;
+    SIGHT_UI_API frame();
+    SIGHT_UI_API ~frame() override = default;
 
     /**
      * @brief Initialize frame managers.
@@ -140,20 +141,20 @@ protected:
      * ui::layout::frame_manager::initialize(),
      *      ui::builder::toolbar::initialize(), ui::builder::menubar::initialize()
      */
-    UI_API void initialize();
+    SIGHT_UI_API void initialize();
 
     /// Creates frame, sub-view, menubar and toolbar containers. Manages sub-view, menubar and toobar services.
-    UI_API void create();
+    SIGHT_UI_API void create();
 
     /// Stops sub-view, menubar and toobar services. Destroys frame, sub-view, menubar and toolbar containers.
-    UI_API void destroy();
+    SIGHT_UI_API void destroy();
 
-    UI_API static const std::string CLOSE_POLICY_EXIT;
-    UI_API static const std::string CLOSE_POLICY_NOTIFY;
-    UI_API static const std::string CLOSE_POLICY_MESSAGE;
+    SIGHT_UI_API static const std::string CLOSE_POLICY_EXIT;
+    SIGHT_UI_API static const std::string CLOSE_POLICY_NOTIFY;
+    SIGHT_UI_API static const std::string CLOSE_POLICY_MESSAGE;
 
     /// Static reference on a widget defined for progress bar installation
-    UI_API static ui::container::widget::wptr s_progress_widget;
+    SIGHT_UI_API static ui::container::widget::wptr s_progress_widget;
 
 private:
 

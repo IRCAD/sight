@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/itk/config.hpp"
+#include <sight/io/itk/config.hpp>
 
 #include <core/location/single_file.hpp>
 #include <core/tools/progress_adviser.hpp>
@@ -34,20 +34,20 @@
 namespace sight::io::itk
 {
 
-class IO_ITK_CLASS_API inr_image_writer : public writer::generic_object_writer<data::image>,
-                                          public core::location::single_file,
-                                          public core::tools::progress_adviser
+class SIGHT_IO_ITK_CLASS_API inr_image_writer : public writer::generic_object_writer<data::image>,
+                                                public core::location::single_file,
+                                                public core::tools::progress_adviser
 {
 public:
 
     SIGHT_DECLARE_CLASS(inr_image_writer, io::writer::generic_object_writer<data::image>);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    IO_ITK_API ~inr_image_writer() override = default;
+    SIGHT_IO_ITK_API ~inr_image_writer() override = default;
 
-    IO_ITK_API void write() override;
+    SIGHT_IO_ITK_API void write() override;
 
-    IO_ITK_API std::string extension() const override;
+    SIGHT_IO_ITK_API std::string extension() const override;
 };
 
 } // namespace sight::io::itk

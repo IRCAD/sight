@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "activity/config.hpp"
+#include <sight/activity/config.hpp>
+
 #include "activity/extension/activity.hpp"
 
 #include <data/activity.hpp>
@@ -37,7 +38,7 @@ namespace sight::activity
 /**
  * @brief Base class for services that launches Activity instances.
  */
-class ACTIVITY_CLASS_API launcher
+class SIGHT_ACTIVITY_CLASS_API launcher
 {
 public:
 
@@ -48,27 +49,27 @@ public:
     using in_out_map_t    = std::vector<std::string>;
 
     /// Constructor. Do nothing.
-    ACTIVITY_API launcher() = default;
+    SIGHT_ACTIVITY_API launcher() = default;
 
     /// Destructor. Do nothing.
-    ACTIVITY_API virtual ~launcher() = default;
+    SIGHT_ACTIVITY_API virtual ~launcher() = default;
 
 protected:
 
     /// Parses the configuration
-    ACTIVITY_API virtual void parse_configuration(
+    SIGHT_ACTIVITY_API virtual void parse_configuration(
         const configuration_t& _config,
         const in_out_map_t& _inouts = in_out_map_t()
     );
 
     /// Create the activity given in 'mainActivity' configuration
-    [[nodiscard]] ACTIVITY_API virtual data::activity::sptr create_main_activity() const;
+    [[nodiscard]] SIGHT_ACTIVITY_API virtual data::activity::sptr create_main_activity() const;
 
     /**
      * @brief Check if the activity is valid by calling the activity validator.
      * @return Return true if the given activity is valid
      */
-    static ACTIVITY_API std::pair<bool, std::string> validate_activity(
+    static SIGHT_ACTIVITY_API std::pair<bool, std::string> validate_activity(
         const data::activity::csptr& _activity
     );
 

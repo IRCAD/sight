@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,22 +30,22 @@
 namespace sight::ui::dialog
 {
 
-class UI_CLASS_API location_dummy : public sight::ui::dialog::location_base
+class SIGHT_UI_CLASS_API location_dummy : public sight::ui::dialog::location_base
 {
 public:
 
-    UI_API void set_type(types _type) override;
-    UI_API void set_option(location_dummy::options _option) override;
-    UI_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
-    UI_API std::string get_current_selection() const override;
+    SIGHT_UI_API void set_type(types _type) override;
+    SIGHT_UI_API void set_option(location_dummy::options _option) override;
+    SIGHT_UI_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
+    SIGHT_UI_API std::string get_current_selection() const override;
 
-    UI_API sight::core::location::base::sptr show() override;
+    SIGHT_UI_API sight::core::location::base::sptr show() override;
 
-    UI_API static void set_paths(const std::vector<std::filesystem::path>& _files);
+    SIGHT_UI_API static void set_paths(const std::vector<std::filesystem::path>& _files);
 
-    UI_API static void push_paths(const std::vector<std::filesystem::path>& _files);
+    SIGHT_UI_API static void push_paths(const std::vector<std::filesystem::path>& _files);
 
-    UI_API static bool clear();
+    SIGHT_UI_API static bool clear();
 
 private:
 

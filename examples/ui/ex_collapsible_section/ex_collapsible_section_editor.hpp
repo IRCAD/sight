@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "ex_collapsible_section/config.hpp"
+#include <sight/ex_collapsible_section/config.hpp>
 
 #include <ui/__/editor.hpp>
 
@@ -39,31 +39,31 @@ namespace ex_collapsible_section
    @endcode
  */
 
-class EX_COLLAPSIBLE_SECTION_CLASS_API ex_collapsible_section_editor : public sight::ui::editor
+class SIGHT_EX_COLLAPSIBLE_SECTION_CLASS_API ex_collapsible_section_editor : public sight::ui::editor
 {
 public:
 
     SIGHT_DECLARE_SERVICE(ex_collapsible_section_editor, sight::ui::editor);
 
     /// Constructor.
-    EX_COLLAPSIBLE_SECTION_API ex_collapsible_section_editor() noexcept = default;
+    SIGHT_EX_COLLAPSIBLE_SECTION_API ex_collapsible_section_editor() noexcept = default;
 
     /// Destructor. Destroy UI.
-    EX_COLLAPSIBLE_SECTION_API ~ex_collapsible_section_editor() noexcept override = default;
+    SIGHT_EX_COLLAPSIBLE_SECTION_API ~ex_collapsible_section_editor() noexcept override = default;
 
 protected:
 
     /// Initialize the container.
-    EX_COLLAPSIBLE_SECTION_API void configuring() override;
+    SIGHT_EX_COLLAPSIBLE_SECTION_API void configuring() override;
 
     /// Start the service, slot connections, widget initialization.
-    EX_COLLAPSIBLE_SECTION_API void starting() override;
+    SIGHT_EX_COLLAPSIBLE_SECTION_API void starting() override;
 
     /// Destroy the service and the container.
-    EX_COLLAPSIBLE_SECTION_API void stopping() override;
+    SIGHT_EX_COLLAPSIBLE_SECTION_API void stopping() override;
 
     /// Update the interface.
-    EX_COLLAPSIBLE_SECTION_API void updating() override;
+    SIGHT_EX_COLLAPSIBLE_SECTION_API void updating() override;
 };
 
 } // namespace ex_collapsible_section.

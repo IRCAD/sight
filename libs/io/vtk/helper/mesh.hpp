@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "io/vtk/config.hpp"
+#include <sight/io/vtk/config.hpp>
 
 #include <data/mesh.hpp>
 
@@ -36,7 +36,7 @@ namespace sight::io::vtk::helper
 /**
  * @brief   Helper to manage vtkPolyData and data::mesh.
  */
-class IO_VTK_CLASS_API mesh
+class SIGHT_IO_VTK_CLASS_API mesh
 {
 public:
 
@@ -46,7 +46,7 @@ public:
      * @param[in] _poly_data vtkPolyData.
      * @param[out] _mesh data::mesh::sptr.
      */
-    IO_VTK_API static void from_vtk_mesh(vtkSmartPointer<vtkPolyData> _poly_data, data::mesh::sptr _mesh);
+    SIGHT_IO_VTK_API static void from_vtk_mesh(vtkSmartPointer<vtkPolyData> _poly_data, data::mesh::sptr _mesh);
     /*!
      * @brief Convert a vtkUnstructuredGrid to a data::mesh::sptr.
      *
@@ -54,7 +54,7 @@ public:
      * @param[out] _mesh data::mesh::sptr.
      */
 
-    IO_VTK_API static void from_vtk_grid(vtkSmartPointer<vtkUnstructuredGrid> _grid, data::mesh::sptr _mesh);
+    SIGHT_IO_VTK_API static void from_vtk_grid(vtkSmartPointer<vtkUnstructuredGrid> _grid, data::mesh::sptr _mesh);
 
     /*!
      * @brief Convert a data::mesh::csptr to a vtkUnstructuredGrid.
@@ -62,7 +62,10 @@ public:
      * @param[in] _mesh data::mesh::csptr.
      * @param[out] _grid vtkUnstructuredGrid.
      */
-    IO_VTK_API static void to_vtk_grid(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkUnstructuredGrid> _grid);
+    SIGHT_IO_VTK_API static void to_vtk_grid(
+        const data::mesh::csptr& _mesh,
+        vtkSmartPointer<vtkUnstructuredGrid> _grid
+    );
 
     /*!
      * @brief Convert a data::mesh::csptr to a vtkPolyData.
@@ -70,14 +73,14 @@ public:
      * @param[in] _mesh data::mesh::csptr.
      * @param[out] _poly_data vtkPolyData.
      */
-    IO_VTK_API static void to_vtk_mesh(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkPolyData> _poly_data);
+    SIGHT_IO_VTK_API static void to_vtk_mesh(const data::mesh::csptr& _mesh, vtkSmartPointer<vtkPolyData> _poly_data);
 
     /*!
      * @brief Compute the volume of the mesh using MassProperties vtk class
      * @param[in] _mesh current mesh
      * @return volume of the mesh
      */
-    IO_VTK_API static double compute_volume(const data::mesh::csptr& _mesh);
+    SIGHT_IO_VTK_API static double compute_volume(const data::mesh::csptr& _mesh);
 };
 
 } // namespace sight::io::vtk::helper

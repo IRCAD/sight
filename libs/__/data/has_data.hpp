@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 
 #include <data/mt/weak_ptr.hpp>
 #include <data/object.hpp>
@@ -41,12 +41,12 @@ class base_ptr;
  *
  * It allows to register the pointers at instantiation time and provides generic getters and setters of the pointers.
  */
-class DATA_CLASS_API has_data
+class SIGHT_DATA_CLASS_API has_data
 {
 public:
 
-    DATA_API has_data()          = default;
-    DATA_API virtual ~has_data() = default;
+    SIGHT_DATA_API has_data()          = default;
+    SIGHT_DATA_API virtual ~has_data() = default;
 
     /**
      * @brief Return a weak data pointer of the input object at the given key and index.
@@ -82,7 +82,7 @@ public:
      * @param _index optional index of the data to retrieve.
      * @return data object, nullptr if not found.
      */
-    DATA_API data::object::csptr object(
+    SIGHT_DATA_API data::object::csptr object(
         std::string_view _key,
         data::access _access,
         std::optional<std::size_t> _index = {}) const;
@@ -96,7 +96,7 @@ public:
      * @param[in] _optional if true, the service can be started even if the objet is not present
      * @param[in] _index if specified, indicates the object is part of a group and gives its index
      */
-    DATA_API void set_input(
+    SIGHT_DATA_API void set_input(
         data::object::csptr _obj,
         std::string_view _key,
         std::optional<bool> _auto_connect = {},
@@ -112,7 +112,7 @@ public:
      * @param[in] _optional if true, the service can be started even if the objet is not present
      * @param[in] _index if specified, indicates the object is part of a group and gives its index
      */
-    DATA_API void set_inout(
+    SIGHT_DATA_API void set_inout(
         data::object::sptr _obj,
         std::string_view _key,
         std::optional<bool> _auto_connect = {},
@@ -129,7 +129,7 @@ public:
      * services will not maintain a reference to this object (only weak_ptr). When the service stops, it should remove
      * its outputs by calling set_output(key, nullptr). Otherwise, a service may work on an expired object.
      */
-    DATA_API void set_output(
+    SIGHT_DATA_API void set_output(
         std::string_view _key,
         data::object::sptr _object,
         std::optional<std::size_t> _index = {});
@@ -146,7 +146,7 @@ protected:
      * @param[in] _auto_connect if true, the service will be connected to the object's signals
      * @param[in] _optional if true, the service can be started even if the objet is not present
      */
-    DATA_API void set_object(
+    SIGHT_DATA_API void set_object(
         data::object::sptr _obj,
         std::string_view _key,
         std::optional<std::size_t> _index,
@@ -161,7 +161,7 @@ protected:
      * @param[in] _key key of the object
      * @param[in] _index index of the data in the group
      */
-    DATA_API void reset_object(std::string_view _key, std::optional<std::size_t> _index);
+    SIGHT_DATA_API void reset_object(std::string_view _key, std::optional<std::size_t> _index);
 
     /**
      * @brief Set the deferred identifier of a key. This is useful to declare an object that is not present at start of
@@ -170,7 +170,7 @@ protected:
      * @param[in] _id label of the object
      * @param[in] _index index of the data in the group
      */
-    DATA_API void set_deferred_id(
+    SIGHT_DATA_API void set_deferred_id(
         std::string_view _key,
         const std::string& _id,
         std::optional<std::size_t> _index = {});
@@ -178,10 +178,10 @@ protected:
     /**
      * @brief Reset all output objects
      */
-    DATA_API void reset_all_out();
+    SIGHT_DATA_API void reset_all_out();
 
     using container_t = std::map<std::pair<std::string_view, std::optional<std::size_t> >, base_ptr*>;
-    DATA_API const container_t& container() const;
+    SIGHT_DATA_API const container_t& container() const;
 
 private:
 
@@ -192,13 +192,13 @@ private:
     friend class ptr_vector;
 
     /// Registers a pointer
-    DATA_API void register_ptr(std::string_view _key, base_ptr* _data, std::optional<std::size_t> _index = 0);
+    SIGHT_DATA_API void register_ptr(std::string_view _key, base_ptr* _data, std::optional<std::size_t> _index = 0);
     /// Unregisters a pointer
-    DATA_API void unregister_ptr(base_ptr* _data);
+    SIGHT_DATA_API void unregister_ptr(base_ptr* _data);
     /// Notifies that a new object has been created and available
-    DATA_API virtual void notify_register_out(data::object::sptr, const std::string&) = 0;
+    SIGHT_DATA_API virtual void notify_register_out(data::object::sptr, const std::string&) = 0;
     /// Notifies that a new object is being destroyed and no longer available
-    DATA_API virtual void notify_unregister_out(data::object::sptr, const std::string&) = 0;
+    SIGHT_DATA_API virtual void notify_unregister_out(data::object::sptr, const std::string&) = 0;
 
     /**
      * @brief Map of data pointers, data::ptr and data::ptr_vector.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,8 +20,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <data/transfer_function.hpp>
 
@@ -54,8 +52,8 @@ namespace sight::module::ui::qt::image
  * - \b piece(optional, default="-1"): if specified not negative, apply the opacity on the given piece instead of the
  * whole function.
  */
-class MODULE_UI_QT_CLASS_API transfer_function_opacity final : public QObject,
-                                                               public sight::ui::editor
+class transfer_function_opacity final : public QObject,
+                                        public sight::ui::editor
 {
 Q_OBJECT
 
@@ -64,10 +62,10 @@ public:
     SIGHT_DECLARE_SERVICE(transfer_function_opacity, sight::ui::editor);
 
     /// Initialize signals and slots.
-    MODULE_UI_QT_API transfer_function_opacity() noexcept = default;
+    transfer_function_opacity() noexcept = default;
 
     /// Destroys the service.
-    MODULE_UI_QT_API ~transfer_function_opacity() noexcept override = default;
+    ~transfer_function_opacity() noexcept override = default;
 
 protected:
 

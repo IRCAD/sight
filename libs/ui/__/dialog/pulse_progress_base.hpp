@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/object.hpp"
 
 #include <functional>
@@ -35,7 +36,7 @@ namespace sight::ui::dialog
  * @brief   Defines the generic Progress dialog for IHM.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
  */
-class UI_CLASS_API pulse_progress_base : public ui::object
+class SIGHT_UI_CLASS_API pulse_progress_base : public ui::object
 {
 public:
 
@@ -48,28 +49,28 @@ public:
     using MilliSecond = std::uint64_t;
 
     /// this *unique* key should  be used *for all* factory for specific location(qt,wx,...)
-    UI_API static const factory_registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const factory_registry_key_t REGISTRY_KEY;
 
-    UI_API ~pulse_progress_base() override = default;
-    UI_API pulse_progress_base()           = default;
+    SIGHT_UI_API ~pulse_progress_base() override = default;
+    SIGHT_UI_API pulse_progress_base()           = default;
 
     ///set the title for the dialog
-    UI_API virtual void set_title(const std::string& _title) = 0;
+    SIGHT_UI_API virtual void set_title(const std::string& _title) = 0;
 
     ///set the message for the dialog
-    UI_API virtual void set_message(const std::string& _msg) = 0;
+    SIGHT_UI_API virtual void set_message(const std::string& _msg) = 0;
 
     ///set the stuff
-    UI_API virtual void set_stuff(Stuff _stuff);
+    SIGHT_UI_API virtual void set_stuff(Stuff _stuff);
 
     ///set the frequence
-    UI_API virtual void set_frequence(MilliSecond _frequence);
+    SIGHT_UI_API virtual void set_frequence(MilliSecond _frequence);
 
     ///allow to cancel the dialog
-    UI_API virtual void set_cancellable(bool _cancellable);
+    SIGHT_UI_API virtual void set_cancellable(bool _cancellable);
 
     ///show the pulse progress dialog
-    UI_API virtual void show() = 0;
+    SIGHT_UI_API virtual void show() = 0;
 
 protected:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/qt3d/config.hpp"
+#include <sight/viz/qt3d/config.hpp>
+
 #include "viz/qt3d/core/frame_graph.hpp"
 
 #include <QPointer>
@@ -47,7 +48,7 @@ namespace sight::viz::qt3d::core
  * A scene contains a camera, a camera controller and a framegraph. In a QML application, generic_scene also defines a
  * QInputSettings object and a QRenderSettings object needed by QML.
  */
-class VIZ_QT3D_CLASS_API_QT generic_scene : public Qt3DCore::QEntity
+class SIGHT_VIZ_QT3D_CLASS_API_QT generic_scene : public Qt3DCore::QEntity
 {
 Q_OBJECT
 
@@ -72,40 +73,40 @@ Q_PROPERTY(
 public:
 
     /// Constructs a scene.
-    VIZ_QT3D_API_QT generic_scene(bool _is_qml = true, Qt3DCore::QNode* _parent = nullptr);
+    SIGHT_VIZ_QT3D_API_QT generic_scene(bool _is_qml = true, Qt3DCore::QNode* _parent = nullptr);
 
     /// Destructs a scene.
-    VIZ_QT3D_API_QT ~generic_scene() override;
+    SIGHT_VIZ_QT3D_API_QT ~generic_scene() override;
 
     /// @returns the scene's camera.
-    VIZ_QT3D_API_QT Qt3DRender::QCamera* get_camera();
+    SIGHT_VIZ_QT3D_API_QT Qt3DRender::QCamera* get_camera();
 
     /// @returns the scene's camera controller.
-    VIZ_QT3D_API_QT Qt3DExtras::QAbstractCameraController* get_camera_controller();
+    SIGHT_VIZ_QT3D_API_QT Qt3DExtras::QAbstractCameraController* get_camera_controller();
 
     /// @returns the scene's QInputSettings object (only used in QML applications).
-    VIZ_QT3D_API_QT Qt3DInput::QInputSettings* get_input_settings();
+    SIGHT_VIZ_QT3D_API_QT Qt3DInput::QInputSettings* get_input_settings();
 
     /// @returns the scene's render settings object (only used in QML applications).
-    VIZ_QT3D_API_QT Qt3DRender::QRenderSettings* get_render_settings();
+    SIGHT_VIZ_QT3D_API_QT Qt3DRender::QRenderSettings* get_render_settings();
 
     /// @returns the scene's framegraph.
-    VIZ_QT3D_API_QT frame_graph* get_frame_graph();
+    SIGHT_VIZ_QT3D_API_QT frame_graph* get_frame_graph();
 
     /// Updates the scene's camera.
-    VIZ_QT3D_API_QT void set_camera(Qt3DRender::QCamera* _camera);
+    SIGHT_VIZ_QT3D_API_QT void set_camera(Qt3DRender::QCamera* _camera);
 
     /// Updates the scene's camera controller.
-    VIZ_QT3D_API_QT void set_camera_controller(Qt3DExtras::QAbstractCameraController* _camera_controller);
+    SIGHT_VIZ_QT3D_API_QT void set_camera_controller(Qt3DExtras::QAbstractCameraController* _camera_controller);
 
     /// Updates the scene's QInputSettings object (only used in QML applications).
-    VIZ_QT3D_API_QT void set_input_settings(Qt3DInput::QInputSettings* _input_settings);
+    SIGHT_VIZ_QT3D_API_QT void set_input_settings(Qt3DInput::QInputSettings* _input_settings);
 
     /// Updates the scene's render settings object (only used in QML applications).
-    VIZ_QT3D_API_QT void set_render_settings(Qt3DRender::QRenderSettings* _render_settings);
+    SIGHT_VIZ_QT3D_API_QT void set_render_settings(Qt3DRender::QRenderSettings* _render_settings);
 
     /// Updates the scene's framegraph.
-    VIZ_QT3D_API_QT void set_frame_graph(frame_graph* _frame_graph);
+    SIGHT_VIZ_QT3D_API_QT void set_frame_graph(frame_graph* _frame_graph);
 
 Q_SIGNALS:
 

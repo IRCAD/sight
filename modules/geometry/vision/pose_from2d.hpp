@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,7 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-#include "modules/geometry/vision/config.hpp"
 
 #include <core/clock.hpp>
 #include <core/mt/types.hpp>
@@ -78,7 +77,7 @@ namespace sight::module::geometry::vision
  * @subsection Configuration Configuration
  * - \b patternWidth : width of the tag.
  */
-class MODULE_GEOMETRY_VISION_CLASS_API pose_from2d : public service::registerer
+class pose_from2d : public service::registerer
 {
 public:
 
@@ -86,8 +85,8 @@ public:
 
     using vect_key_t = std::vector<std::string>;
 
-    MODULE_GEOMETRY_VISION_API pose_from2d() noexcept;
-    MODULE_GEOMETRY_VISION_API ~pose_from2d() noexcept override = default;
+    pose_from2d() noexcept;
+    ~pose_from2d() noexcept override = default;
 
     /// Connect MarkerTL::signals::PUSHED to REGISTER_SLOT
     service::connections_t auto_connections() const override;
@@ -97,22 +96,22 @@ protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    MODULE_GEOMETRY_VISION_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    MODULE_GEOMETRY_VISION_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    MODULE_GEOMETRY_VISION_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    MODULE_GEOMETRY_VISION_API void stopping() override;
+    void stopping() override;
 
     /// Register matrix slot
     void compute_registration(core::clock::type _timestamp) override;

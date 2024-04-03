@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/__/config.hpp"
-
 #include <ui/__/action.hpp>
 
 #include <map>
@@ -35,17 +33,17 @@ namespace sight::module::ui::viz
 /**
  * @brief   This action allows change the cross type
  */
-class MODULE_UI_CLASS_API cross_type_action : public sight::ui::action
+class cross_type_action : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(cross_type_action, sight::ui::action);
 
     /// Constructor. Do nothing.
-    MODULE_UI_API cross_type_action() noexcept;
+    cross_type_action() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_API ~cross_type_action() noexcept override = default;
+    ~cross_type_action() noexcept override = default;
 
 protected:
 

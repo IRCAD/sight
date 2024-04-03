@@ -53,7 +53,7 @@ enum class level : std::uint8_t
  * @brief Class that allow writing files in an archive.
  *
  */
-class IO_ZIP_CLASS_API archive_writer : public archive
+class SIGHT_IO_ZIP_CLASS_API archive_writer : public archive
 {
 public:
 
@@ -67,12 +67,12 @@ public:
     archive_writer& operator=(archive_writer&&)      = delete;
 
     /// Destructor
-    IO_ZIP_API ~archive_writer() override = default;
+    SIGHT_IO_ZIP_API ~archive_writer() override = default;
 
     /// Shared factory. It uses a cache mechanism to return the same instance for the same archive_path.
     /// @param _archive_path path of the archive file. The file will be kept opened as long as the instance leave.
     /// @param _format the format of the archive. @see sight::io::zip::archive::archiveFormat
-    IO_ZIP_API static archive_writer::uptr get(
+    SIGHT_IO_ZIP_API static archive_writer::uptr get(
         const std::filesystem::path& _archive_path,
         archive_format _format = archive_format::DEFAULT
     );
@@ -82,7 +82,7 @@ public:
     /// @param _password the password needed to encrypt the file.
     /// @param _method the compression algorithm to use.
     /// @param _level the compression level to use.
-    IO_ZIP_API virtual std::unique_ptr<std::ostream> open_file(
+    SIGHT_IO_ZIP_API virtual std::unique_ptr<std::ostream> open_file(
         const std::filesystem::path& _file_path,
         const core::crypto::secure_string& _password = "",
         method _method                               = method::DEFAULT,
@@ -90,12 +90,12 @@ public:
     )                                                = 0;
 
     /// Returns true for raw archive
-    [[nodiscard]] IO_ZIP_API virtual bool is_raw() const = 0;
+    [[nodiscard]] SIGHT_IO_ZIP_API virtual bool is_raw() const = 0;
 
 protected:
 
     /// Constructor
-    IO_ZIP_API archive_writer(const std::filesystem::path& _archive_path);
+    SIGHT_IO_ZIP_API archive_writer(const std::filesystem::path& _archive_path);
 };
 
 } // namespace sight::io::zip

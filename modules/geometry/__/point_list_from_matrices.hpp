@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/geometry/__/config.hpp"
 
 #include <data/matrix4.hpp>
 #include <data/point_list.hpp>
@@ -60,7 +58,7 @@ namespace sight::module::geometry
  * - \b append (optional, default=false): does the service append points in the pointlist on update (true) or clear it
  * (false)?
  */
-class MODULE_GEOMETRY_CLASS_API point_list_from_matrices final : public sight::service::filter
+class point_list_from_matrices final : public sight::service::filter
 {
 public:
 
@@ -68,24 +66,24 @@ public:
     SIGHT_DECLARE_SERVICE(point_list_from_matrices, sight::service::filter);
 
     /// Initializes a member variable
-    MODULE_GEOMETRY_API point_list_from_matrices();
+    point_list_from_matrices();
 
     /// Destroys the service
-    MODULE_GEOMETRY_API ~point_list_from_matrices() override;
+    ~point_list_from_matrices() override;
 
 protected:
 
     /// Sets the append mode on or off.
-    MODULE_GEOMETRY_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void starting() override;
+    void starting() override;
 
     /// Fills the PointList.
-    MODULE_GEOMETRY_API void updating() override;
+    void updating() override;
 
     /// Does nothing.
-    MODULE_GEOMETRY_API void stopping() override;
+    void stopping() override;
 
 private:
 

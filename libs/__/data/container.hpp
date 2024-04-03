@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 #include "data/object.hpp"
 
 #include <core/com/signal.hpp>
@@ -143,7 +143,7 @@ class container_wrapper
 
 /// Array container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_array<C>::value>
     >: private C
@@ -176,7 +176,7 @@ public:
 
 /// Vector container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_vector<C>::value>
     >: private C
@@ -233,7 +233,7 @@ public:
 
 /// Deque container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_deque<C>::value>
     >: private C
@@ -273,7 +273,7 @@ public:
 
 /// List container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_list<C>::value>
     >: private C
@@ -314,7 +314,7 @@ public:
 
 /// Sequenced set container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_sequenced_set<C>::value>
     >: private C
@@ -386,7 +386,7 @@ public:
 
 /// Map container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_map<C>::value>
     >: private C
@@ -421,7 +421,7 @@ public:
 
 /// Multimap container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_multimap<C>::value>
     >: private C
@@ -456,7 +456,7 @@ public:
 
 /// Set container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_set<C>::value>
     >: private C
@@ -491,7 +491,7 @@ public:
 
 /// Set container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_multiset<C>::value>
     >: private C
@@ -523,7 +523,7 @@ public:
 
 /// Unordered map container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C, typename std::enable_if_t<core::tools::is_unordered_map<C>::value>
     >: private C
 {
@@ -554,7 +554,7 @@ public:
 
 /// Unordered multimap container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_unordered_multimap<C>::value>
     >: private C
@@ -586,7 +586,7 @@ public:
 
 /// Unordered set container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C, typename std::enable_if_t<core::tools::is_unordered_set<C>::value>
     >: private C
 {
@@ -617,7 +617,7 @@ public:
 
 /// Unordered set container class.
 template<class C>
-class DATA_CLASS_API container_wrapper<
+class SIGHT_DATA_CLASS_API container_wrapper<
         C,
         typename std::enable_if_t<core::tools::is_unordered_multiset<C>::value>
     >: private C
@@ -656,8 +656,8 @@ public:
 
 /// Generic Sight data container class.
 template<class C>
-class DATA_CLASS_API container : public object,
-                                 public container_wrapper<C>
+class SIGHT_DATA_CLASS_API container : public object,
+                                       public container_wrapper<C>
 {
 public:
 
@@ -702,7 +702,7 @@ public:
     /// Returns a copy of the underlying container
     constexpr C get_content() const noexcept;
 
-    struct DATA_CLASS_API scoped_emitter
+    struct SIGHT_DATA_CLASS_API scoped_emitter
     {
         constexpr scoped_emitter(const container& _container) noexcept;
         inline ~scoped_emitter() noexcept;

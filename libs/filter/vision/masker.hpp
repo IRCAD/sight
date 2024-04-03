@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "filter/vision/config.hpp"
+#include <sight/filter/vision/config.hpp>
 
 #include <opencv2/ml.hpp>
 #include <opencv2/opencv.hpp>
@@ -57,18 +57,18 @@ enum detection_mode
  *
  * @see Documentation from OpenCV https://docs.opencv.org/master/dc/dd6/ml_intro.html#ml_intro_em
  */
-class FILTER_VISION_CLASS_API masker
+class SIGHT_FILTER_VISION_CLASS_API masker
 {
 public:
 
     /// Constructor
-    FILTER_VISION_API masker(const col_space& _c, const detection_mode& _d);
+    SIGHT_FILTER_VISION_API masker(const col_space& _c, const detection_mode& _d);
 
     /// Destructor
-    FILTER_VISION_API ~masker();
+    SIGHT_FILTER_VISION_API ~masker();
 
     /// Train the foreground color model defined with a number of clusters inside a mask on a given image
-    FILTER_VISION_API void train_foreground_model(
+    SIGHT_FILTER_VISION_API void train_foreground_model(
         const cv::Mat& _rgb_img,
         const cv::Mat& _selection_mask,
         unsigned int _num_clusters,
@@ -76,24 +76,24 @@ public:
     );
 
     /// Train the background color model defined with a number of clusters inside a mask on a given image
-    FILTER_VISION_API void train_background_model(
+    SIGHT_FILTER_VISION_API void train_background_model(
         const cv::Mat& _rgb_img,
         const cv::Mat& _selection_mask,
         unsigned int _num_clusters
     );
 
     /// Perform an image masking based on the learned model on a downscaled image inside a given mask
-    [[nodiscard]] FILTER_VISION_API cv::Mat make_mask(
+    [[nodiscard]] SIGHT_FILTER_VISION_API cv::Mat make_mask(
         const cv::Mat& _test_img,
         const cv::Size& _down_size,
         cv::InputArray _filter_mask
     ) const;
 
     /// Set threshold value to get final binary image
-    FILTER_VISION_API void set_threshold(double _t);
+    SIGHT_FILTER_VISION_API void set_threshold(double _t);
 
     /// Return if a model is learned
-    FILTER_VISION_API bool is_model_learned();
+    SIGHT_FILTER_VISION_API bool is_model_learned();
 
 private:
 

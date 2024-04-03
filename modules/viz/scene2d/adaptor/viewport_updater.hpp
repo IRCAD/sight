@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/viz/scene2d/config.hpp"
 
 #include <data/image.hpp>
 
@@ -64,7 +62,7 @@ namespace sight::module::viz::scene2d::adaptor
  *
  * This adaptor is intended to be used with a module::viz::scene2d::adaptor::viewport_range_selector adaptor.
  */
-class MODULE_VIZ_SCENE2D_CLASS_API viewport_updater : public sight::viz::scene2d::adaptor
+class viewport_updater : public sight::viz::scene2d::adaptor
 {
 public:
 
@@ -73,12 +71,12 @@ public:
 
 protected:
 
-    MODULE_VIZ_SCENE2D_API void configuring() override;
-    MODULE_VIZ_SCENE2D_API void starting() override;
-    MODULE_VIZ_SCENE2D_API void updating() override;
-    MODULE_VIZ_SCENE2D_API void stopping() override;
+    void configuring() override;
+    void starting() override;
+    void updating() override;
+    void stopping() override;
 
-    MODULE_VIZ_SCENE2D_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private:
 

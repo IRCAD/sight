@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/jobs/base.hpp"
 
 #include <cstdint>
@@ -44,7 +45,7 @@ namespace sight::core::jobs
  * The embedded task will be run at most once. Once the job is finished or has
  * been canceled, the job (thus the task) will not be run anymore)
  */
-class CORE_CLASS_API job : public base
+class SIGHT_CORE_CLASS_API job : public base
 {
 public:
 
@@ -68,13 +69,13 @@ public:
      * @param _task The task managed by the job
      * @param _worker An optional worker to run the task on
      */
-    CORE_API job(const std::string& _name, task _task, SPTR(core::thread::worker)_worker = nullptr);
+    SIGHT_CORE_API job(const std::string& _name, task _task, SPTR(core::thread::worker)_worker = nullptr);
 
     /**
      * @brief Return a job callback with the done work number as parameter
      * This callback can only be used if the job is still instantiated.
      */
-    CORE_API progress_callback_t progress_callback();
+    SIGHT_CORE_API progress_callback_t progress_callback();
 
     /**
      * @name Exposed base methods
@@ -86,10 +87,10 @@ public:
     /**  @} */
 
     ///Getter on the current job worker or nullptr if no worker has been set.
-    CORE_API SPTR(core::thread::worker) get_worker();
+    SIGHT_CORE_API SPTR(core::thread::worker) get_worker();
 
     /// Reimplements base's cancel
-    CORE_API shared_future cancel() override;
+    SIGHT_CORE_API shared_future cancel() override;
 
 protected:
 
@@ -98,7 +99,7 @@ protected:
      *
      * @return future of the task
      */
-    CORE_API shared_future run_impl() override;
+    SIGHT_CORE_API shared_future run_impl() override;
 
 private:
 

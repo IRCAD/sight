@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
+
 #include "viz/scene3d/factory/new.hpp"
 #include "viz/scene3d/graphics_worker.hpp"
 #include "viz/scene3d/interactor/base.hpp"
@@ -39,7 +40,7 @@ namespace sight::viz::scene3d
  * @brief   Defines a class to manage ogreRenderwindow_interactor in a window.
  *
  */
-class VIZ_SCENE3D_CLASS_API window_interactor : public core::base_object
+class SIGHT_VIZ_SCENE3D_CLASS_API window_interactor : public core::base_object
 {
 public:
 
@@ -123,11 +124,11 @@ public:
 
     using factory_registry_key_t = std::string;
 
-    VIZ_SCENE3D_API static const factory_registry_key_t REGISTRY_KEY;
+    SIGHT_VIZ_SCENE3D_API static const factory_registry_key_t REGISTRY_KEY;
 
-    VIZ_SCENE3D_API static const factory_registry_key_t OFFSCREEN_REGISTRY_KEY;
+    SIGHT_VIZ_SCENE3D_API static const factory_registry_key_t OFFSCREEN_REGISTRY_KEY;
 
-    VIZ_SCENE3D_API static window_interactor::sptr create_manager();
+    SIGHT_VIZ_SCENE3D_API static window_interactor::sptr create_manager();
 
     /**
      * @brief Creates an offscreen window using the factory.
@@ -135,54 +136,54 @@ public:
      * @param _width  width of underlying render texture.
      * @param _height height of underlying render texture.
      */
-    VIZ_SCENE3D_API static window_interactor::sptr create_offscreen_manager(
+    SIGHT_VIZ_SCENE3D_API static window_interactor::sptr create_offscreen_manager(
         unsigned int _width,
         unsigned int _height
     );
 
     /// Constructor. Do nothing.
-    VIZ_SCENE3D_API window_interactor();
+    SIGHT_VIZ_SCENE3D_API window_interactor();
 
     /// Destructor. Do nothing.
-    VIZ_SCENE3D_API ~window_interactor() override;
+    SIGHT_VIZ_SCENE3D_API ~window_interactor() override;
 
     /// Call Ogre Widget render immediately
-    VIZ_SCENE3D_API virtual void render_now() = 0;
+    SIGHT_VIZ_SCENE3D_API virtual void render_now() = 0;
 
     /// Call Ogre Widget render as soon as possible
-    VIZ_SCENE3D_API virtual void request_render() = 0;
+    SIGHT_VIZ_SCENE3D_API virtual void request_render() = 0;
 
     /// Creates an interactor and installs it in window.
-    VIZ_SCENE3D_API virtual void create_container(
+    SIGHT_VIZ_SCENE3D_API virtual void create_container(
         ui::container::widget::sptr _parent,
         bool _fullscreen,
         const std::string& _id
     ) = 0;
 
     /// Connects widget and render signals and slots.
-    VIZ_SCENE3D_API virtual void connect_to_container() = 0;
+    SIGHT_VIZ_SCENE3D_API virtual void connect_to_container() = 0;
 
     /// Deletes interactor and manage correctly the window (removing layout).
-    VIZ_SCENE3D_API virtual void disconnect_interactor() = 0;
+    SIGHT_VIZ_SCENE3D_API virtual void disconnect_interactor() = 0;
 
     /// Returns Ogre widget
-    VIZ_SCENE3D_API virtual int get_widget_id() const = 0;
+    SIGHT_VIZ_SCENE3D_API virtual int get_widget_id() const = 0;
 
     /// Returns frame ID
-    VIZ_SCENE3D_API virtual int get_frame_id() const = 0;
+    SIGHT_VIZ_SCENE3D_API virtual int get_frame_id() const = 0;
 
     /// Sets the rendering context as being enabled against this window and on this thread.
-    VIZ_SCENE3D_API virtual void make_current() = 0;
+    SIGHT_VIZ_SCENE3D_API virtual void make_current() = 0;
 
     /// Returns the texture in which this window manager is rendering. Only implemented for offscreen windows.
-    VIZ_SCENE3D_API virtual Ogre::TexturePtr get_render_texture() = 0;
+    SIGHT_VIZ_SCENE3D_API virtual Ogre::TexturePtr get_render_texture() = 0;
 
     /// Spawns a worker able to handle graphics resources in parallel.
-    VIZ_SCENE3D_API virtual graphics_worker* create_graphics_worker() = 0;
+    SIGHT_VIZ_SCENE3D_API virtual graphics_worker* create_graphics_worker() = 0;
 
     /// Gets the vertical logical DPI of the monitor on which the window is displayed.
     /// The logical DPI takes accessibility features and desktop zoom into account and is used for font rendering.
-    VIZ_SCENE3D_API virtual float get_logical_dots_per_inch() const = 0;
+    SIGHT_VIZ_SCENE3D_API virtual float get_logical_dots_per_inch() const = 0;
 
     /**
      * @brief Sets the fullscreen or windowed rendering mode.
@@ -190,7 +191,7 @@ public:
      * @param _fullscreen whether to render in fullscreen mode. Use windowed mode otherwise.
      * @param _screen_number index of the screen on which to render in fullscreen mode.
      */
-    VIZ_SCENE3D_API virtual void set_fullscreen(bool _fullscreen, int _screen_number);
+    SIGHT_VIZ_SCENE3D_API virtual void set_fullscreen(bool _fullscreen, int _screen_number);
 
     /// Set the render service using the IOgreRenderwindow_interactor
     virtual void set_render_service(service::base::sptr _srv)

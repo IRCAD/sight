@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <data/landmarks.hpp>
 
@@ -34,7 +34,7 @@ namespace sight::viz::scene3d
 
 /// Landmarks configuration used in signals/slots
 /// Parameter with `std::nullopt`, means "no change".
-struct VIZ_SCENE3D_CLASS_API landmarks_configuration
+struct SIGHT_VIZ_SCENE3D_CLASS_API landmarks_configuration
 {
     /// Group name of the landmarks to configure.
     std::optional<std::string> group {std::nullopt};

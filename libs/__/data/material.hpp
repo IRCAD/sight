@@ -34,7 +34,7 @@ namespace sight::data
  * @brief This class defines a material. A material is represented by an ambient color and a diffuse color.
  * @see Color
  */
-class DATA_CLASS_API material final : public object
+class SIGHT_DATA_CLASS_API material final : public object
 {
 public:
 
@@ -43,41 +43,41 @@ public:
     /**
      * @brief Constructor
      */
-    DATA_API material();
+    SIGHT_DATA_API material();
 
     /// Destructor
-    DATA_API ~material() noexcept override = default;
+    SIGHT_DATA_API ~material() noexcept override = default;
 
     /**
      * @brief returns editable ambient color
      */
-    DATA_API color::sptr ambient() const;
+    SIGHT_DATA_API color::sptr ambient() const;
 
     /**
      * @brief Setter for ambient color
      *
      * @param _ambient color
      */
-    DATA_API void set_ambient(const color::sptr& _ambient);
+    SIGHT_DATA_API void set_ambient(const color::sptr& _ambient);
 
     /**
      * @brief returns editable diffuse color
      */
-    DATA_API color::sptr diffuse() const;
+    SIGHT_DATA_API color::sptr diffuse() const;
 
     /**
      * @brief Setter for diffuse color
      *
      * @param _diffuse color
      */
-    DATA_API void set_diffuse(const color::sptr& _diffuse);
+    SIGHT_DATA_API void set_diffuse(const color::sptr& _diffuse);
 
     /**
      * @brief returns editable diffuse texture
      * @{
      */
-    DATA_API image::sptr get_diffuse_texture();
-    DATA_API image::csptr get_diffuse_texture() const;
+    SIGHT_DATA_API image::sptr get_diffuse_texture();
+    SIGHT_DATA_API image::csptr get_diffuse_texture() const;
     ///@}
 
     /**
@@ -85,7 +85,7 @@ public:
      *
      * @param _diffuse_texture texture
      */
-    DATA_API void set_diffuse_texture(const image::sptr& _diffuse_texture);
+    SIGHT_DATA_API void set_diffuse_texture(const image::sptr& _diffuse_texture);
 
     /**
      * @brief Options
@@ -182,31 +182,31 @@ public:
      */
     /// Type of signal when a texture is added
     using added_texture_signal_t = core::com::signal<void (image::sptr)>;
-    DATA_API static const core::com::signals::key_t ADDED_TEXTURE_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t ADDED_TEXTURE_SIG;
 
     /// Type of signal when a texture is removed
     using removed_texture_signal_t = core::com::signal<void (image::sptr)>;
-    DATA_API static const core::com::signals::key_t REMOVED_TEXTURE_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t REMOVED_TEXTURE_SIG;
 /**
  * @}
  */
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const material& _other) const noexcept;
-    DATA_API bool operator!=(const material& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const material& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const material& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "ui/__/config.hpp"
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/object.hpp"
 
 namespace sight::ui
@@ -31,17 +32,17 @@ namespace sight::ui
 /**
  * @brief   Defines the application manipulation API.
  */
-class UI_CLASS_API application : public ui::object
+class SIGHT_UI_CLASS_API application : public ui::object
 {
 public:
 
     SIGHT_DECLARE_CLASS(application, ui::object);
 
     /// Destructor. Do nothing.
-    UI_API ~application() override = default;
+    SIGHT_UI_API ~application() override = default;
 
     /// Tells the application to exit with a returncode
-    UI_API virtual void exit(int _return_code = 0, bool _async = true) = 0;
+    SIGHT_UI_API virtual void exit(int _return_code = 0, bool _async = true) = 0;
 
     /// Sets if confirmation is required when exiting application
     void set_confirm(bool _confirm)
@@ -50,10 +51,10 @@ public:
     }
 
     /// application factory, returning the registered instance of application. Manage a Singleton.
-    UI_API static application::sptr get();
+    SIGHT_UI_API static application::sptr get();
 
     using factory_registry_key_t = std::string;
-    UI_API static const factory_registry_key_t REGISTRY_KEY;
+    SIGHT_UI_API static const factory_registry_key_t REGISTRY_KEY;
 
 protected:
 

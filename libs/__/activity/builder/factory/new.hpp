@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/activity/config.hpp>
+
 #include "activity/builder/registry/detail.hpp"
-#include "activity/config.hpp"
 
 #include <string>
 
@@ -38,7 +39,7 @@ namespace factory
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make();
 
-ACTIVITY_API SPTR(sight::activity::builder::base) make(const activity::builder::registry::key_t& _classname);
+SIGHT_ACTIVITY_API SPTR(sight::activity::builder::base) make(const activity::builder::registry::key_t& _classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME)  make()

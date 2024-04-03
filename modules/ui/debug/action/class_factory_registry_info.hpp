@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/debug/config.hpp"
-
 #include <ui/__/action.hpp>
 
 #include <QApplication>
@@ -36,17 +34,17 @@ namespace sight::module::ui::debug::action
 /**
  * @brief   Implements an action to show services registered in factory
  */
-class MODULE_UI_DEBUG_CLASS_API class_factory_registry_info : public sight::ui::action
+class class_factory_registry_info : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(class_factory_registry_info, sight::ui::action);
 
     /// Does nothing
-    MODULE_UI_DEBUG_API class_factory_registry_info() noexcept;
+    class_factory_registry_info() noexcept;
 
     /// Does nothing
-    MODULE_UI_DEBUG_API ~class_factory_registry_info() noexcept override;
+    ~class_factory_registry_info() noexcept override;
 
 protected:
 

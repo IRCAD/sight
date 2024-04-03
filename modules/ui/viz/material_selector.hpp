@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/viz/config.hpp"
 
 #include <core/tools/failed.hpp>
 
@@ -59,8 +57,8 @@ namespace sight::module::ui::viz
 /**
  * @brief
  */
-class MODULE_UI_VIZ_CLASS_API material_selector : public QObject,
-                                                  public sight::ui::editor
+class material_selector : public QObject,
+                          public sight::ui::editor
 {
 Q_OBJECT
 
@@ -69,16 +67,16 @@ public:
     SIGHT_DECLARE_SERVICE(material_selector, sight::ui::editor);
 
     /// Constructor.
-    MODULE_UI_VIZ_API material_selector() noexcept;
+    material_selector() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_VIZ_API ~material_selector() noexcept override;
+    ~material_selector() noexcept override;
 
     /**
      * @name Signals API
      * @{
      */
-    MODULE_UI_VIZ_API static const core::com::signals::key_t SELECTED_SIG;
+    static const core::com::signals::key_t SELECTED_SIG;
     using selected_signal_t = core::com::signal<void (std::string)>;
 /** @} */
 
@@ -91,16 +89,16 @@ protected:
         </service>
        @endcode
      */
-    MODULE_UI_VIZ_API void configuring() override;
+    void configuring() override;
 
     /// Start the service. Create UI
-    MODULE_UI_VIZ_API void starting() override;
+    void starting() override;
 
     /// Stop the service. Delete UI
-    MODULE_UI_VIZ_API void stopping() override;
+    void stopping() override;
 
     /// Update UI depending on current reconstruction
-    MODULE_UI_VIZ_API void updating() override;
+    void updating() override;
 
 protected Q_SLOTS:
 

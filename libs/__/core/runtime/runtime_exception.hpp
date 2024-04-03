@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/exception.hpp"
 
 #include <exception>
@@ -35,26 +36,26 @@ namespace sight::core::runtime
  * @brief   Defines the runtime exception class.
  *
  */
-struct CORE_CLASS_API runtime_exception : public core::exception
+struct SIGHT_CORE_CLASS_API runtime_exception : public core::exception
 {
     /**
      * @brief       Copy constructor.
      *
      * @param[in]   _exception   an exception instance to copy
      */
-    CORE_API runtime_exception(const runtime_exception& _exception) noexcept;
+    SIGHT_CORE_API runtime_exception(const runtime_exception& _exception) noexcept;
 
     /**
      * @brief       Constructor.
      *
      * @param[in]   _message a string containing the exception message
      */
-    CORE_API runtime_exception(const std::string& _message) noexcept;
+    SIGHT_CORE_API runtime_exception(const std::string& _message) noexcept;
 
     /**
      * @brief   Destructor : does nothing.
      */
-    CORE_API ~runtime_exception() noexcept override;
+    SIGHT_CORE_API ~runtime_exception() noexcept override;
 };
 
 } // namespace sight::core::runtime

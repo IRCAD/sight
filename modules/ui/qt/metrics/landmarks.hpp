@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <data/image_series.hpp>
 #include <data/landmarks.hpp>
 #include <data/matrix4.hpp>
@@ -175,8 +173,8 @@ struct image_or_image_series_lock
  * - \b advanced (optional, default="false"): if "true", use the advanced mode displaying point information
  *      and groups with multiple points.
  */
-class MODULE_UI_QT_CLASS_API landmarks final : public QObject,
-                                               public sight::ui::editor
+class landmarks final : public QObject,
+                        public sight::ui::editor
 {
 Q_OBJECT
 
@@ -185,10 +183,10 @@ public:
     SIGHT_DECLARE_SERVICE(landmarks, sight::ui::editor);
 
     /// Initializes slots.
-    MODULE_UI_QT_API landmarks() noexcept;
+    landmarks() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_QT_API ~landmarks() noexcept override;
+    ~landmarks() noexcept override;
 
     /// Configures the service.
     void configuring() override;
@@ -224,9 +222,9 @@ public:
     connections_t auto_connections() const override;
 
     /// Signal send when double clicked on a landmark, send its world coordinates;
-    MODULE_UI_QT_API static const core::com::signals::key_t SEND_WORLD_COORD;
+    static const core::com::signals::key_t SEND_WORLD_COORD;
     using world_coordinates_signal_t = core::com::signal<void (double, double, double)>;
-    MODULE_UI_QT_API static const core::com::signals::key_t GROUP_SELECTED;
+    static const core::com::signals::key_t GROUP_SELECTED;
     using group_selected_signal_t = core::com::signal<void (std::string)>;
 
     /// Resets the interface content and create connections between widgets and this service.

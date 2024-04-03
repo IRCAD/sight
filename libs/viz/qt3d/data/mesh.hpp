@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/qt3d/config.hpp"
+#include <sight/viz/qt3d/config.hpp>
+
 #include "viz/qt3d/data/material.hpp"
 
 #include <data/mesh.hpp>
@@ -59,7 +60,7 @@ namespace data
 /**
  * @brief Manages a generic mesh.
  */
-class VIZ_QT3D_CLASS_API_QT mesh : public Qt3DCore::QEntity
+class SIGHT_VIZ_QT3D_CLASS_API_QT mesh : public Qt3DCore::QEntity
 {
 Q_OBJECT
 
@@ -69,31 +70,31 @@ Q_PROPERTY(material * material READ get_material WRITE set_material NOTIFY mater
 public:
 
     /// Constructs an empty mesh.
-    VIZ_QT3D_API_QT mesh(Qt3DCore::QNode* _parent = nullptr);
+    SIGHT_VIZ_QT3D_API_QT mesh(Qt3DCore::QNode* _parent = nullptr);
 
     /// Destroys the mesh.
-    VIZ_QT3D_API_QT ~mesh() override;
+    SIGHT_VIZ_QT3D_API_QT ~mesh() override;
 
     /// @returns mesh material.
-    [[nodiscard]] VIZ_QT3D_API_QT viz::qt3d::data::material* get_material() const;
+    [[nodiscard]] SIGHT_VIZ_QT3D_API_QT viz::qt3d::data::material* get_material() const;
 
     /// @returns the scene associated with the mesh.
-    [[nodiscard]] VIZ_QT3D_API_QT sight::viz::qt3d::core::generic_scene* get_scene() const;
+    [[nodiscard]] SIGHT_VIZ_QT3D_API_QT sight::viz::qt3d::core::generic_scene* get_scene() const;
 
     /// Updates mesh material.
-    VIZ_QT3D_API_QT void set_material(viz::qt3d::data::material* _material);
+    SIGHT_VIZ_QT3D_API_QT void set_material(viz::qt3d::data::material* _material);
 
     /// Updates the scene associated with the mesh.
-    VIZ_QT3D_API_QT void set_scene(sight::viz::qt3d::core::generic_scene* _scene);
+    SIGHT_VIZ_QT3D_API_QT void set_scene(sight::viz::qt3d::core::generic_scene* _scene);
 
     /// Constructs position and normal buffers according to _mesh.
-    VIZ_QT3D_API_QT void build_buffers(sight::data::mesh::sptr _mesh);
+    SIGHT_VIZ_QT3D_API_QT void build_buffers(sight::data::mesh::sptr _mesh);
 
     /// Updates the mesh according to _mesh.
-    VIZ_QT3D_API_QT Q_INVOKABLE void set_mesh(sight::data::mesh::sptr _mesh);
+    SIGHT_VIZ_QT3D_API_QT Q_INVOKABLE void set_mesh(sight::data::mesh::sptr _mesh);
 
     /// Centers camera on mesh.
-    VIZ_QT3D_API_QT Q_INVOKABLE void center_camera_on_mesh();
+    SIGHT_VIZ_QT3D_API_QT Q_INVOKABLE void center_camera_on_mesh();
 
 Q_SIGNALS:
 

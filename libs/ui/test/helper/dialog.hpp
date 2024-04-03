@@ -41,8 +41,8 @@ public:
      * @{
      */
     template<typename T>
-    static void take(tester& _tester, const std::string& _desc, const std::string& _child_name             = "");
-    UI_TEST_API static void take(tester& _tester, const std::string& _desc, const std::string& _child_name = "");
+    static void take(tester& _tester, const std::string& _desc, const std::string& _child_name                   = "");
+    SIGHT_UI_TEST_API static void take(tester& _tester, const std::string& _desc, const std::string& _child_name = "");
     /// @}
 
     /**
@@ -57,8 +57,16 @@ public:
      * @{
      */
     template<typename T>
-    static void maybe_take(tester& _tester, const std::string& _desc, const std::string& _child_name             = "");
-    UI_TEST_API static void maybe_take(tester& _tester, const std::string& _desc, const std::string& _child_name = "");
+    static void maybe_take(
+        tester& _tester,
+        const std::string& _desc,
+        const std::string& _child_name = ""
+    );
+    SIGHT_UI_TEST_API static void maybe_take(
+        tester& _tester,
+        const std::string& _desc,
+        const std::string& _child_name = ""
+    );
     /// @}
 };
 

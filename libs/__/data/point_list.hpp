@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
+
 #include "data/factory/new.hpp"
 #include "data/object.hpp"
 #include "data/point.hpp"
@@ -39,7 +40,7 @@ namespace sight::data
  * @brief   This class defines a list of points.
  * @see     Point
  */
-class DATA_CLASS_API point_list final : public object
+class SIGHT_DATA_CLASS_API point_list final : public object
 {
 public:
 
@@ -47,8 +48,8 @@ public:
 
     using container_t = std::vector<point::sptr>;
 
-    DATA_API point_list();
-    DATA_API ~point_list() noexcept override = default;
+    SIGHT_DATA_API point_list();
+    SIGHT_DATA_API ~point_list() noexcept override = default;
 
     /**
      * @brief Gets point vector
@@ -88,32 +89,32 @@ public:
      * @brief Signal emitted when a Point is added
      */
     using point_added_signal_t = core::com::signal<void (point::sptr)>;
-    DATA_API static const core::com::signals::key_t POINT_ADDED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t POINT_ADDED_SIG;
     /**
      * @brief Signal emitted when a Point is removed
      */
     using point_removed_signal_t = core::com::signal<void (point::sptr)>;
-    DATA_API static const core::com::signals::key_t POINT_REMOVED_SIG;
+    SIGHT_DATA_API static const core::com::signals::key_t POINT_REMOVED_SIG;
 /**
  * @}
  */
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const point_list& _other) const noexcept;
-    DATA_API bool operator!=(const point_list& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const point_list& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const point_list& _other) const noexcept;
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
@@ -169,6 +170,6 @@ inline void point_list::clear()
     this->m_v_points.clear();
 }
 
-DATA_API std::ostream& operator<<(std::ostream& _out, const point_list& _pl);
+SIGHT_DATA_API std::ostream& operator<<(std::ostream& _out, const point_list& _pl);
 
 } // end namespace sight::data

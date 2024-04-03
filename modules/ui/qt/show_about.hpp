@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <ui/__/action.hpp>
 
 #include <QObject>
@@ -38,8 +36,8 @@ namespace sight::module::ui::qt
 /**
  * @brief   This action show the about frame.
  */
-class MODULE_UI_QT_CLASS_API show_about : public QObject,
-                                          public sight::ui::action
+class show_about : public QObject,
+                   public sight::ui::action
 {
 Q_OBJECT
 
@@ -50,8 +48,8 @@ public:
     /**
      * @name Constructor/Destructor
      * @{ */
-    MODULE_UI_QT_API show_about() noexcept;
-    MODULE_UI_QT_API ~show_about() noexcept override;
+    show_about() noexcept;
+    ~show_about() noexcept override;
 /**  @} */
 
 protected:

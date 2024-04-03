@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "sight/modules/io/session/config.hpp"
+
 #include <core/runtime/plugin.hpp>
 
 namespace sight::module::io::session
@@ -40,14 +42,14 @@ public:
      *
      * @exception core::runtime::RuntimeException
      */
-    void start() override;
+    SIGHT_MODULE_IO_SESSION_API void start() override;
 
     /**
      * @brief Stop method.
      *
      * This method is used by runtime in order to close the module.
      */
-    void stop() noexcept override;
+    SIGHT_MODULE_IO_SESSION_API void stop() noexcept override;
 };
 
 } // namespace sight::module::io::session

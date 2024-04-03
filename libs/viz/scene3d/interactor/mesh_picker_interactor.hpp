@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,10 @@
 
 #pragma once
 
+#include <sight/viz/scene3d/config.hpp>
+
 #include <core/com/signal.hpp>
 
-#include <viz/scene3d/config.hpp>
 #include <viz/scene3d/interactor/base.hpp>
 
 namespace sight::viz::scene3d::interactor
@@ -35,7 +36,7 @@ namespace sight::viz::scene3d::interactor
  *
  * Emits a signal with the relevant intersection data when picking succeeds.
  */
-class VIZ_SCENE3D_CLASS_API mesh_picker_interactor final : public sight::viz::scene3d::interactor::base
+class SIGHT_VIZ_SCENE3D_CLASS_API mesh_picker_interactor final : public sight::viz::scene3d::interactor::base
 {
 public:
 
@@ -43,22 +44,25 @@ public:
     using point_clicked_sig_t = core::com::signal<void (data::tools::picking_info)>;
 
     /// Initializes the picker.
-    VIZ_SCENE3D_API mesh_picker_interactor(SPTR(layer)_layer = nullptr, bool _layer_order_dependant = true) noexcept;
+    SIGHT_VIZ_SCENE3D_API mesh_picker_interactor(
+        SPTR(layer)_layer           = nullptr,
+        bool _layer_order_dependant = true
+    ) noexcept;
 
     /// Destroys the picker.
-    VIZ_SCENE3D_API ~mesh_picker_interactor() noexcept override;
+    SIGHT_VIZ_SCENE3D_API ~mesh_picker_interactor() noexcept override;
 
     /// Runs a picking query when a mouse button is released @see mesh_picker_interactor::pick().
-    VIZ_SCENE3D_API void button_release_event(mouse_button _button, modifier _mods, int _x, int _y) override;
+    SIGHT_VIZ_SCENE3D_API void button_release_event(mouse_button _button, modifier _mods, int _x, int _y) override;
 
     /// Runs a picking query when a mouse button is pressed @see mesh_picker_interactor::pick().
-    VIZ_SCENE3D_API void button_press_event(mouse_button _button, modifier _mods, int _x, int _y) override;
+    SIGHT_VIZ_SCENE3D_API void button_press_event(mouse_button _button, modifier _mods, int _x, int _y) override;
 
     /// Sets the signal to be called when picking succeeded.
-    VIZ_SCENE3D_API void set_point_clicked_sig(const point_clicked_sig_t::sptr& _sig);
+    SIGHT_VIZ_SCENE3D_API void set_point_clicked_sig(const point_clicked_sig_t::sptr& _sig);
 
     /// Sets the mask to filter out entities with mismathing query flags.
-    VIZ_SCENE3D_API void set_query_mask(std::uint32_t _query_mask);
+    SIGHT_VIZ_SCENE3D_API void set_query_mask(std::uint32_t _query_mask);
 
 private:
 

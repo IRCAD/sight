@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ex_timeline/config.hpp"
+#include <sight/ex_timeline/config.hpp>
 
 #include <service/base.hpp>
 
@@ -37,7 +37,7 @@ namespace ex_timeline
  * @brief This service is just a hack to block the main thread. Services on the other threads can run.
  * Without that, the application exits immediately since we have no GUI.
  */
-class EX_TIMELINE_CLASS_API main final : public sight::service::base
+class SIGHT_EX_TIMELINE_CLASS_API main final : public sight::service::base
 {
 public:
 
@@ -45,24 +45,24 @@ public:
     SIGHT_DECLARE_SERVICE(main, sight::service::base);
 
     /// Creates the service.
-    EX_TIMELINE_API main() noexcept;
+    SIGHT_EX_TIMELINE_API main() noexcept;
 
     /// Destroys the service.
-    EX_TIMELINE_API ~main() noexcept override;
+    SIGHT_EX_TIMELINE_API ~main() noexcept override;
 
 protected:
 
     /// Does nothing.
-    EX_TIMELINE_API void configuring() override;
+    SIGHT_EX_TIMELINE_API void configuring() override;
 
     /// Does nothing.
-    EX_TIMELINE_API void starting() override;
+    SIGHT_EX_TIMELINE_API void starting() override;
 
     /// Contains one input instruction to block the main thread.
-    EX_TIMELINE_API void updating() override;
+    SIGHT_EX_TIMELINE_API void updating() override;
 
     /// Does nothing.
-    EX_TIMELINE_API void stopping() override;
+    SIGHT_EX_TIMELINE_API void stopping() override;
 };
 
 } // namespace ex_timeline.

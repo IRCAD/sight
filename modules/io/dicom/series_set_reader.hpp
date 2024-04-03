@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/dicom/config.hpp"
-
 #include <core/com/signal.hpp>
 
 #include <io/__/service/reader.hpp>
@@ -119,7 +117,7 @@ namespace sight::module::io::dicom
  *    - user_selection (let the user decide whether using the DicomDir or not)
  * - \b op_classSelection:  List of SOP Class selection managed by the reader
  */
-class MODULE_IO_DICOM_CLASS_API series_set_reader : public sight::io::service::reader
+class series_set_reader : public sight::io::service::reader
 {
 public:
 
@@ -131,12 +129,12 @@ public:
      * @brief   constructor
      *
      */
-    MODULE_IO_DICOM_API series_set_reader() noexcept;
+    series_set_reader() noexcept;
 
     /**
      * @brief   destructor
      */
-    MODULE_IO_DICOM_API ~series_set_reader() noexcept override = default;
+    ~series_set_reader() noexcept override = default;
 
 protected:
 
@@ -150,28 +148,28 @@ protected:
     };
 
     /// Configuring method. This method is used to configure the service.
-    MODULE_IO_DICOM_API void configuring() override;
+    void configuring() override;
 
     /// Override
-    MODULE_IO_DICOM_API void starting() override;
+    void starting() override;
 
     /// Override
-    MODULE_IO_DICOM_API void stopping() override;
+    void stopping() override;
 
     /// Override
-    MODULE_IO_DICOM_API void updating() override;
+    void updating() override;
 
     /// Override
-    MODULE_IO_DICOM_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
     /// Override
-    MODULE_IO_DICOM_API std::string get_selector_dialog_title() override;
+    std::string get_selector_dialog_title() override;
 
     /// Configure using GUI.
-    MODULE_IO_DICOM_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
     /// Return managed file type, here FOLDER
-    MODULE_IO_DICOM_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
 private:
 

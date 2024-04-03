@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/dimse/config.hpp"
-
 #include <core/thread/worker.hpp>
 
 #include <io/dimse/data/pacs_configuration.hpp>
@@ -64,9 +62,9 @@ namespace sight::module::io::dimse
  * - \b showDialog (optional, bool, default=true): display dialog message for the ping result, or just send the
  *                                                 notification.
  */
-class MODULE_IO_DIMSE_CLASS_API pacs_configuration_editor : public QObject,
-                                                            public sight::ui::editor,
-                                                            private sight::service::notifier
+class pacs_configuration_editor : public QObject,
+                                  public sight::ui::editor,
+                                  private sight::service::notifier
 {
 Q_OBJECT;
 
@@ -76,24 +74,24 @@ public:
     SIGHT_DECLARE_SERVICE(pacs_configuration_editor, sight::ui::editor);
 
     /// Creates the service.
-    MODULE_IO_DIMSE_API pacs_configuration_editor() noexcept;
+    pacs_configuration_editor() noexcept;
 
     /// Destroyes the service.
-    MODULE_IO_DIMSE_API ~pacs_configuration_editor() noexcept override = default;
+    ~pacs_configuration_editor() noexcept override = default;
 
 protected:
 
     /// Configures the editor.
-    MODULE_IO_DIMSE_API void configuring() override;
+    void configuring() override;
 
     /// Creates the UI.
-    MODULE_IO_DIMSE_API void starting() override;
+    void starting() override;
 
     /// Does nothing.
-    MODULE_IO_DIMSE_API void updating() override;
+    void updating() override;
 
     /// Destroyes the UI.
-    MODULE_IO_DIMSE_API void stopping() override;
+    void stopping() override;
 
 private:
 

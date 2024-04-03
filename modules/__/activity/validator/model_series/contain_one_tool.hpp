@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/activity/config.hpp"
-
 #include <activity/validator/object.hpp>
 
 namespace sight::module::activity::validator::model_series
@@ -34,7 +32,7 @@ namespace sight::module::activity::validator::model_series
  * @note If the given Object is a container (Vector or Composite), it validates that each sub-object is a ModelSeries
  *       with one and only one Tool.
  */
-class MODULE_ACTIVITY_CLASS_API contain_one_tool : public sight::activity::validator::object
+class contain_one_tool : public sight::activity::validator::object
 {
 public:
 
@@ -43,16 +41,15 @@ public:
         sight::activity::validator::object,
         sight::activity::validator::factory::make<contain_one_tool>
     )
-
     /// Destructor. Do nothing.
-    MODULE_ACTIVITY_API ~contain_one_tool() override = default;
+    ~contain_one_tool() override = default;
 
     /**
      * @brief Checks that the ModelSeries contains one only one Tool.
      * @note Given object should be a single ModelSeries or a Vector or a Composite of ModelSeries.
      * @see module::activity::validator::base::validate
      */
-    MODULE_ACTIVITY_API sight::activity::validator::return_t validate(const CSPTR(data::object)& _current_object) const
+    sight::activity::validator::return_t validate(const CSPTR(data::object)& _current_object) const
     override;
 };
 

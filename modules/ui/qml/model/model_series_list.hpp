@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qml/config.hpp"
 #include "modules/ui/qml/model/organ_list_model.hpp"
 
 #include <ui/qml/editor.hpp>
@@ -67,7 +66,7 @@ namespace sight::module::ui::qml::model
  * @subsection In-Out In-Out
  * - \b modelSeries [sight::data::model_series]: model series containing the organs to list
  */
-class MODULE_UI_QML_CLASS_API model_series_list : public sight::ui::qml::editor
+class model_series_list : public sight::ui::qml::editor
 {
 Q_OBJECT
 Q_PROPERTY(organ_list_model * list_model MEMBER m_list_model)
@@ -77,10 +76,10 @@ public:
     SIGHT_DECLARE_SERVICE(model_series_list, sight::ui::qml::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QML_API model_series_list() noexcept;
+    model_series_list() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QML_API ~model_series_list() noexcept override;
+    ~model_series_list() noexcept override;
 
 protected:
 

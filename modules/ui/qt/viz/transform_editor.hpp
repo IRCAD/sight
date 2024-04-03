@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <data/matrix4.hpp>
 
@@ -60,8 +58,8 @@ namespace sight::module::ui::qt::viz
  * - \b min (optional): set the minimum value for translation/rotation (default: translation=-300, rotation=-180 ).
  * - \b max (optional): set the maximum value for translation/rotation (default: translation=+300, rotation=180).
  */
-class MODULE_UI_QT_CLASS_API transform_editor : public QObject,
-                                                public sight::ui::editor
+class transform_editor : public QObject,
+                         public sight::ui::editor
 {
 Q_OBJECT;
 
@@ -70,27 +68,27 @@ public:
     SIGHT_DECLARE_SERVICE(transform_editor, sight::ui::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API transform_editor() noexcept;
+    transform_editor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~transform_editor() noexcept override;
+    ~transform_editor() noexcept override;
 
 protected:
 
     /// This method is used to configure the service parameters:
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     ///This method launches the sight::ui::service::create method.
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     ///This method launches the sight::ui::service::destroy method.
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /// Updates Slider value
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
     // Connect data::matrix4::MODIFIED_SIG to update slot
-    MODULE_UI_QT_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private Q_SLOTS:
 

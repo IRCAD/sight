@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,7 @@
 
 #pragma once
 
-#include "data/config.hpp"
+#include <sight/data/config.hpp>
 
 #include <cstdint>
 #include <string_view>
@@ -144,7 +144,7 @@ enum class Keyword : std::uint8_t
     _SIZE
 };
 
-struct DATA_CLASS_API ISop
+struct SIGHT_DATA_CLASS_API ISop
 {
     constexpr ISop(
         const Keyword& keyword,
@@ -180,27 +180,27 @@ struct DATA_CLASS_API ISop
 };
 
 template<Keyword>
-struct DATA_CLASS_API Sop final : public ISop
+struct SIGHT_DATA_CLASS_API Sop final : public ISop
 {
     constexpr Sop() noexcept :
         ISop(s_keyword, s_name, s_uid, s_iod)
     {
     }
 
-    DATA_API static const Keyword s_keyword;
-    DATA_API static const std::string_view s_name;
-    DATA_API static const std::string_view s_uid;
-    DATA_API static const std::string_view s_iod;
+    SIGHT_DATA_API static const Keyword s_keyword;
+    SIGHT_DATA_API static const std::string_view s_name;
+    SIGHT_DATA_API static const std::string_view s_uid;
+    SIGHT_DATA_API static const std::string_view s_iod;
 };
 
 /// @return a static const reference to an Sop
 /// @{
-DATA_API const ISop& get(Keyword keyword);
-DATA_API const ISop& get(const std::string_view& uid);
+SIGHT_DATA_API const ISop& get(Keyword keyword);
+SIGHT_DATA_API const ISop& get(const std::string_view& uid);
 /// @}
 
 /// convert a uid directly to a keyword
-DATA_API const Keyword& keyword(const std::string_view& uid) noexcept;
+SIGHT_DATA_API const Keyword& keyword(const std::string_view& uid) noexcept;
 
 } // namespace sight::data::dicom::sop
 

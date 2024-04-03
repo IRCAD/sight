@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/dicomweb/config.hpp"
-
 #include <data/dicom_series.hpp>
 
 #include <io/http/client_qt.hpp>
@@ -65,8 +63,8 @@ class series_set;
 namespace sight::module::io::dicomweb
 {
 
-class MODULE_IO_DICOMWEB_CLASS_API slice_index_dicom_puller_editor : public QObject,
-                                                                     public sight::ui::editor
+class slice_index_dicom_puller_editor : public QObject,
+                                        public sight::ui::editor
 {
 Q_OBJECT;
 
@@ -77,12 +75,12 @@ public:
     /**
      * @brief Constructor
      */
-    MODULE_IO_DICOMWEB_API slice_index_dicom_puller_editor() noexcept;
+    slice_index_dicom_puller_editor() noexcept;
 
     /**
      * @brief Destructor
      */
-    MODULE_IO_DICOMWEB_API ~slice_index_dicom_puller_editor() noexcept override;
+    ~slice_index_dicom_puller_editor() noexcept override;
 
 private Q_SLOTS:
 
@@ -95,16 +93,16 @@ private Q_SLOTS:
 protected:
 
     /// Gets the configurations and creates a timer on a worker.
-    MODULE_IO_DICOMWEB_API void configuring() override;
+    void configuring() override;
 
     /// Creates the widgets, connect the signal, register the DICOM reader and starts the callback timer.
-    MODULE_IO_DICOMWEB_API void starting() override;
+    void starting() override;
 
     /// Stops the timer, unregister the DICOM reader and destroy the created widgets.
-    MODULE_IO_DICOMWEB_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing.
-    MODULE_IO_DICOMWEB_API void updating() override;
+    void updating() override;
 
 private:
 

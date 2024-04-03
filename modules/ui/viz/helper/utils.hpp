@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/viz/config.hpp"
-
 #include <OGRE/OgreColourValue.h>
 
 #include <QColor>
@@ -31,7 +29,7 @@
 namespace sight::module::ui::viz::helper
 {
 
-class MODULE_UI_VIZ_CLASS_API utils
+class utils
 {
 public:
 

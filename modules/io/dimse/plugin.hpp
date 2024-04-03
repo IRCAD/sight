@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/io/dimse/config.hpp"
+#include "sight/modules/io/dimse/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -30,16 +30,16 @@ namespace sight::module::io::dimse
 {
 
 /// This class is started when the bundle is loaded.
-struct MODULE_IO_DIMSE_CLASS_API plugin : public core::runtime::plugin
+struct SIGHT_MODULE_IO_DIMSE_CLASS_API plugin : public core::runtime::plugin
 {
     /// Destroys the plugin.
-    MODULE_IO_DIMSE_API ~plugin() noexcept override;
+    SIGHT_MODULE_IO_DIMSE_API ~plugin() noexcept override;
 
     /// Starts the plugin, does nothing here.
-    MODULE_IO_DIMSE_API void start() override;
+    SIGHT_MODULE_IO_DIMSE_API void start() override;
 
     /// Stops the plugin, does nothing here.
-    MODULE_IO_DIMSE_API void stop() noexcept override;
+    SIGHT_MODULE_IO_DIMSE_API void stop() noexcept override;
 };
 
 } // namespace sight::module::io::dimse.

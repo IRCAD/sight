@@ -22,8 +22,9 @@
 
 #pragma once
 
+#include <sight/ui/__/config.hpp>
+
 #include "ui/__/action_callback_base.hpp"
-#include "ui/__/config.hpp"
 #include "ui/__/container/menu.hpp"
 #include "ui/__/container/menu_item.hpp"
 #include "ui/__/container/toolbar.hpp"

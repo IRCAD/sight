@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <activity/extension/activity.hpp>
 
@@ -70,18 +68,18 @@ namespace sight::module::ui::qt::activity
  * @subsection Configuration Configuration
  * - \b border (optional, default="-1"): contents margins of the layout.
  */
-class MODULE_UI_QT_CLASS_API view : public sight::ui::activity_view
+class view : public sight::ui::activity_view
 {
 public:
 
     SIGHT_DECLARE_SERVICE(view, sight::ui::activity_view);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API view();
+    view();
 
     /// Destructor. Do nothing.
 
-    MODULE_UI_QT_API ~view() override;
+    ~view() override;
 
     /**
      * @name Signal API

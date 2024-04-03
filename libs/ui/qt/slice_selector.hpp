@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "ui/qt/config.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <boost/function.hpp>
 
@@ -46,7 +46,7 @@ namespace sight::ui::qt
  * @brief A Qt panel used to control a VTK 2D Negatoscope view.
  *
  */
-class UI_QT_CLASS_API_QT slice_selector : public QWidget
+class SIGHT_UI_QT_CLASS_API_QT slice_selector : public QWidget
 {
 Q_OBJECT
 
@@ -56,7 +56,7 @@ public:
      * @brief Constructor.
      * @param _parent The parent widget.
      */
-    UI_QT_API_QT slice_selector(
+    SIGHT_UI_QT_API_QT slice_selector(
         bool _display_axis_selector,
         bool _display_step_buttons,
         std::uint8_t _index_digits = 1,
@@ -64,23 +64,23 @@ public:
     ) noexcept;
 
     /// @brief Destructor.
-    UI_QT_API_QT ~slice_selector() noexcept override;
+    SIGHT_UI_QT_API_QT ~slice_selector() noexcept override;
 
-    UI_QT_API_QT void set_index_digits(std::uint8_t _index_digits);
+    SIGHT_UI_QT_API_QT void set_index_digits(std::uint8_t _index_digits);
 
-    UI_QT_API_QT void set_slice_range(int _min, int _max);
+    SIGHT_UI_QT_API_QT void set_slice_range(int _min, int _max);
 
-    UI_QT_API_QT void set_slice_value(int _index);
+    SIGHT_UI_QT_API_QT void set_slice_value(int _index);
 
-    UI_QT_API_QT void set_type_selection(int _type);
+    SIGHT_UI_QT_API_QT void set_type_selection(int _type);
 
-    UI_QT_API_QT void set_enable(bool _enable);
+    SIGHT_UI_QT_API_QT void set_enable(bool _enable);
 
     using ChangeIndexCallback = std::function<void (int)>;
-    UI_QT_API_QT void set_change_index_callback(ChangeIndexCallback _fct);
+    SIGHT_UI_QT_API_QT void set_change_index_callback(ChangeIndexCallback _fct);
 
     using ChangeTypeCallback = std::function<void (int)>;
-    UI_QT_API_QT void set_change_type_callback(ChangeTypeCallback _fct);
+    SIGHT_UI_QT_API_QT void set_change_type_callback(ChangeTypeCallback _fct);
 
 protected Q_SLOTS:
 
@@ -88,13 +88,13 @@ protected Q_SLOTS:
      * @brief Event handler for a slice type change.
      * @param _index index of the selected type item.
      */
-    UI_QT_API_QT void on_slice_type_change(int _index);
+    SIGHT_UI_QT_API_QT void on_slice_type_change(int _index);
 
     /**
      * @brief Event handler for a slice index change.
      * @param _value current value of the slice index slider.
      */
-    UI_QT_API_QT void on_slice_index_change(int _value) noexcept;
+    SIGHT_UI_QT_API_QT void on_slice_index_change(int _value) noexcept;
 
 private:
 

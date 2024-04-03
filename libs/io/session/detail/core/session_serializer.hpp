@@ -21,7 +21,8 @@
 
 #pragma once
 
-#include "io/session/config.hpp"
+#include <sight/io/session/config.hpp>
+
 #include "io/session/detail/session.hpp"
 #include "io/session/session_writer.hpp"
 

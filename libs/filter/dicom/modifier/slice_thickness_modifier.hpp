@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/dicom/config.hpp"
+#include <sight/filter/dicom/config.hpp>
+
 #include "filter/dicom/modifier/base.hpp"
 
 #include <data/dicom_series.hpp>
@@ -34,26 +35,26 @@ namespace sight::filter::dicom::modifier
  * @brief filter that uses the ImagepositionPatient tag to sort the instances.
  * The position increases along the direction given by cross product of the ImageOrientationPatient vectors.
  */
-class FILTER_DICOM_CLASS_API slice_thickness_modifier : public base
+class SIGHT_FILTER_DICOM_CLASS_API slice_thickness_modifier : public base
 {
 public:
 
     SIGHT_DECLARE_CLASS(slice_thickness_modifier, base, sight::filter::dicom::factory::make<slice_thickness_modifier>);
 
     /// Destructor
-    FILTER_DICOM_API ~slice_thickness_modifier() override = default;
+    SIGHT_FILTER_DICOM_API ~slice_thickness_modifier() override = default;
 
     /// Override
-    FILTER_DICOM_API dicom_series_container_t apply(
+    SIGHT_FILTER_DICOM_API dicom_series_container_t apply(
         const data::dicom_series::sptr& _series,
         const core::log::logger::sptr& _logger
     ) const override;
 
     /// Return the name of the filter
-    FILTER_DICOM_API std::string get_name() const override;
+    SIGHT_FILTER_DICOM_API std::string get_name() const override;
 
     /// Return the description of the filter
-    FILTER_DICOM_API std::string get_description() const override;
+    SIGHT_FILTER_DICOM_API std::string get_description() const override;
 
 protected:
 
@@ -62,13 +63,15 @@ protected:
      *  tags.
      *  @param[in] _buffer_obj BufferObject containing the slice
      */
-    FILTER_DICOM_API virtual double get_instance_z_position(const core::memory::buffer_object::sptr& _buffer_obj) const;
+    SIGHT_FILTER_DICOM_API virtual double get_instance_z_position(const core::memory::buffer_object::sptr& _buffer_obj)
+    const;
 
     /**
      * @brief Get the SliceThickness value from an instance.
      *  @param[in] _buffer_obj BufferObject containing the slice
      */
-    FILTER_DICOM_API virtual double get_slice_thickness(const core::memory::buffer_object::sptr& _buffer_obj) const;
+    SIGHT_FILTER_DICOM_API virtual double get_slice_thickness(const core::memory::buffer_object::sptr& _buffer_obj)
+    const;
 
     /// filter name
     static const std::string FILTER_NAME;

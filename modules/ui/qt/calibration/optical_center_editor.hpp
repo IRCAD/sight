@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <data/camera.hpp>
 #include <data/matrix4.hpp>
@@ -61,8 +59,8 @@ namespace sight::module::ui::qt::calibration
    0   0   0   0
    0   0   0   0
  */
-class MODULE_UI_QT_CLASS_API optical_center_editor : public QObject,
-                                                     public sight::ui::editor
+class optical_center_editor : public QObject,
+                              public sight::ui::editor
 {
 Q_OBJECT
 
@@ -71,27 +69,27 @@ public:
     SIGHT_DECLARE_SERVICE(optical_center_editor, sight::ui::editor);
 
     /// Constructor.
-    MODULE_UI_QT_API optical_center_editor() noexcept;
+    optical_center_editor() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_QT_API ~optical_center_editor() noexcept override;
+    ~optical_center_editor() noexcept override;
 
 protected:
 
     /// Does nothing
-    MODULE_UI_QT_API void configuring() override;
+    void configuring() override;
 
     /// Create UI.
-    MODULE_UI_QT_API void starting() override;
+    void starting() override;
 
     /// Destroy UI.
-    MODULE_UI_QT_API void stopping() override;
+    void stopping() override;
 
     /// Does nothing.
-    MODULE_UI_QT_API void updating() override;
+    void updating() override;
 
     /// Defines the connection between camera and matrix and this editor
-    MODULE_UI_QT_API connections_t auto_connections() const override;
+    connections_t auto_connections() const override;
 
 private Q_SLOTS:
 

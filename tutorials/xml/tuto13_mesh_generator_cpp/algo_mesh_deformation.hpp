@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "tuto13_mesh_generator_cpp/config.hpp"
+#include <sight/tuto13_mesh_generator_cpp/config.hpp>
 
 #include <core/tools/failed.hpp>
 
@@ -32,18 +32,18 @@
 namespace tuto13_mesh_generator_cpp
 {
 
-class TUTO13_MESH_GENERATOR_CPP_CLASS_API algo_mesh_deformation final
+class SIGHT_TUTO13_MESH_GENERATOR_CPP_CLASS_API algo_mesh_deformation final
 {
 public:
 
     /// Creates an instance.
-    TUTO13_MESH_GENERATOR_CPP_API algo_mesh_deformation() noexcept;
+    SIGHT_TUTO13_MESH_GENERATOR_CPP_API algo_mesh_deformation() noexcept;
 
     /// Destroys the instance.
-    TUTO13_MESH_GENERATOR_CPP_API ~algo_mesh_deformation() noexcept;
+    SIGHT_TUTO13_MESH_GENERATOR_CPP_API ~algo_mesh_deformation() noexcept;
 
     /// Computes the deformation or sets and initializes the algorithm if necessary.
-    TUTO13_MESH_GENERATOR_CPP_API void compute_deformation(
+    SIGHT_TUTO13_MESH_GENERATOR_CPP_API void compute_deformation(
         sight::data::mesh::sptr _mesh,
         unsigned int _nb_step,
         unsigned int _amplitude

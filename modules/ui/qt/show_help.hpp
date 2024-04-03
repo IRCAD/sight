@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
 #include <ui/__/action.hpp>
 
 #include <filesystem>
@@ -34,14 +32,14 @@ namespace sight::module::ui::qt
 /**
  * @brief   This action show the help contents.
  */
-class MODULE_UI_QT_CLASS_API show_help : public sight::ui::action
+class show_help : public sight::ui::action
 {
 public:
 
     SIGHT_DECLARE_SERVICE(show_help, sight::ui::action);
 
-    MODULE_UI_QT_API show_help() noexcept           = default;
-    MODULE_UI_QT_API ~show_help() noexcept override = default;
+    show_help() noexcept           = default;
+    ~show_help() noexcept override = default;
 
 protected:
 
@@ -67,7 +65,7 @@ protected:
     /// Stops action
     void stopping() override;
 
-    MODULE_UI_QT_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
 private:
 

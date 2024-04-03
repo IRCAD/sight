@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "geometry/vision/config.hpp"
+#include <sight/geometry/vision/config.hpp>
 
 #ifdef WIN32
 // Needed for Ceres with C++20
@@ -41,7 +41,7 @@ namespace sight::geometry::vision::detail
  * this class is used as functor in a ::ceres::Problem.
  * @see http://ceres-solver.org/nnls_tutorial.html#hello-world
  */
-class GEOMETRY_VISION_CLASS_API reprojection_error
+class SIGHT_GEOMETRY_VISION_CLASS_API reprojection_error
 {
 public:
 
@@ -53,7 +53,7 @@ public:
      * @param _object_points: the corresponding 3d point
      * @param _extrinsic    extrinsic matrix
      */
-    GEOMETRY_VISION_API reprojection_error(
+    SIGHT_GEOMETRY_VISION_API reprojection_error(
         cv::Mat _camera_mat,
         cv::Mat _dist_coef,
         cv::Point2f _image_points,
@@ -81,7 +81,7 @@ public:
      * @return a pointer to a ::ceres::CostFunction
      */
 
-    GEOMETRY_VISION_API static ::ceres::CostFunction* create(
+    SIGHT_GEOMETRY_VISION_API static ::ceres::CostFunction* create(
         const cv::Mat& _camera_matrix,
         const cv::Mat& _dist_coef,
         const cv::Point2f& _image_points,

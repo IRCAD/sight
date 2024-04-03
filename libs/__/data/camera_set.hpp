@@ -31,8 +31,8 @@ namespace sight::data
 {
 
 /// This class is Camera container
-class DATA_CLASS_API camera_set final : public data::container<std::vector<std::pair<std::shared_ptr<camera>,
-                                                                                     std::shared_ptr<matrix4> > > >
+class SIGHT_DATA_CLASS_API camera_set final : public data::container<std::vector<std::pair<std::shared_ptr<camera>,
+                                                                                           std::shared_ptr<matrix4> > > >
 {
 public:
 
@@ -40,8 +40,8 @@ public:
 
     /// Constructors / Destructor / Assignment operators
     /// @{
-    DATA_API camera_set();
-    DATA_API ~camera_set() noexcept override = default;
+    SIGHT_DATA_API camera_set();
+    SIGHT_DATA_API ~camera_set() noexcept override = default;
 
     /// This will enable common collection constructors / assignment operators
     using container<camera_set::container_t>::container;
@@ -50,47 +50,47 @@ public:
 
     /// Equality comparison operators
     /// @{
-    DATA_API bool operator==(const camera_set& _other) const noexcept;
-    DATA_API bool operator!=(const camera_set& _other) const noexcept;
+    SIGHT_DATA_API bool operator==(const camera_set& _other) const noexcept;
+    SIGHT_DATA_API bool operator!=(const camera_set& _other) const noexcept;
     /// @}
 
     /// Signals
     /// @{
     using added_camera_signal_t = core::com::signal<void (camera::sptr)>;
-    DATA_API inline static const core::com::signals::key_t ADDED_CAMERA_SIG = "added_camera";
+    SIGHT_DATA_API inline static const core::com::signals::key_t ADDED_CAMERA_SIG = "added_camera";
 
     using removed_camera_signal_t = core::com::signal<void (camera::sptr)>;
-    DATA_API inline static const core::com::signals::key_t REMOVED_CAMERA_SIG = "removedCamera";
+    SIGHT_DATA_API inline static const core::com::signals::key_t REMOVED_CAMERA_SIG = "removedCamera";
 
     using extrinsic_calibrated_signal_t = core::com::signal<void ()>;
-    DATA_API inline static const core::com::signals::key_t EXTRINSIC_CALIBRATED_SIG = "extrinsicCalibrated";
+    SIGHT_DATA_API inline static const core::com::signals::key_t EXTRINSIC_CALIBRATED_SIG = "extrinsicCalibrated";
     /// @}
 
     /// Adds a camera
     /// @throws core::exception if the camera is already present.
     /// @param[in] _camera the camera to add
-    DATA_API void add_camera(camera::sptr _camera);
+    SIGHT_DATA_API void add_camera(camera::sptr _camera);
 
     /// Returns the camera at the index.
     /// @throws std::out_of_range if the index is out of range
     /// @param[in] _index the index of the camera to return
     /// @return the camera at the index
     /// @{
-    DATA_API camera::csptr get_camera(std::size_t _index) const;
-    DATA_API camera::sptr get_camera(std::size_t _index);
+    SIGHT_DATA_API camera::csptr get_camera(std::size_t _index) const;
+    SIGHT_DATA_API camera::sptr get_camera(std::size_t _index);
     /// @}
 
     /// Remove the given camera
     /// @throws core::exception if the camera is not found
     /// @param[in] _camera the camera to remove
-    DATA_API void remove_camera(camera::sptr _camera);
+    SIGHT_DATA_API void remove_camera(camera::sptr _camera);
 
     /// Sets the extrinsic matrix.
     /// @throws std::out_of_range if the index is out of range
     /// @param[in] _index index of the camera associated to this extrinsic matrix. The matrix correspond to the
     ///                   transformation from camera[0] to camera[index].
     /// @param[in] _matrix the extrinsic matrix
-    DATA_API void set_extrinsic_matrix(std::size_t _index, matrix4::sptr _matrix);
+    SIGHT_DATA_API void set_extrinsic_matrix(std::size_t _index, matrix4::sptr _matrix);
 
     /// Gets the extrinsic matrix.
     /// @throws std::out_of_range if the index is out of range
@@ -100,20 +100,20 @@ public:
     ///
     /// @note By default, the first matrix (index=0) is initialized to identity, the other are nullptr.
     /// @{
-    DATA_API matrix4::csptr get_extrinsic_matrix(std::size_t _index) const;
-    DATA_API matrix4::sptr get_extrinsic_matrix(std::size_t _index);
+    SIGHT_DATA_API matrix4::csptr get_extrinsic_matrix(std::size_t _index) const;
+    SIGHT_DATA_API matrix4::sptr get_extrinsic_matrix(std::size_t _index);
     /// @}
 
     /// Defines shallow copy
     /// @throws data::exception if an errors occurs during copy
     /// @param[in] _source the source object to copy
-    DATA_API void shallow_copy(const object::csptr& _source) override;
+    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
 
     /// Defines deep copy
     /// @throws data::exception if an errors occurs during copy
     /// @param _source source object to copy
     /// @param _cache  cache used to deduplicate pointers
-    DATA_API void deep_copy(
+    SIGHT_DATA_API void deep_copy(
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;

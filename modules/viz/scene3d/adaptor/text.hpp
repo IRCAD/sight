@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/config.hpp"
-
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/text.hpp>
 
@@ -72,7 +70,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b x (optional, float, default=0.): horizontal coordinate relatively to the screen.
  * - \b y (optional, float, default=0.): vertical coordinate relatively to the screen.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API text final : public sight::viz::scene3d::adaptor
+class text final : public sight::viz::scene3d::adaptor
 {
 public:
 
@@ -80,18 +78,18 @@ public:
     SIGHT_DECLARE_SERVICE(text, sight::viz::scene3d::adaptor);
 
     /// Creates the adaptor.
-    MODULE_VIZ_SCENE3D_API text() noexcept;
+    text() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~text() noexcept final = default;
+    ~text() noexcept final = default;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring() final;
+    void configuring() final;
 
     /// Creates the text object and adds it to the scene.
-    MODULE_VIZ_SCENE3D_API void starting() final;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -99,13 +97,13 @@ protected:
      *
      * Connect data::object::s_OBJECT_INPUT of s_POINTLIST_INPUT to service::slots::UPDATE
      */
-    MODULE_VIZ_SCENE3D_API connections_t auto_connections() const final;
+    connections_t auto_connections() const final;
 
     /// Updates the displayed text from the input object.
-    MODULE_VIZ_SCENE3D_API void updating() final;
+    void updating() final;
 
     /// Removes the text from the ogre scene and deletes it.
-    MODULE_VIZ_SCENE3D_API void stopping() final;
+    void stopping() final;
 
 private:
 

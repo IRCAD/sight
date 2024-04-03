@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
+
 #include "core/memory/policy/registry/detail.hpp"
 
 #include <string>
@@ -33,7 +34,7 @@ namespace sight::core::memory::policy::factory
 template<class CLASSNAME>
 SPTR(CLASSNAME)  create();
 
-CORE_API SPTR(core::memory::policy::base) create(const core::memory::policy::registry::key_t& _classname);
+SIGHT_CORE_API SPTR(core::memory::policy::base) create(const core::memory::policy::registry::key_t& _classname);
 
 template<class CLASSNAME>
 SPTR(CLASSNAME)  create()

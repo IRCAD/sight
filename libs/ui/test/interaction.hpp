@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "ui/test/config.hpp"
+#include <sight/ui/test/config.hpp>
 
 #include <QPoint>
 #include <QWidget>
@@ -33,7 +33,7 @@ namespace sight::ui::test
 {
 
 /// Represents a user interaction on the interace, such as a mouse click, keyboard tap...
-class UI_TEST_CLASS_API interaction
+class SIGHT_UI_TEST_CLASS_API interaction
 {
 public:
 
@@ -51,11 +51,11 @@ public:
 };
 
 /// Represents a mouse click.
-class UI_TEST_CLASS_API mouse_click : public interaction
+class SIGHT_UI_TEST_CLASS_API mouse_click : public interaction
 {
 public:
 
-    UI_TEST_API mouse_click(
+    SIGHT_UI_TEST_API mouse_click(
         Qt::MouseButton _button          = Qt::MouseButton::LeftButton,
         Qt::KeyboardModifiers _modifiers = Qt::NoModifier,
         const QPoint& _pos               = QPoint()
@@ -77,11 +77,11 @@ private:
 };
 
 /// Represents a mouse double click.
-class UI_TEST_CLASS_API mouse_double_click : public interaction
+class SIGHT_UI_TEST_CLASS_API mouse_double_click : public interaction
 {
 public:
 
-    UI_TEST_API mouse_double_click(
+    SIGHT_UI_TEST_API mouse_double_click(
         Qt::MouseButton _button          = Qt::MouseButton::LeftButton,
         Qt::KeyboardModifiers _modifiers = Qt::NoModifier,
         const QPoint& _pos               = QPoint()
@@ -103,11 +103,11 @@ private:
 };
 
 /// Represents a dragging of the mouse over a component.
-class UI_TEST_CLASS_API mouse_drag : public interaction
+class SIGHT_UI_TEST_CLASS_API mouse_drag : public interaction
 {
 public:
 
-    UI_TEST_API mouse_drag(
+    SIGHT_UI_TEST_API mouse_drag(
         const QPoint& _from,
         const QPoint& _to,
         Qt::MouseButton _button          = Qt::MouseButton::LeftButton,
@@ -131,7 +131,7 @@ private:
 };
 
 /// Represents the use of the mouse wheel over a component.
-class UI_TEST_CLASS_API mouse_wheel : public interaction
+class SIGHT_UI_TEST_CLASS_API mouse_wheel : public interaction
 {
 public:
 
@@ -148,7 +148,7 @@ public:
      * @param _modifiers the keyboard modifier to be held when the mouse wheel is used
      * @param _position the position of the widget where the mouse wheel is to be rotated
      */
-    UI_TEST_API mouse_wheel(
+    SIGHT_UI_TEST_API mouse_wheel(
         const QPoint& _angle_delta,
         Qt::KeyboardModifiers _modifiers = Qt::NoModifier,
         const QPoint& _position          = QPoint()
@@ -170,11 +170,11 @@ private:
 };
 
 /// Represents the typing of a sequence of printable caracters.
-class UI_TEST_CLASS_API keyboard_sequence : public interaction
+class SIGHT_UI_TEST_CLASS_API keyboard_sequence : public interaction
 {
 public:
 
-    UI_TEST_API keyboard_sequence(std::string _text, Qt::KeyboardModifiers _modifiers = Qt::NoModifier);
+    SIGHT_UI_TEST_API keyboard_sequence(std::string _text, Qt::KeyboardModifiers _modifiers = Qt::NoModifier);
 
     void interact_with(QWidget* _widget) const override;
     void interact_with(QWindow* _window) const override;
@@ -190,11 +190,11 @@ private:
 };
 
 /// Represents a key tap.
-class UI_TEST_CLASS_API keyboard_click : public interaction
+class SIGHT_UI_TEST_CLASS_API keyboard_click : public interaction
 {
 public:
 
-    UI_TEST_API keyboard_click(Qt::Key _key, Qt::KeyboardModifiers _modifiers = Qt::NoModifier);
+    SIGHT_UI_TEST_API keyboard_click(Qt::Key _key, Qt::KeyboardModifiers _modifiers = Qt::NoModifier);
 
     void interact_with(QWidget* _widget) const override;
     void interact_with(QWindow* _window) const override;
@@ -210,7 +210,7 @@ private:
 };
 
 /// Represents a pinch gesture with two fingers on a component.
-class UI_TEST_CLASS_API pinch_gesture : public interaction
+class SIGHT_UI_TEST_CLASS_API pinch_gesture : public interaction
 {
 public:
 
@@ -218,7 +218,7 @@ public:
      * @param _first_finger_pos the starting position and ending position of the first finger
      * @param _second_finger_pos the starting position and ending position of the second finger
      */
-    UI_TEST_API pinch_gesture(
+    SIGHT_UI_TEST_API pinch_gesture(
         std::pair<QPoint, QPoint> _first_finger_pos,
         std::pair<QPoint, QPoint> _second_finger_pos
     );

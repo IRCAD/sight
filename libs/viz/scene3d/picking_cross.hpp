@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
 #include <OGRE/OgreManualObject.h>
 
@@ -42,7 +42,7 @@ namespace sight::viz::scene3d
 /**
  * @brief Cross displayed on top of negatoscope planes. It is made of two line segments, normally perpendicular.
  */
-class VIZ_SCENE3D_CLASS_API picking_cross
+class SIGHT_VIZ_SCENE3D_CLASS_API picking_cross
 {
 public:
 
@@ -55,17 +55,17 @@ public:
      * @param _scene_manager the Ogre scene manager.
      * @param _parent parent node where attach the plane.
      */
-    VIZ_SCENE3D_API picking_cross(
+    SIGHT_VIZ_SCENE3D_API picking_cross(
         const std::string& _name,
         Ogre::SceneManager& _scene_manager,
         Ogre::SceneNode& _parent
     );
 
     /// Cleans ogre resources.
-    VIZ_SCENE3D_API ~picking_cross();
+    SIGHT_VIZ_SCENE3D_API ~picking_cross();
 
     /// Update the coordinates of the cross. The first segment 1 is defined by [a;b] and the second segment by [c;d].
-    VIZ_SCENE3D_API void update(
+    SIGHT_VIZ_SCENE3D_API void update(
         const Ogre::Vector3& _a,
         const Ogre::Vector3& _b,
         const Ogre::Vector3& _c,

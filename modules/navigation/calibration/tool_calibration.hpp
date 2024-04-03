@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/navigation/calibration/config.hpp"
 
 #include <data/matrix4.hpp>
 #include <data/vector.hpp>
@@ -54,7 +52,7 @@ namespace sight::module::navigation::calibration
  * is moved
  *
  */
-class MODULE_NAVIGATION_CALIBRATION_CLASS_API tool_calibration : public service::registerer
+class tool_calibration : public service::registerer
 {
 public:
 
@@ -63,29 +61,29 @@ public:
     /**
      * @brief Constructor.
      */
-    MODULE_NAVIGATION_CALIBRATION_API tool_calibration() noexcept;
+    tool_calibration() noexcept;
 
     /**
      * @brief Destructor.
      */
-    MODULE_NAVIGATION_CALIBRATION_API ~tool_calibration() noexcept override;
+    ~tool_calibration() noexcept override;
 
 protected:
 
     /// Configures the service
-    MODULE_NAVIGATION_CALIBRATION_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_NAVIGATION_CALIBRATION_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_NAVIGATION_CALIBRATION_API void updating() override;
+    void updating() override;
 
     /// Does nothing
-    MODULE_NAVIGATION_CALIBRATION_API void stopping() override;
+    void stopping() override;
 
     /// Registers matrix slot
-    MODULE_NAVIGATION_CALIBRATION_API void compute_registration(core::clock::type _timestamp)
+    void compute_registration(core::clock::type _timestamp)
     override;
 
 private:

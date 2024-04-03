@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/qt/config.hpp"
 
 #include <core/tools/failed.hpp>
 
@@ -58,8 +56,8 @@ namespace sight::module::ui::qt::metrics
  * @subsection In-Out In-Out
  * -\b image [data::image]: image in which we calculate the distance.
  */
-class MODULE_UI_QT_CLASS_API distance : public QObject,
-                                        public sight::ui::editor
+class distance : public QObject,
+                 public sight::ui::editor
 {
 Q_OBJECT
 
@@ -68,16 +66,16 @@ public:
     SIGHT_DECLARE_SERVICE(distance, sight::ui::editor);
 
     /// Constructor. Do nothing.
-    MODULE_UI_QT_API distance() noexcept;
+    distance() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~distance() noexcept override;
+    ~distance() noexcept override;
 
     /**
      * @name Signal
      * @{
      */
-    MODULE_UI_QT_API static const core::com::signals::key_t DISTANCE_REQUESTED_SIG;
+    static const core::com::signals::key_t DISTANCE_REQUESTED_SIG;
     using distance_requested_signal_t = core::com::signal<void ()>;
 /**
  * @}

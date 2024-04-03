@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/document/config.hpp"
-
 #include <data/image.hpp>
 
 #include <io/__/service/writer.hpp>
@@ -64,7 +62,7 @@ namespace sight::module::io::document
  * - \b container(optional) : Defines the SID or the WID of the container to write.
  */
 
-class MODULE_IO_DOCUMENT_CLASS_API pdf_writer : public sight::io::service::writer
+class pdf_writer : public sight::io::service::writer
 {
 public:
 
@@ -79,12 +77,12 @@ public:
     /**
      * @brief Constructor : does nothing
      */
-    MODULE_IO_DOCUMENT_API pdf_writer() = default;
+    pdf_writer() = default;
 
     /**
      * @brief Destructor
      */
-    MODULE_IO_DOCUMENT_API ~pdf_writer() noexcept override = default;
+    ~pdf_writer() noexcept override = default;
 
 protected:
 
@@ -98,14 +96,14 @@ protected:
      *
      * This method is used to initialize the service.
      */
-    MODULE_IO_DOCUMENT_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Stopping method : default does nothing.
      *
      * The stopping method is empty for this service.
      */
-    MODULE_IO_DOCUMENT_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Configure service. This method is called by configure() from base service ( service::base )
@@ -113,7 +111,7 @@ protected:
      * Gets the images or containers from their IDs.
      *
      */
-    MODULE_IO_DOCUMENT_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Configure the image path.
@@ -121,7 +119,7 @@ protected:
      * This method is used to set the file path of the PDF to write.
      *
      */
-    MODULE_IO_DOCUMENT_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
     /**
      * @brief Updating method. Creates a new PDF.
@@ -129,7 +127,7 @@ protected:
      * Loops over the containers list and the images list. Creates a new A4 page for each,
      * converts the containers and the images to QImage and writes them into the newly created PDF.
      */
-    MODULE_IO_DOCUMENT_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Info method.
@@ -139,11 +137,11 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    MODULE_IO_DOCUMENT_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
     /// @}
 
     /// Returns managed path type, here service manages only single file
-    MODULE_IO_DOCUMENT_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
 private:
 

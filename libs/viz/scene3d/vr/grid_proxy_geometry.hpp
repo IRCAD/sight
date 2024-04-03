@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
+
 #include "viz/scene3d/factory/r2vb_renderable.hpp"
 #include "viz/scene3d/r2vb_renderable.hpp"
 #include "viz/scene3d/texture.hpp"
@@ -55,13 +56,13 @@ namespace sight::viz::scene3d::vr
  * This is all done on the GPU using shaders and R2VB making it quite efficient.
  * The geometry needs to be recomputed when the TF changes or when the whole image changes.
  */
-class VIZ_SCENE3D_CLASS_API grid_proxy_geometry : public r2vb_renderable
+class SIGHT_VIZ_SCENE3D_CLASS_API grid_proxy_geometry : public r2vb_renderable
 {
 public:
 
     /// Creates an instance of the objetc.
     //As the object must be created through Ogre::...::createMovableObject, the constructor cannot be called directly
-    static VIZ_SCENE3D_API grid_proxy_geometry* make(
+    static SIGHT_VIZ_SCENE3D_API grid_proxy_geometry* make(
         const std::string& _name,
         Ogre::SceneManager* _scene_manager,
         const viz::scene3d::texture::sptr& _3d_image_texture,
@@ -74,26 +75,26 @@ public:
     grid_proxy_geometry(const Ogre::String& _name);
 
     /// Destructor, frees resources if they have been allocated.
-    VIZ_SCENE3D_API ~grid_proxy_geometry() override;
+    SIGHT_VIZ_SCENE3D_API ~grid_proxy_geometry() override;
 
     /// Function to be called when the volume changed and its size too. Recomputes texture and geometry.
-    VIZ_SCENE3D_API void update_grid_size();
+    SIGHT_VIZ_SCENE3D_API void update_grid_size();
 
     /// Fills the grid texture and uses it to compute the grid geometry.
-    VIZ_SCENE3D_API void compute_grid();
+    SIGHT_VIZ_SCENE3D_API void compute_grid();
 
     /// Clip the proxy geometry. Recomputes the geometry.
     /// @pre Clipping box coordinates must be clamped to the volume boundaries.
-    VIZ_SCENE3D_API void clip_grid(const Ogre::AxisAlignedBox& _clipping_box);
+    SIGHT_VIZ_SCENE3D_API void clip_grid(const Ogre::AxisAlignedBox& _clipping_box);
 
     /// Get the object's type as a string.
-    VIZ_SCENE3D_API const Ogre::String& getMovableType() const override;
+    SIGHT_VIZ_SCENE3D_API const Ogre::String& getMovableType() const override;
 
     /// Sets the texture for which the grid is computed. Doesn't recompute the grid.
-    VIZ_SCENE3D_API void set_3d_image_texture(const viz::scene3d::texture::sptr& _texture);
+    SIGHT_VIZ_SCENE3D_API void set_3d_image_texture(const viz::scene3d::texture::sptr& _texture);
 
     /// Sets the mask texture for which the grid is computed. Doesn't recompute the grid.
-    VIZ_SCENE3D_API void set_mask_texture(const viz::scene3d::texture::sptr& _texture);
+    SIGHT_VIZ_SCENE3D_API void set_mask_texture(const viz::scene3d::texture::sptr& _texture);
 
 private:
 
@@ -158,18 +159,18 @@ class grid_proxy_geometry_factory : public viz::scene3d::factory::r2vb_renderabl
 public:
 
     /// Constructor, does nothing.
-    VIZ_SCENE3D_API grid_proxy_geometry_factory()
+    SIGHT_VIZ_SCENE3D_API grid_proxy_geometry_factory()
     = default;
 
     /// Destructor, does nothing.
-    VIZ_SCENE3D_API ~grid_proxy_geometry_factory() override
+    SIGHT_VIZ_SCENE3D_API ~grid_proxy_geometry_factory() override
     = default;
 
     /// Produced object type name. (i.e. "grid_proxy_geometry")
-    VIZ_SCENE3D_API static inline const Ogre::String FACTORY_TYPE_NAME = "grid_proxy_geometry";
+    SIGHT_VIZ_SCENE3D_API static inline const Ogre::String FACTORY_TYPE_NAME = "grid_proxy_geometry";
 
     /// Returns the object type name.
-    [[nodiscard]] VIZ_SCENE3D_API const Ogre::String& getType() const override
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API const Ogre::String& getType() const override
     {
         return grid_proxy_geometry_factory::FACTORY_TYPE_NAME;
     }
@@ -177,7 +178,7 @@ public:
 #if OGRE_VERSION_PATCH < 9
     //------------------------------------------------------------------------------
 
-    VIZ_SCENE3D_API void destroyInstance(Ogre::MovableObject* obj) override
+    SIGHT_VIZ_SCENE3D_API void destroyInstance(Ogre::MovableObject* obj) override
     {
         delete obj;
     }
@@ -188,7 +189,7 @@ protected:
     //------------------------------------------------------------------------------
 
     /// Produces a "GridGeometryObject" object.
-    VIZ_SCENE3D_API Ogre::MovableObject* createInstanceImpl(
+    SIGHT_VIZ_SCENE3D_API Ogre::MovableObject* createInstanceImpl(
         const Ogre::String& _name,
         const Ogre::NameValuePairList*
         /*params*/

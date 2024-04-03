@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/filter/vision/config.hpp"
 
 #include <data/image.hpp>
 
@@ -68,17 +66,17 @@ namespace sight::module::filter::vision
  * - \b foregroundImage [sight::data::image] : image containing the foreground pixels and background pixels are
  * transparent.
  */
-class MODULE_FILTER_VISION_CLASS_API depth_image_masking : public service::filter
+class depth_image_masking : public service::filter
 {
 public:
 
     SIGHT_DECLARE_SERVICE(depth_image_masking, service::filter);
 
     /// Initializes slots
-    MODULE_FILTER_VISION_CLASS_API depth_image_masking() noexcept;
+    depth_image_masking() noexcept;
 
     /// Does nothing
-    MODULE_FILTER_VISION_CLASS_API ~depth_image_masking() noexcept override;
+    ~depth_image_masking() noexcept override;
 
     /// Defines auto connection for this service (update slot) to the depth image (objectModified)
     service::connections_t auto_connections() const override;
@@ -86,16 +84,16 @@ public:
 protected:
 
     /// Does nothing
-    MODULE_FILTER_VISION_CLASS_API void configuring() override;
+    void configuring() override;
 
     /// Does nothing
-    MODULE_FILTER_VISION_CLASS_API void starting() override;
+    void starting() override;
 
     /// Does nothing
-    MODULE_FILTER_VISION_CLASS_API void stopping() override;
+    void stopping() override;
 
     /// Performs difference on depth images and fills foreground image
-    MODULE_FILTER_VISION_CLASS_API void updating() override;
+    void updating() override;
 
 private:
 

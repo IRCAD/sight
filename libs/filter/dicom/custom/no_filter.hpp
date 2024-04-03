@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "filter/dicom/config.hpp"
+#include <sight/filter/dicom/config.hpp>
+
 #include "filter/dicom/custom/base.hpp"
 
 #include <data/dicom_series.hpp>
@@ -33,26 +34,26 @@ namespace sight::filter::dicom::custom
 /**
  * @brief filter that doesn't apply any modification.
  */
-class FILTER_DICOM_CLASS_API no_filter : public base
+class SIGHT_FILTER_DICOM_CLASS_API no_filter : public base
 {
 public:
 
     SIGHT_DECLARE_CLASS(no_filter, base, sight::filter::dicom::factory::make<no_filter>);
 
-    FILTER_DICOM_API no_filter()           = default;
-    FILTER_DICOM_API ~no_filter() override = default;
+    SIGHT_FILTER_DICOM_API no_filter()           = default;
+    SIGHT_FILTER_DICOM_API ~no_filter() override = default;
 
     /// Override
-    FILTER_DICOM_API dicom_series_container_t apply(
+    SIGHT_FILTER_DICOM_API dicom_series_container_t apply(
         const data::dicom_series::sptr& _series,
         const core::log::logger::sptr& _logger
     ) const override;
 
     /// Return the name of the filter
-    FILTER_DICOM_API std::string get_name() const override;
+    SIGHT_FILTER_DICOM_API std::string get_name() const override;
 
     /// Return the description of the filter
-    FILTER_DICOM_API std::string get_description() const override;
+    SIGHT_FILTER_DICOM_API std::string get_description() const override;
 
 protected:
 

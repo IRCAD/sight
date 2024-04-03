@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "geometry/data/config.hpp"
+#include <sight/geometry/data/config.hpp>
+
 #include "geometry/data/types.hpp"
 
 #include <core/base.hpp>
@@ -37,7 +38,7 @@ namespace sight::geometry::data
  *  @param [out] _dest
  *
  */
-GEOMETRY_DATA_API void mult_vec_matrix(const fw_matrix4x4& _matrix, const fw_vec3d& _source, fw_vec3d& _dest);
+SIGHT_GEOMETRY_DATA_API void mult_vec_matrix(const fw_matrix4x4& _matrix, const fw_vec3d& _source, fw_vec3d& _dest);
 
 /**
  * @brief Compute a matrix rotation
@@ -46,7 +47,7 @@ GEOMETRY_DATA_API void mult_vec_matrix(const fw_matrix4x4& _matrix, const fw_vec
  *  @return rotation matrix
  *
  */
-GEOMETRY_DATA_API fw_matrix4x4 get_rotation_matrix(const fw_vec3d& _vec_norm);
+SIGHT_GEOMETRY_DATA_API fw_matrix4x4 get_rotation_matrix(const fw_vec3d& _vec_norm);
 
 /**
  * @brief Computes the inverse of a matrix
@@ -54,7 +55,7 @@ GEOMETRY_DATA_API fw_matrix4x4 get_rotation_matrix(const fw_vec3d& _vec_norm);
  *  @return inverted matrix
  *
  */
-GEOMETRY_DATA_API fw_matrix4x4 get_inverse(const fw_matrix4x4& _matrix);
+SIGHT_GEOMETRY_DATA_API fw_matrix4x4 get_inverse(const fw_matrix4x4& _matrix);
 
 } // namespace sight::geometry::data
 
@@ -65,4 +66,4 @@ GEOMETRY_DATA_API fw_matrix4x4 get_inverse(const fw_matrix4x4& _matrix);
  *  @return matrix
  *
  */
-GEOMETRY_DATA_API fw_matrix4x4 operator*(const fw_matrix4x4& _matrix1, const fw_matrix4x4& _matrix2);
+SIGHT_GEOMETRY_DATA_API fw_matrix4x4 operator*(const fw_matrix4x4& _matrix1, const fw_matrix4x4& _matrix2);

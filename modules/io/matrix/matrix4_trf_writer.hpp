@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/matrix/config.hpp"
 
 #include <io/__/service/writer.hpp>
 
@@ -46,7 +44,7 @@ namespace sight::module::io::matrix
  * @subsection Input Input
  * - \b data [sight::data::matrix4]: matrix to save.
  */
-class MODULE_IO_MATRIX_CLASS_API matrix4_trf_writer : public sight::io::service::writer
+class matrix4_trf_writer : public sight::io::service::writer
 {
 public:
 
@@ -65,10 +63,10 @@ public:
      * This method is used to find
      * the file path  using a file selector.
      */
-    MODULE_IO_MATRIX_API void open_location_dialog() override;
+    void open_location_dialog() override;
 
     /// Return path type managed by the service, here FILE
-    MODULE_IO_MATRIX_API sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const override;
 
     ///@}
 
@@ -83,19 +81,19 @@ protected:
      *
      * This method is used to initialize the service. The starting method is empty for this service.
      */
-    MODULE_IO_MATRIX_API void starting() override;
+    void starting() override;
 
     /**
      * @brief Stopping method. This method is called by stop() from base service ( service::base )
      *
      * The stopping method is empty for this service.
      */
-    MODULE_IO_MATRIX_API void stopping() override;
+    void stopping() override;
 
     /**
      * @brief Configuring method : calls implementation from `io::writer`
      */
-    MODULE_IO_MATRIX_API void configuring() override;
+    void configuring() override;
 
     /**
      * @brief Updating method. This method is called by update() from base service ( service::base )
@@ -104,7 +102,7 @@ protected:
      * The transformation matrix is written with the writer io::writer::matrix4_writer.
      * Notify writing.
      */
-    MODULE_IO_MATRIX_API void updating() override;
+    void updating() override;
 
     /**
      * @brief Info method.
@@ -114,7 +112,7 @@ protected:
      *
      * @param[out] _sstream output stream
      */
-    MODULE_IO_MATRIX_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
     /// @}
 };
 

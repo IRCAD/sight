@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/io/dicom/config.hpp"
 
 #include <core/com/signal.hpp>
 
@@ -60,7 +58,7 @@ namespace sight::module::io::dicom
  * @subsection In-Out In-Out:
  * - \b target [sight::data::series_set]: Destination series_set.
  */
-class MODULE_IO_DICOM_CLASS_API dicom_series_converter : public sight::ui::action
+class dicom_series_converter : public sight::ui::action
 {
 public:
 
@@ -71,29 +69,29 @@ public:
     /**
      * @brief Constructor
      */
-    MODULE_IO_DICOM_API dicom_series_converter() noexcept;
+    dicom_series_converter() noexcept;
 
     /**
      * @brief Destructor
      */
-    MODULE_IO_DICOM_API ~dicom_series_converter() noexcept override;
+    ~dicom_series_converter() noexcept override;
 
 protected:
 
     /// Configuring method. This method is used to configure the service.
-    MODULE_IO_DICOM_API void configuring() override;
+    void configuring() override;
 
     /// Override
-    MODULE_IO_DICOM_API void starting() override;
+    void starting() override;
 
     /// Override
-    MODULE_IO_DICOM_API void stopping() override;
+    void stopping() override;
 
     /// Override
-    MODULE_IO_DICOM_API void updating() override;
+    void updating() override;
 
     /// Override
-    MODULE_IO_DICOM_API void info(std::ostream& _sstream) override;
+    void info(std::ostream& _sstream) override;
 
 protected:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #pragma once
-
-#include "modules/ui/__/config.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/com/slot.hpp>
@@ -77,7 +75,7 @@ namespace sight::module::ui::series
  * @subsection In-Out In-Out
  * - \b seriesSet [sight::data::series_set]: the series_set to merge.
  */
-class MODULE_UI_CLASS_API db_merger : public sight::ui::action
+class db_merger : public sight::ui::action
 {
 public:
 
@@ -86,9 +84,9 @@ public:
     using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
     using forward_job_slot_t   = core::com::slot<void (std::shared_ptr<core::jobs::base>)>;
 
-    MODULE_UI_API db_merger() noexcept;
+    db_merger() noexcept;
 
-    MODULE_UI_API ~db_merger() noexcept override;
+    ~db_merger() noexcept override;
 
 protected:
 

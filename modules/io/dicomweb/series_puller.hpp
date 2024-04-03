@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "modules/io/dicomweb/config.hpp"
-
 #include <data/series_set.hpp>
 #include <data/vector.hpp>
 
@@ -71,7 +69,7 @@ namespace sight::module::io::dicomweb
  * @note : hostname and port of this service are from the preference settings.
  */
 
-class MODULE_IO_DICOMWEB_CLASS_API series_puller : public service::controller
+class series_puller : public service::controller
 {
 public:
 
@@ -85,26 +83,26 @@ public:
     /**
      * @brief Constructor
      */
-    MODULE_IO_DICOMWEB_API series_puller() noexcept;
+    series_puller() noexcept;
 
     /**
      * @brief Destructor
      */
-    MODULE_IO_DICOMWEB_API ~series_puller() noexcept override;
+    ~series_puller() noexcept override;
 
 protected:
 
     /// Gets the configuration.
-    MODULE_IO_DICOMWEB_API void configuring() override;
+    void configuring() override;
 
     /// Registers the DICOM reader.
-    MODULE_IO_DICOMWEB_API void starting() override;
+    void starting() override;
 
     /// Stops the DICOM reader.
-    MODULE_IO_DICOMWEB_API void stopping() override;
+    void stopping() override;
 
     /// Checks the configuration and pull the series.
-    MODULE_IO_DICOMWEB_API void updating() override;
+    void updating() override;
 
 private:
 

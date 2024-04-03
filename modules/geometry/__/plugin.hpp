@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/geometry/__/config.hpp"
+#include "sight/modules/geometry/__/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -32,16 +32,16 @@ namespace sight::module::geometry
 /**
  * @brief This class is started when the module is loaded.
  */
-struct MODULE_GEOMETRY_CLASS_API plugin final : public core::runtime::plugin
+struct SIGHT_MODULE_GEOMETRY_CLASS_API plugin final : public core::runtime::plugin
 {
     /// Destroys the plugin.
-    MODULE_GEOMETRY_API ~plugin() noexcept override;
+    SIGHT_MODULE_GEOMETRY_API ~plugin() noexcept override;
 
     /// Starts the plugin, does nothing here.
-    MODULE_GEOMETRY_API void start() override;
+    SIGHT_MODULE_GEOMETRY_API void start() override;
 
     /// Stops the plugin, does nothing here.
-    MODULE_GEOMETRY_API void stop() noexcept override;
+    SIGHT_MODULE_GEOMETRY_API void stop() noexcept override;
 };
 
 } // namespace sight::module::geometry

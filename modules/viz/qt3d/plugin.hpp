@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/viz/qt3d/config.hpp"
+#include "sight/modules/viz/qt3d/config.hpp"
 
 #include <core/runtime/plugin.hpp>
 
@@ -30,16 +30,16 @@ namespace sight::module::viz::qt3d
 {
 
 /// This class is started when the module is loaded.
-struct MODULE_VIZ_QT3D_CLASS_API plugin final : public core::runtime::plugin
+struct SIGHT_MODULE_VIZ_QT3D_CLASS_API plugin final : public core::runtime::plugin
 {
     /// Destroys the plugin.
-    MODULE_VIZ_QT3D_API ~plugin() noexcept override;
+    SIGHT_MODULE_VIZ_QT3D_API ~plugin() noexcept override;
 
     /// Starts the plugin, does nothing here.
-    MODULE_VIZ_QT3D_API void start() override;
+    SIGHT_MODULE_VIZ_QT3D_API void start() override;
 
     /// Stops the plugin, does nothing here.
-    MODULE_VIZ_QT3D_API void stop() noexcept override;
+    SIGHT_MODULE_VIZ_QT3D_API void stop() noexcept override;
 };
 
 } // namespace sight::module::viz::qt3d.

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "core/config.hpp"
+#include <sight/core/config.hpp>
 
 #include <memory>
 #include <string>
@@ -47,7 +47,7 @@ class runtime;
  * An executable object is an instance created by an extension
  * point of a plugin.
  */
-class CORE_CLASS_API executable
+class SIGHT_CORE_CLASS_API executable
 {
 public:
 
@@ -57,7 +57,7 @@ public:
     /**
      * @brief   Destructor : does nothing.
      */
-    CORE_API virtual ~executable() = default;
+    SIGHT_CORE_API virtual ~executable() = default;
 
     /**
      * @brief   Retrieves the module the executable originates from.
