@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,30 +56,30 @@ void image::starting()
     auto* const layout = new QVBoxLayout();
     auto* const label  = new QLabel("");
 
-    auto* const pixmap = new QPixmap();
+    QPixmap pixmap;
 
-    pixmap->load(m_path.string().c_str());
+    pixmap.load(m_path.string().c_str());
 
-    if(pixmap->isNull())
+    if(pixmap.isNull())
     {
         SIGHT_ERROR("image could not be found: " << m_path);
     }
 
     if(m_width != -1 && m_height != -1)
     {
-        label->setPixmap(pixmap->scaled(m_width, m_height, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        label->setPixmap(pixmap.scaled(m_width, m_height, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     }
     else if(m_width != -1)
     {
-        label->setPixmap((pixmap->scaledToWidth(m_width, Qt::SmoothTransformation)));
+        label->setPixmap((pixmap.scaledToWidth(m_width, Qt::SmoothTransformation)));
     }
     else if(m_height != -1)
     {
-        label->setPixmap((pixmap->scaledToHeight(m_height, Qt::SmoothTransformation)));
+        label->setPixmap((pixmap.scaledToHeight(m_height, Qt::SmoothTransformation)));
     }
     else
     {
-        label->setPixmap(*pixmap);
+        label->setPixmap(pixmap);
     }
 
     layout->addWidget(label);
