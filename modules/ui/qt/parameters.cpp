@@ -1516,9 +1516,12 @@ QPushButton* parameters::create_double_slider_widget(
     {
         const auto alignment = _orientation == Qt::Vertical ? Qt::AlignCenter : Qt::Alignment {};
 
-        sub_layout->addWidget(min_value_label, /*scretch=*/ 0, alignment);
+        auto* const first_label  = _orientation == Qt::Vertical ? max_value_label : min_value_label;
+        auto* const second_label = _orientation == Qt::Vertical ? min_value_label : max_value_label;
+
+        sub_layout->addWidget(first_label, /*scretch=*/ 0, alignment);
         sub_layout->addWidget(slider, /*scretch=*/ 0, alignment);
-        sub_layout->addWidget(max_value_label, /*scretch=*/ 0, alignment);
+        sub_layout->addWidget(second_label, /*scretch=*/ 0, alignment);
         sub_layout->addWidget(value_label, /*scretch=*/ 0, alignment);
         sub_layout->setAlignment(alignment);
 
@@ -1623,9 +1626,12 @@ QPushButton* parameters::create_integer_slider_widget(
     {
         const auto alignment = _orientation == Qt::Vertical ? Qt::AlignCenter : Qt::Alignment {};
 
-        sub_layout->addWidget(min_value_label, /*scretch=*/ 0, alignment);
+        auto* const first_label  = _orientation == Qt::Vertical ? max_value_label : min_value_label;
+        auto* const second_label = _orientation == Qt::Vertical ? min_value_label : max_value_label;
+
+        sub_layout->addWidget(first_label, /*scretch=*/ 0, alignment);
         sub_layout->addWidget(slider, /*scretch=*/ 0, alignment);
-        sub_layout->addWidget(max_value_label, /*scretch=*/ 0, alignment);
+        sub_layout->addWidget(second_label, /*scretch=*/ 0, alignment);
         sub_layout->addWidget(value_label, /*scretch=*/ 0, alignment);
         sub_layout->setAlignment(alignment);
 
@@ -1941,9 +1947,12 @@ void parameters::create_slider_enum_widget(
     {
         const auto alignment = _orientation == Qt::Vertical ? Qt::AlignCenter : Qt::Alignment {};
 
-        sub_layout->addWidget(min_value_label, /*scretch=*/ 0, alignment);
+        auto* const first_label  = _orientation == Qt::Vertical ? max_value_label : min_value_label;
+        auto* const second_label = _orientation == Qt::Vertical ? min_value_label : max_value_label;
+
+        sub_layout->addWidget(first_label, /*scretch=*/ 0, alignment);
         sub_layout->addWidget(slider, /*stretch=*/ 0, alignment);
-        sub_layout->addWidget(max_value_label, /*scretch=*/ 0, alignment);
+        sub_layout->addWidget(second_label, /*scretch=*/ 0, alignment);
         sub_layout->addWidget(value_label, /*scretch=*/ 0, alignment);
 
         if(_setup.hide_min_max)
