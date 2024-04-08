@@ -79,11 +79,11 @@
         <service uid="videoToolbarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                    <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
-                    <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                    <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
-                    <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
+                    <menuItem name="Start" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                    <menuItem name="Pause" icon="sight::module::ui::icons/pause.svg" shortcut="Space" />
+                    <menuItem name="Play" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                    <menuItem name="Stop" icon="sight::module::ui::icons/stop.svg" />
+                    <menuItem name="Loop" icon="sight::module::ui::icons/loop.svg" style="check" />
                 </layout>
             </gui>
             <registry>
@@ -131,14 +131,14 @@
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Add" icon="sight::module::ui::flaticons/GreenPlus.svg"  shortcut="A" />
-                    <menuItem name="Remove" icon="sight::module::ui::flaticons/RedMinus.svg" />
-                    <menuItem name="Calibrate" icon="sight::module::ui::flaticons/YellowPhoto.svg" shortcut="Return" />
-                    <menuItem name="Display" icon="sight::module::ui::flaticons/YellowFullscreen.svg" />
-                    <menuItem name="Reset" icon="sight::module::ui::flaticons/RedReset.svg" />
-                    <menuItem name="Export extrinsic matrix" icon="sight::module::ui::flaticons/BlueLoad.svg" />
-                    <menuItem name="Save calibration images" icon="sight::module::ui::flaticons/BlueLoad.svg" />
-                    <menuItem name="Load calibration images" icon="sight::module::ui::flaticons/BlueSave.svg" />
+                    <menuItem name="Add" icon="sight::module::ui::icons/plus.svg" shortcut="A" />
+                    <menuItem name="Remove" icon="sight::module::ui::icons/minus.svg" />
+                    <menuItem name="Calibrate" icon="sight::module::ui::icons/calibration.svg" shortcut="Return" />
+                    <menuItem name="Display" icon="sight::module::ui::icons/maximize.svg" />
+                    <menuItem name="Reset" icon="sight::module::ui::icons/reset.svg" />
+                    <menuItem name="Export extrinsic matrix" icon="sight::module::ui::icons/export.svg" />
+                    <menuItem name="Save calibration images" icon="sight::module::ui::icons/save.svg" />
+                    <menuItem name="Load calibration images" icon="sight::module::ui::icons/load.svg" />
                 </layout>
             </gui>
             <registry>

@@ -21,7 +21,7 @@ add_dependencies(
     data
     module_service
     module_ui
-    module_ui_flaticons
+    module_ui_icons
     module_io_matrix
     module_io_vtk
     module_io_video

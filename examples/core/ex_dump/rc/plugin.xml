@@ -91,8 +91,8 @@
             <service uid="toolBarView" type="sight::module::ui::toolbar" >
                 <gui>
                     <layout>
-                        <menuItem name="Open..." icon="sight::module::ui::flaticons/BlueLoad.svg" />
-                        <menuItem name="Save..." icon="sight::module::ui::flaticons/BlueSave.svg" />
+                        <menuItem name="Open..." icon="sight::module::ui::icons/load.svg" />
+                        <menuItem name="Save..." icon="sight::module::ui::icons/save.svg" />
                         <separator />
                         <menuItem name="Dump all" icon="monitorQt/icon-dump.svg" />
                     </layout>

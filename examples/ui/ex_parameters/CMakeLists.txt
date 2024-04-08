@@ -4,8 +4,8 @@ add_dependencies(ex_parameters sightrun module_app module_ui module_ui_qt module
 
 # Allow dark theme via module_ui_qt
 module_param(
-    module_ui_qt PARAM_LIST resource stylesheet touch_friendly PARAM_VALUES sight::module::ui::qt/ircad_style.rcc
-                                                                            sight::module::ui::qt/ircad_style.qss true
+    module_ui_qt PARAM_LIST resource stylesheet touch_friendly PARAM_VALUES sight::module::ui::qt/noctura.rcc
+                                                                            sight::module::ui::qt/noctura.qss true
 )
 
 # Main application's configuration to launch

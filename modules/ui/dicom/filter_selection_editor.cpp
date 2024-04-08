@@ -106,7 +106,7 @@ void filter_selection_editor::starting()
     auto path = core::runtime::get_module_resource_path("sight::module::ui::icons");
 
     // Add filter button
-    m_add_filter_button = new QPushButton(QIcon(QString::fromStdString((path / "GreenPlus.svg").string())), "Add");
+    m_add_filter_button = new QPushButton(QIcon(QString::fromStdString((path / "plus.svg").string())), "Add");
     m_add_filter_button->setSizePolicy(policy);
     top_layout->addWidget(m_add_filter_button);
 
@@ -145,7 +145,7 @@ void filter_selection_editor::starting()
 
     // Apply filters button
     m_apply_filters_button =
-        new QPushButton(QIcon(QString::fromStdString((path / "GreenCheck.svg").string())), "Apply");
+        new QPushButton(QIcon(QString::fromStdString((path / "check.svg").string())), "Apply");
     m_apply_filters_button->setSizePolicy(policy);
     button_layout->addWidget(m_apply_filters_button);
 
@@ -159,14 +159,14 @@ void filter_selection_editor::starting()
     button_layout->addWidget(m_configure_filter_button);
 
     // Split filter button
-    m_split_filter_button = new QPushButton(QIcon(QString::fromStdString((path / "Split.svg").string())), "Split");
+    m_split_filter_button = new QPushButton(QIcon(QString::fromStdString((path / "split.svg").string())), "Split");
     m_split_filter_button->setSizePolicy(policy);
     m_split_filter_button->setEnabled(false);
     button_layout->addWidget(m_split_filter_button);
 
     // Remove filter button
     m_remove_filter_button =
-        new QPushButton(QIcon(QString::fromStdString((path / "RedMinus.svg").string())), "Remove");
+        new QPushButton(QIcon(QString::fromStdString((path / "minus.svg").string())), "Remove");
     m_remove_filter_button->setSizePolicy(policy);
     m_remove_filter_button->setEnabled(false);
     button_layout->addWidget(m_remove_filter_button);
@@ -596,11 +596,11 @@ QIcon filter_selection_editor::get_filter_icon(sight::filter::dicom::filter::spt
 {
     const std::filesystem::path path = core::runtime::get_module_resource_path(std::string("sight::module::ui::icons"));
     std::array icons {
-        QIcon(QString::fromStdString((path / "OrangeLoop.svg").string())),
-        QIcon(QString::fromStdString((path / "Sorter.svg").string())),
-        QIcon(QString::fromStdString((path / "Splitter.svg").string())),
-        QIcon(QString::fromStdString((path / "Composite.svg").string())),
-        QIcon(QString::fromStdString((path / "Custom.svg").string()))
+        QIcon(QString::fromStdString((path / "loop.svg").string())),
+        QIcon(QString::fromStdString((path / "sorter.svg").string())),
+        QIcon(QString::fromStdString((path / "splitter.svg").string())),
+        QIcon(QString::fromStdString((path / "composite.svg").string())),
+        QIcon(QString::fromStdString((path / "custom.svg").string()))
     };
     return icons[_filter->get_filter_type()];
 }

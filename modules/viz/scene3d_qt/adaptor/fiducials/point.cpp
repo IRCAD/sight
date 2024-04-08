@@ -542,7 +542,7 @@ void point::starting()
     auto* layout = new QHBoxLayout;
     QIcon trash_bin_icon(QString::fromStdString(
                              core::runtime::get_module_resource_file_path(
-                                 "sight::module::ui::flaticons/RedTrashBin.svg"
+                                 "sight::module::ui::icons/trash.svg"
                              ).string()
     ));
     auto* bin_button             = new QPushButton(trash_bin_icon, "");
@@ -567,7 +567,7 @@ void point::starting()
     {
         QIcon pen_icon(QString::fromStdString(
                            core::runtime::get_module_resource_file_path(
-                               "sight::module::ui::flaticons/YellowPen.svg"
+                               "sight::module::ui::icons/text.svg"
                            ).string()
         ));
         auto* pen_button = new QPushButton(pen_icon, "");

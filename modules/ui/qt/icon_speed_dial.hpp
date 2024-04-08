@@ -39,13 +39,13 @@ namespace sight::module::ui::qt
  * Example of configuration:
  * @code{.xml}
     <service uid="iconSpeedDialSrv" type="sight::module::ui::qt::icon_speed_dial">
-        <config direction="right" spacing="10" icon="sight::module::ui::flaticons/BlueLoad.svg" />
+        <config direction="right" spacing="10" icon="sight::module::ui::icons/load.svg" />
         <actions>
-            <action sid="openImageAct" name="Open image" icon="sight::module::ui::flaticons/OpenImage.svg"
+            <action sid="openImageAct" name="Open image" icon="sight::module::ui::icons/image_series.svg"
                     shortcut="Ctrl+I" />
-            <action sid="openMeshAct" name="Open mesh" icon="sight::module::ui::flaticons/OpenMesh.svg"
+            <action sid="openMeshAct" name="Open mesh" icon="sight::module::ui::icons/model_series.svg"
                     shortcut="Ctrl+M" />
-            <action sid="openTextureAct" name="Open texture" icon="sight::module::ui::flaticons/OpenTexture.svg"
+            <action sid="openTextureAct" name="Open texture" icon="sight::module::ui::icons/opacity.svg"
                     shortcut="Ctrl+T" />
         </actions>
     </service>

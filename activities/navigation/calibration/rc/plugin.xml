@@ -18,7 +18,7 @@
         <id>Calibration</id>
         <title>Calibration</title>
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
-        <icon>sight::module::ui::flaticons/YellowCamera.svg</icon>
+        <icon>sight::module::ui::icons/calibration.svg</icon>
         <requirements>
             <requirement name="cameraSet" type="sight::data::camera_set" minOccurs="0" maxOccurs="0" />
         </requirements>
@@ -35,7 +35,7 @@
                 - edit the resolution
             ]]>
         </desc>
-        <icon>sight::module::ui::flaticons/BlueParametersCamera.svg</icon>
+        <icon>sight::module::ui::icons/gear.svg</icon>
         <requirements>
             <requirement name="cameraSet" type="sight::data::camera_set" minOccurs="1" maxOccurs="1">
                 <desc>Calibrated camera series.</desc>
@@ -48,7 +48,7 @@
         <id>ToolCalibration</id>
         <title>Tool calibration</title>
         <desc>Tool Calibration Activity using a tracking system</desc>
-        <icon>sight::module::ui::icons/YellowCamera.svg</icon>
+        <icon>sight::module::ui::icons/calibration.svg</icon>
         <requirements></requirements>
         <appConfig id="toolCalibration">
             <parameters></parameters>

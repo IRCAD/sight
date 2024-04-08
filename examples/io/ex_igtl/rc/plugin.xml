@@ -45,15 +45,15 @@
                 <gui>
                     <layout>
                         <editor />
-                        <menuItem name="Load mesh" icon="sight::module::ui::flaticons/BlueLoad.svg" />
+                        <menuItem name="Load mesh" icon="sight::module::ui::icons/load.svg" />
                         <separator />
-                        <menuItem name="start sender" icon="sight::module::ui::flaticons/GreenServerConnected.svg" />
-                        <menuItem name="stop sender" icon="sight::module::ui::flaticons/RedServerDisconnected.svg" />
-                        <menuItem name="configure sender" icon="sight::module::ui::flaticons/BlueParametersConnected.svg" />
+                        <menuItem name="start sender" icon="sight::module::ui::icons/connect.svg" />
+                        <menuItem name="stop sender" icon="sight::module::ui::icons/disconnect.svg" />
+                        <menuItem name="configure sender" icon="sight::module::ui::icons/connection.svg" />
                         <separator />
-                        <menuItem name="start listener" icon="sight::module::ui::flaticons/GreenServerConnected.svg" />
-                        <menuItem name="stop listener" icon="sight::module::ui::flaticons/RedServerDisconnected.svg" />
-                        <menuItem name="configure listener" icon="sight::module::ui::flaticons/BlueParametersConnected.svg" />
+                        <menuItem name="start listener" icon="sight::module::ui::icons/connect.svg" />
+                        <menuItem name="stop listener" icon="sight::module::ui::icons/disconnect.svg" />
+                        <menuItem name="configure listener" icon="sight::module::ui::icons/connection.svg" />
                         <separator />
                     </layout>
                 </gui>

@@ -94,7 +94,7 @@ void camera_config_launcher::starting()
     QIcon add_icon(QString::fromStdString(
                        core::runtime::get_module_resource_file_path(
                            "sight::module::ui::icons",
-                           "ImportSession.svg"
+                           "plus.svg"
                        )
                        .string()
     ));
@@ -105,7 +105,7 @@ void camera_config_launcher::starting()
     QIcon import_icon(QString::fromStdString(
                           core::runtime::get_module_resource_file_path(
                               "sight::module::ui::icons",
-                              "ImportSession.svg"
+                              "import.svg"
                           )
                           .string()
     ));
@@ -116,7 +116,7 @@ void camera_config_launcher::starting()
     QIcon remove_icon(QString::fromStdString(
                           core::runtime::get_module_resource_file_path(
                               "sight::module::ui::icons",
-                              "RedMinus.svg"
+                              "minus.svg"
                           )
                           .string()
     ));

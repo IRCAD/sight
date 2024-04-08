@@ -68,7 +68,7 @@ void snapshot_editor::starting()
 
     std::filesystem::path path = core::runtime::get_module_resource_file_path(
         "sight::module::ui::qt",
-        "YellowPhoto.svg"
+        "frame.svg"
     );
     QIcon icon(QString::fromStdString(path.string()));
     m_snap_button = new QPushButton(icon, "");

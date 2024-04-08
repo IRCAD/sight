@@ -173,13 +173,13 @@
             <in key="image" uid="${image}" />
             <inout key="tf" uid="${currentTF}" />
             <inout key="presets" uid="${presets}" />
-            <config deleteIcon="sight::module::ui::icons/RedTrashBin.svg"
-                newIcon="sight::module::ui::icons/BlueFile.svg"
-                copyIcon="sight::module::ui::icons/GreenCopyFile.svg"
-                reinitializeIcon="sight::module::ui::icons/RedReset.svg"
-                renameIcon="sight::module::ui::icons/YellowRenameFile.svg"
-                importIcon="sight::module::ui::icons/BlueLoad.svg"
-                exportIcon="sight::module::ui::icons/BlueSave.svg"
+            <config deleteIcon="sight::module::ui::icons/trash.svg"
+                newIcon="sight::module::ui::icons/file.svg"
+                copyIcon="sight::module::ui::icons/copy.svg"
+                reinitializeIcon="sight::module::ui::icons/reset.svg"
+                renameIcon="sight::module::ui::icons/edit.svg"
+                importIcon="sight::module::ui::icons/load.svg"
+                exportIcon="sight::module::ui::icons/save.svg"
                 iconWidth="24" iconHeight="24"
                 useDefaultPath="${USE_DEFAULT_TF}">
                 <path>${ADDITIONAL_TF_PATH}</path>

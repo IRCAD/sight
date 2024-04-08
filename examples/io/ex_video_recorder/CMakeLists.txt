@@ -11,7 +11,7 @@ add_dependencies(
     data
     module_service
     module_ui
-    module_ui_flaticons
+    module_ui_icons
     module_sync
     module_io_video
     config_io_video

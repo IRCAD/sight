@@ -136,7 +136,7 @@ are already displayed and where they are displayed on screen.
                     <type>combobox</type>
                     <name>Color Theme</name>
                     <key>THEME</key>
-                    <values>DEFAULT,DARKSTYLE,FLATDARK</values>
+                    <values>DEFAULT,FLATDARK</values>
                     <default_value>FLATDARK</default_value>
                 </preference>
             </service>

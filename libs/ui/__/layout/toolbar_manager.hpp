@@ -38,9 +38,9 @@
                <separator />
                <editor />
                <accordion>
-                    <menuItem name="Show/hide distance-related actions" icon="icons/Distance.svg" style="check" />
-                    <menuItem name="Add/Edit distance" icon="icons/AddDistance.svg" style="check" />
-                    <menuItem name="Remove distance" icon="icons/RemoveDistance.svg" />
+                    <menuItem name="Show/hide distance-related actions" icon="icons/distance.svg" style="check" />
+                    <menuItem name="Add/Edit distance" icon="icons/add_distance.svg" style="check" />
+                    <menuItem name="Remove distance" icon="icons/remove_distance.svg" />
                 </accordion>
            </layout>
        </gui>

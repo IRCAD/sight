@@ -39,7 +39,7 @@
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="sight::data::camera_set" icon="sight::module::ui::flaticons/YellowCamera.svg" />
+                <icon type="sight::data::camera_set" icon="sight::module::ui::icons/calibration.svg" />
             </icons>
         </service>
 

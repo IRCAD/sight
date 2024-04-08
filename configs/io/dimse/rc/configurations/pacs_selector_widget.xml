@@ -284,7 +284,7 @@
         <service uid="seriesPullerAct" type="sight::module::ui::qt::com::signal_button">
             <config>
                 <checkable>false</checkable>
-                <icon>sight::module::ui::flaticons/YellowPull.svg</icon>
+                <icon>sight::module::ui::icons/pull.svg</icon>
                 <iconWidth>24</iconWidth>
                 <iconHeight>24</iconHeight>
                 <toolTip>Pull selected series</toolTip>
@@ -295,7 +295,7 @@
             <config>
                 <checkable>false</checkable>
                 <executable>false</executable>
-                <icon>sight::module::ui::flaticons/BlueWait.svg</icon>
+                <icon>sight::module::ui::icons/wait.svg</icon>
                 <iconWidth>24</iconWidth>
                 <iconHeight>24</iconHeight>
                 <toolTip>Pulling selected series</toolTip>
@@ -306,7 +306,7 @@
             <config>
                 <checkable>false</checkable>
                 <enable>false</enable>
-                <icon>sight::module::ui::flaticons/YellowPull.svg</icon>
+                <icon>sight::module::ui::icons/pull.svg</icon>
                 <iconWidth>24</iconWidth>
                 <iconHeight>24</iconHeight>
                 <toolTip>Load the image</toolTip>
@@ -318,7 +318,7 @@
         <service uid="showAdvancedQueryEditorSrv" type="sight::module::ui::qt::com::signal_button">
             <config>
                 <checkable>false</checkable>
-                <icon>sight::module::ui::flaticons/YellowBottomChevron.svg</icon>
+                <icon>sight::module::ui::icons/bottom.svg</icon>
                 <iconWidth>24</iconWidth>
                 <iconHeight>24</iconHeight>
             </config>
@@ -327,7 +327,7 @@
         <service uid="hideAdvancedQueryEditorSrv" type="sight::module::ui::qt::com::signal_button">
             <config>
                 <checkable>false</checkable>
-                <icon>sight::module::ui::flaticons/YellowTopChevron.svg</icon>
+                <icon>sight::module::ui::icons/top.svg</icon>
                 <iconWidth>24</iconWidth>
                 <iconHeight>24</iconHeight>
             </config>
@@ -336,7 +336,7 @@
         <service uid="showPACSConfigurationSrv" type="sight::module::ui::qt::com::signal_button">
             <config>
                 <checkable>false</checkable>
-                <icon>sight::module::ui::flaticons/BlueParametersConnected.svg</icon>
+                <icon>sight::module::ui::icons/connection.svg</icon>
                 <iconWidth>24</iconWidth>
                 <iconHeight>24</iconHeight>
             </config>
@@ -345,7 +345,7 @@
         <service uid="hidePACSConfigurationSrv" type="sight::module::ui::qt::com::signal_button">
             <config>
                 <checkable>false</checkable>
-                <icon>sight::module::ui::flaticons/BlueParametersConnected.svg</icon>
+                <icon>sight::module::ui::icons/connection.svg</icon>
                 <iconWidth>24</iconWidth>
                 <iconHeight>24</iconHeight>
             </config>
@@ -376,7 +376,8 @@
 
         <service uid="configurePACSInitializerSrv" type="sight::module::io::dimse::pacs_configuration_initializer">
             <inout key="config" uid="pacsConfiguration" auto_connect="true" />
-            <config localApplicationTitle="sight_viewer" pacsHostName="localhost" pacsApplicationTitle="PACSNAME" pacsApplicationPort="4242" moveApplicationTitle="sight_viewer" moveApplicationPort="104" retrieveMethod="MOVE" preferenceKey="SIGHTVIEWER_PACS_CONFIGURATION" />
+            <config localApplicationTitle="sight_viewer" pacsHostName="localhost" pacsApplicationTitle="PACSNAME" pacsApplicationPort="4242" moveApplicationTitle="sight_viewer" moveApplicationPort="104" retrieveMethod="MOVE"
+                preferenceKey="SIGHTVIEWER_PACS_CONFIGURATION" />
         </service>
 
         <service uid="configurePACSEditorSrv" type="sight::module::io::dimse::pacs_configuration_editor">
@@ -387,20 +388,20 @@
         <service uid="queryEditorSrv" type="sight::module::io::dimse::query_editor">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesSet" uid="previewSeriesSet" />
-            <config icon="sight::module::ui::flaticons/BlueMagnifyingGlass.svg" advanced="false" />
+            <config icon="sight::module::ui::icons/find.svg" advanced="false" />
         </service>
 
         <service uid="advancedQueryEditorSrv" type="sight::module::io::dimse::query_editor">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <inout key="seriesSet" uid="previewSeriesSet" />
-            <config icon="sight::module::ui::flaticons/BlueMagnifyingGlass.svg" />
+            <config icon="sight::module::ui::icons/find.svg" />
         </service>
 
         <service uid="previewSelectorSrv" type="sight::module::ui::qt::series::selector" auto_connect="true">
             <inout key="seriesSet" uid="previewSeriesSet" />
             <inout key="selection" uid="previewSelections" />
             <icons>
-                <icon series="sight::data::dicom_series" icon="sight::module::ui::flaticons/GreenMedicine.svg" />
+                <icon series="sight::data::dicom_series" icon="sight::module::ui::icons/image_series.svg" />
             </icons>
             <config selectionMode="extended" allowedRemove="false" />
         </service>
@@ -430,9 +431,9 @@
             <inout key="seriesSet" uid="localSeriesSet" />
             <inout key="selection" uid="localSelections" />
             <icons>
-                <icon series="sight::data::image_series" icon="sight::module::ui::flaticons/Volume.svg" />
+                <icon series="sight::data::image_series" icon="sight::module::ui::icons/volume.svg" />
             </icons>
-            <config selectionMode="extended" removeStudyicon="sight::module::ui::flaticons/RedCross.svg" removeSerieicon="sight::module::ui::flaticons/RemoveMedecine.svg" />
+            <config selectionMode="extended" removeStudyicon="sight::module::ui::icons/cross.svg" removeSerieicon="sight::module::ui::icons/image_series.svg" />
         </service>
 
         <service uid="extractLocalImageSeriesSrv" type="sight::module::data::get_vector">

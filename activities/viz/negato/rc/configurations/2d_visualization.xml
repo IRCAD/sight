@@ -36,8 +36,8 @@
         <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Previous" icon="sight::module::ui::icons/YellowLeftChevron.svg" />
-                    <menuItem name="Next" icon="sight::module::ui::icons/YellowRightChevron.svg" />
+                    <menuItem name="Previous" icon="sight::module::ui::icons/left.svg" />
+                    <menuItem name="Next" icon="sight::module::ui::icons/right.svg" />
                 </layout>
             </gui>
             <registry>

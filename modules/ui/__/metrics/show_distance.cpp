@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,11 +49,6 @@ show_distance::show_distance() noexcept
 
 //------------------------------------------------------------------------------
 
-show_distance::~show_distance() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void show_distance::configuring()
 {
     this->sight::ui::action::initialize();
@@ -84,7 +79,7 @@ void show_distance::updating()
         data::helper::medical_image::set_distance_visibility(*image, to_show);
 
         // Manage hide/show from the field information.
-        this->sight::ui::action::set_checked(!to_show);
+        this->sight::ui::action::set_checked(to_show);
 
         const auto sig = image->signal<data::image::distance_displayed_signal_t>(
             data::image::DISTANCE_DISPLAYED_SIG
@@ -107,20 +102,19 @@ void show_distance::stopping()
 
 service::connections_t show_distance::auto_connections() const
 {
-    connections_t connections;
-    connections.push(IMAGE, data::image::DISTANCE_DISPLAYED_SIG, SHOW_DISTANCE_SLOT);
-
-    return connections;
+    return {
+        {IMAGE, data::image::DISTANCE_DISPLAYED_SIG, SHOW_DISTANCE_SLOT}
+    };
 }
 
 //------------------------------------------------------------------------------
 
-void show_distance::show(bool /*unused*/)
+void show_distance::show(bool _show)
 {
     const auto image          = m_image.lock();
     const auto show_distances = data::helper::medical_image::get_distance_visibility(*image);
 
-    this->sight::ui::action::set_checked(!(show_distances));
+    this->sight::ui::action::set_checked(show_distances && _show);
 }
 
 //------------------------------------------------------------------------------

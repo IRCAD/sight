@@ -13,7 +13,7 @@
         <id>ExImage_Import_Activity</id>
         <title>ImageSeries reading</title>
         <desc>Activity to read an imageSeries</desc>
-        <icon>sight::module::ui::flaticons/BlueFile.svg</icon>
+        <icon>sight::module::ui::icons/file.svg</icon>
         <requirements>
             <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
                 <desc>ImageSeries that will be read by this activity.</desc>
@@ -26,7 +26,7 @@
         <id>ExImage_Negatoscope_Activity</id>
         <title>ImageSeries displaying</title>
         <desc>Activity to display an imageSeries</desc>
-        <icon>sight::module::ui::flaticons/Layers.svg</icon>
+        <icon>sight::module::ui::icons/layers.svg</icon>
         <requirements>
             <!-- The imageSeries must be present to launch the activity -->
             <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
@@ -43,7 +43,7 @@
         <id>ExImage_VolumeRendering_Activity</id>
         <title>ImageSeries displaying Volume</title>
         <desc>Activity to display an imageSeries in a volume rendering</desc>
-        <icon>sight::module::ui::flaticons/Volume.svg</icon>
+        <icon>sight::module::ui::icons/volume.svg</icon>
         <requirements>
             <!-- The imageSeries must be present to launch the activity -->
             <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
@@ -83,7 +83,7 @@
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="sight::data::image" icon="sight::module::ui::flaticons/Volume.svg" />
+                <icon type="sight::data::image" icon="sight::module::ui::icons/volume.svg" />
             </icons>
         </config>
     </extension>

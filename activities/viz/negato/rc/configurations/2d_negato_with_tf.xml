@@ -51,7 +51,7 @@
         <service uid="topToolbarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Snapshot" icon="sight::module::ui::flaticons/YellowPhoto.svg" shortcut="CTRL+S" />
+                    <menuItem name="Snapshot" icon="sight::module::ui::icons/frame.svg" shortcut="CTRL+S" />
                 </layout>
             </gui>
             <registry>

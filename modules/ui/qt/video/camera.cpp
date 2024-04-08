@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -134,11 +134,11 @@ void camera::starting()
     // Add button to edit the preferences when and set `m_preferenceMode` to true
     if(m_resolution == "preferences")
     {
-        auto path = core::runtime::get_module_resource_path("sight::module::ui::flaticons");
+        auto path = core::runtime::get_module_resource_path("sight::module::ui::icons");
         // Add preference setting button
         QPointer<QPushButton> set_pref_button = new QPushButton();
         set_pref_button->setProperty("class", "signal-button");
-        set_pref_button->setIcon(QIcon(QString::fromStdString((path / "BlueParametersCamera.svg").string())));
+        set_pref_button->setIcon(QIcon(QString::fromStdString((path / "gear.svg").string())));
         set_pref_button->setToolTip("Set camera resolution preference");
         layout->addWidget(set_pref_button);
         m_preference_mode = true;

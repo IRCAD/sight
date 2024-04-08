@@ -178,7 +178,7 @@ struct SIGHT_ACTIVITY_CLASS_API activity_requirement
         <title>3D Visu</title>
         <tabinfo>3D MPR - !values.modelSeries.patient.name</tabinfo>
         <desc>Activity description ...</desc>
-        <icon>sight::module::ui::icons/Volume.svg</icon>
+        <icon>sight::module::ui::icons/volume.svg</icon>
         <requirements>
             <requirement name="param1" type="data::image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
             <requirement name="param2" type="data::mesh" maxOccurs="3" >

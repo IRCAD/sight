@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,13 +70,13 @@ transfer_function::transfer_function()
         )
     );
 
-    m_delete_icon       = module_path / "delete.png";
-    m_new_icon          = module_path / "new.png";
-    m_copy_icon         = module_path / "copy.png";
-    m_rename_icon       = module_path / "rename.png";
-    m_reinitialize_icon = module_path / "reinitialize.png";
-    m_import_icon       = module_path / "import.png";
-    m_export_icon       = module_path / "export.png";
+    m_delete_icon       = module_path / "delete.svg";
+    m_new_icon          = module_path / "new.svg";
+    m_copy_icon         = module_path / "copy.svg";
+    m_rename_icon       = module_path / "text.svg";
+    m_reinitialize_icon = module_path / "reset.svg";
+    m_import_icon       = module_path / "import.svg";
+    m_export_icon       = module_path / "export.svg";
 }
 
 //------------------------------------------------------------------------------

@@ -15,7 +15,7 @@
         <id>ExDicomSegmentation_VTKMesher_Activity</id>
         <title>VTK mesher</title>
         <desc>Mesher activity using VTK</desc>
-        <icon>sight::module::ui::flaticons/GreenMedicine.svg</icon>
+        <icon>sight::module::ui::icons/image_series.svg</icon>
         <requirements>
             <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1" />
         </requirements>
@@ -27,7 +27,7 @@
         <id>ExDicomSegmentation_Threshold_Activity</id>
         <title>Threshold</title>
         <desc>Simple threshold activity</desc>
-        <icon>sight::module::ui::flaticons/GreenMedicine.svg</icon>
+        <icon>sight::module::ui::icons/image_series.svg</icon>
         <requirements>
             <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1" />
         </requirements>
@@ -39,7 +39,7 @@
         <id>ExDicomSegmentation_Base_Activity</id>
         <title>ex_dicom_segmentation</title>
         <desc>ex_dicom_segmentation main activity</desc>
-        <icon>sight::module::ui::flaticons/GreenMedicine.svg</icon>
+        <icon>sight::module::ui::icons/image_series.svg</icon>
         <requirements />
         <appConfig id="ExDicomSegmentation_Base_AppCfg">
             <parameters />

@@ -155,15 +155,15 @@
             <service uid="snapshotSrv" type="sight::module::ui::qt::com::signal_button">
                 <config>
                     <checkable>false</checkable>
-                    <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
+                    <icon>sight::module::ui::icons/frame.svg</icon>
                 </config>
             </service>
 
             <service uid="showNegatoSrv" type="sight::module::ui::qt::com::signal_button">
                 <config>
                     <checkable>true</checkable>
-                    <icon>sight::module::ui::flaticons/RedCross.svg</icon>
-                    <icon2>sight::module::ui::flaticons/Layers.svg</icon2>
+                    <icon>sight::module::ui::icons/cross.svg</icon>
+                    <icon2>sight::module::ui::icons/layers.svg</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>

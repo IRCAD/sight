@@ -81,15 +81,15 @@
             <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
-                        <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
+                        <menuItem name="Load Calibration" icon="sight::module::ui::icons/calibration.svg" />
                         <editor />
-                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
-                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight::module::ui::icons/pause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::icons/stop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::icons/loop.svg" style="check" />
                         <editor />
-                        <menuItem name="Register" icon="sight::module::ui::flaticons/RegistrationPoints.svg" />
+                        <menuItem name="Register" icon="sight::module::ui::icons/register_points.svg" />
                     </layout>
                 </gui>
                 <registry>

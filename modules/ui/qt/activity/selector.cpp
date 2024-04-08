@@ -134,7 +134,7 @@ void selector::starting()
     sight::activity::extension::activity_info info_load;
     info_load.title = "Load activity";
     info_load.icon  =
-        core::runtime::get_module_resource_file_path("sight::module::ui::icons", "BlueLoad.svg").string();
+        core::runtime::get_module_resource_file_path("sight::module::ui::icons", "load.svg").string();
     info_load.description = "Load a previously saved activity.";
 
     m_activities_info.insert(m_activities_info.begin(), info_load);

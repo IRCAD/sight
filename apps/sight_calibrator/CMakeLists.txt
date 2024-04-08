@@ -10,7 +10,7 @@ add_dependencies(
     module_sync
     data
     module_ui
-    module_ui_flaticons
+    module_ui_icons
     module_ui_icons
     module_io_vision
     module_io_video

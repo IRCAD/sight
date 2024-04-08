@@ -164,7 +164,7 @@ slice_selector::slice_selector(
 
         auto* step_backward = new QToolButton(this);
         auto path           = core::runtime::get_module_resource_path("sight::module::ui::icons");
-        step_backward->setIcon(QIcon(QString::fromStdString((path / "YellowLeftChevron.svg").string())));
+        step_backward->setIcon(QIcon(QString::fromStdString((path / "left.svg").string())));
         step_backward->setToolTip(tr("Step backward"));
 
         QObject::connect(
@@ -182,7 +182,7 @@ slice_selector::slice_selector(
         layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
 
         auto* step_forward = new QToolButton(this);
-        step_forward->setIcon(QIcon(QString::fromStdString((path / "YellowRightChevron.svg").string())));
+        step_forward->setIcon(QIcon(QString::fromStdString((path / "right.svg").string())));
         step_backward->setToolTip(tr("Step forward"));
 
         QObject::connect(

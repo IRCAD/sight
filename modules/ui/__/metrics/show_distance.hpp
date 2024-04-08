@@ -56,7 +56,7 @@ public:
     show_distance() noexcept;
 
     /// Destroys the service.
-    ~show_distance() noexcept override;
+    ~show_distance() noexcept override = default;
 
 protected:
 

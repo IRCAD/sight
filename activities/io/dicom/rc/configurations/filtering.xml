@@ -38,10 +38,10 @@
         <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Read DICOM files" icon="sight::module::ui::icons/ImportSession.svg" />
-                    <menuItem name="Preview filtered DICOM series" icon="sight::module::ui::icons/BlueMagnifyingGlass.svg" style="check" />
-                    <menuItem name="Read filtered DICOM series" icon="sight::module::ui::icons/GreenCheck.svg" />
-                    <menuItem name="Push selected series to the main SeriesSet" icon="sight::module::ui::icons/Push.svg" />
+                    <menuItem name="Read DICOM files" icon="sight::module::ui::icons/import.svg" />
+                    <menuItem name="Preview filtered DICOM series" icon="sight::module::ui::icons/find.svg" style="check" />
+                    <menuItem name="Read filtered DICOM series" icon="sight::module::ui::icons/check.svg" />
+                    <menuItem name="Push selected series to the main SeriesSet" icon="sight::module::ui::icons/push.svg" />
 
                     <spacer />
 
@@ -147,7 +147,7 @@
             <inout group="data">
                 <key name="SERIES_SET" uid="filteredSeriesSet" />
             </inout>
-            <parameter replace="ICON_PATH" by="sight::module::ui::icons/BlueMagnifyingGlass.svg" />
+            <parameter replace="ICON_PATH" by="sight::module::ui::icons/find.svg" />
         </service>
 
         <service uid="action_convertSeries" type="sight::module::io::dicom::dicom_series_converter">

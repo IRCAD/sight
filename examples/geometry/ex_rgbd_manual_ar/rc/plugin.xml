@@ -83,23 +83,23 @@
             <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
-                        <menuItem name="Load calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
+                        <menuItem name="Load calibration" icon="sight::module::ui::icons/calibration.svg" />
                         <separator />
-                        <menuItem name="Load transformation" icon="sight::module::ui::flaticons/BlueLoad.svg" />
+                        <menuItem name="Load transformation" icon="sight::module::ui::icons/load.svg" />
                         <separator />
-                        <menuItem name="Load mesh" icon="sight::module::ui::flaticons/BlueLoad.svg" />
+                        <menuItem name="Load mesh" icon="sight::module::ui::icons/load.svg" />
                         <separator />
                         <editor />
-                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
-                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
-                        <menuItem name="Manage organs" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
+                        <menuItem name="Start" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight::module::ui::icons/pause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::icons/stop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::icons/loop.svg" style="check" />
+                        <menuItem name="Manage organs" icon="sight::module::ui::icons/organs.svg" style="check" />
                         <separator />
-                        <menuItem name="Learn background model" icon="sight::module::ui::flaticons/Background.svg" />
-                        <menuItem name="Learn foreground model" icon="sight::module::ui::flaticons/Foreground.svg" />
-                        <menuItem name="Segmentation parameters" icon="sight::module::ui::flaticons/BlueParameters.svg" style="check" />
+                        <menuItem name="Learn background model" icon="sight::module::ui::icons/background.svg" />
+                        <menuItem name="Learn foreground model" icon="sight::module::ui::icons/foreground.svg" />
+                        <menuItem name="Segmentation parameters" icon="sight::module::ui::icons/gear.svg" style="check" />
                         <editor />
                         <editor />
                         <editor />

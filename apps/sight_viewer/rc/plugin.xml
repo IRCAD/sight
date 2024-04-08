@@ -107,7 +107,7 @@
                     <toolbar align="left" />
                     <layout type="sight::ui::layout::overlay" >
                         <view />
-                        <view x="-1" y="0" width="50" height="55" visible="false" />
+                        <view x="-1" y="0" width="80" height="80" visible="false" />
                     </layout>
                 </gui>
                 <registry>
@@ -147,7 +147,7 @@
                 <gui>
                     <layout>
                         <spacer />
-                        <menuItem name="Show parameters" icon="sight::module::ui::flaticons/YellowLeftChevron.svg" />
+                        <menuItem name="Show parameters" icon="sight::module::ui::icons/left.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -196,13 +196,13 @@
             <service uid="parameterToolBarView" type="sight::module::ui::toolbar" >
                 <gui>
                     <layout>
-                        <menuItem name="Show volume parameters" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
-                        <menuItem name="Show transfer function editor" icon="sight::module::ui::flaticons/TF1.svg" style="check" />
-                        <menuItem name="Show organs manager" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
-                        <menuItem name="Show landmarks manager" icon="sight::module::ui::flaticons/YellowLandmarks.svg" style="check" />
-                        <menuItem name="Show light manager" icon="sight::module::ui::flaticons/Light.svg" style="check" />
+                        <menuItem name="Show volume parameters" icon="sight::module::ui::icons/volume.svg" style="check" />
+                        <menuItem name="Show transfer function editor" icon="sight::module::ui::icons/tf1.svg" style="check" />
+                        <menuItem name="Show organs manager" icon="sight::module::ui::icons/organs.svg" style="check" />
+                        <menuItem name="Show landmarks manager" icon="sight::module::ui::icons/fiducial.svg" style="check" />
+                        <menuItem name="Show light manager" icon="sight::module::ui::icons/light.svg" style="check" />
                         <spacer/>
-                        <menuItem name="Close parameters" icon="sight::module::ui::flaticons/YellowRightChevron.svg" />
+                        <menuItem name="Close parameters" icon="sight::module::ui::icons/right.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -260,34 +260,34 @@
             <service uid="toolBarView" type="sight::module::ui::toolbar" >
                 <gui>
                     <layout>
-                        <menuItem name="Load series" icon="sight::module::ui::flaticons/BlueLoad.svg" />
-                        <menuItem name="Open PACS" icon="sight::module::ui::flaticons/GreenServerConnected.svg" style="check" />
+                        <menuItem name="Load series" icon="sight::module::ui::icons/load.svg" />
+                        <menuItem name="Open PACS" icon="sight::module::ui::icons/connection.svg" style="check" />
                         <separator/>
-                        <menuItem name="Negato view" icon="sight::module::ui::flaticons/Layers.svg" />
-                        <menuItem name="Volume view" icon="sight::module::ui::flaticons/Volume.svg" />
+                        <menuItem name="Negato view" icon="sight::module::ui::icons/layers.svg" />
+                        <menuItem name="Volume view" icon="sight::module::ui::icons/volume.svg" />
                         <separator/>
-                        <menuItem name="Show/hide mesh" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
-                        <menuItem name="Show/hide volume" icon="sight::module::ui::flaticons/showVolume.svg" style="check" />
-                        <menuItem name="Show/hide negato" icon="sight::module::ui::flaticons/showNegato.svg" style="check" />
+                        <menuItem name="Show/hide mesh" icon="sight::module::ui::icons/show_mesh.svg" style="check" />
+                        <menuItem name="Show/hide volume" icon="sight::module::ui::icons/show_volume.svg" style="check" />
+                        <menuItem name="Show/hide negato" icon="sight::module::ui::icons/show_negato.svg" style="check" />
                         <separator/>
-                        <menuItem name="Show/hide cropping box" icon="sight::module::ui::flaticons/CroppingBox.svg" style="check" />
-                        <menuItem name="Reset cropping box" icon="sight::module::ui::flaticons/ResetCroppingBox.svg" />
+                        <menuItem name="Show/hide cropping box" icon="sight::module::ui::icons/cropping_box.svg" style="check" />
+                        <menuItem name="Reset cropping box" icon="sight::module::ui::icons/reset.svg" />
                         <accordion>
-                            <menuItem name="Draw a new freehand cropping region" icon="sight::module::ui::flaticons/cutVolume.svg" style="check" />
-                            <menuItem name="Undo" icon="sight::module::ui::flaticons/revertCutVolume.svg" />
+                            <menuItem name="Draw a new freehand cropping region" icon="sight::module::ui::icons/eraser.svg" style="check" />
+                            <menuItem name="Undo" icon="sight::module::ui::icons/reset.svg" />
                         </accordion>
                         <separator/>
                         <accordion>
-                            <menuItem name="Enable landmarks edit mode" icon="sight::module::ui::flaticons/YellowLandmarks.svg" style="check" />
-                            <menuItem name="Remove all landmarks"  icon="sight::module::ui::flaticons/RemoveLandmark.svg"  />
+                            <menuItem name="Enable landmarks edit mode" icon="sight::module::ui::icons/fiducial.svg" style="check" />
+                            <menuItem name="Remove all landmarks" icon="sight::module::ui::icons/trash.svg" />
                         </accordion>
                         <accordion>
-                            <menuItem name="Add/Edit distance" icon="sight::module::ui::flaticons/Distance.svg" style="check" />
-                            <menuItem name="Remove all distances" icon="sight::module::ui::flaticons/RemoveDistance.svg" />
+                            <menuItem name="Add/Edit distance" icon="sight::module::ui::icons/distance.svg" style="check" />
+                            <menuItem name="Remove all distances" icon="sight::module::ui::icons/remove_distance.svg" />
                         </accordion>
-                        <menuItem name="Hide/show distance" icon="sight::module::ui::flaticons/HideDistance.svg"  icon2="sight::module::ui::flaticons/ShowDistance.svg" style="check" />
+                        <menuItem name="Show/Hide distance" icon="sight::module::ui::icons/show_distance.svg" style="check" />
                         <separator/>
-                        <menuItem name="Show/hide axis" icon="sight::module::ui::flaticons/Axis.svg" style="check" />
+                        <menuItem name="Show/hide axis" icon="sight::module::ui::icons/axis.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>
@@ -306,7 +306,7 @@
                     <menuItem sid="removeAllLandmarksAct" start="true" />
                     <menuItem sid="addDistanceAct" start="true" />
                     <menuItem sid="removeAllDistancesAct" start="true" />
-                    <menuItem sid="hideDistanceAct" start="false" />
+                    <menuItem sid="showDistanceAct" start="false" />
                     <menuItem sid="axisVisibilityAct" start="true" />
                 </registry>
             </service>
@@ -440,12 +440,13 @@
 
             <!-- Manage distance -->
             <service uid="addDistanceAct" type="sight::module::ui::action">
-                <state enabled="false" checked="false"/>
+                <state enabled="false" checked="false" />
             </service>
 
             <service uid="removeAllDistancesAct" type="sight::module::ui::action" />
 
-            <service uid="hideDistanceAct" type="sight::module::ui::metrics::show_distance" auto_connect="true" >
+            <service uid="showDistanceAct" type="sight::module::ui::metrics::show_distance" auto_connect="true">
+                <state enabled="true" checked="true" />
                 <inout key="image" uid="image" />
             </service>
 
@@ -685,7 +686,7 @@
                 <slot>landmarksEditModeAct/enable</slot>
                 <slot>addDistanceAct/enable</slot>
                 <slot>removeDistanceAct/enable</slot>
-                <slot>hideDistanceAct/enable</slot>
+                <slot>showDistanceAct/enable</slot>
             </connect>
 
             <connect channel="VOLUME_BOOL_SENDER_CHANNEL" >
@@ -795,8 +796,8 @@
             <start uid="extractPacsImageSrv" />
             <start uid="lightSelectorSrv" />
             <start uid="lightEditorSrv" />
-            <start uid="hideDistanceAct" />
             <start uid="landmarksParameterSrv" />
+            <start uid="showDistanceAct" />
 
             <update uid="TFManagerAct" />
             <update uid="volumeParameterSrv" />

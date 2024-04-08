@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ void distance::starting()
     );
 
     namespace fs = std::filesystem;
-    fs::path path_image_dist = core::runtime::get_module_resource_file_path("sight::module::ui::qt", "distance.png");
+    fs::path path_image_dist = core::runtime::get_module_resource_file_path("sight::module::ui::qt", "distance.svg");
     SIGHT_ASSERT("image " << path_image_dist << "is missing", fs::exists(path_image_dist));
 
     QIcon image_dist(QString::fromStdString(path_image_dist.string()));

@@ -11,7 +11,7 @@ add_dependencies(
     module_service
     module_filter_image
     module_ui
-    module_ui_flaticons
+    module_ui_icons
     module_io_vtk
     module_io_activity
     activity_viz_negato
@@ -49,10 +49,10 @@ module_param(
         true
         "New password required"
         "  Please enter a new password: "
-        "sight::module::ui::flaticons/ircad.svg"
+        "sight::module::ui::icons/ircad_white.svg"
         "Password required"
         "  Please enter your password: "
-        "sight::module::ui::flaticons/ircad.svg"
+        "sight::module::ui::icons/ircad_white.svg"
 )
 
 sight_generate_profile(ex_activities)

@@ -69,11 +69,11 @@
             </service>
 
             <service uid="speedDialSrv" type="sight::module::ui::qt::icon_speed_dial">
-                <config direction="right" icon="sight::module::ui::flaticons/BlueLoad.svg" unfoldedIcon="sight::module::ui::flaticons/RedRightArrow.svg"/>
+                <config direction="right" icon="sight::module::ui::icons/load.svg" unfoldedIcon="sight::module::ui::icons/revert.svg" />
                 <actions>
-                    <action sid="openImageAct" name="Open image" icon="sight::module::ui::flaticons/BlueFileImg.svg" shortcut="Ctrl+I" />
-                    <action sid="openMeshAct" name="Open mesh" icon="sight::module::ui::flaticons/BlueFileMesh.svg" shortcut="Ctrl+M" />
-                    <action sid="openTextureAct" name="Open texture" icon="sight::module::ui::flaticons/BlueFileTex.svg" shortcut="Ctrl+T" />
+                    <action sid="openImageAct" name="Open image" icon="sight::module::ui::icons/image_series.svg" shortcut="Ctrl+I" />
+                    <action sid="openMeshAct" name="Open mesh" icon="sight::module::ui::icons/model_series.svg" shortcut="Ctrl+M" />
+                    <action sid="openTextureAct" name="Open texture" icon="sight::module::ui::icons/opacity.svg" shortcut="Ctrl+T" />
                 </actions>
             </service>
 
@@ -178,8 +178,8 @@
             <service uid="showNegatoSrv" type="sight::module::ui::qt::com::signal_button">
                 <config>
                     <checkable>true</checkable>
-                    <icon>sight::module::ui::flaticons/RedCross.svg</icon>
-                    <icon2>sight::module::ui::flaticons/Layers.svg</icon2>
+                    <icon>sight::module::ui::icons/cross.svg</icon>
+                    <icon2>sight::module::ui::icons/layers.svg</icon2>
                     <iconWidth>40</iconWidth>
                     <iconHeight>16</iconHeight>
                     <checked>true</checked>
@@ -195,7 +195,7 @@
             <service uid="snapshotSrv" type="sight::module::ui::qt::com::signal_button">
                 <config>
                     <checkable>false</checkable>
-                    <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
+                    <icon>sight::module::ui::icons/frame.svg</icon>
                 </config>
             </service>
 

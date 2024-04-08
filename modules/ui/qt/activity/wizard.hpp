@@ -68,8 +68,8 @@ namespace sight::module::ui::qt::activity
      <confirm>true</confirm>
      <cancel>true</cancel>
      <icons>
-         <icon type="data::image_series" icon="sight::module::ui::icons/ImageSeries.svg" />
-         <icon type="data::model_series" icon="sight::module::ui::icons/ModelSeries.svg" />
+         <icon type="data::image_series" icon="sight::module::ui::icons/image_series.svg" />
+         <icon type="data::model_series" icon="sight::module::ui::icons/model_series.svg" />
      </icons>
    </service>
    @endcode

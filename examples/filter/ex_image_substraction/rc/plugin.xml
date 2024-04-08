@@ -110,7 +110,7 @@
                         <menuItem name="Load image 2" icon="ex_image_substraction/icons/icon-load2.png" />
                         <separator />
                         <menuItem name="Save image" icon="ex_image_substraction/icons/save.png" />
-                        <menuItem name="Substract image" icon="sight::module::ui::icons/RedMinus.svg" />
+                        <menuItem name="Substract image" icon="sight::module::ui::icons/minus.svg" />
                     </layout>
                 </gui>
                 <registry>
@@ -328,21 +328,21 @@
             <service uid="snapshotNegato1EditorSrv" type="sight::module::ui::qt::com::signal_button">
                 <config>
                     <checkable>false</checkable>
-                    <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
+                    <icon>sight::module::ui::icons/frame.svg</icon>
                 </config>
             </service>
 
             <service uid="snapshotNegato2EditorSrv" type="sight::module::ui::qt::com::signal_button">
                 <config>
                     <checkable>false</checkable>
-                    <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
+                    <icon>sight::module::ui::icons/frame.svg</icon>
                 </config>
             </service>
 
             <service uid="snapshotNegato3EditorSrv" type="sight::module::ui::qt::com::signal_button">
                 <config>
                     <checkable>false</checkable>
-                    <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
+                    <icon>sight::module::ui::icons/frame.svg</icon>
                 </config>
             </service>
 

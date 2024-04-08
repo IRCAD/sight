@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,11 +117,11 @@ void window_level::starting()
             QIcon ico;
             std::string square_icon(core::runtime::get_module_resource_file_path(
                                         "sight::module::ui::qt",
-                                        "square.png"
+                                        "square.svg"
             ).string());
             std::string ramp_icon(core::runtime::get_module_resource_file_path(
                                       "sight::module::ui::qt",
-                                      "ramp.png"
+                                      "ramp.svg"
             ).string());
             ico.addPixmap(QPixmap(QString::fromStdString(square_icon)), QIcon::Normal, QIcon::On);
             ico.addPixmap(QPixmap(QString::fromStdString(ramp_icon)), QIcon::Normal, QIcon::Off);
@@ -138,7 +138,7 @@ void window_level::starting()
             icon.addFile(QString::fromStdString(win), QSize(), QIcon::Normal, QIcon::On);
             std::string nowindo(core::runtime::get_module_resource_file_path(
                                     "sight::module::ui::qt",
-                                    "nowindowing.svg"
+                                    "no_windowing.svg"
             ).string());
             icon.addFile(QString::fromStdString(nowindo), QSize(), QIcon::Normal, QIcon::Off);
             m_toggle_auto_button->setIcon(icon);

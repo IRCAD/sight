@@ -16,7 +16,7 @@
         <id>sight::activity::io::dicom::pacs_reader</id>
         <title>Dicom PACS Reader</title>
         <desc>Dicom PACS Reader activity</desc>
-        <icon>sight::module::ui::icons/Pull.svg</icon>
+        <icon>sight::module::ui::icons/pull.svg</icon>
         <requirements>
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
@@ -28,7 +28,7 @@
         <id>sight::activity::io::dicom::pacs_writer</id>
         <title>Dicom PACS Writer</title>
         <desc>Dicom Pacs Writer activity</desc>
-        <icon>sight::module::ui::icons/Push.svg</icon>
+        <icon>sight::module::ui::icons/push.svg</icon>
         <requirements>
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
@@ -48,7 +48,7 @@
         <id>sight::activity::io::dicom::filtering</id>
         <title>DICOM Filtering</title>
         <desc>DICOM Filtering activity</desc>
-        <icon>sight::module::ui::icons/GreenPlus.svg</icon>
+        <icon>sight::module::ui::icons/plus.svg</icon>
         <requirements>
         </requirements>
         <builder>sight::activity::builder::Activity</builder>

@@ -8,6 +8,6 @@ add_dependencies(
     module_ui
     module_ui_qt
     module_viz_scene2d
-    module_ui_flaticons
+    module_ui_icons
     viz_scene2d
 )

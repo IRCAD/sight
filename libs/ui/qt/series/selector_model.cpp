@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -643,11 +643,11 @@ void selector_model::add_series_icon(data::series::sptr _series, QStandardItem* 
 
         if(const auto& type = _series->get_dicom_type(); type == data::series::dicom_t::image)
         {
-            icon_path = core::runtime::get_module_resource_file_path("sight::module::ui::icons", "ImageSeries.svg");
+            icon_path = core::runtime::get_module_resource_file_path("sight::module::ui::icons", "image_series.svg");
         }
         else if(type == data::series::dicom_t::model)
         {
-            icon_path = core::runtime::get_module_resource_file_path("sight::module::ui::icons", "ModelSeries.svg");
+            icon_path = core::runtime::get_module_resource_file_path("sight::module::ui::icons", "model_series.svg");
         }
 
         if(!icon_path.empty())

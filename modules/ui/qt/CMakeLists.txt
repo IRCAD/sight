@@ -39,21 +39,15 @@ endif()
 file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/module_ui_qt")
 
 qt5_add_binary_resources(
-    module_ui_qt_DARKSTYLE_RCC "rc/darkstyle.qrc" DESTINATION
-    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/module_ui_qt/darkstyle.rcc"
-)
-
-qt5_add_binary_resources(
     module_ui_qt_FLATDARK_RCC "rc/flatdark.qrc" DESTINATION
     "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/module_ui_qt/flatdark.rcc"
 )
 
 qt5_add_binary_resources(
-    module_ui_qt_IRCAD_RCC "rc/ircad_style.qrc" DESTINATION
-    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/module_ui_qt/ircad_style.rcc"
+    module_ui_qt_IRCAD_RCC "rc/noctura.qrc" DESTINATION
+    "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/module_ui_qt/noctura.rcc"
 )
 
-add_dependencies(module_ui_qt module_ui_qt_DARKSTYLE_RCC)
 add_dependencies(module_ui_qt module_ui_qt_FLATDARK_RCC)
 add_dependencies(module_ui_qt module_ui_qt_IRCAD_RCC)
 

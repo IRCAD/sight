@@ -15,8 +15,8 @@
             <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
             <confirm>false</confirm>
             <icons>
-                <icon type="sight::data::image_series" icon="sight::module::ui::icons/ImageSeries.svg" />
-                <icon type="sight::data::model_series" icon="sight::module::ui::icons/ModelSeries.svg" />
+                <icon type="sight::data::image_series" icon="sight::module::ui::icons/image_series.svg" />
+                <icon type="sight::data::model_series" icon="sight::module::ui::icons/model_series.svg" />
             </icons>
         </config>
     </extension>

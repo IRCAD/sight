@@ -53,11 +53,11 @@
                     <layout>
                         <editor />
                         <separator />
-                        <menuItem name="Frame recording" icon="sight::module::ui::flaticons/RedCircle.svg" style="check" />
-                        <menuItem name="Video recording" icon="sight::module::ui::flaticons/RedCircle.svg" style="check" />
+                        <menuItem name="Frame recording" icon="sight::module::ui::icons/record_frame.svg" style="check" />
+                        <menuItem name="Video recording" icon="sight::module::ui::icons/record.svg" style="check" />
                         <editor />
                         <spacer />
-                        <menuItem name="Preferences" icon="sight::module::ui::flaticons/BlueParametersConnected.svg" />
+                        <menuItem name="Preferences" icon="sight::module::ui::icons/connection.svg" />
                     </layout>
                 </gui>
                 <registry>

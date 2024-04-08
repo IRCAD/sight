@@ -69,21 +69,21 @@
             <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
-                        <menuItem name="Load Calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
+                        <menuItem name="Load Calibration" icon="sight::module::ui::icons/calibration.svg" />
                         <editor />
                         <separator />
-                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
-                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight::module::ui::icons/pause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::icons/stop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::icons/loop.svg" style="check" />
                         <separator />
-                        <menuItem name="Enable video image undistortion" icon="sight::module::ui::flaticons/YellowUndistortion.svg" style="check" />
-                        <menuItem name="Enable 3D rendering distortion" icon="sight::module::ui::flaticons/YellowDistortion.svg" style="check" />
+                        <menuItem name="Enable video image undistortion" icon="sight::module::ui::icons/barrel_distortion.svg" style="check" />
+                        <menuItem name="Enable 3D rendering distortion" icon="sight::module::ui::icons/pincushion_distortion.svg" style="check" />
                         <separator />
-                        <menuItem name="Show Mesh on tag" icon="sight::module::ui::flaticons/Mask.svg" style="check" />
+                        <menuItem name="Show Mesh on tag" icon="sight::module::ui::icons/mesh.svg" style="check" />
                         <separator />
-                        <menuItem name="Settings" icon="sight::module::ui::flaticons/BlueParameters.svg" style="check" />
+                        <menuItem name="Settings" icon="sight::module::ui::icons/gear.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>

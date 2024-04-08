@@ -117,7 +117,7 @@ public:
  * tests, in order to enhance reproducibility of the tests and to avoid to mess with the preferences of the user.
  *
  * @subsection set_password set_password
- * Set an harcoded password to be used. It enables defacto the encryption
+ * Set an hardcoded password to be used. It enables defacto the encryption
  *
  * @subsection set_password_policy set_password_policy
  * Defines how and when a password is asked. @see sight::core::crypto::password_keeper::password_policy for possible
@@ -172,7 +172,7 @@ public:
             true
             "Password required"
             "  Please enter your password: "
-            "sight::module::ui::qt/rename.png"
+            "sight::module::ui::qt/text.svg"
     )
  * @endcode
  *

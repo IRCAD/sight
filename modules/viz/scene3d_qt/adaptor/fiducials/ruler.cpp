@@ -925,8 +925,8 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                     auto* parent_widget = qt_interactor->get_qt_widget();
                     static const QIcon s_TRASH_BIN_ICON(QString::fromStdString(
                                                             (core::runtime::get_module_resource_path(
-                                                                 "sight::module::ui::flaticons"
-                                                             ) / "RedTrashBin.svg").string()
+                                                                 "sight::module::ui::icons"
+                                                             ) / "trash.svg").string()
                     ));
                     m_bin_button = new QPushButton(s_TRASH_BIN_ICON, "", parent_widget);
                     const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);

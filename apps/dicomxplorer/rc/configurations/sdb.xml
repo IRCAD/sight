@@ -31,16 +31,16 @@
         <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Import" icon="sight::module::ui::icons/ImportSession.svg" />
-                    <menuItem name="Export" icon="sight::module::ui::icons/Export.svg" />
+                    <menuItem name="Import" icon="sight::module::ui::icons/import.svg" />
+                    <menuItem name="Export" icon="sight::module::ui::icons/export.svg" />
                     <separator />
-                    <menuItem name="2D visualization" icon="sight::module::ui::icons/Layers.svg" />
+                    <menuItem name="2D visualization" icon="sight::module::ui::icons/layers.svg" />
                     <separator />
-                    <menuItem name="DICOM PACS Reader" icon="sight::module::ui::icons/Pull.svg" />
-                    <menuItem name="DICOM PACS Writer" icon="sight::module::ui::icons/Push.svg" />
-                    <menuItem name="DICOM Filtering" icon="sight::module::ui::icons/GreenPlus.svg" />
-                    <menuItem name="DICOM Web Reader" icon="sight::module::ui::icons/Pull.svg" />
-                    <menuItem name="DICOM Web Writer" icon="sight::module::ui::icons/Push.svg" />
+                    <menuItem name="DICOM PACS Reader" icon="sight::module::ui::icons/pull.svg" />
+                    <menuItem name="DICOM PACS Writer" icon="sight::module::ui::icons/push.svg" />
+                    <menuItem name="DICOM Filtering" icon="sight::module::ui::icons/plus.svg" />
+                    <menuItem name="DICOM Web Reader" icon="sight::module::ui::icons/pull.svg" />
+                    <menuItem name="DICOM Web Writer" icon="sight::module::ui::icons/push.svg" />
                 </layout>
             </gui>
             <registry>

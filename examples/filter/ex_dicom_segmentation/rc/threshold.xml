@@ -38,8 +38,8 @@
         <service uid="toolBarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Threshold" icon="sight::module::ui::flaticons/YellowMenu.svg" />
-                    <menuItem name="Export ImageSeries Mask" icon="sight::module::ui::flaticons/BlueSave.svg" />
+                    <menuItem name="Threshold" icon="sight::module::ui::icons/menu.svg" />
+                    <menuItem name="Export ImageSeries Mask" icon="sight::module::ui::icons/save.svg" />
                 </layout>
             </gui>
             <registry>

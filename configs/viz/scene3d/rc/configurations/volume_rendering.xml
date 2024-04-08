@@ -90,9 +90,9 @@
         <service uid="topToolbarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Fullscreen" icon="sight::module::ui::flaticons/YellowFullscreen.svg" />
-                    <menuItem name="Windowed" icon="sight::module::ui::flaticons/YellowMinimize.svg" shortcut="1" />
-                    <menuItem name="Snapshot" icon="sight::module::ui::flaticons/YellowPhoto.svg" shortcut="CTRL+S" />
+                    <menuItem name="Fullscreen" icon="sight::module::ui::icons/maximize.svg" />
+                    <menuItem name="Windowed" icon="sight::module::ui::icons/restore.svg" shortcut="1" />
+                    <menuItem name="Snapshot" icon="sight::module::ui::icons/frame.svg" shortcut="CTRL+S" />
                     <spacer />
                 </layout>
             </gui>

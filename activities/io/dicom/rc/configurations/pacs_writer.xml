@@ -32,10 +32,10 @@
         <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Import" icon="sight::module::ui::icons/ImportSession.svg" />
+                    <menuItem name="Import" icon="sight::module::ui::icons/import.svg" />
                     <menuItem name="Edit pacs configuration" icon="sight::module::ui::icons/gear.svg" style="check" />
-                    <menuItem name="Anonymize selected series" icon="sight::module::ui::icons/icon-Anonymization.svg" />
-                    <menuItem name="Push selected series to Pacs" icon="sight::module::ui::icons/Push.svg" />
+                    <menuItem name="Anonymize selected series" icon="sight::module::ui::icons/anonymization.svg" />
+                    <menuItem name="Push selected series to Pacs" icon="sight::module::ui::icons/push.svg" />
                 </layout>
             </gui>
             <registry>

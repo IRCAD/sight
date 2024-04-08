@@ -40,7 +40,7 @@
             <service uid="toolBarView" type="sight::module::ui::toolbar" >
                 <gui>
                     <layout style="ToolButtonTextBesideIcon">
-                        <menuItem name="Extract archive" icon="sight::module::ui::flaticons/Volume.svg" />
+                        <menuItem name="Extract archive" icon="sight::module::ui::icons/volume.svg" />
                     </layout>
                 </gui>
                 <registry>

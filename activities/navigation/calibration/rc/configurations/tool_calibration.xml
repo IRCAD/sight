@@ -48,17 +48,12 @@
         <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Start Tracker client"
-                        icon="sight::module::ui::icons/Pull.svg" />
-                    <menuItem name="Stop Tracker client"
-                        icon="sight::module::ui::icons/stop.svg" />
-                    <menuItem name="Configure Tracker client"
-                        icon="sight::module::ui::icons/gear.svg" />
-                    <menuItem name="Add point" icon="sight::module::ui::icons/ImportSession.svg" />
-                    <menuItem name="Compute tool calibration"
-                        icon="sight::module::ui::icons/GreenCheck.svg" />
-                    <menuItem name="Save calibration matrix"
-                        icon="sight::module::ui::icons/Export.svg" />
+                    <menuItem name="Start Tracker client" icon="sight::module::ui::icons/pull.svg" />
+                    <menuItem name="Stop Tracker client" icon="sight::module::ui::icons/stop.svg" />
+                    <menuItem name="Configure Tracker client" icon="sight::module::ui::icons/gear.svg" />
+                    <menuItem name="Add point" icon="sight::module::ui::icons/import.svg" />
+                    <menuItem name="Compute tool calibration" icon="sight::module::ui::icons/check.svg" />
+                    <menuItem name="Save calibration matrix" icon="sight::module::ui::icons/export.svg" />
                 </layout>
             </gui>
             <registry>

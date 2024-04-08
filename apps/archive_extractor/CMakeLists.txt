@@ -6,7 +6,7 @@ add_dependencies(
     module_app
     module_ui
     module_ui_qt
-    module_ui_flaticons
+    module_ui_icons
     module_io_zip
 )
 

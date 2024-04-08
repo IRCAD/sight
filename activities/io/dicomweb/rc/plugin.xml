@@ -12,7 +12,7 @@
         <id>sight::activity::io::dicomweb::reader</id>
         <title>DicomWeb Reader</title>
         <desc>DicomWeb Reader activity</desc>
-        <icon>sight::module::ui::icons/Pull.svg</icon>
+        <icon>sight::module::ui::icons/pull.svg</icon>
         <requirements>
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
@@ -32,7 +32,7 @@
         <id>sight::activity::io::dicomweb::writer</id>
         <title>DicomWeb Writer</title>
         <desc>DicomWeb Writer activity</desc>
-        <icon>sight::module::ui::icons/Push.svg</icon>
+        <icon>sight::module::ui::icons/push.svg</icon>
         <requirements>
         </requirements>
         <builder>sight::activity::builder::Activity</builder>

@@ -9,7 +9,7 @@ add_dependencies(
     data
     module_service
     module_ui
-    module_ui_flaticons
+    module_ui_icons
     module_io_itk
     module_io_vtk
     module_io_dicom
@@ -22,7 +22,8 @@ add_dependencies(
     module_ui_debug
 )
 
-# Set the reading mode to "lazy", so the buffers will only be read in module_memory when they are used.
+# Set the reading mode to "lazy", so the buffers will only be read in
+# module_memory when they are used.
 module_param(module_memory PARAM_LIST loading_mode PARAM_VALUES lazy)
 
 # Allow dark theme via module_ui_qt

@@ -10,7 +10,7 @@ add_dependencies(
     module_viz_scene3d_qt
     data
     module_service
-    module_ui_flaticons
+    module_ui_icons
     module_io_video
     module_filter_vision
     module_sync

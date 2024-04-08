@@ -12,7 +12,7 @@ add_dependencies(
     viz_scene2d
     module_ui
     module_ui_viz
-    module_ui_flaticons
+    module_ui_icons
     module_io_itk
     module_io_vtk
     module_io_dicom
@@ -23,8 +23,8 @@ add_dependencies(
 )
 
 module_param(
-    module_ui_qt PARAM_LIST resource stylesheet touch_friendly PARAM_VALUES sight::module::ui::qt/ircad_style.rcc
-                                                                            sight::module::ui::qt/ircad_style.qss true
+    module_ui_qt PARAM_LIST resource stylesheet touch_friendly PARAM_VALUES sight::module::ui::qt/noctura.rcc
+                                                                            sight::module::ui::qt/noctura.qss true
 )
 
 # Main application's configuration to launch

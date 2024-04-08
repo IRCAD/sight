@@ -72,20 +72,20 @@
             <service uid="toolbarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
-                        <menuItem name="Load calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
+                        <menuItem name="Load calibration" icon="sight::module::ui::icons/calibration.svg" />
                         <editor />
-                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
-                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::icons/stop.svg" />
+                        <menuItem name="Pause" icon="sight::module::ui::icons/pause.svg" shortcut="Space" />
+                        <menuItem name="Loop" icon="sight::module::ui::icons/loop.svg" style="check" />
                         <separator />
-                        <menuItem name="Start openvslam" icon="sight::module::ui::flaticons/GreenTracking.svg" />
-                        <menuItem name="Stop openvslam" icon="sight::module::ui::flaticons/RedUntracking.svg" />
-                        <menuItem name="Pause openvslam" icon="sight::module::ui::flaticons/OrangePause.svg" style="check" />
-                        <menuItem name="Reset openvslam" icon="sight::module::ui::flaticons/RedResetTracking.svg" />
-                        <menuItem name="Localization mode" icon="sight::module::ui::flaticons/OrangeLocalization.svg" style="check" />
+                        <menuItem name="Start openvslam" icon="sight::module::ui::icons/tracking.svg" />
+                        <menuItem name="Stop openvslam" icon="sight::module::ui::icons/stop.svg" />
+                        <menuItem name="Pause openvslam" icon="sight::module::ui::icons/pause.svg" style="check" />
+                        <menuItem name="Reset openvslam" icon="sight::module::ui::icons/reset.svg" />
+                        <menuItem name="Localization mode" icon="sight::module::ui::icons/localization.svg" style="check" />
                         <separator />
-                        <menuItem name="Hide/Show point cloud" icon="sight::module::ui::flaticons/Points.svg" style="check" />
+                        <menuItem name="Hide/Show point cloud" icon="sight::module::ui::icons/points.svg" style="check" />
                     </layout>
                 </gui>
                 <registry>

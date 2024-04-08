@@ -48,7 +48,7 @@ namespace sight::module::ui::qt
             <type>combobox</type>
             <name>Color Theme</name>
             <key>THEME</key>
-            <values>DEFAULT,DARKSTYLE,FLATDARK</values>
+            <values>DEFAULT,FLATDARK</values>
             <default_value>DEFAULT</default_value>
         </preference>
     </service>

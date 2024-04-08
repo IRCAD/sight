@@ -138,11 +138,11 @@ Usage:
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="${playShortCut}"/>
-                    <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="${pauseShortCut}"/>
-                    <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="${pauseShortCut}"/>
-                    <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" shortcut="${stopShortCut}"/>
-                    <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
+                    <menuItem name="Start" icon="sight::module::ui::icons/play.svg" shortcut="${playShortCut}" />
+                    <menuItem name="Pause" icon="sight::module::ui::icons/pause.svg" shortcut="${pauseShortCut}" />
+                    <menuItem name="Play" icon="sight::module::ui::icons/play.svg" shortcut="${pauseShortCut}" />
+                    <menuItem name="Stop" icon="sight::module::ui::icons/stop.svg" shortcut="${stopShortCut}" />
+                    <menuItem name="Loop" icon="sight::module::ui::icons/loop.svg" style="check" />
                 </layout>
             </gui>
             <registry>
@@ -305,7 +305,6 @@ Usage:
         </connect>
 
         
-
         <start uid="containerViewSrv" />
         <start uid="grabberProxySrv" />
 

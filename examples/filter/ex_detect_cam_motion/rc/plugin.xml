@@ -73,11 +73,11 @@
                 <gui>
                     <layout>
                         <editor />
-                        <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
-                        <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                        <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
-                        <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
+                        <menuItem name="Start" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                        <menuItem name="Pause" icon="sight::module::ui::icons/pause.svg" shortcut="Space" />
+                        <menuItem name="Play" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                        <menuItem name="Stop" icon="sight::module::ui::icons/stop.svg" />
+                        <menuItem name="Loop" icon="sight::module::ui::icons/loop.svg" style="check" />
                         <separator />
                         <editor />
                     </layout>
