@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,6 +41,7 @@ void concatenate_matrices::configuring()
     SIGHT_ASSERT("config must contain one input group named 'matrix'.", group_cfg.has_value());
     SIGHT_ASSERT("Missing 'in group=\"matrix\"'", group_cfg->get_value<std::string>() == MATRIX_GROUP_INPUT);
 
+    m_invert_vector.clear();
     for(const auto& cfg : boost::make_iterator_range(in_cfg.equal_range("key")))
     {
         const auto inverse = cfg.second.get<bool>("<xmlattr>.inverse", false);
