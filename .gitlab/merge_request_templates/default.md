@@ -20,6 +20,10 @@ _Describe how to test this feature step by step_
 
 _Optional, reference to any specific data needed for testing_
 
+### Decreased code coverage
+
+_If you reduce test coverage, it is mandatory to justify it here_
+
 ## Related issue(s)
 
 _If an issue must be closed only by this merge request, use Closes #X_
