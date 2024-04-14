@@ -1,5 +1,5 @@
-add_subdirectory(DicomAnonymizer)
+add_subdirectory(dicom_anonymizer)
 add_subdirectory(sightrun)
-add_subdirectory(arucoMarker)
-add_subdirectory(NetworkProxy)
+add_subdirectory(aruco_marker)
+add_subdirectory(network_proxy)
 add_subdirectory(sightlog)

@@ -1,18 +1,2 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg version="1.1" viewBox="0 0 131.71 131.71" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:osb="http://www.openswatchbook.org/uri/2009/osb" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink">
-<metadata>
-<rdf:RDF>
-<cc:Work rdf:about="">
-<dc:format>image/svg+xml</dc:format>
-<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
-<dc:title/>
-</cc:Work>
-</rdf:RDF>
-</metadata>
-<g transform="translate(-237.32 -121.94)">
-<text x="246.47722" y="272.52441" fill="#000000" font-family="DejaVu Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><tspan x="246.47722" y="272.52441"/></text>
-<flowRoot transform="translate(241.54 126.16)" fill="#000000" font-family="Sans" font-size="40px" letter-spacing="0px" word-spacing="0px" style="line-height:125%" xml:space="preserve"><flowRegion><rect x="-35.86" y="3.5674" width="213.39" height="149"/></flowRegion><flowPara/></flowRoot>
-<rect x="316.6" y="147.27" width="27.35" height="81.274" ry="1.4992" fill="#f60" stroke="#a70000" stroke-width="6"/>
-<rect x="262.39" y="147.05" width="27.35" height="81.274" ry="1.4992" fill="#f60" stroke="#a80000" stroke-width="6"/>
-</g>
-</svg>
+<svg enable-background="new 0 0 130 130" version="1.1" viewBox="0 0 130 130" xmlns="http://www.w3.org/2000/svg"><style type="text/css">.st0{fill:#FFFFFF;}
+	.st1{opacity:0.99;fill:#CB772F;stroke:#663C18;stroke-width:1.1643;stroke-linejoin:round;enable-background:new    ;}</style><path class="st0" d="m92 2.1c1.8 0.6 3.7 1 5.4 2.1 4.2 2.8 6.3 6.7 6.3 12v75 22c0 7.5-4.6 13-12 14-6.9 1-13-3.6-15-10-0.3-1.4-0.4-2.7-0.4-4.1v-96c0-8 5.1-13 11-14 0.2 0 0.3-0.1 0.4-0.2h4z"/><path class="st0" d="m43 2.1c1.5 0.6 3.2 0.9 4.6 1.7 4.8 2.9 7 7.2 7 13v55 41c0 3.1-0.6 6-2.3 8.6-3 4.6-8.9 6.9-14 5.7-5.3-1.2-9.5-5.7-10-11-0.2-1-0.2-2-0.2-3 0-32 0.1-64 0-96 0-7.4 4.7-13 11-14 0.1 0 0.3-0.1 0.4-0.2h4.1z"/></svg>

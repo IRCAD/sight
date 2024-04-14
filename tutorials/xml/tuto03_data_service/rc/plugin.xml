@@ -1,0 +1,140 @@
+
+<plugin id="tuto03_data_service" >
+
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+
+    <extension implements="sight::app::extension::config" >
+        <id>Tuto03DataService_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <!-- The root data object in tutoDataService is a sight::data::image. -->
+            <object uid="image" type="sight::data::image" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <!-- Frame service:
+                The frame creates a container for the rendering service and a menu bar.
+                In this tutorial, the gui services will automatically start the services they register using the
+                'start="true"' attribute.
+            -->
+            <service uid="mainFrame" type="sight::module::ui::frame" >
+                <gui>
+                    <frame>
+                        <name>tuto03_data_service</name>
+                        <icon>tuto03_data_service/tuto.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <menubar />
+                </gui>
+                <registry>
+                    <menubar sid="menuBarView" start="true" />
+                    <view sid="imageRenderSrv" start="true" />
+                </registry>
+            </service>
+
+            <!--
+                Menu bar service:
+                This service defines the list of the menus displayed in the menu bar.
+                Here, we have only one menu: File
+                Each <menu> declared into the <layout> tag, must have its associated <menu> into the <registry> tag.
+                The <layout> tags defines the displayed information, whereas the <registry> tags defines the
+                services information.
+            -->
+            <service uid="menuBarView" type="sight::module::ui::menubar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuView" start="true" />
+                </registry>
+            </service>
+
+            <!--
+                Menu service:
+                This service defines the actions displayed in the "File" menu.
+                Here, it registers two actions: "Open file", and "Quit".
+                As in the menu bar service, each <menuItem> declared into the <layout> tag, must have its
+                associated <menuItem> into the <registry> tag.
+
+                It's possible to associate specific attributes for <menuItem> to configure their style, shortcut...
+                In this tutorial, the attribute 'specialAction' has the value "QUIT". On MS Windows, there's no
+                impact, but on Linux this value installs the default 'Quit' system icon in the menuItem.
+            -->
+            <service uid="menuView" type="sight::module::ui::menu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open image" shortcut="Ctrl+O" />
+                        <separator />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openImageAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <!--
+                Quit action:
+                The action service (sight::module::ui::quit) is a generic action that will close the application
+                when the user click on the menuItem "Quit".
+            -->
+            <service uid="quitAct" type="sight::module::ui::quit" />
+
+            <!--
+                Open file action:
+                This service (sight::module::ui::action) is a generic action.
+                Its 'clicked' signal is connected to the 'update' slot of the image reader service.
+            -->
+            <service uid="openImageAct" type="sight::module::ui::action" />
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <!--
+                Reader selector dialog:
+                This is a generic service that shows a dialog to display all the readers or writers available for its
+                associated data. By default it is configured to show readers. (Note: if there is only one reading
+                service, it is directly selected without prompting.)
+                Here, the only reader available to read a sight::data::image is sight::module::io::vtk::ImageReaderService (see
+                tuto02_data_service_basic), so the selector will not be displayed.
+                When the service is chosen, it is started, updated and stopped, so the data is read.
+            -->
+            <service uid="imageReaderSrv" type="sight::module::ui::io::selector" >
+                <inout key="data" uid="image" />
+            </service>
+
+            <!--
+                3D visualization service of medical images:
+                Here, the service attribute 'auto_connect="true"' allows the rendering to listen the modification of
+                the data image. So, when the image is loaded, the visualization will be updated.
+            -->
+            <service uid="imageRenderSrv" type="sight::module::viz::sample::image" >
+                <in key="image" uid="image" auto_connect="true" />
+            </service>
+
+            <connect>
+                <signal>openImageAct/clicked</signal>
+                <slot>imageReaderSrv/update</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <!--
+                Here, we only start the frame because all the others services are managed by the gui service:
+                - the frame starts the menu bar and the redering service
+                - the menu bar starts the menu services
+                - the menus starts the actions
+            -->
+            <start uid="mainFrame" />
+            <start uid="imageReaderSrv" />
+
+        </config>
+    </extension>
+</plugin>

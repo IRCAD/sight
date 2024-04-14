@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>calibration</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -14,38 +14,38 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${AS_UID}" type="sight::data::Activity" src="ref" />
-        <object uid="${dataSet}" type="sight::data::Set" src="ref" />
-        <object uid="${cameraSet}" type="sight::data::CameraSet" src="ref" />
+        <object uid="${AS_UID}" type="sight::data::activity" src="ref" />
+        <object uid="${dataSet}" type="sight::data::set" src="ref" />
+        <object uid="${cameraSet}" type="sight::data::camera_set" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SView">
+        <service uid="mainView" type="sight::module::ui::view">
             <gui>
-                <toolBar />
-                <layout type="sight::ui::base::CardinalLayoutManager">
+                <toolbar />
+                <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBarView" start="true" />
+                <toolbar sid="toolBarView" start="true" />
                 <view wid="calibrationView" />
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
+        <service uid="toolBarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Previous" icon="sight::module::ui::icons/Back.svg" />
-                    <menuItem name="Next" icon="sight::module::ui::icons/Next.svg" />
-                    <menuItem name="Export camera set" icon="sight::module::ui::flaticons/BlueSave.svg" />
+                    <menuItem name="Previous" icon="sight::module::ui::icons/left.svg" />
+                    <menuItem name="Next" icon="sight::module::ui::icons/right.svg" />
+                    <menuItem name="Export camera set" icon="sight::module::ui::icons/save.svg" />
                     <separator />
-                    <menuItem name="Export xml/yaml" icon="sight::module::ui::flaticons/BlueFile.svg" />
+                    <menuItem name="Export xml/yaml" icon="sight::module::ui::icons/file.svg" />
                     <separator />
                     <editor />
                     <separator />
-                    <menuItem name="Chessboard size" icon="sight::module::ui::flaticons/GreyChessboard.svg" />
+                    <menuItem name="Chessboard size" icon="sight::module::ui::icons/chessboard.svg" />
                 </layout>
             </gui>
             <registry>
@@ -60,9 +60,9 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="sight::module::ui::base::SAction" />
+        <service uid="writeCalibrationAct" type="sight::module::ui::action" />
 
-        <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::SCameraConfigLauncher">
+        <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::camera_config_launcher">
             <inout key="cameraSet" uid="${cameraSet}" />
             <inout key="activity" uid="${AS_UID}" />
             <config>
@@ -80,7 +80,7 @@
             </config>
         </service>
 
-        <service uid="chessboardSizeAct" type="sight::module::ui::qt::SPreferencesConfiguration">
+        <service uid="chessboardSizeAct" type="sight::module::ui::qt::preferences_configuration">
             <preference>
                 <type>int</type>
                 <name>Chessboard width</name>
@@ -107,24 +107,24 @@
             </preference>
         </service>
 
-        <service uid="exportAct" type="sight::module::ui::base::SExportSet" autoConnect="true">
+        <service uid="exportAct" type="sight::module::ui::export_set" auto_connect="true">
             <inout key="container" uid="${dataSet}" />
             <inout key="data" uid="${cameraSet}" />
         </service>
 
-        <!-- The action "previous" and "next" are visible only if the application use a "SSequencer".
+        <!-- The action "previous" and "next" are visible only if the application use a "sequencer".
                          This service send signals to enable or not the actions. -->
-        <service uid="previousAct" type="sight::module::ui::base::com::SSignal">
+        <service uid="previousAct" type="sight::module::ui::action">
             <state visible="false" />
         </service>
 
-        <service uid="nextAct" type="sight::module::ui::base::com::SSignal">
+        <service uid="nextAct" type="sight::module::ui::action">
             <state visible="false" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="calibrationWriterSrv" type="sight::module::io::vision::SOpenCVWriter">
+        <service uid="calibrationWriterSrv" type="sight::module::io::vision::open_cv_writer">
             <in key="data" uid="${cameraSet}" />
         </service>
 
@@ -136,31 +136,31 @@
         </connect>
 
         <connect channel="preferencesModifiedProxy">
-            <signal>chessboardSizeAct/parametersModified</signal>
+            <signal>chessboardSizeAct/parameters_modified</signal>
         </connect>
 
-        <!-- Connection to enable "previous" action. It should be connected to a SSequencer in the application configuration.-->
+        <!-- Connection to enable "previous" action. It should be connected to a sequencer in the application configuration.-->
         <connect channel="${hasPreviousChannel}">
             <slot>exportAct/hide</slot>
             <slot>previousAct/show</slot>
-            <slot>previousAct/setEnabled</slot>
+            <slot>previousAct/set_enabled</slot>
         </connect>
 
-        <!-- Connection to called 'previous' slot of the application's SSequencer. -->
+        <!-- Connection to called 'previous' slot of the application's sequencer. -->
         <connect channel="${previousActivityChannel}">
-            <signal>previousAct/triggered</signal>
+            <signal>previousAct/clicked</signal>
         </connect>
 
-        <!-- Connection to enable "next" action. It should be connected to a SSequencer in the application configuration.-->
+        <!-- Connection to enable "next" action. It should be connected to a sequencer in the application configuration.-->
         <connect channel="${hasNextChannel}">
             <slot>exportAct/hide</slot>
             <slot>nextAct/show</slot>
-            <slot>nextAct/setEnabled</slot>
+            <slot>nextAct/set_enabled</slot>
         </connect>
 
-        <!-- Connection to called 'next' slot of the application's SSequencer. -->
+        <!-- Connection to called 'next' slot of the application's sequencer. -->
         <connect channel="${nextActivityChannel}">
-            <signal>nextAct/triggered</signal>
+            <signal>nextAct/clicked</signal>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

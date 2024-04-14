@@ -27,7 +27,7 @@
 #include <windows.h>
 #endif
 
-#include <core/log/SpyLogger.hpp>
+#include <core/log/spy_logger.hpp>
 #include <core/runtime/runtime.hpp>
 
 #include <cppunit/BriefTestProgressListener.h>
@@ -116,15 +116,15 @@ struct Options
                     return false;
                 }
 
-                const std::filesystem::path externalBundel {std::string(*args)};
-                if(!std::filesystem::exists(externalBundel) || !std::filesystem::is_directory(externalBundel))
+                const std::filesystem::path external_bundle {std::string(*args)};
+                if(!std::filesystem::exists(external_bundle) || !std::filesystem::is_directory(external_bundle))
                 {
-                    std::cerr << "The external bundle provided in argument is not a consistent directory : "
-                    << externalBundel.string() << std::endl;
+                    std::cerr << "The external module provided in argument is not a consistent directory : "
+                    << external_bundle.string() << std::endl;
                     return false;
                 }
 
-                sight::core::runtime::addModules(externalBundel);
+                sight::core::runtime::add_modules(external_bundle);
             }
             else
             {
@@ -152,14 +152,14 @@ void init_log_output()
         if(err.value() != 0)
         {
             // replace log file appender by stream appender: current dir and temp dir unreachable
-            sight::core::log::SpyLogger::add_console_log();
+            sight::core::log::spy_logger::add_console_log();
         }
         else
         {
             // creates fwTest.log in temp directory: current dir unreachable
             sysTmp  = sysTmp / logFile;
             logFile = sysTmp.string();
-            sight::core::log::SpyLogger::add_file_log(logFile);
+            sight::core::log::spy_logger::add_file_log(logFile);
         }
     }
     else
@@ -170,7 +170,7 @@ void init_log_output()
             perror("fclose");
         }
 
-        sight::core::log::SpyLogger::add_file_log(logFile);
+        sight::core::log::spy_logger::add_file_log(logFile);
     }
 }
 
@@ -184,7 +184,7 @@ void init_runtime()
     {
         SIGHT_INFO("Automatic loading of module '" + moduleName + "'");
         sight::core::runtime::init();
-        sight::core::runtime::loadModule(moduleName);
+        sight::core::runtime::load_module(moduleName);
     }
 }
 

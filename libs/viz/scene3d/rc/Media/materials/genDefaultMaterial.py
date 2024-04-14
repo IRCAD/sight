@@ -63,14 +63,14 @@ lightingParams = [ '// Lighting',
                    'param_named_auto u_f3CameraPos camera_position',
                    'param_named u_fNumLights float 1.0',
                    'param_named_auto u_f4LightAmbientCol ambient_light_colour',
-                   'param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 10',
-                   'param_named_auto u_f3LightSpecularCol light_specular_colour_array 10',
+                   'param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 8',
+                   'param_named_auto u_f3LightSpecularCol light_specular_colour_array 8',
                    'param_named_auto u_f4AmbientCol surface_ambient_colour',
                    'param_named_auto u_f4DiffuseCol surface_diffuse_colour',
                    'param_named_auto u_f4SpecularCol surface_specular_colour',
                    'param_named_auto u_fShininess surface_shininess']
 
-lightingParamsFlat = lightingParams + [ 'param_named_auto u_f4LightPosVs light_position_view_space_array 10' ]
+lightingParamsFlat = lightingParams + [ 'param_named_auto u_f4LightPosVs light_position_view_space_array 8' ]
 
 lightingParams += [ 'param_named_auto u_f4LightPos light_position_array 10' ]
 
@@ -98,16 +98,21 @@ diffuseColorParams = ['// Diffuse color',
 ## Per primitive color
 ppColorParams = ['param_named u_colorPrimitiveTexture int 0']
 
+vpFlatParams = ['param_named_auto u_worldView worldview_matrix']
+vpPixelLitParams = ['param_named_auto u_world world_matrix',
+                    'param_named_auto u_normalMatrix inverse_transpose_world_matrix']
+
 ## 'Name', '#Define', 'Attached vp', {parameters dict}
 cfgAmbient = ['Ambient', '', { 'renderSceneVP' : ambientParams } ]
 
-cfgFlat = ['Flat', 'FLAT=1', { 'defaultFP' : lightingParamsFlat } ]
+cfgFlat = ['Flat', 'FLAT=1', { 'renderSceneVP' : vpFlatParams, 'defaultFP' : lightingParamsFlat } ]
 
-cfgPixelLit = ['PixelLit', 'PHONG=1', { 'defaultFP' : lightingParams,
-                                                                   'depthPeelingFP' : lightingParams,
-                                                                   'dualDepthPeelingFP' : lightingParams,
-                                                                   'HT_weight_blendFP' : lightingParams,
-                                                                   'weighted_blendFP' : lightingParams } ]
+cfgPixelLit = ['PixelLit', 'PHONG=1', { 'renderSceneVP' : vpPixelLitParams,
+                                        'defaultFP' : lightingParams,
+                                        'depthPeelingFP' : lightingParams,
+                                        'dualDepthPeelingFP' : lightingParams,
+                                        'HT_weight_blendFP' : lightingParams,
+                                        'weighted_blendFP' : lightingParams } ]
 
 cfgEdgeNormal = ['Edge_Normal', 'EDGE_NORMAL=1', { } ]
 

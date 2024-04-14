@@ -84,8 +84,8 @@ function(get_header_file_install_destination)
     # activities -> activity/theme/project/
     # apps -> project
     # examples -> project
-    # libs -> theme/project/ except for theme=core project
-    # modules -> modules/theme/project/  except for theme=core modules/project
+    # libs -> theme/project/ except for theme=main project
+    # modules -> modules/theme/project/  except for theme=main modules/project
     # tutorials -> project
     file(RELATIVE_PATH CURRENT_SOURCE_DIR_REL ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
     string(REPLACE "/" ";" CURRENT_SOURCE_DIRS ${CURRENT_SOURCE_DIR_REL})
@@ -98,7 +98,7 @@ function(get_header_file_install_destination)
     else()
         list(GET CURRENT_SOURCE_DIRS 1 THEME)
         list(GET CURRENT_SOURCE_DIRS 2 PROJECT)
-        string(REPLACE "core" "." THEME ${THEME})
+        string(REPLACE "__" "." THEME ${THEME})
         set(PROJECT_PATH "${THEME}/${PROJECT}")
     endif()
 
@@ -112,19 +112,19 @@ function(get_header_file_install_destination)
         endif()
     endif()
     set(HEADER_FILE_DESTINATION_REL "${HEADER_FILE_DESTINATION_REL}" PARENT_SCOPE)
-    set(HEADER_FILE_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_FILE_DESTINATION_REL}" PARENT_SCOPE)
+    set(HEADER_FILE_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/include/${PROJECT_NAME}/${HEADER_FILE_DESTINATION_REL}"
+        PARENT_SCOPE
+    )
 endfunction()
 
 # Configure header template
 macro(configure_header_file SIGHT_TARGET FILENAME HEADER_FILE_DESTINATION HEADER_FILE_DESTINATION_REL)
 
     configure_file("${FWCMAKE_BUILD_FILES_DIR}/${FILENAME}.in" ${HEADER_FILE_DESTINATION}/${FILENAME} IMMEDIATE @ONLY)
-    # On windows, we must replace the _API macros before, so we install it later with all other headers
-    if(UNIX)
-        install(FILES ${HEADER_FILE_DESTINATION}/${FILENAME}
-                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
-        )
-    endif()
+
+    install(FILES ${HEADER_FILE_DESTINATION}/${FILENAME}
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
+    )
 endmacro()
 
 # Initialize the project and set basic variables
@@ -147,10 +147,14 @@ macro(init_project PRJ_NAME PRJ_TYPE)
         list(FILTER SOURCES EXCLUDE REGEX "/test/detail")
         list(FILTER SOURCES EXCLUDE REGEX "/test/tu")
         list(FILTER SOURCES EXCLUDE REGEX "/test/ui")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/uit")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/ut")
         list(FILTER HEADERS EXCLUDE REGEX "/test/api")
         list(FILTER HEADERS EXCLUDE REGEX "/test/detail")
         list(FILTER HEADERS EXCLUDE REGEX "/test/tu")
         list(FILTER HEADERS EXCLUDE REGEX "/test/ui")
+        list(FILTER HEADERS EXCLUDE REGEX "/test/uit")
+        list(FILTER HEADERS EXCLUDE REGEX "/test/ut")
     endif()
 
     list(APPEND ${SIGHT_TARGET}_HEADERS ${HEADERS})
@@ -164,7 +168,9 @@ macro(init_project PRJ_NAME PRJ_TYPE)
     set(${SIGHT_TARGET}_HEADERS ${${SIGHT_TARGET}_HEADERS} PARENT_SCOPE)
     set(${SIGHT_TARGET}_SOURCES ${${SIGHT_TARGET}_SOURCES} PARENT_SCOPE)
 
-    file(GLOB_RECURSE ${SIGHT_TARGET}_RC_FILES "${PRJ_SOURCE_DIR}/rc/*" "${PRJ_SOURCE_DIR}/tu/rc/*")
+    file(GLOB_RECURSE ${SIGHT_TARGET}_RC_FILES "${PRJ_SOURCE_DIR}/rc/*" "${PRJ_SOURCE_DIR}/ut/rc/*"
+         "${PRJ_SOURCE_DIR}/tu/rc/*"
+    )
     set(${SIGHT_TARGET}_RC_FILES ${${SIGHT_TARGET}_RC_FILES} PARENT_SCOPE)
     set_source_files_properties(${${SIGHT_TARGET}_RC_FILES} PROPERTIES HEADER_FILE_ONLY TRUE)
 
@@ -177,7 +183,7 @@ endmacro()
 
 # Configure the project
 macro(configure_project SIGHT_TARGET)
-    string(TOUPPER ${SIGHT_TARGET} PROJECT_NAME_UPCASE)
+    string(TOUPPER ${PROJECT_NAME}_${SIGHT_TARGET} TARGET_NAME_UPCASE)
 
     if(TARGET_OBJECT_LIB)
         set(BUILD_TARGET_NAME ${TARGET_OBJECT_LIB})
@@ -185,7 +191,7 @@ macro(configure_project SIGHT_TARGET)
         set(BUILD_TARGET_NAME ${SIGHT_TARGET})
     endif()
 
-    target_compile_definitions(${BUILD_TARGET_NAME} PRIVATE "${PROJECT_NAME_UPCASE}_EXPORTS")
+    target_compile_definitions(${BUILD_TARGET_NAME} PRIVATE "${TARGET_NAME_UPCASE}_EXPORTS")
 
     # Get CMake target type (not Sight one)
     get_target_property(TARGET_TYPE ${SIGHT_TARGET} TYPE)
@@ -226,7 +232,7 @@ macro(create_resources_target TARGET TARGET_RC RES_DIR TARGET_RC_DIR)
 
     endforeach()
 
-    add_custom_target("${TARGET_RC}" ALL DEPENDS ${CREATED_RESOURCES_LIST} COMMENT "Copy resources")
+    add_custom_target("${TARGET_RC}" DEPENDS ${CREATED_RESOURCES_LIST} COMMENT "Copy resources")
 
     # Adds project into folder rc
     set_target_properties("${TARGET_RC}" PROPERTIES FOLDER "rc")
@@ -366,8 +372,7 @@ macro(sight_generic_test SIGHT_TARGET)
         set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}>)
     endif()
 
-    string(REGEX REPLACE "Test$" "" DIRNAME "${SIGHT_TARGET}")
-    set(TU_NAME "tu_exec_${DIRNAME}")
+    string(REGEX REPLACE "_ui?t$" "" DIRNAME "${SIGHT_TARGET}")
 
     set(BASE_TARGET "${DIRNAME}")
 
@@ -413,13 +418,15 @@ macro(sight_generic_test SIGHT_TARGET)
 
     configure_project(${SIGHT_TARGET})
 
-    if(EXISTS "${PRJ_SOURCE_DIR}/tu/rc")
-        set(TEST_RC_DIR "${PRJ_SOURCE_DIR}/tu/rc")
+    if(EXISTS "${PRJ_SOURCE_DIR}/ut/rc")
+        set(TEST_RC_DIR "${PRJ_SOURCE_DIR}/ut/rc")
+    elseif(EXISTS "${PRJ_SOURCE_DIR}/rc")
+        set(TEST_RC_DIR "${PRJ_SOURCE_DIR}/rc")
     elseif(EXISTS "${PRJ_SOURCE_DIR}/rc")
         set(TEST_RC_DIR "${PRJ_SOURCE_DIR}/rc")
     endif()
     if(TEST_RC_DIR)
-        set(${SIGHT_TARGET}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}")
+        set(${SIGHT_TARGET}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${SIGHT_TARGET}")
 
         create_resources_target(${SIGHT_TARGET} ${SIGHT_TARGET}_rc "${TEST_RC_DIR}" "${${SIGHT_TARGET}_RC_BUILD_DIR}")
         add_dependencies(${SIGHT_TARGET} ${SIGHT_TARGET}_rc)
@@ -573,7 +580,7 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
         target_include_directories(
             ${TARGET_OBJECT_LIB}
             PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include> $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
-                   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/>
+                   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/__/>
         )
         target_include_directories(${SIGHT_TARGET} PUBLIC $<INSTALL_INTERFACE:include>)
         target_link_libraries(${SIGHT_TARGET} PUBLIC ${TARGET_OBJECT_LIB})
@@ -585,7 +592,7 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
         target_include_directories(
             ${SIGHT_TARGET}
             PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/> $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
-                   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core/> $<INSTALL_INTERFACE:include>
+                   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/__/> $<INSTALL_INTERFACE:include>
         )
     endif()
 
@@ -621,45 +628,16 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
 
     # export and install target
     if(NOT ${SIGHT_TARGET} MATCHES "^pch.*")
-        if(WIN32)
-            set(HEADERS_TO_INSTALL "${${SIGHT_TARGET}_HEADERS}")
-            foreach(HEADER ${HEADERS_TO_INSTALL})
-                cmake_path(RELATIVE_PATH HEADER)
-                list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/install/${HEADER})
-            endforeach()
-            list(APPEND HEADERS_TO_INSTALL "${HEADER_FILE_DESTINATION}/config.hpp")
-            list(APPEND GENERATED_HEADERS "${CMAKE_CURRENT_BINARY_DIR}/install/config.hpp")
-
-            # Did not find any simple way to pass a list as argument, semi-columns are always replaced by spaces...
-            # Thus, we hack this by using an another separator character
-            string(REPLACE ";" "," HEADERS_REMAKE "${HEADERS_TO_INSTALL}")
-
-            add_custom_command(
-                OUTPUT ${GENERATED_HEADERS}
-                COMMAND
-                    ${CMAKE_COMMAND} ARGS -DSOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
-                    -DCONFIG_SOURCE_DIR="${HEADER_FILE_DESTINATION}" -DTARGET_DIR="${CMAKE_CURRENT_BINARY_DIR}/install"
-                    -DHEADERS="${HEADERS_REMAKE}" -P "${FWCMAKE_RESOURCE_PATH}/install/windows/generate_headers.cmake"
-                DEPENDS ${HEADERS_TO_INSTALL}
-                COMMENT "Generate headers for ${SIGHT_TARGET}"
-            )
-            add_custom_target("${SIGHT_TARGET}_headers" ALL DEPENDS ${GENERATED_HEADERS} COMMENT "Copy headers")
-
-            install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/install/
-                    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
-            )
-        else()
-            install(
-                DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
-                FILES_MATCHING
-                PATTERN "*.h"
-                PATTERN "*.hpp"
-                PATTERN "*.hxx"
-                PATTERN "*.cuh" # CUDA
-                PATTERN "test/*" EXCLUDE
-            )
-        endif()
+        install(
+            DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
+            FILES_MATCHING
+            PATTERN "*.h"
+            PATTERN "*.hpp"
+            PATTERN "*.hxx"
+            PATTERN "*.cuh" # CUDA
+            PATTERN "test/*" EXCLUDE
+        )
 
         set(TARGETS_TO_EXPORT ${SIGHT_TARGET})
 
@@ -735,14 +713,12 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
         set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}>)
     endif()
 
-    set(MODULE_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_LIB_PREFIX}/${SIGHT_TARGET}")
-
     if(${SIGHT_TARGET}_SOURCES)
 
         add_library(
             ${SIGHT_TARGET} SHARED
             ${ARGN} ${${SIGHT_TARGET}_HEADERS} ${${SIGHT_TARGET}_SOURCES} ${${SIGHT_TARGET}_RC_FILES}
-            ${${SIGHT_TARGET}_CMAKE_FILES} ${${SIGHT_TARGET}_PCH_LIB}
+            ${${SIGHT_TARGET}_CMAKE_FILES} $<BUILD_INTERFACE:${${SIGHT_TARGET}_PCH_LIB}>
         )
 
         # create the custom command that may generate the plugin.xml and the registerServices.cpp file
@@ -772,8 +748,8 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
         target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>)
         # Allows include of all folders in libs, i.e. <ui/..> <io/..> ...
         target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs>)
-        # Allows include of type <core/..> <data/..> ...
-        target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/core>)
+        # Allows include of type <__/..> <data/..> ...
+        target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/__>)
         # Allows include of type <modules/../..>
         target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
 
@@ -929,9 +905,25 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
         ${SIGHT_TARGET} PROPERTIES SIGHT_MODULE_RC_DIR "\${_IMPORT_PREFIX}/${SIGHT_MODULE_RC_PREFIX}/${SIGHT_TARGET}"
     )
 
+    # Create a property SIGHT_MODULE_ID that can be used to generate profile files
+    get_filename_component(SOURCE_DIR_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+    string(REPLACE "${SOURCE_DIR_NAME}" "" MODULE_NAME ${SIGHT_TARGET})
+    if(MODULE_NAME)
+        string(REPLACE "_" "::" MODULE_NAME ${MODULE_NAME})
+        # Strip trailing __ for anonymous modules such as sight::ui
+        string(REPLACE "__" "" SOURCE_DIR_NAME ${SOURCE_DIR_NAME})
+    endif()
+
+    set(MODULE_ID "${MODULE_NAME}${SOURCE_DIR_NAME}")
+    if(NOT "${TARGET_TYPE}" STREQUAL "APP")
+        set(MODULE_ID "${PROJECT_NAME}::${MODULE_ID}")
+    endif()
+    set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_MODULE_ID "${MODULE_ID}")
+
     set_target_properties(
-        ${SIGHT_TARGET} PROPERTIES EXPORT_PROPERTIES
-                                   "SIGHT_TARGET_TYPE;SIGHT_START;SIGHT_MODULE_RC_DIR;SIGHT_MODULE_DEPENDENCIES"
+        ${SIGHT_TARGET}
+        PROPERTIES EXPORT_PROPERTIES
+                   "SIGHT_TARGET_TYPE;SIGHT_START;SIGHT_MODULE_RC_DIR;SIGHT_MODULE_DEPENDENCIES;SIGHT_MODULE_ID"
     )
 endmacro()
 

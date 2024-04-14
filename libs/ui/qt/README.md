@@ -4,51 +4,51 @@ Contains all needed interfaces, helper classes and resources to build a Qt inter
 
 ## Files
 
-- **ActionCallback**: defines the menu item callback.
-- **App**: defines the Qt application.
-- **Application**: gives access to the qml application part.
-- **Cursor**: defines the generic cursor.
+- **action_callback**: defines the menu item callback.
+- **app**: defines the Qt application.
+- **application**: gives access to the qml application part.
+- **cursor**: defines the generic cursor.
 - **QtMainFame**: defines the Qt main frame.
-- **SliceSelector**: defines a Qt panel used to control a VTK 2D Negatoscope view.
-- **WorkerQt**: provides an implementation of core::thread::Worker using boost::asio.
-
+- **slice_selector**: defines a Qt panel used to control a VTK 2D Negatoscope view.
+- **worker_qt**: provides an implementation of core::thread::Worker using boost::asio.
+- **collapsible_section**: defines a collapsible section. 
+ 
 ### _builder_
 
-- **ContainerBuilder**: defines the generic layout manager.
-- **MenuBarBuilder**: defines a menu bar.
-- **SlideViewBuilder**: creates a slide widget, that can be displayed over all others widgets.
+- **widget**: defines the generic layout manager.
+- **menubar**: defines a menu bar.
+- **slideview**: creates a slide widget, that can be displayed over all others widgets.
 - **ToolbarBuilder**: defines a tool bar.
 
 ### _container_
 
-- **QtContainer**: defines the QWidget container.
-- **QtMenuBarContainer**: defines the Qt menu bar container.
-- **QtMenuContainer**: defines the Qt menu container.
-- **QtMenuItemContainer**: defines the Qt menu item bar container.
-- **QtToolBarContainer**: defines the Qt tool bar container.
+- **widget**: defines the QWidget container.
+- **menubar**: defines the Qt menu bar container.
+- **menu**: defines the Qt menu container.
+- **menu_item**: defines the Qt menu item bar container.
+- **toolbar**: defines the Qt tool bar container.
 
 ### _dialog_
 
-- **InputDialog**: defines an Input dialog.
-- **LocationDialog**: defines the generic file/folder dialog.
-- **LoggerDialog**: defines a dialog showing log information.
-- **MessageDialog**: defines the generic message box.
-- **MultiSelectorDialog**: allows choosing multiple elements among several selections.
-- **NotificationDialog**: defines a notification popup.
-- **ProgressDialog**: allows to select an acquisition in a patient database.
-- **PulseProgressDialog**: allows to show a pulse progress bar.
-- **SelectorDialog**: allows choosing an element among several (selections).
+- **input**: defines an Input dialog.
+- **location**: defines the generic file/folder dialog.
+- **logger**: defines a dialog showing log information.
+- **message**: defines the generic message box.
+- **notification**: defines a notification popup.
+- **progress**: allows to select an acquisition in a patient database.
+- **pulse_progress**: allows to show a pulse progress bar.
+- **selector**: allows choosing an element among several (selections).
 
-### _layoutManager_
+### _layout_
 
-- **CardinalLayoutManager**: defines the cardinal layout manager.
-- **FrameLayoutManager**: defines the frame manager.
-- **LineLayoutManager**: defines the line layout manager.
-- **MenuBarLayoutManager**: defines the menu bar layout manager for the GUI.
-- **MenuLayoutManager**: defines the menu layout manager for the GUI.
-- **TabLayoutManager**: defines the tab layout manager.
-- **ToolBarLayoutManager**: defines the toolbar layout manager for the GUI.
-- **ToolboxLayoutManager**: defines the toolbox layout manager.
+- **cardinal**: defines the cardinal layout manager.
+- **frame**: defines the frame manager.
+- **line**: defines the line layout manager.
+- **menubar**: defines the menu bar layout manager for the GUI.
+- **menu**: defines the menu layout manager for the GUI.
+- **tab**: defines the tab layout manager.
+- **toolbar**: defines the toolbar layout manager for the GUI.
+- **toolbox**: defines the toolbox layout manager.
 
 ### _util_
 
@@ -59,7 +59,7 @@ Contains all needed interfaces, helper classes and resources to build a Qt inter
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> 
+target_link_libraries( my_target <PUBLIC|PRIVATE> 
                        ui_qt
 )
 ```

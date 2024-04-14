@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="profile" type="profile_t" />
+
+<xs:complexType name="profile_t">
+  <xs:sequence>
+    <xs:element name="activate" type="activate_t" minOccurs="0" maxOccurs="unbounded" />
+    <xs:element name="start" type="start_t" minOccurs="0" maxOccurs="unbounded" />
+  </xs:sequence>
+  <xs:attribute name="name" type="xs:string" use="required"/>
+  <xs:attribute name="version" type="xs:string" use="optional"/>
+  <xs:attribute name="check-single-instance" type="xs:boolean" use="optional"/>
+</xs:complexType>
+
+<xs:complexType name="activate_t">
+	<xs:sequence>
+		<xs:element name="disable-extension-point" type="disable_extension_point_t" minOccurs="0" maxOccurs="unbounded" />
+		<xs:element name="disable-extension" type="disable_extension_t" minOccurs="0" maxOccurs="unbounded" />
+		<xs:element name="param" type="param_t" minOccurs="0" maxOccurs="unbounded" />
+	</xs:sequence>
+	<xs:attribute name="id" type="xs:string" use="required"/>
+	<xs:attribute name="version" type="xs:string" />
+</xs:complexType>
+
+<xs:complexType name="param_t">
+	<xs:attribute name="id" type="xs:string" use="required"/>
+	<xs:attribute name="value" type="xs:string"/>
+</xs:complexType>
+
+<xs:complexType name="disable_extension_point_t">
+	<xs:attribute name="id" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="disable_extension_t">
+	<xs:attribute name="id" type="xs:string" use="required"/>
+</xs:complexType>
+
+<xs:complexType name="start_t">
+	<xs:attribute name="id" type="xs:string" use="required"/>
+</xs:complexType>
+
+</xs:schema>

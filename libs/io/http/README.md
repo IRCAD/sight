@@ -15,7 +15,7 @@ This sub-folder contains classes defining exceptions.
 
 ### helper
 
--**Series**: defines methods to help converting data::DicomSeries to http responses and more. 
+-**Series**: defines methods to help converting data::dicom_series to http responses and more. 
 
 
 ## How to use it
@@ -24,7 +24,7 @@ This sub-folder contains classes defining exceptions.
 
 ```cmake
 
-target_link_libraries( myTarget <PUBLIC|PRIVATE> io_http)
+target_link_libraries( my_target <PUBLIC|PRIVATE> io_http)
 
 ```
 

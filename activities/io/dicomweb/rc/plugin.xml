@@ -2,41 +2,41 @@
 
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::ui::qt" />
-    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::viz::scene3d_qt" />
 
-    <xi:include href="configurations/DicomWebReader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/DicomWebWriter.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/2DDicomWebPreviewConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/reader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/writer.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/2d_preview_config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="sight::activity::extension::Activity">
-        <id>activity_io_dicomweb</id>
+    <extension implements="sight::activity::extension">
+        <id>sight::activity::io::dicomweb::reader</id>
         <title>DicomWeb Reader</title>
         <desc>DicomWeb Reader activity</desc>
-        <icon>sight::module::ui::icons/Pull.svg</icon>
+        <icon>sight::module::ui::icons/pull.svg</icon>
         <requirements>
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="activity_io_dicomweb">
+        <appConfig id="sight::activity::io::dicomweb::reader">
         </appConfig>
     </extension>
 
-    <extension implements="sight::service::extension::Config">
-        <id>DicomWebReaderConfig</id>
+    <extension implements="sight::service::extension::config">
+        <id>sight::activity::io::dicomweb::reader_config</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
-            <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
+            <filterType>sight::filter::dicom::custom::default_dicom_filter</filterType>
         </config>
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
-        <id>DicomWebWriterActivity</id>
+    <extension implements="sight::activity::extension">
+        <id>sight::activity::io::dicomweb::writer</id>
         <title>DicomWeb Writer</title>
         <desc>DicomWeb Writer activity</desc>
-        <icon>sight::module::ui::icons/Push.svg</icon>
+        <icon>sight::module::ui::icons/push.svg</icon>
         <requirements>
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="DicomWebWriterActivity">
+        <appConfig id="sight::activity::io::dicomweb::writer">
         </appConfig>
     </extension>
 

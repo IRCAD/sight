@@ -77,7 +77,6 @@ material DualDepthPeeling/Blend
             scene_blend src_alpha one_minus_src_alpha
             depth_check off
             cull_hardware none
-            cull_software none
             vertex_program_ref RenderQuad_VP
             {
             }

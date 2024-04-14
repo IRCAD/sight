@@ -17,6 +17,8 @@ lint:sheldon:
   extends: .lint
   variables:
     ENABLE_CLANG_TIDY: "ON"
+  tags:
+    - linux-power-runner
 
 .linux_build:
   extends: .linux_before
@@ -59,8 +61,9 @@ lint:sheldon:
     # Build
     - ninja -j${RUNNER_THREADS} | tee output.log
     # Generate metrics information
-    - nb_warnings=$(grep -c "warning:" output.log)
-    - nb_deprecated=$(grep -ce "-Wdeprecated-declarations" output.log)
+    # Note: beware when there is no warning, grep returns false...
+    - nb_warnings=$(grep -c "warning:" output.log || true)
+    - nb_deprecated=$(grep -ce "-Wdeprecated-declarations" output.log || true)
     - echo -e "Cpp_Warnings $nb_warnings\nCpp_Deprecated_declaration $nb_deprecated" >metrics.txt
     # Print CCache statistics (Cache hit rate should have raised)
     - ccache -s
@@ -76,9 +79,9 @@ lint:sheldon:
       else
         TIMEOUT="600"
       fi
-    - ctest -E "(guitest)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j10 --output-junit junit1.xml --repeat until-pass:2
+    - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j10 --output-junit junit1.xml --repeat until-pass:2
     - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j10 --output-junit junit2.xml --repeat until-pass:2
-    - ctest -R "(guitest)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j10 --output-junit junit3.xml --repeat until-pass:2
+    - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j10 --output-junit junit3.xml --repeat until-pass:2
     # Build documentation if needed
     - >
       if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
@@ -86,10 +89,10 @@ lint:sheldon:
       fi
     - >
       if [ "${SIGHT_BUILD_PACKAGES}" == "ON" ]; then
-        ninja -j${RUNNER_THREADS} SightViewer_package
+        ninja -j${RUNNER_THREADS} sight_viewer_package
         rm -rf ${CI_PROJECT_DIR}/.install
 
-        ninja -j${RUNNER_THREADS} SightCalibrator_package
+        ninja -j${RUNNER_THREADS} sight_calibrator_package
         rm -rf ${CI_PROJECT_DIR}/.install
       fi
     - >
@@ -125,23 +128,23 @@ lint:sheldon:
     - cd .build
     - >
       if [ "${SIGHT_TEST_PACKAGES}" == "ON" ]; then
-        tar -xf packages/SightViewer-*.tar.zst
-        echo Testing SightViewer:
-        timeout 5s xvfb-run -a SightViewer-*/bin/sightviewer || [ $? -eq 124 ]
+        tar -xf packages/sight_viewer-*.tar.zst
+        echo Testing sight_viewer:
+        timeout 5s xvfb-run -a sight_viewer-*/bin/sight_viewer || [ $? -eq 124 ]
 
-        tar -xf packages/SightCalibrator-*.tar.zst
-        echo Testing SightCalibrator:
-        timeout 5s xvfb-run -a SightCalibrator-*/bin/sightcalibrator || [ $? -eq 124 ]
+        tar -xf packages/sight_calibrator-*.tar.zst
+        echo Testing sight_calibrator:
+        timeout 5s xvfb-run -a sight_calibrator-*/bin/sight_calibrator || [ $? -eq 124 ]
       fi
     - >
       if [ "${SIGHT_TEST_SDK}" == "ON" ]; then
         tar -xf packages/sight-*.tar.zst
         PACKAGE_NAME=$(cmake -DGET_ARCHIVE_FOLDER=ON -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -P "${CI_PROJECT_DIR}/cmake/build/download_deps.cmake" 2>&1)
-        for program in sight-*/bin/{ex*,tuto*,sightviewer,sightcalibrator,dicomxplorer}; do
+        for program in sight-*/bin/{ex*,tuto*,sight_viewer,sight_calibrator,dicomxplorer}; do
             echo Testing $(basename $program):
             LD_LIBRARY_PATH=/cache/.sight-deps/$PACKAGE_NAME/lib timeout 5s xvfb-run -a $program || [ $? -eq 124 ]
         done
-        for program in sight-*/bin/{arucomarker,dicomanonymizer,networkproxy}; do
+        for program in sight-*/bin/{aruco_marker,dicom_anonymizer,network_proxy}; do
             echo Testing $(basename $program):
             $program --help
         done
@@ -274,7 +277,7 @@ deploy:apps-linux-release:
       artifacts: true
     - job: deploy-test:linux-release
   variables:
-    APPS: "SightViewer,SightCalibrator"
+    APPS: "sight_viewer,sight_calibrator"
     URL: "IRCAD%20-%20Open/"
   rules:
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
@@ -289,6 +292,8 @@ deploy:apps-linux-release:
     TOOLCHAIN: "scripts\\buildsystems\\vcpkg.cmake"
     SIGHT_BUILD_PACKAGES: "OFF"
     SIGHT_BUILD_SDK: "OFF"
+    MSVC_VERSION: "17"
+    CUDA_VERSION: "12_2"
   stage: build
   script:
     # Get the package_name name from our CMake script
@@ -307,20 +312,20 @@ deploy:apps-linux-release:
     - $env:DISABLE_ABORT_DIALOG="1"
     - |
       if ("${SIGHT_ENABLE_COVERAGE}" -eq "ON" -or "${BUILD_TYPE}" -eq "Debug") {
-        $env:TIMEOUT="1200"
+        $TIMEOUT="1200"
       } else {
-        $env:TIMEOUT="600"
+        $TIMEOUT="600"
       }
     # Launch tests
-    - ctest -E "(guitest)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j6 --output-junit junit1.xml --repeat until-pass:2
+    - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j6 --output-junit junit1.xml --repeat until-pass:2
     - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j6 --output-junit junit2.xml --repeat until-pass:2
-    - ctest -R "(guitest)" --timeout $TIMEOUT --output-on-failure -O ctes3.log -j6 --output-junit junit3.xml --repeat until-pass:2
+    - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j6 --output-junit junit3.xml --repeat until-pass:2
     - |
       if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
-        ninja SightViewer_package
+        ninja sight_viewer_package
         (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
 
-        ninja SightCalibrator_package
+        ninja sight_calibrator_package
         (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
       }
     - |
@@ -356,40 +361,18 @@ deploy:apps-linux-release:
     reports:
       junit: build/junit.xml
 
-.windows_deploy_test:
-  stage: deploy-test
-  variables:
-    SIGHT_TEST_PACKAGES: "OFF"
-    SIGHT_TEST_SDK: "OFF"
-    CACHE: "D:\\gitlab-cache"
-    # Ideally, we would like to use `none` but we need the `git clean -ddfx` to be performed to clean previous artifacts
-    GIT_STRATEGY: fetch
+.windows_sight_deploy_test:
+  extends: .windows_deploy_test
   script:
     - $PACKAGE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
     - cd build
     - |
       if("${SIGHT_TEST_PACKAGES}" -eq "ON"){
-        Start-Process -Wait .\packages\SightViewer-*.exe /S,/D=${pwd}\SightViewer
-        $process = Start-Process -PassThru -NoNewWindow SightViewer\bin\sightviewer.bat --no-abort-dialog,--clog
-        $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
-        ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
-          (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
-          $process | Wait-Process
-        }
-        if($process.ExitCode -ne 0){
-          Write-Error "SightViewer crashed." -ErrorAction Stop
-        }
+        Start-Process -Wait .\packages\sight_viewer-*.exe /S,/D=${pwd}\sight_viewer
+        Start-SightProcess -path "sight_viewer\bin\sight_viewer.bat"
 
-        Start-Process -Wait .\packages\SightCalibrator-*.exe /S,/D=${pwd}\SightCalibrator
-        $process = Start-Process -PassThru -NoNewWindow SightCalibrator\bin\sightcalibrator.bat --no-abort-dialog,--clog
-        $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
-        ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
-          (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
-          $process | Wait-Process
-        }
-        if($process.ExitCode -ne 0){
-          Write-Error "SightCalibrator crashed." -ErrorAction Stop
-        }
+        Start-Process -Wait .\packages\sight_calibrator-*.exe /S,/D=${pwd}\sight_calibrator
+        Start-SightProcess -path "sight_calibrator\bin\sight_calibrator.bat"
       }
     - |
       Expand-Archive packages/sight-*.zip
@@ -401,31 +384,17 @@ deploy:apps-linux-release:
           $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\bin\;$env:PATH"
         }
         cd sight-*/*/bin
-        ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sightviewer.bat,sightcalibrator.bat,dicomxplorer.bat){
+        ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sight_viewer.bat,sight_calibrator.bat,dicomxplorer.bat){
           $programName = Split-Path -Leaf $program
           Write-Host Testing $programName
-          $process = Start-Process -PassThru -NoNewWindow $program --no-abort-dialog,--clog
-          $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
-          ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
-              (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
-              $process | Wait-Process -Timeout 5
-              if(!$process.HasExited){
-                (Get-Process -Id $p.ProcessId).Kill()
-                $process | Wait-Process
-              }
-          }
-          if(!($process.ExitCode -in -1,0)){
-              Write-Error "$programName crashed." -ErrorAction Stop
-          }
+          Start-SightProcess -path $program
         }
-        ForEach($program in Get-ChildItem arucomarker.exe,dicomanonymizer.exe){
+        ForEach($program in Get-ChildItem aruco_marker.exe,dicom_anonymizer.exe){
           $programName = Split-Path -Leaf $program
           Write-Host Testing $programName
           Start-Process -NoNewWindow -Wait $program --help
         }
       }
-  tags:
-    - windows
 
 build:windows-debug:
   extends: .windows_build
@@ -456,7 +425,7 @@ build:windows-release-draft:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE =~ "/^Draft.*/"
 
 deploy-test:windows-debug:
-  extends: .windows_deploy_test
+  extends: .windows_sight_deploy_test
   needs:
     - job: build:windows-debug
       artifacts: true
@@ -480,7 +449,7 @@ deploy:windows-debug:
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy-test:windows-release:
-  extends: .windows_deploy_test
+  extends: .windows_sight_deploy_test
   needs:
     - job: build:windows-release
       artifacts: true
@@ -511,7 +480,7 @@ deploy:apps-windows-release:
       artifacts: true
     - job: deploy-test:windows-release
   variables:
-    APPS: "SightViewer,SightCalibrator"
+    APPS: "sight_viewer,sight_calibrator"
     URL: "IRCAD%20-%20Open/"
   rules:
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"

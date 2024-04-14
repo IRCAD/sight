@@ -1,0 +1,130 @@
+<extension implements="sight::app::extension::config">
+    <id>2DVisualization</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="imageSeries" />
+        <param name="landmarks" />
+        <param name="advancedLandmarksEditor" default="true" />
+        <param name="hasPreviousChannel" default="hasPreviousChannel" />
+        <param name="hasNextChannel" default="hasNextChannel" />
+        <param name="previousActivityChannel" default="previousActivityChannel" />
+        <param name="nextActivityChannel" default="nextActivityChannel" />
+    </parameters>
+    <config>
+        <object uid="${imageSeries}" type="sight::data::image_series" src="ref" />
+        <object uid="${landmarks}" type="sight::data::landmarks" src="ref" />
+
+        <service uid="mainView" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::cardinal">
+                    <view caption="Negato1" align="center" />
+                    <view caption="Negato2" align="right" minWidth="300" />
+                    <view caption="Negato3" align="right" />
+                    <view align="left" visible="false" />
+                </layout>
+                <toolbar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolbar sid="toolbar" />
+                <view wid="view_negato1" />
+                <view wid="view_negato2" />
+                <view wid="view_negato3" />
+            </registry>
+        </service>
+
+        <service uid="toolbar" type="sight::module::ui::toolbar">
+            <gui>
+                <layout>
+                    <menuItem name="Previous" icon="sight::module::ui::icons/left.svg" />
+                    <menuItem name="Next" icon="sight::module::ui::icons/right.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="ActionPrevious" />
+                <menuItem sid="ActionNext" />
+            </registry>
+        </service>
+
+        <service uid="cfgNegato1" type="sight::app::config_controller">
+            <appConfig id="2DNegato" />
+            <inout group="data">
+                <key name="image" uid="${imageSeries}" />
+                <key name="landmarks" uid="${landmarks}" />
+            </inout>
+            <parameter replace="WID_PARENT" by="view_negato1" />
+            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
+            <parameter replace="PickingChannel" by="pickerChannel" />
+            <parameter replace="orientation" by="axial" />
+        </service>
+
+        <service uid="cfgNegato2" type="sight::app::config_controller">
+            <appConfig id="2DNegato" />
+            <inout group="data">
+                <key name="image" uid="${imageSeries}" />
+                <key name="landmarks" uid="${landmarks}" />
+            </inout>
+            <parameter replace="WID_PARENT" by="view_negato2" />
+            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
+            <parameter replace="PickingChannel" by="pickerChannel" />
+            <parameter replace="orientation" by="frontal" />
+        </service>
+
+        <service uid="cfgNegato3" type="sight::app::config_controller">
+            <appConfig id="2DNegato" />
+            <inout group="data">
+                <key name="image" uid="${imageSeries}" />
+                <key name="landmarks" uid="${landmarks}" />
+            </inout>
+            <parameter replace="WID_PARENT" by="view_negato3" />
+            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
+            <parameter replace="PickingChannel" by="pickerChannel" />
+            <parameter replace="orientation" by="sagittal" />
+        </service>
+
+        <!-- The action "previous" and "next" are visible only if the application use a "sequencer".
+             This service send signals to enable or not the actions. -->
+        <service uid="ActionPrevious" type="sight::module::ui::action">
+            <state visible="false" />
+        </service>
+
+        <service uid="ActionNext" type="sight::module::ui::action">
+            <state visible="false" />
+        </service>
+
+        <!-- Connection to enable "previous" action. It should be connected to a sequencer in the application
+             configuration.-->
+        <connect channel="${hasPreviousChannel}">
+            <slot>ActionPrevious/show</slot>
+            <slot>ActionPrevious/set_enabled</slot>
+        </connect>
+
+        <!-- Connection to called 'previous' slot of the application's sequencer. -->
+        <connect channel="${previousActivityChannel}">
+            <signal>ActionPrevious/clicked</signal>
+        </connect>
+
+        <!-- Connection to enable "next" action. It should be connected to a sequencer in the application
+             configuration.-->
+        <connect channel="${hasNextChannel}">
+            <slot>ActionNext/show</slot>
+            <slot>ActionNext/set_enabled</slot>
+        </connect>
+
+        <!-- Connection to called 'next' slot of the application's sequencer. -->
+        <connect channel="${nextActivityChannel}">
+            <signal>ActionNext/clicked</signal>
+        </connect>
+
+        <!-- START AND STOP SERVICES -->
+        <start uid="mainView" />
+        <start uid="toolbar" />
+        <start uid="ActionPrevious" />
+        <start uid="ActionNext" />
+
+        <start uid="cfgNegato1" />
+        <start uid="cfgNegato2" />
+        <start uid="cfgNegato3" />
+
+    </config>
+</extension>

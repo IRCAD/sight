@@ -307,6 +307,16 @@ QToolButton::menu-button:pressed
 }
 
 /************************************************************************/
+/************* QToolButton used in module::ui::qt::status ***************/
+/************************************************************************/
+
+QToolButton.status
+{
+    icon-size: 32px 32px;
+    color: rgb(255, 255, 255);
+}
+
+/************************************************************************/
 /******************************** QLabel ********************************/
 /************************************************************************/
 
@@ -510,10 +520,10 @@ QGroupBox::title
 }
 
 /************************************************************************/
-/***************************** SlideBar *********************************/
+/***************************** slide_bar *********************************/
 /************************************************************************/
 
-QGroupBox#SlideBar
+QGroupBox#slide_bar
 {
     margin: 0px;
     background: transparent;
@@ -1353,9 +1363,14 @@ QProgressBar::chunk
 /**************************** QfwToolBox ********************************/
 /************************************************************************/
 
-#QfwToolBoxButton
+.toolbox_button
 {
     text-align: left;
+    background-color: lightgray;
+    border-style: solid;
+    border-width: 1px;
+    border-color: darkgray;
+    height: 20px;
 }
 
 /************************************************************************/
@@ -1431,4 +1446,36 @@ QProgressBar::chunk
     border: none;
     border-bottom: 4px solid rgb(46, 48, 52);
     border-radius: 0px;
+}
+
+
+/************************** Custom class *****************************/
+
+.accordion_menu[folded="false"]
+{
+    background-color: rgba(0, 0, 0, 15%);
+    border: 1px solid rgba(0, 0, 0, 40%);
+    border-radius: 4px;
+    margin: 1px;
+}
+
+.Bracket
+{
+  padding: 0;
+  background: none;
+}
+
+.view_background 
+{
+    background: #2E2F30;
+}
+.scene2d_render 
+{
+    background: #36393E
+}
+
+
+QPushButton.Bracket:disabled
+{
+  background: none;
 }

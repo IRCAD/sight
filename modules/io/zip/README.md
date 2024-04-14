@@ -5,14 +5,14 @@ compression. It can be password protected using AES256.
 
 ## Services
 
-- **SExtract**: read an archive and output to the specified directory
+- **extract**: read an archive and output to the specified directory
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_zip ...)
+add_dependencies(my_target module_io_zip ...)
 ```
 
 ### XML

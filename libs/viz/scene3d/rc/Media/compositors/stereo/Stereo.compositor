@@ -14,7 +14,7 @@ compositor Stereo
             }
 
             shadows off
-            material_scheme AutoStereo/0
+            material_scheme auto_stereo/0
 
             pass render_scene
             {
@@ -29,7 +29,7 @@ compositor Stereo
             }
 
             shadows off
-            material_scheme AutoStereo/1
+            material_scheme auto_stereo/1
 
             pass render_scene
             {

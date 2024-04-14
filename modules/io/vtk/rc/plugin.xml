@@ -2,73 +2,73 @@
 
     <requirement id="sight::module::service" />
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IWriter</type>
-        <service>sight::module::io::vtk::SImageWriter</service>
-        <object>sight::data::Image</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::writer</type>
+        <service>sight::module::io::vtk::image_writer</service>
+        <object>sight::data::image</object>
         <desc>VTK Image Writer (VTK)</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IReader</type>
-        <service>sight::module::io::vtk::SImageSeriesReader</service>
-        <object>sight::data::ImageSeries</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::reader</type>
+        <service>sight::module::io::vtk::image_series_reader</service>
+        <object>sight::data::image_series</object>
         <desc>VTK Image Series Reader (VTK)</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IWriter</type>
-        <service>sight::module::io::vtk::SImageSeriesWriter</service>
-        <object>sight::data::ImageSeries</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::writer</type>
+        <service>sight::module::io::vtk::image_series_writer</service>
+        <object>sight::data::image_series</object>
         <desc>VTK Image Series Writer (VTK)</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IReader</type>
-        <service>sight::module::io::vtk::SImageReader</service>
-        <object>sight::data::Image</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::reader</type>
+        <service>sight::module::io::vtk::image_reader</service>
+        <object>sight::data::image</object>
         <desc>VTK Image Reader (VTK)</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IReader</type>
-        <service>sight::module::io::vtk::SMeshReader</service>
-        <object>sight::data::Mesh</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::reader</type>
+        <service>sight::module::io::vtk::mesh_reader</service>
+        <object>sight::data::mesh</object>
         <desc>VTK Reader (*.obj *.stl *.ply *.vtk *.vtp)</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IWriter</type>
-        <service>sight::module::io::vtk::SMeshWriter</service>
-        <object>sight::data::Mesh</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::writer</type>
+        <service>sight::module::io::vtk::mesh_writer</service>
+        <object>sight::data::mesh</object>
         <desc>VTK Mesh Writer (VTK)</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IWriter</type>
-        <service>sight::module::io::vtk::SModelSeriesWriter</service>
-        <object>sight::data::ModelSeries</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::writer</type>
+        <service>sight::module::io::vtk::model_series_writer</service>
+        <object>sight::data::model_series</object>
         <desc>VTK files (VTK)</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IReader</type>
-        <service>sight::module::io::vtk::SModelSeriesReader</service>
-        <object>sight::data::ModelSeries</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::reader</type>
+        <service>sight::module::io::vtk::model_series_reader</service>
+        <object>sight::data::model_series</object>
         <desc>VTK Reader (*.obj *.stl *.ply *.vtk *.vtp)</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IWriter</type>
-        <service>sight::module::io::vtk::SModelSeriesObjWriter</service>
-        <object>sight::data::ModelSeries</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::writer</type>
+        <service>sight::module::io::vtk::model_series_obj_writer</service>
+        <object>sight::data::model_series</object>
         <desc>Wavefront OBJ files (VTK)</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IReader</type>
-        <service>sight::module::io::vtk::SSeriesSetReader</service>
-        <object>sight::data::SeriesSet</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::reader</type>
+        <service>sight::module::io::vtk::series_set_reader</service>
+        <object>sight::data::series_set</object>
         <desc>VTK Reader (*.obj *.stl *.ply *.vtk *.vtp *.vtu *.vti *.mhd)</desc>
     </extension>
 

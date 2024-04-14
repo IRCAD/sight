@@ -21,8 +21,8 @@
 
 #pragma once
 
-#include <io/session/SessionReader.hpp>
-#include <io/session/SessionWriter.hpp>
+#include <io/session/session_reader.hpp>
+#include <io/session/session_writer.hpp>
 
 namespace sight::io::session
 {
@@ -30,10 +30,10 @@ namespace sight::io::session
 template<typename T>
 struct SerializerRegister
 {
-    SerializerRegister(serializer_t serializer, deserializer_t deserializer)
+    SerializerRegister(serializer_t _serializer, deserializer_t _deserializer)
     {
-        sight::io::session::SessionWriter::setSerializer(T::classname(), serializer);
-        sight::io::session::SessionReader::setDeserializer(T::classname(), deserializer);
+        sight::io::session::session_writer::set_serializer(T::classname(), _serializer);
+        sight::io::session::session_reader::set_deserializer(T::classname(), _deserializer);
     }
 };
 

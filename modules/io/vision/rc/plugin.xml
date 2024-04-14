@@ -1,31 +1,31 @@
 <plugin id="sight::module::io::vision" library="true" >
     <requirement id="sight::module::service"/>
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::io::base::service::IWriter</type>
-         <service>sight::module::io::vision::SCalibrationImagesWriter</service>
-         <object key="data">sight::data::CalibrationInfo</object>
+    <extension implements="sight::service::extension::factory">
+         <type>sight::io::service::writer</type>
+         <service>sight::module::io::vision::calibration_images_writer</service>
+         <object key="data">sight::data::calibration_info</object>
          <desc>Write CalibrationInfo 2D images to a folder using OpenCV.</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::io::base::service::IReader</type>
-         <service>sight::module::io::vision::SCalibrationInfoReader</service>
-         <object key="data">sight::data::CalibrationInfo</object>
+    <extension implements="sight::service::extension::factory">
+         <type>sight::io::service::reader</type>
+         <service>sight::module::io::vision::calibration_info_reader</service>
+         <object key="data">sight::data::calibration_info</object>
          <desc>Read calibration input datasets.</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::io::base::service::IReader</type>
-         <service>sight::module::io::vision::SOpenCVReader</service>
-         <object key="data">sight::data::CameraSet</object>
-         <desc>SOpenCVReader class read a xml/yaml file using opencv and fill a data::CameraSet.</desc>
+    <extension implements="sight::service::extension::factory">
+         <type>sight::io::service::reader</type>
+         <service>sight::module::io::vision::open_cv_reader</service>
+         <object key="data">sight::data::camera_set</object>
+         <desc>open_cv_reader class read a xml/yaml file using opencv and fill a data::camera_set.</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::io::base::service::IWriter</type>
-         <service>sight::module::io::vision::SOpenCVWriter</service>
-         <object key="data">sight::data::CameraSet</object>
-         <desc>SOpenCVWriter class exports data::CameraSet in xml/yaml files using openCV</desc>
+    <extension implements="sight::service::extension::factory">
+         <type>sight::io::service::writer</type>
+         <service>sight::module::io::vision::open_cv_writer</service>
+         <object key="data">sight::data::camera_set</object>
+         <desc>open_cv_writer class exports data::camera_set in xml/yaml files using openCV</desc>
     </extension>
 
 </plugin>

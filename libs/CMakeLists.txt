@@ -1,6 +1,6 @@
-add_subdirectory(core)
+add_subdirectory(__)
 add_subdirectory(geometry)
-add_subdirectory(io/base)
+add_subdirectory(io/__)
 add_subdirectory(io/itk)
 add_subdirectory(filter)
 add_subdirectory(ui)

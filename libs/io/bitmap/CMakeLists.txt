@@ -1,5 +1,5 @@
 sight_add_target(io_bitmap TYPE LIBRARY)
-target_link_libraries(io_bitmap PUBLIC core data io_base)
+target_link_libraries(io_bitmap PUBLIC core data io)
 
 option(SIGHT_ENABLE_NVJPEG "Enable nvJPEG support." OFF)
 option(SIGHT_ENABLE_NVJPEG2K "Enable nvJPEG2000 support." OFF)
@@ -59,5 +59,5 @@ target_link_libraries(io_bitmap PRIVATE openjp2)
 target_include_directories(io_bitmap PRIVATE ${OPENJPEG_INCLUDE_DIRS})
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

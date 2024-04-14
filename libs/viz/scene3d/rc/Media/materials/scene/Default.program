@@ -21,9 +21,6 @@ vertex_program Default/Ambient_VP glsl
     {
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_worldView worldview_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
@@ -41,9 +38,6 @@ vertex_program Default/Ambient+VT_VP glsl
     {
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_worldView worldview_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
@@ -61,9 +55,6 @@ vertex_program Default/Ambient+DfsTex_VP glsl
     {
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_worldView worldview_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
@@ -81,9 +72,6 @@ vertex_program Default/Ambient+VT+DfsTex_VP glsl
     {
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_worldView worldview_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
@@ -102,8 +90,6 @@ vertex_program Default/Flat_VP glsl
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_worldView worldview_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
     }
 }
 
@@ -119,8 +105,6 @@ vertex_program Default/Flat+VT_VP glsl
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_worldView worldview_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
     }
 }
 
@@ -136,8 +120,6 @@ vertex_program Default/Flat+DfsTex_VP glsl
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_worldView worldview_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
     }
 }
 
@@ -153,8 +135,6 @@ vertex_program Default/Flat+VT+DfsTex_VP glsl
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
         param_named_auto u_worldView worldview_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
     }
 }
 
@@ -169,7 +149,6 @@ vertex_program Default/PixelLit_VP glsl
     {
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_worldView worldview_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
     }
@@ -186,7 +165,6 @@ vertex_program Default/PixelLit+VT_VP glsl
     {
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_worldView worldview_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
     }
@@ -203,7 +181,6 @@ vertex_program Default/PixelLit+DfsTex_VP glsl
     {
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_worldView worldview_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
     }
@@ -220,7 +197,6 @@ vertex_program Default/PixelLit+VT+DfsTex_VP glsl
     {
         // Common
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_worldView worldview_matrix
         param_named_auto u_world world_matrix
         param_named_auto u_normalMatrix inverse_transpose_world_matrix
     }
@@ -295,13 +271,13 @@ fragment_program Default/Flat_FP glsl
         param_named_auto u_f3CameraPos camera_position
         param_named u_fNumLights float 1.0
         param_named_auto u_f4LightAmbientCol ambient_light_colour
-        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 10
-        param_named_auto u_f3LightSpecularCol light_specular_colour_array 10
+        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 8
+        param_named_auto u_f3LightSpecularCol light_specular_colour_array 8
         param_named_auto u_f4AmbientCol surface_ambient_colour
         param_named_auto u_f4DiffuseCol surface_diffuse_colour
         param_named_auto u_f4SpecularCol surface_specular_colour
         param_named_auto u_fShininess surface_shininess
-        param_named_auto u_f4LightPosVs light_position_view_space_array 10
+        param_named_auto u_f4LightPosVs light_position_view_space_array 8
     }
 }
 
@@ -317,13 +293,13 @@ fragment_program Default/Flat+VT_FP glsl
         param_named_auto u_f3CameraPos camera_position
         param_named u_fNumLights float 1.0
         param_named_auto u_f4LightAmbientCol ambient_light_colour
-        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 10
-        param_named_auto u_f3LightSpecularCol light_specular_colour_array 10
+        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 8
+        param_named_auto u_f3LightSpecularCol light_specular_colour_array 8
         param_named_auto u_f4AmbientCol surface_ambient_colour
         param_named_auto u_f4DiffuseCol surface_diffuse_colour
         param_named_auto u_f4SpecularCol surface_specular_colour
         param_named_auto u_fShininess surface_shininess
-        param_named_auto u_f4LightPosVs light_position_view_space_array 10
+        param_named_auto u_f4LightPosVs light_position_view_space_array 8
     }
 }
 
@@ -339,13 +315,13 @@ fragment_program Default/Flat+DfsTex_FP glsl
         param_named_auto u_f3CameraPos camera_position
         param_named u_fNumLights float 1.0
         param_named_auto u_f4LightAmbientCol ambient_light_colour
-        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 10
-        param_named_auto u_f3LightSpecularCol light_specular_colour_array 10
+        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 8
+        param_named_auto u_f3LightSpecularCol light_specular_colour_array 8
         param_named_auto u_f4AmbientCol surface_ambient_colour
         param_named_auto u_f4DiffuseCol surface_diffuse_colour
         param_named_auto u_f4SpecularCol surface_specular_colour
         param_named_auto u_fShininess surface_shininess
-        param_named_auto u_f4LightPosVs light_position_view_space_array 10
+        param_named_auto u_f4LightPosVs light_position_view_space_array 8
         // Diffuse texture
         param_named u_texture int 0
         // Use alpha channel from the texture
@@ -365,13 +341,13 @@ fragment_program Default/Flat+VT+DfsTex_FP glsl
         param_named_auto u_f3CameraPos camera_position
         param_named u_fNumLights float 1.0
         param_named_auto u_f4LightAmbientCol ambient_light_colour
-        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 10
-        param_named_auto u_f3LightSpecularCol light_specular_colour_array 10
+        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 8
+        param_named_auto u_f3LightSpecularCol light_specular_colour_array 8
         param_named_auto u_f4AmbientCol surface_ambient_colour
         param_named_auto u_f4DiffuseCol surface_diffuse_colour
         param_named_auto u_f4SpecularCol surface_specular_colour
         param_named_auto u_fShininess surface_shininess
-        param_named_auto u_f4LightPosVs light_position_view_space_array 10
+        param_named_auto u_f4LightPosVs light_position_view_space_array 8
         // Diffuse texture
         param_named u_texture int 0
         // Use alpha channel from the texture
@@ -391,8 +367,8 @@ fragment_program Default/PixelLit_FP glsl
         param_named_auto u_f3CameraPos camera_position
         param_named u_fNumLights float 1.0
         param_named_auto u_f4LightAmbientCol ambient_light_colour
-        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 10
-        param_named_auto u_f3LightSpecularCol light_specular_colour_array 10
+        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 8
+        param_named_auto u_f3LightSpecularCol light_specular_colour_array 8
         param_named_auto u_f4AmbientCol surface_ambient_colour
         param_named_auto u_f4DiffuseCol surface_diffuse_colour
         param_named_auto u_f4SpecularCol surface_specular_colour
@@ -413,8 +389,8 @@ fragment_program Default/PixelLit+VT_FP glsl
         param_named_auto u_f3CameraPos camera_position
         param_named u_fNumLights float 1.0
         param_named_auto u_f4LightAmbientCol ambient_light_colour
-        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 10
-        param_named_auto u_f3LightSpecularCol light_specular_colour_array 10
+        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 8
+        param_named_auto u_f3LightSpecularCol light_specular_colour_array 8
         param_named_auto u_f4AmbientCol surface_ambient_colour
         param_named_auto u_f4DiffuseCol surface_diffuse_colour
         param_named_auto u_f4SpecularCol surface_specular_colour
@@ -435,8 +411,8 @@ fragment_program Default/PixelLit+DfsTex_FP glsl
         param_named_auto u_f3CameraPos camera_position
         param_named u_fNumLights float 1.0
         param_named_auto u_f4LightAmbientCol ambient_light_colour
-        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 10
-        param_named_auto u_f3LightSpecularCol light_specular_colour_array 10
+        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 8
+        param_named_auto u_f3LightSpecularCol light_specular_colour_array 8
         param_named_auto u_f4AmbientCol surface_ambient_colour
         param_named_auto u_f4DiffuseCol surface_diffuse_colour
         param_named_auto u_f4SpecularCol surface_specular_colour
@@ -461,8 +437,8 @@ fragment_program Default/PixelLit+VT+DfsTex_FP glsl
         param_named_auto u_f3CameraPos camera_position
         param_named u_fNumLights float 1.0
         param_named_auto u_f4LightAmbientCol ambient_light_colour
-        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 10
-        param_named_auto u_f3LightSpecularCol light_specular_colour_array 10
+        param_named_auto u_f3LightDiffuseCol light_diffuse_colour_array 8
+        param_named_auto u_f3LightSpecularCol light_specular_colour_array 8
         param_named_auto u_f4AmbientCol surface_ambient_colour
         param_named_auto u_f4DiffuseCol surface_diffuse_colour
         param_named_auto u_f4SpecularCol surface_specular_colour
@@ -502,8 +478,6 @@ vertex_program CelShadingDepthPeeling/Ambient_VP glsl
     {
         // CelShadingDepthPeeling
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
@@ -521,8 +495,6 @@ vertex_program CelShadingDepthPeeling/Ambient+VT_VP glsl
     {
         // CelShadingDepthPeeling
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
@@ -540,8 +512,6 @@ vertex_program CelShadingDepthPeeling/Ambient+DfsTex_VP glsl
     {
         // CelShadingDepthPeeling
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
@@ -559,8 +529,6 @@ vertex_program CelShadingDepthPeeling/Ambient+VT+DfsTex_VP glsl
     {
         // CelShadingDepthPeeling
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
@@ -578,8 +546,7 @@ vertex_program CelShadingDepthPeeling/Flat_VP glsl
     {
         // CelShadingDepthPeeling
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_worldView worldview_matrix
     }
 }
 
@@ -594,8 +561,7 @@ vertex_program CelShadingDepthPeeling/Flat+VT_VP glsl
     {
         // CelShadingDepthPeeling
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_worldView worldview_matrix
     }
 }
 
@@ -610,8 +576,7 @@ vertex_program CelShadingDepthPeeling/Flat+DfsTex_VP glsl
     {
         // CelShadingDepthPeeling
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_worldView worldview_matrix
     }
 }
 
@@ -626,8 +591,7 @@ vertex_program CelShadingDepthPeeling/Flat+VT+DfsTex_VP glsl
     {
         // CelShadingDepthPeeling
         param_named_auto u_worldViewProj worldviewproj_matrix
-        param_named_auto u_world world_matrix
-        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+        param_named_auto u_worldView worldview_matrix
     }
 }
 

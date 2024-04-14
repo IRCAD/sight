@@ -19,7 +19,7 @@ target_link_libraries(
            ITKIONIFTI
 )
 
-target_link_libraries(io_itk PUBLIC core data io_base)
+target_link_libraries(io_itk PUBLIC core data io)
 
 # This is a hack to allow both Clang and gcc support
 # @todo: remove this when ITK >= 5.3 is released
@@ -31,5 +31,5 @@ if("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND ITK_VERSION_MAJOR GREATER 4 AN
 endif()
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

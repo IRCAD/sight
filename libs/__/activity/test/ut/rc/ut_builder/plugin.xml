@@ -1,0 +1,33 @@
+<plugin id="ut_builder">
+
+    <extension implements="sight::activity::extension">
+        <id>TestBuilder0</id>
+        <title>Title Test0</title>
+        <desc>Desc Test0</desc>
+        <icon>Icon Test0</icon>
+        <requirements>
+            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1" />
+            <requirement name="modelSeries" type="sight::data::model_series" minOccurs="0" maxOccurs="2">
+                <key>key1</key>
+                <key>key2</key>
+            </requirement>
+        </requirements>
+        <builder>sight::activity::builder::Activity</builder>
+        <appConfig id="TestBuilderCfg0" />
+    </extension>
+
+    <extension implements="sight::activity::extension">
+        <id>TestBuilderObjectParser</id>
+        <title>ObjectParser</title>
+        <desc>Desc Test1</desc>
+        <icon>Icon Test1</icon>
+        <requirements>
+            <requirement name="string" type="sight::data::string" minOccurs="0" maxOccurs="1" create="true">
+                <config>
+                    <value>dummy string</value>
+                </config>
+            </requirement>
+        </requirements>
+        <appConfig id="TestBuilderCfg1" />
+    </extension>
+</plugin>

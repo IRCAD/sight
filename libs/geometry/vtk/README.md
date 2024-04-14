@@ -15,6 +15,6 @@ This library contains geometrical functions or algorithms using vtk library.
 ### CMake
 
 ```cmake
-target_link_libraries(myTarget <PUBLIC|PRIVATE> geometry_vtk)
+target_link_libraries(my_target <PUBLIC|PRIVATE> geometry_vtk)
 ```
 

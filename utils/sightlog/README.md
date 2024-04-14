@@ -22,11 +22,11 @@ password. BTW, this is **less** secure, as the password is still hardcoded, even
 An input dialog asking for a password will be shown when:
 - the log is encrypted and no `SIGHT_DEFAULT_PASSWORD` is set **or** if `sightrun` is launched with `--ask-password`
   argument.
-- for preferences, if the appropriate `password` and `encryption` `policy` is set in module `ui_base` configuration
-  > take a look at `libs/ui/base/Preferences.hpp`.
-- for session files, if the appropriate `password` and `encryption` `policy` is set in SReader and SWriter service
+- for preferences, if the appropriate `password` and `encryption` `policy` is set in module `ui` configuration
+  > take a look at `libs/ui/__/preferences.hpp`.
+- for session files, if the appropriate `password` and `encryption` `policy` is set in reader and writer service
   configuration
-  > take a look at `modules/io/session/SReader.hpp` and `modules/io/session/SWriter.hpp`.
+  > take a look at `modules/io/session/reader.hpp` and `modules/io/session/writer.hpp`.
 
 In all case, the entered password will be kept (obfuscated) in memory, allowing to only ask the password once, until, of
 course, it is explicitly configured to not do so.

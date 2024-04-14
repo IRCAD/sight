@@ -7,7 +7,7 @@ foreach(LINE ${PLUGIN_CONTENT})
 
     if(NOT FOUND_EXTENSION)
         # Look for service extension
-        if("${LINE}" MATCHES "<extension implements=\"(::)?sight::service::extension::Factory\" *>")
+        if("${LINE}" MATCHES "<extension implements=\"(::)?sight::service::extension::factory\" *>")
             set(FOUND_EXTENSION ON)
             set(OBJECTS "")
         endif()
@@ -24,6 +24,10 @@ foreach(LINE ${PLUGIN_CONTENT})
             string(REGEX REPLACE "^::(.*)" "\\1" SERVICE_INCLUDE ${SERVICE_INCLUDE})
             # Guess the name of the root of the target containing the file
             get_filename_component(PROJECT_LAST_DIR ${PROJECT_DIR} NAME)
+            if("${PROJECT_LAST_DIR}" STREQUAL "__")
+                get_filename_component(PARENT_DIR ${PROJECT_DIR} DIRECTORY)
+                get_filename_component(PROJECT_LAST_DIR ${PARENT_DIR} NAME)
+            endif()
             string(REGEX REPLACE ".*${PROJECT_LAST_DIR}::(.*)" "\\1" SERVICE_INCLUDE ${SERVICE_INCLUDE})
 
             string(REGEX REPLACE "::" "/" SERVICE_INCLUDE ${SERVICE_INCLUDE})

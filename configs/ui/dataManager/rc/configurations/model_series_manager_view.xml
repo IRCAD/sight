@@ -1,0 +1,73 @@
+<!--
+This config displays the editors to manage the ModelSeries: show/hide reconstructions, change the color, ...
+
+Example
+<service uid="..." type="sight::app::config_controller">
+    <appConfig id="ModelSeriesManagerView" />
+    <inout group="data">
+        <key name="ORGAN_MANAGER_MODELSERIES" uid="..." />
+    </inout>
+    <parameter replace="WID_PARENT" by="modelManagerView" />
+</service>
+-->
+<extension implements="sight::app::extension::config">
+    <id>ModelSeriesManagerView</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="ORGAN_MANAGER_MODELSERIES" /> <!-- model series to manage -->
+    </parameters>
+    <desc>Display the editors to manage the ModelSeries: show/hide reconstructions, change the color, ...</desc>
+    <config>
+        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="sight::data::model_series" src="ref" />
+        <object uid="reconstruction" type="sight::data::reconstruction" src="deferred" />
+
+        <service uid="multiViewOrgans" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::toolbox">
+                    <view caption="Organs" expanded="true" />
+                    <view caption="Material" expanded="true" />
+                    <view caption="Representation" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="listOrganEditor" start="true" />
+                <view sid="organMaterialEditor" start="false" />
+                <view sid="representationEditor" start="false" />
+            </registry>
+        </service>
+
+        <service uid="reconstructionSelector" type="sight::module::data::select_object">
+            <out key="object" uid="reconstruction" />
+        </service>
+
+        <service uid="organMaterialEditor" type="sight::module::ui::qt::reconstruction::organ_material_editor">
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+
+        <service uid="representationEditor" type="sight::module::ui::qt::reconstruction::representation_editor">
+            <inout key="reconstruction" uid="reconstruction" />
+        </service>
+
+        <service uid="listOrganEditor" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
+            <inout key="modelSeries" uid="${ORGAN_MANAGER_MODELSERIES}" />
+            <columns>
+                <organ_name/>
+                <structure_type/>
+            </columns>
+        </service>
+
+        <connect>
+            <signal>listOrganEditor/reconstruction_selected</signal>
+            <slot>reconstructionSelector/add</slot>
+        </connect>
+
+        <start uid="multiViewOrgans" />
+        <start uid="reconstructionSelector" />
+
+        <!-- Deferred start -->
+        <start uid="representationEditor" />
+        <start uid="organMaterialEditor" />
+
+    </config>
+</extension>

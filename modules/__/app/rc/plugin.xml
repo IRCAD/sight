@@ -1,0 +1,89 @@
+<plugin id="sight::module::app" library="true" autostart="true" priority="100">
+    <!-- we give the lowest priority because the app needs to be launched last -->
+
+    <requirement id="sight::module::service" />
+
+    <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
+    <extension-point id="sight::app::extension::config" schema="appConfig.xsd"/>
+
+    <!-- EXTENSION POINT FOR APP CONFIGURATION PARAMETERS-->
+    <extension-point id="sight::app::extension::parameters" schema="appConfigParameters.xsd"/>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::color</service>
+        <object>sight::data::color</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::composite</service>
+        <object>sight::data::composite</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::image</service>
+        <object>sight::data::image</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::matrix4</service>
+        <object>sight::data::matrix4</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::object</service>
+        <object>sight::data::object</object>
+    </extension>
+
+     <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::vector</service>
+        <object>sight::data::vector</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::boolean</service>
+        <object>sight::data::boolean</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::real</service>
+        <object>sight::data::real</object>
+    </extension>
+
+     <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::integer</service>
+        <object>sight::data::integer</object>
+    </extension>
+
+     <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::string</service>
+        <object>sight::data::string</object>
+    </extension>
+
+     <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::transfer_function</service>
+        <object>sight::data::transfer_function</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::app::config_controller</service>
+        <object>sight::data::object</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::app::multi_config_controller</service>
+        <object>sight::data::object</object>
+    </extension>
+</plugin>

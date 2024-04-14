@@ -4,17 +4,17 @@ Contains services for reading and writing video frames.
 
 ## Services
 
-- **SFrameGrabber**: extracts video frames from a camera object (`sight::data::Camera`) into a frame timeline (`sight::data::FrameTL`) using OpenCV.
-- **SFrameWriter**: saves/writes the timeline frames in files, in a folder.
-- **SGrabberProxy**: allows you to select a frame grabber implementation, at runtime.
-- **SVideoWriter**: saves the timeline frames in a video file.
+- **frame_grabber**: extracts video frames from a camera object (`sight::data::camera`) into a frame timeline (`sight::data::frame_tl`) using OpenCV.
+- **frame_writer**: saves/writes the timeline frames in files, in a folder.
+- **grabberProxy**: allows you to select a frame grabber implementation, at runtime.
+- **videoWriter**: saves the timeline frames in a video file.
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_video ...)
+add_dependencies(my_target module_io_video ...)
 ```
 
 ### XML

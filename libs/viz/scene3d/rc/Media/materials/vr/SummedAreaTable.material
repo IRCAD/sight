@@ -9,7 +9,6 @@ fragment_program SummedAreaTableInit_FP glsl
         param_named u_sliceDepth float 0
         param_named u_image int 0
         param_named u_s2TFTexture int 1
-        param_named u_sampleDistance float 1.0
         param_named u_f3TFWindow float3 0 0
     }
 }
@@ -38,7 +37,6 @@ material SummedAreaTableInit
         pass
         {
             cull_hardware none
-            cull_software none
 
             depth_check off
 
@@ -67,14 +65,13 @@ material SummedAreaTableInit
 
 //---------------------------------------------------------------------------
 
-material SummedAreaTable
+material summed_area_table
 {
     technique
     {
         pass
         {
             cull_hardware none
-            cull_software none
 
             depth_check off
 

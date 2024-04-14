@@ -5,11 +5,11 @@ The generic element cover background size, position, viewports, scenes and mouse
 
 ## Classes
 
-* **IAdaptor**: root class for the 2D Scene adaptors. Needs to be extended to get the sight::viz::scene2D elements. 
+* **adaptor**: root class for the 2D scene adaptors. Needs to be extended to get the sight::viz::scene2D elements. 
 
-* **Scene2DGraphicsView**: contains the view dedicated element: viewport, as well as all the mouse interaction methods. 
+* **graphics_view**: contains the view dedicated element: viewport, as well as all the mouse interaction methods. 
 
-* **SRender**: renders the QT scene. 
+* **render**: renders the QT scene. 
  
 ### Data
 
@@ -27,7 +27,7 @@ The generic element cover background size, position, viewports, scenes and mouse
  
 ### Registry
 
-* **Adaptor**: Handles a map containing Adaptor-SRender association for the sight registry.
+* **adaptor**: Handles a map containing adaptor-render association for the sight registry.
 
  
 ## How to use it
@@ -35,11 +35,11 @@ The generic element cover background size, position, viewports, scenes and mouse
 ### CMake
 
 ```cmake
-add_dependencies(myTarget viz_scene2d ... )
+add_dependencies(my_target viz_scene2d ... )
 ```
 
 ### Implementation
 
-Define your specific scene2D class as an extension of the IAdaptor class. 
+Define your specific scene2D class as an extension of the adaptor class. 
 
 

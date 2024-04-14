@@ -1,5 +1,0 @@
-<plugin id="Tuto01BasicQml" library="true" autostart="true">
-
-    <requirement id="sight::module::service" />
-
-</plugin>

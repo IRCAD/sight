@@ -1,0 +1,3 @@
+sight_add_target(sight_calibrator_uit TYPE GUI_TEST)
+
+target_link_libraries(sight_calibrator_uit ui_test sight_calibrator)

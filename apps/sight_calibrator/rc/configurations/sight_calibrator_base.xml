@@ -1,0 +1,188 @@
+<extension implements="sight::app::extension::config">
+    <id>SightCalibrator_AppCfg</id>
+    <parameters>
+        <param name="APP_NAME" />
+        <param name="APP_VERSION" />
+        <param name="ICON_PATH" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="dataSet" type="sight::data::set"/>
+        <object uid="activitySet" type="sight::data::activity_set"/>
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainFrame" type="sight::module::ui::frame" >
+            <gui>
+                <frame>
+                    <name>${APP_NAME}</name>
+                    <version>${APP_VERSION}</version>
+                    <icon>${ICON_PATH}</icon>
+                    <minSize width="1600" height="900" />
+                </frame>
+                <menubar />
+            </gui>
+            <registry>
+                <menubar sid="menuBarView" start="true" />
+                <view sid="mainview" start="true" />
+            </registry>
+        </service>
+
+        <service uid="menuBarView" type="sight::module::ui::menubar" >
+            <gui>
+                <layout>
+                    <menu name="File" />
+                    <menu name="Preferences" />
+                </layout>
+            </gui>
+            <registry>
+                <menu sid="menuFileView" start="true" />
+                <menu sid="menuPreferencesView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="menuFileView" type="sight::module::ui::menu" >
+            <gui>
+                <layout>
+                    <menuItem name="Open data set..." shortcut="Ctrl+O" />
+                    <menuItem name="Open Activity..." shortcut="Ctrl+Shift+O" />
+                    <menuItem name="Save..." shortcut="Ctrl+S" />
+                    <menuItem name="Save Activity..." shortcut="Ctrl+Shift+S" />
+                    <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="openDataSetAct" start="true" />
+                <menuItem sid="openActivityAct" start="true" />
+                <menuItem sid="saveAct" start="true" />
+                <menuItem sid="saveActivityAct" start="true" />
+                <menuItem sid="quitAct" start="true" />
+            </registry>
+        </service>
+
+        <service uid="menuPreferencesView" type="sight::module::ui::menu" >
+            <gui>
+                <layout>
+                    <menuItem name="Video directory" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="videoDirectoryAct" start="true" />
+            </registry>
+        </service>
+
+
+        <service uid="mainview" type="sight::module::ui::view" >
+            <gui>
+                <layout type="sight::ui::layout::cardinal">
+                    <view align="center" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="dynamicView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="dynamicView" type="sight::module::ui::qt::activity::dynamic_view" >
+            <mainActivity id="SightCalibratorActivitySelector_Activity" closable="false" />
+            <parameters>
+                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+                <parameter replace="dataSet" by="dataSet" />
+                <parameter replace="activitySet" by="activitySet" />
+                <parameter replace="DYNAMICVIEW_CHANNEL" by="dynamicView" />
+                <parameter replace="CREATE_ACTIVITY_RECEIVER_CHANNEL" by="CREATE_ACTIVITY_SENDER_CHANNEL" />
+                <parameter replace="LAUNCH_ACTIVITY_SENDER_CHANNEL" by="LAUNCH_ACTIVITY_RECEIVER_CHANNEL" />
+                <parameter replace="LOAD_ACTIVITY_SENDER_CHANNEL" by="LOAD_ACTIVITY_RECEIVER_CHANNEL" />
+            </parameters>
+            <config document="false" />
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="videoDirectoryAct" type="sight::module::ui::qt::preferences_configuration" >
+            <preference>
+                <type>path</type>
+                <name>Video directory</name>
+                <key>VIDEO_DIR_PREF</key>
+                <default_value>...</default_value>
+            </preference>
+        </service>
+
+        <service uid="openDataSetAct" type="sight::module::ui::action" />
+
+        <service uid="openActivityAct" type="sight::module::ui::action" />
+
+        <!-- Actions to save all type of series (jsonz, json, ...). -->
+        <service uid="saveAct" type="sight::module::ui::action" />
+
+        <!-- Save current activity. -->
+        <service uid="saveActivityAct" type="sight::module::ui::action" />
+
+        <service uid="quitAct" type="sight::module::ui::quit" />
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="dataSetReaderSrv" type="sight::module::ui::io::selector" config="SDBSessionReaderIOSelectorConfig" >
+            <inout key="data" uid="dataSet" />
+        </service>
+
+        <service uid="dataSetWriterSrv" type="sight::module::ui::io::selector" config="SDBSessionWriterIOSelectorConfig" >
+            <inout key="data" uid="dataSet" />
+        </service>
+
+        <service uid="activitySetReaderSrv" type="sight::module::ui::io::selector" config="ActivityReaderConfig" >
+            <inout key="data" uid="activitySet" />
+        </service>
+
+        <service uid="activitySetWriterSrv" type="sight::module::ui::io::selector" config="ActivityWriterConfig" >
+            <inout key="data" uid="activitySet" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <!-- connect to launch the activity when it is created/updated. -->
+        <connect channel="LAUNCH_ACTIVITY_RECEIVER_CHANNEL">
+            <slot>dynamicView/launch_activity</slot>
+        </connect>
+
+        <!-- connect to load the activity . -->
+        <connect channel="LOAD_ACTIVITY_RECEIVER_CHANNEL">
+            <slot>activitySetReaderSrv/update</slot>
+        </connect>
+
+        <connect channel="dynamicView">
+            <slot>dynamicView/create_tab</slot>
+        </connect>
+
+        <connect>
+            <signal>openDataSetAct/clicked</signal>
+            <slot>dataSetReaderSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>openActivityAct/clicked</signal>
+            <slot>activitySetReaderSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>saveAct/clicked</signal>
+            <slot>dataSetWriterSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>saveActivityAct/clicked</signal>
+            <slot>activitySetWriterSrv/update</slot>
+        </connect>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainFrame" />
+        <start uid="dataSetReaderSrv" />
+        <start uid="activitySetReaderSrv" />
+        <start uid="dataSetWriterSrv" />
+        <start uid="activitySetWriterSrv" />
+
+    </config>
+</extension>

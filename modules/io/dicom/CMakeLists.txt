@@ -6,9 +6,9 @@ target_link_libraries(
     module_io_dicom
     PUBLIC core
            data
-           io_base
+           io
            io_dicom
-           ui_base
+           ui
            ui_qt
            service
 )

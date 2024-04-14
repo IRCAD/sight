@@ -1,2 +1,3 @@
-add_subdirectory(ExNotifications)
-add_subdirectory(ExSParameters)
+add_subdirectory(ex_notifications)
+add_subdirectory(ex_parameters)
+add_subdirectory(ex_collapsible_section)

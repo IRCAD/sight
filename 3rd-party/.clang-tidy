@@ -1,0 +1,4 @@
+---
+# Disable all checks in this folder.
+Checks: '-*,cppcoreguidelines-avoid-goto'
+---

@@ -1,0 +1,24 @@
+<RCC>
+  <qresource>
+    <file>resources/background.jpg</file>
+    <file>resources/branch_closed-on.png</file>
+    <file>resources/branch_closed.png</file>
+    <file>resources/branch_open-on.png</file>
+    <file>resources/branch_open.png</file>
+    <file>resources/close.png</file>
+    <file>resources/close-hover.png</file>
+    <file>resources/close-pressed.png</file>
+    <file>resources/down_arrow.png</file>
+    <file>resources/down_arrow_disabled.png</file>
+    <file>resources/left_arrow.png</file>
+    <file>resources/left_arrow_disabled.png</file>
+    <file>resources/right_arrow.png</file>
+    <file>resources/right_arrow_disabled.png</file>
+    <file>resources/up_arrow.png</file>
+    <file>resources/up_arrow_disabled.png</file>
+    <file>resources/undock.png</file>
+  </qresource>
+  <qresource>
+      <file>noctura.qss</file>
+  </qresource>
+</RCC>

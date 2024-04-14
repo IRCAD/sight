@@ -6,8 +6,8 @@ target_link_libraries(module_io_vtk PUBLIC VTK::IOImport)
 
 add_dependencies(module_io_vtk data module_service)
 
-target_link_libraries(module_io_vtk PUBLIC core data io_base ui_base service io_vtk)
+target_link_libraries(module_io_vtk PUBLIC core data io ui service io_vtk)
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

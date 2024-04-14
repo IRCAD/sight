@@ -3,8 +3,8 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::io::dimse" />
 
-    <xi:include href="configurations/PACSSelectorWidget.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/PACSSelectorWindow.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/pacs_selector_widget.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/pacs_selector_window.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
 
 </plugin>

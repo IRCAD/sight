@@ -25,7 +25,7 @@ target_link_libraries(
            io_http
            data
            service
-           ui_base
+           ui
            io_opencv
            navigation_openvslam
 )

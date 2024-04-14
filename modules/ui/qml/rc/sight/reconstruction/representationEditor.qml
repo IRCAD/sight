@@ -15,7 +15,7 @@ Item {
         serviceCreated(representationService)
     }
 
-    SRepresentationEditor {
+    RepresentationEditor {
         id: representationService
 
         onStarted: {
@@ -126,7 +126,7 @@ Item {
 
         GroupBox {
             Layout.fillWidth: true
-            title: "Shading"
+            title: "shading"
 
             ColumnLayout {
                 anchors.fill: parent

@@ -1,0 +1,91 @@
+#version 420
+
+#if defined(QUAD)
+layout (lines_adjacency) in;
+layout (triangle_strip, max_vertices = 4) out;
+#else
+#if defined(TETRA)
+layout (lines_adjacency) in;
+layout (triangle_strip, max_vertices = 6) out;
+#else
+layout (triangles) in;
+layout (triangle_strip, max_vertices = 3) out;
+#endif
+#endif
+
+layout(location = 0) in vec3 vNormal[];
+
+#ifdef VERTEX_COLOR
+layout(location = 1) in vec4 vColor[];
+#endif // VERTEX_COLOR
+
+#ifdef DIFFUSE_TEX
+layout(location = 2) in vec2 vTexCoord[];
+#endif // DIFFUSE_TEX
+
+out vec3 @VES_POSITION@;
+out vec3 @VES_NORMAL@;
+#if defined(VERTEX_COLOR) || defined(PER_PRIMITIVE_COLOR)
+out uint @VES_COLOR@;
+#endif // VERTEX_COLOR
+#ifdef DIFFUSE_TEX
+out vec2 @VES_TEXTURE_COORDINATES_0@;
+#endif // DIFFUSE_TEX
+
+#ifdef PER_PRIMITIVE_COLOR
+// Set the default texunit value: this is actually a workaround to fix the first rendering of the object,
+// where the texunit value is not well set by Ogre, for some unknown reason, and despite the command buffer shows
+// it is set before the draw call
+layout(binding=1) uniform sampler2D u_colorPrimitiveTexture;
+#endif // PER_PRIMITIVE_COLOR
+
+void emit(int index, vec4 pp_color)
+{
+    @VES_POSITION@ = gl_in[index].gl_Position.xyz;
+    @VES_NORMAL@ = vNormal[index];
+
+#ifdef DIFFUSE_TEX
+    @VES_TEXTURE_COORDINATES_0@ = vTexCoord[index];
+#endif // DIFFUSE_TEX
+
+#ifdef VERTEX_COLOR
+    vec4 color;
+    color = vColor[index];
+#   ifdef PER_PRIMITIVE_COLOR
+    color = pp_color * color;
+#   endif // PER_PRIMITIVE_COLOR
+    @VES_COLOR@ = packUnorm4x8(color);
+#else
+#   ifdef PER_PRIMITIVE_COLOR
+    @VES_COLOR@ = packUnorm4x8(pp_color);
+#   endif // PER_PRIMITIVE_COLOR
+#endif // VERTEX_COLOR
+
+    EmitVertex();
+}
+
+void main(void)
+{
+    vec4 pp_color = vec4(1.,1.,1.,1.);
+#ifdef PER_PRIMITIVE_COLOR
+    ivec2 colorPrimitiveTextureSize = textureSize(u_colorPrimitiveTexture, 0);
+    // compute offset
+    int div = gl_PrimitiveIDIn / int(colorPrimitiveTextureSize.x);
+    int mod = gl_PrimitiveIDIn - int(colorPrimitiveTextureSize.x) * div;
+
+    vec2 range = max(vec2(1.0, 1.0), colorPrimitiveTextureSize - 1.0);
+    vec2 uv = vec2(mod / range.x , div/ range.y);
+    pp_color = texture(u_colorPrimitiveTexture, uv );
+#endif // PER_PRIMITIVE_COLOR
+
+#if defined(QUAD)
+    emit(0, pp_color); emit(1, pp_color); emit(3, pp_color); emit(2, pp_color);
+#else
+#if defined(TETRA)
+    emit(0, pp_color); emit(1, pp_color); emit(2, pp_color); emit(3, pp_color); emit(0, pp_color); emit(1, pp_color);
+#else
+    emit(0, pp_color); emit(1, pp_color); emit(2, pp_color);
+#endif
+#endif
+    EndPrimitive();
+}

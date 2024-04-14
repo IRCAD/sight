@@ -1,0 +1,78 @@
+<extension implements="sight::app::extension::config">
+    <id>sight::activity::io::dicomweb::2d_preview_config</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="objectID" />
+    </parameters>
+    <config>
+        <object uid="${objectID}" type="sight::data::dicom_series" src="ref" />
+        <object uid="image" type="sight::data::image" src="deferred" />
+        <object uid="tf" type="sight::data::transfer_function" />
+        <service uid="mainview" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::cardinal">
+                    <view align="center" />
+                    <view align="bottom" minWidth="200" minHeight="40" resizable="false" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="gs" start="true" />
+                <view sid="sliderIndexDicomPullerEditor" start="true" />
+            </registry>
+        </service>
+
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="gs" type="sight::viz::scene3d::render">
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="defaultLayer" order="1">
+                    <adaptor uid="pNegatoAdp" />
+                    <adaptor uid="pNegatoCameraAdp" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="pNegatoAdp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
+            <in key="image" uid="image" />
+            <in key="tf" uid="tf" />
+            <config sliceIndex="axial" filtering="anisotropic" />
+        </service>
+
+        <service uid="pNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
+            <inout key="image" uid="image" />
+            <inout key="tf" uid="tf" />
+            <config priority="0" orientation="axial" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <service uid="imageDumpLocker" type="sight::module::memory::lock_dump">
+            <inout key="target" uid="image" />
+        </service>
+
+        <service uid="sliderIndexDicomPullerEditor" type="sight::module::io::dicomweb::slice_index_dicom_puller_editor">
+            <inout key="series" uid="${objectID}" />
+            <out key="image" uid="image" />
+            <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
+            <config dicomReader="sight::module::io::dicom::series_set_reader">
+                <readerConfig>
+                    <config>
+                        <showLogDialog>false</showLogDialog>
+                        <enableBufferRotation>false</enableBufferRotation>
+                        <dicomdirSupport>never</dicomdirSupport>
+                    </config>
+                </readerConfig>
+            </config>
+        </service>
+
+        <start uid="mainview" />
+        <!-- Deferred start -->
+        <start uid="imageDumpLocker" />
+        <!-- 3D scene 'gs' -->
+        <start uid="pNegatoAdp" />
+        <start uid="pNegatoCameraAdp" />
+    </config>
+</extension>

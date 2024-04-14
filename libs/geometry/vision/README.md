@@ -4,8 +4,8 @@ Contains functions related to calibration and 3d reconstruction
 
 ## Classes
 
-- **ICalibration**: generic interface meant to define calibration services.
-- **ReprojectionError**
+- **calibration**: generic interface meant to define calibration services.
+- **reprojection_error**
   The ReprojectionError is used to compute reprojection error in a non-linear least squares problem.
   This class is used as functor in a ::ceres::Problem.
 
@@ -24,7 +24,7 @@ Contains functions related to calibration and 3d reconstruction
 
 ```cmake
 
-target_link_libraries(myTarget <PUBLIC|PRIVATE> geometry_vision)
+target_link_libraries(my_target <PUBLIC|PRIVATE> geometry_vision)
 
 ```
 

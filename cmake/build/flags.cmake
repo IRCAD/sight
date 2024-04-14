@@ -254,8 +254,10 @@ endif()
 
 if(NOT TARGET coverage)
     if(SIGHT_ENABLE_COVERAGE)
-        add_compile_options("$<$<CXX_COMPILER_ID:GNU,Clang>:--coverage>")
-        add_link_options("$<$<CXX_COMPILER_ID:GNU,Clang>:--coverage>")
+        add_compile_options("$<$<COMPILE_LANG_AND_ID:C,GNU,Clang>:--coverage>")
+        add_compile_options("$<$<COMPILE_LANG_AND_ID:CXX,GNU,Clang>:--coverage>")
+        add_link_options("$<$<COMPILE_LANG_AND_ID:C,GNU,Clang>:--coverage>")
+        add_link_options("$<$<COMPILE_LANG_AND_ID:CXX,GNU,Clang>:--coverage>")
 
         if(CMAKE_COMPILER_IS_GNUCXX)
             link_libraries(gcov)
@@ -298,19 +300,6 @@ if(MSVC)
 
     # CMAKE_MSVC_DEBUG_INFORMATION_FORMAT doesn't always work
     replace_flags("/Z[iI]" "/Z7")
-
-    # Use external/system includes available from Visual Studio 15.6
-    # source https://gitlab.kitware.com/cmake/cmake/issues/17904
-    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.14)
-        # cmake-lint: disable=C0301
-        # Last space is mandatory
-        add_compile_options(
-            "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:C,CXX>>:/experimental\:external;/external\:W0;/external\:I >"
-        )
-        add_compile_options(
-            "$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:CUDA>>:-Xcompiler=-experimental\:external -external\:W0 -external\:I >"
-        )
-    endif()
 
     # On MSVC, we want different optimizations depending on the target
     # CMake does allow us to override CXX_FLAGS, so we reset them here and

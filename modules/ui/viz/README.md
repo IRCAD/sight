@@ -4,40 +4,40 @@ Contains all user interface widgets related to scene3d (Ogre).
 
 ## Services
 
-- **SCompositorParameterEditor**: allows to edit shader uniform from a compositor material.
+- **compositor_parameter_editor**: allows to edit shader uniform from a compositor material.
 
-- **SCompositorSelector**: allows to select an Ogre Compositor and apply it to a layer.
+- **compositor_selector**: allows to select an Ogre Compositor and apply it to a layer.
 
-- **SCoreCompositorEditor**: allows to select an Ogre Compositor and apply it to a layer.
+- **core_compositor_editor**: allows to select an Ogre Compositor and apply it to a layer.
 
-- **SLightEditor**: creates a user interface to manage a light adaptor.
+- **light_editor**: creates a user interface to manage a light adaptor.
 
-- **SLightSelector**: selects light adaptor from a selected layer or create a new one.
+- **light_selector**: selects light adaptor from a selected layer or create a new one.
 
-- **SMaterialSelector**: allows to select an Ogre material template and apply it to the current `data::Reconstruction`.
+- **material_selector**: allows to select an Ogre material template and apply it to the current `data::reconstruction`.
 
-- **SScreenSelector**: selects a screen and sends its index.
+- **screen_selector**: selects a screen and sends its index.
 
-- **SShaderParameterEditor**: allows to edit each parameters from each shader of a `data::Reconstruction`.
+- **shader_parameter_editor**: allows to edit each parameters from each shader of a `data::reconstruction`.
 
-- **SStereoSelector**: allows to select the stereo mode of an Ogre Compositor.
+- **stereo_selector**: allows to select the stereo mode of an Ogre Compositor.
 
-- **SStereoToggler**: enables/disables stereo in an ogre scene layer.
+- **stereo_toggler**: enables/disables stereo in an ogre scene layer.
 
-- **STextureSelector**: allows to select a `data::Image` and apply it to the current reconstruction as an Ogre texture.
+- **texture_selector**: allows to select a `data::image` and apply it to the current reconstruction as an Ogre texture.
 
 ## Other classes
 
-- **helper/Utils**: contains functions to convert from Ogre to Qt color format.
+- **helper/utils**: contains functions to convert from Ogre to Qt color format.
 
-- **helper/ParameterEditor**: contains static function  to create a config that will be used to expose a shader parameter adaptor in a SParameters.
+- **helper/parameter_editor**: contains static function  to create a config that will be used to expose a shader parameter adaptor in a parameters.
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_ui_viz ... )
+add_dependencies(my_target module_ui_viz ... )
 ```
 
 ### XML

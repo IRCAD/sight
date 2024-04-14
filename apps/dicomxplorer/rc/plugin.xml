@@ -3,12 +3,12 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::io::session" />
     <requirement id="sight::module::activity" />
-    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::ui" />
 
-    <xi:include href="configurations/dicomXplorerBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/dicomxplorer_base.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/sdb.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="sight::service::extension::AppConfigParameters">
+    <extension implements="sight::app::extension::parameters">
         <id>dicomXplorerAppBase</id>
         <parameters>
             <param name="appName" value="DicomXplorer" />
@@ -17,11 +17,11 @@
         </parameters>
     </extension>
 
-    <extension implements="sight::activity::extension::Activity">
+    <extension implements="sight::activity::extension">
         <id>SDBdicomXplorer</id>
         <title>SDB</title>
         <desc>Series Selector</desc>
-        <icon>sight::module::ui::icons/selector.svg</icon>
+        <icon>sight::module::ui::icons/menu.svg</icon>
         <requirements />
         <appConfig id="SDBdicomXplorer">
             <parameters />

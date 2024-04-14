@@ -17,6 +17,8 @@ cmake_policy(SET CMP0067 NEW)
 cmake_policy(SET CMP0106 OLD)
 # Use new policy for CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
 cmake_policy(SET CMP0141 NEW)
+# Use old policy for now because of openCV
+cmake_policy(SET CMP0146 OLD)
 
 if(${CMAKE_VERSION} VERSION_GREATER "3.25.0")
     # Transform the ``DEPFILE`` after running the custom command for Ninja generator.
@@ -42,7 +44,7 @@ endif()
 
 project(
     sight
-    VERSION 23.1.0
+    VERSION 24.0.0
     DESCRIPTION "Surgical Image Guidance and Healthcare Toolkit"
     HOMEPAGE_URL "https://git.ircad.fr/sight/sight"
 )
@@ -323,7 +325,6 @@ if(WIN32)
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/template_exe.bat.in"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/setpath.bat.in"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/windows_fixup.cmake.in"
-              "${CMAKE_SOURCE_DIR}/cmake/install/windows/generate_headers.cmake"
         DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/windows
         COMPONENT dev
     )

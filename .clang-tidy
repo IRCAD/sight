@@ -1,7 +1,6 @@
 ---
-Checks: '*,-llvm-header-guard,-llvm-include-order,-llvmlibc-*,-fuchsia-*,-altera-struct-pack-align,-modernize-use-trailing-return-type,-misc-non-private-member-variables-in-classes,-google-readability-namespace-comments,-cppcoreguidelines-avoid-magic-numbers,-readability-magic-numbers,-google-readability-todo,-cppcoreguidelines-special-member-functions,-hicpp-special-member-functions,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-altera-unroll-loops,-cppcoreguidelines-pro-bounds-constant-array-index,-cppcoreguidelines-avoid-non-const-global-variables,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-google-default-arguments,-altera-id-dependent-backward-branch,-cppcoreguidelines-pro-type-reinterpret-cast,-cert-err58-cpp,-bugprone-easily-swappable-parameters,-cppcoreguidelines-owning-memory,-misc-no-recursion,-concurrency-mt-unsafe,-abseil-*,-clang-analyzer-cplusplus.NewDelete,-bugprone-exception-escape,-cppcoreguidelines-pro-type-static-cast-downcast,-cppcoreguidelines-pro-type-union-access,-readability-redundant-access-specifiers,-readability-function-cognitive-complexity,-clang-analyzer-cplusplus.NewDeleteLeaks,-android-cloexec-fopen,-hicpp-signed-bitwise,-bugprone-unhandled-exception-at-new,-openmp-use-default-none,-performance-no-int-to-ptr,-clang-diagnostic-*,-google-readability-casting,-readability-identifier-length,-clang-analyzer-cplusplus.StringChecker,-readability-redundant-string-cstr,-performance-unnecessary-value-param,-performance-inefficient-string-concatenation,-misc-include-cleaner,-misc-const-correctness,-cppcoreguidelines-avoid-do-while,-performance-avoid-endl,-bugprone-unchecked-optional-access,-misc-use-anonymous-namespace,-readability-simplify-boolean-expr'
+Checks: '*,-llvm-header-guard,-llvm-include-order,-llvmlibc-*,-fuchsia-*,-altera-struct-pack-align,-modernize-use-trailing-return-type,-misc-non-private-member-variables-in-classes,-google-readability-namespace-comments,-cppcoreguidelines-avoid-magic-numbers,-readability-magic-numbers,-google-readability-todo,-cppcoreguidelines-special-member-functions,-hicpp-special-member-functions,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-altera-unroll-loops,-cppcoreguidelines-pro-bounds-constant-array-index,-cppcoreguidelines-avoid-non-const-global-variables,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-google-default-arguments,-altera-id-dependent-backward-branch,-cppcoreguidelines-pro-type-reinterpret-cast,-cert-err58-cpp,-bugprone-easily-swappable-parameters,-cppcoreguidelines-owning-memory,-misc-no-recursion,-concurrency-mt-unsafe,-abseil-*,-clang-analyzer-cplusplus.NewDelete,-bugprone-exception-escape,-cppcoreguidelines-pro-type-static-cast-downcast,-cppcoreguidelines-pro-type-union-access,-readability-redundant-access-specifiers,-readability-function-cognitive-complexity,-clang-analyzer-cplusplus.NewDeleteLeaks,-android-cloexec-fopen,-hicpp-signed-bitwise,-bugprone-unhandled-exception-at-new,-openmp-use-default-none,-performance-no-int-to-ptr,-clang-diagnostic-*,-google-readability-casting,-readability-identifier-length,-clang-analyzer-cplusplus.StringChecker,-readability-redundant-string-cstr,-performance-unnecessary-value-param,-performance-inefficient-string-concatenation,-misc-include-cleaner,-misc-const-correctness,-cppcoreguidelines-avoid-do-while,-performance-avoid-endl,-bugprone-unchecked-optional-access,-misc-use-anonymous-namespace,-readability-simplify-boolean-expr,-bugprone-empty-catch,-cppcoreguidelines-avoid-const-or-ref-data-members,-bugprone-assignment-in-if-condition'
 WarningsAsErrors: '*'
-HeaderFilterRegex: '^((?!/3rd-party/|/patch/).)*$'
 CheckOptions:
     - key: readability-simplify-boolean-expr.ChainedConditionalReturn
       value: true
@@ -30,21 +29,53 @@ CheckOptions:
     - key: bugprone-suspicious-enum-usage.StrictMode
       value: 1
     - key: readability-identifier-naming.ClassCase
-      value: CamelCase
-    - key: readability-identifier-naming.NamespaceCase
-      value: camelBack
+      value: lower_case
+    - key: readability-identifier-naming.ClassMemberCase
+      value: lower_case
+    - key: readability-identifier-naming.ClassMemberIgnoredRegexp
+      value: (U?INT\d\d?)|FLOAT|DOUBLE
+    - key: readability-identifier-naming.ClassMemberPrefix
+      value: s_
+    - key: readability-identifier-naming.ClassMethodCase
+      value: lower_case
+    - key: readability-identifier-naming.ConstantMemberCase
+      value: lower_case
+    - key: readability-identifier-naming.EnumCase
+      value: lower_case
+    - key: readability-identifier-naming.EnumConstantCase
+      value: lower_case
+    - key: readability-identifier-naming.EnumConstantIgnoredRegexp
+      value: (in)|(out)|(inout)
     - key: readability-identifier-naming.FunctionCase
-      value: camelBack
+      value: lower_case
+    - key: readability-identifier-naming.GlobalConstantCase
+      value: UPPER_CASE
+    - key: readability-identifier-naming.MacroDefinitionCase
+      value: UPPER_CASE
+    - key: readability-identifier-naming.MemberCase
+      value: lower_case
     - key: readability-identifier-naming.MethodCase
-      value: camelBack
+      value: lower_case
     - key: readability-identifier-naming.MethodIgnoredRegexp
       value: New
+    - key: readability-identifier-naming.NamespaceCase
+      value: lower_case
+    - key: readability-identifier-naming.ParameterCase
+      value: lower_case
+    - key: readability-identifier-naming.ParameterPrefix
+      value: _
     - key: readability-identifier-naming.PrivateMemberCase
-      value: camelBack
+      value: lower_case
     - key: readability-identifier-naming.PrivateMemberPrefix
       value: m_
-    - key: readability-identifier-naming.EnumCase
-      value: CamelCase
-    - key: readability-identifier-naming.EnumConstantCase
+    - key: readability-identifier-naming.StaticConstantCase
       value: UPPER_CASE
+    - key: readability-identifier-naming.StaticConstantPrefix
+      value: s_
+    - key: readability-identifier-naming.TypeAliasCase
+      value: lower_case
+    - key: readability-identifier-naming.TypeAliasIgnoredRegexp
+      value: (c?[usw]ptr)
+    - key: readability-identifier-naming.VariableCase
+      value: lower_case
 ...

@@ -4,15 +4,15 @@ This module contains services for writing bitmap related data.
 
 ## Services
 
-- **SWriter**: writes a bitmap image from a `sight::data::Image`.
-- **SReader**: reads a bitmap image and output a `sight::data::Image`.
+- **writer**: writes a bitmap image from a `sight::data::image`.
+- **reader**: reads a bitmap image and output a `sight::data::image`.
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget
+add_dependencies(my_target
     ...
     module_io_bitmap
 )

@@ -1,0 +1,17 @@
+<plugin id="sight::module::memory" library="true" autostart="true">
+
+    <extension implements="sight::service::extension::factory">
+         <type>sight::service::controller</type>
+         <service>sight::module::memory::lock_dump</service>
+         <object>sight::data::object</object>
+         <desc>This services dump lock object. Unlock it on stopping.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+         <type>sight::service::controller</type>
+         <service>sight::module::memory::dump_policy</service>
+         <object>sight::data::object</object>
+         <desc></desc>
+    </extension>
+
+</plugin>

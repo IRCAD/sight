@@ -1,33 +1,33 @@
  # sight::module::viz::scene2D
 
 This module contains services to display various 2D elements.
-The services are implementations of the IAdaptor present in libs/viz/scene2D
+The services are implementations of the adaptor present in libs/viz/scene2D
 
 ## Services
 
-- **SAxis**
+- **axis**
   Renders an axis on the scene2d
-- **SGrid2D**
+- **grid2d**
   Renders a grid on the scene2d
-- **SHistogram**
+- **histogram**
   Displays the histogram of an image
-- **SLine**
+- **line**
   Draws a line on the scene2D
-- **STransferFunction**
+- **transfer_function**
   Displays a composite of TF and interact with them.
-- **SNegato**
+- **negato**
   Displays one slice of an 3D image.
-- **SSquare**
+- **square**
   Draws a square on the scene2D.
-- **STransferFunction**
+- **transfer_function**
   Displays and edits a transfer function from a medical image.
-- **SViewportInteractor**
+- **viewport_interactor**
   Manages the camera on the scene2D view
-- **SViewportRangeSelector**
+- **viewport_range_selector**
   Allows to select a delimited range of a viewport.
   It uses a graphical delimiter (called shutter) that can be moved from both left to right
   and right to left directions (in those cases, shutter's width is changing).
-- **SViewportUpdater**
+- **viewport_updater**
   Manages the camera on the view (by updating the viewport object)
 
 ## How to use it
@@ -36,7 +36,7 @@ The services are implementations of the IAdaptor present in libs/viz/scene2D
 
 ```cmake
 
-add_dependencies(myTarget
+add_dependencies(my_target
                 ...
                  module_viz_scene2D
 )

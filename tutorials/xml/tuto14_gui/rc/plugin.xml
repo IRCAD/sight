@@ -1,0 +1,475 @@
+<plugin id="tuto14_gui">
+
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+
+    <!-- This is a sub-config to exhibit how to integrate "subToolBars" -->
+    <extension implements="sight::app::extension::config">
+        <id>SubToolBarCfg</id>
+        <parameters>
+            <param name="TOOLBAR" />
+            <param name="LOGO_VISIBILITY_CHANNEL" />
+        </parameters>
+        <config>
+
+            <service uid="view" type="sight::module::ui::view">
+                <gui>
+                    <toolbar />
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                    </layout>
+                </gui>
+                <registry>
+                    <parent wid="${TOOLBAR}" />
+                    <toolbar sid="toolBarView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="toolBarView" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout style="ToolButtonTextUnderIcon">
+                        <menuItem name="logo visibility (inverted)" style="check" icon="tuto14_gui/icons/monkey.png" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="view5VisibilityAct" start="true" />
+                </registry>
+            </service>
+
+            <service uid="view5VisibilityAct" type="sight::module::ui::action">
+                <state checked="true" inverse="true" />
+            </service>
+
+            <connect channel="${LOGO_VISIBILITY_CHANNEL}">
+                <signal>view5VisibilityAct/is_checked</signal>
+            </connect>
+
+            <start uid="view" />
+
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>Tuto14Gui_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="text" type="sight::data::string">
+                <value>
+            <![CDATA[
+                This is a text_status
+            ]]>
+            </value>
+            </object>
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::frame">
+                <gui>
+                    <menubar />
+                    <toolbar />
+                    <frame>
+                        <name>tuto14_gui</name>
+                        <icon>tuto14_gui/tuto.ico</icon>
+                        <minSize width="800" height="600" />
+                        <size width="1600" height="1200" />
+                        <style mode="FULLSCREEN" />
+                    </frame>
+                </gui>
+                <registry>
+                    <menubar sid="menuBarView" start="true" />
+                    <toolbar sid="toolBarView" start="true" />
+                    <view sid="backgroundView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="sight::module::ui::menubar">
+                <gui>
+                    <layout>
+                        <menu name="My Menu" />
+                        <menu name="My Menu 2" />
+                        <menu name="My Menu 3" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu1View" start="true" />
+                    <menu sid="menu2View" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menu1View" type="sight::module::ui::menu">
+                <gui>
+                    <layout>
+                        <menuItem name="Item 1" shortcut="1" style="check" />
+                        <separator />
+                        <menuItem name="Item 2" shortcut="2" style="radio" />
+                        <menuItem name="Item 3" shortcut="3" style="radio" />
+                        <separator />
+                        <menuItem name="Item A" shortcut="A" style="radio" />
+                        <menuItem name="Item B" shortcut="B" style="radio" />
+                        <separator />
+                        <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="item1Act" start="false" />
+                    <menuItem sid="item2Act" start="false" />
+                    <menuItem sid="item3Act" start="false" />
+                    <menuItem sid="item4Act" start="false" />
+                    <menuItem sid="item5Act" start="false" />
+                    <menuItem sid="quitAct" start="false" />
+                </registry>
+            </service>
+
+            <service uid="menu2View" type="sight::module::ui::menu">
+                <gui>
+                    <layout>
+                        <menuItem name="Item 1" style="check" />
+                        <separator />
+                        <menuItem name="start 2-3 / stop A-B" style="radio" />
+                        <menuItem name="start A-B / stop 2-3" style="radio" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="item1Act" start="false" />
+                    <menuItem sid="item16Act" start="false" />
+                    <menuItem sid="item17Act" start="false" />
+                </registry>
+            </service>
+
+            <service uid="toolBarView" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout hideActions="true" style="ToolButtonTextUnderIcon">
+                        <menuItem name="start" icon="sight::module::ui::icons/play.svg" shortcut="space;f" />
+                        <menuItem name="pause" icon="sight::module::ui::icons/pause.svg" />
+                        <menuItem name="stop" icon="sight::module::ui::icons/stop.svg" />
+                        <separator />
+                        <menuItem name="Item 1" style="check" icon="tuto14_gui/icons/important.png" />
+                        <separator />
+                        <menuItem name="Item 2" style="radio" icon="sight::module::ui::icons/gear.svg" />
+                        <menuItem name="Item 3" style="radio" icon="sight::module::ui::icons/gear.svg" />
+                        <separator />
+                        <menuItem name="Item A" style="radio" icon="tuto14_gui/icons/monkey.png" />
+                        <menuItem name="Item B" style="radio" icon="tuto14_gui/icons/monkey.png" />
+                        <separator />
+                        <menuItem name="start 2-3 / stop A-B" style="radio" icon="tuto14_gui/icons/important.png" />
+                        <menuItem name="start A-B / stop 2-3" style="radio" icon="tuto14_gui/icons/important.png" />
+                        <editor />
+                        <spacer />
+                        <menuItem name="Hide/Show Toolbar" style="check" />
+                        <menu name="Test Hide/Show" start="true" />
+                        <menuItem name="Quit" icon="sight::module::ui::icons/cross.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="startAct" start="true" />
+                    <menuItem sid="pauseAct" start="true" />
+                    <menuItem sid="stopAct" start="true" />
+                    <menuItem sid="item1Act" start="true" />
+                    <menuItem sid="item2Act" start="false" />
+                    <menuItem sid="item3Act" start="false" />
+                    <menuItem sid="item4Act" start="false" />
+                    <menuItem sid="item5Act" start="false" />
+                    <menuItem sid="item16Act" start="true" />
+                    <menuItem sid="item17Act" start="true" />
+                    <editor wid="subToolBarView" />
+                    <menuItem sid="hideShowToolbar" start="true" />
+                    <menu sid="testHideShowView" start="true" />
+                    <menuItem sid="quitAct" start="true" />
+                </registry>
+            </service>
+
+        <service uid="hideShowToolbar" type="sight::module::ui::action" >
+            <state checked="true" />
+        </service>
+
+            <service uid="testHideShowView" type="sight::module::ui::menu">
+                <gui>
+                    <layout>
+                        <menuItem name="start" icon="sight::module::ui::icons/play.svg" />
+                        <menuItem name="pause" icon="sight::module::ui::icons/pause.svg" />
+                        <menuItem name="stop" icon="sight::module::ui::icons/stop.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="startAct" start="false" />
+                    <menuItem sid="pauseAct" start="false" />
+                    <menuItem sid="stopAct" start="false" />
+                </registry>
+            </service>
+
+            <service uid="backgroundView" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="1" backgroundColor="#2E2F30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="containerView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="containerView" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="2" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view wid="subWidView" />
+                    <view sid="sub2View" start="true" />
+                </registry>
+            </service>
+
+            <service uid="sub1View" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <view proportion="1" toolTip="View with tabs inside" backgroundColor="#36393E" />
+                        <view proportion="1" toolTip="Empty view" backgroundColor="#36393E" />
+                        <view proportion="1" backgroundColor="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <parent wid="subWidView" />
+                    <view sid="sub3View" start="true" />
+                    <view sid="sub4View" start="true" />
+                    <view sid="sub5View" start="true" />
+                </registry>
+            </service>
+
+            <service uid="sub2View" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::cardinal">
+                        <view align="center" backgroundColor="#36393E" />
+                        <view caption="CardinalView2" align="right" minWidth="400" />
+                        <view caption="CardinalView3" align="right" minWidth="400" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="view12" start="true" />
+                </registry>
+            </service>
+
+            <service uid="sub3View" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::tab">
+                        <view caption="TabView1" />
+                        <view caption="TabView2" selected="true" />
+                        <view caption="TabView3" />
+                    </layout>
+                </gui>
+                <registry />
+            </service>
+
+            <service uid="sub4View" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <spacer />
+                        <view proportion="0" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="text_statusSrv" start="true" />
+                </registry>
+            </service>
+
+            <service uid="sub5View" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <spacer />
+                        <view proportion="0" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="ircadLogoSrv" start="true" />
+                </registry>
+            </service>
+
+            <service uid="view12" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <view toolTip="This is a nice tooltip" />
+                        <view toolTip="You can put some useful information here" />
+                        <view toolTip="This button is check/unchecked by clicking on 'Click' or 'Me'" />
+                    </layout>
+                    <toolbar />
+                </gui>
+                <registry>
+                    <view sid="clickSrv" start="true" />
+                    <view sid="meSrv" start="true" />
+                    <view sid="checkableSrv" start="true" />
+                    <toolbar sid="toolbar2View" start="true" />
+                </registry>
+            </service>
+
+            <service uid="toolbar2View" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout>
+                        <menuItem name="Item 2" style="radio" icon="sight::module::ui::icons/gear.svg" />
+                        <menuItem name="Item 3" style="radio" icon="sight::module::ui::icons/gear.svg" />
+                        <separator />
+                        <menuItem name="Item A" style="radio" icon="tuto14_gui/icons/monkey.png" />
+                        <menuItem name="Item B" style="radio" icon="tuto14_gui/icons/monkey.png" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="item2Act" />
+                    <menuItem sid="item3Act" />
+                    <menuItem sid="item4Act" />
+                    <menuItem sid="item5Act" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="item1Act" type="sight::module::ui::action">
+                <state checked="true" />
+            </service>
+
+            <service uid="item2Act" type="sight::module::ui::action">
+                <state checked="true" />
+            </service>
+
+            <service uid="item3Act" type="sight::module::ui::action" />
+
+            <service uid="item4Act" type="sight::module::ui::action">
+                <state checked="false" />
+            </service>
+
+            <service uid="item5Act" type="sight::module::ui::action">
+                <state checked="true" />
+            </service>
+
+            <service uid="startAct" type="sight::module::ui::action">
+                <confirmation value="true" message="Are you sure you want to Start ?" />
+            </service>
+
+            <service uid="stopAct" type="sight::module::ui::action">
+                <state enabled="false" />
+            </service>
+
+            <service uid="pauseAct" type="sight::module::ui::action">
+                <state checked="true" visible="false" />
+            </service>
+
+            <service uid="item16Act" type="sight::module::ui::action">
+                <state checked="true" />
+            </service>
+
+            <service uid="item17Act" type="sight::module::ui::action" />
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="clickSrv" type="sight::module::ui::qt::com::signal_button">
+                <config>
+                    <text>Click</text>
+                </config>
+            </service>
+
+            <service uid="meSrv" type="sight::module::ui::qt::com::signal_button">
+                <config>
+                    <text>Me</text>
+                </config>
+            </service>
+
+            <service uid="checkableSrv" type="sight::module::ui::qt::com::signal_button">
+                <config>
+                    <checkable>true</checkable>
+                    <icon>sight::module::ui::icons/play.svg</icon>
+                    <icon2>sight::module::ui::icons/stop.svg</icon2>
+                    <text>Check</text>
+                </config>
+            </service>
+
+            <service uid="ircadLogoSrv" type="sight::module::ui::qt::image::image">
+                <path>sight::module::ui::icons/ircad_white.svg</path>
+                <height>70</height>
+            </service>
+
+            <service uid="text_statusSrv" type="sight::module::ui::qt::text_status">
+                <in key="string" uid="text" />
+                <label>Text status</label>
+                <color>#6997BB</color>
+            </service>
+
+            <service uid="quitAct" type="sight::module::ui::quit" />
+
+            <service uid="subToolBarConfig" type="sight::app::config_controller">
+                <appConfig id="SubToolBarCfg" />
+                <parameter replace="TOOLBAR" by="subToolBarView" />
+                <parameter replace="LOGO_VISIBILITY_CHANNEL" by="LOGO_VISIBILITY_CHANNEL" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <!-- check button "Check" when button "Click" is clicked  -->
+            <connect>
+                <signal>clickSrv/clicked</signal>
+                <slot>checkableSrv/check</slot>
+            </connect>
+
+            <!-- uncheck button "Check" when button "Me" is clicked  -->
+            <connect>
+                <signal>meSrv/clicked</signal>
+                <slot>checkableSrv/uncheck</slot>
+            </connect>
+
+            <connect channel="LOGO_VISIBILITY_CHANNEL">
+                <slot>sub5View/set_visible</slot>
+            </connect>
+
+            <connect>
+                <signal>startAct/clicked</signal>
+                <slot>startAct/hide</slot>
+                <slot>stopAct/enable</slot>
+                <slot>pauseAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>stopAct/clicked</signal>
+                <slot>startAct/show</slot>
+                <slot>stopAct/disable</slot>
+                <slot>pauseAct/hide</slot>
+            </connect>
+
+        <connect>
+            <signal>hideShowToolbar/is_checked</signal>
+            <slot>toolbar2View/set_visible</slot>
+        </connect>
+
+            <connect>
+                <signal>item16Act/checked</signal>
+                <slot>item2Act/start</slot>
+                <slot>item3Act/start</slot>
+                <slot>item4Act/stop</slot>
+                <slot>item5Act/stop</slot>
+            </connect>
+
+            <connect>
+                <signal>item17Act/checked</signal>
+                <slot>item2Act/stop</slot>
+                <slot>item3Act/stop</slot>
+                <slot>item4Act/start</slot>
+                <slot>item5Act/start</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="sub1View" />
+            <start uid="subToolBarConfig" />
+
+        </config>
+    </extension>
+</plugin>

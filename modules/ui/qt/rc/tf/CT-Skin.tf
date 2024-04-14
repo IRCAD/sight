@@ -1,5 +1,5 @@
 {
-    "sight::data::TransferFunction": {
+    "sight::data::transfer_function": {
         "uuid": "72f6f5b4-3ece-48f7-9ec4-1bc2da626a58",
         "Level": "-327.80200000000002",
         "Window": "1296.5999999999999",

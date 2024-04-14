@@ -50,17 +50,17 @@ Window {
         RowLayout {
             id: row
             anchors.fill: parent
-            Image {
+            image {
                 id: icon
 
                 width: 48
                 height: 48
-                fillMode: Image.PreserveAspectFit
+                fillMode: image.PreserveAspectFit
                 mipmap: true
-                source: messageDialog.icon
+                source: message.icon
             }
             Label {
-                text: messageDialog.message
+                text: message.message
                 font.bold: true
                 Layout.fillWidth: true
                 width: parent.width
@@ -81,7 +81,7 @@ Window {
                 DialogButtonBox.buttonRole: DialogButtonBox.AcceptRole
                 highlighted: false
                 onClicked: {
-                    messageDialog.resultDialog(StandardButton.Ok)
+                    message.resultDialog(StandardButton.Ok)
                 }
             }
             Button {
@@ -93,7 +93,7 @@ Window {
                 DialogButtonBox.buttonRole: DialogButtonBox.RejectRole
                 highlighted: false
                 onClicked: {
-                    messageDialog.resultDialog(StandardButton.Cancel)
+                    message.resultDialog(StandardButton.Cancel)
                 }
             }
             Button {
@@ -105,7 +105,7 @@ Window {
                 DialogButtonBox.buttonRole: DialogButtonBox.YesRole
                 highlighted: false
                 onClicked: {
-                    messageDialog.resultDialog(StandardButton.Yes)
+                    message.resultDialog(StandardButton.Yes)
                 }
             }
             Button {
@@ -117,7 +117,7 @@ Window {
                 DialogButtonBox.buttonRole: DialogButtonBox.NoRole
                 highlighted: false
                 onClicked: {
-                    messageDialog.resultDialog(StandardButton.No)
+                    message.resultDialog(StandardButton.No)
                 }
             }
         }

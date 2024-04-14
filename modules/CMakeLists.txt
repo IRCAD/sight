@@ -1,4 +1,4 @@
-add_subdirectory(core)
+add_subdirectory(__)
 add_subdirectory(filter)
 add_subdirectory(geometry)
 add_subdirectory(io)

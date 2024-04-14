@@ -1,44 +1,44 @@
 # sight::module::filter::image
 
 Contains services for image processing. 
-In other words it contains services to operate on a `sight::data::Image`.
+In other words it contains services to operate on a `sight::data::image`.
 
 ## Services
 
-- **SAutomaticRegistration**
+- **automatic_registration**
   Computes a rigid transform, matching an image to another.
-- **SBitwiseAnd**
+- **bitwise_and**
   Implements the AND bitwise operator pixel-wise between two images. 
-- **SFlip**
+- **flip**
   Flips an input image along x or y or z axis.
-- **SImageCenter**
+- **image_center**
   Computes the center of a 3D image, it outputs the translation going from origin to the center.
-- **SImageExtruder**
+- **imageExtruder**
   Sets all voxels of an image that are inside meshes to the lowest value of the image type.
-- **SImagesSubstract**
+- **images_substract**
   Computes the difference of two images.
-- **SLabelGeometryImage**
+- **label_geometry_image**
   Computes centroids of shapes from labeled image and adds them as a 'landmark' field to it.
-- **SLabelImageToBinaryImage**
+- **label_image_to_binary_image**
   Extracts a binary mask from an image with labels.
-- **SMatrixRegressor**
+- **matrix_regressor**
   Computes the matrix that best fits a list of matrices.
-- **SMIPMatchingRegistration**
+- **mip_matching_registration**
   Uses a fast registration algorithm to quickly register two images together if the transform between both is pure translation.
-- **SPlaneSlicer**
+- **plane_slicer**
   Computes a 2D slice from a 3D image.
-- **SPropagator**
+- **propagator**
   Places seeds and propagating from them in an image.
-- **SResampler**
+- **resampler**
   Applies a transform to an image and outputting the resampled image.
-- **SThreshold**
+- **threshold**
   Applies a threshold on an image.
 
 ## CMake
 
 ```cmake
 
-add_dependencies(myTarget 
+add_dependencies(my_target 
                 ...
                  module_filter_image
 )

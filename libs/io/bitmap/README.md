@@ -11,7 +11,7 @@ To sum up:
   > Note: libTIFF signed and float image can be written and read back, but are rare and most third party software won't read them.
 - `openJPEG`: supports unsigned, signed 8, 16 bits RGB, RGBA or GRAYSCALE images.
 - `nvJPEG`: supports unsigned 8 bits RGB, BGR images.
-- `nvJPEG2K`: supports unsigned 8, 16 bits RGB, BGR or GRAYSCALE images.
+- `nv_jpeg_2k`: supports unsigned 8, 16 bits RGB, BGR or GRAYSCALE images.
 
 `detail` contains the real implementation with direct calls to image libraries.
 
@@ -19,25 +19,25 @@ To sum up:
 
 ### Writer
 
-- **Writer**: writes a 2D image to a file or a stream in the selected format (.jpg, .tiff, .png, j2k).
+- **writer**: writes a 2D image to a file or a stream in the selected format (.jpg, .tiff, .png, j2k).
 
 ### Reader
 
-- **Reader**: reads a 2D image to a file or a stream in the selected format (.jpg, .tiff, .png, j2k).
+- **reader**: reads a 2D image to a file or a stream in the selected format (.jpg, .tiff, .png, j2k).
 
 ## How to use it
 
 ### Writing
 
 ```c++
-    auto image = sight::data::Image::New();
+    auto image = sight::data::image::New();
     // fill the image...
     ...
 
     auto writer = io::bitmap::Writer::New();
 
     // Configure the session writer
-    writer->setObject(image);
+    writer->set_object(image);
 
     // Write with DEFAULT backend (tiff) and DEFAULT mode (fast)
     writer->setFile("image.tiff");
@@ -52,14 +52,14 @@ To sum up:
 ### Reading
 
 ```c++
-    auto image = sight::data::Image::New();
+    auto image = sight::data::image::New();
     // fill the image...
     ...
 
     auto reader = io::bitmap::Reader::New();
 
     // Configure the session writer
-    reader->setObject(image);
+    reader->set_object(image);
 
     // Read by guessing right backend (use the extension)
     reader->setFile("image.png");
@@ -73,7 +73,7 @@ To sum up:
 ### CMake
 
 ```cmake
-target_link_library(myTarget <PUBLIC|PRIVATE> io_bitmap)
+target_link_library(my_target <PUBLIC|PRIVATE> io_bitmap)
 ```
 
 

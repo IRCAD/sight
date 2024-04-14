@@ -4,15 +4,15 @@ Module containing sample user interface widgets displaying sight data.
 
 ## Services
 
-- **SImage**: renders a 3D negatoscope of a medical image.
-- **SMesh**: renders a 3D mesh.
+- **image**: renders a 3D negatoscope of a medical image.
+- **mesh**: renders a 3D mesh.
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_viz_sample ... )
+add_dependencies(my_target module_viz_sample ... )
 ```
 
 ### XML

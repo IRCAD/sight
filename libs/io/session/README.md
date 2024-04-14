@@ -9,7 +9,7 @@ compression
 The archive can be password protected using AES256 algorithm and the compression level is set individually, depending
 of the type of data to serialize.
 
-The entry points are `SessionReader` and `SessionWriter`. They directly wrap `detail\Session[De]Serializer`, whose
+The entry points are `session_reader` and `session_writer`. They directly wrap `detail\Session[De]Serializer`, whose
 contain the main \[de\]serialization algorithms. These algorithms call, for each data object, a specific serialization
 and de-serialization function, stored in a separated header file (all of them are stored in `detail`).
 
@@ -22,19 +22,19 @@ and de-serialization function, stored in a separated header file (all of them ar
 
 ### Reader / Writer
 
-- **SessionReader**: reads a root data object from a session file on disk.
-- **SessionWriter**: writes a root data object to a session file on disk.
+- **session_reader**: reads a root data object from a session file on disk.
+- **session_writer**: writes a root data object to a session file on disk.
 
 ## How to use it
 
 ### Writing
 
 ```c++
-    auto object = sight::data::String::New("Sample");
-    auto sessionWriter = io::session::SessionWriter::New();
+    auto object = sight::data::string::New("Sample");
+    auto sessionWriter = io::session::session_writer::New();
 
     // Configure the session writer
-    sessionWriter->setObject(object);
+    sessionWriter->set_object(object);
     sessionWriter->setFile("Sample.zip");
 
     // Setting a password means the session will be encrypted
@@ -47,7 +47,7 @@ and de-serialization function, stored in a separated header file (all of them ar
 ### Reading
 
 ```c++
-    auto sessionReader = io::session::SessionReader::New();
+    auto sessionReader = io::session::session_reader::New();
 
     // Configure the session reader
     sessionReader->setFile(testPath);
@@ -59,13 +59,13 @@ and de-serialization function, stored in a separated header file (all of them ar
     sessionReader->read();
 
     // Retrieve the object
-    auto object = sessionReader->getObject();
+    auto object = sessionReader->get_object();
 ```
 
 ### CMake
 
 ```cmake
-target_link_library(myTarget <PUBLIC|PRIVATE> io_session)
+target_link_library(my_target <PUBLIC|PRIVATE> io_session)
 ```
 
 

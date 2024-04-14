@@ -1,0 +1,9 @@
+<plugin id="sight::module::service" library="true" >
+
+    <!-- EXTENSION POINT FOR A SERVICE FACTORY -->
+    <extension-point id="sight::service::extension::factory" schema="service_factory.xsd"/>
+
+    <!-- EXTENSION POINT FOR A SERVICE CONFIGURATION -->
+    <extension-point id="sight::service::extension::config"  schema="service_config.xsd"/>
+
+</plugin>

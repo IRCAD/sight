@@ -11,9 +11,9 @@ target_link_libraries(
     PUBLIC core
            filter_dicom
            ui_dicom
-           ui_base
+           ui
            ui_qt
            service
-           io_base
+           io
            data
 )

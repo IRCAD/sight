@@ -1,2 +1,2 @@
-add_subdirectory(ExRGBDManualAR)
-add_subdirectory(ExSolvePnP)
+add_subdirectory(ex_rgbd_manual_ar)
+add_subdirectory(ex_solve_pnp)

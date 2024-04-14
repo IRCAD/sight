@@ -15,7 +15,6 @@ material Blit
         pass
         {
             cull_hardware none
-            cull_software none
             scene_blend alpha_blend
             depth_check off
             depth_write off

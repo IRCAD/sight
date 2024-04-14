@@ -10,10 +10,10 @@ target_link_libraries(
     PUBLIC core
            data
            ui_qt
-           viz_base
+           viz
            viz_scene2d
            service
-           ui_base
+           ui
 )
 
 add_dependencies(module_viz_scene2d module_ui_qt)

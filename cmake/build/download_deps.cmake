@@ -6,17 +6,12 @@
 cmake_minimum_required(VERSION 3.18)
 
 # Download and install package, if needed
-function(
-    download_deps
-    root_directory
-    package
-    archive
-    archive_hash
-    url
-    basename
-)
+function(download_deps root_directory package archive archive_hash url)
     # Retrieve the package directory
     get_filename_component(package_directory "${root_directory}/${package}" REALPATH)
+
+    # Avoid to download the package if it is already present
+    file(LOCK ${package_directory}.lock)
 
     if(NOT EXISTS "${package_directory}")
 
@@ -31,11 +26,6 @@ function(
 
         # Cleanup
         file(REMOVE "${root_directory}/${archive}")
-
-        if(NOT "${basename}" STREQUAL "")
-            # Rename the extracted directory to ${package} to include commit hash, os version, build type.
-            file(RENAME "${root_directory}/${basename}" "${root_directory}/${package}")
-        endif()
     else()
         message(STATUS "Download of ${archive} skipped, already present.")
     endif()
@@ -50,7 +40,7 @@ if(WIN32)
     endif()
 
     if(NOT SIGHT_DEPS_PACKAGE)
-        set(SIGHT_DEPS_PACKAGE "${SIGHT_DEPS_BASENAME}-0c1939bb")
+        set(SIGHT_DEPS_PACKAGE "${SIGHT_DEPS_BASENAME}-23ecf993")
     endif()
 
     if(NOT SIGHT_DEPS_ARCHIVE)
@@ -58,11 +48,11 @@ if(WIN32)
     endif()
 
     if(NOT SIGHT_DEPS_PUBLIC_URL)
-        set(SIGHT_DEPS_PUBLIC_URL "https://cloud.ircad.fr/s/yeRcWygdf3Wt3bQ/download")
+        set(SIGHT_DEPS_PUBLIC_URL "https://cloud.ircad.fr/s/QDGDtNPmxG6LX2L/download")
     endif()
 
     if(NOT SIGHT_DEPS_ARCHIVE_HASH)
-        set(SIGHT_DEPS_ARCHIVE_HASH "c92ed0e215cdd6563c20ef81fac852c624c72806f9f0d8177c4bbf6d2f54e86c")
+        set(SIGHT_DEPS_ARCHIVE_HASH "4918fcff1958b23d1a4263fc6eb7813d8635374048a934593c4ae1869ddf1cc5")
     endif()
 
     # By default, we avoid to download binary packages inside the build tree on windows

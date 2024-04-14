@@ -25,7 +25,6 @@ material CelShadingDepthPeeling/Blend
         pass blend
         {
             cull_hardware none
-            cull_software none
 
             depth_check off
             // Blend compositor render with previous layer's render

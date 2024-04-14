@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <data/Image.hpp>
+#include <data/image.hpp>
 
-#include "io/itk/config.hpp"
+#include <sight/io/itk/config.hpp>
 #include <itkImageIOBase.h>
 
 namespace sight::io::itk
@@ -34,61 +34,61 @@ namespace sight::io::itk
  * @brief Allocate a new data Image from an itk one.
  *
  * If bufferManagerIsDataImage = true, itkImage releases buffer management
- * and so data::Image manages it (in this case, itkImage must be the
+ * and so data::image manages it (in this case, itkImage must be the
  * owner of this buffer). if bufferManagerIsDataImage = false, the created
- * data::Image does not manage the image buffer.
+ * data::image does not manage the image buffer.
  */
 template<class ITKIMAGE>
-data::Image::sptr moveFromItk(typename ITKIMAGE::Pointer itkImage, bool bufferManagerIsDataImage = true);
+data::image::sptr move_from_itk(typename ITKIMAGE::Pointer _itk_image, bool _buffer_manager_is_data_image = true);
 
 /**
  * @brief Update a data Image from an itk one.
  *
  * If bufferManagerIsDataImage = true, itkImage releases buffer management
- * and so data::Image manages it (in this case, itkImage must be the
+ * and so data::image manages it (in this case, itkImage must be the
  * owner of this buffer). if bufferManagerIsDataImage = false, the created
- * data::Image does not manage the image buffer.
+ * data::image does not manage the image buffer.
  */
 template<class ITKIMAGE>
-void moveFromItk(
-    typename ITKIMAGE::Pointer itkImage,
-    data::Image::sptr _dataImage,
-    bool bufferManagerIsDataImage = true
+void move_from_itk(
+    typename ITKIMAGE::Pointer _itk_image,
+    data::image::sptr _data_image,
+    bool _buffer_manager_is_data_image = true
 );
 
 /**
- * @brief Create an ITK image from an data::Image.
+ * @brief Create an ITK image from an data::image.
  *
  * If bufferManagerIsDataImage = true, imageData conserve his buffer management
  * and so the created itkImage not manages it. If bufferManagerIsDataImage = false,
  * the created itkImage manage his image buffer and thus imageData releases his
  * buffer (in this case, imageData must be the owner of this buffer).
  *
- * @pre an assertion check if ITKIMAGE::PixelType correspond to imageData->getPixelType
+ * @pre an assertion check if ITKIMAGE::pixel_t correspond to imageData->get_pixel_type
  * @pre an assertion check if ITKIMAGE dimension correspond to imageData dimension
  */
 template<class ITKIMAGE>
-typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData);
+typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _image_data);
 
 /**
  * @brief Map which associates itk types with sight types
  *
  */
-static const std::map<::itk::ImageIOBase::IOComponentType, core::Type> ITK_TYPE_CONVERTER =
+static const std::map<::itk::ImageIOBase::IOComponentType, core::type> ITK_TYPE_CONVERTER =
 {
-    {::itk::ImageIOBase::UNKNOWNCOMPONENTTYPE, core::Type::NONE},
-    {::itk::ImageIOBase::UCHAR, core::Type::UINT8},
-    {::itk::ImageIOBase::CHAR, core::Type::INT8},
-    {::itk::ImageIOBase::USHORT, core::Type::UINT16},
-    {::itk::ImageIOBase::SHORT, core::Type::INT16},
-    {::itk::ImageIOBase::UINT, core::Type::UINT32},
-    {::itk::ImageIOBase::INT, core::Type::INT32},
-    {::itk::ImageIOBase::ULONG, core::Type::UINT32},
-    {::itk::ImageIOBase::LONG, core::Type::INT32},
-    {::itk::ImageIOBase::ULONGLONG, core::Type::UINT64},
-    {::itk::ImageIOBase::LONGLONG, core::Type::INT64},
-    {::itk::ImageIOBase::FLOAT, core::Type::FLOAT},
-    {::itk::ImageIOBase::DOUBLE, core::Type::DOUBLE}
+    {::itk::ImageIOBase::UNKNOWNCOMPONENTTYPE, core::type::NONE},
+    {::itk::ImageIOBase::UCHAR, core::type::UINT8},
+    {::itk::ImageIOBase::CHAR, core::type::INT8},
+    {::itk::ImageIOBase::USHORT, core::type::UINT16},
+    {::itk::ImageIOBase::SHORT, core::type::INT16},
+    {::itk::ImageIOBase::UINT, core::type::UINT32},
+    {::itk::ImageIOBase::INT, core::type::INT32},
+    {::itk::ImageIOBase::ULONG, core::type::UINT32},
+    {::itk::ImageIOBase::LONG, core::type::INT32},
+    {::itk::ImageIOBase::ULONGLONG, core::type::UINT64},
+    {::itk::ImageIOBase::LONGLONG, core::type::INT64},
+    {::itk::ImageIOBase::FLOAT, core::type::FLOAT},
+    {::itk::ImageIOBase::DOUBLE, core::type::DOUBLE}
 };
 
 } // namespace sight::io::itk

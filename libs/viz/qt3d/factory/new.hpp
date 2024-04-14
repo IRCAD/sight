@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "viz/qt3d/config.hpp"
+#include <sight/viz/qt3d/config.hpp>
+
 #include "viz/qt3d/registry/detail.hpp"
 
 #include <string>
@@ -30,35 +31,22 @@
 namespace sight::viz::qt3d
 {
 
-class IWindowInteractor;
+class window_interactor;
 
 namespace factory
 {
 
 template<class CLASSNAME>
-SPTR(CLASSNAME)  New();
+SPTR(CLASSNAME)  make();
 
-/**
- * @brief Key class used to restrict access to Object construction.
- * See http://www.drdobbs.com/184402053
- */
-class Key
-{
-template<typename CLASSNAME>
-friend SPTR(CLASSNAME) viz::qt3d::factory::New();
-
-Key()
-= default;
-};
-
-VIZ_QT3D_API SPTR(viz::qt3d::IWindowInteractor) New(
-    const viz::qt3d::registry::KeyType& classname
+SIGHT_VIZ_QT3D_API SPTR(viz::qt3d::window_interactor) make(
+    const viz::qt3d::registry::key_t& _classname
 );
 
 template<class CLASSNAME>
-SPTR(CLASSNAME)  New()
+SPTR(CLASSNAME)  make()
 {
-    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>(Key());
+    SPTR(CLASSNAME) obj = std::make_shared<CLASSNAME>();
     return obj;
 }
 

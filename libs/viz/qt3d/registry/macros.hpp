@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include "viz/qt3d/IWindowInteractor.hpp"
 #include "viz/qt3d/registry/detail.hpp"
+#include "viz/qt3d/window_interactor.hpp"
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/stringize.hpp>
@@ -32,7 +32,7 @@ namespace sight::viz::qt3d::registry
 {
 
 #define SIGHT_REGISTER_RENDER_QT3D(Qt3DRenderInteractorMngClassname, FunctorKey) \
-    static sight::viz::qt3d::IWindowInteractor::Registry<Qt3DRenderInteractorMngClassname> \
+    static sight::viz::qt3d::window_interactor::registry<Qt3DRenderInteractorMngClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 } // namespace sight::viz::qt3d::registry

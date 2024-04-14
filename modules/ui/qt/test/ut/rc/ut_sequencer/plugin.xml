@@ -1,0 +1,47 @@
+<plugin id="ut_sequencer">
+
+    <extension implements="sight::activity::extension">
+        <id>id_0</id>
+        <title>title_0</title>
+        <desc>desc_0</desc>
+        <icon>icon_0</icon>
+        <requirements>
+            <requirement name="inside_0" type="sight::data::string" minOccurs="0" maxOccurs="1" create="true" />
+        </requirements>
+        <builder>sight::activity::builder::Activity</builder>
+        <appConfig id="appConfig_0">
+            <parameters />
+        </appConfig>
+    </extension>
+
+    <extension implements="sight::activity::extension">
+        <id>id_1</id>
+        <title>title_1</title>
+        <desc>desc_1</desc>
+        <icon>icon_1</icon>
+        <requirements>
+            <requirement name="outside_1" type="sight::data::integer" minOccurs="1" maxOccurs="1" />
+            <requirement name="inside_1" type="sight::data::string" minOccurs="0" maxOccurs="1" create="true" />
+        </requirements>
+        <builder>sight::activity::builder::Activity</builder>
+        <appConfig id="appConfig_1">
+            <parameters />
+        </appConfig>
+    </extension>
+
+    <extension implements="sight::activity::extension">
+        <id>id_2</id>
+        <title>title_2</title>
+        <desc>desc_2</desc>
+        <icon>icon_2</icon>
+        <requirements>
+            <requirement name="outside_2" type="sight::data::integer" minOccurs="1" maxOccurs="1" />
+            <requirement name="inside_2" type="sight::data::string" minOccurs="0" maxOccurs="1" create="true" />
+        </requirements>
+        <builder>sight::activity::builder::Activity</builder>
+        <appConfig id="appConfig_2">
+            <parameters />
+        </appConfig>
+    </extension>
+
+</plugin>

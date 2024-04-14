@@ -1,8 +1,0 @@
-add_subdirectory(memory)
-add_subdirectory(appXml)
-add_subdirectory(sync)
-add_subdirectory(activity)
-add_subdirectory(debug)
-add_subdirectory(service)
-add_subdirectory(data)
-add_subdirectory(utest)

@@ -4,14 +4,14 @@ This module supplies one service related to video using [PCL](https://pointcloud
 
 ## Service
 
-- **SFrameGrabber**: grabs video frames.
+- **frame_grabber**: grabs video frames.
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_pcl ... )
+add_dependencies(my_target module_io_pcl ... )
 ```
 
 ### XML

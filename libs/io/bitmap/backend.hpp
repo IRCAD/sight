@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,41 +21,41 @@
 
 #pragma once
 
-#include "io/bitmap/config.hpp"
+#include <sight/io/bitmap/config.hpp>
 
-#include <data/IContainer.hpp>
+#include <data/container.hpp>
 
 namespace sight::io::bitmap
 {
 
 /// @brief Supported backends. Some of them require an NVidia GPU
-enum class Backend : std::uint8_t
+enum class backend : std::uint8_t
 {
-    ANY          = 0,     ///< Use the file extension to guess the backend. Use DEFAULT if the extension is unknown.
-    NVJPEG       = 1,
-    NVJPEG2K     = 2,
-    NVJPEG2K_J2K = 3,
-    LIBJPEG      = 4,
-    LIBTIFF      = 5,
-    LIBPNG       = 6,
-    OPENJPEG     = 7,
-    OPENJPEG_J2K = 8
+    any          = 0,     ///< Use the file extension to guess the backend. Use DEFAULT if the extension is unknown.
+    nvjpeg       = 1,
+    nvjpeg2k     = 2,
+    nvjpeg2k_j2k = 3,
+    libjpeg      = 4,
+    libtiff      = 5,
+    libpng       = 6,
+    openjpeg     = 7,
+    openjpeg_j2k = 8
 };
 
 /// Return the extension associated with the given backend
 /// @arg backend: the selected backend
 /// @return one or more extension as string set
-[[nodiscard]] IO_BITMAP_API data::sequenced_set<std::string> extensions(Backend backend);
+[[nodiscard]] SIGHT_IO_BITMAP_API data::sequenced_set<std::string> extensions(backend _backend);
 
 /// Returns the label and the wildcard to use in file open dialog to filter input
 /// @arg backend: the selected backend
 /// @return default filter to use with the given backend
-[[nodiscard]] IO_BITMAP_API std::pair<std::string, std::string> wildcardFilter(Backend backend);
+[[nodiscard]] SIGHT_IO_BITMAP_API std::pair<std::string, std::string> wildcard_filter(backend _backend);
 
 /// @return true is nvJPEG is available (support built in AND CUDA capable GPU available)
-[[nodiscard]] IO_BITMAP_API bool nvJPEG();
+[[nodiscard]] SIGHT_IO_BITMAP_API bool nv_jpeg();
 
-/// @return true is nvJPEG2K is available (support built in AND CUDA capable GPU available)
-[[nodiscard]] IO_BITMAP_API bool nvJPEG2K();
+/// @return true is nv_jpeg_2k is available (support built in AND CUDA capable GPU available)
+[[nodiscard]] SIGHT_IO_BITMAP_API bool nv_jpeg_2k();
 
 } // namespace sight::io::bitmap

@@ -22,10 +22,10 @@
 
 #pragma once
 
-#include "viz/scene3d/ILight.hpp"
-#include "viz/scene3d/IText.hpp"
-#include "viz/scene3d/IWindowInteractor.hpp"
+#include "viz/scene3d/light_adaptor.hpp"
 #include "viz/scene3d/registry/detail.hpp"
+#include "viz/scene3d/text.hpp"
+#include "viz/scene3d/window_interactor.hpp"
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/stringize.hpp>
@@ -34,23 +34,23 @@ namespace sight::viz::scene3d::registry
 {
 
 #define SIGHT_REGISTER_SCENE3D(OgreRenderInteractorMngClassname, FunctorKey) \
-    static sight::viz::scene3d::IWindowInteractor::Registry<OgreRenderInteractorMngClassname> \
+    static sight::viz::scene3d::window_interactor::registry<OgreRenderInteractorMngClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 #define SIGHT_REGISTER_SCENE3D_OFFSCREEN(OgreRenderInteractorMngClassname, FunctorKey) \
-    static sight::viz::scene3d::IWindowInteractor::OffscreenMgrRegistry<OgreRenderInteractorMngClassname> \
+    static sight::viz::scene3d::window_interactor::offscreen_mgr_registry<OgreRenderInteractorMngClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 #define SIGHT_REGISTER_SCENE3D_INTERACTOR(OgreInteractorClassname) \
-    static sight::viz::scene3d::interactor::IInteractor::Registry<OgreInteractorClassname> \
+    static sight::viz::scene3d::interactor::base::registry<OgreInteractorClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(BOOST_PP_STRINGIZE(OgreInteractorClassname));
 
 #define SIGHT_REGISTER_SCENE3D_LIGHT(OgreLightClassname, FunctorKey) \
-    static sight::viz::scene3d::ILight::Registry<OgreLightClassname> \
+    static sight::viz::scene3d::light_adaptor::registry<OgreLightClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 #define SIGHT_REGISTER_SCENE3D_TEXT(OgreTextClassname, FunctorKey) \
-    static sight::viz::scene3d::IText::Registry<OgreTextClassname> \
+    static sight::viz::scene3d::text::registry<OgreTextClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 } // namespace sight::viz::scene3d::registry

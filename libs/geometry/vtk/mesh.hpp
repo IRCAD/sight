@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,23 +22,23 @@
 
 #pragma once
 
-#include "geometry/vtk/config.hpp"
+#include <sight/geometry/vtk/config.hpp>
 
-#include <data/Mesh.hpp>
-#include <data/Point.hpp>
+#include <data/mesh.hpp>
+#include <data/point.hpp>
 
 namespace sight::geometry::vtk
 {
 
 /**
  * @brief computeCenterOfMass
- * @param[in] mesh input mesh
- * @param[in] useScalarAsWeights use the scalar data as weights
+ * @param[in] _mesh input mesh
+ * @param[in] _use_scalar_as_weights use the scalar data as weights
  * @return mesh center of mass
  */
-GEOMETRY_VTK_API data::Point::sptr computeCenterOfMass(
-    const data::Mesh::csptr mesh,
-    bool useScalarAsWeights = false
+SIGHT_GEOMETRY_VTK_API data::point::sptr compute_center_of_mass(
+    const data::mesh::csptr _mesh,
+    bool _use_scalar_as_weights = false
 );
 
 } // namespace sight::geometry::vtk

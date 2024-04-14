@@ -37,10 +37,7 @@ macro(profile_setup PROJECT)
 
         if("${TYPE}" STREQUAL "MODULE" OR "${TYPE}" STREQUAL "APP")
 
-            string(REPLACE "_" "::" REQ ${CURRENT_REQUIREMENT})
-            if(${CURRENT_REQUIREMENT} IN_LIST SIGHT_COMPONENTS)
-                set(REQ "${PROJECT_NAME}::${REQ}")
-            endif()
+            get_target_property(MODULE_ID ${CURRENT_REQUIREMENT} SIGHT_MODULE_ID)
 
             # check if a module_param macro had been used in the CMakeLists.txt
             # if yes, get and set module param and values
@@ -49,7 +46,7 @@ macro(profile_setup PROJECT)
                 set(CURRENT_PARAM_VALUES "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_VALUES}")
 
                 #set activate tag with parameters
-                list(APPEND XML_ACTIVATE "    <activate id=\"${REQ}\" >")
+                list(APPEND XML_ACTIVATE "    <activate id=\"${MODULE_ID}\" >")
                 foreach(CURRENT_PARAM ${CURRENT_PARAM_LIST})
                     list(FIND CURRENT_PARAM_LIST "${CURRENT_PARAM}" CURRENT_INDEX)
                     list(GET CURRENT_PARAM_VALUES "${CURRENT_INDEX}" CURRENT_VALUE)
@@ -63,12 +60,9 @@ macro(profile_setup PROJECT)
     string(REPLACE ";" "\n" XML_ACTIVATE "${XML_ACTIVATE}")
 
     foreach(CURRENT_MODULE ${START_MODULES})
-        string(REPLACE "_" "::" MODULE ${CURRENT_MODULE})
-        if(${CURRENT_MODULE} IN_LIST SIGHT_COMPONENTS)
-            set(MODULE "${PROJECT_NAME}::${MODULE}")
-        endif()
+        get_target_property(MODULE_ID ${CURRENT_MODULE} SIGHT_MODULE_ID)
 
-        set(XML_START_MODULES "${XML_START_MODULES}\n    <start id=\"${MODULE}\" />")
+        set(XML_START_MODULES "${XML_START_MODULES}\n    <start id=\"${MODULE_ID}\" />")
     endforeach()
 
     configure_file(

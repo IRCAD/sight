@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-std::string generatePatientId()
+std::string generate_patient_id()
 {
     gdcm::UIDGenerator uid;
     const char* id = uid.Generate();
@@ -43,7 +43,7 @@ std::string generatePatientId()
 
 //------------------------------------------------------------------------------
 
-std::string generateStudyInstanceUid()
+std::string generate_study_instance_uid()
 {
     using boost::posix_time::ptime;
     using boost::posix_time::microsec_clock;

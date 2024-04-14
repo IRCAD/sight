@@ -6,13 +6,13 @@ Module that allows to visualize a 3D scene using Qt3D. This module is not mature
 
 ## Services
 
-- **SMaterial**: binds a `sight::data::Material` in a Qt3D scene.
-- **SMesh**: displays a `sight::data::Mesh` in a Qt3D scene.
-- **SRender**: renders a 3D scene using Qt3D.
+- **material**: binds a `sight::data::material` in a Qt3D scene.
+- **mesh**: displays a `sight::data::mesh` in a Qt3D scene.
+- **render**: renders a 3D scene using Qt3D.
 
 ## Classes
 
-- **WindowInteractor**: manages an interactive `Qt3DExtras::Qt3DWindow` from `ui::base::container::fwContainer::sptr `.
+- **window_interactor**: manages an interactive `Qt3DExtras::Qt3DWindow` from `ui::container::widget::sptr `.
 
 ## How to use it
 
@@ -20,7 +20,7 @@ Module that allows to visualize a 3D scene using Qt3D. This module is not mature
 
 ```cmake
 
-target_link_libraries(myTarget <PUBLIC|PRIVATE> module_viz_qt3d)
+target_link_libraries(my_target <PUBLIC|PRIVATE> module_viz_qt3d)
 
 ```
 

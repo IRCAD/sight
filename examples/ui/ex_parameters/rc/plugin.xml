@@ -1,0 +1,368 @@
+<!--
+This example shows the possibilities of parameters:
+- The two upper parameters are linked together (the values are synchronized for the parameters with the same name).
+- The two lower parameters allow to set the minimum/maximum values of the upper parameters (with the same name).
+   - The minimum of a parameter is connected to the minimum of the maximum parameter (and vice versa)
+-->
+<plugin id="ex_parameters" >
+
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::ui::qt" />
+
+    <extension implements="sight::app::extension::config" >
+        <id>ex_parameters_app_cfg</id>
+        <config>
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::frame" >
+                <gui>
+                    <frame>
+                        <name>ex_parameters</name>
+                        <icon>ex_parameters/app.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <menubar/>
+                </gui>
+                <registry>
+                    <menubar sid="menuBarView" start="true" />
+                    <view sid="mainview" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="sight::module::ui::menubar" >
+                <gui>
+                    <layout>
+                        <menu name="Preferences" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuPreferencesView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuPreferencesView" type="sight::module::ui::menu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Preference sync test" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="preferencesAct" start="true" />
+                </registry>
+            </service>
+
+            <service uid="mainview" type="sight::module::ui::view" >
+                <gui>
+                    <layout type="sight::ui::layout::line" >
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="parametersView" start="true" />
+                    <view sid="minmaxParametersSrvView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="parametersView" type="sight::module::ui::view" >
+                <gui>
+                    <layout type="sight::ui::layout::line" >
+                        <orientation value="horizontal" />
+                        <view proportion="0" QSSClass="Background" />
+                        <view proportion="0" QSSClass="Background"/>
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="parameters1Srv" start="true" />
+                    <view sid="parameters2Srv" start="true" />
+                </registry>
+            </service>
+
+            <service uid="minmaxParametersSrvView" type="sight::module::ui::view" >
+                <gui>
+                    <layout type="sight::ui::layout::line" >
+                        <orientation value="horizontal" />
+                        <view proportion="1" QSSClass="Background" />
+                        <view proportion="1" QSSClass="Background" />
+                        <view proportion="1" QSSClass="Background" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="minParametersSrv"    start="true" />
+                    <view sid="maxParametersSrv"    start="true" />
+                    <view sid="vert_parameters_srv" start="true" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Services ******************************* -->
+
+            <service uid="parameters1Srv" type="sight::module::ui::qt::parameters" >
+                <parameters scrollable="true">
+                    <param type="bool"    name="Enable"    key="enable"    defaultValue="true" />
+                    <param type="bool"    name="Boolean"   key="bool_1"    defaultValue="true" depends="enable" />
+                    <param type="color"   name="Color"     key="color_1"   defaultValue="#a55376b9" depends="enable" />
+                    <param type="double"  name="Double 1"  key="double_1"  defaultValue="0.03" min="0.01" max="1." depends="enable" />
+                    <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="0.01" min="0." max="1." depends="enable" />
+                    <param type="double2" name="2 Double"  key="double2_1" widget="spin"   defaultValue="5.0" min="0." max="100." depends="enable" />
+                    <param type="double3" name="3 Double"  key="double3_1" widget="spin"   defaultValue="5.0" min="0." max="100." depends="enable" />
+                    <param type="int"     name="Integer 1" key="int_1"     widget="spin"   defaultValue="50" min="0" max="100" depends="enable" />
+                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="50" min="0" max="100" depends="enable" />
+                    <param type="int2"    name="2 Integer" key="int2_1"    widget="spin"   defaultValue="5" min="0" max="100" depends="enable" />
+                    <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="5" min="0" max="100" depends="enable" />
+                    <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V1" values="V0,V1=v1,V2=v2,V3=v3" />
+                    <param type="enum"    name="Nonlinear" key="nonlin"    widget="slider" values="25,50,90,120,150" defaultValue="90"/>
+                    <param type="enum"    name="button list:" key="buttonRaw" widget="buttonBar" defaultValue="button2">
+                        <item value="button1" label="extrude" icon="sight::module::ui::icons/extrude.svg" />
+                        <item value="button2" label="Medicine Mode" icon="sight::module::ui::icons/image_series.svg" />
+                        <item value="button3" label="Open settings" icon="sight::module::ui::icons/gear.svg" />
+                        <item value="button4" label="Device TX 3267-AFV" icon="sight::module::ui::icons/add_distance.svg" />
+                        <item value="button5" icon="sight::module::ui::icons/find.svg" />
+                    </param>
+                </parameters>
+            </service>
+
+            <service uid="parameters2Srv" type="sight::module::ui::qt::parameters" >
+                <parameters scrollable="true">
+                    <param type="bool"    name="Enable"    key="enable"    defaultValue="true" />
+                    <param type="bool"    name="Boolean"   key="bool_1"    defaultValue="false" depends="enable"  />
+                    <param type="color"   name="Color"     key="color_1"   defaultValue="#25b18a" depends="enable"  />
+                    <param type="double"  name="Double 1"  key="double_1"  defaultValue="0.35" min="0.01" max="1." depends="enable"  />
+                    <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="0.5" min="0." max="1." depends="enable"  />
+                    <param type="double2" name="2 Double"  key="double2_1" widget="spin"   defaultValue="50.0" min="0." max="100." depends="enable"  />
+                    <param type="double3" name="3 Double"  key="double3_1" widget="spin"   defaultValue="25.0" min="0." max="100." depends="enable"  />
+                    <param type="int"     name="Integer 1" key="int_1"     widget="spin"   defaultValue="26" min="0" max="100" depends="enable"  />
+                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="37" min="0" max="100" depends="enable"  />
+                    <param type="int2"    name="2 Integer" key="int2_1"    widget="spin"   defaultValue="8" min="0" max="100" depends="enable"  />
+                    <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="12" min="0" max="100" depends="enable"  />
+                    <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V2" values="V0,V1=v1,V2=v2,V3=v3" depends="enable"  />
+                    <param type="enum"    name="Nonlinear" key="nonlin"    widget="combobox" values="25,50,90,120,150" defaultValue="90" depends="enable" />
+                    <param type="enum"    name="button list:" key="buttonRaw" widget="buttonBar" defaultValue="button2" hOffset="32">
+                        <item value="button1" label="extrude" icon="sight::module::ui::icons/extrude.svg" />
+                        <item value="button2" label="Medicine Mode" icon="sight::module::ui::icons/image_series.svg" />
+                        <item value="button3" label="Open settings" icon="sight::module::ui::icons/gear.svg" />
+                        <item value="button4" label="Device TX 3267-AFV" icon="sight::module::ui::icons/add_distance.svg" />
+                        <item value="button5" icon="sight::module::ui::icons/find.svg" />
+                    </param>
+                </parameters>
+            </service>
+
+            <service uid="minParametersSrv" type="sight::module::ui::qt::parameters" >
+                <parameters>
+                    <param type="double"  name="Double 1"  key="double_1"  widget="spin"   defaultValue="0.2" min="0." max="0.8" />
+                    <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="0." min="0." max="80." />
+                    <param type="double"  name="2 Double"  key="double2_1" widget="slider" defaultValue="20.5" min="0." max="80." />
+                    <param type="double"  name="3 Double"  key="double3_1" widget="slider" defaultValue="20.5" min="0." max="80." />
+                    <param type="int"     name="Integer 1" key="int_1"     widget="spin"   defaultValue="0" min="0" max="80" />
+                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="0"    min="0"   max="80" emitOnRelease="true" />
+                    <param type="int"     name="Integer 3" key="int2_1"    widget="slider" defaultValue="0" min="0" max="80" />
+                    <param type="int"     name="Integer 4" key="int3_1"    widget="slider" defaultValue="0" min="0" max="80" />
+                </parameters>
+            </service>
+
+            <service uid="maxParametersSrv" type="sight::module::ui::qt::parameters" >
+                <parameters>
+                    <param type="double"  name="Double 1"  key="double_1"  widget="spin"   defaultValue="0.7" min="0.2" max="1." />
+                    <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="75.3" min="35." max="150." />
+                    <param type="double"  name="2 Double"  key="double2_1" widget="slider" defaultValue="75.3" min="35." max="150." min_width="200"/>
+                    <param type="double"  name="3 Double"  key="double3_1" widget="slider" defaultValue="75.3" min="35." max="150." min_width="200"/>
+                    <param type="int"     name="Integer 1" key="int_1"     widget="spin"   defaultValue="20" min="0" max="100"/>
+                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="20" min="0" max="100"  min_width="200" emitOnRelease="true" />
+                    <param type="int"     name="Integer 3" key="int2_1"    widget="slider" defaultValue="20" min="0" max="100"  min_width="200" />
+                    <param type="int"     name="Integer 4" key="int3_1"    widget="slider" defaultValue="20" min="0" max="100"  min_width="200" />
+                </parameters>
+            </service>
+
+            <service uid="vert_parameters_srv" type="sight::module::ui::qt::parameters">
+                <parameters>
+                    <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="0"    min="0"   max="80"   orientation="vertical" emitOnRelease="true" />
+                    <param type="double"  name="Double 2"  key="double_2"  widget="slider" defaultValue="75.3" min="35." max="150." orientation="vertical" />
+                    <param type="double"  name=""          key="double_3"  widget="slider" defaultValue="75.3" min="35." max="150." orientation="vertical" />
+                </parameters>
+            </service>
+
+            <service uid="preferencesAct" type="sight::module::ui::qt::preferences_configuration" >
+                <preference>
+                    <type>int</type>
+                    <name>Integer 1</name>
+                    <key>int_1</key>
+                    <default_value>20</default_value>
+                    <min>0</min>
+                    <max>20</max>
+                </preference>
+                <preference>
+                    <type>combobox</type>
+                    <name>Enum</name>
+                    <key>enum_1</key>
+                    <values>V0,V1,V2,V3</values>
+                    <default_value>V1</default_value>
+                </preference>
+                <preference>
+                    <type>double</type>
+                    <name>Double 1</name>
+                    <key>double_1</key>
+                    <default_value>0.3</default_value>
+                    <min>0.2</min>
+                    <max>0.7</max>
+                </preference>
+                <preference>
+                    <type>checkbox</type>
+                    <name>Boolean</name>
+                    <key>bool_1</key>
+                    <default_value>false</default_value>
+                </preference>
+                <preference>
+                    <type>list</type>
+                    <name>Values for Nonlinear</name>
+                    <key>nonlin</key>
+                    <separator>,</separator>
+                    <default_value>25,50,90,120,150</default_value>
+                </preference>
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <!-- Connect all the parameters to each other -->
+
+            <connect>
+                <signal>preferencesAct/preference_changed</signal>
+                <slot>parameters1Srv/set_parameter</slot>
+                <slot>parameters2Srv/set_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1Srv/bool_changed</signal>
+                <slot>parameters2Srv/set_bool_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2Srv/bool_changed</signal>
+                <slot>parameters1Srv/set_bool_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1Srv/color_changed</signal>
+                <slot>parameters2Srv/set_color_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2Srv/color_changed</signal>
+                <slot>parameters1Srv/set_color_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1Srv/double_changed</signal>
+                <slot>parameters2Srv/set_double_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2Srv/double_changed</signal>
+                <slot>parameters1Srv/set_double_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1Srv/double2_changed</signal>
+                <slot>parameters2Srv/set_double2_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2Srv/double2_changed</signal>
+                <slot>parameters1Srv/set_double2_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1Srv/double3_changed</signal>
+                <slot>parameters2Srv/set_double3_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2Srv/double3_changed</signal>
+                <slot>parameters1Srv/set_double3_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1Srv/int_changed</signal>
+                <slot>parameters2Srv/set_int_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2Srv/int_changed</signal>
+                <slot>parameters1Srv/set_int_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1Srv/int2_changed</signal>
+                <slot>parameters2Srv/set_int2_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2Srv/int2_changed</signal>
+                <slot>parameters1Srv/set_int2_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1Srv/int3_changed</signal>
+                <slot>parameters2Srv/set_int3_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2Srv/int3_changed</signal>
+                <slot>parameters1Srv/set_int3_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters1Srv/enum_changed</signal>
+                <slot>parameters2Srv/set_enum_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>parameters2Srv/enum_changed</signal>
+                <slot>parameters1Srv/set_enum_parameter</slot>
+            </connect>
+
+            <!-- Connection to update the parameters minimum/maximum -->
+            <connect>
+                <signal>minParametersSrv/int_changed</signal>
+                <slot>parameters1Srv/update_int_min_parameter</slot>
+                <slot>parameters2Srv/update_int_min_parameter</slot>
+                <slot>maxParametersSrv/update_int_min_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>maxParametersSrv/int_changed</signal>
+                <slot>parameters1Srv/update_int_max_parameter</slot>
+                <slot>parameters2Srv/update_int_max_parameter</slot>
+                <slot>minParametersSrv/update_int_max_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>minParametersSrv/double_changed</signal>
+                <slot>parameters1Srv/update_double_min_parameter</slot>
+                <slot>parameters2Srv/update_double_min_parameter</slot>
+                <slot>maxParametersSrv/update_double_min_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>maxParametersSrv/double_changed</signal>
+                <slot>parameters1Srv/update_double_max_parameter</slot>
+                <slot>parameters2Srv/update_double_max_parameter</slot>
+                <slot>minParametersSrv/update_double_max_parameter</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+
+            <!-- ******************************* Update services ***************************************** -->
+
+            <update uid="parameters2Srv" />
+            <update uid="minParametersSrv" />
+            <update uid="maxParametersSrv" />
+
+        </config>
+    </extension>
+
+
+</plugin>

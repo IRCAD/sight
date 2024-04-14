@@ -1,18 +1,18 @@
 <plugin id="sight::module::viz::sample" library="true" autostart="true">
     <requirement id="sight::module::ui::qt"/>
     <requirement id="sight::module::viz::scene3d"/>
-    <requirement id="sight::module::viz::scene3dQt"/>
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::ui::base::IGuiContainer</type>
-         <service>sight::module::viz::sample::SImage</service>
-         <object key="image">sight::data::Image</object>
+    <requirement id="sight::module::viz::scene3d_qt"/>
+    <extension implements="sight::service::extension::factory">
+         <type>sight::ui::container</type>
+         <service>sight::module::viz::sample::image</service>
+         <object key="image">sight::data::image</object>
          <desc>Render a 3D negatoscope of a medical image.</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::ui::base::IGuiContainer</type>
-         <service>sight::module::viz::sample::SMesh</service>
-         <object key="mesh">sight::data::Mesh</object>
+    <extension implements="sight::service::extension::factory">
+         <type>sight::ui::container</type>
+         <service>sight::module::viz::sample::mesh</service>
+         <object key="mesh">sight::data::mesh</object>
          <desc>Render a 3D mesh.</desc>
     </extension>
 

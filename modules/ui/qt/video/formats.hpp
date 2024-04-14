@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,7 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
-#include <data/Camera.hpp>
+#include <data/camera.hpp>
 
 #include <boost/bimap/bimap.hpp>
 
@@ -35,7 +33,7 @@ namespace sight::module::ui::qt::video
 
 //-----------------------------------------------------------------------------
 
-typedef boost::bimaps::bimap<QVideoFrame::PixelFormat, data::Camera::PixelFormat> PixelFormatTranslatorType;
-extern MODULE_UI_QT_API PixelFormatTranslatorType pixelFormatTranslator;
+using pixel_format_translator_t = boost::bimaps::bimap<QVideoFrame::PixelFormat, enum data::camera::pixel_format>;
+extern pixel_format_translator_t pixel_format_translator;
 
 } // namespace sight::module::ui::qt::video

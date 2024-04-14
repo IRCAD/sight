@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include "viz/scene3d/config.hpp"
+#include <sight/viz/scene3d/config.hpp>
 
-#include <core/FactoryRegistry.hpp>
+#include <core/factory_registry.hpp>
 #include <core/macros.hpp>
 
 #include <string>
@@ -32,39 +32,40 @@
 namespace sight::viz::scene3d
 {
 
-class IWindowInteractor;
+class window_interactor;
 class ICamera;
-class ILight;
-class IText;
-class Layer;
+class light_adaptor;
+class text;
+class layer;
 
 namespace interactor
 {
 
-class IInteractor;
+class base;
 
 } // namespace interactor
 
 namespace registry
 {
 
-typedef std::string KeyType;
+using key_t = std::string;
 
-typedef core::FactoryRegistry<SPTR(viz::scene3d::IWindowInteractor)(), KeyType> Type;
-typedef core::FactoryRegistry<SPTR(viz::scene3d::IWindowInteractor)(std::pair<unsigned int, unsigned int>),
-                              KeyType> OffscreenMgrType;
-typedef core::FactoryRegistry<SPTR(viz::scene3d::interactor::IInteractor)(), KeyType> InteractorFactoryType;
-typedef core::FactoryRegistry<SPTR(viz::scene3d::ICamera)(), KeyType> CameraFactoryType;
-typedef core::FactoryRegistry<SPTR(viz::scene3d::ILight)(), KeyType> LightFactoryType;
-typedef core::FactoryRegistry<SPTR(viz::scene3d::IText)(const SPTR(sight::viz::scene3d::Layer)& _layer),
-                              KeyType> TextFactoryType;
+using type            = core::factory_registry<std::shared_ptr<viz::scene3d::window_interactor>(), key_t>;
+using offscreen_mgr_t = core::factory_registry<std::shared_ptr<viz::scene3d::window_interactor>(std::pair<unsigned int,
+                                                                                                          unsigned int>),
+                                               key_t>;
+using interactor_factory_t = core::factory_registry<std::shared_ptr<viz::scene3d::interactor::base>(), key_t>;
+using camera_factory_t     = core::factory_registry<std::shared_ptr<viz::scene3d::ICamera>(), key_t>;
+using light_factory_t      = core::factory_registry<std::shared_ptr<viz::scene3d::light_adaptor>(), key_t>;
+using text_factory_t       = core::factory_registry<std::shared_ptr<viz::scene3d::text>(const std::shared_ptr<sight::viz::scene3d::layer>&),
+                                                    key_t>;
 
-VIZ_SCENE3D_API SPTR(Type) get();
-VIZ_SCENE3D_API SPTR(OffscreenMgrType) getOffscreenMgr();
-VIZ_SCENE3D_API SPTR(InteractorFactoryType) getInteractorRegistry();
-VIZ_SCENE3D_API SPTR(CameraFactoryType) getCameraRegistry();
-VIZ_SCENE3D_API SPTR(LightFactoryType) getLightRegistry();
-VIZ_SCENE3D_API SPTR(TextFactoryType) getTextRegistry();
+SIGHT_VIZ_SCENE3D_API SPTR(type) get();
+SIGHT_VIZ_SCENE3D_API SPTR(offscreen_mgr_t) get_offscreen_mgr();
+SIGHT_VIZ_SCENE3D_API SPTR(interactor_factory_t) get_interactor_registry();
+SIGHT_VIZ_SCENE3D_API SPTR(camera_factory_t) get_camera_registry();
+SIGHT_VIZ_SCENE3D_API SPTR(light_factory_t) get_light_registry();
+SIGHT_VIZ_SCENE3D_API SPTR(text_factory_t) get_text_registry();
 
 } // namespace registry
 

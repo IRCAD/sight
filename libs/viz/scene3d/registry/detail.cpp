@@ -22,58 +22,58 @@
 
 #include "viz/scene3d/registry/detail.hpp"
 
-#include <core/LazyInstantiator.hpp>
+#include <core/lazy_instantiator.hpp>
 
 namespace sight::viz::scene3d::registry
 {
 
-struct FwRenderOgreRegistryInstantiatorTag {};
+struct render_ogre_registry_instantiator_tag {};
 
-SPTR(Type) get()
+SPTR(type) get()
 {
-    using InstantiatorType = core::LazyInstantiator<Type, FwRenderOgreRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using instantiator_t = core::lazy_instantiator<type, render_ogre_registry_instantiator_tag>;
+    return instantiator_t::get_instance();
 }
 
-struct InteractorOffscreenMgrRegistryInstantiatorTag {};
+struct interactor_offscreen_mgr_registry_instantiator_tag {};
 
-SPTR(OffscreenMgrType) getOffscreenMgr()
+SPTR(offscreen_mgr_t) get_offscreen_mgr()
 {
-    using InstantiatorType = core::LazyInstantiator<OffscreenMgrType,
-                                                    InteractorOffscreenMgrRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using instantiator_t = core::lazy_instantiator<offscreen_mgr_t,
+                                                   interactor_offscreen_mgr_registry_instantiator_tag>;
+    return instantiator_t::get_instance();
 }
 
-struct InteractorRegistryInstantiatorTag {};
+struct interactor_registry_instantiator_tag {};
 
-SPTR(InteractorFactoryType) getInteractorRegistry()
+SPTR(interactor_factory_t) get_interactor_registry()
 {
-    using InstantiatorType = core::LazyInstantiator<InteractorFactoryType, InteractorRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using instantiator_t = core::lazy_instantiator<interactor_factory_t, interactor_registry_instantiator_tag>;
+    return instantiator_t::get_instance();
 }
 
-struct CameraRegistryInstantiatorTag {};
+struct camera_registry_instantiator_tag {};
 
-SPTR(CameraFactoryType) getCameraRegistry()
+SPTR(camera_factory_t) get_camera_registry()
 {
-    using InstantiatorType = core::LazyInstantiator<CameraFactoryType, CameraRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using instantiator_t = core::lazy_instantiator<camera_factory_t, camera_registry_instantiator_tag>;
+    return instantiator_t::get_instance();
 }
 
-struct LightRegistryInstantiatorTag {};
+struct light_registry_instantiator_tag {};
 
-SPTR(LightFactoryType) getLightRegistry()
+SPTR(light_factory_t) get_light_registry()
 {
-    using InstantiatorType = core::LazyInstantiator<LightFactoryType, LightRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using instantiator_t = core::lazy_instantiator<light_factory_t, light_registry_instantiator_tag>;
+    return instantiator_t::get_instance();
 }
 
-struct TextRegistryInstantiatorTag {};
+struct text_registry_instantiator_tag {};
 
-SPTR(TextFactoryType) getTextRegistry()
+SPTR(text_factory_t) get_text_registry()
 {
-    using InstantiatorType = core::LazyInstantiator<TextFactoryType, TextRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using instantiator_t = core::lazy_instantiator<text_factory_t, text_registry_instantiator_tag>;
+    return instantiator_t::get_instance();
 }
 
 } // namespace sight::viz::scene3d::registry

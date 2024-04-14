@@ -80,7 +80,7 @@ Item {
                     width: menuButton.width
                     Action {
                         text: ""
-                        icon.source: "icons/open.svg"
+                        icon.source: "icons/load.svg"
                         onTriggered: appManager.open()
                     }
                     Action {

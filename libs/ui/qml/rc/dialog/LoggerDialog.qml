@@ -37,22 +37,22 @@ Window{
                 width: window.width
 
                 // icon of the biggest type of error from the TableView
-                Image {
+                image {
                     id: icon
 
                     width: 48
                     height: 48
                     x: description.leftPadding
                     y: description.height / 2 - icon.height / 2 + 15
-                    fillMode: Image.PreserveAspectFit
+                    fillMode: image.PreserveAspectFit
                     mipmap: true
-                    source: loggerDialog.icon
+                    source: logger.icon
                 }
                 // this label is the summary of the number of errors
                 Label {
                     id:description
 
-                    text: loggerDialog.message
+                    text: logger.message
                     // For text to wrap, a width has to be explicitly provided
                     width: window.width
                     // This setting makes the text wrap at word boundaries when it goes
@@ -69,17 +69,17 @@ Window{
 
                 text: checkState ? "Hide Details" : "Show Details"
                 // the style permits to not show the default checkbox indicator but instead an image if set
-                indicator: Image {
+                indicator: image {
                     id: detailsIcon
 
                     width:  28
                     height: 28
                     x: checkbox.leftPadding
                     y: parent.height / 2 - height / 2
-                    fillMode: Image.PreserveAspectFit
+                    fillMode: image.PreserveAspectFit
                     mipmap: true
                     antialiasing: true
-                    source: checkbox.checkState ? loggerDialog.shown : loggerDialog.hidden
+                    source: checkbox.checkState ? logger.shown : logger.hidden
                     cache : true;
                     asynchronous: true;
                 }
@@ -169,11 +169,11 @@ Window{
         }
 
         onAccepted: {
-            loggerDialog.resultDialog(true)
+            logger.resultDialog(true)
             window.close()
         }
         onRejected: {
-            loggerDialog.resultDialog(false)
+            logger.resultDialog(false)
             window.close()
         }
         onVisibleChanged: visible ? "" : reset()

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,17 +22,17 @@
 
 #include "viz/qt3d/registry/detail.hpp"
 
-#include <core/LazyInstantiator.hpp>
+#include <core/lazy_instantiator.hpp>
 
 namespace sight::viz::qt3d::registry
 {
 
-struct FwRenderQt3DRegistryInstantiatorTag {};
+struct render_qt3_d_registry_instantiator_tag {};
 
-SPTR(Type) get()
+SPTR(type) get()
 {
-    using InstantiatorType = core::LazyInstantiator<Type, FwRenderQt3DRegistryInstantiatorTag>;
-    return InstantiatorType::getInstance();
+    using instantiator_t = core::lazy_instantiator<type, render_qt3_d_registry_instantiator_tag>;
+    return instantiator_t::get_instance();
 }
 
 } // namespace sight::viz::qt3d::registry

@@ -1,0 +1,66 @@
+/************************************************************************
+ *
+ * Copyright (C) 2023 IRCAD France
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Sight is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
+
+#pragma once
+
+#include <service/base.hpp>
+
+#include <cppunit/extensions/HelperMacros.h>
+
+#include <filesystem>
+
+namespace sight::module::ui::qt::ut
+{
+
+/**
+ * @brief Test many methods to create mesh.
+ */
+class preferences_configuration : public CPPUNIT_NS::TestFixture
+{
+CPPUNIT_TEST_SUITE(preferences_configuration);
+CPPUNIT_TEST(widgets_test);
+CPPUNIT_TEST(preferences_changed_after_start_test);
+CPPUNIT_TEST_SUITE_END();
+
+public:
+
+    ~preferences_configuration() override;
+
+    // interface
+    void setUp() override;
+    void tearDown() override;
+
+    void widgets_test();
+    void preferences_changed_after_start_test();
+
+private:
+
+    /// The path where the preference file is stored.
+    std::filesystem::path m_preferences_path;
+
+    /// The container service
+    sight::service::base::sptr m_container;
+
+    /// The child uuid to use to be added to the container
+    std::string m_child_uuid;
+};
+
+} // namespace sight::module::ui::qt::ut

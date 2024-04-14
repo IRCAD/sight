@@ -1,0 +1,3 @@
+sight_add_target(sight_viewer_uit TYPE GUI_TEST)
+
+target_link_libraries(sight_viewer_uit ui_test sight_viewer)

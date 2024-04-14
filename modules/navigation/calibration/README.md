@@ -4,14 +4,14 @@
 
 ## Services
 
-- **SToolCalibration**: performs the calibration computation based on a **sight::data::Vector** of **sight::data::Matrix4**. 
+- **tool_calibration**: performs the calibration computation based on a **sight::data::vector** of **sight::data::matrix4**. 
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_navigation_calibration ...)
+add_dependencies(my_target module_navigation_calibration ...)
 ```
 
 ### XML

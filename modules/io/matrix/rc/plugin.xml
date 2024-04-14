@@ -1,31 +1,31 @@
 <plugin id="sight::module::io::matrix" library="true" >
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IReader</type>
-        <service>sight::module::io::matrix::Matrix4ReaderService</service>
-        <object>sight::data::Matrix4</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::reader</type>
+        <service>sight::module::io::matrix::matrix4_trf_reader</service>
+        <object>sight::data::matrix4</object>
         <desc>Matrix4 Reader</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IWriter</type>
-        <service>sight::module::io::matrix::Matrix4WriterService</service>
-        <object>sight::data::Matrix4</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::writer</type>
+        <service>sight::module::io::matrix::matrix4_trf_writer</service>
+        <object>sight::data::matrix4</object>
         <desc>Matrix4 Writer</desc>
     </extension>
 
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IReader</type>
-        <service>sight::module::io::matrix::SMatricesReader</service>
-        <object>sight::data::MatrixTL</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::reader</type>
+        <service>sight::module::io::matrix::matrices_reader</service>
+        <object>sight::data::matrix_tl</object>
         <desc>Reads matrices from a CSV file and push them in a timeline</desc>
     </extension>
 
-    <extension implements="sight::service::extension::Factory">
-        <type>sight::io::base::service::IWriter</type>
-        <service>sight::module::io::matrix::SMatrixWriter</service>
-        <object>sight::data::MatrixTL</object>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::writer</type>
+        <service>sight::module::io::matrix::matrix_writer</service>
+        <object>sight::data::matrix_tl</object>
         <desc>Saves the matrices timeline into a csv file</desc>
     </extension>
 

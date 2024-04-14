@@ -4,8 +4,8 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::viz::scene3d" />
-    <requirement id="sight::module::viz::scene3dQt" />
+    <requirement id="sight::module::viz::scene3d_qt" />
 
-    <xi:include href="configurations/3DSimpleConfig.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/3dsimple_config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
 </plugin>

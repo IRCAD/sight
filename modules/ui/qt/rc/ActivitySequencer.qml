@@ -6,7 +6,7 @@ import QtQuick.Controls.Material 2.12
 Item{
 
     id: activitySequencer
-    objectName: "sequencer"
+    objectName: "Sequencer"
     height: 50
 
     property int currentSelection: 0

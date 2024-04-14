@@ -20,7 +20,7 @@ Contains widgets and DICOM sorters and splitters that can be graphically configu
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> 
+target_link_libraries( my_target <PUBLIC|PRIVATE> 
                        ui_dicom
 )
 ```

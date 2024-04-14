@@ -1,0 +1,8 @@
+<plugin id="sight::module::activity" library="true" >
+
+    <requirement id="sight::module::service"/>
+
+    <!-- EXTENSION POINT FOR AN APP CONFIGURATION -->
+    <extension-point id="sight::activity::extension" schema="activity/activity.xsd"/>
+
+</plugin>

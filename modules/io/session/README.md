@@ -1,6 +1,6 @@
 # sight::module::io::session
 
-Contains services for reading and writing data objects (`sight::data::Object`) to files stored on a filesystem.
+Contains services for reading and writing data objects (`sight::data::object`) to files stored on a filesystem.
 
 The session file is indeed a standard "ZIP" archive, while the compression algorithm for files inside the session
 archive is ZSTD. A standard archive reader could open a session file, if it is able to handle ZIP archive with ZSTD
@@ -11,15 +11,15 @@ of the type of data to serialize.
 
 ## Services
 
-- **SReader**: loads a session file and restore the saved `sight::data::Object`.
-- **SWriter**: saves a `sight::data::Object` into a session file on a filesystem.
+- **reader**: loads a session file and restore the saved `sight::data::object`.
+- **writer**: saves a `sight::data::object` into a session file on a filesystem.
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_io_session ...)
+add_dependencies(my_target module_io_session ...)
 ```
 
 ### XML

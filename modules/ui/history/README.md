@@ -1,18 +1,18 @@
  
 # sight::module::ui::history
 
-Contains service to handle a command history. Used for instance to undo or redo some command (see `ui::history::ICommand`).
+Contains service to handle a command history. Used for instance to undo or redo some command (see `ui::history::command`).
 
 ## Services
 
-- **SCommandHistory**: manages a command history, see also `ui::history::ICommand` for more details about which command can be stored.
+- **command_history**: manages a command history, see also `ui::history::command` for more details about which command can be stored.
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_ui_history ...)
+add_dependencies(my_target module_ui_history ...)
 ```
 
 ### XML

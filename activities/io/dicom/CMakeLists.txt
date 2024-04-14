@@ -7,7 +7,7 @@ add_dependencies(
     module_activity
     module_memory
     module_data
-    module_ui_base
+    module_ui
     module_ui_qt
     module_ui_dicom
     module_io_dicom
@@ -15,5 +15,5 @@ add_dependencies(
     module_ui_icons
     module_service
     module_viz_scene3d
-    module_viz_scene3dQt
+    module_viz_scene3d_qt
 )

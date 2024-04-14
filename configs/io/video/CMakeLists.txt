@@ -7,6 +7,6 @@ add_dependencies(
     module_service
     module_io_video
     module_ui_icons
-    module_ui_base
+    module_ui
     module_ui_qt
 )

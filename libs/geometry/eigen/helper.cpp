@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,9 @@ namespace sight::geometry::eigen::helper
 
 //-------------------------------------------------------------------------------------------------
 
-data::Matrix4::sptr toF4s(const Eigen::Matrix4f& _mat)
+data::matrix4::sptr from_eigen(const Eigen::Matrix4f& _mat)
 {
-    data::Matrix4::sptr trf = data::Matrix4::New();
+    data::matrix4::sptr trf = std::make_shared<data::matrix4>();
 
     for(unsigned int r = 0 ; r < 4 ; ++r)
     {
@@ -46,9 +46,9 @@ data::Matrix4::sptr toF4s(const Eigen::Matrix4f& _mat)
 
 //-------------------------------------------------------------------------------------------------
 
-data::Matrix4::sptr toF4s(const Eigen::Matrix4d& _mat)
+data::matrix4::sptr from_eigen(const Eigen::Matrix4d& _mat)
 {
-    data::Matrix4::sptr trf = data::Matrix4::New();
+    data::matrix4::sptr trf = std::make_shared<data::matrix4>();
 
     for(unsigned int r = 0 ; r < 4 ; ++r)
     {
@@ -63,9 +63,9 @@ data::Matrix4::sptr toF4s(const Eigen::Matrix4d& _mat)
 
 //-------------------------------------------------------------------------------------------------
 
-RvecTvecType eigenMatToRvecTvec(const Eigen::Matrix4d& _mat)
+rvec_tvec_t eigen_mat_to_rvec_tvec(const Eigen::Matrix4d& _mat)
 {
-    Eigen::AngleAxisd angleAxis;
+    Eigen::AngleAxisd angle_axis;
 
     Eigen::Matrix3d rotation;
 
@@ -77,9 +77,9 @@ RvecTvecType eigenMatToRvecTvec(const Eigen::Matrix4d& _mat)
         }
     }
 
-    angleAxis.fromRotationMatrix(rotation);
+    angle_axis.fromRotationMatrix(rotation);
 
-    Eigen::Vector3d rvec = angleAxis.angle() * angleAxis.axis();
+    Eigen::Vector3d rvec = angle_axis.angle() * angle_axis.axis();
     Eigen::Vector3d tvec = _mat.block<3, 1>(0, 3);
 
     return std::make_pair(rvec, tvec);
@@ -87,15 +87,15 @@ RvecTvecType eigenMatToRvecTvec(const Eigen::Matrix4d& _mat)
 
 //-------------------------------------------------------------------------------------------------
 
-RvecTvecType f4sMatToRvecTvec(const data::Matrix4::csptr _mat)
+rvec_tvec_t f4s_mat_to_rvec_tvec(const data::matrix4::csptr _mat)
 {
-    Eigen::Matrix4d eigenMat = toEigen<double>(_mat);
-    return eigenMatToRvecTvec(eigenMat);
+    Eigen::Matrix4d eigen_mat = to_eigen<double>(_mat);
+    return eigen_mat_to_rvec_tvec(eigen_mat);
 }
 
 //-------------------------------------------------------------------------------------------------
 
-EigenMatrix toEigen(const std::array<float, 16>& _farray)
+EigenMatrix to_eigen(const std::array<float, 16>& _farray)
 {
     Eigen::Matrix<double, 4, 4, Eigen::RowMajor> mat;
 
@@ -112,7 +112,7 @@ EigenMatrix toEigen(const std::array<float, 16>& _farray)
 
 //-------------------------------------------------------------------------------------------------
 
-EigenMatrix toEigen(const std::array<double, 16>& _farray)
+EigenMatrix to_eigen(const std::array<double, 16>& _farray)
 {
     Eigen::Matrix<double, 4, 4, Eigen::RowMajor> mat;
 
@@ -129,10 +129,10 @@ EigenMatrix toEigen(const std::array<double, 16>& _farray)
 
 //-------------------------------------------------------------------------------------------------
 
-RvecTvecType float16ToRvecTvec(const std::array<float, 16>& _farray)
+rvec_tvec_t float16_to_rvec_tvec(const std::array<float, 16>& _farray)
 {
-    Eigen::Matrix4d eigenMat = toEigen(_farray);
-    return eigenMatToRvecTvec(eigenMat);
+    Eigen::Matrix4d eigen_mat = to_eigen(_farray);
+    return eigen_mat_to_rvec_tvec(eigen_mat);
 }
 
 //-------------------------------------------------------------------------------------------------

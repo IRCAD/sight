@@ -9,7 +9,7 @@ Please refer to [OpenIGTLink official website](http://openigtlink.org/) for more
 
 The library proposes different base classes to implement services. They bring a semantic on top of `IService`, which allows to query services that match an interface.
 
-- **INetwork**: generic interface meant to handle the protocol for both client and server sides
+- **network**: generic interface meant to handle the protocol for both client and server sides
 - **Server**: defines a network igtl server which supports sight native data transfer
 - **Client**: defines a network igtl client which supports sight native data transfer
 - **Exception**: defines the igtl network exceptions
@@ -26,18 +26,18 @@ These classes are used for the lib internal mechanism:
 The purpose of the library is to facilitate the transfer through igtl network protocol of sight native data formats. 
 The present converters transform (forward and backward) various sight native data toward igtl specific data format.
 
-- **IConverter**: generic interface meant to convert `sight::data` to `::igtl::MessageBase`
+- **base**: generic interface meant to convert `sight::data` to `::igtl::MessageBase`
 - **TrackingStartConverter**: starts the conversion between the sight data and the igtl message
 - **TrackingStopConverter**: tops the conversion between the sight data and the igtl message
-- **AtomConverter**: manages the conversion between `data::Object` and `igtl::RawMessage` (contain serialized atom)
-- **CompositeConverter**: manages the conversion between `data::Composite` and `igtl::TrackingDataMessage`
-- **ImageConverter**: manages the conversion between `data::Image` and `igtl::ImageMessage`
-- **LineConverter**: manages the conversion between `data::Line` and `igtl::PositionMessage`
-- **MatrixConverter**: manages the conversion between `data::Matrix4` and `igtl::TransformationMessage`
-- **MeshConverter**: manages the conversion between `data::Mesh` and `igtl::PolyDataMessage`
-- **PointListConverter**: manages the conversion between `data::PointList` and `igtl::PointMessage`
-- **ScalarConverter**: manages the conversion between `data::Integer` of Float and `igtl::RawMessage`
-- **StringConverter**: manages the conversion between `data::String` and `igtl::StringMessage`
+- **AtomConverter**: manages the conversion between `data::object` and `igtl::RawMessage` (contain serialized atom)
+- **CompositeConverter**: manages the conversion between `data::composite` and `igtl::TrackingDataMessage`
+- **ImageConverter**: manages the conversion between `data::image` and `igtl::ImageMessage`
+- **LineConverter**: manages the conversion between `data::line` and `igtl::PositionMessage`
+- **MatrixConverter**: manages the conversion between `data::matrix4` and `igtl::TransformationMessage`
+- **MeshConverter**: manages the conversion between `data::mesh` and `igtl::PolyDataMessage`
+- **PointListConverter**: manages the conversion between `data::point_list` and `igtl::PointMessage`
+- **ScalarConverter**: manages the conversion between `data::integer` of Float and `igtl::RawMessage`
+- **StringConverter**: manages the conversion between `data::string` and `igtl::StringMessage`
 
 ## Exception
 
@@ -56,25 +56,25 @@ The present converters transform (forward and backward) various sight native dat
 - **RawMessage**: OpenIGTLink message in which raw data can be stored
 
 
-### Application configuration
+### application configuration
 
 ## How to use it
 
 Here is a sample of forward and backward data conversion:
 
 ```c++
-    data::Mesh::sptr mesh  
+    data::mesh::sptr mesh  
     DataConverter::sptr converter = DataConverter::getInstance();
     ::igtl::MessageBase::Pointer msg = converter->fromFwObject(mesh);
 
-    data::Object::sptr obj = converter->fromIgtlMessage(msg);
-    data::Mesh::sptr mesh2 = data::Mesh::dynamicCast(obj);
+    data::object::sptr obj = converter->fromIgtlMessage(msg);
+    data::mesh::sptr mesh2 = data::mesh::dynamicCast(obj);
 ```
 
 ### CMake
 
 ```cmake
-target_link_library(myTarget <PUBLIC|PRIVATE> io_igtl  )
+target_link_library(my_target <PUBLIC|PRIVATE> io_igtl  )
 ```
 
 

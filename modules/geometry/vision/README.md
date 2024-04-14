@@ -4,20 +4,20 @@ Contains services that implement some computer vision algorithms, notably to cal
 
 ## Services
 
-- **SChessBoardDetector**: detects chessboards in images and pushes detected points to CalibrationInfo objects.
-- **SChessboardReprojection**: reprojects the chessboard model onto the detected points using the estimated camera pose and calibration.
-- **SDistortion**: distorts or undistorts an image according to camera intrinsic parameters and distortion coefficients.
-- **SMarkerToPoint**: updates a point list with the center of the marker (from a matrixTL) when the extractMarker slot is
-- **SOpenCVExtrinsic**: computes extrinsic calibration with openCV.
-- **SOpenCVIntrinsic**: computes intrinsic calibration with openCV.
-- **SPoseFrom2d**: computes the 3d pose of a, object using 2d points.
-- **SReprojectionError**: computes the mean error of reprojection between 3d object points.
-- **SSolvePnP**: estimates the object pose given a set of object points, their corresponding image projections.
+- **chess_board_detector**: detects chessboards in images and pushes detected points to CalibrationInfo objects.
+- **chessboard_reprojection**: reprojects the chessboard model onto the detected points using the estimated camera pose and calibration.
+- **distortion**: distorts or undistorts an image according to camera intrinsic parameters and distortion coefficients.
+- **marker_to_point**: updates a point list with the center of the marker (from a matrixTL) when the extractMarker slot is
+- **open_cv_extrinsic**: computes extrinsic calibration with openCV.
+- **open_cv_intrinsic**: computes intrinsic calibration with openCV.
+- **pose_from2d**: computes the 3d pose of a, object using 2d points.
+- **reprojection_error**: computes the mean error of reprojection between 3d object points.
+- **solve_pn_p**: estimates the object pose given a set of object points, their corresponding image projections.
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_geometry_vision ... )
+add_dependencies(my_target module_geometry_vision ... )
 ```

@@ -1,21 +1,19 @@
-### Description
+## Description
 
-_Describe the need, what would be the feature, use cases, benefits, and goals_
+_Describe the need, what would be the feature, use cases, benefits, and goals._
 
-### Proposal
+_Optionally, you may give directions about how to address the issue._
 
-_Optional section to give some functional or technical hints_
-
-### Functional specifications
+## Functional specifications
 
 _Workflow, UX/UI design, screenshots, etc..._
 
-### Technical specifications
+## Technical specifications
 
-_Details of the implementation_
+_Details of the implementation._
 
-### Test plan
+## Test plan
 
-_Describe how you will verify that the implementation fulfils the specifications_
+_Describe how you will verify that the implementation meets specifications._
 
 /label ~"Type::feature" ~"Priority::medium"

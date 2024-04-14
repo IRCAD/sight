@@ -4,13 +4,13 @@ This module contains services to manage and use an instance of OpenVSLAM (Simult
 
 ## Services
 
-- **SOpenvslam**: manages an instance of OpenVSLAM.
+- **openvslam**: manages an instance of OpenVSLAM.
 
 ## CMake
 
 ```cmake
 
-add_dependencies(myTarget
+add_dependencies(my_target
                  ...
                  module_navigation_openvslam
 )

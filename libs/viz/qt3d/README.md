@@ -4,9 +4,9 @@ Contains all needed interfaces, helper classes and resources to render with the 
 
 ## Files
 
-- **IAdaptor**: provides behavior of Qt3D adaptor services.
-- **IWindowInteractor**: defines an abstract class to manage Qt3D RenderWindow in a qt container.
-- **SRender**: renders a scene with Qt3D API.
+- **adaptor**: provides behavior of Qt3D adaptor services.
+- **window_interactor**: defines an abstract class to manage Qt3D RenderWindow in a qt container.
+- **render**: renders a scene with Qt3D API.
 
 ### _CMake_
 
@@ -34,7 +34,7 @@ Contains GLSL shaders.
 * **GP**: geometry programs.
 
 ### _registry_
-- **Adaptor**: registry of adaptors.
+- **adaptor**: registry of adaptors.
 - **detail**: ?
 - **macros**: ?
 
@@ -47,10 +47,10 @@ Contains GLSL shaders.
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> 
+target_link_libraries( my_target <PUBLIC|PRIVATE> 
                         viz_qt3d
 )
 ```
 ### XML
 
-Please consult the [doxygen](https://sight.pages.ircad.fr/sight) of `sight::viz::qt3d::SRender `to learn more about its use in xml configurations.
+Please consult the [doxygen](https://sight.pages.ircad.fr/sight) of `sight::viz::qt3d::render `to learn more about its use in xml configurations.

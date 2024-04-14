@@ -20,7 +20,6 @@ material HybridTransparency_Blend
         pass
         {
             cull_hardware none
-            cull_software none
 
             depth_check off
             scene_blend_op add
@@ -52,7 +51,6 @@ material HybridTransparency/BlendFinal
         pass
         {
             cull_hardware none
-            cull_software none
 
             depth_check off
             scene_blend_op add
@@ -86,7 +84,6 @@ fragment_program HybridTransparency/WBOITBlend_FP glsl
         {
             param_named u_fragData0 int 0
             param_named u_fragData1 int 1
-            param_named_auto u_diffuse surface_diffuse_colour
         }
 }
 

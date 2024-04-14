@@ -15,7 +15,7 @@ target_link_libraries(io_dicom PRIVATE Boost::locale PUBLIC gdcmMSFF)
 
 target_link_libraries(
     io_dicom
-    PUBLIC io_base
+    PUBLIC io
            filter_dicom
            core
            geometry_data
@@ -26,5 +26,5 @@ target_link_libraries(
 )
 
 if(SIGHT_BUILD_TESTS)
-    add_subdirectory(test)
+    add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

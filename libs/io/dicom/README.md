@@ -7,10 +7,10 @@ Library containing functions for reading and writing DICOM files. It also contai
 ### Reader / Writer
 
 - **Reader**: New general purpose DICOM image reader. It is intended to replace all other Readers, when it will be able
-              to read non image DICOM. It reads images and put them in a sight::data::SeriesSet
-- **Series**: reads / writes a sight::data::Series from/to DICOM files. For Images, prefer "Reader"
-- **seriesSet**: reads / writes a sight::data::SeriesSet from/to DICOM files. It uses internally Series reader / writer
-- **SurfaceSegmentation**: writes a sight::data::ModelSeries to a surface segmentation in DICOM files.
+              to read non image DICOM. It reads images and put them in a sight::data::series_set
+- **Series**: reads / writes a sight::data::series from/to DICOM files. For Images, prefer "Reader"
+- **seriesSet**: reads / writes a sight::data::series_set from/to DICOM files. It uses internally Series reader / writer
+- **SurfaceSegmentation**: writes a sight::data::model_series to a surface segmentation in DICOM files.
 
 ### Container
 
@@ -25,7 +25,7 @@ Library containing functions for reading and writing DICOM files. It also contai
 - **DicomSurface**: defines one surface mesh item in order to transform into DICOM/Sight form.
 
 ### helper
-- **DicomAnonymizer**: contains helpers to anonymize dicom files on filesystem.
+- **dicom_anonymizer**: contains helpers to anonymize dicom files on filesystem.
 - **DicomCodedAttribute**: manages DICOM coded attributes.
 - **DicomDataReader**: handles GDCM data reading.
 - **DicomDataTools**: contains helpers to handle GDCM data.
@@ -39,11 +39,11 @@ Library containing functions for reading and writing DICOM files. It also contai
 - **DicomSeriesSetWriter**:
 - **DicomSeriesWriter**: writes a DicomSeries in DICOM format.
 - **Encoding**: manages encoding.
-- **Fiducial**: contains helper methods about fiducials in a `data::SeriesSet` object.
+- **Fiducial**: contains helper methods about fiducials in a `data::series_set` object.
 - **FileWriter**: writes a DICOM file.
 - **functions**: generates a random Dicom Patient ID using GDCM.
 - **SegmentedPropertyRegistry**: defines a registry which links a structure type to an entry.
-- **SOPClass**: contains tools (functions) to manage SOPClass.
+- **sop_class**: contains tools (functions) to manage sop_class.
 - **StructuredReport**: contains helpers for DICOM Structured Reporting (SR).
 - **tags**: parses group and element strings and return a gdcm::Tag instance
 
@@ -53,7 +53,7 @@ Library containing functions for reading and writing DICOM files. It also contai
 
 ```cmake
 
-target_link_libraries( myTarget <PUBLIC|PRIVATE> io_dicom)
+target_link_libraries( my_target <PUBLIC|PRIVATE> io_dicom)
 
 ```
 

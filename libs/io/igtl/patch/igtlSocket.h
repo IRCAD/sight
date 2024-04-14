@@ -1,3 +1,4 @@
+// NOLINTBEGIN
 /*=========================================================================
 
   Program:   The OpenIGTLink Library
@@ -197,3 +198,5 @@ private:
 }
 
 #endif
+
+// NOLINTEND

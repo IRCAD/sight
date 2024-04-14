@@ -7,4 +7,4 @@ target_link_libraries(module_ui_debug PRIVATE Qt5::Core Qt5::Concurrent Qt5::Gui
 
 set_target_properties(module_ui_debug PROPERTIES AUTOMOC TRUE)
 
-target_link_libraries(module_ui_debug PUBLIC core data service ui_base ui_qt)
+target_link_libraries(module_ui_debug PUBLIC core data service ui ui_qt)

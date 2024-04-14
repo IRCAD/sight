@@ -33,30 +33,30 @@ namespace sight::io::bitmap
 
 //------------------------------------------------------------------------------
 
-data::sequenced_set<std::string> extensions(Backend backend)
+data::sequenced_set<std::string> extensions(backend _backend)
 {
-    switch(backend)
+    switch(_backend)
     {
-        case Backend::NVJPEG:
-        case Backend::LIBJPEG:
+        case backend::nvjpeg:
+        case backend::libjpeg:
             return {detail::JPG_EXT, detail::JPEG_EXT};
 
-        case Backend::NVJPEG2K_J2K:
-        case Backend::OPENJPEG_J2K:
+        case backend::nvjpeg2k_j2k:
+        case backend::openjpeg_j2k:
             return {detail::J2K_EXT};
 
-        case Backend::NVJPEG2K:
-        case Backend::OPENJPEG:
+        case backend::nvjpeg2k:
+        case backend::openjpeg:
             return {detail::JP2_EXT};
 
-        case Backend::LIBTIFF:
+        case backend::libtiff:
             return {detail::TIFF_EXT, detail::TIF_EXT};
 
-        case Backend::LIBPNG:
+        case backend::libpng:
             return {detail::PNG_EXT};
 
         default:
-            SIGHT_THROW("Unsupported image backend: '" << std::uint8_t(backend) << "'");
+            SIGHT_THROW("Unsupported image backend: '" << std::uint8_t(_backend) << "'");
     }
 }
 
@@ -68,27 +68,11 @@ static const bool NVJPEG_AVAILABLE =
     {
         try
         {
-            int count                    = 0;
-            auto cuDeviceGetCount_result = cuDeviceGetCount(&count);
+            int count = 0;
 
-            // cspell:ignore deinitialized
-            if(cuDeviceGetCount_result == CUDA_ERROR_DEINITIALIZED
-               || cuDeviceGetCount_result == CUDA_ERROR_NOT_INITIALIZED)
+            if(const auto result = cudaGetDeviceCount(&count); result != cudaSuccess)
             {
-                // The cuda driver is not yet initialized, we try to initialize it
-                if(const auto cuInit_result = cuInit(0); cuInit_result != CUDA_SUCCESS)
-                {
-                    SIGHT_ERROR("cuInit failed: " << cuInit_result);
-                    return false;
-                }
-
-                // Retry
-                cuDeviceGetCount_result = cuDeviceGetCount(&count);
-            }
-
-            if(cuDeviceGetCount_result != CUDA_SUCCESS)
-            {
-                SIGHT_ERROR("cuDeviceGetCount failed: " << cuDeviceGetCount_result);
+                SIGHT_ERROR("cudaGetDeviceCount failed: " << result);
                 return false;
             }
 
@@ -117,17 +101,17 @@ static const bool NVJPEG_AVAILABLE = false;
 
 //------------------------------------------------------------------------------
 
-bool nvJPEG()
+bool nv_jpeg()
 {
     return NVJPEG_AVAILABLE;
 }
 
 //------------------------------------------------------------------------------
 
-bool nvJPEG2K()
+bool nv_jpeg_2k()
 {
 #ifdef SIGHT_ENABLE_NVJPEG2K
-    return nvJPEG();
+    return nv_jpeg();
 #else
     return false;
 #endif
@@ -135,43 +119,43 @@ bool nvJPEG2K()
 
 //------------------------------------------------------------------------------
 
-std::pair<std::string, std::string> wildcardFilter(Backend backend)
+std::pair<std::string, std::string> wildcard_filter(backend _backend)
 {
-    switch(backend)
+    switch(_backend)
     {
-        case Backend::NVJPEG:
-        case Backend::LIBJPEG:
+        case backend::nvjpeg:
+        case backend::libjpeg:
             return std::make_pair(detail::JPEG_LABEL, std::string("*") + detail::JPG_EXT + " *" + detail::JPEG_EXT);
 
-        case Backend::NVJPEG2K:
-        case Backend::OPENJPEG:
+        case backend::nvjpeg2k:
+        case backend::openjpeg:
             return std::make_pair(detail::J2K_LABEL, std::string("*") + detail::JP2_EXT);
 
-        case Backend::NVJPEG2K_J2K:
-        case Backend::OPENJPEG_J2K:
+        case backend::nvjpeg2k_j2k:
+        case backend::openjpeg_j2k:
             return std::make_pair(detail::J2K_LABEL, std::string("*") + detail::J2K_EXT);
 
-        case Backend::LIBTIFF:
+        case backend::libtiff:
             return std::make_pair(detail::TIFF_LABEL, std::string("*") + detail::TIF_EXT + +" *" + detail::TIFF_EXT);
 
-        case Backend::LIBPNG:
+        case backend::libpng:
             return std::make_pair(detail::PNG_LABEL, std::string("*") + detail::PNG_EXT);
 
         default:
-            SIGHT_THROW("Unsupported backend: " << uint8_t(backend));
+            SIGHT_THROW("Unsupported backend: " << uint8_t(_backend));
     }
 }
 
 #ifdef SIGHT_ENABLE_NVJPEG
 /// Ensure the CUDA context and all associated memory are frees when the application exits.
 /// This allows to proper memory leak detection using tools like valgrind and cuda-memcheck.
-static const struct CudaResetter
+static const struct cuda_resetter
 {
-    ~CudaResetter()
+    ~cuda_resetter()
     {
         cudaDeviceReset();
     }
-} s_CUDA_RESETTER;
+} CUDA_RESETTER;
 #endif
 
 } // namespace sight::io::bitmap

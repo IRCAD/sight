@@ -1,0 +1,205 @@
+<plugin id="ex_dump" >
+
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::io::session" />
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::memory" />
+    <requirement id="sight::module::ui::qt" />
+
+    <!-- This example allows to test the different dump policy. -->
+    <extension implements="sight::app::extension::config" >
+        <id>ExDump_AppCfg</id>
+        <config>
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="seriesSet" type="sight::data::series_set" />
+            <object uid="selections" type="sight::data::vector" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::frame" >
+                <gui>
+                    <frame>
+                        <name>ex_dump</name>
+                        <icon>ex_dump/app.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                    <menubar />
+                    <toolbar />
+                </gui>
+                <registry>
+                    <menubar sid="menuBarView" start="true" />
+                    <toolbar sid="toolBarView" start="true" />
+                    <view sid="mainview" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="sight::module::ui::menubar" >
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Monitor" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuMonitorView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuFileView" type="sight::module::ui::menu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open Series..." shortcut="Ctrl+O" />
+                        <menuItem name="Save Series..." shortcut="Ctrl+S" />
+                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openAct" start="true" />
+                    <menuItem sid="saveAct" start="true" />
+                    <menuItem sid="quitAct" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuMonitorView" type="sight::module::ui::menu" >
+                <gui>
+                    <layout>
+                        <menuItem name="ClassFactoryRegistry information" />
+                        <menuItem name="Framework related object metrics" />
+                        <separator />
+                        <menuItem name="Show contributions tree" />
+                        <separator />
+                        <menuItem name="Memory" />
+                        <menuItem name="Dump all" />
+                        <menuItem name="Increase memory consumption" />
+                        <menuItem name="Decrease memory consumption" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="classFactoryRegistryInfoAct" start="true" />
+                    <menuItem sid="metricsAct" start="true" />
+                    <menuItem sid="componentsTreeAct" start="true" />
+                    <menuItem sid="memInfoAct" start="true" />
+                    <menuItem sid="dumpAllAct" start="true" />
+                    <menuItem sid="incMemConsumAct" start="true" />
+                    <menuItem sid="decMemConsumAct" start="true" />
+                </registry>
+            </service>
+
+            <service uid="toolBarView" type="sight::module::ui::toolbar" >
+                <gui>
+                    <layout>
+                        <menuItem name="Open..." icon="sight::module::ui::icons/load.svg" />
+                        <menuItem name="Save..." icon="sight::module::ui::icons/save.svg" />
+                        <separator />
+                        <menuItem name="Dump all" icon="monitorQt/icon-dump.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="openAct" start="false" />
+                    <menuItem sid="saveAct" start="false" />
+                    <menuItem sid="dumpAllAct" start="false" />
+                </registry>
+            </service>
+
+            <service uid="mainview" type="sight::module::ui::view" >
+                <gui>
+                    <layout type="sight::ui::layout::line" >
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" backgroundColor="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="subView" start="true" />
+                    <view sid="dumpEditorSrv" start="true" />
+                </registry>
+            </service>
+
+            <service uid="subView" type="sight::module::ui::view" >
+                <gui>
+                    <layout type="sight::ui::layout::line" >
+                        <orientation value="vertical" />
+                            <view proportion="1" backgroundColor="#36393E" />
+                            <view proportion="1" backgroundColor="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="selectorSrv" start="true" />
+                    <view wid="previewView" />
+                </registry>
+            </service>
+
+            <!-- ************************************* Action ************************************ -->
+
+            <service uid="quitAct" type="sight::module::ui::quit" />
+
+            <service uid="openAct" type="sight::module::ui::series::db_merger" >
+                <inout key="seriesSet" uid="seriesSet" />
+                <IOSelectorSrvConfig name="FullSDBReaderIOSelectorConfig" />
+            </service>
+
+            <service uid="saveAct" type="sight::module::ui::action" >
+                <start uid="SDBWriterSrv" />
+            </service>
+
+            <service uid="metricsAct" type="sight::module::debug::action::metrics" />
+
+            <service uid="memInfoAct" type="sight::module::debug::action::memory_info" />
+
+            <service uid="incMemConsumAct" type="sight::module::debug::action::memory_consumption" >
+                <config mode="increase" value="256" />
+            </service>
+
+            <service uid="decMemConsumAct" type="sight::module::debug::action::memory_consumption" >
+                <config mode="decrease" />
+            </service>
+
+            <service uid="classFactoryRegistryInfoAct" type="sight::module::ui::debug::action::class_factory_registry_info" />
+
+            <service uid="componentsTreeAct" type="sight::module::ui::debug::action::components_tree" />
+
+            <service uid="dumpAllAct" type="sight::module::debug::action::dump_all" />
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="SDBWriterSrv" type="sight::module::ui::io::selector" config="SDBSessionWriterIOSelectorConfig" >
+                <inout key="data" uid="seriesSet" />
+            </service>
+
+            <service uid="selectorSrv" type="sight::module::ui::qt::series::selector" auto_connect="true" >
+                <inout key="seriesSet" uid="seriesSet" />
+                <inout key="selection" uid="selections" />
+            </service>
+
+            <!-- This editor allows to change the dump policy, and displays the managed buffer. -->
+            <service uid="dumpEditorSrv" type="sight::module::ui::debug::dump_editor" />
+
+            <!-- Service to display the preview when an image or an mesh is selected -->
+            <service uid="seriesViewerSrv" type="sight::module::ui::qt::series::viewer" auto_connect="true" >
+                <in key="series" uid="selections" />
+                <parentView wid="previewView" />
+                <configs>
+                    <config id="2DSimpleConfig" type="sight::data::image_series" />
+                    <config id="3DSimpleConfig" type="sight::data::model_series" />
+                </configs>
+            </service>
+
+            <connect>
+                <signal>saveAct/clicked</signal>
+                <slot>SDBWriterSrv/update</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="mainFrame" />
+            <start uid="seriesViewerSrv" />
+            <start uid="SDBWriterSrv" />
+
+        </config>
+    </extension>
+
+
+</plugin>

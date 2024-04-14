@@ -10,8 +10,8 @@
     video processing are not expected here.
 
 Inout:
-   camera  [sight::data::Camera]: camera used to display video.
-   frameTL  [sight::data::FrameTL]: timeline where to extract the video frames.
+   camera  [sight::data::camera]: camera used to display video.
+   frameTL  [sight::data::frame_tl]: timeline where to extract the video frames.
 
 ui elements:
    TOOLBAR: editor wid of a toolbar in which the play/pause/stop/loop buttons will be displayed.
@@ -31,7 +31,7 @@ channels - out (optional):
     cameraStoppedChannelOut:     channel on which a signal is triggered when the camera is stopped.
     loopModeToggleChannelOut:    channel on which a signal is triggered when the camera loop mode is toggled.
 
-    parameterChannelOut(ui::base::parameter_t, std::string): channel on which a signal is triggered when a named grabber parameter is changed.
+    parameterChannelOut(ui::parameter_t, std::string): channel on which a signal is triggered when a named grabber parameter is changed.
 
     videoPositionParameterOut: channel on which a signal is triggered when the position in the video is modified during playing.
     videoDurationParameterOut: channel on which a signal is triggered when the duration of the video is modified.
@@ -42,13 +42,13 @@ channels - out (optional):
 
 channels - in (optional):
 
-    parameterChannelIn(ui::base::parameter_t, std::string) : channel on which a signal is expected to notify the grabber that a named parameter is changed.
-    addROICenterChannelIn(sight::data::Point):        channel on which a signal is expected to notify the grabber that a new point has been selected.
-    removeROICenterChannelIn(sight::data::Point):     channel on which a signal is expected to notify the grabber that a point has been remove.
+    parameterChannelIn(ui::parameter_t, std::string) : channel on which a signal is expected to notify the grabber that a named parameter is changed.
+    addROICenterChannelIn(sight::data::point):        channel on which a signal is expected to notify the grabber that a new point has been selected.
+    removeROICenterChannelIn(sight::data::point):     channel on which a signal is expected to notify the grabber that a point has been remove.
 
 Usage:
 
-        <service uid="..." type="sight::service::SConfigController">
+        <service uid="..." type="sight::app::config_controller">
             <appConfig id="sight::config::io::video::controls" />
             <inout group="data">
                 <key name="camera" uid="..." />
@@ -74,7 +74,7 @@ Usage:
 
         </service>
 -->
-<extension implements="sight::service::extension::AppConfig" >
+<extension implements="sight::app::extension::config" >
     <id>sight::config::io::video::controls</id>
     <parameters>
         <param name="camera" />
@@ -113,36 +113,36 @@ Usage:
     </parameters>
     <config>
 
-        <object uid="${camera}" type="sight::data::Camera" src="ref" />
-        <object uid="${frameTL}" type="sight::data::FrameTL" src="ref" />
+        <object uid="${camera}" type="sight::data::camera" src="ref" />
+        <object uid="${frameTL}" type="sight::data::frame_tl" src="ref" />
 
-        <service uid="containerViewSrv" type="sight::module::ui::base::SView" >
+        <service uid="containerViewSrv" type="sight::module::ui::view" >
             <gui>
-                <toolBar />
-                <layout type="sight::ui::base::LineLayoutManager" >
+                <toolbar />
+                <layout type="sight::ui::layout::line" >
                     <orientation value="horizontal" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${TOOLBAR}" />
-                <toolBar sid="toolbarViewSrv" start="true" />
+                <toolbar sid="toolbarViewSrv" start="true" />
             </registry>
         </service>
 
-        <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
+        <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera" >
             <inout key="camera" uid="${camera}" />
             <videoSupport>${videoSupport}</videoSupport>
         </service>
 
-        <service uid="toolbarViewSrv" type="sight::module::ui::base::SToolBar" >
+        <service uid="toolbarViewSrv" type="sight::module::ui::toolbar" >
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="${playShortCut}"/>
-                    <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="${pauseShortCut}"/>
-                    <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="${pauseShortCut}"/>
-                    <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" shortcut="${stopShortCut}"/>
-                    <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
+                    <menuItem name="Start" icon="sight::module::ui::icons/play.svg" shortcut="${playShortCut}" />
+                    <menuItem name="Pause" icon="sight::module::ui::icons/pause.svg" shortcut="${pauseShortCut}" />
+                    <menuItem name="Play" icon="sight::module::ui::icons/play.svg" shortcut="${pauseShortCut}" />
+                    <menuItem name="Stop" icon="sight::module::ui::icons/stop.svg" shortcut="${stopShortCut}" />
+                    <menuItem name="Loop" icon="sight::module::ui::icons/loop.svg" style="check" />
                 </layout>
             </gui>
             <registry>
@@ -155,7 +155,7 @@ Usage:
             </registry>
         </service>
 
-        <service uid="grabberProxySrv" type="sight::module::io::video::SGrabberProxy" >
+        <service uid="grabberProxySrv" type="sight::module::io::video::grabber_proxy" >
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="${frameTL}" />
         </service>
@@ -163,25 +163,25 @@ Usage:
         <!-- ******************************* Actions ****************************** -->
 
         <!-- Start the frame grabber -->
-        <service uid="startVideoAct" type="sight::module::ui::base::SAction" />
+        <service uid="startVideoAct" type="sight::module::ui::action" />
 
         <!-- Pause the frame grabber -->
-        <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" >
+        <service uid="pauseVideoAct" type="sight::module::ui::action" >
             <state visible="false" />
         </service>
 
         <!-- Resume the frame grabber -->
-        <service uid="resumeVideoAct" type="sight::module::ui::base::SAction" >
+        <service uid="resumeVideoAct" type="sight::module::ui::action" >
             <state visible="false" />
         </service>
 
         <!-- Stop the frame grabber -->
-        <service uid="stopVideoAct" type="sight::module::ui::base::SAction" >
+        <service uid="stopVideoAct" type="sight::module::ui::action" >
             <state enabled="false" />
         </service>
 
         <!-- Loop the frame grabber -->
-        <service uid="loopVideoAct" type="sight::module::ui::base::SAction" >
+        <service uid="loopVideoAct" type="sight::module::ui::action" >
             <state enabled="false" />
         </service>
 
@@ -189,26 +189,26 @@ Usage:
 
         <connect>
             <signal>startVideoAct/clicked</signal>
-            <slot>grabberProxySrv/startCamera</slot>
+            <slot>grabberProxySrv/start_camera</slot>
         </connect>
 
         <connect channel="${cameraPausedChannelOut}">
             <signal>pauseVideoAct/clicked</signal>
-            <slot>grabberProxySrv/pauseCamera</slot>
+            <slot>grabberProxySrv/pause_camera</slot>
             <slot>resumeVideoAct/show</slot>
             <slot>pauseVideoAct/hide</slot>
         </connect>
 
         <connect channel="${cameraResumePauseChannelOut}">
             <signal>resumeVideoAct/clicked</signal>
-            <slot>grabberProxySrv/pauseCamera</slot>
+            <slot>grabberProxySrv/pause_camera</slot>
             <slot>resumeVideoAct/hide</slot>
             <slot>pauseVideoAct/show</slot>
         </connect>
 
         <connect>
             <signal>stopVideoAct/clicked</signal>
-            <slot>grabberProxySrv/stopCamera</slot>
+            <slot>grabberProxySrv/stop_camera</slot>
             <slot>startVideoAct/show</slot>
             <slot>resumeVideoAct/hide</slot>
             <slot>pauseVideoAct/hide</slot>
@@ -219,34 +219,34 @@ Usage:
 
         <connect channel="${loopModeToggleChannelOut}">
             <signal>loopVideoAct/clicked</signal>
-            <slot>grabberProxySrv/loopVideo</slot>
+            <slot>grabberProxySrv/loop_video</slot>
         </connect>
 
         <connect>
-            <signal>videoSelectorSrv/configuredCameras</signal>
+            <signal>videoSelectorSrv/configured_cameras</signal>
             <slot>grabberProxySrv/reconfigure</slot>
         </connect>
 
         <connect>
-            <signal>videoSelectorSrv/configuredStream</signal>
-            <signal>videoSelectorSrv/configuredDevice</signal>
+            <signal>videoSelectorSrv/configured_stream</signal>
+            <signal>videoSelectorSrv/configured_device</signal>
             <slot>startVideoAct/update</slot>
         </connect>
 
         <connect channel="${configuredFileOut}">
-            <signal>videoSelectorSrv/configuredFile</signal>
+            <signal>videoSelectorSrv/configured_file</signal>
         </connect>
 
         <connect channel="${configuredStreamOut}">
-            <signal>videoSelectorSrv/configuredStream</signal>
+            <signal>videoSelectorSrv/configured_stream</signal>
         </connect>
 
         <connect channel="${configuredDeviceOut}">
-            <signal>videoSelectorSrv/configuredDevice</signal>
+            <signal>videoSelectorSrv/configured_device</signal>
         </connect>
 
         <connect channel="${cameraStartedChannelOut}" >
-            <signal>grabberProxySrv/cameraStarted</signal>
+            <signal>grabberProxySrv/camera_started</signal>
             <slot>pauseVideoAct/show</slot>
             <slot>startVideoAct/hide</slot>
             <slot>stopVideoAct/enable</slot>
@@ -254,12 +254,12 @@ Usage:
         </connect>
 
         <connect>
-            <signal>camera/idModified</signal>
-            <slot>grabberProxySrv/stopCamera</slot>
+            <signal>camera/id_modified</signal>
+            <slot>grabberProxySrv/stop_camera</slot>
         </connect>
 
         <connect channel="${cameraStoppedChannelOut}" >
-            <signal>grabberProxySrv/cameraStopped</signal>
+            <signal>grabberProxySrv/camera_stopped</signal>
         </connect>
 
         <connect>
@@ -269,23 +269,23 @@ Usage:
         </connect>
 
         <connect channel="${parameterChannelIn}" >
-            <slot>grabberProxySrv/setParameter</slot>
+            <slot>grabberProxySrv/set_parameter</slot>
         </connect>
 
         <connect channel="${parameterChannelOut}" >
-            <signal>grabberProxySrv/parameterChanged</signal>
+            <signal>grabberProxySrv/parameter_changed</signal>
         </connect>
 
         <connect channel="${videoPositionParameterIn}">
-            <slot>grabberProxySrv/setPositionVideo</slot>
+            <slot>grabberProxySrv/set_position_video</slot>
         </connect>
 
         <connect channel="${videoPositionParameterOut}">
-            <signal>grabberProxySrv/positionModified</signal>
+            <signal>grabberProxySrv/position_modified</signal>
         </connect>
 
         <connect channel="${videoDurationParameterOut}">
-            <signal>grabberProxySrv/durationModified</signal>
+            <signal>grabberProxySrv/duration_modified</signal>
         </connect>
 
         <connect channel="${notificationChannel}">
@@ -293,11 +293,11 @@ Usage:
         </connect>
 
         <connect channel="${addROICenterChannelIn}">
-            <slot>grabberProxySrv/addROICenter</slot>
+            <slot>grabberProxySrv/add_roi_center</slot>
         </connect>
 
         <connect channel="${removeROICenterChannelIn}">
-            <slot>grabberProxySrv/removeROICenter</slot>
+            <slot>grabberProxySrv/remove_roi_center</slot>
         </connect>
 
         <connect channel="${optimizeGrabberIn}">
@@ -305,7 +305,6 @@ Usage:
         </connect>
 
         
-
         <start uid="containerViewSrv" />
         <start uid="grabberProxySrv" />
 

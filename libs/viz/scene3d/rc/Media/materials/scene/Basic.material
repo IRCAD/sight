@@ -8,7 +8,6 @@ material BasicAmbient
         {
             scene_blend alpha_blend
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/Ambient_VP
             {
@@ -25,7 +24,6 @@ material BasicAmbient
         pass
         {
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/Ambient_VP
             {
@@ -43,7 +41,6 @@ material BasicAmbientVT
         {
             scene_blend alpha_blend
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/Ambient+VT_VP
             {
@@ -60,7 +57,6 @@ material BasicAmbientVT
         pass
         {
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/Ambient+VT_VP
             {
@@ -79,7 +75,6 @@ material BasicPhong
         {
             scene_blend alpha_blend
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/PixelLit_VP
             {
@@ -96,7 +91,6 @@ material BasicPhong
         pass
         {
             cull_hardware none
-            cull_software none
 
             vertex_program_ref Default/PixelLit_VP
             {

@@ -1,10 +1,10 @@
 <plugin id="sight::module::ui::history" library="true" >
 
 
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IService</type>
-         <service>sight::module::ui::history::SCommandHistory</service>
-         <object>sight::data::Object</object>
+    <extension implements="sight::service::extension::factory">
+         <type>sight::service::base</type>
+         <service>sight::module::ui::history::command_history</service>
+         <object>sight::data::object</object>
          <desc>This service manages a command history.</desc>
     </extension>
 </plugin>

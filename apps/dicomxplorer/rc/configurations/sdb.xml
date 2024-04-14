@@ -1,4 +1,4 @@
-<extension implements="sight::service::extension::AppConfig">
+<extension implements="sight::app::extension::config">
     <id>SDBdicomXplorer</id>
     <parameters>
         <param name="SERIES_SET" />
@@ -9,38 +9,38 @@
     </parameters>
     <config>
 
-        <object uid="${SERIES_SET}" type="sight::data::SeriesSet" src="ref" />
-        <object uid="selections" type="sight::data::Vector" />
+        <object uid="${SERIES_SET}" type="sight::data::series_set" src="ref" />
+        <object uid="selections" type="sight::data::vector" />
 
-        <service uid="mainview" type="sight::module::ui::base::SView">
+        <service uid="mainview" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager">
+                <layout type="sight::ui::layout::cardinal">
                     <view caption="Information" align="center" minWidth="200" />
                     <view caption="Preview" align="bottom" minHeight="200" />
                 </layout>
-                <toolBar />
+                <toolbar />
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolBar sid="toolBar" start="true" />
+                <toolbar sid="toolbar" start="true" />
                 <view sid="selector" start="true" />
                 <view wid="preview" />
             </registry>
         </service>
 
-        <service uid="toolBar" type="sight::module::ui::base::SToolBar">
+        <service uid="toolbar" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Import" icon="sight::module::ui::icons/Import.svg" />
-                    <menuItem name="Export" icon="sight::module::ui::icons/Export.svg" />
+                    <menuItem name="Import" icon="sight::module::ui::icons/import.svg" />
+                    <menuItem name="Export" icon="sight::module::ui::icons/export.svg" />
                     <separator />
-                    <menuItem name="2D visualization" icon="sight::module::ui::icons/icon-2D.png" />
+                    <menuItem name="2D visualization" icon="sight::module::ui::icons/layers.svg" />
                     <separator />
-                    <menuItem name="DICOM PACS Reader" icon="sight::module::ui::icons/Pull.svg" />
-                    <menuItem name="DICOM PACS Writer" icon="sight::module::ui::icons/Push.svg" />
-                    <menuItem name="DICOM Filtering" icon="sight::module::ui::icons/icon-DICOM-Filtering.svg" />
-                    <menuItem name="DICOM Web Reader" icon="sight::module::ui::icons/Pull.svg" />
-                    <menuItem name="DICOM Web Writer" icon="sight::module::ui::icons/Push.svg" />
+                    <menuItem name="DICOM PACS Reader" icon="sight::module::ui::icons/pull.svg" />
+                    <menuItem name="DICOM PACS Writer" icon="sight::module::ui::icons/push.svg" />
+                    <menuItem name="DICOM Filtering" icon="sight::module::ui::icons/plus.svg" />
+                    <menuItem name="DICOM Web Reader" icon="sight::module::ui::icons/pull.svg" />
+                    <menuItem name="DICOM Web Writer" icon="sight::module::ui::icons/push.svg" />
                 </layout>
             </gui>
             <registry>
@@ -55,25 +55,25 @@
             </registry>
         </service>
 
-        <service uid="action_import" type="sight::module::ui::base::series::SDBMerger">
+        <service uid="action_import" type="sight::module::ui::series::db_merger">
             <inout key="seriesSet" uid="${SERIES_SET}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
-        <service uid="selector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
+        <service uid="selector" type="sight::module::ui::qt::series::selector" auto_connect="true">
             <inout key="seriesSet" uid="${SERIES_SET}" />
             <inout key="selection" uid="selections" />
         </service>
 
-        <service uid="seriesViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
+        <service uid="seriesViewer" type="sight::module::ui::qt::series::viewer" auto_connect="true">
             <in key="series" uid="selections" />
             <parentView wid="preview" />
             <configs>
-                <config id="2DSimpleConfig" type="sight::data::ImageSeries" />
-                <config id="3DSimpleConfig" type="sight::data::ModelSeries" />
+                <config id="2DSimpleConfig" type="sight::data::image_series" />
+                <config id="3DSimpleConfig" type="sight::data::model_series" />
             </configs>
         </service>
 
-        <service uid="action_newActivity" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true">
+        <service uid="action_newActivity" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -91,7 +91,7 @@
             </config>
         </service>
 
-        <service uid="action_2DVisualization" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true">
+        <service uid="action_2DVisualization" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -105,7 +105,7 @@
             </config>
         </service>
 
-        <service uid="action_3DVisualization" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true">
+        <service uid="action_3DVisualization" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -119,7 +119,7 @@
             </config>
         </service>
 
-        <service uid="action_dicomPacsReader" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true">
+        <service uid="action_dicomPacsReader" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -129,12 +129,12 @@
                 </parameters>
                 <filter>
                     <mode>include</mode>
-                    <id>DicomPacsReader</id>
+                    <id>sight::activity::io::dicom::pacs_reader</id>
                 </filter>
             </config>
         </service>
 
-        <service uid="action_dicomPacsWriter" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true">
+        <service uid="action_dicomPacsWriter" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -144,12 +144,12 @@
                 </parameters>
                 <filter>
                     <mode>include</mode>
-                    <id>DicomPacsWriter</id>
+                    <id>sight::activity::io::dicom::pacs_writer</id>
                 </filter>
             </config>
         </service>
 
-        <service uid="action_dicomFiltering" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true">
+        <service uid="action_dicomFiltering" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -159,12 +159,12 @@
                 </parameters>
                 <filter>
                     <mode>include</mode>
-                    <id>DicomFiltering</id>
+                    <id>sight::activity::io::dicom::filtering</id>
                 </filter>
             </config>
         </service>
 
-        <service uid="action_dicomWebReader" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true">
+        <service uid="action_dicomWebReader" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -174,12 +174,12 @@
                 </parameters>
                 <filter>
                     <mode>include</mode>
-                    <id>activity_io_dicomweb</id>
+                    <id>sight::activity::io::dicomweb::reader</id>
                 </filter>
             </config>
         </service>
 
-        <service uid="action_dicomWebWriter" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true">
+        <service uid="action_dicomWebWriter" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
             <in key="series" uid="selections" />
             <config>
                 <parameters>
@@ -189,12 +189,12 @@
                 </parameters>
                 <filter>
                     <mode>include</mode>
-                    <id>DicomWebWriterActivity</id>
+                    <id>sight::activity::io::dicomweb::writer</id>
                 </filter>
             </config>
         </service>
 
-        <service uid="action_exportSeries" type="sight::module::ui::qt::activity::SLauncher" autoConnect="true">
+        <service uid="action_exportSeries" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
             <in key="series" uid="selections" />
             <config>
                 <mode>immediate</mode>
@@ -209,25 +209,25 @@
         </service>
 
         <connect>
-            <signal>selector/seriesDoubleClicked</signal>
-            <slot>action_newActivity/launchSeries</slot>
+            <signal>selector/series_double_clicked</signal>
+            <slot>action_newActivity/launch_series</slot>
         </connect>
 
         <connect channel="${PROGRESS_CHANNEL}">
-            <signal>action_import/jobCreated</signal>
+            <signal>action_import/job_created</signal>
         </connect>
 
         <connect channel="${DYNAMICVIEW_CHANNEL}">
-            <signal>action_newActivity/activityLaunched</signal>
-            <signal>action_2DVisualization/activityLaunched</signal>
-            <signal>action_3DVisualization/activityLaunched</signal>
-            <signal>action_volumeRendering/activityLaunched</signal>
-            <signal>action_blend/activityLaunched</signal>
-            <signal>action_dicomPacsReader/activityLaunched</signal>
-            <signal>action_dicomPacsWriter/activityLaunched</signal>
-            <signal>action_dicomFiltering/activityLaunched</signal>
-            <signal>action_dicomWebReader/activityLaunched</signal>
-            <signal>action_dicomWebWriter/activityLaunched</signal>
+            <signal>action_newActivity/activity_launched</signal>
+            <signal>action_2DVisualization/activity_launched</signal>
+            <signal>action_3DVisualization/activity_launched</signal>
+            <signal>action_volumeRendering/activity_launched</signal>
+            <signal>action_blend/activity_launched</signal>
+            <signal>action_dicomPacsReader/activity_launched</signal>
+            <signal>action_dicomPacsWriter/activity_launched</signal>
+            <signal>action_dicomFiltering/activity_launched</signal>
+            <signal>action_dicomWebReader/activity_launched</signal>
+            <signal>action_dicomWebWriter/activity_launched</signal>
         </connect>
 
         <start uid="mainview" />

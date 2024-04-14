@@ -6,28 +6,28 @@ Contains base QML code to build a Sight application.
 
 ### activity
 
-* **SSequencer**
+* **sequencer**
 Displays an activity stepper that allows to select the activity to launch and display the current selection
 
-* **SView**
+* **view**
 Displays activities in a single view (when a new activity is launched, it replaces the previous one).
 
 ### image
 
-* **SSliceIndexPositionEditor**
+* **slice_index_position_editor**
 Allows to change the slice index of an image.
 
 ### model
 
-* **SModelSeriesList**
+* **model_series_list**
 Allows to manage the ModelSeries organs.
 
 ### reconstruction
 
-* **SOrganMaterialEditor**
+* **organ_material_editor**
 Displays a widget to change the reconstruction material (color and transparency).
 
-* **SRepresentationEditor**
+* **representation_editor**
 Displays a widget to change the reconstruction representation (surface, point, edge, ...).
 
 ## Other classes
@@ -51,7 +51,7 @@ The rc directory contains the QML resources allowing to create an application.
 ### CMake
 
 ```cmake
-add_dependencies(myTarget module_ui_qml ... )
+add_dependencies(my_target module_ui_qml ... )
 ```
 
 ### XML

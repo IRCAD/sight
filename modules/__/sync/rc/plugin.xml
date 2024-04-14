@@ -1,0 +1,15 @@
+<plugin id="sight::module::sync" library="true" >
+
+     <extension implements="sight::service::extension::factory">
+         <type>sight::service::synchronizer</type>
+         <service>sight::module::sync::synchronizer</service>
+         <desc>synchronizer service synchronizes any kind of video or matrix streams combination.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+         <type>sight::service::controller</type>
+         <service>sight::module::sync::signal_gate</service>
+         <desc>This service triggers a signal each time all configured signals are received. Once it triggers the signal</desc>
+    </extension>
+
+</plugin>
