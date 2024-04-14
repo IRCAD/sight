@@ -1,3 +1,325 @@
+# sight 24.0.0
+
+## Enhancement:
+
+### build
+
+*Update vcpkg.*
+
+### core
+
+*Add missing subscript operator in array_iterator class.*
+
+*Do not restart multi_config_controller when the config does not change.*
+
+*Improve series error management.*
+
+*Improve series error management.*
+
+### doc
+
+*Update main README.md.*
+
+### geometry
+
+*Add unit test for module::geometry::concatenate_matrices.*
+
+### io
+
+*Avoid reetrance in update loops using synchronizers.*
+
+*Add a way to set the video grabber loop mode by a generic parameter.*
+
+Also override the new configuring(const config_t&) signature in tracker interface to allow implementations to override it as well.
+
+### ui
+
+*Properly align qt::parameters sliders.*
+
+*Update icons.*
+
+*Add a button to reset preferences settings.*
+
+*Add an option to skip action signal emit at start.*
+
+*Apply new QSS theme on sight_viewer.*
+
+Some enhancements were also brought in the QSS itself.
+
+*Add the collapsible section widget in libs and provide an example and test on it.*
+
+*Minor UI improvements.*
+
+Simplify reset of points/regions in freehand crop by using single slot for reset.
+
+Correct the accordion menu icon placement.
+
+Others minor improvements on new ircad style QSS.
+
+*Enlarge the status bar.*
+
+*Modernize status editor service.*
+
+`module`::ui::qt::status``was modernized to be able to align it with toolbar buttons. In doing so, its configuration was revised to be more concise and meaningful:
+
+```xml
+   <service uid="..." type="sight::module::ui::qt::status">
+       <layout>horizontal|vertical</layout>
+       <labels display="under|besides">
+           <name>SCP Server</name>
+           <name>TCP Server</name>
+       </labels>
+       <red>Stopped</red>
+       <green>Tracking</green>
+       <orange>Started</orange>
+   </service>
+```
+
+Here are the changes:
+- the `count` is removed since it is useless and error-prone.
+- the `form` tag is removed since now the shape is always a circle.
+- if one wants only a single status, one just has to declare a single ```<name>```. No need for a shortcut.
+- if one wants a status without any name, one can just declare an empty ```<name/>```.
+- ```<labels display="beside|under">``` is added to allow specifying the location of the text
+
+*Add optional popup to warn the user when changing activity.*
+
+*Minor improvements for line edit and toolbars.*
+
+- update color when QLineEdit is disabled
+- toolbar theme update
+- add optional spacing for toolbars
+- remove useless property in lineLayout
+
+*Add support for vertical sliders in SParameters.*
+
+### viz
+
+*Skip rendering request when an adaptor is not visible.*
+
+*Render mode policy should always be respected.*
+
+*Center the volume rendering around the visible area.*
+
+*Add support for ruler and shape fiducials.*
+
+*Add an adaptor to display a background grid.*
+
+A new adaptor that displays the grid, with a customizable size, elevation and color is now available:
+
+```xml
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::SGrid">
+        <config transform="..." size="30" dashLength="2.5" color="#0000FF" elevation="200"/>
+    </service>
+```
+
+## New features:
+
+### core
+
+*Set parameters with config slot.*
+
+*Add a slot to reset requirements in the sequencer.*
+
+### geometry
+
+*Add a service to damp matrices over time.*
+
+### io
+
+*Get and store itk direction in sight::data::image.*
+
+### ui
+
+*New icons.*
+
+*Add multiple shortcut support on toolbar.*
+
+- disable auto repeat on all QActions of toolbar.
+
+*Add sound support for notifier service.*
+
+- Add three sound files .wav to the qt resources directory.
+- Notifier supports three sound notifications, on for each type of notification (Success, failure and info).
+- New bool is passed on notify signal to add or mute sound.
+- Update ex_notifiers to display a toggle checkbox for adding sound to the displayed notification.
+
+*Add fullscreen support with (f11, ctrl-f11).*
+
+*Add possibility to remove fiducial distances from the current slice.*
+
+*Uncancellable pulse_progress dialog.*
+
+*Allow requesting values set through preferences_configuration.*
+
+### viz
+
+*Add slot to update color of text.*
+
+## Bug fixes:
+
+### build
+
+*Fully qualify export macros to avoid conflicts.*
+
+*Install qml plugins next to binaries on Windows.*
+
+*Remove manual registration of QML plugins on Windows.*
+
+The manual registration of QML plugins on Windows has no longer been required for a while since we use the standard location. It confuses Qt if the path is different when resolving filesystem links (for instance when using SUBST).
+
+*Exclude cuda files from code coverage.*
+
+*New vcpkg build with MSVC 2022 support.*
+
+*Run generate_headers script only during install.*
+
+### ci
+
+*Use Start-SightProcess function to launch deploy tests.*
+
+*Restore test timeout on windows.*
+
+*Point again to the dev branch for sight-data repository.*
+
+### core
+
+*Add recursive mutex protection for GDCM access.*
+
+*Missing dependency to module_ui_icons in module_ui_qt.*
+
+*Make all modules repositories path absolute.*
+
+*Test should use canonified paths.*
+
+*Resolve path symlinks in core::runtime.*
+
+All modules and libraries' paths are now correctly located when encountering symlinks.
+
+*Single instance mode.*
+
+*Always reset output data_ptr when stopping services.*
+
+### doc
+
+*Snake_case convention in doxygen documentation, missing parameters and several typos.*
+
+### io
+
+*Add a new function to avoid deadlock in remove_landmarks().*
+
+Add a new function is_landmark_visible_without_lock().
+Fix the remove_landmarks() function.
+
+*Add missing data for saving fiducial ruler and included unit test.*
+
+*Simplify bitmap service configuration.*
+
+*Modernize tuto05.*
+
+- add missing states
+- remove the openMeshAct action and fix the way to compute mesh
+
+*Fortify matrix_writer.*
+
+*Do not use cuda driver api.*
+
+*Crash when canceling selector.*
+
+fix(io): selector canceled
+
+### ui
+
+*Module::ui::qt::image leaks.*
+
+*Ui::qt::parameters vertical sliders labels are inverted.*
+
+*Parsing of the option to hide unstarted actions.*
+
+*Accordion_button leaks.*
+
+*Remove useless spacing in ruler and shape fiducials.*
+
+*Restore display and saving of calibration images in Sight Calibrator.*
+
+*Update restrict_to_current_slice function.*
+
+- Add missing slice reference in ruler data
+
+*Do not keep progress dialog shared pointers.*
+
+*Remove unwanted std::cout from status.*
+
+*Assert the result of QMetaObject::invokeMethod.*
+
+*Synchronize with global preferences before update.*
+
+This fixes the internal stored preferences not being in sync with the actual preferences and fixes a widget/memory leak (QDialog without a parent). Unit tests were added for the preferences configuration service.
+
+*Size of the slice selector index text.*
+
+The size of the index label next to the slice selector slider now uses the current font metrics and the current maximum index to compute accurately the size of the widget.
+
+*Add possibility to find the parent widget when it isn't active.*
+
+*Allow transparency on SSequencer.*
+
+*Vertical sliders are aligned.*
+
+### viz
+
+*Respect initial visibility state and restore it properly in negato_3d.*
+
+*Only reset the crop mask when the image changes, not its content.*
+
+*Dead lock when updating mask.*
+
+*Display of triangle meshes that use per cell colors.*
+
+*Avoid infinite loops in volume rendering box crop.*
+
+*Make Ogre aware of GLX context switches made by Qt.*
+
+*Grid no longer disappear when viewed from the top.*
+
+*Memory leak when a texture is unloaded.*
+
+*Remove unnecessary render requests.*
+
+*Add missing slicesCross argument to Plane in SNegato2d.*
+
+*Crash when zooming VR without autoresetcamera.*
+
+## Refactor:
+
+### core
+
+*Remove obsolete get_temp_path() and get_temporary_folder().*
+
+*Homogenise all timestamping mechanism.*
+
+- replace occurrence creation timestamps with hires_clock functions
+- use of system_clock instead of high_resolution_clock whenever possible
+- use of std`::chrono::steady_clock`when more suitable
+
+*Apply updated coding-style with clang-tidy.*
+
+*Local and parameter variables renaming in snake_case.*
+
+*Mass-rename of core namespace in snake_case.*
+
+- The core namespace is now entirely in snake_case
+- New() is replaced by std::make_shared<> or custom make for factory functions,
+- dynamicCast() is replaced by std::dynamic_pointer_cast<>(),
+- Most interfaces named in I* are simplified
+- `base` namespaces renamed to __ on the filesystem and simply removed for namespaces (`ui`::base``becomes `ui`)
+- Mass renaming for layout "managers" and dialogs
+
+### ui
+
+*Remove obsolete ui::signal, ui::starter and ui::default_action services.*
+
+
 # sight 23.1.0
 
 ## New features:
