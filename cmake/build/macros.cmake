@@ -1260,17 +1260,19 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
             endif()
         endforeach()
 
-        # Determine if we need to copy Qml plugins
-        foreach(DEP ${DEPENDS})
-            get_target_property(LINKED_DEPENDS ${DEP} LINK_LIBRARIES)
-            if("${LINKED_DEPENDS}" MATCHES "Qml")
-                set(QML_SOURCE_DIR "${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>/qml")
-                break()
-            endif()
-        endforeach()
-
         # Add a fixup target for every app
         if(WIN32)
+
+            # Determine if we need to copy Qml plugins
+            find_target_dependencies(${APP} "${SIGHT_COMPONENTS};${SIGHT_IMPORTED_COMPONENTS}" DEPENDS_FOR_QML)
+            foreach(DEP ${DEPENDS_FOR_QML})
+                get_target_property(LINKED_DEPENDS ${DEP} LINK_LIBRARIES)
+                if("${DEP}" MATCHES "sight::module_ui_qt" OR "${LINKED_DEPENDS}" MATCHES "Qml")
+                    set(QML_SOURCE_DIR "${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>/qml")
+                    break()
+                endif()
+            endforeach()
+
             list(APPEND DEPENDS ${IMPORTED_DEPENDS})
             list(REMOVE_DUPLICATES DEPENDS)
             add_custom_target(
