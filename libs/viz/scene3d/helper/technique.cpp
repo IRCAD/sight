@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,6 +39,7 @@ Ogre::Technique* technique::copy_to_material(
     *new_tech = *_tech;
     new_tech->setName(_scheme_name);
     new_tech->setSchemeName(_scheme_name);
+    _mtl->compile();
 
     SIGHT_ASSERT("Empty pass", new_tech->getPass(0));
 
