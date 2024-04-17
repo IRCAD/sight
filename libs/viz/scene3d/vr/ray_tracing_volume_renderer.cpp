@@ -172,7 +172,7 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
     //Compositor parameters
     const std::uint8_t num_view_points   = m_layer.lock()->num_cameras();
     const auto stereo_mode               = _layer->get_stereo_mode();
-    const auto ray_entry_compositor_name = "VolumeEntries" + std::to_string(num_view_points);
+    const auto ray_entry_compositor_name = _parent_id + "_VolumeEntries" + std::to_string(num_view_points);
 
     //Compositor for ray entry
     m_ray_entry_compositor = std::make_unique<ray_entry_compositor>(

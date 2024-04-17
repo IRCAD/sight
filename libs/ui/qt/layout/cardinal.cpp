@@ -46,6 +46,30 @@ SIGHT_REGISTER_GUI(sight::ui::qt::layout::cardinal, sight::ui::layout::cardinal:
 namespace sight::ui::qt::layout
 {
 
+class paint_filter final : public QObject
+{
+public:
+
+    paint_filter()
+    {
+        qApp->installEventFilter(this);
+    }
+
+    ~paint_filter() final
+    {
+        qApp->removeEventFilter(this);
+    }
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    bool eventFilter(QObject* /*_watched*/, QEvent* _event) final
+    {
+        return _event->type() == QEvent::Paint;
+    }
+};
+
 //-----------------------------------------------------------------------------
 
 void cardinal::create_layout(ui::container::widget::sptr _parent, const std::string& _id)
@@ -220,6 +244,7 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
                 widget->setLayout(another_layout);
 
                 dock_widget->setTitleBarWidget(widget);
+                dock_widget->setObjectName(q_id + "/QDockWidget/" + QString("%1").arg(idx));
             }
 
             // Use an intermediate widget to avoid unwanted interaction with other child layout when resizing
@@ -274,14 +299,21 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
 
             if(!view_info.m_is_resizable)
             {
+                QPointer<QDockWidget> dock_widget_ptr = dock_widget;
+
                 // Freeze the size of the dock widget
                 // Do it at the very end to be sure everything is correctly initialized
                 QTimer::singleShot(
                     0,
-                    [dock_widget]()
+                    [dock_widget_ptr]()
                     {
-                        const auto& size = dock_widget->size();
-                        dock_widget->setFixedSize(size.isValid() ? size : dock_widget->sizeHint());
+                        if(dock_widget_ptr.isNull())
+                        {
+                            return;
+                        }
+
+                        const auto& size = dock_widget_ptr->size();
+                        dock_widget_ptr->setFixedSize(size.isValid() ? size : dock_widget_ptr->sizeHint());
                     });
             }
         }
@@ -310,12 +342,16 @@ void cardinal::destroy_layout()
     m_parent_container->clean();
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void cardinal::modify_layout(const ui::parameter_t& _parameter, const std::string& _key)
 {
     if(_key == "swap")
     {
+        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+
+        paint_filter filter;
+
         // Get the wid of the container to switch to central or maximize/restore.
         SIGHT_THROW_IF("WID parameter is missing.", !std::holds_alternative<std::string>(_parameter));
         const auto& wid = std::get<std::string>(_parameter);
@@ -358,14 +394,12 @@ void cardinal::modify_layout(const ui::parameter_t& _parameter, const std::strin
             m_qt_window->setCentralWidget(widget);
             dock_child_layout->addWidget(central_widget);
 
-            // Restore the state at the end when layouts have been updated
-            QTimer::singleShot(
-                0,
-                [this, state]()
-                {
-                    m_qt_window->restoreState(state);
-                });
+            qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+
+            m_qt_window->restoreState(state);
         }
+
+        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
     }
     else
     {
