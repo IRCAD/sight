@@ -348,58 +348,61 @@ void cardinal::modify_layout(const ui::parameter_t& _parameter, const std::strin
 {
     if(_key == "swap")
     {
-        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
-
-        paint_filter filter;
-
-        // Get the wid of the container to switch to central or maximize/restore.
-        SIGHT_THROW_IF("WID parameter is missing.", !std::holds_alternative<std::string>(_parameter));
-        const auto& wid = std::get<std::string>(_parameter);
-
-        // Get the container from the registry.
-        const auto& container = sight::ui::registry::get_wid_container(wid);
-        SIGHT_THROW_IF("Cannot retrieve container '" << wid << "' in the registry.", !container);
-
-        const auto& qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(container);
-        SIGHT_ASSERT("Container '" << wid << "' is not a widget.", qt_container);
-
-        // Finally, get the underlying QWidget
-        auto* const widget = qt_container->get_qt_container();
-        SIGHT_ASSERT("Container '" << wid << "' have no QWidget.", widget);
-
-        if(m_qt_window->centralWidget() == widget)
         {
-            // Already central. Just maximize/minimize it
-            for(auto* const child : m_qt_window->children())
-            {
-                if(auto* const dock_widget = qobject_cast<QDockWidget*>(child); dock_widget)
-                {
-                    dock_widget->setVisible(!dock_widget->isVisible());
-                }
-            }
-        }
-        else
-        {
-            // Not central. Move it to the central widget
-            // Save the state to restore the sizes later
-            const auto state = m_qt_window->saveState();
-
-            // Retrieve the dock child widget containing the widget
-            auto* const dock_child = widget->parentWidget();
-
-            // Swap the central widget with the docked widget
-            auto* dock_child_layout = dock_child->layout();
-            dock_child_layout->removeWidget(widget);
-            auto* const central_widget = m_qt_window->takeCentralWidget();
-            m_qt_window->setCentralWidget(widget);
-            dock_child_layout->addWidget(central_widget);
+            paint_filter filter;
 
             qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
 
-            m_qt_window->restoreState(state);
+            // Get the wid of the container to switch to central or maximize/restore.
+            SIGHT_THROW_IF("WID parameter is missing.", !std::holds_alternative<std::string>(_parameter));
+            const auto& wid = std::get<std::string>(_parameter);
+
+            // Get the container from the registry.
+            const auto& container = sight::ui::registry::get_wid_container(wid);
+            SIGHT_THROW_IF("Cannot retrieve container '" << wid << "' in the registry.", !container);
+
+            const auto& qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(container);
+            SIGHT_ASSERT("Container '" << wid << "' is not a widget.", qt_container);
+
+            // Finally, get the underlying QWidget
+            auto* const widget = qt_container->get_qt_container();
+            SIGHT_ASSERT("Container '" << wid << "' have no QWidget.", widget);
+
+            if(m_qt_window->centralWidget() == widget)
+            {
+                // Already central. Just maximize/minimize it
+                for(auto* const child : m_qt_window->children())
+                {
+                    if(auto* const dock_widget = qobject_cast<QDockWidget*>(child); dock_widget)
+                    {
+                        dock_widget->setVisible(!dock_widget->isVisible());
+                    }
+                }
+            }
+            else
+            {
+                // Not central. Move it to the central widget
+                // Save the state to restore the sizes later
+                const auto state = m_qt_window->saveState();
+
+                // Retrieve the dock child widget containing the widget
+                auto* const dock_child = widget->parentWidget();
+
+                // Swap the central widget with the docked widget
+                auto* dock_child_layout = dock_child->layout();
+                dock_child_layout->removeWidget(widget);
+                auto* const central_widget = m_qt_window->takeCentralWidget();
+                m_qt_window->setCentralWidget(widget);
+                dock_child_layout->addWidget(central_widget);
+
+                qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+
+                m_qt_window->restoreState(state);
+            }
         }
 
-        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+        // Force a repaint of the top level widget to compensate the ones we blocked
+        m_qt_window->topLevelWidget()->repaint();
     }
     else
     {
