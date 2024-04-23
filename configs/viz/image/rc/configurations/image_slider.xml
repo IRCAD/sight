@@ -26,7 +26,6 @@ Example:
     <desc>This configuration displays a tab layout containing a negato and a transfer function
         editor</desc>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${image}" type="sight::data::image" src="ref" />
@@ -156,6 +155,5 @@ Example:
         </connect>
 
         <start uid="view" />
-
     </config>
 </extension>

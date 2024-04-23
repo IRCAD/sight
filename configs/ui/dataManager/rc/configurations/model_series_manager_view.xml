@@ -14,7 +14,8 @@ Example
     <id>ModelSeriesManagerView</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="ORGAN_MANAGER_MODELSERIES" /> <!-- model series to manage -->
+        <!-- model series to manage -->
+        <param name="ORGAN_MANAGER_MODELSERIES" />
     </parameters>
     <desc>Display the editors to manage the ModelSeries: show/hide reconstructions, change the color, ...</desc>
     <config>
@@ -52,8 +53,8 @@ Example
         <service uid="listOrganEditor" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
             <inout key="modelSeries" uid="${ORGAN_MANAGER_MODELSERIES}" />
             <columns>
-                <organ_name/>
-                <structure_type/>
+                <organ_name />
+                <structure_type />
             </columns>
         </service>
 
@@ -68,6 +69,5 @@ Example
         <!-- Deferred start -->
         <start uid="representationEditor" />
         <start uid="organMaterialEditor" />
-
     </config>
 </extension>

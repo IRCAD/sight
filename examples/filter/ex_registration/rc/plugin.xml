@@ -55,7 +55,6 @@ Detail of the ToolBar
           third tab (registerAct).
  -->
 <plugin id="ex_registration">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -65,7 +64,6 @@ Detail of the ToolBar
     <extension implements="sight::app::extension::config">
         <id>ExRegistration_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Object to store the image loading in the first tab -->
@@ -379,7 +377,6 @@ Detail of the ToolBar
             <start uid="imageReaderSrv" />
             <start uid="meshReader1Srv" />
             <start uid="meshReader2Srv" />
-
         </config>
     </extension>
 </plugin>

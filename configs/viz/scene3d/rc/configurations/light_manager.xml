@@ -5,14 +5,13 @@
     </parameters>
 
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="LightView" type="sight::module::ui::view" >
+        <service uid="LightView" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::toolbox" >
+                <layout type="sight::ui::layout::toolbox">
                     <orientation value="vertical" />
                     <view caption="Light selector" expanded="true" />
                     <view caption="Light editor" expanded="true" />
@@ -27,7 +26,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="light_selector" type="sight::module::ui::viz::light_selector"  />
+        <service uid="light_selector" type="sight::module::ui::viz::light_selector" />
         <service uid="light_editor" type="sight::module::ui::viz::light_editor" />
 
         <!-- ************************************* Actions ************************************* -->
@@ -38,6 +37,5 @@
         </connect>
 
         <start uid="LightView" />
-
     </config>
 </extension>

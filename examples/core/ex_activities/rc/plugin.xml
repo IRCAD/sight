@@ -1,5 +1,4 @@
 <plugin id="ex_activities">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui" />
@@ -118,5 +117,4 @@
             <param name="WIZARD_CONFIG" value="ExActivities_Wizard_SrvCfg" />
         </parameters>
     </extension>
-
 </plugin>

@@ -1,13 +1,10 @@
-
-<plugin id="tuto03_data_service" >
-
+<plugin id="tuto03_data_service">
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
 
-    <extension implements="sight::app::extension::config" >
+    <extension implements="sight::app::extension::config">
         <id>Tuto03DataService_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- The root data object in tutoDataService is a sight::data::image. -->
@@ -20,7 +17,7 @@
                 In this tutorial, the gui services will automatically start the services they register using the
                 'start="true"' attribute.
             -->
-            <service uid="mainFrame" type="sight::module::ui::frame" >
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>tuto03_data_service</name>
@@ -43,7 +40,7 @@
                 The <layout> tags defines the displayed information, whereas the <registry> tags defines the
                 services information.
             -->
-            <service uid="menuBarView" type="sight::module::ui::menubar" >
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -65,7 +62,7 @@
                 In this tutorial, the attribute 'specialAction' has the value "QUIT". On MS Windows, there's no
                 impact, but on Linux this value installs the default 'Quit' system icon in the menuItem.
             -->
-            <service uid="menuView" type="sight::module::ui::menu" >
+            <service uid="menuView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -106,7 +103,7 @@
                 tuto02_data_service_basic), so the selector will not be displayed.
                 When the service is chosen, it is started, updated and stopped, so the data is read.
             -->
-            <service uid="imageReaderSrv" type="sight::module::ui::io::selector" >
+            <service uid="imageReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="image" />
             </service>
 
@@ -115,7 +112,7 @@
                 Here, the service attribute 'auto_connect="true"' allows the rendering to listen the modification of
                 the data image. So, when the image is loaded, the visualization will be updated.
             -->
-            <service uid="imageRenderSrv" type="sight::module::viz::sample::image" >
+            <service uid="imageRenderSrv" type="sight::module::viz::sample::image">
                 <in key="image" uid="image" auto_connect="true" />
             </service>
 
@@ -134,7 +131,6 @@
             -->
             <start uid="mainFrame" />
             <start uid="imageReaderSrv" />
-
         </config>
     </extension>
 </plugin>

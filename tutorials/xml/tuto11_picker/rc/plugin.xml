@@ -1,5 +1,4 @@
 <plugin id="tuto11_picker">
-
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
@@ -8,7 +7,6 @@
     <extension implements="sight::app::extension::config">
         <id>Tuto11Picker_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="mesh" type="sight::data::mesh" />
@@ -191,7 +189,7 @@
             <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
                 <in key="data" uid="snapshot" />
                 <dialog policy="always" />
-                <backends enable="all" mode="best"/>
+                <backends enable="all" mode="best" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
@@ -232,7 +230,6 @@
             <start uid="snapshotAdp" />
             <start uid="imageReaderSrv" />
             <start uid="meshReaderSrv" />
-
         </config>
     </extension>
 </plugin>

@@ -11,7 +11,6 @@
         <param name="preferencesModifiedProxy" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <!-- Displayed image pair. -->
@@ -43,10 +42,9 @@
                 <view sid="leftPanelView" start="true" />
                 <view sid="videoView" start="true" />
             </registry>
-
         </service>
 
-        <service uid="leftPanelView" type="sight::module::ui::view" >
+        <service uid="leftPanelView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
@@ -60,9 +58,9 @@
             </registry>
         </service>
 
-        <service uid="toolboxView" type="sight::module::ui::view" >
+        <service uid="toolboxView" type="sight::module::ui::view">
             <gui>
-                <toolbar/>
+                <toolbar />
                 <layout type="sight::ui::layout::toolbox">
                     <orientation value="vertical" />
                     <view proportion="1" caption="Calibration input" expanded="true" />
@@ -110,7 +108,6 @@
             </registry>
         </service>
 
-
         <service uid="cameraInfoView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
@@ -130,7 +127,7 @@
         <service uid="extrinsicCameraView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <editor/>
+                    <editor />
                     <menuItem name="Add" icon="sight::module::ui::icons/plus.svg" shortcut="A" />
                     <menuItem name="Remove" icon="sight::module::ui::icons/minus.svg" />
                     <menuItem name="Calibrate" icon="sight::module::ui::icons/calibration.svg" shortcut="Return" />
@@ -182,27 +179,27 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="addAct" type="sight::module::ui::action"/>
-        <service uid="resetAct" type="sight::module::ui::action"/>
-        <service uid="removeAct" type="sight::module::ui::action"/>
-        <service uid="goOpenCVAct" type="sight::module::ui::action"/>
-        <service uid="displayImageAct" type="sight::module::ui::action"/>
+        <service uid="addAct" type="sight::module::ui::action" />
+        <service uid="resetAct" type="sight::module::ui::action" />
+        <service uid="removeAct" type="sight::module::ui::action" />
+        <service uid="goOpenCVAct" type="sight::module::ui::action" />
+        <service uid="displayImageAct" type="sight::module::ui::action" />
 
         <!-- Start the frame grabber -->
         <service uid="startVideoAct" type="sight::module::ui::action" />
 
         <!-- Pause the frame grabber -->
-        <service uid="pauseVideoAct" type="sight::module::ui::action" >
+        <service uid="pauseVideoAct" type="sight::module::ui::action">
             <state visible="false" />
         </service>
 
         <!-- Resume the frame grabber -->
-        <service uid="resumeVideoAct" type="sight::module::ui::action" >
+        <service uid="resumeVideoAct" type="sight::module::ui::action">
             <state visible="false" />
         </service>
 
         <!-- Stop the frame grabber -->
-        <service uid="stopVideoAct" type="sight::module::ui::action" >
+        <service uid="stopVideoAct" type="sight::module::ui::action">
             <state enabled="false" />
         </service>
 
@@ -213,36 +210,36 @@
 
         <service uid="exportExtrinsicAct" type="sight::module::ui::action" />
 
-        <service uid="saveInputsAct" type="sight::module::ui::action" >
+        <service uid="saveInputsAct" type="sight::module::ui::action">
             <sync>true</sync>
         </service>
-        <service uid="loadInputsAct" type="sight::module::ui::action" >
+        <service uid="loadInputsAct" type="sight::module::ui::action">
             <sync>true</sync>
         </service>
 
         <!-- ******************************* Begin Generic scene ******************************* -->
 
-        <service uid="genericSceneSrv" type="sight::viz::scene3d::render" >
+        <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
             <scene renderMode="sync">
                 <background topColor="#000000" bottomColor="#000000" />
 
                 <layer id="video1" order="1">
-                    <viewport width="1.0" height="0.5" hAlign="left" vAlign="top"/>
+                    <viewport width="1.0" height="0.5" hAlign="left" vAlign="top" />
                     <adaptor uid="video1Adp" />
                 </layer>
 
                 <layer id="video2" order="2">
-                    <viewport width="1.0" height="0.5" hAlign="left" vAlign="bottom"/>
+                    <viewport width="1.0" height="0.5" hAlign="left" vAlign="bottom" />
                     <adaptor uid="video2Adp" />
                 </layer>
             </scene>
         </service>
 
-        <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true" >
+        <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
             <in key="image" uid="frame1" />
         </service>
 
-        <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true" >
+        <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
             <in key="image" uid="frame2" />
         </service>
 
@@ -251,7 +248,7 @@
         <service uid="videoSliderSrv" type="sight::module::ui::qt::video::slider" />
 
         <!-- Extracts images for the detection algorithm. -->
-        <service uid="frameSynchronizerSrv"  type="sight::module::sync::synchronizer">
+        <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer">
             <in group="frameTL">
                 <key uid="frame1TL" />
                 <key uid="frame2TL" />
@@ -262,14 +259,14 @@
             </inout>
         </service>
 
-        <service uid="extrinsicExporterSrv" type="sight::module::ui::io::selector" >
+        <service uid="extrinsicExporterSrv" type="sight::module::ui::io::selector">
             <inout key="data" uid="exportExtrinsicMat" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="sight::module::io::matrix::Matrix4WriterService" />
         </service>
 
-        <service uid="calibrationInfoEditorSrv" type="sight::module::ui::qt::calibration::calibration_info_editor" >
+        <service uid="calibrationInfoEditorSrv" type="sight::module::ui::qt::calibration::calibration_info_editor">
             <inout key="calInfo1" uid="${calibrationInfo1}" />
             <inout key="calInfo2" uid="${calibrationInfo2}" />
         </service>
@@ -279,7 +276,7 @@
             <orange>Calibration in progress</orange>
             <red>Points are NOT visible</red>
             <labels>
-                <name></name>
+                <name />
             </labels>
         </service>
 
@@ -289,7 +286,7 @@
         </service>
 
         <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" worker="extr_chess_checker">
-            <in group="image" auto_connect="true" >
+            <in group="image" auto_connect="true">
                 <key uid="frame1" />
                 <key uid="frame2" />
             </in>
@@ -325,7 +322,7 @@
             <in key="calibrationInfo1" uid="${calibrationInfo1}" />
             <in key="calibrationInfo2" uid="${calibrationInfo2}" />
             <inout key="cameraSet" uid="${cameraSet}" />
-            <out   key="matrix" uid="exportExtrinsicMat" />
+            <out key="matrix" uid="exportExtrinsicMat" />
             <camIndex>${camIndex}</camIndex>
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
         </service>
@@ -553,6 +550,5 @@
         <start uid="calibrationDataReader2Srv" />
         <start uid="video1Adp" />
         <start uid="video2Adp" />
-
     </config>
 </extension>

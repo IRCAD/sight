@@ -7,7 +7,6 @@
         <param name="imageSeries" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${seriesSet}" type="sight::data::series_set" src="ref" />
@@ -184,7 +183,7 @@
         <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
             <in key="data" uid="snapshot" />
             <dialog policy="always" />
-            <backends enable="all" mode="best"/>
+            <backends enable="all" mode="best" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

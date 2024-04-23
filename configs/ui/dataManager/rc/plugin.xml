@@ -1,9 +1,7 @@
-<plugin id="sight::config::ui::datamanager" >
-
+<plugin id="sight::config::ui::datamanager">
     <requirement id="sight::module::service" />
 
     <xi:include href="configurations/model_series_manager_window.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/image_manager.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/model_series_manager_view.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
 </plugin>

@@ -1,26 +1,26 @@
 <plugin id="sight::module::viz::scene3d_qt" library="true" autostart="true">
-    <requirement id="sight::module::service"/>
-    <requirement id="sight::module::viz::scene3d"/>
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene3d::adaptor</type>
-         <service>sight::module::viz::scene3d_qt::adaptor::fiducials::point</service>
-         <object key="landmarks">sight::data::landmarks</object>
-         <object key="image">sight::data::image</object>
-         <desc>Displays point fiducials.</desc>
+        <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d_qt::adaptor::fiducials::point</service>
+        <object key="landmarks">sight::data::landmarks</object>
+        <object key="image">sight::data::image</object>
+        <desc>Displays point fiducials.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene3d::adaptor</type>
-         <service>sight::module::viz::scene3d_qt::adaptor::fiducials::ruler</service>
-         <object key="image">sight::data::image</object>
-         <desc>Displays ruler fiducials.</desc>
+        <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d_qt::adaptor::fiducials::ruler</service>
+        <object key="image">sight::data::image</object>
+        <desc>Displays ruler fiducials.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene3d::adaptor</type>
-         <service>sight::module::viz::scene3d_qt::adaptor::fiducials::shape</service>
-         <object key="image">sight::data::image</object>
-         <desc>Displays shape fiducials.</desc>
+        <type>sight::viz::scene3d::adaptor</type>
+        <service>sight::module::viz::scene3d_qt::adaptor::fiducials::shape</service>
+        <object key="image">sight::data::image</object>
+        <desc>Displays shape fiducials.</desc>
     </extension>
 </plugin>

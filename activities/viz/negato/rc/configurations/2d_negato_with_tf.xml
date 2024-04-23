@@ -5,7 +5,8 @@
         <param name="image" />
         <param name="landmarks" />
         <param name="patient_name" default="" />
-        <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
+        <!-- axial, frontal, sagittal -->
+        <param name="orientation" default="axial" />
         <param name="CrossTypeChannel" default="crossTypeChannel" />
         <param name="transferFunctionDeferred" />
         <param name="PickingChannel" default="pickingChannel" />
@@ -129,7 +130,7 @@
         <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
             <in key="data" uid="snapshot" />
             <dialog policy="always" />
-            <backends enable="all" mode="best"/>
+            <backends enable="all" mode="best" />
         </service>
 
         <!-- START AND STOP SERVICES -->

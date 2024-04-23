@@ -1,5 +1,4 @@
 <plugin id="sight_calibrator">
-
     <requirement id="sight::module::service" />
     <requirement id="sight::module::memory" />
     <requirement id="sight::module::ui" />
@@ -15,7 +14,7 @@
         <title>Activity selector</title>
         <desc>Activity selector for sight_calibrator</desc>
         <icon>sight::module::ui::icons/calibration.svg</icon>
-        <requirements></requirements>
+        <requirements />
         <appConfig id="SightCalibrator_ActivitySelector_AppCfg">
             <parameters />
         </appConfig>
@@ -29,5 +28,4 @@
             <param name="ICON_PATH" value="sight_calibrator/app.ico" />
         </parameters>
     </extension>
-
 </plugin>

@@ -1,1 +1,1 @@
-<plugin id="sight::module::ui::test" library="true"></plugin>
+<plugin id="sight::module::ui::test" library="true" />

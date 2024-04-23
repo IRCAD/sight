@@ -1,5 +1,4 @@
 <plugin id="sight::activity::io::dicom">
-
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::viz::scene3d_qt" />
@@ -17,11 +16,9 @@
         <title>Dicom PACS Reader</title>
         <desc>Dicom PACS Reader activity</desc>
         <icon>sight::module::ui::icons/pull.svg</icon>
-        <requirements>
-        </requirements>
+        <requirements />
         <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="sight::activity::io::dicom::pacs_reader">
-        </appConfig>
+        <appConfig id="sight::activity::io::dicom::pacs_reader" />
     </extension>
 
     <extension implements="sight::activity::extension">
@@ -29,11 +26,9 @@
         <title>Dicom PACS Writer</title>
         <desc>Dicom Pacs Writer activity</desc>
         <icon>sight::module::ui::icons/push.svg</icon>
-        <requirements>
-        </requirements>
+        <requirements />
         <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="sight::activity::io::dicom::pacs_writer">
-        </appConfig>
+        <appConfig id="sight::activity::io::dicom::pacs_writer" />
     </extension>
 
     <extension implements="sight::service::extension::config">
@@ -49,11 +44,9 @@
         <title>DICOM Filtering</title>
         <desc>DICOM Filtering activity</desc>
         <icon>sight::module::ui::icons/plus.svg</icon>
-        <requirements>
-        </requirements>
+        <requirements />
         <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="sight::activity::io::dicom::filtering">
-        </appConfig>
+        <appConfig id="sight::activity::io::dicom::filtering" />
     </extension>
 
     <extension implements="sight::service::extension::config">
@@ -76,5 +69,4 @@
             <mode>direct</mode>
         </config>
     </extension>
-
 </plugin>

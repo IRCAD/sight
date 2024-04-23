@@ -52,7 +52,6 @@
     Step 3 : The user goes to the third tab and click on compute to see the result of the subtract between the two images.
 -->
 <plugin id="ex_image_substraction">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -62,7 +61,6 @@
     <extension implements="sight::app::extension::config">
         <id>ExImageSubstraction_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="image1" type="sight::data::image" />
@@ -460,7 +458,6 @@
             <start uid="readerFile1Srv" />
             <start uid="readerFile2Srv" />
             <start uid="imageWriterSrv" />
-
         </config>
     </extension>
 </plugin>

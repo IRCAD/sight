@@ -1,5 +1,4 @@
 <plugin id="ex_stereo_ar">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -9,7 +8,6 @@
     <extension implements="sight::app::extension::config">
         <id>ex_stereo_ar::config</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="cameraSet" type="sight::data::camera_set" />
@@ -177,7 +175,6 @@
                     <view sid="errorLabelRightSrv" start="true" />
                 </registry>
             </service>
-
 
             <service uid="parametersView" type="sight::module::ui::view">
                 <gui>
@@ -489,9 +486,8 @@
                 <patternWidth>60</patternWidth>
             </service>
 
-
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameMatrixSynchronizerSrv"  type="sight::module::sync::synchronizer" worker="videoWorker">
+            <service uid="frameMatrixSynchronizerSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTL1" />
                     <key uid="frameTL2" />
@@ -697,7 +693,6 @@
 
             <update uid="showParametersAct" />
             <update uid="hideAxisSrv" />
-
         </config>
     </extension>
 </plugin>

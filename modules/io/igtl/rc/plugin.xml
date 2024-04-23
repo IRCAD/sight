@@ -1,32 +1,32 @@
-<plugin id="sight::module::io::igtl" library="true" >
+<plugin id="sight::module::io::igtl" library="true">
     <extension implements="sight::service::extension::factory">
-         <type>sight::module::io::igtl::network_listener</type>
-         <service>sight::module::io::igtl::client_listener</service>
-         <desc>OpenIGTLink client that will listen objects to the connected server</desc>
+        <type>sight::module::io::igtl::network_listener</type>
+        <service>sight::module::io::igtl::client_listener</service>
+        <desc>OpenIGTLink client that will listen objects to the connected server</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::module::io::igtl::network_sender</type>
-         <service>sight::module::io::igtl::client_sender</service>
-         <desc>OpenIGTLink client that will send objects to the connected server</desc>
+        <type>sight::module::io::igtl::network_sender</type>
+        <service>sight::module::io::igtl::client_sender</service>
+        <desc>OpenIGTLink client that will send objects to the connected server</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::module::io::igtl::network_listener</type>
-         <service>sight::module::io::igtl::server_listener</service>
-         <desc>OpenIGTLink server that will listen objects from the connected clients</desc>
+        <type>sight::module::io::igtl::network_listener</type>
+        <service>sight::module::io::igtl::server_listener</service>
+        <desc>OpenIGTLink server that will listen objects from the connected clients</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::module::io::igtl::network_sender</type>
-         <service>sight::module::io::igtl::server_sender</service>
-         <desc>OpenIGTLink server that will send objects to the connected clients</desc>
+        <type>sight::module::io::igtl::network_sender</type>
+        <service>sight::module::io::igtl::server_sender</service>
+        <desc>OpenIGTLink server that will send objects to the connected clients</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::module::io::igtl::network_listener</type>
-         <service>sight::module::io::igtl::tdata_listener</service>
-         <object>sight::data::matrix_tl</object>
-         <desc>class for network client service use OpenIGTLink</desc>
+        <type>sight::module::io::igtl::network_listener</type>
+        <service>sight::module::io::igtl::tdata_listener</service>
+        <object>sight::data::matrix_tl</object>
+        <desc>class for network client service use OpenIGTLink</desc>
     </extension>
 </plugin>

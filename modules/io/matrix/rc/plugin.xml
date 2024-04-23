@@ -1,5 +1,4 @@
-<plugin id="sight::module::io::matrix" library="true" >
-
+<plugin id="sight::module::io::matrix" library="true">
     <extension implements="sight::service::extension::factory">
         <type>sight::io::service::reader</type>
         <service>sight::module::io::matrix::matrix4_trf_reader</service>
@@ -14,7 +13,6 @@
         <desc>Matrix4 Writer</desc>
     </extension>
 
-
     <extension implements="sight::service::extension::factory">
         <type>sight::io::service::reader</type>
         <service>sight::module::io::matrix::matrices_reader</service>
@@ -28,5 +26,4 @@
         <object>sight::data::matrix_tl</object>
         <desc>Saves the matrices timeline into a csv file</desc>
     </extension>
-
 </plugin>

@@ -1,33 +1,32 @@
-<plugin id="sight::module::io::dicomweb" library="true" >
-    <requirement id="sight::module::service"/>
+<plugin id="sight::module::io::dicomweb" library="true">
+    <requirement id="sight::module::service" />
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::editor</type>
-         <service>sight::module::io::dicomweb::query_editor</service>
-         <object key="seriesSet">sight::data::series_set</object>
-         <desc>This editor service is used to perform an HTTP query on a Pacs.</desc>
+        <type>sight::ui::editor</type>
+        <service>sight::module::io::dicomweb::query_editor</service>
+        <object key="seriesSet">sight::data::series_set</object>
+        <desc>This editor service is used to perform an HTTP query on a Pacs.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::service::controller</type>
-         <service>sight::module::io::dicomweb::series_puller</service>
-         <object key="selectedSeries">sight::data::vector</object>
-         <object key="seriesSet">sight::data::series_set</object>
-         <desc>This service is used to pull series from a PACS (Orthanc).</desc>
+        <type>sight::service::controller</type>
+        <service>sight::module::io::dicomweb::series_puller</service>
+        <object key="selectedSeries">sight::data::vector</object>
+        <object key="seriesSet">sight::data::series_set</object>
+        <desc>This service is used to pull series from a PACS (Orthanc).</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::service::controller</type>
-         <service>sight::module::io::dicomweb::series_pusher</service>
-         <object key="selectedSeries">sight::data::vector</object>
-         <desc>This service is used to push a DICOM series to a PACS.</desc>
+        <type>sight::service::controller</type>
+        <service>sight::module::io::dicomweb::series_pusher</service>
+        <object key="selectedSeries">sight::data::vector</object>
+        <desc>This service is used to push a DICOM series to a PACS.</desc>
     </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::io::dicomweb::slice_index_dicom_puller_editor</service>
-          <object key="series">sight::data::dicom_series</object>
-          <desc>This service is used to push a DICOM series to a PACS.</desc>
-     </extension>
-
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::io::dicomweb::slice_index_dicom_puller_editor</service>
+        <object key="series">sight::data::dicom_series</object>
+        <desc>This service is used to push a DICOM series to a PACS.</desc>
+    </extension>
 </plugin>

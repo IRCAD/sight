@@ -10,7 +10,6 @@ are already displayed and where they are displayed on screen.
 
 -->
 <plugin id="ex_notifications" library="true">
-
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::ui" />
@@ -24,7 +23,6 @@ are already displayed and where they are displayed on screen.
     <extension implements="sight::app::extension::config">
         <id>ex_notifications_AppCfg</id>
         <config>
-
             <!-- ******************************* UI declaration *********************************** -->
 
             <service uid="mainFrame" type="sight::module::ui::frame">
@@ -153,8 +151,10 @@ are already displayed and where they are displayed on screen.
 
             <!-- notifier listen to all the connected service & display queued notification at the same place (here TOP_RIGHT)-->
             <service uid="notifierSrv" type="sight::module::ui::qt::notifier">
-                <parent uid="mainview" /> <!-- Parent container where notifications will be displayed, use the xmlattr uid hack to generate the generic_uid prefix of "maview" -->
-                <message>Default Message</message><!-- Default message printed if empty string is emitted in notify* signals -->
+                <!-- Parent container where notifications will be displayed, use the xmlattr uid hack to generate the generic_uid prefix of "maview" -->
+                <parent uid="mainview" />
+                <!-- Default message printed if empty string is emitted in notify* signals -->
+                <message>Default Message</message>
                 <channels>
                     <!-- Channel without uid configures default for all notification. It can be changed using enumParameters -->
                     <channel position="TOP_RIGHT" duration="3000" max="3" size="200x60" />
@@ -229,9 +229,6 @@ are already displayed and where they are displayed on screen.
             <start uid="notifierSrv" />
             <start uid="testNotifierSrv" />
             <start uid="sight::module::ui::qtChangerSrv" />
-
         </config>
     </extension>
-
-
 </plugin>

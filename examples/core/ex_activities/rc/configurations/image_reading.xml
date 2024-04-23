@@ -7,7 +7,6 @@
         <param name="validationChannel" default="validationChannel" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${imageSeries}" type="sight::data::image_series" src="ref" />

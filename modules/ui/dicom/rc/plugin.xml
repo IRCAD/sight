@@ -1,5 +1,4 @@
-<plugin id="sight::module::ui::dicom" library="true" >
-
+<plugin id="sight::module::ui::dicom" library="true">
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::editor</type>
         <service>sight::module::ui::dicom::filter_selection_editor</service>
@@ -19,5 +18,4 @@
         <object>sight::data::dicom_series</object>
         <desc>Slice Index Dicom Editor</desc>
     </extension>
-
 </plugin>

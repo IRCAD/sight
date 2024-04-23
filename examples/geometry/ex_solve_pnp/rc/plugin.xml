@@ -1,5 +1,4 @@
 <plugin id="ex_solve_pnp">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -9,7 +8,6 @@
     <extension implements="sight::app::extension::config">
         <id>ex_solve_pnp::config</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="cameraSet" type="sight::data::camera_set" />
@@ -297,7 +295,7 @@
                     <key uid="frameTL" />
                 </in>
                 <inout group="frames">
-                    <key uid="videoImage"  />
+                    <key uid="videoImage" />
                 </inout>
             </service>
 
@@ -427,11 +425,9 @@
             <start uid="VRMeshAdp" />
             <start uid="VRAxisAdp" />
 
-
             <!-- ******************************* Update services ***************************************** -->
 
             <update uid="meshReaderSrv" />
-
         </config>
     </extension>
 </plugin>

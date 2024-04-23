@@ -11,7 +11,6 @@
         <param name="nextActivityChannel" default="nextActivityChannel" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${AS_UID}" type="sight::data::activity" src="ref" />
@@ -166,8 +165,8 @@
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainView" />
-        <start uid="cameraLauncherAct" /> <!-- Must be started after mainView -->
+        <!-- Must be started after mainView -->
+        <start uid="cameraLauncherAct" />
         <start uid="calibrationWriterSrv" />
-
     </config>
 </extension>

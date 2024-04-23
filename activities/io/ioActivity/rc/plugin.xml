@@ -1,5 +1,4 @@
 <plugin id="sight::module::io::activity">
-
     <requirement id="sight::module::io::session" />
     <requirement id="sight::module::activity" />
 
@@ -199,5 +198,4 @@
             <password policy="default" encryption="default" />
         </config>
     </extension>
-
 </plugin>

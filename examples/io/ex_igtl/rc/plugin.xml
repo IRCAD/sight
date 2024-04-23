@@ -1,5 +1,4 @@
 <plugin id="ex_igtl">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -9,7 +8,6 @@
     <extension implements="sight::app::extension::config">
         <id>ExIgtl_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="objectMeshUid" type="sight::data::mesh" />
@@ -223,7 +221,6 @@
             <start uid="cameraAdp" />
             <start uid="transformAdp" />
             <start uid="meshAdp" />
-
         </config>
     </extension>
 </plugin>

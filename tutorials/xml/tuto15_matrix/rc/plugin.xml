@@ -1,5 +1,4 @@
 <plugin id="tuto15_matrix">
-
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
@@ -8,7 +7,6 @@
     <extension implements="sight::app::extension::config">
         <id>Tuto15Matrix_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Mesh object associated to the uid 'mesh' -->
@@ -189,7 +187,6 @@
                 <config color="#00FF00" fontSize="15" hAlign="right" vAlign="bottom" />
             </service>
 
-
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
@@ -266,8 +263,6 @@
             <start uid="text2Adp" />
             <start uid="trackballInteractorAdp" />
             <start uid="meshReaderSrv" />
-
         </config>
     </extension>
-
 </plugin>

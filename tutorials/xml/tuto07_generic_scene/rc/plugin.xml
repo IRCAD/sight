@@ -3,7 +3,6 @@
     To use this application, you should open a 3D image, a mesh and/or a 2D texture image.
 -->
 <plugin id="tuto07_generic_scene">
-
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
@@ -13,7 +12,6 @@
     <extension implements="sight::app::extension::config">
         <id>Tuto07GenericScene_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="image" type="sight::data::image" />
@@ -203,7 +201,7 @@
             <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
                 <in key="data" uid="snapshot" />
                 <dialog policy="always" />
-                <backends enable="all" mode="best"/>
+                <backends enable="all" mode="best" />
             </service>
 
             <service uid="tfm" type="sight::module::ui::qt::image::transfer_function">
@@ -271,7 +269,6 @@
             <start uid="meshAdp" />
             <start uid="negatoAdp" />
             <start uid="snapshotAdp" />
-
         </config>
     </extension>
 </plugin>

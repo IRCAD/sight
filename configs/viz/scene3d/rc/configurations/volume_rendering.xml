@@ -18,8 +18,8 @@
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
-        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL"/>
-        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL"/>
+        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL" />
+        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
         <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
         <param name="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" />
@@ -31,7 +31,6 @@
         <param name="extrudedModelSeries" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${modelSeries}" type="sight::data::model_series" src="deferred" />
@@ -70,7 +69,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="sceneSrv" start="true"/>
+                <view sid="sceneSrv" start="true" />
                 <view wid="sliderView" />
             </registry>
         </service>
@@ -107,9 +106,9 @@
 
         <service uid="sceneSrv" type="sight::viz::scene3d::render">
             <scene>
-                <background  material="bkg_gradient" />
+                <background material="bkg_gradient" />
 
-                <layer id="gridLayer" order="1" >
+                <layer id="gridLayer" order="1">
                     <adaptor uid="gridCameraAdp" />
                     <adaptor uid="gridAdp" />
                 </layer>
@@ -134,7 +133,6 @@
                     <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom" />
                     <adaptor uid="orientationMarkerAdp" />
                 </layer>
-
             </scene>
         </service>
 
@@ -188,7 +186,7 @@
         </service>
 
         <service uid="pickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::text">
-            <text></text>
+            <text />
             <config x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
         </service>
 
@@ -202,7 +200,7 @@
         </service>
 
         <service uid="eventAdp" type="sight::module::viz::scene3d::adaptor::event">
-            <event type="buttonDoublePress" buttons="left" modifiers="none"/>
+            <event type="buttonDoublePress" buttons="left" modifiers="none" />
         </service>
 
         <service uid="orientationMarkerAdp" type="sight::module::viz::scene3d::adaptor::orientation_marker" auto_connect="true">
@@ -210,7 +208,7 @@
         </service>
 
         <service uid="gridAdp" type="sight::module::viz::scene3d::adaptor::grid">
-            <config size="5000" step="50" color="#505050" elevation="400" dashLength="10"/>
+            <config size="5000" step="50" color="#505050" elevation="400" dashLength="10" />
         </service>
 
         <!-- Reset the clipping box matreix -->
@@ -236,10 +234,10 @@
         <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
             <in key="data" uid="snapshot" />
             <dialog policy="always" />
-            <backends enable="all" mode="best"/>
+            <backends enable="all" mode="best" />
         </service>
 
-        <service uid="sliderCfg" type="sight::app::config_controller" >
+        <service uid="sliderCfg" type="sight::app::config_controller">
             <appConfig id="sight::config::viz::image::imageSlider" />
             <parameter replace="WID_PARENT" by="sliderView" />
             <parameter replace="sliceIndex" by="axial" />
@@ -398,7 +396,6 @@
             <slot>3DNegatoAdp/update_slices_from_world</slot>
         </connect>
 
-
         <connect>
             <signal>snapshotAct/clicked</signal>
             <slot>imageWriterSrv/update</slot>
@@ -448,6 +445,5 @@
 
         <update uid="imageExtruderSrv" />
         <update uid="shapeExtruderAdp" />
-
     </config>
 </extension>

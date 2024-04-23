@@ -1,5 +1,4 @@
 <plugin id="dicomxplorer">
-
     <requirement id="sight::module::service" />
     <requirement id="sight::module::io::session" />
     <requirement id="sight::module::activity" />
@@ -27,5 +26,4 @@
             <parameters />
         </appConfig>
     </extension>
-
 </plugin>

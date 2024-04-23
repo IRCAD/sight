@@ -7,7 +7,6 @@
         <param name="imageSeries" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${seriesSet}" type="sight::data::series_set" src="ref" />

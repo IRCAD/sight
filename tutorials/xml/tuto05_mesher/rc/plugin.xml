@@ -4,7 +4,6 @@
     <extension implements="sight::app::extension::config">
         <id>Tuto05Mesher_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Deferred Mesh object associated to the uid 'myMesh' -->
@@ -105,10 +104,10 @@
             <service uid="saveMeshAct" type="sight::module::ui::action">
                 <state enabled="false" />
             </service>
-            <service uid="createMeshAct" type="sight::module::ui::action"/>
+            <service uid="createMeshAct" type="sight::module::ui::action" />
 
             <service uid="mesherSrv" type="sight::module::filter::mesh::vtk_mesher">
-                <in key="imageSeries" uid="imageSeries"/>
+                <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="myModelSeries" />
                 <config percentReduction="0" threshold="255" />
             </service>

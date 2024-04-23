@@ -9,7 +9,6 @@
         <param name="ICON_PATH" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${activitySet}" type="sight::data::activity_set" src="ref" />
@@ -92,6 +91,5 @@
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainview" />
-
     </config>
 </extension>

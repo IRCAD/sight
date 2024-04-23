@@ -3,13 +3,14 @@
     <parameters>
         <param name="PACS_CONFIGURATION" />
         <param name="ICON_PATH" />
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by config_launcher -->
+        <!-- defined by config_launcher -->
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
     </parameters>
     <config>
         <object uid="${PACS_CONFIGURATION}" type="sight::io::dimse::data::pacs_configuration" src="ref" />
 
         <!-- MAIN FRAME -->
-        <service uid="pacsConfigurationManagerFrame" type="sight::module::ui::frame" >
+        <service uid="pacsConfigurationManagerFrame" type="sight::module::ui::frame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -24,7 +25,7 @@
             </registry>
         </service>
 
-        <service uid="mainView" type="sight::module::ui::view" >
+        <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
@@ -45,6 +46,5 @@
 
         <!-- START AND STOP SERVICES -->
         <start uid="pacsConfigurationManagerFrame" />
-
     </config>
 </extension>

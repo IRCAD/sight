@@ -1,4 +1,4 @@
-<extension implements="sight::app::extension::config" >
+<extension implements="sight::app::extension::config">
     <id>sight::config::viz::scene2d::TransferFunctionWindowCfg</id>
     <parameters>
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
@@ -11,7 +11,6 @@
         <param name="ADDITIONAL_TF_PATH" default="" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${image}" type="sight::data::image" src="ref" />
@@ -20,7 +19,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::frame" >
+        <service uid="mainView" type="sight::module::ui::frame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -35,9 +34,9 @@
             </registry>
         </service>
 
-        <service uid="transferFunctionEditorView" type="sight::module::ui::view" >
+        <service uid="transferFunctionEditorView" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::line" >
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="0" />
                 </layout>
@@ -48,13 +47,13 @@
         </service>
 
         <!-- TF manager -->
-        <service uid="TFManagerCfg"  type="sight::app::config_controller" >
+        <service uid="TFManagerCfg" type="sight::app::config_controller">
             <appConfig id="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
             <parameter replace="WID_PARENT" by="tfView" />
             <inout group="data">
                 <key name="image" uid="${image}" />
                 <key name="currentTF" uid="${currentTF}" />
-                <key name="presets" uid="${presets}" optional="true"/>
+                <key name="presets" uid="${presets}" optional="true" />
             </inout>
             <parameter replace="USE_DEFAULT_TF" by="${USE_DEFAULT_TF}" />
             <parameter replace="ADDITIONAL_TF_PATH" by="${ADDITIONAL_TF_PATH}" />
@@ -62,7 +61,7 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <connect channel="${CLOSE_CONFIG_CHANNEL}" >
+        <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>mainView/closed</signal>
         </connect>
 

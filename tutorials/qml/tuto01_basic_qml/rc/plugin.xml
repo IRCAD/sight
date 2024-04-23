@@ -1,5 +1,3 @@
 <plugin id="tuto01_basic_qml" library="true" autostart="true">
-
     <requirement id="sight::module::service" />
-
 </plugin>

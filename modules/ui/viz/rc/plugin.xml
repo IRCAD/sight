@@ -1,78 +1,76 @@
-<plugin id="sight::module::ui::viz" library="true" >
-    <requirement id="sight::module::ui"/>
-    <requirement id="sight::module::ui::qt"/>
+<plugin id="sight::module::ui::viz" library="true">
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::ui::qt" />
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::editor</type>
-         <service>sight::module::ui::viz::compositor_parameter_editor</service>
-         <desc>Editor allowing to edit shader uniform from a compositor material.</desc>
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::viz::compositor_parameter_editor</service>
+        <desc>Editor allowing to edit shader uniform from a compositor material.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::editor</type>
-         <service>sight::module::ui::viz::compositor_selector</service>
-         <object>sight::data::composite</object>
-         <desc>Allows to select an Ogre Compositor and apply it to a layer</desc>
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::viz::compositor_selector</service>
+        <object>sight::data::composite</object>
+        <desc>Allows to select an Ogre Compositor and apply it to a layer</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::editor</type>
-         <service>sight::module::ui::viz::core_compositor_editor</service>
-         <object>sight::data::composite</object>
-         <desc>Allows to select an Ogre Compositor and apply it to a layer</desc>
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::viz::core_compositor_editor</service>
+        <object>sight::data::composite</object>
+        <desc>Allows to select an Ogre Compositor and apply it to a layer</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::editor</type>
-         <service>sight::module::ui::viz::light_editor</service>
-         <object>sight::data::composite</object>
-         <desc>This service creates a user interface to manage a light adaptor.</desc>
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::viz::light_editor</service>
+        <object>sight::data::composite</object>
+        <desc>This service creates a user interface to manage a light adaptor.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::editor</type>
-         <service>sight::module::ui::viz::light_selector</service>
-         <object>sight::data::composite</object>
-         <desc>User interface to select light adaptor from a selected layer or create a new one.</desc>
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::viz::light_selector</service>
+        <object>sight::data::composite</object>
+        <desc>User interface to select light adaptor from a selected layer or create a new one.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::editor</type>
-         <service>sight::module::ui::viz::material_selector</service>
-         <object>sight::data::reconstruction</object>
-         <desc>Allows to select an Ogre material template and apply it to the current reconstruction.</desc>
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::viz::material_selector</service>
+        <object>sight::data::reconstruction</object>
+        <desc>Allows to select an Ogre material template and apply it to the current reconstruction.</desc>
     </extension>
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::action</type>
-         <service>sight::module::ui::viz::screen_selector</service>
-         <desc>Selects a screen and sends its index.</desc>
-    </extension>
-
-
-    <extension implements="sight::service::extension::factory">
-         <type>sight::ui::editor</type>
-         <service>sight::module::ui::viz::shader_parameter_editor</service>
-         <object>sight::data::reconstruction</object>
-         <desc>Editor allowing to edit each parameters from each shader of a reconstruction</desc>
+        <type>sight::ui::action</type>
+        <service>sight::module::ui::viz::screen_selector</service>
+        <desc>Selects a screen and sends its index.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::editor</type>
-         <service>sight::module::ui::viz::stereo_selector</service>
-         <object>sight::data::composite</object>
-         <desc>Allows to select the stereo mode of an Ogre Compositor</desc>
-    </extension>
-    <extension implements="sight::service::extension::factory">
-         <type>sight::ui::action</type>
-         <service>sight::module::ui::viz::stereo_toggler</service>
-         <desc>Action to enable/disable stereo in an ogre scene layer.</desc>
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::viz::shader_parameter_editor</service>
+        <object>sight::data::reconstruction</object>
+        <desc>Editor allowing to edit each parameters from each shader of a reconstruction</desc>
     </extension>
 
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::viz::stereo_selector</service>
+        <object>sight::data::composite</object>
+        <desc>Allows to select the stereo mode of an Ogre Compositor</desc>
+    </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::action</type>
+        <service>sight::module::ui::viz::stereo_toggler</service>
+        <desc>Action to enable/disable stereo in an ogre scene layer.</desc>
+    </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::editor</type>
-         <service>sight::module::ui::viz::texture_selector</service>
-         <object>sight::data::reconstruction</object>
-         <desc>Allows to select a data::image and apply it to the current reconstruction as an Ogre texture</desc>
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::viz::texture_selector</service>
+        <object>sight::data::reconstruction</object>
+        <desc>Allows to select a data::image and apply it to the current reconstruction as an Ogre texture</desc>
     </extension>
 </plugin>

@@ -1,5 +1,4 @@
 <plugin id="ut_builder">
-
     <extension implements="sight::activity::extension">
         <id>TestBuilder0</id>
         <title>Title Test0</title>

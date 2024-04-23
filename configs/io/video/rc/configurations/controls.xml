@@ -74,7 +74,7 @@ Usage:
 
         </service>
 -->
-<extension implements="sight::app::extension::config" >
+<extension implements="sight::app::extension::config">
     <id>sight::config::io::video::controls</id>
     <parameters>
         <param name="camera" />
@@ -109,17 +109,15 @@ Usage:
         <param name="removeROICenterChannelIn" default="removeROICenterChannelIn" />
 
         <param name="optimizeGrabberIn" default="optimizeGrabberIn" />
-
     </parameters>
     <config>
-
         <object uid="${camera}" type="sight::data::camera" src="ref" />
         <object uid="${frameTL}" type="sight::data::frame_tl" src="ref" />
 
-        <service uid="containerViewSrv" type="sight::module::ui::view" >
+        <service uid="containerViewSrv" type="sight::module::ui::view">
             <gui>
                 <toolbar />
-                <layout type="sight::ui::layout::line" >
+                <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                 </layout>
             </gui>
@@ -129,15 +127,15 @@ Usage:
             </registry>
         </service>
 
-        <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera" >
+        <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
             <inout key="camera" uid="${camera}" />
             <videoSupport>${videoSupport}</videoSupport>
         </service>
 
-        <service uid="toolbarViewSrv" type="sight::module::ui::toolbar" >
+        <service uid="toolbarViewSrv" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <editor/>
+                    <editor />
                     <menuItem name="Start" icon="sight::module::ui::icons/play.svg" shortcut="${playShortCut}" />
                     <menuItem name="Pause" icon="sight::module::ui::icons/pause.svg" shortcut="${pauseShortCut}" />
                     <menuItem name="Play" icon="sight::module::ui::icons/play.svg" shortcut="${pauseShortCut}" />
@@ -155,7 +153,7 @@ Usage:
             </registry>
         </service>
 
-        <service uid="grabberProxySrv" type="sight::module::io::video::grabber_proxy" >
+        <service uid="grabberProxySrv" type="sight::module::io::video::grabber_proxy">
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="${frameTL}" />
         </service>
@@ -166,22 +164,22 @@ Usage:
         <service uid="startVideoAct" type="sight::module::ui::action" />
 
         <!-- Pause the frame grabber -->
-        <service uid="pauseVideoAct" type="sight::module::ui::action" >
+        <service uid="pauseVideoAct" type="sight::module::ui::action">
             <state visible="false" />
         </service>
 
         <!-- Resume the frame grabber -->
-        <service uid="resumeVideoAct" type="sight::module::ui::action" >
+        <service uid="resumeVideoAct" type="sight::module::ui::action">
             <state visible="false" />
         </service>
 
         <!-- Stop the frame grabber -->
-        <service uid="stopVideoAct" type="sight::module::ui::action" >
+        <service uid="stopVideoAct" type="sight::module::ui::action">
             <state enabled="false" />
         </service>
 
         <!-- Loop the frame grabber -->
-        <service uid="loopVideoAct" type="sight::module::ui::action" >
+        <service uid="loopVideoAct" type="sight::module::ui::action">
             <state enabled="false" />
         </service>
 
@@ -245,7 +243,7 @@ Usage:
             <signal>videoSelectorSrv/configured_device</signal>
         </connect>
 
-        <connect channel="${cameraStartedChannelOut}" >
+        <connect channel="${cameraStartedChannelOut}">
             <signal>grabberProxySrv/camera_started</signal>
             <slot>pauseVideoAct/show</slot>
             <slot>startVideoAct/hide</slot>
@@ -258,7 +256,7 @@ Usage:
             <slot>grabberProxySrv/stop_camera</slot>
         </connect>
 
-        <connect channel="${cameraStoppedChannelOut}" >
+        <connect channel="${cameraStoppedChannelOut}">
             <signal>grabberProxySrv/camera_stopped</signal>
         </connect>
 
@@ -268,11 +266,11 @@ Usage:
             <slot>stopVideoAct/update</slot>
         </connect>
 
-        <connect channel="${parameterChannelIn}" >
+        <connect channel="${parameterChannelIn}">
             <slot>grabberProxySrv/set_parameter</slot>
         </connect>
 
-        <connect channel="${parameterChannelOut}" >
+        <connect channel="${parameterChannelOut}">
             <signal>grabberProxySrv/parameter_changed</signal>
         </connect>
 
@@ -304,9 +302,7 @@ Usage:
             <slot>grabberProxySrv/optimize</slot>
         </connect>
 
-        
         <start uid="containerViewSrv" />
         <start uid="grabberProxySrv" />
-
     </config>
 </extension>

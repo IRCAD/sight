@@ -18,12 +18,13 @@ Example:
     <parameters>
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
-        <param name="image" /><!-- Image to manage -->
-        <param name="transferFunction" /><!-- Selected TransferFunction -->
+        <!-- Image to manage -->
+        <param name="image" />
+        <!-- Selected TransferFunction -->
+        <param name="transferFunction" />
     </parameters>
     <desc>Displays sliders to manage the image (slice index, windowing)</desc>
     <config>
-
         <object uid="${image}" type="sight::data::image" src="ref" />
         <object uid="${transferFunction}" type="sight::data::transfer_function" src="ref" />
 
@@ -68,6 +69,5 @@ Example:
         </service>
 
         <start uid="imageManagerView" />
-
     </config>
 </extension>

@@ -1,5 +1,4 @@
-<plugin id="sight::activity::io::dicomweb" >
-
+<plugin id="sight::activity::io::dicomweb">
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::viz::scene3d_qt" />
@@ -13,11 +12,9 @@
         <title>DicomWeb Reader</title>
         <desc>DicomWeb Reader activity</desc>
         <icon>sight::module::ui::icons/pull.svg</icon>
-        <requirements>
-        </requirements>
+        <requirements />
         <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="sight::activity::io::dicomweb::reader">
-        </appConfig>
+        <appConfig id="sight::activity::io::dicomweb::reader" />
     </extension>
 
     <extension implements="sight::service::extension::config">
@@ -33,11 +30,8 @@
         <title>DicomWeb Writer</title>
         <desc>DicomWeb Writer activity</desc>
         <icon>sight::module::ui::icons/push.svg</icon>
-        <requirements>
-        </requirements>
+        <requirements />
         <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="sight::activity::io::dicomweb::writer">
-        </appConfig>
+        <appConfig id="sight::activity::io::dicomweb::writer" />
     </extension>
-
 </plugin>

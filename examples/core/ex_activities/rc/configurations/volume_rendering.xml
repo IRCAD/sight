@@ -6,7 +6,6 @@
         <param name="imageSeries" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${imageSeries}" type="sight::data::image_series" src="ref" />
@@ -58,7 +57,7 @@
         <service uid="imageScene" type="sight::viz::scene3d::render">
             <scene>
                 <background color="#36393E" />
-                <layer id="default" order="1" >
+                <layer id="default" order="1">
                     <adaptor uid="cameraInteractorAdaptor" />
                     <adaptor uid="volumeRender" />
                 </layer>
@@ -98,6 +97,5 @@
         <start uid="imageExtruderSrv" />
 
         <update uid="imageExtruderSrv" />
-
     </config>
 </extension>

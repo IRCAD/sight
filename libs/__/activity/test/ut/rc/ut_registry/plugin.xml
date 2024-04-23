@@ -1,5 +1,4 @@
 <plugin id="ut_registry">
-
     <extension-point id="sight::activity::extension" schema="activity/activity.xsd" />
 
     <extension implements="sight::activity::extension">
@@ -8,7 +7,8 @@
         <desc>Desc Test0</desc>
         <icon>Icon Test0</icon>
         <requirements>
-            <requirement name="param1" type="sight::data::image" /> <!-- defaults : minOccurs = 1, maxOccurs = 1-->
+            <!-- defaults : minOccurs = 1, maxOccurs = 1-->
+            <requirement name="param1" type="sight::data::image" />
             <requirement name="param2" type="sight::data::mesh" maxOccurs="8">
                 <key>key1</key>
                 <key>key2</key>
@@ -37,7 +37,8 @@
                 <key>key2</key>
             </requirement>
             <requirement name="modelSeries" type="sight::data::model_series" minOccurs="1" maxOccurs="1" />
-            <!--# ...-->
+            <!--#
+            ...-->
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestRegistryCfg0">
@@ -46,7 +47,6 @@
             </parameters>
         </appConfig>
     </extension>
-
 
     <extension implements="sight::activity::extension">
         <id>TestRegistry1</id>
@@ -174,5 +174,4 @@
             <parameters />
         </appConfig>
     </extension>
-
 </plugin>

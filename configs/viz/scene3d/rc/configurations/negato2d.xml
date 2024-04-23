@@ -6,16 +6,15 @@
         <param name="transferFunction" />
         <param name="sliceIndex" default="axial" />
         <param name="enableSliceType" default="true" />
-        <param name="WORLD_COORDS_LANDMARKS_CHANNEL" default="WORLD_COORDS_LANDMARKS_CHANNEL"/>
-        <param name="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" default="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL"/>
-        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL"/>
-        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL"/>
-        <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" default="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL"/>
-        <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" default="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL"/>
-        <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" default="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL"/>
+        <param name="WORLD_COORDS_LANDMARKS_CHANNEL" default="WORLD_COORDS_LANDMARKS_CHANNEL" />
+        <param name="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" default="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" />
+        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL" />
+        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL" />
+        <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" default="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
+        <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" default="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
+        <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" default="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${image}" type="sight::data::image_series" src="deferred" />
@@ -46,7 +45,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="sceneSrv" start="true"/>
+                <view sid="sceneSrv" start="true" />
                 <view wid="negatoSliderView" />
             </registry>
         </service>
@@ -132,12 +131,12 @@
         </service>
 
         <service uid="eventAdp" type="sight::module::viz::scene3d::adaptor::event">
-            <event type="buttonDoublePress" buttons="left" modifiers="none"/>
+            <event type="buttonDoublePress" buttons="left" modifiers="none" />
         </service>
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="negatoSliderCfg" type="sight::app::config_controller" >
+        <service uid="negatoSliderCfg" type="sight::app::config_controller">
             <appConfig id="sight::config::viz::image::imageSlider" />
             <parameter replace="WID_PARENT" by="negatoSliderView" />
             <parameter replace="sliceIndex" by="${sliceIndex}" />
@@ -218,6 +217,5 @@
         <start uid="eventAdp" />
 
         <start uid="negatoSliderCfg" />
-
     </config>
 </extension>

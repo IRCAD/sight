@@ -1,5 +1,4 @@
 <plugin id="ut_sequencer">
-
     <extension implements="sight::activity::extension">
         <id>id_0</id>
         <title>title_0</title>
@@ -43,5 +42,4 @@
             <parameters />
         </appConfig>
     </extension>
-
 </plugin>

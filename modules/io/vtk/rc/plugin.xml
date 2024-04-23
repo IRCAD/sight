@@ -1,5 +1,4 @@
-<plugin id="sight::module::io::vtk" library="true" >
-
+<plugin id="sight::module::io::vtk" library="true">
     <requirement id="sight::module::service" />
 
     <extension implements="sight::service::extension::factory">
@@ -71,5 +70,4 @@
         <object>sight::data::series_set</object>
         <desc>VTK Reader (*.obj *.stl *.ply *.vtk *.vtp *.vtu *.vti *.mhd)</desc>
     </extension>
-
 </plugin>

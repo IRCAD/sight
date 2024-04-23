@@ -145,13 +145,11 @@
             </preference>
         </service>
 
-        <service uid="toolCalibration"
-            type="sight::module::navigation::calibration::tool_calibration">
+        <service uid="toolCalibration" type="sight::module::navigation::calibration::tool_calibration">
             <out key="matrixCenter" uid="toolMatrix" />
             <out key="matrixCalibration" uid="matrixCalibration" />
             <in key="matricesVector" uid="matricesVector" />
         </service>
-
 
         <service uid="manageVector" type="sight::module::data::manage">
             <inout key="object" uid="trackerMatrix0" />
@@ -195,36 +193,30 @@
             </scene>
         </service>
 
-        <service uid="trackballInteractorAdp"
-            type="sight::module::viz::scene3d::adaptor::trackball_camera">
+        <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
             <config priority="0" />
         </service>
 
-        <service uid="trackedMatrixAdp" type="sight::module::viz::scene3d::adaptor::transform"
-            auto_connect="true">
+        <service uid="trackedMatrixAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
             <inout key="transform" uid="trackerMatrix0" />
             <config transform="trackerMatrix0Trf" />
         </service>
 
-        <service uid="calibMatAdp" type="sight::module::viz::scene3d::adaptor::transform"
-            auto_connect="true">
+        <service uid="calibMatAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
             <inout key="transform" uid="matrixCalibration" />
             <config transform="calibrationTrf" />
         </service>
 
-        <service uid="calibAxisMatAdp" type="sight::module::viz::scene3d::adaptor::transform"
-            auto_connect="true">
+        <service uid="calibAxisMatAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
             <inout key="transform" uid="calibrationAxisMatrix" />
             <config transform="calibrationAxisTrf" />
         </service>
 
         <service uid="calibrationAxisAdp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config length="20" transform="calibrationAxisTrf" label="false" origin="true"
-                originColor="#0000FF" />
+            <config length="20" transform="calibrationAxisTrf" label="false" origin="true" originColor="#0000FF" />
         </service>
 
-        <service uid="toolCalibrationAdp" type="sight::module::viz::scene3d::adaptor::transform"
-            auto_connect="true">
+        <service uid="toolCalibrationAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
             <inout key="transform" uid="toolMatrix" />
             <config transform="toolCalibrationTrf" />
         </service>
@@ -234,21 +226,16 @@
         </service>
 
         <service uid="toolAxisAdp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config length="20" transform="toolCalibrationTrf" label="false" origin="true"
-                originColor="#FF0000" />
+            <config length="20" transform="toolCalibrationTrf" label="false" origin="true" originColor="#FF0000" />
         </service>
 
         <service uid="trackerAxis0Adp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config length="20" transform="trackerMatrix0Trf" label="false" origin="true"
-                originColor="#00FF00" />
+            <config length="20" transform="trackerMatrix0Trf" label="false" origin="true" originColor="#00FF00" />
         </service>
 
-        <service uid="pointlistAdp" type="sight::module::viz::scene3d::adaptor::point_list"
-            auto_connect="true">
+        <service uid="pointlistAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
             <in key="pointList" uid="pointlist" />
-            <config radius="3.0" fontSource="DejaVuSans.ttf" fontSize="16"
-                labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000"
-                displayLabel="false" />
+            <config radius="3.0" fontSource="DejaVuSans.ttf" fontSize="16" labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" displayLabel="false" />
         </service>
 
         <!-- *************************** End resultView *************************** -->
@@ -322,6 +309,5 @@
         <start uid="calibrationAxisAdp" />
 
         <update uid="concatenateMatrices" />
-
     </config>
 </extension>

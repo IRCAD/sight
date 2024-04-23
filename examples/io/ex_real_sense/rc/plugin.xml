@@ -1,5 +1,4 @@
 <plugin id="ex_real_sense">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -9,7 +8,6 @@
     <extension implements="sight::app::extension::config">
         <id>ExRealSense_AppCgf</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="frameTLVideo" type="sight::data::frame_tl" />
@@ -223,7 +221,6 @@
                 </registry>
             </service>
 
-
             <service uid="filterSettingsView" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
@@ -325,7 +322,8 @@
 
             <service uid="DMCameraAdp" type="sight::module::viz::scene3d::adaptor::camera">
                 <inout key="transform" uid="identity" />
-                <in key="calibration" uid="DCamera" /> <!-- Projection matrix of Depth/Infrared Sensor -->
+                <!-- Projection matrix of Depth/Infrared Sensor -->
+                <in key="calibration" uid="DCamera" />
             </service>
 
             <!-- ******************************* Begin Generic scene ******************************* -->
@@ -356,7 +354,8 @@
 
             <service uid="VCameraAdp" type="sight::module::viz::scene3d::adaptor::camera">
                 <inout key="transform" uid="identity" />
-                <in key="calibration" uid="RGBCamera" /> <!-- Projection matrix of Color Sensor -->
+                <!-- Projection matrix of Color Sensor -->
+                <in key="calibration" uid="RGBCamera" />
             </service>
 
             <!-- ******************************* Begin Generic scene ******************************* -->
@@ -385,17 +384,21 @@
 
             <service uid="presetsSrv" type="sight::module::ui::qt::parameters">
                 <parameters>
-                    <param type="enum" name="Realsense presets" key="preset" defaultValue="Default"
+                    <param
+                        type="enum"
+                        name="Realsense presets"
+                        key="preset"
+                        defaultValue="Default"
                         values="Default,HighResHighAccuracy,HighResHighDensity,HighResMidDensity,MidResHighAccuracy,
                     MidResHighDensity,MidResMidDensity,LowResHighAccuracy,LowResHighDensity,LowResMidDensity,
-                    Hand,ShortRange,BodyScan,RemoveIR" />
+                    Hand,ShortRange,BodyScan,RemoveIR"
+                    />
                 </parameters>
             </service>
 
             <service uid="alignmentSrv" type="sight::module::ui::qt::parameters">
                 <parameters>
-                    <param type="enum" name="Align frames to" key="alignTo" defaultValue="None"
-                        values="None,Color,Depth,Infrared" />
+                    <param type="enum" name="Align frames to" key="alignTo" defaultValue="None" values="None,Color,Depth,Infrared" />
                 </parameters>
             </service>
 
@@ -449,9 +452,14 @@
                 <parameters>
                     <param type="double" name="Smooth Alpha" key="temporalSmoothAlpha" defaultValue="0.4" min="0" max="1" widget="slider" />
                     <param type="int" name="Smooth Delta" key="temporalSmoothDelta" defaultValue="20" min="1" max="100" />
-                    <param type="enum" name="Persistency index" key="temporalPersistency" defaultValue="Valid_in_2/last_3"
+                    <param
+                        type="enum"
+                        name="Persistency index"
+                        key="temporalPersistency"
+                        defaultValue="Valid_in_2/last_3"
                         values="Disabled,Valid_in_8/8 ,Valid_in_2/last_3,Valid_in_2/last_4,Valid_in_2/8,Valid_in_1/last_2,Valid_in_1/last_5,
-                                   Valid_in_1/last_8,Persist_Indefinitely" />
+                                   Valid_in_1/last_8,Persist_Indefinitely"
+                    />
                 </parameters>
             </service>
 
@@ -481,30 +489,31 @@
                 <out key="pointcloud" uid="pointcloud" />
             </service>
 
-            <service uid="frameUpdaterSrv"  type="sight::module::sync::synchronizer">
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer">
                 <in group="frameTL">
                     <key uid="frameTLVideo" />
                     <key uid="frameTLDepth" />
                 </in>
                 <inout group="frames">
                     <key uid="videoImage" tl="0" />
-                    <key uid="imageDepth" tl="1"/>
+                    <key uid="imageDepth" tl="1" />
                 </inout>
                 <tolerance>50</tolerance>
             </service>
-
 
             <!-- extract a sight::data::camera from the sight::data::camera_set -->
             <service uid="extractCameraSrv" type="sight::module::data::get_camera">
                 <inout key="cameraSet" uid="RGBDCameraSet" auto_connect="true" />
                 <out group="camera">
-                    <key index="0" uid="DCamera" /> <!-- Depth/Infrared1 Camera -->
-                    <key index="1" uid="RGBCamera" /> <!-- Color Camera -->
+                    <!-- Depth/Infrared1 Camera -->
+                    <key index="0" uid="DCamera" />
+                    <!-- Color Camera -->
+                    <key index="1" uid="RGBCamera" />
                 </out>
                 <out group="extrinsic">
-                    <key index="0" uid="depth_to_color" /> <!-- Infrared1 to Color coordinate frame -->
+                    <!-- Infrared1 to Color coordinate frame -->
+                    <key index="0" uid="depth_to_color" />
                 </out>
-
             </service>
 
             <!-- ******************************* Begin Generic scene ******************************* -->
@@ -685,7 +694,7 @@
                 <signal>enableSpacialFilterParamsSrv/parameter_changed</signal>
                 <signal>enableTemporalFilterParamsSrv/parameter_changed</signal>
                 <signal>enableHoleFillingFilterParamsSrv/parameter_changed</signal>
-                 <slot>videoGrabberSrv/set_parameter</slot>
+                <slot>videoGrabberSrv/set_parameter</slot>
             </connect>
 
             <connect>
@@ -783,7 +792,6 @@
             <update uid="enableSpacialFilterParamsSrv" />
             <update uid="enableTemporalFilterParamsSrv" />
             <update uid="enableHoleFillingFilterParamsSrv" />
-
         </config>
     </extension>
 </plugin>

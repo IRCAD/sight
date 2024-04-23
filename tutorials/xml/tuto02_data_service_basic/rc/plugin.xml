@@ -1,14 +1,12 @@
-<plugin id="tuto02_data_service_basic" >
-
+<plugin id="tuto02_data_service_basic">
     <!-- The modules in requirements are automatically started when this
          Application is launched. -->
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
 
-    <extension implements="sight::app::extension::config" >
+    <extension implements="sight::app::extension::config">
         <id>TutoDataServiceBasic_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- In tutoDataServiceBasic, the central data object is a sight::data::image. -->
@@ -22,7 +20,7 @@
                 containers in the application main window.
                 Here, it declares a container for the 3D rendering service.
             -->
-            <service uid="mainFrame" type="sight::module::ui::frame" >
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>tuto02_data_service_basic</name>
@@ -42,7 +40,7 @@
                 Reading service:
                 The <resource> tag defines the resource path (/rc) of a module or application.
             -->
-            <service uid="imageReaderSrv" type="sight::module::io::vtk::image_reader" >
+            <service uid="imageReaderSrv" type="sight::module::io::vtk::image_reader">
                 <inout key="data" uid="imageData" />
                 <resource>tuto02_data_service_basic/img-test.vtk</resource>
             </service>
@@ -51,7 +49,7 @@
                 Visualization service of a 3D medical image:
                 This service will render the 3D image.
             -->
-            <service uid="imageRendereSrv" type="sight::module::viz::sample::image" >
+            <service uid="imageRendereSrv" type="sight::module::viz::sample::image">
                 <in key="image" uid="imageData" />
             </service>
 
@@ -75,8 +73,6 @@
             -->
             <update uid="imageReaderSrv" />
             <update uid="imageRendereSrv" />
-
         </config>
     </extension>
-
 </plugin>

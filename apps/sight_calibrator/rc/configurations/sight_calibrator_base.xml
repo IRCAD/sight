@@ -6,15 +6,14 @@
         <param name="ICON_PATH" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="dataSet" type="sight::data::set"/>
-        <object uid="activitySet" type="sight::data::activity_set"/>
+        <object uid="dataSet" type="sight::data::set" />
+        <object uid="activitySet" type="sight::data::activity_set" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="sight::module::ui::frame" >
+        <service uid="mainFrame" type="sight::module::ui::frame">
             <gui>
                 <frame>
                     <name>${APP_NAME}</name>
@@ -30,7 +29,7 @@
             </registry>
         </service>
 
-        <service uid="menuBarView" type="sight::module::ui::menubar" >
+        <service uid="menuBarView" type="sight::module::ui::menubar">
             <gui>
                 <layout>
                     <menu name="File" />
@@ -43,7 +42,7 @@
             </registry>
         </service>
 
-        <service uid="menuFileView" type="sight::module::ui::menu" >
+        <service uid="menuFileView" type="sight::module::ui::menu">
             <gui>
                 <layout>
                     <menuItem name="Open data set..." shortcut="Ctrl+O" />
@@ -62,7 +61,7 @@
             </registry>
         </service>
 
-        <service uid="menuPreferencesView" type="sight::module::ui::menu" >
+        <service uid="menuPreferencesView" type="sight::module::ui::menu">
             <gui>
                 <layout>
                     <menuItem name="Video directory" />
@@ -73,8 +72,7 @@
             </registry>
         </service>
 
-
-        <service uid="mainview" type="sight::module::ui::view" >
+        <service uid="mainview" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
                     <view align="center" />
@@ -85,7 +83,7 @@
             </registry>
         </service>
 
-        <service uid="dynamicView" type="sight::module::ui::qt::activity::dynamic_view" >
+        <service uid="dynamicView" type="sight::module::ui::qt::activity::dynamic_view">
             <mainActivity id="SightCalibratorActivitySelector_Activity" closable="false" />
             <parameters>
                 <parameter replace="ICON_PATH" by="${ICON_PATH}" />
@@ -101,7 +99,7 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="videoDirectoryAct" type="sight::module::ui::qt::preferences_configuration" >
+        <service uid="videoDirectoryAct" type="sight::module::ui::qt::preferences_configuration">
             <preference>
                 <type>path</type>
                 <name>Video directory</name>
@@ -124,19 +122,19 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="dataSetReaderSrv" type="sight::module::ui::io::selector" config="SDBSessionReaderIOSelectorConfig" >
+        <service uid="dataSetReaderSrv" type="sight::module::ui::io::selector" config="SDBSessionReaderIOSelectorConfig">
             <inout key="data" uid="dataSet" />
         </service>
 
-        <service uid="dataSetWriterSrv" type="sight::module::ui::io::selector" config="SDBSessionWriterIOSelectorConfig" >
+        <service uid="dataSetWriterSrv" type="sight::module::ui::io::selector" config="SDBSessionWriterIOSelectorConfig">
             <inout key="data" uid="dataSet" />
         </service>
 
-        <service uid="activitySetReaderSrv" type="sight::module::ui::io::selector" config="ActivityReaderConfig" >
+        <service uid="activitySetReaderSrv" type="sight::module::ui::io::selector" config="ActivityReaderConfig">
             <inout key="data" uid="activitySet" />
         </service>
 
-        <service uid="activitySetWriterSrv" type="sight::module::ui::io::selector" config="ActivityWriterConfig" >
+        <service uid="activitySetWriterSrv" type="sight::module::ui::io::selector" config="ActivityWriterConfig">
             <inout key="data" uid="activitySet" />
         </service>
 
@@ -183,6 +181,5 @@
         <start uid="activitySetReaderSrv" />
         <start uid="dataSetWriterSrv" />
         <start uid="activitySetWriterSrv" />
-
     </config>
 </extension>

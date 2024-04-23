@@ -7,7 +7,6 @@
         <param name="preferencesModifiedProxy" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${calibrationInfo}" type="sight::data::calibration_info" src="ref" />
@@ -216,7 +215,7 @@
             <orange>Calibration in progress</orange>
             <red>Points are NOT visible</red>
             <labels>
-                <name></name>
+                <name />
             </labels>
         </service>
 
@@ -268,7 +267,7 @@
         <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
             <inout key="camera" uid="${camera}" />
             <videoSupport>true</videoSupport>
-            <label></label>
+            <label />
         </service>
 
         <service uid="videoGrabberSrv" type="sight::module::io::video::grabber_proxy">
@@ -276,7 +275,7 @@
             <inout key="frameTL" uid="frameTL" />
         </service>
 
-        <service uid="frameSynchronizerSrv"  type="sight::module::sync::synchronizer" >
+        <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer">
             <in group="frameTL">
                 <key uid="frameTL" />
             </in>
@@ -556,6 +555,5 @@
         <start uid="distorterSrv" />
         <start uid="computeCameraPoseSrv" />
         <start uid="videoAdp" />
-
     </config>
 </extension>
