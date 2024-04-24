@@ -7,10 +7,10 @@ stages:
 
 include:
     - project: "sight/sight-gitlab"
-      ref: dev
+      ref: 858ee0e67e17f352229a621e89ddaa253172fb02
       file: "/.templates/deploy.yml"
     - project: "sight/sight-gitlab"
-      ref: dev
+      ref: 858ee0e67e17f352229a621e89ddaa253172fb02
       file: "/.templates/build.yml"
 
 lint:sheldon:
@@ -152,7 +152,7 @@ lint:sheldon:
 
 build:linux-22.04-debug-gcc:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:dev"
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     variables:
         BUILD_TYPE: "Debug"
         SIGHT_BUILD_SDK: "ON"
@@ -165,7 +165,7 @@ build:linux-22.04-debug-gcc:
 
 build:linux-22.04-release-gcc:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:dev"
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     variables:
         BUILD_TYPE: "Release"
         SIGHT_BUILD_SDK: "ON"
@@ -179,7 +179,7 @@ build:linux-22.04-release-gcc:
 
 build:linux-22.04-RelWithDebInfo-clang:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:dev"
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_IGNORE_UNSTABLE_TESTS: 1
@@ -192,7 +192,7 @@ build:linux-22.04-RelWithDebInfo-clang:
 
 build:linux-22.04-coverage-gcc:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:dev"
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_BUILD_DOC: "ON"
@@ -206,7 +206,7 @@ build:linux-22.04-coverage-gcc:
 
 build:linux-22.04-coverage-gcc-draft:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:dev"
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_ENABLE_COVERAGE: "ON"
@@ -218,7 +218,7 @@ build:linux-22.04-coverage-gcc-draft:
 
 deploy-test:linux-debug:
     extends: .linux_deploy_test
-    image: "${SIGHT_CI_UBUNTU22_04}:dev"
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     needs:
         - job: build:linux-22.04-debug-gcc
           artifacts: true
@@ -231,7 +231,7 @@ deploy-test:linux-debug:
 
 deploy:linux-debug:
     extends: .linux_deploy
-    image: "${SIGHT_CI_UBUNTU22_04}:dev"
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     needs:
         - job: build:linux-22.04-debug-gcc
           artifacts: true
@@ -244,7 +244,7 @@ deploy:linux-debug:
 
 deploy-test:linux-release:
     extends: .linux_deploy_test
-    image: "${SIGHT_CI_UBUNTU22_04}:dev"
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     needs:
         - job: build:linux-22.04-release-gcc
           artifacts: true
@@ -258,7 +258,7 @@ deploy-test:linux-release:
 
 deploy:linux-release:
     extends: .linux_deploy
-    image: "${SIGHT_CI_UBUNTU22_04}:dev"
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     needs:
         - job: build:linux-22.04-release-gcc
           artifacts: true
@@ -271,7 +271,7 @@ deploy:linux-release:
 
 deploy:apps-linux-release:
     extends: .linux_deploy
-    image: "${SIGHT_CI_UBUNTU22_04}:dev"
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     needs:
         - job: build:linux-22.04-release-gcc
           artifacts: true
@@ -486,7 +486,7 @@ deploy:apps-windows-release:
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 pages:
-    image: "${SIGHT_CI_UBUNTU22_04}:dev"
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     stage: deploy
     needs:
         - job: build:linux-22.04-coverage-gcc

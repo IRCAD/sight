@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,13 @@ CPPUNIT_TEST(from_to_vtk_test);
 CPPUNIT_TEST(mhd_reader_test);
 CPPUNIT_TEST(mhd_writer_test);
 CPPUNIT_TEST(vti_reader_test);
+
+// FIXME: This test is disabled on linux until vtk is patched upstream.
+// see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1064762
+#ifdef WIN32
 CPPUNIT_TEST(vti_writer_test);
+#endif
+
 CPPUNIT_TEST(vtk_reader_test);
 CPPUNIT_TEST(vtk_writer_test);
 

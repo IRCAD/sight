@@ -13,6 +13,7 @@ find_package(
                Quick
                Widgets
                QuickWidgets
+               Svg
     REQUIRED
 )
 
@@ -27,6 +28,7 @@ target_link_libraries(
             Qt5::Quick
             Qt5::Widgets
             Qt5::QuickWidgets
+            Qt5::Svg
 )
 set_target_properties(module_ui_qt PROPERTIES AUTOMOC TRUE)
 

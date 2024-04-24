@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,12 +42,18 @@ CPPUNIT_TEST(test_synthetic_mesh);
 CPPUNIT_TEST(test_export_import_synthetic_mesh);
 CPPUNIT_TEST(test_point_cloud);
 CPPUNIT_TEST(test_read_vtk_file);
+
+// FIXME: This test is disabled on linux until vtk is patched upstream.
+// see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1064762
+#ifdef WIN32
 CPPUNIT_TEST(test_read_vtp_file);
+CPPUNIT_TEST(test_write_vtp_file);
+#endif
+
 CPPUNIT_TEST(test_read_obj_file);
 CPPUNIT_TEST(test_read_stl_file);
 CPPUNIT_TEST(test_read_ply_file);
 CPPUNIT_TEST(test_write_vtk_file);
-CPPUNIT_TEST(test_write_vtp_file);
 CPPUNIT_TEST(test_write_obj_file);
 CPPUNIT_TEST(test_write_stl_file);
 CPPUNIT_TEST(test_write_ply_file);

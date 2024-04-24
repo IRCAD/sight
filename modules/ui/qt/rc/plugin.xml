@@ -47,6 +47,12 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::progress_bar</service>
+        <desc>This service shows a progress bar.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
         <type>sight::ui::action</type>
         <service>sight::module::ui::qt::show_about</service>
         <object>sight::data::object</object>

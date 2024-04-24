@@ -36,7 +36,7 @@
             </service>
 
             <!-- Status bar used to display the progress bar for reading -->
-            <service uid="progressBarView" type="sight::module::ui::job_bar" />
+            <service uid="progressBarView" type="sight::module::ui::qt::progress_bar" />
 
             <!-- main view -->
             <service uid="containerView" type="sight::module::ui::view">
@@ -58,11 +58,13 @@
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" resizable="false" backgroundColor="#3E4453" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="genericSceneSrv" start="true" />
                     <view sid="editorsView" start="true" />
+                    <view sid="progressBarView" start="true" />
                 </registry>
             </service>
 
@@ -260,7 +262,6 @@
             </connect>
 
             <start uid="mainFrame" />
-            <start uid="progressBarView" />
             <start uid="imageReaderSrv" />
             <start uid="meshReaderSrv" />
             <start uid="textureReaderSrv" />
