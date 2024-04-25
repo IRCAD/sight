@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,14 +28,10 @@
 #include <core/tools/dispatcher.hpp>
 #include <core/tools/type_key_type_mapping.hpp>
 
-#include <io/__/writer/registry/macros.hpp>
-
 #include <itkImageFileWriter.h>
 #include <itkNiftiImageIO.h>
 
 #include <filesystem>
-
-SIGHT_REGISTER_IO_WRITER(sight::io::itk::nifti_image_writer);
 
 namespace sight::io::itk
 {

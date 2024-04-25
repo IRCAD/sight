@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,8 +40,6 @@
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
 
-#include <io/__/reader/registry/macros.hpp>
-
 #include <boost/algorithm/string/join.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/iostreams/categories.hpp>
@@ -68,8 +66,6 @@
 #include <filesystem>
 #include <iosfwd>
 #include <numeric>
-
-SIGHT_REGISTER_IO_READER(sight::io::vtk::series_set_reader);
 
 namespace sight::io::vtk
 {

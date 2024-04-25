@@ -64,7 +64,7 @@ class SIGHT_IO_SESSION_CLASS_API session_reader final :
 {
 public:
 
-    SIGHT_DECLARE_CLASS(session_reader, io::reader::object_reader, io::reader::factory::make<session_reader>);
+    SIGHT_DECLARE_CLASS(session_reader, io::reader::object_reader);
     SIGHT_ALLOW_SHARED_FROM_THIS()
     /// Delete default constructors and assignment operators
     session_reader(const session_reader&)            = delete;

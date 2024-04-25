@@ -42,13 +42,7 @@ class SIGHT_IO_DICOM_CLASS_API file final : public sight::io::writer::generic_ob
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        file,
-        io::writer::generic_object_writer<data::series_set>,
-        io::writer::factory::make<file>
-    );
-
-    SIGHT_ALLOW_SHARED_FROM_THIS();
+    SIGHT_DECLARE_CLASS(file, io::writer::generic_object_writer<data::series_set>);
 
     /// Delete default constructors and assignment operators
     file(const file&)            = delete;

@@ -53,11 +53,7 @@ class bitmap_image_reader : public reader::generic_object_reader<data::image>,
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        bitmap_image_reader,
-        io::reader::generic_object_reader<data::image>,
-        io::reader::factory::make<bitmap_image_reader>
-    );
+    SIGHT_DECLARE_CLASS(bitmap_image_reader, io::reader::generic_object_reader<data::image>);
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 

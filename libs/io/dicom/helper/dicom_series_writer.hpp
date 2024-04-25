@@ -71,11 +71,7 @@ class SIGHT_IO_DICOM_CLASS_API dicom_series_writer : public io::writer::generic_
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        dicom_series_writer,
-        io::writer::generic_object_writer<data::dicom_series>,
-        io::writer::factory::make<dicom_series_writer>
-    );
+    SIGHT_DECLARE_CLASS(dicom_series_writer, io::writer::generic_object_writer<data::dicom_series>);
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 

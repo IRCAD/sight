@@ -62,11 +62,7 @@ class SIGHT_IO_DICOM_CLASS_API series_set : public sight::io::reader::generic_ob
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        series_set,
-        io::reader::generic_object_reader<data::series_set>,
-        io::reader::factory::make<series_set>
-    );
+    SIGHT_DECLARE_CLASS(series_set, io::reader::generic_object_reader<data::series_set>);
 
     using dicom_series_container_t        = std::vector<std::shared_ptr<data::dicom_series> >;
     using filename_container_t            = std::vector<std::string>;

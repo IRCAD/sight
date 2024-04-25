@@ -77,11 +77,7 @@ public:
         best = 2
     };
 
-    SIGHT_DECLARE_CLASS(
-        writer,
-        io::writer::generic_object_writer<data::image>,
-        io::writer::factory::make<writer>
-    );
+    SIGHT_DECLARE_CLASS(writer, io::writer::generic_object_writer<data::image>);
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 

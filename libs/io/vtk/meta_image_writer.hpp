@@ -52,12 +52,7 @@ class SIGHT_IO_VTK_CLASS_API meta_image_writer : public writer::generic_object_w
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        meta_image_writer,
-        io::writer::generic_object_writer<data::image>,
-        io::writer::factory::make<meta_image_writer>
-    );
-    SIGHT_ALLOW_SHARED_FROM_THIS();
+    SIGHT_DECLARE_CLASS(meta_image_writer, io::writer::generic_object_writer<data::image>);
 
     //! @brief Constructor.
     SIGHT_IO_VTK_API meta_image_writer();

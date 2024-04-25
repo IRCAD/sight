@@ -24,9 +24,6 @@
 
 #include <sight/io/__/config.hpp>
 
-#include "io/__/writer/factory/new.hpp"
-#include "io/__/writer/registry/detail.hpp"
-
 #include <core/base.hpp>
 #include <core/jobs/base.hpp>
 #include <core/object.hpp>
@@ -55,23 +52,6 @@ public:
 
     using progress_callback = std::function<void (std::uint64_t)>;
     using cancel_callback   = std::function<void ()>;
-
-    /**
-     * @brief Class used to register a class factory in factory registry.
-     * This class defines also the object factory ( 'create' )
-     *
-     * @tparam T factory product type
-     */
-    template<typename T>
-    class registry
-    {
-    public:
-
-        registry()
-        {
-            io::writer::registry::get()->add_factory(T::classname(), &io::writer::factory::make<T>);
-        }
-    };
 
     /**
      * @brief Defines a writer interface.

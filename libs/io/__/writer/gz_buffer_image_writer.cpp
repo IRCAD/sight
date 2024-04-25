@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,11 @@
 
 #include "io/__/writer/gz_buffer_image_writer.hpp"
 
-#include "io/__/writer/registry/macros.hpp"
-
 #include <data/image.hpp>
 
 #include <zlib.h>
 
 #include <iostream>
-
-SIGHT_REGISTER_IO_WRITER(sight::io::writer::gz_buffer_image_writer);
 
 namespace sight::io::writer
 {

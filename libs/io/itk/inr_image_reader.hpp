@@ -40,11 +40,7 @@ class SIGHT_IO_ITK_CLASS_API inr_image_reader : public reader::generic_object_re
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        inr_image_reader,
-        io::reader::generic_object_reader<data::image>,
-        io::reader::factory::make<inr_image_reader>
-    );
+    SIGHT_DECLARE_CLASS(inr_image_reader, io::reader::generic_object_reader<data::image>);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     SIGHT_IO_ITK_API ~inr_image_reader() override = default;

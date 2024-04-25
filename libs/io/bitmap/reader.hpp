@@ -61,11 +61,7 @@ class SIGHT_IO_BITMAP_CLASS_API reader final : public io::reader::generic_object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        reader,
-        io::reader::generic_object_reader<data::image>,
-        io::reader::factory::make<reader>
-    );
+    SIGHT_DECLARE_CLASS(reader, io::reader::generic_object_reader<data::image>);
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 

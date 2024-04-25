@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,8 +34,6 @@
 #include <data/integer.hpp>
 #include <data/transfer_function.hpp>
 
-#include <io/__/writer/registry/macros.hpp>
-
 #include <itkImageSeriesWriter.h>
 #include <itkIntensityWindowingImageFilter.h>
 #include <itkJPEGImageIOFactory.h>
@@ -43,8 +41,6 @@
 
 #include <cmath>
 #include <filesystem>
-
-SIGHT_REGISTER_IO_WRITER(sight::io::itk::jpg_image_writer);
 
 namespace sight::io::itk
 {

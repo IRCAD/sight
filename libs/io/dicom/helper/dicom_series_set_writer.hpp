@@ -60,12 +60,7 @@ class SIGHT_IO_DICOM_CLASS_API dicom_series_set_writer :
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        dicom_series_set_writer,
-        io::writer::generic_object_writer<data::series_set>,
-        io::writer::factory::make<dicom_series_set_writer>
-    );
-    SIGHT_ALLOW_SHARED_FROM_THIS();
+    SIGHT_DECLARE_CLASS(dicom_series_set_writer, io::writer::generic_object_writer<data::series_set>);
 
     /**
      * @brief Constructor/Destructor

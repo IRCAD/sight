@@ -41,11 +41,7 @@ class SIGHT_IO_DICOM_CLASS_API file final : public io::reader::generic_object_re
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        file,
-        io::reader::generic_object_reader<data::series_set>,
-        io::reader::factory::make<file>
-    );
+    SIGHT_DECLARE_CLASS(file, io::reader::generic_object_reader<data::series_set>);
 
     SIGHT_IO_DICOM_API file();
 

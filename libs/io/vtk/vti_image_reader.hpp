@@ -53,13 +53,7 @@ class SIGHT_IO_VTK_CLASS_API vti_image_reader : public reader::generic_object_re
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        vti_image_reader,
-        io::reader::generic_object_reader<data::image>,
-        io::reader::factory::make<vti_image_reader>
-    );
-
-    SIGHT_ALLOW_SHARED_FROM_THIS();
+    SIGHT_DECLARE_CLASS(vti_image_reader, io::reader::generic_object_reader<data::image>);
 
     //! @brief Constructor.
     SIGHT_IO_VTK_API vti_image_reader();

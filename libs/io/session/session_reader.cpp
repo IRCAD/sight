@@ -25,10 +25,6 @@
 
 #include <core/crypto/password_keeper.hpp>
 
-#include <io/__/reader/registry/macros.hpp>
-
-SIGHT_REGISTER_IO_READER(sight::io::session::session_reader);
-
 namespace sight::io::session
 {
 

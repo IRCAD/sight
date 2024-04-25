@@ -53,12 +53,7 @@ class SIGHT_IO_VTK_CLASS_API stl_mesh_reader : public reader::generic_object_rea
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        stl_mesh_reader,
-        io::reader::generic_object_reader<data::mesh>,
-        io::reader::factory::make<stl_mesh_reader>
-    )
-    SIGHT_ALLOW_SHARED_FROM_THIS()
+    SIGHT_DECLARE_CLASS(stl_mesh_reader, io::reader::generic_object_reader<data::mesh>)
 
     /// @brief Constructor.
     SIGHT_IO_VTK_API stl_mesh_reader();

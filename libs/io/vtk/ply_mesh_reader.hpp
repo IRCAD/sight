@@ -53,12 +53,7 @@ class SIGHT_IO_VTK_CLASS_API ply_mesh_reader :
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        ply_mesh_reader,
-        io::reader::generic_object_reader<data::mesh>,
-        io::reader::factory::make<ply_mesh_reader>
-    )
-    SIGHT_ALLOW_SHARED_FROM_THIS()
+    SIGHT_DECLARE_CLASS(ply_mesh_reader, io::reader::generic_object_reader<data::mesh>)
 
     /// @brief Constructor.
     SIGHT_IO_VTK_API ply_mesh_reader();
