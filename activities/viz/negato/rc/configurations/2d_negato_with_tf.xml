@@ -119,7 +119,7 @@
 
         <service uid="slider_negato" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
             <inout key="image" uid="${image}" />
-            <sliceIndex>${orientation}</sliceIndex>
+            <config orientation="${orientation}" label="index" display_axis_selector="false" display_step_buttons="false" />
         </service>
 
         <service uid="distanceNegatoEditor" type="sight::module::ui::qt::metrics::Distance">

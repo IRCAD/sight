@@ -30,6 +30,7 @@
 #include <data/integer.hpp>
 #include <data/point.hpp>
 #include <data/point_list.hpp>
+#include <data/real.hpp>
 #include <data/string.hpp>
 #include <data/vector.hpp>
 
@@ -135,8 +136,7 @@ bool is_buf_null(const data::image::buffer_t* _buf, const unsigned int _len)
     return is_null;
 }
 
-//------------------------------------------------------------------------------
-
+//-------------------------------------------------------------------------------
 std::optional<std::int64_t> get_slice_index(
     const data::image& _image,
     const orientation_t& _orientation
@@ -178,8 +178,7 @@ std::optional<std::int64_t> get_slice_index(
     return {};
 }
 
-//------------------------------------------------------------------------------
-
+//-------------------------------------------------------------------------------
 void set_slice_index(
     data::image& _image,
     const orientation_t& _orientation,
@@ -210,6 +209,40 @@ void set_slice_index(
     }
 
     _image.set_field(orientation_index, value);
+}
+
+//-------------------------------------------------------------------------------
+
+std::optional<double_t> get_slice_position(
+    const data::image& _image,
+    const orientation_t& _orientation
+)
+{
+    const auto slice_idx_opt = get_slice_index(_image, _orientation);
+    if(!slice_idx_opt)
+    {
+        return {};
+    }
+
+    const auto& spacing          = _image.spacing();
+    const auto& origin           = _image.origin();
+    const std::int64_t slice_idx = slice_idx_opt.value();
+    return origin[_orientation] + static_cast<double>(slice_idx) * spacing[_orientation];
+}
+
+//-----------------------------------------------------------------------------
+void set_slice_position(
+    data::image& _image,
+    const orientation_t& _orientation,
+    double& _position
+)
+{
+    const auto& spacing = _image.spacing();
+    const auto& origin  = _image.origin();
+
+    const auto new_index =
+        static_cast<std::int64_t>((_position - origin[_orientation]) / spacing[_orientation]);
+    set_slice_index(_image, _orientation, new_index);
 }
 
 //------------------------------------------------------------------------------

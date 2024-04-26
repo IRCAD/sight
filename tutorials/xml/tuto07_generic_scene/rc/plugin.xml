@@ -189,7 +189,7 @@
             <!-- Editor representing a slider to navigate into image slices -->
             <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
                 <inout key="image" uid="image" />
-                <sliceIndex>axial</sliceIndex>
+                <config orientation="axial" label="index" display_axis_selector="true" display_step_buttons="true" />
             </service>
 
             <service uid="snapshotSrv" type="sight::module::ui::qt::com::signal_button">

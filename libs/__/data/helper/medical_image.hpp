@@ -145,6 +145,16 @@ SIGHT_DATA_API std::optional<std::int64_t> get_slice_index(
 );
 
 /**
+ * @brief Helper function to get current slice position on a medical image in a specific orientation (Axial, Sagittal,
+ * Frontal).
+ *
+ * @param _image : input image reference
+ * @param _orientation : desired orientation
+ * @return the current position as a double_t.
+ */
+
+SIGHT_DATA_API std::optional<double_t> get_slice_position(const data::image& _image, const orientation_t& _orientation);
+/**
  * @brief Helper function to set current slice index on a medical image in a specific orientation (Axial, Sagittal,
  * Frontal).
  *
@@ -156,6 +166,21 @@ SIGHT_DATA_API void set_slice_index(
     data::image& _image,
     const orientation_t& _orientation,
     std::int64_t _slice_count
+);
+
+/**
+ * @brief Helper function to set current slice position on a medical image in a specific orientation (Axial, Sagittal,
+ * Frontal).
+ *
+ * @param _image : input image reference
+ * @param _orientation : desired orientation.
+ * @param _position  : current slice position to set as double_t.
+ */
+
+SIGHT_DATA_API void set_slice_position(
+    data::image& _image,
+    const orientation_t& _orientation,
+    double_t& _position
 );
 
 /**

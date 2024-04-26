@@ -352,7 +352,7 @@
             <!-- Editors for Negato1 -->
             <service uid="sliderNegato1Srv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
                 <inout key="image" uid="image1" />
-                <sliceIndex>axial</sliceIndex>
+                <config orientation="axial" label="position" display_axis_selector="true" display_step_buttons="false" />
             </service>
 
             <service uid="readerFile2Srv" type="sight::module::ui::io::selector">
@@ -363,7 +363,7 @@
             <!-- Editors for Negato2 -->
             <service uid="sliderNegato2Srv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
                 <inout key="image" uid="image2" />
-                <sliceIndex>axial</sliceIndex>
+                <config orientation="axial" label="index" display_axis_selector="true" display_step_buttons="false" />
             </service>
 
             <service uid="imageSubstractSrv" type="sight::module::filter::image::images_substract">
@@ -375,7 +375,7 @@
             <!-- Editors for Negato3 -->
             <service uid="sliderNegato3Srv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
                 <inout key="image" uid="imageResult" />
-                <sliceIndex>axial</sliceIndex>
+                <config orientation="axial" label="index" display_axis_selector="true" display_step_buttons="false" />
             </service>
 
             <service uid="imageWriterSrv" type="sight::module::ui::io::selector">

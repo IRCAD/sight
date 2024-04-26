@@ -56,7 +56,7 @@
 
         <service uid="sliderIndexEditor" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
             <inout key="image" uid="${objectID}" />
-            <sliceIndex>${orientation}</sliceIndex>
+            <config orientation="${orientation}" label="index" display_axis_selector="false" display_step_buttons="false" />
         </service>
 
         <start uid="imageDumpLocker" />

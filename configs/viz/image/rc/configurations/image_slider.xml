@@ -108,8 +108,7 @@ Example:
 
         <service uid="negatoSlicerSrv" type="sight::module::ui::qt::image::slice_index_position_editor">
             <inout key="image" uid="${image}" />
-            <sliceIndex>${sliceIndex}</sliceIndex>
-            <displayAxisSelector>${enableSliceType}</displayAxisSelector>
+            <config orientation="${sliceIndex}" label="position" display_axis_selector="true" display_step_buttons="true" />
         </service>
 
         <service uid="windowLevelImage" type="sight::module::ui::qt::image::window_level">

@@ -29,14 +29,22 @@
 #include <ui/__/editor.hpp>
 #include <ui/qt/slice_selector.hpp>
 
+#include <map>
+
 namespace sight::module::ui::qt::image
 {
 
+enum label_option_t
+{
+    index,
+    position
+};
+
 /**
- * @brief   slice_index_position_editor service allows to change the slice index of an image.
+ * @brief   slice_index_position_editor service allows to change the slice index/position of an image.
  *
  * This is represented by
- *  - a slider to select the slice index
+ *  - a slider to select the slice index/position
  *  - a choice list to select the slice orientation (axial, frontal, sagittal)
  *
  * @section XML XML Configuration
@@ -44,17 +52,20 @@ namespace sight::module::ui::qt::image
  * @code{.xml}
    <service uid="..." type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
       <inout key="image" uid="..."/>
-      <sliceIndex>${orientationValue}</sliceIndex>
-      <displayAxisSelector>true</displayAxisSelector>
+      <config orientation="${orientationValue}" label="position" display_axis_selector="true"
+ * display_step_buttons="true" />
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b image [sight::data::image]: image on which the slice index will be changed
+ * - \b image [sight::data::image]: image on which the slice index/position will be changed.
  *
  * @subsection Configuration Configuration
- * - \b sliceIndex : Axis on which the index will be changed, must be "axial", "frontal" or "sagittal".
- * - \b displayAxisSelector : Allows to change the axis.
- * - \b displayStepButtons : Allows to change the slice index with step buttons.
+ * - \b orientation : Axis on which the index/position of slice will be changed, must be "axial", "frontal" or
+ *"sagittal". ( default = "axial")
+ * - \b label : allows to choose between showing the position of the slice or the index of the slice. (default =
+ *"index")
+ * - \b display_axis_selector : Allows to change the axis.(default = "true")
+ * - \b display_step_buttons : Allows to change the slice index/position with step buttons.(default = "false")
  */
 class slice_index_position_editor : public sight::ui::editor
 {
@@ -75,6 +86,7 @@ protected:
     /// @brief The slice type: axial, frontal, sagittal.
     using orientation_t = data::helper::medical_image::orientation_t;
 
+    void configuring() override;
     /**
      * @brief Install the layout.
      */
@@ -87,20 +99,6 @@ protected:
 
     /// Update editor information from the image
     void updating() override;
-
-    /**
-     * @brief Configure the editor.
-     *
-     * Example of configuration
-     * @code{.xml}
-       <service uid="slider_negato1" type="sight::module::ui::qt::image::slice_index_position_editor"
-     * auto_connect="true">
-        <sliceIndex>axial</sliceIndex>
-       </service>
-       @endcode
-       \b sliceIndex must be "axial", "frontal" or "sagittal".
-     */
-    void configuring() override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -147,7 +145,8 @@ private:
      * @}
      */
 
-    sight::ui::qt::slice_selector* m_slice_selector_panel {};
+    sight::ui::qt::slice_selector* m_slice_selector_with_index {};
+    sight::ui::qt::slice_selector* m_slice_selector_with_position {};
 
     data::ptr<data::image, data::access::inout> m_image {this, "image", true};
 
@@ -155,8 +154,14 @@ private:
     std::int64_t m_frontal_index {-1};
     std::int64_t m_sagittal_index {-1};
 
+    double m_axial_position {-1};
+    double m_sagittal_position {-1};
+    double m_frontal_position {-1};
+
+    label_option_t m_label_option {label_option_t::index};
     orientation_t m_orientation {orientation_t::z_axis};
 
+    static std::map<orientation_t, std::string> orientation_prefix_map;
     bool m_display_axis_selector {true};
 
     bool m_display_step_buttons {false};
