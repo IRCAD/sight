@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -344,39 +344,12 @@ void image_multi_distances::set_visible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-std::optional<Ogre::Vector3> image_multi_distances::get_nearest_picked_position(int _x, int _y)
-{
-    Ogre::SceneManager* sm = this->get_scene_manager();
-    const auto result      = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *sm);
-
-    if(result.has_value())
-    {
-        const auto* const camera = sm->getCamera(sight::viz::scene3d::layer::DEFAULT_CAMERA_NAME);
-        const auto* const vp     = camera->getViewport();
-
-        // Screen to viewport space conversion.
-        const float vp_x = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
-        const float vp_y = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
-
-        const Ogre::Ray ray = camera->getCameraToViewportRay(vp_x, vp_y);
-
-        Ogre::Vector3 normal = -ray.getDirection();
-        normal.normalise();
-
-        return result->second + normal * 0.01F;
-    }
-
-    return std::nullopt;
-}
-
-//------------------------------------------------------------------------------
-
 void image_multi_distances::button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y)
 {
     if(_button == left && m_tool_activated && !m_creation_mode)
     {
         const sight::viz::scene3d::layer::csptr layer = this->layer();
-        Ogre::SceneManager* const scene_mgr           = layer->get_scene_manager();
+        Ogre::SceneManager* scene_mgr                 = layer->get_scene_manager();
 
         const Ogre::Camera* const cam = layer->get_default_camera();
         const auto* const vp          = cam->getViewport();
@@ -401,12 +374,21 @@ void image_multi_distances::button_press_event(mouse_button _button, modifier /*
                 if(object_type == "Entity" && object->isVisible())
                 {
                     //First point
-                    auto first_point      = std::make_shared<data::point>();
-                    auto clicked_position = this->get_nearest_picked_position(_x, _y);
-                    first_point->set_coord({clicked_position->x, clicked_position->y, clicked_position->z});
+                    auto first_point = std::make_shared<data::point>();
+
+                    const auto pick_result = sight::viz::scene3d::utils::pick_object(
+                        _x,
+                        _y,
+                        m_query_mask,
+                        *scene_mgr,
+                        true
+                    );
+                    SIGHT_ASSERT("No intersection found", pick_result.has_value());
+                    const auto clicked_position = pick_result->second;
+                    first_point->set_coord({clicked_position.x, clicked_position.y, clicked_position.z});
                     //Second Point
                     auto second_point = std::make_shared<data::point>();
-                    second_point->set_coord({clicked_position->x, clicked_position->y, clicked_position->z});
+                    second_point->set_coord({clicked_position.x, clicked_position.y, clicked_position.z});
                     m_points.push_back(first_point);
                     m_points.push_back(second_point);
 
@@ -497,11 +479,19 @@ void image_multi_distances::mouse_move_event(
             Ogre::Vector3 new_pos;
             if(cam->getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
             {
+                Ogre::SceneManager* scene_mgr = layer->get_scene_manager();
+
                 // If something is picked, we will snap the landmark to it
-                std::optional<Ogre::Vector3> picked_pos = this->get_nearest_picked_position(_x, _y);
-                if(picked_pos.has_value())
+                const auto pick_result = sight::viz::scene3d::utils::pick_object(
+                    _x,
+                    _y,
+                    m_query_mask,
+                    *scene_mgr,
+                    true
+                );
+                if(pick_result.has_value())
                 {
-                    new_pos              = picked_pos.value();
+                    new_pos              = pick_result->second;
                     move_in_camera_plane = false;
                 }
             }

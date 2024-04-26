@@ -242,14 +242,6 @@ private:
     void activate_shape_tool(bool _activate);
 
     /**
-     * @brief Gets the nearest picked position if there is one.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     * @return The picked world coordinates.
-     */
-    std::optional<Ogre::Vector3> get_nearest_picked_position(int _x, int _y);
-
-    /**
      * @brief Creates a shape and add it into m_shapes.
      * @param _pl The point list used to create the shape.
      */

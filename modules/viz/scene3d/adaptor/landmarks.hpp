@@ -422,14 +422,6 @@ private:
     void hide_landmarks();
 
     /**
-     * @brief Gets the nearest picked position if there is one.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     * @return The picked world coordinates.
-     */
-    std::optional<Ogre::Vector3> get_nearest_picked_position(int _x, int _y);
-
-    /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
      * @param _landmark the landmark to hide.
      */

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -833,7 +833,8 @@ std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > utils::pick_objec
     int _x,
     int _y,
     std::uint32_t _query_mask,
-    Ogre::SceneManager& _layer
+    Ogre::SceneManager& _layer,
+    bool _shift_toward_camera
 )
 {
     const auto* const camera = _layer.getCamera(viz::scene3d::layer::DEFAULT_CAMERA_NAME);
@@ -847,6 +848,11 @@ std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > utils::pick_objec
     if(entityFound)
     {
         SIGHT_DEBUG("Entity find and intersect at " << rayIntersect << "(WS)");
+
+        if(_shift_toward_camera)
+        {
+            rayIntersect -= vp_ray.getDirection() * 0.01F;
+        }
     }
     else
     {

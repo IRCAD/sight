@@ -188,7 +188,8 @@ public:
         int _x,
         int _y,
         std::uint32_t _query_mask,
-        Ogre::SceneManager& _layer
+        Ogre::SceneManager& _layer,
+        bool _shift_toward_camera = false
     );
 
     /**
