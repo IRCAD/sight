@@ -38,17 +38,14 @@ namespace sight::app::extension
  * @brief This class allows to register all the configuration parameters which has the point extension
  *        "sight::app::extension::parameters".
  */
-class SIGHT_APP_CLASS_API parameters : public core::base_object
+class SIGHT_APP_CLASS_API parameters final
 {
 public:
 
-    SIGHT_DECLARE_CLASS(parameters, core::base_object);
+    using sptr = std::shared_ptr<parameters>;
 
     /// Return the default global instance of parameters
     SIGHT_APP_API static parameters::sptr get_default();
-
-    SIGHT_APP_API parameters();
-    SIGHT_APP_API ~parameters() override = default;
 
     /**
      * @brief Parse module information to retrieve config parameters declaration

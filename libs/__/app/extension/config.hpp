@@ -65,13 +65,11 @@ public:
  * @brief This class allows to register all the configuration which has the point extension
  *        "sight::app::extension::config".
  */
-class SIGHT_APP_CLASS_API config
+class SIGHT_APP_CLASS_API config final
 {
 public:
 
     using sptr = SPTR(config);
-
-    SIGHT_APP_API config();
 
     /**
      * @brief Parses module information to retrieve configuration declaration.

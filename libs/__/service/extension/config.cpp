@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,10 +86,11 @@ void config::add_service_config_info
         m_reg.find(_config_id) == m_reg.end()
     );
 
-    service_config_info::sptr info = std::make_shared<service_config_info>();
-    info->service     = sight::core::runtime::filter_id(_service);
-    info->desc        = _desc;
-    info->config      = _config;
+    service_config_info info {
+        .service = sight::core::runtime::filter_id(_service),
+        .desc    = _desc,
+        .config  = _config,
+    };
     m_reg[_config_id] = info;
 }
 
@@ -121,9 +122,9 @@ boost::property_tree::ptree config::get_service_config(
     );
     SIGHT_ASSERT(
         "The id " << _config_id << " is not allowed for this service " << service_impl,
-        service_impl.empty() || iter->second->service.empty() || iter->second->service == service_impl
+        service_impl.empty() || iter->second.service.empty() || iter->second.service == service_impl
     );
-    return iter->second->config;
+    return iter->second.config;
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +137,7 @@ const std::string& config::get_config_desc(const std::string& _config_id) const
         "The id " << _config_id << " is not found in the application configuration registry",
         iter != m_reg.end()
     );
-    return iter->second->desc;
+    return iter->second.desc;
 }
 
 //-----------------------------------------------------------------------------
@@ -149,8 +150,8 @@ std::vector<std::string> config::get_all_config_for_service(std::string _service
 
     for(const auto& srv_cfg : m_reg)
     {
-        service_config_info::sptr info = srv_cfg.second;
-        if((info->service.empty() && !_matching_only) || info->service == service_impl)
+        const service_config_info& info = srv_cfg.second;
+        if((info.service.empty() && !_matching_only) || info.service == service_impl)
         {
             configs.push_back(srv_cfg.first);
         }

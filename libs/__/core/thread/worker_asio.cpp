@@ -63,7 +63,7 @@ public:
 
     void post(task_t _handler) override;
 
-    thread_id_t get_thread_id() const override;
+    [[nodiscard]] thread_id_t get_thread_id() const override;
 
     void set_thread_name(const std::string& _thread_name) const override;
 

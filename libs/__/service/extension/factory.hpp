@@ -46,10 +46,11 @@ namespace extension
  * The factory is a registry of all the services. It allows to retrieve the informations necessary to
  * instantiate the services.
  */
-class SIGHT_SERVICE_CLASS_API factory : public core::base_object // NOLINT(bugprone-forward-declaration-namespace)
+class SIGHT_SERVICE_CLASS_API factory final
 {
 public:
 
+    using sptr          = std::shared_ptr<factory>;
     using key_t         = std::string;
     using key_vector_t  = std::vector<key_t>;
     using string_pair_t = std::pair<std::string, std::string>;
@@ -57,8 +58,6 @@ public:
     /// We keep boost here because std implementation does not support a pair of std::string as key
     using support_map_t = boost::unordered_map<string_pair_t, bool>;
     using factory_t     = std::function<std::shared_ptr<service::base>()>;
-
-    SIGHT_DECLARE_CLASS(factory, core::base_object);
 
     /// Return the unique Instance, create it if required at first access
     SIGHT_SERVICE_API static factory::sptr get();
@@ -125,7 +124,7 @@ public:
     /**
      * @brief returns the registered factory keys.
      */
-    SIGHT_SERVICE_API virtual key_vector_t get_factory_keys() const;
+    SIGHT_SERVICE_API key_vector_t get_factory_keys() const;
 
 private:
 

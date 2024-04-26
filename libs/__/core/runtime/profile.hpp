@@ -26,6 +26,8 @@
 
 #include <core/base.hpp>
 
+#include <boost/noncopyable.hpp>
+
 #include <filesystem>
 #include <functional>
 #include <vector>
@@ -36,16 +38,15 @@ namespace sight::core::runtime
 /**
  * @brief   Implements a module set profile.
  */
-class SIGHT_CORE_CLASS_API profile : public core::base_object
+class SIGHT_CORE_CLASS_API profile : public boost::noncopyable
 {
 public:
 
+    using sptr              = std::shared_ptr<profile>;
     using params_container  = std::vector<std::string>;
     using run_callback_type = std::function<int ()>;
 
-    SIGHT_DECLARE_CLASS(profile, base_object);
-
-    SIGHT_CORE_API ~profile() override;
+    SIGHT_CORE_API virtual ~profile();
 
     ///  Starts the profile.
     SIGHT_CORE_API virtual void start() = 0;

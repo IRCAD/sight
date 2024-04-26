@@ -124,11 +124,6 @@ void config::addapp_info(
 
 //-----------------------------------------------------------------------------
 
-config::config()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void config::clear_registry()
 {
     core::mt::write_lock lock(m_registry_mutex);

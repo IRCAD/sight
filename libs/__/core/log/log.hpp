@@ -35,7 +35,7 @@ namespace sight::core::log
  * @brief Log
  * @brief Log class used to retrieve information to the user
  */
-class SIGHT_CORE_CLASS_API log : public core::base_object
+class SIGHT_CORE_CLASS_API log final
 {
 public:
 
@@ -50,7 +50,7 @@ public:
     SIGHT_CORE_API log(level_t _level, std::string _message);
 
     /// Destructor
-    SIGHT_CORE_API ~log() override;
+    SIGHT_CORE_API ~log();
 
     /// Set Log level
     void set_level(level_t _level)

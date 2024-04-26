@@ -48,13 +48,11 @@ namespace sight::service
  * The API of ObjectService should not be directly invoked,
  * service/op methods (i.e. add, get,...) should be used instead
  */
-class object_service : public core::base_object
+class object_service
 {
 public:
 
-    SIGHT_DECLARE_CLASS(object_service, core::base_object);
-    SIGHT_ALLOW_SHARED_FROM_THIS();
-
+    using sptr             = std::shared_ptr<object_service>;
     using service_vector_t = std::set<SPTR(service::base)>;
 
     /// Return some informations contain in the registry
