@@ -61,6 +61,25 @@ if(UNIX)
     include(${FWCMAKE_BUILD_FILES_DIR}/linux/manpage.cmake)
 endif()
 
+# Get the privilege excalation string
+macro(get_admin_request_string ADMIN_REQUEST)
+    string(
+        CONCAT ${ADMIN_REQUEST}
+               "rem This executable was marked as requiring admin access.\n"
+               "rem Check if we have elevated privileges\n"
+               "whoami /all | findstr S-1-16-12288 > nul\n"
+               "rem if we do not have those, restart the script as Admin\n"
+               "if %errorlevel%==1 if not \"%~1\"==\"/noadmin\" "
+               "(\n"
+               "    if \"%~1\" == \"\" (\n"
+               "        powershell Start-Process -verb runas '%~f0' & exit /b\n"
+               "    ) else (\n"
+               "        powershell Start-Process -verb runas -ArgumentList '%*' '%~f0' & exit /b\n"
+               "    )\n"
+               ")\n"
+    )
+endmacro()
+
 # Create the target sources group
 macro(group_maker SIGHT_TARGET)
     file(GLOB_RECURSE PRJ_SOURCES "${${SIGHT_TARGET}_DIR}/*")
@@ -324,15 +343,7 @@ macro(fw_exec SIGHT_TARGET)
         set(PROJECT_EXECUTABLE ${SIGHT_TARGET})
 
         if(${FWEXEC_REQUIRE_ADMIN})
-            string(
-                CONCAT ADMIN_REQUEST
-                       "rem This executable was marked as requiring admin access.\n"
-                       "rem Check if we have elevated privileges\n"
-                       "whoami /all | findstr S-1-16-12288 > nul\n"
-                       "rem if we do not have those, restart the script as Admin\n"
-                       "if %errorlevel%==1 if not \"%~1\"==\"/noadmin\" "
-                       "(powershell start -verb runas '%~f0' %* & exit /b)\n"
-            )
+            get_admin_request_string(ADMIN_REQUEST)
         endif()
 
         configure_file(
@@ -831,15 +842,7 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
             file(TO_NATIVE_PATH "${PROFILE_PATH}" PROFILE_PATH)
 
             if(${TARGET_REQUIRE_ADMIN})
-                string(
-                    CONCAT ADMIN_REQUEST
-                           "rem This executable was marked as requiring admin access.\n"
-                           "rem Check if we have elevated privileges\n"
-                           "whoami /all | findstr S-1-16-12288 > nul\n"
-                           "rem if we do not have those, restart the script as Admin\n"
-                           "if %errorlevel%==1 if not \"%~1\"==\"/noadmin\" "
-                           "(powershell start -verb runas '%~f0' %* & exit /b)\n"
-                )
+                get_admin_request_string(ADMIN_REQUEST)
             endif()
 
             foreach(MODULE ${SIGHT_EXTRA_MODULES})
