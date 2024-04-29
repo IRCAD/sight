@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -720,6 +720,8 @@ service::base::sptr config_manager::create_service(const detail::service_config&
         if(!worker)
         {
             worker = core::thread::worker::make();
+            worker->set_thread_name(_srv_config.m_worker);
+
             core::thread::add_worker(_srv_config.m_worker, worker);
             m_created_workers.push_back(worker);
         }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,6 +64,8 @@ public:
     void post(task_t _handler) override;
 
     thread_id_t get_thread_id() const override;
+
+    void set_thread_name(const std::string& _thread_name) const override;
 
     SPTR(core::thread::timer) create_timer() override;
 
@@ -238,6 +240,13 @@ void worker_asio::post(task_t _handler)
 thread_id_t worker_asio::get_thread_id() const
 {
     return m_thread->get_id();
+}
+
+//------------------------------------------------------------------------------
+
+void worker_asio::set_thread_name(const std::string& _thread_name) const
+{
+    core::thread::set_thread_name(_thread_name, m_thread->native_handle());
 }
 
 //------------------------------------------------------------------------------
