@@ -26,4 +26,11 @@
         <object>sight::data::matrix_tl</object>
         <desc>Saves the matrices timeline into a csv file</desc>
     </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::controller</type>
+        <service>sight::module::io::matrix::validator</service>
+        <object>sight::data::matrix4</object>
+        <desc>Checks if a matrix4 is a valid transformation matrix</desc>
+    </extension>
 </plugin>

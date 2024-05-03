@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -309,5 +309,74 @@ void matrix4_test::glm_getter_setter_test()
 }
 
 //------------------------------------------------------------------------------
+
+void matrix4_test::orthogonality_test()
+{
+    sight::data::matrix4::container_t coefs = {2, -2, .3, .12,
+                                               4, 8.9, 4.2, 1.2,
+                                               7.8, -12.1, 2.3, 1.2,
+                                               .3, 1.21, -3.1, 1.2
+    };
+
+    sight::data::matrix4 mat;
+    mat = coefs;
+
+    CPPUNIT_ASSERT_EQUAL(false, geometry::data::is_orthogonal(mat));
+
+    coefs = {
+        0., 1., 0., .12,
+        1., 0., 0., 12.,
+        0., 0., -1., 40.,
+        0., 0., 0., 1.
+    };
+
+    mat = coefs;
+
+    CPPUNIT_ASSERT_EQUAL(true, geometry::data::is_orthogonal(mat));
+
+    coefs = {
+        0.001, 1., 0., .12,
+        1., 0., 0., 12.,
+        0., 0., -0.9999, 40.,
+        0., 0., 0., 1.
+    };
+
+    mat = coefs;
+
+    CPPUNIT_ASSERT_EQUAL(false, geometry::data::is_orthogonal(mat));
+
+    coefs = {
+        0.057, 0.99824, 0.01589, 80,
+        0.98927, -0.05433, -0.13557, 3.79,
+        -0.01344, 0.02345, -0.99063, -19,
+        0, 0, 0, 1
+    };
+
+    mat = coefs;
+
+    CPPUNIT_ASSERT_EQUAL(false, geometry::data::is_orthogonal(mat));
+
+    coefs = {
+        0.00107661, -0.02771048, -0.999615411, 0.51901669,
+        0.549932075, 0.834904851, -0.02255222, 5.2933552,
+        0.835208689, -0.54969629, 0.016137752, -20.156430847,
+        0, 0, 0, 1
+    };
+
+    mat = coefs;
+
+    CPPUNIT_ASSERT_EQUAL(true, geometry::data::is_orthogonal(mat));
+
+    coefs = {
+        0.304829245, 0.646320775, -0.699534551, 6.729738147,
+        -0.386013738, -0.587616669, -0.7111259, 0.900330841,
+        -0.870673605, 0.486801918, 0.070365953, 9.34067625,
+        0, 0, 0, 1
+    };
+
+    mat = coefs;
+
+    CPPUNIT_ASSERT_EQUAL(true, geometry::data::is_orthogonal(mat));
+}
 
 } // namespace sight::geometry::data::ut

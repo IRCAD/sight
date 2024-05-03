@@ -84,6 +84,22 @@ SIGHT_GEOMETRY_DATA_API bool is_identity(
 );
 
 /**
+ * @brief Return whether a data::matrix4 is orthogonal
+ * @param[in] _trf Input data::matrix4
+ * @param[in] _epsilon Precision of the test (default 1e-6)
+ * @return boolean value: true if the matrix is orthogonal, false otherwise.
+ */
+SIGHT_GEOMETRY_DATA_API bool is_orthogonal(const sight::data::matrix4& _trf, double _epsilon = 1e-6);
+
+/**
+ * @brief Return whether a data::matrix4 is homogeneous
+ * @param[in] _trf Input data::matrix4
+ * @param[in] _epsilon Precision of the test (default 1e-6)
+ * @return boolean value: true if the matrix is homogeneous, false otherwise.
+ */
+SIGHT_GEOMETRY_DATA_API bool is_homogeneous(const sight::data::matrix4& _trf, double _epsilon = 1e-6);
+
+/**
  * @brief Convert a data::matrix4 into a GLM matrix.
  * @param[in] _trf Input data::matrix4.
  * @return GLM matrix.

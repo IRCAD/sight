@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,23 +21,21 @@
 
 #pragma once
 
-#include <data/matrix4.hpp>
-
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::geometry::data::ut
+namespace sight::module::io::matrix::ut
 {
 
 /**
- * @brief Test many methods to create image.
+ * @brief Test the matrix writer.
  */
-class matrix4_test : public CPPUNIT_NS::TestFixture
+class validator_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(matrix4_test);
-CPPUNIT_TEST(identity_matrix_test);
-CPPUNIT_TEST(matrix_test);
-CPPUNIT_TEST(glm_getter_setter_test);
-CPPUNIT_TEST(orthogonality_test);
+CPPUNIT_TEST_SUITE(validator_test);
+CPPUNIT_TEST(basic_test);
+CPPUNIT_TEST(orthogonal_test);
+CPPUNIT_TEST(homogeneous_test);
+CPPUNIT_TEST(empty_mat_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,10 +44,10 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void identity_matrix_test();
-    static void matrix_test();
-    static void glm_getter_setter_test();
-    static void orthogonality_test();
+    static void basic_test();
+    static void orthogonal_test();
+    static void homogeneous_test();
+    static void empty_mat_test();
 };
 
-} // namespace sight::geometry::data::ut
+} // namespace sight::module::io::matrix::ut

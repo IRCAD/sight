@@ -26,6 +26,8 @@
 
 #include <io/__/service/reader.hpp>
 
+#include <service/notifier.hpp>
+
 namespace sight::module::io::session
 {
 
@@ -94,7 +96,8 @@ namespace sight::module::io::session
  * @see sight::io::session::session_reader
  */
 
-class reader final : public sight::io::service::reader
+class reader final : public sight::io::service::reader,
+                     public sight::service::notifier
 {
 public:
 
@@ -107,7 +110,7 @@ public:
 
         using signal_t = sight::core::com::signals::key_t;
         inline static const signal_t SESSION_LOADED         = "session_loaded";
-        inline static const signal_t SESSION_LOADING_FAILED = "sessionLoadingFailed";
+        inline static const signal_t SESSION_LOADING_FAILED = "session_loading_failed";
     };
 
     reader() noexcept;
