@@ -270,9 +270,12 @@ void progress_bar::update_widgets(core::jobs::base::wptr _weak_job_to_remove)
         // Get the current job as shared pointer.
         if(const auto& job = weak_job.lock(); job && job->get_state() == core::jobs::base::state::running)
         {
-            const auto name  = job->name();
-            const auto title = name.empty() ? QString() : QString::fromStdString(name + " - ");
-            const int value  = int((float(job->get_done_work_units()) / float(job->get_total_work_units()) * 100));
+            const auto name       = job->name();
+            const std::string msg = (job->get_logs().empty()) ? "" : job->get_logs().back();
+            const auto title      = name.empty() ? QString() : QString::fromStdString(
+                name + (msg.empty() ? "" : " - ") + msg
+            );
+            const int value = int((float(job->get_done_work_units()) / float(job->get_total_work_units()) * 100));
 
             if(!m_title.isNull() && m_title->text() != title)
             {

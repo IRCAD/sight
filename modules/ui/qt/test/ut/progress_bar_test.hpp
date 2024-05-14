@@ -47,7 +47,13 @@ public:
 
 private:
 
-    void launch_test(bool _show_title, bool _show_cancel, bool _pulse, const std::string& _svg = std::string());
+    void launch_test(
+        bool _show_title,
+        bool _show_cancel,
+        bool _pulse,
+        const std::string& _svg = std::string(),
+        bool _show_log          = false
+    );
 
     /// The container service.
     sight::service::base::sptr m_container;

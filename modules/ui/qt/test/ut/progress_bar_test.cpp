@@ -122,7 +122,13 @@ void progress_bar_test::svg_test()
 
 //------------------------------------------------------------------------------
 
-void progress_bar_test::launch_test(bool _show_title, bool _show_cancel, bool _pulse, const std::string& _svg)
+void progress_bar_test::launch_test(
+    bool _show_title,
+    bool _show_cancel,
+    bool _pulse,
+    const std::string& _svg,
+    bool _show_log
+)
 {
     // Build configuration
     service::config_t config;
@@ -230,13 +236,18 @@ void progress_bar_test::launch_test(bool _show_title, bool _show_cancel, bool _p
     auto job                            = std::make_shared<dummy_job>(job_name);
     progress_bar->slot("show_job")->run(std::static_pointer_cast<core::jobs::base>(job));
 
-    // Check that progress_bar is setted with correct information.
+    // Check that progress_bar is set with correct information.
     for(int i = 1 ; i <= 100 ; i++)
     {
         job->done_work(std::uint64_t(i));
 
+        if(_show_log)
+        {
+            job->log(std::to_string(i));
+        }
+
         auto check_progress_info = wait_for_widget(
-            [_show_title, _pulse, _svg, i, job, job_name, this](QWidget* _widget)
+            [_show_title, _pulse, _svg, _show_log, i, job, job_name, this](QWidget* _widget)
             {
                 if(_widget != nullptr && _widget->objectName().startsWith(QString::fromStdString(m_child_uuid)))
                 {
@@ -245,8 +256,8 @@ void progress_bar_test::launch_test(bool _show_title, bool _show_cancel, bool _p
                     {
                         CPPUNIT_ASSERT_EQUAL_MESSAGE(
                             "The title of progress_bar should be equal to job name.",
-                            job_name + " - ",
-                            label->text().toStdString()
+                            job_name,
+                            label->text().toStdString() + (_show_log ? " - " + std::to_string(i) : "")
                         );
 
                         correct_title = true;
