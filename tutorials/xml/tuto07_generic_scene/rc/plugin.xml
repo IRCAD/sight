@@ -74,6 +74,8 @@
                     <action sid="openImageAct" name="Open image" icon="sight::module::ui::icons/image_series.svg" shortcut="Ctrl+I" />
                     <action sid="openMeshAct" name="Open mesh" icon="sight::module::ui::icons/model_series.svg" shortcut="Ctrl+M" />
                     <action sid="openTextureAct" name="Open texture" icon="sight::module::ui::icons/opacity.svg" shortcut="Ctrl+T" />
+                    <action sid="fullscreen_act" name="Fullscreen" icon="sight::module::ui::icons/maximize.svg" />
+                    <action sid="windowed_act" name="Windowed" icon="sight::module::ui::icons/restore.svg" />
                 </actions>
             </service>
 
@@ -146,6 +148,16 @@
             <service uid="openImageAct" type="sight::module::ui::action" />
             <service uid="openMeshAct" type="sight::module::ui::action" />
             <service uid="openTextureAct" type="sight::module::ui::action" />
+
+            <!-- Set the view in full screen -->
+            <service uid="fullscreen_act" type="sight::module::ui::viz::screen_selector">
+                <config mode="select" />
+            </service>
+
+            <!-- Set the view in windowed  -->
+            <service uid="windowed_act" type="sight::module::ui::action">
+                <state visible="false" />
+            </service>
 
             <!-- ******************************* Services ***************************************** -->
 
@@ -241,7 +253,32 @@
                 <signal>openImageAct/updated</signal>
                 <signal>openMeshAct/updated</signal>
                 <signal>openTextureAct/updated</signal>
+                <signal>fullscreen_act/updated</signal>
+                <signal>windowed_act/updated</signal>
                 <slot>speedDialSrv/fold</slot>
+            </connect>
+
+            <!-- Manage full screen -->
+            <connect>
+                <signal>fullscreen_act/screen_selected</signal>
+                <slot>genericSceneSrv/enable_fullscreen</slot>
+            </connect>
+
+            <connect>
+                <signal>genericSceneSrv/fullscreen_set</signal>
+                <slot>windowed_act/show</slot>
+                <slot>fullscreen_act/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>windowed_act/clicked</signal>
+                <slot>genericSceneSrv/disable_fullscreen</slot>
+            </connect>
+
+            <connect>
+                <signal>genericSceneSrv/fullscreen_unset</signal>
+                <slot>windowed_act/hide</slot>
+                <slot>fullscreen_act/show</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -185,10 +185,11 @@ void speed_dial::update_actions(std::vector<QWidget*> _actions)
     // Update the action container
     for(QObject* obj : m_actions_container->children())
     {
-        if(obj->isWidgetType() && std::ranges::find(m_actions, obj) == m_actions.end())
+        if(auto* widget = qobject_cast<QWidget*>(obj);
+           widget != nullptr && std::ranges::find(m_actions, obj) == m_actions.end())
         {
-            static_cast<QWidget*>(obj)->hide();
-            obj->setParent(nullptr);
+            widget->hide();
+            widget->setParent(nullptr);
         }
     }
 

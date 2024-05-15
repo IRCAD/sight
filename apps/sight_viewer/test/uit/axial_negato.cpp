@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -57,8 +57,8 @@ void axial_negato::test()
             // We want to hide the volume, we must click on the Show/hide volume button to achieve this
             helper::button::push(_tester, "toolBarView/Show/hide volume");
 
-            // Then we want to display the negato view, we must click on the Negato view button to achieve this
-            helper::button::push(_tester, "toolBarView/Negato view");
+            // Then we want to display the negato views, we must click on the restore button from the 3d scene toolbar
+            helper::button::push(_tester, "topToolbarView/Restore");
 
             // For the test to work, we must first reset all negatos to 0
             reset_negatos(_tester);

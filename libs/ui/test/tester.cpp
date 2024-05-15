@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -308,15 +308,9 @@ void tester::start(std::function<void()> _f)
                 }
 
                 QTest::qWait(2000); // Temporize, because the window takes time to effectively show up
+
                 _f();
-                qApp->postEvent(
-                    qApp,
-                    new test_event(
-                        [this]
-                {
-                    m_main_window->close();
-                })
-                );
+
                 if(m_verbose_mode)
                 {
                     qDebug() << "Waiting up to 5000 ms for the main window to close";
@@ -325,10 +319,12 @@ void tester::start(std::function<void()> _f)
                 ok = QTest::qWaitFor(
                     [this]() -> bool
                 {
+                    QTimer::singleShot(0, m_main_window, &QWidget::close);
                     return qApp->activeWindow() == nullptr || !m_main_window->isVisible();
                 },
                     DEFAULT_TIMEOUT
                 );
+
                 if(!ok)
                 {
                     fail("The main window never closed");

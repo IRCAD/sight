@@ -260,9 +260,6 @@
                         <menuItem name="Load series" icon="sight::module::ui::icons/load.svg" />
                         <menuItem name="Open PACS" icon="sight::module::ui::icons/connection.svg" style="check" />
                         <separator />
-                        <menuItem name="Negato view" icon="sight::module::ui::icons/layers.svg" />
-                        <menuItem name="Volume view" icon="sight::module::ui::icons/volume.svg" />
-                        <separator />
                         <menuItem name="Show/hide mesh" icon="sight::module::ui::icons/show_mesh.svg" style="check" />
                         <menuItem name="Show/hide volume" icon="sight::module::ui::icons/show_volume.svg" style="check" />
                         <menuItem name="Show/hide negato" icon="sight::module::ui::icons/show_negato.svg" style="check" />
@@ -290,8 +287,6 @@
                 <registry>
                     <menuItem sid="openSeriesSetAct" start="true" />
                     <menuItem sid="pacsAct" start="true" />
-                    <menuItem sid="negatoViewAct" start="true" />
-                    <menuItem sid="volumeViewAct" start="true" />
                     <menuItem sid="meshVisibilityAct" start="true" />
                     <menuItem sid="volumeVisibilityAct" start="true" />
                     <menuItem sid="negato3DVisibilityAct" start="true" />
@@ -321,13 +316,6 @@
                 <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::series_set_reader" />
                 <config id="SightViewer_itk_SrvCfg" service="sight::module::io::itk::series_set_reader" />
                 <config id="SightViewer_dicom_SrvCfg" service="sight::module::io::dicom::reader" />
-            </service>
-
-            <!-- Show the negato/volume view -->
-            <service uid="negatoViewAct" type="sight::module::ui::action" />
-
-            <service uid="volumeViewAct" type="sight::module::ui::action">
-                <state visible="false" />
             </service>
 
             <!-- Switch between parameters -->
@@ -452,9 +440,6 @@
             <service uid="ogreGenericSceneCfg" type="sight::app::config_controller">
                 <appConfig id="sight::config::viz::scene3d::imageSplitViews" />
                 <parameter replace="WID_PARENT" by="sceneView" />
-                <parameter replace="NEGATO_VIEW_RECEIVE_CHANNEL" by="NEGATO_VIEW_SENDER_CHANNEL" />
-                <parameter replace="VOLUME_VIEW_RECEIVE_CHANNEL" by="VOLUME_VIEW_SENDER_CHANNEL" />
-                <parameter replace="NEGATO_VOLUME_VIEW_TOGGLE_SENDER_CHANNEL" by="NEGATO_VOLUME_VIEW_TOGGLE_RECEIVER_CHANNEL" />
                 <parameter replace="VR_BOOL_PARAM_RECEIVER_CHANNEL" by="VOLUME_BOOL_SENDER_CHANNEL" />
                 <parameter replace="VR_INT_PARAM_RECEIVER_CHANNEL" by="VOLUME_INT_SENDER_CHANNEL" />
                 <parameter replace="VR_DOUBLE_PARAM_RECEIVER_CHANNEL" by="VOLUME_DOUBLE_SENDER_CHANNEL" />
@@ -556,23 +541,6 @@
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
-
-            <connect channel="NEGATO_VIEW_SENDER_CHANNEL">
-                <signal>negatoViewAct/clicked</signal>
-                <slot>negatoViewAct/hide</slot>
-                <slot>volumeViewAct/show</slot>
-            </connect>
-
-            <connect channel="VOLUME_VIEW_SENDER_CHANNEL">
-                <signal>volumeViewAct/clicked</signal>
-                <slot>volumeViewAct/hide</slot>
-                <slot>negatoViewAct/show</slot>
-            </connect>
-
-            <connect channel="NEGATO_VOLUME_VIEW_TOGGLE_RECEIVER_CHANNEL">
-                <slot>negatoViewAct/toggle_visibility</slot>
-                <slot>volumeViewAct/toggle_visibility</slot>
-            </connect>
 
             <connect channel="VR_VISIBILITY_SENDER_CHANNEL">
                 <signal>volumeVisibilityAct/is_checked</signal>

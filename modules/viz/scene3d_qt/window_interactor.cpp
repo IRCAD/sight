@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,32 +108,6 @@ void window_interactor::create_container(
 
     this->set_fullscreen(_fullscreen, -1);
 
-    auto toggle_fullscreen = [this]
-                             {
-                                 this->set_fullscreen(!m_is_full_screen, -1);
-
-                                 service::base::sptr render_service                    = m_render_service.lock();
-                                 sight::viz::scene3d::render::sptr ogre_render_service =
-                                     std::dynamic_pointer_cast<sight::viz::scene3d::render>(render_service);
-                                 if(m_is_full_screen)
-                                 {
-                                     auto enable_full_screen_slot = ogre_render_service->slot(
-                                         sight::viz::scene3d::render::ENABLE_FULLSCREEN
-                                     );
-                                     enable_full_screen_slot->run(0);
-                                 }
-                                 else
-                                 {
-                                     auto disable_full_screen_slot = ogre_render_service->slot(
-                                         sight::viz::scene3d::render::DISABLE_FULLSCREEN
-                                     );
-                                     disable_full_screen_slot->run();
-                                 }
-                             };
-
-    auto* toggle_fullscreen_shortcut = new QShortcut(QString("F11"), m_ogre_widget);
-    QObject::connect(toggle_fullscreen_shortcut, &QShortcut::activated, toggle_fullscreen);
-
     const auto render_service = std::dynamic_pointer_cast<sight::viz::scene3d::render>(m_render_service.lock());
     SIGHT_ASSERT("RenderService wrongly instantiated. ", render_service);
 
@@ -234,6 +208,12 @@ sight::viz::scene3d::graphics_worker* window_interactor::create_graphics_worker(
 
 void window_interactor::set_fullscreen(bool _fullscreen, int _screen_number)
 {
+    if(!m_fullscreen_shortcut.isNull())
+    {
+        m_fullscreen_shortcut->deleteLater();
+        m_fullscreen_shortcut.clear();
+    }
+
     QWidget* const container = m_parent_container->get_qt_container();
     m_is_full_screen = _fullscreen;
     if(_fullscreen)
@@ -260,6 +240,34 @@ void window_interactor::set_fullscreen(bool _fullscreen, int _screen_number)
         m_ogre_widget->setParent(nullptr);
         m_ogre_widget->showFullScreen();
         m_ogre_widget->setGeometry(screenres);
+
+        m_fullscreen_shortcut = new QShortcut(
+            QKeySequence::FullScreen,
+            m_ogre_widget,
+            [this]
+            {
+                this->set_fullscreen(!m_is_full_screen, -1);
+
+                auto render_service      = m_render_service.lock();
+                auto ogre_render_service = std::dynamic_pointer_cast<sight::viz::scene3d::render>(render_service);
+
+                if(m_is_full_screen)
+                {
+                    auto enable_full_screen_slot = ogre_render_service->slot(
+                        sight::viz::scene3d::render::ENABLE_FULLSCREEN
+                    );
+
+                    enable_full_screen_slot->run(0);
+                }
+                else
+                {
+                    auto disable_full_screen_slot = ogre_render_service->slot(
+                        sight::viz::scene3d::render::DISABLE_FULLSCREEN
+                    );
+
+                    disable_full_screen_slot->run();
+                }
+            });
     }
     else if(container->layout()->isEmpty())
     {
