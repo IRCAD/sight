@@ -149,7 +149,7 @@ std::vector<double> to_floats(const std::vector<fiducials_series::point3>& _poin
 
 //------------------------------------------------------------------------------
 
-gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::referenced_image _referenced_image)
+gdcm::DataSet to_gdcm(detail::series_impl& _pimpl, fiducials_series::referenced_image _referenced_image)
 {
     std::unique_lock lock(_pimpl.m_mutex);
 
@@ -163,7 +163,7 @@ gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::referenced_i
 
 //------------------------------------------------------------------------------
 
-gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::graphic_coordinates_data _graphic_coordinates_data)
+gdcm::DataSet to_gdcm(detail::series_impl& _pimpl, fiducials_series::graphic_coordinates_data _graphic_coordinates_data)
 {
     std::unique_lock lock(_pimpl.m_mutex);
 
@@ -179,7 +179,7 @@ gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::graphic_coor
 
 //------------------------------------------------------------------------------
 
-gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial _fiducial)
+gdcm::DataSet to_gdcm(detail::series_impl& _pimpl, fiducials_series::fiducial _fiducial)
 {
     std::unique_lock lock(_pimpl.m_mutex);
 
@@ -212,7 +212,7 @@ gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial _fi
 
 //------------------------------------------------------------------------------
 
-gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial_set _fiducial_set)
+gdcm::DataSet to_gdcm(detail::series_impl& _pimpl, fiducials_series::fiducial_set _fiducial_set)
 {
     std::unique_lock lock(_pimpl.m_mutex);
 
@@ -266,7 +266,7 @@ gdcm::DataSet to_gdcm(detail::SeriesImpl& _pimpl, fiducials_series::fiducial_set
 
 template<typename T>
 gdcm::SmartPointer<gdcm::SequenceOfItems> append_in_sequence(
-    detail::SeriesImpl& _pimpl,
+    detail::series_impl& _pimpl,
     const gdcm::SmartPointer<gdcm::SequenceOfItems>& _sequence,
     T _element
 )
@@ -282,7 +282,7 @@ gdcm::SmartPointer<gdcm::SequenceOfItems> append_in_sequence(
 
 template<typename T>
 void append_in_sequence(
-    detail::SeriesImpl& _pimpl,
+    detail::series_impl& _pimpl,
     gdcm::Tag _tag,
     T _element,
     const std::vector<std::pair<gdcm::Tag, std::size_t> >& _indices = {})

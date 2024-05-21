@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-// cspell:ignore NOLINT tparam
-
 #pragma once
 
 #include <future>

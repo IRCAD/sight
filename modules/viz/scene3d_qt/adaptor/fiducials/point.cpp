@@ -1232,7 +1232,7 @@ void point::select_point(std::string _group_name, std::size_t _index)
                 selected_landmark->m_timer->set_function(
                     [this, selected_landmark](auto&& ...)
                     {
-                        hightlight(selected_landmark);
+                        highlight(selected_landmark);
                     });
                 selected_landmark->m_timer->set_duration(duration);
                 selected_landmark->m_timer->start();
@@ -1274,12 +1274,12 @@ void point::deselect_point(std::string _group_name, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void point::hightlight(std::shared_ptr<selected_landmark> _selected_landmark)
+void point::highlight(std::shared_ptr<selected_landmark> _selected_landmark)
 {
     // Make the context as current.
     this->render_service()->make_current();
 
-    // Hightlight the selected landmark.
+    // Highlight the selected landmark.
     this->update_landmark_visibility(_selected_landmark->m_landmark);
     if(_selected_landmark->m_landmark->m_object->isVisible())
     {

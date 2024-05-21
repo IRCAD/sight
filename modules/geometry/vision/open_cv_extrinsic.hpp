@@ -26,7 +26,7 @@
 #include <data/camera_set.hpp>
 #include <data/matrix4.hpp>
 
-#include <geometry/vision/icalibration.hpp>
+#include <geometry/vision/calibrator.hpp>
 
 namespace sight::module::geometry::vision
 {
@@ -61,11 +61,11 @@ namespace sight::module::geometry::vision
  *      (from camera[0] to camera[index]).
  * - \b board : preference key to retrieve the number of square in 2 dimensions of the chessboard.
  */
-class open_cv_extrinsic : public sight::geometry::vision::i_calibration
+class open_cv_extrinsic : public sight::geometry::vision::calibrator
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(open_cv_extrinsic, sight::geometry::vision::i_calibration);
+    SIGHT_DECLARE_SERVICE(open_cv_extrinsic, sight::geometry::vision::calibrator);
 
     /// Double changed signal type
     using error_computed_signal_t = core::com::signal<void (double)>;

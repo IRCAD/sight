@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,7 +83,7 @@ inline static std::string tag_to_string(const gdcm::Tag& _tag)
 }
 
 series::series() :
-    m_pimpl(std::make_unique<detail::SeriesImpl>(this))
+    m_pimpl(std::make_unique<detail::series_impl>(this))
 {
 }
 

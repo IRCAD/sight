@@ -36,7 +36,7 @@ This is the core library in _sight_ which defines the various base interface for
 - **logger_base**: defines the generic graphical interface to display a dialog message and a set of logs
 - **message_base**: defines the generic graphical interface to display generic message box
 - **notification_base**: defines the generic graphical interface to display a generic notification popup
-- **input**: defines the generic graphical interface to display an input dialog for IHM.
+- **input**: defines the generic graphical interface to display an input dialog for UI.
 - **progress_base**: defines the generic graphical interface to display a generic progress dialog
 - **pulse_progress_base**: defines the generic graphical interface to display a pulse progress dialog
 - **selector_base**: defines the generic graphical interface to display a bialog box which allows the choice of an element among several

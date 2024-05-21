@@ -46,7 +46,7 @@ class DataSet;
 namespace sight::data::detail
 {
 
-class SeriesImpl;
+class series_impl;
 
 }
 
@@ -729,7 +729,7 @@ public:
 
 protected:
 
-    std::unique_ptr<detail::SeriesImpl> m_pimpl;
+    std::unique_ptr<detail::series_impl> m_pimpl;
 };
 
 } // Namespace fwMedData.

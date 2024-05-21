@@ -33,7 +33,7 @@ namespace sight::ui::detail::registry
 {
 
 /**
- * @brief   Defines the menu registry for IHM.
+ * @brief   Defines the menu registry for UI.
  */
 class menu : public ui::object
 {

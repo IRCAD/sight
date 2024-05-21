@@ -95,7 +95,7 @@ namespace sight::ui::layout
 {
 
 /**
- * @brief   Defines the toolbar layout manager for IHM.
+ * @brief   Defines the toolbar layout manager for UI.
  */
 class SIGHT_UI_CLASS_API toolbar_manager : public ui::object
 {

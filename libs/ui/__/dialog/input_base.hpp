@@ -32,7 +32,7 @@ namespace sight::ui::dialog
 {
 
 /**
- * @brief   Defines the generic input dialog box for IHM.
+ * @brief   Defines the generic input dialog box for UI.
  */
 class SIGHT_UI_CLASS_API input_base : public ui::object
 {

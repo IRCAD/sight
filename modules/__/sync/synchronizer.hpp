@@ -307,7 +307,7 @@ private:
      * @param _frame_tl_index : the index of the frameTL to treat
      * @param _synchronization_timestamp : the synchronization timestamp
      */
-    void copy_frame_from_t_lto_output(
+    void copy_frame_from_tl_to_output(
         std::size_t _frame_tl_index,
         core::clock::type _synchronization_timestamp
     );
@@ -325,7 +325,7 @@ private:
      * @param _matrix_tl_index : the index of the matrixTL to treat
      * @param _synchronization_timestamp : the synchronization timestamp
      */
-    void copy_matrix_from_t_lto_output(
+    void copy_matrix_from_tl_to_output(
         std::size_t _matrix_tl_index,
         core::clock::type _synchronization_timestamp
     );
@@ -392,13 +392,13 @@ private:
     bool m_locked {false};
 
     /// Contains the input video timelines.
-    data::ptr_vector<data::frame_tl, data::access::in> m_frame_t_ls {this, config_key::FRAMETL_INPUT, true};
+    data::ptr_vector<data::frame_tl, data::access::in> m_frame_tls {this, config_key::FRAMETL_INPUT, true};
 
     /// Contains the output images.
     data::ptr_vector<data::image, data::access::inout> m_frames {this, config_key::FRAME_INOUT, false};
 
     /// Contains the input matrix timelines.
-    data::ptr_vector<data::matrix_tl, data::access::in> m_matrix_t_ls {this, config_key::MATRIXTL_INPUT, true};
+    data::ptr_vector<data::matrix_tl, data::access::in> m_matrix_tl_s {this, config_key::MATRIXTL_INPUT, true};
 
     /// Contains the output matrices.
     data::ptr_vector<data::matrix4, data::access::inout> m_matrix {this, config_key::MATRIX_INOUT, false};

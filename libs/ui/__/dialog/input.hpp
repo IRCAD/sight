@@ -110,7 +110,7 @@ public:
 
 protected:
 
-    /// Implementation of an input dialog in a specific IHM (wx/Qt)
+    /// Implementation of an input dialog in a specific UI (wx/Qt)
     ui::dialog::input_base::sptr m_implementation;
 };
 

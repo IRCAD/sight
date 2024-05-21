@@ -36,7 +36,7 @@ namespace sight::ui::layout
 {
 
 /**
- * @brief   Defines the menu bar layout manager for IHM.
+ * @brief   Defines the menu bar layout manager for UI.
  */
 class SIGHT_UI_CLASS_API menubar_manager : public ui::object
 {

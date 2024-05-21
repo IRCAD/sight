@@ -40,7 +40,7 @@ namespace sight::ui::layout
 {
 
 /**
- * @brief   Defines the menu layout manager for IHM.
+ * @brief   Defines the menu layout manager for UI.
  */
 class SIGHT_UI_CLASS_API menu_manager : public ui::object
 {

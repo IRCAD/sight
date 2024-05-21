@@ -30,7 +30,7 @@ namespace sight::ui
 {
 
 /**
- * @brief   Defines the generic cursor for IHM.
+ * @brief   Defines the generic cursor for UI.
  */
 class SIGHT_UI_CLASS_API cursor_base : public ui::object
 {

@@ -134,8 +134,8 @@ struct image_or_image_series_lock
  * - \b add_point(std::string): adds the last point of a landmarks group.
  * - \b removePoint(std::string, std::size_t): removes a point.
  * - \b insertPoint(std::string, std::size_t): inserts a point.
- * - \b selectPoint(std::string, std::size_t) hightlights the selected landmark.
- * - \b deselectPoint(std::string, std::size_t): resets the hightlighting of the selected landmark.
+ * - \b selectPoint(std::string, std::size_t) highlights the selected landmark.
+ * - \b deselectPoint(std::string, std::size_t): resets the highlighting of the selected landmark.
  * - \b initializeImage(): initializes image slices index if there is one.
  * - \b changeSliceType(int, int): updates the image slice type.
  * - \b changeSliceIndex(int, int, int): updates the image slice index to show or hide landmarks.
@@ -475,7 +475,7 @@ private:
         std::vector<std::shared_ptr<core::com::slot_base> > m_slots; /*!< Contains the slots related to the landmark */
     };
 
-    /// Stores data used to hightlight the selected landmark.
+    /// Stores data used to highlight the selected landmark.
     struct selected_landmark final
     {
         selected_landmark(core::thread::timer::sptr _timer, std::shared_ptr<landmark> _landmark) :
@@ -570,7 +570,7 @@ private:
      * @brief Manages the highlighting of the landmarks at the given index (must be run in a thread).
      * @param _selected_landmark which landmarks to manage.
      */
-    void hightlight(std::shared_ptr<selected_landmark> _selected_landmark);
+    void highlight(std::shared_ptr<selected_landmark> _selected_landmark);
 
     /// Used to create a landmark and pick it. Called by the mouse event (pick) and the slot (no pick).
     void create_and_pick_landmark(const sight::data::landmarks::point_t& _point, bool _pick = true);

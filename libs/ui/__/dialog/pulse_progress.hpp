@@ -32,7 +32,7 @@ namespace sight::ui::dialog
 {
 
 /**
- * @brief   Defines the generic pulse progress dialog for IHM.
+ * @brief   Defines the generic pulse progress dialog for UI.
  * Use the Delegate design pattern. The specific implementation selection is ensured by SIGHT_REGISTER_GUI.
  * The specific implementation are in fwGuiWX and fwGuiQT libraries
  */

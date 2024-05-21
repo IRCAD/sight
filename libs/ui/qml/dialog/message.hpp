@@ -37,7 +37,7 @@ namespace sight::ui::qml::dialog
 {
 
 /**
- * @brief Defines the generic message box for IHM.
+ * @brief Defines the generic message box for UI.
  */
 class SIGHT_UI_QML_CLASS_API message : public QObject,
                                        public ui::dialog::message_base

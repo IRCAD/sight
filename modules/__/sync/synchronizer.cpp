@@ -237,9 +237,9 @@ void synchronizer::synchronize()
     std::vector<std::size_t> frame_tl_populated_index;
     std::vector<core::clock::type> frame_tl_populated_timestamp;
 
-    for(std::size_t i = 0 ; i != m_frame_t_ls.size() ; ++i)
+    for(std::size_t i = 0 ; i != m_frame_tls.size() ; ++i)
     {
-        const auto tl = m_frame_t_ls[i].lock();
+        const auto tl = m_frame_tls[i].lock();
         // if the tl is null, ignore it
         if(tl)
         {
@@ -258,9 +258,9 @@ void synchronizer::synchronize()
     std::vector<std::size_t> matrix_tl_populated_index;
     std::vector<core::clock::type> matrix_tl_populated_timestamp;
 
-    for(std::size_t i = 0 ; i != m_matrix_t_ls.size() ; ++i)
+    for(std::size_t i = 0 ; i != m_matrix_tl_s.size() ; ++i)
     {
-        const auto tl = m_matrix_t_ls[i].lock();
+        const auto tl = m_matrix_tl_s[i].lock();
         if(tl)
         {
             // get the tl new timestamp
@@ -342,12 +342,12 @@ void synchronizer::synchronize()
 
         for(const std::size_t tl_index : frame_tl_to_synch_index)
         {
-            copy_frame_from_t_lto_output(tl_index, synchronization_timestamp);
+            copy_frame_from_tl_to_output(tl_index, synchronization_timestamp);
         }
 
         for(const std::size_t tl_index : matrix_tl_to_synch_index)
         {
-            copy_matrix_from_t_lto_output(tl_index, synchronization_timestamp);
+            copy_matrix_from_tl_to_output(tl_index, synchronization_timestamp);
         }
 
         this->signal<signals::timestamp_t>(signals::SYNCHRONIZATION_DONE)->async_emit(synchronization_timestamp);
@@ -398,12 +398,12 @@ std::vector<synchronizer::out_var_parameter> synchronizer::get_frame_tl_output_v
 
 // ----------------------------------------------------------------------------
 
-void synchronizer::copy_frame_from_t_lto_output(
+void synchronizer::copy_frame_from_tl_to_output(
     std::size_t _frame_tl_index,
     core::clock::type _synchronization_timestamp
 )
 {
-    const auto frame_tl = m_frame_t_ls[_frame_tl_index].lock();
+    const auto frame_tl = m_frame_tls[_frame_tl_index].lock();
     CSPTR(data::frame_tl::buffer_t) buffer =
         frame_tl->get_closest_buffer(_synchronization_timestamp - m_frame_tl_delay[_frame_tl_index]);
 
@@ -511,12 +511,12 @@ std::vector<synchronizer::out_var_parameter> synchronizer::get_matrix_tl_output_
 
 //------------------------------------------------------------------------------
 
-void synchronizer::copy_matrix_from_t_lto_output(
+void synchronizer::copy_matrix_from_tl_to_output(
     std::size_t _matrix_tl_index,
     core::clock::type _synchronization_timestamp
 )
 {
-    const auto matrix_tl = m_matrix_t_ls[_matrix_tl_index].lock();
+    const auto matrix_tl = m_matrix_tl_s[_matrix_tl_index].lock();
     CSPTR(data::matrix_tl::buffer_t) buffer =
         matrix_tl->get_closest_buffer(_synchronization_timestamp - m_matrix_tl_delay[_matrix_tl_index]);
 

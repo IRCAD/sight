@@ -35,7 +35,7 @@ namespace sight::ui::detail::registry
 {
 
 /**
- * @brief   Defines the toolbar registry for IHM.
+ * @brief   Defines the toolbar registry for UI.
  */
 class toolbar : public ui::object
 {

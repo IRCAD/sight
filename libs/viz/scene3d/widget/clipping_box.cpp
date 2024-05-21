@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -87,7 +87,7 @@ clipping_box::~clipping_box()
         m_scene_manager->destroyMovableObject(mo->getName(), mo->getMovableType());
     }
 
-    Ogre::MaterialManager::getSingleton().remove(m_handle_hightlight_mtl->getHandle());
+    Ogre::MaterialManager::getSingleton().remove(m_handle_highlight_mtl->getHandle());
     Ogre::MaterialManager::getSingleton().remove(m_box_highlight_mtl->getHandle());
     Ogre::MaterialManager::getSingleton().remove(m_box_face_mtl->getHandle());
 
@@ -197,9 +197,9 @@ void clipping_box::init_widgets()
         m_handle_mtl->setSpecular(0.F, 0.F, 0.F, 1.F);
         m_handle_mtl->setShininess(1.F);
 
-        m_handle_hightlight_mtl = m_handle_mtl->clone(m_id + "_SphereHighlight", true, RESOURCE_GROUP);
-        m_handle_hightlight_mtl->setAmbient(0.3F, 0.F, 0.F);
-        m_handle_hightlight_mtl->setDiffuse(0.5F, 0.1F, 0.1F, 1.F);
+        m_handle_highlight_mtl = m_handle_mtl->clone(m_id + "_SphereHighlight", true, RESOURCE_GROUP);
+        m_handle_highlight_mtl->setAmbient(0.3F, 0.F, 0.F);
+        m_handle_highlight_mtl->setDiffuse(0.5F, 0.1F, 0.1F, 1.F);
 
         m_box_mtl->setAmbient(1.F, 1.F, 1.F);
         m_box_mtl->setDiffuse(0.F, 0.F, 0.F, 1.F);

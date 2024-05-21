@@ -30,19 +30,13 @@ namespace sight::geometry::vision
 {
 
 /**
- * @brief   ICalibration is an interface API for calibration services.
+ * @brief   Interface for calibration services.
  */
-class SIGHT_GEOMETRY_VISION_CLASS_API i_calibration : public service::base
+class SIGHT_GEOMETRY_VISION_CLASS_API calibrator : public service::base
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(i_calibration, service::base);
-
-    /// Constructor.
-    SIGHT_GEOMETRY_VISION_API i_calibration() noexcept;
-
-    /// Destructor.
-    SIGHT_GEOMETRY_VISION_API ~i_calibration() noexcept override;
+    SIGHT_DECLARE_SERVICE(calibrator, service::base);
 };
 
 } // namespace sight::geometry::vision

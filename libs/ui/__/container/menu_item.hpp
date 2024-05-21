@@ -30,7 +30,7 @@ namespace sight::ui::container
 {
 
 /**
- * @brief   Defines the menu item for IHM.
+ * @brief   Defines the menu item for UI.
  */
 class SIGHT_UI_CLASS_API menu_item : public ui::object
 {

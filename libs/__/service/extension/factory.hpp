@@ -56,7 +56,7 @@ public:
 
     /// We keep boost here because std implementation does not support a pair of std::string as key
     using support_map_t = boost::unordered_map<string_pair_t, bool>;
-    using factoryType   = std::function<std::shared_ptr<service::base>()>;
+    using factory_t     = std::function<std::shared_ptr<service::base>()>;
 
     SIGHT_DECLARE_CLASS(factory, core::base_object);
 
@@ -67,7 +67,7 @@ public:
     SIGHT_SERVICE_API void parse_plugin_infos();
 
     SIGHT_SERVICE_API void add_service_factory(
-        factoryType _factory,
+        factory_t _factory,
         const std::string& _simpl,
         const std::string& _stype
     );
@@ -136,7 +136,7 @@ private:
         std::string desc;
         std::string tags;
         std::shared_ptr<core::runtime::module> module;
-        factoryType factory;
+        factory_t factory;
         bool objects_set_from_module {false}; // True if the objects implementation are set from the module information
     };
     using srv_reg_container_t = std::unordered_map<key_t, service_info>;
