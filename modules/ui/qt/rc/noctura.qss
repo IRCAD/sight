@@ -1041,6 +1041,11 @@ QTreeWidget
     outline: 0;
 }
 
+QTreeWidget QLineEdit
+{
+    background: #5d5c72;
+}
+
 QTreeView
 {
     background: rgba(255, 255, 255, 10%);

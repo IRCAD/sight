@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -510,6 +510,8 @@ void landmarks::on_group_name_edited(QTreeWidgetItem* _item, int _column)
                         li_lock.landmarks != nullptr || li_lock.image_series != nullptr
                     );
 
+                    const data::landmarks::GroupNameContainer group_names = get_group_names(li_lock);
+
                     if(li_lock.landmarks != nullptr)
                     {
                         li_lock.landmarks->rename_group(old_group_name.toStdString(), new_group_name.toStdString());
@@ -532,6 +534,11 @@ void landmarks::on_group_name_edited(QTreeWidgetItem* _item, int _column)
                         if(!fiducial_set.has_value())
                         {
                             throw data::exception("'" + old_group_name.toStdString() + "' group doesn't exist");
+                        }
+
+                        if(std::ranges::find(group_names, new_group_name.toStdString()) != group_names.end())
+                        {
+                            throw data::exception("'" + new_group_name.toStdString() + "' group already exists");
                         }
 
                         li_lock.image_series->get_fiducials()->set_group_name(
@@ -1440,7 +1447,7 @@ void landmarks::deselect_point(std::string /*unused*/, std::size_t /*unused*/) c
 
 std::string landmarks::generate_new_group_name() const
 {
-    static std::size_t group_count = 0;
+    std::size_t group_count = 0;
 
     // const auto landmarks = m_landmarks.lock();
     landmarks_or_image_series_const_lock li_lock = const_lock();

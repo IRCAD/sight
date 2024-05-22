@@ -675,7 +675,7 @@ private:
 
     /// Initial group configuration
     /// @{
-    std::string m_current_group {"Landmarks"};
+    std::string m_current_group {INITIAL_GROUP_NAME};
     sight::data::landmarks::color_t m_current_color {1.0F, 1.0F, 0.0F, 1.0F};
     sight::data::landmarks::size_t m_current_size {32.0F};
     sight::data::landmarks::shape m_current_shape {sight::data::landmarks::shape::sphere};
@@ -717,6 +717,8 @@ private:
 
     /// Auto-delete the event filter in the end
     std::unique_ptr<delete_contextual_menu_when_focus_out> m_event_filter = nullptr;
+
+    static constexpr std::string_view INITIAL_GROUP_NAME = "Group_0";
 
     static constexpr std::string_view LANDMARKS_INOUT    = "landmarks";
     static constexpr std::string_view IMAGE_SERIES_INOUT = "imageSeries";

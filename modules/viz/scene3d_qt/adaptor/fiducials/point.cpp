@@ -743,14 +743,12 @@ void point::remove_all()
                 continue;
             }
 
-            bool has_deleted = false;
             for(auto it_fiducial = it_fiducial_set->fiducial_sequence.begin() ;
                 it_fiducial != it_fiducial_set->fiducial_sequence.end() ; )
             {
                 if(it_fiducial->shape_type == data::fiducials_series::shape::point)
                 {
                     it_fiducial = it_fiducial_set->fiducial_sequence.erase(it_fiducial);
-                    has_deleted = true;
                 }
                 else
                 {
@@ -758,7 +756,8 @@ void point::remove_all()
                 }
             }
 
-            if(has_deleted)
+            // Add all group names, even empty groups.
+            if(std::ranges::find(deleted_group_names, *it_fiducial_set->group_name) == deleted_group_names.end())
             {
                 deleted_group_names.push_back(*it_fiducial_set->group_name);
             }
@@ -817,6 +816,8 @@ void point::remove_group(std::string _group_name)
             ++object_it;
         }
     }
+
+    m_current_group = INITIAL_GROUP_NAME;
 
     // Request the rendering.
     request_render();
@@ -887,7 +888,7 @@ void point::rename_group(std::string _old_group_name, std::string _new_group_nam
 
 void point::set_current_group(std::string _new_current_group_name)
 {
-    m_current_group = _new_current_group_name;
+    m_current_group = _new_current_group_name.empty() ? INITIAL_GROUP_NAME : _new_current_group_name;
 }
 
 //------------------------------------------------------------------------------
@@ -1034,7 +1035,7 @@ std::shared_ptr<point::landmark> point::create_manual_object(
                 object,
                 m_material_adaptor->get_material_name(),
                 color,
-                m_current_size
+                _group_data.m_size
             );
             break;
 
@@ -1043,7 +1044,7 @@ std::shared_ptr<point::landmark> point::create_manual_object(
                 object,
                 m_material_adaptor->get_material_name(),
                 color,
-                m_current_size
+                _group_data.m_size
             );
             break;
     }
@@ -1111,12 +1112,25 @@ std::shared_ptr<point::landmark> point::create_manual_object(
                 }
                 else if(lock.image_series != nullptr)
                 {
-                    std::optional<std::pair<data::fiducials_series::fiducial_set, std::size_t> > fiducial_set =
-                        lock.image_series->get_fiducials()->get_fiducial_set_and_index(old_group_name);
+                    const auto fiducial_set =
+                        lock.image_series->get_fiducials()->get_fiducial_set_and_index(
+                            old_group_name
+                        );
+
+                    // Try finding a fiducial_set with the new_group_name to check if that name is already being used.
+                    const auto fiducial_set_duplicate =
+                        lock.image_series->get_fiducials()->get_fiducial_set_and_index(new_group_name);
+
                     if(!fiducial_set.has_value())
                     {
                         SIGHT_WARN("Couldn't rename group '" << old_group_name << "', it doesn't exist");
                         return;
+                    }
+
+                    // Not allowed to pass an existing or empty name and set the previous value.
+                    if(fiducial_set_duplicate.has_value() || new_group_name.empty())
+                    {
+                        new_group_name = old_group_name;
                     }
 
                     lock.image_series->get_fiducials()->set_group_name(fiducial_set->second, new_group_name);
