@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -888,9 +888,19 @@ void layer::reset_camera_clipping_range() const
 
         if(m_camera_orthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE)
         {
+            // To compute the needed orthographic height,
+            // one needs to apply the camera transformation on the world bounding box.
+            auto transformed_bb = world_bounding_box;
+            Ogre::Matrix3 camera_transform;
+
+            // We inverse the orientation because it's being applied to an object in the world coordinate system.
+            m_camera->getRealOrientation().Inverse().ToRotationMatrix(camera_transform);
+
+            transformed_bb.transform(Ogre::Matrix4(camera_transform));
+
             // Use height as the difference on y coordinates.
-            const auto y1     = world_bounding_box.getMinimum().y;
-            const auto y2     = world_bounding_box.getMaximum().y;
+            const auto y1     = transformed_bb.getMinimum().y;
+            const auto y2     = transformed_bb.getMaximum().y;
             Ogre::Real h      = y2 - y1;
             Ogre::Real margin = 0.1F;
             m_camera->setOrthoWindowHeight(h + h * margin);
