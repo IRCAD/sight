@@ -214,6 +214,10 @@ void ruler::updating()
     m_sphere_material->update_shading_mode(data::material::shading_t::phong, layer->num_lights(), false, false);
     m_line_material->update_shading_mode(data::material::shading_t::ambient, layer->num_lights(), false, false);
     m_dashed_line_material->update_shading_mode(data::material::shading_t::ambient, layer->num_lights(), false, false);
+
+    // Make sure that if image has changed we remove old distances before adding new ones.
+    this->remove_distances();
+    this->update_from_fiducials();
 }
 
 //------------------------------------------------------------------------------

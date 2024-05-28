@@ -52,7 +52,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::negato2d_camera" >
         <inout key="image" uid="..." auto_connect="true" />
         <inout key="tf" uid="..." />
-        <config priority="0" layerOrderDependant="true" orientation="sagittal" margin="0.1"/>
+        <config priority="0" layerOrderDependant="true" orientation="sagittal" margin="0.1" block_width_scaling="true"/>
    </service>
    @endcode
  *
@@ -69,6 +69,9 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): the camera's orientation at start.
  * - \b margin (optional, default=0.1): margin to the border of the viewport, in percentage of the highest of width
  *  or height.
+ * - \b scale (optional, default=false):whether to scale the orthographic plane to the viewport or
+ *      keep it at its original resolution.
+ * - \b interactive (optional, default=true), enable or disable interactions.
  */
 class negato2d_camera final : public sight::viz::scene3d::adaptor,
                               public sight::viz::scene3d::interactor::base
@@ -241,6 +244,12 @@ private:
 
     /// This allows us to reset the camera when Qt refreshes the size of the viewport after the start of the adaptor
     bool m_has_moved {false};
+
+    /// Enable/disable scaling (like video adaptor).
+    bool m_scale {false};
+
+    /// Enable/disable interactions.
+    bool m_is_interactive {true};
 
     /// Handles connection with the layer.
     core::com::helper::sig_slot_connection m_layer_connection;
