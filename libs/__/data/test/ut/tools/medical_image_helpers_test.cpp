@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::medical_image_helpers_test);
-namespace medImHelper = sight::data::helper::medical_image;
+namespace med_im_helper = sight::data::helper::medical_image;
 namespace sight::data::tools::ut
 {
 
@@ -170,7 +170,7 @@ void medical_image_helpers_test::get_min_max_test()
         image->at<type>(156) = min;
         image->at<type>(245) = max;
 
-        medImHelper::get_min_max(image, res_min, res_max);
+        med_im_helper::get_min_max(image, res_min, res_max);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", min, res_min);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("max values are not equal", max, res_max);
     }
@@ -212,7 +212,7 @@ void medical_image_helpers_test::get_min_max_test()
         image->at<type>(16)  = min;
         image->at<type>(286) = max;
 
-        medImHelper::get_min_max(image, res_min, res_max);
+        med_im_helper::get_min_max(image, res_min, res_max);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", min, res_min);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("max values are not equal", max, res_max);
     }
@@ -256,7 +256,7 @@ void medical_image_helpers_test::get_min_max_test()
         image->at<type>(5)    = min;
         image->at<type>(2155) = max;
 
-        medImHelper::get_min_max(image, res_min, res_max);
+        med_im_helper::get_min_max(image, res_min, res_max);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", min, res_min);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("max values are not equal", max, res_max);
     }
@@ -427,31 +427,93 @@ void data::tools::ut::medical_image_helpers_test::is_buf_null()
         const data::image::buffer_t* pix_buf =
             static_cast<data::image::buffer_t*>(image->get_pixel(0));
 
-        bool is_null = medImHelper::is_buf_null(pix_buf, 3);
+        bool is_null = med_im_helper::is_buf_null(pix_buf, 3);
         CPPUNIT_ASSERT_EQUAL(true, is_null);
 
-        is_null = medImHelper::is_buf_null(pix_buf, 100);
+        is_null = med_im_helper::is_buf_null(pix_buf, 100);
         CPPUNIT_ASSERT_EQUAL(true, is_null);
 
         {
             std::array<float, 3> pixel_value = {42.0F, 1487.4F, 0.1445F};
             image->set_pixel(0, reinterpret_cast<uint8_t*>(pixel_value.data()));
 
-            is_null = medImHelper::is_buf_null(pix_buf, 3);
+            is_null = med_im_helper::is_buf_null(pix_buf, 3);
             CPPUNIT_ASSERT_EQUAL(false, is_null);
 
             const data::image::buffer_t* pix_buf2 =
                 static_cast<data::image::buffer_t*>(image->get_pixel(10));
 
-            is_null = medImHelper::is_buf_null(pix_buf2, 3);
+            is_null = med_im_helper::is_buf_null(pix_buf2, 3);
             CPPUNIT_ASSERT_EQUAL(true, is_null);
 
             image->set_pixel(15, reinterpret_cast<uint8_t*>(pixel_value.data()));
-            is_null = medImHelper::is_buf_null(pix_buf2, 5 * 3);
+            is_null = med_im_helper::is_buf_null(pix_buf2, 5 * 3);
             CPPUNIT_ASSERT_EQUAL(true, is_null);
-            is_null = medImHelper::is_buf_null(pix_buf2, 6 * 3);
+            is_null = med_im_helper::is_buf_null(pix_buf2, 6 * 3);
             CPPUNIT_ASSERT_EQUAL(false, is_null);
         }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void data::tools::ut::medical_image_helpers_test::compute_voxel_indices()
+{
+    data::image image;
+
+    const data::image::size_t size       = {567, 789, 39};
+    const data::image::spacing_t spacing = {1.4, 0.8, 0.5};
+    const data::image::origin_t origin   = {-18.3, 54., 230.};
+
+    image.resize(size, core::type::INT16, data::image::gray_scale);
+    image.set_spacing(spacing);
+    image.set_origin(origin);
+
+    {
+        const auto indices = med_im_helper::compute_voxel_indices(image, {16, 543.65, 456.});
+
+        med_im_helper::index_t expected_indices {25, 612, 452};
+        for(std::size_t i = 0 ; i < 3 ; ++i)
+        {
+            CPPUNIT_ASSERT_EQUAL(expected_indices[i], indices[i]);
+        }
+    }
+    {
+        const auto indices = med_im_helper::compute_voxel_indices(image, {2., 34.4, 7.});
+        med_im_helper::index_t expected_indices {15, -25, -446};
+        for(std::size_t i = 0 ; i < 3 ; ++i)
+        {
+            CPPUNIT_ASSERT_EQUAL(expected_indices[i], indices[i]);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void data::tools::ut::medical_image_helpers_test::compute_bounding_box()
+{
+    data::image image;
+
+    const data::image::size_t size       = {567, 789, 39};
+    const data::image::spacing_t spacing = {1.4, 0.8, 0.5};
+    const data::image::origin_t origin   = {-18.3, 54., 230.};
+
+    image.resize(size, core::type::INT16, data::image::gray_scale);
+    image.set_spacing(spacing);
+    image.set_origin(origin);
+
+    const auto& [min, max] = med_im_helper::compute_bounding_box(image);
+
+    med_im_helper::vec3_t expected_min {-18.3, 54., 230.};
+    for(std::size_t i = 0 ; i < 3 ; ++i)
+    {
+        CPPUNIT_ASSERT_EQUAL(expected_min[i], min[i]);
+    }
+
+    med_im_helper::vec3_t expected_max {775.5, 685.2, 249.5};
+    for(std::size_t i = 0 ; i < 3 ; ++i)
+    {
+        CPPUNIT_ASSERT_EQUAL(expected_max[i], max[i]);
     }
 }
 
@@ -462,18 +524,18 @@ void medical_image_helpers_test::test_landmarks()
     data::image::sptr image = generate_image();
 
     // get landrmaks (should NOT be nullptr)
-    const auto landmarks_not_null = medImHelper::get_landmarks(*image);
+    const auto landmarks_not_null = med_im_helper::get_landmarks(*image);
     CPPUNIT_ASSERT(landmarks_not_null);
 
     /// Set landmarks
     data::point::sptr p       = std::make_shared<data::point>(1., 2., 3.);
     data::point_list::sptr pt = std::make_shared<data::point_list>();
     pt->push_back(p);
-    CPPUNIT_ASSERT_THROW(medImHelper::set_landmarks(*image, nullptr), data::exception);
-    medImHelper::set_landmarks(*image, pt);
+    CPPUNIT_ASSERT_THROW(med_im_helper::set_landmarks(*image, nullptr), data::exception);
+    med_im_helper::set_landmarks(*image, pt);
 
     // get landmarks (should NOT be nullptr)
-    const auto landmarks = medImHelper::get_landmarks(*image);
+    const auto landmarks = med_im_helper::get_landmarks(*image);
     CPPUNIT_ASSERT(landmarks);
 
     const auto points = landmarks->get_points();
@@ -498,11 +560,11 @@ void medical_image_helpers_test::test_image_validity()
     const auto invalid_image = std::make_shared<data::image>();
 
     // Check validity of each
-    auto validity = medImHelper::check_image_validity(*valid_image);
+    auto validity = med_im_helper::check_image_validity(*valid_image);
 
     CPPUNIT_ASSERT_EQUAL(true, validity);
 
-    validity = medImHelper::check_image_validity(*invalid_image);
+    validity = med_im_helper::check_image_validity(*invalid_image);
 
     CPPUNIT_ASSERT_EQUAL(false, validity);
 }
@@ -515,17 +577,17 @@ void medical_image_helpers_test::test_slice_index()
 
     // AXIAL
     {
-        auto orientation = medImHelper::orientation_t::axial;
+        auto orientation = med_im_helper::orientation_t::axial;
 
-        auto index = medImHelper::get_slice_index(*image, orientation);
+        auto index = med_im_helper::get_slice_index(*image, orientation);
 
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
 
         CPPUNIT_ASSERT_EQUAL(std::int64_t(50), index.value());
 
-        medImHelper::set_slice_index(*image, orientation, std::int64_t(35));
+        med_im_helper::set_slice_index(*image, orientation, std::int64_t(35));
 
-        index = medImHelper::get_slice_index(*image, orientation);
+        index = med_im_helper::get_slice_index(*image, orientation);
 
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
 
@@ -534,17 +596,17 @@ void medical_image_helpers_test::test_slice_index()
 
     // SAGITTAL
     {
-        auto orientation = medImHelper::orientation_t::sagittal;
+        auto orientation = med_im_helper::orientation_t::sagittal;
 
-        auto index = medImHelper::get_slice_index(*image, orientation);
+        auto index = med_im_helper::get_slice_index(*image, orientation);
 
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
 
         CPPUNIT_ASSERT_EQUAL(std::int64_t(128), index.value());
 
-        medImHelper::set_slice_index(*image, orientation, std::int64_t(0));
+        med_im_helper::set_slice_index(*image, orientation, std::int64_t(0));
 
-        index = medImHelper::get_slice_index(*image, orientation);
+        index = med_im_helper::get_slice_index(*image, orientation);
 
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
 
@@ -553,17 +615,17 @@ void medical_image_helpers_test::test_slice_index()
 
     // FRONTAL
     {
-        auto orientation = medImHelper::orientation_t::frontal;
+        auto orientation = med_im_helper::orientation_t::frontal;
 
-        auto index = medImHelper::get_slice_index(*image, orientation);
+        auto index = med_im_helper::get_slice_index(*image, orientation);
 
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
 
         CPPUNIT_ASSERT_EQUAL(std::int64_t(75), index.value());
 
-        medImHelper::set_slice_index(*image, orientation, std::int64_t(17));
+        med_im_helper::set_slice_index(*image, orientation, std::int64_t(17));
 
-        index = medImHelper::get_slice_index(*image, orientation);
+        index = med_im_helper::get_slice_index(*image, orientation);
 
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
 
@@ -573,8 +635,8 @@ void medical_image_helpers_test::test_slice_index()
     // No slice index
     {
         const auto image_no_slices = std::make_shared<data::image>();
-        auto orientation           = medImHelper::orientation_t::axial;
-        const auto index           = medImHelper::get_slice_index(*image_no_slices, orientation);
+        auto orientation           = med_im_helper::orientation_t::axial;
+        const auto index           = med_im_helper::get_slice_index(*image_no_slices, orientation);
 
         CPPUNIT_ASSERT_EQUAL(false, index.has_value());
     }
@@ -586,7 +648,7 @@ void medical_image_helpers_test::test_distances()
 {
     const auto image = generate_image();
 
-    const auto distances_null = medImHelper::get_distances(*image);
+    const auto distances_null = med_im_helper::get_distances(*image);
 
     CPPUNIT_ASSERT(!distances_null);
 
@@ -597,9 +659,9 @@ void medical_image_helpers_test::test_distances()
 
     distances->push_back(point_list);
 
-    medImHelper::set_distances(*image, distances);
+    med_im_helper::set_distances(*image, distances);
 
-    const auto distances_not_null = medImHelper::get_distances(*image);
+    const auto distances_not_null = med_im_helper::get_distances(*image);
 
     CPPUNIT_ASSERT(distances_not_null);
 
@@ -612,13 +674,13 @@ void medical_image_helpers_test::test_distance_visibility()
 {
     const auto image = generate_image();
 
-    auto distance_visibility = medImHelper::get_distance_visibility(*image);
+    auto distance_visibility = med_im_helper::get_distance_visibility(*image);
 
     CPPUNIT_ASSERT_EQUAL(true, distance_visibility);
 
-    medImHelper::set_distance_visibility(*image, false);
+    med_im_helper::set_distance_visibility(*image, false);
 
-    distance_visibility = medImHelper::get_distance_visibility(*image);
+    distance_visibility = med_im_helper::get_distance_visibility(*image);
 
     CPPUNIT_ASSERT_EQUAL(false, distance_visibility);
 }
@@ -629,13 +691,13 @@ void medical_image_helpers_test::test_landmarks_visibility()
 {
     const auto image = generate_image();
 
-    auto lm_visibility = medImHelper::get_landmarks_visibility(*image);
+    auto lm_visibility = med_im_helper::get_landmarks_visibility(*image);
 
     CPPUNIT_ASSERT_EQUAL(true, lm_visibility);
 
-    medImHelper::set_landmarks_visibility(*image, false);
+    med_im_helper::set_landmarks_visibility(*image, false);
 
-    lm_visibility = medImHelper::get_landmarks_visibility(*image);
+    lm_visibility = med_im_helper::get_landmarks_visibility(*image);
 
     CPPUNIT_ASSERT_EQUAL(false, lm_visibility);
 }

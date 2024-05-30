@@ -41,6 +41,7 @@ constexpr static auto ALPHA {"Alpha"};
 constexpr static auto BACKGROUND_COLOR {"BackgroundColor"};
 constexpr static auto INTERPOLATION_MODE {"InterpolationMode"};
 constexpr static auto IS_CLAMPED {"IsClamped"};
+constexpr static auto IS_GENERATED {"is_generated"};
 constexpr static auto TF_DATA {"TFData"};
 constexpr static auto VALUE {"Value"};
 constexpr static auto COLOR {"Color"};
@@ -55,6 +56,7 @@ inline static void serialize_transfer_function_piece(
 {
     _tree.put(INTERPOLATION_MODE, static_cast<int>(_transfer_function.get_interpolation_mode()));
     _tree.put(IS_CLAMPED, _transfer_function.clamped());
+    _tree.put(IS_GENERATED, _transfer_function.generated());
     _tree.put(LEVEL, _transfer_function.level());
     _tree.put(WINDOW, _transfer_function.window());
 
@@ -80,7 +82,8 @@ inline static void serialize_transfer_function_piece(
 
 inline static void deserialize_transfer_function_piece(
     const boost::property_tree::ptree& _tree,
-    data::transfer_function_piece& _transfer_function
+    data::transfer_function_piece& _transfer_function,
+    int _version
 )
 {
     // Deserialize attributes
@@ -90,6 +93,11 @@ inline static void deserialize_transfer_function_piece(
         static_cast<data::transfer_function::interpolation_mode>(_tree.get<int>(INTERPOLATION_MODE))
     );
     _transfer_function.set_clamped(_tree.get<bool>(IS_CLAMPED));
+
+    if(_version == 2)
+    {
+        _transfer_function.set_generated(_tree.get<bool>(IS_GENERATED));
+    }
 
     // Transfer function data
     for(const auto& value : _tree.get_child(TF_DATA))
@@ -118,7 +126,7 @@ inline static void write(
 {
     const auto transfer_function = helper::safe_cast<data::transfer_function>(_object);
 
-    helper::write_version<data::transfer_function>(_tree, 1);
+    helper::write_version<data::transfer_function>(_tree, 2);
 
     // Serialize attributes
     helper::write_string(_tree, NAME, transfer_function->name());
@@ -171,14 +179,14 @@ inline static data::transfer_function::sptr read(
     transfer_function->set_background_color(background_color);
     transfer_function->set_name(helper::read_string(_tree, NAME));
 
-    const int version = helper::read_version<data::transfer_function>(_tree, 0, 1);
+    const int version = helper::read_version<data::transfer_function>(_tree, 0, 2);
 
     if(version == -1)
     {
         auto& pieces = transfer_function->pieces();
         pieces.push_back(std::make_shared<data::transfer_function_piece>());
 
-        deserialize_transfer_function_piece(_tree, *pieces.back());
+        deserialize_transfer_function_piece(_tree, *pieces.back(), version);
 
         transfer_function->fit_window();
     }
@@ -195,7 +203,7 @@ inline static data::transfer_function::sptr read(
             const auto new_piece = std::make_shared<data::transfer_function_piece>();
             pieces.push_back(new_piece);
 
-            deserialize_transfer_function_piece(piece_tree.second, *new_piece);
+            deserialize_transfer_function_piece(piece_tree.second, *new_piece, version);
         }
     }
 

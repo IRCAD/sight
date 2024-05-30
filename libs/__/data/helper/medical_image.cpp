@@ -136,6 +136,36 @@ bool is_buf_null(const data::image::buffer_t* _buf, const unsigned int _len)
     return is_null;
 }
 
+//------------------------------------------------------------------------------
+
+index_t compute_voxel_indices(const data::image& _image, const vec3_t& _pos)
+{
+    const auto& spacing = _image.spacing();
+    const auto& origin  = _image.origin();
+
+    return {
+        static_cast<index_t::value_type>(std::round((_pos[0] - origin[0]) / spacing[0])),
+        static_cast<index_t::value_type>(std::round((_pos[1] - origin[1]) / spacing[1])),
+        static_cast<index_t::value_type>(std::round((_pos[2] - origin[2]) / spacing[2]))
+    };
+}
+
+//------------------------------------------------------------------------------
+
+std::pair<vec3_t, vec3_t> compute_bounding_box(const data::image& _image)
+{
+    const auto& spacing = _image.spacing();
+    const auto& origin  = _image.origin();
+    const auto& size    = _image.size();
+
+    const vec3_t max {origin[0] + spacing[0] * static_cast<double>(size[0]),
+                      origin[1] + spacing[1] * static_cast<double>(size[1]),
+                      origin[2] + spacing[2] * static_cast<double>(size[2])
+    };
+
+    return {origin, max};
+}
+
 //-------------------------------------------------------------------------------
 std::optional<std::int64_t> get_slice_index(
     const data::image& _image,

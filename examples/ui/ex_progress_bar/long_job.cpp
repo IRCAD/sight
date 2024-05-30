@@ -96,15 +96,11 @@ void long_job::updating()
             });
     }
 
-    auto jobs = std::make_shared<sight::core::jobs::aggregator>();
-    jobs->add(real_long_job);
-    jobs->set_cancelable(m_cancelable);
-
     // Emit signal to notify the job creation.
     this->signal<signals::job_created_t>(signals::JOB_CREATED)->emit(real_long_job);
 
     // Perform the job.
-    jobs->run().get();
+    real_long_job->run().get();
 }
 
 } // namespace ex_progress_bar.

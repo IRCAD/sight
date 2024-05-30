@@ -59,6 +59,9 @@ static constexpr std::string_view DIRECTION            = "direction";
 namespace medical_image
 {
 
+using index_t = std::array<int, 3>;
+using vec3_t  = std::array<double, 3>;
+
 enum orientation_t
 {
     /// Directions.
@@ -128,6 +131,23 @@ SPTR(data::image::buffer_t) get_pixel_in_image_space(data::image::sptr _image, T
  */
 template<typename MINMAXTYPE>
 void get_min_max(data::image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
+
+/**
+ * @brief Compute the indices of a 3D position inside an image. Beware, to be as generic as possible, no boundary check
+ * is performed so it can lie outside the image. If you want to use it to access a voxel inside the image, be sure to
+ * make these checks first and handle what you want to do in this case.
+ * @param[in] _image : input image
+ * @param[in] _pos : the 3D coordinates of the voxel
+ * @return: the indices of the voxel
+ */
+SIGHT_DATA_API index_t compute_voxel_indices(const data::image& _image, const vec3_t& _pos);
+
+/**
+ * @brief Return the bounding box surrounding an image.
+ * @param[in] _image : input image
+ * @return: the bounding box as the minimum and a maximum coordinates
+ */
+SIGHT_DATA_API std::pair<vec3_t, vec3_t> compute_bounding_box(const data::image& _image);
 
 // Getter/Setter for specific image fields
 
@@ -345,9 +365,9 @@ public:
     public:
 
         using value_t = VALUE;
-        using point_t = INT_INDEX;
+        using vec3_t  = INT_INDEX;
 
-        param(point_t& _p, value_t& _v) :
+        param(vec3_t& _p, value_t& _v) :
             value(_v),
             point(_p)
         {
@@ -355,7 +375,7 @@ public:
 
         data::image::sptr image;
         const value_t& value;
-        const point_t& point;
+        const vec3_t& point;
     };
 
     // ------------------------------------------------------------------------------
