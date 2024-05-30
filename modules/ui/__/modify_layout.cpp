@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,7 @@
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/registry.hpp>
 #include <ui/__/service.hpp>
+#include <ui/__/toolbar.hpp>
 
 namespace sight::module::ui
 {
@@ -194,6 +195,55 @@ void modify_layout::updating()
         }
     }
 
+    auto set_visible = [](service::base::sptr _service, bool _visible)
+                       {
+                           auto container_srv = std::dynamic_pointer_cast<sight::ui::service>(_service);
+                           if(container_srv)
+                           {
+                               sight::ui::container::widget::sptr container = container_srv->get_container();
+                               container->set_visible(_visible);
+                           }
+                           else
+                           {
+                               auto toolbar_srv = std::dynamic_pointer_cast<sight::ui::toolbar>(_service);
+                               if(toolbar_srv)
+                               {
+                                   toolbar_srv->set_visible(_visible);
+                               }
+                               else
+                               {
+                                   SIGHT_ASSERT(
+                                       "Cannot cast service " << std::quoted(_service->get_id()) << " as a UI service.",
+                                       false
+                                   );
+                               }
+                           }
+                       };
+
+    auto visible = [](service::base::sptr _service)
+                   {
+                       auto container_srv = std::dynamic_pointer_cast<sight::ui::service>(_service);
+                       if(container_srv)
+                       {
+                           sight::ui::container::widget::sptr container = container_srv->get_container();
+                           return !container->is_shown_on_screen();
+                       }
+                       else
+                       {
+                           auto toolbar_srv = std::dynamic_pointer_cast<sight::ui::toolbar>(_service);
+                           if(toolbar_srv)
+                           {
+                               return toolbar_srv->visible();
+                           }
+                       }
+
+                       SIGHT_ASSERT(
+                           "Cannot cast service " << std::quoted(_service->get_id()) << " as a UI service.",
+                           false
+                       );
+                       return false;
+                   };
+
     for(const auto& elt : m_show_srv_sid)
     {
         std::string uid       = elt.first;
@@ -201,26 +251,21 @@ void modify_layout::updating()
         SIGHT_ASSERT(uid << " doesn't exist", core::tools::id::exist(uid));
         service::base::sptr service = service::get(uid);
 
-        auto container_srv = std::dynamic_pointer_cast<sight::ui::service>(service);
-        SIGHT_ASSERT("::ui::container dynamicCast failed", container_srv);
-
-        sight::ui::container::widget::sptr container = container_srv->get_container();
-
         if(visibility == visibility_t::show)
         {
-            container->set_visible(true);
+            set_visible(service, true);
         }
         else if(visibility == visibility_t::hide)
         {
-            container->set_visible(false);
+            set_visible(service, false);
         }
         else if(visibility == visibility_t::show_or_hide)
         {
-            container->set_visible(this->checked());
+            set_visible(service, this->checked());
         }
         else if(visibility == visibility_t::toggle)
         {
-            container->set_visible(!container->is_shown_on_screen());
+            set_visible(service, visible(service));
         }
         else
         {

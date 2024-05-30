@@ -65,6 +65,21 @@ public:
     /// Method called when the action service is visible
     SIGHT_UI_API void action_service_set_visible(std::string _action_srv_sid, bool _is_visible);
 
+    /// SLOT: show/hide the container
+    SIGHT_UI_API void set_visible(bool _is_visible);
+
+    /// SLOT: return the visibility of the container
+    SIGHT_UI_API bool visible() const;
+
+    /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
+    SIGHT_UI_API void set_visible_by_parameter(ui::parameter_t);
+
+    /// SLOT: show the container
+    SIGHT_UI_API void show();
+
+    /// SLOT: hide the container
+    SIGHT_UI_API void hide();
+
 protected:
 
     SIGHT_UI_API toolbar();
@@ -142,18 +157,6 @@ protected:
         static inline const key_t SHOW_SLOT                 = "show";
         static inline const key_t HIDE_SLOT                 = "hide";
     };
-
-    /// SLOT: show/hide the container
-    SIGHT_UI_API void set_visible(bool _is_visible);
-
-    /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
-    SIGHT_UI_API void set_visible_by_parameter(ui::parameter_t);
-
-    /// SLOT: show the container
-    SIGHT_UI_API void show();
-
-    /// SLOT: hide the container
-    SIGHT_UI_API void hide();
 
 private:
 

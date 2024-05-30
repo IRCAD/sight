@@ -80,6 +80,7 @@ public:
     SIGHT_UI_QT_API void menu_item_set_checked(ui::container::menu_item::sptr /*menu_item*/, bool _is_checked) override;
 
     SIGHT_UI_QT_API void set_visible(bool _is_visible) override;
+    SIGHT_UI_QT_API bool visible() const override;
 
 protected:
 

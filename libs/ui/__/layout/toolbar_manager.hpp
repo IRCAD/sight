@@ -198,6 +198,11 @@ public:
     SIGHT_UI_API virtual void set_visible(bool _is_visible) = 0;
 
     /**
+     * @brief Get the toolbar visibility.
+     */
+    SIGHT_UI_API virtual bool visible() const = 0;
+
+    /**
      * @brief Sets callbacks associate with toolbar items.
      */
     virtual void set_callbacks(callbacks_t _callbacks)
