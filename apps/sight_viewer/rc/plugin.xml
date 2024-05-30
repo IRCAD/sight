@@ -306,7 +306,7 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Read a series -->
-            <service uid="openSeriesSetAct" type="sight::module::ui::io::selector" worker="COMPUTING_THREAD">
+            <service uid="openSeriesSetAct" type="sight::module::ui::io::selector" worker="COMPUTE">
                 <inout key="data" uid="seriesSet" />
                 <type mode="reader" />
                 <selection mode="exclude" />

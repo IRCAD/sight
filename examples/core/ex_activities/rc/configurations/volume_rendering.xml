@@ -75,7 +75,7 @@
             <config widgets="true" preintegration="false" autoresetcamera="true" />
         </service>
 
-        <service uid="imageExtruderSrv" type="sight::module::filter::image::image_extruder" worker="EXTRUSION_THREAD">
+        <service uid="imageExtruderSrv" type="sight::module::filter::image::image_extruder" worker="EXTRUSION">
             <in key="meshes" uid="extrudedModelSeries" />
             <in key="image" uid="${imageSeries}" />
             <inout key="mask" uid="mask" />
