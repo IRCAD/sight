@@ -36,7 +36,8 @@ static const core::com::slots::key_t ADD_RECONSTRUCTIONS_SLOT = "addReconstructi
 
 //------------------------------------------------------------------------------
 
-image_extruder::image_extruder()
+image_extruder::image_extruder() :
+    filter(m_signals)
 {
     new_slot(ADD_RECONSTRUCTIONS_SLOT, &image_extruder::add_reconstructions, this);
 }
@@ -136,7 +137,7 @@ void image_extruder::add_reconstructions(data::model_series::reconstruction_vect
     const auto sig = image_out->signal<data::image::buffer_modified_signal_t>(data::image::MODIFIED_SIG);
     sig->async_emit();
 
-    m_sig_computed->async_emit();
+    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
 }
 
 //------------------------------------------------------------------------------

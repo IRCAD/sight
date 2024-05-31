@@ -43,18 +43,19 @@ public:
 
     SIGHT_DECLARE_SERVICE(filter, service::base);
 
-    SIGHT_SERVICE_API static const core::com::signals::key_t COMPUTED_SIG;
-    using computed_signal_t = core::com::signal<void ()>;
+    struct signals
+    {
+        using computed_t = core::com::signal<void ()>;
+        static inline const core::com::signals::key_t COMPUTED = "computed";
+    };
 
 protected:
 
     /// filter constructor.
-    SIGHT_SERVICE_API filter();
+    SIGHT_SERVICE_API filter(core::com::signals& _signals);
 
     /// filter destructor.
-    SIGHT_SERVICE_API ~filter() override;
-
-    computed_signal_t::sptr m_sig_computed; ///< Signal emitted when operator is computed.
+    SIGHT_SERVICE_API ~filter() override = default;
 };
 
 } // namespace sight::service

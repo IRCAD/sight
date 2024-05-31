@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ chessboard_reprojection::chessboard_reprojection()
     new_slot(TOGGLE_DISTORTION_SLOT, &chessboard_reprojection::toggle_distortion, this);
     new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &chessboard_reprojection::update_chessboard_size, this);
 
-    m_error_computed_sig = new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
+    m_error_computed_sig = new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
 }
 
 //-----------------------------------------------------------------------------

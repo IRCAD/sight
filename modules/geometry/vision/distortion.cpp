@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,16 +48,12 @@ const core::com::slots::key_t distortion::CHANGE_STATE_SLOT = "change_state";
 static const core::com::slots::key_t CALIBRATE_SLOT = "calibrate";
 
 //------------------------------------------------------------------------------
-distortion::distortion() noexcept
+distortion::distortion() noexcept :
+    filter(m_signals)
 {
     new_slot(CHANGE_STATE_SLOT, &distortion::change_state, this);
     new_slot(CALIBRATE_SLOT, &distortion::calibrate, this);
 }
-
-//------------------------------------------------------------------------------
-
-distortion::~distortion() noexcept =
-    default;
 
 // ----------------------------------------------------------------------------
 

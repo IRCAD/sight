@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,13 +33,10 @@ namespace sight::module::filter::image
 
 //-----------------------------------------------------------------------------
 
-matrix_regressor::matrix_regressor()
-= default;
-
-//-----------------------------------------------------------------------------
-
-matrix_regressor::~matrix_regressor()
-= default;
+matrix_regressor::matrix_regressor() :
+    filter(m_signals)
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -86,7 +83,7 @@ void matrix_regressor::updating()
         data::matrix4::sptr res = regressor.minimize(*init_val, 1., 1e-4, 1e-4);
         optimal_matrix->deep_copy(res);
 
-        m_sig_computed->async_emit();
+        this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
     }
 }
 

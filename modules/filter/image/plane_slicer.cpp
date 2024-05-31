@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ static const core::com::slots::key_t UPDATE_DEFAULT_VALUE_SLOT = "updateDefaultV
 //------------------------------------------------------------------------------
 
 plane_slicer::plane_slicer() noexcept :
-
+    filter(m_signals),
     m_reslicer(vtkSmartPointer<vtkImageReslice>::New())
 {
     new_slot(UPDATE_SLICE_TYPE_SLOT, &plane_slicer::updateorientation_t, this);
@@ -111,7 +111,6 @@ void plane_slicer::updating()
     slice->set_origin({{origin[0], origin[1], 0}});
 
     auto sig = slice->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG);
-
     sig->async_emit();
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ reprojection_error::reprojection_error() :
 
     m_cv_color(cv::Scalar(255, 255, 255, 255))
 {
-    new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
+    new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
 
     new_slot(COMPUTE_SLOT, &reprojection_error::compute, this);
     new_slot(SET_PARAMETER_SLOT, &reprojection_error::set_parameter, this);
@@ -188,7 +188,7 @@ void reprojection_error::compute(core::clock::type _timestamp)
                             m_distorsion_coef
                         );
 
-                    this->signal<error_computed_signal_t>(ERROR_COMPUTED_SIG)->async_emit(err_p.first);
+                    this->signal<error_computed_t>(ERROR_COMPUTED_SIG)->async_emit(err_p.first);
 
                     errors.push_back(err_p);
                 }

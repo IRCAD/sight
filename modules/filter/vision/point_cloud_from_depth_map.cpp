@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,8 @@ const core::com::slots::key_t point_cloud_from_depth_map::SET_DEPTH_RANGE = "set
 
 //------------------------------------------------------------------------------
 
-point_cloud_from_depth_map::point_cloud_from_depth_map() noexcept
+point_cloud_from_depth_map::point_cloud_from_depth_map() noexcept :
+    filter(m_signals)
 {
     new_slot(SET_DEPTH_RANGE, &point_cloud_from_depth_map::set_depth_range, this);
 }
@@ -159,7 +160,7 @@ void point_cloud_from_depth_map::updating()
         sig->async_emit();
     }
 
-    m_sig_computed->async_emit();
+    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
 }
 
 //------------------------------------------------------------------------------

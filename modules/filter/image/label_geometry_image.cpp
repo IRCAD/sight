@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,8 @@ const core::com::slots::key_t UPDATE_SELECTED_POINT_LIST = "updateSelectedPointL
 
 //-----------------------------------------------------------------------------
 
-label_geometry_image::label_geometry_image()
+label_geometry_image::label_geometry_image() :
+    filter(m_signals)
 {
     new_slot(UPDATE_SELECTED_POINT_LIST, &label_geometry_image::update_selected_point_list, this);
 }
@@ -104,7 +105,7 @@ void label_geometry_image::updating()
         this->update_selected_point_list("1", "");
     }
 
-    m_sig_computed->async_emit();
+    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
 }
 
 //-----------------------------------------------------------------------------

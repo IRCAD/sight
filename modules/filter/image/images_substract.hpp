@@ -54,7 +54,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(images_substract, sight::service::filter);
 
-    images_substract()           = default;
+    images_substract();
     ~images_substract() override = default;
 
 protected:

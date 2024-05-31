@@ -59,7 +59,7 @@ public:
     bitwise_and();
 
     /// Destroys the service.
-    ~bitwise_and() override;
+    ~bitwise_and() override = default;
 
 protected:
 

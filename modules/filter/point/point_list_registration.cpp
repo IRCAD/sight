@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ static const core::com::signals::key_t ERROR_COMPUTED_SIG          = "error_comp
 
 point_list_registration::point_list_registration()
 {
-    new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
+    new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
     new_slot(CHANGE_MODE, &point_list_registration::change_mode, this);
 }
 
@@ -225,7 +225,7 @@ void point_list_registration::compute_registration(core::clock::type /*timestamp
 
         error_value /= static_cast<double>(source_pts->GetNumberOfPoints());
 
-        this->signal<error_computed_signal_t>(ERROR_COMPUTED_SIG)->async_emit(error_value);
+        this->signal<error_computed_t>(ERROR_COMPUTED_SIG)->async_emit(error_value);
 
         // Notify Matrix modified
         auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);

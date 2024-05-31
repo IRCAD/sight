@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ const core::com::slots::key_t CLEAR_MASKTL_SLOT              = "clearMaskTL";
 // ------------------------------------------------------------------------------
 
 colour_image_masking::colour_image_masking() noexcept :
-
+    filter(m_signals),
     m_mask_downsize(cv::Size(0, 0)),
     m_lower_color(cv::Scalar(0, 0, 0)),
     m_upper_color(cv::Scalar(255, 255, 255))

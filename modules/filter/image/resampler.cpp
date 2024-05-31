@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,8 +34,10 @@ namespace sight::module::filter::image
 
 //------------------------------------------------------------------------------
 
-resampler::resampler()
-= default;
+resampler::resampler() :
+    filter(m_signals)
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -74,17 +76,9 @@ void resampler::updating()
         std::make_tuple(target->size(), target->origin(), target->spacing())
     );
 
-    m_sig_computed->async_emit();
+    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
 
-    auto img_buf_modified_sig = out_img->signal<data::image::buffer_modified_signal_t>
-                                    (data::image::BUFFER_MODIFIED_SIG);
-
-    img_buf_modified_sig->async_emit();
-
-    auto img_modified_sig = out_img->signal<data::image::modified_signal_t>
-                                (data::image::MODIFIED_SIG);
-
-    img_modified_sig->async_emit();
+    out_img->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG)->async_emit();
 }
 
 //------------------------------------------------------------------------------

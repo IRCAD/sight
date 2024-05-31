@@ -35,7 +35,8 @@ namespace sight::module::geometry
 
 //-----------------------------------------------------------------------------
 
-weighted_mean_matrix::weighted_mean_matrix()
+weighted_mean_matrix::weighted_mean_matrix() :
+    filter(m_signals)
 {
     new_slot(slots::SET_PARAMETER, &weighted_mean_matrix::set_parameter, this);
 }
@@ -79,7 +80,7 @@ void weighted_mean_matrix::updating()
         auto output = m_matrix_out.lock();
         output->deep_copy(current_mat.get_shared());
         output->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG)->async_emit();
-        m_sig_computed->async_emit();
+        this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
         m_initialized = false;
         return;
     }
@@ -114,7 +115,7 @@ void weighted_mean_matrix::updating()
         output->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG)->async_emit();
     }
 
-    m_sig_computed->async_emit();
+    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
 }
 
 //-----------------------------------------------------------------------------

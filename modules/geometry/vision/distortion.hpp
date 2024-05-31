@@ -91,7 +91,7 @@ public:
     distortion() noexcept;
 
     /// Destructor. Does nothing
-    ~distortion() noexcept override;
+    ~distortion() noexcept override = default;
 
     /**
      * @brief Connect data::image::MODIFIED_SIG to service::slots::UPDATE

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,8 @@ static const core::com::slots::key_t COMPUTE_SLOT = "compute";
 
 //------------------------------------------------------------------------------
 
-transform_depth_tl2mm::transform_depth_tl2mm()
+transform_depth_tl2mm::transform_depth_tl2mm() :
+    filter(m_signals)
 {
     new_slot(COMPUTE_SLOT, &transform_depth_tl2mm::compute, this);
 }
@@ -115,7 +116,7 @@ void transform_depth_tl2mm::compute(core::clock::type _timestamp)
                     data::timeline::signals::PUSHED
                 );
             sig->async_emit(_timestamp);
-            m_sig_computed->async_emit();
+            this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
         }
 
         m_last_timestamp = _timestamp;

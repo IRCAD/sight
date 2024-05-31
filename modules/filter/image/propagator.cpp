@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
- * Copyright (C) 2018-2021 IHU Strasbourg
+ * Copyright (C) 2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -49,6 +48,7 @@ static const core::com::slots::key_t RESET_DRAWING        = "resetDrawing";
 //-----------------------------------------------------------------------------
 
 propagator::propagator() :
+    filter(m_signals),
     has_parameters(m_slots)
 {
     new_slot(DRAW_SLOT, &propagator::draw, this);

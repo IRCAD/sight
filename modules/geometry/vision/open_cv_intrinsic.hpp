@@ -60,7 +60,7 @@ class open_cv_intrinsic : public sight::geometry::vision::calibrator
 public:
 
     /// Double changed signal type
-    using error_computed_signal_t = core::com::signal<void (double)>;
+    using error_computed_t = core::com::signal<void (double)>;
 
     SIGHT_DECLARE_SERVICE(open_cv_intrinsic, sight::geometry::vision::calibrator);
 

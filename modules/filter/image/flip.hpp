@@ -36,9 +36,9 @@ namespace sight::module::filter::image
  * @brief Service flipping an input image along x or y or z axis.
  *
  * @section Slots Slots
- * - flipAxisX(): flip along X axis
- * - flipAxisY(): flip along Y axis
- * - flipAxisZ(): flip along Z axis
+ * - flip_axis_x(): flip along X axis
+ * - flip_axis_y(): flip along Y axis
+ * - flip_axis_z(): flip along Z axis
 
  * @section XML XML Configuration
  *
@@ -67,7 +67,7 @@ public:
     flip();
 
     /// Destructor, does nothing.
-    ~flip() override;
+    ~flip() override = default;
 
 protected:
 
