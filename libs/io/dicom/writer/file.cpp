@@ -28,6 +28,7 @@
 #include <core/macros.hpp>
 
 #include <data/fiducials_series.hpp>
+#include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 
 #include <io/bitmap/writer.hpp>
@@ -85,15 +86,30 @@ inline static void write_enhanced_us_volume(
     {
         gdcm_image.SetDirectionCosines(orientation_patient.data());
     }
+    else if(const auto& direction = data::helper::medical_image::get_direction(_image_series);
+            direction&& direction->size() == 6)
+    {
+        ///@todo remove this when we get ride of the direction "field" from medical image
+        std::array<double, 6> direction_array {
+            (*direction)(0, 0), (*direction)(1, 0), (*direction)(2, 0),
+            (*direction)(0, 1), (*direction)(0, 2), (*direction)(0, 3)
+        };
+
+        gdcm_image.SetDirectionCosines(direction_array.data());
+    }
 
     // Position
     if(const auto& position_volume = _image_series.get_image_position_volume(); position_volume.size() == 3)
     {
         gdcm_image.SetOrigin(position_volume.data());
     }
-    else if(const auto& position_patient = _image_series.get_image_position_patient(); position_patient.size() == 6)
+    else if(const auto& position_patient = _image_series.get_image_position_patient(); position_patient.size() == 3)
     {
         gdcm_image.SetOrigin(position_patient.data());
+    }
+    else if(const auto& origin = _image_series.origin(); origin.size() == 3)
+    {
+        gdcm_image.SetOrigin(origin.data());
     }
 
     // Pixel Format
@@ -218,30 +234,73 @@ inline static void write_enhanced_us_volume(
             transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::JPEGLSLossless);
             break;
 
-        case writer::file::transfer_syntax::jpe_g2000:
+        case writer::file::transfer_syntax::jpeg_2000:
             transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000);
             break;
 
         default:
         {
-            // Default is JPEG2000 lossless
-            transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
+            if(_image_series.type().size() <= 2)
+            {
+                // Default is JPEG2000 lossless for 16 bits or less since jpeg2000 doesn't support more than 16 bits
+                transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-            if(!_force_cpu)
-            {
-                SIGHT_THROW_IF(
-                    "nvJPEG2000 is not available, but the support has been compiled in. "
-                    "Check your nvJPEG2000 library installation",
-                    !io::bitmap::nv_jpeg_2k()
-                );
+                if(!_force_cpu)
+                {
+                    SIGHT_THROW_IF(
+                        "nvJPEG2000 is not available, but the support has been compiled in. "
+                        "Check your nvJPEG2000 library installation",
+                        !io::bitmap::nv_jpeg_2k()
+                    );
 
-                nvjpeg2k_codec = std::make_unique<codec::nv_jpeg2_k>();
-                transfer_syntax_changer.SetUserCodec(nvjpeg2k_codec.get());
-            }
+                    nvjpeg2k_codec = std::make_unique<codec::nv_jpeg2_k>();
+                    transfer_syntax_changer.SetUserCodec(nvjpeg2k_codec.get());
+                }
 #endif
+            }
+            else
+            {
+                // For more thant 16 bits, we use RLE
+                transfer_syntax_changer.SetTransferSyntax(gdcm::TransferSyntax::RLELossless);
+
+                SIGHT_WARN(
+                    "The image has more than 16 bits per component. "
+                    "RLE compression will be used instead of JPEG2000."
+                );
+            }
+
             break;
         }
+    }
+
+    // Final check for JPEG compression
+    switch(transfer_syntax_changer.GetTransferSyntax())
+    {
+        case gdcm::TransferSyntax::JPEGBaselineProcess1:
+        case gdcm::TransferSyntax::JPEGExtendedProcess2_4:
+        case gdcm::TransferSyntax::JPEGExtendedProcess3_5:
+        case gdcm::TransferSyntax::JPEGSpectralSelectionProcess6_8:
+        case gdcm::TransferSyntax::JPEGFullProgressionProcess10_12:
+        case gdcm::TransferSyntax::JPEGLosslessProcess14:
+        case gdcm::TransferSyntax::JPEGLosslessProcess14_1:
+        case gdcm::TransferSyntax::JPEGLSLossless:
+        case gdcm::TransferSyntax::JPEGLSNearLossless:
+        case gdcm::TransferSyntax::JPEG2000Lossless:
+        case gdcm::TransferSyntax::JPEG2000:
+        case gdcm::TransferSyntax::JPEG2000Part2Lossless:
+        case gdcm::TransferSyntax::JPEG2000Part2:
+        {
+            SIGHT_THROW_IF(
+                "JPEG compression doesn't support more than 16 nits per component.",
+                _image_series.type().size() > 2
+            );
+
+            break;
+        }
+
+        default:
+            break;
     }
 
     transfer_syntax_changer.SetInput(gdcm_image);
@@ -262,11 +321,11 @@ inline static void write_enhanced_us_volume(
                 changed_gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::YBR_FULL_422);
                 break;
 
-            case writer::file::transfer_syntax::jpe_g2000:
+            case writer::file::transfer_syntax::jpeg_2000:
                 changed_gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::YBR_ICT);
                 break;
 
-            case writer::file::transfer_syntax::jpe_g2000_lossless:
+            case writer::file::transfer_syntax::jpeg_2000_lossless:
             case writer::file::transfer_syntax::sop_default:
                 changed_gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::YBR_RCT);
                 break;

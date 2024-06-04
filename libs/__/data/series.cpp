@@ -35,11 +35,13 @@
 #include <gdcmDicts.h>
 #include <gdcmGlobal.h>
 #include <gdcmPrivateTag.h>
+#include <gdcmUIDGenerator.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/epsilon.hpp>
 
 #include <iomanip>
+#include <regex>
 #include <sstream>
 #include <utility>
 
@@ -48,8 +50,22 @@ SIGHT_REGISTER_DATA(sight::data::series)
 namespace sight::data
 {
 
+namespace
+{
+
+constexpr size_t YEAR_LENGTH        = std::string_view("YYYY").length();
+constexpr size_t MONTH_LENGTH       = std::string_view("MM").length();
+constexpr size_t YEAR_MONTH_LENGTH  = YEAR_LENGTH + MONTH_LENGTH;
+constexpr size_t DAY_LENGTH         = std::string_view("DD").length();
+constexpr size_t DATE_LENGTH        = YEAR_MONTH_LENGTH + DAY_LENGTH;
+constexpr size_t HOUR_LENGTH        = std::string_view("HH").length();
+constexpr size_t MINUTE_LENGTH      = std::string_view("MM").length();
+constexpr size_t HOUR_MINUTE_LENGTH = HOUR_LENGTH + MINUTE_LENGTH;
+constexpr size_t SECOND_LENGTH      = std::string_view("SS").length();
+constexpr size_t TIME_LENGTH        = HOUR_MINUTE_LENGTH + SECOND_LENGTH;
+
 // This allows to register private tags in the private dictionary and so to set and get value from them
-static const class gdcm_loader final
+class gdcm_loader final
 {
 public:
 
@@ -68,11 +84,29 @@ public:
             gdcm::PrivateTag(detail::PRIVATE_GROUP, detail::PRIVATE_CREATOR_ELEMENT, detail::PRIVATE_CREATOR.c_str()),
             gdcm::DictEntry("Sight Private Data", "SightPrivateData", gdcm::VR::UT, gdcm::VM::VM1)
         );
+
+        // Create a UID generator with the "programmer" root "2.25
+        /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_B.2.html
+        m_uid_generator = std::make_unique<gdcm::UIDGenerator>();
+        m_uid_generator->SetRoot("2.25");
     }
-} LOADER;
+
+    //------------------------------------------------------------------------------
+
+    std::string generate_uid()
+    {
+        std::unique_lock lock(m_mutex);
+        return m_uid_generator->Generate();
+    }
+
+private:
+
+    std::mutex m_mutex;
+    std::unique_ptr<gdcm::UIDGenerator> m_uid_generator;
+} gdcm_loader;
 
 /// helper function to get the value of a tag as a string like "(0020,0011)", which can be searched on the internet.
-inline static std::string tag_to_string(const gdcm::Tag& _tag)
+inline std::string tag_to_string(const gdcm::Tag& _tag)
 {
     std::stringstream ss;
     ss << "("
@@ -81,6 +115,73 @@ inline static std::string tag_to_string(const gdcm::Tag& _tag)
 
     return ss.str();
 }
+
+/// Helper function to parse a path with DICOM tags
+inline std::filesystem::path parse_path(
+    const sight::data::series* const _series,
+    const std::string& _path
+)
+{
+    static const std::regex s_DICOM_REGEX(
+        R"([(]\s*(?:0x)?([0123456789abcdefABCDEF]{4})\s*,\s*(?:0x)?([0123456789abcdefABCDEF]{4})\s*[)])"
+    );
+
+    // Copy the source string
+    std::string path(_path);
+
+    for(std::smatch dicom_match ; std::regex_search(path, dicom_match, s_DICOM_REGEX) ; )
+    {
+        // Parse the group and element
+        const auto group   = uint16_t(std::stoi(dicom_match.str(1), nullptr, 16));
+        const auto element = uint16_t(std::stoi(dicom_match.str(2), nullptr, 16));
+
+        // Find the value of the corresponding DICOM tag
+        auto dicom_value = _series->get_string_value(group, element);
+
+        // Get the attribute
+        const auto& attribute = sight::data::dicom::attribute::get(group, element);
+
+        // If the Value Representation is UI, we will shorten it using hash
+        if(attribute.m_vr == sight::data::dicom::attribute::VR::UI)
+        {
+            std::ostringstream hex;
+            hex << std::hex << std::hash<std::string> {}(dicom_value);
+
+            dicom_value = hex.str();
+        }
+
+        if(dicom_value.empty())
+        {
+            // This is helpful for debugging
+            const std::string message = "DICOM attribute " + std::string(attribute.m_name)
+                                        + " has not been found or is empty.";
+
+            SIGHT_ASSERT(message, false);
+            SIGHT_ERROR(message);
+
+            dicom_value = "[NA]";
+        }
+
+        // Replace the match with the DICOM value
+        path = dicom_match.format("$`" + dicom_value + "$'");
+    }
+
+    // Filter forbidden characters for paths (Windows and Linux, even if linux allows almost anything)
+    std::replace_if(
+        path.begin(),
+        path.end(),
+        [](char _c)
+            {
+                static constexpr std::string_view s_FORBIDDEN(":?\"<>|$;* \t\n\r");
+                return std::isprint(_c) == 0 || s_FORBIDDEN.find(_c) != std::string::npos;
+            },
+        '_'
+    );
+
+    return path;
+}
+
+} // namespace
 
 series::series() :
     m_pimpl(std::make_unique<detail::series_impl>(this))
@@ -92,6 +193,48 @@ series::~series() noexcept = default;
 
 //------------------------------------------------------------------------------
 
+void series::new_sop_instance()
+{
+    // Set series date, time and uid
+    set_sop_instance_uid(gdcm_loader.generate_uid());
+
+    // DICOM date time format is YYYYMMDDHHMMSS.FFFFFF, but may include null components
+    /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
+    const auto& date_time = series::time_point_to_date_time(std::chrono::system_clock::now());
+    set_instance_creation_date(date_time.substr(0, DATE_LENGTH));
+    set_instance_creation_time(date_time.substr(DATE_LENGTH));
+}
+
+//------------------------------------------------------------------------------
+
+void series::new_study_instance()
+{
+    // Set series date, time and uid
+    set_study_instance_uid(gdcm_loader.generate_uid());
+
+    // DICOM date time format is YYYYMMDDHHMMSS.FFFFFF, but may include null components
+    /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
+    const auto& date_time = series::time_point_to_date_time(std::chrono::system_clock::now());
+    set_study_date(date_time.substr(0, DATE_LENGTH));
+    set_study_time(date_time.substr(DATE_LENGTH));
+}
+
+//------------------------------------------------------------------------------
+
+void series::new_series_instance()
+{
+    // Set series date, time and uid
+    set_series_instance_uid(gdcm_loader.generate_uid());
+
+    // DICOM date time format is YYYYMMDDHHMMSS.FFFFFF, but may include null components
+    /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
+    const auto& date_time = series::time_point_to_date_time(std::chrono::system_clock::now());
+    set_series_date(date_time.substr(0, DATE_LENGTH));
+    set_series_time(date_time.substr(DATE_LENGTH));
+}
+
+//------------------------------------------------------------------------------
+
 std::chrono::system_clock::time_point series::date_time_to_time_point(const std::string& _date_time)
 {
     // DICOM date time format is YYYYMMDDHHMMSS.FFFFFF, but may include null components
@@ -99,38 +242,38 @@ std::chrono::system_clock::time_point series::date_time_to_time_point(const std:
 
     std::tm time_info {};
 
-    if(_date_time.length() >= 4)
+    if(_date_time.length() >= YEAR_LENGTH)
     {
-        time_info.tm_year = std::stoi(_date_time.substr(0, 4)) - 1900;
+        time_info.tm_year = std::stoi(_date_time.substr(0, YEAR_LENGTH)) - 1900;
     }
 
-    if(_date_time.length() >= 6)
+    if(_date_time.length() >= YEAR_MONTH_LENGTH)
     {
-        time_info.tm_mon = std::stoi(_date_time.substr(4, 2)) - 1;
+        time_info.tm_mon = std::stoi(_date_time.substr(YEAR_LENGTH, MONTH_LENGTH)) - 1;
     }
 
-    if(_date_time.length() >= 8)
+    if(_date_time.length() >= DATE_LENGTH)
     {
-        time_info.tm_mday = std::stoi(_date_time.substr(6, 2));
+        time_info.tm_mday = std::stoi(_date_time.substr(YEAR_MONTH_LENGTH, DAY_LENGTH));
     }
     else
     {
         time_info.tm_mday = 1;
     }
 
-    if(_date_time.length() >= 10)
+    if(_date_time.length() >= (DATE_LENGTH + HOUR_LENGTH))
     {
-        time_info.tm_hour = std::stoi(_date_time.substr(8, 2));
+        time_info.tm_hour = std::stoi(_date_time.substr(DATE_LENGTH, HOUR_LENGTH));
     }
 
-    if(_date_time.length() >= 12)
+    if(_date_time.length() >= (DATE_LENGTH + HOUR_MINUTE_LENGTH))
     {
-        time_info.tm_min = std::stoi(_date_time.substr(10, 2));
+        time_info.tm_min = std::stoi(_date_time.substr((DATE_LENGTH + HOUR_LENGTH), MINUTE_LENGTH));
     }
 
-    if(_date_time.length() >= 14)
+    if(_date_time.length() >= (DATE_LENGTH + TIME_LENGTH))
     {
-        time_info.tm_sec = std::stoi(_date_time.substr(12, 2));
+        time_info.tm_sec = std::stoi(_date_time.substr(DATE_LENGTH + HOUR_MINUTE_LENGTH, SECOND_LENGTH));
     }
 
 #ifdef _WIN32
@@ -142,10 +285,10 @@ std::chrono::system_clock::time_point series::date_time_to_time_point(const std:
 
     std::chrono::microseconds microseconds {0};
 
-    if(_date_time.length() > 15)
+    if(_date_time.length() > (DATE_LENGTH + TIME_LENGTH + 1))
     {
         // Do not forget '.' after the seconds
-        auto us = _date_time.substr(15);
+        auto us = _date_time.substr((DATE_LENGTH + TIME_LENGTH + 1));
 
         // Fill with trailing 0 to always have microseconds
         us.resize(6, '0');
@@ -183,6 +326,104 @@ std::string series::time_point_to_date_time(const std::chrono::system_clock::tim
     ss << std::setfill('0') << std::setw(6) << std::right << hh_mm_ss.subseconds().count();
 
     return ss.str();
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::date_to_iso(const std::string& _date)
+{
+    // DICOM date format is YYYYMMDD, but may include null components
+    // ISO 8601 is YYYY-MM-DD
+    /// @see @link https://www.iso.org/fr/iso-8601-date-and-time-format.html
+    /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
+    std::string date;
+
+    // Year
+    if(_date.length() >= YEAR_LENGTH)
+    {
+        date += _date.substr(0, YEAR_LENGTH);
+    }
+    else
+    {
+        date += "1900";
+    }
+
+    // Month
+    if(_date.length() >= YEAR_MONTH_LENGTH)
+    {
+        date += "-" + _date.substr(YEAR_LENGTH, MONTH_LENGTH);
+    }
+    else
+    {
+        date += "-01";
+    }
+
+    // Day
+    if(_date.length() >= (DATE_LENGTH))
+    {
+        date += "-" + _date.substr(YEAR_MONTH_LENGTH, DAY_LENGTH);
+    }
+    else
+    {
+        date += "-01";
+    }
+
+    return date;
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::time_to_iso(const std::string& _time)
+{
+    // DICOM time format is HHMMSS.FFFFFF, but may include null components
+    // ISO 8601 is HH:MM:SS.FFF
+    /// @see @link https://www.iso.org/fr/iso-8601-date-and-time-format.html
+    /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
+    std::string time;
+
+    // Hours
+    if(_time.length() >= HOUR_LENGTH)
+    {
+        time += _time.substr(0, HOUR_LENGTH);
+    }
+    else
+    {
+        time += "00";
+    }
+
+    // Minutes
+    if(_time.length() >= HOUR_MINUTE_LENGTH)
+    {
+        time += ":" + _time.substr(HOUR_LENGTH, MINUTE_LENGTH);
+    }
+    else
+    {
+        time += ":00";
+    }
+
+    // Seconds
+    if(_time.length() >= TIME_LENGTH)
+    {
+        time += ":" + _time.substr(HOUR_MINUTE_LENGTH, SECOND_LENGTH);
+    }
+    else
+    {
+        time += ":00";
+    }
+
+    // Milliseconds
+    // HHMMSS.yyyyyy is legit, but also HHMMSS.y -> (+1 for `.`, +1 for `y`)
+    if(_time.length() >= (TIME_LENGTH + 1 + 1))
+    {
+        // ISO only allows 3 decimals (millisecond)
+        time += _time.substr(6, 4);
+    }
+    else
+    {
+        time += ".000";
+    }
+
+    return time;
 }
 
 //------------------------------------------------------------------------------
@@ -1297,6 +1538,34 @@ std::string series::get_encoding() const noexcept
     // We hope that the underlying codec will deal with it...
     // This case is used for DICOM official sample with one "WINDOWS_1252" encoding
     return specific_character_set;
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::get_instance_creation_date() const noexcept
+{
+    return m_pimpl->get_string_value<gdcm::Keywords::InstanceCreationDate>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_instance_creation_date(const std::string& _instance_creation_date)
+{
+    m_pimpl->set_value<gdcm::Keywords::InstanceCreationDate>(_instance_creation_date);
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::get_instance_creation_time() const noexcept
+{
+    return m_pimpl->get_string_value<gdcm::Keywords::InstanceCreationTime>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_instance_creation_time(const std::string& _instance_creation_time)
+{
+    m_pimpl->set_value<gdcm::Keywords::InstanceCreationTime>(_instance_creation_time);
 }
 
 //-----------------------------------------------------------------------------
@@ -3111,6 +3380,56 @@ std::optional<std::uint16_t> series::get_columns() const noexcept
 void series::set_columns(const std::optional<std::uint16_t>& _columns)
 {
     m_pimpl->set_value<gdcm::Keywords::Columns>(_columns);
+}
+
+//------------------------------------------------------------------------------
+
+std::filesystem::path series::file_name(
+    const std::optional<std::string>& _suffix
+) const
+{
+    // File name. DICOM value can be specified with the syntax "(group,element)"
+    // "<PatientID>.<Modality>.<SeriesDate><SeriesTime>.<SeriesInstanceUID>.dcm"
+    static constexpr std::string_view s_FILE_NAME {"(0010,0020).(0008,0060).(0008,0021)(0008,0031).(0020,000E)"};
+
+    std::string file_name {s_FILE_NAME};
+
+    if(_suffix && !_suffix->empty())
+    {
+        file_name += *_suffix;
+    }
+
+    return sight::data::parse_path(this, file_name);
+}
+
+//------------------------------------------------------------------------------
+
+std::filesystem::path series::folder(
+    const std::optional<std::filesystem::path>& _root
+) const
+{
+    // Sub-folder to save the images. DICOM value can be specified with the syntax "(group,element)"
+    // "<PatientID>/<StudyDate><StudyTime>"
+    static const std::string s_FOLDER {"(0010,0020)/(0008,0020)(0008,0030)"};
+
+    std::filesystem::path folder {sight::data::parse_path(this, s_FOLDER)};
+
+    if(_root && !_root->empty())
+    {
+        folder = *_root / folder;
+    }
+
+    return std::filesystem::weakly_canonical(folder);
+}
+
+//------------------------------------------------------------------------------
+
+std::filesystem::path series::file_path(
+    const std::optional<std::filesystem::path>& _root,
+    const std::optional<std::string>& _suffix
+) const
+{
+    return std::filesystem::weakly_canonical(folder(_root) / file_name(_suffix));
 }
 
 } // namespace sight::data

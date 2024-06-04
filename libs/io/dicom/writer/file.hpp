@@ -88,8 +88,8 @@ public:
         jpeg_lossless,
         jpeg_ls_lossless,
         jpeg_ls_nearlossless,
-        jpe_g2000,
-        jpe_g2000_lossless
+        jpeg_2000,
+        jpeg_2000_lossless
     };
 
     static constexpr std::string_view transfer_syntax_to_string(transfer_syntax _transfer_syntax);
@@ -137,10 +137,10 @@ constexpr std::string_view file::transfer_syntax_to_string(file::transfer_syntax
         case transfer_syntax::jpeg_ls_nearlossless:
             return "JPEG_LS_NEARLOSSLESS";
 
-        case transfer_syntax::jpe_g2000:
+        case transfer_syntax::jpeg_2000:
             return "JPEG2000";
 
-        case transfer_syntax::jpe_g2000_lossless:
+        case transfer_syntax::jpeg_2000_lossless:
             return "JPEG2000_LOSSLESS";
 
         default:
@@ -182,14 +182,14 @@ constexpr file::transfer_syntax file::string_to_transfer_syntax(const std::strin
         return transfer_syntax::jpeg_ls_nearlossless;
     }
 
-    if(constexpr auto ts = transfer_syntax_to_string(transfer_syntax::jpe_g2000); _string == ts)
+    if(constexpr auto ts = transfer_syntax_to_string(transfer_syntax::jpeg_2000); _string == ts)
     {
-        return transfer_syntax::jpe_g2000;
+        return transfer_syntax::jpeg_2000;
     }
 
-    if(constexpr auto ts = transfer_syntax_to_string(transfer_syntax::jpe_g2000_lossless); _string == ts)
+    if(constexpr auto ts = transfer_syntax_to_string(transfer_syntax::jpeg_2000_lossless); _string == ts)
     {
-        return transfer_syntax::jpe_g2000_lossless;
+        return transfer_syntax::jpeg_2000_lossless;
     }
 
     return transfer_syntax::sop_default;
