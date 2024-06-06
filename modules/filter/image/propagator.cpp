@@ -118,18 +118,23 @@ void propagator::propagate()
         "Propagation",
         [&](sight::core::jobs::job& _running_job)
         {
-            _running_job.done_work(1);
-
             // Convert point list into seeds
             sight::filter::image::min_max_propagation::seeds_t seeds;
-
-            const auto image_in = m_image_in.lock();
-            SIGHT_ASSERT("No " << std::quoted(IMAGE_IN) << " found.", image_in);
-            SIGHT_ASSERT("Invalid image", data::helper::medical_image::check_image_validity(image_in.get_shared()));
 
             {
                 const auto point_list = m_seeds_in.lock();
 
+                // Early return that can help to avoid deadlocks when starting the service
+                if(point_list->get_points().empty())
+                {
+                    _running_job.done_work(10);
+                    return;
+                }
+
+                _running_job.done_work(1);
+                const auto image_in = m_image_in.lock();
+                SIGHT_ASSERT("No " << std::quoted(IMAGE_IN) << " found.", image_in);
+                SIGHT_ASSERT("Invalid image", data::helper::medical_image::check_image_validity(image_in.get_shared()));
                 const auto& bbox = sight::data::helper::medical_image::compute_bounding_box(*image_in);
 
                 std::ranges::for_each(
@@ -152,40 +157,43 @@ void propagator::propagate()
             }
             _running_job.done_work(1);
 
-            const auto image_out   = m_image_out.lock();
-            const auto propag_diff = sight::filter::image::min_max_propagation::process(
-                image_in.get_shared(),
-                image_out.get_shared(),
-                nullptr,
-                seeds,
-                static_cast<std::uint8_t>(m_value),
-                m_radius,
-                m_overwrite,
-                m_mode
-            );
-            _running_job.done_work(6);
-
-            if(propag_diff.num_elements() > 0)
             {
-                image_out->signal<data::image::buffer_modified_signal_t>(
-                    data::image::BUFFER_MODIFIED_SIG
-                )->async_emit();
-                this->signal<filter::signals::computed_t>(filter::signals::COMPUTED)->async_emit();
+                const auto image_in    = m_image_in.lock();
+                const auto image_out   = m_image_out.lock();
+                const auto propag_diff = sight::filter::image::min_max_propagation::process(
+                    image_in.get_shared(),
+                    image_out.get_shared(),
+                    nullptr,
+                    seeds,
+                    static_cast<std::uint8_t>(m_value),
+                    m_radius,
+                    m_overwrite,
+                    m_mode
+                );
+                _running_job.done_work(6);
 
-                const auto samples_out = m_samples_out.lock();
-                if(samples_out)
+                if(propag_diff.num_elements() > 0)
                 {
-                    sight::data::image::size_t voxels_size {propag_diff.num_elements(), 1, 1};
+                    image_out->signal<data::image::buffer_modified_signal_t>(
+                        data::image::BUFFER_MODIFIED_SIG
+                    )->async_emit();
+                    this->signal<filter::signals::computed_t>(filter::signals::COMPUTED)->async_emit();
 
-                    samples_out->resize(voxels_size, image_in->type(), image_in->pixel_format());
-
-                    const auto lock = samples_out->dump_lock();
-                    for(std::size_t i = 0 ; i < propag_diff.num_elements() ; ++i)
+                    const auto samples_out = m_samples_out.lock();
+                    if(samples_out)
                     {
-                        samples_out->set_pixel(i, propag_diff.get_element(i).m_old_value);
-                    }
+                        sight::data::image::size_t voxels_size {propag_diff.num_elements(), 1, 1};
 
-                    samples_out->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG)->async_emit();
+                        samples_out->resize(voxels_size, image_in->type(), image_in->pixel_format());
+
+                        const auto lock = samples_out->dump_lock();
+                        for(std::size_t i = 0 ; i < propag_diff.num_elements() ; ++i)
+                        {
+                            samples_out->set_pixel(i, propag_diff.get_element(i).m_old_value);
+                        }
+
+                        samples_out->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG)->async_emit();
+                    }
                 }
             }
 
