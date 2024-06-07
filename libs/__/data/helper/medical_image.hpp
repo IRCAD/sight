@@ -220,6 +220,37 @@ SIGHT_DATA_API data::point_list::sptr get_landmarks(const data::image& _image);
 SIGHT_DATA_API void set_landmarks(data::image& _image, const data::point_list::sptr& _landmarks);
 
 /**
+ * @brief Helper function to calculate the slice index of a given fiducial point in a specified orientation within a
+ * medical image.
+ *
+ * @param _image : The input image as a constant reference to data::image.
+ * @param _point : The coordinates of the fiducial point as a std::array of three doubles.
+ * @param _orientation : The orientation (axial, sagittal, or frontal) to calculate the slice index.
+ * @return std::optional<std::int64_t> : The calculated slice index as an integer.
+ */
+
+SIGHT_DATA_API std::optional<std::int64_t> get_fiducial_slice_index(
+    const data::image& _image,
+    const std::array<double,
+                     3>& _point,
+    orientation_t _orientation
+);
+
+/**
+ * @brief Helper function to calculate the physical position of a given fiducial point along a specified slice
+ * orientation within a medical image.
+ *
+ * @param _image : The input image as a constant reference to data::image.
+ * @param _point : The coordinates of the fiducial point as a std::array of three doubles.
+ * @param _orientation : The orientation (axial, sagittal, or frontal) to calculate the physical slice position.
+ * @return std::optional<double> : The calculated physical position as a double.
+ */
+SIGHT_DATA_API std::optional<double> get_fiducial_slice_position(
+    const data::image& _image,
+    const std::array<double, 3>& _point,
+    orientation_t _orientation
+);
+/**
  * @brief Helper function to get distances vector of a medical image.
  *
  * @param _image : input image reference.

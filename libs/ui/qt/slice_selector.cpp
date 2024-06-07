@@ -22,24 +22,33 @@
 
 #include "ui/qt/slice_selector.hpp"
 
-#include <core/base.hpp>
-#include <core/runtime/path.hpp>
+#include "data/landmarks.hpp"
 
+#include <core/base.hpp>
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/runtime/path.hpp>
+#include <core/tools/uuid.hpp>
+
+#include <data/fiducials_series.hpp>
+#include <data/has_fiducials.hpp>
+#include <data/helper/fiducials_series.hpp>
 #include <data/string.hpp>
 
 #include <QApplication>
+#include <QColor>
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QLineEdit>
+#include <QPainter>
+#include <QRect>
 #include <QSize>
 #include <QSlider>
 #include <QStringList>
 #include <QToolButton>
+#include <QVector>
 #include <QWidget>
 
-#include <functional>
-#include <string>
-#include <variant>
 namespace sight::ui::qt
 {
 
@@ -186,6 +195,82 @@ public:
     }
 };
 
+// This class enhances Qt slider by adding colored vertical lines at specific positions on the groove of the slider,
+// matching the fiducials' color and position.
+class custom_slider : public QSlider
+{
+public:
+
+    using QSlider::QSlider;
+
+    //------------------------------------------------------------------------------
+
+    void add_slider_position(std::int64_t _position, const QColor& _color)
+    {
+        m_position_colors[_position].push_back(_color);
+        update();
+    }
+
+    //------------------------------------------------------------------------------
+
+    void add_position_slider(std::optional<double> _position, const QColor& _color)
+    {
+        if(_position.has_value())
+        {
+            m_position_colors[static_cast<int64_t>(_position.value())].push_back(_color);
+            update();
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    void clear_positions()
+    {
+        m_position_colors.clear();
+        update();
+    }
+
+protected:
+
+    //------------------------------------------------------------------------------
+    void paintEvent(QPaintEvent* _event) override
+    {
+        QSlider::paintEvent(_event);
+
+        QPainter painter(this);
+        QStyleOptionSlider opt;
+        initStyleOption(&opt);
+        QRect rect       = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderGroove, this);
+        int handle_width = style()->pixelMetric(QStyle::PM_SliderControlThickness, &opt, this);
+
+        int effective_width = rect.width() - handle_width;
+        for(const auto& [position, colors] : m_position_colors)
+        {
+            double position_scaled = static_cast<double>(position) / static_cast<double>(maximum());
+            int x                  = rect.left() + handle_width / 2
+                                     + static_cast<int>(position_scaled * effective_width);
+
+            if(x >= rect.left() && x < rect.right())
+            {
+                int segment_height = rect.height() / static_cast<int>(colors.size());
+                int current_top    = rect.top();
+
+                for(const QColor& color : colors)
+                {
+                    QPen pen(color, 3);
+                    painter.setPen(pen);
+                    painter.drawLine(x, current_top, x, current_top + segment_height);
+                    current_top += segment_height;
+                }
+            }
+        }
+    }
+
+private:
+
+    std::map<int64_t, std::vector<QColor> > m_position_colors;
+};
+
 class second_proxy_style : public QProxyStyle
 {
 public:
@@ -217,9 +302,9 @@ slice_selector::slice_selector(
     QWidget(_parent),
     m_slice_index_style(new absolute_proxy_style()),
     m_slice_index_text(new slice_index_text(this)),
-    m_slice_index(new QSlider(Qt::Horizontal, this))
+    m_slider(new custom_slider(Qt::Horizontal, this))
 {
-    m_slice_index->setStyle(m_slice_index_style);
+    m_slider->setStyle(m_slice_index_style);
     m_fct_change_index_callback = [](int){};
     m_fct_change_type_callback  = [](int){};
 
@@ -242,7 +327,7 @@ slice_selector::slice_selector(
     m_slice_index_text->setReadOnly(true);
     m_slice_index_text->setAlignment(Qt::AlignVCenter | Qt::AlignRight | Qt::AlignAbsolute);
 
-    layout->addWidget(m_slice_index, 1);
+    layout->addWidget(m_slider, 1);
     layout->addWidget(m_slice_index_text, 0);
 
     if(_display_step_buttons)
@@ -259,8 +344,8 @@ slice_selector::slice_selector(
             &QToolButton::clicked,
             [this]()
             {
-                m_slice_index->setValue(
-                    std::max(m_slice_index->minimum(), m_slice_index->value() - m_slice_index->singleStep())
+                m_slider->setValue(
+                    std::max(m_slider->minimum(), m_slider->value() - m_slider->singleStep())
                 );
             });
 
@@ -277,8 +362,8 @@ slice_selector::slice_selector(
             &QToolButton::clicked,
             [this]()
             {
-                m_slice_index->setValue(
-                    std::min(m_slice_index->maximum(), m_slice_index->value() + m_slice_index->singleStep())
+                m_slider->setValue(
+                    std::min(m_slider->maximum(), m_slider->value() + m_slider->singleStep())
                 );
             });
 
@@ -289,7 +374,7 @@ slice_selector::slice_selector(
 
     layout->setContentsMargins(0, 0, 0, 0);
 
-    QObject::connect(m_slice_index, &QSlider::valueChanged, this, &slice_selector::on_slice_index_change);
+    QObject::connect(m_slider, &QSlider::valueChanged, this, &slice_selector::on_slice_index_change);
 
     this->setLayout(layout);
 }
@@ -303,7 +388,7 @@ slice_selector::slice_selector(
     QWidget* _parent_pos
 ) noexcept :
     QWidget(_parent_pos),
-    m_slice_position_slider(new QSlider(Qt::Horizontal, this)),
+    m_slice_position_slider(new custom_slider(Qt::Horizontal, this)),
     m_slice_position_text(new slice_pos_text(this)),
     m_slice_position_style(new second_proxy_style())
 {
@@ -396,12 +481,45 @@ slice_selector::~slice_selector() noexcept
 }
 
 //------------------------------------------------------------------------------
-
 void slice_selector::set_index_digits(std::uint8_t _index_digits)
 {
     auto* slice_index_widget = static_cast<slice_index_text*>(m_slice_index_text.data());
     slice_index_widget->set_digits(_index_digits);
     slice_index_widget->updateGeometry();
+}
+
+//-----------------------------------------------------------------------------
+void slice_selector::clear_slider_index()
+{
+    auto* slider = dynamic_cast<custom_slider*>(m_slider.data());
+    slider->clear_positions();
+}
+
+//-----------------------------------------------------------------------------
+void slice_selector::clear_slider_position()
+{
+    auto* slider_position = dynamic_cast<custom_slider*>(m_slice_position_slider.data());
+    slider_position->clear_positions();
+}
+
+//-----------------------------------------------------------------------------
+void slice_selector::add_slider_position(std::int64_t _position, const QColor& _color)
+{
+    auto* m_slider_widget = static_cast<custom_slider*>(m_slider.data());
+
+    m_slider_widget->blockSignals(true);
+    m_slider_widget->add_slider_position(_position, _color);
+    m_slider_widget->blockSignals(false);
+}
+
+//------------------------------------------------------------------------------
+void slice_selector::add_position_slider(std::double_t _position, const QColor& _color)
+{
+    auto* m_slider_widget = static_cast<custom_slider*>(m_slice_position_slider.data());
+
+    m_slider_widget->blockSignals(true);
+    m_slider_widget->add_position_slider(_position, _color);
+    m_slider_widget->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------
@@ -415,21 +533,21 @@ void slice_selector::set_position_digits(double _pos_digits)
 //-------------------------------------------------------------------------------
 void slice_selector::set_slice_range(int _min, int _max)
 {
-    m_slice_index->blockSignals(true);
-    m_slice_index->setRange(_min, _max);
-    m_slice_index->blockSignals(false);
+    m_slider->blockSignals(true);
+    m_slider->setRange(_min, _max);
+    m_slider->blockSignals(false);
 }
 
 //------------------------------------------------------------------------------
 
 void slice_selector::set_slice_value(int _index)
 {
-    m_slice_index->blockSignals(true);
-    m_slice_index->setValue(_index);
-    m_slice_index->blockSignals(false);
+    m_slider->blockSignals(true);
+    m_slider->setValue(_index);
+    m_slider->blockSignals(false);
 
     std::stringstream ss;
-    ss << _index << " / " << this->m_slice_index->maximum();
+    ss << _index << " / " << this->m_slider->maximum();
     this->m_slice_index_text->setText(QString::fromStdString(ss.str()));
 }
 
@@ -522,9 +640,9 @@ void slice_selector::set_enable(bool _enable)
         m_slice_type->setEnabled(_enable);
     }
 
-    if(m_slice_index != nullptr)
+    if(m_slider != nullptr)
     {
-        m_slice_index->setEnabled(_enable);
+        m_slider->setEnabled(_enable);
     }
 
     if(m_slice_index_text != nullptr)
@@ -557,9 +675,9 @@ void slice_selector::on_slice_type_change(int _index)
 {
     m_fct_change_type_callback(_index);
 
-    if(m_slice_index != nullptr)
+    if(m_slider != nullptr)
     {
-        this->set_slice_value(this->m_slice_index->value());
+        this->set_slice_value(this->m_slider->value());
     }
     else if(m_slice_position_slider != nullptr)
     {

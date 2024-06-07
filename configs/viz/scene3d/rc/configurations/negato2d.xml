@@ -149,10 +149,6 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <connect channel="${WORLD_COORDS_LANDMARKS_CHANNEL}">
-            <signal>landmarksAdp/send_world_coord</signal>
-        </connect>
-
         <!-- Display the picked voxel information -->
         <connect>
             <signal>negatoAdp/picked_voxel</signal>

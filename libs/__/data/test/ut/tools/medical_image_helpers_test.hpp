@@ -39,6 +39,8 @@ CPPUNIT_TEST(is_buf_null);
 CPPUNIT_TEST(compute_voxel_indices);
 CPPUNIT_TEST(compute_bounding_box);
 CPPUNIT_TEST(test_landmarks);
+CPPUNIT_TEST(test_slice_index_fiducial);
+CPPUNIT_TEST(test_slice_position_fiducial);
 CPPUNIT_TEST(test_image_validity);
 CPPUNIT_TEST(test_slice_index);
 CPPUNIT_TEST(test_distances);
@@ -80,6 +82,12 @@ public:
 
     /// Tests helper methods around slice count.
     void test_slice_count();
+
+    /// Tests helper methods for slice indexes based on the position of fiducials.
+    static void test_slice_index_fiducial();
+
+    /// Tests helper methods for slice positions based on the position of the fiducials.
+    static void test_slice_position_fiducial();
 
     /// Tests helper methods around slice indexes.
     static void test_slice_index();

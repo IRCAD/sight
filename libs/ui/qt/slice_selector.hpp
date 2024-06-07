@@ -21,11 +21,22 @@
  ***********************************************************************/
 
 #pragma once
-
 #include <sight/ui/qt/config.hpp>
+
+#include "data/landmarks.hpp"
+
+#include <core/com/signal.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/signals.hpp>
+
+#include <data/helper/fiducials_series.hpp>
+#include <data/landmarks.hpp>
+
+#include <ui/qt/container/widget.hpp>
 
 #include <boost/function.hpp>
 
+#include <QColor>
 #include <QObject>
 #include <QPointer>
 #include <QProxyStyle>
@@ -43,6 +54,17 @@ class QStringList;
 
 namespace sight::ui::qt
 {
+
+struct SlicePosition
+{
+    size_t slice_index;
+};
+
+struct Fiducial
+{
+    int position;
+    QColor color;
+};
 
 /**
  * @brief A Qt panel used to control a VTK 2D Negatoscope view.
@@ -67,7 +89,6 @@ public:
         double _pos_digits   = 0.0,
         QWidget* _parent_pos = nullptr
     ) noexcept;
-
     /// @brief Destructor.
     SIGHT_UI_QT_API_QT ~slice_selector() noexcept override;
 
@@ -84,6 +105,8 @@ public:
     SIGHT_UI_QT_API_QT void set_enable(bool _enable);
 
     SIGHT_UI_QT_API_QT void set_position_digits(double value);
+    SIGHT_UI_QT_API_QT void clear_slider_index();
+    SIGHT_UI_QT_API_QT void clear_slider_position();
 
     SIGHT_UI_QT_API_QT void set_position_value(int index);
 
@@ -94,7 +117,8 @@ public:
     SIGHT_UI_QT_API_QT void set_image_info(double origin, double spacing);
 
     SIGHT_UI_QT_API_QT void set_orientation(std::string& orientation);
-
+    SIGHT_UI_QT_API_QT void add_slider_position(std::int64_t _position, const QColor& _color);
+    SIGHT_UI_QT_API_QT void add_position_slider(std::double_t _position, const QColor& _color);
     SIGHT_UI_QT_API_QT void set_enabled(bool _enable);
 
     SIGHT_UI_QT_API_QT void set_prefix(const std::string& _orientation_prefix);
@@ -133,6 +157,7 @@ private:
     QPointer<QStyle> m_slice_index_style;
     QPointer<QLineEdit> m_slice_index_text;
     QPointer<QSlider> m_slice_index;
+    QPointer<QSlider> m_slider;
 
     /// @brief The slice position slider widget.
     QPointer<QSlider> m_slice_position_slider;
@@ -141,6 +166,7 @@ private:
 
     double m_origin {0.00};
     double m_spacing {0.00};
+
     std::string m_orientation_prefix;
 
     ChangeIndexCallback m_fct_change_index_callback;

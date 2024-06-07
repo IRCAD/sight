@@ -22,12 +22,15 @@
 
 #include "modules/ui/qt/image/slice_index_position_editor.hpp"
 
+#include "data/image_series.hpp"
+
 #include <core/base.hpp>
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
 #include <core/spy_log.hpp>
 
+#include <data/helper/fiducials_series.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
@@ -56,6 +59,7 @@ static const core::com::slots::key_t UPDATE_SLICE_TYPE_SLOT  = "updateSliceType"
 
 const service::base::key_t slice_index_position_editor::IMAGE_INOUT =
     "image";
+
 std::map<data::helper::medical_image::orientation_t,
          std::string> slice_index_position_editor::orientation_prefix_map = {
     {data::helper::medical_image::orientation_t::axial, "S"},
@@ -205,49 +209,53 @@ void slice_index_position_editor::starting()
 
 void slice_index_position_editor::updating()
 {
-    const auto image = m_image.const_lock();
-
-    if(m_label_option == label_option_t::index)
     {
-        const bool image_is_valid = imHelper::check_image_validity(image.get_shared());
+        const auto image = m_image.const_lock();
 
-        m_slice_selector_with_index->set_enable(image_is_valid);
+        if(m_label_option == label_option_t::index)
+        {
+            const bool image_is_valid = imHelper::check_image_validity(image.get_shared());
 
-        m_axial_index = std::max(
-            std::int64_t(0),
-            imHelper::get_slice_index(*image, imHelper::orientation_t::axial).value_or(0)
-        );
-        m_frontal_index = std::max(
-            std::int64_t(0),
-            imHelper::get_slice_index(*image, imHelper::orientation_t::frontal).value_or(0)
-        );
-        m_sagittal_index = std::max(
-            std::int64_t(0),
-            imHelper::get_slice_index(*image, imHelper::orientation_t::sagittal).value_or(0)
-        );
+            m_slice_selector_with_index->set_enable(image_is_valid);
 
-        this->update_slice_index_from_img(*image);
+            m_axial_index = std::max(
+                std::int64_t(0),
+                imHelper::get_slice_index(*image, imHelper::orientation_t::axial).value_or(0)
+            );
+            m_frontal_index = std::max(
+                std::int64_t(0),
+                imHelper::get_slice_index(*image, imHelper::orientation_t::frontal).value_or(0)
+            );
+            m_sagittal_index = std::max(
+                std::int64_t(0),
+                imHelper::get_slice_index(*image, imHelper::orientation_t::sagittal).value_or(0)
+            );
+
+            this->update_slice_index_from_img(*image);
+        }
+        else if(m_label_option == label_option_t::position)
+        {
+            const bool image_is_valid = imHelper::check_image_validity(image.get_shared());
+
+            m_slice_selector_with_position->set_enabled(image_is_valid);
+
+            m_axial_position =
+                static_cast<double>(imHelper::get_slice_position(*image, imHelper::orientation_t::axial)
+                                    .value_or(image->origin()[2]));
+
+            m_frontal_position =
+                static_cast<double>(imHelper::get_slice_position(*image, imHelper::orientation_t::frontal)
+                                    .value_or(image->origin()[1]));
+
+            m_sagittal_position =
+                static_cast<double>(imHelper::get_slice_position(*image, imHelper::orientation_t::sagittal)
+                                    .value_or(image->origin()[0]));
+
+            this->update_slice_index_from_img(*image);
+        }
     }
-    else if(m_label_option == label_option_t::position)
-    {
-        const bool image_is_valid = imHelper::check_image_validity(image.get_shared());
 
-        m_slice_selector_with_position->set_enabled(image_is_valid);
-
-        m_axial_position =
-            static_cast<double>(imHelper::get_slice_position(*image, imHelper::orientation_t::axial)
-                                .value_or(image->origin()[2]));
-
-        m_frontal_position =
-            static_cast<double>(imHelper::get_slice_position(*image, imHelper::orientation_t::frontal)
-                                .value_or(image->origin()[1]));
-
-        m_sagittal_position =
-            static_cast<double>(imHelper::get_slice_position(*image, imHelper::orientation_t::sagittal)
-                                .value_or(image->origin()[0]));
-
-        this->update_slice_index_from_img(*image);
-    }
+    this->update_slider_fiducial();
 }
 
 //----------------------------------------------------------------------------
@@ -374,7 +382,6 @@ void slice_index_position_editor::update_slice_index_from_img(const sight::data:
 }
 
 //------------------------------------------------------------------------------
-
 void slice_index_position_editor::slice_index_notification(int _index)
 {
     const auto image = m_image.lock();
@@ -415,6 +422,15 @@ void slice_index_position_editor::update_slice_type(int _from, int _to)
         m_orientation = static_cast<orientation_t>(_to);
     }
 
+    if(m_label_option == label_option_t::index)
+    {
+        m_slice_selector_with_index->clear_slider_index();
+    }
+    else if(m_label_option == label_option_t::position)
+    {
+        m_slice_selector_with_position->clear_slider_position();
+    }
+
     this->update_slice_type_from_img(m_orientation);
 }
 
@@ -436,6 +452,87 @@ void slice_index_position_editor::update_slice_type_from_img(const orientation_t
     const auto image = m_image.const_lock();
     SIGHT_ASSERT("The inout key '" + IMAGE_INOUT + "' is not defined.", image);
     this->update_slice_index_from_img(*image);
+}
+
+//------------------------------------------------------------------------------
+void slice_index_position_editor::update_slider_fiducial()
+{
+    const auto image        = m_image.lock();
+    const auto image_series = std::dynamic_pointer_cast<const sight::data::image_series>(image.get_shared());
+
+    if(image_series)
+    {
+        if(m_label_option == label_option_t::index)
+        {
+            m_slice_selector_with_index->clear_slider_index();
+        }
+        else
+        {
+            m_slice_selector_with_position->clear_slider_position();
+        }
+
+        const auto fiducials_series = image_series->get_fiducials();
+        const auto sets             = fiducials_series->get_fiducial_sets();
+
+        std::vector<QColor> color_list;
+        for(const auto& fiducials : sets)
+        {
+            std::array<float, 4> colors = {0.F, 0.F, 0.F, 1.F};
+
+            if(fiducials.color.has_value())
+            {
+                colors = fiducials.color.value();
+            }
+
+            const QColor color = QColor::fromRgbF(
+                colors[0],
+                colors[1],
+                colors[2],
+                colors[3]
+            );
+
+            color_list.push_back(color);
+
+            for(const auto& set : fiducials.fiducial_sequence)
+            {
+                for(const auto& point : set.contour_data)
+                {
+                    std::optional<std::int64_t> fiducial_position;
+                    const std::array<double, 3> array_point = {point.x, point.y, point.z};
+
+                    if(m_label_option == label_option_t::index)
+                    {
+                        fiducial_position = imHelper::get_fiducial_slice_index(*image, array_point, m_orientation);
+                    }
+                    else
+                    {
+                        fiducial_position =
+                            static_cast<std::int64_t>(imHelper::get_fiducial_slice_position(
+                                                          *image,
+                                                          array_point,
+                                                          m_orientation
+                            ).value_or(-1));
+                    }
+
+                    if(fiducial_position.has_value())
+                    {
+                        if(m_label_option == label_option_t::index)
+                        {
+                            m_slice_selector_with_index->add_slider_position(fiducial_position.value(), color);
+                        }
+                        else
+                        {
+                            m_slice_selector_with_position->add_position_slider(
+                                static_cast<double>(fiducial_position.
+                                                    value()),
+                                color
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -471,7 +568,6 @@ void slice_index_position_editor::slice_type_notification(int _type)
 }
 
 //------------------------------------------------------------------------------
-
 service::connections_t slice_index_position_editor::auto_connections() const
 {
     connections_t connections;
@@ -480,6 +576,19 @@ service::connections_t slice_index_position_editor::auto_connections() const
     connections.push(IMAGE_INOUT, data::image::SLICE_INDEX_MODIFIED_SIG, UPDATE_SLICE_INDEX_SLOT);
     connections.push(IMAGE_INOUT, data::image::SLICE_TYPE_MODIFIED_SIG, UPDATE_SLICE_TYPE_SLOT);
     connections.push(IMAGE_INOUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INOUT, data::image::DISTANCE_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INOUT, data::image::DISTANCE_REMOVED_SIG, service::slots::UPDATE);
+
+    const auto image        = m_image.lock();
+    const auto image_series = std::dynamic_pointer_cast<const sight::data::image_series>(image.get_shared());
+
+    if(image_series)
+    {
+        // connect fiducials added/removed to update slot.
+        connections.push(IMAGE_INOUT, data::has_fiducials::signals::GROUP_REMOVED, service::slots::UPDATE);
+        connections.push(IMAGE_INOUT, data::has_fiducials::signals::POINT_REMOVED, service::slots::UPDATE);
+        connections.push(IMAGE_INOUT, data::has_fiducials::signals::POINT_ADDED, service::slots::UPDATE);
+    }
 
     return connections;
 }

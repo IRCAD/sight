@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "data/image_series.hpp"
+
 #include <core/tools/failed.hpp>
 
 #include <data/helper/medical_image.hpp>
@@ -39,7 +41,23 @@ enum label_option_t
     index,
     position
 };
+enum orientation_t
+{
+    /// Directions.
+    x_axis = 0,
+    y_axis,
+    z_axis,
+    /// Planar definitions.
+    sagittal = x_axis,
+    frontal  = y_axis,
+    axial    = z_axis
+};
 
+struct fiducial_info
+{
+    std::int64_t position;
+    std::vector<QColor> colors;
+};
 /**
  * @brief   slice_index_position_editor service allows to change the slice index/position of an image.
  *
@@ -126,6 +144,9 @@ protected:
     /// This method is called when the slice type selected change. Notify the slice type is modified.
     void slice_type_notification(int _type);
 
+    ///update the slider verticals lines.
+    void update_slider_fiducial();
+
 private:
 
     /**
@@ -147,7 +168,6 @@ private:
 
     sight::ui::qt::slice_selector* m_slice_selector_with_index {};
     sight::ui::qt::slice_selector* m_slice_selector_with_position {};
-
     data::ptr<data::image, data::access::inout> m_image {this, "image", true};
 
     std::int64_t m_axial_index {-1};
