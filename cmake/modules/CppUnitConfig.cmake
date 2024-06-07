@@ -59,7 +59,7 @@ if(EXISTS "${CppUnit_LIBRARY_DEBUG_DLL}")
         set_target_properties(
             CppUnit
             PROPERTIES IMPORTED_CONFIGURATIONS Debug
-                       IMPORTED_LOCATION_DEBUG "${CppUnit_LIBRARY_DEBUG_DLL"
+                       IMPORTED_LOCATION_DEBUG "${CppUnit_LIBRARY_DEBUG_DLL}"
                        IMPORTED_IMPLIB_DEBUG "${CppUnit_LIBRARY_DEBUG}"
                        INTERFACE_INCLUDE_DIRECTORIES "${CppUnit_INCLUDE_DIR}"
         )
