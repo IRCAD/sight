@@ -180,6 +180,7 @@ void data_parser_test::test_transfer_function_parser()
     boost::property_tree::read_xml(config_string, config);
 
     auto parser = sight::service::add<sight::app::parser::transfer_function>("sight::app::parser::transfer_function");
+    CPPUNIT_ASSERT(parser->is_a("sight::app::parser::transfer_function"));
     parser->set_object_config(config);
 
     auto tf = std::make_shared<sight::data::transfer_function>();

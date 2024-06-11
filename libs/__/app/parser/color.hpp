@@ -57,13 +57,11 @@ public:
     /// Does nothing.
     SIGHT_APP_API ~color() override = default;
 
-private:
-
     /**
      * @brief Parse a color XML configuration.
      * @param _obj color in which apply the configuration.
      */
-    void create_config(core::object::sptr _obj) override;
+    SIGHT_APP_API void create_config(core::object::sptr _obj) override;
 };
 
 } // namespace sight::app::parser

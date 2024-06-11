@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,6 +59,7 @@ void viewport_test::test_parser()
     boost::property_tree::read_xml(config_string, config);
 
     auto parser = sight::service::add<data::parser::viewport>("sight::viz::scene2d::data::parser::viewport");
+    CPPUNIT_ASSERT(parser->is_a("sight::viz::scene2d::data::parser::viewport"));
     parser->set_object_config(config);
 
     auto viewport = std::make_shared<sight::viz::scene2d::data::viewport>();

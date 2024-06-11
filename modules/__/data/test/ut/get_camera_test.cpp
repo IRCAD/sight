@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -65,6 +65,8 @@ void get_camera_test::extracts_camera_from_camera_set()
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
     // create service
     sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
+    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
+
     // ------------------ create a matrix ----------------------
     sight::data::matrix4::sptr matrix = std::make_shared<sight::data::matrix4>();
     // -- Camera 1 --
@@ -110,6 +112,7 @@ void get_camera_test::extracts_invalid_camera_set()
 {
     // create service
     sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
+    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
     service::config_t config;
     std::stringstream config_string;
     config_string
@@ -140,6 +143,7 @@ void get_camera_test::extracts_valid_extrinsic()
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
     // create service
     sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
+    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
     // -- Camera 1 --
     sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
     // -- Camera 2 --
@@ -177,6 +181,7 @@ void get_camera_test::extracts_valid_extrinsic1()
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
     // create service
     sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
+    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
     // -- Camera 1 --
     sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
     // -- Camera 2 --
@@ -217,6 +222,7 @@ void get_camera_test::extracts_camera_out_of_bound_index()
     auto camera_set = std::make_shared<sight::data::camera_set>();
     // create service
     auto get_camera_srv = sight::service::add("sight::module::data::get_camera");
+    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
     // -- Camera 1 --
     auto camera1 = std::make_shared<sight::data::camera>();
     // -- Camera 2 --
@@ -256,6 +262,7 @@ void get_camera_test::extracts_extrinsic_out_of_bound_index()
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
     // create service
     sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
+    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
 
     // -- Camera 1 --
     sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
@@ -295,6 +302,7 @@ void get_camera_test::extracts_invalid_extrinsic()
     sight::data::camera_set::sptr camera_set = std::make_shared<sight::data::camera_set>();
     // create service
     sight::service::base::sptr get_camera_srv = sight::service::add("sight::module::data::get_camera");
+    CPPUNIT_ASSERT(get_camera_srv->is_a("sight::module::data::get_camera"));
     // -- Camera 1 --
     sight::data::camera::sptr camera1 = std::make_shared<sight::data::camera>();
     // -- Camera 2 --

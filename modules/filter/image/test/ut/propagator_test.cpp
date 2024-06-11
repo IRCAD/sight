@@ -99,6 +99,7 @@ void propagator_test::propagate()
 
     // Create service
     sight::service::base::sptr srv = sight::service::add("sight::module::filter::image::propagator");
+    CPPUNIT_ASSERT(srv->is_a("sight::module::filter::image::propagator"));
     CPPUNIT_ASSERT(srv);
 
     service::config_t config;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -62,6 +62,7 @@ void get_vector_test::extracts_element_from_vector()
 
     sight::service::base::sptr get_vector = sight::service::add("sight::module::data::get_vector");
     CPPUNIT_ASSERT(get_vector);
+    CPPUNIT_ASSERT(get_vector->is_a("sight::module::data::get_vector"));
 
     // create different series
     sight::data::series::sptr series1 = std::make_shared<sight::data::model_series>();
@@ -120,6 +121,7 @@ void get_vector_test::extracts_element_from_vector()
 void get_vector_test::invalid_vector()
 {
     sight::service::base::sptr get_vector = sight::service::add("sight::module::data::get_vector");
+    CPPUNIT_ASSERT(get_vector->is_a("sight::module::data::get_vector"));
 
     service::config_t config;
     std::stringstream config_string;

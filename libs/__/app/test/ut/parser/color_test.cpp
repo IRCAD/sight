@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,42 +19,34 @@
  *
  ***********************************************************************/
 
-#include "matrix4_test.hpp"
+#include "color_test.hpp"
 
-#include <app/parser/matrix4.hpp>
+#include <app/parser/color.hpp>
 
-#include <data/matrix4.hpp>
+#include <data/color.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::parser::ut::matrix4_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::parser::ut::color_test);
 
 namespace sight::app::parser::ut
 {
 
 //------------------------------------------------------------------------------
 
-void matrix4_test::basic_test()
+void color_test::basic_test()
 {
     boost::property_tree::ptree ptree;
-    ptree.put("matrix", R"(
-        0 1 2 3
-        10 11 12 13
-        20 21 22 23
-        30 31 32 33
-    )");
-    auto matrix = std::make_shared<data::matrix4>();
-    parser::matrix4 matrix_parser;
-    CPPUNIT_ASSERT(matrix_parser.is_a("sight::app::parser::matrix4"));
-    matrix_parser.set_object_config(ptree);
-    matrix_parser.create_config(matrix);
-    for(std::uint8_t i = 0 ; i < 4 ; i++)
-    {
-        for(std::uint8_t j = 0 ; j < 4 ; j++)
-        {
-            CPPUNIT_ASSERT_EQUAL(j + 10. * i, (*matrix)(i, j));
-        }
-    }
+    ptree.put("value", "#0077FFA3");
+    auto color = std::make_shared<data::color>();
+    parser::color color_parser;
+    CPPUNIT_ASSERT(color_parser.is_a("sight::app::parser::color"));
+    color_parser.set_object_config(ptree);
+    color_parser.create_config(color);
+    CPPUNIT_ASSERT_EQUAL(0.F, color->red());
+    CPPUNIT_ASSERT_EQUAL(119.F / 255.F, color->green());
+    CPPUNIT_ASSERT_EQUAL(1.F, color->blue());
+    CPPUNIT_ASSERT_EQUAL(163.F / 255.F, color->alpha());
 }
 
 } // namespace sight::app::parser::ut

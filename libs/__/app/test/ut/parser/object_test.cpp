@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -65,6 +65,7 @@ void object_test::basic_test()
     ptree.put("item.object.<xmlattr>.type", "sight::data::string");
     ptree.put("item.object.value", "Hello world");
     auto object = std::make_shared<data::string>();
+    CPPUNIT_ASSERT(m_object_parser.is_a("sight::app::parser::object"));
     m_object_parser.set_object_config(ptree);
     m_object_parser.create_config(object);
     CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::string>(object->get_field("data")) != nullptr);

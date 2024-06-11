@@ -60,6 +60,7 @@ public:
     {
         CPPUNIT_ASSERT_NO_THROW(srv = sight::service::add("sight::module::geometry::weighted_mean_matrix"));
         CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT(srv->is_a("sight::module::geometry::weighted_mean_matrix"));
     }
 
     //------------------------------------------------------------------------------

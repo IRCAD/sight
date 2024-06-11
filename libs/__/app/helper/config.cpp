@@ -52,93 +52,7 @@ static std::mutex s_services_props_mutex;
 
 //-----------------------------------------------------------------------------
 
-void config::create_connections(
-    const core::runtime::config_t& _connection_cfg,
-    core::com::helper::sig_slot_connection& _connections,
-    const CSPTR(core::object)& _obj
-)
-{
-    connection_info info = parse_connections(_connection_cfg, _obj);
-
-    core::object::sptr sig_source            = core::id::get_object(info.m_signal.first);
-    core::com::has_signals::sptr has_signals = std::dynamic_pointer_cast<core::com::has_signals>(sig_source);
-
-    SIGHT_ASSERT("Signal source not found '" + info.m_signal.first + "'", sig_source);
-    SIGHT_ASSERT("invalid signal source '" + info.m_signal.first + "'", has_signals);
-
-    for(const slot_info_t& slot_info : info.m_slots)
-    {
-        core::object::sptr slot_obj = core::id::get_object(slot_info.first);
-        SIGHT_ASSERT("Failed to retrieve object '" + slot_info.first + "'", slot_obj);
-        core::com::has_slots::sptr has_slots = std::dynamic_pointer_cast<core::com::has_slots>(slot_obj);
-        SIGHT_ASSERT("invalid slot owner " << slot_info.first, has_slots);
-
-        _connections.connect(has_signals, info.m_signal.second, has_slots, slot_info.second);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-config::connection_info config::parse_connections(
-    const core::runtime::config_t& _connection_cfg,
-    const CSPTR(core::object)& _obj
-)
-{
-    connection_info info;
-
-    for(const auto& elem : _connection_cfg)
-    {
-        const auto src = elem.second.get_value<std::string>();
-        static const std::regex s_RE("(.*)/(.*)");
-        std::smatch match;
-        std::string uid;
-        std::string key;
-
-        if(std::regex_match(src, match, s_RE))
-        {
-            SIGHT_ASSERT("Wrong value for attribute src: " << src, match.size() >= 3);
-            uid.assign(match[1].first, match[1].second);
-            key.assign(match[2].first, match[2].second);
-
-            SIGHT_ASSERT(
-                src << " configuration is not correct for " << elem.first,
-                !uid.empty() && !key.empty()
-            );
-
-            if(elem.first == "signal")
-            {
-                SIGHT_ASSERT(
-                    "There must be only one signal by connection",
-                    info.m_signal.first.empty() && info.m_signal.second.empty()
-                );
-                info.m_signal = {uid, key};
-            }
-            else if(elem.first == "slot")
-            {
-                info.m_slots.emplace_back(uid, key);
-            }
-        }
-        else
-        {
-            SIGHT_ASSERT("Object uid is not defined, object used to retrieve signal must be present.", _obj);
-            uid = _obj->get_id();
-            key = src;
-            SIGHT_ASSERT("Element must be a signal or must be written as <fwID/key>", elem.first == "signal");
-            SIGHT_ASSERT(
-                "There must be only one signal by connection",
-                info.m_signal.first.empty() && info.m_signal.second.empty()
-            );
-            info.m_signal = {uid, key};
-        }
-    }
-
-    // This is ok to return like this, thanks to C++11 rvalue there will be no copy of the vectors inside the struct
-    return info;
-}
-
-//-----------------------------------------------------------------------------
-
-core::com::helper::proxy_connections config::parse_connections2(
+core::com::helper::proxy_connections config::parse_connections(
     const core::runtime::config_t& _connection_cfg,
     const std::string& _err_msg_head,
     std::function<std::string()> _generate_channel_name_fn
@@ -191,41 +105,6 @@ core::com::helper::proxy_connections config::parse_connections2(
 
     // This is ok to return like this, thanks to C++11 rvalue there will be no copy of the vectors inside the struct
     return proxy_cnt;
-}
-
-//-----------------------------------------------------------------------------
-
-void config::disconnect_proxies(const std::string& _object_key, config::proxy_connections_map_t& _proxy_map)
-{
-    auto iter = _proxy_map.find(_object_key);
-    if(iter != _proxy_map.end())
-    {
-        core::com::proxy::sptr proxy = core::com::proxy::get();
-
-        proxy_connections_vect_t proxy_connections = iter->second;
-
-        for(const auto& proxy_connection : proxy_connections)
-        {
-            for(const auto& signal_elt : proxy_connection.m_signals)
-            {
-                core::object::sptr obj                   = core::id::get_object(signal_elt.first);
-                core::com::has_signals::sptr has_signals = std::dynamic_pointer_cast<core::com::has_signals>(obj);
-                core::com::signal_base::sptr sig         = has_signals->signal(signal_elt.second);
-                proxy->disconnect(proxy_connection.m_channel, sig);
-            }
-
-            for(const auto& slot_elt : proxy_connection.m_slots)
-            {
-                core::object::sptr obj               = core::id::get_object(slot_elt.first);
-                core::com::has_slots::sptr has_slots = std::dynamic_pointer_cast<core::com::has_slots>(obj);
-                core::com::slot_base::sptr slot      = has_slots->slot(slot_elt.second);
-                proxy->disconnect(proxy_connection.m_channel, slot);
-            }
-        }
-
-        proxy_connections.clear();
-        _proxy_map.erase(_object_key);
-    }
 }
 
 //-----------------------------------------------------------------------------

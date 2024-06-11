@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -63,6 +63,7 @@ void get_series_test::extracts_series_from_series_set()
     // Create service
     sight::service::base::sptr get_series = sight::service::add("sight::module::data::get_series");
     CPPUNIT_ASSERT(get_series);
+    CPPUNIT_ASSERT(get_series->is_a("sight::module::data::get_series"));
 
     // create Different models series
     sight::data::series::sptr series1 = std::make_shared<sight::data::model_series>();
@@ -118,6 +119,7 @@ void get_series_test::invalid_series_set()
 {
     // Create service
     sight::service::base::sptr get_series = sight::service::add("sight::module::data::get_series");
+    CPPUNIT_ASSERT(get_series->is_a("sight::module::data::get_series"));
 
     service::config_t config;
     std::stringstream config_string;

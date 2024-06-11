@@ -66,6 +66,7 @@ void concatenate_matrices_test::identity()
 {
     auto srv = sight::service::add("sight::module::geometry::concatenate_matrices");
     CPPUNIT_ASSERT(srv != nullptr);
+    CPPUNIT_ASSERT(srv->is_a("sight::module::geometry::concatenate_matrices"));
 
     // One identity matrix as input
     {
@@ -131,6 +132,7 @@ void concatenate_matrices_test::single()
 
     auto srv = sight::service::add("sight::module::geometry::concatenate_matrices");
     CPPUNIT_ASSERT(srv != nullptr);
+    CPPUNIT_ASSERT(srv->is_a("sight::module::geometry::concatenate_matrices"));
 
     {
         std::stringstream config_string;
@@ -177,6 +179,8 @@ void concatenate_matrices_test::multiply_2()
 {
     auto srv = sight::service::add("sight::module::geometry::concatenate_matrices");
     CPPUNIT_ASSERT(srv != nullptr);
+    CPPUNIT_ASSERT(srv->is_a("sight::module::geometry::concatenate_matrices"));
+
     std::stringstream config_string;
     config_string
     << "<in group=\"matrix\">"
@@ -236,6 +240,8 @@ void concatenate_matrices_test::multiply_4()
 {
     auto srv = sight::service::add("sight::module::geometry::concatenate_matrices");
     CPPUNIT_ASSERT(srv != nullptr);
+    CPPUNIT_ASSERT(srv->is_a("sight::module::geometry::concatenate_matrices"));
+
     std::stringstream config_string;
     config_string
     << "<in group=\"matrix\">"
@@ -308,6 +314,8 @@ void concatenate_matrices_test::multiply_inverse()
 {
     auto srv = sight::service::add("sight::module::geometry::concatenate_matrices");
     CPPUNIT_ASSERT(srv != nullptr);
+    CPPUNIT_ASSERT(srv->is_a("sight::module::geometry::concatenate_matrices"));
+
     std::stringstream config_string;
     config_string
     << "<in group=\"matrix\">"
@@ -384,6 +392,8 @@ void concatenate_matrices_test::auto_connect()
 {
     auto srv = sight::service::add("sight::module::geometry::concatenate_matrices");
     CPPUNIT_ASSERT(srv != nullptr);
+    CPPUNIT_ASSERT(srv->is_a("sight::module::geometry::concatenate_matrices"));
+
     std::stringstream config_string;
     config_string
     << "<in group=\"matrix\">"

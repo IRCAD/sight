@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -72,6 +72,7 @@ void vector_test::basic_test()
     second.put("object.value", "Second");
     root.add_child("item", second);
     auto vector = std::make_shared<data::vector>();
+    CPPUNIT_ASSERT(m_vector_parser.is_a("sight::app::parser::vector"));
     m_vector_parser.set_object_config(root);
     m_vector_parser.create_config(vector);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), vector->size());

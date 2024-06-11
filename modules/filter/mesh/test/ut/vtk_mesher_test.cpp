@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -71,6 +71,7 @@ inline static std::pair<sight::service::base::sptr, sight::data::image_series::s
     // Create service
     sight::service::base::sptr generate_mesh_service = sight::service::add("sight::module::filter::mesh::vtk_mesher");
     CPPUNIT_ASSERT(generate_mesh_service);
+    CPPUNIT_ASSERT(generate_mesh_service->is_a("sight::module::filter::mesh::vtk_mesher"));
 
     auto image_series    = std::make_shared<sight::data::image_series>();
     const auto dump_lock = image_series->dump_lock();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,6 +65,7 @@ void archive_test::new_test()
 
         {
             auto archive_writer = archive_writer::get(archive_path);
+            CPPUNIT_ASSERT(archive_writer->is_a("sight::io::zip::archive_writer"));
 
             // check the archive path getter
             CPPUNIT_ASSERT_EQUAL(
@@ -75,6 +76,7 @@ void archive_test::new_test()
 
         {
             auto archive_reader = archive_reader::get(archive_path);
+            CPPUNIT_ASSERT(archive_reader->is_a("sight::io::zip::archive_reader"));
 
             // check the archive path getter
             CPPUNIT_ASSERT_EQUAL(
@@ -219,6 +221,7 @@ void archive_test::raw_test()
     {
         // Create the archive writer
         auto archive_writer = archive_writer::get(folder_path, archive::archive_format::filesystem);
+        CPPUNIT_ASSERT(archive_writer->is_a("sight::io::zip::archive_writer"));
 
         // Write a new file in the archive with default parameters
         auto ostream = archive_writer->open_file(raw_text);
@@ -228,6 +231,7 @@ void archive_test::raw_test()
     {
         // Create the archive reader
         auto archive_reader = archive_reader::get(folder_path, archive::archive_format::filesystem);
+        CPPUNIT_ASSERT(archive_reader->is_a("sight::io::zip::archive_reader"));
 
         // Read the stream
         std::string buffer(raw_text.size(), 0);

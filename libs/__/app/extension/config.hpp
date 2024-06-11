@@ -46,17 +46,11 @@ namespace extension
 
 /**
  */
-class SIGHT_APP_CLASS_API app_info : public core::base_object
+class SIGHT_APP_CLASS_API app_info
 {
 public:
 
-    SIGHT_DECLARE_CLASS(app_info, core::base_object);
-
-    /// Constructor, do nothing.
-    app_info() = default;
-
-    /// Destructor, do nothing.
-    ~app_info() override = default;
+    using sptr = SPTR(app_info);
 
     std::string group;
     std::string desc;
@@ -71,14 +65,13 @@ public:
  * @brief This class allows to register all the configuration which has the point extension
  *        "sight::app::extension::config".
  */
-class SIGHT_APP_CLASS_API config : public core::base_object
+class SIGHT_APP_CLASS_API config
 {
 public:
 
-    SIGHT_DECLARE_CLASS(config, core::base_object);
+    using sptr = SPTR(config);
 
     SIGHT_APP_API config();
-    SIGHT_APP_API ~config() override = default;
 
     /**
      * @brief Parses module information to retrieve configuration declaration.

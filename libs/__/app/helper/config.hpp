@@ -120,24 +120,6 @@ public:
     using object_id_t              = std::string;
     using proxy_connections_vect_t = std::vector<core::com::helper::proxy_connections>;
     using proxy_connections_map_t  = std::map<object_id_t, proxy_connections_vect_t>;
-    struct connection_info
-    {
-        signal_info_t m_signal;
-        slot_info_container_t m_slots;
-    };
-
-    /**
-     * @brief Parses "<connect>" tags from given configuration and return a structure containing the signal and
-     *        slots informations.
-     *
-     * @param _cfg configuration element containing "<connect>" tags
-     * @param _obj optional object used to retrieve signal if uid is not defined [deprecated]
-     */
-    SIGHT_APP_API static connection_info parse_connections(
-        const core::runtime::config_t& _cfg,
-        const CSPTR(core::object)& _obj =
-        CSPTR(core::object)()
-    );
 
     /**
      * @brief Parses "<connect>" tags from given configuration and return a structure containing the signal and
@@ -145,29 +127,10 @@ public:
      *
      * @param _connection_cfg configuration element containing "<connect>" tags
      */
-    SIGHT_APP_API static core::com::helper::proxy_connections parse_connections2(
+    SIGHT_APP_API static core::com::helper::proxy_connections parse_connections(
         const core::runtime::config_t& _connection_cfg,
         const std::string& _err_msg_head,
         std::function<std::string()> _generate_channel_name_fn
-    );
-
-    /**
-     * @brief Parses "<connect>" tags from given configuration to connect signals and slots using given helper.
-     *
-     * @param _cfg configuration element containing "<connect>" tags
-     * @param _helper sig_slot_connection helper to connect signals and slots
-     * @param _obj optional object used to retrieve signal if uid is not defined [deprecated]
-     */
-    SIGHT_APP_API static void create_connections(
-        const core::runtime::config_t& _cfg,
-        core::com::helper::sig_slot_connection& _helper,
-        const CSPTR(core::object)& _obj = CSPTR(core::object)()
-    );
-
-    /// Disconnects all proxies associated to objectKey
-    SIGHT_APP_API static void disconnect_proxies(
-        const std::string& _object_key,
-        config::proxy_connections_map_t& _proxy_map
     );
 
     /// Parse a service and return a service configuration
