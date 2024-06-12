@@ -7,10 +7,10 @@ stages:
 
 include:
     - project: "sight/sight-gitlab"
-      ref: 858ee0e67e17f352229a621e89ddaa253172fb02
+      ref: b45de5bbdf838589e11466fd6d5b4a271e95a055
       file: "/.templates/deploy.yml"
     - project: "sight/sight-gitlab"
-      ref: 858ee0e67e17f352229a621e89ddaa253172fb02
+      ref: b45de5bbdf838589e11466fd6d5b4a271e95a055
       file: "/.templates/build.yml"
 
 lint:sheldon:
@@ -36,7 +36,7 @@ lint:sheldon:
         # Reset the modified time of all files to improve ccache performance
         - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
         # Print CCache statistics
-        - ccache -s
+        - ccache -svv
         # Launch CMake
         - cd $CI_PROJECT_DIR/.build
         - >
@@ -44,12 +44,12 @@ lint:sheldon:
             -G Ninja
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
             -DCMAKE_C_COMPILER_LAUNCHER=ccache
+            -DCMAKE_CUDA_COMPILER_LAUNCHER=ccache
             -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/.install
             -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
             -DSIGHT_ARCH=sandybridge
             -DSIGHT_BUILD_TESTS=ON
             -DSIGHT_BUILD_DOC=${SIGHT_BUILD_DOC}
-            -DSIGHT_ENABLE_PCH=ON
             -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
             -DSIGHT_ENABLE_OPENVSLAM=ON
             -DSIGHT_ENABLE_REALSENSE=${SIGHT_ENABLE_REALSENSE}
@@ -66,7 +66,7 @@ lint:sheldon:
         - nb_deprecated=$(grep -ce "-Wdeprecated-declarations" output.log || true)
         - echo -e "Cpp_Warnings $nb_warnings\nCpp_Deprecated_declaration $nb_deprecated" >metrics.txt
         # Print CCache statistics (Cache hit rate should have raised)
-        - ccache -s
+        - ccache -svv
         # Clone sight-data.
         - SIGHT_DATA_DIR=$(cmake -DOUTPUT_FOLDER=/cache/sight-data -DBRANCH=dev -P "${CI_PROJECT_DIR}/cmake/build/download_test_data.cmake" 2>&1 | grep sight-data)
         - export FWTEST_DATA_DIR=${SIGHT_DATA_DIR}
@@ -293,17 +293,20 @@ deploy:apps-linux-release:
         SIGHT_BUILD_PACKAGES: "OFF"
         SIGHT_BUILD_SDK: "OFF"
         MSVC_VERSION: "17"
-        CUDA_VERSION: "12_2"
+        CUDA_VERSION: "12_5"
     stage: build
     script:
+        # Print CCache statistics
+        - ccache -svv
         # Get the package_name name from our CMake script
         - $PACKAGE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
-        # Build the project on the merge result.
+        # Configure the project.
         - cd "${env:CI_PROJECT_DIR}/build"
-        - cmake "$env:CI_PROJECT_DIR" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$CACHE\$PACKAGE_NAME\$TOOLCHAIN" -DCMAKE_INSTALL_PREFIX="$env:CI_PROJECT_DIR/install" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DSIGHT_BUILD_TESTS=ON -DSIGHT_ENABLE_PCH=OFF -DCMAKE_C_COMPILER_LAUNCHER="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER="ccache"
-        - $env:TMP="$CACHE\tmp"
-        - $env:TEMP="$CACHE\tmp"
+        - cmake "$env:CI_PROJECT_DIR" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$CACHE\$PACKAGE_NAME\$TOOLCHAIN" -DCMAKE_INSTALL_PREFIX="$env:CI_PROJECT_DIR/install" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DSIGHT_BUILD_TESTS=ON -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache" -DCMAKE_C_COMPILER_LAUNCHER="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER="ccache"
+        # Build the project
         - ninja
+        # Print CCache statistics (Cache hit rate should have raised)
+        - ccache -svv
         # Clone sight-data.
         - cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH=dev -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake"
         - $env:FWTEST_DATA_DIR=cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH=dev -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake" '2>&1' | Select-String sight-data

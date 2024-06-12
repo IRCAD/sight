@@ -956,9 +956,9 @@ function(
     else()
         # Default pch
         if(FAST_DEBUG AND "${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-            set(PCH_SUFFIX "Og")
+            set(PCH_SUFFIX "_og")
         endif()
-        set(${TARGET_NAME}_PCH_TARGET pchCore${PCH_SUFFIX} PARENT_SCOPE)
+        set(${TARGET_NAME}_PCH_TARGET pch_core${PCH_SUFFIX} PARENT_SCOPE)
     endif()
 
 endfunction()
@@ -1421,3 +1421,140 @@ function(sight_generate_component_list COMPONENTS)
     get_property(sight_targets GLOBAL PROPERTY sight_targets)
     sight_forbid_module_link("${sight_targets}")
 endfunction()
+
+# Utility macro for sight_configure_pch: creates the pch targets and setup optimized debug options if needed
+macro(sight_create_pch_target _og)
+    set(SIGHT_PCH_HEADERS
+        <boost/algorithm/string.hpp>
+        <boost/foreach.hpp>
+        <boost/function_types/function_arity.hpp>
+        <boost/function_types/result_type.hpp>
+        <boost/graph/named_graph.hpp>
+        <boost/lexical_cast.hpp>
+        <boost/mpl/accumulate.hpp>
+        <boost/mpl/apply.hpp>
+        <boost/mpl/back_inserter.hpp>
+        <boost/mpl/copy.hpp>
+        <boost/mpl/empty.hpp>
+        <boost/mpl/eval_if.hpp>
+        <boost/mpl/if.hpp>
+        <boost/mpl/placeholders.hpp>
+        <boost/mpl/push_front.hpp>
+        <boost/mpl/transform.hpp>
+        <boost/mpl/vector.hpp>
+        <boost/multi_index/hashed_index.hpp>
+        <boost/multi_index/random_access_index.hpp>
+        <boost/multi_index_container.hpp>
+        <boost/noncopyable.hpp>
+        <boost/preprocessor/cat.hpp>
+        <boost/preprocessor/comparison/equal.hpp>
+        <boost/preprocessor/comparison/greater_equal.hpp>
+        <boost/preprocessor/control/expr_if.hpp>
+        <boost/preprocessor/control/if.hpp>
+        <boost/preprocessor/facilities/empty.hpp>
+        <boost/preprocessor/facilities/expand.hpp>
+        <boost/preprocessor/facilities/is_empty_variadic.hpp>
+        <boost/preprocessor/facilities/overload.hpp>
+        <boost/preprocessor/variadic/elem.hpp>
+        <boost/property_tree/ptree.hpp>
+        <boost/range/combine.hpp>
+        <boost/range/iterator_range_core.hpp>
+        <boost/thread/locks.hpp>
+        <boost/thread/mutex.hpp>
+        <boost/thread/once.hpp>
+        <boost/thread/shared_mutex.hpp>
+        <boost/tokenizer.hpp>
+        <boost/type_traits.hpp>
+        <boost/unordered_map.hpp>
+        <glm/glm.hpp>
+        <algorithm>
+        <any>
+        <array>
+        <cassert>
+        <chrono>
+        <cmath>
+        <csignal>
+        <cstdint>
+        <cstring>
+        <deque>
+        <exception>
+        <filesystem>
+        <functional>
+        <future>
+        <iostream>
+        <iterator>
+        <limits>
+        <list>
+        <map>
+        <memory>
+        <queue>
+        <ranges>
+        <regex>
+        <set>
+        <sstream>
+        <string>
+        <thread>
+        <typeinfo>
+        <unordered_map>
+        <unordered_set>
+        <utility>
+        <vector>
+    )
+
+    if(${_og})
+        set(SIGHT_PCH_NAME "pch_core_og")
+    else()
+        set(SIGHT_PCH_NAME "pch_core")
+    endif()
+
+    add_library(${SIGHT_PCH_NAME} STATIC ${FWCMAKE_BUILD_FILES_DIR}/pch.cpp)
+
+    if(${_og})
+        # Set the debug optimized flags the same way it is done in sight_add_target
+        if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+            if(UNIX)
+                target_compile_options(${SIGHT_PCH_NAME} PRIVATE "-Og")
+            elseif(MSVC)
+                set_fast_debug_cxx_flags(${SIGHT_PCH_NAME} OFF)
+            endif()
+        endif()
+    else()
+        # Ensure we use the same compile flags with the other targets
+        if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND MSVC)
+            restore_cxx_flags(${SIGHT_PCH_NAME} ${SIGHT_CMAKE_CXX_FLAGS_DEBUG} OFF)
+        endif()
+    endif()
+
+    target_precompile_headers(${SIGHT_PCH_NAME} PUBLIC ${SIGHT_PCH_HEADERS})
+
+    # CLang does not always support std::filesystem
+    find_package(Filesystem REQUIRED)
+    target_link_libraries(${SIGHT_PCH_NAME} PUBLIC std::filesystem)
+
+    # Boost
+    find_package(Boost QUIET COMPONENTS system date_time iostreams log log_setup REQUIRED)
+
+    target_link_libraries(${SIGHT_PCH_NAME} PUBLIC Boost::date_time Boost::iostreams Boost::log Boost::log_setup)
+    target_compile_definitions(${SIGHT_PCH_NAME} PUBLIC BOOST_BIND_GLOBAL_PLACEHOLDERS)
+
+    # Glm
+    if(WIN32)
+        target_link_libraries(${SIGHT_PCH_NAME} PRIVATE glm::glm)
+    else()
+        # Hacky, no longer needed when glm-0.9.9.8+ds-3 is available
+        target_include_directories(${SIGHT_PCH_NAME} SYSTEM PRIVATE ${GLM_INCLUDE_DIRS})
+    endif()
+endmacro()
+
+# Enable precompiled headers for the project
+macro(sight_configure_pch)
+    find_package(glm QUIET REQUIRED)
+
+    if(SIGHT_ENABLE_PCH)
+        sight_create_pch_target(FALSE)
+
+        if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+            sight_create_pch_target(TRUE)
+        endif()
+    endif()
+endmacro()
