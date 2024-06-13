@@ -45,6 +45,8 @@ namespace sight::module::ui::qt
  * - \b label (optional, default="") : text to show before size of the vector
  * - \b color (optional, default="white") : needed color of the displayed label in a CSS style as names (ex: red),
  * rgb/rgba (ex: rgb(0,255,137,0.3)) or hexadecimal (ex: #355C66).
+ * - \b size (optional, default="14pt") : size of the font used in the label, as supported by 'font-size' QSS attribute
+ * - \b weight (optional, default="bold") : normal, bold any value supported by 'font-weight' QSS attribute
  */
 class text final : public QObject,
                    public sight::ui::editor

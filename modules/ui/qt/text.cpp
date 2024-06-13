@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -48,6 +48,8 @@ void text::configuring()
 
     const auto config = this->get_config();
 
+    QString style_sheet;
+
     if(const auto label = config.get_optional<std::string>("label"); label.has_value())
     {
         const QString txt = QString::fromStdString(label.value());
@@ -65,7 +67,13 @@ void text::configuring()
         }
     }
 
-    m_label->setStyleSheet(m_label->styleSheet() + " color: " + color + ";");
+    const auto size   = config.get<std::string>("size", "14pt");
+    const auto weight = config.get<std::string>("weight", "bold");
+
+    m_label->setStyleSheet(
+        m_label->styleSheet() + " color: " + color + ";" + "font-size: "
+        + QString::fromStdString(size) + ";" + "font-weight: " + QString::fromStdString(weight) + ";"
+    );
 }
 
 //------------------------------------------------------------------------------
