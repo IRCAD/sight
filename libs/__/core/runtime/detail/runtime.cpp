@@ -93,6 +93,13 @@ runtime::~runtime()
 void runtime::add_module(std::shared_ptr<module> _module)
 {
     SIGHT_DEBUG("Module " + _module->identifier() + " added.")
+    SIGHT_ASSERT(
+        "Module " + _module->identifier() + " already added.",
+        std::ranges::find_if(
+            m_modules,
+            [&](const auto& x){return x->identifier() == _module->identifier();}) == m_modules.cend()
+    );
+
     m_modules.insert(_module);
     std::for_each(
         _module->extensions_begin(),

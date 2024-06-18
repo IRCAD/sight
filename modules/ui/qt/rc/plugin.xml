@@ -2,6 +2,7 @@
     <!-- we give a high priority because the Qt worker needs to be created first -->
     <requirement id="sight::module::data" />
     <requirement id="sight::module::ui" />
+    <requirement id="sight::module::io::session" />
 
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::container</type>

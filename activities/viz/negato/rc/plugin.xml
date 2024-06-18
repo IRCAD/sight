@@ -1,4 +1,4 @@
-<plugin id="activity_viz_negato">
+<plugin id="sight::activity::viz::negato">
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::activity" />

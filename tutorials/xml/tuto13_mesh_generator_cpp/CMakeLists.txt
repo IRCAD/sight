@@ -24,5 +24,3 @@ module_param(
 
 # Main application's configuration to launch
 module_param(module_app PARAM_LIST config PARAM_VALUES tuto13_mesh_generator_cpp_AppCfg)
-
-sight_generate_profile(tuto13_mesh_generator_cpp)

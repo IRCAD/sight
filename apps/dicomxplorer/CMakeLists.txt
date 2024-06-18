@@ -30,5 +30,3 @@ module_param(
     module_ui_qt PARAM_LIST resource stylesheet PARAM_VALUES sight::module::ui::qt/flatdark.rcc
                                                              sight::module::ui::qt/flatdark.qss
 )
-
-sight_generate_profile(dicomxplorer)

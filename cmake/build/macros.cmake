@@ -1088,11 +1088,9 @@ macro(sight_add_target)
     set_property(GLOBAL PROPERTY sight_targets "${sight_targets}")
 endmacro()
 
-# Generate "profile.xml"
+# Used to generate "profile.xml", now done in sight_create_package_targets()
 macro(sight_generate_profile TARGET)
-    if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/rc/profile.xml")
-        profile_setup(${TARGET})
-    endif()
+    message(WARNING "sight_generate_profile is now deprecated, it is no longer required.")
 endmacro()
 
 # Treat warnings as errors if requested
@@ -1219,6 +1217,9 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
         set(IMPORTED_LIBS "")
 
         find_target_dependencies(${APP} "${SIGHT_COMPONENTS};${SIGHT_IMPORTED_COMPONENTS}" ALL_DEPENDS)
+
+        profile_setup("${APP}" "${ALL_DEPENDS}")
+
         foreach(DEP ${ALL_DEPENDS})
             if(NOT ${DEP} IN_LIST SIGHT_COMPONENTS)
                 list(APPEND IMPORTED_DEPENDS ${DEP})

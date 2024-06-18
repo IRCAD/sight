@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,7 +76,6 @@ void activater::apply()
     }
 
     SIGHT_FATAL_IF("Unable to activate Module " + m_identifier + ". Not found.", module == nullptr);
-    // TEMP_FB: useless now since all modules are now enabled by default
     module->set_enable(true);
 
     // Management of parameter configuration

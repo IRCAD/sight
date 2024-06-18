@@ -41,5 +41,3 @@ module_param(
 
 # Main application's configuration to launch
 module_param(module_app PARAM_LIST config PARAM_VALUES Tuto17SimpleAR_AppCfg)
-
-sight_generate_profile(tuto17_simple_ar)

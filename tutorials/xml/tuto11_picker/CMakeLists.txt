@@ -24,5 +24,3 @@ module_param(
                                                              sight::module::ui::qt/flatdark.qss
 )
 module_param(module_app PARAM_LIST config PARAM_VALUES Tuto11Picker_AppCfg)
-
-sight_generate_profile(tuto11_picker)

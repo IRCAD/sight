@@ -1,6 +1,6 @@
 sight_add_target(module_ui_qt TYPE MODULE)
 
-add_dependencies(module_ui_qt module_ui module_ui_icons module_data)
+add_dependencies(module_ui_qt module_ui module_ui_icons module_data module_io_session)
 
 find_package(
     Qt5 QUIET

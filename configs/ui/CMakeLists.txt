@@ -1,2 +1,2 @@
 add_subdirectory(activity)
-add_subdirectory(dataManager)
+add_subdirectory(datamanager)

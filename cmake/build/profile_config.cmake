@@ -1,5 +1,5 @@
 # Do not change the indentation of the activate list
-macro(profile_setup PROJECT)
+macro(profile_setup PROJECT REQUIREMENTS)
     set(UNIQUE "false")
     set(NAME "${PROJECT}")
 
@@ -9,7 +9,9 @@ macro(profile_setup PROJECT)
     # set a variable used in the configure_file command
     set(PROJECT_VERSION ${${PROJECT}_VERSION})
 
-    get_target_property(ALL_REQUIREMENTS ${PROJECT} MANUALLY_ADDED_DEPENDENCIES)
+    set(START_MODULES "")
+    set(PRIORITY_MODULES "")
+    set(ALL_REQUIREMENTS ${REQUIREMENTS})
 
     # Manage module starting
     get_target_property(START ${PROJECT} SIGHT_START)
@@ -26,9 +28,10 @@ macro(profile_setup PROJECT)
         endif()
     endforeach()
 
-    list(APPEND ALL_REQUIREMENTS "${PROJECT}")
+    list(APPEND ALL_REQUIREMENTS ${PROJECT})
 
-    get_property(SIGHT_COMPONENTS GLOBAL PROPERTY ${PROJECT_NAME}_COMPONENTS)
+    set(XML_ACTIVATE "")
+    set(XML_START_MODULES "")
 
     # Manage module activation
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
@@ -39,11 +42,15 @@ macro(profile_setup PROJECT)
 
             get_target_property(MODULE_ID ${CURRENT_REQUIREMENT} SIGHT_MODULE_ID)
 
+            get_target_property(PARAM_MODULE ${PROJECT} PARAM_MODULE)
+
             # check if a module_param macro had been used in the CMakeLists.txt
             # if yes, get and set module param and values
-            if(${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST)
-                set(CURRENT_PARAM_LIST "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_LIST}")
-                set(CURRENT_PARAM_VALUES "${${PROJECT}_${CURRENT_REQUIREMENT}_PARAM_VALUES}")
+            if(${CURRENT_REQUIREMENT} IN_LIST PARAM_MODULE)
+                # Tiny hack because ':' is not supported in variables names...
+                string(REPLACE ":" "|" CURRENT_REQUIREMENT_REV "${CURRENT_REQUIREMENT}")
+                get_target_property(CURRENT_PARAM_LIST ${PROJECT} ${CURRENT_REQUIREMENT_REV}_PARAM_LIST)
+                get_target_property(CURRENT_PARAM_VALUES ${PROJECT} ${CURRENT_REQUIREMENT_REV}_PARAM_VALUES)
 
                 #set activate tag with parameters
                 list(APPEND XML_ACTIVATE "    <activate id=\"${MODULE_ID}\" >")
@@ -54,9 +61,12 @@ macro(profile_setup PROJECT)
                 endforeach()
 
                 list(APPEND XML_ACTIVATE "    </activate>")
+            else()
+                list(APPEND XML_ACTIVATE "    <activate id=\"${MODULE_ID}\" />")
             endif()
         endif()
     endforeach()
+
     string(REPLACE ";" "\n" XML_ACTIVATE "${XML_ACTIVATE}")
 
     foreach(CURRENT_MODULE ${START_MODULES})
@@ -76,5 +86,20 @@ macro(module_param MODULE_NAME)
     set(options)
     set(oneValueArgs)
     set(multiValueArgs PARAM_VALUES PARAM_LIST)
-    cmake_parse_arguments("${SIGHT_TARGET}_${MODULE_NAME}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    # Tiny hack because ':' is not supported in variables names...
+    string(REPLACE ":" "|" MODULE_NAME_REV "${MODULE_NAME}")
+    cmake_parse_arguments(
+        "${SIGHT_TARGET}_${MODULE_NAME_REV}" "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN}
+    )
+
+    get_target_property(PARAM_LIST ${SIGHT_TARGET} PARAM_MODULES)
+    list(APPEND PARAM_MODULES ${MODULE_NAME})
+
+    set_target_properties(
+        ${SIGHT_TARGET}
+        PROPERTIES PARAM_MODULE "${PARAM_MODULES}" ${MODULE_NAME_REV}_PARAM_LIST
+                                                   "${${SIGHT_TARGET}_${MODULE_NAME_REV}_PARAM_LIST}"
+                   ${MODULE_NAME_REV}_PARAM_VALUES "${${SIGHT_TARGET}_${MODULE_NAME_REV}_PARAM_VALUES}"
+    )
 endmacro()

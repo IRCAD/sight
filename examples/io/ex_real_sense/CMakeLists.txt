@@ -28,5 +28,3 @@ module_param(
 
 # Main application's configuration to launch
 module_param(module_app PARAM_LIST config PARAM_VALUES ExRealSense_AppCgf)
-
-sight_generate_profile(ex_real_sense)

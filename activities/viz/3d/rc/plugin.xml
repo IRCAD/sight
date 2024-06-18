@@ -1,4 +1,4 @@
-<plugin id="activity_viz_3d">
+<plugin id="sight::activity::viz::3d">
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::activity" />
