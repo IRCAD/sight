@@ -1,4 +1,4 @@
-<extension implements="sight::app::extension::config" >
+<extension implements="sight::app::extension::config">
     <id>ExActivities_Base_AppCfg</id>
     <parameters>
         <param name="APP_NAME" />
@@ -8,14 +8,13 @@
         <param name="WIZARD_CONFIG" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="activitySet" type="sight::data::activity_set" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="sight::module::ui::frame" >
+        <service uid="mainFrame" type="sight::module::ui::frame">
             <gui>
                 <frame>
                     <name>${APP_NAME}</name>
@@ -31,7 +30,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="activityLauncherSrv" type="sight::app::config_controller" >
+        <service uid="activityLauncherSrv" type="sight::app::config_controller">
             <appConfig id="ActivityLauncher" />
             <inout group="data">
                 <key name="activitySet" uid="activitySet" />
@@ -48,6 +47,5 @@
 
         <start uid="mainFrame" />
         <start uid="activityLauncherSrv" />
-
     </config>
 </extension>

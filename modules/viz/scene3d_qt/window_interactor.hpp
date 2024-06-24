@@ -32,6 +32,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include <QShortcut>
 
 namespace sight::ui::qt::container
 {
@@ -115,8 +116,12 @@ private Q_SLOTS:
 private:
 
     bool m_is_full_screen {false};
+
     /// Contains Qt element of the Widget.
     QPointer<module::viz::scene3d_qt::window> m_ogre_widget;
+
+    /// Contains the shortcut to switch to fullscreen.
+    QPointer<QShortcut> m_fullscreen_shortcut;
 
     /// Contains the parent of the widget.
     SPTR(ui::qt::container::widget) m_parent_container;

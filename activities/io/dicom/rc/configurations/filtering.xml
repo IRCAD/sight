@@ -7,7 +7,6 @@
         <param name="PROGRESS_CHANNEL" />
     </parameters>
     <config>
-
         <object type="sight::data::series_set" uid="${SERIES_SET}" src="ref" />
         <object type="sight::data::series_set" uid="readingSeriesSet" />
         <object type="sight::data::series_set" uid="loadedSeriesSet" />
@@ -57,7 +56,6 @@
                 <menu sid="menuHelp" start="true" />
             </registry>
         </service>
-
 
         <service uid="centerView" type="sight::module::ui::view">
             <gui>
@@ -186,6 +184,5 @@
         <start uid="mainView" />
         <start uid="readingViewer" />
         <start uid="loadedViewer" />
-
     </config>
 </extension>

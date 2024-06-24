@@ -59,6 +59,9 @@ static constexpr std::string_view DIRECTION            = "direction";
 namespace medical_image
 {
 
+using index_t = std::array<int, 3>;
+using vec3_t  = std::array<double, 3>;
+
 enum orientation_t
 {
     /// Directions.
@@ -129,6 +132,23 @@ SPTR(data::image::buffer_t) get_pixel_in_image_space(data::image::sptr _image, T
 template<typename MINMAXTYPE>
 void get_min_max(data::image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
 
+/**
+ * @brief Compute the indices of a 3D position inside an image. Beware, to be as generic as possible, no boundary check
+ * is performed so it can lie outside the image. If you want to use it to access a voxel inside the image, be sure to
+ * make these checks first and handle what you want to do in this case.
+ * @param[in] _image : input image
+ * @param[in] _pos : the 3D coordinates of the voxel
+ * @return: the indices of the voxel
+ */
+SIGHT_DATA_API index_t compute_voxel_indices(const data::image& _image, const vec3_t& _pos);
+
+/**
+ * @brief Return the bounding box surrounding an image.
+ * @param[in] _image : input image
+ * @return: the bounding box as the minimum and a maximum coordinates
+ */
+SIGHT_DATA_API std::pair<vec3_t, vec3_t> compute_bounding_box(const data::image& _image);
+
 // Getter/Setter for specific image fields
 
 /**
@@ -145,6 +165,16 @@ SIGHT_DATA_API std::optional<std::int64_t> get_slice_index(
 );
 
 /**
+ * @brief Helper function to get current slice position on a medical image in a specific orientation (Axial, Sagittal,
+ * Frontal).
+ *
+ * @param _image : input image reference
+ * @param _orientation : desired orientation
+ * @return the current position as a double_t.
+ */
+
+SIGHT_DATA_API std::optional<double_t> get_slice_position(const data::image& _image, const orientation_t& _orientation);
+/**
  * @brief Helper function to set current slice index on a medical image in a specific orientation (Axial, Sagittal,
  * Frontal).
  *
@@ -156,6 +186,21 @@ SIGHT_DATA_API void set_slice_index(
     data::image& _image,
     const orientation_t& _orientation,
     std::int64_t _slice_count
+);
+
+/**
+ * @brief Helper function to set current slice position on a medical image in a specific orientation (Axial, Sagittal,
+ * Frontal).
+ *
+ * @param _image : input image reference
+ * @param _orientation : desired orientation.
+ * @param _position  : current slice position to set as double_t.
+ */
+
+SIGHT_DATA_API void set_slice_position(
+    data::image& _image,
+    const orientation_t& _orientation,
+    double_t& _position
 );
 
 /**
@@ -174,6 +219,37 @@ SIGHT_DATA_API data::point_list::sptr get_landmarks(const data::image& _image);
  */
 SIGHT_DATA_API void set_landmarks(data::image& _image, const data::point_list::sptr& _landmarks);
 
+/**
+ * @brief Helper function to calculate the slice index of a given fiducial point in a specified orientation within a
+ * medical image.
+ *
+ * @param _image : The input image as a constant reference to data::image.
+ * @param _point : The coordinates of the fiducial point as a std::array of three doubles.
+ * @param _orientation : The orientation (axial, sagittal, or frontal) to calculate the slice index.
+ * @return std::optional<std::int64_t> : The calculated slice index as an integer.
+ */
+
+SIGHT_DATA_API std::optional<std::int64_t> get_fiducial_slice_index(
+    const data::image& _image,
+    const std::array<double,
+                     3>& _point,
+    orientation_t _orientation
+);
+
+/**
+ * @brief Helper function to calculate the physical position of a given fiducial point along a specified slice
+ * orientation within a medical image.
+ *
+ * @param _image : The input image as a constant reference to data::image.
+ * @param _point : The coordinates of the fiducial point as a std::array of three doubles.
+ * @param _orientation : The orientation (axial, sagittal, or frontal) to calculate the physical slice position.
+ * @return std::optional<double> : The calculated physical position as a double.
+ */
+SIGHT_DATA_API std::optional<double> get_fiducial_slice_position(
+    const data::image& _image,
+    const std::array<double, 3>& _point,
+    orientation_t _orientation
+);
 /**
  * @brief Helper function to get distances vector of a medical image.
  *
@@ -320,9 +396,9 @@ public:
     public:
 
         using value_t = VALUE;
-        using point_t = INT_INDEX;
+        using vec3_t  = INT_INDEX;
 
-        param(point_t& _p, value_t& _v) :
+        param(vec3_t& _p, value_t& _v) :
             value(_v),
             point(_p)
         {
@@ -330,7 +406,7 @@ public:
 
         data::image::sptr image;
         const value_t& value;
-        const point_t& point;
+        const vec3_t& point;
     };
 
     // ------------------------------------------------------------------------------

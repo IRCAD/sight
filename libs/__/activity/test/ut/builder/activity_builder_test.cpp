@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,6 +49,7 @@ void activity_builder_test::setUp()
 
     // Set up context before running a test.
     core::runtime::add_modules(core::runtime::get_resource_file_path("activity_ut"));
+    core::runtime::load_module("ut_registry");
     core::runtime::load_module("ut_builder");
 
     m_activity->parse_plugin_infos();
@@ -73,7 +74,7 @@ void activity_builder_test::build_data_test()
 
     activity::extension::activity::infos_t activities;
     activities = m_activity->get_infos(selection);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), activities.size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), activities.size());
 
     activity::extension::activity_info activity_info = activities[0];
     auto builder                                     =

@@ -79,7 +79,7 @@ public:
      * @{
      */
     /// Emitted when registration error is computed
-    using error_computed_signal_t = core::com::signal<void (double)>;
+    using error_computed_t = core::com::signal<void (double)>;
     ///@}
 
     point_list_registration();

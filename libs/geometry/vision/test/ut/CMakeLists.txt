@@ -3,8 +3,6 @@ sight_add_target(geometry_vision_ut TYPE TEST)
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_imgcodecs opencv_highgui)
 target_link_libraries(geometry_vision_ut PUBLIC opencv_highgui PRIVATE opencv_imgcodecs)
 
-find_package(glm QUIET REQUIRED)
-
 if(WIN32)
     target_link_libraries(geometry_vision_ut PRIVATE glm::glm)
 else()

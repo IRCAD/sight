@@ -1,4 +1,4 @@
-<extension implements="sight::app::extension::config" >
+<extension implements="sight::app::extension::config">
     <id>PACSselectorWindow_AppCfg</id>
     <parameters>
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
@@ -7,14 +7,13 @@
         <param name="outputSeriesSet" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${outputSeriesSet}" type="sight::data::series_set" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::frame" >
+        <service uid="mainView" type="sight::module::ui::frame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -28,9 +27,9 @@
             </registry>
         </service>
 
-        <service uid="pacsSelectorView" type="sight::module::ui::view" >
+        <service uid="pacsSelectorView" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::line" >
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="0" />
                 </layout>
@@ -41,7 +40,7 @@
         </service>
 
         <!-- TF manager -->
-        <service uid="PACSselectorCfg"  type="sight::app::config_controller" >
+        <service uid="PACSselectorCfg" type="sight::app::config_controller">
             <appConfig id="PACSselectorWidget_AppCfg" />
             <parameter replace="WID_PARENT" by="view" />
             <inout group="data">
@@ -51,7 +50,7 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <connect channel="${CLOSE_CONFIG_CHANNEL}" >
+        <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>mainView/closed</signal>
         </connect>
 

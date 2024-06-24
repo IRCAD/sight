@@ -32,7 +32,7 @@ namespace sight::ui::dialog
 {
 
 /**
- * @brief   Defines the generic message box for IHM.
+ * @brief   Defines the generic message box for UI.
  * Use the Delegate design pattern.
  */
 class SIGHT_UI_CLASS_API message : public ui::dialog::message_base
@@ -94,7 +94,7 @@ public:
 
 protected:
 
-    /// Implementation of a message box in a specific IHM (wx/Qt)
+    /// Implementation of a message box in a specific UI (wx/Qt)
     ui::dialog::message_base::sptr m_implementation;
 };
 

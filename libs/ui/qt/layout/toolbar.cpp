@@ -374,4 +374,16 @@ void toolbar::set_visible(bool _is_visible)
     }
 }
 
+//-----------------------------------------------------------------------------
+
+bool toolbar::visible() const
+{
+    if(m_toggle_toolbar_visibility_action != nullptr)
+    {
+        return m_toggle_toolbar_visibility_action->isChecked();
+    }
+
+    return false;
+}
+
 } // namespace sight::ui::qt::layout

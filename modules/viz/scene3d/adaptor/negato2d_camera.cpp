@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,6 +83,10 @@ void negato2d_camera::configuring()
     }
 
     m_margin = config.get<float>(CONFIG + "margin", m_margin);
+
+    m_scale = config.get<bool>(CONFIG + "scale", m_scale);
+
+    m_is_interactive = config.get<bool>(CONFIG + "interactive", m_is_interactive);
 }
 
 //-----------------------------------------------------------------------------
@@ -139,6 +143,11 @@ service::connections_t negato2d_camera::auto_connections() const
 
 void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int _y)
 {
+    if(!m_is_interactive)
+    {
+        return;
+    }
+
     const auto layer = this->layer();
 
     if(interactor_3d::base::is_in_layer(_x, _y, layer, m_layer_order_dependant))
@@ -256,6 +265,11 @@ void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int
 
 void negato2d_camera::pinch_gesture_event(double _scale_factor, int _center_x, int _center_y)
 {
+    if(!m_is_interactive)
+    {
+        return;
+    }
+
     // * 42 / 0.05 is a magic number to get a similar behavior as the mouse wheel
     wheel_event(modifier::control, (_scale_factor * 42) / 0.05, _center_x, _center_y);
 }
@@ -264,6 +278,11 @@ void negato2d_camera::pinch_gesture_event(double _scale_factor, int _center_x, i
 
 void negato2d_camera::pan_gesture_move_event(int _x, int _y, int _dx, int _dy)
 {
+    if(!m_is_interactive)
+    {
+        return;
+    }
+
     m_is_interacting = true;
 
     mouse_move_event(mouse_button::middle, {}, _x, _y, _dx, _dy);
@@ -287,6 +306,11 @@ void negato2d_camera::mouse_move_event(
     int _dy
 )
 {
+    if(!m_is_interactive)
+    {
+        return;
+    }
+
     if(m_is_interacting && _button == mouse_button::middle)
     {
         const auto layer = this->layer();
@@ -323,6 +347,11 @@ void negato2d_camera::mouse_move_event(
 
 void negato2d_camera::button_press_event(interactor_3d::base::mouse_button _button, modifier /*_mods*/, int _x, int _y)
 {
+    if(!m_is_interactive)
+    {
+        return;
+    }
+
     const auto layer = this->layer();
     if(_button == mouse_button::middle)
     {
@@ -357,6 +386,11 @@ void negato2d_camera::button_release_event(
 
 void negato2d_camera::key_press_event(int _key, modifier /*_mods*/, int _x, int _y)
 {
+    if(!m_is_interactive)
+    {
+        return;
+    }
+
     const auto layer = this->layer();
     if(interactor_3d::base::is_in_layer(_x, _y, layer, m_layer_order_dependant) && (_key == 'R' || _key == 'r'))
     {
@@ -382,7 +416,7 @@ void negato2d_camera::reset_camera()
     camera->setAspectRatio(vp_ratio);
 
     // HACK: Temporarily set the near clip distance here because the layer doesn't handle orthographic cameras.
-    camera->setNearClipDistance(1e-3F);
+    //camera->setNearClipDistance(1e-3F);
 
     cam_node->setPosition(Ogre::Vector3::ZERO);
     cam_node->resetOrientation();
@@ -392,65 +426,81 @@ void negato2d_camera::reset_camera()
     const auto size    = image->size();
     const auto spacing = image->spacing();
 
-    if(size[0] > 0 && size[1] > 0 && size[2] > 0)
+    float ratio   = 0;
+    double width  = 0.;
+    double height = 0.;
+    switch(m_current_negato_orientation)
     {
-        float ratio   = 0;
-        double width  = 0.;
-        double height = 0.;
-        switch(m_current_negato_orientation)
-        {
-            case orientation_t::x_axis:
-                cam_node->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90.F));
-                cam_node->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(-90.F));
-                width  = static_cast<double>(size[1]) * spacing[1];
-                height = static_cast<double>(size[2]) * spacing[2];
-                ratio  = static_cast<float>(width / height);
-                break;
+        case orientation_t::x_axis:
+            if(size[1] <= 0 || size[2] <= 0)
+            {
+                return;
+            }
 
-            case orientation_t::y_axis:
-                cam_node->rotate(Ogre::Vector3::UNIT_X, Ogre::Degree(90.F));
-                width  = static_cast<double>(size[0]) * spacing[0];
-                height = static_cast<double>(size[2]) * spacing[2];
-                ratio  = static_cast<float>(width / height);
-                break;
+            cam_node->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90.F));
+            cam_node->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(-90.F));
+            width  = static_cast<double>(size[1]) * spacing[1];
+            height = static_cast<double>(size[2]) * spacing[2];
+            ratio  = static_cast<float>(width / height);
+            break;
 
-            case orientation_t::z_axis:
-                cam_node->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(180.F));
-                cam_node->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(180.F));
-                width  = static_cast<double>(size[0]) * spacing[0];
-                height = static_cast<double>(size[1]) * spacing[1];
-                ratio  = static_cast<float>(width / height);
-                break;
-        }
+        case orientation_t::y_axis:
 
-        if(vp_ratio > ratio)
-        {
-            const auto h = static_cast<Ogre::Real>(height);
-            // Zoom out the camera with the margin, allow the image to not be stuck on the viewport.
-            camera->setOrthoWindowHeight(h + h * m_margin);
-        }
-        else
-        {
-            const auto w = static_cast<Ogre::Real>(width);
-            // Zoom out the camera with the margin, allow the image to not be stuck on the viewport.
-            camera->setOrthoWindowWidth(w + w * m_margin);
-        }
+            if(size[0] <= 0 || size[2] <= 0)
+            {
+                return;
+            }
 
-        const auto orientation = static_cast<std::size_t>(m_current_negato_orientation);
-        Ogre::Vector3 cam_pos(
-            static_cast<Ogre::Real>(origin[0] + static_cast<double>(size[0]) * spacing[0] * 0.5),
-            static_cast<Ogre::Real>(origin[1] + static_cast<double>(size[1]) * spacing[1] * 0.5),
-            static_cast<Ogre::Real>(origin[2] + static_cast<double>(size[2]) * spacing[2] * 0.5)
-        );
+            cam_node->rotate(Ogre::Vector3::UNIT_X, Ogre::Degree(90.F));
+            width  = static_cast<double>(size[0]) * spacing[0];
+            height = static_cast<double>(size[2]) * spacing[2];
+            ratio  = static_cast<float>(width / height);
+            break;
 
-        cam_pos[orientation] =
-            static_cast<Ogre::Real>(origin[orientation] - static_cast<double>(size[orientation])
-                                    * spacing[orientation]);
-        cam_node->setPosition(cam_pos);
+        case orientation_t::z_axis:
 
-        m_has_moved = false;
-        this->request_render();
+            if(size[0] <= 0 || size[1] <= 0)
+            {
+                return;
+            }
+
+            cam_node->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(180.F));
+            cam_node->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(180.F));
+            width  = static_cast<double>(size[0]) * spacing[0];
+            height = static_cast<double>(size[1]) * spacing[1];
+            ratio  = static_cast<float>(width / height);
+            break;
     }
+
+    if(vp_ratio > ratio || m_scale)
+    {
+        const auto h = static_cast<Ogre::Real>(height);
+        // Zoom out the camera with the margin, allow the image to not be stuck on the viewport.
+        camera->setOrthoWindowHeight(h + h * m_margin);
+    }
+    else
+    {
+        const auto w = static_cast<Ogre::Real>(width);
+        // Zoom out the camera with the margin, allow the image to not be stuck on the viewport.
+        camera->setOrthoWindowWidth(w + w * m_margin);
+    }
+
+    const auto orientation = static_cast<std::size_t>(m_current_negato_orientation);
+    Ogre::Vector3 cam_pos(
+        static_cast<Ogre::Real>(origin[0] + static_cast<double>(size[0]) * spacing[0] * 0.5),
+        static_cast<Ogre::Real>(origin[1] + static_cast<double>(size[1]) * spacing[1] * 0.5),
+        static_cast<Ogre::Real>(origin[2] + static_cast<double>(size[2]) * spacing[2] * 0.5)
+    );
+
+    const auto distance_pos =
+        static_cast<Ogre::Real>(origin[orientation] - static_cast<double>(size[orientation]) * spacing[orientation]);
+    // Special case, distance is equal to 0, so move camera to -1.
+    cam_pos[orientation] = (distance_pos != 0) ? distance_pos : -1;
+
+    camera->getParentSceneNode()->setPosition(cam_pos);
+
+    m_has_moved = false;
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------

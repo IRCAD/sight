@@ -1,5 +1,4 @@
 <plugin id="ex_openvslam">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -9,7 +8,6 @@
     <extension implements="sight::app::extension::config">
         <id>ExOpenvslam_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="cameraSet" type="sight::data::camera_set" />
@@ -146,7 +144,6 @@
                 </registry>
             </service>
 
-
             <service uid="statusView" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
@@ -228,7 +225,7 @@
                 <in key="image" uid="Frame" />
             </service>
 
-            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera"></service>
+            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera" />
 
             <service uid="cameraAxisAdp" type="sight::module::viz::scene3d::adaptor::axis">
                 <config transform="cameraMatrixTrf" length="30" />
@@ -270,7 +267,8 @@
             <service uid="cameraExtractorSrv" type="sight::module::data::get_camera">
                 <inout key="cameraSet" uid="cameraSet" />
                 <out group="camera">
-                    <key index="0" uid="camera" /> <!-- destination -->
+                    <!-- destination -->
+                    <key index="0" uid="camera" />
                 </out>
             </service>
 
@@ -333,18 +331,18 @@
                 <inout key="frameTL" uid="Timeline" />
             </service>
 
-            <service uid="frameUpdaterSrv"  type="sight::module::sync::synchronizer" >
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer">
                 <in group="frameTL">
                     <key uid="Timeline" />
                 </in>
                 <inout group="frames">
                     <key uid="Frame" />
                 </inout>
-                 <in group="matrixTL">
+                <in group="matrixTL">
                     <key uid="CamMatrixTimeline" />
                 </in>
                 <inout group="matrix">
-                    <key uid="CameraPoseMatrix"/>
+                    <key uid="CameraPoseMatrix" />
                 </inout>
                 <legacyAutoSync>true</legacyAutoSync>
             </service>
@@ -499,7 +497,6 @@
                 <slot>saveTrajectoriesAct/show</slot>
             </connect>
 
-
             <connect>
                 <signal>openvslamSrv/tracking_lost</signal>
                 <signal>openvslamSrv/stopped</signal>
@@ -602,7 +599,6 @@
             <!-- ******************************* Update services ***************************************** -->
 
             <update uid="HideAtStart" />
-
         </config>
     </extension>
 </plugin>

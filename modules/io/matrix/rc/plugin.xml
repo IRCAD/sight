@@ -1,5 +1,4 @@
-<plugin id="sight::module::io::matrix" library="true" >
-
+<plugin id="sight::module::io::matrix" library="true">
     <extension implements="sight::service::extension::factory">
         <type>sight::io::service::reader</type>
         <service>sight::module::io::matrix::matrix4_trf_reader</service>
@@ -13,7 +12,6 @@
         <object>sight::data::matrix4</object>
         <desc>Matrix4 Writer</desc>
     </extension>
-
 
     <extension implements="sight::service::extension::factory">
         <type>sight::io::service::reader</type>
@@ -29,4 +27,10 @@
         <desc>Saves the matrices timeline into a csv file</desc>
     </extension>
 
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::controller</type>
+        <service>sight::module::io::matrix::validator</service>
+        <object>sight::data::matrix4</object>
+        <desc>Checks if a matrix4 is a valid transformation matrix</desc>
+    </extension>
 </plugin>

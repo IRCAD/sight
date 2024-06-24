@@ -1,6 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,6 +20,28 @@
  *
  ***********************************************************************/
 
-// Empty source file
-// This is only to get a source file compiled, otherwise CMake would consider this target as an utility target
-// And the pch would not be generated properly
+#pragma once
+
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace sight::viz::scene3d::helper::ut
+{
+
+class layer_test : public CPPUNIT_NS::TestFixture
+{
+CPPUNIT_TEST_SUITE(layer_test);
+CPPUNIT_TEST(set_orthographic);
+CPPUNIT_TEST_SUITE_END();
+
+public:
+
+    // interface
+    void setUp() override;
+    void tearDown() override;
+
+    static void set_orthographic();
+
+private:
+};
+
+} // namespace sight::viz::scene3d::helper::ut

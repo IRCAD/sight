@@ -6,7 +6,6 @@
         <param name="cameraSet" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
         <object uid="${dataSet}" type="sight::data::set" src="ref" />
         <object uid="${cameraSet}" type="sight::data::camera_set" src="ref" />
@@ -90,7 +89,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="sight::module::ui::action"/>
+        <service uid="writeCalibrationAct" type="sight::module::ui::action" />
 
         <service uid="exportAct" type="sight::module::ui::export_set" auto_connect="true">
             <inout key="container" uid="${dataSet}" />
@@ -101,10 +100,10 @@
             <in key="data" uid="newCameraSet" />
         </service>
 
-        <service uid="startVideoAct" type="sight::module::ui::action"/>
-        <service uid="stopVideoAct" type="sight::module::ui::action"/>
-        <service uid="pauseVideoAct" type="sight::module::ui::action"/>
-        <service uid="loopVideoAct" type="sight::module::ui::action"/>
+        <service uid="startVideoAct" type="sight::module::ui::action" />
+        <service uid="stopVideoAct" type="sight::module::ui::action" />
+        <service uid="pauseVideoAct" type="sight::module::ui::action" />
+        <service uid="loopVideoAct" type="sight::module::ui::action" />
 
         <!-- ************************ Configuration launchers ********************************* -->
 
@@ -228,6 +227,5 @@
 
         <update uid="copyCameraSetSrv" />
         <update uid="extractCamerasSrv" />
-
     </config>
 </extension>

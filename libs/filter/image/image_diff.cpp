@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,10 +55,15 @@ void image_diff::add_diff(
     const data::image::buffer_t* _new_value
 )
 {
-    const std::size_t old_size = this->size();
-    const std::size_t new_size = old_size + m_elt_size;
+    const std::size_t old_size = m_buffer.size();
 
-    m_buffer.reserve(new_size);
+    // Double the size of the buffer to prevent systematic reallocation when building a diff
+    if(old_size + m_elt_size > m_buffer.capacity())
+    {
+        const std::size_t new_size = std::max(m_elt_size, old_size) * 2;
+        m_buffer.reserve(new_size);
+    }
+
     std::copy_n(reinterpret_cast<std::uint8_t*>(&_index), sizeof(data::image::index_t), std::back_inserter(m_buffer));
     std::copy_n(_old_value, m_img_elt_size, std::back_inserter(m_buffer));
     std::copy_n(_new_value, m_img_elt_size, std::back_inserter(m_buffer));

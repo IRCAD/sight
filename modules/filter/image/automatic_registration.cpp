@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,6 +36,7 @@ namespace sight::module::filter::image
 //------------------------------------------------------------------------------
 
 automatic_registration::automatic_registration() :
+    filter(m_signals),
     has_parameters(m_slots)
 {
 }
@@ -251,7 +252,7 @@ void automatic_registration::updating()
         SIGHT_ERROR("[ITK EXCEPTION]" << e.GetDescription());
     }
 
-    m_sig_computed->async_emit();
+    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
     transfo_modified_sig->async_emit();
 }
 

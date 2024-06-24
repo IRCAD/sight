@@ -1,5 +1,4 @@
 <plugin id="ex_frame_by_frame">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -9,7 +8,6 @@
     <extension implements="sight::app::extension::config">
         <id>ExFrameByFrame_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="camera" type="sight::data::camera" />
@@ -95,7 +93,7 @@
                 <createTimestamp>true</createTimestamp>
             </service>
 
-            <service uid="frameUpdaterSrv"  type="sight::module::sync::synchronizer" worker="videoWorker">
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTL" />
                 </in>
@@ -148,7 +146,6 @@
             <start uid="videoGrabberSrv" />
             <start uid="frameUpdaterSrv" />
             <start uid="videoAdp" />
-
         </config>
     </extension>
 </plugin>

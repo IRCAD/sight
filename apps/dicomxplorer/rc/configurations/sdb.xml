@@ -8,7 +8,6 @@
         <param name="ICON_PATH" />
     </parameters>
     <config>
-
         <object uid="${SERIES_SET}" type="sight::data::series_set" src="ref" />
         <object uid="selections" type="sight::data::vector" />
 
@@ -198,7 +197,7 @@
             <in key="series" uid="selections" />
             <config>
                 <mode>immediate</mode>
-                <parameters></parameters>
+                <parameters />
                 <filter>
                     <mode>include</mode>
                     <id>ImageSeriesExport</id>
@@ -233,6 +232,5 @@
         <start uid="mainview" />
         <start uid="seriesViewer" />
         <start uid="action_newActivity" />
-
     </config>
 </extension>

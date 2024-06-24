@@ -65,7 +65,7 @@ public:
 
     threshold() noexcept;
 
-    ~threshold() noexcept override;
+    ~threshold() noexcept override = default;
 
 protected:
 

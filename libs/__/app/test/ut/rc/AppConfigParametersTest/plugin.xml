@@ -1,5 +1,4 @@
-<plugin id="parameters_test" >
-
+<plugin id="parameters_test">
     <requirement id="sight::module::service" />
 
     <extension implements="sight::app::extension::parameters">
@@ -17,5 +16,4 @@
             <param name="param4" value="value4" />
         </parameters>
     </extension>
-
 </plugin>

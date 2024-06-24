@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,9 +72,13 @@ void config_test::setUp()
     core::runtime::load_module("sight::module::app");
     core::runtime::load_module("config_test");
 
-    app::extension::config::sptr app_config = app::extension::config::get_default();
+    auto app_config = app::extension::config::get_default();
     app_config->clear_registry();
     app_config->parse_plugin_infos();
+
+    auto srv_config = sight::service::extension::config::get_default();
+    srv_config->clear_registry();
+    srv_config->parse_plugin_infos();
 }
 
 //------------------------------------------------------------------------------
@@ -96,7 +100,7 @@ void config_test::tearDown()
 
 void config_test::add_config_test()
 {
-    app::extension::config::sptr current_app_config = app::extension::config::get_default();
+    auto current_app_config = app::extension::config::get_default();
 
     const std::string config_id(app::extension::config::get_unique_identifier());
     const std::string group("TestGroup");

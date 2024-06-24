@@ -148,6 +148,7 @@ std::size_t image::resize(const size_t& _size, const core::type& _type, enum pix
     m_type           = _type;
     m_pixel_format   = _format;
     m_num_components = pixel_format_to_num_components(_format);
+    m_stride         = m_type.size() * m_num_components;
 
     SIGHT_ASSERT("Number of components must be > 0", m_num_components > 0);
     SIGHT_ASSERT("Number of components must be <= 4", m_num_components <= 4);
@@ -186,6 +187,7 @@ void image::copy_information(image::csptr _source)
     m_size           = _source->m_size;
     m_spacing        = _source->m_spacing;
     m_origin         = _source->m_origin;
+    m_stride         = _source->m_stride;
     m_type           = _source->m_type;
     m_window_centers = _source->m_window_centers;
     m_window_widths  = _source->m_window_widths;
@@ -225,7 +227,7 @@ std::size_t image::size_in_bytes() const
         size = std::accumulate(
             m_size.begin(),
             m_size.begin() + dims,
-            static_cast<std::size_t>(m_type.size()) * m_num_components,
+            m_stride,
             std::multiplies<>()
         );
     }
@@ -272,9 +274,8 @@ const void* image::buffer() const
 
 void* image::get_pixel(index_t _index)
 {
-    const std::size_t image_pixel_size = m_type.size() * m_num_components;
-    auto* buf                          = static_cast<buffer_t*>(this->buffer());
-    const index_t buf_index            = _index * image_pixel_size;
+    auto* buf               = static_cast<buffer_t*>(this->buffer());
+    const index_t buf_index = _index * m_stride;
     return buf + buf_index;
 }
 
@@ -282,9 +283,8 @@ void* image::get_pixel(index_t _index)
 
 const void* image::get_pixel(index_t _index) const
 {
-    const std::size_t image_pixel_size = m_type.size() * m_num_components;
-    const auto* buf                    = static_cast<const buffer_t*>(this->buffer());
-    const index_t buf_index            = _index * image_pixel_size;
+    const auto* buf         = static_cast<const buffer_t*>(this->buffer());
+    const index_t buf_index = _index * m_stride;
     return buf + buf_index;
 }
 
@@ -292,10 +292,10 @@ const void* image::get_pixel(index_t _index) const
 
 void image::set_pixel(index_t _index, const image::buffer_t* _pix_buf)
 {
-    const std::size_t image_pixel_size = m_type.size() * m_num_components;
-    auto* buf                          = static_cast<buffer_t*>(this->get_pixel(_index));
+    auto* buf               = static_cast<buffer_t*>(m_data_array->buffer());
+    const index_t buf_index = _index * m_stride;
 
-    std::copy(_pix_buf, _pix_buf + image_pixel_size, buf);
+    std::copy(_pix_buf, _pix_buf + m_stride, buf + buf_index);
 }
 
 //------------------------------------------------------------------------------

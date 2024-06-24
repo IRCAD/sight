@@ -36,7 +36,7 @@ namespace sight::ui::layout
 {
 
 /**
- * @brief   Defines the generic layout manager for IHM.
+ * @brief   Defines the generic layout manager for UI.
  */
 class SIGHT_UI_CLASS_API view : public ui::object
 {

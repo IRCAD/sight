@@ -1,74 +1,73 @@
-<plugin id="sight::module::viz::scene2d" library="true" >
-    <requirement id="sight::module::ui::qt"/>
+<plugin id="sight::module::viz::scene2d" library="true">
+    <requirement id="sight::module::ui::qt" />
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene2d::adaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::axis</service>
-         <object key="viewport">sight::viz::scene2d::data::viewport</object>
-         <desc>Render an axis on the scene2d.</desc>
+        <type>sight::viz::scene2d::adaptor</type>
+        <service>sight::module::viz::scene2d::adaptor::axis</service>
+        <object key="viewport">sight::viz::scene2d::data::viewport</object>
+        <desc>Render an axis on the scene2d.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene2d::adaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::grid2d</service>
-         <desc>Render grid on the scene2d.</desc>
+        <type>sight::viz::scene2d::adaptor</type>
+        <service>sight::module::viz::scene2d::adaptor::grid2d</service>
+        <desc>Render grid on the scene2d.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene2d::adaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::histogram</service>
-         <object key="viewport">sight::viz::scene2d::data::viewport</object>
-         <object key="image">sight::data::image</object>
-         <desc>Displays the histogram of an image.</desc>
+        <type>sight::viz::scene2d::adaptor</type>
+        <service>sight::module::viz::scene2d::adaptor::histogram</service>
+        <object key="viewport">sight::viz::scene2d::data::viewport</object>
+        <object key="image">sight::data::image</object>
+        <desc>Displays the histogram of an image.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene2d::adaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::line</service>
-         <desc>Line adaptor. Draw a line on the scene2D</desc>
+        <type>sight::viz::scene2d::adaptor</type>
+        <service>sight::module::viz::scene2d::adaptor::line</service>
+        <desc>Line adaptor. Draw a line on the scene2D</desc>
     </extension>
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene2d::adaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::transfer_function</service>
-         <object key="viewport">sight::viz::scene2d::data::viewport</object>
-         <object key="tf">sight::data::transfer_function</object>
-         <desc>Defines an adaptor to display a composite of TF and interact with them.</desc>
-    </extension>
-
-
-    <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene2d::adaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::negato</service>
-         <desc>adaptor implementation to display one slice of an image.</desc>
+        <type>sight::viz::scene2d::adaptor</type>
+        <service>sight::module::viz::scene2d::adaptor::transfer_function</service>
+        <object key="viewport">sight::viz::scene2d::data::viewport</object>
+        <object key="tf">sight::data::transfer_function</object>
+        <desc>Defines an adaptor to display a composite of TF and interact with them.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::render</type>
-         <service>sight::viz::scene2d::render</service>
-         <desc></desc>
+        <type>sight::viz::scene2d::adaptor</type>
+        <service>sight::module::viz::scene2d::adaptor::negato</service>
+        <desc>adaptor implementation to display one slice of an image.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene2d::adaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::square</service>
-         <desc>Create a square on the scene2D</desc>
+        <type>sight::viz::render</type>
+        <service>sight::viz::scene2d::render</service>
+        <desc />
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene2d::adaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::viewport_interactor</service>
-         <desc>Adaptor implementation that manages the camera on the view.</desc>
+        <type>sight::viz::scene2d::adaptor</type>
+        <service>sight::module::viz::scene2d::adaptor::square</service>
+        <desc>Create a square on the scene2D</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene2d::adaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::viewport_range_selector</service>
-         <desc>The viewport range selector adaptor allows to select a delimited range of a viewport.</desc>
+        <type>sight::viz::scene2d::adaptor</type>
+        <service>sight::module::viz::scene2d::adaptor::viewport_interactor</service>
+        <desc>Adaptor implementation that manages the camera on the view.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::viz::scene2d::adaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::viewport_updater</service>
-         <desc>Adaptor implementation that manages the camera on the view (by updating the viewport object).</desc>
+        <type>sight::viz::scene2d::adaptor</type>
+        <service>sight::module::viz::scene2d::adaptor::viewport_range_selector</service>
+        <desc>The viewport range selector adaptor allows to select a delimited range of a viewport.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::viz::scene2d::adaptor</type>
+        <service>sight::module::viz::scene2d::adaptor::viewport_updater</service>
+        <desc>Adaptor implementation that manages the camera on the view (by updating the viewport object).</desc>
     </extension>
 </plugin>

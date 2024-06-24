@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,11 @@ CPPUNIT_TEST(get_min_max_test);
 CPPUNIT_TEST(get_pixel_test);
 CPPUNIT_TEST(set_pixel_test);
 CPPUNIT_TEST(is_buf_null);
+CPPUNIT_TEST(compute_voxel_indices);
+CPPUNIT_TEST(compute_bounding_box);
 CPPUNIT_TEST(test_landmarks);
+CPPUNIT_TEST(test_slice_index_fiducial);
+CPPUNIT_TEST(test_slice_position_fiducial);
 CPPUNIT_TEST(test_image_validity);
 CPPUNIT_TEST(test_slice_index);
 CPPUNIT_TEST(test_distances);
@@ -55,14 +59,20 @@ public:
     /// Tests the get_min_max method.
     static void get_min_max_test();
 
-    /// Tests the getPixel method for several image pixel types
+    /// Tests the get_pixel method for several image pixel types
     static void get_pixel_test();
 
-    /// Tests the setPixel method for several image pixel types
+    /// Tests the set_pixel method for several image pixel types
     static void set_pixel_test();
 
-    /// Tests isBuffNull method.
+    /// Tests is_buf_null method.
     static void is_buf_null();
+
+    /// Tests compute_voxel_indices method.
+    static void compute_voxel_indices();
+
+    /// Tests compute_bounding_box method.
+    static void compute_bounding_box();
 
     /// Tests helper method around landmarks (get/set).
     static void test_landmarks();
@@ -72,6 +82,12 @@ public:
 
     /// Tests helper methods around slice count.
     void test_slice_count();
+
+    /// Tests helper methods for slice indexes based on the position of fiducials.
+    static void test_slice_index_fiducial();
+
+    /// Tests helper methods for slice positions based on the position of the fiducials.
+    static void test_slice_position_fiducial();
 
     /// Tests helper methods around slice indexes.
     static void test_slice_index();

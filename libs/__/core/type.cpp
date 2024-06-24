@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -32,14 +32,14 @@ namespace sight::core
 const std::array<std::tuple<size_t, bool, std::string, type::type_t>,
                  size_t(type::type_t::none) + 1> type::TYPE_PROPERTIES =
 {{
-    {sizeof(std::int8_t), true, "int8", type_t::in_t8},
-    {sizeof(std::int16_t), true, "int16", type_t::in_t16},
-    {sizeof(std::int32_t), true, "int32", type_t::in_t32},
-    {sizeof(std::int64_t), true, "int64", type_t::in_t64},
-    {sizeof(std::uint8_t), false, "uint8", type_t::uin_t8},
-    {sizeof(std::uint16_t), false, "uint16", type_t::uin_t16},
-    {sizeof(std::uint32_t), false, "uint32", type_t::uin_t32},
-    {sizeof(std::uint64_t), false, "uint64", type_t::uin_t64},
+    {sizeof(std::int8_t), true, "int8", type_t::int_8},
+    {sizeof(std::int16_t), true, "int16", type_t::int_16},
+    {sizeof(std::int32_t), true, "int32", type_t::int_32},
+    {sizeof(std::int64_t), true, "int64", type_t::int_64},
+    {sizeof(std::uint8_t), false, "uint8", type_t::uint_8},
+    {sizeof(std::uint16_t), false, "uint16", type_t::uint_16},
+    {sizeof(std::uint32_t), false, "uint32", type_t::uint_32},
+    {sizeof(std::uint64_t), false, "uint64", type_t::uint_64},
     {sizeof(float), true, "float", type_t::FLOAT},
     {sizeof(double), true, "double", type_t::DOUBLE},
     {0, false, "unspecified", type_t::none}
@@ -87,49 +87,49 @@ std::string type::to_string(const void* _value) const
 {
     switch(m_type)
     {
-        case type_t::in_t8:
+        case type_t::int_8:
         {
             const auto& v = *(static_cast<const std::int8_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::in_t16:
+        case type_t::int_16:
         {
             const auto& v = *(static_cast<const std::int16_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::in_t32:
+        case type_t::int_32:
         {
             const auto& v = *(static_cast<const std::int32_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::in_t64:
+        case type_t::int_64:
         {
             const auto& v = *(static_cast<const std::int64_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::uin_t8:
+        case type_t::uint_8:
         {
             const auto& v = *(static_cast<const std::uint8_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::uin_t16:
+        case type_t::uint_16:
         {
             const auto& v = *(static_cast<const std::uint16_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::uin_t32:
+        case type_t::uint_32:
         {
             const auto& v = *(static_cast<const std::uint32_t*>(_value));
             return std::to_string(v);
         }
 
-        case type_t::uin_t64:
+        case type_t::uint_64:
         {
             const auto& v = *(static_cast<const std::uint64_t*>(_value));
             return std::to_string(v);

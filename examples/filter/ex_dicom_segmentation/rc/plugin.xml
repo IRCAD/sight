@@ -1,5 +1,4 @@
 <plugin id="ex_dicom_segmentation">
-
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -20,7 +19,7 @@
             <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1" />
         </requirements>
         <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="ExDicomSegmentation_VTKMesher_AppCfg"/>
+        <appConfig id="ExDicomSegmentation_VTKMesher_AppCfg" />
     </extension>
 
     <extension implements="sight::activity::extension">
@@ -49,7 +48,6 @@
     <extension implements="sight::app::extension::config">
         <id>ExDicomSegmentation_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="seriesSet" type="sight::data::series_set" />
@@ -91,8 +89,6 @@
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
-
         </config>
     </extension>
-
 </plugin>

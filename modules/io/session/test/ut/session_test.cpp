@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -169,7 +169,7 @@ inline static void basic_test(const bool _raw = false)
                 session_loading_failed_path = _path;
             });
         session_loading_failed_slot->set_worker(sight::core::thread::get_default_worker());
-        auto conn2 = reader->signal("sessionLoadingFailed")->connect(session_loading_failed_slot);
+        auto conn2 = reader->signal("session_loading_failed")->connect(session_loading_failed_slot);
 
         // Configure the reader service
         reader->set_config(setup_config(true, _raw));
@@ -292,7 +292,7 @@ void session_test::reader_bad_file()
                 session_loading_failed_path = _path;
             });
         session_loading_failed_slot->set_worker(sight::core::thread::get_default_worker());
-        auto conn2 = reader->signal("sessionLoadingFailed")->connect(session_loading_failed_slot);
+        auto conn2 = reader->signal("session_loading_failed")->connect(session_loading_failed_slot);
 
         // Configure the reader service
         reader->set_config(setup_config(true, false));

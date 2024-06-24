@@ -1,5 +1,4 @@
 <plugin id="config_test">
-
     <extension implements="sight::app::extension::config">
         <id>parametersConfigTest1</id>
         <parameters>
@@ -28,12 +27,10 @@
         </config>
     </extension>
 
-
     <extension implements="sight::app::extension::config">
         <id>startStopTest</id>
         <desc>Test configuration for start and stop</desc>
         <config>
-
             <object uid="data1Id" type="sight::data::image" />
             <object uid="data2Id" type="sight::data::image" src="deferred" />
             <object uid="data3Id" type="sight::data::image" />
@@ -70,7 +67,6 @@
             <update uid="TestService1Uid" />
             <update uid="TestService4Uid" />
             <update uid="TestService5Uid" />
-
         </config>
     </extension>
 
@@ -78,7 +74,6 @@
         <id>autoConnectTest</id>
         <desc>Test configuration for auto connect</desc>
         <config>
-
             <object uid="data1Id" type="sight::data::image" />
             <object uid="data2Id" type="sight::data::image" />
             <object uid="data3Id" type="sight::data::image" src="deferred" />
@@ -113,7 +108,6 @@
             <start uid="TestService3Uid" />
             <start uid="TestService5Uid" />
             <start uid="TestService4Uid" />
-
         </config>
     </extension>
 
@@ -121,7 +115,6 @@
         <id>connectionTest</id>
         <desc>Test configuration for connections</desc>
         <config>
-
             <object uid="data1Id" type="sight::data::image" />
             <object uid="data2Id" type="sight::data::image" src="deferred" />
             <object uid="data3Id" type="sight::data::image" src="deferred" />
@@ -184,7 +177,6 @@
             <start uid="TestService2Uid" />
             <start uid="TestService3Uid" />
             <start uid="TestService4Uid" />
-
         </config>
     </extension>
 
@@ -192,7 +184,6 @@
         <id>startStopConnectionTest</id>
         <desc>Test configuration for start/stop connections</desc>
         <config>
-
             <service uid="TestService5Uid" type="sight::app::ut::test_no_data" />
             <service uid="TestService6Uid" type="sight::app::ut::test_no_data" />
             <service uid="TestService7Uid" type="sight::app::ut::test_no_data" />
@@ -214,7 +205,6 @@
 
             <start uid="TestService5Uid" />
             <start uid="TestService7Uid" />
-
         </config>
     </extension>
 
@@ -222,7 +212,6 @@
         <id>optionalKeyTest</id>
         <desc>Test configuration for optional keys</desc>
         <config>
-
             <object uid="data1Id" type="sight::data::image" />
             <object uid="data2Id" type="sight::data::boolean" src="deferred" />
             <object uid="data3Id" type="sight::data::boolean" src="deferred" />
@@ -260,21 +249,17 @@
                 <slot>TestService2Uid/update</slot>
             </connect>
 
-
             <start uid="SGenerateData" />
             <start uid="SGenerateData2" />
             <start uid="TestService1Uid" />
             <start uid="TestService2Uid" />
-
         </config>
     </extension>
-
 
     <extension implements="sight::app::extension::config">
         <id>keyGroupTest</id>
         <desc>Test configuration for key groups</desc>
         <config>
-
             <object uid="data1Id" type="sight::data::string" />
             <object uid="data2Id" type="sight::data::boolean" src="deferred" />
             <object uid="data3Id" type="sight::data::image" src="deferred" />
@@ -326,15 +311,12 @@
                 <slot>TestService2Uid/update</slot>
             </connect>
 
-
             <start uid="SGenerateData" />
             <start uid="TestService1Uid" />
             <start uid="TestService2Uid" />
             <start uid="TestService3Uid" />
-
         </config>
     </extension>
-
 
     <extension implements="sight::app::extension::config">
         <id>parameterReplaceTest</id>
@@ -343,7 +325,6 @@
         </parameters>
         <desc>Test configuration for parameter replace</desc>
         <config>
-
             <object uid="${data1}" type="sight::data::string" />
             <object uid="data2Id" type="sight::data::boolean" />
 
@@ -376,7 +357,6 @@
 
             <start uid="TestService1Uid" />
             <start uid="TestService2Uid" />
-
         </config>
     </extension>
 
@@ -392,7 +372,6 @@
         </parameters>
         <desc>Test configuration for parameter replace</desc>
         <config>
-
             <object uid="${data1}" type="sight::data::string" src="ref" />
             <object uid="${data2}" type="sight::data::boolean" src="ref" />
 
@@ -411,16 +390,13 @@
             </connect>
 
             <start uid="TestServiceUid" />
-
         </config>
     </extension>
-
 
     <extension implements="sight::app::extension::config">
         <id>objectConfigTest</id>
         <desc>Test configuration for start and stop</desc>
         <config>
-
             <object uid="compo1Id" type="sight::data::composite">
                 <item key="dataInComposite">
                     <object uid="data2Id" type="sight::data::string">
@@ -434,7 +410,6 @@
             </service>
 
             <start uid="TestService1Uid" />
-
         </config>
     </extension>
 
@@ -476,5 +451,4 @@
             <start uid="srv" />
         </config>
     </extension>
-
 </plugin>

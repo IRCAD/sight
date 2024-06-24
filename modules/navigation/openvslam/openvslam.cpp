@@ -231,8 +231,8 @@ void openvslam::starting()
 
     if(m_tracking_mode != tracking_mode::mono)
     {
-        const auto frame_t_l2 = m_timeline2.lock();
-        SIGHT_ASSERT("The input " << TIMELIN_E2_INPUT << " is not valid.", frame_t_l2);
+        const auto frame_tl_2 = m_timeline2.lock();
+        SIGHT_ASSERT("The input " << TIMELIN_E2_INPUT << " is not valid.", frame_tl_2);
     }
 
     m_pointcloud_worker = core::thread::worker::make();
@@ -757,8 +757,8 @@ void openvslam::tracking(core::clock::type& _timestamp)
 
         if(m_tracking_mode != tracking_mode::mono)
         {
-            const auto frame_t_l2    = m_timeline2.lock();
-            const auto buffer_frame2 = frame_t_l2->get_closest_buffer(_timestamp);
+            const auto frame_tl_2    = m_timeline2.lock();
+            const auto buffer_frame2 = frame_tl_2->get_closest_buffer(_timestamp);
 
             if(buffer_frame2 == nullptr)
             {
@@ -767,7 +767,7 @@ void openvslam::tracking(core::clock::type& _timestamp)
 
             const std::uint8_t* frame_data2 = &buffer_frame2->get_element(0);
 
-            cv::Mat img_right = io::opencv::frame_tl::move_to_cv(frame_t_l2.get_shared(), frame_data2);
+            cv::Mat img_right = io::opencv::frame_tl::move_to_cv(frame_tl_2.get_shared(), frame_data2);
 
             // the two frames need to have same size
             if(img_left.cols != img_right.cols || img_left.rows != img_right.rows)

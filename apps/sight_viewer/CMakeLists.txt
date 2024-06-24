@@ -30,8 +30,6 @@ module_param(
 # Main application's configuration to launch
 module_param(module_app PARAM_LIST config PARAM_VALUES SightViewer_AppCfg)
 
-sight_generate_profile(sight_viewer)
-
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/uit)
 endif(SIGHT_BUILD_TESTS)

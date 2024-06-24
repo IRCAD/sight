@@ -32,7 +32,7 @@ namespace sight::ui::detail::registry
 {
 
 /**
- * @brief   Defines the menubar registry for IHM.
+ * @brief   Defines the menubar registry for UI.
  */
 class menubar : public ui::object
 {

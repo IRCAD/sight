@@ -1,17 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<plugin id="archive_extractor" >
-
+<?xml version="1.0" encoding="UTF-8" ?>
+<plugin id="archive_extractor">
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::io::zip" />
 
-    <extension implements="sight::app::extension::config" >
+    <extension implements="sight::app::extension::config">
         <id>ArchiveExtractor_AppCfg</id>
         <config>
-
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainView" type="sight::module::ui::frame" >
+            <service uid="mainView" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>Archive Extractor</name>
@@ -25,10 +22,10 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::view" >
+            <service uid="containerView" type="sight::module::ui::view">
                 <gui>
                     <toolbar align="top" />
-                    <layout type="sight::ui::layout::line" >
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                     </layout>
                 </gui>
@@ -37,7 +34,7 @@
                 </registry>
             </service>
 
-            <service uid="toolBarView" type="sight::module::ui::toolbar" >
+            <service uid="toolBarView" type="sight::module::ui::toolbar">
                 <gui>
                     <layout style="ToolButtonTextBesideIcon">
                         <menuItem name="Extract archive" icon="sight::module::ui::icons/volume.svg" />
@@ -76,7 +73,6 @@
             <start uid="progressStatusbar" />
 
             <start uid="extractArchiveSrv" />
-
         </config>
     </extension>
 </plugin>

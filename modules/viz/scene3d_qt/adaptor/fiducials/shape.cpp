@@ -490,33 +490,6 @@ void shape::set_visible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-std::optional<Ogre::Vector3> shape::get_nearest_picked_position(int _x, int _y)
-{
-    Ogre::SceneManager* sm = this->get_scene_manager();
-    const auto result      = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *sm);
-
-    if(result.has_value())
-    {
-        const auto* const camera = sm->getCamera(sight::viz::scene3d::layer::DEFAULT_CAMERA_NAME);
-        const auto* const vp     = camera->getViewport();
-
-        // Screen to viewport space conversion.
-        const float vp_x = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
-        const float vp_y = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
-
-        const Ogre::Ray ray = camera->getCameraToViewportRay(vp_x, vp_y);
-
-        Ogre::Vector3 normal = -ray.getDirection();
-        normal.normalise();
-
-        return result->second + normal * 0.01F;
-    }
-
-    return std::nullopt;
-}
-
-//------------------------------------------------------------------------------
-
 void shape::button_press_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
     /// No implemented interaction for editing shapes as of now

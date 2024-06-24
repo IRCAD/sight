@@ -19,17 +19,16 @@ Example:
         <param name="image" />
         <param name="histogram" />
         <param name="landmarks" />
-        <param name="TFPath" default="sight::module::ui::qt/tf"/>
+        <param name="TFPath" default="sight::module::ui::qt/tf" />
         <param name="transferFunctionOutput" />
     </parameters>
     <desc>This configuration displays a tab layout containing a negato and a transfer function editor</desc>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}"     type="sight::data::image"     src="ref" />
-        <object uid="${histogram}" type="sight::data::histogram" src="ref"/>
-        <object uid="${landmarks}" type="sight::data::landmarks" src="ref"/>
+        <object uid="${image}" type="sight::data::image" src="ref" />
+        <object uid="${histogram}" type="sight::data::histogram" src="ref" />
+        <object uid="${landmarks}" type="sight::data::landmarks" src="ref" />
 
         <object uid="TFSet" type="sight::data::composite" src="deferred" />
         <object uid="${transferFunctionOutput}" type="sight::data::transfer_function" src="deferred" />
@@ -57,8 +56,8 @@ Example:
         </service>
 
         <service uid="tfm" type="sight::module::ui::qt::image::TransferFunctionEditor">
-            <inout key="tfPool" uid="TFSet" auto_connect="true"/>
-            <in key="currentTF" uid="${transferFunctionOutput}"/>
+            <inout key="tfPool" uid="TFSet" auto_connect="true" />
+            <in key="currentTF" uid="${transferFunctionOutput}" />
             <out key="tf" uid="${transferFunctionOutput}" />
             <config useDefaultPath="false">
                 <path>${TFPath}</path>
@@ -91,11 +90,11 @@ Example:
         <service uid="tfWidget" type="sight::app::config_controller">
             <appConfig id="TransferFunctionWidget" />
             <inout group="data">
-                <key name="image" uid="${image}"/>
-                <key name="histogram" uid="${histogram}"/>
+                <key name="image" uid="${image}" />
+                <key name="histogram" uid="${histogram}" />
                 <key name="transferFunction" uid="${transferFunctionOutput}" />
             </inout>
-            <parameter replace="WID_PARENT" by="tfScene"/>
+            <parameter replace="WID_PARENT" by="tfScene" />
         </service>
 
         <connect>
@@ -110,6 +109,5 @@ Example:
         <start uid="tfm" />
 
         <update uid="fieldMgr" />
-
     </config>
 </extension>

@@ -14,6 +14,7 @@ if(ITK_VERSION_MAJOR GREATER 4)
         PATHS "${ITK_DIR}/Modules"
         NO_DEFAULT_PATH
     )
+
     if(HAS_ITK_REVIEW_MODULE)
         target_compile_definitions(filter_image PUBLIC "HAS_ITK_REVIEW_MODULE")
     endif()
@@ -21,7 +22,6 @@ else()
     target_compile_definitions(filter_image PUBLIC "HAS_ITK_REVIEW_MODULE")
 endif()
 
-find_package(glm QUIET REQUIRED)
 if(WIN32)
     target_link_libraries(filter_image PRIVATE glm::glm)
 else()

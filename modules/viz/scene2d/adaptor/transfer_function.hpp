@@ -138,7 +138,7 @@ private:
         std::vector<QAbstractGraphicsShapeItem*> m_tf_polygons;
     };
 
-    /// Deletes pieceView in @ref m_pieceView and clears them.
+    /// Deletes piece views in @ref m_pieceView and clears them.
     void release_tf_data();
 
     /**
@@ -151,10 +151,10 @@ private:
     /// Removes all graphic points in @ref m_pieceView from the layer and deletes them.
     void destroy_tf_points();
 
-    /// Creates a pieceView from a TF, fills basic data and creates graphic points.
+    /// Creates a piece view from a TF, fills basic data and creates graphic points.
     piece_view* create_piece_view(const data::transfer_function_piece::sptr _tf, int _z_index);
 
-    /// Creates the gradient of each pieceView and stores it in each element of @ref m_pieceView.
+    /// Creates the gradient of each piece view and stores it in each element of @ref m_pieceView.
     void create_tf_polygons();
 
     /**
@@ -401,7 +401,7 @@ private:
     /// Sets if interactions are enable or not.
     bool m_interactive {true};
 
-    /// Stores all created pieceView.
+    /// Stores all created piece view.
     std::vector<piece_view*> m_piece_view;
 
     /// Stores the main layer.

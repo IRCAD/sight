@@ -26,10 +26,9 @@ Example:
     <desc>This configuration displays a tab layout containing a negato and a transfer function
         editor</desc>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="sight::data::image" src="ref" />
+        <object uid="${image}" type="sight::data::image_series" src="ref" />
         <object uid="${transferFunction}" type="sight::data::transfer_function" src="ref" />
 
         <service uid="view" type="sight::module::ui::view">
@@ -109,8 +108,7 @@ Example:
 
         <service uid="negatoSlicerSrv" type="sight::module::ui::qt::image::slice_index_position_editor">
             <inout key="image" uid="${image}" />
-            <sliceIndex>${sliceIndex}</sliceIndex>
-            <displayAxisSelector>${enableSliceType}</displayAxisSelector>
+            <config orientation="${sliceIndex}" label="index" display_axis_selector="true" display_step_buttons="true" />
         </service>
 
         <service uid="windowLevelImage" type="sight::module::ui::qt::image::window_level">
@@ -156,6 +154,5 @@ Example:
         </connect>
 
         <start uid="view" />
-
     </config>
 </extension>

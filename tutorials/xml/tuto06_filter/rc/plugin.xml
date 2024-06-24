@@ -1,12 +1,10 @@
-<plugin id="tuto06_filter" >
-
+<plugin id="tuto06_filter">
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
 
-    <extension implements="sight::app::extension::config" >
+    <extension implements="sight::app::extension::config">
         <id>Tuto06Filter_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- This is the source image for the filtering. -->
@@ -18,7 +16,7 @@
             <!-- ******************************* UI declaration *********************************** -->
 
             <!-- Windows & Main Menu -->
-            <service uid="mainFrame" type="sight::module::ui::frame" >
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>tuto06_filter</name>
@@ -33,7 +31,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menubar" >
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -47,7 +45,7 @@
             </service>
 
             <!-- Menus -->
-            <service uid="menuFileView" type="sight::module::ui::menu" >
+            <service uid="menuFileView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -61,7 +59,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFilterView" type="sight::module::ui::menu" >
+            <service uid="menuFilterView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Compute image filter" />
@@ -74,9 +72,9 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::view" >
+            <service uid="containerView" type="sight::module::ui::view">
                 <gui>
-                    <layout type="sight::ui::layout::line" >
+                    <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -106,7 +104,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <!-- Reader of the input image -->
-            <service uid="imageReaderSrv" type="sight::module::ui::io::selector" >
+            <service uid="imageReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="myImage1" />
                 <type mode="reader" />
             </service>
@@ -117,7 +115,7 @@
                 output image is 'myImage2'.
                 The two images are declared above.
              -->
-            <service uid="imageFilterSrv" type="sight::module::filter::image::threshold" >
+            <service uid="imageFilterSrv" type="sight::module::filter::image::threshold">
                 <in key="source" uid="myImage1" />
                 <out key="target" uid="myImage2" />
                 <config>
@@ -131,7 +129,7 @@
                 output image is 'myImage2'.
                 The two images are declared above.
              -->
-            <service uid="imageFlipperSrv" type="sight::module::filter::image::flip" >
+            <service uid="imageFlipperSrv" type="sight::module::filter::image::flip">
                 <in key="source" uid="myImage1" />
                 <out key="target" uid="myImage2" />
             </service>
@@ -140,7 +138,7 @@
                 Renderer of the 1st image:
                 This is the source image for the filtering.
             -->
-            <service uid="image1Srv" type="sight::module::viz::sample::image" >
+            <service uid="image1Srv" type="sight::module::viz::sample::image">
                 <in key="image" uid="myImage1" auto_connect="true" />
             </service>
 
@@ -148,7 +146,7 @@
                 Rendered for the 2nd image:
                 This is the output image for the filtering.
             -->
-            <service uid="image2Srv" type="sight::module::viz::sample::image" >
+            <service uid="image2Srv" type="sight::module::viz::sample::image">
                 <in key="image" uid="myImage2" auto_connect="true" />
             </service>
 
@@ -176,7 +174,6 @@
 
             <!-- start the service using a deferred image -->
             <start uid="image2Srv" />
-
         </config>
     </extension>
 </plugin>

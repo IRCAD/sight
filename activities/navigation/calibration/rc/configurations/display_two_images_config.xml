@@ -9,7 +9,6 @@
         <param name="pointListId2" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${imageId1}" src="ref" type="sight::data::image" />
@@ -96,6 +95,5 @@
 
         <update uid="video1Adp" />
         <update uid="video2Adp" />
-
     </config>
 </extension>

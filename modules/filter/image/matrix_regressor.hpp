@@ -69,7 +69,7 @@ public:
     matrix_regressor();
 
     /// Destroys the service.
-    ~matrix_regressor() override;
+    ~matrix_regressor() override = default;
 
 protected:
 

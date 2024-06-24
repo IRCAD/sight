@@ -1,5 +1,4 @@
 <plugin id="sight::activity::navigation::calibration">
-
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::viz::scene3d_qt" />
@@ -49,10 +48,9 @@
         <title>Tool calibration</title>
         <desc>Tool Calibration Activity using a tracking system</desc>
         <icon>sight::module::ui::icons/calibration.svg</icon>
-        <requirements></requirements>
+        <requirements />
         <appConfig id="toolCalibration">
-            <parameters></parameters>
+            <parameters />
         </appConfig>
     </extension>
-
 </plugin>

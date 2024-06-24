@@ -32,7 +32,7 @@ namespace sight::ui::dialog
 {
 
 /**
- * @brief   Defines the generic message box for IHM.
+ * @brief   Defines the generic message box for UI.
  */
 class SIGHT_UI_CLASS_API message_base : public ui::object
 {

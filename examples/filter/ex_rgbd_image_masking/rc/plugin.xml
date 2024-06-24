@@ -1,5 +1,4 @@
 <plugin id="ex_rgbd_image_masking">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -9,7 +8,6 @@
     <extension implements="sight::app::extension::config">
         <id>ExRGBDImageMasking_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Frames timelines to manage video and depth streams  -->
@@ -173,7 +171,7 @@
                 <state enabled="false" />
             </service>
 
-            <service uid="learnBackgroundAct" type="sight::module::ui::action"></service>
+            <service uid="learnBackgroundAct" type="sight::module::ui::action" />
 
             <service uid="organManagerAct" type="sight::module::ui::config_launcher">
                 <appConfig id="ModelSeriesManagerWindow" />
@@ -280,14 +278,14 @@
             </service>
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameUpdaterSrv"  type="sight::module::sync::synchronizer" worker="videoWorker">
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTLVideo" />
                     <key uid="frameTLDepth" />
                 </in>
                 <inout group="frames">
                     <key uid="videoImage" tl="0" />
-                    <key uid="depthImage" tl="1"/>
+                    <key uid="depthImage" tl="1" />
                 </inout>
             </service>
 
@@ -301,7 +299,8 @@
             <!-- This matrix is used to staticaly register the model onto the video -->
             <service uid="transformReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="registrationMatrix" />
-                <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
+                <!-- mode is optional (by default it is "reader") -->
+                <type mode="reader" />
                 <selection mode="include" />
                 <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
             </service>
@@ -448,8 +447,8 @@
             </connect>
 
             <connect>
-                 <signal>enableHoleFillingFilterParamSrv/parameter_changed</signal>
-                 <slot>videoGrabberSrv/set_parameter</slot>
+                <signal>enableHoleFillingFilterParamSrv/parameter_changed</signal>
+                <slot>videoGrabberSrv/set_parameter</slot>
             </connect>
 
             <connect>
@@ -498,7 +497,6 @@
             <update uid="concatenateSrv" />
             <update uid="enableHoleFillingFilterParamSrv" />
             <update uid="meshAdp" />
-
         </config>
     </extension>
 </plugin>

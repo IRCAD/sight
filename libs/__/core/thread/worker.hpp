@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-// cspell:ignore NOLINT
-
 #pragma once
 
 #include <future>
 #include <any>
+#include <optional>
 
 #include <core/base.hpp>
 #include <core/clock.hpp>
@@ -37,8 +36,62 @@ namespace sight::core::thread
 
 using thread_id_t = std::thread::id;
 
-/// Returns the current thread id
+/**
+ * @brief Retrieves the identifier of the current thread.
+ *
+ * @return The identifier of the current thread.
+ *
+ * @note The type `thread_id_t` represents the identifier of a thread.
+ */
 SIGHT_CORE_API thread_id_t get_current_thread_id();
+
+/// The type `thread_native_id` represents the native identifier of a thread.
+using thread_native_id_t = std::thread::native_handle_type;
+
+/**
+ * @brief Retrieves the native identifier of the current thread.
+ *
+ * @return The native identifier of the current thread.
+ */
+SIGHT_CORE_API thread_native_id_t get_current_thread_native_id();
+
+/**
+ * @brief Sets the name of the specified thread.
+ *
+ * This function sets the name of the thread identified by `_thread_id` to the given `_thread_name`.
+ *
+ * @param _thread_name The name to be assigned to the thread
+ * @param _thread_id (Optional) The native handle of the thread whose name is to be set. If not provided,
+ *                   the name of the current thread is set.
+ */
+SIGHT_CORE_API void set_thread_name(
+    const std::string& _thread_name,
+    std::optional<std::thread::native_handle_type> _thread_id = std::nullopt
+);
+
+/**
+ * @brief Retrieves the name of the specified thread.
+ *
+ * This function retrieves the name of the thread identified by `_thread_id`.
+ *
+ * @param _thread_id (Optional) The native handle of the thread whose name is to be retrieved. If not provided,
+ *                   the name of the current thread is retrieved.
+ * @return A string containing the name of the specified thread.
+ */
+SIGHT_CORE_API std::string get_thread_name(std::optional<std::thread::native_handle_type> _thread_id = std::nullopt);
+
+/**
+ * @brief Retrieves the maximum length of a thread name.
+ *
+ * This function returns the maximum length of a thread name that can be set including the terminating null byte ('\0').
+ *
+ * @return The maximum length of a thread name.
+ */
+constexpr int get_max_length_of_thread_name()
+{
+    constexpr auto g_max_thread_name_length = 16; // 15 characters + \0
+    return g_max_thread_name_length;
+}
 
 class timer; // NOLINT(bugprone-forward-declaration-namespace)
 
@@ -83,6 +136,9 @@ public:
 
     /// Returns the worker's thread id
     SIGHT_CORE_API virtual thread_id_t get_thread_id() const = 0;
+
+    /// Sets the worker's name (useful for debugging).
+    SIGHT_CORE_API virtual void set_thread_name(const std::string& _thread_name) const = 0;
 
     /// Creates and returns a core::thread::timer running in this Worker
     SIGHT_CORE_API virtual SPTR(core::thread::timer) create_timer() = 0;

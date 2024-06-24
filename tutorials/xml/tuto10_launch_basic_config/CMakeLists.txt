@@ -22,5 +22,3 @@ module_param(
 
 # Main application's configuration to launch
 module_param(module_app PARAM_LIST config PARAM_VALUES Tuto10LaunchBasicConfig_AppCfg)
-
-sight_generate_profile(tuto10_launch_basic_config)

@@ -3,7 +3,8 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="objectID" />
-        <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
+        <!-- axial, frontal, sagittal -->
+        <param name="orientation" default="axial" />
     </parameters>
     <config>
         <object uid="${objectID}" type="sight::data::image_series" src="ref" />
@@ -32,7 +33,6 @@
                     <adaptor uid="interactor4Negato" />
                     <adaptor uid="seriesAdaptor" />
                 </layer>
-
             </scene>
         </service>
 
@@ -56,7 +56,7 @@
 
         <service uid="sliderIndexEditor" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
             <inout key="image" uid="${objectID}" />
-            <sliceIndex>${orientation}</sliceIndex>
+            <config orientation="${orientation}" label="index" display_axis_selector="false" display_step_buttons="false" />
         </service>
 
         <start uid="imageDumpLocker" />

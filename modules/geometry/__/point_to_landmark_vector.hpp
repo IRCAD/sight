@@ -50,7 +50,7 @@ namespace sight::module::geometry
             <computedLandmarkLabel>computedLandmark</computedLandmarkLabel>
             <sameAxialSliceTolerance>0,001</sameAxialSliceTolerance>
             <sameAxialSliceLabel>Same axial slice</sameAxialSliceLabel>
-       </service>
+        </service>
    @endcode
  * @subsection Input Input:
  * - \b landmark [sight::data::landmarks]: landmarks representing a point and target

@@ -33,7 +33,7 @@ namespace sight::ui::dialog
 {
 
 /**
- * @brief   Defines the generic Progress dialog for IHM.
+ * @brief   Defines the generic Progress dialog for UI.
  * @todo    add methods for behavior like autoClose, flying window or in status bar
  */
 class SIGHT_UI_CLASS_API pulse_progress_base : public ui::object

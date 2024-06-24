@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,8 @@ static const sight::core::com::slots::key_t UPDATE_THRESHOLD_SLOT = "update_thre
 
 //-----------------------------------------------------------------------------
 
-vtk_mesher::vtk_mesher() noexcept
+vtk_mesher::vtk_mesher() noexcept :
+    filter(m_signals)
 {
     new_slot(UPDATE_THRESHOLD_SLOT, &vtk_mesher::update_threshold, this);
 }

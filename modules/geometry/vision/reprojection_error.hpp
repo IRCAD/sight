@@ -80,7 +80,7 @@ public:
     SIGHT_DECLARE_SERVICE(reprojection_error, service::controller);
 
     /// Double changed signal type
-    using error_computed_signal_t = core::com::signal<void (double)>;
+    using error_computed_t = core::com::signal<void (double)>;
 
     static const core::com::slots::key_t COMPUTE_SLOT;
     static const core::com::slots::key_t SET_PARAMETER_SLOT;

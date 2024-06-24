@@ -14,7 +14,6 @@
         <param name="videoDurationModifiedChannel" default="videoDurationModified" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${camera}" type="sight::data::camera" src="ref" />
@@ -86,14 +85,14 @@
                 <key uid="timeLine" />
             </in>
             <inout group="frames">
-                <key uid="frame"  />
+                <key uid="frame" />
             </inout>
         </service>
 
         <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
             <inout key="camera" uid="${camera}" />
             <videoSupport>true</videoSupport>
-            <label></label>
+            <label />
         </service>
 
         <service uid="intrinsicEditionSrv" type="sight::module::ui::qt::calibration::intrinsic_edition">
@@ -176,6 +175,5 @@
         <start uid="frameSynchronizerSrv" />
         <start uid="intrinsicEditionSrv" />
         <start uid="videoAdp" />
-
     </config>
 </extension>

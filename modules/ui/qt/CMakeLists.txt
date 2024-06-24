@@ -1,6 +1,6 @@
 sight_add_target(module_ui_qt TYPE MODULE)
 
-add_dependencies(module_ui_qt module_ui module_ui_icons module_data)
+add_dependencies(module_ui_qt module_ui module_ui_icons module_data module_io_session)
 
 find_package(
     Qt5 QUIET
@@ -13,6 +13,7 @@ find_package(
                Quick
                Widgets
                QuickWidgets
+               Svg
     REQUIRED
 )
 
@@ -27,6 +28,7 @@ target_link_libraries(
             Qt5::Quick
             Qt5::Widgets
             Qt5::QuickWidgets
+            Qt5::Svg
 )
 set_target_properties(module_ui_qt PROPERTIES AUTOMOC TRUE)
 

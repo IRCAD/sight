@@ -196,7 +196,7 @@ private:
     Ogre::MaterialPtr m_handle_mtl;
 
     /// Material applied to a sphere when it is selected.
-    Ogre::MaterialPtr m_handle_hightlight_mtl;
+    Ogre::MaterialPtr m_handle_highlight_mtl;
 
     /// Material displaying the edges of the box.
     Ogre::MaterialPtr m_box_mtl;

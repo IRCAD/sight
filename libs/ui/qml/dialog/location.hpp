@@ -36,7 +36,7 @@ namespace sight::ui::qml::dialog
 {
 
 /**
- * @brief   Defines the generic file/folder dialog for IHM.
+ * @brief   Defines the generic file/folder dialog for UI.
  *
  */
 class SIGHT_UI_QML_CLASS_API location : public QObject,

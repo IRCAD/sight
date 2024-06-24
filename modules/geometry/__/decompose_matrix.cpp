@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,8 +34,10 @@ namespace sight::module::geometry
 
 // ----------------------------------------------------------------------------
 
-decompose_matrix::decompose_matrix() noexcept =
-    default;
+decompose_matrix::decompose_matrix() noexcept :
+    filter(m_signals)
+{
+}
 
 // ----------------------------------------------------------------------------
 
@@ -128,7 +130,7 @@ void decompose_matrix::updating()
         }
     }
 
-    m_sig_computed->async_emit();
+    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
 }
 
 // ----------------------------------------------------------------------------

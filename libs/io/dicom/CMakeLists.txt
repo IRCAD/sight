@@ -2,8 +2,6 @@ sight_add_target(io_dicom TYPE LIBRARY)
 
 find_package(Boost QUIET COMPONENTS locale REQUIRED)
 
-find_package(glm QUIET REQUIRED)
-
 if(WIN32)
     target_link_libraries(io_dicom PRIVATE glm::glm)
 else()

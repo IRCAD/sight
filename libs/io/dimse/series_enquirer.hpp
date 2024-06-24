@@ -216,13 +216,13 @@ public:
     );
 
     /**
-     * @brief Pushs instances using C-STORE requests.
+     * @brief Pushes instances using C-STORE requests.
      * @param _path_container The instance paths container.
      */
     SIGHT_IO_DIMSE_API void push_series(const instance_path_container_t& _path_container);
 
     /**
-     * @brief Pushs instances using C-STORE requests.
+     * @brief Pushes instances using C-STORE requests.
      * @param _dataset_container The dICOM dataset container.
      */
     SIGHT_IO_DIMSE_API void push_series(const dataset_container_t& _dataset_container);

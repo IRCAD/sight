@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -122,6 +122,10 @@ CPPUNIT_TEST(copy_general_image_module_test);
 
 CPPUNIT_TEST(get_patient_position_string_test);
 
+CPPUNIT_TEST(new_instances_test);
+CPPUNIT_TEST(iso_date_time_test);
+CPPUNIT_TEST(path_test);
+
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -220,6 +224,10 @@ public:
     static void copy_general_image_module_test();
 
     static void get_patient_position_string_test();
+
+    static void new_instances_test();
+    static void iso_date_time_test();
+    static void path_test();
 
 protected:
 

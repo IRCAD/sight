@@ -1,501 +1,504 @@
 stages:
-  - lint
-  - prebuild
-  - build
-  - deploy-test
-  - deploy
+    - lint
+    - prebuild
+    - build
+    - deploy-test
+    - deploy
 
 include:
-  - project: "sight/sight-gitlab"
-    ref: dev
-    file: "/.templates/deploy.yml"
-  - project: "sight/sight-gitlab"
-    ref: dev
-    file: "/.templates/build.yml"
+    - project: "sight/sight-gitlab"
+      ref: b45de5bbdf838589e11466fd6d5b4a271e95a055
+      file: "/.templates/deploy.yml"
+    - project: "sight/sight-gitlab"
+      ref: b45de5bbdf838589e11466fd6d5b4a271e95a055
+      file: "/.templates/build.yml"
 
 lint:sheldon:
-  extends: .lint
-  variables:
-    ENABLE_CLANG_TIDY: "ON"
-  tags:
-    - linux-power-runner
+    extends: .lint
+    variables:
+        ENABLE_CLANG_TIDY: "ON"
+    tags:
+        - linux-power-runner
 
 .linux_build:
-  extends: .linux_before
-  stage: build
-  needs:
-    - job: lint:sheldon
-      optional: true
-  variables:
-    SIGHT_BUILD_DOC: "OFF"
-    SIGHT_BUILD_PACKAGES: "OFF"
-    SIGHT_BUILD_SDK: "OFF"
-    SIGHT_ENABLE_REALSENSE: "OFF"
-    SIGHT_ENABLE_GDB: "OFF"
-  script:
-    # Reset the modified time of all files to improve ccache performance
-    - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
-    # Print CCache statistics
-    - ccache -s
-    # Launch CMake
-    - cd $CI_PROJECT_DIR/.build
-    - >
-      cmake $CI_PROJECT_DIR
-      -G Ninja
-      -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-      -DCMAKE_C_COMPILER_LAUNCHER=ccache
-      -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/.install
-      -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
-      -DSIGHT_ARCH=sandybridge
-      -DSIGHT_BUILD_TESTS=ON
-      -DSIGHT_BUILD_DOC=${SIGHT_BUILD_DOC}
-      -DSIGHT_ENABLE_PCH=ON
-      -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
-      -DSIGHT_ENABLE_OPENVSLAM=ON
-      -DSIGHT_ENABLE_REALSENSE=${SIGHT_ENABLE_REALSENSE}
-      -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
-      -DSIGHT_ENABLE_GDB=${SIGHT_ENABLE_GDB}
-      -DSIGHT_BUILD_MANPAGES=ON
-    # Touch all generated files to improve CCache performance
-    - find . -type f -name '*.?pp' -o -name '*.?xx' -exec touch -t 197001010000 {} \;
-    # Build
-    - ninja -j${RUNNER_THREADS} | tee output.log
-    # Generate metrics information
-    # Note: beware when there is no warning, grep returns false...
-    - nb_warnings=$(grep -c "warning:" output.log || true)
-    - nb_deprecated=$(grep -ce "-Wdeprecated-declarations" output.log || true)
-    - echo -e "Cpp_Warnings $nb_warnings\nCpp_Deprecated_declaration $nb_deprecated" >metrics.txt
-    # Print CCache statistics (Cache hit rate should have raised)
-    - ccache -s
-    # Clone sight-data.
-    - SIGHT_DATA_DIR=$(cmake -DOUTPUT_FOLDER=/cache/sight-data -DBRANCH=dev -P "${CI_PROJECT_DIR}/cmake/build/download_test_data.cmake" 2>&1 | grep sight-data)
-    - export FWTEST_DATA_DIR=${SIGHT_DATA_DIR}
-    - export IMAGE_OUTPUT_PATH=$CI_PROJECT_DIR/.build/testImages
-    - mkdir -p $IMAGE_OUTPUT_PATH
-    # Launch tests
-    - >
-      if [ "$SIGHT_ENABLE_COVERAGE" = "ON" ] || [ "$BUILD_TYPE" = "Debug" ]; then
-        TIMEOUT="1200"
-      else
-        TIMEOUT="600"
-      fi
-    - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j10 --output-junit junit1.xml --repeat until-pass:2
-    - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j10 --output-junit junit2.xml --repeat until-pass:2
-    - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j10 --output-junit junit3.xml --repeat until-pass:2
-    # Build documentation if needed
-    - >
-      if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
-        ninja -j${RUNNER_THREADS} doc
-      fi
-    - >
-      if [ "${SIGHT_BUILD_PACKAGES}" == "ON" ]; then
-        ninja -j${RUNNER_THREADS} sight_viewer_package
-        rm -rf ${CI_PROJECT_DIR}/.install
+    extends: .linux_before
+    stage: build
+    needs:
+        - job: lint:sheldon
+          optional: true
+    variables:
+        SIGHT_BUILD_DOC: "OFF"
+        SIGHT_BUILD_PACKAGES: "OFF"
+        SIGHT_BUILD_SDK: "OFF"
+        SIGHT_ENABLE_REALSENSE: "OFF"
+        SIGHT_ENABLE_GDB: "OFF"
+    script:
+        # Reset the modified time of all files to improve ccache performance
+        - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
+        # Print CCache statistics
+        - ccache -svv
+        # Launch CMake
+        - cd $CI_PROJECT_DIR/.build
+        - >
+            cmake $CI_PROJECT_DIR
+            -G Ninja
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache
+            -DCMAKE_CUDA_COMPILER_LAUNCHER=ccache
+            -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/.install
+            -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
+            -DSIGHT_ARCH=sandybridge
+            -DSIGHT_BUILD_TESTS=ON
+            -DSIGHT_BUILD_DOC=${SIGHT_BUILD_DOC}
+            -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
+            -DSIGHT_ENABLE_OPENVSLAM=ON
+            -DSIGHT_ENABLE_REALSENSE=${SIGHT_ENABLE_REALSENSE}
+            -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
+            -DSIGHT_ENABLE_GDB=${SIGHT_ENABLE_GDB}
+            -DSIGHT_BUILD_MANPAGES=ON
+        # Touch all generated files to improve CCache performance
+        - find . -type f -name '*.?pp' -o -name '*.?xx' -exec touch -t 197001010000 {} \;
+        # Build
+        - ninja -j${RUNNER_THREADS} | tee output.log
+        # Generate metrics information
+        # Note: beware when there is no warning, grep returns false...
+        - nb_warnings=$(grep -c "warning:" output.log || true)
+        - nb_deprecated=$(grep -ce "-Wdeprecated-declarations" output.log || true)
+        - echo -e "Cpp_Warnings $nb_warnings\nCpp_Deprecated_declaration $nb_deprecated" >metrics.txt
+        # Print CCache statistics (Cache hit rate should have raised)
+        - ccache -svv
+        # Clone sight-data.
+        - SIGHT_DATA_DIR=$(cmake -DOUTPUT_FOLDER=/cache/sight-data -DBRANCH=dev -P "${CI_PROJECT_DIR}/cmake/build/download_test_data.cmake" 2>&1 | grep sight-data)
+        - export FWTEST_DATA_DIR=${SIGHT_DATA_DIR}
+        - export IMAGE_OUTPUT_PATH=$CI_PROJECT_DIR/.build/testImages
+        - mkdir -p $IMAGE_OUTPUT_PATH
+        # Launch tests
+        - >
+            if [ "$SIGHT_ENABLE_COVERAGE" = "ON" ] || [ "$BUILD_TYPE" = "Debug" ]; then
+              TIMEOUT="1200"
+            else
+              TIMEOUT="600"
+            fi
+        - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j10 --output-junit junit1.xml --repeat until-pass:2
+        - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j10 --output-junit junit2.xml --repeat until-pass:2
+        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j10 --output-junit junit3.xml --repeat until-pass:2
+        # Build documentation if needed
+        - >
+            if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
+              ninja -j${RUNNER_THREADS} doc
+            fi
+        - >
+            if [ "${SIGHT_BUILD_PACKAGES}" == "ON" ]; then
+              ninja -j${RUNNER_THREADS} sight_viewer_package
+              rm -rf ${CI_PROJECT_DIR}/.install
 
-        ninja -j${RUNNER_THREADS} sight_calibrator_package
-        rm -rf ${CI_PROJECT_DIR}/.install
-      fi
-    - >
-      if [ "${SIGHT_BUILD_SDK}" == "ON" ]; then
-        ninja -j${RUNNER_THREADS} install
-        ninja -j${RUNNER_THREADS} package
-      fi
-    - >
-      if [ "${SIGHT_ENABLE_COVERAGE}" == "ON" ]; then
-        ninja coverage
-      fi
+              ninja -j${RUNNER_THREADS} sight_calibrator_package
+              rm -rf ${CI_PROJECT_DIR}/.install
+            fi
+        - >
+            if [ "${SIGHT_BUILD_SDK}" == "ON" ]; then
+              ninja -j${RUNNER_THREADS} install
+              ninja -j${RUNNER_THREADS} package
+            fi
+        - >
+            if [ "${SIGHT_ENABLE_COVERAGE}" == "ON" ]; then
+              ninja coverage
+            fi
 
-  artifacts: &linux_build_artifacts
-    when: always
-    paths:
-      - .build/ctest*.log
-      - .build/Documentation/Doxygen/
-      - .build/packages/*.tar.zst
-      - .build/coverage
-      - .build/bin/*.core
-      - .build/testImages
-    reports:
-      junit: .build/junit*.xml
-      metrics: .build/metrics.txt
+    artifacts: &linux_build_artifacts
+        when: always
+        paths:
+            - .build/ctest*.log
+            - .build/Documentation/Doxygen/
+            - .build/packages/*.tar.zst
+            - .build/coverage
+            - .build/bin/*.core
+            - .build/testImages
+        reports:
+            junit: .build/junit*.xml
+            metrics: .build/metrics.txt
 
 .linux_deploy_test:
-  stage: deploy-test
-  variables:
-    BUILD_TYPE: "Debug"
-    SIGHT_TEST_PACKAGES: "OFF"
-    SIGHT_TEST_SDK: "OFF"
-  script:
-    - cd .build
-    - >
-      if [ "${SIGHT_TEST_PACKAGES}" == "ON" ]; then
-        tar -xf packages/sight_viewer-*.tar.zst
-        echo Testing sight_viewer:
-        timeout 5s xvfb-run -a sight_viewer-*/bin/sight_viewer || [ $? -eq 124 ]
+    stage: deploy-test
+    variables:
+        BUILD_TYPE: "Debug"
+        SIGHT_TEST_PACKAGES: "OFF"
+        SIGHT_TEST_SDK: "OFF"
+    script:
+        - cd .build
+        - >
+            if [ "${SIGHT_TEST_PACKAGES}" == "ON" ]; then
+              tar -xf packages/sight_viewer-*.tar.zst
+              echo Testing sight_viewer:
+              timeout 5s xvfb-run -a sight_viewer-*/bin/sight_viewer || [ $? -eq 124 ]
 
-        tar -xf packages/sight_calibrator-*.tar.zst
-        echo Testing sight_calibrator:
-        timeout 5s xvfb-run -a sight_calibrator-*/bin/sight_calibrator || [ $? -eq 124 ]
-      fi
-    - >
-      if [ "${SIGHT_TEST_SDK}" == "ON" ]; then
-        tar -xf packages/sight-*.tar.zst
-        PACKAGE_NAME=$(cmake -DGET_ARCHIVE_FOLDER=ON -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -P "${CI_PROJECT_DIR}/cmake/build/download_deps.cmake" 2>&1)
-        for program in sight-*/bin/{ex*,tuto*,sight_viewer,sight_calibrator,dicomxplorer}; do
-            echo Testing $(basename $program):
-            LD_LIBRARY_PATH=/cache/.sight-deps/$PACKAGE_NAME/lib timeout 5s xvfb-run -a $program || [ $? -eq 124 ]
-        done
-        for program in sight-*/bin/{aruco_marker,dicom_anonymizer,network_proxy}; do
-            echo Testing $(basename $program):
-            $program --help
-        done
-      fi
+              tar -xf packages/sight_calibrator-*.tar.zst
+              echo Testing sight_calibrator:
+              timeout 5s xvfb-run -a sight_calibrator-*/bin/sight_calibrator || [ $? -eq 124 ]
+            fi
+        - >
+            if [ "${SIGHT_TEST_SDK}" == "ON" ]; then
+              tar -xf packages/sight-*.tar.zst
+              PACKAGE_NAME=$(cmake -DGET_ARCHIVE_FOLDER=ON -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -P "${CI_PROJECT_DIR}/cmake/build/download_deps.cmake" 2>&1)
+              for program in sight-*/bin/{ex*,tuto*,sight_viewer,sight_calibrator,dicomxplorer}; do
+                  echo Testing $(basename $program):
+                  LD_LIBRARY_PATH=/cache/.sight-deps/$PACKAGE_NAME/lib timeout 5s xvfb-run -a $program || [ $? -eq 124 ]
+              done
+              for program in sight-*/bin/{aruco_marker,dicom_anonymizer,network_proxy}; do
+                  echo Testing $(basename $program):
+                  $program --help
+              done
+            fi
 
 build:linux-22.04-debug-gcc:
-  extends: .linux_build
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  variables:
-    BUILD_TYPE: "Debug"
-    SIGHT_BUILD_SDK: "ON"
-    SIGHT_ENABLE_GDB: "ON"
-    CC: "gcc"
-    CXX: "g++"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .linux_build
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    variables:
+        BUILD_TYPE: "Debug"
+        SIGHT_BUILD_SDK: "ON"
+        SIGHT_ENABLE_GDB: "ON"
+        CC: "gcc"
+        CXX: "g++"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:linux-22.04-release-gcc:
-  extends: .linux_build
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  variables:
-    BUILD_TYPE: "Release"
-    SIGHT_BUILD_SDK: "ON"
-    SIGHT_BUILD_PACKAGES: "ON"
-    SIGHT_IGNORE_UNSTABLE_TESTS: 1
-    CC: "gcc"
-    CXX: "g++"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .linux_build
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    variables:
+        BUILD_TYPE: "Release"
+        SIGHT_BUILD_SDK: "ON"
+        SIGHT_BUILD_PACKAGES: "ON"
+        SIGHT_IGNORE_UNSTABLE_TESTS: 1
+        CC: "gcc"
+        CXX: "g++"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:linux-22.04-RelWithDebInfo-clang:
-  extends: .linux_build
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  variables:
-    BUILD_TYPE: "RelWithDebInfo"
-    SIGHT_IGNORE_UNSTABLE_TESTS: 1
-    SIGHT_ENABLE_GDB: "ON"
-    CC: "clang"
-    CXX: "clang++"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .linux_build
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    variables:
+        BUILD_TYPE: "RelWithDebInfo"
+        SIGHT_IGNORE_UNSTABLE_TESTS: 1
+        SIGHT_ENABLE_GDB: "ON"
+        CC: "clang"
+        CXX: "clang++"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:linux-22.04-coverage-gcc:
-  extends: .linux_build
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  variables:
-    BUILD_TYPE: "RelWithDebInfo"
-    SIGHT_BUILD_DOC: "ON"
-    SIGHT_ENABLE_COVERAGE: "ON"
-    SIGHT_IGNORE_UNSTABLE_TESTS: 1
-    CC: "gcc"
-    CXX: "g++"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .linux_build
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    variables:
+        BUILD_TYPE: "RelWithDebInfo"
+        SIGHT_BUILD_DOC: "ON"
+        SIGHT_ENABLE_COVERAGE: "ON"
+        SIGHT_IGNORE_UNSTABLE_TESTS: 1
+        CC: "gcc"
+        CXX: "g++"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:linux-22.04-coverage-gcc-draft:
-  extends: .linux_build
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  variables:
-    BUILD_TYPE: "RelWithDebInfo"
-    SIGHT_ENABLE_COVERAGE: "ON"
-    SIGHT_IGNORE_UNSTABLE_TESTS: 1
-    CC: "gcc"
-    CXX: "g++"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE =~ "/^Draft.*/"
+    extends: .linux_build
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    variables:
+        BUILD_TYPE: "RelWithDebInfo"
+        SIGHT_ENABLE_COVERAGE: "ON"
+        SIGHT_IGNORE_UNSTABLE_TESTS: 1
+        CC: "gcc"
+        CXX: "g++"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE =~ "/^Draft.*/"
 
 deploy-test:linux-debug:
-  extends: .linux_deploy_test
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  needs:
-    - job: build:linux-22.04-debug-gcc
-      artifacts: true
-  variables:
-    BUILD_TYPE: "Debug"
-    SIGHT_TEST_SDK: "ON"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .linux_deploy_test
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    needs:
+        - job: build:linux-22.04-debug-gcc
+          artifacts: true
+    variables:
+        BUILD_TYPE: "Debug"
+        SIGHT_TEST_SDK: "ON"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:linux-debug:
-  extends: .linux_deploy
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  needs:
-    - job: build:linux-22.04-debug-gcc
-      artifacts: true
-    - job: deploy-test:linux-debug
-  variables:
-    APPS: "sight-"
-    URL: "IRCAD%20-%20Open/"
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .linux_deploy
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    needs:
+        - job: build:linux-22.04-debug-gcc
+          artifacts: true
+        - job: deploy-test:linux-debug
+    variables:
+        APPS: "sight-"
+        URL: "IRCAD%20-%20Open/"
+    rules:
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy-test:linux-release:
-  extends: .linux_deploy_test
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  needs:
-    - job: build:linux-22.04-release-gcc
-      artifacts: true
-  variables:
-    BUILD_TYPE: "Release"
-    SIGHT_TEST_PACKAGES: "ON"
-    SIGHT_TEST_SDK: "ON"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .linux_deploy_test
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    needs:
+        - job: build:linux-22.04-release-gcc
+          artifacts: true
+    variables:
+        BUILD_TYPE: "Release"
+        SIGHT_TEST_PACKAGES: "ON"
+        SIGHT_TEST_SDK: "ON"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:linux-release:
-  extends: .linux_deploy
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  needs:
-    - job: build:linux-22.04-release-gcc
-      artifacts: true
-    - job: deploy-test:linux-release
-  variables:
-    APPS: "sight-"
-    URL: "IRCAD%20-%20Open/"
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .linux_deploy
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    needs:
+        - job: build:linux-22.04-release-gcc
+          artifacts: true
+        - job: deploy-test:linux-release
+    variables:
+        APPS: "sight-"
+        URL: "IRCAD%20-%20Open/"
+    rules:
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:apps-linux-release:
-  extends: .linux_deploy
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  needs:
-    - job: build:linux-22.04-release-gcc
-      artifacts: true
-    - job: deploy-test:linux-release
-  variables:
-    APPS: "sight_viewer,sight_calibrator"
-    URL: "IRCAD%20-%20Open/"
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .linux_deploy
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    needs:
+        - job: build:linux-22.04-release-gcc
+          artifacts: true
+        - job: deploy-test:linux-release
+    variables:
+        APPS: "sight_viewer,sight_calibrator"
+        URL: "IRCAD%20-%20Open/"
+    rules:
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 .windows_build:
-  extends: .windows_before
-  needs:
-    - job: lint:sheldon
-      optional: true
-    - job: prebuild:windows
-  variables:
-    TOOLCHAIN: "scripts\\buildsystems\\vcpkg.cmake"
-    SIGHT_BUILD_PACKAGES: "OFF"
-    SIGHT_BUILD_SDK: "OFF"
-    MSVC_VERSION: "17"
-    CUDA_VERSION: "12_2"
-  stage: build
-  script:
-    # Get the package_name name from our CMake script
-    - $PACKAGE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
-    # Build the project on the merge result.
-    - cd "${env:CI_PROJECT_DIR}/build"
-    - cmake "$env:CI_PROJECT_DIR" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$CACHE\$PACKAGE_NAME\$TOOLCHAIN" -DCMAKE_INSTALL_PREFIX="$env:CI_PROJECT_DIR/install" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DSIGHT_BUILD_TESTS=ON -DSIGHT_ENABLE_PCH=OFF -DCMAKE_C_COMPILER_LAUNCHER="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER="ccache"
-    - $env:TMP="$CACHE\tmp"
-    - $env:TEMP="$CACHE\tmp"
-    - ninja
-    # Clone sight-data.
-    - cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH=dev -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake"
-    - $env:FWTEST_DATA_DIR=cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH=dev -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake" '2>&1' | Select-String sight-data
-    - $env:IMAGE_OUTPUT_PATH="${env:CI_PROJECT_DIR}/build/testImages"
-    - md "${env:IMAGE_OUTPUT_PATH}"
-    - $env:DISABLE_ABORT_DIALOG="1"
-    - |
-      if ("${SIGHT_ENABLE_COVERAGE}" -eq "ON" -or "${BUILD_TYPE}" -eq "Debug") {
-        $TIMEOUT="1200"
-      } else {
-        $TIMEOUT="600"
-      }
-    # Launch tests
-    - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j6 --output-junit junit1.xml --repeat until-pass:2
-    - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j6 --output-junit junit2.xml --repeat until-pass:2
-    - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j6 --output-junit junit3.xml --repeat until-pass:2
-    - |
-      if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
-        ninja sight_viewer_package
-        (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
+    extends: .windows_before
+    needs:
+        - job: lint:sheldon
+          optional: true
+        - job: prebuild:windows
+    variables:
+        TOOLCHAIN: "scripts\\buildsystems\\vcpkg.cmake"
+        SIGHT_BUILD_PACKAGES: "OFF"
+        SIGHT_BUILD_SDK: "OFF"
+        MSVC_VERSION: "17"
+        CUDA_VERSION: "12_5"
+    stage: build
+    script:
+        # Print CCache statistics
+        - ccache -svv
+        # Get the package_name name from our CMake script
+        - $PACKAGE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
+        # Configure the project.
+        - cd "${env:CI_PROJECT_DIR}/build"
+        - cmake "$env:CI_PROJECT_DIR" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$CACHE\$PACKAGE_NAME\$TOOLCHAIN" -DCMAKE_INSTALL_PREFIX="$env:CI_PROJECT_DIR/install" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DSIGHT_BUILD_TESTS=ON -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache" -DCMAKE_C_COMPILER_LAUNCHER="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER="ccache"
+        # Build the project
+        - ninja
+        # Print CCache statistics (Cache hit rate should have raised)
+        - ccache -svv
+        # Clone sight-data.
+        - cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH=dev -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake"
+        - $env:FWTEST_DATA_DIR=cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH=dev -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake" '2>&1' | Select-String sight-data
+        - $env:IMAGE_OUTPUT_PATH="${env:CI_PROJECT_DIR}/build/testImages"
+        - md "${env:IMAGE_OUTPUT_PATH}"
+        - $env:DISABLE_ABORT_DIALOG="1"
+        - |
+            if ("${SIGHT_ENABLE_COVERAGE}" -eq "ON" -or "${BUILD_TYPE}" -eq "Debug") {
+              $TIMEOUT="1200"
+            } else {
+              $TIMEOUT="600"
+            }
+        # Launch tests
+        - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j6 --output-junit junit1.xml --repeat until-pass:2
+        - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j6 --output-junit junit2.xml --repeat until-pass:2
+        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j6 --output-junit junit3.xml --repeat until-pass:2
+        - |
+            if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
+              ninja sight_viewer_package
+              (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
 
-        ninja sight_calibrator_package
-        (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
-      }
-    - |
-      if ("${SIGHT_BUILD_SDK}" -eq "ON") {
-        ninja install
-        # Check if the package is relocatable
-        Try {
-          if (Select-String -Pattern "[A-Z]:[\/\\]\w+" -Path "${env:CI_PROJECT_DIR}/install/lib/cmake/sight/*.cmake") {
-            echo "The package is not relocatable, some absolute paths are present"
-            exit 1
-          }
-          else
-          {
-            echo "The package is relocatable, no absolute path found."
-          }
-        }
-        Catch {
-          echo "Error when looking for absolute paths, see output below."
-          echo $Error[0]
-          exit 1
-        }
-        ninja package
-      }
-  artifacts:
-    when: always
-    name: "${env:CI_JOB_NAME}-${env:CI_COMMIT_REF_SLUG}"
-    paths:
-      - build/ctest*.log
-      - build/fwTest.log
-      - build/packages/*.exe
-      - build/packages/sight-*.zip
-      - build/testImages
-    reports:
-      junit: build/junit.xml
+              ninja sight_calibrator_package
+              (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
+            }
+        - |
+            if ("${SIGHT_BUILD_SDK}" -eq "ON") {
+              ninja install
+              # Check if the package is relocatable
+              Try {
+                if (Select-String -Pattern "[A-Z]:[\/\\]\w+" -Path "${env:CI_PROJECT_DIR}/install/lib/cmake/sight/*.cmake") {
+                  echo "The package is not relocatable, some absolute paths are present"
+                  exit 1
+                }
+                else
+                {
+                  echo "The package is relocatable, no absolute path found."
+                }
+              }
+              Catch {
+                echo "Error when looking for absolute paths, see output below."
+                echo $Error[0]
+                exit 1
+              }
+              ninja package
+            }
+    artifacts:
+        when: always
+        name: "${env:CI_JOB_NAME}-${env:CI_COMMIT_REF_SLUG}"
+        paths:
+            - build/ctest*.log
+            - build/fwTest.log
+            - build/packages/*.exe
+            - build/packages/sight-*.zip
+            - build/testImages
+        reports:
+            junit: build/junit.xml
 
 .windows_sight_deploy_test:
-  extends: .windows_deploy_test
-  script:
-    - $PACKAGE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
-    - cd build
-    - |
-      if("${SIGHT_TEST_PACKAGES}" -eq "ON"){
-        Start-Process -Wait .\packages\sight_viewer-*.exe /S,/D=${pwd}\sight_viewer
-        Start-SightProcess -path "sight_viewer\bin\sight_viewer.bat"
+    extends: .windows_deploy_test
+    script:
+        - $PACKAGE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
+        - cd build
+        - |
+            if("${SIGHT_TEST_PACKAGES}" -eq "ON"){
+              Start-Process -Wait .\packages\sight_viewer-*.exe /S,/D=${pwd}\sight_viewer
+              Start-SightProcess -path "sight_viewer\bin\sight_viewer.bat"
 
-        Start-Process -Wait .\packages\sight_calibrator-*.exe /S,/D=${pwd}\sight_calibrator
-        Start-SightProcess -path "sight_calibrator\bin\sight_calibrator.bat"
-      }
-    - |
-      Expand-Archive packages/sight-*.zip
-      if("${SIGHT_TEST_SDK}" -eq "ON"){
-        if ( ${BUILD_TYPE} -eq "Debug" ) {
-          $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\debug\bin;$env:PATH"
-        }
-        else {
-          $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\bin\;$env:PATH"
-        }
-        cd sight-*/*/bin
-        ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sight_viewer.bat,sight_calibrator.bat,dicomxplorer.bat){
-          $programName = Split-Path -Leaf $program
-          Write-Host Testing $programName
-          Start-SightProcess -path $program
-        }
-        ForEach($program in Get-ChildItem aruco_marker.exe,dicom_anonymizer.exe){
-          $programName = Split-Path -Leaf $program
-          Write-Host Testing $programName
-          Start-Process -NoNewWindow -Wait $program --help
-        }
-      }
+              Start-Process -Wait .\packages\sight_calibrator-*.exe /S,/D=${pwd}\sight_calibrator
+              Start-SightProcess -path "sight_calibrator\bin\sight_calibrator.bat"
+            }
+        - |
+            Expand-Archive packages/sight-*.zip
+            if("${SIGHT_TEST_SDK}" -eq "ON"){
+              if ( ${BUILD_TYPE} -eq "Debug" ) {
+                $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\debug\bin;$env:PATH"
+              }
+              else {
+                $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\bin\;$env:PATH"
+              }
+              cd sight-*/*/bin
+              ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sight_viewer.bat,sight_calibrator.bat,dicomxplorer.bat){
+                $programName = Split-Path -Leaf $program
+                Write-Host Testing $programName
+                Start-SightProcess -path $program
+              }
+              ForEach($program in Get-ChildItem aruco_marker.exe,dicom_anonymizer.exe){
+                $programName = Split-Path -Leaf $program
+                Write-Host Testing $programName
+                Start-Process -NoNewWindow -Wait $program --help
+              }
+            }
 
 build:windows-debug:
-  extends: .windows_build
-  variables:
-    BUILD_TYPE: "Debug"
-    SIGHT_BUILD_SDK: "ON"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .windows_build
+    variables:
+        BUILD_TYPE: "Debug"
+        SIGHT_BUILD_SDK: "ON"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:windows-release:
-  extends: .windows_build
-  variables:
-    BUILD_TYPE: "Release"
-    SIGHT_BUILD_PACKAGES: "ON"
-    SIGHT_BUILD_SDK: "ON"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .windows_build
+    variables:
+        BUILD_TYPE: "Release"
+        SIGHT_BUILD_PACKAGES: "ON"
+        SIGHT_BUILD_SDK: "ON"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:windows-release-draft:
-  extends: .windows_build
-  variables:
-    BUILD_TYPE: "Release"
-    SIGHT_BUILD_PACKAGES: "OFF"
-    SIGHT_BUILD_SDK: "OFF"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE =~ "/^Draft.*/"
+    extends: .windows_build
+    variables:
+        BUILD_TYPE: "Release"
+        SIGHT_BUILD_PACKAGES: "OFF"
+        SIGHT_BUILD_SDK: "OFF"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE =~ "/^Draft.*/"
 
 deploy-test:windows-debug:
-  extends: .windows_sight_deploy_test
-  needs:
-    - job: build:windows-debug
-      artifacts: true
-  variables:
-    BUILD_TYPE: "Debug"
-    SIGHT_TEST_SDK: "ON"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .windows_sight_deploy_test
+    needs:
+        - job: build:windows-debug
+          artifacts: true
+    variables:
+        BUILD_TYPE: "Debug"
+        SIGHT_TEST_SDK: "ON"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:windows-debug:
-  extends: .windows_deploy
-  needs:
-    - job: build:windows-debug
-      artifacts: true
-    - job: deploy-test:windows-debug
-  variables:
-    APPS: "sight-"
-    URL: "IRCAD%20-%20Open/"
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .windows_deploy
+    needs:
+        - job: build:windows-debug
+          artifacts: true
+        - job: deploy-test:windows-debug
+    variables:
+        APPS: "sight-"
+        URL: "IRCAD%20-%20Open/"
+    rules:
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy-test:windows-release:
-  extends: .windows_sight_deploy_test
-  needs:
-    - job: build:windows-release
-      artifacts: true
-  variables:
-    BUILD_TYPE: "Release"
-    SIGHT_TEST_PACKAGES: "ON"
-    SIGHT_TEST_SDK: "ON"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .windows_sight_deploy_test
+    needs:
+        - job: build:windows-release
+          artifacts: true
+    variables:
+        BUILD_TYPE: "Release"
+        SIGHT_TEST_PACKAGES: "ON"
+        SIGHT_TEST_SDK: "ON"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:windows-release:
-  extends: .windows_deploy
-  needs:
-    - job: build:windows-release
-      artifacts: true
-    - job: deploy-test:windows-release
-  variables:
-    APPS: "sight-"
-    URL: "IRCAD%20-%20Open/"
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .windows_deploy
+    needs:
+        - job: build:windows-release
+          artifacts: true
+        - job: deploy-test:windows-release
+    variables:
+        APPS: "sight-"
+        URL: "IRCAD%20-%20Open/"
+    rules:
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:apps-windows-release:
-  extends: .windows_deploy
-  needs:
-    - job: build:windows-release
-      artifacts: true
-    - job: deploy-test:windows-release
-  variables:
-    APPS: "sight_viewer,sight_calibrator"
-    URL: "IRCAD%20-%20Open/"
-  rules:
-    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+    extends: .windows_deploy
+    needs:
+        - job: build:windows-release
+          artifacts: true
+        - job: deploy-test:windows-release
+    variables:
+        APPS: "sight_viewer,sight_calibrator"
+        URL: "IRCAD%20-%20Open/"
+    rules:
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 pages:
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  stage: deploy
-  needs:
-    - job: build:linux-22.04-coverage-gcc
-      artifacts: true
-  script:
-    - mv .build/Documentation/Doxygen/html/ public/
-    - mv .build/coverage/ public/coverage
-  artifacts:
-    paths:
-      - public
-  only:
-    - dev
+    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    stage: deploy
+    needs:
+        - job: build:linux-22.04-coverage-gcc
+          artifacts: true
+    script:
+        - mv .build/Documentation/Doxygen/html/ public/
+        - mv .build/coverage/ public/coverage
+    artifacts:
+        paths:
+            - public
+    only:
+        - dev

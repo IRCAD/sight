@@ -1,5 +1,4 @@
-<plugin id="tuto10_launch_basic_config" >
-
+<plugin id="tuto10_launch_basic_config">
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -7,17 +6,16 @@
     <!-- Allows to include a xml file containing a sub-configuration -->
     <xi:include href="basic_frame_config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
-    <extension implements="sight::app::extension::config" >
+    <extension implements="sight::app::extension::config">
         <id>Tuto10LaunchBasicConfig_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="image" type="sight::data::image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::frame" >
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>tuto10_launch_basic_config</name>
@@ -32,7 +30,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menubar" >
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -43,7 +41,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::menu" >
+            <service uid="menuFileView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -73,7 +71,7 @@
                 This service allows to launch a sub-configuration.
                 The configuration is defined by its id.
             -->
-            <service uid="launchConfigAct" type="sight::module::ui::config_launcher" >
+            <service uid="launchConfigAct" type="sight::module::ui::config_launcher">
                 <appConfig id="Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg" />
                 <!--
                     replace ${image} in the sub-config by the uid of the object with the key
@@ -86,11 +84,11 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="imageReaderSrv" type="sight::module::ui::io::selector" >
+            <service uid="imageReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="image" />
             </service>
 
-            <service uid="imageRendereSrv" type="sight::module::viz::sample::image" >
+            <service uid="imageRendereSrv" type="sight::module::viz::sample::image">
                 <in key="image" uid="image" />
             </service>
 
@@ -103,7 +101,6 @@
 
             <start uid="mainFrame" />
             <start uid="imageReaderSrv" />
-
         </config>
     </extension>
 </plugin>

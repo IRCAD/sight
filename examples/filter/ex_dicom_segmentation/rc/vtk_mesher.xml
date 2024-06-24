@@ -7,7 +7,6 @@
         <param name="imageSeries" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${seriesSet}" type="sight::data::series_set" src="ref" />
@@ -158,7 +157,7 @@
 
         <service uid="sliceIndexEditorSrv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
             <inout key="image" uid="${imageSeries}" />
-            <sliceIndex>axial</sliceIndex>
+            <config orientation="axial" label="index" display_axis_selector="false" display_step_buttons="false" />
         </service>
 
         <service uid="modelSeriesListSrv" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
@@ -184,7 +183,7 @@
         <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
             <in key="data" uid="snapshot" />
             <dialog policy="always" />
-            <backends enable="all" mode="best"/>
+            <backends enable="all" mode="best" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

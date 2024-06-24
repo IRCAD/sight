@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -367,6 +367,47 @@ void worker_test::registry_test()
     }
 
     CPPUNIT_ASSERT_THROW(core::thread::set_default_worker(core::thread::worker::sptr()), core::exception);
+}
+
+//------------------------------------------------------------------------------
+
+void worker_test::thread_name_test()
+{
+    // Current thread (implicit api)
+    {
+        const auto thread_name     = core::thread::get_thread_name();
+        const auto new_thread_name = thread_name + "_pf0";
+        core::thread::set_thread_name(new_thread_name);
+        const auto modified_thread_name = core::thread::get_thread_name();
+        CPPUNIT_ASSERT_EQUAL(new_thread_name, modified_thread_name);
+
+        core::thread::set_thread_name(thread_name);
+    }
+
+    // Current thread (implicit api) and thread name too long
+    {
+        const auto thread_name = core::thread::get_thread_name();
+
+        const auto desired_thread_name  = std::string("desired_thread_name_too_long");
+        const auto expected_thread_name = std::string("desired_thread_");
+
+        core::thread::set_thread_name(desired_thread_name);
+        const auto current_thread_name = core::thread::get_thread_name();
+        CPPUNIT_ASSERT_EQUAL(expected_thread_name, current_thread_name);
+
+        core::thread::set_thread_name(thread_name);
+    }
+
+    // Current thread (explicit api)
+    {
+        const auto current_native_id = core::thread::get_current_thread_native_id();
+
+        const auto thread_name     = core::thread::get_thread_name(current_native_id);
+        const auto new_thread_name = thread_name + "_pf1";
+        core::thread::set_thread_name(new_thread_name, current_native_id);
+        const auto modified_thread_name = core::thread::get_thread_name(current_native_id);
+        CPPUNIT_ASSERT_EQUAL(new_thread_name, modified_thread_name);
+    }
 }
 
 //-----------------------------------------------------------------------------

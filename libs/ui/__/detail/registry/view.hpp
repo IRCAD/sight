@@ -45,7 +45,7 @@ namespace detail::registry
 {
 
 /**
- * @brief   Defines the generic view manager for IHM.
+ * @brief   Defines the generic view manager for UI.
  *
  */
 class SIGHT_UI_CLASS_API view : public ui::object

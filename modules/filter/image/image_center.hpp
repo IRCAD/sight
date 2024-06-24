@@ -60,7 +60,7 @@ public:
     SIGHT_DECLARE_SERVICE(image_center, service::filter);
 
     /// Constructor, does nothing.
-    image_center() = default;
+    image_center();
 
     /// Destructor, does nothing.
     ~image_center() override = default;

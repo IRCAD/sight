@@ -20,13 +20,13 @@ With:
     <id>ModelSeriesManagerWindow</id>
     <parameters>
         <param name="ORGAN_MANAGER_MODELSERIES" />
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!--  defined by config_launcher -->
+        <!--  defined by config_launcher -->
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
         <param name="ICON_PATH" />
-        <param name="WindowTitle" default="Organs Manager"/>
+        <param name="WindowTitle" default="Organs Manager" />
     </parameters>
     <desc>Open a windows containing the editors to manage the ModelSeries: show/hide reconstructions, change the color.</desc>
     <config>
-
         <object uid="${ORGAN_MANAGER_MODELSERIES}" type="sight::data::model_series" src="ref" />
 
         <!-- MAIN FRAME -->
@@ -59,6 +59,5 @@ With:
         <!-- START AND STOP SERVICES -->
         <start uid="organManagerFrame" />
         <start uid="modelManager" />
-
     </config>
 </extension>

@@ -76,7 +76,7 @@ public:
     depth_image_masking() noexcept;
 
     /// Does nothing
-    ~depth_image_masking() noexcept override;
+    ~depth_image_masking() noexcept override = default;
 
     /// Defines auto connection for this service (update slot) to the depth image (objectModified)
     service::connections_t auto_connections() const override;

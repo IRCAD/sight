@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,8 +33,10 @@ namespace sight::module::geometry
 
 //-----------------------------------------------------------------------------
 
-point_list_from_matrices::point_list_from_matrices()
-= default;
+point_list_from_matrices::point_list_from_matrices() :
+    filter(m_signals)
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -99,10 +101,8 @@ void point_list_from_matrices::updating()
         point_list->push_back(p);
     }
 
-    auto sig = point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG);
-    sig->async_emit();
-
-    m_sig_computed->async_emit();
+    point_list->signal<data::point_list::modified_signal_t>(data::point_list::MODIFIED_SIG)->async_emit();
+    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
 }
 
 //-----------------------------------------------------------------------------

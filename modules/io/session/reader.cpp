@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -96,6 +96,7 @@ public:
 };
 
 reader::reader() noexcept :
+    notifier(m_signals),
     m_pimpl(std::make_unique<reader_impl>(this))
 {
     new_signal<signals::session_path_t>(signals::SESSION_LOADED);
@@ -326,11 +327,14 @@ void reader::updating()
     {
         // Handle the error.
         SIGHT_ERROR(e.what());
-        sight::ui::dialog::message::show(
-            "Session reader failed",
-            e.what(),
-            sight::ui::dialog::message::critical
-        );
+        // FIXME: due to modal message popups, eventLoop may by flushed and introduced race-conditions.
+        // sight::ui::dialog::message::show(
+        //     "Session reader failed",
+        //     e.what(),
+        //     sight::ui::dialog::message::critical
+        // );
+
+        this->notifier::failure(e.what());
 
         // Signal that we failed to read this file
         this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);
@@ -338,11 +342,14 @@ void reader::updating()
     catch(...)
     {
         // Handle the error.
-        sight::ui::dialog::message::show(
-            "Session reader aborted",
-            "Reading process aborted",
-            sight::ui::dialog::message::warning
-        );
+        SIGHT_ERROR("Reading process aborted");
+        this->notifier::failure("Reading process aborted");
+        // FIXME: due to modal message popups, eventLoop may by flushed and introduced race-conditions.
+        // sight::ui::dialog::message::show(
+        //     "Session reader aborted",
+        //     "Reading process aborted",
+        //     sight::ui::dialog::message::warning
+        // );
 
         // Signal that we failed to read this file
         this->signal<signals::session_path_t>(signals::SESSION_LOADING_FAILED)->async_emit(filepath);

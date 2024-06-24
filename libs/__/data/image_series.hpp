@@ -123,7 +123,6 @@ public:
      */
     SIGHT_DATA_API std::size_t resize(const size_t& _size, const core::type& _type, enum pixel_format _format) override;
     /// @}
-
     SIGHT_DATA_API fiducials_series::csptr get_fiducials() const;
     SIGHT_DATA_API fiducials_series::sptr get_fiducials();
 

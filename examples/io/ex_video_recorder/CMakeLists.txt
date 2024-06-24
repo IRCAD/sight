@@ -25,5 +25,3 @@ module_param(
 
 # Main application's configuration to launch
 module_param(module_app PARAM_LIST config PARAM_VALUES ExVideoRecorder_AppCfg)
-
-sight_generate_profile(ex_video_recorder)

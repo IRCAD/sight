@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -849,7 +849,7 @@ void shape_extruder::generate_extruded_mesh(const std::vector<triangle3_d>& _tri
     reconstruction->set_mesh(mesh);
     reconstruction->set_organ_name("ExtrudedMesh_" + std::to_string(reconstructions.size()));
 
-    // Pushs the reconstruction.
+    // Pushes the reconstruction.
     reconstructions.push_back(reconstruction);
     extruded_meshes->set_reconstruction_db(reconstructions);
 

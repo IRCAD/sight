@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,10 +56,10 @@ void sequencer::setUp()
     if(!done)
     {
         CPPUNIT_ASSERT_NO_THROW(core::runtime::load_module("ut_sequencer"));
+        CPPUNIT_ASSERT_NO_THROW(core::runtime::load_module("sight::module::app"));
+        CPPUNIT_ASSERT_NO_THROW(core::runtime::load_module("sight::module::activity"));
         done = true;
     }
-
-    CPPUNIT_ASSERT_NO_THROW(sight::activity::extension::activity::get_default()->parse_plugin_infos());
 
     // Build container
     std::tie(m_container, m_child_uuid) = make_container();
@@ -71,9 +71,6 @@ void sequencer::tearDown()
 {
     // Destroy container
     destroy_container(m_container);
-
-    // Clean up after the test run.
-    CPPUNIT_ASSERT_NO_THROW(sight::activity::extension::activity::get_default()->clear_registry());
 }
 
 //------------------------------------------------------------------------------

@@ -109,6 +109,5 @@
         <start uid="viewer" />
         <start uid="anonymizeController" />
         <start uid="pushSeriesController" />
-
     </config>
 </extension>

@@ -46,7 +46,7 @@ class DataSet;
 namespace sight::data::detail
 {
 
-class SeriesImpl;
+class series_impl;
 
 }
 
@@ -68,6 +68,15 @@ public:
     SIGHT_DATA_API ~series() noexcept override;
     /// @}
 
+    /// Generate a new study instance uid / data / time
+    SIGHT_DATA_API void new_sop_instance();
+
+    /// Generate a new study instance uid / data / time
+    SIGHT_DATA_API void new_study_instance();
+
+    /// Generate a new study instance uid / data / time
+    SIGHT_DATA_API void new_series_instance();
+
     /// Getter/Setter of DICOM SOP Common Module related attributes
     /// @{
     SIGHT_DATA_API dicom::sop::Keyword get_sop_keyword() const noexcept;
@@ -85,6 +94,12 @@ public:
 
     /// Translate DICOM specific character set to something compatible with iconv/ICU/Qt
     SIGHT_DATA_API std::string get_encoding() const noexcept;
+
+    SIGHT_DATA_API std::string get_instance_creation_date() const noexcept;
+    SIGHT_DATA_API void set_instance_creation_date(const std::string& _instance_creation_date);
+
+    SIGHT_DATA_API std::string get_instance_creation_time() const noexcept;
+    SIGHT_DATA_API void set_instance_creation_time(const std::string& _instance_creation_time);
     /// @}
 
     /// Getter/Setter of DICOM General series Module related attributes
@@ -719,17 +734,42 @@ public:
     /// Helper function to convert a std::chrono::system_clock::time_point to /from DICOM date time string
     SIGHT_DATA_API static std::string time_point_to_date_time(const std::chrono::system_clock::time_point& _time_point);
 
+    /// Helper function to convert a DICOM date to ISO date string
+    SIGHT_DATA_API static std::string date_to_iso(const std::string& _date);
+
+    /// Helper function to convert a DICOM time to ISO time string
+    SIGHT_DATA_API static std::string time_to_iso(const std::string& _time);
+
     /// Shrink the number of instances / frames to the given size.
     /// This is mainly an optimization and a bugfix when using GDCM to write a multi-frame DICOM file.
     /// @param _size
     SIGHT_DATA_API void shrink_frames(std::size_t _size);
 
-    SIGHT_DATA_API void set_frame_landmarks(std::vector<data::landmarks::sptr> _landmarks, std::size_t _frame_index);
-    SIGHT_DATA_API std::vector<data::landmarks::sptr> get_frame_landmarks(std::size_t _frame_index);
+    /// Helper function to generate a file name / sub-folder for a given series.
+    /// @{
+    /// Returns "<PatientID>.<Modality>.hash(SeriesInstanceUID).<SeriesDate><SeriesTime>"
+    SIGHT_DATA_API std::filesystem::path file_name(
+        const std::optional<std::string>& _suffix = std::string(".dcm")
+    ) const;
+
+    /// Returns "<root> / <PatientID> / <StudyDate><StudyTime>"
+    /// @param _root: the base root folder where to store the file
+    SIGHT_DATA_API std::filesystem::path folder(
+        const std::optional<std::filesystem::path>& _root = std::nullopt
+    ) const;
+
+    /// Returns "folder(root) / file_name(suffix)"
+    /// @param _root: the base root folder where to store the file
+    /// @param _suffix: the suffix to append to the file name
+    SIGHT_DATA_API std::filesystem::path file_path(
+        const std::optional<std::filesystem::path>& _root = std::nullopt,
+        const std::optional<std::string>& _suffix         = std::string(".dcm")
+    ) const;
+    /// @}
 
 protected:
 
-    std::unique_ptr<detail::SeriesImpl> m_pimpl;
+    std::unique_ptr<detail::series_impl> m_pimpl;
 };
 
 } // Namespace fwMedData.

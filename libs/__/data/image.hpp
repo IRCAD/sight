@@ -600,6 +600,9 @@ private:
     //! type of image pixel
     core::type m_type {core::type::UINT8};
 
+    //! number of bytes between two pixels - not serialized
+    std::size_t m_stride {1};
+
     //! image format
     enum pixel_format m_pixel_format {pixel_format::undefined};
 

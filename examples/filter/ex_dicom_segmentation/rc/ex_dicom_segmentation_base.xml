@@ -1,4 +1,4 @@
-<extension implements="sight::app::extension::config" >
+<extension implements="sight::app::extension::config">
     <id>ExDicomSegmentation_Base_AppCfg</id>
     <parameters>
         <param name="WID_PARENT" />
@@ -6,7 +6,6 @@
         <param name="seriesSet" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${seriesSet}" type="sight::data::series_set" src="ref" />
@@ -14,9 +13,9 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::view" >
+        <service uid="mainView" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::line" >
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#2E3034" />
                 </layout>
@@ -27,10 +26,10 @@
             </registry>
         </service>
 
-        <service uid="containerView" type="sight::module::ui::view" >
+        <service uid="containerView" type="sight::module::ui::view">
             <gui>
-                <toolbar/>
-                <layout type="sight::ui::layout::line" >
+                <toolbar />
+                <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <view proportion="1" backgroundColor="#36393E" />
                     <view proportion="1" backgroundColor="#2E3034" border="5" />
@@ -44,7 +43,7 @@
             </registry>
         </service>
 
-        <service uid="toolBarView" type="sight::module::ui::toolbar" >
+        <service uid="toolBarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
                     <menuItem name="Import" icon="sight::module::ui::icons/load.svg" />
@@ -63,17 +62,16 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="importAct" type="sight::module::ui::series::db_merger" >
+        <service uid="importAct" type="sight::module::ui::series::db_merger">
             <inout key="seriesSet" uid="${seriesSet}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
 
-        <service uid="exportAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true" >
+        <service uid="exportAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
             <in key="series" uid="selection" />
             <config>
                 <mode>immediate</mode>
-                <parameters>
-                </parameters>
+                <parameters />
                 <filter>
                     <mode>include</mode>
                     <id>ImageSeriesExport</id>
@@ -83,7 +81,7 @@
             </config>
         </service>
 
-        <service uid="mesherAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true" >
+        <service uid="mesherAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -96,7 +94,7 @@
             </config>
         </service>
 
-        <service uid="thresholdAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true" >
+        <service uid="thresholdAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
             <in key="series" uid="selection" />
             <config>
                 <parameters>
@@ -111,12 +109,12 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="selectorSrv" type="sight::module::ui::qt::series::selector" auto_connect="true" >
+        <service uid="selectorSrv" type="sight::module::ui::qt::series::selector" auto_connect="true">
             <inout key="seriesSet" uid="${seriesSet}" />
             <inout key="selection" uid="selection" />
         </service>
 
-        <service uid="seriesViewerSrv" type="sight::module::ui::qt::series::viewer" auto_connect="true" >
+        <service uid="seriesViewerSrv" type="sight::module::ui::qt::series::viewer" auto_connect="true">
             <in key="series" uid="selection" />
             <parentView wid="previewView" />
             <configs>
@@ -127,7 +125,7 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <connect channel="${DYNAMICVIEW_SENDER_CHANNEL}" >
+        <connect channel="${DYNAMICVIEW_SENDER_CHANNEL}">
             <signal>thresholdAct/activity_launched</signal>
             <signal>mesherAct/activity_launched</signal>
         </connect>
@@ -136,6 +134,5 @@
 
         <start uid="mainView" />
         <start uid="seriesViewerSrv" />
-
     </config>
 </extension>

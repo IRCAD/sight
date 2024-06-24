@@ -147,6 +147,5 @@
         <start uid="pacsConfigurationInitializer" />
 
         <update uid="pacsConfigurationInitializer" />
-
     </config>
 </extension>

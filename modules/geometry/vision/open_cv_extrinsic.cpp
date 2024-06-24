@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ static const core::com::signals::key_t ERROR_COMPUTED_SIG        = "error_comput
 
 open_cv_extrinsic::open_cv_extrinsic() noexcept
 {
-    new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
+    new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
     new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &open_cv_extrinsic::update_chessboard_size, this);
 }
 
@@ -231,7 +231,7 @@ void open_cv_extrinsic::updating()
             )
         );
 
-        this->signal<error_computed_signal_t>(ERROR_COMPUTED_SIG)->async_emit(err);
+        this->signal<error_computed_t>(ERROR_COMPUTED_SIG)->async_emit(err);
 
         data::matrix4::sptr matrix = std::make_shared<data::matrix4>();
         cv::Mat cv4x4              = cv::Mat::eye(4, 4, CV_64F);

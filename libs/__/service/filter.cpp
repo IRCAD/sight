@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,19 +29,10 @@ namespace sight::service
 
 //-----------------------------------------------------------------------------
 
-const core::com::signals::key_t filter::COMPUTED_SIG = "computed";
-
-//-----------------------------------------------------------------------------
-
-filter::filter() :
-    m_sig_computed(new_signal<computed_signal_t>(COMPUTED_SIG))
+filter::filter(core::com::signals& _signals)
 {
+    _signals(signals::COMPUTED, std::make_shared<signals::computed_t>());
 }
-
-//-----------------------------------------------------------------------------
-
-filter::~filter()
-= default;
 
 //-----------------------------------------------------------------------------
 

@@ -16,11 +16,11 @@
         <param name="SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" />
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
-        <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
-        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL"/>
-        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL"/>
+        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL" />
+        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
+        <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
         <param name="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" />
         <param name="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" />
@@ -29,9 +29,10 @@
         <param name="image" />
         <param name="volumeTF" />
         <param name="extrudedModelSeries" />
+        <param name="maximized" default="false" />
+        <param name="restored" default="true" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${modelSeries}" type="sight::data::model_series" src="deferred" />
@@ -70,7 +71,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="sceneSrv" start="true"/>
+                <view sid="sceneSrv" start="true" />
                 <view wid="sliderView" />
             </registry>
         </service>
@@ -90,15 +91,15 @@
         <service uid="topToolbarView" type="sight::module::ui::toolbar">
             <gui>
                 <layout>
-                    <menuItem name="Fullscreen" icon="sight::module::ui::icons/maximize.svg" />
-                    <menuItem name="Windowed" icon="sight::module::ui::icons/restore.svg" shortcut="1" />
+                    <menuItem name="Maximize" icon="sight::module::ui::icons/maximize.svg" />
+                    <menuItem name="Restore" icon="sight::module::ui::icons/restore.svg" shortcut="1" />
                     <menuItem name="Snapshot" icon="sight::module::ui::icons/frame.svg" shortcut="CTRL+S" />
                     <spacer />
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="fullscreenAct" start="true" />
-                <menuItem sid="windowedAct" start="true" />
+                <menuItem sid="maximize_act" start="true" />
+                <menuItem sid="restore_act" start="true" />
                 <menuItem sid="snapshotAct" start="true" />
             </registry>
         </service>
@@ -107,9 +108,9 @@
 
         <service uid="sceneSrv" type="sight::viz::scene3d::render">
             <scene>
-                <background  material="bkg_gradient" />
+                <background material="bkg_gradient" />
 
-                <layer id="gridLayer" order="1" >
+                <layer id="gridLayer" order="1">
                     <adaptor uid="gridCameraAdp" />
                     <adaptor uid="gridAdp" />
                 </layer>
@@ -134,7 +135,6 @@
                     <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom" />
                     <adaptor uid="orientationMarkerAdp" />
                 </layer>
-
             </scene>
         </service>
 
@@ -188,7 +188,7 @@
         </service>
 
         <service uid="pickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::text">
-            <text></text>
+            <text />
             <config x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
         </service>
 
@@ -202,7 +202,7 @@
         </service>
 
         <service uid="eventAdp" type="sight::module::viz::scene3d::adaptor::event">
-            <event type="buttonDoublePress" buttons="left" modifiers="none"/>
+            <event type="buttonDoublePress" buttons="left" modifiers="none" />
         </service>
 
         <service uid="orientationMarkerAdp" type="sight::module::viz::scene3d::adaptor::orientation_marker" auto_connect="true">
@@ -210,7 +210,7 @@
         </service>
 
         <service uid="gridAdp" type="sight::module::viz::scene3d::adaptor::grid">
-            <config size="5000" step="50" color="#505050" elevation="400" dashLength="10"/>
+            <config size="5000" step="50" color="#505050" elevation="400" dashLength="10" />
         </service>
 
         <!-- Reset the clipping box matreix -->
@@ -219,7 +219,7 @@
             <inout key="target" uid="clippingMatrix" />
         </service>
 
-        <service uid="imageExtruderSrv" type="sight::module::filter::image::image_extruder" worker="EXTRUSION_THREAD">
+        <service uid="imageExtruderSrv" type="sight::module::filter::image::image_extruder" worker="EXTRUSION">
             <in key="meshes" uid="${extrudedModelSeries}" />
             <in key="image" uid="${image}" />
             <inout key="mask" uid="mask" />
@@ -236,10 +236,10 @@
         <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
             <in key="data" uid="snapshot" />
             <dialog policy="always" />
-            <backends enable="all" mode="best"/>
+            <backends enable="all" mode="best" />
         </service>
 
-        <service uid="sliderCfg" type="sight::app::config_controller" >
+        <service uid="sliderCfg" type="sight::app::config_controller">
             <appConfig id="sight::config::viz::image::imageSlider" />
             <parameter replace="WID_PARENT" by="sliderView" />
             <parameter replace="sliceIndex" by="axial" />
@@ -255,13 +255,13 @@
         <!-- ************************************* Actions ************************************ -->
 
         <!-- Set the view in full screen -->
-        <service uid="fullscreenAct" type="sight::module::ui::viz::screen_selector">
-            <config mode="select" />
+        <service uid="maximize_act" type="sight::module::ui::action">
+            <state visible="${restored}" />
         </service>
 
         <!-- Set the view in windowed  -->
-        <service uid="windowedAct" type="sight::module::ui::action">
-            <state visible="false" />
+        <service uid="restore_act" type="sight::module::ui::action">
+            <state visible="${maximized}" />
         </service>
 
         <!-- Save the snapshot image -->
@@ -359,26 +359,17 @@
         </connect>
 
         <!-- Manage full screen -->
+
         <connect>
-            <signal>fullscreenAct/screen_selected</signal>
-            <slot>sceneSrv/enable_fullscreen</slot>
+            <signal>maximize_act/clicked</signal>
+            <slot>restore_act/show</slot>
+            <slot>maximize_act/hide</slot>
         </connect>
 
         <connect>
-            <signal>sceneSrv/fullscreen_set</signal>
-            <slot>windowedAct/show</slot>
-            <slot>fullscreenAct/hide</slot>
-        </connect>
-
-        <connect>
-            <signal>windowedAct/clicked</signal>
-            <slot>sceneSrv/disable_fullscreen</slot>
-        </connect>
-
-        <connect>
-            <signal>sceneSrv/fullscreen_unset</signal>
-            <slot>windowedAct/hide</slot>
-            <slot>fullscreenAct/show</slot>
+            <signal>restore_act/clicked</signal>
+            <slot>restore_act/hide</slot>
+            <slot>maximize_act/show</slot>
         </connect>
 
         <!-- Display the picked voxel information -->
@@ -398,7 +389,6 @@
             <slot>3DNegatoAdp/update_slices_from_world</slot>
         </connect>
 
-
         <connect>
             <signal>snapshotAct/clicked</signal>
             <slot>imageWriterSrv/update</slot>
@@ -408,6 +398,14 @@
 
         <connect channel="${TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL}">
             <signal>eventAdp/triggered</signal>
+            <signal>maximize_act/clicked</signal>
+            <signal>restore_act/clicked</signal>
+        </connect>
+
+        <connect>
+            <signal>eventAdp/triggered</signal>
+            <slot>maximize_act/toggle_visibility</slot>
+            <slot>restore_act/toggle_visibility</slot>
         </connect>
 
         <!-- distance channels -->
@@ -448,6 +446,5 @@
 
         <update uid="imageExtruderSrv" />
         <update uid="shapeExtruderAdp" />
-
     </config>
 </extension>

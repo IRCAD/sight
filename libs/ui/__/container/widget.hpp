@@ -30,7 +30,7 @@ namespace sight::ui::container
 {
 
 /**
- * @brief   Defines the generic container for IHM.
+ * @brief   Defines the generic container for UI.
  *
  */
 class SIGHT_UI_CLASS_API widget : public ui::object

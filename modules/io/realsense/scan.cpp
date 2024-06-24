@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,7 +88,7 @@ scan::scan() noexcept
     new_slot(CONFIGURE_RECORDING_PATH_SLOT, &scan::configureRecordingPath, this);
     new_slot(RECORD, &scan::record, this);
 
-    new_signal<distance_computed_signal_t>(DISTANCE_COMPUTED_SIG);
+    new_signal<distance_computed_t>(DISTANCE_COMPUTED_SIG);
     new_signal<device_played_signal_t>(DEVICE_PLAYED_SIG);
     new_signal<file_played_signal_t>(FILE_PLAYED_SIG);
 }
@@ -1097,7 +1097,7 @@ void scan::grab()
 
             // Compute the z value of the center pixel, to give the distance "object-camera" in mm.
             const auto distanceToCenter = depth.get_distance(depth.get_width() / 2, depth.get_height() / 2);
-            this->signal<distance_computed_signal_t>(DISTANCE_COMPUTED_SIG)->async_emit(
+            this->signal<distance_computed_t>(DISTANCE_COMPUTED_SIG)->async_emit(
                 static_cast<double>(distanceToCenter * s_METERS_TO_MMS)
             );
         }

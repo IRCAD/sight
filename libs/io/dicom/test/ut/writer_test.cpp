@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -617,7 +617,7 @@ void writer_test::transfer_syntax_test()
             io::dicom::writer::file::transfer_syntax::rle,
             io::dicom::writer::file::transfer_syntax::jpeg_lossless,
             io::dicom::writer::file::transfer_syntax::jpeg_ls_lossless,
-            io::dicom::writer::file::transfer_syntax::jpe_g2000_lossless
+            io::dicom::writer::file::transfer_syntax::jpeg_2000_lossless
         })
     {
         // Then others (which should be smaller)

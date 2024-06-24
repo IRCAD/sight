@@ -67,7 +67,6 @@ mark_as_advanced(SIGHT_VERBOSE_PCH)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/pch.cmake)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modules)
 
 # We find VTK to know its version so we can enable PCL or not
@@ -166,7 +165,6 @@ endif()
 ########################################################################################################################
 # External libraries management
 ########################################################################################################################
-
 set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
 # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
@@ -208,7 +206,6 @@ find_package(CppUnit QUIET REQUIRED)
 ########################################################################################################################
 # Default paths settings for libraries, modules and resources
 ########################################################################################################################
-
 set(FW_INSTALL_PATH_SUFFIX "${PROJECT_NAME}")
 set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
 if(WIN32)
@@ -228,6 +225,8 @@ else()
     set(SIGHT_VCPKG_ROOT_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
     set(EXCLUDE_PATTERN ".*/debug/.*")
 endif()
+
+sight_configure_pch()
 
 add_subdirectory(libs)
 add_subdirectory(modules)
@@ -289,6 +288,7 @@ install(
     FILES "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
           "${CMAKE_SOURCE_DIR}/cmake/build/flags.cmake"
           "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp"
+          "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp"
           "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
           "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"
           "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config_command.cmake"

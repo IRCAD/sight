@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,16 +37,12 @@ static const core::com::slots::key_t SET_THRESHOLD_SLOT  = "set_threshold";
 
 // ------------------------------------------------------------------------------
 
-depth_image_masking::depth_image_masking() noexcept
+depth_image_masking::depth_image_masking() noexcept :
+    filter(m_signals)
 {
     new_slot(SET_BACKGROUND_SLOT, &depth_image_masking::set_background, this);
     new_slot(SET_THRESHOLD_SLOT, &depth_image_masking::set_threshold, this);
 }
-
-// ------------------------------------------------------------------------------
-
-depth_image_masking::~depth_image_masking() noexcept =
-    default;
 
 // ------------------------------------------------------------------------------
 
@@ -113,7 +109,7 @@ void depth_image_masking::updating()
         );
         sig->async_emit();
 
-        m_sig_computed->async_emit();
+        this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
     }
 }
 

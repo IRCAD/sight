@@ -1,0 +1,194 @@
+<!--
+This example shows the possibilities of progress bar in SIGHT.:
+- classic progress.
+- pulse progress.
+- pulse progress with svg.
+-->
+<plugin id="ex_progress_bar" library="true">
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::ui::qt" />
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::base</type>
+        <service>ex_progress_bar::long_job</service>
+        <desc>Create a generic long job</desc>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>ex_progress_bar_app_cfg</id>
+        <config>
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="frame" type="sight::module::ui::frame">
+                <gui>
+                    <toolbar />
+                    <frame>
+                        <name>ex_progress_bar</name>
+                        <icon>ex_progress_bar/app.ico</icon>
+                        <minSize width="800" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <toolbar sid="toolbar" start="true" />
+                    <view sid="main_view" start="true" />
+                </registry>
+            </service>
+
+            <service uid="toolbar" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout style="ToolButtonTextUnderIcon">
+                        <menuItem name="Start job 1" icon="sight::module::ui::icons/gear.svg" />
+                        <menuItem name="Start job 2" icon="sight::module::ui::icons/gear.svg" />
+                        <menuItem name="Start job 3" icon="sight::module::ui::icons/gear.svg" />
+                        <editor />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="job_1_act" start="true" />
+                    <menuItem sid="job_2_act" start="true" />
+                    <menuItem sid="job_3_act" start="true" />
+                    <editor sid="progress_bar_5" start="true" />
+                </registry>
+            </service>
+
+            <service uid="main_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="progress_bar_1" start="true" />
+                    <view sid="progress_bar_2" start="true" />
+                    <view sid="progress_bar_3" start="true" />
+                    <view sid="progress_bar_4" start="true" />
+                </registry>
+            </service>
+
+            <service uid="job_1_act" type="sight::module::ui::action">
+                <state enabled="false" />
+            </service>
+
+            <service uid="job_2_act" type="sight::module::ui::action">
+                <state enabled="false" />
+            </service>
+
+            <service uid="job_3_act" type="sight::module::ui::action">
+                <state enabled="false" />
+            </service>
+
+            <service uid="job_1_srv" type="ex_progress_bar::long_job" worker="job_1_worker" />
+
+            <service uid="job_2_srv" type="ex_progress_bar::long_job" worker="job_2_worker" />
+
+            <service uid="job_3_srv" type="ex_progress_bar::long_job" worker="job_3_worker" />
+
+            <service uid="progress_bar_1" type="sight::module::ui::qt::progress_bar" />
+
+            <service uid="progress_bar_2" type="sight::module::ui::qt::progress_bar">
+                <config pulse="true" show_cancel="false" />
+            </service>
+
+            <service uid="progress_bar_3" type="sight::module::ui::qt::progress_bar">
+                <config svg="ex_progress_bar/wait_1.svg" />
+            </service>
+
+            <service uid="progress_bar_4" type="sight::module::ui::qt::progress_bar">
+                <config svg="ex_progress_bar/wait_2.svg" show_cancel="false" />
+            </service>
+
+            <service uid="progress_bar_5" type="sight::module::ui::qt::progress_bar">
+                <config svg="ex_progress_bar/wait_3.svg" svg_size="48" show_title="false" show_cancel="false" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <!-- Connect actions to job services -->
+
+            <connect>
+                <signal>job_1_srv/started</signal>
+                <slot>job_1_act/enable</slot>
+            </connect>
+
+            <connect>
+                <signal>job_1_act/clicked</signal>
+                <slot>job_1_act/disable</slot>
+                <slot>job_1_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>job_1_srv/updated</signal>
+                <slot>job_1_act/enable</slot>
+            </connect>
+
+            <connect>
+                <signal>job_2_srv/started</signal>
+                <slot>job_2_act/enable</slot>
+            </connect>
+
+            <connect>
+                <signal>job_2_act/clicked</signal>
+                <slot>job_2_act/disable</slot>
+                <slot>job_2_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>job_2_srv/updated</signal>
+                <slot>job_2_act/enable</slot>
+            </connect>
+
+            <connect>
+                <signal>job_3_srv/started</signal>
+                <slot>job_3_act/enable</slot>
+            </connect>
+
+            <connect>
+                <signal>job_3_act/clicked</signal>
+                <slot>job_3_act/disable</slot>
+                <slot>job_3_act/hide</slot>
+                <slot>job_3_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>job_3_srv/updated</signal>
+                <slot>job_3_act/enable</slot>
+                <slot>job_3_act/show</slot>
+            </connect>
+
+            <!-- Connect job services to progress_bar -->
+
+            <connect>
+                <signal>job_1_srv/job_created</signal>
+                <slot>progress_bar_1/show_job</slot>
+            </connect>
+
+            <connect>
+                <signal>job_2_srv/job_created</signal>
+                <slot>progress_bar_2/show_job</slot>
+            </connect>
+
+            <connect>
+                <signal>job_3_srv/job_created</signal>
+                <slot>progress_bar_3/show_job</slot>
+                <slot>progress_bar_4/show_job</slot>
+                <slot>progress_bar_5/show_job</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <start uid="frame" />
+
+            <start uid="job_1_srv" />
+            <start uid="job_2_srv" />
+            <start uid="job_3_srv" />
+
+            <!-- ******************************* Update services ***************************************** -->
+        </config>
+    </extension>
+</plugin>

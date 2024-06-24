@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,6 +33,7 @@ CPPUNIT_TEST_SUITE(worker_test);
 CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST(timer_test);
 CPPUNIT_TEST(registry_test);
+CPPUNIT_TEST(thread_name_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,6 +45,7 @@ public:
     static void basic_test();
     static void timer_test();
     static void registry_test();
+    static void thread_name_test();
 };
 
 } // namespace sight::core::thread::ut

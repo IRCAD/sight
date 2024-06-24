@@ -1,0 +1,5 @@
+sight_add_target(module_filter_image_ut TYPE TEST)
+
+add_dependencies(module_filter_image_ut data module_service module_data module_filter_image)
+
+target_link_libraries(module_filter_image_ut PUBLIC service utest_data)

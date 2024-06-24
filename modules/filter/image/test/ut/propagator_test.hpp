@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
- * Copyright (C) 2014-2018 IHU Strasbourg
+ * Copyright (C) 2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,21 +19,29 @@
  *
  ***********************************************************************/
 
-#include "icalibration.hpp"
+#pragma once
 
-namespace sight::geometry::vision
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace sight::module::filter::mesh::ut
 {
 
-// ----------------------------------------------------------------------------
+/**
+ * @brief Test apply the threshold value on the image.
+ */
+class propagator_test : public CPPUNIT_NS::TestFixture
+{
+CPPUNIT_TEST_SUITE(propagator_test);
+CPPUNIT_TEST(propagate);
+CPPUNIT_TEST_SUITE_END();
 
-i_calibration::i_calibration() noexcept =
-    default;
+public:
 
-// ----------------------------------------------------------------------------
+    // interface
+    void setUp();
+    void tearDown();
 
-i_calibration::~i_calibration() noexcept =
-    default;
+    static void propagate();
+};
 
-// ----------------------------------------------------------------------------
-
-} // namespace sight::geometry::vision
+} // namespace sight::module::filter::mesh::ut

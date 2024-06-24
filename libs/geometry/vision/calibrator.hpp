@@ -1,6 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -19,6 +20,23 @@
  *
  ***********************************************************************/
 
-// Empty source file
-// This is only to get a source file compiled, otherwise CMake would consider this target as an utility target
-// And the pch would not be generated properly
+#pragma once
+
+#include <sight/geometry/vision/config.hpp>
+
+#include <service/base.hpp>
+
+namespace sight::geometry::vision
+{
+
+/**
+ * @brief   Interface for calibration services.
+ */
+class SIGHT_GEOMETRY_VISION_CLASS_API calibrator : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(calibrator, service::base);
+};
+
+} // namespace sight::geometry::vision

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -292,7 +292,7 @@ void transfer_function::shallow_copy(const object::csptr& _source)
     m_window = other->m_window;
 
     m_pieces.clear();
-    std::copy(other->m_pieces.cbegin(), other->m_pieces.cend(), std::back_inserter(m_pieces));
+    std::ranges::copy(other->m_pieces, std::back_inserter(m_pieces));
 
     base_class_t::shallow_copy(other);
 }
@@ -319,9 +319,8 @@ void transfer_function::deep_copy(const object::csptr& _source, const std::uniqu
 
     m_pieces.clear();
 
-    std::transform(
-        other->m_pieces.cbegin(),
-        other->m_pieces.cend(),
+    std::ranges::transform(
+        other->m_pieces,
         std::back_inserter(this->m_pieces),
         [&](const auto& _value)
         {

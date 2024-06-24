@@ -75,7 +75,6 @@
     </parameters>
     <desc>Configuration to launch activities sequentially</desc>
     <config>
-
         <!-- ************************************ Begin Objects declaration **************************************** -->
 
         <object uid="${activitySet}" type="sight::data::activity_set" src="ref" />
@@ -195,7 +194,6 @@
             <slot>SDBWriter/update</slot>
         </connect>
 
-
         <!-- connect to launch the activity when it is created/updated. -->
         <connect channel="launchActivityChannel">
             <signal>activitySequencer/activity_created</signal>
@@ -252,7 +250,6 @@
             <slot>activitySequencer/go_to</slot>
         </connect>
 
-
         <!-- *************************************** Begin start and update **************************************** -->
 
         <start uid="mainView" />
@@ -261,6 +258,5 @@
 
         <!-- Load the sub-activities contained in the SeriesSet, or launch the first activity from the sequencer -->
         <update uid="activitySequencer" />
-
     </config>
 </extension>

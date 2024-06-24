@@ -1,342 +1,349 @@
 <plugin id="sight::module::ui::qt" library="true" autostart="true" priority="-100">
-     <!-- we give a high priority because the Qt worker needs to be created first -->
-     <requirement id="sight::module::data" />
-     <requirement id="sight::module::ui" />
+    <!-- we give a high priority because the Qt worker needs to be created first -->
+    <requirement id="sight::module::data" />
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::io::session" />
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::container</type>
-          <service>sight::module::ui::qt::icon_speed_dial</service>
-          <desc>This widget shows a speed dial with predefined icons.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::container</type>
+        <service>sight::module::ui::qt::icon_speed_dial</service>
+        <desc>This widget shows a speed dial with predefined icons.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::action</type>
-          <service>sight::module::ui::qt::launch_browser</service>
-          <object>sight::data::object</object>
-          <desc>This action launch a browser on the url given in configuration.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::action</type>
+        <service>sight::module::ui::qt::launch_browser</service>
+        <object>sight::data::object</object>
+        <desc>This action launch a browser on the url given in configuration.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::list_view</service>
-          <desc>This editor allows to draw a list.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::list_view</service>
+        <desc>This editor allows to draw a list.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::service::controller</type>
-          <service>sight::module::ui::qt::notifier</service>
-          <desc>notifier is a general service used to display notification in a centralized way.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::ui::qt::notifier</service>
+        <desc>notifier is a general service used to display notification in a centralized way.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::parameters</service>
-          <desc>Generic editor to interact with parameters.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::parameters</service>
+        <desc>Generic editor to interact with parameters.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::action</type>
-          <service>sight::module::ui::qt::preferences_configuration</service>
-          <desc>This action shows a dialog to configure preferences of an application.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::action</type>
+        <service>sight::module::ui::qt::preferences_configuration</service>
+        <desc>This action shows a dialog to configure preferences of an application.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::selection_menu_button</service>
-          <desc>This service show a menu button. The user can select one item in the menu.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::selection_menu_button</service>
+        <desc>This service show a menu button. The user can select one item in the menu.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::action</type>
-          <service>sight::module::ui::qt::show_about</service>
-          <object>sight::data::object</object>
-          <desc>This action show the about frame.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::progress_bar</service>
+        <desc>This service shows a progress bar.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::action</type>
-          <service>sight::module::ui::qt::show_help</service>
-          <object>sight::data::object</object>
-          <desc>This action show the help contents.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::action</type>
+        <service>sight::module::ui::qt::show_about</service>
+        <object>sight::data::object</object>
+        <desc>This action show the about frame.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::status</service>
-          <desc>status service shows a colored square (red, orange, green) representing a status.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::action</type>
+        <service>sight::module::ui::qt::show_help</service>
+        <object>sight::data::object</object>
+        <desc>This action show the help contents.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::service::controller</type>
-          <service>sight::module::ui::qt::style_selector</service>
-          <desc>Selector of theme/style.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::status</service>
+        <desc>status service shows a colored square (red, orange, green) representing a status.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::text_status</service>
-          <desc>This service is used to displays and update values (int, double or string) in a QLabel.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::ui::qt::style_selector</service>
+        <desc>Selector of theme/style.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::text</service>
-          <desc>This service is used to display a label.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::text_status</service>
+        <desc>This service is used to displays and update values (int, double or string) in a QLabel.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::view::activity</type>
-          <service>sight::module::ui::qt::activity::dynamic_view</service>
-          <desc>This editor manages tabs containing activities.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::text</service>
+        <desc>This service is used to display a label.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::action</type>
-          <service>sight::module::ui::qt::activity::launcher</service>
-          <object key="series">sight::data::vector</object>
-          <desc>This action launches an activity according to the selected data</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::view::activity</type>
+        <service>sight::module::ui::qt::activity::dynamic_view</service>
+        <desc>This editor manages tabs containing activities.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::activity::selector</service>
-          <desc>This editor launches an activity according to the given configuration</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::action</type>
+        <service>sight::module::ui::qt::activity::launcher</service>
+        <object key="series">sight::data::vector</object>
+        <desc>This action launches an activity according to the selected data</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::activity::sequencer</service>
-          <object key="requirementOverrides">sight::data::composite</object>
-          <object key="activitySet">sight::data::activity_set</object>
-          <desc>This editor displays an activity stepper that allows to select the activity to launch, and display the</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::activity::selector</service>
+        <desc>This editor launches an activity according to the given configuration</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::activity_view</type>
-          <service>sight::module::ui::qt::activity::view</service>
-          <desc>This editor displays activities in a single view (when a new activity is launched, it replaces the previous</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::activity::sequencer</service>
+        <object key="requirementOverrides">sight::data::composite</object>
+        <object key="activitySet">sight::data::activity_set</object>
+        <desc>This editor displays an activity stepper that allows to select the activity to launch, and display the</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::activity::wizard</service>
-          <object>sight::data::activity_set</object>
-          <desc>This editor allows to select the data required in order to create the Activity.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::activity_view</type>
+        <service>sight::module::ui::qt::activity::view</service>
+        <desc>This editor displays activities in a single view (when a new activity is launched, it replaces the previous</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::calibration::calibration_info_editor</service>
-          <desc>calibration_info_editor service is used to handle the calibration points acquisition.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::activity::wizard</service>
+        <object>sight::data::activity_set</object>
+        <desc>This editor allows to select the data required in order to create the Activity.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::calibration::camera_config_launcher</service>
-          <object>sight::data::composite</object>
-          <desc>This editor adds cameras to a camera series and launches configurations to calibrate them.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::calibration::calibration_info_editor</service>
+        <desc>calibration_info_editor service is used to handle the calibration points acquisition.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::calibration::camera_information_editor</service>
-          <object>sight::data::camera</object>
-          <desc>camera_information_editor service is used to display the intrinsic calibration of a camera.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::calibration::camera_config_launcher</service>
+        <object>sight::data::composite</object>
+        <desc>This editor adds cameras to a camera series and launches configurations to calibrate them.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::calibration::camera_set_editor</service>
-          <object>sight::data::camera_set</object>
-          <desc>camera_set_editor service is used to display the extrinsic calibration of a camera series.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::calibration::camera_information_editor</service>
+        <object>sight::data::camera</object>
+        <desc>camera_information_editor service is used to display the intrinsic calibration of a camera.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::service::controller</type>
-          <service>sight::module::ui::qt::calibration::display_calibration_info</service>
-          <object>sight::data::object</object>
-          <desc>Launch an config to display calibration images.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::calibration::camera_set_editor</service>
+        <object>sight::data::camera_set</object>
+        <desc>camera_set_editor service is used to display the extrinsic calibration of a camera series.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::calibration::images_selector</service>
-          <object>sight::data::vector</object>
-          <desc>This editor allows to add images into a data::vector from an data::frame_tl.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::ui::qt::calibration::display_calibration_info</service>
+        <object>sight::data::object</object>
+        <desc>Launch an config to display calibration images.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::service::base</type>
-          <service>sight::module::ui::qt::calibration::intrinsic_edition</service>
-          <object key="camera">sight::data::camera</object>
-          <desc>intrinsic_edition service is used to set the intrinsic parameter infos.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::calibration::images_selector</service>
+        <object>sight::data::vector</object>
+        <desc>This editor allows to add images into a data::vector from an data::frame_tl.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::calibration::optical_center_editor</service>
-          <object>sight::data::camera</object>
-          <desc>This editor shows sliders to configure an intrinsic camera calibration.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::base</type>
+        <service>sight::module::ui::qt::calibration::intrinsic_edition</service>
+        <object key="camera">sight::data::camera</object>
+        <desc>intrinsic_edition service is used to set the intrinsic parameter infos.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::com::signal_button</service>
-          <desc>This editor shows a button and send a signal when it is clicked.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::calibration::optical_center_editor</service>
+        <object>sight::data::camera</object>
+        <desc>This editor shows sliders to configure an intrinsic camera calibration.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::service::base</type>
-          <service>sight::module::ui::qt::com::signal_shortcut</service>
-          <desc>This service sends a signal when the associated shortcut is checked.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::com::signal_button</service>
+        <desc>This editor shows a button and send a signal when it is clicked.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::image::image_info</service>
-          <object>sight::data::image</object>
-          <desc>image_info service allows to display image pixel information when it receives the mouse cursor coordinates.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::base</type>
+        <service>sight::module::ui::qt::com::signal_shortcut</service>
+        <desc>This service sends a signal when the associated shortcut is checked.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::image::image</service>
-          <desc>This editor displays an image.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::image::image_info</service>
+        <object>sight::data::image</object>
+        <desc>image_info service allows to display image pixel information when it receives the mouse cursor coordinates.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::image::transfer_function</service>
-          <object key="tf">sight::data::transfer_function</object>
-          <desc>Editor to select a transfer function preset.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::image::image</service>
+        <desc>This editor displays an image.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::image::slice_index_position_editor</service>
-          <object>sight::data::image</object>
-          <desc>slice_index_position_editor service allows to change the slice index of an image.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::image::transfer_function</service>
+        <object key="tf">sight::data::transfer_function</object>
+        <desc>Editor to select a transfer function preset.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::image::window_level</service>
-          <object>sight::data::image</object>
-          <desc>window_level service allows to change the min/max value of windowing.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::image::slice_index_position_editor</service>
+        <object>sight::data::image</object>
+        <desc>slice_index_position_editor service allows to change the slice index of an image.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::image::transfer_function_opacity</service>
-          <object>sight::data::transfer_function</object>
-          <desc>window_level service allows to change the opacity value of transparency.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::image::window_level</service>
+        <object>sight::data::image</object>
+        <desc>window_level service allows to change the min/max value of windowing.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::metrics::distance</service>
-          <object>sight::data::image</object>
-          <desc>Distance service is represented by a button. It allows to show distances in a generic scene.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::image::transfer_function_opacity</service>
+        <object>sight::data::transfer_function</object>
+        <desc>window_level service allows to change the opacity value of transparency.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::metrics::landmarks</service>
-          <desc>This service defines a graphical editor to edit landmarks.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::metrics::distance</service>
+        <object>sight::data::image</object>
+        <desc>Distance service is represented by a button. It allows to show distances in a generic scene.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::model::model_series_list</service>
-          <object>sight::data::model_series</object>
-          <desc>Editor displaying the list of the organs in a ModelSeries.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::metrics::landmarks</service>
+        <desc>This service defines a graphical editor to edit landmarks.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::model::organ_transformation</service>
-          <desc>Display the organs list and allow an interactive selection to set the corresponding meshes in a composite</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::model::model_series_list</service>
+        <object>sight::data::model_series</object>
+        <desc>Editor displaying the list of the organs in a ModelSeries.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::reconstruction::representation_editor</service>
-          <object>sight::data::reconstruction</object>
-          <desc>Display a widget to change the reconstruction representation (surface, point, edge, ...).</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::model::organ_transformation</service>
+        <desc>Display the organs list and allow an interactive selection to set the corresponding meshes in a composite</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::reconstruction::organ_material_editor</service>
-          <object>sight::data::reconstruction</object>
-          <desc>Display a widget to change the reconstruction material (color and transparency).</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::reconstruction::representation_editor</service>
+        <object>sight::data::reconstruction</object>
+        <desc>Display a widget to change the reconstruction representation (surface, point, edge, ...).</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::series::selector</service>
-          <object>sight::data::series_set</object>
-          <desc>This editor shows information about the medical data. It allows to manipulate (select, erase, ...)</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::reconstruction::organ_material_editor</service>
+        <object>sight::data::reconstruction</object>
+        <desc>Display a widget to change the reconstruction material (color and transparency).</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::service::controller</type>
-          <service>sight::module::ui::qt::series::select_dialog</service>
-          <object>sight::data::series_set</object>
-          <object>sight::data::model_series</object>
-          <object>sight::data::image_series</object>
-          <desc>This editor shows information about the medical data. It allows to manipulate (select, erase, ...)</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::series::selector</service>
+        <object>sight::data::series_set</object>
+        <desc>This editor shows information about the medical data. It allows to manipulate (select, erase, ...)</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::service::controller</type>
-          <service>sight::module::ui::qt::series::viewer</service>
-          <object>sight::data::vector</object>
-          <desc>This Service allows to preview the selected series in the Vector. For the moment, it works only on a</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::ui::qt::series::select_dialog</service>
+        <object>sight::data::series_set</object>
+        <object>sight::data::model_series</object>
+        <object>sight::data::image_series</object>
+        <desc>This editor shows information about the medical data. It allows to manipulate (select, erase, ...)</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::video::camera</service>
-          <desc>This editor allows to select the device to use. It updates the data camera identifier.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::ui::qt::series::viewer</service>
+        <object>sight::data::vector</object>
+        <desc>This Service allows to preview the selected series in the Vector. For the moment, it works only on a</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::video::slider</service>
-          <desc>This editor allows to draw a slider. It is designed to be used with frame_grabber to browse a video.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::video::camera</service>
+        <desc>This editor allows to select the device to use. It updates the data camera identifier.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::viz::point_editor</service>
-          <object>sight::data::composite</object>
-          <desc>point_editor service allows to display point information.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::video::slider</service>
+        <desc>This editor allows to draw a slider. It is designed to be used with frame_grabber to browse a video.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::viz::matrix_viewer</service>
-          <desc>This class defines a viewer for a data::matrix4.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::viz::point_editor</service>
+        <object>sight::data::composite</object>
+        <desc>point_editor service allows to display point information.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::viz::transform_editor</service>
-          <object>sight::data::matrix4</object>
-          <desc>This editor regulates the position and rotation defined in a transformation matrix.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::viz::matrix_viewer</service>
+        <desc>This class defines a viewer for a data::matrix4.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::viz::snapshot_editor</service>
-          <desc>snapshot_editor service is represented by a button. It allows to snap shot a generic scene.</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::viz::transform_editor</service>
+        <object>sight::data::matrix4</object>
+        <desc>This editor regulates the position and rotation defined in a transformation matrix.</desc>
+    </extension>
 
-     <extension implements="sight::service::extension::factory">
-          <type>sight::ui::editor</type>
-          <service>sight::module::ui::qt::material_opacity_editor</service>
-          <object>sight::data::material</object>
-          <desc>Allows to edit a Mesh's opacity</desc>
-     </extension>
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::viz::snapshot_editor</service>
+        <desc>snapshot_editor service is represented by a button. It allows to snap shot a generic scene.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::ui::editor</type>
+        <service>sight::module::ui::qt::material_opacity_editor</service>
+        <object>sight::data::material</object>
+        <desc>Allows to edit a Mesh's opacity</desc>
+    </extension>
 </plugin>

@@ -1,9 +1,7 @@
-<plugin id="sight::config::viz::scene2d" >
-
+<plugin id="sight::config::viz::scene2d">
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene2d" />
 
     <xi:include href="configurations/transfer_function_widget.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/transfer_function_window.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
 </plugin>

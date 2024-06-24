@@ -30,7 +30,7 @@ namespace sight::ui::detail::registry
 {
 
 /**
- * @brief   Defines the action registry for IHM.
+ * @brief   Defines the action registry for UI.
  */
 class action : public ui::object
 {

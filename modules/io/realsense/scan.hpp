@@ -181,7 +181,7 @@ public:
     SIGHT_DECLARE_SERVICE(scan, sight::io::service::rgbd_grabber);
 
     /// Signal send when Distance is computed.
-    typedef core::com::signal<void (double)> distance_computed_signal_t;
+    typedef core::com::signal<void (double)> distance_computed_t;
 
     /// Signal send when stream from a realsense device, can be useful to enable/disable some gui actions.
     typedef core::com::signal<void (void)> device_played_signal_t;

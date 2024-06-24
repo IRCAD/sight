@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -216,7 +216,7 @@ base::sptr factory::create(const std::string& _srv_impl) const
 //------------------------------------------------------------------------------
 
 void factory::add_service_factory(
-    factoryType _factory,
+    factory_t _factory,
     const std::string& _srv_impl,
     const std::string& _srv_type
 )

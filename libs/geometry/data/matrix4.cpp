@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -130,6 +130,55 @@ bool is_identity(const sight::data::matrix4& _trf, const double _epsilon)
     static const sight::data::matrix4 s_IDENTITY;
 
     for(std::size_t i = 0 ; i < s_IDENTITY.size() ; ++i)
+    {
+        if(std::abs(s_IDENTITY[i] - _trf[i]) > _epsilon)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+
+bool is_orthogonal(const sight::data::matrix4& _trf, double _epsilon)
+{
+    const auto mat = to_glm_mat(_trf);
+
+    const glm::dvec3 v1(mat[0]);
+    const glm::dvec3 v2(mat[1]);
+    const glm::dvec3 v3(mat[2]);
+
+    const glm::dmat3 rot(v1, v2, v3);
+
+    const auto rot_t = glm::transpose(rot);
+
+    const auto res = rot_t * rot;
+
+    const auto identity = glm::identity<glm::dmat3>();
+
+    for(glm::length_t i = 0 ; i < 3 ; ++i)
+    {
+        for(glm::length_t j = 0 ; j < 3 ; ++j)
+        {
+            if(std::abs(identity[i][j] - res[i][j]) > _epsilon)
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+// ----------------------------------------------------------------------------
+
+SIGHT_GEOMETRY_DATA_API bool is_homogeneous(const sight::data::matrix4& _trf, double _epsilon)
+{
+    static const sight::data::matrix4 s_IDENTITY;
+
+    for(std::size_t i = 12 ; i < s_IDENTITY.size() ; ++i)
     {
         if(std::abs(s_IDENTITY[i] - _trf[i]) > _epsilon)
         {

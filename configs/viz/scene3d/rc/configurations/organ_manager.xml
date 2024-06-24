@@ -6,7 +6,6 @@
         <param name="organManagerModelSeries" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${organManagerModelSeries}" type="sight::data::model_series" src="ref" />
@@ -14,15 +13,15 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="organView" type="sight::module::ui::view" >
+        <service uid="organView" type="sight::module::ui::view">
             <gui>
-                <layout type="sight::ui::layout::toolbox" >
+                <layout type="sight::ui::layout::toolbox">
                     <view caption="Organs" expanded="true" QSSClass="view_background" />
-                    <view caption="Material" expanded="true" QSSClass="view_background"/>
-                    <view caption="Representation" expanded="true" QSSClass="view_background"/>
-                    <view caption="Texture" expanded="true" QSSClass="view_background"/>
-                    <view caption="Material selector" expanded="true" QSSClass="view_background"/>
-                    <view caption="Shader parameters" expanded="true" QSSClass="view_background"/>
+                    <view caption="Material" expanded="true" QSSClass="view_background" />
+                    <view caption="Representation" expanded="true" QSSClass="view_background" />
+                    <view caption="Texture" expanded="true" QSSClass="view_background" />
+                    <view caption="Material selector" expanded="true" QSSClass="view_background" />
+                    <view caption="Shader parameters" expanded="true" QSSClass="view_background" />
                 </layout>
             </gui>
             <registry>
@@ -38,32 +37,32 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="selectReconstructionSrv" type="sight::module::data::select_object" >
+        <service uid="selectReconstructionSrv" type="sight::module::data::select_object">
             <out key="object" uid="reconstruction" />
         </service>
 
-        <service uid="listOrganEditorSrv" type="sight::module::ui::qt::model::model_series_list" auto_connect="true" >
+        <service uid="listOrganEditorSrv" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
             <inout key="modelSeries" uid="${organManagerModelSeries}" />
             <columns>
-                <organ_name/>
-                <volume/>
+                <organ_name />
+                <volume />
             </columns>
             <config enableDelete="${MODELSERIESLIST_ENABLE_DELETE_CONFIG}" />
         </service>
 
-        <service uid="organMaterialEditorSrv" type="sight::module::ui::qt::reconstruction::organ_material_editor" >
+        <service uid="organMaterialEditorSrv" type="sight::module::ui::qt::reconstruction::organ_material_editor">
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="representationEditorSrv" type="sight::module::ui::qt::reconstruction::representation_editor" >
+        <service uid="representationEditorSrv" type="sight::module::ui::qt::reconstruction::representation_editor">
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="textureSelectorSrv" type="sight::module::ui::viz::texture_selector" >
+        <service uid="textureSelectorSrv" type="sight::module::ui::viz::texture_selector">
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="materialSelectorSrv" type="sight::module::ui::viz::material_selector" >
+        <service uid="materialSelectorSrv" type="sight::module::ui::viz::material_selector">
             <inout key="reconstruction" uid="reconstruction" />
         </service>
-        <service uid="shaderParametersSrv" type="sight::module::ui::viz::shader_parameter_editor" >
+        <service uid="shaderParametersSrv" type="sight::module::ui::viz::shader_parameter_editor">
             <inout key="reconstruction" uid="reconstruction" />
         </service>
 
@@ -94,6 +93,5 @@
         <start uid="shaderParametersSrv" />
         <start uid="organMaterialEditorSrv" />
         <start uid="textureSelectorSrv" />
-
     </config>
 </extension>

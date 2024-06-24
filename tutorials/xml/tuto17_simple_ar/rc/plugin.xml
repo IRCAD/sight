@@ -14,7 +14,6 @@
       - aruco_tag.m4v
 -->
 <plugin id="tuto17_simple_ar">
-
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
@@ -24,7 +23,6 @@
     <extension implements="sight::app::extension::config">
         <id>Tuto17SimpleAR_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Series of camera calibration -->
@@ -202,12 +200,12 @@
                 <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1" compositors="Remap" >
+                    <layer id="video" order="1" compositors="Remap">
                         <adaptor uid="videoAdp" />
                         <adaptor uid="undistortAdp" />
                     </layer>
 
-                    <layer id="default" order="3" compositors="Remap" >
+                    <layer id="default" order="3" compositors="Remap">
                         <adaptor uid="axisAdp" />
                         <adaptor uid="cameraAdp" />
                         <adaptor uid="materialAdp" />
@@ -217,8 +215,8 @@
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" >
-                <in key="image" uid="sourceFrame" auto_connect="false"/>
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video">
+                <in key="image" uid="sourceFrame" auto_connect="false" />
             </service>
 
             <service uid="undistortAdp" type="sight::module::viz::scene3d::adaptor::compositor_parameter" auto_connect="true">
@@ -364,7 +362,7 @@
 
             <!-- Consumes a frame in the timeline, picks the latest one to be processed -->
             <!-- It is overkill in this sample, but mandatory when we use multiple grabbers to synchronize them. -->
-            <service uid="frameUpdaterSrv"  type="sight::module::sync::synchronizer">
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer">
                 <in group="frameTL">
                     <key uid="frameTL" />
                 </in>
@@ -379,7 +377,8 @@
                 <in key="camera" uid="camera" />
                 <inout key="frame" uid="sourceFrame" auto_connect="true" />
                 <inout group="markerMap">
-                    <key uid="markerMap" /> <!-- timeline of detected tag(s) -->
+                    <!-- timeline of detected tag(s) -->
+                    <key uid="markerMap" />
                 </inout>
                 <track>
                     <!-- list of tag's id -->
@@ -444,11 +443,11 @@
                 <label>Cube opacity</label>
             </service>
 
-            <service uid="damp_matrix_srv" type="sight::module::geometry::weighted_mean_matrix" >
+            <service uid="damp_matrix_srv" type="sight::module::geometry::weighted_mean_matrix">
                 <in key="raw" uid="cameraToMarker" />
                 <inout key="damped" uid="cameraToMarkerDamped" />
                 <config weight="0.6" />
-           </service>
+            </service>
 
             <!-- ******************************* Connections ***************************************** -->
 
@@ -637,7 +636,6 @@
             <update uid="arucoParametersSrv" />
             <update uid="reprojectionParametersSrv" />
             <update uid="damp_matrix_srv" />
-
         </config>
     </extension>
 </plugin>

@@ -35,7 +35,7 @@ namespace sight::ui::dialog
 {
 
 /**
- * @brief   Defines the generic file/folder selector dialog for IHM.
+ * @brief   Defines the generic file/folder selector dialog for UI.
  */
 class SIGHT_UI_CLASS_API location_base : public ui::object
 {

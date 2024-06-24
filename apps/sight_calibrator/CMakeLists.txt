@@ -38,8 +38,6 @@ module_param(
 # Main application's configuration to launch
 module_param(module_app PARAM_LIST config parameters PARAM_VALUES SightCalibrator_AppCfg SightCalibrator_AppCfgParam)
 
-sight_generate_profile(sight_calibrator)
-
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/uit)
 endif()

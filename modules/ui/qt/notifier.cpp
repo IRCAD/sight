@@ -406,7 +406,16 @@ void notifier::pop(service::notification _notification)
     popup->set_position(position);
     popup->set_duration(duration);
     popup->set_size(*target_stack.size);
-    popup->set_closed_callback([this, popup](auto&& ...){on_notification_closed(popup);});
+    std::weak_ptr<sight::core::base_object> weak_notifier = this->shared_from_this();
+    popup->set_closed_callback(
+        [weak_notifier, popup](auto&& ...)
+        {
+            if(auto notifier = std::dynamic_pointer_cast<sight::module::ui::qt::notifier>(weak_notifier.lock());
+               notifier)
+            {
+                notifier->on_notification_closed(popup);
+            }
+        });
     popup->set_channel(_notification.channel);
     popup->set_closable(closable);
     popup->show();

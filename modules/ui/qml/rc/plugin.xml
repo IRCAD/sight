@@ -1,17 +1,17 @@
 <plugin id="sight::module::ui::qml" library="true" autostart="true" priority="-100">
-     <!-- we give a lower priority because the Qt worker needs to be created first -->
+    <!-- we give a lower priority because the Qt worker needs to be created first -->
 
-    <requirement id="sight::module::ui"/>
+    <requirement id="sight::module::ui" />
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::qml::editor</type>
-         <service>sight::module::ui::qml::activity::sequencer</service>
-         <desc>This editor displays an activity stepper that allows to select the activity to launch, and display the</desc>
+        <type>sight::ui::qml::editor</type>
+        <service>sight::module::ui::qml::activity::sequencer</service>
+        <desc>This editor displays an activity stepper that allows to select the activity to launch, and display the</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::qml::editor</type>
-         <service>sight::module::ui::qml::activity::view</service>
-         <desc>This editor displays activities in a single view (when a new activity is launched, it replaces the previous</desc>
+        <type>sight::ui::qml::editor</type>
+        <service>sight::module::ui::qml::activity::view</service>
+        <desc>This editor displays activities in a single view (when a new activity is launched, it replaces the previous</desc>
     </extension>
 </plugin>

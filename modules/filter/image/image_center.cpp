@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,6 +30,13 @@
 
 namespace sight::module::filter::image
 {
+
+//------------------------------------------------------------------------------
+
+image_center::image_center() :
+    filter(m_signals)
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -90,12 +97,8 @@ void image_center::updating()
 
     // output the translation matrix
 
-    auto sig = matrix->signal<data::matrix4::modified_signal_t>
-                   (data::matrix4::MODIFIED_SIG);
-
-    sig->async_emit();
-
-    m_sig_computed->async_emit();
+    matrix->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG)->async_emit();
+    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
 }
 
 //------------------------------------------------------------------------------

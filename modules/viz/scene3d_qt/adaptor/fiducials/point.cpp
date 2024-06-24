@@ -1232,7 +1232,7 @@ void point::select_point(std::string _group_name, std::size_t _index)
                 selected_landmark->m_timer->set_function(
                     [this, selected_landmark](auto&& ...)
                     {
-                        hightlight(selected_landmark);
+                        highlight(selected_landmark);
                     });
                 selected_landmark->m_timer->set_duration(duration);
                 selected_landmark->m_timer->start();
@@ -1274,12 +1274,12 @@ void point::deselect_point(std::string _group_name, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void point::hightlight(std::shared_ptr<selected_landmark> _selected_landmark)
+void point::highlight(std::shared_ptr<selected_landmark> _selected_landmark)
 {
     // Make the context as current.
     this->render_service()->make_current();
 
-    // Hightlight the selected landmark.
+    // Highlight the selected landmark.
     this->update_landmark_visibility(_selected_landmark->m_landmark);
     if(_selected_landmark->m_landmark->m_object->isVisible())
     {
@@ -1973,33 +1973,6 @@ void point::set_visible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-std::optional<Ogre::Vector3> point::get_nearest_picked_position(int _x, int _y)
-{
-    Ogre::SceneManager* sm = this->get_scene_manager();
-    const auto result      = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *sm);
-
-    if(result.has_value())
-    {
-        const auto* const camera = sm->getCamera(sight::viz::scene3d::layer::DEFAULT_CAMERA_NAME);
-        const auto* const vp     = camera->getViewport();
-
-        // Screen to viewport space conversion.
-        const float vp_x = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
-        const float vp_y = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
-
-        const Ogre::Ray ray = camera->getCameraToViewportRay(vp_x, vp_y);
-
-        Ogre::Vector3 normal = -ray.getDirection();
-        normal.normalise();
-
-        return result->second + normal * 0.01F;
-    }
-
-    return std::nullopt;
-}
-
-//------------------------------------------------------------------------------
-
 void point::button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y)
 {
     m_contextual_menu->hide();
@@ -2034,11 +2007,12 @@ void point::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
         // Nothing is picked, we will create a new landmark if we are in EDIT mode.
         m_must_show_contextual_menu = false;
 
+        Ogre::SceneManager* const scene_mgr = this->layer()->get_scene_manager();
         // If nothing is picked, we will create a new landmark.
-        if(auto new_pos = this->get_nearest_picked_position(_x, _y); new_pos)
+        if(auto new_pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *scene_mgr, true); new_pos)
         {
             set_cursor(Qt::ClosedHandCursor);
-            create_and_pick_landmark({(*new_pos)[0], (*new_pos)[1], (*new_pos)[2]});
+            create_and_pick_landmark({new_pos->second.x, new_pos->second.y, new_pos->second.z});
         }
     }
 }
@@ -2065,11 +2039,12 @@ void point::mouse_move_event(mouse_button /*_button*/, modifier /*_mods*/, int _
         Ogre::Vector3 new_pos;
         if(cam->getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
         {
+            Ogre::SceneManager* const scene_mgr = layer->get_scene_manager();
             // If something is picked, we will snap the landmark to it
-            std::optional<Ogre::Vector3> picked_pos = this->get_nearest_picked_position(_x, _y);
+            auto picked_pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *scene_mgr, true);
             if(picked_pos.has_value())
             {
-                new_pos              = picked_pos.value();
+                new_pos              = picked_pos->second;
                 move_in_camera_plane = false;
             }
         }
@@ -2278,7 +2253,14 @@ void point::button_double_press_event(mouse_button /*_button*/, modifier /*_mods
         layer()->cancel_further_interaction();
 
         // Check if something is picked to update the position of the distance.
-        const auto picked_pos = get_nearest_picked_position(_x, _y);
+        Ogre::SceneManager* const scene_mgr = layer()->get_scene_manager();
+        const auto picked_pos               = sight::viz::scene3d::utils::pick_object(
+            _x,
+            _y,
+            m_query_mask,
+            *scene_mgr,
+            false
+        );
         if(picked_pos.has_value())
         {
             landmarks_or_image_series_const_lock lock           = const_lock_landmarks();

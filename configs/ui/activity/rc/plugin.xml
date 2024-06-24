@@ -1,5 +1,4 @@
 <plugin id="sight::config::ui::activity">
-
     <requirement id="sight::module::io::session" />
     <requirement id="sight::module::activity" />
     <requirement id="sight::module::io::activity" />
@@ -20,5 +19,4 @@
             </icons>
         </config>
     </extension>
-
 </plugin>

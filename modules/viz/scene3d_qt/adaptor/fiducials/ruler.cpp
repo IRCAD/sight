@@ -214,6 +214,10 @@ void ruler::updating()
     m_sphere_material->update_shading_mode(data::material::shading_t::phong, layer->num_lights(), false, false);
     m_line_material->update_shading_mode(data::material::shading_t::ambient, layer->num_lights(), false, false);
     m_dashed_line_material->update_shading_mode(data::material::shading_t::ambient, layer->num_lights(), false, false);
+
+    // Make sure that if image has changed we remove old distances before adding new ones.
+    this->remove_distances();
+    this->update_from_fiducials();
 }
 
 //------------------------------------------------------------------------------
@@ -584,33 +588,6 @@ void ruler::set_visible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-std::optional<Ogre::Vector3> ruler::get_nearest_picked_position(int _x, int _y)
-{
-    Ogre::SceneManager* sm = this->get_scene_manager();
-    const auto result      = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *sm);
-
-    if(result.has_value())
-    {
-        const auto* const camera = sm->getCamera(sight::viz::scene3d::layer::DEFAULT_CAMERA_NAME);
-        const auto* const vp     = camera->getViewport();
-
-        // Screen to viewport space conversion.
-        const float vp_x = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
-        const float vp_y = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
-
-        const Ogre::Ray ray = camera->getCameraToViewportRay(vp_x, vp_y);
-
-        Ogre::Vector3 normal = -ray.getDirection();
-        normal.normalise();
-
-        return result->second + normal * 0.01F;
-    }
-
-    return std::nullopt;
-}
-
-//------------------------------------------------------------------------------
-
 void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y)
 {
     if(m_bin_button != nullptr)
@@ -686,15 +663,22 @@ void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
                     if(object_type == "Entity" && object->isVisible())
                     {
                         //First point
-                        auto first_point      = std::make_shared<data::point>();
-                        auto clicked_position = this->get_nearest_picked_position(_x, _y);
+                        auto first_point       = std::make_shared<data::point>();
+                        const auto pick_result = sight::viz::scene3d::utils::pick_object(
+                            _x,
+                            _y,
+                            m_query_mask,
+                            *scene_mgr,
+                            true
+                        );
 
-                        if(clicked_position.has_value())
+                        if(pick_result.has_value())
                         {
-                            first_point->set_coord({clicked_position->x, clicked_position->y, clicked_position->z});
+                            const auto clicked_position = pick_result->second;
+                            first_point->set_coord({clicked_position.x, clicked_position.y, clicked_position.z});
                             //Second Point
                             auto second_point = std::make_shared<data::point>();
-                            second_point->set_coord({clicked_position->x, clicked_position->y, clicked_position->z});
+                            second_point->set_coord({clicked_position.x, clicked_position.y, clicked_position.z});
                             m_points.push_back(first_point);
                             m_points.push_back(second_point);
 
@@ -754,11 +738,12 @@ void ruler::mouse_move_event(
             Ogre::Vector3 new_pos;
             if(cam->getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
             {
+                Ogre::SceneManager* const scene_mgr = layer->get_scene_manager();
                 // If something is picked, we will snap the landmark to it
-                std::optional<Ogre::Vector3> picked_pos = this->get_nearest_picked_position(_x, _y);
+                auto picked_pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *scene_mgr, true);
                 if(picked_pos.has_value())
                 {
-                    new_pos              = picked_pos.value();
+                    new_pos              = picked_pos->second;
                     move_in_camera_plane = false;
                 }
             }

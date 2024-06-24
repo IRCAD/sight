@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,6 +94,8 @@ public:
 
     core::thread::thread_id_t get_thread_id() const override;
 
+    void set_thread_name(const std::string& _thread_name) const override;
+
     void process_tasks() override;
 
     void process_tasks(period_t _maxtime) override;
@@ -108,6 +110,7 @@ private:
     SPTR(core::thread::timer) create_timer() override;
 
     core::thread::thread_id_t m_thread_id;
+    core::thread::thread_native_id_t m_thread_native_id;
 };
 
 //-----------------------------------------------------------------------------
@@ -198,8 +201,10 @@ private:
 worker_qt::worker_qt() :
 
     m_app(nullptr),
-    m_thread_id(core::thread::get_current_thread_id())
+    m_thread_id(core::thread::get_current_thread_id()),
+    m_thread_native_id(core::thread::get_current_thread_native_id())
 {
+    worker_qt::set_thread_name("QT_WORKER");
 }
 
 //------------------------------------------------------------------------------
@@ -280,6 +285,17 @@ core::thread::worker::future_t worker_qt::get_future()
 core::thread::thread_id_t worker_qt::get_thread_id() const
 {
     return m_thread_id;
+}
+
+//------------------------------------------------------------------------------
+
+void worker_qt::set_thread_name([[maybe_unused]] const std::string& _thread_name) const
+{
+#ifdef _WIN32
+    core::thread::set_thread_name(_thread_name, m_thread_native_id);
+#else
+    // Do nothing on non Windows platform, because all threads inherit the program name/current thread name
+#endif
 }
 
 //------------------------------------------------------------------------------

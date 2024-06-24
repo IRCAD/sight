@@ -1,5 +1,4 @@
-<plugin id="sight::module::io::itk" library="true" >
-
+<plugin id="sight::module::io::itk" library="true">
     <extension implements="sight::service::extension::factory">
         <type>sight::io::service::reader</type>
         <service>sight::module::io::itk::image_reader</service>
@@ -41,5 +40,4 @@
         <object>sight::data::image_series</object>
         <desc>ImageSeries Reader (ITK)</desc>
     </extension>
-
 </plugin>

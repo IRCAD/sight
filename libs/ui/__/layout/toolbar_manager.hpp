@@ -95,7 +95,7 @@ namespace sight::ui::layout
 {
 
 /**
- * @brief   Defines the toolbar layout manager for IHM.
+ * @brief   Defines the toolbar layout manager for UI.
  */
 class SIGHT_UI_CLASS_API toolbar_manager : public ui::object
 {
@@ -196,6 +196,11 @@ public:
      * @brief Set the toolbar visibility.
      */
     SIGHT_UI_API virtual void set_visible(bool _is_visible) = 0;
+
+    /**
+     * @brief Get the toolbar visibility.
+     */
+    SIGHT_UI_API virtual bool visible() const = 0;
 
     /**
      * @brief Sets callbacks associate with toolbar items.

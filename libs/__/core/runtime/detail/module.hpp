@@ -410,7 +410,7 @@ private:
     SPTR(dl::library) m_library;                         ///< library that is part of the module
     parameter_container m_parameters;                    ///< all parameters
 
-    bool m_enabled {true}; ///< a boolean telling if the module is enabled or not
+    bool m_enabled {false}; ///< a boolean telling if the module is enabled or not
     bool m_started {false};
     int m_priority; ///< start order, lower is more favorable
 

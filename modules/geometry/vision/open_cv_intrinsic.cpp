@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ static const core::com::signals::key_t ERROR_COMPUTED_SIG = "error_computed";
 
 open_cv_intrinsic::open_cv_intrinsic() noexcept
 {
-    new_signal<error_computed_signal_t>(ERROR_COMPUTED_SIG);
+    new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
     new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &open_cv_intrinsic::update_chessboard_size, this);
 }
 
@@ -143,7 +143,7 @@ void open_cv_intrinsic::updating()
         double err =
             cv::calibrateCamera(object_points, image_points, imgsize, camera_matrix, dist_coeffs, rvecs, tvecs);
 
-        this->signal<error_computed_signal_t>(ERROR_COMPUTED_SIG)->async_emit(err);
+        this->signal<error_computed_t>(ERROR_COMPUTED_SIG)->async_emit(err);
 
         const auto pose_camera = m_pose_vector.lock();
         if(pose_camera)

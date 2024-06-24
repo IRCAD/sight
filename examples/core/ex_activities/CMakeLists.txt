@@ -54,5 +54,3 @@ module_param(
         "  Please enter your password: "
         "sight::module::ui::icons/ircad_white.svg"
 )
-
-sight_generate_profile(ex_activities)

@@ -1,12 +1,10 @@
-<plugin id="tuto04_signal_slot" >
-
+<plugin id="tuto04_signal_slot">
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
 
-    <extension implements="sight::app::extension::config" >
+    <extension implements="sight::app::extension::config">
         <id>Tuto04SignalSlot_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- The main data object is sight::data::mesh. -->
@@ -14,7 +12,7 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::frame" >
+            <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>tuto04_signal_slot</name>
@@ -29,7 +27,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menubar" >
+            <service uid="menuBarView" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -40,7 +38,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::menu" >
+            <service uid="menuFileView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
@@ -63,9 +61,9 @@
                 Each <view> declared into the <layout> tag, must have its associated <view> into the <registry> tag.
                 A minimum window height and a width are given to the two non-central views.
             -->
-            <service uid="containerView" type="sight::module::ui::view" >
+            <service uid="containerView" type="sight::module::ui::view">
                 <gui>
-                    <layout type="sight::ui::layout::cardinal" >
+                    <layout type="sight::ui::layout::cardinal">
                         <view align="center" />
                         <view caption="Move cameras 1,2" align="right" minWidth="600" minHeight="100" />
                         <view caption="Move camera 3" align="right" minWidth="600" minHeight="100" />
@@ -85,9 +83,10 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="meshReaderSrv" type="sight::module::ui::io::selector" >
+            <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="mesh" />
-                <type mode="reader" /><!-- mode is optional (by default it is "reader") -->
+                <!-- mode is optional (by default it is "reader") -->
+                <type mode="reader" />
             </service>
 
             <!--
@@ -95,15 +94,15 @@
                 We have three rendering service representing a 3D scene displaying the loaded mesh. The scene are
                 shown in the windows defines in 'view' service.
             -->
-            <service uid="rendering1Srv" type="sight::module::viz::sample::mesh" >
+            <service uid="rendering1Srv" type="sight::module::viz::sample::mesh">
                 <in key="mesh" uid="mesh" auto_connect="true" />
             </service>
 
-            <service uid="rendering2Srv" type="sight::module::viz::sample::mesh" >
+            <service uid="rendering2Srv" type="sight::module::viz::sample::mesh">
                 <in key="mesh" uid="mesh" auto_connect="true" />
             </service>
 
-            <service uid="rendering3Srv" type="sight::module::viz::sample::mesh" >
+            <service uid="rendering3Srv" type="sight::module::viz::sample::mesh">
                 <in key="mesh" uid="mesh" auto_connect="true" />
             </service>
 
@@ -138,8 +137,6 @@
 
             <start uid="mainFrame" />
             <start uid="meshReaderSrv" />
-
         </config>
     </extension>
-
 </plugin>

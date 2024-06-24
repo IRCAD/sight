@@ -1,5 +1,4 @@
 <plugin id="tuto13_mesh_generator_cpp" library="true">
-
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::viz::scene3d_qt" />
@@ -15,7 +14,6 @@
     <extension implements="sight::app::extension::config">
         <id>tuto13_mesh_generator_cpp_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="mesh" type="sight::data::mesh" />
@@ -202,7 +200,6 @@
             <start uid="meshAdp" />
             <start uid="meshReaderSrv" />
             <start uid="meshWriterSrv" />
-
         </config>
     </extension>
 </plugin>

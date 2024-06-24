@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,6 +38,7 @@ CPPUNIT_TEST_SUITE(matrix4_test);
 CPPUNIT_TEST(identity_matrix_test);
 CPPUNIT_TEST(matrix_test);
 CPPUNIT_TEST(glm_getter_setter_test);
+CPPUNIT_TEST(orthogonality_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,6 +50,7 @@ public:
     static void identity_matrix_test();
     static void matrix_test();
     static void glm_getter_setter_test();
+    static void orthogonality_test();
 };
 
 } // namespace sight::geometry::data::ut

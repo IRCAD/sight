@@ -1,5 +1,4 @@
 <plugin id="ut_validator">
-
     <extension implements="sight::activity::extension">
         <id>TestValidator0</id>
         <title>Title Test0</title>
@@ -77,5 +76,4 @@
         </requirements>
         <appConfig id="TestValidatorCfg1" />
     </extension>
-
 </plugin>

@@ -316,27 +316,27 @@ inline static void set_private_value(
 }
 
 /// Private Series implementation
-class SeriesImpl final
+class series_impl final
 {
 public:
 
     /// Delete default constructors and assignment operators
     /// @{
-    SeriesImpl(const SeriesImpl&)            = delete;
-    SeriesImpl(SeriesImpl&&)                 = delete;
-    SeriesImpl& operator=(const SeriesImpl&) = delete;
-    SeriesImpl& operator=(SeriesImpl&&)      = delete;
+    series_impl(const series_impl&)            = delete;
+    series_impl(series_impl&&)                 = delete;
+    series_impl& operator=(const series_impl&) = delete;
+    series_impl& operator=(series_impl&&)      = delete;
     /// @}
 
     /// Constructor
-    inline explicit SeriesImpl(sight::data::series* const _series) noexcept :
+    inline explicit series_impl(sight::data::series* const _series) noexcept :
         m_series(_series),
         m_frame_datasets(1)
     {
     }
 
     /// Default destructor
-    inline ~SeriesImpl() noexcept = default;
+    inline ~series_impl() noexcept = default;
 
     //------------------------------------------------------------------------------
 

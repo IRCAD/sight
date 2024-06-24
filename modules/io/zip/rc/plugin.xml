@@ -1,9 +1,7 @@
-<plugin id="sight::module::io::zip" library="true" >
-
+<plugin id="sight::module::io::zip" library="true">
     <extension implements="sight::service::extension::factory">
         <type>sight::io::service::reader</type>
         <service>sight::module::io::zip::extract</service>
         <desc>Archive extractor</desc>
     </extension>
-
 </plugin>

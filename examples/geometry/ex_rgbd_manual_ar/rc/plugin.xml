@@ -1,5 +1,4 @@
 <plugin id="ex_rgbd_manual_ar">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -9,7 +8,6 @@
     <extension implements="sight::app::extension::config">
         <id>ExRGBDManualAR_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="cameraSet" type="sight::data::camera_set" />
@@ -257,9 +255,9 @@
                 <scene width="1280" height="720">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" >
-                    <adaptor uid="meshOffscreenAdp" />
-                    <adaptor uid="cameraOffscreenAdp" />
+                    <layer id="default" order="1">
+                        <adaptor uid="meshOffscreenAdp" />
+                        <adaptor uid="cameraOffscreenAdp" />
                     </layer>
                 </scene>
             </service>
@@ -296,7 +294,8 @@
             <!-- This matrix is used to staticaly register the model onto the video -->
             <service uid="transformReaderSrv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="matrix" />
-                <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
+                <!-- mode is optional (by default it is "reader") -->
+                <type mode="reader" />
                 <selection mode="include" />
                 <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
             </service>
@@ -360,14 +359,14 @@
             </service>
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameUpdaterSrv"  type="sight::module::sync::synchronizer" worker="videoWorker">
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTL" />
                     <key uid="maskTL" />
                 </in>
                 <inout group="frames">
                     <key uid="videoImage" tl="0" />
-                    <key uid="foregroundMask" tl="1"/>
+                    <key uid="foregroundMask" tl="1" />
                 </inout>
                 <tolerance>200</tolerance>
             </service>

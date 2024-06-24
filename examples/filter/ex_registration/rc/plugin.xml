@@ -55,7 +55,6 @@ Detail of the ToolBar
           third tab (registerAct).
  -->
 <plugin id="ex_registration">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -65,7 +64,6 @@ Detail of the ToolBar
     <extension implements="sight::app::extension::config">
         <id>ExRegistration_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Object to store the image loading in the first tab -->
@@ -304,7 +302,7 @@ Detail of the ToolBar
             <!-- Editors for Negato1 -->
             <service uid="sliderNegatoSrv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
                 <inout key="image" uid="myImage" />
-                <sliceIndex>axial</sliceIndex>
+                <config orientation="axial" label="index" display_axis_selector="false" display_step_buttons="false" />
             </service>
 
             <service uid="meshReader1Srv" type="sight::module::ui::io::selector">
@@ -379,7 +377,6 @@ Detail of the ToolBar
             <start uid="imageReaderSrv" />
             <start uid="meshReader1Srv" />
             <start uid="meshReader2Srv" />
-
         </config>
     </extension>
 </plugin>

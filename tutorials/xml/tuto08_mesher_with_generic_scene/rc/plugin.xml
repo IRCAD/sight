@@ -4,7 +4,6 @@
     reconstruction. Then, you can update the organ color, transparence, ... using the editors in the right.
  -->
 <plugin id="tuto08_mesher_with_generic_scene">
-
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
@@ -13,7 +12,6 @@
     <extension implements="sight::app::extension::config">
         <id>Tuto08MesherWithGenericScene_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="modelSeries" type="sight::data::model_series" src="deferred" />
@@ -116,7 +114,7 @@
                         <view caption="Organs" expanded="true" />
                         <view caption="Material" expanded="true" />
                         <view caption="Representation" />
-                        <view caption= "Threshold" proportion="0" />
+                        <view caption="Threshold" proportion="0" />
                     </layout>
                 </gui>
                 <registry>
@@ -149,11 +147,11 @@
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" >
-                    <adaptor uid="trackballInteractorAdp" />
-                    <adaptor uid="modelSeriesAdp" />
-                    <adaptor uid="negatoAdp" />
-                    <adaptor uid="snapshotAdp" />
+                    <layer id="default" order="1">
+                        <adaptor uid="trackballInteractorAdp" />
+                        <adaptor uid="modelSeriesAdp" />
+                        <adaptor uid="negatoAdp" />
+                        <adaptor uid="snapshotAdp" />
                     </layer>
                 </scene>
             </service>
@@ -195,9 +193,9 @@
                 </config>
             </service>
 
-            <service uid="thresholdSliderSrv" type="sight::module::ui::qt::parameters" >
+            <service uid="thresholdSliderSrv" type="sight::module::ui::qt::parameters">
                 <parameters>
-                    <param type="int" name="threshold" key="threshold" widget="slider" defaultValue="255" min="0" max="255" depends="enable"/>
+                    <param type="int" name="threshold" key="threshold" widget="slider" defaultValue="255" min="0" max="255" depends="enable" />
                 </parameters>
             </service>
 
@@ -221,19 +219,19 @@
 
             <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
                 <inout key="image" uid="imageSeries" />
-                <sliceIndex>axial</sliceIndex>
+                <config orientation="axial" label="index" display_axis_selector="false" display_step_buttons="false" />
             </service>
 
             <service uid="mesher50Srv" type="sight::module::filter::mesh::vtk_mesher">
                 <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="modelSeries" />
-               <config percentReduction="50" threshold="255" />
+                <config percentReduction="50" threshold="255" />
             </service>
 
             <service uid="mesher80Srv" type="sight::module::filter::mesh::vtk_mesher">
                 <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="modelSeries" />
-              <config percentReduction="80" threshold="255" />
+                <config percentReduction="80" threshold="255" />
             </service>
 
             <service uid="modelSeriesWriterSrv" type="sight::module::ui::io::selector">
@@ -262,7 +260,7 @@
             <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
                 <in key="data" uid="snapshot" />
                 <dialog policy="always" />
-                <backends enable="all" mode="best"/>
+                <backends enable="all" mode="best" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
@@ -277,12 +275,11 @@
                 <slot>updaterReconstSrv/add</slot>
             </connect>
 
-             <connect>
+            <connect>
                 <signal>thresholdSliderSrv/int_changed</signal>
                 <slot>mesher50Srv/update_threshold</slot>
                 <slot>mesher80Srv/update_threshold</slot>
             </connect>
-
 
             <connect>
                 <signal>snapshotSrv/clicked</signal>
@@ -343,7 +340,6 @@
             <start uid="snapshotAdp" />
             <start uid="imageReaderSrv" />
             <start uid="modelSeriesWriterSrv" />
-
         </config>
     </extension>
 </plugin>

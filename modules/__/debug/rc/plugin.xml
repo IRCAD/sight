@@ -1,31 +1,29 @@
-<plugin id="sight::module::debug" library="true" >
-
-
+<plugin id="sight::module::debug" library="true">
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::action</type>
-         <service>sight::module::debug::action::memory_consumption</service>
-         <object>sight::data::object</object>
-         <desc>Implements configuring method derived from base. .</desc>
+        <type>sight::ui::action</type>
+        <service>sight::module::debug::action::memory_consumption</service>
+        <object>sight::data::object</object>
+        <desc>Implements configuring method derived from base. .</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::action</type>
-         <service>sight::module::debug::action::memory_info</service>
-         <object>sight::data::object</object>
-         <desc></desc>
+        <type>sight::ui::action</type>
+        <service>sight::module::debug::action::memory_info</service>
+        <object>sight::data::object</object>
+        <desc />
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::action</type>
-         <service>sight::module::debug::action::dump_all</service>
-         <object>sight::data::object</object>
-         <desc></desc>
+        <type>sight::ui::action</type>
+        <service>sight::module::debug::action::dump_all</service>
+        <object>sight::data::object</object>
+        <desc />
     </extension>
 
     <extension implements="sight::service::extension::factory">
-         <type>sight::ui::action</type>
-         <service>sight::module::debug::action::metrics</service>
-         <object>sight::data::object</object>
-         <desc></desc>
+        <type>sight::ui::action</type>
+        <service>sight::module::debug::action::metrics</service>
+        <object>sight::data::object</object>
+        <desc />
     </extension>
 </plugin>

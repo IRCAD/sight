@@ -18,5 +18,3 @@ module_param(
 
 # Main application's configuration to launch
 module_param(module_app PARAM_LIST config PARAM_VALUES ArchiveExtractor_AppCfg)
-
-sight_generate_profile(archive_extractor)

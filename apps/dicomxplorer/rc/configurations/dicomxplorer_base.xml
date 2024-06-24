@@ -149,6 +149,5 @@
         <start uid="progress_statusbar" />
         <start uid="qtSelector" />
         <start uid="SDBWriter" />
-
     </config>
 </extension>

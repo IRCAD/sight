@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
- * Copyright (C) 2014-2019 IHU Strasbourg
+ * Copyright (C) 2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,27 +21,52 @@
 
 #pragma once
 
-#include <sight/geometry/vision/config.hpp>
+#include <sight/ex_progress_bar/config.hpp>
+
+#include <core/jobs/base.hpp>
 
 #include <service/base.hpp>
 
-namespace sight::geometry::vision
+namespace ex_progress_bar
 {
 
-/**
- * @brief   ICalibration is an interface API for calibration services.
- */
-class SIGHT_GEOMETRY_VISION_CLASS_API i_calibration : public service::base
+class long_job : public sight::service::base
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(i_calibration, service::base);
+    SIGHT_DECLARE_SERVICE(long_job, sight::service::base);
 
     /// Constructor.
-    SIGHT_GEOMETRY_VISION_API i_calibration() noexcept;
+    long_job() noexcept;
 
     /// Destructor.
-    SIGHT_GEOMETRY_VISION_API ~i_calibration() noexcept override;
+    ~long_job() noexcept override = default;
+
+    struct signals final
+    {
+        using job_created_t = sight::core::com::signal<void (sight::core::jobs::base::sptr)>;
+        using key_t         = sight::core::com::signals::key_t;
+
+        static inline const key_t JOB_CREATED = "job_created";
+    };
+
+protected:
+
+    /// Initialize the container.
+    void configuring() override;
+
+    /// Start the service, slot connections
+    void starting() override;
+
+    /// Destroy the service
+    void stopping() override;
+
+    /// Update the interface.
+    void updating() override;
+
+private:
+
+    bool m_cancelable {true};
 };
 
-} // namespace sight::geometry::vision
+} // namespace ex_progress_bar.

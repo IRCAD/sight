@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -162,7 +162,7 @@ std::shared_future<bool> wait_for_widget(std::function<bool(QWidget*)> _predicat
                     {
                         window_ptr->close();
                     }
-                }).get();
+                });
             }
             else
             {
@@ -170,7 +170,7 @@ std::shared_future<bool> wait_for_widget(std::function<bool(QWidget*)> _predicat
                     []
                 {
                     qApp->closeAllWindows();
-                }).get();
+                });
             }
 
             return false;

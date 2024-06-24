@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,24 +30,20 @@
 namespace sight::module::filter::image
 {
 
-const core::com::slots::key_t flip::FLIP_AXIS_X_SLOT = "flipAxisX";
+const core::com::slots::key_t flip::FLIP_AXIS_X_SLOT = "flip_axis_x";
 const core::com::slots::key_t flip::FLIP_AXIS_Y_SLOT = "flip_axis_y";
-const core::com::slots::key_t flip::FLIP_AXIS_Z_SLOT = "flipAxisZ";
+const core::com::slots::key_t flip::FLIP_AXIS_Z_SLOT = "flip_axis_z";
 
 //------------------------------------------------------------------------------
 
-flip::flip()
+flip::flip() :
+    filter(m_signals)
 {
     // Initialize the slots
     new_slot(FLIP_AXIS_X_SLOT, &flip::flip_axis_x, this);
     new_slot(FLIP_AXIS_Y_SLOT, &flip::flip_axis_y, this);
     new_slot(FLIP_AXIS_Z_SLOT, &flip::flip_axis_z, this);
 }
-
-//------------------------------------------------------------------------------
-
-flip::~flip()
-= default;
 
 //------------------------------------------------------------------------------
 
@@ -76,7 +72,7 @@ void flip::updating()
 
         m_target = out_img;
 
-        m_sig_computed->async_emit();
+        this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
     }
     else
     {

@@ -32,7 +32,7 @@ namespace sight::ui
 {
 
 /**
- * @brief   Defines the generic cursor for IHM.
+ * @brief   Defines the generic cursor for UI.
  * Use the Delegate design pattern
  */
 class SIGHT_UI_CLASS_API cursor : public ui::cursor_base
@@ -55,7 +55,7 @@ public:
 
 protected:
 
-    /// Implementation of a cursor in a specific IHM (wx/Qt)
+    /// Implementation of a cursor in a specific UI (wx/Qt)
     ui::cursor_base::sptr m_implementation;
 };
 

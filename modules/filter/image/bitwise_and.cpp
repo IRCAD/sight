@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,13 +110,10 @@ struct and_image_filter_caller
 
 //-----------------------------------------------------------------------------
 
-bitwise_and::bitwise_and()
-= default;
-
-//-----------------------------------------------------------------------------
-
-bitwise_and::~bitwise_and()
-= default;
+bitwise_and::bitwise_and() :
+    filter(m_signals)
+{
+}
 
 //-----------------------------------------------------------------------------
 
@@ -152,7 +149,7 @@ void bitwise_and::updating()
 
     this->set_output(OUTPUTIMAGE_OUT, output_image);
 
-    m_sig_computed->async_emit();
+    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
 }
 
 //-----------------------------------------------------------------------------

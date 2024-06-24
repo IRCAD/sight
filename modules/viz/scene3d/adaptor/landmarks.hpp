@@ -49,8 +49,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b add_point(std::string): adds the last point of a landmarks group.
  * - \b removePoint(std::string, std::size_t): removes a point.
  * - \b insertPoint(std::string, std::size_t): inserts a point.
- * - \b selectPoint(std::string, std::size_t) hightlights the selected landmark.
- * - \b deselectPoint(std::string, std::size_t): resets the hightlighting of the selected landmark.
+ * - \b selectPoint(std::string, std::size_t) highlights the selected landmark.
+ * - \b deselectPoint(std::string, std::size_t): resets the highlighting of the selected landmark.
  * - \b initializeImage(): initializes image slices index if there is one.
  * - \b changeSliceType(int, int): updates the image slice type.
  * - \b changeSliceIndex(int, int, int): updates the image slice index to show or hide landmarks.
@@ -179,12 +179,12 @@ public:
     /// @param _index index of the point relative to the group.
     void insert_point(std::string _group_name, std::size_t _index);
 
-    /// SLOT: hightlights the selected landmark.
+    /// SLOT: highlights the selected landmark.
     /// @param _group_name group name of the landmark.
     /// @param _index index of the point relative to the group.
     void select_point(std::string _group_name, std::size_t _index);
 
-    /// SLOT: resets the hightlights the selected landmark.
+    /// SLOT: resets the highlights the selected landmark.
     /// @param _group_name group name of the landmark.
     /// @param _index index of the point relative to the group.
     void deselect_point(std::string _group_name, std::size_t _index);
@@ -355,7 +355,7 @@ private:
         sight::viz::scene3d::text::sptr m_label; /*!< Defines the text label of the landmark (can be nullptr) */
     };
 
-    /// Stores data used to hightlight the selected landmark.
+    /// Stores data used to highlight the selected landmark.
     struct selected_landmark final
     {
         selected_landmark(core::thread::timer::sptr _timer, std::shared_ptr<landmark> _landmark) :
@@ -407,7 +407,7 @@ private:
      * @brief Manages the highting of the landmarks at the given index (must be run in a thread).
      * @param _selected_landmark which landmarks to manage.
      */
-    void hightlight(std::shared_ptr<selected_landmark> _selected_landmark);
+    void highlight(std::shared_ptr<selected_landmark> _selected_landmark);
 
     /// Used to create a landmark and pick it. Called by the mouse event (pick) and the slot (no pick).
     void create_and_pick_landmark(const sight::data::landmarks::point_t& _point, bool _pick = true);
@@ -420,14 +420,6 @@ private:
      * @see hideLandmark().
      */
     void hide_landmarks();
-
-    /**
-     * @brief Gets the nearest picked position if there is one.
-     * @param _x X screen coordinate.
-     * @param _y Y screen coordinate.
-     * @return The picked world coordinates.
-     */
-    std::optional<Ogre::Vector3> get_nearest_picked_position(int _x, int _y);
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).

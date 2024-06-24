@@ -67,7 +67,7 @@ public:
     /**
      * @brief transform_depth_map2mm destructor.
      */
-    ~transform_depth_map2mm() override;
+    ~transform_depth_map2mm() override = default;
 
 protected:
 

@@ -5,7 +5,8 @@
         <param name="image" />
         <param name="landmarks" />
         <param name="patient_name" default="" />
-        <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
+        <!-- axial, frontal, sagittal -->
+        <param name="orientation" default="axial" />
         <param name="CrossTypeChannel" default="crossTypeChannel" />
         <param name="PickingChannel" default="pickingChannel" />
     </parameters>
@@ -139,14 +140,14 @@
 
         <service uid="slider_negato" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
             <inout key="image" uid="${image}" />
-            <sliceIndex>${orientation}</sliceIndex>
+            <config orientation="${orientation}" label="index" display_axis_selector="false" display_step_buttons="false" />
         </service>
 
         <!-- Write the snapshot image -->
         <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
             <in key="data" uid="snapshot" />
             <dialog policy="always" />
-            <backends enable="all" mode="best"/>
+            <backends enable="all" mode="best" />
         </service>
 
         <connect channel="${CrossTypeChannel}">

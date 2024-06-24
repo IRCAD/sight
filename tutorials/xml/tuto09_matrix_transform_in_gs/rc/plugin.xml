@@ -4,7 +4,6 @@
         To use this application, you need to load a mesh.
 -->
 <plugin id="tuto09_matrix_transform_in_gs">
-
     <requirement id="sight::module::ui" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
@@ -13,7 +12,6 @@
     <extension implements="sight::app::extension::config">
         <id>Tuto09MatrixTransformInGS_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="matrixA" type="sight::data::matrix4">
@@ -262,7 +260,6 @@
             <update uid="rotation1Srv" />
             <update uid="rotation2Srv" />
             <update uid="rotation3Srv" />
-
         </config>
     </extension>
 </plugin>

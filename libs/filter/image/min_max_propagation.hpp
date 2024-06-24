@@ -37,7 +37,7 @@ namespace sight::filter::image
 /**
  * @brief Flood fills an image as long as the neighboring voxels are greater than the smallest seed value.
  */
-class SIGHT_FILTER_IMAGE_CLASS_API min_max_propagation
+class min_max_propagation
 {
 public:
 
@@ -45,30 +45,19 @@ public:
     {
         min,
         max,
-        minmax
+        minmax,
+        stddev
     };
 
     using coordinates_t = filter::image::bresenham_line::coordinates_t;
-
-    using orientation_t = filter::image::bresenham_line::Orientation;
-
-    using seeds_t = std::vector<coordinates_t>;
-
-    /**
-     * @brief Constructor.
-     * @param[in] _in_image image in which we propagate.
-     * @param[in,out] _out_image mask image containing the written values.
-     * @param[in] _roi region of interest.
-     */
-    SIGHT_FILTER_IMAGE_API min_max_propagation(
-        data::image::csptr _in_image,
-        data::image::sptr _out_image,
-        data::image::csptr _roi
-    );
+    using seeds_t       = std::set<coordinates_t>;
 
     /**
      * @brief propagates through the image starting from each seed as along as the encountered voxel value
      * is greater than smallest seed value.
+     * @param[in] _in_image image in which we propagate.
+     * @param[out] _out_image mask image containing the written values.
+     * @param[in] _roi region of interest.
      * @param[in] _seeds points where propagation is started.
      * @param[in] _value the value propagated through the buffer.
      * @param[in] _radius maximum propagation distance.
@@ -76,27 +65,16 @@ public:
      * @param[in] _mode propagation mode (min, max, or minmax).
      * @return the differences in the image before and after propagation.
      */
-    SIGHT_FILTER_IMAGE_API image_diff propagate(
+    static SIGHT_FILTER_IMAGE_API image_diff process(
+        data::image::csptr _in_image,
+        data::image::sptr _out_image,
+        data::image::csptr _roi,
         seeds_t& _seeds,
-        data::image::buffer_t* _value,
+        std::uint8_t _value,
         double _radius,
         bool _overwrite,
         mode _mode
     );
-
-private:
-
-    /// Seed list.
-    seeds_t m_seeds;
-
-    /// Input image. Where the voxel values are read from.
-    data::image::csptr m_in_image;
-
-    /// Region of interest.
-    data::image::csptr m_roi;
-
-    /// Output image. Where we write the flooded voxels.
-    data::image::sptr m_out_image;
 };
 
 } // namespace sight::filter::image.

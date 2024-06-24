@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -2794,6 +2794,91 @@ void series_test::get_patient_position_string_test()
         series->set_patient_position(key);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(key, value, series->get_patient_position_string());
     }
+}
+
+//------------------------------------------------------------------------------
+
+void series_test::new_instances_test()
+{
+    auto series = std::make_shared<data::series>();
+
+    CPPUNIT_ASSERT(series->get_sop_instance_uid().empty());
+    CPPUNIT_ASSERT(series->get_study_instance_uid().empty());
+    CPPUNIT_ASSERT(series->get_series_instance_uid().empty());
+
+    CPPUNIT_ASSERT(series->get_instance_creation_date().empty());
+    CPPUNIT_ASSERT(series->get_instance_creation_time().empty());
+    CPPUNIT_ASSERT(series->get_study_date().empty());
+    CPPUNIT_ASSERT(series->get_study_time().empty());
+    CPPUNIT_ASSERT(series->get_series_date().empty());
+    CPPUNIT_ASSERT(series->get_series_time().empty());
+
+    series->new_sop_instance();
+    series->new_study_instance();
+    series->new_series_instance();
+
+    CPPUNIT_ASSERT(!series->get_instance_creation_date().empty());
+    CPPUNIT_ASSERT(!series->get_instance_creation_time().empty());
+    CPPUNIT_ASSERT(!series->get_study_date().empty());
+    CPPUNIT_ASSERT(!series->get_study_time().empty());
+    CPPUNIT_ASSERT(!series->get_series_date().empty());
+    CPPUNIT_ASSERT(!series->get_series_time().empty());
+}
+
+//------------------------------------------------------------------------------
+
+void series_test::iso_date_time_test()
+{
+    static const std::string s_DATE("20221026");
+    static const std::string s_TIME("150703.123456");
+    static const std::string s_EXPECTED_DATE("2022-10-26");
+    static const std::string s_EXPECTED_TIME("15:07:03.123");
+
+    CPPUNIT_ASSERT_EQUAL(s_EXPECTED_DATE, data::series::date_to_iso(s_DATE));
+    CPPUNIT_ASSERT_EQUAL(s_EXPECTED_TIME, data::series::time_to_iso(s_TIME));
+}
+
+//------------------------------------------------------------------------------
+
+void series_test::path_test()
+{
+    static const std::string s_DATE       = "20221026";
+    static const std::string s_TIME       = "150703.123456";
+    static const std::string s_UID        = "789";
+    static const std::string s_PATIENT_ID = "666";
+    static const std::string s_MODALITY   = "CT";
+
+    static const std::string s_HASH =
+        []
+        {
+            std::ostringstream hex;
+            hex << std::hex << std::hash<std::string> {}(s_UID);
+
+            return hex.str();
+        }();
+
+    auto series = std::make_shared<data::series>();
+
+    series->set_study_date(s_DATE);
+    series->set_study_time(s_TIME);
+    series->set_series_instance_uid(s_UID);
+    series->set_series_date(s_DATE);
+    series->set_series_time(s_TIME);
+    series->set_patient_id(s_PATIENT_ID);
+    series->set_modality(s_MODALITY);
+
+    std::filesystem::path path;
+
+    CPPUNIT_ASSERT_NO_THROW((path = series->file_path(std::filesystem::path("/tmp"), ".ima")));
+
+    const auto expected_path = std::filesystem::path("/tmp") / s_PATIENT_ID / (s_DATE + s_TIME)
+                               / (s_PATIENT_ID + "." + s_MODALITY + "." + s_DATE + s_TIME + "." + s_HASH
+                                  + std::string(".ima"));
+
+    CPPUNIT_ASSERT_EQUAL(
+        std::filesystem::weakly_canonical(expected_path).string(),
+        std::filesystem::weakly_canonical(path).string()
+    );
 }
 
 } //namespace sight::data::ut

@@ -30,6 +30,7 @@
 #include <data/integer.hpp>
 #include <data/point.hpp>
 #include <data/point_list.hpp>
+#include <data/real.hpp>
 #include <data/string.hpp>
 #include <data/vector.hpp>
 
@@ -137,6 +138,35 @@ bool is_buf_null(const data::image::buffer_t* _buf, const unsigned int _len)
 
 //------------------------------------------------------------------------------
 
+index_t compute_voxel_indices(const data::image& _image, const vec3_t& _pos)
+{
+    const auto& spacing = _image.spacing();
+    const auto& origin  = _image.origin();
+
+    return {
+        static_cast<index_t::value_type>(std::round((_pos[0] - origin[0]) / spacing[0])),
+        static_cast<index_t::value_type>(std::round((_pos[1] - origin[1]) / spacing[1])),
+        static_cast<index_t::value_type>(std::round((_pos[2] - origin[2]) / spacing[2]))
+    };
+}
+
+//------------------------------------------------------------------------------
+
+std::pair<vec3_t, vec3_t> compute_bounding_box(const data::image& _image)
+{
+    const auto& spacing = _image.spacing();
+    const auto& origin  = _image.origin();
+    const auto& size    = _image.size();
+
+    const vec3_t max {origin[0] + spacing[0] * static_cast<double>(size[0]),
+                      origin[1] + spacing[1] * static_cast<double>(size[1]),
+                      origin[2] + spacing[2] * static_cast<double>(size[2])
+    };
+
+    return {origin, max};
+}
+
+//-------------------------------------------------------------------------------
 std::optional<std::int64_t> get_slice_index(
     const data::image& _image,
     const orientation_t& _orientation
@@ -178,8 +208,7 @@ std::optional<std::int64_t> get_slice_index(
     return {};
 }
 
-//------------------------------------------------------------------------------
-
+//-------------------------------------------------------------------------------
 void set_slice_index(
     data::image& _image,
     const orientation_t& _orientation,
@@ -210,6 +239,102 @@ void set_slice_index(
     }
 
     _image.set_field(orientation_index, value);
+}
+
+//-------------------------------------------------------------------------------
+
+std::optional<double_t> get_slice_position(
+    const data::image& _image,
+    const orientation_t& _orientation
+)
+{
+    const auto slice_idx_opt = get_slice_index(_image, _orientation);
+    if(!slice_idx_opt)
+    {
+        return {};
+    }
+
+    const auto& spacing          = _image.spacing();
+    const auto& origin           = _image.origin();
+    const std::int64_t slice_idx = slice_idx_opt.value();
+    return origin[_orientation] + static_cast<double>(slice_idx) * spacing[_orientation];
+}
+
+//------------------------------------------------------------------------------
+void set_slice_position(
+    data::image& _image,
+    const orientation_t& _orientation,
+    double& _position
+)
+{
+    const auto& spacing = _image.spacing();
+    const auto& origin  = _image.origin();
+
+    const auto new_index =
+        static_cast<std::int64_t>((_position - origin[_orientation]) / spacing[_orientation]);
+    set_slice_index(_image, _orientation, new_index);
+}
+
+//----------------------------------------------------------------------------
+std::optional<std::int64_t> get_fiducial_slice_index(
+    const data::image& _image,
+    const std::array<double, 3>& _point,
+    orientation_t _orientation
+)
+{
+    std::optional<std::int64_t> slice_index;
+
+    switch(_orientation)
+    {
+        case orientation_t::sagittal:
+            slice_index = static_cast<std::int64_t>(std::round((_point[0] - _image.origin()[0]) / _image.spacing()[0]));
+            break;
+
+        case orientation_t::frontal:
+            slice_index = static_cast<std::int64_t>(std::round((_point[1] - _image.origin()[1]) / _image.spacing()[1]));
+            break;
+
+        case orientation_t::axial:
+            slice_index = static_cast<std::int64_t>(std::round((_point[2] - _image.origin()[2]) / _image.spacing()[2]));
+            break;
+
+        default:
+            slice_index = std::nullopt;
+            break;
+    }
+
+    return slice_index;
+}
+
+//-----------------------------------------------------------------------------
+std::optional<double> get_fiducial_slice_position(
+    const data::image& _image,
+    const std::array<double, 3>& _point,
+    orientation_t _orientation
+)
+{
+    std::optional<double> slice_position;
+
+    switch(_orientation)
+    {
+        case orientation_t::sagittal:
+            slice_position = (std::round(_point[0] - _image.origin()[0]) * _image.spacing()[0]);
+            break;
+
+        case orientation_t::frontal:
+            slice_position = (std::round(_point[1] - _image.origin()[1]) * _image.spacing()[1]);
+            break;
+
+        case orientation_t::axial:
+            slice_position = (std::round(_point[2] - _image.origin()[2]) * _image.spacing()[2]);
+            break;
+
+        default:
+            slice_position = std::nullopt;
+            break;
+    }
+
+    return slice_position;
 }
 
 //------------------------------------------------------------------------------

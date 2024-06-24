@@ -1,5 +1,4 @@
 <plugin id="ex_video_tracking">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -9,7 +8,6 @@
     <extension implements="sight::app::extension::config">
         <id>ExVideoTracking_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="camera" type="sight::data::camera" />
@@ -142,7 +140,7 @@
                 </parameters>
             </service>
 
-            <service uid="frameUpdaterSrv"  type="sight::module::sync::synchronizer"  worker="videoWorker">
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTL" />
                 </in>
@@ -182,7 +180,6 @@
             <start uid="frameUpdaterSrv" />
             <start uid="trackerSrv" />
             <start uid="videoAdp" />
-
         </config>
     </extension>
 </plugin>

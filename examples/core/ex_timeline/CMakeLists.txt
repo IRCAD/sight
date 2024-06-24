@@ -8,5 +8,3 @@ target_link_libraries(ex_timeline PUBLIC data service core)
 
 # Main application's configuration to launch
 module_param(module_app PARAM_LIST config PARAM_VALUES ex_timeline_AppCfg)
-
-sight_generate_profile(ex_timeline)

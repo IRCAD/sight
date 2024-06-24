@@ -1,5 +1,4 @@
 <plugin id="ex_video_recorder">
-
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d" />
@@ -9,7 +8,6 @@
     <extension implements="sight::app::extension::config">
         <id>ExVideoRecorder_AppCfg</id>
         <config>
-
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="camera" type="sight::data::camera" />
@@ -74,7 +72,7 @@
                     <type>path</type>
                     <name>Base output folder for recordings</name>
                     <key>BASE_FOLDER</key>
-                    <default_value></default_value>
+                    <default_value />
                 </preference>
             </service>
 
@@ -136,7 +134,7 @@
                 <file>video.mp4</file>
             </service>
 
-            <service uid="frameUpdaterSrv"  type="sight::module::sync::synchronizer" worker="videoWorker">
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTL" />
                 </in>
@@ -144,7 +142,7 @@
                     <key uid="videoImage" />
                 </inout>
             </service>
-            
+
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
@@ -203,7 +201,6 @@
             <start uid="videoAdp" />
 
             <start uid="imagePickerSrv" />
-
         </config>
     </extension>
 </plugin>

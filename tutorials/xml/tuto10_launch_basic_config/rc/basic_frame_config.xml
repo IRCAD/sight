@@ -1,6 +1,7 @@
-<extension implements="sight::app::extension::config" >
+<extension implements="sight::app::extension::config">
     <id>Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg</id>
-    <parameters><!-- Declared the required parameters -->
+    <!-- Declared the required parameters -->
+    <parameters>
         <!--
             CLOSE_CONFIG_CHANNEL is defined by config_launcher. It allows to connect the frame signal "closed" to the
             config_launcher slot "stopConfig".
@@ -12,14 +13,13 @@
         <param name="imageUid" />
     </parameters>
     <config>
-
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${imageUid}" type="sight::data::image" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="sight::module::ui::frame" >
+        <service uid="mainFrame" type="sight::module::ui::frame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -34,13 +34,13 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="imageRendereSrv" type="sight::module::viz::sample::image" >
+        <service uid="imageRendereSrv" type="sight::module::viz::sample::image">
             <in key="image" uid="${imageUid}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <connect channel="${CLOSE_CONFIG_CHANNEL}" >
+        <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>mainFrame/closed</signal>
         </connect>
 
@@ -48,6 +48,5 @@
 
         <start uid="mainFrame" />
         <start uid="imageRendereSrv" />
-
     </config>
 </extension>

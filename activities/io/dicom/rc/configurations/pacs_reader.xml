@@ -7,7 +7,6 @@
         <param name="APP_NAME" />
     </parameters>
     <config>
-
         <!-- ******************************* UI declaration *********************************** -->
 
         <object uid="${SERIES_SET}" type="sight::data::series_set" src="ref" />
@@ -71,8 +70,7 @@
                     <orientation value="horizontal" />
                 </layout>
             </gui>
-            <registry>
-            </registry>
+            <registry />
         </service>
 
         <service uid="centerView" type="sight::module::ui::view">
@@ -212,6 +210,5 @@
         <start uid="pacsConfigurationInitializer" />
 
         <update uid="pacsConfigurationInitializer" />
-
     </config>
 </extension>

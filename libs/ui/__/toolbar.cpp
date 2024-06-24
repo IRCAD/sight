@@ -249,6 +249,13 @@ void toolbar::set_visible(bool _is_visible)
 
 //-----------------------------------------------------------------------------
 
+bool toolbar::visible() const
+{
+    return m_layout_manager->visible();
+}
+
+//-----------------------------------------------------------------------------
+
 void toolbar::set_visible_by_parameter(ui::parameter_t _is_visible)
 {
     // Only consider boolean alternative, skip all other type of the variant.

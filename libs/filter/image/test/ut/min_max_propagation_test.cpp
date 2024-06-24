@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,20 +99,26 @@ void min_max_propagation_test::min_propag_test()
     // Draw a cube at 10,10,10 with a 255 value
     draw_cube(image_in, 255);
 
-    min_max_propagation propagator(image_in, image_out, nullptr);
-
     min_max_propagation::seeds_t seed = {{{15, 15, 15}}};
 
     // Propagate at 15,15,15 with a 255 value (same as cube)
     std::uint8_t value = 255;
 
-    SPTR(data::image::buffer_t) buffer_value =
-        data::helper::medical_image::get_pixel_in_image_space(image_in, value);
-
-    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::min);
+    SPTR(data::image::buffer_t) buffer_value = data::helper::medical_image::get_pixel_in_image_space(image_in, value);
 
     const auto dump_lock_in  = image_in->dump_lock();
     const auto dump_lock_out = image_out->dump_lock();
+
+    min_max_propagation::process(
+        image_in,
+        image_out,
+        nullptr,
+        seed,
+        value,
+        500,
+        true,
+        min_max_propagation::min
+    );
 
     // Check that the image is not changed because the propagated value is the same
     for(std::size_t index = 0 ; index < image_in->size_in_bytes() ; ++index)
@@ -128,10 +134,16 @@ void min_max_propagation_test::min_propag_test()
 
     value = 3;
 
-    buffer_value =
-        data::helper::medical_image::get_pixel_in_image_space(image_in, value);
-
-    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::min);
+    min_max_propagation::process(
+        image_in,
+        image_out,
+        nullptr,
+        seed,
+        value,
+        500,
+        true,
+        min_max_propagation::min
+    );
 
     for(std::size_t index = 0 ; index < image_in->size_in_bytes() ; ++index)
     {
@@ -149,14 +161,19 @@ void min_max_propagation_test::min_propag_test()
     }
 
     // Check that the entire image is completely filled with propagated value
-    seed = {{{0, 0, 0}}};
-
+    seed  = {{{0, 0, 0}}};
     value = 4;
 
-    buffer_value =
-        data::helper::medical_image::get_pixel_in_image_space(image_in, value);
-
-    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::min);
+    min_max_propagation::process(
+        image_in,
+        image_out,
+        nullptr,
+        seed,
+        value,
+        500,
+        true,
+        min_max_propagation::min
+    );
 
     for(std::size_t index = 0 ; index < image_in->size_in_bytes() ; ++index)
     {
@@ -185,20 +202,24 @@ void min_max_propagation_test::max_propag_test()
     // Draw a cube at 10,10,10 with a 2 value
     draw_cube(image_in, 2);
 
-    min_max_propagation propagator(image_in, image_out, nullptr);
-
     min_max_propagation::seeds_t seed = {{{15, 15, 15}}};
 
     // Propagate at 15,15,15 with a 3 value
     std::uint8_t value = 3;
 
-    SPTR(data::image::buffer_t) buffer_value =
-        data::helper::medical_image::get_pixel_in_image_space(image_in, value);
-
-    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::max);
-
     const auto dump_lock_in  = image_in->dump_lock();
     const auto dump_lock_out = image_out->dump_lock();
+
+    min_max_propagation::process(
+        image_in,
+        image_out,
+        nullptr,
+        seed,
+        value,
+        500,
+        true,
+        min_max_propagation::max
+    );
 
     // Check that the entire image is completely filled with propagated value
     for(std::size_t index = 0 ; index < image_in->size_in_bytes() ; ++index)
@@ -211,9 +232,16 @@ void min_max_propagation_test::max_propag_test()
     seed  = {{{0, 0, 0}}};
     value = 2;
 
-    buffer_value = data::helper::medical_image::get_pixel_in_image_space(image_in, value);
-
-    propagator.propagate(seed, buffer_value.get(), 500, true, min_max_propagation::max);
+    min_max_propagation::process(
+        image_in,
+        image_out,
+        nullptr,
+        seed,
+        value,
+        500,
+        true,
+        min_max_propagation::max
+    );
 
     // Check that the entire image is completely filled with propagated value
     for(std::size_t index = 0 ; index < image_in->size_in_bytes() ; ++index)
@@ -249,19 +277,24 @@ void min_max_propagation_test::radius_test()
     utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
     utest_data::generator::image::generate_image(image_out, size, spacing, origin, type, data::image::gray_scale);
 
-    min_max_propagation propagator(image_in, image_out, nullptr);
-
     min_max_propagation::seeds_t seed = {{{16, 16, 16}}};
 
     // Propagate at 16,16,16 with a 3 value
     std::uint8_t value = 3;
 
-    SPTR(data::image::buffer_t) buffer_value =
-        data::helper::medical_image::get_pixel_in_image_space(image_in, value);
-
-    propagator.propagate(seed, buffer_value.get(), 3.5, true, min_max_propagation::min);
-
+    const auto dump_lock_in  = image_in->dump_lock();
     const auto dump_lock_out = image_out->dump_lock();
+
+    min_max_propagation::process(
+        image_in,
+        image_out,
+        nullptr,
+        seed,
+        value,
+        3.5,
+        true,
+        min_max_propagation::min
+    );
 
     // Check the voxel at 16,16,12
     std::uint8_t value_out = image_out->at<std::uint8_t>(16, 16, 12);
