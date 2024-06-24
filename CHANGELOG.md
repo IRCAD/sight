@@ -1,3 +1,135 @@
+# sight 24.1.0
+
+## Refactor:
+
+### core
+
+*Do not enable all modules by default.*
+
+Sight used to provide a mechanism to select the modules for an application. This is the `<activate>` tag of the `profile.xml`. A few years ago, it was decided, by simplicity, to enable all modules by default. Indeed, when an app is installed, the selection is somehow done thanks to the CMake dependencies. However, in the build tree, you may have access to modules your app does not depend on. This is not that tragic, but sometimes this is annoying because we realize we have a missing dependency against an XML configuration for instance only at install time. Also, we may have more extensions available (for instance readers) in the build tree than in the install tree.
+
+With this merge-request, only the modules that an app depends on (recursively) are enabled.
+
+### filter
+
+*Modernize computed signal of filter service interface.*
+
+### viz
+
+*Factorize redundant picking code.*
+
+## Enhancement:
+
+### filter
+
+*Rework propagation service.*
+
+### ui
+
+*Add two options to configure the size and weight of text service.*
+
+`sight`::module::ui::qt``has two new options:
+  - size (optional, default="14pt"): size of the font used in the label, as supported by 'font-size' QSS attribute
+  - weight (optional, default="bold"): normal, bold or any value supported by 'font-weight' QSS attribute
+
+The weight option defaults to 'bold' to keep the default behaviour of the service.
+
+*Toggle visibility of toolbars with modify_layout service.*
+
+*Rework view maximization.*
+
+This fixes the standard maximization shortcut (F11 on Windows, on Linux it depends on the window manager) when a 3d scene is displayed. The 3D scene used its own QShortcut that took precedence over the one installed on the main frame.
+
+This also updates sight_viewer to use a more common maximization/restore behavior, but since the 3D scene real full-screen has also been removed, the tutorial "07" has also been changed to include a demonstration of the 3D scene full-screen.
+
+And last but not the least, a crash was fixed in Speeddial code, discovered while modifying `tuto07_generic_scene`. Another kind of "deadlock" (window that was never closed) was also fixed in gui tests (seen in sight_viewer_uit)
+
+## Bug fixes:
+
+### build
+
+*Properly forward script arguments when using privilege escalation on windows.*
+
+### ci
+
+*Re-enable pch for windows.*
+
+- Fix vswhere not finding Visual Studio
+- make pch related files snake case
+
+### filter
+
+*Lock the image later in the propagation to avoid deadlock.*
+
+### io
+
+*Dicom writer fixes for US volume.*
+
+* This fixes some problems / implements needed features for writing US DICOM.
+
+* It also incorporates uid / date / time generation for study / series.
+
+* Series can suggest a file name and file path for DICOM files.
+
+*Add orthogonality test in matrix helper.*
+
+* create dedicated service to test validity of transformation matrix
+
+*Disable vti related unit test.*
+
+wait for an upstream patch of vtk9
+see https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1064762
+
+### ui
+
+*Crash when notifier class is already destroyed.*
+
+*Add missing log in progress bar.*
+
+*Force a repaint when swapping view in cardinal layout.*
+
+### viz
+
+*Orthographic height on transformed camera.*
+
+*Make the compositor name unique.*
+
+## New features:
+
+### core
+
+*Add api to set/get thread name and use it in worker related classes.*
+
+### ui
+
+*Sliders should indicate frame where a fiducial is placed.*
+
+The slider will visually update with vertical lines that match the color of the fiducials. These lines will indicate the frame and the slice where the fiducial is positioned, allowing users to interact with the slider to retrieve and view specific fiducials.
+
+*Allow to display the slice position in mm in slice_index_position_editor.*
+
+- Rename service configuration tags to snake case
+- Move service configuration tags: `orientation`, `display_axis_selector` and `display_step_buttons` to an attribute of a `config` tag
+- Add a `label` attribute to specify either the slice index (`index`) or position in mm (`position`)
+
+*Add a new progress_bar service.*
+
+The progress bar is now a standalone editor, which use the same API as the old  `job_bar`. The progress bar can be placed anywhere, like any regular editor.
+
+Added features:
+- pulse mode
+- svg pulse mode
+- title and cancel button can be set visible or not
+
+### viz
+
+*Update negato2d_camera to be used with 2d image.*
+
+* also add option to provide the same scaling behavior than video adaptor
+* add option to disable interfaction (touch, mouse, keyboard)
+* ruler removes all distances before adding new one at update
+
+
 # sight 24.0.2
 
 
