@@ -40,9 +40,9 @@ CPPUNIT_TEST(compute_voxel_indices);
 CPPUNIT_TEST(compute_bounding_box);
 CPPUNIT_TEST(test_landmarks);
 CPPUNIT_TEST(test_slice_index_fiducial);
-CPPUNIT_TEST(test_slice_position_fiducial);
 CPPUNIT_TEST(test_image_validity);
 CPPUNIT_TEST(test_slice_index);
+CPPUNIT_TEST(test_slice_position);
 CPPUNIT_TEST(test_distances);
 CPPUNIT_TEST(test_distance_visibility);
 CPPUNIT_TEST(test_landmarks_visibility);
@@ -86,15 +86,12 @@ public:
     /// Tests helper methods for slice indexes based on the position of fiducials.
     static void test_slice_index_fiducial();
 
-    /// Tests helper methods for slice positions based on the position of the fiducials.
-    static void test_slice_position_fiducial();
-
     /// Tests helper methods around slice indexes.
     static void test_slice_index();
 
     /// Tests helper methods around distances.
     static void test_distances();
-
+    static void test_slice_position();
     /// Tests set/get methods on distance visibility.
     static void test_distance_visibility();
 

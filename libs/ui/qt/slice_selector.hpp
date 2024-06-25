@@ -55,17 +55,6 @@ class QStringList;
 namespace sight::ui::qt
 {
 
-struct SlicePosition
-{
-    size_t slice_index;
-};
-
-struct Fiducial
-{
-    int position;
-    QColor color;
-};
-
 /**
  * @brief A Qt panel used to control a VTK 2D Negatoscope view.
  *
@@ -105,7 +94,9 @@ public:
     SIGHT_UI_QT_API_QT void set_enable(bool _enable);
 
     SIGHT_UI_QT_API_QT void set_position_digits(double value);
+
     SIGHT_UI_QT_API_QT void clear_slider_index();
+
     SIGHT_UI_QT_API_QT void clear_slider_position();
 
     SIGHT_UI_QT_API_QT void set_position_value(int index);
@@ -117,8 +108,11 @@ public:
     SIGHT_UI_QT_API_QT void set_image_info(double origin, double spacing);
 
     SIGHT_UI_QT_API_QT void set_orientation(std::string& orientation);
+
     SIGHT_UI_QT_API_QT void add_slider_position(std::int64_t _position, const QColor& _color);
+
     SIGHT_UI_QT_API_QT void add_position_slider(std::double_t _position, const QColor& _color);
+
     SIGHT_UI_QT_API_QT void set_enabled(bool _enable);
 
     SIGHT_UI_QT_API_QT void set_prefix(const std::string& _orientation_prefix);

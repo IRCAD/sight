@@ -570,7 +570,76 @@ void medical_image_helpers_test::test_image_validity()
 }
 
 //------------------------------------------------------------------------------
+void medical_image_helpers_test::test_slice_position()
+{
+    const auto image = generate_image();
+    // AXIAL
+    {
+        auto orientation = med_im_helper::orientation_t::axial;
 
+        auto position = med_im_helper::get_slice_position(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(true, position.has_value());
+
+        CPPUNIT_ASSERT_EQUAL(double(25), position.value());
+
+        med_im_helper::set_slice_position(*image, orientation, std::double_t(35.0));
+
+        position = med_im_helper::get_slice_position(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(true, position.has_value());
+
+        CPPUNIT_ASSERT_EQUAL(double(35), position.value());
+    }
+
+    // SAGITTAL
+    {
+        auto orientation = med_im_helper::orientation_t::sagittal;
+
+        auto index = med_im_helper::get_slice_position(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+
+        CPPUNIT_ASSERT_EQUAL(double(128), index.value());
+
+        med_im_helper::set_slice_position(*image, orientation, std::double_t(0.0));
+
+        index = med_im_helper::get_slice_position(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+
+        CPPUNIT_ASSERT_EQUAL(double(0), index.value());
+    }
+    // FRONTAL
+    {
+        auto orientation = med_im_helper::orientation_t::frontal;
+
+        auto index = med_im_helper::get_slice_position(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+
+        CPPUNIT_ASSERT_EQUAL(double(75), index.value());
+
+        med_im_helper::set_slice_position(*image, orientation, std::double_t(17.0));
+
+        index = med_im_helper::get_slice_position(*image, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+
+        CPPUNIT_ASSERT_EQUAL(double(17), index.value());
+    }
+
+    // No slice index
+    {
+        const auto image_no_slices = std::make_shared<data::image>();
+        auto orientation           = med_im_helper::orientation_t::axial;
+        const auto index           = med_im_helper::get_slice_position(*image_no_slices, orientation);
+
+        CPPUNIT_ASSERT_EQUAL(false, index.has_value());
+    }
+}
+
+//------------------------------------------------------------------------------
 void medical_image_helpers_test::test_slice_index()
 {
     const auto image = generate_image();
@@ -668,35 +737,6 @@ void medical_image_helpers_test::test_slice_index_fiducial()
         auto index = med_im_helper::get_fiducial_slice_index(*image, point1, orientation);
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
         CPPUNIT_ASSERT_EQUAL(std::int64_t(2), index.value());
-    }
-}
-
-//------------------------------------------------------------------------------
-void medical_image_helpers_test::test_slice_position_fiducial()
-{
-    const auto image                   = generate_image();
-    const std::array<double, 3> point1 = {1.0, 2.0, 3.0};
-
-    {
-        auto orientation = med_im_helper::orientation_t::sagittal;
-
-        auto position = med_im_helper::get_fiducial_slice_position(*image, point1, orientation);
-        CPPUNIT_ASSERT_EQUAL(true, position.has_value());
-        CPPUNIT_ASSERT_EQUAL(std::double_t(1), position.value());
-    }
-    {
-        auto orientation = med_im_helper::orientation_t::axial;
-
-        auto position = med_im_helper::get_fiducial_slice_position(*image, point1, orientation);
-        CPPUNIT_ASSERT_EQUAL(true, position.has_value());
-        CPPUNIT_ASSERT_EQUAL(std::double_t(1.5), position.value());
-    }
-    {
-        auto orientation = med_im_helper::orientation_t::frontal;
-
-        auto position = med_im_helper::get_fiducial_slice_position(*image, point1, orientation);
-        CPPUNIT_ASSERT_EQUAL(true, position.has_value());
-        CPPUNIT_ASSERT_EQUAL(std::double_t(2), position.value());
     }
 }
 

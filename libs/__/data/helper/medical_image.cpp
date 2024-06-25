@@ -264,7 +264,7 @@ std::optional<double_t> get_slice_position(
 void set_slice_position(
     data::image& _image,
     const orientation_t& _orientation,
-    double& _position
+    const double& _position
 )
 {
     const auto& spacing = _image.spacing();
@@ -304,37 +304,6 @@ std::optional<std::int64_t> get_fiducial_slice_index(
     }
 
     return slice_index;
-}
-
-//-----------------------------------------------------------------------------
-std::optional<double> get_fiducial_slice_position(
-    const data::image& _image,
-    const std::array<double, 3>& _point,
-    orientation_t _orientation
-)
-{
-    std::optional<double> slice_position;
-
-    switch(_orientation)
-    {
-        case orientation_t::sagittal:
-            slice_position = (std::round(_point[0] - _image.origin()[0]) * _image.spacing()[0]);
-            break;
-
-        case orientation_t::frontal:
-            slice_position = (std::round(_point[1] - _image.origin()[1]) * _image.spacing()[1]);
-            break;
-
-        case orientation_t::axial:
-            slice_position = (std::round(_point[2] - _image.origin()[2]) * _image.spacing()[2]);
-            break;
-
-        default:
-            slice_position = std::nullopt;
-            break;
-    }
-
-    return slice_position;
 }
 
 //------------------------------------------------------------------------------

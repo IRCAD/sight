@@ -500,19 +500,7 @@ void slice_index_position_editor::update_slider_fiducial()
                     std::optional<std::int64_t> fiducial_position;
                     const std::array<double, 3> array_point = {point.x, point.y, point.z};
 
-                    if(m_label_option == label_option_t::index)
-                    {
-                        fiducial_position = imHelper::get_fiducial_slice_index(*image, array_point, m_orientation);
-                    }
-                    else
-                    {
-                        fiducial_position =
-                            static_cast<std::int64_t>(imHelper::get_fiducial_slice_position(
-                                                          *image,
-                                                          array_point,
-                                                          m_orientation
-                            ).value_or(-1));
-                    }
+                    fiducial_position = imHelper::get_fiducial_slice_index(*image, array_point, m_orientation);
 
                     if(fiducial_position.has_value())
                     {
@@ -523,8 +511,7 @@ void slice_index_position_editor::update_slider_fiducial()
                         else
                         {
                             m_slice_selector_with_position->add_position_slider(
-                                static_cast<double>(fiducial_position.
-                                                    value()),
+                                static_cast<double>(fiducial_position.value()),
                                 color
                             );
                         }
@@ -588,6 +575,7 @@ service::connections_t slice_index_position_editor::auto_connections() const
         connections.push(IMAGE_INOUT, data::has_fiducials::signals::GROUP_REMOVED, service::slots::UPDATE);
         connections.push(IMAGE_INOUT, data::has_fiducials::signals::POINT_REMOVED, service::slots::UPDATE);
         connections.push(IMAGE_INOUT, data::has_fiducials::signals::POINT_ADDED, service::slots::UPDATE);
+        connections.push(IMAGE_INOUT, data::has_fiducials::signals::POINT_MODIFIED, service::slots::UPDATE);
     }
 
     return connections;

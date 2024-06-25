@@ -53,11 +53,6 @@ enum orientation_t
     axial    = z_axis
 };
 
-struct fiducial_info
-{
-    std::int64_t position;
-    std::vector<QColor> colors;
-};
 /**
  * @brief   slice_index_position_editor service allows to change the slice index/position of an image.
  *

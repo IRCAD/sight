@@ -233,6 +233,7 @@ public:
 protected:
 
     //------------------------------------------------------------------------------
+
     void paintEvent(QPaintEvent* _event) override
     {
         QSlider::paintEvent(_event);
@@ -240,25 +241,28 @@ protected:
         QPainter painter(this);
         QStyleOptionSlider opt;
         initStyleOption(&opt);
-        QRect rect       = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderGroove, this);
-        int handle_width = style()->pixelMetric(QStyle::PM_SliderControlThickness, &opt, this);
-
-        int effective_width = rect.width() - handle_width;
+        QRect rect                = style()->subControlRect(QStyle::CC_Slider, &opt, QStyle::SC_SliderGroove, this);
+        const int handle_width    = style()->pixelMetric(QStyle::PM_SliderControlThickness, &opt, this);
+        const int effective_width = rect.width() - handle_width;
         for(const auto& [position, colors] : m_position_colors)
         {
-            double position_scaled = static_cast<double>(position) / static_cast<double>(maximum());
-            int x                  = rect.left() + handle_width / 2
-                                     + static_cast<int>(position_scaled * effective_width);
+            const double position_scaled = static_cast<double>(position) / static_cast<double>(maximum());
+            const int x                  = rect.left() + handle_width / 2
+                                           + static_cast<int>(position_scaled * effective_width);
+            int segment_height_base     = rect.height() / static_cast<int>(colors.size());
+            const auto remaining_height = static_cast<size_t>(rect.height() % static_cast<int>(colors.size()));
+            int current_top             = rect.top();
 
             if(x >= rect.left() && x < rect.right())
             {
-                int segment_height = rect.height() / static_cast<int>(colors.size());
-                int current_top    = rect.top();
-
-                for(const QColor& color : colors)
+                for(size_t i = 0 ; i < colors.size() ; ++i)
                 {
+                    const QColor& color = colors[i];
                     QPen pen(color, 3);
                     painter.setPen(pen);
+
+                    int segment_height = segment_height_base + (i < remaining_height ? 1 : 0);
+
                     painter.drawLine(x, current_top, x, current_top + segment_height);
                     current_top += segment_height;
                 }
