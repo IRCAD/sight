@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,8 @@
 
 #include "core/jobs/job.hpp"
 
+#include <core/compare.hpp>
 #include <core/macros.hpp>
-#include <core/tools/compare.hpp>
 
 #include <data/dicom/sop.hpp>
 #include <data/helper/medical_image.hpp>
@@ -575,7 +575,7 @@ inline static data::image::spacing_t compute_spacing(
 
     // Z Spacing correction
     // Overwrite only if GDCM returned the default value (1.0), since GDCM usually knows to compute it right
-    if(core::tools::is_equal(spacing[2], 1.0))
+    if(core::is_equal(spacing[2], 1.0))
     {
         const auto& computed_spacing = compute_z_spacing(_source);
 
@@ -878,7 +878,7 @@ inline static data::series_set::sptr read_image_instance(
         [&]
         {
             if(const double gdcm_intercept = gdcm_image.GetIntercept();
-               !core::tools::is_equal(gdcm_intercept, 0.0))
+               !core::is_equal(gdcm_intercept, 0.0))
             {
                 return std::make_pair(true, gdcm_intercept);
             }
@@ -897,7 +897,7 @@ inline static data::series_set::sptr read_image_instance(
         [&]
         {
             if(const double gdcm_slope = gdcm_image.GetSlope();
-               !core::tools::is_equal(gdcm_slope, 1.0))
+               !core::is_equal(gdcm_slope, 1.0))
             {
                 return std::make_pair(true, gdcm_slope);
             }

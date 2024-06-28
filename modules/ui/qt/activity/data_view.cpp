@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -160,7 +160,7 @@ bool data_view::eventFilter(QObject* _obj, QEvent* _event)
                 if(!uid.empty())
                 {
                     // insert the object if it is in the required type
-                    data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
+                    data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
                     if(obj && obj->is_a(requirement.type))
                     {
                         // Insert the new object
@@ -441,7 +441,7 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
             std::string uid =
                 item->data(int(column_commun_t::id), data_view::UID_ROLE).toString().toStdString();
 
-            data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
+            data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
             if(obj && obj->is_a(req.type))
             {
                 object = obj;
@@ -489,7 +489,7 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
                     std::string uid            =
                         item_data->data(int(column_commun_t::id), UID_ROLE).toString().toStdString();
 
-                    data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
+                    data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
                     if(obj && obj->is_a(req.type))
                     {
                         vector->push_back(obj);
@@ -516,7 +516,7 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
                     std::string uid            =
                         item_data->data(int(column_commun_t::id), UID_ROLE).toString().toStdString();
 
-                    data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
+                    data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
                     if(obj && obj->is_a(req.type))
                     {
                         std::string key = req.keys[i].key;
@@ -1042,7 +1042,7 @@ void data_view::on_tree_item_double_clicked(QTreeWidgetItem* _item, int /*unused
         std::string uid = _item->data(int(column_commun_t::id), UID_ROLE).toString().toStdString();
         if(!uid.empty())
         {
-            data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
+            data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
             if(obj)
             {
                 if(obj->is_a("sight::data::string"))

@@ -26,7 +26,7 @@
 #include <core/com/signal.hxx>
 #include <core/com/signals.hpp>
 #include <core/com/slots.hxx>
-#include <core/tools/id.hpp>
+#include <core/id.hpp>
 
 #include <data/image_series.hpp>
 #include <data/mesh.hpp>

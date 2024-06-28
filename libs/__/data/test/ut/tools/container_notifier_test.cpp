@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,8 @@
 #include <core/com/signal.hxx>
 #include <core/com/slot.hpp>
 #include <core/com/slot.hxx>
+#include <core/compare.hpp>
 #include <core/thread/worker.hpp>
-#include <core/tools/compare.hpp>
 #include <core/tools/uuid.hpp>
 
 #include <data/activity_set.hpp>
@@ -144,7 +144,7 @@ inline static void container_notifier_test_fn()
                 container->push_back(std::dynamic_pointer_cast<series>(object2));
                 container->push_back(std::dynamic_pointer_cast<series>(object3));
             }
-            else if constexpr(core::tools::is_map_like<T>::value)
+            else if constexpr(core::is_map_like<T>::value)
             {
                 container->insert({s_DESCRIPTION1, object1});
                 container->insert({s_DESCRIPTION2, object2});
@@ -178,7 +178,7 @@ inline static void container_notifier_test_fn()
                 CPPUNIT_ASSERT(added_from_slot[1].first == object2);
                 CPPUNIT_ASSERT(added_from_slot[2].first == object3);
             }
-            else if constexpr(core::tools::is_map_like<T>::value)
+            else if constexpr(core::is_map_like<T>::value)
             {
                 CPPUNIT_ASSERT(added_from_slot[s_DESCRIPTION1] == object1);
                 CPPUNIT_ASSERT(added_from_slot[s_DESCRIPTION2] == object2);
@@ -243,7 +243,7 @@ inline static void container_notifier_test_fn()
             {
                 container->remove_camera(std::static_pointer_cast<camera>(object1));
             }
-            else if constexpr(core::tools::is_map_like<T>::value)
+            else if constexpr(core::is_map_like<T>::value)
             {
                 container->erase(s_DESCRIPTION1);
             }
@@ -271,7 +271,7 @@ inline static void container_notifier_test_fn()
             {
                 CPPUNIT_ASSERT(removed_from_slot[0].first == object1);
             }
-            else if constexpr(core::tools::is_map_like<T>::value)
+            else if constexpr(core::is_map_like<T>::value)
             {
                 CPPUNIT_ASSERT(removed_from_slot[s_DESCRIPTION1] == object1);
             }
@@ -283,7 +283,7 @@ inline static void container_notifier_test_fn()
     }
 
     // Test changed signal
-    if constexpr(core::tools::is_map_like<T>::value)
+    if constexpr(core::is_map_like<T>::value)
     {
         auto worker                   = core::thread::worker::make();
         std::size_t change_call_count = 0;

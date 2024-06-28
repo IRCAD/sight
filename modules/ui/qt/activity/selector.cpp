@@ -145,7 +145,7 @@ void selector::starting()
     const int num_rows       = static_cast<int>(std::floor(rows));
     num_cols = 2 * num_cols + 1;
 
-    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(base_id());
 
     QWidget* const container = qt_container->get_qt_container();
     container->setObjectName(service_id);

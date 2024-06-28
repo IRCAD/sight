@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -422,7 +422,7 @@ bool array::operator==(const array& _other) const noexcept
     if(m_strides != _other.m_strides
        || m_type != _other.m_type
        || m_size != _other.m_size
-       || !core::tools::is_equal(m_buffer_object, _other.m_buffer_object))
+       || !core::is_equal(m_buffer_object, _other.m_buffer_object))
     {
         return false;
     }

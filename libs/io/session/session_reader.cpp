@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -75,7 +75,7 @@ public:
     detail::session_deserializer m_session_deserializer;
 
     /// Use a shared_ptr to keep the object alive as it is the read() return value
-    core::tools::object::sptr m_object;
+    core::object::sptr m_object;
 
     /// Pointer to the public interface
     session_reader* const m_session_reader;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ void transfer_function::updating()
 
 // ------------------------------------------------------------------------------
 
-void transfer_function::create_config(core::tools::object::sptr _obj)
+void transfer_function::create_config(core::object::sptr _obj)
 {
     data::transfer_function::sptr tf = std::dynamic_pointer_cast<data::transfer_function>(_obj);
     SIGHT_ASSERT("transfer_function not instanced", tf);

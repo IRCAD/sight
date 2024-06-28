@@ -24,8 +24,8 @@
 
 #include <sight/app/config.hpp>
 
+#include <core/object.hpp>
 #include <core/tools/failed.hpp>
-#include <core/tools/object.hpp>
 
 #include <service/object_parser.hpp>
 
@@ -51,7 +51,7 @@ public:
     ~generic_field() override
     = default;
 
-    SIGHT_APP_API void create_config(core::tools::object::sptr _obj) override;
+    SIGHT_APP_API void create_config(core::object::sptr _obj) override;
 
 protected:
 

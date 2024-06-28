@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -241,7 +241,7 @@ void buffer_tl::clear_timeline()
 bool buffer_tl::operator==(const buffer_tl& _other) const noexcept
 {
     if(m_maximum_size != _other.m_maximum_size
-       || !core::tools::is_equal(m_timeline, _other.m_timeline))
+       || !core::is_equal(m_timeline, _other.m_timeline))
     {
         return false;
     }

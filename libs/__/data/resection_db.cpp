@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,8 +110,8 @@ void resection_db::add_resection(const data::resection::sptr& _resection)
 
 bool resection_db::operator==(const resection_db& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_safe_resection, _other.m_safe_resection)
-       || !core::tools::is_equal(m_resections, _other.m_resections))
+    if(!core::is_equal(m_safe_resection, _other.m_safe_resection)
+       || !core::is_equal(m_resections, _other.m_resections))
     {
         return false;
     }

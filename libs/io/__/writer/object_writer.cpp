@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,14 +29,14 @@ namespace sight::io::writer
 
 //------------------------------------------------------------------------------
 
-void object_writer::set_object(core::tools::object::csptr _object)
+void object_writer::set_object(core::object::csptr _object)
 {
     m_object = _object;
 }
 
 //------------------------------------------------------------------------------
 
-core::tools::object::csptr object_writer::get_object() const
+core::object::csptr object_writer::get_object() const
 {
     auto object = m_object.lock();
     SIGHT_ASSERT("Object expired.", object);

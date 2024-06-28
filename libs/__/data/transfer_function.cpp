@@ -337,7 +337,7 @@ void transfer_function::deep_copy(const object::csptr& _source, const std::uniqu
 bool transfer_function::operator==(const transfer_function& _other) const noexcept
 {
     if(m_name != _other.m_name
-       || !core::tools::is_equal(m_background_color, _other.m_background_color)
+       || !core::is_equal(m_background_color, _other.m_background_color)
        || m_pieces.size() != _other.m_pieces.size())
     {
         return false;

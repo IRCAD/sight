@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ namespace sight::viz::scene2d::data::parser
 
 //------------------------------------------------------------------------------
 
-void viewport::create_config(core::tools::object::sptr _obj)
+void viewport::create_config(core::object::sptr _obj)
 {
     const data::viewport::sptr viewport = std::dynamic_pointer_cast<data::viewport>(_obj);
     SIGHT_ASSERT("viewport does not exist.", viewport);

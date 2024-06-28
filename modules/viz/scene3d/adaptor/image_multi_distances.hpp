@@ -196,7 +196,7 @@ private:
     };
 
     /// Map each distances to there related list ID.
-    using distance_map = std::map<core::tools::id::type, distance_data>;
+    using distance_map = std::map<core::id::type, distance_data>;
 
     /**
      * @brief Generates a dashed line in a Ogre::ManualObject.
@@ -242,7 +242,7 @@ private:
      * @brief Destroys a distance from its ID and remove it from m_distances.
      * @param _id ID of the distance.
      */
-    void destroy_distance(core::tools::id::type _id);
+    void destroy_distance(core::id::type _id);
 
     /// Slot: Allows visualizing the creation and/or modification of distances field of an image in multiple
     /// adaptors(Negato2d/Negato3d) by displaying the distances synchronously.

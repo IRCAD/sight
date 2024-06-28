@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -170,7 +170,7 @@ bool dicom_series::operator==(const dicom_series& _other) const noexcept
        || m_sop_class_ui_ds != _other.m_sop_class_ui_ds
        || m_computed_tag_values != _other.m_computed_tag_values
        || m_first_instance_number != _other.m_first_instance_number
-       || !core::tools::is_equal(m_dicom_container, _other.m_dicom_container))
+       || !core::is_equal(m_dicom_container, _other.m_dicom_container))
     {
         return false;
     }

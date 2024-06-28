@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,36 +21,29 @@
 
 #pragma once
 
-#include <core/object.hpp>
-
 #include <cppunit/extensions/HelperMacros.h>
 
 namespace sight::core::tools::ut
 {
 
-class id_test : public CPPUNIT_NS::TestFixture
+class string_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(id_test);
-CPPUNIT_TEST(object_id_test);
-CPPUNIT_TEST(concurrent_access_on_id_map_test);
-CPPUNIT_TEST(join_id_test);
-CPPUNIT_TEST(short_id_test);
+CPPUNIT_TEST_SUITE(string_test);
+CPPUNIT_TEST(concat_basic_test);
+CPPUNIT_TEST(concat_empty_test);
+CPPUNIT_TEST(join_basic_test);
+CPPUNIT_TEST(join_empty_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    // interface
     void setUp() override;
     void tearDown() override;
 
-    static void object_id_test();
-    static void concurrent_access_on_id_map_test();
-    static void join_id_test();
-    static void short_id_test();
-
-private:
-
-    static void run_id_creation();
+    static void concat_basic_test();
+    static void concat_empty_test();
+    static void join_basic_test();
+    static void join_empty_test();
 };
 
 } // namespace sight::core::tools::ut

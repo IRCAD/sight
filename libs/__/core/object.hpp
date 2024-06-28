@@ -24,17 +24,17 @@
 
 #include <sight/core/config.hpp>
 
-#include "core/tools/id.hpp"
+#include "base.hpp"
+#include "id.hpp"
 
-#include <core/base.hpp>
-namespace sight::core::tools
+namespace sight::core
 {
 
 /**
  * @brief   Define Base class for Sight objects and services
  */
 class SIGHT_CORE_CLASS_API object : public core::base_object,
-                                    protected core::tools::id
+                                    protected core::id
 {
 public:
 
@@ -48,10 +48,11 @@ public:
     object& operator=(object&&)      = delete;
 
     // expose API for ID management
-    using core::tools::id::has_id;
-    using core::tools::id::get_id;
-    using core::tools::id::set_id;
-    using core::tools::id::reset_id;
+    using core::id::has_id;
+    using core::id::get_id;
+    using core::id::set_id;
+    using core::id::reset_id;
+    using core::id::base_id;
 
     SIGHT_CORE_API object() = default;
     SIGHT_CORE_API ~object() override;
@@ -68,4 +69,4 @@ public:
     SIGHT_CORE_API static object::sptr from_uuid(const std::string& _uuid);
 };
 
-} // namespace sight::core::tools
+} // namespace sight::core

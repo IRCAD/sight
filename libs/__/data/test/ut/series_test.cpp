@@ -21,7 +21,7 @@
 
 #include "series_test.hpp"
 
-#include <core/tools/compare.hpp>
+#include <core/compare.hpp>
 #include <core/tools/uuid.hpp>
 
 #include <data/dicom/attribute.hpp>
@@ -1867,7 +1867,7 @@ void series_test::contrast_flow_rate_test()
     {
         auto series = std::make_shared<data::image_series>();
         series->set_contrast_flow_rates(s_CONTRAST_FLOW_RATES);
-        CPPUNIT_ASSERT(core::tools::is_equal(s_CONTRAST_FLOW_RATES, series->get_contrast_flow_rates()));
+        CPPUNIT_ASSERT(core::is_equal(s_CONTRAST_FLOW_RATES, series->get_contrast_flow_rates()));
         CPPUNIT_ASSERT(
             s_CONTRAST_FLOW_RATE_STRINGS
             == series->get_byte_values(data::dicom::attribute::Keyword::ContrastFlowRate)
@@ -1950,7 +1950,7 @@ void series_test::contrast_flow_duration_test()
     {
         auto series = std::make_shared<data::image_series>();
         series->set_contrast_flow_durations(s_CONTRAST_FLOW_DURATIONS);
-        CPPUNIT_ASSERT(core::tools::is_equal(s_CONTRAST_FLOW_DURATIONS, series->get_contrast_flow_durations()));
+        CPPUNIT_ASSERT(core::is_equal(s_CONTRAST_FLOW_DURATIONS, series->get_contrast_flow_durations()));
         CPPUNIT_ASSERT(
             s_CONTRAST_FLOW_DURATION_STRINGS
             == series->get_byte_values(data::dicom::attribute::Keyword::ContrastFlowDuration)

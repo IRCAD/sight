@@ -365,7 +365,7 @@ data::object::sptr config_manager::get_new_object(config_attribute_t _type, conf
     if(_uid.second)
     {
         SIGHT_ASSERT("Object already has an UID.", !obj->has_id());
-        SIGHT_ASSERT("UID " << _uid.first << " already exists.", !core::tools::id::exist(_uid.first));
+        SIGHT_ASSERT("UID " << _uid.first << " already exists.", !core::id::exist(_uid.first));
         obj->set_id(_uid.first);
     }
 
@@ -383,8 +383,8 @@ data::object::sptr config_manager::get_new_object(config_attribute_t _type, cons
 
 data::object::sptr config_manager::get_object(config_attribute_t _type, const std::string& _uid) const
 {
-    SIGHT_ASSERT(this->msg_head() + "Object with UID \"" + _uid + "\" doesn't exist.", core::tools::id::exist(_uid));
-    auto obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(_uid));
+    SIGHT_ASSERT(this->msg_head() + "Object with UID \"" + _uid + "\" doesn't exist.", core::id::exist(_uid));
+    auto obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(_uid));
 
     SIGHT_ASSERT(this->msg_head() + "The UID '" + _uid + "' does not reference any object.", obj);
 
@@ -411,7 +411,7 @@ service::base::sptr config_manager::get_new_service(const std::string& _uid, con
     SIGHT_ASSERT("factory could not create service of type <" + _impl_type + ">.", srv);
     SIGHT_ASSERT("Service already has an UID.", !srv->has_id());
 
-    SIGHT_ASSERT(this->msg_head() + "UID " + _uid + " already exists.", !core::tools::id::exist(_uid));
+    SIGHT_ASSERT(this->msg_head() + "UID " + _uid + " already exists.", !core::id::exist(_uid));
     if(!_uid.empty())
     {
         srv->set_id(_uid);
@@ -459,7 +459,7 @@ void config_manager::process_start_items()
             const auto uid = elem.second.get<std::string>("<xmlattr>.uid");
             SIGHT_ASSERT("\"uid\" attribute is empty.", !uid.empty());
 
-            if(!core::tools::id::exist(uid))
+            if(!core::id::exist(uid))
             {
                 if(m_deferred_services.find(uid) != m_deferred_services.end())
                 {
@@ -510,7 +510,7 @@ void config_manager::process_update_items()
             const auto uid = elem.second.get<std::string>("<xmlattr>.uid");
             SIGHT_ASSERT("\"uid\" attribute is empty.", !uid.empty());
 
-            if(!core::tools::id::exist(uid))
+            if(!core::id::exist(uid))
             {
                 if(m_deferred_services.find(uid) != m_deferred_services.end())
                 {
@@ -662,7 +662,7 @@ void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
                 m_deferred_services.insert(srv_config.m_uid);
 
                 // Do not start the service if any non-optional object is not yet present
-                if(!objectCfg.m_optional && !core::tools::id::exist(objectCfg.m_uid))
+                if(!objectCfg.m_optional && !core::id::exist(objectCfg.m_uid))
                 {
                     create_service = false;
                 }
@@ -688,7 +688,7 @@ void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
             // Check if a service hasn't been already created with this uid
             SIGHT_ASSERT(
                 this->msg_head() + "UID " + srv_config.m_uid + " already exists.",
-                !core::tools::id::exist(srv_config.m_uid)
+                !core::id::exist(srv_config.m_uid)
             );
 
             const std::string msg = config_manager::get_uid_list_as_string(uids);
@@ -812,7 +812,7 @@ void config_manager::create_connections()
         if(elem.first == "connect")
         {
             // Parse all connections
-            auto gen_id_fn = [this](){return "Proxy_" + this->get_id() + "_" + std::to_string(m_proxy_id++);};
+            auto gen_id_fn = [this](){return "proxy_" + this->get_id() + "_" + std::to_string(m_proxy_id++);};
 
             proxy_connections_t connection_infos = app::helper::config::parse_connections2(
                 elem.second,
@@ -902,10 +902,10 @@ void config_manager::destroy_proxy(
     {
         if(_key.empty() || signal_elt.first == _key)
         {
-            core::tools::object::csptr obj = _hint_obj;
+            core::object::csptr obj = _hint_obj;
             if(obj == nullptr)
             {
-                obj = core::tools::id::get_object(signal_elt.first);
+                obj = core::id::get_object(signal_elt.first);
             }
 
             core::com::has_signals::csptr has_signals = std::dynamic_pointer_cast<const core::com::has_signals>(obj);
@@ -933,7 +933,7 @@ void config_manager::destroy_proxy(
     {
         if(_key.empty() || slot_elt.first == _key)
         {
-            core::tools::object::sptr obj        = core::tools::id::get_object(slot_elt.first);
+            core::object::sptr obj               = core::id::get_object(slot_elt.first);
             core::com::has_slots::sptr has_slots = std::dynamic_pointer_cast<core::com::has_slots>(obj);
             SIGHT_ASSERT(this->msg_head() + "Slot destination not found '" + slot_elt.first + "'", has_slots);
 
@@ -1070,7 +1070,7 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
                         );
                     }
                 }
-                else if(core::tools::id::exist(uid))
+                else if(core::id::exist(uid))
                 {
                     service::base::sptr srv = service::get(uid);
                     SIGHT_ASSERT(this->msg_head() + "No service registered with UID \"" + uid + "\".", srv);
@@ -1206,7 +1206,7 @@ void config_manager::remove_objects(data::object::sptr _obj, const std::string& 
         // Are there services that were using this object ?
         for(const auto& srv_cfg : it_deferred_obj->second.m_services_cfg)
         {
-            if(core::tools::id::exist(srv_cfg.m_uid))
+            if(core::id::exist(srv_cfg.m_uid))
             {
                 // Check all objects, to know if this object is optional
                 bool optional = true;
@@ -1292,7 +1292,7 @@ void config_manager::connect_proxy(const std::string& _channel, const proxy_conn
 
     for(const auto& signal_cfg : _connect_cfg.m_signals)
     {
-        core::tools::object::sptr sig_source = core::tools::id::get_object(signal_cfg.first);
+        core::object::sptr sig_source = core::id::get_object(signal_cfg.first);
         if(sig_source == nullptr)
         {
             // We didn't found the object or service globally, let's try with local deferred objects
@@ -1328,7 +1328,7 @@ void config_manager::connect_proxy(const std::string& _channel, const proxy_conn
 
     for(const auto& slot_cfg : _connect_cfg.m_slots)
     {
-        core::tools::object::sptr slot_dest  = core::tools::id::get_object(slot_cfg.first);
+        core::object::sptr slot_dest         = core::id::get_object(slot_cfg.first);
         core::com::has_slots::sptr has_slots = std::dynamic_pointer_cast<core::com::has_slots>(slot_dest);
         SIGHT_ASSERT(this->msg_head() + "Slot destination not found '" + slot_cfg.first + "'", has_slots);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -127,7 +127,7 @@ void data_parser_test::test_image_parser()
     const std::string object_uuid = "objectUUID";
     service::config_t config;
 
-    // Configuration on core::tools::object which uid is objectUUID
+    // Configuration on core::object which uid is objectUUID
     service::config_t obj_cfg;
     obj_cfg.add("<xmlattr>.uid", object_uuid);
     obj_cfg.add("<xmlattr>.type", "sight::data::image");
@@ -138,7 +138,7 @@ void data_parser_test::test_image_parser()
     auto config_manager = app::config_manager::make();
     config_manager->app::config_manager::set_config(config);
     config_manager->create();
-    auto image = std::dynamic_pointer_cast<data::image>(core::tools::id::get_object(object_uuid));
+    auto image = std::dynamic_pointer_cast<data::image>(core::id::get_object(object_uuid));
 
     // Test object uid
     CPPUNIT_ASSERT_EQUAL(object_uuid, image->get_id());
@@ -219,7 +219,7 @@ service::config_t data_parser_test::build_object_config()
 {
     service::config_t config;
 
-    // Configuration on core::tools::object which uid is objectUUID
+    // Configuration on core::object which uid is objectUUID
     service::config_t obj_cfg;
     obj_cfg.add("<xmlattr>.uid", "objectUUID");
     obj_cfg.add("<xmlattr>.type", "sight::data::image");

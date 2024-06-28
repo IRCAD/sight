@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,16 @@
 
 // cspell:ignore NOLINTNEXTLINE
 
-#include "core/tools/id.hpp"
+#include "id.hpp"
 
-#include "core/tools/failed.hpp"
-#include "core/tools/object.hpp"
+#include "demangler.hpp"
+#include "object.hpp"
 
-#include <core/demangler.hpp>
+#include "tools/failed.hpp"
 
 #include <boost/lexical_cast.hpp>
 
-namespace sight::core::tools
+namespace sight::core
 {
 
 id::categorized_counter id::s_categorized_counter;
@@ -112,11 +112,25 @@ id::type id::get_id(policy _policy) const
         }
         else if(_policy == policy::must_exist)
         {
-            throw core::tools::failed("fwID::get_id() no id set");
+            throw core::tools::failed("id::get_id() no id set");
         }
     }
 
     return m_id;
+}
+
+//------------------------------------------------------------------------------
+
+id::type id::base_id(policy _policy) const
+{
+    const auto& id = get_id(_policy);
+
+    if(const auto pos = id.find_last_of(s_separator); pos != std::string::npos)
+    {
+        return id.substr(pos + 1);
+    }
+
+    return id;
 }
 
 //-----------------------------------------------------------------------------
@@ -137,7 +151,7 @@ id::type id::generate() const
 
 //-----------------------------------------------------------------------------
 
-core::tools::object::sptr id::get_object(id::type _request_id)
+object::sptr id::get_object(id::type _request_id)
 {
     core::mt::read_lock lock(s_dictionary_mutex);
     auto it = s_dictionary.find(_request_id);
@@ -172,4 +186,4 @@ void id::remove_id_from_dictionary(type _id)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::core::tools
+} // namespace sight::core

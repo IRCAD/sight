@@ -29,7 +29,7 @@
 #include "data/registry/macros.hpp"
 
 #include <core/clock.hpp>
-#include <core/tools/compare.hpp>
+#include <core/compare.hpp>
 
 #include <gdcmDict.h>
 #include <gdcmDicts.h>

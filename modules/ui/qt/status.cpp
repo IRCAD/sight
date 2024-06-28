@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -111,7 +111,7 @@ void status::configuring(const config_t& _config)
             auto* status     = new QToolButton();
             status->setText(QString::fromStdString(label));
 
-            const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+            const QString service_id = QString::fromStdString(base_id());
             status->setObjectName(service_id + "/" + QString::number(i++));
 
             m_label_status.push_back(status);

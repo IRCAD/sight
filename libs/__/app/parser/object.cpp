@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ void object::updating()
 
 //------------------------------------------------------------------------------
 
-void object::create_config(core::tools::object::sptr _obj)
+void object::create_config(core::object::sptr _obj)
 {
     // Declaration of attributes values
     const std::string object_build_mode = "src";

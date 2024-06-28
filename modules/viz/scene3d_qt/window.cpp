@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #define FW_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
-#include <core/tools/compare.hpp>
+#include <core/compare.hpp>
 
 #include <viz/scene3d/utils.hpp>
 #include <viz/scene3d/window_manager.hpp>
@@ -453,7 +453,7 @@ void window::gesture_event(QGestureEvent* _e)
         }
 
         if(const auto& delta = pan_gesture->delta();
-           core::tools::is_greater(std::abs(delta.x()), 0.0F) || core::tools::is_greater(std::abs(delta.y()), 0.0F))
+           core::is_greater(std::abs(delta.x()), 0.0F) || core::is_greater(std::abs(delta.y()), 0.0F))
         {
             sight::viz::scene3d::window_interactor::interaction_info info {};
 
@@ -502,7 +502,7 @@ void window::gesture_event(QGestureEvent* _e)
 
         // Ignore the gesture if the scale factor is 0 or too near 1.0
         if(const auto scale = pinch_gesture->scaleFactor();
-           !core::tools::is_equal(scale, 0) && !core::tools::is_less(std::abs(scale - 1.0F), 0.01F))
+           !core::is_equal(scale, 0) && !core::is_less(std::abs(scale - 1.0F), 0.01F))
         {
             sight::viz::scene3d::window_interactor::interaction_info info {};
             info.interaction_type = sight::viz::scene3d::window_interactor::interaction_info::pinch_gesture;
@@ -512,7 +512,7 @@ void window::gesture_event(QGestureEvent* _e)
             // In order to interface with the mouse wheel methods, where angleDelta is positive if the wheel is
             // rotated away from the user and negative if the wheel is rotated toward the user, the following
             // transformation is done.
-            if(core::tools::is_less(scale, 1.0F))
+            if(core::is_less(scale, 1.0F))
             {
                 info.delta = -1 / scale;
             }

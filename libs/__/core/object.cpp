@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,12 @@
 
 #include "object.hpp"
 
-#include "uuid.hpp"
+#include "tools/uuid.hpp"
 
 #include <map>
 #include <mutex>
 
-namespace sight::core::tools
+namespace sight::core
 {
 
 static std::map<const object*, std::string> s_ptr_to_uuid;
@@ -74,7 +74,7 @@ std::string object::get_uuid() const
     // Almost impossible, but possible
     do
     {
-        uuid = uuid::generate();
+        uuid = tools::uuid::generate();
     }
     while(s_uuid_to_wptr.find(uuid) != s_uuid_to_wptr.end());
 
@@ -143,4 +143,4 @@ object::~object()
     }
 }
 
-} //namespace sight::core::tools
+} //namespace sight::core

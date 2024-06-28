@@ -169,7 +169,7 @@ void structure_traits_dictionary::deep_copy(
 
 bool structure_traits_dictionary::operator==(const structure_traits_dictionary& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_structure_traits_map, _other.m_structure_traits_map))
+    if(!core::is_equal(m_structure_traits_map, _other.m_structure_traits_map))
     {
         return false;
     }

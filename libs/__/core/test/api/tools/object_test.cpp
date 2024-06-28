@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "object_test.hpp"
 
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::object_test);
@@ -51,7 +51,7 @@ void object_test::id_test()
     const std::string uuid = "uid";
 
     // process
-    core::tools::object::sptr obj = std::make_shared<core::tools::object>();
+    core::object::sptr obj = std::make_shared<core::object>();
 
     obj->set_id(uuid);
 

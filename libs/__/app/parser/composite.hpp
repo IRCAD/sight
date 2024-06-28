@@ -26,8 +26,8 @@
 
 #include <app/config_manager.hpp>
 
+#include <core/object.hpp>
 #include <core/tools/failed.hpp>
-#include <core/tools/object.hpp>
 
 #include <service/object_parser.hpp>
 
@@ -57,7 +57,7 @@ public:
     ~composite() override
     = default;
 
-    SIGHT_APP_API void create_config(core::tools::object::sptr _obj) override;
+    SIGHT_APP_API void create_config(core::object::sptr _obj) override;
 
     SIGHT_APP_API void start_config() override;
 

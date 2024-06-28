@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "uuid_test.hpp"
 
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 #include <core/tools/uuid.hpp>
 
 #include <functional>
@@ -39,7 +39,7 @@ namespace sight::core::tools::ut
 void uuidtest::setUp()
 {
     // Set up context before running a test.
-    m_object = std::make_shared<core::tools::object>();
+    m_object = std::make_shared<core::object>();
     m_uuid   = core::tools::uuid::generate();
 }
 
@@ -56,19 +56,19 @@ void uuidtest::object_uuidtest()
 {
     const std::string uuid = "myUUID";
 
-    core::tools::object::sptr obj = std::make_shared<core::tools::object>();
+    core::object::sptr obj = std::make_shared<core::object>();
 
-    CPPUNIT_ASSERT(!core::tools::object::from_uuid(uuid));
+    CPPUNIT_ASSERT(!core::object::from_uuid(uuid));
 
     obj->set_uuid(uuid);
 
-    CPPUNIT_ASSERT(core::tools::object::from_uuid(uuid));
+    CPPUNIT_ASSERT(core::object::from_uuid(uuid));
     CPPUNIT_ASSERT_EQUAL(uuid, obj->get_uuid());
-    CPPUNIT_ASSERT_EQUAL(obj, core::tools::object::from_uuid(uuid));
+    CPPUNIT_ASSERT_EQUAL(obj, core::object::from_uuid(uuid));
 
-    auto obj2          = std::make_shared<core::tools::object>();
+    auto obj2          = std::make_shared<core::object>();
     std::string uui_d2 = obj2->get_uuid();
-    CPPUNIT_ASSERT_EQUAL(obj2, core::tools::object::from_uuid(uui_d2));
+    CPPUNIT_ASSERT_EQUAL(obj2, core::object::from_uuid(uui_d2));
 }
 
 //-----------------------------------------------------------------------------
@@ -95,18 +95,18 @@ void uuidtest::run_uuidcreation()
 {
     std::string uuid = core::tools::uuid::generate();
 
-    core::tools::object::sptr obj = std::make_shared<core::tools::object>();
+    core::object::sptr obj = std::make_shared<core::object>();
 
-    CPPUNIT_ASSERT(!core::tools::object::from_uuid(uuid));
+    CPPUNIT_ASSERT(!core::object::from_uuid(uuid));
 
     obj->set_uuid(uuid);
 
     CPPUNIT_ASSERT_EQUAL(uuid, obj->get_uuid());
-    CPPUNIT_ASSERT_EQUAL(obj, core::tools::object::from_uuid(uuid));
+    CPPUNIT_ASSERT_EQUAL(obj, core::object::from_uuid(uuid));
 
-    auto obj2          = std::make_shared<core::tools::object>();
+    auto obj2          = std::make_shared<core::object>();
     std::string uui_d2 = obj2->get_uuid();
-    CPPUNIT_ASSERT_EQUAL(obj2, core::tools::object::from_uuid(uui_d2));
+    CPPUNIT_ASSERT_EQUAL(obj2, core::object::from_uuid(uui_d2));
 }
 
 //-----------------------------------------------------------------------------
@@ -134,9 +134,9 @@ void uuidtest::run_access_to_object_uuid()
 {
     m_object->set_uuid(m_uuid);
 
-    CPPUNIT_ASSERT(core::tools::object::from_uuid(m_uuid));
+    CPPUNIT_ASSERT(core::object::from_uuid(m_uuid));
     CPPUNIT_ASSERT_EQUAL(m_uuid, m_object->get_uuid());
-    CPPUNIT_ASSERT_EQUAL(m_object, core::tools::object::from_uuid(m_uuid));
+    CPPUNIT_ASSERT_EQUAL(m_object, core::object::from_uuid(m_uuid));
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,8 +107,8 @@ bool structure_traits::operator==(const structure_traits& _other) const noexcept
        || m_anatomic_region != _other.m_anatomic_region
        || m_property_category != _other.m_property_category
        || m_property_type != _other.m_property_type
-       || !core::tools::is_equal(m_categories, _other.m_categories)
-       || !core::tools::is_equal(m_color, _other.m_color))
+       || !core::is_equal(m_categories, _other.m_categories)
+       || !core::is_equal(m_color, _other.m_color))
     {
         return false;
     }

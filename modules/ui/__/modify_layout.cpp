@@ -132,7 +132,7 @@ void modify_layout::updating()
     {
         std::string uid = elt.first;
         std::string wid = elt.second;
-        SIGHT_ASSERT(uid << " doesn't exist", core::tools::id::exist(uid));
+        SIGHT_ASSERT(uid << " doesn't exist", core::id::exist(uid));
         service::base::sptr service = service::get(uid);
         SIGHT_ASSERT("service not found", service);
         auto container = std::dynamic_pointer_cast<sight::ui::service>(service);
@@ -146,7 +146,7 @@ void modify_layout::updating()
     {
         std::string uid = elt.first;
         bool is_enable  = elt.second;
-        SIGHT_ASSERT(uid << " doesn't exist", core::tools::id::exist(uid));
+        SIGHT_ASSERT(uid << " doesn't exist", core::id::exist(uid));
         service::base::sptr service = service::get(uid);
         SIGHT_ASSERT("service not found", service);
         if(service->started())
@@ -195,60 +195,58 @@ void modify_layout::updating()
         }
     }
 
-    auto set_visible = [](service::base::sptr _service, bool _visible)
-                       {
-                           auto container_srv = std::dynamic_pointer_cast<sight::ui::service>(_service);
-                           if(container_srv)
-                           {
-                               sight::ui::container::widget::sptr container = container_srv->get_container();
-                               container->set_visible(_visible);
-                           }
-                           else
-                           {
-                               auto toolbar_srv = std::dynamic_pointer_cast<sight::ui::toolbar>(_service);
-                               if(toolbar_srv)
-                               {
-                                   toolbar_srv->set_visible(_visible);
-                               }
-                               else
-                               {
-                                   SIGHT_ASSERT(
-                                       "Cannot cast service " << std::quoted(_service->get_id()) << " as a UI service.",
-                                       false
-                                   );
-                               }
-                           }
-                       };
+    auto set_visible =
+        [](service::base::sptr _service, bool _visible)
+        {
+            auto container_srv = std::dynamic_pointer_cast<sight::ui::service>(_service);
+            if(container_srv)
+            {
+                sight::ui::container::widget::sptr container = container_srv->get_container();
+                container->set_visible(_visible);
+            }
+            else
+            {
+                auto toolbar_srv = std::dynamic_pointer_cast<sight::ui::toolbar>(_service);
+                if(toolbar_srv)
+                {
+                    toolbar_srv->set_visible(_visible);
+                }
+                else
+                {
+                    SIGHT_ASSERT(
+                        "Cannot cast service " << std::quoted(_service->get_id()) << " as a UI service.",
+                        false
+                    );
+                }
+            }
+        };
 
-    auto visible = [](service::base::sptr _service)
-                   {
-                       auto container_srv = std::dynamic_pointer_cast<sight::ui::service>(_service);
-                       if(container_srv)
-                       {
-                           sight::ui::container::widget::sptr container = container_srv->get_container();
-                           return !container->is_shown_on_screen();
-                       }
-                       else
-                       {
-                           auto toolbar_srv = std::dynamic_pointer_cast<sight::ui::toolbar>(_service);
-                           if(toolbar_srv)
-                           {
-                               return toolbar_srv->visible();
-                           }
-                       }
+    auto visible =
+        [](service::base::sptr _service)
+        {
+            if(auto container_srv = std::dynamic_pointer_cast<sight::ui::service>(_service); container_srv)
+            {
+                sight::ui::container::widget::sptr container = container_srv->get_container();
+                return !container->is_shown_on_screen();
+            }
 
-                       SIGHT_ASSERT(
-                           "Cannot cast service " << std::quoted(_service->get_id()) << " as a UI service.",
-                           false
-                       );
-                       return false;
-                   };
+            if(auto toolbar_srv = std::dynamic_pointer_cast<sight::ui::toolbar>(_service); toolbar_srv)
+            {
+                return toolbar_srv->visible();
+            }
+
+            SIGHT_ASSERT(
+                "Cannot cast service " << std::quoted(_service->get_id()) << " as a UI service.",
+                false
+            );
+            return false;
+        };
 
     for(const auto& elt : m_show_srv_sid)
     {
         std::string uid       = elt.first;
         const auto visibility = elt.second;
-        SIGHT_ASSERT(uid << " doesn't exist", core::tools::id::exist(uid));
+        SIGHT_ASSERT(uid << " doesn't exist", core::id::exist(uid));
         service::base::sptr service = service::get(uid);
 
         if(visibility == visibility_t::show)

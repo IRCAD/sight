@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -141,7 +141,7 @@ void calibration_info_editor::starting()
     auto* label = new QLabel("nb captures:");
     nb_items_h_box->addWidget(label);
 
-    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(base_id());
 
     m_nb_captures_label = new QLabel("-");
     m_nb_captures_label->setObjectName(service_id + "/nbCapturesLabel");

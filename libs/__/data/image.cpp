@@ -421,15 +421,15 @@ core::memory::buffer_object::csptr image::get_buffer_object() const
 
 bool image::operator==(const image& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_size, _other.m_size)
-       || !core::tools::is_equal(m_spacing, _other.m_spacing)
-       || !core::tools::is_equal(m_origin, _other.m_origin)
+    if(!core::is_equal(m_size, _other.m_size)
+       || !core::is_equal(m_spacing, _other.m_spacing)
+       || !core::is_equal(m_origin, _other.m_origin)
        || m_type != _other.m_type
-       || !core::tools::is_equal(m_window_centers, _other.m_window_centers)
-       || !core::tools::is_equal(m_window_widths, _other.m_window_widths)
+       || !core::is_equal(m_window_centers, _other.m_window_centers)
+       || !core::is_equal(m_window_widths, _other.m_window_widths)
        || m_num_components != _other.m_num_components
        || m_pixel_format != _other.m_pixel_format
-       || !core::tools::is_equal(m_data_array, _other.m_data_array))
+       || !core::is_equal(m_data_array, _other.m_data_array))
     {
         return false;
     }

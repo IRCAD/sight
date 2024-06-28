@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,15 +34,15 @@ namespace sight::data
 template<class C>
 constexpr static auto inserter(C& _container)
 {
-    if constexpr(core::tools::is_container_associative<C>::value)
+    if constexpr(core::is_container_associative<C>::value)
     {
         return std::inserter(_container, _container.begin());
     }
-    else if constexpr(core::tools::is_container_back_inserter<C>::value)
+    else if constexpr(core::is_container_back_inserter<C>::value)
     {
         return std::back_inserter(_container);
     }
-    else if constexpr(core::tools::is_container<C>::value)
+    else if constexpr(core::is_container<C>::value)
     {
         // std::array case
         return _container.begin();
@@ -50,7 +50,7 @@ constexpr static auto inserter(C& _container)
     else
     {
         static_assert(
-            core::tools::is_container<C>::value,
+            core::is_container<C>::value,
             "sight::data::inserter(): Unsupported container type"
         );
 
@@ -87,7 +87,7 @@ inline container<C>::container(C&& _container) :
 template<class C>
 constexpr bool container<C>::operator==(const container& _other) const noexcept
 {
-    if(!core::tools::is_equal(*this, _other))
+    if(!core::is_equal(*this, _other))
     {
         return false;
     }
@@ -118,17 +118,17 @@ inline void container<C>::shallow_copy(const object::csptr& _source)
         !other
     );
 
-    if constexpr(core::tools::is_container_dynamic<C>::value)
+    if constexpr(core::is_container_dynamic<C>::value)
     {
         this->container<C>::clear();
 
-        if constexpr(core::tools::is_vector<C>::value || core::tools::is_container_unordered_associative<C>::value)
+        if constexpr(core::is_vector<C>::value || core::is_container_unordered_associative<C>::value)
         {
             this->container<C>::reserve(other->size());
         }
     }
 
-    if constexpr(core::tools::is_container<C>::value)
+    if constexpr(core::is_container<C>::value)
     {
         std::copy(other->cbegin(), other->cend(), inserter(*this));
     }
@@ -141,9 +141,9 @@ inline void container<C>::shallow_copy(const object::csptr& _source)
 template<class C>
 constexpr bool is_data_object_fn()
 {
-    if constexpr(core::tools::is_map_like<C>::value)
+    if constexpr(core::is_map_like<C>::value)
     {
-        if constexpr(core::tools::is_shared_ptr<typename C::mapped_type>::value)
+        if constexpr(core::is_shared_ptr<typename C::mapped_type>::value)
         {
             // "using" is required for MSVC
             using shared_ptr_type = typename C::mapped_type;
@@ -152,7 +152,7 @@ constexpr bool is_data_object_fn()
     }
     else
     {
-        if constexpr(core::tools::is_shared_ptr<typename C::value_type>::value)
+        if constexpr(core::is_shared_ptr<typename C::value_type>::value)
         {
             // "using" is required for MSVC
             using shared_ptr_type = typename C::value_type;
@@ -178,13 +178,13 @@ inline void container<C>::deep_copy(const object::csptr& _source, const std::uni
     );
 
     // If the container is dynamic, we need to clear it before copying
-    if constexpr(core::tools::is_container_dynamic<C>::value)
+    if constexpr(core::is_container_dynamic<C>::value)
     {
         // Clear the container
         this->container<C>::clear();
 
         // Reserve room in the container, if reserve() is available
-        if constexpr(core::tools::is_vector<C>::value || core::tools::is_container_unordered_associative<C>::value)
+        if constexpr(core::is_vector<C>::value || core::is_container_unordered_associative<C>::value)
         {
             this->container<C>::reserve(other->size());
         }
@@ -194,7 +194,7 @@ inline void container<C>::deep_copy(const object::csptr& _source, const std::uni
     constexpr bool is_data_object = is_data_object_fn<C>();
 
     // Special case for map
-    if constexpr(core::tools::is_map_like<C>::value)
+    if constexpr(core::is_map_like<C>::value)
     {
         // Need to be done this way, because std::pair<key, value>::operator= is deleted..
         for(const auto& [key, value] : *other)
@@ -209,7 +209,7 @@ inline void container<C>::deep_copy(const object::csptr& _source, const std::uni
             }
         }
     }
-    else if constexpr(core::tools::is_container<C>::value)
+    else if constexpr(core::is_container<C>::value)
     {
         if constexpr(is_data_object)
         {
@@ -286,7 +286,7 @@ void container<C>::scoped_emitter::emit() noexcept
     // Build the added and the changed lists
     for(const auto& element : m_container)
     {
-        if constexpr(core::tools::is_map_like<C>::value)
+        if constexpr(core::is_map_like<C>::value)
         {
             // If we cannot find the key in the backup, it means it was added
             if(const auto& it = m_backup.find(element.first); it == m_backup.cend())
@@ -315,7 +315,7 @@ void container<C>::scoped_emitter::emit() noexcept
     // Build the removed lists
     for(const auto& element : m_backup)
     {
-        if constexpr(core::tools::is_map_like<C>::value)
+        if constexpr(core::is_map_like<C>::value)
         {
             // If we cannot find the key in the container, it means it was removed
             if(m_container.find(element.first) == m_container.cend())

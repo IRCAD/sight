@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -160,9 +160,9 @@ bool material::operator==(const material& _other) const noexcept
     if(m_shading_mode != _other.m_shading_mode
        || m_representation_mode != _other.m_representation_mode
        || m_options_mode != _other.m_options_mode
-       || !core::tools::is_equal(m_ambient, _other.m_ambient)
-       || !core::tools::is_equal(m_diffuse, _other.m_diffuse)
-       || !core::tools::is_equal(m_diffuse_texture, _other.m_diffuse_texture)
+       || !core::is_equal(m_ambient, _other.m_ambient)
+       || !core::is_equal(m_diffuse, _other.m_diffuse)
+       || !core::is_equal(m_diffuse_texture, _other.m_diffuse_texture)
        || m_diffuse_texture_filtering != _other.m_diffuse_texture_filtering
        || m_diffuse_texture_wrapping != _other.m_diffuse_texture_wrapping)
     {

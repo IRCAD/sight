@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ void generic_field::updating()
 
 //------------------------------------------------------------------------------
 
-void generic_field::create_config(core::tools::object::sptr _obj)
+void generic_field::create_config(core::object::sptr _obj)
 {
     const auto input = m_cfg.get_optional<std::string>("value");
 

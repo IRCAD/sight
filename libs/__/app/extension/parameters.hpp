@@ -27,7 +27,7 @@
 #include "app/extension/config.hpp"
 
 #include <core/mt/types.hpp>
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <map>
 

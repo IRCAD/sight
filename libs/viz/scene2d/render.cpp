@@ -101,7 +101,7 @@ void render::dispatch_interaction(scene2d::data::event& _event)
             if(elt.second == this->get_id())
             {
                 viz::scene2d::adaptor::sptr adaptor =
-                    std::dynamic_pointer_cast<viz::scene2d::adaptor>(core::tools::id::get_object(elt.first));
+                    std::dynamic_pointer_cast<viz::scene2d::adaptor>(core::id::get_object(elt.first));
                 if(adaptor != nullptr && adaptor->started())
                 {
                     ordered_adaptors.push_back(adaptor);

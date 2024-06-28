@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,8 +31,8 @@
 #include <core/com/has_signals.hpp>
 #include <core/com/has_slots.hpp>
 #include <core/com/helper/sig_slot_connection.hpp>
+#include <core/object.hpp>
 #include <core/runtime/helper.hpp>
-#include <core/tools/object.hpp>
 
 #include <data/object.hpp>
 
@@ -55,12 +55,12 @@ static std::mutex s_services_props_mutex;
 void config::create_connections(
     const core::runtime::config_t& _connection_cfg,
     core::com::helper::sig_slot_connection& _connections,
-    const CSPTR(core::tools::object)& _obj
+    const CSPTR(core::object)& _obj
 )
 {
     connection_info info = parse_connections(_connection_cfg, _obj);
 
-    core::tools::object::sptr sig_source     = core::tools::id::get_object(info.m_signal.first);
+    core::object::sptr sig_source            = core::id::get_object(info.m_signal.first);
     core::com::has_signals::sptr has_signals = std::dynamic_pointer_cast<core::com::has_signals>(sig_source);
 
     SIGHT_ASSERT("Signal source not found '" + info.m_signal.first + "'", sig_source);
@@ -68,7 +68,7 @@ void config::create_connections(
 
     for(const slot_info_t& slot_info : info.m_slots)
     {
-        core::tools::object::sptr slot_obj = core::tools::id::get_object(slot_info.first);
+        core::object::sptr slot_obj = core::id::get_object(slot_info.first);
         SIGHT_ASSERT("Failed to retrieve object '" + slot_info.first + "'", slot_obj);
         core::com::has_slots::sptr has_slots = std::dynamic_pointer_cast<core::com::has_slots>(slot_obj);
         SIGHT_ASSERT("invalid slot owner " << slot_info.first, has_slots);
@@ -81,7 +81,7 @@ void config::create_connections(
 
 config::connection_info config::parse_connections(
     const core::runtime::config_t& _connection_cfg,
-    const CSPTR(core::tools::object)& _obj
+    const CSPTR(core::object)& _obj
 )
 {
     connection_info info;
@@ -208,7 +208,7 @@ void config::disconnect_proxies(const std::string& _object_key, config::proxy_co
         {
             for(const auto& signal_elt : proxy_connection.m_signals)
             {
-                core::tools::object::sptr obj            = core::tools::id::get_object(signal_elt.first);
+                core::object::sptr obj                   = core::id::get_object(signal_elt.first);
                 core::com::has_signals::sptr has_signals = std::dynamic_pointer_cast<core::com::has_signals>(obj);
                 core::com::signal_base::sptr sig         = has_signals->signal(signal_elt.second);
                 proxy->disconnect(proxy_connection.m_channel, sig);
@@ -216,7 +216,7 @@ void config::disconnect_proxies(const std::string& _object_key, config::proxy_co
 
             for(const auto& slot_elt : proxy_connection.m_slots)
             {
-                core::tools::object::sptr obj        = core::tools::id::get_object(slot_elt.first);
+                core::object::sptr obj               = core::id::get_object(slot_elt.first);
                 core::com::has_slots::sptr has_slots = std::dynamic_pointer_cast<core::com::has_slots>(obj);
                 core::com::slot_base::sptr slot      = has_slots->slot(slot_elt.second);
                 proxy->disconnect(proxy_connection.m_channel, slot);

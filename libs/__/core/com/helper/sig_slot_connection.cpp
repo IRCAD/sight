@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,8 @@
 #include <core/com/exception/already_connected.hpp>
 #include <core/com/exception/bad_slot.hpp>
 #include <core/com/signal_base.hpp>
+#include <core/object.hpp>
 #include <core/spy_log.hpp>
-#include <core/tools/object.hpp>
 
 #include <ranges>
 
@@ -70,10 +70,10 @@ void sig_slot_connection::connect(
     }
     catch(core::com::exception::already_connected& e)
     {
-        const auto source = std::dynamic_pointer_cast<const core::tools::object>(_has_signals);
+        const auto source = std::dynamic_pointer_cast<const core::object>(_has_signals);
         auto source_id    = source ? source->get_id() : "";
 
-        const auto target = std::dynamic_pointer_cast<const core::tools::object>(_has_slots);
+        const auto target = std::dynamic_pointer_cast<const core::object>(_has_slots);
         auto target_id    = target ? target->get_id() : "";
 
         SIGHT_ERROR(
@@ -115,10 +115,10 @@ void sig_slot_connection::connect(
         }
         catch(core::com::exception::already_connected& e)
         {
-            const auto source = std::dynamic_pointer_cast<const core::tools::object>(_has_signals);
+            const auto source = std::dynamic_pointer_cast<const core::object>(_has_signals);
             auto source_id    = source ? source->get_id() : "";
 
-            const auto target = std::dynamic_pointer_cast<const core::tools::object>(_has_slots);
+            const auto target = std::dynamic_pointer_cast<const core::object>(_has_slots);
             auto target_id    = target ? target->get_id() : "";
 
             SIGHT_ERROR(

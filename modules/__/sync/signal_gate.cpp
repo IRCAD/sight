@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,9 +76,9 @@ void signal_gate::starting()
             uid.assign(match[1].first, match[1].second);
             signal_key.assign(match[2].first, match[2].second);
 
-            if(core::tools::id::exist(uid))
+            if(core::id::exist(uid))
             {
-                core::tools::object::sptr obj               = core::tools::id::get_object(uid);
+                core::object::sptr obj                      = core::id::get_object(uid);
                 core::com::has_signals::sptr signals_holder = std::dynamic_pointer_cast<core::com::has_signals>(obj);
                 SIGHT_ASSERT("Object with id " << uid << " is not a has_slots", signals_holder);
 

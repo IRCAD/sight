@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -202,7 +202,7 @@ const color::color_t& color::alpha() const
 bool color::operator==(const color& _other) const noexcept
 {
     // If the attributes are different, then it is not equal
-    if(!core::tools::is_equal(m_v_rgba, _other.m_v_rgba))
+    if(!core::is_equal(m_v_rgba, _other.m_v_rgba))
     {
         return false;
     }

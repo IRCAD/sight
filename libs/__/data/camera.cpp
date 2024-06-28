@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -201,17 +201,17 @@ bool camera::operator==(const camera& _other) const noexcept
 {
     if(m_width != _other.m_width
        || m_height != _other.m_height
-       || !core::tools::is_equal(m_intrinsic, _other.m_intrinsic)
-       || !core::tools::is_equal(m_distortion_coefficient, _other.m_distortion_coefficient)
-       || !core::tools::is_equal(m_skew, _other.m_skew)
+       || !core::is_equal(m_intrinsic, _other.m_intrinsic)
+       || !core::is_equal(m_distortion_coefficient, _other.m_distortion_coefficient)
+       || !core::is_equal(m_skew, _other.m_skew)
        || m_is_calibrated != _other.m_is_calibrated
        || m_camera_id != _other.m_camera_id
-       || !core::tools::is_equal(m_max_frame_rate, _other.m_max_frame_rate)
+       || !core::is_equal(m_max_frame_rate, _other.m_max_frame_rate)
        || m_pixel_format != _other.m_pixel_format
        || m_video_file != _other.m_video_file
        || m_stream_url != _other.m_stream_url
        || m_camera_source != _other.m_camera_source
-       || !core::tools::is_equal(m_scale, _other.m_scale))
+       || !core::is_equal(m_scale, _other.m_scale))
     {
         return false;
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@ namespace sight::app::parser
 
 //------------------------------------------------------------------------------
 
-void color::create_config(core::tools::object::sptr _obj)
+void color::create_config(core::object::sptr _obj)
 {
     const data::color::sptr color = std::dynamic_pointer_cast<data::color>(_obj);
     SIGHT_ASSERT("color does not exist.", color);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,7 @@
 
 #include "app/extension/config.hpp"
 
+#include <core/id.hpp>
 #include <core/runtime/module.hpp>
 #include <core/runtime/runtime.hpp>
 
@@ -276,23 +277,15 @@ field_adaptor_t config::composite_to_field_adaptor(data::composite::csptr _field
 
 std::string config::get_unique_identifier(const std::string& _service_uid)
 {
-    static core::mt::mutex s_id_mutex;
-    core::mt::scoped_lock lock(s_id_mutex);
+    static std::mutex s_id_mutex;
+    std::unique_lock lock(s_id_mutex);
 
     static unsigned int srv_cpt = 1;
-    std::stringstream sstr;
 
-    if(_service_uid.empty())
-    {
-        sstr << "config_manager_" << srv_cpt;
-    }
-    else
-    {
-        sstr << _service_uid << "_" << srv_cpt;
-    }
-
-    ++srv_cpt;
-    return sstr.str();
+    return core::id::join(
+        _service_uid.empty() ? "config_manager" : _service_uid,
+        srv_cpt++
+    );
 }
 
 //-----------------------------------------------------------------------------
@@ -370,7 +363,7 @@ core::runtime::config_t config::adapt_config(
                         // This is not a variable, add the prefix
                         result.put(
                             "<xmlattr>." + attribute.first,
-                            _auto_prefix_id + "_" + adapt_field(attribute_value, _field_adaptors)
+                            core::id::join(_auto_prefix_id, adapt_field(attribute_value, _field_adaptors))
                         );
                         continue;
                     }
@@ -387,8 +380,10 @@ core::runtime::config_t config::adapt_config(
                         {
                             result.put(
                                 "<xmlattr>." + attribute.first,
-                                _auto_prefix_id + "_"
-                                + adapt_field(attribute_value, _field_adaptors)
+                                core::id::join(
+                                    _auto_prefix_id,
+                                    adapt_field(attribute_value, _field_adaptors)
+                                )
                             );
                             continue;
                         }
@@ -410,7 +405,7 @@ core::runtime::config_t config::adapt_config(
             {
                 // This is not a variable, add the prefix
                 core::runtime::config_t elt;
-                elt.put_value(_auto_prefix_id + "_" + sub_elem.second.get_value<std::string>());
+                elt.put_value(core::id::join(_auto_prefix_id, sub_elem.second.get_value<std::string>()));
 
                 const auto& sub_attributes = _cfg_elem.get_child_optional("<xmlattr>");
 

@@ -233,7 +233,7 @@ void render::starting()
         m_layers[OGREBACKGROUNDID] = ogre_layer;
     }
 
-    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
+    const std::string service_id = base_id();
     if(m_off_screen)
     {
         // Instantiate the manager that help to communicate between this service and the widget

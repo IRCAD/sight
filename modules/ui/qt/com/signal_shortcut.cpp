@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ void signal_shortcut::starting()
     // Either get the container via a service id
     if(!m_sid.empty())
     {
-        bool sid_exists = core::tools::id::exist(m_sid);
+        bool sid_exists = core::id::exist(m_sid);
 
         if(sid_exists)
         {

@@ -303,11 +303,11 @@ std::size_t landmarks::num_points(const std::string& _name) const
 
 bool landmarks::landmarks_group::operator==(const landmarks_group& _other) const noexcept
 {
-    return !(!core::tools::is_equal(m_color, _other.m_color)
-             || !core::tools::is_equal(m_size, _other.m_size)
+    return !(!core::is_equal(m_color, _other.m_color)
+             || !core::is_equal(m_size, _other.m_size)
              || m_shape != _other.m_shape
              || m_visibility != _other.m_visibility
-             || !core::tools::is_equal(m_points, _other.m_points));
+             || !core::is_equal(m_points, _other.m_points));
 }
 
 //------------------------------------------------------------------------------
@@ -321,7 +321,7 @@ bool landmarks::landmarks_group::operator!=(const landmarks_group& _other) const
 
 bool landmarks::operator==(const landmarks& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_landmarks, _other.m_landmarks))
+    if(!core::is_equal(m_landmarks, _other.m_landmarks))
     {
         return false;
     }

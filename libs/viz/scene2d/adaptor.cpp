@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ viz::scene2d::render::sptr adaptor::get_scene_2d_render() const
     SIGHT_ASSERT("adaptor " + this->get_id() + " not registered", iter != registry.end());
 
     viz::scene2d::render::sptr render =
-        std::dynamic_pointer_cast<viz::scene2d::render>(core::tools::id::get_object(iter->second));
+        std::dynamic_pointer_cast<viz::scene2d::render>(core::id::get_object(iter->second));
     SIGHT_ASSERT("Service render " + iter->second + " not instanced", render);
     return render;
 }

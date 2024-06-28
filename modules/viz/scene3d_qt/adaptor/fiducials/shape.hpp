@@ -218,7 +218,7 @@ private:
     };
 
     /// Map each shape to there related list ID.
-    using shape_map = std::map<core::tools::id::type, shape_data>;
+    using shape_map = std::map<core::id::type, shape_data>;
 
     class delete_bin_button_when_focus_out : public QObject
     {
@@ -262,7 +262,7 @@ private:
      * @brief Destroys a shape from its ID and remove it from m_shapes.
      * @param _id ID of the shape.
      */
-    void destroy_shape(core::tools::id::type _id);
+    void destroy_shape(core::id::type _id);
 
     /// Slot: Allows visualizing the creation and/or modification of shape fiducials of an image in multiple
     /// adaptors(Negato2d/Negato3d) by displaying the shapes synchronously.
@@ -325,7 +325,7 @@ private:
     sight::viz::scene3d::material::uptr m_dashed_line_material {nullptr};
 
     // Keep a map of the shapes associated to each image slice
-    std::map<std::size_t, std::vector<core::tools::id::type> > m_index_to_shapes {};
+    std::map<std::size_t, std::vector<core::id::type> > m_index_to_shapes {};
 
     /// Stores all generated shapes.
     shape_map m_shapes {};

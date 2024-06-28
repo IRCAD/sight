@@ -546,7 +546,7 @@ void point::starting()
                              ).string()
     ));
     auto* bin_button             = new QPushButton(trash_bin_icon, "");
-    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
+    const std::string service_id = base_id();
     bin_button->setObjectName(QString::fromStdString(service_id) + "/binButton");
     bin_button->setCursor(Qt::ArrowCursor);
     bin_button->adjustSize();
@@ -1942,8 +1942,8 @@ bool point::is_landmark_visible_without_lock(
             const auto group_half_size = _group_size * 0.5;
             const auto max_size        = std::max(group_half_size, spacing);
 
-            return core::tools::is_greater(position, (slice_position - _group_size))
-                   && core::tools::is_less(position, (slice_position + max_size));
+            return core::is_greater(position, (slice_position - _group_size))
+                   && core::is_less(position, (slice_position + max_size));
         }
 
         case view_distance::current_slice:
@@ -1951,7 +1951,7 @@ bool point::is_landmark_visible_without_lock(
             // Check if the position is the same than slice position
             const auto rounded_position       = std::round(position / spacing);
             const auto rounded_slice_position = std::round(slice_position / spacing);
-            return core::tools::is_equal(rounded_position, rounded_slice_position);
+            return core::is_equal(rounded_position, rounded_slice_position);
         }
 
         default:
@@ -2191,7 +2191,7 @@ void point::button_release_event(mouse_button _button, modifier /*_mods*/, int /
 
             m_contextual_menu->move(x, y);
             m_contextual_menu->raise();
-            const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+            const QString service_id = QString::fromStdString(base_id());
             auto* bin_button         = m_contextual_menu->findChild<QPushButton*>(service_id + "/binButton");
             SIGHT_ASSERT("The contextual menu should have the bin button", bin_button);
             bin_button->disconnect();

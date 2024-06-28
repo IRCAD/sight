@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "ui/__/menu.hpp"
 #include "ui/__/toolbar.hpp"
 
-#include <core/tools/id.hpp>
+#include <core/id.hpp>
 
 #include <service/macros.hpp>
 #include <service/op.hpp>
@@ -57,7 +57,7 @@ void register_sid_container(std::string _sid, ui::container::widget::sptr _conta
 
 void unregister_sid_container(std::string _sid)
 {
-    bool service_exists = core::tools::id::exist(_sid);
+    bool service_exists = core::id::exist(_sid);
     SIGHT_INFO_IF("The service '" + _sid + "' does not exist.", !service_exists);
     if(service_exists)
     {
@@ -158,7 +158,7 @@ void register_sid_menu_bar(std::string _sid, ui::container::menubar::sptr _menu_
 
 void unregister_sid_menu_bar(std::string _sid)
 {
-    bool service_exists = core::tools::id::exist(_sid);
+    bool service_exists = core::id::exist(_sid);
     SIGHT_INFO_IF("The menubar '" + _sid + "' does not exist.", !service_exists);
     if(service_exists)
     {
@@ -205,7 +205,7 @@ void register_sid_tool_bar(std::string _sid, ui::container::toolbar::sptr _tool_
 
 void unregister_sid_tool_bar(std::string _sid)
 {
-    bool service_exists = core::tools::id::exist(_sid);
+    bool service_exists = core::id::exist(_sid);
     SIGHT_INFO_IF("The toolbar '" + _sid + "' does not exist.", !service_exists);
     if(service_exists)
     {
@@ -252,7 +252,7 @@ void register_sid_menu(std::string _sid, ui::container::menu::sptr _menu)
 
 void unregister_sid_menu(std::string _sid)
 {
-    bool service_exists = core::tools::id::exist(_sid);
+    bool service_exists = core::id::exist(_sid);
     SIGHT_INFO_IF("The menu " << _sid << " does not exist.", !service_exists);
     if(service_exists)
     {
@@ -313,7 +313,7 @@ void unregister_action_sid_to_parent_sid(std::string _action_sid, std::string _p
     if(m_action_sid_to_parent_sid[_action_sid].size() == 1)
     {
         // action has one parent
-        bool service_exists = core::tools::id::exist(_action_sid);
+        bool service_exists = core::id::exist(_action_sid);
         SIGHT_INFO_IF("The service '" + _action_sid + "' does not exist.", !service_exists);
         if(service_exists)
         {
@@ -353,7 +353,7 @@ void action_service_stopping(std::string _action_sid)
 
         for(const std::string& parent_sid : parent_sids)
         {
-            bool service_exists = core::tools::id::exist(parent_sid);
+            bool service_exists = core::id::exist(parent_sid);
             SIGHT_INFO_IF(
                 std::string("The service '") + parent_sid + "' managing the action '" + _action_sid
                 + "' does not exist.",
@@ -394,7 +394,7 @@ void action_service_starting(std::string _action_sid)
 
         for(const std::string& parent_sid : parent_sids)
         {
-            bool service_exists = core::tools::id::exist(parent_sid);
+            bool service_exists = core::id::exist(parent_sid);
             SIGHT_INFO_IF(
                 std::string("The service '") + parent_sid + "' managing the action '" + _action_sid
                 + "' does not exist.",
@@ -435,7 +435,7 @@ void action_service_set_checked(std::string _action_sid, bool _is_checked)
 
         for(const std::string& parent_sid : parent_sids)
         {
-            bool service_exists = core::tools::id::exist(parent_sid);
+            bool service_exists = core::id::exist(parent_sid);
             SIGHT_INFO_IF(
                 std::string("The service '") + parent_sid + "' managing the action '" + _action_sid
                 + "' does not exist.",
@@ -476,7 +476,7 @@ void action_service_set_enabled(std::string _action_sid, bool _is_enabled)
 
         for(const std::string& parent_sid : parent_sids)
         {
-            bool service_exists = core::tools::id::exist(parent_sid);
+            bool service_exists = core::id::exist(parent_sid);
             SIGHT_INFO_IF(
                 std::string("The service '") + parent_sid + "' managing the action '" + _action_sid
                 + "' does not exist.",
@@ -517,7 +517,7 @@ void action_service_set_visible(std::string _action_sid, bool _is_visible)
 
         for(const std::string& parent_sid : parent_sids)
         {
-            bool service_exists = core::tools::id::exist(parent_sid);
+            bool service_exists = core::id::exist(parent_sid);
             SIGHT_INFO_IF(
                 std::string("The service '") + parent_sid + "' managing the action '" + _action_sid
                 + "' does not exist.",

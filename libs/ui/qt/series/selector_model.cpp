@@ -22,8 +22,8 @@
 
 #include "ui/qt/series/selector_model.hpp"
 
+#include <core/id.hpp>
 #include <core/runtime/path.hpp>
-#include <core/tools/id.hpp>
 
 #include <data/dicom/sop.hpp>
 #include <data/image.hpp>

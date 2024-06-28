@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -240,15 +240,15 @@ void service_test::test_service_creation_with_uuid()
     service2->set_inout(obj, data_key);
 
     nb_services = 2;
-    CPPUNIT_ASSERT(core::tools::id::exist(my_uuid));
-    CPPUNIT_ASSERT(core::tools::id::exist(my_uui_d2));
+    CPPUNIT_ASSERT(core::id::exist(my_uuid));
+    CPPUNIT_ASSERT(core::id::exist(my_uui_d2));
 
     // Test getting the service its object
     service::base::sptr service2bis = service::get(my_uui_d2);
     CPPUNIT_ASSERT(service2bis);
     CPPUNIT_ASSERT(service2bis->inout<data::integer>(data_key).lock() == obj);
     CPPUNIT_ASSERT_EQUAL(my_uui_d2, service2bis->get_id());
-    CPPUNIT_ASSERT(!core::tools::id::exist(my_uui_d3));
+    CPPUNIT_ASSERT(!core::id::exist(my_uui_d3));
     CPPUNIT_ASSERT_EQUAL(nb_services, sight::service::get_services("sight::service::ut::test_service").size());
 
     // Test erasing service

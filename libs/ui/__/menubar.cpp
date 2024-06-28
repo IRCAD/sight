@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ void menubar::create()
     ui::container::menubar::sptr menubar = m_registry->get_parent();
     SIGHT_ASSERT("Parent menubar is unknown.", menubar);
 
-    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
+    const std::string service_id = base_id();
 
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(

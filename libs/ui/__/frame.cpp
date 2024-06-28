@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,9 +28,9 @@
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
+#include <core/id.hpp>
 #include <core/thread/worker.hpp>
 #include <core/thread/worker.hxx>
-#include <core/tools/id.hpp>
 
 #include <service/macros.hpp>
 

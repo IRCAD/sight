@@ -57,7 +57,7 @@ progress_bar::progress_bar() noexcept
 void progress_bar::starting()
 {
     this->create();
-    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
+    const std::string service_id = base_id();
     auto widget_container        = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
 
     auto* qt_container = widget_container->get_qt_container();

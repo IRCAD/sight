@@ -409,7 +409,7 @@ void shape::remove_shapes()
         }
     }
 
-    std::vector<core::tools::id::type> found_id;
+    std::vector<core::id::type> found_id;
     if(shape_vector)
     {
         for(const auto& object : *shape_vector)
@@ -425,13 +425,13 @@ void shape::remove_shapes()
         }
     }
 
-    std::vector<core::tools::id::type> current_id;
+    std::vector<core::id::type> current_id;
     for(const auto& [id, _] : m_shapes)
     {
         current_id.push_back(id);
     }
 
-    for(const core::tools::id::type& id : current_id)
+    for(const core::id::type& id : current_id)
     {
         if(std::find(found_id.begin(), found_id.end(), id) == found_id.end())
         {
@@ -655,7 +655,7 @@ void shape::create_mask(data::point_list::sptr _pl)
 
 void shape::create_shape(data::point_list::sptr _pl)
 {
-    const core::tools::id::type id = _pl->get_id();
+    const core::id::type id = _pl->get_id();
 
     if(auto it = m_shapes.find(id); it != m_shapes.end() && !(it->second.m_nodes.empty()))
     {
@@ -858,7 +858,7 @@ void shape::update_shape(
 
 //------------------------------------------------------------------------------
 
-void shape::destroy_shape(core::tools::id::type _id)
+void shape::destroy_shape(core::id::type _id)
 {
     const auto it = m_shapes.find(_id);
     SIGHT_ASSERT("The shape is not found", it != m_shapes.end());

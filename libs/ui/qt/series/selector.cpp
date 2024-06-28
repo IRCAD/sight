@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -105,8 +105,8 @@ selector::series_vector_t selector::get_series(const QModelIndexList& _index_lis
     series_vector_t v_series;
     for(QModelIndex index : _index_list)
     {
-        std::string uid               = index.data(selector_model::uid).toString().toStdString();
-        core::tools::object::sptr obj = core::tools::id::get_object(uid);
+        std::string uid        = index.data(selector_model::uid).toString().toStdString();
+        core::object::sptr obj = core::id::get_object(uid);
 
         if(index.data(selector_model::item_type) == selector_model::series)
         {
@@ -149,8 +149,8 @@ selector::series_vector_t selector::get_series_from_study_index(const QModelInde
         SIGHT_ASSERT("Child is null", child);
         const std::string uid = child->data(selector_model::uid).toString().toStdString();
         SIGHT_ASSERT("UID must not be empty.", !uid.empty());
-        core::tools::object::sptr obj = core::tools::id::get_object(uid);
-        data::series::sptr series     = std::dynamic_pointer_cast<data::series>(obj);
+        core::object::sptr obj    = core::id::get_object(uid);
+        data::series::sptr series = std::dynamic_pointer_cast<data::series>(obj);
         v_series.push_back(series);
     }
 
@@ -222,7 +222,7 @@ void selector::on_remove_study_instance_uid(const std::string& _uid)
                     const std::string series_uid =
                         series_item->index().data(selector_model::uid).toString().toStdString();
                     auto series =
-                        std::dynamic_pointer_cast<data::series>(core::tools::id::get_object(series_uid));
+                        std::dynamic_pointer_cast<data::series>(core::id::get_object(series_uid));
 
                     if(series)
                     {
@@ -262,7 +262,7 @@ void selector::on_remove_series_id(const std::string& _id)
                 if(series_uid == _id)
                 {
                     selection.push_back(series_item->index());
-                    auto series = std::dynamic_pointer_cast<data::series>(core::tools::id::get_object(series_uid));
+                    auto series = std::dynamic_pointer_cast<data::series>(core::id::get_object(series_uid));
 
                     if(series)
                     {

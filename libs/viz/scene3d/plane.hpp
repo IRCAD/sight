@@ -78,7 +78,7 @@ public:
      * @param _entity_opacity opacity of the entity.
      */
     SIGHT_VIZ_SCENE3D_API plane(
-        const core::tools::id::type& _negato_id,
+        const core::id::type& _negato_id,
         Ogre::SceneNode* _parent_scene_node,
         Ogre::SceneManager* _scene_manager,
         viz::scene3d::texture::sptr _tex,

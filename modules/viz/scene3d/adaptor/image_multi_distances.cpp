@@ -267,7 +267,7 @@ void image_multi_distances::remove_distances()
 
     const data::vector::csptr distance_field = data::helper::medical_image::get_distances(*image);
 
-    std::vector<core::tools::id::type> found_id;
+    std::vector<core::id::type> found_id;
     if(distance_field)
     {
         for(const auto& object : *distance_field)
@@ -283,13 +283,13 @@ void image_multi_distances::remove_distances()
         }
     }
 
-    std::vector<core::tools::id::type> current_id;
+    std::vector<core::id::type> current_id;
     for(const auto& [id, _] : m_distances)
     {
         current_id.push_back(id);
     }
 
-    for(const core::tools::id::type& id : current_id)
+    for(const core::id::type& id : current_id)
     {
         if(std::find(found_id.begin(), found_id.end(), id) == found_id.end())
         {
@@ -742,7 +742,7 @@ void image_multi_distances::key_press_event(int _key, modifier /*_mods*/, int /*
 
 void image_multi_distances::create_distance(data::point_list::sptr& _pl)
 {
-    const core::tools::id::type id = _pl->get_id();
+    const core::id::type id = _pl->get_id();
     SIGHT_ASSERT("The distance already exist", m_distances.find(id) == m_distances.end());
 
     Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
@@ -922,7 +922,7 @@ void image_multi_distances::update_distance(
 
 //------------------------------------------------------------------------------
 
-void image_multi_distances::destroy_distance(core::tools::id::type _id)
+void image_multi_distances::destroy_distance(core::id::type _id)
 {
     const auto it = m_distances.find(_id);
     SIGHT_ASSERT("The distance is not found", it != m_distances.end());

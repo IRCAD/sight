@@ -25,7 +25,7 @@
 #include <sight/ui/qt/config.hpp>
 
 #include <core/base.hpp>
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <ui/__/container/widget.hpp>
 

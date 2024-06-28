@@ -24,7 +24,7 @@
 
 #include <sight/service/config.hpp>
 
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 

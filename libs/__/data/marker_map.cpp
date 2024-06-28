@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -136,7 +136,7 @@ void marker_map::set_marker(const key_t& _id, const marker_map::marker_t& _marke
 
 bool marker_map::operator==(const marker_map& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_markers, _other.m_markers))
+    if(!core::is_equal(m_markers, _other.m_markers))
     {
         return false;
     }

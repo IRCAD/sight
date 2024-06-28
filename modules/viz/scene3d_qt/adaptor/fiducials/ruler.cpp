@@ -435,7 +435,7 @@ void ruler::remove_distances()
         distance_field = data::helper::medical_image::get_distances(*image);
     }
 
-    std::vector<core::tools::id::type> found_id;
+    std::vector<core::id::type> found_id;
     if(distance_field)
     {
         for(const auto& object : *distance_field)
@@ -451,13 +451,13 @@ void ruler::remove_distances()
         }
     }
 
-    std::vector<core::tools::id::type> current_id;
+    std::vector<core::id::type> current_id;
     for(const auto& [id, _] : m_distances)
     {
         current_id.push_back(id);
     }
 
-    for(const core::tools::id::type& id : current_id)
+    for(const core::id::type& id : current_id)
     {
         if(std::find(found_id.begin(), found_id.end(), id) == found_id.end())
         {
@@ -914,7 +914,7 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                                                              ) / "trash.svg").string()
                     ));
                     m_bin_button = new QPushButton(s_TRASH_BIN_ICON, "", parent_widget);
-                    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
+                    const std::string service_id = base_id();
                     m_bin_button->setObjectName(QString::fromStdString(service_id) + "/binButton");
                     m_bin_button->setCursor(Qt::ArrowCursor);
                     m_bin_button->adjustSize();
@@ -1027,7 +1027,7 @@ void ruler::wheel_event(modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, 
 
 void ruler::create_distance(data::point_list::sptr& _pl)
 {
-    const core::tools::id::type id = _pl->get_id();
+    const core::id::type id = _pl->get_id();
     SIGHT_ASSERT("The distance already exist", m_distances.find(id) == m_distances.end());
 
     Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
@@ -1325,7 +1325,7 @@ void ruler::update_distance(
 
 //------------------------------------------------------------------------------
 
-void ruler::destroy_distance(core::tools::id::type _id)
+void ruler::destroy_distance(core::id::type _id)
 {
     const auto it = m_distances.find(_id);
     SIGHT_ASSERT("The distance is not found", it != m_distances.end());

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@ namespace sight::app::parser
 
 //------------------------------------------------------------------------------
 
-void image::create_config(core::tools::object::sptr _obj)
+void image::create_config(core::object::sptr _obj)
 {
     const auto image = std::dynamic_pointer_cast<data::image>(_obj);
     SIGHT_ASSERT("image does not exist.", image);

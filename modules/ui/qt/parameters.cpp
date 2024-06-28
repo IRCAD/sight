@@ -24,8 +24,8 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
+#include <core/object.hpp>
 #include <core/runtime/path.hpp>
-#include <core/tools/object.hpp>
 
 #include <data/tools/color.hpp>
 
@@ -135,7 +135,7 @@ void parameters::starting()
 {
     this->create();
 
-    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
+    const std::string service_id = base_id();
 
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
     qt_container->get_qt_container()->setObjectName(QString::fromStdString(service_id));
@@ -1189,7 +1189,7 @@ void parameters::on_reset_double_mapped(QWidget* _widget)
 [[nodiscard]]
 QPushButton* parameters::create_reset_button(const std::string& _key, std::function<void()> _on_click) const
 {
-    std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
+    std::string service_id = base_id();
     auto* reset_button     = new QPushButton("R");
     reset_button->setObjectName(QString::fromStdString(service_id + "/Reset " + _key));
     reset_button->setFocusPolicy(Qt::NoFocus);

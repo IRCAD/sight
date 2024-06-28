@@ -352,8 +352,8 @@ inline transfer_function_piece& transfer_function_piece::operator=(const transfe
 
 inline bool transfer_function_piece::operator==(const transfer_function_piece& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_level, _other.m_level)
-       || !core::tools::is_equal(m_window, _other.m_window)
+    if(!core::is_equal(m_level, _other.m_level)
+       || !core::is_equal(m_window, _other.m_window)
        || m_interpolation_mode != _other.m_interpolation_mode
        || m_clamped != _other.m_clamped
        || m_generated != _other.m_generated)
@@ -362,7 +362,7 @@ inline bool transfer_function_piece::operator==(const transfer_function_piece& _
     }
 
     // Super class last
-    return core::tools::is_equal(
+    return core::is_equal(
         *this,
         _other
     );

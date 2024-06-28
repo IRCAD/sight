@@ -56,7 +56,7 @@ public:
      * @brief Parse a viewport XML configuration.
      * @param _obj viewport in which apply the configuration.
      */
-    SIGHT_VIZ_SCENE2D_API void create_config(core::tools::object::sptr _obj) override;
+    SIGHT_VIZ_SCENE2D_API void create_config(core::object::sptr _obj) override;
 };
 
 } // namespace sight::viz::scene2d::data::parser

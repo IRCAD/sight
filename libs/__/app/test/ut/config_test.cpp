@@ -54,7 +54,7 @@ namespace sight::app::ut
 
 static inline void wait_service_started(const std::string& _srv)
 {
-    auto service = core::tools::id::get_object(_srv);
+    auto service = core::id::get_object(_srv);
     SIGHT_TEST_WAIT(service != nullptr && std::dynamic_pointer_cast<service::base>(service)->started());
 }
 
@@ -198,27 +198,27 @@ void config_test::start_stop_test()
     // Test manual start and stop of services, with or without data
     // =================================================================================================================
 
-    auto data1 = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object("data1Id"));
+    auto data1 = std::dynamic_pointer_cast<data::object>(core::id::get_object("data1Id"));
     CPPUNIT_ASSERT(data1 != nullptr);
 
     // This service doesn't exist in the config
-    CPPUNIT_ASSERT(core::tools::id::get_object("TestService142Uid") == nullptr);
+    CPPUNIT_ASSERT(core::id::get_object("TestService142Uid") == nullptr);
 
-    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData"));
+    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object("SGenerateData"));
     CPPUNIT_ASSERT(gen_data_srv != nullptr);
 
     // This service has no data and is started by the config
     {
-        core::tools::object::sptr gn_srv1 = core::tools::id::get_object("TestService1Uid");
-        auto srv1                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv1);
+        core::object::sptr gn_srv1 = core::id::get_object("TestService1Uid");
+        auto srv1                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv1);
         CPPUNIT_ASSERT(srv1 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv1->status());
     }
 
     // This service has no data and is NOT started by the config
     {
-        core::tools::object::sptr gn_srv2 = core::tools::id::get_object("TestService2Uid");
-        auto srv2                         = std::dynamic_pointer_cast<service::base>(gn_srv2);
+        core::object::sptr gn_srv2 = core::id::get_object("TestService2Uid");
+        auto srv2                  = std::dynamic_pointer_cast<service::base>(gn_srv2);
         CPPUNIT_ASSERT(srv2 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv2->status());
         srv2->stop().wait();
@@ -229,15 +229,15 @@ void config_test::start_stop_test()
 
     // This service has a data and is NOT started by the config
     {
-        core::tools::object::sptr gn_srv3 = core::tools::id::get_object("TestService3Uid");
-        auto srv3                         = std::dynamic_pointer_cast<service::base>(gn_srv3);
+        core::object::sptr gn_srv3 = core::id::get_object("TestService3Uid");
+        auto srv3                  = std::dynamic_pointer_cast<service::base>(gn_srv3);
         CPPUNIT_ASSERT(srv3 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv3->status());
     }
 
     // This service has a data that is not present yet (WID), so it is even not created
     {
-        core::tools::object::sptr gn_srv4 = core::tools::id::get_object("TestService4Uid");
+        core::object::sptr gn_srv4 = core::id::get_object("TestService4Uid");
         CPPUNIT_ASSERT(gn_srv4 == nullptr);
     }
 
@@ -253,7 +253,7 @@ void config_test::start_stop_test()
 
         // Now the service should have been started automatically
         {
-            auto gn_srv4 = core::tools::id::get_object("TestService4Uid");
+            auto gn_srv4 = core::id::get_object("TestService4Uid");
             auto srv4    = std::dynamic_pointer_cast<service::base>(gn_srv4);
             CPPUNIT_ASSERT(srv4 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv4->status());
@@ -261,11 +261,11 @@ void config_test::start_stop_test()
 
         // Remove the data
         gen_data_srv->set_output("out2", nullptr);
-        SIGHT_TEST_WAIT(core::tools::id::exist("TestService4Uid") == false);
+        SIGHT_TEST_WAIT(core::id::exist("TestService4Uid") == false);
 
         // Now the service should have been stopped and destroyed automatically
         {
-            auto gn_srv4 = core::tools::id::get_object("TestService4Uid");
+            auto gn_srv4 = core::id::get_object("TestService4Uid");
             CPPUNIT_ASSERT(gn_srv4 == nullptr);
         }
 
@@ -275,7 +275,7 @@ void config_test::start_stop_test()
 
         // Check again that the service was started automatically
         {
-            auto gn_srv4 = core::tools::id::get_object("TestService4Uid");
+            auto gn_srv4 = core::id::get_object("TestService4Uid");
             auto srv4    = std::dynamic_pointer_cast<service::base>(gn_srv4);
             CPPUNIT_ASSERT(srv4 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv4->status());
@@ -289,7 +289,7 @@ void config_test::start_stop_test()
     {
         // Still one data is not yet available thus the service is not created
         {
-            core::tools::object::sptr gn_srv5 = core::tools::id::get_object("TestService5Uid");
+            core::object::sptr gn_srv5 = core::id::get_object("TestService5Uid");
             CPPUNIT_ASSERT(gn_srv5 == nullptr);
         }
 
@@ -301,7 +301,7 @@ void config_test::start_stop_test()
 
         // Now the service should have been started automatically
         {
-            auto gn_srv5 = core::tools::id::get_object("TestService5Uid");
+            auto gn_srv5 = core::id::get_object("TestService5Uid");
             auto srv5    = std::dynamic_pointer_cast<service::base>(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv5->status());
@@ -312,13 +312,13 @@ void config_test::start_stop_test()
 
         // Now the service should have been stopped and destroyed automatically
         {
-            SIGHT_TEST_WAIT(core::tools::id::exist("TestService5Uid") == false);
-            auto gn_srv5 = core::tools::id::get_object("TestService5Uid");
+            SIGHT_TEST_WAIT(core::id::exist("TestService5Uid") == false);
+            auto gn_srv5 = core::id::get_object("TestService5Uid");
             CPPUNIT_ASSERT(gn_srv5 == nullptr);
 
             // Test as well service 4, just to be sure
-            SIGHT_TEST_WAIT(core::tools::id::exist("TestService4Uid") == false);
-            auto gn_srv4 = core::tools::id::get_object("TestService4Uid");
+            SIGHT_TEST_WAIT(core::id::exist("TestService4Uid") == false);
+            auto gn_srv4 = core::id::get_object("TestService4Uid");
             CPPUNIT_ASSERT(gn_srv4 == nullptr);
         }
 
@@ -330,7 +330,7 @@ void config_test::start_stop_test()
 
         // Now the service should have been started automatically, check start order as well
         {
-            auto gn_srv5 = core::tools::id::get_object("TestService5Uid");
+            auto gn_srv5 = core::id::get_object("TestService5Uid");
             auto srv5    = std::dynamic_pointer_cast<app::ut::test_srv>(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv5->status());
@@ -341,7 +341,7 @@ void config_test::start_stop_test()
             CPPUNIT_ASSERT_EQUAL(1U, srv5->get_update_order());
 
             // Test as well service 4, just to be sure
-            auto gn_srv4 = core::tools::id::get_object("TestService4Uid");
+            auto gn_srv4 = core::id::get_object("TestService4Uid");
             auto srv4    = std::dynamic_pointer_cast<app::ut::test_srv>(gn_srv4);
             CPPUNIT_ASSERT(gn_srv4 != nullptr);
             CPPUNIT_ASSERT_EQUAL(1U, srv4->get_start_order());
@@ -356,7 +356,7 @@ void config_test::start_stop_test()
     {
         // Test initial status (started because of the previous test)
         {
-            auto gn_srv5 = core::tools::id::get_object("TestService5Uid");
+            auto gn_srv5 = core::id::get_object("TestService5Uid");
             auto srv5    = std::dynamic_pointer_cast<service::base>(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv5->status());
@@ -366,12 +366,12 @@ void config_test::start_stop_test()
         data::boolean::sptr data5 = std::make_shared<data::boolean>();
 
         gen_data_srv->set_output("out2", nullptr);
-        SIGHT_TEST_WAIT(core::tools::id::exist("TestService5Uid") == false);
+        SIGHT_TEST_WAIT(core::id::exist("TestService5Uid") == false);
         gen_data_srv->set_output("out2", data5);
         wait_service_started("TestService5Uid");
 
         {
-            auto gn_srv5 = core::tools::id::get_object("TestService5Uid");
+            auto gn_srv5 = core::id::get_object("TestService5Uid");
             auto srv5    = std::dynamic_pointer_cast<service::base>(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv5->status());
@@ -393,25 +393,25 @@ void config_test::auto_connect_test()
     // Test autoconnect with available data
     // =================================================================================================================
 
-    auto data1 = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object("data1Id"));
-    auto data2 = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object("data2Id"));
+    auto data1 = std::dynamic_pointer_cast<data::object>(core::id::get_object("data1Id"));
+    auto data2 = std::dynamic_pointer_cast<data::object>(core::id::get_object("data2Id"));
     CPPUNIT_ASSERT(data1 != nullptr);
 
     {
-        core::tools::object::sptr gn_srv1 = core::tools::id::get_object("TestService1Uid");
-        auto srv1                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv1);
+        core::object::sptr gn_srv1 = core::id::get_object("TestService1Uid");
+        auto srv1                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv1);
         CPPUNIT_ASSERT(srv1 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv1->status());
         CPPUNIT_ASSERT(!srv1->get_is_updated());
 
-        core::tools::object::sptr gn_srv2 = core::tools::id::get_object("TestService2Uid");
-        auto srv2                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv2);
+        core::object::sptr gn_srv2 = core::id::get_object("TestService2Uid");
+        auto srv2                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv2);
         CPPUNIT_ASSERT(srv2 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv2->status());
         CPPUNIT_ASSERT(!srv2->get_is_updated());
 
-        core::tools::object::sptr gn_srv3 = core::tools::id::get_object("TestService3Uid");
-        auto srv3                         = std::dynamic_pointer_cast<app::ut::test_srv>(gn_srv3);
+        core::object::sptr gn_srv3 = core::id::get_object("TestService3Uid");
+        auto srv3                  = std::dynamic_pointer_cast<app::ut::test_srv>(gn_srv3);
         CPPUNIT_ASSERT(srv3 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv3->status());
         CPPUNIT_ASSERT(!srv3->get_is_updated());
@@ -446,14 +446,14 @@ void config_test::auto_connect_test()
     // =================================================================================================================
 
     // Service used to generate data
-    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData"));
+    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object("SGenerateData"));
     CPPUNIT_ASSERT(gen_data_srv != nullptr);
     {
         // Check that dependent services are not created
         {
-            core::tools::object::sptr gn_srv3 = core::tools::id::get_object("TestService4Uid");
+            core::object::sptr gn_srv3 = core::id::get_object("TestService4Uid");
             CPPUNIT_ASSERT(gn_srv3 == nullptr);
-            core::tools::object::sptr gn_srv5 = core::tools::id::get_object("TestService5Uid");
+            core::object::sptr gn_srv5 = core::id::get_object("TestService5Uid");
             CPPUNIT_ASSERT(gn_srv5 == nullptr);
         }
 
@@ -464,14 +464,14 @@ void config_test::auto_connect_test()
         wait_service_started("TestService4Uid");
         wait_service_started("TestService5Uid");
         {
-            core::tools::object::sptr gn_srv4 = core::tools::id::get_object("TestService4Uid");
-            auto srv4                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv4);
+            core::object::sptr gn_srv4 = core::id::get_object("TestService4Uid");
+            auto srv4                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv4);
             CPPUNIT_ASSERT(srv4 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv4->status());
             CPPUNIT_ASSERT(!srv4->get_is_updated());
 
-            core::tools::object::sptr gn_srv5 = core::tools::id::get_object("TestService5Uid");
-            auto srv5                         = std::dynamic_pointer_cast<app::ut::test_srv>(gn_srv5);
+            core::object::sptr gn_srv5 = core::id::get_object("TestService5Uid");
+            auto srv5                  = std::dynamic_pointer_cast<app::ut::test_srv>(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv5->status());
 
@@ -491,13 +491,13 @@ void config_test::auto_connect_test()
         // Remove one data
         gen_data_srv->set_output("out3", nullptr);
         SIGHT_TEST_WAIT(
-            core::tools::id::exist("TestService4Uid") == false
-            && core::tools::id::exist("TestService5Uid") == false
+            core::id::exist("TestService4Uid") == false
+            && core::id::exist("TestService5Uid") == false
         );
         {
-            core::tools::object::sptr gn_srv4 = core::tools::id::get_object("TestService4Uid");
+            core::object::sptr gn_srv4 = core::id::get_object("TestService4Uid");
             CPPUNIT_ASSERT(gn_srv4 == nullptr);
-            core::tools::object::sptr gn_srv5 = core::tools::id::get_object("TestService5Uid");
+            core::object::sptr gn_srv5 = core::id::get_object("TestService5Uid");
             CPPUNIT_ASSERT(gn_srv5 == nullptr);
         }
 
@@ -507,14 +507,14 @@ void config_test::auto_connect_test()
         wait_service_started("TestService4Uid");
         wait_service_started("TestService5Uid");
         {
-            core::tools::object::sptr gn_srv4 = core::tools::id::get_object("TestService4Uid");
-            auto srv4                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv4);
+            core::object::sptr gn_srv4 = core::id::get_object("TestService4Uid");
+            auto srv4                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv4);
             CPPUNIT_ASSERT(srv4 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv4->status());
             CPPUNIT_ASSERT(!srv4->get_is_updated());
 
-            core::tools::object::sptr gn_srv5 = core::tools::id::get_object("TestService5Uid");
-            auto srv5                         = std::dynamic_pointer_cast<app::ut::test_srv>(gn_srv5);
+            core::object::sptr gn_srv5 = core::id::get_object("TestService5Uid");
+            auto srv5                  = std::dynamic_pointer_cast<app::ut::test_srv>(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv5->status());
 
@@ -552,27 +552,27 @@ void config_test::connection_test()
 
     data::composite::sptr composite;
 
-    auto data1 = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object("data1Id"));
+    auto data1 = std::dynamic_pointer_cast<data::object>(core::id::get_object("data1Id"));
     CPPUNIT_ASSERT(data1 != nullptr);
 
     // =================================================================================================================
     // Test connection without data or with available data
     // =================================================================================================================
 
-    core::tools::object::sptr gn_srv1 = core::tools::id::get_object("TestService1Uid");
-    auto srv1                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv1);
+    core::object::sptr gn_srv1 = core::id::get_object("TestService1Uid");
+    auto srv1                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv1);
     CPPUNIT_ASSERT(srv1 != nullptr);
     CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv1->status());
     CPPUNIT_ASSERT(!srv1->get_is_updated());
 
-    core::tools::object::sptr gn_srv2 = core::tools::id::get_object("TestService2Uid");
-    auto srv2                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv2);
+    core::object::sptr gn_srv2 = core::id::get_object("TestService2Uid");
+    auto srv2                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv2);
     CPPUNIT_ASSERT(srv2 != nullptr);
     CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv2->status());
     CPPUNIT_ASSERT(!srv2->get_is_updated());
 
-    core::tools::object::sptr gn_srv4 = core::tools::id::get_object("TestService4Uid");
-    auto srv4                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv4);
+    core::object::sptr gn_srv4 = core::id::get_object("TestService4Uid");
+    auto srv4                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv4);
     CPPUNIT_ASSERT(srv4 != nullptr);
     SIGHT_TEST_WAIT(service::base::global_status::started == srv4->status());
     CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv4->status());
@@ -586,7 +586,7 @@ void config_test::connection_test()
     CPPUNIT_ASSERT(srv2->get_is_updated());
 
     // Service used to generate data
-    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData"));
+    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object("SGenerateData"));
     CPPUNIT_ASSERT(gen_data_srv != nullptr);
 
     // =================================================================================================================
@@ -594,7 +594,7 @@ void config_test::connection_test()
     // =================================================================================================================
 
     {
-        core::tools::object::sptr gn_srv3 = core::tools::id::get_object("TestService3Uid");
+        core::object::sptr gn_srv3 = core::id::get_object("TestService3Uid");
         CPPUNIT_ASSERT(gn_srv3 == nullptr);
     }
 
@@ -606,7 +606,7 @@ void config_test::connection_test()
     CPPUNIT_ASSERT(!srv2->get_is_updated());
 
     // Check connection data4 -> srv2
-    auto data4 = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object("data4Id"));
+    auto data4 = std::dynamic_pointer_cast<data::object>(core::id::get_object("data4Id"));
     CPPUNIT_ASSERT(data4 != nullptr);
     auto sig4 = data4->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
     sig4->async_emit();
@@ -625,8 +625,8 @@ void config_test::connection_test()
     gen_data_srv->set_output("out3", data3);
     wait_service_started("TestService3Uid");
     {
-        core::tools::object::sptr gn_srv3 = core::tools::id::get_object("TestService3Uid");
-        auto srv3                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv3);
+        core::object::sptr gn_srv3 = core::id::get_object("TestService3Uid");
+        auto srv3                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv3);
         CPPUNIT_ASSERT(srv3 != nullptr);
         SIGHT_TEST_WAIT(service::base::global_status::started == srv3->status());
         CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv3->status());
@@ -686,11 +686,11 @@ void config_test::connection_test()
     // Remove one data
     gen_data_srv->set_output("out3", nullptr);
 
-    SIGHT_TEST_WAIT(core::tools::id::exist("TestService3Uid") == false);
+    SIGHT_TEST_WAIT(core::id::exist("TestService3Uid") == false);
 
     // Service 3 should be removed
     {
-        core::tools::object::sptr gn_srv3 = core::tools::id::get_object("TestService3Uid");
+        core::object::sptr gn_srv3 = core::id::get_object("TestService3Uid");
         CPPUNIT_ASSERT(gn_srv3 == nullptr);
     }
 
@@ -729,8 +729,8 @@ void config_test::connection_test()
     wait_service_started("TestService3Uid");
 
     {
-        core::tools::object::sptr gn_srv3 = core::tools::id::get_object("TestService3Uid");
-        auto srv3                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv3);
+        core::object::sptr gn_srv3 = core::id::get_object("TestService3Uid");
+        auto srv3                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv3);
         CPPUNIT_ASSERT(srv3 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv3->status());
         srv2->reset_is_updated();
@@ -796,14 +796,14 @@ void config_test::start_stop_connection_test()
         // Check TestService5 starts TestService6
         // Check TestService5 stops TestService6
         {
-            core::tools::object::sptr gn_srv5 = core::tools::id::get_object("TestService5Uid");
-            auto srv5                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv5);
+            core::object::sptr gn_srv5 = core::id::get_object("TestService5Uid");
+            auto srv5                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv5->status());
 
             {
-                core::tools::object::sptr gn_srv6 = core::tools::id::get_object("TestService6Uid");
-                auto srv6                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv6);
+                core::object::sptr gn_srv6 = core::id::get_object("TestService6Uid");
+                auto srv6                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv6);
                 CPPUNIT_ASSERT(srv6 != nullptr);
                 CPPUNIT_ASSERT_EQUAL(service::base::global_status::stopped, srv6->status());
 
@@ -831,14 +831,14 @@ void config_test::start_stop_connection_test()
         // Check TestService6 is well stopped by the config_manager
         // Check TestService6 stops TestService7
         {
-            core::tools::object::sptr gn_srv5 = core::tools::id::get_object("TestService5Uid");
-            auto srv5                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv5);
+            core::object::sptr gn_srv5 = core::id::get_object("TestService5Uid");
+            auto srv5                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv5);
             CPPUNIT_ASSERT(srv5 != nullptr);
             CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv5->status());
 
             {
-                core::tools::object::sptr gn_srv6 = core::tools::id::get_object("TestService6Uid");
-                auto srv6                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv6);
+                core::object::sptr gn_srv6 = core::id::get_object("TestService6Uid");
+                auto srv6                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv6);
                 CPPUNIT_ASSERT(srv6 != nullptr);
                 CPPUNIT_ASSERT_EQUAL(service::base::global_status::stopped, srv6->status());
 
@@ -857,8 +857,8 @@ void config_test::start_stop_connection_test()
                 SIGHT_TEST_WAIT(srv6->started());
                 CPPUNIT_ASSERT_EQUAL(true, srv6->started());
 
-                core::tools::object::sptr gn_srv7 = core::tools::id::get_object("TestService7Uid");
-                auto srv7                         = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv7);
+                core::object::sptr gn_srv7 = core::id::get_object("TestService7Uid");
+                auto srv7                  = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv7);
                 srv6->update().wait();
                 SIGHT_TEST_WAIT(srv7->stopped());
                 CPPUNIT_ASSERT_EQUAL(true, srv7->stopped());
@@ -876,18 +876,18 @@ void config_test::optional_key_test()
     m_app_config_mgr = this->launch_app_config_mgr("optionalKeyTest");
 
     // Service used to generate data
-    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData"));
+    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object("SGenerateData"));
     CPPUNIT_ASSERT(gen_data_srv != nullptr);
 
-    auto data1 = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object("data1Id"));
+    auto data1 = std::dynamic_pointer_cast<data::object>(core::id::get_object("data1Id"));
     CPPUNIT_ASSERT(data1 != nullptr);
 
     // =================================================================================================================
     // Test service with two optional attributes and available data at start
     // =================================================================================================================
 
-    core::tools::object::sptr gn_srv1 = core::tools::id::get_object("TestService1Uid");
-    auto srv1                         = std::dynamic_pointer_cast<app::ut::test_srv>(gn_srv1);
+    core::object::sptr gn_srv1 = core::id::get_object("TestService1Uid");
+    auto srv1                  = std::dynamic_pointer_cast<app::ut::test_srv>(gn_srv1);
     CPPUNIT_ASSERT(srv1 != nullptr);
     CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv1->status());
     CPPUNIT_ASSERT(!srv1->get_is_updated());
@@ -1001,13 +1001,13 @@ void config_test::optional_key_test()
     // Create data 5
     data::boolean::sptr data5 = std::make_shared<data::boolean>();
     {
-        core::tools::object::sptr gn_srv2 = core::tools::id::get_object("TestService2Uid");
+        core::object::sptr gn_srv2 = core::id::get_object("TestService2Uid");
         CPPUNIT_ASSERT(gn_srv2 == nullptr);
 
         gen_data_srv->set_output("out5", data5);
         wait_service_started("TestService2Uid");
 
-        gn_srv2 = core::tools::id::get_object("TestService2Uid");
+        gn_srv2 = core::id::get_object("TestService2Uid");
         CPPUNIT_ASSERT(gn_srv2 != nullptr);
         auto srv2 = std::dynamic_pointer_cast<app::ut::test_srv>(gn_srv2);
         CPPUNIT_ASSERT(srv2 != nullptr);
@@ -1052,9 +1052,9 @@ void config_test::optional_key_test()
     // Remove data 5
     {
         gen_data_srv->set_output("out5", nullptr);
-        SIGHT_TEST_WAIT(false == core::tools::id::exist("TestService2Uid"));
+        SIGHT_TEST_WAIT(false == core::id::exist("TestService2Uid"));
 
-        core::tools::object::sptr gn_srv5 = core::tools::id::get_object("TestService2Uid");
+        core::object::sptr gn_srv5 = core::id::get_object("TestService2Uid");
         CPPUNIT_ASSERT(gn_srv5 == nullptr);
     }
 
@@ -1063,7 +1063,7 @@ void config_test::optional_key_test()
         gen_data_srv->set_output("out5", data5);
         wait_service_started("TestService2Uid");
 
-        auto gn_srv2 = core::tools::id::get_object("TestService2Uid");
+        auto gn_srv2 = core::id::get_object("TestService2Uid");
         auto srv2    = std::dynamic_pointer_cast<app::ut::test_srv>(gn_srv2);
         CPPUNIT_ASSERT(srv2 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv2->status());
@@ -1109,7 +1109,7 @@ void config_test::optional_key_test()
         data::boolean::sptr data2bis = std::make_shared<data::boolean>();
 
         auto gen_data_srv2 =
-            std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object("SGenerateData2"));
+            std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object("SGenerateData2"));
         CPPUNIT_ASSERT(gen_data_srv2 != nullptr);
 
         gen_data_srv2->set_output("out", data2bis);
@@ -1157,16 +1157,16 @@ void config_test::key_group_test()
     m_app_config_mgr = this->launch_app_config_mgr("keyGroupTest");
 
     // Service used to generate data
-    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_out>(core::tools::id::get_object("SGenerateData"));
+    auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_out>(core::id::get_object("SGenerateData"));
     CPPUNIT_ASSERT(gen_data_srv != nullptr);
 
-    auto data1 = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object("data1Id"));
+    auto data1 = std::dynamic_pointer_cast<data::object>(core::id::get_object("data1Id"));
     CPPUNIT_ASSERT(data1 != nullptr);
 
-    auto data4 = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object("data4Id"));
+    auto data4 = std::dynamic_pointer_cast<data::object>(core::id::get_object("data4Id"));
     CPPUNIT_ASSERT(data1 != nullptr);
 
-    auto data5 = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object("data5Id"));
+    auto data5 = std::dynamic_pointer_cast<data::object>(core::id::get_object("data5Id"));
     CPPUNIT_ASSERT(data1 != nullptr);
 
     // =================================================================================================================
@@ -1175,7 +1175,7 @@ void config_test::key_group_test()
 
     data::image::sptr data3;
     {
-        core::tools::object::sptr gn_srv1 = core::tools::id::get_object("TestService1Uid");
+        core::object::sptr gn_srv1 = core::id::get_object("TestService1Uid");
         CPPUNIT_ASSERT(gn_srv1 == nullptr);
 
         // Create data 2b
@@ -1183,7 +1183,7 @@ void config_test::key_group_test()
         gen_data_srv->set_output("out2", data2b);
         wait_service_started("TestService1Uid");
 
-        gn_srv1 = core::tools::id::get_object("TestService1Uid");
+        gn_srv1 = core::id::get_object("TestService1Uid");
         auto srv1 = std::dynamic_pointer_cast<app::ut::test1_input1_input_group>(gn_srv1);
         CPPUNIT_ASSERT(srv1 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv1->status());
@@ -1248,16 +1248,16 @@ void config_test::key_group_test()
     {
         gen_data_srv->set_output("out2", nullptr);
 
-        SIGHT_TEST_WAIT(false == core::tools::id::exist("TestService1Uid"));
+        SIGHT_TEST_WAIT(false == core::id::exist("TestService1Uid"));
 
-        core::tools::object::sptr gn_srv5 = core::tools::id::get_object("TestService1Uid");
+        core::object::sptr gn_srv5 = core::id::get_object("TestService1Uid");
         CPPUNIT_ASSERT(gn_srv5 == nullptr);
     }
 
     {
         wait_service_started("TestService2Uid");
-        core::tools::object::sptr gn_srv2 = core::tools::id::get_object("TestService2Uid");
-        auto srv2                         = std::dynamic_pointer_cast<app::ut::test2_input_groups>(gn_srv2);
+        core::object::sptr gn_srv2 = core::id::get_object("TestService2Uid");
+        auto srv2                  = std::dynamic_pointer_cast<app::ut::test2_input_groups>(gn_srv2);
         CPPUNIT_ASSERT(srv2 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv2->status());
         CPPUNIT_ASSERT(!srv2->get_is_updated());
@@ -1321,20 +1321,20 @@ void config_test::key_group_test()
 
     // Test output data group
     {
-        core::tools::object::sptr gn_srv3 = core::tools::id::get_object("TestService3Uid");
+        core::object::sptr gn_srv3 = core::id::get_object("TestService3Uid");
         CPPUNIT_ASSERT(gn_srv3 == nullptr);
 
         auto data6 = std::make_shared<data::image>();
         gen_data_srv->m_out_group[0] = data6;
 
-        gn_srv3 = core::tools::id::get_object("TestService3Uid");
+        gn_srv3 = core::id::get_object("TestService3Uid");
         CPPUNIT_ASSERT(gn_srv3 == nullptr);
 
         auto data7 = std::make_shared<data::image>();
         gen_data_srv->m_out_group[1] = data7;
 
         wait_service_started("TestService3Uid");
-        gn_srv3 = core::tools::id::get_object("TestService3Uid");
+        gn_srv3 = core::id::get_object("TestService3Uid");
         auto srv3 = std::dynamic_pointer_cast<app::ut::test1_input1_input_group>(gn_srv3);
         CPPUNIT_ASSERT(srv3 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv3->status());
@@ -1345,9 +1345,9 @@ void config_test::key_group_test()
         gen_data_srv->m_out_group[0] = nullptr;
     }
     {
-        SIGHT_TEST_WAIT(false == core::tools::id::exist("TestService3Uid"));
+        SIGHT_TEST_WAIT(false == core::id::exist("TestService3Uid"));
 
-        auto gn_srv3 = core::tools::id::get_object("TestService3Uid");
+        auto gn_srv3 = core::id::get_object("TestService3Uid");
         CPPUNIT_ASSERT(gn_srv3 == nullptr);
     }
 }
@@ -1382,19 +1382,19 @@ void config_test::parameter_replace_test()
 
     unsigned int i = 0;
     unsigned int j = 0;
-    core::tools::object::sptr gn_srv1;
-    core::tools::object::sptr gn_srv2;
+    core::object::sptr gn_srv1;
+    core::object::sptr gn_srv2;
 
     // Not really elegant, but we have to "guess" how it is replaced
     while(gn_srv1 == nullptr && i++ < 200)
     {
-        gn_srv1 = core::tools::id::get_object("parameterReplaceTest_" + std::to_string(i) + "_TestService1Uid");
+        gn_srv1 = core::id::get_object("parameterReplaceTest", i, "TestService1Uid");
     }
 
     auto srv1 = std::dynamic_pointer_cast<app::ut::test_service>(gn_srv1);
     CPPUNIT_ASSERT(srv1 != nullptr);
 
-    gn_srv2 = core::tools::id::get_object("parameterReplaceTest_" + std::to_string(i) + "_TestService2Uid");
+    gn_srv2 = core::id::get_object("parameterReplaceTest", i, "TestService2Uid");
     auto srv2           = std::dynamic_pointer_cast<service::base>(gn_srv2);
     auto adapted_config = srv2->get_config();
 
@@ -1410,23 +1410,20 @@ void config_test::parameter_replace_test()
     CPPUNIT_ASSERT_EQUAL(std::string("name"), params_cfg[0].get<std::string>("<xmlattr>.by"));
 
     replace_by = params_cfg[1].get<std::string>("<xmlattr>.by");
-    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_Channel No5"), replace_by);
+    CPPUNIT_ASSERT_EQUAL(core::id::join("parameterReplaceTest", i, "Channel No5"), replace_by);
 
     replace_by = params_cfg[2].get<std::string>("<xmlattr>.by");
-    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_disneyChannel"), replace_by);
+    CPPUNIT_ASSERT_EQUAL(core::id::join("parameterReplaceTest", i, "disneyChannel"), replace_by);
 
     replace_by = params_cfg[3].get<std::string>("<xmlattr>.by");
-    CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_view1"), replace_by);
+    CPPUNIT_ASSERT_EQUAL(core::id::join("parameterReplaceTest", i, "view1"), replace_by);
 
-    core::tools::object::sptr gn_sub_srv;
+    core::object::sptr gn_sub_srv;
 
     // Not really elegant, but we have to "guess" how it is replaced
     while(gn_sub_srv == nullptr && j++ < 200)
     {
-        gn_sub_srv = core::tools::id::get_object(
-            "parameterReplaceTestSubConfig_" + std::to_string(j)
-            + "_TestServiceUid"
-        );
+        gn_sub_srv = core::id::get_object("parameterReplaceTestSubConfig", j, "TestServiceUid");
     }
 
     auto srv_in_sub_config = std::dynamic_pointer_cast<app::ut::test_service>(gn_sub_srv);
@@ -1475,7 +1472,7 @@ void config_test::object_config_test()
     // Test a service with an external configuration and test Composite with sub-object parsing
     // =================================================================================================================
 
-    auto compo1 = std::dynamic_pointer_cast<data::composite>(core::tools::id::get_object("compo1Id"));
+    auto compo1 = std::dynamic_pointer_cast<data::composite>(core::id::get_object("compo1Id"));
     CPPUNIT_ASSERT(compo1 != nullptr);
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), compo1->count("dataInComposite"));
     auto data2 = compo1->get<data::string>("dataInComposite");
@@ -1484,8 +1481,8 @@ void config_test::object_config_test()
     CPPUNIT_ASSERT_EQUAL(std::string("Hello"), data2->value());
 
     // This service should have a composite data and contain an external configuration with 2 parameters
-    core::tools::object::sptr service = core::tools::id::get_object("TestService1Uid");
-    auto srv1                         = std::dynamic_pointer_cast<app::ut::test_service>(service);
+    core::object::sptr service = core::id::get_object("TestService1Uid");
+    auto srv1                  = std::dynamic_pointer_cast<app::ut::test_service>(service);
     CPPUNIT_ASSERT(srv1 != nullptr);
     CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv1->config_status());
 

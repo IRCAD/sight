@@ -24,7 +24,7 @@
 
 #include "service/base.hpp"
 
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 namespace sight::service
 {
@@ -38,7 +38,7 @@ namespace sight::service
  *
  * The updating() method of this base class parses the XML description: each object named XML children corresponds to a
  * field
- * added to the object (see core::tools::object). The New() method on the related child is invoked, therefore
+ * added to the object (see core::object). The New() method on the related child is invoked, therefore
  * allowing to build tree like composite object which services.
  */
 class SIGHT_SERVICE_CLASS_API object_parser : public service::base
@@ -49,7 +49,7 @@ public:
 
     SIGHT_SERVICE_API void set_object_config(const service::config_t& _cfg_elem);
 
-    SIGHT_SERVICE_API virtual void create_config(core::tools::object::sptr _obj);
+    SIGHT_SERVICE_API virtual void create_config(core::object::sptr _obj);
 
     SIGHT_SERVICE_API virtual void start_config();
 

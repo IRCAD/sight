@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -51,8 +51,8 @@ service::base::sptr add(const std::string& _impl_type, const std::string& _uid)
 
 service::base::sptr get(std::string _uid)
 {
-    SIGHT_ASSERT("service does not exist with uid " << _uid, core::tools::id::exist(_uid));
-    return std::dynamic_pointer_cast<service::base>(core::tools::id::get_object(_uid));
+    SIGHT_ASSERT("service does not exist with uid " << _uid, core::id::exist(_uid));
+    return std::dynamic_pointer_cast<service::base>(core::id::get_object(_uid));
 }
 
 //------------------------------------------------------------------------------

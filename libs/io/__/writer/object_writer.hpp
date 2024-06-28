@@ -29,7 +29,7 @@
 
 #include <core/base.hpp>
 #include <core/jobs/base.hpp>
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <cstdint>
 #include <filesystem>
@@ -86,14 +86,14 @@ public:
      * @note m_object is saved in class as a weakptr
      * @note This object can be get with the method get_object()
      */
-    SIGHT_IO_API virtual void set_object(core::tools::object::csptr _object);
+    SIGHT_IO_API virtual void set_object(core::object::csptr _object);
 
     /**
      * @brief m_object getter.
      *
      * @return m_object
      */
-    SIGHT_IO_API virtual core::tools::object::csptr get_object() const;
+    SIGHT_IO_API virtual core::object::csptr get_object() const;
 
     /**
      * @brief Return the default filename extension can be dynamic.
@@ -125,7 +125,7 @@ protected:
      *
      * This object is given in parameter of set_object method but it is conserved with a weakptr.
      */
-    core::tools::object::cwptr m_object;
+    core::object::cwptr m_object;
 
     /// Extension of file format
     std::string m_extension;

@@ -29,7 +29,7 @@
 
 #include <core/base.hpp>
 #include <core/jobs/base.hpp>
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <cstdint>
 #include <filesystem>
@@ -86,7 +86,7 @@ public:
      * @note m_object is saved in class with a weakptr
      * @note This object can be get with the method get_object()
      */
-    SIGHT_IO_API virtual void set_object(core::tools::object::sptr _p_object);
+    SIGHT_IO_API virtual void set_object(core::object::sptr _p_object);
 
     /**
      * @brief m_object getter.
@@ -94,7 +94,7 @@ public:
      * @return m_object
      * @note m_object is saved in reader with a weakptr
      */
-    SIGHT_IO_API virtual core::tools::object::sptr get_object() const;
+    SIGHT_IO_API virtual core::object::sptr get_object() const;
 
     SIGHT_IO_API virtual std::string extension() const = 0;
 
@@ -119,7 +119,7 @@ protected:
      *
      * This object is given in parameter of set_object method but it is conserved with a weakptr.
      */
-    core::tools::object::wptr m_object;
+    core::object::wptr m_object;
 };
 
 } // namespace sight::io::reader

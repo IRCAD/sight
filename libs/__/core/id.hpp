@@ -24,19 +24,23 @@
 
 #include <sight/core/config.hpp>
 
-#include <core/base.hpp>
-#include <core/mt/types.hpp>
+#include "base.hpp"
+
+#include "mt/types.hpp"
+
+#include "string.hpp"
 
 #include <cstdint>
 #include <string>
 #include <unordered_map>
 
-namespace sight::core::tools
+namespace sight::core
 {
 
 class object;
+
 /**
- * @brief   Defines ID for core::tools::object. It is used to associate ID with object.
+ * @brief   Defines ID for core::object. It is used to associate ID with object.
  */
 class SIGHT_CORE_CLASS_API id
 {
@@ -53,6 +57,8 @@ public:
         must_exist ///< throw an exception if object has not id.
     };
 
+    SIGHT_CORE_API virtual ~id();
+
     /**
      * Test if the given id exist (i.e recorded in fwID dictionary)
      * @param[in] _id : the id to test.
@@ -65,13 +71,29 @@ public:
      * @brief Retrieve the object attached to the given id. Return a null sptr if no correspondence exist.
      * @note This method is thread-safe.
      */
-    SIGHT_CORE_API static SPTR(core::tools::object) get_object(type _request_id);
+    SIGHT_CORE_API static SPTR(object) get_object(type _request_id);
 
-    SIGHT_CORE_API virtual ~id();
+    template<typename T, typename ... Args>
+    static SPTR(object) get_object(const T& _first, const Args& ... _args);
+
+    /**
+     * @brief Concatenate things with the separator `s_separator`.
+     * This is an utility function to be used where an id is constructed from multiple parts.
+     * @note This method uses variadic template as argument to concatenate.
+     */
+    template<typename T, typename ... Args>
+    static std::string join(const T& _first, const Args& ... _args);
 
 protected:
 
-    // API to expose in core::tools::object
+    inline static constexpr auto s_separator = '-';
+
+    /**
+     * @brief   Constructor : does nothing.
+     */
+    id() = default; // cannot be instantiated
+
+    // API to expose in core::object
     /**
      * @brief Return true if the object has an id set.
      * @note This method is thread-safe.
@@ -90,23 +112,31 @@ protected:
     SIGHT_CORE_API type get_id(policy _policy = policy::generate) const;
 
     /**
-     * @brief Set a newID  for the object, (newID must not exist in fwID), the oldest one is released.
-     * @warning Cannot set a empty ID.
+     * @brief Returns the base ID of the object which is the last sub-string when separator is used in ID.
+     * For example, if the ID is "config_name-1-my_service", the base ID is "my_service".
+     * @note if there is no separator, the "full" ID is returned.
+     */
+    SIGHT_CORE_API type base_id(policy _policy = policy::generate) const;
+
+    /**
+     * @brief Set an ID for the object.
+     * @warning Cannot set an empty or existing ID.
      * @note This method is thread-safe.
      */
-    SIGHT_CORE_API virtual void set_id(type _new_id); // cannot set a empty one
+    SIGHT_CORE_API virtual void set_id(type _new_id);
+
+    /**
+     * @brief Set an ID for the object by joining all arguments into a string.
+     * @note arguments are separated with `s_separator`.
+     */
+    template<typename T, typename ... Args>
+    void set_id(const T& _first, const Args& ... _args);
 
     /**
      * @brief Release the id for the object.
      * @note This method is thread-safe
      */
     SIGHT_CORE_API void reset_id();
-
-    /**
-     * @brief   Constructor : does nothing.
-     */
-    id()
-    = default; // cannot be instantiated
 
 private:
 
@@ -137,7 +167,7 @@ private:
     /// The ID associated with the object. It is mutable, as it may be modified with a call to get_id(GENERATE).
     mutable type m_id;
 
-    using dictionary          = std::unordered_map<type, std::weak_ptr<core::tools::object> >;
+    using dictionary          = std::unordered_map<type, std::weak_ptr<object> >;
     using categorized_counter = std::unordered_map<std::string, std::uint32_t>;
 
     static dictionary s_dictionary;
@@ -153,4 +183,28 @@ private:
     mutable core::mt::read_write_mutex m_id_mutex;
 };
 
-} // namespace sight::core::tools
+//------------------------------------------------------------------------------
+
+template<typename T, typename ... Args>
+SPTR(object) id::get_object(const T& _first, const Args& ... _args)
+{
+    return get_object(join(_first, _args ...));
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T, typename ... Args>
+std::string id::join(const T& _first, const Args& ... _args)
+{
+    return string::join(s_separator, _first, _args ...);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T, typename ... Args>
+void id::set_id(const T& _first, const Args& ... _args)
+{
+    set_id(join(_first, _args ...));
+}
+
+} // namespace sight::core

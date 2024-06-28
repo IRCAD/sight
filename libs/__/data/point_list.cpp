@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -91,7 +91,7 @@ void point_list::deep_copy(const object::csptr& _source, const std::unique_ptr<d
 
 bool point_list::operator==(const point_list& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_v_points, _other.m_v_points))
+    if(!core::is_equal(m_v_points, _other.m_v_points))
     {
         return false;
     }

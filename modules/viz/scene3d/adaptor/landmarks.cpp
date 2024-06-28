@@ -25,7 +25,7 @@
 #include "modules/viz/scene3d/adaptor/transform.hpp"
 
 #include <core/com/slots.hxx>
-#include <core/tools/compare.hpp>
+#include <core/compare.hpp>
 
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
@@ -1183,8 +1183,8 @@ bool landmarks::is_landmark_visible(
                 const auto group_half_size = _group_size * 0.5;
                 const auto max_size        = std::max(group_half_size, spacing);
 
-                return core::tools::is_greater(position, (slice_position - _group_size))
-                       && core::tools::is_less(position, (slice_position + max_size));
+                return core::is_greater(position, (slice_position - _group_size))
+                       && core::is_less(position, (slice_position + max_size));
             }
 
             case view_distance::current_slice:
@@ -1192,7 +1192,7 @@ bool landmarks::is_landmark_visible(
                 // Check if the position is the same than slice position
                 const auto rounded_position       = std::round(position / spacing);
                 const auto rounded_slice_position = std::round(slice_position / spacing);
-                return core::tools::is_equal(rounded_position, rounded_slice_position);
+                return core::is_equal(rounded_position, rounded_slice_position);
             }
 
             default:

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,7 @@
 
 #include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/tools/compare.hpp>
+#include <core/compare.hpp>
 
 #include <data/container.hxx>
 #include <data/integer.hpp>
@@ -61,12 +61,12 @@ inline static void test_container(const C& _source, const C& _modified_source)
         container container(_source);
 
         // Should be a perfect copy, is_equal will also test default forward iterators
-        CPPUNIT_ASSERT(core::tools::is_equal(container, _source));
+        CPPUNIT_ASSERT(core::is_equal(container, _source));
 
         class container modified_container(_modified_source);
 
         // Should be different
-        CPPUNIT_ASSERT(!core::tools::is_equal(container, modified_container));
+        CPPUNIT_ASSERT(!core::is_equal(container, modified_container));
     }
 
     // Assignement test
@@ -75,13 +75,13 @@ inline static void test_container(const C& _source, const C& _modified_source)
         container = _source;
 
         // Should be a perfect copy, is_equal will also test default forward iterators
-        CPPUNIT_ASSERT(core::tools::is_equal(container, _source));
+        CPPUNIT_ASSERT(core::is_equal(container, _source));
 
         class container modified_container;
         modified_container = _modified_source;
 
         // Should be different
-        CPPUNIT_ASSERT(!core::tools::is_equal(container, modified_container));
+        CPPUNIT_ASSERT(!core::is_equal(container, modified_container));
     }
 
     // Initializer list test
@@ -93,31 +93,31 @@ inline static void test_container(const C& _source, const C& _modified_source)
         std::copy(_source.cbegin(), _source.cend(), inserter(container));
 
         // Should be a perfect copy
-        CPPUNIT_ASSERT(core::tools::is_equal(container, _source));
+        CPPUNIT_ASSERT(core::is_equal(container, _source));
 
         class container modified_container;
 
         std::copy(_modified_source.cbegin(), _modified_source.cend(), inserter(modified_container));
 
         // Should be different (test inequality operator)
-        CPPUNIT_ASSERT(!core::tools::is_equal(container, modified_container));
+        CPPUNIT_ASSERT(!core::is_equal(container, modified_container));
     }
 
     // Clear test
-    if constexpr(core::tools::is_container_dynamic<C>::value)
+    if constexpr(core::is_container_dynamic<C>::value)
     {
         container container(_source);
         class container empty;
 
-        CPPUNIT_ASSERT(!core::tools::is_equal(container, empty));
+        CPPUNIT_ASSERT(!core::is_equal(container, empty));
 
         container.clear();
 
-        CPPUNIT_ASSERT(core::tools::is_equal(container, empty));
+        CPPUNIT_ASSERT(core::is_equal(container, empty));
     }
 
     // Special features of vector kind container
-    if constexpr(core::tools::is_vector<C>::value)
+    if constexpr(core::is_vector<C>::value)
     {
         container container(_source);
 

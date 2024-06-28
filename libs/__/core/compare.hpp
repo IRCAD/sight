@@ -27,7 +27,7 @@
 #include <memory>
 #include <type_traits>
 
-namespace sight::core::tools
+namespace sight::core
 {
 
 /**
@@ -1016,4 +1016,4 @@ constexpr static bool is_greater(T1 _a, T2 _b)
     }
 }
 
-} // namespace sight::core::tools
+} // namespace sight::core

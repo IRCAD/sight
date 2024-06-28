@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -276,7 +276,7 @@ void material::create_shader_parameter_adaptors()
                                                 == Ogre::GPT_FRAGMENT_PROGRAM ? "fragment"
                                                                               :
                                                 "geometry";
-            const core::tools::id::type id =
+            const core::id::type id =
                 std::string(this->get_id()) + "_" + shader_type_str + "-" + constant_name;
 
             // Creates an Ogre adaptor and associates it with the Sight object

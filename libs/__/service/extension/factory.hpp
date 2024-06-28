@@ -27,8 +27,8 @@
 #include <sight/service/config.hpp>
 
 #include <core/mt/types.hpp>
+#include <core/object.hpp>
 #include <core/runtime/module.hpp>
-#include <core/tools/object.hpp>
 
 #include <boost/unordered_map.hpp>
 

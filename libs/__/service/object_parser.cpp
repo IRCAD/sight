@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ void object_parser::set_object_config(const service::config_t& _cfg_elem)
 
 //-----------------------------------------------------------------------------
 
-void object_parser::create_config(core::tools::object::sptr /*unused*/)
+void object_parser::create_config(core::object::sptr /*unused*/)
 {
 }
 

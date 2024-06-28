@@ -196,7 +196,7 @@ void preferences_configuration::updating()
     // Preferences may have been updated after start or last update.
     this->update_from_preferences();
 
-    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(base_id());
 
     QDialog dialog;
     dialog.setObjectName("preferences_configuration");

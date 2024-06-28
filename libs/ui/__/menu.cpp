@@ -65,7 +65,7 @@ void menu::create()
     SIGHT_ASSERT("Parent menu is unknown.", menu);
     m_layout_manager->set_callbacks(callbacks);
 
-    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
+    const std::string service_id = base_id();
 
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(

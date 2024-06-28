@@ -31,15 +31,15 @@
 #include <core/base.hpp>
 #include <core/com/signals.hpp>
 #include <core/com/slots.hpp>
+#include <core/object.hpp>
 #include <core/runtime/types.hpp>
-#include <core/tools/object.hpp>
 
-namespace sight::core::tools
+namespace sight::core
 {
 
 class object;
 
-} // namespace sight::core::tools
+} // namespace sight::core
 
 namespace sight::data
 {
@@ -135,8 +135,8 @@ public:
      */
     SIGHT_APP_API static connection_info parse_connections(
         const core::runtime::config_t& _cfg,
-        const CSPTR(core::tools::object)& _obj =
-        CSPTR(core::tools::object)()
+        const CSPTR(core::object)& _obj =
+        CSPTR(core::object)()
     );
 
     /**
@@ -161,7 +161,7 @@ public:
     SIGHT_APP_API static void create_connections(
         const core::runtime::config_t& _cfg,
         core::com::helper::sig_slot_connection& _helper,
-        const CSPTR(core::tools::object)& _obj = CSPTR(core::tools::object)()
+        const CSPTR(core::object)& _obj = CSPTR(core::object)()
     );
 
     /// Disconnects all proxies associated to objectKey

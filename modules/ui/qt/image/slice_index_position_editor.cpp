@@ -135,7 +135,7 @@ void slice_index_position_editor::starting()
         this->get_container()
     );
 
-    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(base_id());
 
     auto* layout = new QVBoxLayout();
 

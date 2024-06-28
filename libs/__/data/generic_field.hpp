@@ -94,7 +94,7 @@ public:
             if constexpr(std::is_floating_point_v<T>)
             {
                 // Use our handcrafted comparison (which manage scaled epsilon and NaN / Inf)
-                if(!core::tools::is_equal(this->m_value, other_field.m_value))
+                if(!core::is_equal(this->m_value, other_field.m_value))
                 {
                     return false;
                 }
@@ -130,7 +130,7 @@ public:
             if constexpr(std::is_floating_point_v<T>)
             {
                 // Use our handcrafted comparison (which manage scaled epsilon and NaN / Inf)
-                if(!core::tools::is_less(this->m_value, other_field.m_value))
+                if(!core::is_less(this->m_value, other_field.m_value))
                 {
                     return false;
                 }
@@ -163,7 +163,7 @@ public:
             if constexpr(std::is_floating_point_v<T>)
             {
                 // Use our handcrafted comparison (which manage scaled epsilon and NaN / Inf)
-                if(!core::tools::is_greater(this->m_value, other_field.m_value))
+                if(!core::is_greater(this->m_value, other_field.m_value))
                 {
                     return false;
                 }

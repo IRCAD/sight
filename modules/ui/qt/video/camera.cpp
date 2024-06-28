@@ -116,7 +116,7 @@ void camera::starting()
         layout->addWidget(source_label);
     }
 
-    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(base_id());
 
     m_devices_combo_box = new QComboBox();
     m_devices_combo_box->setObjectName(service_id);

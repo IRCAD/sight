@@ -29,7 +29,7 @@
 #include <core/com/has_signals.hpp>
 #include <core/com/has_slots.hpp>
 #include <core/com/slot.hpp>
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <data/mt/locked_ptr.hpp>
 #include <data/ptr.hpp>
@@ -125,14 +125,14 @@ struct SIGHT_SERVICE_CLASS_API connections_t
  * - \b stop() : Stop the service.
  * - \b swap_key(const key_t&, data::object::sptr) : Swap the object at the given key with the object in parameter.
  */
-class SIGHT_SERVICE_CLASS_API base : public core::tools::object,
+class SIGHT_SERVICE_CLASS_API base : public core::object,
                                      public core::com::has_slots,
                                      public core::com::has_signals,
                                      public data::has_data
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(base, core::tools::object);
+    SIGHT_DECLARE_SERVICE(base, core::object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     using config_t = service::config_t;

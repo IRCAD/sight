@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "id_test.hpp"
 
+#include <core/id.hpp>
+#include <core/object.hpp>
 #include <core/tools/failed.hpp>
-#include <core/tools/id.hpp>
-#include <core/tools/object.hpp>
 #include <core/tools/uuid.hpp>
 
 #include <chrono>
@@ -56,32 +56,32 @@ void id_test::object_id_test()
 {
     const std::string id = "myID";
 
-    core::tools::object::sptr obj = std::make_shared<core::tools::object>();
+    core::object::sptr obj = std::make_shared<core::object>();
 
-    CPPUNIT_ASSERT(core::tools::id::exist(id) == false);
+    CPPUNIT_ASSERT(core::id::exist(id) == false);
 
     obj->set_id(id);
 
-    CPPUNIT_ASSERT(core::tools::id::exist(id));
+    CPPUNIT_ASSERT(core::id::exist(id));
     CPPUNIT_ASSERT_EQUAL(id, obj->get_id());
-    CPPUNIT_ASSERT_EQUAL(obj, core::tools::id::get_object(id));
+    CPPUNIT_ASSERT_EQUAL(obj, core::id::get_object(id));
 
-    core::tools::object::sptr obj2 = std::make_shared<core::tools::object>();
+    core::object::sptr obj2 = std::make_shared<core::object>();
 
     CPPUNIT_ASSERT(obj2->has_id() == false);
-    CPPUNIT_ASSERT_THROW(obj2->get_id(core::tools::id::policy::must_exist), core::tools::failed);
+    CPPUNIT_ASSERT_THROW(obj2->get_id(core::id::policy::must_exist), core::tools::failed);
 
-    std::string fwid = obj2->get_id(core::tools::id::policy::generate);
-    CPPUNIT_ASSERT_NO_THROW(obj2->get_id(core::tools::id::policy::must_exist));
+    std::string fwid = obj2->get_id(core::id::policy::generate);
+    CPPUNIT_ASSERT_NO_THROW(obj2->get_id(core::id::policy::must_exist));
 
     CPPUNIT_ASSERT(obj2->has_id() == true);
-    CPPUNIT_ASSERT(core::tools::id::exist(fwid));
+    CPPUNIT_ASSERT(core::id::exist(fwid));
 
     obj2->reset_id();
     CPPUNIT_ASSERT(obj2->has_id() == false);
 
-    CPPUNIT_ASSERT(core::tools::id::exist(fwid) == false);
-    CPPUNIT_ASSERT(!core::tools::id::get_object(fwid));
+    CPPUNIT_ASSERT(core::id::exist(fwid) == false);
+    CPPUNIT_ASSERT(!core::id::get_object(fwid));
 }
 
 //-----------------------------------------------------------------------------
@@ -102,40 +102,70 @@ void id_test::concurrent_access_on_id_map_test()
     }
 }
 
+//------------------------------------------------------------------------------
+
+void id_test::join_id_test()
+{
+    // Build an id with a specific format
+    const std::string config_id  = "my_object_id";
+    const std::string service_id = "my_service_id";
+    const auto real_id           = core::string::join('-', config_id, 6, 6, 6, service_id);
+
+    CPPUNIT_ASSERT_EQUAL(false, core::id::exist(real_id));
+    CPPUNIT_ASSERT_EQUAL(config_id + std::string("-6-6-6-") + service_id, real_id);
+
+    auto obj = std::make_shared<core::object>();
+    obj->set_id("", std::string(""), config_id, "", std::string(""), 6, 6, 6, service_id, "", std::string(""));
+    CPPUNIT_ASSERT_EQUAL(true, core::id::exist(real_id));
+}
+
+//------------------------------------------------------------------------------
+
+void id_test::short_id_test()
+{
+    // Build an id with a specific format
+    const std::string config_id  = "my_object_id";
+    const std::string service_id = "my_service_id";
+
+    auto obj = std::make_shared<core::object>();
+    obj->set_id("", std::string(""), config_id, "", std::string(""), 6, 6, 6, service_id, "", std::string(""));
+    CPPUNIT_ASSERT_EQUAL(service_id, obj->base_id());
+}
+
 //-----------------------------------------------------------------------------
 
 void id_test::run_id_creation()
 {
     const std::string id = core::tools::uuid::generate();
 
-    core::tools::object::sptr obj = std::make_shared<core::tools::object>();
+    core::object::sptr obj = std::make_shared<core::object>();
 
-    CPPUNIT_ASSERT(core::tools::id::exist(id) == false);
+    CPPUNIT_ASSERT(core::id::exist(id) == false);
 
     obj->set_id(id);
 
-    CPPUNIT_ASSERT(core::tools::id::exist(id));
+    CPPUNIT_ASSERT(core::id::exist(id));
 
     CPPUNIT_ASSERT_EQUAL(id, obj->get_id());
 
-    CPPUNIT_ASSERT_EQUAL(obj, core::tools::id::get_object(id));
+    CPPUNIT_ASSERT_EQUAL(obj, core::id::get_object(id));
 
-    core::tools::object::sptr obj2 = std::make_shared<core::tools::object>();
+    core::object::sptr obj2 = std::make_shared<core::object>();
 
     CPPUNIT_ASSERT(obj2->has_id() == false);
-    CPPUNIT_ASSERT_THROW(obj2->get_id(core::tools::id::policy::must_exist), core::tools::failed);
+    CPPUNIT_ASSERT_THROW(obj2->get_id(core::id::policy::must_exist), core::tools::failed);
 
-    const std::string id2 = obj2->get_id(core::tools::id::policy::generate);
-    CPPUNIT_ASSERT_NO_THROW(obj2->get_id(core::tools::id::policy::must_exist));
+    const std::string id2 = obj2->get_id(core::id::policy::generate);
+    CPPUNIT_ASSERT_NO_THROW(obj2->get_id(core::id::policy::must_exist));
 
     CPPUNIT_ASSERT(obj2->has_id() == true);
-    CPPUNIT_ASSERT(core::tools::id::exist(id2));
+    CPPUNIT_ASSERT(core::id::exist(id2));
 
     obj2->reset_id();
     CPPUNIT_ASSERT(obj2->has_id() == false);
 
-    CPPUNIT_ASSERT(core::tools::id::exist(id2) == false);
-    CPPUNIT_ASSERT(!core::tools::id::get_object(id2));
+    CPPUNIT_ASSERT(core::id::exist(id2) == false);
+    CPPUNIT_ASSERT(!core::id::get_object(id2));
 }
 
 //-----------------------------------------------------------------------------

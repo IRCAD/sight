@@ -88,7 +88,7 @@ void image_series::deep_copy(const object::csptr& _source, const std::unique_ptr
 
 bool image_series::operator==(const image_series& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_dicom_reference, _other.m_dicom_reference))
+    if(!core::is_equal(m_dicom_reference, _other.m_dicom_reference))
     {
         return false;
     }

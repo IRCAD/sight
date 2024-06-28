@@ -27,8 +27,8 @@
 #include "service/extension/config.hpp"
 
 #include <core/mt/types.hpp>
+#include <core/object.hpp>
 #include <core/runtime/extension.hpp>
-#include <core/tools/object.hpp>
 
 #include <data/composite.hpp>
 

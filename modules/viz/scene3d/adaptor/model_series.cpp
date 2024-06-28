@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -139,7 +139,7 @@ void model_series::updating()
         adaptor->set_input(reconstruction, "reconstruction", true);
 
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
-        adaptor->set_id(this->get_id() + "_" + adaptor->get_id());
+        adaptor->set_id(this->get_id(), adaptor->get_id());
 
         adaptor->set_render_service(this->render_service());
         adaptor->set_layer_id(m_layer_id);

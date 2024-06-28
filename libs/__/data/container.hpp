@@ -25,7 +25,7 @@
 #include "data/object.hpp"
 
 #include <core/com/signal.hpp>
-#include <core/tools/compare.hpp>
+#include <core/compare.hpp>
 
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/random_access_index.hpp>
@@ -145,7 +145,7 @@ class container_wrapper
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
         C,
-        typename std::enable_if_t<core::tools::is_array<C>::value>
+        typename std::enable_if_t<core::is_array<C>::value>
     >: private C
 {
 public:
@@ -178,7 +178,7 @@ public:
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
         C,
-        typename std::enable_if_t<core::tools::is_vector<C>::value>
+        typename std::enable_if_t<core::is_vector<C>::value>
     >: private C
 {
 public:
@@ -235,7 +235,7 @@ public:
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
         C,
-        typename std::enable_if_t<core::tools::is_deque<C>::value>
+        typename std::enable_if_t<core::is_deque<C>::value>
     >: private C
 {
 public:
@@ -275,7 +275,7 @@ public:
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
         C,
-        typename std::enable_if_t<core::tools::is_list<C>::value>
+        typename std::enable_if_t<core::is_list<C>::value>
     >: private C
 {
 public:
@@ -316,7 +316,7 @@ public:
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
         C,
-        typename std::enable_if_t<core::tools::is_sequenced_set<C>::value>
+        typename std::enable_if_t<core::is_sequenced_set<C>::value>
     >: private C
 {
 public:
@@ -388,7 +388,7 @@ public:
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
         C,
-        typename std::enable_if_t<core::tools::is_map<C>::value>
+        typename std::enable_if_t<core::is_map<C>::value>
     >: private C
 {
 public:
@@ -423,7 +423,7 @@ public:
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
         C,
-        typename std::enable_if_t<core::tools::is_multimap<C>::value>
+        typename std::enable_if_t<core::is_multimap<C>::value>
     >: private C
 {
 public:
@@ -458,7 +458,7 @@ public:
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
         C,
-        typename std::enable_if_t<core::tools::is_set<C>::value>
+        typename std::enable_if_t<core::is_set<C>::value>
     >: private C
 {
 public:
@@ -493,7 +493,7 @@ public:
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
         C,
-        typename std::enable_if_t<core::tools::is_multiset<C>::value>
+        typename std::enable_if_t<core::is_multiset<C>::value>
     >: private C
 {
 public:
@@ -524,7 +524,7 @@ public:
 /// Unordered map container class.
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
-        C, typename std::enable_if_t<core::tools::is_unordered_map<C>::value>
+        C, typename std::enable_if_t<core::is_unordered_map<C>::value>
     >: private C
 {
 public:
@@ -556,7 +556,7 @@ public:
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
         C,
-        typename std::enable_if_t<core::tools::is_unordered_multimap<C>::value>
+        typename std::enable_if_t<core::is_unordered_multimap<C>::value>
     >: private C
 {
 public:
@@ -587,7 +587,7 @@ public:
 /// Unordered set container class.
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
-        C, typename std::enable_if_t<core::tools::is_unordered_set<C>::value>
+        C, typename std::enable_if_t<core::is_unordered_set<C>::value>
     >: private C
 {
 public:
@@ -619,7 +619,7 @@ public:
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
         C,
-        typename std::enable_if_t<core::tools::is_unordered_multiset<C>::value>
+        typename std::enable_if_t<core::is_unordered_multiset<C>::value>
     >: private C
 {
 public:
