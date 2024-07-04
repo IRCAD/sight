@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,7 +84,7 @@ void series_set::generate_series_information(data::series::sptr _series)
     str << count++;
 
     const std::string uid         = "1.2.826.0.1.3680043.2.1125.102906542887009256605006409108689" + str.str();
-    const std::string modality    = "CT";
+    const auto modality           = data::dicom::modality_t::ct;
     const std::string date        = "20130418";
     const std::string time        = "101010.101010";
     const std::string description = "Description";

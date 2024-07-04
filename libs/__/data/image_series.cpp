@@ -180,6 +180,86 @@ std::size_t image_series::resize(const image::size_t& _size, const core::type& _
 
 //------------------------------------------------------------------------------
 
+void image_series::set_image_position_patient(
+    const std::vector<double>& _image_position_patient,
+    const std::optional<std::size_t>& _frame_index
+)
+{
+    // If we set the position the shared group, we also set the image origin
+    if(!_frame_index)
+    {
+        image::set_origin({_image_position_patient[0], _image_position_patient[1], _image_position_patient[2]});
+    }
+
+    series::set_image_position_patient(_image_position_patient, _frame_index);
+}
+
+//------------------------------------------------------------------------------
+
+void image_series::set_origin(const origin_t& _origin)
+{
+    image::set_origin(_origin);
+
+    if(get_sop_keyword() != dicom::sop::Keyword::INVALID)
+    {
+        // We know if we are multi-frame or not, so we can use series method
+        // Check if we are an ultrasound volume and if we have a specific acquisition geometry
+        switch(get_ultrasound_acquisition_geometry())
+        {
+            case data::dicom::ultrasound_acquisition_geometry_t::apex:
+            {
+                // Search for Volume to Transducer Mapping Matrix
+
+                if(auto transducer_mapping = get_volume_to_transducer_mapping_matrix(); transducer_mapping)
+                {
+                    transducer_mapping->set_position(_origin);
+                    set_volume_to_transducer_mapping_matrix(transducer_mapping);
+                }
+                else
+                {
+                    matrix4 new_mapping;
+                    new_mapping.set_position(_origin);
+                    set_volume_to_transducer_mapping_matrix(new_mapping);
+                }
+
+                break;
+            }
+
+            case data::dicom::ultrasound_acquisition_geometry_t::patient:
+            {
+                if(auto table_mapping = get_volume_to_table_mapping_matrix(); table_mapping)
+                {
+                    table_mapping->set_position(_origin);
+                    set_volume_to_table_mapping_matrix(table_mapping);
+                }
+                else
+                {
+                    matrix4 new_mapping;
+                    new_mapping.set_position(_origin);
+                    set_volume_to_table_mapping_matrix(new_mapping);
+                }
+
+                break;
+            }
+
+            default:
+            {
+                // This is the default case, we set the shared group if multi-frame or the root ImagePositionPatient
+                // In either case it won't overwrite per-frame positions
+                set_image_position_patient({_origin[0], _origin[1], _origin[2]}, std::nullopt);
+                break;
+            }
+        }
+    }
+    else
+    {
+        // Store it as "global" ImagePositionPatient
+        m_pimpl->set_values<gdcm::Keywords::ImagePositionPatient>({_origin[0], _origin[1], _origin[2]}, 0);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 fiducials_series::csptr image_series::get_fiducials() const
 {
     return m_fiducials_series;

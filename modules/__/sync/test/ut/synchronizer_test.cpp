@@ -1961,10 +1961,10 @@ void synchronizer_test::image_series_time_tagging_test()
 
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == timestamp);
 
-    const auto dt = frame1->get_frame_acquisition_date_time();
+    const auto dt = frame1->get_frame_acquisition_date_time(0);
     CPPUNIT_ASSERT(dt.has_value());
 
-    const auto time_point = frame1->get_frame_acquisition_time_point();
+    const auto time_point = frame1->get_frame_acquisition_time_point(0);
     CPPUNIT_ASSERT(time_point.has_value());
 
     std::int64_t ts = std::chrono::duration_cast<std::chrono::milliseconds>(time_point->time_since_epoch()).count();
@@ -2086,9 +2086,9 @@ void synchronizer_test::single_image_series_tl_population()
     std::int64_t ts = 0;
 
     // Check that the ImageSeries timestamp was written
-    dt = frame1->get_frame_acquisition_date_time();
+    dt = frame1->get_frame_acquisition_date_time(0);
     CPPUNIT_ASSERT(dt.has_value());
-    time_point = frame1->get_frame_acquisition_time_point();
+    time_point = frame1->get_frame_acquisition_time_point(0);
     CPPUNIT_ASSERT(time_point.has_value());
     ts = std::chrono::duration_cast<std::chrono::milliseconds>(time_point->time_since_epoch()).count();
     CPPUNIT_ASSERT(ts == 2);
@@ -2104,9 +2104,9 @@ void synchronizer_test::single_image_series_tl_population()
     synchronizer_tester::check_matrix(matrix1, 0);
 
     // Check that the ImageSeries timestamp was written
-    dt = frame1->get_frame_acquisition_date_time();
+    dt = frame1->get_frame_acquisition_date_time(0);
     CPPUNIT_ASSERT(dt.has_value());
-    time_point = frame1->get_frame_acquisition_time_point();
+    time_point = frame1->get_frame_acquisition_time_point(0);
     CPPUNIT_ASSERT(time_point.has_value());
     ts = std::chrono::duration_cast<std::chrono::milliseconds>(time_point->time_since_epoch()).count();
     CPPUNIT_ASSERT(ts == 3);

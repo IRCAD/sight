@@ -25,6 +25,8 @@
 
 #include <data/image_series.hpp>
 
+#include <geometry/data/vector_functions.hpp>
+
 #include <io/bitmap/backend.hpp>
 #include <io/dicom/reader/file.hpp>
 #include <io/dicom/writer/file.hpp>
@@ -35,8 +37,12 @@
 #include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
 
+#include <glm/glm.hpp>
+
 #include <chrono>
 #include <ctime>
+
+// cspell: ignore orthogonalize
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::writer_test);
 
@@ -144,17 +150,12 @@ inline static data::image_series::sptr get_us_volume_image(
                 frame_index
             );
 
-            image->set_image_orientation_patient(
-                {
-                    double(_seed + 1) * 0.4,
-                    double(_seed + 1) * 0.5,
-                    double(_seed + 1) * 0.6,
-                    double(_seed + 1) * 0.7,
-                    double(_seed + 1) * 0.8,
-                    double(_seed + 1) * 0.9,
-                },
-                frame_index
-            );
+            fw_vec3d u = {double(_seed + 1) * 0.4, double(_seed + 1) * 0.5, double(_seed + 1) * 0.6};
+            fw_vec3d v = {double(_seed + 1) * 0.7, double(_seed + 1) * 0.8, double(_seed + 1) * 0.9};
+
+            // We really want orthogonal directions
+            geometry::data::orthogonalize(u, v);
+            image->set_image_orientation_patient({u[0], u[1], u[2], v[0], v[1], v[2]}, frame_index);
 
             // set the Frame Acquisition Date Time, which is our "timestamp"
             auto now = std::chrono::system_clock::now();

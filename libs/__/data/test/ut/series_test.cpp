@@ -144,13 +144,11 @@ void series_test::attr_instance_uid_test()
 
 void series_test::attr_modality_test()
 {
-    const std::string modality = "MR";
-
     for(const auto& series : m_series)
     {
-        series->set_modality(modality);
+        series->set_modality(data::dicom::modality_t::mr);
 
-        CPPUNIT_ASSERT_EQUAL(modality, series->get_modality());
+        CPPUNIT_ASSERT_EQUAL(data::dicom::modality_t::mr, series->get_modality());
     }
 }
 
@@ -216,7 +214,7 @@ void series_test::equality_test()
 
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->set_modality("1");
+    series1->set_modality(data::dicom::modality_t::us);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->set_modality(series1->get_modality());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
@@ -381,7 +379,7 @@ void series_test::equality_test()
     series2->set_institution_name(series1->get_institution_name());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->set_sop_keyword(dicom::sop::Keyword::CTImageStorage);
+    series1->set_sop_keyword(dicom::sop::Keyword::EnhancedUSVolumeStorage);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->set_sop_keyword(series1->get_sop_keyword());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
@@ -421,14 +419,24 @@ void series_test::equality_test()
     series2->set_rescale_slope(series1->get_rescale_slope());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->set_image_position_patient({47, 48, 49});
+    series1->set_image_position_patient({47, 48, 49}, 0);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->set_image_position_patient(series1->get_image_position_patient());
+    series2->set_image_position_patient(series1->get_image_position_patient(0), 0);
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->set_image_orientation_patient({50, 51, 52, 53, 54, 55});
+    series1->set_image_position_patient({50, 51, 52}, std::nullopt);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->set_image_orientation_patient(series1->get_image_orientation_patient());
+    series2->set_image_position_patient(series1->get_image_position_patient(std::nullopt), std::nullopt);
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_image_orientation_patient({50, 51, 52, 53, 54, 55}, 0);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_image_orientation_patient(series1->get_image_orientation_patient(0), 0);
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_image_orientation_patient({56, 57, 58, 59, 60, 61}, std::nullopt);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_image_orientation_patient(series1->get_image_orientation_patient(std::nullopt), std::nullopt);
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
     series1->set_slice_thickness(56);
@@ -436,19 +444,85 @@ void series_test::equality_test()
     series2->set_slice_thickness(series1->get_slice_thickness());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->set_frame_acquisition_date_time("57");
+    CPPUNIT_ASSERT_NO_THROW(
+        series1->set_ultrasound_acquisition_geometry(
+            data::dicom::ultrasound_acquisition_geometry_t::patient
+        )
+    );
+
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->set_frame_acquisition_date_time(series1->get_frame_acquisition_date_time());
+    series2->set_ultrasound_acquisition_geometry(series1->get_ultrasound_acquisition_geometry());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->set_frame_comments("58");
+    CPPUNIT_ASSERT_NO_THROW(
+        series1->set_patient_frame_of_reference_source(
+            data::dicom::patient_frame_of_reference_source_t::table
+        )
+    );
+
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->set_frame_comments(series1->get_frame_comments());
+    series2->set_patient_frame_of_reference_source(series1->get_patient_frame_of_reference_source());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->set_frame_label("59");
+    CPPUNIT_ASSERT_NO_THROW(
+        series1->set_dimension_organization_type(
+            data::dicom::dimension_organization_t::volume
+        )
+    );
+
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->set_frame_label(series1->get_frame_label());
+    series2->set_dimension_organization_type(series1->get_dimension_organization_type());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_slice_thickness(0.55);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_slice_thickness(series1->get_slice_thickness());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_frame_acquisition_date_time("57", 0);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_frame_acquisition_date_time(series1->get_frame_acquisition_date_time(0), 0);
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_frame_acquisition_date_time("57b", std::nullopt);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_frame_acquisition_date_time(series1->get_frame_acquisition_date_time(std::nullopt), std::nullopt);
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_frame_comments("58", 0);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_frame_comments(series1->get_frame_comments(0), 0);
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_frame_comments("58b", std::nullopt);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_frame_comments(series1->get_frame_comments(std::nullopt), std::nullopt);
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_frame_label("59", 0);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_frame_label(series1->get_frame_label(0), 0);
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_frame_label("59b", std::nullopt);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_frame_label(series1->get_frame_label(std::nullopt), std::nullopt);
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_apex_position({60.0, 61.0, 62.0});
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_apex_position(series1->get_apex_position());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    data::matrix4 matrix;
+    series1->set_volume_to_transducer_mapping_matrix(matrix);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_volume_to_transducer_mapping_matrix(series1->get_volume_to_transducer_mapping_matrix());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_volume_to_table_mapping_matrix(matrix);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_volume_to_table_mapping_matrix(series1->get_volume_to_table_mapping_matrix());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
     // Test also deepcopy, just for fun
@@ -628,20 +702,21 @@ void series_test::series_time_test()
 
 void series_test::modality_test()
 {
-    static const std::string s_MODALITY("US");
+    static const data::dicom::modality_t s_MODALITY = data::dicom::modality_t::us;
+    static const std::string s_MODALITY_STRING(*data::dicom::to_string(s_MODALITY));
 
     {
         auto series = std::make_shared<data::series>();
         series->set_modality(s_MODALITY);
         CPPUNIT_ASSERT_EQUAL(s_MODALITY, series->get_modality());
-        CPPUNIT_ASSERT_EQUAL(s_MODALITY, series->get_byte_value(data::dicom::attribute::Keyword::Modality));
+        CPPUNIT_ASSERT_EQUAL(s_MODALITY_STRING, series->get_byte_value(data::dicom::attribute::Keyword::Modality));
     }
 
     {
         auto series = std::make_shared<data::series>();
-        series->set_byte_value(data::dicom::attribute::Keyword::Modality, s_MODALITY);
+        series->set_byte_value(data::dicom::attribute::Keyword::Modality, s_MODALITY_STRING);
         CPPUNIT_ASSERT_EQUAL(s_MODALITY, series->get_modality());
-        CPPUNIT_ASSERT_EQUAL(s_MODALITY, series->get_byte_value(data::dicom::attribute::Keyword::Modality));
+        CPPUNIT_ASSERT_EQUAL(s_MODALITY_STRING, series->get_byte_value(data::dicom::attribute::Keyword::Modality));
     }
 }
 
@@ -2196,8 +2271,8 @@ void series_test::image_position_patient_test()
         // We need to set the SOP class UID to let Sight know how to store the image position patient
         series->set_sop_keyword(data::dicom::sop::Keyword::CTImageStorage);
 
-        series->set_image_position_patient(s_POSITION);
-        CPPUNIT_ASSERT(s_POSITION == series->get_image_position_patient());
+        series->set_image_position_patient(s_POSITION, std::nullopt);
+        CPPUNIT_ASSERT(s_POSITION == series->get_image_position_patient(std::nullopt));
 
         const auto values = series->get_byte_values(data::dicom::attribute::Keyword::ImagePositionPatient);
         const std::vector<double> actual {
@@ -2223,7 +2298,7 @@ void series_test::image_position_patient_test()
                 std::to_string(s_POSITION[2])
             });
 
-        CPPUNIT_ASSERT(s_POSITION == series->get_image_position_patient());
+        CPPUNIT_ASSERT(s_POSITION == series->get_image_position_patient(std::nullopt));
 
         const auto values = series->get_byte_values(data::dicom::attribute::Keyword::ImagePositionPatient);
         const std::vector<double> actual {
@@ -2242,8 +2317,12 @@ void series_test::image_position_patient_test()
         series->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
 
         // test Multi-Frame image
-        series->set_image_position_patient(s_POSITION);
-        CPPUNIT_ASSERT(s_POSITION == series->get_image_position_patient());
+        series->set_image_position_patient(s_POSITION, 0);
+        CPPUNIT_ASSERT(s_POSITION == series->get_image_position_patient(0));
+
+        // Also test shared group
+        series->set_image_position_patient(s_POSITION, std::nullopt);
+        CPPUNIT_ASSERT(s_POSITION == series->get_image_position_patient(std::nullopt));
     }
 }
 
@@ -2259,8 +2338,8 @@ void series_test::image_orientation_patient_test()
         // We need to set the SOP class UID to let Sight know how to store the image orientation patient
         series->set_sop_keyword(data::dicom::sop::Keyword::CTImageStorage);
 
-        series->set_image_orientation_patient(s_ORIENTATION);
-        CPPUNIT_ASSERT(s_ORIENTATION == series->get_image_orientation_patient());
+        series->set_image_orientation_patient(s_ORIENTATION, std::nullopt);
+        CPPUNIT_ASSERT(s_ORIENTATION == series->get_image_orientation_patient(std::nullopt));
 
         const auto values = series->get_byte_values(data::dicom::attribute::Keyword::ImageOrientationPatient);
         const std::vector<double> actual {
@@ -2292,7 +2371,7 @@ void series_test::image_orientation_patient_test()
                 std::to_string(s_ORIENTATION[5])
             });
 
-        CPPUNIT_ASSERT(s_ORIENTATION == series->get_image_orientation_patient());
+        CPPUNIT_ASSERT(s_ORIENTATION == series->get_image_orientation_patient(std::nullopt));
 
         const auto values = series->get_byte_values(data::dicom::attribute::Keyword::ImageOrientationPatient);
         const std::vector<double> actual {
@@ -2314,8 +2393,12 @@ void series_test::image_orientation_patient_test()
         series->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
 
         // test Multi-Frame image
-        series->set_image_orientation_patient(s_ORIENTATION);
-        CPPUNIT_ASSERT(s_ORIENTATION == series->get_image_orientation_patient());
+        series->set_image_orientation_patient(s_ORIENTATION, 0);
+        CPPUNIT_ASSERT(s_ORIENTATION == series->get_image_orientation_patient(0));
+
+        // Also test shared group
+        series->set_image_orientation_patient(s_ORIENTATION, std::nullopt);
+        CPPUNIT_ASSERT(s_ORIENTATION == series->get_image_orientation_patient(std::nullopt));
     }
 }
 
@@ -2323,12 +2406,12 @@ void series_test::image_orientation_patient_test()
 
 void series_test::image_transform_patient_test()
 {
-    data::matrix4 matrix = {
-        0., 1., 0., 0.,
-        1., 0., 0., 0.,
-        0., 0., -1., 0.,
-        0., 0., 0., 1.
-    };
+    const data::matrix4 matrix({
+            0., 1., 0., 0.,
+            1., 0., 0., 0.,
+            0., 0., -1., 0.,
+            0., 0., 0., 1.
+        });
 
     {
         auto series = std::make_shared<data::image_series>();
@@ -2336,10 +2419,11 @@ void series_test::image_transform_patient_test()
         // We need to set the SOP class UID to let Sight know how to read the image orientation/position patient
         series->set_sop_keyword(data::dicom::sop::Keyword::CTImageStorage);
 
-        series->set_image_transform_patient(matrix);
+        series->set_image_transform_patient(matrix, std::nullopt);
+        const auto& value = series->get_image_transform_patient(std::nullopt);
         CPPUNIT_ASSERT(
-            series->get_image_transform_patient().has_value()
-            && matrix == *(series->get_image_transform_patient())
+            value
+            && matrix == *value
         );
     }
 }
@@ -2697,7 +2781,7 @@ void series_test::copy_patient_study_module_test()
 void series_test::copy_general_series_module_test()
 {
     auto series1 = std::make_shared<data::series>();
-    series1->set_modality("1");
+    series1->set_modality(data::dicom::modality_t::ct);
     series1->set_series_instance_uid("2");
     series1->set_series_number(3);
     series1->set_laterality("4");
@@ -2846,7 +2930,9 @@ void series_test::path_test()
     static const std::string s_TIME       = "150703.123456";
     static const std::string s_UID        = "789";
     static const std::string s_PATIENT_ID = "666";
-    static const std::string s_MODALITY   = "CT";
+    static const auto s_MODALITY          = data::dicom::modality_t::ct;
+
+    static const std::string s_MODALITY_STRING(*data::dicom::to_string(s_MODALITY));
 
     static const std::string s_HASH =
         []
@@ -2872,7 +2958,7 @@ void series_test::path_test()
     CPPUNIT_ASSERT_NO_THROW((path = series->file_path(std::filesystem::path("/tmp"), ".ima")));
 
     const auto expected_path = std::filesystem::path("/tmp") / s_PATIENT_ID / (s_DATE + s_TIME)
-                               / (s_PATIENT_ID + "." + s_MODALITY + "." + s_DATE + s_TIME + "." + s_HASH
+                               / (s_PATIENT_ID + "." + s_MODALITY_STRING + "." + s_DATE + s_TIME + "." + s_HASH
                                   + std::string(".ima"));
 
     CPPUNIT_ASSERT_EQUAL(

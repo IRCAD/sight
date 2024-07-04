@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,7 +83,7 @@ void series_set_test::generation_test()
             std::string("1.2.826.0.1.3680043.2.1125.102906542887009256605006409108689" + str.str()),
             series->get_series_instance_uid()
         );
-        CPPUNIT_ASSERT_EQUAL(std::string("CT"), series->get_modality());
+        CPPUNIT_ASSERT_EQUAL(data::dicom::modality_t::ct, series->get_modality());
         CPPUNIT_ASSERT_EQUAL(std::string("20130418"), series->get_series_date());
         CPPUNIT_ASSERT_EQUAL(std::string("101010.101010"), series->get_series_time());
         CPPUNIT_ASSERT_EQUAL(std::string("Description"), series->get_series_description());

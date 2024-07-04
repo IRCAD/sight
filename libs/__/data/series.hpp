@@ -25,6 +25,7 @@
 #include <sight/data/config.hpp>
 
 #include "data/dicom/attribute.hpp"
+#include "data/dicom/coded_string.hpp"
 #include "data/dicom/sop.hpp"
 #include "data/factory/new.hpp"
 #include "data/landmarks.hpp"
@@ -110,7 +111,9 @@ public:
     SIGHT_DATA_API std::string get_series_time() const noexcept;
     SIGHT_DATA_API void set_series_time(const std::string& _series_time);
 
-    SIGHT_DATA_API std::string get_modality() const noexcept;
+    SIGHT_DATA_API std::string get_modality_string() const noexcept;
+    SIGHT_DATA_API dicom::modality_t get_modality() const noexcept;
+    SIGHT_DATA_API void set_modality(dicom::modality_t _modality);
     SIGHT_DATA_API void set_modality(const std::string& _modality);
 
     SIGHT_DATA_API std::string get_series_description() const noexcept;
@@ -337,80 +340,130 @@ public:
     /// Getter/Setter of DICOM Image Plane Module related attributes
     /// ...and Multi-frame Functional Groups Module
     /// @{
-    SIGHT_DATA_API std::vector<double> get_image_position_patient(std::size_t _instance = 0) const;
+    SIGHT_DATA_API std::vector<double> get_image_position_patient(
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) const;
 
-    SIGHT_DATA_API void set_image_position_patient(
+    SIGHT_DATA_API virtual void set_image_position_patient(
         const std::vector<double>& _image_position_patient,
-        std::size_t _instance = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     );
 
-    SIGHT_DATA_API std::vector<double> get_image_orientation_patient(std::size_t _instance = 0) const;
+    SIGHT_DATA_API std::vector<double> get_image_orientation_patient(
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) const;
 
     SIGHT_DATA_API void set_image_orientation_patient(
         const std::vector<double>& _image_orientation_patient,
-        std::size_t _instance = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     );
 
-    SIGHT_DATA_API std::optional<sight::data::matrix4> get_image_transform_patient(std::size_t _instance = 0) const;
+    SIGHT_DATA_API std::optional<matrix4> get_image_transform_patient(
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) const;
 
     // Dicom only stores x and y axis for the transformation, so we must make sure that the cross has the correct
     // orientation
-    SIGHT_DATA_API static bool check_image_transform_patient_validity(const sight::data::matrix4& _transform);
-    SIGHT_DATA_API void set_image_transform_patient(const sight::data::matrix4& _transform, std::size_t _instance = 0);
+    SIGHT_DATA_API void set_image_transform_patient(
+        const std::optional<std::reference_wrapper<const matrix4> >& _transform,
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    );
 
     SIGHT_DATA_API std::optional<double> get_slice_thickness() const noexcept;
     SIGHT_DATA_API void set_slice_thickness(const std::optional<double>& _slice_thickness = std::nullopt);
     /// @}
 
+    /// Getter/Setter of DICOM Ultrasound Frame of Reference Module
+    /// @{
+    SIGHT_DATA_API dicom::ultrasound_acquisition_geometry_t get_ultrasound_acquisition_geometry() const noexcept;
+    SIGHT_DATA_API void set_ultrasound_acquisition_geometry(
+        dicom::ultrasound_acquisition_geometry_t _ultrasound_acquisition_geometry
+    );
+
+    SIGHT_DATA_API std::vector<double> get_apex_position() const noexcept;
+    SIGHT_DATA_API void set_apex_position(const std::vector<double>& _apex_position);
+
+    SIGHT_DATA_API std::optional<matrix4> get_volume_to_transducer_mapping_matrix() const noexcept;
+    SIGHT_DATA_API void set_volume_to_transducer_mapping_matrix(
+        const std::optional<std::reference_wrapper<const matrix4> >& _volume_to_transducer_mapping_matrix
+    );
+
+    SIGHT_DATA_API std::optional<matrix4> get_volume_to_table_mapping_matrix() const noexcept;
+    SIGHT_DATA_API void set_volume_to_table_mapping_matrix(
+        const std::optional<std::reference_wrapper<const matrix4> >& _volume_to_table_mapping_matrix
+    );
+
+    SIGHT_DATA_API dicom::patient_frame_of_reference_source_t get_patient_frame_of_reference_source() const noexcept;
+    SIGHT_DATA_API void set_patient_frame_of_reference_source(
+        dicom::patient_frame_of_reference_source_t _patient_frame_of_reference_source
+    );
+    /// @}
+
+    /// Getter/Setter of DICOM Multi-frame Dimension Module
+    /// @{
+    SIGHT_DATA_API dicom::dimension_organization_t get_dimension_organization_type() const noexcept;
+    SIGHT_DATA_API void set_dimension_organization_type(dicom::dimension_organization_t _dimension_organization_type);
+    /// @}
+
     /// Getter/Setter of DICOM Multi-frame Functional Groups Module related attributes
     /// @{
-    SIGHT_DATA_API std::vector<double> get_image_position_volume(std::size_t _frame_index = 0) const;
+    SIGHT_DATA_API std::vector<double> get_image_position_volume(
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) const;
 
     SIGHT_DATA_API void set_image_position_volume(
         const std::vector<double>& _image_position_volume,
-        std::size_t _frame_index = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     );
 
-    SIGHT_DATA_API std::vector<double> get_image_orientation_volume(std::size_t _frame_index = 0) const;
+    SIGHT_DATA_API std::vector<double> get_image_orientation_volume(
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) const;
 
     SIGHT_DATA_API void set_image_orientation_volume(
         const std::vector<double>& _image_orientation_volume,
-        std::size_t _frame_index = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     );
 
-    SIGHT_DATA_API std::optional<std::string> get_frame_acquisition_date_time(std::size_t _frame_index = 0) const;
+    SIGHT_DATA_API std::optional<std::string> get_frame_acquisition_date_time(
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) const;
 
     SIGHT_DATA_API void set_frame_acquisition_date_time(
         const std::optional<std::string>& _frame_acquisition_date_time = std::nullopt,
-        std::size_t _frame_index                                       = 0
+        const std::optional<std::size_t>& _frame_index                 = std::nullopt
     );
 
     SIGHT_DATA_API std::optional<std::chrono::system_clock::time_point> get_frame_acquisition_time_point(
-        std::size_t _frame_index = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     ) const noexcept;
 
     SIGHT_DATA_API void set_frame_acquisition_time_point(
         const std::optional<std::chrono::system_clock::time_point>& _time_point = std::nullopt,
-        std::size_t _frame_index                                                = 0
+        const std::optional<std::size_t>& _frame_index                          = std::nullopt
     );
 
     SIGHT_DATA_API void set_frame_acquisition_time_point(
         sight::core::clock::type _time_point,
-        std::size_t _frame_index = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     );
 
-    SIGHT_DATA_API std::optional<std::string> get_frame_comments(std::size_t _frame_index = 0) const;
+    SIGHT_DATA_API std::optional<std::string> get_frame_comments(
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) const;
 
     SIGHT_DATA_API void set_frame_comments(
         const std::optional<std::string>& _frame_comments = std::nullopt,
-        std::size_t _frame_index                          = 0
+        const std::optional<std::size_t>& _frame_index    = std::nullopt
     );
 
-    SIGHT_DATA_API std::optional<std::string> get_frame_label(std::size_t _frame_index = 0) const;
+    SIGHT_DATA_API std::optional<std::string> get_frame_label(
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) const;
 
     SIGHT_DATA_API void set_frame_label(
         const std::optional<std::string>& _frame_label = std::nullopt,
-        std::size_t _frame_index                       = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     );
 
     /// @}
@@ -612,7 +665,7 @@ public:
     /// @return the private value as a string
     SIGHT_DATA_API std::optional<std::string> get_multi_frame_private_value(
         std::uint8_t _element,
-        std::size_t _frame_index = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     ) const;
 
     /// Private values setter for a DICOM Multi-frame Functional Groups Module.
@@ -624,25 +677,25 @@ public:
     SIGHT_DATA_API void set_multi_frame_private_value(
         const std::optional<std::string>& _value,
         std::uint8_t _element,
-        std::size_t _frame_index = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     );
 
     /// Enum that defines the kind of DICOM series we are
     enum class dicom_t : std::uint64_t
     {
-        image     = 1,
-        model     = image << 1,
-        report    = model << 1,
-        fiducials = report << 1,
-        unknown   = 0
+        unknown = 0,
+        image,
+        model,
+        report,
+        fiducials
     };
 
     /// In case we want to filter series by type
-    using DicomTypes = std::underlying_type_t<dicom_t>;
+    using dicom_types = std::underlying_type_t<dicom_t>;
 
     /// Convenience function to convert from dicom_t enum value to string
     /// @param[in] _type the dicom_t enum value to convert
-    constexpr static std::string_view dicom_type_to_string(dicom_t _type) noexcept
+    static constexpr std::optional<std::string_view> dicom_type_to_string(dicom_t _type)
     {
         switch(_type)
         {
@@ -658,8 +711,11 @@ public:
             case dicom_t::fiducials:
                 return "fiducials";
 
+            case dicom_t::unknown:
+                return std::nullopt;
+
             default:
-                return "unknown";
+                throw std::invalid_argument("Invalid dicom_t enum value");
         }
     }
 
@@ -689,15 +745,15 @@ public:
         }
     }
 
-    /// Convenience function to convert from / to DicomTypes values to string
+    /// Convenience function to convert from / to dicom_types values to string
     /// This may be used to configure reader/writer service
     /// @{
-    SIGHT_DATA_API static std::string dicom_types_to_string(DicomTypes _types) noexcept;
-    SIGHT_DATA_API static DicomTypes string_to_dicom_types(const std::string& _types) noexcept;
+    SIGHT_DATA_API static std::string dicom_types_to_string(dicom_types _types) noexcept;
+    SIGHT_DATA_API static dicom_types string_to_dicom_types(const std::string& _types) noexcept;
 
     using SopKeywords = std::set<dicom::sop::Keyword>;
-    SIGHT_DATA_API static SopKeywords dicom_types_to_sops(DicomTypes _types) noexcept;
-    SIGHT_DATA_API static DicomTypes sops_to_dicom_types(const SopKeywords& _sops) noexcept;
+    SIGHT_DATA_API static SopKeywords dicom_types_to_sops(dicom_types _types) noexcept;
+    SIGHT_DATA_API static dicom_types sops_to_dicom_types(const SopKeywords& _sops) noexcept;
     SIGHT_DATA_API static SopKeywords string_to_sops(const std::string& _sops) noexcept;
     SIGHT_DATA_API static std::string sops_to_string(const SopKeywords& _sops) noexcept;
     /// @}
@@ -728,22 +784,26 @@ public:
     /// Returns the number of frames in the series.
     SIGHT_DATA_API std::size_t num_frames() const noexcept;
 
-    /// Helper function to convert a DICOM date time string to/from a std::chrono::system_clock::time_point
-    SIGHT_DATA_API static std::chrono::system_clock::time_point date_time_to_time_point(const std::string& _date_time);
-
-    /// Helper function to convert a std::chrono::system_clock::time_point to /from DICOM date time string
-    SIGHT_DATA_API static std::string time_point_to_date_time(const std::chrono::system_clock::time_point& _time_point);
-
-    /// Helper function to convert a DICOM date to ISO date string
-    SIGHT_DATA_API static std::string date_to_iso(const std::string& _date);
-
-    /// Helper function to convert a DICOM time to ISO time string
-    SIGHT_DATA_API static std::string time_to_iso(const std::string& _time);
-
     /// Shrink the number of instances / frames to the given size.
     /// This is mainly an optimization and a bugfix when using GDCM to write a multi-frame DICOM file.
     /// @param _size
     SIGHT_DATA_API void shrink_frames(std::size_t _size);
+
+    /// Helper function to convert a DICOM date time string to/from a std::chrono::system_clock::time_point
+    /// @param _date_time in DICOM format
+    SIGHT_DATA_API static std::chrono::system_clock::time_point date_time_to_time_point(const std::string& _date_time);
+
+    /// Helper function to convert a std::chrono::system_clock::time_point to /from DICOM date time string
+    /// @param _time_point to convert to string in DICOM format
+    SIGHT_DATA_API static std::string time_point_to_date_time(const std::chrono::system_clock::time_point& _time_point);
+
+    /// Helper function to convert a DICOM date to ISO date string
+    /// @param _date in DICOM format
+    SIGHT_DATA_API static std::string date_to_iso(const std::string& _date);
+
+    /// Helper function to convert a DICOM time to ISO time string
+    /// @param _time in DICOM format
+    SIGHT_DATA_API static std::string time_to_iso(const std::string& _time);
 
     /// Helper function to generate a file name / sub-folder for a given series.
     /// @{

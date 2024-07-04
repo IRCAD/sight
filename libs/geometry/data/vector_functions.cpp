@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+// cspell: ignore orthogonalize
 
 namespace sight::geometry::data
 {
@@ -88,6 +90,35 @@ void negate(fw_vec3d& _vec)
     _vec[0] = -_vec[0];
     _vec[1] = -_vec[1];
     _vec[2] = -_vec[2];
+}
+
+//------------------------------------------------------------------------------
+
+bool orthogonalize(fw_vec3d& _vec1, fw_vec3d& _vec2, const std::optional<std::reference_wrapper<fw_vec3d> >& _vec3)
+{
+    const glm::dvec3 glm_u = glm::make_vec3<double>(_vec1.data());
+    const glm::dvec3 glm_v = glm::make_vec3<double>(_vec2.data());
+
+    // Make them Orthogonal
+    const auto glm_w     = glm::normalize(glm::cross(glm_u, glm_v));
+    const auto new_glm_u = glm::normalize(glm::cross(glm_v, glm_w));
+    const auto new_glm_v = glm::cross(glm_w, new_glm_u);
+
+    if(_vec3)
+    {
+        _vec3->get() = {glm_w.x, glm_w.y, glm_w.z};
+    }
+
+    if(glm::all(glm::epsilonEqual(glm_u, new_glm_u, 1e-3))
+       && glm::all(glm::epsilonEqual(glm_v, new_glm_v, 1e-3)))
+    {
+        return false;
+    }
+
+    _vec1 = {new_glm_u.x, new_glm_u.y, new_glm_u.z};
+    _vec2 = {new_glm_v.x, new_glm_v.y, new_glm_v.z};
+
+    return true;
 }
 
 } //namespace sight::geometry::data

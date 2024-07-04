@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -307,10 +307,10 @@ void series_puller::read_local_series(dicom_series_container_t _selected_series)
 
     for(const auto& series : _selected_series)
     {
-        const std::string& modality = series->get_modality();
-        if(modality != "CT" && modality != "MR" && modality != "XA")
+        const auto& type = series->get_dicom_type();
+        if(type == sight::data::series::dicom_t::image)
         {
-            this->notifier::info("Unable to read the modality '" + modality + "'");
+            this->notifier::info("Unable to read the modality '" + series->get_modality_string() + "'");
             return;
         }
 

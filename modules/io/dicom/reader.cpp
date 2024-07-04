@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -226,9 +226,9 @@ public:
     /// Default filters to use when scanning for DICOM files
     data::series::SopKeywords m_filters {
         data::series::dicom_types_to_sops(
-            static_cast<data::series::DicomTypes>(data::series::dicom_t::image)
-            | static_cast<data::series::DicomTypes>(data::series::dicom_t::model)
-            | static_cast<data::series::DicomTypes>(data::series::dicom_t::report)
+            static_cast<data::series::dicom_types>(data::series::dicom_t::image)
+            | static_cast<data::series::dicom_types>(data::series::dicom_t::model)
+            | static_cast<data::series::dicom_types>(data::series::dicom_t::report)
         )
     };
 
@@ -316,9 +316,9 @@ void reader::configuring()
         if(m_pimpl->m_filters.empty())
         {
             m_pimpl->m_filters = data::series::dicom_types_to_sops(
-                static_cast<data::series::DicomTypes>(data::series::dicom_t::image)
-                | static_cast<data::series::DicomTypes>(data::series::dicom_t::model)
-                | static_cast<data::series::DicomTypes>(data::series::dicom_t::report)
+                static_cast<data::series::dicom_types>(data::series::dicom_t::image)
+                | static_cast<data::series::dicom_types>(data::series::dicom_t::model)
+                | static_cast<data::series::dicom_types>(data::series::dicom_t::report)
             );
         }
     }

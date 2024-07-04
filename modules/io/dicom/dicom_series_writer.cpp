@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -138,12 +138,12 @@ void dicom_series_writer::updating()
             m_write_failed = true;
         }
 
-        if(series->get_modality() == "OT")
+        if(series->get_modality() == sight::data::dicom::modality_t::ot)
         {
             sight::ui::dialog::message dialog;
             dialog.set_message(
-                "Series modality is '" + series->get_modality() + "' some information can be lost."
-                                                                  "\nDo you want to continue ?"
+                "Series modality is '" + series->get_modality_string() + "' some information can be lost."
+                                                                         "\nDo you want to continue ?"
             );
             dialog.set_title("Series modality.");
             dialog.set_icon(ui::dialog::message::question);

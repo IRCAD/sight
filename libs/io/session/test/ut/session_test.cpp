@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -409,8 +409,8 @@ inline data::series::sptr generate<data::series>(const std::size_t _variant)
     auto object = std::make_shared<data::series>();
 
     // Fill trivial attributes
-    object->set_sop_keyword(sight::data::dicom::sop::Keyword::CTImageStorage);
-    object->set_modality(uuid::generate());
+    object->set_sop_keyword(sight::data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+    object->set_modality(sight::data::dicom::modality_t::us);
     object->set_series_description(uuid::generate());
     object->set_series_instance_uid(uuid::generate());
     object->set_series_number(std::int32_t(_variant));
@@ -451,6 +451,15 @@ inline data::series::sptr generate<data::series>(const std::size_t _variant)
     object->set_patient_age(uuid::generate());
     object->set_patient_size(double(_variant));
     object->set_patient_weight(double(_variant));
+
+    // Other Modules
+    object->set_slice_thickness(double(_variant));
+    object->set_frame_acquisition_date_time("57", 0);
+    object->set_frame_comments("58", 0);
+    object->set_frame_label("59", 0);
+    object->set_ultrasound_acquisition_geometry(data::dicom::ultrasound_acquisition_geometry_t::patient);
+    object->set_patient_frame_of_reference_source(data::dicom::patient_frame_of_reference_source_t::table);
+    object->set_dimension_organization_type(data::dicom::dimension_organization_t::volume);
 
     // Generate specific instance data
     for(std::size_t i = 0 ; i < _variant + 3 ; ++i)

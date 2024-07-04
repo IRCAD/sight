@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,6 +20,8 @@
  ***********************************************************************/
 
 #include "fiducials_reader_writer_test.hpp"
+
+#include <core/os/temp_path.hpp>
 
 #include <data/image_series.hpp>
 
@@ -100,15 +102,16 @@ void fiducials_reader_writer_test::basic_test()
     );
     original_fiducials_series->append_fiducial_set(fiducial_set);
 
+    const core::os::temp_dir folder;
+
     auto writer = std::make_shared<io::dicom::writer::file>();
     writer->set_object(original);
-    std::filesystem::create_directories("/tmp/FiducialsReaderWriterTest");
-    writer->set_folder("/tmp/FiducialsReaderWriterTest");
+    writer->set_folder(folder);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     auto actual = std::make_shared<data::series_set>();
     reader->set_object(actual);
-    reader->set_folder("/tmp/FiducialsReaderWriterTest");
+    reader->set_folder(folder);
     CPPUNIT_ASSERT_NO_THROW(reader->read());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), actual->size());
 

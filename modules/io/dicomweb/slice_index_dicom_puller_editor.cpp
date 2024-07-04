@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -257,8 +257,7 @@ void slice_index_dicom_puller_editor::read_image(
 )
 {
     // DicomSeries
-    if(_dicom_series.get_modality() != "CT" && _dicom_series.get_modality() != "MR"
-       && _dicom_series.get_modality() != "XA")
+    if(_dicom_series.get_dicom_type() != sight::data::series::dicom_t::image)
     {
         return;
     }

@@ -28,6 +28,11 @@
 
 #include <core/base.hpp>
 
+#include <functional>
+#include <optional>
+
+// cspell: ignore orthogonalize
+
 namespace sight::geometry::data
 {
 
@@ -71,6 +76,19 @@ SIGHT_GEOMETRY_DATA_API double vec_length(const fw_vec3d& _vec);
  *  @param [out] _vec
  */
 SIGHT_GEOMETRY_DATA_API void negate(fw_vec3d& _vec);
+
+/**
+ *  @brief Makes the vectors orthogonal.
+ *  @param [in] _vec1
+ *  @param [in] _vec2
+ *  @param [out] _vec3 (optional)
+ *  @return false if already orthogonal, true otherwise.
+ */
+SIGHT_GEOMETRY_DATA_API bool orthogonalize(
+    fw_vec3d& _vec1,
+    fw_vec3d& _vec2,
+    const std::optional<std::reference_wrapper<fw_vec3d> >& _vec3 = std::nullopt
+);
 
 } //namespace sight::geometry::data
 

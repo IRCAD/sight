@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -233,9 +233,7 @@ void slice_index_dicom_editor::read_image(std::size_t _selected_slice_index)
 
     auto is_modality_supported = [](const data::series& _series)
                                  {
-                                     return _series.get_modality() == "CT"
-                                            || _series.get_modality() == "MR"
-                                            || _series.get_modality() == "XA";
+                                     return _series.get_dicom_type() == data::series::dicom_t::image;
                                  };
 
     if(!is_modality_supported(*dicom_series))

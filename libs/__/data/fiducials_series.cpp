@@ -401,6 +401,7 @@ bool fiducials_series::fiducial_set::operator==(const fiducial_set& _other) cons
 fiducials_series::fiducials_series()
 {
     set_sop_keyword(dicom::sop::Keyword::SpatialFiducialsStorage);
+    set_modality(dicom::modality_t::fid);
 }
 
 //------------------------------------------------------------------------------

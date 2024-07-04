@@ -170,8 +170,7 @@ public:
     using C::C;
 
     /// Default virtual destructor
-    /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Vector container class.
@@ -211,7 +210,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 
     /// Utility function to remove all matching elements from the container.
     constexpr auto remove(const typename C::value_type& _value)
@@ -268,7 +267,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// List container class.
@@ -309,7 +308,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Sequenced set container class.
@@ -368,7 +367,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 
     /// Utility function to remove first matching elements from the container.
     constexpr auto remove(const typename C::value_type& _value)
@@ -416,7 +415,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Multimap container class.
@@ -451,7 +450,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Set container class.
@@ -486,7 +485,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Set container class.
@@ -518,7 +517,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Unordered map container class.
@@ -549,7 +548,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Unordered multimap container class.
@@ -581,7 +580,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Unordered set container class.
@@ -612,7 +611,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Unordered set container class.
@@ -641,7 +640,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 #undef USING_CONTAINER

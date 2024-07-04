@@ -126,11 +126,28 @@ inline static void compare_enhanced_us_volume(
         // Image Position Patient
         const auto& expected_position = _expected->get_image_position_patient(frame_index);
         const auto& actual_position   = _actual->get_image_position_patient(frame_index);
-        CPPUNIT_ASSERT_EQUAL(expected_position.size(), actual_position.size());
 
-        for(std::size_t i = 0 ; i < expected_position.size() ; ++i)
+        if(expected_position.empty() && !actual_position.empty())
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_position[i], actual_position[i], 0.0001);
+            for(const auto& position : actual_position)
+            {
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(position, 0.0, 0.0001);
+            }
+        }
+        else if(!expected_position.empty() && actual_position.empty())
+        {
+            for(const auto& position : expected_position)
+            {
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(position, 0.0, 0.0001);
+            }
+        }
+        else
+        {
+            CPPUNIT_ASSERT_EQUAL(expected_position.size(), actual_position.size());
+            for(std::size_t i = 0 ; i < expected_position.size() ; ++i)
+            {
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_position[i], actual_position[i], 0.0001);
+            }
         }
 
         // Image Orientation Patient

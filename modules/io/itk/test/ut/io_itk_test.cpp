@@ -364,7 +364,7 @@ void io_itk_test::series_set_inr_test()
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
     data::image_series::sptr img_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
     CPPUNIT_ASSERT(img_series);
-    CPPUNIT_ASSERT_EQUAL(std::string("OT"), img_series->get_modality());
+    CPPUNIT_ASSERT_EQUAL(data::dicom::modality_t::ot, img_series->get_modality());
 
     CPPUNIT_ASSERT_EQUAL(std::string("int16"), img_series->type().name());
     CPPUNIT_ASSERT(size == img_series->size());
@@ -374,7 +374,7 @@ void io_itk_test::series_set_inr_test()
 
     img_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(1));
     CPPUNIT_ASSERT(img_series);
-    CPPUNIT_ASSERT_EQUAL(std::string("OT"), img_series->get_modality());
+    CPPUNIT_ASSERT_EQUAL(data::dicom::modality_t::ot, img_series->get_modality());
 
     CPPUNIT_ASSERT_EQUAL(std::string("uint8"), img_series->type().name());
     CPPUNIT_ASSERT(size == img_series->size());

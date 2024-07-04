@@ -47,28 +47,246 @@ namespace sight::io::dicom::writer
 
 //------------------------------------------------------------------------------
 
+/// Decode image orientation / position
+/// GDCM doesn't handle Enhanced US Volume (which is rather a complicated case)
+/// see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.8.24.2.html
+inline static void compute_transform(
+    data::matrix4& _matrix,
+    const data::image_series& _image_series
+)
+{
+    // Use the image metadata as a lower priority
+    _matrix.set_position(_image_series.origin());
+
+    // Try also the magical field "direction"
+    ///@todo remove this when we get rid of the direction "field" from medical image
+    if(const auto& direction_matrix = data::helper::medical_image::get_direction(_image_series); direction_matrix)
+    {
+        for(std::size_t i = 0 ; i < 3 ; ++i)
+        {
+            for(std::size_t j = 0 ; j < 3 ; ++j)
+            {
+                _matrix(i, j) = (*direction_matrix)(i, j);
+            }
+        }
+    }
+
+    // But DICOM metadata should have the highest priority !
+    if(_image_series.get_ultrasound_acquisition_geometry() == data::dicom::ultrasound_acquisition_geometry_t::apex)
+    {
+        // Try first the shared group
+        if(const auto& shared_orientation = _image_series.get_image_orientation_volume(std::nullopt);
+           shared_orientation.size() == 6)
+        {
+            _matrix.set_orientation(shared_orientation);
+        }
+
+        if(const auto& shared_position = _image_series.get_image_position_volume(std::nullopt);
+           shared_position.size() == 3)
+        {
+            _matrix.set_position(shared_position);
+        }
+
+        // Then the first frame from the per_frame group
+        if(const auto& frame_orientation = _image_series.get_image_orientation_volume(0);
+           frame_orientation.size() == 6)
+        {
+            _matrix.set_orientation(frame_orientation);
+        }
+
+        if(const auto& frame_position = _image_series.get_image_position_volume(0);
+           frame_position.size() == 3)
+        {
+            _matrix.set_position(frame_position);
+        }
+    }
+    else // data::dicom::ultrasound_acquisition_geometry_t::patient or unknown
+    {
+        // Try the shared group
+        if(const auto& shared_orientation = _image_series.get_image_orientation_patient(std::nullopt);
+           shared_orientation.size() == 6)
+        {
+            _matrix.set_orientation(shared_orientation);
+        }
+
+        if(const auto& shared_position = _image_series.get_image_position_patient(std::nullopt);
+           shared_position.size() == 3)
+        {
+            _matrix.set_position(shared_position);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 inline static void write_enhanced_us_volume(
     const data::image_series& _image_series,
+    data::series& _series_copy,
     const std::string& _filepath,
     writer::file::transfer_syntax _transfer_syntax,
     [[maybe_unused]] bool _force_cpu
 )
 {
+    data::matrix4 transform;
+    compute_transform(transform, _image_series);
+
+    if(_series_copy.get_ultrasound_acquisition_geometry()
+       == data::dicom::ultrasound_acquisition_geometry_t::unknown)
+    {
+        SIGHT_INFO(
+            "The Ultrasound Acquisition Geometry is unknown. "
+            "The default 'PATIENT' will be used."
+        );
+
+        _series_copy.set_ultrasound_acquisition_geometry(data::dicom::ultrasound_acquisition_geometry_t::patient);
+    }
+
+    if(_series_copy.get_ultrasound_acquisition_geometry()
+       == data::dicom::ultrasound_acquisition_geometry_t::patient
+       && _series_copy.get_patient_frame_of_reference_source()
+       == data::dicom::patient_frame_of_reference_source_t::unknown)
+    {
+        SIGHT_INFO(
+            "The Patient Frame of Reference Source is unknown but Ultrasound Acquisition Geometry is `PATIENT`. "
+            "The default 'TABLE' will be used."
+        );
+
+        _series_copy.set_patient_frame_of_reference_source(
+            data::dicom::patient_frame_of_reference_source_t::table
+        );
+    }
+
+    if(_series_copy.get_ultrasound_acquisition_geometry()
+       == data::dicom::ultrasound_acquisition_geometry_t::apex
+       && !_series_copy.get_volume_to_transducer_mapping_matrix())
+    {
+        SIGHT_INFO(
+            "The Volume to Transducer mapping is not present but Ultrasound Acquisition Geometry is `APEX`. "
+            "The mapping matrix will be set."
+        );
+
+        _series_copy.set_volume_to_transducer_mapping_matrix(transform);
+    }
+
+    if(_series_copy.get_patient_frame_of_reference_source()
+       == data::dicom::patient_frame_of_reference_source_t::table
+       && !_series_copy.get_volume_to_table_mapping_matrix())
+    {
+        SIGHT_INFO(
+            "The Volume to Table mapping is not present but Patient Frame of Reference Source is 'TABLE'. "
+            "The mapping matrix will be set."
+        );
+
+        _series_copy.set_volume_to_table_mapping_matrix(transform);
+    }
+
+    if(_series_copy.get_dimension_organization_type()
+       == data::dicom::dimension_organization_t::unknown)
+    {
+        ///@note TILED_SPARSE is not really documented in enhanced US volume, but before the volume is reconstructed
+        ///      We need to tells that the slices may not be contiguous
+        SIGHT_INFO(
+            "The Dimension Organization Type is unknown. "
+            "The default 'TILED_SPARSE' will be used."
+        );
+
+        _series_copy.set_dimension_organization_type(
+            data::dicom::dimension_organization_t::tiled_sparse
+        );
+    }
+
+    // Now that the defaults are set, we can set the image position / orientation if missing and needed
+    if(_series_copy.get_ultrasound_acquisition_geometry()
+       == data::dicom::ultrasound_acquisition_geometry_t::apex)
+    {
+        // Orientation
+        if(_series_copy.get_image_orientation_volume(std::nullopt).size() != 6
+           && _series_copy.get_image_orientation_volume(0).size() != 6)
+        {
+            // Orientation can be shared for all frames
+            // It won't overwrite the per-frame orientation
+            _series_copy.set_image_orientation_volume(transform.orientation<std::vector<double> >(false), std::nullopt);
+        }
+
+        // Position
+        if(_series_copy.get_image_position_volume(std::nullopt).size() != 3
+           && _series_copy.get_image_position_volume(0).size() != 3)
+        {
+            // Do it for each frames
+            // Use the sight image origin for the first frame
+            auto frame_position = transform.position<std::vector<double> >();
+
+            // Get z spacing
+            const auto z_spacing = _image_series.spacing()[2];
+
+            // We need to compute the frame position from image origin and z spacing
+            for(std::size_t frame = 0, end_index = _series_copy.num_frames() ;
+                frame < end_index ; ++frame)
+            {
+                SIGHT_WARN_IF(
+                    "ImagePositionVolume for frame " + std::to_string(frame) + " will be overwritten",
+                    _series_copy.get_image_position_volume(frame).size() == 3
+                );
+
+                _series_copy.set_image_position_volume(frame_position, frame);
+                frame_position[2] += z_spacing;
+            }
+        }
+    }
+    else
+    {
+        // Orientation
+        if(_series_copy.get_image_orientation_patient(std::nullopt).size() != 6
+           && _series_copy.get_image_orientation_patient(0).size() != 6)
+        {
+            // Orientation can be shared for all frames
+            // It won't overwrite the per-frame orientation
+            _series_copy.set_image_orientation_patient(
+                transform.orientation<std::vector<double> >(false),
+                std::nullopt
+            );
+        }
+
+        // Position
+        if(_series_copy.get_image_position_patient(std::nullopt).size() != 3
+           && _series_copy.get_image_position_patient(0).size() != 3)
+        {
+            // Do it for each frames
+            // Use the sight image origin for the first frame
+            auto frame_position = transform.position<std::vector<double> >();
+
+            // Get z spacing
+            const auto z_spacing = _image_series.spacing()[2];
+
+            // We need to compute the frame position from image origin and z spacing
+            for(std::size_t frame = 0, end_index = _series_copy.num_frames() ;
+                frame < end_index ; ++frame)
+            {
+                SIGHT_WARN_IF(
+                    "ImagePositionPatient for frame " + std::to_string(frame) + " will be overwritten",
+                    _series_copy.get_image_position_patient(frame).size() == 3
+                );
+
+                _series_copy.set_image_position_patient(frame_position, frame);
+                frame_position[2] += z_spacing;
+            }
+        }
+    }
+
     // Create the writer
     gdcm::ImageWriter writer;
     writer.SetFileName(_filepath.c_str());
-    writer.GetFile().SetDataSet(_image_series.get_data_set());
+    writer.GetFile().SetDataSet(_series_copy.get_data_set());
 
     auto& gdcm_image = writer.GetImage();
 
-    const auto& image_sizes = _image_series.size();
-
-    // Set the dimension to 3. This magically allows to write multi-frame images. Or at least, they are saved and we can
-    // read them back.
+    // Set the dimension to 3. This magically allows to write multi-frame images.
+    // Or at least, they are saved and we can read them back.
     gdcm_image.SetNumberOfDimensions(3);
 
     // Set the image dimensions
-    std::array<std::uint32_t, 3> dimensions {
+    const auto& image_sizes = _image_series.size();
+    const std::array<std::uint32_t, 3> dimensions {
         std::uint32_t(image_sizes[0]),
         std::uint32_t(image_sizes[1]),
         std::uint32_t(image_sizes[2])
@@ -76,41 +294,12 @@ inline static void write_enhanced_us_volume(
 
     gdcm_image.SetDimensions(dimensions.data());
 
-    // Orientation
-    if(const auto& orientation_volume = _image_series.get_image_orientation_volume(); orientation_volume.size() == 6)
-    {
-        gdcm_image.SetDirectionCosines(orientation_volume.data());
-    }
-    else if(const auto& orientation_patient = _image_series.get_image_orientation_patient();
-            orientation_patient.size() == 6)
-    {
-        gdcm_image.SetDirectionCosines(orientation_patient.data());
-    }
-    else if(const auto& direction = data::helper::medical_image::get_direction(_image_series);
-            direction&& direction->size() == 6)
-    {
-        ///@todo remove this when we get ride of the direction "field" from medical image
-        std::array<double, 6> direction_array {
-            (*direction)(0, 0), (*direction)(1, 0), (*direction)(2, 0),
-            (*direction)(0, 1), (*direction)(0, 2), (*direction)(0, 3)
-        };
-
-        gdcm_image.SetDirectionCosines(direction_array.data());
-    }
-
-    // Position
-    if(const auto& position_volume = _image_series.get_image_position_volume(); position_volume.size() == 3)
-    {
-        gdcm_image.SetOrigin(position_volume.data());
-    }
-    else if(const auto& position_patient = _image_series.get_image_position_patient(); position_patient.size() == 3)
-    {
-        gdcm_image.SetOrigin(position_patient.data());
-    }
-    else if(const auto& origin = _image_series.origin(); origin.size() == 3)
-    {
-        gdcm_image.SetOrigin(origin.data());
-    }
+    // This is not enough for Enhanced US Volume
+    // We still do it, just in case it will be managed correctly in the future
+    const auto& gdcm_direction = transform.orientation();
+    gdcm_image.SetDirectionCosines(gdcm_direction.data());
+    const auto& gdcm_origin = transform.position();
+    gdcm_image.SetOrigin(gdcm_origin.data());
 
     // Pixel Format
     switch(_image_series.type())
@@ -339,7 +528,10 @@ inline static void write_enhanced_us_volume(
     writer.SetImage(changed_gdcm_image);
 
     // Finally write the file
-    writer.Write();
+    SIGHT_THROW_IF(
+        "Failed to write the DICOM file '" + _filepath + "'.",
+        !writer.Write()
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -496,8 +688,15 @@ void file::write()
                 !image_series
             );
 
+            // Shallow copy the series (but not the pixel data !)
+            // This will allow to modify the GDCM DICOM context using series API to workaround some GDCM bugs or
+            // unimplemented features like the image origin for Enhanced US Volume
+            auto series_copy = std::make_shared<data::series>();
+            series_copy->shallow_copy(series);
+
             write_enhanced_us_volume(
                 *image_series,
+                *series_copy,
                 filepath.string(),
                 m_pimpl->m_transfer_syntax,
                 m_pimpl->m_force_cpu
@@ -524,14 +723,7 @@ void file::write()
                 // Make sure to include this field as it is necessary for creating a correct header for the DICOM file
                 if(fiducials->get_sop_instance_uid().empty())
                 {
-                    fiducials->set_sop_instance_uid(
-                        std::string(
-                            sight::data::dicom::sop::get(
-                                sight::data::dicom::sop::Keyword::
-                                SpatialFiducialsStorage
-                            ).m_uid
-                        ) + ".0"
-                    );
+                    fiducials->new_sop_instance();
                 }
 
                 write_spatial_fiducials(*fiducials, filepath);
@@ -544,14 +736,7 @@ void file::write()
                 // Make sure to include this field as it is necessary for creating a correct header for the DICOM file
                 if(fiducials->get_sop_instance_uid().empty())
                 {
-                    fiducials->set_sop_instance_uid(
-                        std::string(
-                            sight::data::dicom::sop::get(
-                                sight::data::dicom::sop::Keyword::
-                                SpatialFiducialsStorage
-                            ).m_uid
-                        ) + ".0"
-                    );
+                    fiducials->new_sop_instance();
                 }
 
                 write_spatial_fiducials(*fiducials, filepath);

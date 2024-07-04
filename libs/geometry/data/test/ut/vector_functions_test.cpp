@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,6 +30,8 @@
 #include <core/profiling.hpp>
 
 #include <geometry/data/vector_functions.hpp>
+
+// cspell: ignore orthogonalize
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::vector_functions_test);
@@ -276,5 +278,25 @@ void vector_functions_test::check_operators()
 }
 
 //------------------------------------------------------------------------------
+
+void vector_functions_test::check_orthogonalize()
+{
+    fw_vec3d u = {0.4, 0.5, 0.6};
+    fw_vec3d v = {0.7, 0.8, 0.9};
+
+    CPPUNIT_ASSERT_EQUAL(true, orthogonalize(u, v));
+    CPPUNIT_ASSERT_EQUAL(false, orthogonalize(u, v));
+
+    u = {0.4, 0.5, 0.6};
+    v = {0.7, 0.8, 0.9};
+    fw_vec3d w = {0, 0, 0};
+
+    CPPUNIT_ASSERT_EQUAL(true, orthogonalize(u, v, w));
+    CPPUNIT_ASSERT_EQUAL(false, orthogonalize(u, v, w));
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.408248290463863, w[0], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.816496580927726, w[1], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.408248290463862, w[2], 1e-6);
+}
 
 } // namespace sight::geometry::data::ut

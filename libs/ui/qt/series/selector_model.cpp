@@ -249,7 +249,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
     {"Modality", {.header = "Modality", .get_info =
         [](data::series::csptr _series, when _when)
         {
-            return new QStandardItem(QString::fromStdString(_when == when::series ? _series->get_modality() : ""));
+            return new QStandardItem(QString::fromStdString(_when == when::series ? _series->get_modality_string() : ""));
         }
      }
     },

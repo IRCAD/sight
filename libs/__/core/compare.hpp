@@ -663,7 +663,7 @@ template<
     typename T2,
     typename std::enable_if_t<std::is_floating_point<T1>::value && std::is_floating_point<T2>::value>* = nullptr
 >
-constexpr static bool is_equal(T1 _a, T2 _b)
+constexpr static bool is_equal(T1 _a, T2 _b, T1 e = std::numeric_limits<T1>::epsilon())
 {
     if constexpr(std::is_same_v<T1, T2>)
     {
@@ -687,24 +687,38 @@ constexpr static bool is_equal(T1 _a, T2 _b)
         }
 
         const T1 abs_diff = std::abs(_a - _b);
-        if(abs_diff <= std::numeric_limits<T1>::epsilon())
+        if(abs_diff <= e)
         {
             // This manage the case where we are near zero
             return true;
         }
 
         // Otherwise, use a scaled epsilon
-        return abs_diff <= std::numeric_limits<T1>::epsilon() * std::max(std::abs(_a), std::abs(_b));
+        return abs_diff <= e* std::max(std::abs(_a), std::abs(_b));
     }
     else if constexpr(std::is_same_v<T1, float>|| std::is_same_v<T2, float>)
     {
         // In case one is float and the other is double or long double
-        return is_equal(static_cast<float>(_a), static_cast<float>(_b));
+        return is_equal(
+            static_cast<float>(_a),
+            static_cast<float>(_b),
+            std::max(
+                static_cast<float>(e),
+                std::numeric_limits<float>::epsilon()
+            )
+        );
     }
     else if constexpr(std::is_same_v<T1, double>|| std::is_same_v<T2, double>)
     {
         // In case one is double and the other is long double
-        return is_equal(static_cast<double>(_a), static_cast<double>(_b));
+        is_equal(
+            static_cast<double>(_a),
+            static_cast<double>(_b),
+            std::max(
+                static_cast<double>(e),
+                std::numeric_limits<double>::epsilon()
+            )
+        );
     }
 }
 
@@ -742,9 +756,9 @@ constexpr static bool is_equal(const T1& _a, const T2& _b)
     }
 }
 
-/// This is a weak pointer comparison helper. It automatically dereferences the pointer and compare the values
-/// @param _a left weak pointer to compare
-/// @param _b right weak pointer to compare
+/// This is a pair comparison helper.
+/// @param _a left pair to compare
+/// @param _b right pair to compare
 template<
     typename T1,
     typename T2,

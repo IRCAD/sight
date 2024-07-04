@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -148,7 +148,7 @@ void init_series(data::series::sptr _series)
     const std::string date             = core::tools::get_date(now);
     const std::string time             = core::tools::get_time(now);
 
-    _series->set_modality("OT");
+    _series->set_modality(data::dicom::modality_t::ot);
     _series->set_series_date(date);
     _series->set_series_time(time);
     _series->set_series_description("image imported with VTK");

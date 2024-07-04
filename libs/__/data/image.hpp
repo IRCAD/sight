@@ -219,7 +219,7 @@ public:
     /// Get image origin
     const origin_t& origin() const;
     /// Set image origin
-    void set_origin(const origin_t& _origin);
+    virtual void set_origin(const origin_t& _origin);
 
     /// Get image size
     const image::size_t& size() const;

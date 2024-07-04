@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -142,7 +142,7 @@ void series_set_reader::updating()
 
 void series_set_reader::init_series(data::series::sptr _series, const std::string& _instance_uid)
 {
-    _series->set_modality("OT");
+    _series->set_modality(data::dicom::modality_t::ot);
     boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
     const std::string date       = core::tools::get_date(now);
     const std::string time       = core::tools::get_time(now);

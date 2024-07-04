@@ -29,7 +29,10 @@
 #include <data/dicom/sop.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
+#include <data/matrix4.hpp>
 #include <data/model_series.hpp>
+
+#include <geometry/data/vector_functions.hpp>
 
 #include <gdcmDirectory.h>
 #include <gdcmImageApplyLookupTable.h>
@@ -47,6 +50,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 
+// cspell: ignore orthogonalize
 namespace sight::io::dicom::reader
 {
 
@@ -628,10 +632,6 @@ inline static data::image_series::sptr new_image_series(
     // Spacing.
     image_series->set_spacing(compute_spacing(_source, _gdcm_image));
 
-    // Origin
-    const double* const origin = _gdcm_image.GetOrigin();
-    image_series->set_origin({origin[0], origin[1], origin[2]});
-
     return image_series;
 }
 
@@ -828,20 +828,143 @@ inline static bool read_buffer(
     return true;
 }
 
-//------------------------------------------------------------------------------
-
-inline static std::vector<double> tune_directions(const double* const _gdcm_direction_cosines)
+/// Make direction cosines orthogonal. Also found in ITK
+/// This is for some strange DICOM files that have non orthogonal direction cosines.
+inline static std::vector<double> orthogonalize(const double* const _direction_cosines)
 {
-    glm::dvec3 glm_u {_gdcm_direction_cosines[0], _gdcm_direction_cosines[1], _gdcm_direction_cosines[2]};
-    glm::dvec3 glm_v {_gdcm_direction_cosines[3], _gdcm_direction_cosines[4], _gdcm_direction_cosines[5]};
+    fw_vec3d u = {_direction_cosines[0], _direction_cosines[1], _direction_cosines[2]};
+    fw_vec3d v = {_direction_cosines[3], _direction_cosines[4], _direction_cosines[5]};
+    fw_vec3d w;
 
-    // Make them Orthogonal
-    // This code is also found in ITK and is mostly a bugfix when direction vectors are not orthogonal.
-    glm::dvec3 glm_w = glm::normalize(glm::cross(glm_u, glm_v));
-    glm_u = glm::normalize(glm::cross(glm_v, glm_w));
-    glm_v = glm::cross(glm_w, glm_u);
+    if(geometry::data::orthogonalize(u, v, w))
+    {
+        SIGHT_WARN("Direction cosines are not orthogonal, they will be corrected, but the result must be checked.");
+    }
 
-    return {glm_u.x, glm_u.y, glm_u.z, glm_v.x, glm_v.y, glm_v.z};
+    return {u[0], u[1], u[2], v[0], v[1], v[2], w[0], w[1], w[2]};
+}
+
+/// Decode image orientation / position
+/// GDCM doesn't handle Enhanced US Volume (which is rather a complicated case)
+/// see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.8.24.2.html
+inline static data::matrix4 compute_image_transform(
+    const gdcm::Image& _gdcm_image,
+    data::image_series::sptr _image_series
+)
+{
+    data::matrix4 transform;
+
+    switch(_image_series->get_ultrasound_acquisition_geometry())
+    {
+        case data::dicom::ultrasound_acquisition_geometry_t::apex:
+        {
+            // Search for Volume to Transducer Mapping Matrix
+            if(const auto& transducer_mapping = _image_series->get_volume_to_transducer_mapping_matrix();
+               transducer_mapping)
+            {
+                return transducer_mapping->values();
+            }
+
+            break;
+        }
+
+        case data::dicom::ultrasound_acquisition_geometry_t::patient:
+        {
+            // Make direction cosines orthogonal. Also found in ITK
+            // This is for some strange DICOM files that have non orthogonal direction cosines.
+
+            // Tune the shared orientation
+            if(const auto& orientation = _image_series->get_image_orientation_patient(std::nullopt);
+               orientation.size() == 6)
+            {
+                const auto& orthogonal_directions = orthogonalize(orientation.data());
+
+                // Having more than 6 elements makes GDCM assert
+                auto image_orientation = orthogonal_directions;
+                image_orientation.resize(6);
+
+                _image_series->set_image_orientation_patient(
+                    image_orientation,
+                    std::nullopt
+                );
+
+                // Store the orientation to use it later if there is no Volume to Table Mapping Matrix
+                transform.set_orientation(orthogonal_directions);
+            }
+
+            // Tune the per-frame orientation
+            for(std::size_t frame = 0, end_index = _image_series->num_frames() ;
+                frame < end_index ; ++frame)
+            {
+                // For each frame, make the direction cosines orthogonal, if needed
+                if(const auto& orientation = _image_series->get_image_orientation_patient(frame);
+                   orientation.size() == 6)
+                {
+                    const auto& orthogonal_directions = orthogonalize(orientation.data());
+
+                    // Having more than 6 elements makes GDCM assert
+                    auto image_orientation = orthogonal_directions;
+                    image_orientation.resize(6);
+
+                    _image_series->set_image_orientation_patient(
+                        image_orientation,
+                        frame
+                    );
+
+                    if(frame == 0)
+                    {
+                        // Store the orientation to use it later if there is no Volume to Table Mapping Matrix
+                        transform.set_orientation(orthogonal_directions);
+                    }
+                }
+            }
+
+            if(_image_series->get_patient_frame_of_reference_source()
+               == data::dicom::patient_frame_of_reference_source_t::table)
+            {
+                // Search for Volume to Table Mapping Matrix
+                if(const auto& table_mapping = _image_series->get_volume_to_table_mapping_matrix(); table_mapping)
+                {
+                    return table_mapping->values();
+                }
+            }
+
+            // If there is no Volume to Table Mapping Matrix, use the first frame
+            if(const auto& frame_position = _image_series->get_image_position_patient(0);
+               frame_position.size() == 3)
+            {
+                transform.set_position(frame_position);
+            }
+            else if(const auto& shared_position = _image_series->get_image_position_patient(std::nullopt);
+                    shared_position.size() == 3)
+            {
+                transform.set_position(shared_position);
+            }
+
+            // If the transform has been modified, return it
+            if(!transform.is_identity())
+            {
+                return transform.values();
+            }
+
+            break;
+        }
+
+        default:
+            break;
+    }
+
+    // Last resort: GDCM Direction cosines + origin
+    const auto& orthogonal_directions = orthogonalize(_gdcm_image.GetDirectionCosines());
+    const auto* const origin          = _gdcm_image.GetOrigin();
+
+    return data::matrix4(
+        {
+            orthogonal_directions[0], orthogonal_directions[3], orthogonal_directions[6], origin[0],
+            orthogonal_directions[1], orthogonal_directions[4], orthogonal_directions[7], origin[1],
+            orthogonal_directions[2], orthogonal_directions[5], orthogonal_directions[8], origin[2],
+            0., 0., 0., 1.
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -934,10 +1057,9 @@ inline static data::series_set::sptr read_image_instance(
             return nullptr;
         }
 
-        const auto& image_series = new_image_series(_source, _job, gdcm_image, gdcm_rescaler, filename);
-
         // User may have canceled the job
-        if(image_series)
+        if(const auto& image_series = new_image_series(_source, _job, gdcm_image, gdcm_rescaler, filename);
+           image_series)
         {
             // Add the dataset to allow access to all DICOM attributes (not only the ones we have converted)
             image_series->set_data_set(gdcm_dataset);
@@ -945,14 +1067,14 @@ inline static data::series_set::sptr read_image_instance(
             // Also save the file path. It could be useful to keep a link to the original file.
             image_series->set_file(filename);
 
-            if(!image_series->is_multi_frame())
-            {
-                // Make direction vectors orthogonal. Also found in ITK
-                // This is for some strange DICOM files that have non orthogonal direction vectors.
-                /// @note This is not done for multi-frame images, because frame may be independently oriented.
-                const auto& tuned_directions = tune_directions(gdcm_image.GetDirectionCosines());
-                image_series->set_image_orientation_patient(tuned_directions);
-            }
+            const auto& transform = compute_image_transform(gdcm_image, image_series);
+            image_series->data::image::set_origin(transform.position<data::image::origin_t>());
+
+            ///@todo remove that once we remove field 'direction' from image_series
+            data::helper::medical_image::set_direction(
+                *image_series,
+                std::make_shared<data::matrix4>(transform.values())
+            );
 
             // Add the series to a new dataset
             if(!_splitted_series)
@@ -1017,7 +1139,8 @@ inline static data::series_set::sptr read_image(const data::series& _source, con
     }
 
     // Read first instance to get image information
-    // readImageInstance() returns a series set, because the series can be splitted in rare cases, like US 4D Volume.
+    // readImageInstance() returns a series set, because the series can be splitted in rare cases,
+    // like US 4D Volume.
     std::unique_ptr<std::vector<char> > gdcm_instance_buffer;
     auto splitted_series = read_image_instance(_source, _job, gdcm_instance_buffer, 0);
 
@@ -1055,7 +1178,10 @@ inline static data::series_set::sptr read_image(const data::series& _source, con
 
 //------------------------------------------------------------------------------
 
-inline static data::series_set::sptr read_model(const data::series& /*unused*/, const core::jobs::job::sptr& /*unused*/)
+inline static data::series_set::sptr read_model(
+    const data::series& /*unused*/,
+    const core::jobs::job::sptr& /*unused*/
+)
 {
     data::series_set::sptr splitted_series;
 
@@ -1508,7 +1634,8 @@ public:
 
                     if(!series_have_fiducials)
                     {
-                        // It is the first fiducial set to be appended to this fiducials series; set fiducials metadata
+                        // It is the first fiducial set to be appended to this fiducials series;
+                        // set fiducials metadata
                         fiducials_series->set_content_date(fiducial_set.content_date);
                         fiducials_series->set_content_time(fiducial_set.content_time);
                         fiducials_series->set_instance_number(fiducial_set.instance_number);
@@ -1555,7 +1682,8 @@ public:
     data::series::SopKeywords m_filters {};
 
     /// Contains the list of files to sort and read.
-    /// Usually, it is filed by user after showing a selection dialog, but calling read() will fill it automatically.
+    /// Usually, it is filed by user after showing a selection dialog,
+    /// but calling read() will fill it automatically.
     data::series_set::sptr m_scanned;
 
     /// Contains the list of sorted files to read.
@@ -1611,7 +1739,14 @@ data::series_set::sptr file::scan()
 
         // We need to transform std::vector<std::string> to std::vector<std::filesystem::path>
         const auto& filenames = gdcm_directory.GetFilenames();
-        std::transform(filenames.cbegin(), filenames.cend(), std::back_inserter(files), [](const auto& _v){return _v;});
+        std::transform(
+            filenames.cbegin(),
+            filenames.cend(),
+            std::back_inserter(files),
+            [](const auto& _v)
+            {
+                return _v;
+            });
     }
 
     if(m_pimpl->cancel_requested())

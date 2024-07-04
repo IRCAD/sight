@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,7 @@ void series::write_general_series_module()
     // Retrieve dataset
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
-    io::dicom::helper::dicom_data_writer::set_tag_value<0x0008, 0x0060>(m_object->get_modality(), dataset);
+    io::dicom::helper::dicom_data_writer::set_tag_value<0x0008, 0x0060>(m_object->get_modality_string(), dataset);
 
     // As the data may have been updated between two export, we regenerate an UID
     gdcm::UIDGenerator uid_generator;

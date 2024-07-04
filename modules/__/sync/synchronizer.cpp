@@ -470,7 +470,7 @@ void synchronizer::copy_frame_from_tl_to_output(
             if(auto image_series =
                    std::dynamic_pointer_cast<sight::data::image_series>(frame.get_shared()); image_series)
             {
-                image_series->set_frame_acquisition_time_point(_synchronization_timestamp);
+                image_series->set_frame_acquisition_time_point(_synchronization_timestamp, 0);
             }
 
             const std::uint8_t* frame_buff = &buffer->get_element(frame_tl_element_index);

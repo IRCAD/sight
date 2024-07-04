@@ -86,6 +86,18 @@ public:
     SIGHT_DATA_API void set_columns(const std::optional<std::uint16_t>& _columns = std::nullopt) override;
     /// @}
 
+    /// Getter/Setter of DICOM Image Plane Module related attributes
+    /// ...and Multi-frame Functional Groups Module
+    /// @{
+    SIGHT_DATA_API void set_image_position_patient(
+        const std::vector<double>& _image_position_patient,
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) override;
+
+    /// Override the origin setter to also update DICOM image position patient
+    SIGHT_DATA_API void set_origin(const origin_t& _origin) override;
+    /// @}
+
     /// Equality comparison operators
     /// @{
     SIGHT_DATA_API bool operator==(const image_series& _other) const noexcept;
@@ -123,6 +135,7 @@ public:
      */
     SIGHT_DATA_API std::size_t resize(const size_t& _size, const core::type& _type, enum pixel_format _format) override;
     /// @}
+
     SIGHT_DATA_API fiducials_series::csptr get_fiducials() const;
     SIGHT_DATA_API fiducials_series::sptr get_fiducials();
 

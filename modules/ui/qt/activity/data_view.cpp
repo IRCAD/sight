@@ -828,7 +828,7 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
 
         new_item->setText(int(column_series_t::birthdate), QString::fromStdString(birthdate));
 
-        new_item->setText(int(column_series_t::modality), QString::fromStdString(series->get_modality()));
+        new_item->setText(int(column_series_t::modality), QString::fromStdString(series->get_modality_string()));
         new_item->setText(
             int(column_series_t::modality_desc),
             QString::fromStdString(series->get_series_description())

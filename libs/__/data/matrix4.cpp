@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,29 +31,6 @@ namespace sight::data
 {
 
 //------------------------------------------------------------------------------
-
-matrix4::matrix4()
-{
-    *this = IDENTITY;
-}
-
-//------------------------------------------------------------------------------
-
-matrix4::matrix4(std::initializer_list<value_type> _init_list)
-{
-    SIGHT_ASSERT("16 values should be provided to the constructor  of the matrix", _init_list.size() == this->size());
-    std::copy(_init_list.begin(), _init_list.end(), this->begin());
-}
-
-//------------------------------------------------------------------------------
-matrix4& matrix4::operator=(std::initializer_list<value_type> _init_list)
-{
-    SIGHT_ASSERT("16 values should be provided to the constructor  of the matrix", _init_list.size() == this->size());
-    std::copy(_init_list.begin(), _init_list.end(), this->begin());
-    return *this;
-}
-
-//-----------------------------------------------------------------------------
 
 void matrix4::shallow_copy(const object::csptr& _source)
 {

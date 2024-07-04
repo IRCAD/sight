@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,6 +36,10 @@ private:
     CPPUNIT_TEST(getter_setter_by_array);
     CPPUNIT_TEST(row_matrix_accessor);
     CPPUNIT_TEST(equality_test);
+    CPPUNIT_TEST(position_test);
+    CPPUNIT_TEST(orientation_test);
+    CPPUNIT_TEST(value_test);
+    CPPUNIT_TEST(initialization_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -48,6 +52,10 @@ public:
     static void getter_setter_by_array();
     static void row_matrix_accessor();
     static void equality_test();
+    static void position_test();
+    static void orientation_test();
+    static void value_test();
+    static void initialization_test();
 };
 
 } // namespace sight::data::ut

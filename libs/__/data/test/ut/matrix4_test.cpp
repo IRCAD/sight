@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,6 +66,9 @@ void matrix4_test::getter_setter_by_coef()
         }
     }
 
+    CPPUNIT_ASSERT_EQUAL(true, mat->is_identity());
+    CPPUNIT_ASSERT(*mat == mat->identity());
+
     // Call setter and check getter
     const std::array coefs = {
         2., -2., .3, .12,
@@ -81,6 +84,10 @@ void matrix4_test::getter_setter_by_coef()
             (*mat)(i, j) = coefs[i * 4 + j];
         }
     }
+
+    CPPUNIT_ASSERT_EQUAL(false, mat->is_identity());
+    CPPUNIT_ASSERT(*mat != mat->identity());
+    CPPUNIT_ASSERT(*mat == coefs);
 
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
@@ -253,6 +260,164 @@ void matrix4_test::equality_test()
     TEST({0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1});
 
     #undef TEST
+}
+
+//------------------------------------------------------------------------------
+
+void matrix4_test::position_test()
+{
+    data::matrix4 matrix({
+            2, -2, .3, .12,
+            4, 8.9, 4.2, 1.2,
+            7.8, -12.1, 2.3, 1.2,
+            .3, 1.21, -3.1, 1.2
+        });
+
+    const auto& position = matrix.position();
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(.12, position[0], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.2, position[1], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.2, position[2], 1e-6);
+
+    matrix.set_position(std::vector<double> {1.1, 2.2, 3.3});
+    const auto& modified = matrix.position();
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.1, modified[0], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(2.2, modified[1], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(3.3, modified[2], 1e-6);
+}
+
+//------------------------------------------------------------------------------
+
+void matrix4_test::orientation_test()
+{
+    data::matrix4 matrix({
+            2, -2, .3, .12,
+            4, 8.9, 4.2, 1.2,
+            7.8, -12.1, 2.3, 1.2,
+            .3, 1.21, -3.1, 1.2
+        });
+
+    const auto& sparse = matrix.orientation(false);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(2., sparse[0], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4., sparse[1], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.8, sparse[2], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-2., sparse[3], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(8.9, sparse[4], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-12.1, sparse[5], 1e-6);
+
+    const auto& full = matrix.orientation(true);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(.3, full[6], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.2, full[7], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(2.3, full[8], 1e-6);
+
+    matrix.set_orientation(std::vector<double> {1.1, 2.2, 3.3, 4.4, 5.5, 6.6});
+
+    const auto& modified = matrix.orientation(true);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.1, modified[0], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(2.2, modified[1], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(3.3, modified[2], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.4, modified[3], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.5, modified[4], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(6.6, modified[5], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.63, modified[6], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.26, modified[7], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.63, modified[8], 1e-6);
+
+    matrix.set_orientation(std::vector<double> {1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9});
+    const auto& modified_b = matrix.orientation(true);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.1, modified_b[0], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(2.2, modified_b[1], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(3.3, modified_b[2], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.4, modified_b[3], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.5, modified_b[4], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(6.6, modified_b[5], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.7, modified_b[6], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(8.8, modified_b[7], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(9.9, modified_b[8], 1e-6);
+}
+
+//------------------------------------------------------------------------------
+
+void matrix4_test::value_test()
+{
+    const data::matrix4 matrix({
+            2, -2, .3, .12,
+            4, 8.9, 4.2, 1.2,
+            7.8, -12.1, 2.3, 1.2,
+            .3, 1.21, -3.1, 1.2
+        });
+
+    const auto& values = matrix.values();
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(2., values[0], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-2., values[1], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(.3, values[2], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(.12, values[3], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4, values[4], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(8.9, values[5], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.2, values[6], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.2, values[7], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.8, values[8], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-12.1, values[9], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(2.3, values[10], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.2, values[11], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(.3, values[12], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.21, values[13], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.1, values[14], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.2, values[15], 1e-6);
+}
+
+//------------------------------------------------------------------------------
+
+void matrix4_test::initialization_test()
+{
+    const data::matrix4 matrix({1., 0., 0., 0., 0., 1., 0., 180., 0., 0., 1., 0., 0., 0., 0., 1.});
+    const data::matrix4 matrix2 = std::vector<double> {
+        1., 0., 0., 0., 0., 1., 0., 180., 0., 0., 1., 0., 0., 0., 0., 1.
+    };
+
+    CPPUNIT_ASSERT(core::is_equal(matrix, matrix2));
+
+    const data::matrix4 matrix3 {
+        1., 0., 0., 0., 0., 1., 0., 180., 0., 0., 1., 0., 0., 0., 0., 1.
+    };
+
+    CPPUNIT_ASSERT(core::is_equal(matrix, matrix3));
+
+    const data::matrix4 matrix3b = {
+        1., 0., 0., 0., 0., 1., 0., 180., 0., 0., 1., 0., 0., 0., 0., 1.
+    };
+
+    CPPUNIT_ASSERT(core::is_equal(matrix, matrix3b));
+
+    data::matrix4 matrix4;
+    CPPUNIT_ASSERT(!core::is_equal(matrix, matrix4));
+    matrix4 = {1., 0., 0., 0., 0., 1., 0., 180., 0., 0., 1., 0., 0., 0., 0., 1.};
+    CPPUNIT_ASSERT(core::is_equal(matrix, matrix4));
+    matrix4 = data::matrix4::identity();
+    CPPUNIT_ASSERT(!core::is_equal(matrix, matrix4));
+    matrix4 = matrix.values();
+    CPPUNIT_ASSERT(core::is_equal(matrix, matrix4));
+
+    // Test if the fields is correctly set
+    matrix4.set_field("test", std::make_shared<data::matrix4>());
+    CPPUNIT_ASSERT(matrix != matrix4);
+    matrix4 = matrix.values();
+    CPPUNIT_ASSERT(sight::core::is_equal(matrix, matrix4));
+
+    // copy from other container
+    std::vector<double> vector {1., 0., 0., 0., 0., 1., 0., 180., 0., 0., 1., 0., 0., 0., 0., 1.};
+    const data::matrix4 matrix5 = vector;
+    CPPUNIT_ASSERT(core::is_equal(matrix, matrix5));
+
+    const data::matrix4 matrix6(vector);
+    CPPUNIT_ASSERT(core::is_equal(matrix, matrix6));
+
+    // yeah we don't have to support that, but we can...
+    std::list<std::uint8_t> list {1, 0, 0, 0, 0, 1, 0, 180, 0, 0, 1, 0, 0, 0, 0, 1};
+    const data::matrix4 matrix7 = list;
+    CPPUNIT_ASSERT(core::is_equal(matrix, matrix7));
+
+    const data::matrix4 matrix8(list);
+    CPPUNIT_ASSERT(core::is_equal(matrix, matrix8));
 }
 
 //------------------------------------------------------------------------------

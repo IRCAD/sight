@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -333,10 +333,10 @@ void slice_index_dicom_editor::read_slice(
 ) const
 {
     // Retrieve informations.
-    const std::string modality = _dicom_series->get_modality();
-    if(modality != "CT" && modality != "MR" && modality != "XA")
+    const auto type = _dicom_series->get_dicom_type();
+    if(type == data::series::dicom_t::image)
     {
-        this->notifier::info("Unable to read the modality '" + modality + "'");
+        this->notifier::info("Unable to read the modality '" + _dicom_series->get_modality_string() + "'");
         return;
     }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
+// cspell: ignore orthogonalize
+
 namespace sight::geometry::data::ut
 {
 
@@ -38,6 +40,7 @@ private:
     CPPUNIT_TEST(check_negate);
     CPPUNIT_TEST(check_vec_length);
     CPPUNIT_TEST(check_operators);
+    CPPUNIT_TEST(check_orthogonalize);
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -54,6 +57,7 @@ public:
     static void check_negate();
     static void check_vec_length();
     static void check_operators();
+    static void check_orthogonalize();
 };
 
 } // namespace sight::geometry::data::ut

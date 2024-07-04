@@ -74,7 +74,7 @@ namespace sight::io::vtk
 
 void init_series(data::series::sptr _series, const std::string& _instance_uid)
 {
-    _series->set_modality("OT");
+    _series->set_modality(data::dicom::modality_t::ot);
     boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
     const std::string date       = core::tools::get_date(now);
     const std::string time       = core::tools::get_time(now);
