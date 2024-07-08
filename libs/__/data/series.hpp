@@ -183,6 +183,30 @@ public:
     /// @{
     SIGHT_DATA_API std::string get_institution_name() const noexcept;
     SIGHT_DATA_API void set_institution_name(const std::string& _institution_name);
+
+    SIGHT_DATA_API std::string get_equipment_manufacturer() const noexcept;
+    SIGHT_DATA_API void set_equipment_manufacturer(const std::string& _manufacturer);
+
+    SIGHT_DATA_API std::string get_equipment_manufacturer_model_name() const noexcept;
+    SIGHT_DATA_API void set_equipment_manufacturer_model_name(const std::string& _model_name);
+
+    SIGHT_DATA_API std::string get_equipment_device_serial_number() const noexcept;
+    SIGHT_DATA_API void set_equipment_device_serial_number(const std::string& _serial_number);
+
+    SIGHT_DATA_API std::vector<std::string> get_software_versions() const noexcept;
+    SIGHT_DATA_API void set_software_versions(const std::vector<std::string>& _software_versions);
+
+    SIGHT_DATA_API std::optional<int> get_depth_of_scan_field_mm() const noexcept;
+    SIGHT_DATA_API void set_depth_of_scan_field_mm(const int _depth_of_scan_field);
+
+    SIGHT_DATA_API std::vector<double> get_depths_of_focus_mm() const noexcept;
+    SIGHT_DATA_API void set_depths_of_focus_mm(std::vector<double>& _depth_of_focus_mm);
+
+    SIGHT_DATA_API std::optional<std::string> get_processing_function() const noexcept;
+    SIGHT_DATA_API void set_processing_function(const std::string& _processing_function);
+
+    SIGHT_DATA_API std::string get_position_measuring_device_used() const noexcept;
+    SIGHT_DATA_API bool set_position_measuring_device_used(const std::string& _position_measuring_device_used);
     /// @}
 
     /// Getter/Setter of DICOM Patient Module related attributes
@@ -259,6 +283,9 @@ public:
         std::optional<std::int32_t> _acquisition_number = std::nullopt,
         std::size_t _instance                           = 0
     );
+
+    SIGHT_DATA_API std::optional<double> get_acquisition_duration() const;
+    SIGHT_DATA_API void set_acquisition_duration(double _duration);
     /// @}
 
     /// Getter/Setter of DICOM Contrast/Bolus Module related attributes

@@ -119,11 +119,28 @@ void series_test::attr_study_test()
 
 void series_test::attr_equipment_test()
 {
-    constexpr auto institution_name = "IRCAD";
+    constexpr auto institution_name  = "IRCAD";
+    constexpr auto manufacturer_name = "IRCAD";
+    constexpr auto model_name        = "device-0";
+    constexpr auto serial_number     = "S/N:N/A";
+    std::vector<std::string> software_versions {"Sight-X.Y"};
+
     for(const auto& series : m_series)
     {
         series->set_institution_name(institution_name);
         CPPUNIT_ASSERT(series->get_institution_name() == institution_name);
+
+        series->set_equipment_manufacturer(manufacturer_name);
+        CPPUNIT_ASSERT(series->get_equipment_manufacturer() == manufacturer_name);
+
+        series->set_equipment_manufacturer_model_name(model_name);
+        CPPUNIT_ASSERT(series->get_equipment_manufacturer_model_name() == model_name);
+
+        series->set_equipment_device_serial_number(serial_number);
+        CPPUNIT_ASSERT(series->get_equipment_device_serial_number() == serial_number);
+
+        series->set_software_versions(software_versions);
+        CPPUNIT_ASSERT(series->get_software_versions() == software_versions);
     }
 }
 
@@ -202,6 +219,85 @@ void series_test::attr_description_test()
     {
         series->set_series_description(description);
         CPPUNIT_ASSERT_EQUAL(description, series->get_series_description());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void series_test::attr_enhanced_us_image_test()
+{
+    int depth_mm = 150;
+    std::vector<double> focus_depths_mm {8, 64};
+    std::string processing_function            = "gain: 54;";
+    std::string position_measuring_device_used = "UNKNOWN";
+
+    for(const auto& series : m_series)
+    {
+        series->set_depth_of_scan_field_mm(depth_mm);
+        CPPUNIT_ASSERT(depth_mm == series->get_depth_of_scan_field_mm());
+
+        series->set_depths_of_focus_mm(focus_depths_mm);
+        CPPUNIT_ASSERT(focus_depths_mm.size() == series->get_depths_of_focus_mm().size());
+        for(std::size_t i = 0 ; i < focus_depths_mm.size() ; i++)
+        {
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(focus_depths_mm.at(i), series->get_depths_of_focus_mm().at(i), 1.e-5);
+        }
+
+        series->set_processing_function(processing_function);
+        CPPUNIT_ASSERT(processing_function == series->get_processing_function());
+
+        position_measuring_device_used = "UNKNOWN";
+        CPPUNIT_ASSERT(!series->set_position_measuring_device_used(position_measuring_device_used));
+
+        position_measuring_device_used = "TRACKED";
+        CPPUNIT_ASSERT(series->set_position_measuring_device_used(position_measuring_device_used));
+        CPPUNIT_ASSERT(position_measuring_device_used == series->get_position_measuring_device_used());
+
+        position_measuring_device_used = "RIGID";
+        CPPUNIT_ASSERT(series->set_position_measuring_device_used(position_measuring_device_used));
+        CPPUNIT_ASSERT(position_measuring_device_used == series->get_position_measuring_device_used());
+
+        position_measuring_device_used = "FREEHAND";
+        CPPUNIT_ASSERT(series->set_position_measuring_device_used(position_measuring_device_used));
+        CPPUNIT_ASSERT(position_measuring_device_used == series->get_position_measuring_device_used());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void series_test::attr_general_acquisition_test()
+{
+    double duration = 123.456;
+
+    for(const auto& series : m_series)
+    {
+        series->set_acquisition_duration(duration);
+        auto dt = series->get_acquisition_duration();
+        CPPUNIT_ASSERT(dt.has_value());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(duration, *dt, 0.0001);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void series_test::attr_ultrasound_frame_of_reference_test()
+{
+    sight::data::matrix4 volume_to_transducer_mapping_matrix {
+        10.0, 0.0, 0.0, 0.0,
+        0.0, 15.0, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
+        0.0, 0.0, 0.0, 1.0
+    };
+
+    for(const auto& series : m_series)
+    {
+        series->set_volume_to_transducer_mapping_matrix(volume_to_transducer_mapping_matrix);
+        auto matrix = series->get_volume_to_transducer_mapping_matrix();
+        CPPUNIT_ASSERT(matrix);
+        for(std::size_t i = 0 ; i < volume_to_transducer_mapping_matrix.size() ; i++)
+        {
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(volume_to_transducer_mapping_matrix.at(i), (*matrix).at(i), 0.0001);
+        }
     }
 }
 

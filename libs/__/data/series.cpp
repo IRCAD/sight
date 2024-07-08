@@ -1984,6 +1984,127 @@ void series::set_institution_name(const std::string& _institution_name)
 
 //------------------------------------------------------------------------------
 
+std::string series::get_equipment_manufacturer() const noexcept
+{
+    return m_pimpl->get_string_value<gdcm::Keywords::Manufacturer>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_equipment_manufacturer(const std::string& _manufacturer)
+{
+    m_pimpl->set_value<gdcm::Keywords::Manufacturer>(_manufacturer);
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::get_equipment_manufacturer_model_name() const noexcept
+{
+    return m_pimpl->get_string_value<gdcm::Keywords::ManufacturerModelName>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_equipment_manufacturer_model_name(const std::string& _model_name)
+{
+    m_pimpl->set_value<gdcm::Keywords::ManufacturerModelName>(_model_name);
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::get_equipment_device_serial_number() const noexcept
+{
+    return m_pimpl->get_string_value<gdcm::Keywords::DeviceSerialNumber>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_equipment_device_serial_number(const std::string& _serial_number)
+{
+    m_pimpl->set_value<gdcm::Keywords::DeviceSerialNumber>(_serial_number);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<std::string> series::get_software_versions() const noexcept
+{
+    return m_pimpl->get_string_values<gdcm::Keywords::SoftwareVersions>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_software_versions(const std::vector<std::string>& _software_versions)
+{
+    m_pimpl->set_string_values<gdcm::Keywords::SoftwareVersions>(_software_versions);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<int> series::get_depth_of_scan_field_mm() const noexcept
+{
+    return m_pimpl->get_value<gdcm::Keywords::DepthOfScanField>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_depth_of_scan_field_mm(const int _depth_of_scan_field)
+{
+    m_pimpl->set_value<gdcm::Keywords::DepthOfScanField>(_depth_of_scan_field);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<double> series::get_depths_of_focus_mm() const noexcept
+{
+    return m_pimpl->get_values<gdcm::Keywords::DepthsOfFocus>().value_or(std::vector<double> {});
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_depths_of_focus_mm(std::vector<double>& _depth_of_focus_mm)
+{
+    m_pimpl->set_values<gdcm::Keywords::DepthsOfFocus>(_depth_of_focus_mm);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> series::get_processing_function() const noexcept
+{
+    return m_pimpl->get_value<gdcm::Keywords::ProcessingFunction>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_processing_function(const std::string& _processing_function)
+{
+    m_pimpl->set_value<gdcm::Keywords::ProcessingFunction>(_processing_function);
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::get_position_measuring_device_used() const noexcept
+{
+    return m_pimpl->get_string_value<gdcm::Keywords::PositionMeasuringDeviceUsed>();
+}
+
+//------------------------------------------------------------------------------
+
+bool series::set_position_measuring_device_used(const std::string& _position_measuring_device_used)
+{
+    if(_position_measuring_device_used != "RIGID"
+       && _position_measuring_device_used != "TRACKED"
+       && _position_measuring_device_used != "FREEHAND")
+    {
+        SIGHT_ERROR("Invalid PositionMeasuringDeviceUsed value: " << _position_measuring_device_used << ".");
+        return false;
+    }
+
+    m_pimpl->set_value<gdcm::Keywords::PositionMeasuringDeviceUsed>(_position_measuring_device_used);
+    return true;
+}
+
+//------------------------------------------------------------------------------
+
 std::string series::get_patient_name() const noexcept
 {
     return m_pimpl->get_string_value<gdcm::Keywords::PatientName>();
@@ -2599,6 +2720,20 @@ std::optional<std::int32_t> series::get_acquisition_number(std::size_t _instance
 void series::set_acquisition_number(std::optional<std::int32_t> _acquisition_number, std::size_t _instance)
 {
     m_pimpl->set_value<gdcm::Keywords::AcquisitionNumber>(_acquisition_number, _instance);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<double> series::get_acquisition_duration() const
+{
+    return m_pimpl->get_value<gdcm::Keywords::AcquisitionDuration>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_acquisition_duration(double _acquisition_duration)
+{
+    m_pimpl->set_value<gdcm::Keywords::AcquisitionDuration>(_acquisition_duration);
 }
 
 //------------------------------------------------------------------------------

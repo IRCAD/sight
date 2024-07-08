@@ -604,7 +604,7 @@ public:
         return data_set.GetDataElement(A::GetTag()).GetValueAsSQ();
     }
 
-    /// Set a DICOM tag value. If the value is null, the tag is replaced by and empty element.
+    /// Set a DICOM tag value. If the value is null, the tag is replaced by an empty element.
     template<typename A>
     inline void set_value(const std::optional<typename A::ArrayType>& _value, std::size_t _instance = 0)
     {
@@ -625,7 +625,7 @@ public:
         }
     }
 
-    /// Set a string DICOM tag value. If the value is null, the tag is replaced by and empty element.
+    /// Set a string DICOM tag value. If the value is null, the tag is replaced by an empty element.
     /// @{
     template<typename A>
     inline void set_string_value(const std::string& _value, gdcm::DataSet& _data_set)
@@ -690,7 +690,7 @@ public:
 
     /// @}
 
-    /// Set a multi-value DICOM tag. If the vector is empty, the tag is replaced by and empty element.
+    /// Set a multi-value DICOM tag. If the vector is empty, the tag is replaced by an empty element.
     template<typename A>
     inline void set_values(const std::vector<typename A::ArrayType>& _values, std::size_t _instance = 0)
     {
@@ -729,7 +729,7 @@ public:
         set_string_values<A>(split, _instance);
     }
 
-    /// Set a string multi-value DICOM tag. If the vector is empty, the tag is replaced by and empty element.
+    /// Set a string multi-value DICOM tag. If the vector is empty, the tag is replaced by an empty element.
     template<typename A>
     inline void set_string_values(const std::vector<std::string>& _values, std::size_t _instance = 0)
     {
