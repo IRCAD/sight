@@ -248,8 +248,7 @@ inline static void write_enhanced_us_volume(
         }
 
         // Position
-        if(_series_copy.get_image_position_patient(std::nullopt).size() != 3
-           && _series_copy.get_image_position_patient(0).size() != 3)
+        if(_series_copy.get_image_position_patient(0).size() != 3)
         {
             // Do it for each frames
             // Use the sight image origin for the first frame
@@ -259,7 +258,7 @@ inline static void write_enhanced_us_volume(
             const auto z_spacing = _image_series.spacing()[2];
 
             // We need to compute the frame position from image origin and z spacing
-            for(std::size_t frame = 0, end_index = _series_copy.num_frames() ;
+            for(std::size_t frame = 0, end_index = std::max(std::size_t(1), _image_series.size()[2]) ;
                 frame < end_index ; ++frame)
             {
                 SIGHT_WARN_IF(

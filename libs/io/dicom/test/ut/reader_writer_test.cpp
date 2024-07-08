@@ -65,7 +65,21 @@ inline static sight::data::series_set::sptr read(const std::filesystem::path _pa
 
     for(const auto& series : *series_set)
     {
-        series->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+        // Since we may modify the SOP to Enhanced US Volume, we need ensure each frame has a position
+        if(series->get_ultrasound_acquisition_geometry() != data::dicom::ultrasound_acquisition_geometry_t::apex)
+        {
+            std::size_t end_index = series->num_frames();
+            series->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+
+            // We need to compute the frame position from image origin and z spacing
+            for(std::size_t frame = 0 ; frame < end_index ; ++frame)
+            {
+                if(series->get_image_position_patient(frame).empty())
+                {
+                    series->set_image_position_patient({0, 0, 0}, frame);
+                }
+            }
+        }
     }
 
     return series_set;
