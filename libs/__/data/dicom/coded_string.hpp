@@ -675,4 +675,64 @@ static constexpr volume_to_transducer_relationship_t to_volume_to_transducer_rel
     return volume_to_transducer_relationship_t::unknown;
 }
 
+/// Enum that defines the position measuring device used
+enum class position_measuring_device_used_t : std::uint8_t
+{
+    unknown = 0,
+    rigid,
+    tracked,
+    freehand
+};
+
+//------------------------------------------------------------------------------
+
+static constexpr std::optional<std::string_view> to_string(
+    position_measuring_device_used_t _position_measuring_device_used
+)
+{
+    // See: https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.8.24.3.html#table_C.8.24.3-1
+    switch(_position_measuring_device_used)
+    {
+        case position_measuring_device_used_t::rigid:
+            return "RIGID";
+
+        case position_measuring_device_used_t::tracked:
+            return "TRACKED";
+
+        case position_measuring_device_used_t::freehand:
+            return "FREEHAND";
+
+        case position_measuring_device_used_t::unknown:
+            return std::nullopt;
+
+        default:
+            throw std::invalid_argument("Invalid dimension organization type");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+static constexpr std::optional<position_measuring_device_used_t> to_position_measuring_device_used(
+    const std::string_view& _position_measuring_device_used
+) noexcept
+{
+    // See: https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.8.24.3.html#table_C.8.24.3-1
+    if(_position_measuring_device_used == to_string(position_measuring_device_used_t::rigid))
+    {
+        return position_measuring_device_used_t::rigid;
+    }
+
+    if(_position_measuring_device_used == to_string(position_measuring_device_used_t::tracked))
+    {
+        return position_measuring_device_used_t::tracked;
+    }
+
+    if(_position_measuring_device_used == to_string(position_measuring_device_used_t::freehand))
+    {
+        return position_measuring_device_used_t::freehand;
+    }
+
+    return std::nullopt;
+}
+
 } // namespace sight::data::dicom

@@ -228,8 +228,9 @@ void series_test::attr_enhanced_us_image_test()
 {
     int depth_mm = 150;
     std::vector<double> focus_depths_mm {8, 64};
-    std::string processing_function            = "gain: 54;";
-    std::string position_measuring_device_used = "UNKNOWN";
+    std::string processing_function                                              = "gain: 54;";
+    data::dicom::position_measuring_device_used_t position_measuring_device_used =
+        dicom::position_measuring_device_used_t::tracked;
 
     for(const auto& series : m_series)
     {
@@ -246,19 +247,16 @@ void series_test::attr_enhanced_us_image_test()
         series->set_processing_function(processing_function);
         CPPUNIT_ASSERT(processing_function == series->get_processing_function());
 
-        position_measuring_device_used = "UNKNOWN";
-        CPPUNIT_ASSERT(!series->set_position_measuring_device_used(position_measuring_device_used));
-
-        position_measuring_device_used = "TRACKED";
-        CPPUNIT_ASSERT(series->set_position_measuring_device_used(position_measuring_device_used));
+        position_measuring_device_used = data::dicom::position_measuring_device_used_t::tracked;
+        CPPUNIT_ASSERT_NO_THROW(series->set_position_measuring_device_used(position_measuring_device_used));
         CPPUNIT_ASSERT(position_measuring_device_used == series->get_position_measuring_device_used());
 
-        position_measuring_device_used = "RIGID";
-        CPPUNIT_ASSERT(series->set_position_measuring_device_used(position_measuring_device_used));
+        position_measuring_device_used = dicom::position_measuring_device_used_t::rigid;
+        CPPUNIT_ASSERT_NO_THROW(series->set_position_measuring_device_used(position_measuring_device_used));
         CPPUNIT_ASSERT(position_measuring_device_used == series->get_position_measuring_device_used());
 
-        position_measuring_device_used = "FREEHAND";
-        CPPUNIT_ASSERT(series->set_position_measuring_device_used(position_measuring_device_used));
+        position_measuring_device_used = dicom::position_measuring_device_used_t::freehand;
+        CPPUNIT_ASSERT_NO_THROW(series->set_position_measuring_device_used(position_measuring_device_used));
         CPPUNIT_ASSERT(position_measuring_device_used == series->get_position_measuring_device_used());
     }
 }

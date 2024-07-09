@@ -55,7 +55,7 @@ struct and_image_filter
         data::image::csptr mask        = _params.mask;
         data::image::sptr output_image = _params.output_image;
 
-        const unsigned int dimension = 3;
+        [[maybe_unused]] const unsigned int dimension = 3;
         SIGHT_ASSERT("Only image dimension 3 managed.", input_image->num_dimensions() == dimension);
 
         using input_image_t  = typename itk::Image<PIXELTYPE, dimension>;

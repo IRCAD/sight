@@ -205,8 +205,11 @@ public:
     SIGHT_DATA_API std::optional<std::string> get_processing_function() const noexcept;
     SIGHT_DATA_API void set_processing_function(const std::string& _processing_function);
 
-    SIGHT_DATA_API std::string get_position_measuring_device_used() const noexcept;
-    SIGHT_DATA_API bool set_position_measuring_device_used(const std::string& _position_measuring_device_used);
+    SIGHT_DATA_API std::optional<dicom::position_measuring_device_used_t> get_position_measuring_device_used() const
+    noexcept;
+    SIGHT_DATA_API void set_position_measuring_device_used(
+        const dicom::position_measuring_device_used_t _position_measuring_device_used
+    );
     /// @}
 
     /// Getter/Setter of DICOM Patient Module related attributes

@@ -2082,25 +2082,27 @@ void series::set_processing_function(const std::string& _processing_function)
 
 //------------------------------------------------------------------------------
 
-std::string series::get_position_measuring_device_used() const noexcept
+std::optional<dicom::position_measuring_device_used_t> series::get_position_measuring_device_used() const noexcept
 {
-    return m_pimpl->get_string_value<gdcm::Keywords::PositionMeasuringDeviceUsed>();
+    if(const auto& value = m_pimpl->get_value<gdcm::Keywords::PositionMeasuringDeviceUsed>(); value&& !value->empty())
+    {
+        return dicom::to_position_measuring_device_used(*value);
+    }
+
+    return std::nullopt;
 }
 
 //------------------------------------------------------------------------------
 
-bool series::set_position_measuring_device_used(const std::string& _position_measuring_device_used)
+void series::set_position_measuring_device_used(
+    const dicom::position_measuring_device_used_t _position_measuring_device_used
+)
 {
-    if(_position_measuring_device_used != "RIGID"
-       && _position_measuring_device_used != "TRACKED"
-       && _position_measuring_device_used != "FREEHAND")
+    if(auto position_measuring_device_used = dicom::to_string(_position_measuring_device_used);
+       position_measuring_device_used)
     {
-        SIGHT_ERROR("Invalid PositionMeasuringDeviceUsed value: " << _position_measuring_device_used << ".");
-        return false;
+        m_pimpl->set_value<gdcm::Keywords::PositionMeasuringDeviceUsed>(std::string(*position_measuring_device_used));
     }
-
-    m_pimpl->set_value<gdcm::Keywords::PositionMeasuringDeviceUsed>(_position_measuring_device_used);
-    return true;
 }
 
 //------------------------------------------------------------------------------
