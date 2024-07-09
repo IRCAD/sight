@@ -142,6 +142,8 @@ protected:
     ///update the slider verticals lines.
     void update_slider_fiducial();
 
+    void update_label(const sight::data::image& image);
+
 private:
 
     /**

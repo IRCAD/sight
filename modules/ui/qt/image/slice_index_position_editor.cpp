@@ -232,6 +232,7 @@ void slice_index_position_editor::updating()
             );
 
             this->update_slice_index_from_img(*image);
+            this->update_label(*image);
         }
         else if(m_label_option == label_option_t::position)
         {
@@ -252,6 +253,7 @@ void slice_index_position_editor::updating()
                                     .value_or(image->origin()[0]));
 
             this->update_slice_index_from_img(*image);
+            this->update_label(*image);
         }
     }
 
@@ -443,10 +445,12 @@ void slice_index_position_editor::update_slice_type_from_img(const orientation_t
         const std::string& new_orientation_prefix = orientation_prefix_map.at(_type);
         m_slice_selector_with_position->set_prefix(new_orientation_prefix);
         m_slice_selector_with_position->set_type_selection(static_cast<int>(_type));
+        m_slice_selector_with_position->update_label();
     }
     else if(m_label_option == label_option_t::index)
     {
         m_slice_selector_with_index->set_type_selection(static_cast<int>(_type));
+        m_slice_selector_with_index->update_label();
     }
 
     const auto image = m_image.const_lock();
@@ -552,6 +556,35 @@ void slice_index_position_editor::slice_type_notification(int _type)
         }
         this->update_slice_index_from_img(*image);
     }
+}
+
+//------------------------------------------------------------------------------
+void slice_index_position_editor::update_label(const sight::data::image& _image)
+{
+    if(m_label_option == label_option_t::position)
+    {
+        if(m_slice_selector_with_position != nullptr)
+        {
+            m_slice_selector_with_position->update_label();
+        }
+    }
+    else if(m_label_option == label_option_t::index)
+    {
+        if(m_slice_selector_with_index != nullptr)
+        {
+            const auto& spacing = _image.spacing();
+            const auto& origin  = _image.origin();
+
+            m_slice_selector_with_index->set_image_info(origin[m_orientation], spacing[m_orientation]);
+
+            const std::string& new_orientation_prefix = orientation_prefix_map.at(m_orientation);
+            m_slice_selector_with_index->set_prefix(new_orientation_prefix);
+
+            m_slice_selector_with_index->update_label();
+        }
+    }
+
+    this->update_slice_index_from_img(_image);
 }
 
 //------------------------------------------------------------------------------

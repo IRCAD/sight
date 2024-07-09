@@ -52,18 +52,38 @@
 namespace sight::ui::qt
 {
 
-class slice_index_text : public QLineEdit
+class slice_text_editor : public QLineEdit
 {
 public:
 
     using QLineEdit::QLineEdit;
+
+    explicit slice_text_editor(slice_selector* _parent_selector, QWidget* _parent = nullptr) :
+        QLineEdit(_parent),
+        m_button(new QToolButton(this)),
+        m_parent_selector(_parent_selector)
+    {
+        m_button->setCursor(Qt::ArrowCursor);
+        m_button->setStyleSheet(
+            "QToolButton { "
+            "border: none; "
+            "border-radius: 20%;"
+            "padding: 4px; "
+            "border-top-left-radius: 10px; "
+            "border-top-right-radius: 10px; "
+            "border-bottom-left-radius: 30px; "
+            "border-bottom-right-radius: 30px; "
+            "}"
+        );
+
+        connect(m_button, &QToolButton::clicked, this, &slice_text_editor::call_update_label);
+    }
 
     //------------------------------------------------------------------------------
 
     void set_digits(std::uint8_t _digits)
     {
         m_digits = _digits;
-
         const auto& digits_string = std::string(_digits, '9');
         m_default_text = QString::fromStdString(digits_string + " / " + digits_string);
     }
@@ -74,6 +94,35 @@ public:
     {
         return m_digits;
     }
+
+    //-------------------------------------------------------------------------------
+    void set_digits_position(double _value)
+    {
+        std::ostringstream stream;
+        stream << std::setw(24) << _value;
+        std::string value_str = stream.str();
+
+        const size_t dot_pos        = value_str.find('.');
+        const size_t integer_digits = dot_pos != std::string::npos ? dot_pos : value_str.length();
+        const size_t decimal_digits = dot_pos != std::string::npos ? value_str.length() - dot_pos - 1 : 0;
+
+        const size_t total_digits = integer_digits + (decimal_digits > 0 ? 1 : 0) + decimal_digits;
+        m_digits = static_cast<std::uint8_t>(total_digits > 255 ? 255 : total_digits);
+
+        m_default_text = QString::fromStdString(value_str);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void call_update_label()
+    {
+        if(m_parent_selector != nullptr)
+        {
+            m_parent_selector->update_label();
+        }
+    }
+
+//------------------------------------------------------------------------------
 
 protected:
 
@@ -100,74 +149,30 @@ protected:
         return minimumSizeHint();
     }
 
+    //------------------------------------------------------------------------------
+
+    void resizeEvent(QResizeEvent* /*event*/) override
+    {
+        update_button_geometry();
+    }
+
 private:
 
+    QPointer<QToolButton> m_button;
     QString m_default_text;
     std::uint8_t m_digits {0};
+    slice_selector* m_parent_selector;
+
+    //------------------------------------------------------------------------------
+
+    void update_button_geometry()
+    {
+        const int frame_width   = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
+        const int button_width  = qMin(200, this->width() - 2 * frame_width);
+        const int button_height = this->height() - 2 * frame_width;
+        m_button->setGeometry(this->width() - frame_width - button_width, frame_width, button_width, button_height);
+    }
 };
-//-----------------------------------------------------------------------------------
-
-class slice_pos_text : public QLineEdit
-{
-public:
-
-    using QLineEdit::QLineEdit;
-
-    //------------------------------------------------------------------------------
-    void set_digits_position(double _value)
-    {
-        std::ostringstream stream;
-        stream << std::setw(24) << _value;
-        std::string value_str = stream.str();
-
-        const size_t dot_pos        = value_str.find('.');
-        const size_t integer_digits = dot_pos != std::string::npos ? dot_pos : value_str.length();
-        const size_t decimal_digits = dot_pos != std::string::npos ? value_str.length() - dot_pos - 1 : 0;
-
-        const size_t total_digits = integer_digits + (decimal_digits > 0 ? 1 : 0) + decimal_digits;
-        m_digits_p = static_cast<std::uint8_t>(total_digits > 255 ? 255 : total_digits);
-
-        m_position_text = QString::fromStdString(value_str);
-    }
-
-    //------------------------------------------------------------------------------
-
-    [[nodiscard]] std::uint8_t get_position_digits() const
-    {
-        return m_digits_p;
-    }
-
-protected:
-
-    //----------------------------------------------------------------- -------------
-
-    [[nodiscard]] QSize minimumSizeHint() const override
-    {
-        // Don't forget to spare some margins
-        const auto* const style = this->style() == nullptr ? QApplication::style() : this->style();
-        const int right_margin  = style->pixelMetric(QStyle::PM_LayoutRightMargin, nullptr, this);
-        const int left_margin   = style->pixelMetric(QStyle::PM_LayoutLeftMargin, nullptr, this);
-
-        // Compute the optimal width for the text field.
-        auto size = QLineEdit::minimumSizeHint();
-        size.setWidth(this->fontMetrics().horizontalAdvance(m_position_text) + left_margin + right_margin);
-
-        return size;
-    }
-
-    //------------------------------------------------------------------------------
-
-    [[nodiscard]] QSize sizeHint() const override
-    {
-        return minimumSizeHint();
-    }
-
-private:
-
-    QString m_position_text;
-    std::uint8_t m_digits_p {0};
-};
-
 // This proxy style class provides a way to set slider positions in an absolute way
 // which is very useful in general and especially for touchscreen input.
 // See: https://stackoverflow.com/questions/11132597/qslider-mouse-direct-jump
@@ -305,7 +310,7 @@ slice_selector::slice_selector(
 ) noexcept :
     QWidget(_parent),
     m_slice_index_style(new absolute_proxy_style()),
-    m_slice_index_text(new slice_index_text(this)),
+    m_slice_index_text(new slice_text_editor(this)),
     m_slider(new custom_slider(Qt::Horizontal, this))
 {
     m_slider->setStyle(m_slice_index_style);
@@ -326,7 +331,7 @@ slice_selector::slice_selector(
         QObject::connect(m_slice_type, SIGNAL(currentIndexChanged(int)), this, SLOT(on_slice_type_change(int)));
     }
 
-    static_cast<slice_index_text*>(m_slice_index_text.data())->set_digits(_index_digits);
+    static_cast<slice_text_editor*>(m_slice_index_text.data())->set_digits(_index_digits);
 
     m_slice_index_text->setReadOnly(true);
     m_slice_index_text->setAlignment(Qt::AlignVCenter | Qt::AlignRight | Qt::AlignAbsolute);
@@ -393,7 +398,7 @@ slice_selector::slice_selector(
 ) noexcept :
     QWidget(_parent_pos),
     m_slice_position_slider(new custom_slider(Qt::Horizontal, this)),
-    m_slice_position_text(new slice_pos_text(this)),
+    m_slice_position_text(new slice_text_editor(this, this)),
     m_slice_position_style(new second_proxy_style())
 {
     auto* layout = new QHBoxLayout(this);
@@ -414,7 +419,7 @@ slice_selector::slice_selector(
         QObject::connect(m_slice_type, SIGNAL(currentIndexChanged(int)), this, SLOT(on_slice_type_change(int)));
     }
 
-    static_cast<slice_pos_text*>(m_slice_position_text.data())->set_digits_position(_pos_digits);
+    static_cast<slice_text_editor*>(m_slice_position_text.data())->set_digits_position(_pos_digits);
     m_slice_position_text->setReadOnly(true);
     m_slice_position_text->setAlignment(Qt::AlignVCenter | Qt::AlignRight | Qt::AlignAbsolute);
 
@@ -471,6 +476,7 @@ slice_selector::slice_selector(
 
     layout->setContentsMargins(0, 0, 0, 0);
     QObject::connect(m_slice_position_slider, &QSlider::valueChanged, this, &slice_selector::on_slice_position_change);
+
     this->setLayout(layout);
 }
 
@@ -487,7 +493,8 @@ slice_selector::~slice_selector() noexcept
 //------------------------------------------------------------------------------
 void slice_selector::set_index_digits(std::uint8_t _index_digits)
 {
-    auto* slice_index_widget = static_cast<slice_index_text*>(m_slice_index_text.data());
+    auto* slice_index_widget = static_cast<slice_text_editor*>(m_slice_index_text.data());
+
     slice_index_widget->set_digits(_index_digits);
     slice_index_widget->updateGeometry();
 }
@@ -529,7 +536,8 @@ void slice_selector::add_position_slider(std::double_t _position, const QColor& 
 //------------------------------------------------------------------------------
 void slice_selector::set_position_digits(double _pos_digits)
 {
-    auto* slice_position_widget = static_cast<slice_pos_text*>(m_slice_position_text.data());
+    auto* slice_position_widget = static_cast<slice_text_editor*>(m_slice_index_text.data());
+
     slice_position_widget->set_digits_position(_pos_digits);
     slice_position_widget->updateGeometry();
 }
@@ -562,6 +570,27 @@ void slice_selector::set_prefix(const std::string& _orientation_prefix)
 }
 
 //-------------------------------------------------------------------------------
+void slice_selector::update_label()
+{
+    if(m_slice_index_text != nullptr && m_slider != nullptr)
+    {
+        const int number = m_slider->value();
+        set_position_digits(number);
+        set_position_text(number);
+    }
+    else if(m_slice_position_text != nullptr && m_slice_position_slider != nullptr)
+    {
+        const int number = m_slice_position_slider->value();
+        m_slice_position_slider->setValue(number);
+
+        std::stringstream ss;
+
+        ss << number << " / " << this->m_slice_position_slider->maximum();
+        this->m_slice_position_text->setText(QString::fromStdString(ss.str()));
+    }
+}
+
+//------------------------------------------------------------------------------
 
 void slice_selector::set_position_value(int _index)
 {
@@ -570,13 +599,21 @@ void slice_selector::set_position_value(int _index)
     m_slice_position_slider->blockSignals(false);
 }
 
-//---------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------------
 void slice_selector::set_position_text(double _position_index)
 {
     std::stringstream ss;
     ss << m_orientation_prefix << " : " << std::fixed << std::setprecision(2)
     << m_origin + (m_spacing * _position_index) << " mm";
-    this->m_slice_position_text->setText(QString::fromStdString(ss.str()));
+
+    if(m_slice_index_text != nullptr)
+    {
+        m_slice_index_text->setText(QString::fromStdString(ss.str()));
+    }
+    else if(m_slice_position_text != nullptr)
+    {
+        m_slice_position_text->setText(QString::fromStdString(ss.str()));
+    }
 }
 
 //---------------------------------------------------------------------------------------
