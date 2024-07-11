@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,9 +48,9 @@ int main(int argc, char** argv)
     // Declare the supported options.
     boost::program_options::options_description desc("Allowed options");
     desc.add_options()
-        ("help,h", "produce help message")
-        ("input,i", boost::program_options::value<std::string>(), "set input folder")
-        ("output,o", boost::program_options::value<std::string>(), "set output folder")
+    ("help,h", "produce help message")
+    ("input,i", boost::program_options::value<std::string>(), "set input folder")
+    ("output,o", boost::program_options::value<std::string>(), "set output folder")
     ;
 
     // Manage the options

@@ -185,7 +185,7 @@ public:
     void add_frame_to_frame_tl(data::frame_tl::sptr& _frame_tl, const std::uint8_t _timestamp)
     {
         const SPTR(data::frame_tl::buffer_t) data = _frame_tl->create_buffer(_timestamp);
-        std::uint8_t* elt_buffer = data->add_element(0);
+        std::uint8_t* elt_buffer                  = data->add_element(0);
         memset(elt_buffer, _timestamp, frame_size[0] * frame_size[1]);
 
         _frame_tl->push_object(data);

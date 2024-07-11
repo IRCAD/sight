@@ -137,7 +137,7 @@ private:
 
     data::object::sptr find_object(const std::string& _uid, std::string_view _err_msg_tail) const;
 
-    data::object::sptr get_new_object(config_attribute_t _type, const std::string& _uid) const;
+    static data::object::sptr get_new_object(config_attribute_t _type, const std::string& _uid);
 
     static data::object::sptr get_new_object(
         config_attribute_t _type,

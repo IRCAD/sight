@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ static const double EPSILON = 1e-5;
 
 // There might be some uncertainty when sampling, so we need to include an epsilon when testing equality
 #define ASSERT_COLOR_EQUALS(c1, c2) \
-    CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(c1, c2, EPSILON)));
+        CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(c1, c2, EPSILON)));
 
 namespace sight::data::ut
 {
@@ -211,7 +211,7 @@ void transfer_function_test::check_tf_color(data::transfer_function::sptr _tf)
 
 void transfer_function_test::set_tf_data_test()
 {
-    data::transfer_function::sptr tf = this->create_tf_color();
+    data::transfer_function::sptr tf = sight::data::ut::transfer_function_test::create_tf_color();
     tf->set_level(900.6);
     tf->set_window(-200.02);
 
@@ -223,14 +223,14 @@ void transfer_function_test::set_tf_data_test()
     tf_data[150]    = data::transfer_function::color_t(0.1, 0.2, 0.3, 0.9);
     std::copy(tf_data.begin(), tf_data.end(), inserter(*piece));
 
-    this->check_tf_color(tf);
+    sight::data::ut::transfer_function_test::check_tf_color(tf);
 }
 
 //------------------------------------------------------------------------------
 
 void transfer_function_test::linear_color_test()
 {
-    data::transfer_function::sptr tf = this->create_tf_color();
+    data::transfer_function::sptr tf = sight::data::ut::transfer_function_test::create_tf_color();
 
     // Value = -40.33 => color : {0.9, 0.2, 0.3, 0.4}
     // Value = -0.2   => color : {0.1, 0.9, 0.3, 0.4}
@@ -312,7 +312,7 @@ void transfer_function_test::linear_color_test()
 
 void transfer_function_test::nearest_color_test()
 {
-    data::transfer_function::sptr tf = this->create_tf_color();
+    data::transfer_function::sptr tf = sight::data::ut::transfer_function_test::create_tf_color();
 
     // Value = -40.33 => color : {0.9, 0.2, 0.3, 0.4}
     // Value = -0.2  => color : {0.1, 0.9, 0.3, 0.4}
@@ -531,16 +531,16 @@ void transfer_function_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    function1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Transfer functions should be different when using " #op " on the first one", \
-        *function1 != *function2 && !(*function1 == *function2) \
-    ); \
-    function2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Transfer functions should be equal when using " #op " on both", \
-        *function1 == *function2 && !(*function1 != *function2) \
-    );
+            function1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Transfer functions should be different when using " #op " on the first one", \
+                *function1 != *function2 && !(*function1 == *function2) \
+            ); \
+            function2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Transfer functions should be equal when using " #op " on both", \
+                *function1 == *function2 && !(*function1 != *function2) \
+            );
 
     // transfer_function::setWindow and transfer_function::setLevel aren't tested here, as the behavior is
     // counterintuitive: The equality of the TransferFunction isn't changed by setWindow et setLevel if the list of

@@ -1484,7 +1484,10 @@ std::vector<std::string> fiducials_series::get_point_fiducials_group_names() con
             return _fiducial_set.fiducial_sequence.empty() || std::ranges::find_if(
                 _fiducial_set.fiducial_sequence,
                 [](
-                    const fiducial& _fiducial){return _fiducial.shape_type == shape::point;}) != _fiducial_set.fiducial_sequence.end();
+                    const fiducial& _fiducial)
+            {
+                return _fiducial.shape_type == shape::point;
+            }) != _fiducial_set.fiducial_sequence.end();
         });
     std::ranges::for_each(
         point_fiducial_sets,

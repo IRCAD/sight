@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -220,7 +220,6 @@ void surface::read_surface_segmentation_module(
 
     // Structure Type from Private Tag (0x5649,0x1000)
     const gdcm::Tag structure_type_tag(0x5649, 0x1000);
-    auto private_creator = gdcm::LOComp::Trim(segment_dataset.GetPrivateCreator(structure_type_tag).c_str());
     if(segment_dataset.FindDataElement(structure_type_tag))
     {
         const auto structure_type =
@@ -353,14 +352,15 @@ void surface::read_surface_mesh_module(
     const std::uint64_t index_size = point_indices->GetLength() / sizeof(uint32_t);
 
     // Create a new Mesh
-    io::dicom::container::dicom_surface surface_container(reinterpret_cast<const float*>(point_coordinates->GetPointer()),
-                                                          data::mesh::size_t(point_coordinates_size),
-                                                          reinterpret_cast<const uint32_t*>(point_indices->GetPointer()),
-                                                          data::mesh::size_t(index_size),
-                                                          _surface->GetVectorCoordinateData().IsEmpty() ? nullptr
-                                                                                                        :
-                                                          reinterpret_cast<
-                                                              const float*>(normal_coordinates->GetPointer()));
+    io::dicom::container::dicom_surface surface_container(
+        reinterpret_cast<const float*>(point_coordinates->GetPointer()),
+        data::mesh::size_t(point_coordinates_size),
+        reinterpret_cast<const uint32_t*>(point_indices->GetPointer()),
+        data::mesh::size_t(index_size),
+        _surface->GetVectorCoordinateData().IsEmpty() ? nullptr
+                                                      :
+        reinterpret_cast<
+            const float*>(normal_coordinates->GetPointer()));
 
     // Set the reconstruction
     _reconstruction->set_material(material);

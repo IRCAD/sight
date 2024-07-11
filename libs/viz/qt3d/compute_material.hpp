@@ -56,7 +56,7 @@ class SIGHT_VIZ_QT3D_CLASS_API compute_material : public Qt3DRender::QMaterial
 Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
-Q_PROPERTY(Qt3DRender::QBuffer* buffer READ get_index_buffer WRITE set_index_buffer NOTIFY index_buffer_changed)
+Q_PROPERTY(Qt3DRender::QBuffer * buffer READ get_index_buffer WRITE set_index_buffer NOTIFY index_buffer_changed)
 
 public:
 

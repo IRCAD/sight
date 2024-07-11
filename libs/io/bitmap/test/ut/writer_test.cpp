@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -163,7 +163,7 @@ inline static void profile_writer(
     // Now profile writing
     SIGHT_PROFILE_FUNC(
         [&]
-            (std::size_t i)
+        (std::size_t i)
         {
             for(std::size_t j = 0 ; const auto& image : _images)
             {
@@ -250,7 +250,7 @@ inline static void profile_open_cv_writer(
     // Now profile writing
     SIGHT_PROFILE_FUNC(
         [&]
-            (std::size_t i)
+        (std::size_t i)
         {
             for(std::size_t j = 0 ; const auto& image : _images)
             {

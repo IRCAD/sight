@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -191,7 +191,7 @@ inline static void profile_reader(
     // Now profile reading
     SIGHT_PROFILE_FUNC(
         [&]
-            (std::size_t)
+        (std::size_t)
         {
             CPPUNIT_ASSERT_NO_THROW(reader->read(_backend));
         },
@@ -206,7 +206,7 @@ inline static void profile_reader(
         const auto& opencv_label = "(openCV): " + filepath.extension().string();
         SIGHT_PROFILE_FUNC(
             [&]
-                (std::size_t)
+            (std::size_t)
             {
                 CPPUNIT_ASSERT_NO_THROW(read_image(filepath));
             },

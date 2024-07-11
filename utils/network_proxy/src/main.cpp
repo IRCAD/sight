@@ -113,7 +113,8 @@ std::map<std::string, configuration> initialize(std::string _config_file)
                 SIGHT_FATAL_IF("Error in configuration file line: '" << i << "'.", words.size() != 4);
 
                 SIGHT_INFO(
-                    "Type : " << words[0] << ", device In : " << words[1] << ", device Out : " << words[2] << ", port : "
+                    "Type : " << words[0] << ", device In : " << words[1] << ", device Out : " << words[2]
+                    << ", port : "
                     << words[3]
                 );
 
@@ -269,7 +270,8 @@ int main(int argc, char** argv)
                     else
                     {
                         SIGHT_WARN(
-                            "No corresponding between type " << device_type << " and name " << device_name << " message skipped"
+                            "No corresponding between type " << device_type << " and name " << device_name
+                            << " message skipped"
                         );
                     }
                 }

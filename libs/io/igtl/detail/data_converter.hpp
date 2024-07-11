@@ -33,7 +33,7 @@ namespace sight::io::igtl::detail
 
 ///converterRegisterMacro need to be called by every converter
 #define CONVERTER_REGISTER_MACRO(ClassName) \
-    static io::igtl::detail::data_converter::registry<ClassName> BOOST_PP_CAT(s__factory__record__, __LINE__);
+        static io::igtl::detail::data_converter::registry<ClassName> BOOST_PP_CAT(s__factory__record__, __LINE__);
 
 /**
  *

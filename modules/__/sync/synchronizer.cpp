@@ -426,7 +426,10 @@ void synchronizer::copy_frame_from_tl_to_output(
             // Check if frame dimensions have changed
             if(frame_tl_size != frame->size() || frame_tl_num_components != frame->num_components())
             {
-                enum data::image::pixel_format format {data::image::undefined};
+                enum data::image::pixel_format format
+                {
+                    data::image::undefined
+                };
                 switch(frame_tl_pixel_format)
                 {
                     case data::frame_tl::pixel_format::gray_scale:
@@ -548,7 +551,8 @@ void synchronizer::copy_matrix_from_tl_to_output(
     else
     {
         SIGHT_ERROR(
-            "Buffer not found for timestamp " << _synchronization_timestamp << " in timeline 'matrix" << _matrix_tl_index
+            "Buffer not found for timestamp " << _synchronization_timestamp << " in timeline 'matrix"
+            << _matrix_tl_index
             << "'."
         );
     }
@@ -682,7 +686,7 @@ void synchronizer::set_delay(int _val, std::string _key)
      * it means that the value is a delay set for the i th frameTL
      * This works respectively for matrixDelay_i and matrixTL
      */
-    if(_key.rfind(slots::FRAME_DELAY_PREFIX, 0) == 0)
+    if(_key.starts_with(slots::FRAME_DELAY_PREFIX))
     {
         try
         {
@@ -706,7 +710,7 @@ void synchronizer::set_delay(int _val, std::string _key)
             SIGHT_ERROR("The frameTL index provided in the update delay slot is not a proper number: " << _key);
         }
     }
-    else if(_key.rfind(slots::MATRIX_DELAY_PREFIX, 0) == 0)
+    else if(_key.starts_with(slots::MATRIX_DELAY_PREFIX))
     {
         try
         {

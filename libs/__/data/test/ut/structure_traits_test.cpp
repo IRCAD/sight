@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -39,16 +39,16 @@ void structure_traits_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    struct1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Structures should be different when using " #op " on the first one", \
-        *struct1 != *struct2 && !(*struct1 == *struct2) \
-    ); \
-    struct2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Structures should be equal when using " #op " on both", \
-        *struct1 == *struct2 && !(*struct1 != *struct2) \
-    );
+            struct1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Structures should be different when using " #op " on the first one", \
+                *struct1 != *struct2 && !(*struct1 == *struct2) \
+            ); \
+            struct2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Structures should be equal when using " #op " on both", \
+                *struct1 == *struct2 && !(*struct1 != *struct2) \
+            );
 
     TEST(set_type("1"));
     TEST(set_categories({data::structure_traits::body}));

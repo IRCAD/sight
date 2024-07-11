@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -176,8 +176,8 @@ int main(int argc, char* argv[])
     // Runner options
     po::options_description options("Sight application launcher options");
     options.add_options()
-        ("help,h", "Show help message")
-        ("module-path,B", po::value(&module_paths), "Adds a module path")
+    ("help,h", "Show help message")
+    ("module-path,B", po::value(&module_paths), "Adds a module path")
     ;
 
     // Log options
@@ -274,13 +274,13 @@ int main(int argc, char* argv[])
 
     po::options_description hidden("Hidden options");
     hidden.add_options()
-        ("profile", po::value(&profile_file)->default_value("profile.xml"), "Profile file")
-        ("profile-args", po::value(&profile_args)->multitoken(), "Profile args")
-        ("macro", po::value(&macro_mode)->implicit_value(true)->zero_tokens(), "Enable macro mode")
-        ("no-macro", po::value(&macro_mode)->implicit_value(false)->zero_tokens(), "Disable macro mode")
+    ("profile", po::value(&profile_file)->default_value("profile.xml"), "Profile file")
+    ("profile-args", po::value(&profile_args)->multitoken(), "Profile args")
+    ("macro", po::value(&macro_mode)->implicit_value(true)->zero_tokens(), "Enable macro mode")
+    ("no-macro", po::value(&macro_mode)->implicit_value(false)->zero_tokens(), "Disable macro mode")
 #ifdef WIN32
     ("abort-dialog", po::value(&enableAbortDialog)->implicit_value(true)->zero_tokens(), "Enable abort dialog")
-        ("no-abort-dialog", po::value(&enableAbortDialog)->implicit_value(false)->zero_tokens(), "Disable abort dialog")
+    ("no-abort-dialog", po::value(&enableAbortDialog)->implicit_value(false)->zero_tokens(), "Disable abort dialog")
 #endif
     ;
 

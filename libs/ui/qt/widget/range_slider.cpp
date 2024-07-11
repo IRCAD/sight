@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -279,20 +279,20 @@ range_slider::range_slider(QWidget* _parent) :
     m_min_handle(new handle(this)),
     m_max_handle(new handle(this)),
     m_window(new class window (this))
-    {
-        auto* min_h = new handle(this);
-        auto* max_h = new handle(this);
-        min_h->set_handle_size(m_handle_size);
-        max_h->set_handle_size(m_handle_size);
+{
+    auto* min_h = new handle(this);
+    auto* max_h = new handle(this);
+    min_h->set_handle_size(m_handle_size);
+    max_h->set_handle_size(m_handle_size);
 
-        m_min_handle = min_h;
-        m_max_handle = max_h;
+    m_min_handle = min_h;
+    m_max_handle = max_h;
 
-        this->set_pos(m_min_value, m_max_value);
-        this->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
-    }
+    this->set_pos(m_min_value, m_max_value);
+    this->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+}
 
-             range_slider::~range_slider()
+range_slider::~range_slider()
 {
     delete m_min_handle;
     delete m_max_handle;

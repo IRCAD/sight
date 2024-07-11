@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,16 +89,16 @@ void material_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    material1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Materials should be different when using " #op " on the first one", \
-        *material1 != *material2 && !(*material1 == *material2) \
-    ); \
-    material2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Materials should be equal when using " #op " on both", \
-        *material1 == *material2 && !(*material1 != *material2) \
-    );
+            material1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Materials should be different when using " #op " on the first one", \
+                *material1 != *material2 && !(*material1 == *material2) \
+            ); \
+            material2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Materials should be equal when using " #op " on both", \
+                *material1 == *material2 && !(*material1 != *material2) \
+            );
 
     TEST(set_ambient(std::make_shared<data::color>(1.F, 0.F, 0.F)));
     TEST(set_ambient(std::make_shared<data::color>(0.F, 1.F, 0.F)));

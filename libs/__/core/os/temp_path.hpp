@@ -187,7 +187,7 @@ public:
     SIGHT_CORE_API ~temp_file() noexcept override = default;
 
     /// Conversion operator
-    inline operator std::ostream& ();
+    inline operator std::ostream & ();
 
     /// Convenience operators
     /// @{
@@ -213,7 +213,7 @@ public:
     inline std::ofstream& stream();
 };
 
-inline temp_file::operator std::ostream& ()
+inline temp_file::operator std::ostream & ()
 {
     return *m_ofstream;
 }

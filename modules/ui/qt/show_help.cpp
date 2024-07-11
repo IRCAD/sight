@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,9 +118,9 @@ void show_help::updating()
     }
     else
     {
-        auto* help_panel = new QSplitter(Qt::Horizontal);
-        auto* help_browser = new class help_browser (help_engine, dialog) ;
-                                 help_panel->insertWidget(0, help_engine->contentWidget());
+        auto* help_panel   = new QSplitter(Qt::Horizontal);
+        auto* help_browser = new class help_browser (help_engine, dialog);
+        help_panel->insertWidget(0, help_engine->contentWidget());
         help_panel->insertWidget(1, help_browser);
         help_panel->setStretchFactor(1, 1);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -38,11 +38,11 @@ void dialog::take(tester& _tester, const std::string& _desc, const std::string& 
         [&_child_name](T _o)
         {
             return _o->isVisible()
-            && (_child_name.empty() || _o->template findChild<QObject*>(
-                    QString::fromStdString(
-                        _child_name
-                    )
-                ) != nullptr);
+                   && (_child_name.empty() || _o->template findChild<QObject*>(
+                           QString::fromStdString(
+                               _child_name
+                           )
+                       ) != nullptr);
         });
 }
 
@@ -57,11 +57,11 @@ void dialog::maybe_take(tester& _tester, const std::string& _desc, const std::st
         [&_child_name](T _o)
         {
             return _o->isVisible()
-            && (_child_name.empty() || _o->template findChild<QObject*>(
-                    QString::fromStdString(
-                        _child_name
-                    )
-                ) != nullptr);
+                   && (_child_name.empty() || _o->template findChild<QObject*>(
+                           QString::fromStdString(
+                               _child_name
+                           )
+                       ) != nullptr);
         });
 }
 

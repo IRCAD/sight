@@ -1228,7 +1228,8 @@ void point::select_point(std::string _group_name, std::size_t _index)
                 [&](
                     std::shared_ptr<selected_landmark> _landmark)
                 {
-                    return _landmark->m_landmark->m_group_name == _group_name && _landmark->m_landmark->m_index == _index;
+                    return _landmark->m_landmark->m_group_name == _group_name
+                           && _landmark->m_landmark->m_index == _index;
                 });
 
             if(it == m_selected_landmarks.end())
@@ -2072,7 +2073,8 @@ void point::mouse_move_event(mouse_button /*_button*/, modifier /*_mods*/, int _
             const float vp_y = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
 
             const Ogre::Ray ray           = cam->getCameraToViewportRay(vp_x, vp_y);
-            const Ogre::Vector3 direction = this->get_cam_direction(cam);
+            const Ogre::Vector3 direction =
+                sight::module::viz::scene3d_qt::adaptor::fiducials::point::get_cam_direction(cam);
 
             const Ogre::Vector3 position = m_picked_data->m_node->getPosition();
 

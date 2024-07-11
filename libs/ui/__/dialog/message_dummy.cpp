@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -58,7 +58,7 @@ void message_dummy::set_default_button(buttons /*button*/)
 
 //------------------------------------------------------------------------------
 
-void message_dummy::add_custom_button(const std::string& /*label*/, std::function<void()> /*clickedFn*/)
+void message_dummy::add_custom_button(const std::string& /*label*/, std::function<void()>/*clickedFn*/)
 {
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ void has_parameters::set_bool_parameter(bool /*unused*/, std::string /*unused*/)
 
 //-----------------------------------------------------------------------------
 
-void has_parameters::set_color_parameter(std::array<std::uint8_t, 4> /*unused*/, std::string /*unused*/)
+void has_parameters::set_color_parameter(std::array<std::uint8_t, 4>/*unused*/, std::string /*unused*/)
 {
 }
 

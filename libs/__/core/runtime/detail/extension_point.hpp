@@ -97,7 +97,8 @@ public:
             [this](const auto& _e)
                 {
                     const auto extension = std::dynamic_pointer_cast<detail::extension>(_e);
-                    return extension->point() == m_id && extension->enabled() && extension->validate() == extension::valid;
+                    return extension->point() == m_id && extension->enabled()
+                           && extension->validate() == extension::valid;
                 });
 
         return container;

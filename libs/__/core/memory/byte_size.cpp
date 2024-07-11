@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -216,17 +216,17 @@ bool byte_size::parse_size(const std::string& _s, size_t& _size)
     symbols<char, byte_size::size_t> unit;
 
     unit.add
-        ("b", byte_size::BYTES)("byte", byte_size::BYTES)("bytes", byte_size::BYTES)
-        ("kb", byte_size::KB)
-        ("mb", byte_size::MB)
-        ("gb", byte_size::GB)
-        ("tb", byte_size::TB)
-        ("pb", byte_size::PB)
-        ("k", byte_size::KI_B)("kib", byte_size::KI_B)
-        ("m", byte_size::MI_B)("mib", byte_size::MI_B)
-        ("g", byte_size::GI_B)("gib", byte_size::GI_B)
-        ("t", byte_size::TI_B)("tib", byte_size::TI_B)
-        ("p", byte_size::PI_B)("pib", byte_size::PI_B)
+    ("b", byte_size::BYTES)("byte", byte_size::BYTES)("bytes", byte_size::BYTES)
+    ("kb", byte_size::KB)
+    ("mb", byte_size::MB)
+    ("gb", byte_size::GB)
+    ("tb", byte_size::TB)
+    ("pb", byte_size::PB)
+    ("k", byte_size::KI_B)("kib", byte_size::KI_B)
+    ("m", byte_size::MI_B)("mib", byte_size::MI_B)
+    ("g", byte_size::GI_B)("gib", byte_size::GI_B)
+    ("t", byte_size::TI_B)("tib", byte_size::TI_B)
+    ("p", byte_size::PI_B)("pib", byte_size::PI_B)
     ;
 
     bool r = false;

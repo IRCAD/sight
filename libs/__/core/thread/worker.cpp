@@ -70,7 +70,8 @@ thread_native_id_t get_current_thread_native_id()
 void set_thread_name(const std::string& _thread_name, std::optional<std::thread::native_handle_type> _thread_id)
 {
     SIGHT_WARN_IF(
-        "Thread name '" << _thread_name << "' is too long. It must be restricted to " << get_max_length_of_thread_name() << " characters including the terminating null byte.",
+        "Thread name '" << _thread_name << "' is too long. It must be restricted to "
+        << get_max_length_of_thread_name() << " characters including the terminating null byte.",
         _thread_name.size()
         >= get_max_length_of_thread_name()
     );

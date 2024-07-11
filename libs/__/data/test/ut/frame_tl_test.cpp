@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -279,16 +279,16 @@ void frame_tl_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(...) \
-    frame1->init_pool_size(__VA_ARGS__); \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Frames must be different when the first is set with " #__VA_ARGS__, \
-        *frame1 != *frame2 && !(*frame1 == *frame2) \
-    ); \
-    frame2->init_pool_size(__VA_ARGS__); \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Frames must be equal when they are both set with " #__VA_ARGS__, \
-        *frame1 == *frame2 && !(*frame1 != *frame2) \
-    );
+            frame1->init_pool_size(__VA_ARGS__); \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Frames must be different when the first is set with " #__VA_ARGS__, \
+                *frame1 != *frame2 && !(*frame1 == *frame2) \
+            ); \
+            frame2->init_pool_size(__VA_ARGS__); \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Frames must be equal when they are both set with " #__VA_ARGS__, \
+                *frame1 == *frame2 && !(*frame1 != *frame2) \
+            );
 
     TEST(1, 1, core::type::UINT8, data::frame_tl::pixel_format::rgba);
     TEST(1, 2, core::type::UINT8, data::frame_tl::pixel_format::rgba);

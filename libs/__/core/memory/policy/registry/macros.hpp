@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,6 @@ namespace sight::core::memory::policy::registry
 {
 
 #define SIGHT_REGISTER_MEMORY_POLICY(classname) \
-    static core::memory::policy::base::registry<classname> s__factory__record__ ## __LINE__;
+        static core::memory::policy::base::registry<classname> s__factory__record__ ## __LINE__;
 
 } // namespace sight::core::memory::policy::registry

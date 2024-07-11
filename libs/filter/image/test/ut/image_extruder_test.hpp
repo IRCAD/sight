@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,10 @@ private:
 
     const core::type m_type {core::type::INT8};
 
-    const enum data::image::pixel_format m_format {data::image::pixel_format::gray_scale};
+    const enum data::image::pixel_format m_format
+    {
+        data::image::pixel_format::gray_scale
+    };
     const data::image::size_t m_size {8, 16, 24};
     const data::image::origin_t m_origin {0.F, 0.F, 0.F};
     const data::image::spacing_t m_spacing {1.F, 1.F, 1.F};

@@ -604,7 +604,10 @@ private:
     std::size_t m_stride {1};
 
     //! image format
-    enum pixel_format m_pixel_format {pixel_format::undefined};
+    enum pixel_format m_pixel_format
+    {
+        pixel_format::undefined
+    };
 
     //! image buffer
     array::sptr m_data_array;

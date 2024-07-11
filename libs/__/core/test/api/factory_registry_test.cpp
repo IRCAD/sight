@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -384,7 +384,7 @@ void factory_registry_test::thread_safety_test()
         CPPUNIT_ASSERT_EQUAL(std::size_t(use_factory_thread::NB_OBJECTS), uft->m_objects.size());
     }
 
-    CPPUNIT_ASSERT_EQUAL(nb_thread * use_factory_thread::NB_OBJECTS* 2, object_test::s_counter);
+    CPPUNIT_ASSERT_EQUAL(nb_thread * use_factory_thread::NB_OBJECTS * 2, object_test::s_counter);
     CPPUNIT_ASSERT_EQUAL(
         std::size_t(nb_thread * populate_registry_thread::NB_REGISTRY_ITEMS + 2),
         object_test_factory.get_factory_keys().size()

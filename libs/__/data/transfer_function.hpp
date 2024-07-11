@@ -171,7 +171,10 @@ public:
 private:
 
     /// Defines the current interpolation mode.
-    enum interpolation_mode m_interpolation_mode {interpolation_mode::linear};
+    enum interpolation_mode m_interpolation_mode
+    {
+        interpolation_mode::linear
+    };
 
     /**
      *  @brief Defines interpolation mode on extremities.

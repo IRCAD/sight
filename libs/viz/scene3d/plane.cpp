@@ -49,7 +49,7 @@ plane::plane(
     bool _display_other_planes,
     float _entity_opacity
 ) :
-    m_border({.shape = nullptr, .material = nullptr, .enabled = _display_border}),
+    m_border({.shape       = nullptr, .material = nullptr, .enabled = _display_border}),
     m_slices_cross({.shape = nullptr, .material = nullptr, .enabled = _display_other_planes}),
     m_filtering(_filtering),
     m_texture(std::move(_tex)),

@@ -515,7 +515,7 @@ public:
     static const key_t OUTPUT;
 
     SIGHT_DECLARE_SERVICE(test_service_with_data, service::base);
-    test_service_with_data() noexcept           = default;
+    test_service_with_data() noexcept = default;
     ~test_service_with_data() noexcept override = default;
 
     //------------------------------------------------------------------------------

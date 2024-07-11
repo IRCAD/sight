@@ -105,7 +105,10 @@ public:
 private:
 
     vec2d_t m_coord {};
-    enum type m_type {no_t};
+    enum type m_type
+    {
+        no_t
+    };
     button m_button {no_button};
     modifier m_modifier {no_modifier};
     vec2d_t m_size {};

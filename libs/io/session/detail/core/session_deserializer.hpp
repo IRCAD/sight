@@ -65,7 +65,8 @@ public:
         const std::filesystem::path& _archive_path,
         io::zip::archive::archive_format _archive_format                    = io::zip::archive::archive_format::DEFAULT,
         const core::crypto::secure_string& _password                        = "",
-        core::crypto::password_keeper::encryption_policy _encryption_policy = core::crypto::password_keeper::encryption_policy::password
+        core::crypto::password_keeper::encryption_policy _encryption_policy = core::crypto::password_keeper::
+        encryption_policy::password
     ) const;
 
     /// Set a deserialization function for an object

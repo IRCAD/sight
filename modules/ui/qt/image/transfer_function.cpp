@@ -315,7 +315,7 @@ bool transfer_function::has_preset_name(const sight::data::composite& _presets, 
 std::string transfer_function::create_preset_name(
     const sight::data::composite& _presets,
     const std::string& _basename
-) const
+)
 {
     bool has_transfer_function_name = true;
     std::string new_name            = _basename;
@@ -325,7 +325,10 @@ std::string transfer_function::create_preset_name(
         std::stringstream tmp_str;
         tmp_str << _basename << "_" << cpt;
         new_name                   = tmp_str.str();
-        has_transfer_function_name = this->has_preset_name(_presets, new_name);
+        has_transfer_function_name = sight::module::ui::qt::image::transfer_function::has_preset_name(
+            _presets,
+            new_name
+        );
         cpt++;
     }
 
@@ -357,7 +360,7 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
             // Add the default TF if it not exists.
             const std::string& default_tf_name = data::transfer_function::DEFAULT_TF_NAME;
 
-            if(!this->has_preset_name(presets, default_tf_name))
+            if(!sight::module::ui::qt::image::transfer_function::has_preset_name(presets, default_tf_name))
             {
                 const auto image = m_image.lock();
                 if(image)
@@ -411,9 +414,17 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
                             {
                                 const data::transfer_function::sptr new_tf =
                                     data::object::copy<data::transfer_function>(tf);
-                                if(this->has_preset_name(presets, new_tf->name()))
+                                if(sight::module::ui::qt::image::transfer_function::has_preset_name(
+                                       presets,
+                                       new_tf->name()
+                                ))
                                 {
-                                    new_tf->set_name(this->create_preset_name(presets, new_tf->name()));
+                                    new_tf->set_name(
+                                        sight::module::ui::qt::image::transfer_function::create_preset_name(
+                                            presets,
+                                            new_tf->name()
+                                        )
+                                    );
                                 }
 
                                 presets[new_tf->name()] = new_tf;
@@ -559,7 +570,13 @@ void transfer_function::delete_preset()
 
             presets.erase(selected_tf_preset_key);
 
-            m_preset_combo_box->removeItem(m_preset_combo_box->findText(QString::fromStdString(selected_tf_preset_key)));
+            m_preset_combo_box->removeItem(
+                m_preset_combo_box->findText(
+                    QString::fromStdString(
+                        selected_tf_preset_key
+                    )
+                )
+            );
         }
 
         // Set the current composite
@@ -590,7 +607,7 @@ void transfer_function::create_preset()
             sight::data::composite& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
 
             // Gets TF presets.
-            if(!this->has_preset_name(presets, newName))
+            if(!sight::module::ui::qt::image::transfer_function::has_preset_name(presets, newName))
             {
                 // Create the new composite.
                 const auto image = m_image.lock();
@@ -651,7 +668,7 @@ void transfer_function::copy_preset()
             const auto opt_presets          = m_opt_presets.lock();
             sight::data::composite& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
             // Gets TF presets.
-            if(this->has_preset_name(presets, newName))
+            if(sight::module::ui::qt::image::transfer_function::has_preset_name(presets, newName))
             {
                 sight::ui::dialog::message message_box;
                 message_box.set_title("Error");
@@ -740,7 +757,7 @@ void transfer_function::rename_preset()
             const auto opt_presets          = m_opt_presets.lock();
             sight::data::composite& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
             // Gets TF presets.
-            if(!this->has_preset_name(presets, newName))
+            if(!sight::module::ui::qt::image::transfer_function::has_preset_name(presets, newName))
             {
                 auto tf = std::dynamic_pointer_cast<data::transfer_function>(presets[old_name]);
 
@@ -803,9 +820,9 @@ void transfer_function::import_preset()
 
             const auto opt_presets          = m_opt_presets.lock();
             sight::data::composite& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
-            if(this->has_preset_name(presets, preset_name))
+            if(sight::module::ui::qt::image::transfer_function::has_preset_name(presets, preset_name))
             {
-                preset_name = this->create_preset_name(presets, preset_name);
+                preset_name = sight::module::ui::qt::image::transfer_function::create_preset_name(presets, preset_name);
             }
 
             const auto scoped_emitter = presets.scoped_emit();

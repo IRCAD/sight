@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -354,7 +354,7 @@ public:
     static const key_t OUTPUT;
 
     SIGHT_DECLARE_SERVICE(test_service_with_data, service::base);
-    test_service_with_data() noexcept           = default;
+    test_service_with_data() noexcept = default;
     ~test_service_with_data() noexcept override = default;
 
     //------------------------------------------------------------------------------

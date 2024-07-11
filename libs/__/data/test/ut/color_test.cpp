@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -142,16 +142,16 @@ void color_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(...) \
-    color1->set_rgba(__VA_ARGS__); \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "The colors should be different when the first is set with " #__VA_ARGS__, \
-        *color1 != *color2 && !(*color1 == *color2) \
-    ); \
-    color2->set_rgba(color1->rgba()); \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "The colors should be equal when both are set with " #__VA_ARGS__, \
-        *color1 == *color2 && !(*color1 != *color2) \
-    );
+            color1->set_rgba(__VA_ARGS__); \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "The colors should be different when the first is set with " #__VA_ARGS__, \
+                *color1 != *color2 && !(*color1 == *color2) \
+            ); \
+            color2->set_rgba(color1->rgba()); \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "The colors should be equal when both are set with " #__VA_ARGS__, \
+                *color1 == *color2 && !(*color1 != *color2) \
+            );
 
     TEST(1, 0, 0, 0);
     TEST(0, 1, 0, 0);

@@ -70,7 +70,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(action, sight::ui::action);
 
-    action() noexcept        = default;
+    action() noexcept = default;
     ~action() noexcept final = default;
 
 protected:

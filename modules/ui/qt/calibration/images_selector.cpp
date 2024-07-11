@@ -181,7 +181,10 @@ void images_selector::add(core::clock::type _timestamp)
     size[1] = frame_tl->get_height();
     size[2] = 1;
 
-    enum data::image::pixel_format format {data::image::pixel_format::undefined};
+    enum data::image::pixel_format format
+    {
+        data::image::pixel_format::undefined
+    };
     // FIXME since frameTL does not have format information, we assume that image are Grayscale, RGB or RGBA according
     // to the number of components.
     switch(frame_tl->num_components())

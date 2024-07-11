@@ -232,8 +232,8 @@ transfer_function::piece_view* transfer_function::create_piece_view(
     const double point_height = (viewport_height * point_size) / scene_height;
 
     // Creates the piece view and fill basic informations.
-    auto* piece_view = new struct piece_view () ;
-        piece_view->m_tf = _tf;
+    auto* piece_view = new struct piece_view ();
+    piece_view->m_tf      = _tf;
     piece_view->m_z_index = _z_index;
 
     // Fills piece view point with color points.
@@ -1649,7 +1649,8 @@ void transfer_function::toggle_linear_current_tf(bool _linear)
     auto tf_piece      = *std::find_if(pieces.begin(), pieces.end(), [&](const auto& _p){return _p == m_current_tf;});
 
     tf_piece->set_interpolation_mode(
-        _linear ? data::transfer_function::interpolation_mode::linear : data::transfer_function::interpolation_mode::nearest
+        _linear ? data::transfer_function::interpolation_mode::linear
+                : data::transfer_function::interpolation_mode::nearest
     );
     tf->fit_window();
     points_modified(*tf);

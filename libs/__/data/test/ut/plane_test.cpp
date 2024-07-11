@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -39,16 +39,16 @@ void plane_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    plane1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Planes should be different when " #op " of the first plane is different", \
-        *plane1 != *plane2 && !(*plane1 == *plane2) \
-    ); \
-    plane2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Planes should be equal when " #op " of both plane are equal", \
-        *plane1 == *plane2 && !(*plane1 != *plane2) \
-    );
+            plane1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Planes should be different when " #op " of the first plane is different", \
+                *plane1 != *plane2 && !(*plane1 == *plane2) \
+            ); \
+            plane2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Planes should be equal when " #op " of both plane are equal", \
+                *plane1 == *plane2 && !(*plane1 != *plane2) \
+            );
 
     TEST(
         set_points(

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,6 @@ data::camera::sptr init_camera()
     const std::size_t width                           = 800;
     const std::size_t height                          = 800;
     const data::camera::source_t camerasource         = data::camera::device;
-    const std::string cameraid                        = "/dev/video0";
     const float maximumframerate                      = 30.F;
     const enum data::camera::pixel_format pixelformat = data::camera::rgba32;
     const std::string videofile                       = "/tmp/video.mp4";
@@ -115,7 +114,6 @@ void camera_test::param_test()
     const std::size_t width                           = 800;
     const std::size_t height                          = 800;
     const data::camera::source_t camerasource         = data::camera::device;
-    const std::string cameraid                        = "/dev/video0";
     const float maximumframerate                      = 30.F;
     const enum data::camera::pixel_format pixelformat = data::camera::rgba32;
     const std::string videofile                       = "/tmp/video.mp4";
@@ -229,16 +227,16 @@ void camera_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    camera1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "The cameras must be different when applying " #op " to the first", \
-        *camera1 != *camera2 && !(*camera1 == *camera2) \
-    ); \
-    camera2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "The cameras must be equal when applying " #op " to both", \
-        *camera1 == *camera2 && !(*camera1 != *camera2) \
-    );
+            camera1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "The cameras must be different when applying " #op " to the first", \
+                *camera1 != *camera2 && !(*camera1 == *camera2) \
+            ); \
+            camera2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "The cameras must be equal when applying " #op " to both", \
+                *camera1 == *camera2 && !(*camera1 != *camera2) \
+            );
 
     TEST(set_cx(1));
     TEST(set_cy(2));

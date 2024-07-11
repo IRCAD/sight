@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -156,7 +156,7 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
             {
                 if(point_colors->GetNumberOfComponents() == 3)
                 {
-                    auto* const color = point_colors->GetPointer(i++ *3);
+                    auto* const color = point_colors->GetPointer(i++ * 3);
                     c.r = color[0];
                     c.g = color[1];
                     c.b = color[2];
@@ -164,7 +164,7 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
                 }
                 else
                 {
-                    auto* const color = point_colors->GetPointer(i++ *4);
+                    auto* const color = point_colors->GetPointer(i++ * 4);
                     c.r = color[0];
                     c.g = color[1];
                     c.b = color[2];
@@ -178,7 +178,7 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
             vtkIdType i = 0;
             for(auto& n : _mesh.range<data::iterator::point::nxyz>())
             {
-                auto* const normal = point_normals->GetPointer(i++ *3);
+                auto* const normal = point_normals->GetPointer(i++ * 3);
                 n.nx = normal[0];
                 n.ny = normal[1];
                 n.nz = normal[2];
@@ -190,7 +190,7 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
             vtkIdType i = 0;
             for(auto& uv : _mesh.range<data::iterator::point::uv>())
             {
-                auto* const tex_coords = point_tex_coords->GetPointer(i++ *2);
+                auto* const tex_coords = point_tex_coords->GetPointer(i++ * 2);
                 uv.u = tex_coords[0];
                 uv.v = tex_coords[1];
             }
@@ -300,7 +300,7 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
             {
                 if(cell_colors->GetNumberOfComponents() == 3)
                 {
-                    auto* const color = cell_colors->GetPointer(i++ *3);
+                    auto* const color = cell_colors->GetPointer(i++ * 3);
                     c.r = color[0];
                     c.g = color[1];
                     c.b = color[2];
@@ -308,7 +308,7 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
                 }
                 else
                 {
-                    auto* const color = cell_colors->GetPointer(i++ *4);
+                    auto* const color = cell_colors->GetPointer(i++ * 4);
                     c.r = color[0];
                     c.g = color[1];
                     c.b = color[2];
@@ -322,7 +322,7 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
             vtkIdType i = 0;
             for(auto& n : _mesh.range<data::iterator::cell::nxyz>())
             {
-                auto* const normal = cell_normals->GetPointer(i++ *3);
+                auto* const normal = cell_normals->GetPointer(i++ * 3);
                 n.nx = normal[0];
                 n.ny = normal[1];
                 n.nz = normal[2];
@@ -334,7 +334,7 @@ void from_vtk_point_set(vtkPointSet& _dataset, data::mesh& _mesh)
             vtkIdType i = 0;
             for(auto& uv : _mesh.range<data::iterator::cell::uv>())
             {
-                auto* const tex_coords = cell_tex_coords->GetPointer(i++ *2);
+                auto* const tex_coords = cell_tex_coords->GetPointer(i++ * 2);
                 uv.u = tex_coords[0];
                 uv.v = tex_coords[1];
             }

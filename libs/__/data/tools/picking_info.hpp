@@ -53,7 +53,7 @@ struct  picking_info
         mouse_middle_down,
         mouse_wheelbackward,
         mouse_move,
-        key_press,
+        key_press
     };
 
     /// Position clicked in world coordinates

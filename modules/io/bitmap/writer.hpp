@@ -93,7 +93,7 @@ public:
 
     /// Trivial constructor / destructor
     /// @{
-    writer() noexcept           = default;
+    writer() noexcept = default;
     ~writer() noexcept override = default;
     /// @}
 

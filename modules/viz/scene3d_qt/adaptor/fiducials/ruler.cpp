@@ -1190,7 +1190,8 @@ void ruler::update_image_distance_field(data::point_list::sptr _pl)
             fiducial.fiducial_uid         = _pl->get_id();
             std::array<double, 3> first_point  = _pl->get_points().front()->get_coord();
             std::array<double, 3> second_point = _pl->get_points().back()->get_coord();
-            fiducial.contour_data = {
+            fiducial.contour_data =
+            {
                 {.x = first_point[0], .y = first_point[1], .z = first_point[2]},
                 {.x = second_point[0], .y = first_point[1], .z = first_point[2]}
             };

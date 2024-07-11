@@ -65,7 +65,8 @@ public:
         sight::data::object::csptr _object,
         io::zip::archive::archive_format _archive_format                    = io::zip::archive::archive_format::DEFAULT,
         const core::crypto::secure_string& _password                        = "",
-        core::crypto::password_keeper::encryption_policy _encryption_policy = core::crypto::password_keeper::encryption_policy::password
+        core::crypto::password_keeper::encryption_policy _encryption_policy = core::crypto::password_keeper::
+        encryption_policy::password
     ) const;
 
     /// Set a serialization function for an object

@@ -85,7 +85,9 @@ public:
         }
         catch(...)
         {
-            throw runtime_exception("Unexpected exception caught while creating an core::runtime::executable instance.");
+            throw runtime_exception(
+                      "Unexpected exception caught while creating an core::runtime::executable instance."
+            );
         }
         return result;
     }

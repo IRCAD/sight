@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -39,16 +39,16 @@ void line_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(fieldName, ...) \
-    line1->set_ ## fieldName(__VA_ARGS__); \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Lines should be different when " #fieldName " is modified", \
-        *line1 != *line2 && !(*line1 == *line2) \
-    ); \
-    line1->set_ ## fieldName(line2->get_ ## fieldName()); \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Lines should be equal when " #fieldName " is copied", \
-        *line1 == *line2 && !(*line1 != *line2) \
-    );
+            line1->set_ ## fieldName(__VA_ARGS__); \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Lines should be different when " #fieldName " is modified", \
+                *line1 != *line2 && !(*line1 == *line2) \
+            ); \
+            line1->set_ ## fieldName(line2->get_ ## fieldName()); \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Lines should be equal when " #fieldName " is copied", \
+                *line1 == *line2 && !(*line1 != *line2) \
+            );
 
     TEST(position, std::make_shared<data::point>(1., 0., 0.));
     TEST(position, std::make_shared<data::point>(0., 1., 0.));

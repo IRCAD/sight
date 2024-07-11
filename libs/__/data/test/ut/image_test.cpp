@@ -236,7 +236,7 @@ void image_test::test_set_get_pixel()
     for( ; iter2 != iter_end ; ++iter2, ++const_iter2)
     {
         CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count * 2), *iter2);
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ *2), *const_iter2);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::int16_t>(count++ * 2), *const_iter2);
     }
 
     data::image::csptr img2 = data::image::copy(img);
@@ -378,7 +378,7 @@ void image_test::test_set_get_pixel_rgba()
     for( ; iter2 != iter_end ; ++iter2, ++const_iter2)
     {
         CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(count * 2), *iter2);
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(count++ *2), *const_iter2);
+        CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(count++ * 2), *const_iter2);
     }
 
     data::image::csptr img2 = data::image::copy(img);
@@ -946,16 +946,16 @@ void image_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    image1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Images should be different when applying " #op " to the first one", \
-        *image1 != *image2 && !(*image1 == *image2) \
-    ); \
-    image2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Images should be equal when applying " #op " to both", \
-        *image1 == *image2 && !(*image1 != *image2) \
-    );
+            image1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Images should be different when applying " #op " to the first one", \
+                *image1 != *image2 && !(*image1 == *image2) \
+            ); \
+            image2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Images should be equal when applying " #op " to both", \
+                *image1 == *image2 && !(*image1 != *image2) \
+            );
 
     TEST(set_spacing({1, 2, 3}));
     TEST(set_origin({4, 5, 6}));

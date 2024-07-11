@@ -81,7 +81,7 @@ struct SIGHT_CORE_CLASS_API slot_call<R(A ...)>: slot_run<void(A ...)>
      *
      * @throws NoWorker if given worker is not valid.
      */
-    virtual shared_future_type async_call(const SPTR(core::thread::worker)& _worker, A ... _args) const;
+    virtual shared_future_type async_call(const SPTR(core::thread::worker) & _worker, A ... _args) const;
 
     /**
      * @brief Call the Slot with the given parameters asynchronously.

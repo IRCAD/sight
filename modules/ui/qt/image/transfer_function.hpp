@@ -136,7 +136,7 @@ private:
      * @param _basename the name of the TF preset to create.
      * @return The new name of the TF preset.
      */
-    std::string create_preset_name(const sight::data::composite& _presets, const std::string& _basename) const;
+    static std::string create_preset_name(const sight::data::composite& _presets, const std::string& _basename);
 
     /**
      * @brief Initializes the composite.

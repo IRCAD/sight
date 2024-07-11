@@ -684,7 +684,11 @@ void landmarks::on_selection_changed(QTreeWidgetItem* _current, QTreeWidgetItem*
                         index < num_points(li_lock, group_name)
                     );
 
-                    const core::com::connection::blocker block(select_sig->get_connection(this->slot(SELECT_POINT_SLOT)));
+                    const core::com::connection::blocker block(select_sig->get_connection(
+                                                                   this->slot(
+                                                                       SELECT_POINT_SLOT
+                                                                   )
+                    ));
                     select_sig->async_emit(group_name, index);
                 }
                 else

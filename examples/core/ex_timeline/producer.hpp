@@ -65,7 +65,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(producer, sight::service::base);
 
-    SIGHT_EX_TIMELINE_API producer() noexcept           = default;
+    SIGHT_EX_TIMELINE_API producer() noexcept = default;
     SIGHT_EX_TIMELINE_API ~producer() noexcept override = default;
 
 protected:

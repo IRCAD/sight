@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -67,10 +67,7 @@ void test::open_file(
         // The Show/hide volume button becomes enabled when the image effectively shows up.
         helper::button::wait_for_clickability(
             _tester,
-            helper::selector("toolBarView/Show/hide volume").with_timeout(
-                sight::ui::test::tester::DEFAULT_TIMEOUT*
-                5
-            )
+            helper::selector("toolBarView/Show/hide volume").with_timeout(sight::ui::test::tester::DEFAULT_TIMEOUT * 5)
         );
     }
     else if(_format == "VTK")

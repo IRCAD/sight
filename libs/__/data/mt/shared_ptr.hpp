@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,12 +86,12 @@ public:
     }
 
     /// Default constructors, destructor and assignment operators
-    shared_ptr()                  = default;
-    shared_ptr(const shared_ptr&) = default;
-    shared_ptr(shared_ptr&&) noexcept = default;
-    shared_ptr& operator=(const shared_ptr&) = default;
+    shared_ptr()                                 = default;
+    shared_ptr(const shared_ptr&)                = default;
+    shared_ptr(shared_ptr&&) noexcept            = default;
+    shared_ptr& operator=(const shared_ptr&)     = default;
     shared_ptr& operator=(shared_ptr&&) noexcept = default;
-    ~shared_ptr() = default;
+    ~shared_ptr()                                = default;
 
     /// Returns the locked_ptr from the shared pointer
     [[nodiscard]] locked_ptr<DATATYPE> lock() const noexcept;

@@ -250,10 +250,10 @@ void archive_test::archive_format_to_string_test()
 {
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(name) \
-    CPPUNIT_ASSERT_EQUAL( \
-        boost::to_lower_copy(std::string(#name)), \
-        std::string(archive::archive_format_to_string(archive::archive_format::name)) \
-    )
+            CPPUNIT_ASSERT_EQUAL( \
+                boost::to_lower_copy(std::string(#name)), \
+                std::string(archive::archive_format_to_string(archive::archive_format::name)) \
+            )
     TEST(filesystem);
     TEST(compatible);
     TEST(optimized);
@@ -266,10 +266,10 @@ void archive_test::string_to_archive_format()
 {
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(name) \
-    CPPUNIT_ASSERT_EQUAL( \
-        archive::archive_format::name, \
-        archive::string_to_archive_format(boost::to_lower_copy(std::string(#name))) \
-    )
+            CPPUNIT_ASSERT_EQUAL( \
+                archive::archive_format::name, \
+                archive::string_to_archive_format(boost::to_lower_copy(std::string(#name))) \
+            )
     TEST(filesystem);
     TEST(compatible);
     TEST(optimized);

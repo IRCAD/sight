@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -114,10 +114,9 @@ void service_connection::connect_start_slot(const sight::service::base& _service
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first + "' can not be connected to the "
-                                                                               "channel '" + proxy_cfg.second.m_channel + "': " + std::string(
-                        e.what()
-                                                                               )
+                    "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first
+                    + "' can not be connected to the " "channel '" + proxy_cfg.second.m_channel + "': "
+                    + std::string(e.what())
                 );
             }
         }
@@ -145,10 +144,9 @@ void service_connection::disconnect(const sight::service::base& _service)
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Signal '" + signal_cfg.second + "' from '" + signal_cfg.first + "' can not be disconnected "
-                                                                                     "from the channel '" + proxy_cfg.second.m_channel + "': " + std::string(
-                        e.what()
-                                                                                     )
+                    "Signal '" + signal_cfg.second + "' from '" + signal_cfg.first
+                    + "' can not be disconnected " "from the channel '" + proxy_cfg.second.m_channel + "': "
+                    + std::string(e.what())
                 );
             }
         }
@@ -171,10 +169,9 @@ void service_connection::disconnect(const sight::service::base& _service)
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first + "' can not be disconnected from the "
-                                                                               "channel '" + proxy_cfg.second.m_channel + "': " + std::string(
-                        e.what()
-                                                                               )
+                    "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first
+                    + "' can not be disconnected from the " "channel '" + proxy_cfg.second.m_channel + "': "
+                    + std::string(e.what())
                 );
             }
         }
@@ -206,10 +203,9 @@ void service_connection::disconnect_start_slot(const sight::service::base& _serv
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first + "' can not be disconnected from the "
-                                                                               "channel '" + proxy_cfg.second.m_channel + "': " + std::string(
-                        e.what()
-                                                                               )
+                    "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first
+                    + "' can not be disconnected from the " "channel '" + proxy_cfg.second.m_channel + "': "
+                    + std::string(e.what())
                 );
             }
         }

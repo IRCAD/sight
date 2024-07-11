@@ -231,16 +231,16 @@ void matrix4_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(...) \
-    *matrix1 = __VA_ARGS__; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Matrices should be different when the coefficients of the first matrix are set to " #__VA_ARGS__, \
-        *matrix1 != *matrix2 && !(*matrix1 == *matrix2) \
-    ); \
-    *matrix2 = __VA_ARGS__; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Matrices should be equal when coefficients of both matrices are set to " #__VA_ARGS__, \
-        *matrix1 == *matrix2 && !(*matrix1 != *matrix2) \
-    );
+            *matrix1 = __VA_ARGS__; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Matrices should be different when the coefficients of the first matrix are set to " #__VA_ARGS__, \
+                *matrix1 != *matrix2 && !(*matrix1 == *matrix2) \
+            ); \
+            *matrix2 = __VA_ARGS__; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Matrices should be equal when coefficients of both matrices are set to " #__VA_ARGS__, \
+                *matrix1 == *matrix2 && !(*matrix1 != *matrix2) \
+            );
 
     TEST({1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});
     TEST({0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0});

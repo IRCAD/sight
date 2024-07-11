@@ -90,7 +90,10 @@ protected:
     std::string_view m_key;
     bool m_auto_connect {false};
     bool m_optional {false};
-    enum access m_access {access::in};
+    enum access m_access
+    {
+        access::in
+    };
 };
 
 //------------------------------------------------------------------------------
@@ -190,8 +193,8 @@ private:
         const sight::data::object::sptr& _obj,
         std::optional<bool> _auto_connect,
         std::optional<bool> _optional,
-        std::optional<std::size_t> /*index*/ = std::nullopt,
-        bool _signal                         = false
+        std::optional<std::size_t>/*index*/ = std::nullopt,
+        bool _signal                        = false
     ) final
     {
         if constexpr(ACCESS == data::access::out)

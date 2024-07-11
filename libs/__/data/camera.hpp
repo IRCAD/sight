@@ -390,7 +390,10 @@ protected:
     float m_max_frame_rate {30.F};
 
     //! Color format of a video frame.
-    enum pixel_format m_pixel_format {invalid};
+    enum pixel_format m_pixel_format
+    {
+        invalid
+    };
 
     //! Video source file
     std::filesystem::path m_video_file;

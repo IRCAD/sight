@@ -64,7 +64,8 @@ public:
     static inline core::crypto::secure_string pickle(
         const core::crypto::secure_string& _password,
         const core::crypto::secure_string& _salt,
-        core::crypto::password_keeper::encryption_policy _policy = core::crypto::password_keeper::encryption_policy::password
+        core::crypto::password_keeper::encryption_policy _policy = core::crypto::password_keeper::encryption_policy::
+        password
     );
 
 protected:

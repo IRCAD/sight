@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace sight::activity::builder::registry
 {
 
 #define SIGHT_REGISTER_ACTIVITY_BUILDER(BuilderClassname, BuilderFunctorKey) \
-    static sight::activity::builder::base::registry<BuilderClassname> \
-    BOOST_PP_CAT(s__factory__record__, __LINE__)(BuilderFunctorKey);
+        static sight::activity::builder::base::registry<BuilderClassname> \
+        BOOST_PP_CAT(s__factory__record__, __LINE__)(BuilderFunctorKey);
 
 } // namespace sight::activity::builder::registry

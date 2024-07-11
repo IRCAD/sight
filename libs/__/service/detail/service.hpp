@@ -105,7 +105,10 @@ public:
     /**
      * @brief Defines if the service is updating.
      */
-    enum base::updating_status m_updating_state {base::updating_status::notupdating};
+    enum base::updating_status m_updating_state
+    {
+        base::updating_status::notupdating
+    };
 
     /**
      * @brief Defines if the service is configured or not.

@@ -2084,7 +2084,7 @@ void series::set_processing_function(const std::string& _processing_function)
 
 std::optional<dicom::position_measuring_device_used_t> series::get_position_measuring_device_used() const noexcept
 {
-    if(const auto& value = m_pimpl->get_value<gdcm::Keywords::PositionMeasuringDeviceUsed>(); value&& !value->empty())
+    if(const auto& value = m_pimpl->get_value<gdcm::Keywords::PositionMeasuringDeviceUsed>(); value && !value->empty())
     {
         return dicom::to_position_measuring_device_used(*value);
     }

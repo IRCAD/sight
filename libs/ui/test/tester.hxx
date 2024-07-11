@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -87,7 +87,8 @@ void tester::doubt(const std::string& _result_description, std::function<bool(T)
     if(!ok)
     {
         fail(
-            "The interaction on the component \"" + m_component_description + "\" didn't yield the result \"" + _result_description
+            "The interaction on the component \"" + m_component_description + "\" didn't yield the result \""
+            + _result_description
             + '"'
         );
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -66,7 +66,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void add_custom_button(const std::string& /*label*/, std::function<void()> /*clickedFn*/) override
+    void add_custom_button(const std::string& /*label*/, std::function<void()>/*clickedFn*/) override
     {
     }
 

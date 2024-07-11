@@ -42,11 +42,11 @@ namespace sight::viz::scene3d::compositor
  * Manages principal compositor for a layer's 3D scene
  */
 class SIGHT_VIZ_SCENE3D_CLASS_API core //TODO : Manage occlusion query
-    //    The current commented lines in this class are standing for occlusion query
-    // purposes
-    //public Ogre::FrameListener,
-    //public Ogre::RenderTargetListener,
-    //public Ogre::RenderObjectListener
+//    The current commented lines in this class are standing for occlusion query
+// purposes
+//public Ogre::FrameListener,
+//public Ogre::RenderTargetListener,
+//public Ogre::RenderObjectListener
 {
 public:
 

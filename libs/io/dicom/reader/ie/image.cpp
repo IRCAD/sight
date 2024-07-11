@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -358,7 +358,10 @@ void image::read_image_pixel_module()
     }
 
     // TODO_FB: This should probably be finer-tuned, but we would need to add new pixel formats before
-    enum sight::data::image::pixel_format format {sight::data::image::pixel_format::undefined};
+    enum sight::data::image::pixel_format format
+    {
+        sight::data::image::pixel_format::undefined
+    };
     if(photometric_interpretation == "MONOCHROME2")
     {
         format = data::image::pixel_format::gray_scale;

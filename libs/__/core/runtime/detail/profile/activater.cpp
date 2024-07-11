@@ -94,7 +94,8 @@ void activater::apply()
         else
         {
             SIGHT_ERROR(
-                "Unable to disable Extension Point " << m_disable_extension_point << " defined in the Module " << m_identifier
+                "Unable to disable Extension Point " << m_disable_extension_point << " defined in the Module "
+                << m_identifier
                 << ". Not found."
             );
         }

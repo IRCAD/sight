@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,38 +34,38 @@
 
 // Wait at worst 1s for a given condition
 #define SIGHT_TEST_WAIT(cond, ...) \
-    sight::core::time_stamp BOOST_PP_CAT(timeStamp, __LINE__); \
-    BOOST_PP_CAT( \
-        timeStamp, \
-        __LINE__ \
-    ).set_life_period( \
-        BOOST_PP_IF( \
-            BOOST_PP_IS_EMPTY(__VA_ARGS__), \
-            2000, \
-            BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__) \
-        ) \
-    ); \
-    BOOST_PP_CAT(timeStamp, __LINE__).modified(); \
-    while(!(cond) && !BOOST_PP_CAT(timeStamp, __LINE__).period_expired()) \
-    { \
-        std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
-    }
+        sight::core::time_stamp BOOST_PP_CAT(timeStamp, __LINE__); \
+        BOOST_PP_CAT( \
+            timeStamp, \
+            __LINE__ \
+        ).set_life_period( \
+            BOOST_PP_IF( \
+                BOOST_PP_IS_EMPTY(__VA_ARGS__), \
+                2000, \
+                BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__) \
+            ) \
+        ); \
+        BOOST_PP_CAT(timeStamp, __LINE__).modified(); \
+        while(!(cond) && !BOOST_PP_CAT(timeStamp, __LINE__).period_expired()) \
+        { \
+            std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
+        }
 
 #define SIGHT_TEST_FAIL_WAIT(cond, ...) \
-    sight::core::time_stamp BOOST_PP_CAT(timeStamp, __LINE__); \
-    BOOST_PP_CAT( \
-        timeStamp, \
-        __LINE__ \
-    ).set_life_period( \
-        BOOST_PP_IF( \
-            BOOST_PP_IS_EMPTY(__VA_ARGS__), \
-            10000, \
-            BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__) \
-        ) \
-    ); \
-    BOOST_PP_CAT(timeStamp, __LINE__).modified(); \
-    while(!(cond) && !BOOST_PP_CAT(timeStamp, __LINE__).period_expired()) \
-    { \
-        std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
-    } \
-    CPPUNIT_ASSERT(cond);
+        sight::core::time_stamp BOOST_PP_CAT(timeStamp, __LINE__); \
+        BOOST_PP_CAT( \
+            timeStamp, \
+            __LINE__ \
+        ).set_life_period( \
+            BOOST_PP_IF( \
+                BOOST_PP_IS_EMPTY(__VA_ARGS__), \
+                10000, \
+                BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__) \
+            ) \
+        ); \
+        BOOST_PP_CAT(timeStamp, __LINE__).modified(); \
+        while(!(cond) && !BOOST_PP_CAT(timeStamp, __LINE__).period_expired()) \
+        { \
+            std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
+        } \
+        CPPUNIT_ASSERT(cond);

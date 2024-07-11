@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -38,7 +38,10 @@ struct SerializerRegister
 };
 
 #define SIGHT_REGISTER_SERIALIZER(dataName, serializer, deserializer) \
-    static const sight::io::session::SerializerRegister<dataName> BOOST_PP_CAT(serializerRegister, __LINE__)(serializer, \
-                                                                                                             deserializer);
+        static const sight::io::session::SerializerRegister<dataName> BOOST_PP_CAT( \
+            serializerRegister, \
+            __LINE__ \
+        )(serializer, \
+          deserializer);
 
 } // namespace sight::io::session

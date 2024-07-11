@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,27 +117,27 @@ void fiducials_series_test::simple_setter_getter_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define COMPARE_GETSETTERS(attribute, before, after, ...) \
-    CPPUNIT_ASSERT_EQUAL(before, fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
-    fiducialsSeries->set_ ## attribute(__VA_ARGS__ __VA_OPT__(, ) after); \
-    CPPUNIT_ASSERT_EQUAL(after, fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
+            CPPUNIT_ASSERT_EQUAL(before, fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
+            fiducialsSeries->set_ ## attribute(__VA_ARGS__ __VA_OPT__( , ) after); \
+            CPPUNIT_ASSERT_EQUAL(after, fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define COMPARE_GETSETTERS_DEMI_OPTIONAL(attribute, before, after, ...) \
-    CPPUNIT_ASSERT(before == fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
-    fiducialsSeries->set_ ## attribute(__VA_ARGS__ __VA_OPT__(, ) * after); \
-    CPPUNIT_ASSERT(after == fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
+            CPPUNIT_ASSERT(before == fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
+            fiducialsSeries->set_ ## attribute(__VA_ARGS__ __VA_OPT__( , ) * after); \
+            CPPUNIT_ASSERT(after == fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define COMPARE_GETSETTERS_ARRAYS(attribute, after, ...) \
-    CPPUNIT_ASSERT(fiducialsSeries->get_ ## attribute(__VA_ARGS__).empty()); \
-    fiducialsSeries->set_ ## attribute(__VA_ARGS__ __VA_OPT__(, ) after); \
-    CPPUNIT_ASSERT(after == fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
+            CPPUNIT_ASSERT(fiducialsSeries->get_ ## attribute(__VA_ARGS__).empty()); \
+            fiducialsSeries->set_ ## attribute(__VA_ARGS__ __VA_OPT__( , ) after); \
+            CPPUNIT_ASSERT(after == fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define COMPARE_GETSETTERS_OPTIONAL(attribute, before, after, ...) \
-    CPPUNIT_ASSERT(before == fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
-    fiducialsSeries->set_ ## attribute(__VA_ARGS__ __VA_OPT__(, ) after); \
-    CPPUNIT_ASSERT(after == fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
+            CPPUNIT_ASSERT(before == fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
+            fiducialsSeries->set_ ## attribute(__VA_ARGS__ __VA_OPT__( , ) after); \
+            CPPUNIT_ASSERT(after == fiducialsSeries->get_ ## attribute(__VA_ARGS__)); \
 
     COMPARE_GETSETTERS(content_date, ""s, "0"s);
     COMPARE_GETSETTERS(content_label, ""s, "1"s);

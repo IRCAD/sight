@@ -31,6 +31,7 @@
 #include <boost/mpl/size.hpp>
 #include <boost/mpl/vector.hpp>
 
+#include <cstdint>
 #include <iterator>
 #include <stdexcept>
 

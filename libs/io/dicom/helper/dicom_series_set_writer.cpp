@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,7 +107,8 @@ void dicom_series_set_writer::write()
                 {
                     m_anonymizer->reset_index();
 
-                    io::dicom::helper::dicom_series_writer::sptr writer = std::make_shared<io::dicom::helper::dicom_series_writer>();
+                    io::dicom::helper::dicom_series_writer::sptr writer =
+                        std::make_shared<io::dicom::helper::dicom_series_writer>();
                     writer->set_object(dicom_series);
                     writer->set_anonymizer(m_anonymizer);
                     writer->set_output_archive(write_archive, nb_series > 1 ? get_sub_path(processed_series++) : "");

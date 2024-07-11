@@ -48,7 +48,7 @@ public:
     static inline const std::string_view MATERIAL_INOUT = "material";
     /** @} */
 
-    SIGHT_VIZ_SCENE3D_CLASS_API material_adaptor() noexcept           = default;
+    SIGHT_VIZ_SCENE3D_CLASS_API material_adaptor() noexcept = default;
     SIGHT_VIZ_SCENE3D_CLASS_API ~material_adaptor() noexcept override = default;
 
     /// Configures the adaptor without using the XML configuration.

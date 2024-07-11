@@ -91,7 +91,7 @@ private:
     enum class mode_t : std::int8_t
     {
         start,
-        update,
+        update
     };
 
     /// Copies the object to the output.

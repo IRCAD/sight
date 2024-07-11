@@ -85,14 +85,14 @@ public:
 
     array_iterator() = default;
     constexpr array_iterator(pointer_t _begin);
-    array_iterator(const array_iterator<T>& _other) = default;
+    array_iterator(const array_iterator<T>& _other)     = default;
     array_iterator(array_iterator<T>&& _other) noexcept = default;
-    ~array_iterator() = default;
+    ~array_iterator()                                   = default;
 
     template<bool isConst = std::is_const_v<T>, typename = typename std::enable_if_t<isConst> >
     constexpr array_iterator(const array_iterator<std::remove_const_t<T> >& _other);
 
-    array_iterator& operator=(const array_iterator& _other) = default;
+    array_iterator& operator=(const array_iterator& _other)     = default;
     array_iterator& operator=(array_iterator&& _other) noexcept = default;
 
     /// Comparison operators

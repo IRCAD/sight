@@ -575,7 +575,8 @@ void parameters::updating()
                         this->signal<signals::changed_signal_t>(signals::PARAMETER_CHANGED_SIG)
                         ->async_emit(data.toStdString(), key);
                         SIGHT_DEBUG(
-                            get_id() << ": [EMIT] " << signals::ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key
+                            get_id() << ": [EMIT] " << signals::ENUM_CHANGED_SIG << "(" << data.toStdString() << ", "
+                            << key
                             << ")"
                         );
                         this->signal<signals::enum_changed_index_signal_t>(signals::ENUM_INDEX_CHANGED_SIG)
@@ -583,7 +584,8 @@ void parameters::updating()
                         this->signal<signals::changed_signal_t>(signals::PARAMETER_CHANGED_SIG)
                         ->async_emit(box->currentIndex(), key);
                         SIGHT_DEBUG(
-                            get_id() << ": [EMIT] " << signals::ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", "
+                            get_id() << ": [EMIT] " << signals::ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex()
+                            << ", "
                             << key << ")"
                         );
                     }
@@ -728,7 +730,8 @@ void parameters::on_change_enum(int _value) const
         this->signal<signals::changed_signal_t>(signals::PARAMETER_CHANGED_SIG)
         ->async_emit(data.toStdString(), key.toStdString());
         SIGHT_DEBUG(
-            get_id() << ": [EMIT] " << signals::ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key.toStdString()
+            get_id() << ": [EMIT] " << signals::ENUM_CHANGED_SIG << "(" << data.toStdString() << ", "
+            << key.toStdString()
             << ")"
         );
         this->signal<signals::enum_changed_index_signal_t>(signals::ENUM_INDEX_CHANGED_SIG)
@@ -963,7 +966,8 @@ void parameters::emit_double_signal(QObject* _widget) const
                     this->signal<signals::changed_signal_t>(signals::PARAMETER_CHANGED_SIG)
                     ->async_emit(values, key.toStdString());
                     SIGHT_DEBUG(
-                        get_id() << ": [EMIT] " << signals::DOUBLE2_CHANGED_SIG << "(" << value1 << ", " << value2 << ", "
+                        get_id() << ": [EMIT] " << signals::DOUBLE2_CHANGED_SIG << "(" << value1 << ", " << value2
+                        << ", "
                         << key.toStdString() << ")"
                     );
                 }
@@ -978,7 +982,8 @@ void parameters::emit_double_signal(QObject* _widget) const
                     this->signal<signals::changed_signal_t>(signals::PARAMETER_CHANGED_SIG)
                     ->async_emit(values, key.toStdString());
                     SIGHT_DEBUG(
-                        get_id() << ": [EMIT] " << signals::DOUBLE3_CHANGED_SIG << "(" << value1 << ", " << value2 << ", "
+                        get_id() << ": [EMIT] " << signals::DOUBLE3_CHANGED_SIG << "(" << value1 << ", " << value2
+                        << ", "
                         << value3 << ", " << key.toStdString() << ")"
                     );
                 }
@@ -1503,7 +1508,10 @@ QPushButton* parameters::create_double_slider_widget(
             slider,
             &QSlider::valueChanged,
             this,
-            [this, value_label, slider]{this->on_double_slider_mapped(value_label, slider);});
+            [value_label, slider]
+            {
+                sight::module::ui::qt::parameters::on_double_slider_mapped(value_label, slider);
+            });
 
         QObject::connect(
             slider,
@@ -1652,7 +1660,7 @@ QPushButton* parameters::create_integer_slider_widget(
             slider,
             &QSlider::valueChanged,
             this,
-            [this, value_label, slider]{this->on_slider_mapped(value_label, slider);});
+            [value_label, slider]{sight::module::ui::qt::parameters::on_slider_mapped(value_label, slider);});
 
         QObject::connect(
             slider,
@@ -2494,7 +2502,7 @@ void parameters::update_enum_range(std::string _options, std::string _key)
         std::vector<std::string> values;
         std::vector<std::string> data;
 
-        this->parse_enum_string(_options, values, data);
+        sight::module::ui::qt::parameters::parse_enum_string(_options, values, data);
 
         int idx = 0;
         for(const auto& value : values)

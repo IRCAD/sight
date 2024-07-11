@@ -74,7 +74,7 @@ public:
     SIGHT_CORE_API static SPTR(object) get_object(type _request_id);
 
     template<typename T, typename ... Args>
-    static SPTR(object) get_object(const T& _first, const Args& ... _args);
+    static SPTR(object) get_object(const T& _first, const Args & ... _args);
 
     /**
      * @brief Concatenate things with the separator `s_separator`.
@@ -186,7 +186,7 @@ private:
 //------------------------------------------------------------------------------
 
 template<typename T, typename ... Args>
-SPTR(object) id::get_object(const T& _first, const Args& ... _args)
+SPTR(object) id::get_object(const T& _first, const Args & ... _args)
 {
     return get_object(join(_first, _args ...));
 }

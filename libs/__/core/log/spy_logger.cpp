@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -115,19 +115,19 @@ public:
     spy_logger_impl& operator=(spy_logger_impl&&)      = delete;
 
     // Constructor
-    inline explicit spy_logger_impl(spy_logger* const _logger) noexcept :
+    explicit spy_logger_impl(spy_logger* const _logger) noexcept :
         m_logger(_logger)
     {
     }
 
     // Destructor
-    inline ~spy_logger_impl()
+    ~spy_logger_impl()
     {
         remove_sink();
     }
 
     // Returns the next log file name
-    inline std::filesystem::path next_log_archive(const std::filesystem::path& _log_archive)
+    std::filesystem::path next_log_archive(const std::filesystem::path& _log_archive)
     {
         // Get the original log archive name and the current index
         if(m_original_log_archive.empty() && _log_archive.empty())
@@ -166,7 +166,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void remove_sink()
+    void remove_sink()
     {
         if(m_remote_sink)
         {
@@ -203,7 +203,7 @@ public:
     }
 
     // Launch the remote logger, either in raw mode or in encrypted mode
-    inline void start_logger(
+    void start_logger(
         const std::filesystem::path& _log_archive,
         level_t _level,
         const core::crypto::secure_string& _password = core::crypto::secure_string(),
@@ -346,7 +346,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void stop_logger()
+    void stop_logger()
     {
         // Stop the logger
         remove_sink();
@@ -604,7 +604,7 @@ void spy_logger::relocate_log(
         {
             const auto& canonical_path = std::filesystem::weakly_canonical(_path);
             return canonical_path == std::filesystem::weakly_canonical(merged_logs_path)
-            || canonical_path == std::filesystem::weakly_canonical(current_log);
+                   || canonical_path == std::filesystem::weakly_canonical(current_log);
         }),
         m_pimpl->m_log_archives.end()
     );
@@ -702,9 +702,9 @@ void spy_logger::relocate_log(
 //-----------------------------------------------------------------------------
 
 #define FILE_LINE(msg) /* NOLINT(cppcoreguidelines-macro-usage) */ \
-    "[" << (file != nullptr ? file : __FILE__) \
-    << ":" << (line >= 0 ? line : __LINE__) << "] " \
-    << (msg)
+        "[" << (file != nullptr ? file : __FILE__) \
+        << ":" << (line >= 0 ? line : __LINE__) << "] " \
+        << (msg)
 
 //------------------------------------------------------------------------------
 

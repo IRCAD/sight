@@ -58,7 +58,7 @@ public:
      */
     [[nodiscard]] SIGHT_IO_IGTL_API virtual data::object::sptr from_igtl_message(::igtl::MessageBase::Pointer _src)
     const =
-        0;
+    0;
 
     /**
      * @brief method to implement conversion fwData object to igtl message
@@ -67,7 +67,7 @@ public:
      */
     [[nodiscard]] SIGHT_IO_IGTL_API virtual ::igtl::MessageBase::Pointer from_fw_data_object(data::object::csptr _src)
     const =
-        0;
+    0;
 
     /**
      * @brief get the igtlType supported for conversion

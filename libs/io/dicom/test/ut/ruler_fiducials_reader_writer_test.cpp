@@ -67,8 +67,8 @@ void ruler_fiducials_reader_writer_test::ruler_basic_test()
 
     fiducial.fiducial_uid = "9";
     fiducial.contour_data = {
-        {.x = 20, .y = 21, .z = 22},
-        {.x = 30, .y = 31, .z = 32}
+        {.x               = 20, .y = 21, .z = 22},
+        {.x               = 30, .y = 31, .z = 32}
     };
 
     fiducial.graphic_coordinates_data_sequence = std::nullopt;

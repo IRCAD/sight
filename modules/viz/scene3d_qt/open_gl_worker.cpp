@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ struct OpenGLRunner final : public QRunnable
 
     // Destructor.
     ~OpenGLRunner() final =
-        default;
+    default;
 
 //------------------------------------------------------------------------------
 

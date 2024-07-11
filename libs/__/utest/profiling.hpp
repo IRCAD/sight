@@ -32,7 +32,7 @@
 /// @note std::source_location is not yet supported by clang...
 /// Profile a function with multiple calls
 #define SIGHT_PROFILE_FUNC(Func, ...) \
-    sight::utest::profile_func(SIGHT_SOURCE_FILE, __LINE__, Func __VA_OPT__(, ) __VA_ARGS__)
+        sight::utest::profile_func(SIGHT_SOURCE_FILE, __LINE__, Func __VA_OPT__( , ) __VA_ARGS__)
 
 namespace sight::utest
 {

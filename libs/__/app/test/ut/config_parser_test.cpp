@@ -46,7 +46,7 @@ static const double EPSILON = 1e-5;
 
 // There might be some uncertainty when sampling, so we need to include an epsilon when testing equality
 #define ASSERT_COLOR_EQUALS(c1, c2) \
-    CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(c1, c2, EPSILON)));
+        CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(c1, c2, EPSILON)));
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::ut::data_parser_test);

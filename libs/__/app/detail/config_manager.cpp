@@ -374,9 +374,9 @@ data::object::sptr config_manager::get_new_object(config_attribute_t _type, conf
 
 // ------------------------------------------------------------------------
 
-data::object::sptr config_manager::get_new_object(config_attribute_t _type, const std::string& _uid) const
+data::object::sptr config_manager::get_new_object(config_attribute_t _type, const std::string& _uid)
 {
-    return this->get_new_object(_type, config_attribute_t(_uid, true));
+    return sight::app::detail::config_manager::get_new_object(_type, config_attribute_t(_uid, true));
 }
 
 // ------------------------------------------------------------------------
@@ -613,7 +613,7 @@ void config_manager::create_objects(const core::runtime::config_t& _cfg_elem)
                 }
                 else
                 {
-                    obj = this->get_new_object(type, id);
+                    obj = sight::app::detail::config_manager::get_new_object(type, id);
 
                     // Get the object parser associated with the object type
                     const auto srv_factory = service::extension::factory::get();
@@ -920,10 +920,8 @@ void config_manager::destroy_proxy(
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Signal '" + signal_elt.second + "' from '" + signal_elt.first + "' can not be disconnected "
-                                                                                     "from the channel '" + _channel + "': " + std::string(
-                        e.what()
-                                                                                     )
+                    "Signal '" + signal_elt.second + "' from '" + signal_elt.first
+                    + "' can not be disconnected " "from the channel '" + _channel + "': " + std::string(e.what())
                 );
             }
         }
@@ -946,10 +944,8 @@ void config_manager::destroy_proxy(
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Slot '" + slot_elt.second + "' from '" + slot_elt.first + "' can not be disconnected from the "
-                                                                               "channel '" + _channel + "': " + std::string(
-                        e.what()
-                                                                               )
+                    "Slot '" + slot_elt.second + "' from '" + slot_elt.first
+                    + "' can not be disconnected from the " "channel '" + _channel + "': " + std::string(e.what())
                 );
             }
         }
@@ -1130,8 +1126,8 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
 
             // Debug message
             SIGHT_INFO(
-                this->msg_head() + "Service '" + uid + "' has been automatically created because its "
-                                                       "objects are all available."
+                this->msg_head() + "Service '" + uid
+                + "' has been automatically created because its objects are all available."
             );
         }
     }
@@ -1149,8 +1145,8 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
 
             // Debug message
             SIGHT_INFO(
-                this->msg_head() + "Service '" + uid + "' has been automatically started because its "
-                                                       "objects are all available."
+                this->msg_head() + "Service '" + uid
+                + "' has been automatically started because its objects are all available."
             );
         }
     }
@@ -1168,8 +1164,8 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
 
             // Debug message
             SIGHT_INFO(
-                this->msg_head() + "Service '" + uid + "' has been automatically update because its "
-                                                       "objects are all available."
+                this->msg_head() + "Service '" + uid
+                + "' has been automatically update because its objects are all available."
             );
         }
     }
@@ -1319,9 +1315,10 @@ void config_manager::connect_proxy(const std::string& _channel, const proxy_conn
         {
             SIGHT_ERROR(
                 "Signal '" + signal_cfg.second + "' from '" + signal_cfg.first + "' can not be connected to the "
-                                                                                 "channel '" + _channel + "': " + std::string(
+                                                                                 "channel '" + _channel + "': "
+                + std::string(
                     e.what()
-                                                                                 )
+                )
             );
         }
     }
@@ -1342,9 +1339,8 @@ void config_manager::connect_proxy(const std::string& _channel, const proxy_conn
         catch(const std::exception& e)
         {
             SIGHT_ERROR(
-                "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first + "' can not be connected to the "
-                                                                           "channel '" + _channel + "': "
-                + std::string(e.what())
+                "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first
+                + "' can not be connected to the " "channel '" + _channel + "': " + std::string(e.what())
             );
         }
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,6 @@ namespace sight::data::registry
 {
 
 #define SIGHT_REGISTER_DATA(classname) \
-    static sight::data::object::registry<classname> BOOST_PP_CAT(s__factory__record__, __LINE__);
+        static sight::data::object::registry<classname> BOOST_PP_CAT(s__factory__record__, __LINE__);
 
 } // namespace sight::data::registry

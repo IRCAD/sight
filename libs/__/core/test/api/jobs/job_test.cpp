@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,13 +98,13 @@ void job_test::apiand_state_test()
         CPPUNIT_ASSERT_EQUAL(false, job.cancel_requested());
         CPPUNIT_ASSERT_EQUAL(false, job.cancel_requested_callback()());
 
-        job.cancel();
+                             job.cancel();
         CPPUNIT_ASSERT_EQUAL(core::jobs::base::canceled, job.get_state());
 
         CPPUNIT_ASSERT_EQUAL(true, job.cancel_requested());
         CPPUNIT_ASSERT_EQUAL(true, job.cancel_requested_callback()());
 
-        CPPUNIT_ASSERT_NO_THROW(job.wait());
+                             CPPUNIT_ASSERT_NO_THROW(job.wait());
 
         CPPUNIT_ASSERT(job.run().valid());
     }
@@ -171,7 +171,7 @@ void job_test::apiand_state_test()
         CPPUNIT_ASSERT_EQUAL(false, job.cancel_requested());
         CPPUNIT_ASSERT_EQUAL(false, job.cancel_requested_callback()());
 
-        job.cancel();
+                             job.cancel();
         CPPUNIT_ASSERT_EQUAL(core::jobs::base::canceled, job.get_state());
         job.finish();
         CPPUNIT_ASSERT_EQUAL(core::jobs::base::canceled, job.get_state());
@@ -179,7 +179,7 @@ void job_test::apiand_state_test()
         CPPUNIT_ASSERT_EQUAL(true, job.cancel_requested());
         CPPUNIT_ASSERT_EQUAL(true, job.cancel_requested_callback()());
 
-        CPPUNIT_ASSERT_NO_THROW(job.wait());
+                             CPPUNIT_ASSERT_NO_THROW(job.wait());
 
         CPPUNIT_ASSERT_EQUAL(false, future.get());
     }
@@ -196,7 +196,7 @@ void job_test::apiand_state_test()
         CPPUNIT_ASSERT_EQUAL(false, job.cancel_requested());
         CPPUNIT_ASSERT_EQUAL(false, job.cancel_requested_callback()());
 
-        CPPUNIT_ASSERT_NO_THROW(job.wait());
+                             CPPUNIT_ASSERT_NO_THROW(job.wait());
     }
 }
 

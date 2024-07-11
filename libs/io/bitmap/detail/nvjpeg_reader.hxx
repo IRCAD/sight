@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -36,24 +36,24 @@ namespace sight::io::bitmap::detail
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define CHECK_CUDA(func, success) \
-    if(const auto& status = func; status != (success)) \
-    { \
-        SIGHT_THROW("The function " #func " failed: " << status); \
-    }
+        if(const auto& status = func; status != (success)) \
+        { \
+            SIGHT_THROW("The function " #func " failed: " << status); \
+        }
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define CHECK_CUDA_NOEXCEPT(func, success) \
-    try \
-    { \
-        if(const auto status = func; status != (success)) \
+        try \
         { \
-            SIGHT_THROW("The function " #func " failed: " << status); \
+            if(const auto status = func; status != (success)) \
+            { \
+                SIGHT_THROW("The function " #func " failed: " << status); \
+            } \
         } \
-    } \
-    catch(const std::exception& e) \
-    { \
-        SIGHT_ERROR(e.what()); \
-    }
+        catch(const std::exception& e) \
+        { \
+            SIGHT_ERROR(e.what()); \
+        }
 
 class nv_jpeg_reader final
 {

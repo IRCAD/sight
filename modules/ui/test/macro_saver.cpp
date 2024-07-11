@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -890,7 +890,11 @@ void macro_saver::save()
                && (iha = static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
                == "PreferencesConfiguration::fill")
             {
-                if(!iha->args[0].contains(QString("\"%1\"").arg(pre_post_interactions[i]->how_to_find_receiver[0].string)))
+                if(!iha->args[0].contains(
+                       QString("\"%1\"").arg(
+                           pre_post_interactions[i]->how_to_find_receiver[0].string
+                       )
+                ))
                 {
                     iha->args[0] += QString(", " + arg);
                 }

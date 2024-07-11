@@ -63,7 +63,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(concatenate_matrices, sight::service::controller);
 
-    concatenate_matrices() noexcept           = default;
+    concatenate_matrices() noexcept = default;
     ~concatenate_matrices() noexcept override = default;
 
 protected:
