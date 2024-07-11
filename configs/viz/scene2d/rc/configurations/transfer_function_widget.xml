@@ -1,19 +1,16 @@
 <extension implements="sight::app::extension::config">
     <id>sight::config::viz::scene2d::TransferFunctionWidgetCfg</id>
     <parameters>
+        <object uid="image" type="sight::data::image" />
+        <object uid="currentTF" type="sight::data::transfer_function" />
+        <object uid="presets" type="sight::data::composite" optional="true" />
+
         <param name="WID_PARENT" />
-        <param name="image" />
-        <param name="currentTF" />
-        <param name="presets" default="emptyPresets" />
         <param name="USE_DEFAULT_TF" default="true" />
         <param name="ADDITIONAL_TF_PATH" default="" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${image}" type="sight::data::image" src="ref" />
-        <object uid="${currentTF}" type="sight::data::transfer_function" src="ref" />
-        <object uid="${presets}" type="sight::data::composite" src="deferred" />
 
         <object uid="viewport" type="sight::viz::scene2d::data::viewport" />
         <object uid="viewportShutter" type="sight::viz::scene2d::data::viewport" />

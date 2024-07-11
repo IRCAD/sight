@@ -1,9 +1,10 @@
 <extension implements="sight::app::extension::config">
     <id>sight::config::viz::scene3d::negato2d</id>
     <parameters>
+        <object uid="image" type="sight::data::image_series" optional="true" />
+        <object uid="transferFunction" type="sight::data::transfer_function" />
+
         <param name="WID_PARENT" />
-        <param name="image" />
-        <param name="transferFunction" />
         <param name="sliceIndex" default="axial" />
         <param name="enableSliceType" default="true" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" default="WORLD_COORDS_LANDMARKS_CHANNEL" />
@@ -14,12 +15,8 @@
         <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" default="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" default="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
     </parameters>
+
     <config>
-        <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${image}" type="sight::data::image_series" src="deferred" />
-        <object uid="${transferFunction}" type="sight::data::transfer_function" src="ref" />
-
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="mainView" type="sight::module::ui::view">

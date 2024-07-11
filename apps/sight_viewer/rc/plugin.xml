@@ -438,7 +438,7 @@
             <!-- ************************ Configuration launchers ********************************* -->
 
             <service uid="ogreGenericSceneCfg" type="sight::app::config_controller">
-                <appConfig id="sight::config::viz::scene3d::imageSplitViews" />
+                <appConfig id="sight::config::viz::scene3d::image_split_views" />
                 <parameter replace="WID_PARENT" by="sceneView" />
                 <parameter replace="VR_BOOL_PARAM_RECEIVER_CHANNEL" by="VOLUME_BOOL_SENDER_CHANNEL" />
                 <parameter replace="VR_INT_PARAM_RECEIVER_CHANNEL" by="VOLUME_INT_SENDER_CHANNEL" />

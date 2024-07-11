@@ -56,6 +56,8 @@ public:
     std::string desc;
     using parameters_t = std::map<std::string, std::string>;
     parameters_t parameters;
+    using objects_t = std::map<std::string, std::pair<std::string, bool> >; ///< uid, type, optional
+    objects_t objects;
     core::runtime::config_t config;
     std::string module_id;      ///< Module identifier (used to start the module when the appConfig is launched)
     std::string module_version; ///< Module version (used to start the module when the appConfig is launched)
@@ -93,14 +95,16 @@ public:
      * @param _group the name of the group that owns the config.
      * @param _desc the config description.
      * @param _parameters the list of template parameters in the config.
+     * @param _objects the list of objects in the config.
      * @param _config the registered config.
      * @note This method is thread safe
      */
-    SIGHT_APP_API void addapp_info(
+    SIGHT_APP_API void add_app_info(
         const std::string& _config_id,
         const std::string& _group,
         const std::string& _desc,
         const app_info::parameters_t& _parameters,
+        const app_info::objects_t& _objects,
         const core::runtime::config_t& _config,
         const std::string& _module_id
     );

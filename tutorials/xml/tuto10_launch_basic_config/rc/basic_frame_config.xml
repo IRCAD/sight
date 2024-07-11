@@ -2,6 +2,9 @@
     <id>Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg</id>
     <!-- Declared the required parameters -->
     <parameters>
+        <!-- image is defined by the previous configuration that called the config_launcher. -->
+        <object uid="image" type="sight::data::image" />
+
         <!--
             CLOSE_CONFIG_CHANNEL is defined by config_launcher. It allows to connect the frame signal "closed" to the
             config_launcher slot "stopConfig".
@@ -9,14 +12,8 @@
             the configuration is launched from another service.
          -->
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
-        <!-- imageUid is defined by the previous configuration that called the config_launcher. -->
-        <param name="imageUid" />
     </parameters>
     <config>
-        <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${imageUid}" type="sight::data::image" src="ref" />
-
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="mainFrame" type="sight::module::ui::frame">
@@ -35,7 +32,7 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="imageRendereSrv" type="sight::module::viz::sample::image">
-            <in key="image" uid="${imageUid}" />
+            <in key="image" uid="${image}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

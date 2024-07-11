@@ -107,10 +107,11 @@ void config_test::add_config_test()
     const std::string desc("Description");
     const std::string module_id("sight::module::service");
     app::extension::app_info::parameters_t parameters;
+    app::extension::app_info::objects_t objects;
 
     const service::config_t config = build_config();
 
-    current_app_config->addapp_info(config_id, group, desc, parameters, config, module_id);
+    current_app_config->add_app_info(config_id, group, desc, parameters, objects, config, module_id);
 
     std::vector<std::string> all_configs = current_app_config->get_all_configs();
     CPPUNIT_ASSERT_EQUAL(false, all_configs.empty());

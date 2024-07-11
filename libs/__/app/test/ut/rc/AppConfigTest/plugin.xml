@@ -363,7 +363,9 @@
     <extension implements="sight::app::extension::config">
         <id>parameterReplaceTestSubConfig</id>
         <parameters>
-            <param name="data1" />
+            <!-- new syntax -->
+            <object uid="data1" type="sight::data::string" />
+
             <param name="data2" />
             <param name="patient" />
             <param name="channel1" />
@@ -372,7 +374,7 @@
         </parameters>
         <desc>Test configuration for parameter replace</desc>
         <config>
-            <object uid="${data1}" type="sight::data::string" src="ref" />
+            <!-- old syntax -->
             <object uid="${data2}" type="sight::data::boolean" src="ref" />
 
             <service uid="TestServiceUid" type="sight::app::ut::test2_inputs">

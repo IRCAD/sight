@@ -23,6 +23,7 @@
 #include "app/extension/config.hpp"
 
 #include <core/id.hpp>
+#include <core/runtime/helper.hpp>
 #include <core/runtime/module.hpp>
 #include <core/runtime/runtime.hpp>
 
@@ -72,13 +73,36 @@ void config::parse_plugin_infos()
         const auto desc      = app_config.get<std::string>("desc", "No description available");
 
         app_info::parameters_t parameters;
+        app_info::objects_t objects;
 
         if(const auto parameters_cfg = app_config.get_child_optional("parameters"); parameters_cfg.has_value())
         {
             for(const auto& param : boost::make_iterator_range(parameters_cfg->equal_range("param")))
             {
                 const auto name = param.second.get<std::string>("<xmlattr>.name");
+
+                SIGHT_ASSERT("Parameter " << std::quoted(name) << " already declared", !parameters.contains(name));
+                SIGHT_ASSERT(
+                    "Parameter " << std::quoted(name) << " already declared as object",
+                    !objects.contains(name)
+                );
                 parameters[name] = param.second.get<std::string>("<xmlattr>.default", s_mandatory_parameter_identifier);
+            }
+
+            for(const auto& object : boost::make_iterator_range(parameters_cfg->equal_range("object")))
+            {
+                const auto uid = object.second.get<std::string>("<xmlattr>.uid");
+
+                SIGHT_ASSERT("Object " << std::quoted(uid) << " already declared", !objects.contains(uid));
+                SIGHT_ASSERT(
+                    "Object " << std::quoted(uid) << " already declared as parameter",
+                    !parameters.contains(uid)
+                );
+
+                objects[uid] = {
+                    object.second.get<std::string>("<xmlattr>.type"),
+                    object.second.get<bool>("<xmlattr>.optional", false)
+                };
             }
         }
 
@@ -90,17 +114,18 @@ void config::parse_plugin_infos()
         std::string module_id                         = module->identifier();
 
         // Add app info
-        this->addapp_info(config_id, group, desc, parameters, config, module_id);
+        this->add_app_info(config_id, group, desc, parameters, objects, config, module_id);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void config::addapp_info(
+void config::add_app_info(
     const std::string& _config_id,
     const std::string& _group,
     const std::string& _desc,
     const app_info::parameters_t& _parameters,
+    const app_info::objects_t& _objects,
     const core::runtime::config_t& _config,
     const std::string& _module_id
 )
@@ -118,6 +143,7 @@ void config::addapp_info(
     info->desc        = _desc;
     info->config      = _config;
     info->parameters  = _parameters;
+    info->objects     = _objects;
     info->module_id   = _module_id;
     m_reg[_config_id] = info;
 }
@@ -147,15 +173,15 @@ core::runtime::config_t config::get_adapted_template_config(
     );
 
     // Adapt config
-    core::runtime::config_t new_config;
+    core::runtime::config_t new_config = iter->second->config;
 
     field_adaptor_t fields;
-    app_info::parameters_t parameters = iter->second->parameters;
+    const auto parse_key = [](const std::string& _s){return "\\$\\{" + _s + "\\}";};
 
-    for(const auto& param : parameters)
+    for(const auto& param : iter->second->parameters)
     {
         auto iter_field       = _field_adaptors.find(param.first);
-        const std::string key = "\\$\\{" + param.first + "\\}";
+        const std::string key = parse_key(param.first);
         if(iter_field != _field_adaptors.end())
         {
             fields[key] = iter_field->second;
@@ -166,11 +192,38 @@ core::runtime::config_t config::get_adapted_template_config(
         }
         else
         {
-            SIGHT_THROW(
-                "Parameter : '" << param.first << "' is needed by the app configuration id='" << _config_id
-                << "'."
-            );
+            SIGHT_THROW("[" << _config_id << "] parameter : " << std::quoted(param.first) << " is needed");
         }
+    }
+
+    for(const auto& object : iter->second->objects)
+    {
+        auto iter_field       = _field_adaptors.find(object.first);
+        const std::string key = parse_key(object.first);
+        if(iter_field != _field_adaptors.end())
+        {
+            fields[key] = iter_field->second;
+        }
+        else
+        {
+            if(object.second.second)
+            {
+                SIGHT_INFO(
+                    "[" << _config_id << "] optional parameter " << std::quoted(object.first)
+                    << " not provided"
+                );
+            }
+            else
+            {
+                SIGHT_THROW("[" << _config_id << "] parameter : " << std::quoted(object.first) << " is needed");
+            }
+        }
+
+        core::runtime::config_t object_ref_cfg;
+        object_ref_cfg.put("<xmlattr>.uid", "${" + object.first + "}");
+        object_ref_cfg.put("<xmlattr>.type", object.second.first);
+        object_ref_cfg.put("<xmlattr>.src", object.second.second ? "deferred" : "ref");
+        new_config.add_child("object", object_ref_cfg);
     }
 
     std::string auto_prefix_name;
@@ -182,11 +235,11 @@ core::runtime::config_t config::get_adapted_template_config(
     uid_parameter_replace_t parameter_replace_adaptors;
     sight::app::extension::config::collect_uid_for_parameter_replace(
         "config",
-        iter->second->config,
+        new_config,
         parameter_replace_adaptors
     );
     new_config = sight::app::extension::config::adapt_config(
-        iter->second->config,
+        new_config,
         fields,
         parameter_replace_adaptors,
         auto_prefix_name

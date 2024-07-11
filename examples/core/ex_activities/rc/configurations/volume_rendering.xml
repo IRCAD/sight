@@ -2,13 +2,12 @@
 <extension implements="sight::app::extension::config">
     <id>VolumeRendering</id>
     <parameters>
+        <object uid="imageSeries" type="sight::data::image_series" />
         <param name="WID_PARENT" />
-        <param name="imageSeries" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${imageSeries}" type="sight::data::image_series" src="ref" />
         <object uid="tf" type="sight::data::transfer_function" />
         <object uid="mask" type="sight::data::image" />
         <object uid="extrudedModelSeries" type="sight::data::model_series" />

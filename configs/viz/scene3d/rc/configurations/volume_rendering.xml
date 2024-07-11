@@ -1,6 +1,11 @@
 <extension implements="sight::app::extension::config">
     <id>sight::config::viz::scene3d::volumeRendering</id>
     <parameters>
+        <object uid="modelSeries" type="sight::data::model_series" optional="true" />
+        <object uid="image" type="sight::data::image_series" optional="true" />
+        <object uid="volumeTF" type="sight::data::transfer_function" />
+        <object uid="extrudedModelSeries" type="sight::data::model_series" />
+
         <param name="WID_PARENT" />
         <param name="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" />
         <param name="VR_BOOL_PARAM_RECEIVER_CHANNEL" />
@@ -25,20 +30,11 @@
         <param name="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" />
         <param name="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
-        <param name="modelSeries" />
-        <param name="image" />
-        <param name="volumeTF" />
-        <param name="extrudedModelSeries" />
         <param name="maximized" default="false" />
         <param name="restored" default="true" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${modelSeries}" type="sight::data::model_series" src="deferred" />
-        <object uid="${image}" type="sight::data::image_series" src="deferred" />
-        <object uid="${volumeTF}" type="sight::data::transfer_function" src="ref" />
-        <object uid="${extrudedModelSeries}" type="sight::data::model_series" src="ref" />
 
         <object uid="mask" type="sight::data::image" />
         <object uid="clippingMatrix" type="sight::data::matrix4" />

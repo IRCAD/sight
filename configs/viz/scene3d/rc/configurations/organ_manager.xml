@@ -1,14 +1,14 @@
 <extension implements="sight::app::extension::config">
     <id>sight::config::viz::scene3d::organManager</id>
     <parameters>
+        <object uid="organManagerModelSeries" type="sight::data::model_series" />
+
         <param name="WID_PARENT" />
         <param name="MODELSERIESLIST_ENABLE_DELETE_CONFIG" default="false" />
-        <param name="organManagerModelSeries" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${organManagerModelSeries}" type="sight::data::model_series" src="ref" />
         <object uid="reconstruction" type="sight::data::reconstruction" src="deferred" />
 
         <!-- ******************************* UI declaration *********************************** -->
