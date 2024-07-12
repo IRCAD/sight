@@ -66,11 +66,11 @@ public:
     /**
      * @brief Constructor
      */
-    mip_matching_registration() noexcept;
+    mip_matching_registration() noexcept = default;
     /**
      * @brief Destructor
      */
-    ~mip_matching_registration() noexcept override;
+    ~mip_matching_registration() noexcept override = default;
 
 protected:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,15 +41,15 @@ int main(int argc, char** argv)
     {
         po::options_description options("aruco_marker Usage");
         options.add_options()
-            ("help,h", "produce help message")
-            ("makerid,m", po::value<int>(&id)->required()->default_value(100), "set the marker ID (0:1023)")
+        ("help,h", "produce help message")
+        ("makerid,m", po::value<int>(&id)->required()->default_value(100), "set the marker ID (0:1023)")
         (
             "file,f",
             po::value<std::string>(&file)->required()->default_value("marker_100.jpeg"),
             "set the output file"
         )
-            ("size,s", po::value<int>(&size)->required()->default_value(300), "set the size in pixels for the marker")
-            ("border,b", po::value<int>(&border_bits)->default_value(1), "width of the marker border");
+        ("size,s", po::value<int>(&size)->required()->default_value(300), "set the size in pixels for the marker")
+        ("border,b", po::value<int>(&border_bits)->default_value(1), "width of the marker border");
 
         po::positional_options_description pos;
         pos.add("makerid", 1).add("file", 1).add("size", 1);
@@ -68,7 +68,7 @@ int main(int argc, char** argv)
 
         cv::Mat marker;
 
-#if CV_MAJOR_VERSION > 4 || (CV_MAJOR_VERSION == 4 && CV_VERSION_MINOR > 5)
+#if CV_MAJOR_VERSION > 4 || (CV_MAJOR_VERSION == 4 && CV_VERSION_MINOR > 6)
         //Use the aruco original dictionary
         const auto& dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_ARUCO_ORIGINAL);
 

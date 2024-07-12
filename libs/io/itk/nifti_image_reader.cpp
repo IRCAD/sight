@@ -103,7 +103,7 @@ void nifti_image_reader::read()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    const core::type& type = nifti_loader_functor::get_image_type(file.string());
+    const core::type type = nifti_loader_functor::get_image_type(file.string());
 
     nifti_loader_functor::parameter param;
     param.filename   = file.string();

@@ -173,7 +173,7 @@ inline static data::series_set::sptr scan_gdcm_files(
                 }
 
                 // Convert the string to SOP Class UID keyword
-                const auto& sop_keyword = data::dicom::sop::keyword(found->second);
+                const auto sop_keyword = data::dicom::sop::keyword(found->second);
 
                 if(sop_keyword == data::dicom::sop::Keyword::INVALID)
                 {
@@ -1230,13 +1230,13 @@ public:
     reader_impl& operator=(reader_impl&&)      = delete;
 
     /// Constructor
-    inline explicit reader_impl(reader::file* const _reader) noexcept :
+    explicit reader_impl(reader::file* const _reader) noexcept :
         m_reader(_reader)
     {
     }
 
     /// Default destructor
-    inline ~reader_impl() noexcept = default;
+    ~reader_impl() noexcept = default;
 
     /// Pointer to the public interface
     reader::file* const m_reader;
@@ -1246,7 +1246,7 @@ public:
     /// @return data::series_set::sptr: A set of series, with their associated files
     /// @throw std::runtime_error if the root directory is not an existing folder
     /// @throw std::runtime_error if there is no dicom files are found
-    [[nodiscard]] inline data::series_set::sptr scan_files(const std::vector<std::filesystem::path>& _files) const
+    [[nodiscard]] data::series_set::sptr scan_files(const std::vector<std::filesystem::path>& _files) const
     {
         // Convert std::vector<std::filesystem::path> to std::vector<std::string>
         gdcm::Directory::FilenamesType gdcm_files;
@@ -1270,7 +1270,7 @@ public:
     /// Returns a list of DICOM series with associated files sorted
     /// @return data::series_set::sptr: A set of series, with their associated files sorted
     /// @throw std::runtime_error if there is no scanned series
-    [[nodiscard]] inline data::series_set::sptr sort() const
+    [[nodiscard]] data::series_set::sptr sort() const
     {
         SIGHT_THROW_IF(
             "There is no DICOM file to sort.",
@@ -1307,7 +1307,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sort_instances_by_image_position(const data::series::sptr& _series)
+    static bool sort_instances_by_image_position(const data::series::sptr& _series)
     {
         // Use a map to sort for us....
         std::map<std::int64_t, std::size_t> sorter;
@@ -1344,7 +1344,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sort_instances_by_content_time(const data::series::sptr& _series)
+    static bool sort_instances_by_content_time(const data::series::sptr& _series)
     {
         // Use a map to sort for us....
         std::map<std::int64_t, std::size_t> sorter;
@@ -1449,7 +1449,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sort_instances_by_instance_number(const data::series::sptr& _series)
+    static bool sort_instances_by_instance_number(const data::series::sptr& _series)
     {
         // Use a map to sort for us....
         std::map<std::int64_t, std::size_t> sorter;
@@ -1483,7 +1483,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sort_instances_by_filename(const data::series::sptr& _series)
+    static bool sort_instances_by_filename(const data::series::sptr& _series)
     {
         // Use a map to sort for us....
         std::map<std::filesystem::path, std::size_t> sorter;
@@ -1517,7 +1517,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void read()
+    void read()
     {
         SIGHT_THROW_IF(
             "There is no DICOM file to read.",
@@ -1655,14 +1655,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline bool cancel_requested() const noexcept
+    [[nodiscard]] bool cancel_requested() const noexcept
     {
         return m_job && m_job->cancel_requested();
     }
 
     //------------------------------------------------------------------------------
 
-    inline void progress(std::uint64_t _units) const
+    void progress(std::uint64_t _units) const
     {
         if(m_job)
         {
@@ -1672,14 +1672,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void clear()
+    void clear()
     {
         m_scanned.reset();
         m_sorted.reset();
     }
 
     /// The default filter to select only some type (Image, Model, ...) of DICOM files.
-    data::series::SopKeywords m_filters {};
+    data::series::SopKeywords m_filters;
 
     /// Contains the list of files to sort and read.
     /// Usually, it is filed by user after showing a selection dialog,

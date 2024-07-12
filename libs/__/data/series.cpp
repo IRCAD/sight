@@ -1324,7 +1324,7 @@ dicom::sop::Keyword series::get_sop_keyword() const noexcept
     {
         try
         {
-            const auto& sop_class = dicom::sop::get(sop_class_uid);
+            const auto sop_class = dicom::sop::get(sop_class_uid);
             return sop_class.m_keyword;
         }
         catch(...)
@@ -1680,7 +1680,7 @@ std::string series::get_performing_physician_name() const noexcept
 
 void series::set_performing_physician_name(const std::string& _performing_physician_name)
 {
-    return m_pimpl->set_joined_values<gdcm::Keywords::PerformingPhysicianName>(_performing_physician_name);
+    m_pimpl->set_joined_values<gdcm::Keywords::PerformingPhysicianName>(_performing_physician_name);
 }
 
 //------------------------------------------------------------------------------
@@ -2625,7 +2625,7 @@ series::SopKeywords series::string_to_sops(const std::string& _uids) noexcept
 
         if(!trimmed.empty())
         {
-            if(const auto& sop_keyword = dicom::sop::keyword(trimmed); sop_keyword != dicom::sop::Keyword::INVALID)
+            if(const auto sop_keyword = dicom::sop::keyword(trimmed); sop_keyword != dicom::sop::Keyword::INVALID)
             {
                 sop_keywords.insert(sop_keyword);
             }
@@ -3541,7 +3541,7 @@ void series::set_slice_thickness(const std::optional<double>& _slice_thickness)
 dicom::ultrasound_acquisition_geometry_t series::get_ultrasound_acquisition_geometry() const noexcept
 {
     if(const auto& value = m_pimpl->get_value<gdcm::Keywords::UltrasoundAcquisitionGeometry>();
-       value&& !value->empty())
+       value && !value->empty())
     {
         return dicom::to_ultrasound_acquisition_geometry(*value);
     }
@@ -3639,7 +3639,7 @@ void series::set_volume_to_table_mapping_matrix(const std::optional<std::referen
 dicom::patient_frame_of_reference_source_t series::get_patient_frame_of_reference_source() const noexcept
 {
     if(const auto& value = m_pimpl->get_value<gdcm::Keywords::PatientFrameOfReferenceSource>();
-       value&& !value->empty())
+       value && !value->empty())
     {
         return dicom::to_patient_frame_of_reference_source(*value);
     }
@@ -3673,7 +3673,7 @@ dicom::dimension_organization_t series::get_dimension_organization_type() const 
     // TILED_SPARSE: Tiled image in which each frame represents a single tile and the positions of tiles are
     //               explicitly defined by per-frame Functional Group Macro entries.
 
-    if(const auto& value = m_pimpl->get_value<gdcm::Keywords::DimensionOrganizationType>(); value&& !value->empty())
+    if(const auto& value = m_pimpl->get_value<gdcm::Keywords::DimensionOrganizationType>(); value && !value->empty())
     {
         return dicom::to_dimension_organization_type(*value);
     }

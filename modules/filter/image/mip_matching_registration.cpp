@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,21 +29,11 @@
 
 #include <geometry/data/matrix4.hpp>
 
-#include <service/macros.hpp>
-
 #include <functional>
 #include <numeric>
 
 namespace sight::module::filter::image
 {
-
-mip_matching_registration::mip_matching_registration() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-mip_matching_registration::~mip_matching_registration() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 

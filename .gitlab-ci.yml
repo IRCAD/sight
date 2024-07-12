@@ -15,8 +15,19 @@ include:
 
 lint:sheldon:
     extends: .lint
+    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     variables:
         ENABLE_CLANG_TIDY: "ON"
+        SIGHT_GIT_BRANCH: dev
+    tags:
+        - linux-power-runner
+
+lint:ubuntu-24.04:
+    extends: .lint
+    image: "${SIGHT_CI_UBUNTU_24_04}:24.2.0.beta-1-g2c29834"
+    variables:
+        ENABLE_CLANG_TIDY: "ON"
+        SIGHT_GIT_BRANCH: dev
     tags:
         - linux-power-runner
 
@@ -51,7 +62,7 @@ lint:sheldon:
             -DSIGHT_BUILD_TESTS=ON
             -DSIGHT_BUILD_DOC=${SIGHT_BUILD_DOC}
             -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
-            -DSIGHT_ENABLE_OPENVSLAM=ON
+            -DSIGHT_ENABLE_OPENVSLAM=OFF
             -DSIGHT_ENABLE_REALSENSE=${SIGHT_ENABLE_REALSENSE}
             -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
             -DSIGHT_ENABLE_GDB=${SIGHT_ENABLE_GDB}
@@ -152,7 +163,20 @@ lint:sheldon:
 
 build:linux-22.04-debug-gcc:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
+    variables:
+        BUILD_TYPE: "Debug"
+        SIGHT_BUILD_SDK: "ON"
+        SIGHT_ENABLE_GDB: "ON"
+        CC: "gcc"
+        CXX: "g++"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+
+build:ubuntu-24.04-debug-gcc:
+    extends: .linux_build
+    image: "${SIGHT_CI_UBUNTU_24_04}:24.2.0.beta-1-g2c29834"
     variables:
         BUILD_TYPE: "Debug"
         SIGHT_BUILD_SDK: "ON"
@@ -165,7 +189,7 @@ build:linux-22.04-debug-gcc:
 
 build:linux-22.04-release-gcc:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     variables:
         BUILD_TYPE: "Release"
         SIGHT_BUILD_SDK: "ON"
@@ -177,9 +201,9 @@ build:linux-22.04-release-gcc:
         - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
-build:linux-22.04-RelWithDebInfo-clang:
+build:ubuntu-24.04-RelWithDebInfo-clang:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_CI_UBUNTU_24_04}:24.2.0.beta-1-g2c29834"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_IGNORE_UNSTABLE_TESTS: 1
@@ -192,7 +216,7 @@ build:linux-22.04-RelWithDebInfo-clang:
 
 build:linux-22.04-coverage-gcc:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_BUILD_DOC: "ON"
@@ -206,7 +230,7 @@ build:linux-22.04-coverage-gcc:
 
 build:linux-22.04-coverage-gcc-draft:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_ENABLE_COVERAGE: "ON"
@@ -218,7 +242,7 @@ build:linux-22.04-coverage-gcc-draft:
 
 deploy-test:linux-debug:
     extends: .linux_deploy_test
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     needs:
         - job: build:linux-22.04-debug-gcc
           artifacts: true
@@ -231,7 +255,7 @@ deploy-test:linux-debug:
 
 deploy:linux-debug:
     extends: .linux_deploy
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     needs:
         - job: build:linux-22.04-debug-gcc
           artifacts: true
@@ -244,7 +268,7 @@ deploy:linux-debug:
 
 deploy-test:linux-release:
     extends: .linux_deploy_test
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     needs:
         - job: build:linux-22.04-release-gcc
           artifacts: true
@@ -258,7 +282,7 @@ deploy-test:linux-release:
 
 deploy:linux-release:
     extends: .linux_deploy
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     needs:
         - job: build:linux-22.04-release-gcc
           artifacts: true
@@ -271,7 +295,7 @@ deploy:linux-release:
 
 deploy:apps-linux-release:
     extends: .linux_deploy
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     needs:
         - job: build:linux-22.04-release-gcc
           artifacts: true
@@ -489,7 +513,7 @@ deploy:apps-windows-release:
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 pages:
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     stage: deploy
     needs:
         - job: build:linux-22.04-coverage-gcc
