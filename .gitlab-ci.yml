@@ -7,15 +7,14 @@ stages:
 
 include:
     - project: "sight/sight-gitlab"
-      ref: b45de5bbdf838589e11466fd6d5b4a271e95a055
+      ref: a05db919f7f163231e369aefe27c33ce6dd15a49
       file: "/.templates/deploy.yml"
     - project: "sight/sight-gitlab"
-      ref: b45de5bbdf838589e11466fd6d5b4a271e95a055
+      ref: a05db919f7f163231e369aefe27c33ce6dd15a49
       file: "/.templates/build.yml"
 
 lint:sheldon:
     extends: .lint
-    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     variables:
         ENABLE_CLANG_TIDY: "ON"
         SIGHT_GIT_BRANCH: dev
@@ -24,7 +23,7 @@ lint:sheldon:
 
 lint:ubuntu-24.04:
     extends: .lint
-    image: "${SIGHT_CI_UBUNTU_24_04}:24.2.0.beta-1-g2c29834"
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         ENABLE_CLANG_TIDY: "ON"
         SIGHT_GIT_BRANCH: dev
@@ -130,6 +129,7 @@ lint:ubuntu-24.04:
             metrics: .build/metrics.txt
 
 .linux_deploy_test:
+    image: "${SIGHT_UBUNTU_22_IMAGE}"
     stage: deploy-test
     variables:
         BUILD_TYPE: "Debug"
@@ -163,7 +163,6 @@ lint:ubuntu-24.04:
 
 build:linux-22.04-debug-gcc:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     variables:
         BUILD_TYPE: "Debug"
         SIGHT_BUILD_SDK: "ON"
@@ -176,7 +175,7 @@ build:linux-22.04-debug-gcc:
 
 build:ubuntu-24.04-debug-gcc:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU_24_04}:24.2.0.beta-1-g2c29834"
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         BUILD_TYPE: "Debug"
         SIGHT_BUILD_SDK: "ON"
@@ -189,7 +188,6 @@ build:ubuntu-24.04-debug-gcc:
 
 build:linux-22.04-release-gcc:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     variables:
         BUILD_TYPE: "Release"
         SIGHT_BUILD_SDK: "ON"
@@ -203,7 +201,7 @@ build:linux-22.04-release-gcc:
 
 build:ubuntu-24.04-RelWithDebInfo-clang:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU_24_04}:24.2.0.beta-1-g2c29834"
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_IGNORE_UNSTABLE_TESTS: 1
@@ -216,7 +214,6 @@ build:ubuntu-24.04-RelWithDebInfo-clang:
 
 build:linux-22.04-coverage-gcc:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_BUILD_DOC: "ON"
@@ -230,7 +227,6 @@ build:linux-22.04-coverage-gcc:
 
 build:linux-22.04-coverage-gcc-draft:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_ENABLE_COVERAGE: "ON"
@@ -242,7 +238,6 @@ build:linux-22.04-coverage-gcc-draft:
 
 deploy-test:linux-debug:
     extends: .linux_deploy_test
-    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     needs:
         - job: build:linux-22.04-debug-gcc
           artifacts: true
@@ -255,7 +250,6 @@ deploy-test:linux-debug:
 
 deploy:linux-debug:
     extends: .linux_deploy
-    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     needs:
         - job: build:linux-22.04-debug-gcc
           artifacts: true
@@ -268,7 +262,6 @@ deploy:linux-debug:
 
 deploy-test:linux-release:
     extends: .linux_deploy_test
-    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     needs:
         - job: build:linux-22.04-release-gcc
           artifacts: true
@@ -282,7 +275,6 @@ deploy-test:linux-release:
 
 deploy:linux-release:
     extends: .linux_deploy
-    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     needs:
         - job: build:linux-22.04-release-gcc
           artifacts: true
@@ -295,7 +287,6 @@ deploy:linux-release:
 
 deploy:apps-linux-release:
     extends: .linux_deploy
-    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
     needs:
         - job: build:linux-22.04-release-gcc
           artifacts: true
@@ -513,7 +504,7 @@ deploy:apps-windows-release:
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 pages:
-    image: "${SIGHT_CI_UBUNTU_22_04}:24.2.0.beta-1-g2c29834"
+    image: "${SIGHT_UBUNTU_22_IMAGE}"
     stage: deploy
     needs:
         - job: build:linux-22.04-coverage-gcc
