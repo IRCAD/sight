@@ -48,13 +48,6 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::viz::scene3d::adaptor</type>
-        <service>sight::module::viz::scene3d::adaptor::image_multi_distances</service>
-        <object key="image">sight::data::image</object>
-        <desc>This adaptor displays distances retrieved from an image fields.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::viz::scene3d::adaptor</type>
         <service>sight::module::viz::scene3d::adaptor::landmarks</service>
         <object key="landmarks">sight::data::landmarks</object>
         <object key="image">sight::data::image</object>

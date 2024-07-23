@@ -84,20 +84,6 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::action</type>
-        <service>sight::module::ui::metrics::remove_distance</service>
-        <object key="image">sight::data::image</object>
-        <desc>This action removes distances from the image field.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::ui::action</type>
-        <service>sight::module::ui::metrics::show_distance</service>
-        <object key="image">sight::data::image</object>
-        <desc>This action allows to show/hide image distances.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::ui::action</type>
         <service>sight::module::ui::series::db_merger</service>
         <object>sight::data::series_set</object>
         <desc>This action allows to load a new SeriesSet and merge it with the current SeriesSet</desc>

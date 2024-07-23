@@ -296,9 +296,9 @@
                     <menuItem sid="shapeExtruderUndoAct" start="true" />
                     <menuItem sid="landmarksEditModeAct" start="true" />
                     <menuItem sid="removeAllLandmarksAct" start="true" />
-                    <menuItem sid="addDistanceAct" start="true" />
-                    <menuItem sid="removeAllDistancesAct" start="true" />
-                    <menuItem sid="showDistanceAct" start="false" />
+                    <menuItem sid="add_ruler_act" start="true" />
+                    <menuItem sid="remove_all_rulers_act" start="true" />
+                    <menuItem sid="show_ruler_act" start="true" />
                     <menuItem sid="axisVisibilityAct" start="true" />
                 </registry>
             </service>
@@ -424,15 +424,14 @@
             <service uid="removeAllLandmarksAct" type="sight::module::ui::action" />
 
             <!-- Manage distance -->
-            <service uid="addDistanceAct" type="sight::module::ui::action">
+            <service uid="add_ruler_act" type="sight::module::ui::action">
                 <state enabled="false" checked="false" />
             </service>
 
-            <service uid="removeAllDistancesAct" type="sight::module::ui::action" />
+            <service uid="remove_all_rulers_act" type="sight::module::ui::action" />
 
-            <service uid="showDistanceAct" type="sight::module::ui::metrics::show_distance" auto_connect="true">
-                <state enabled="true" checked="true" />
-                <inout key="image" uid="image" />
+            <service uid="show_ruler_act" type="sight::module::ui::action">
+                <state enabled="false" checked="false" />
             </service>
 
             <!-- ************************ Configuration launchers ********************************* -->
@@ -455,12 +454,13 @@
                 <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
                 <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="NEGATO3D_TRANSPARENCY_CHANNEL" />
-                <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="DISTANCE_ACTIVATION_CHANNEL" />
-                <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="DISTANCE_DEACTIVATION_CHANNEL" />
+                <parameter replace="RULER_ACTIVATION_CHANNEL" by="RULER_ACTIVATION_CHANNEL" />
+                <parameter replace="RULER_DEACTIVATION_CHANNEL" by="RULER_DEACTIVATION_CHANNEL" />
                 <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="LANDMARKS_EDIT_MODE_SENDER_CHANNEL" />
                 <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="LANDMARKS_GROUP_SELECTED_SENDER_CHANNEL" />
                 <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="REMOVE_ALL_LANDMARKS_SENDER_CHANNEL" />
-                <parameter replace="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" by="REMOVE_ALL_DISTANCES_SENDER_CHANNEL" />
+                <parameter replace="REMOVE_ALL_RULERS_RECEIVER_CHANNEL" by="REMOVE_ALL_RULERS_SENDER_CHANNEL" />
+                <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="VISIBILITY_RULERS_SENDER_CHANNEL" />
                 <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="LANDMARKS_EDIT_MODE_CHANGED_RECEIVER_CHANNEL" />
                 <inout group="data">
                     <key name="modelSeries" uid="modelSeries" optional="true" />
@@ -599,21 +599,21 @@
                 <slot>rightToolbarSliderView/hide</slot>
             </connect>
 
-            <connect channel="DISTANCE_ACTIVATION_CHANNEL">
-                <signal>addDistanceAct/is_checked</signal>
+            <connect channel="RULER_ACTIVATION_CHANNEL">
+                <signal>add_ruler_act/is_checked</signal>
             </connect>
 
-            <connect channel="DISTANCE_DEACTIVATION_CHANNEL">
-                <slot>addDistanceAct/uncheck</slot>
+            <connect channel="RULER_DEACTIVATION_CHANNEL">
+                <slot>add_ruler_act/uncheck</slot>
             </connect>
 
             <connect>
                 <signal>landmarksEditModeAct/checked</signal>
-                <slot>addDistanceAct/uncheck</slot>
+                <slot>add_ruler_act/uncheck</slot>
             </connect>
 
             <connect>
-                <signal>addDistanceAct/checked</signal>
+                <signal>add_ruler_act/checked</signal>
                 <slot>landmarksEditModeAct/uncheck</slot>
             </connect>
 
@@ -649,9 +649,9 @@
                 <slot>shapeExtruderAct/enable</slot>
                 <slot>boxWidgetResetAct/enable</slot>
                 <slot>landmarksEditModeAct/enable</slot>
-                <slot>addDistanceAct/enable</slot>
-                <slot>removeDistanceAct/enable</slot>
-                <slot>showDistanceAct/enable</slot>
+                <slot>add_ruler_act/enable</slot>
+                <slot>remove_all_rulers_act/enable</slot>
+                <slot>show_ruler_act/enable</slot>
             </connect>
 
             <connect channel="VOLUME_BOOL_SENDER_CHANNEL">
@@ -743,8 +743,12 @@
                 <signal>removeAllLandmarksAct/clicked</signal>
             </connect>
 
-            <connect channel="REMOVE_ALL_DISTANCES_SENDER_CHANNEL">
-                <signal>removeAllDistancesAct/clicked</signal>
+            <connect channel="VISIBILITY_RULERS_SENDER_CHANNEL">
+                <signal>show_ruler_act/clicked</signal>
+            </connect>
+
+            <connect channel="REMOVE_ALL_RULERS_SENDER_CHANNEL">
+                <signal>remove_all_rulers_act/clicked</signal>
             </connect>
 
             <connect channel="LANDMARKS_EDIT_MODE_CHANGED_RECEIVER_CHANNEL">
@@ -762,8 +766,6 @@
             <start uid="lightSelectorSrv" />
             <start uid="lightEditorSrv" />
             <start uid="landmarksParameterSrv" />
-            <start uid="showDistanceAct" />
-
             <update uid="TFManagerAct" />
             <update uid="volumeParameterSrv" />
         </config>

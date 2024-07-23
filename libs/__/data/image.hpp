@@ -296,25 +296,9 @@ public:
     using landmark_removed_signal_t = core::com::signal<void (std::shared_ptr<point>)>;
     SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_REMOVED_SIG;
 
-    /// Type of signal when a distance is added
+    /// Type of signal when a landmark is added
     using landmark_displayed_signal_t = core::com::signal<void (bool)>;
     SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_DISPLAYED_SIG;
-
-    /// Type of signal when a distance is added
-    using distance_displayed_signal_t = core::com::signal<void (bool)>;
-    SIGHT_DATA_API static const core::com::signals::key_t DISTANCE_DISPLAYED_SIG;
-
-    /// Type of signal when a distance is added
-    using distance_added_signal_t = core::com::signal<void (std::shared_ptr<point_list>)>;
-    SIGHT_DATA_API static const core::com::signals::key_t DISTANCE_ADDED_SIG;
-
-    /// Type of signal when a distance is modified
-    using distance_modified_signal_t = core::com::signal<void (SPTR(point_list))>;
-    SIGHT_DATA_API static const core::com::signals::key_t DISTANCE_MODIFIED_SIG;
-
-    /// Type of signal when a distance is removed
-    using distance_removed_signal_t = core::com::signal<void (std::shared_ptr<const point_list>)>;
-    SIGHT_DATA_API static const core::com::signals::key_t DISTANCE_REMOVED_SIG;
 
     /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
     using slice_index_modified_signal_t = core::com::signal<void (int, int, int)>;
@@ -323,6 +307,16 @@ public:
     /// Type of signal when slice type is modified (from slice type, to slice type)
     using slice_type_modified_signal_t = core::com::signal<void (int, int)>;
     SIGHT_DATA_API static const core::com::signals::key_t SLICE_TYPE_MODIFIED_SIG;
+
+    /// Type of signal when ruler fiducial is modified (the associated id of ruler fiducial and the new coordinates)
+    using ruler_modified_signal_t =
+        core::com::signal<void (std::optional<std::string>, std::array<double, 3>, std::array<double, 3>)>;
+    SIGHT_DATA_API static const core::com::signals::key_t RULER_MODIFIED_SIG;
+
+    /// Type of signal when fiducial is removed (the associated id of fiducial)
+    using fiducial_removed_signal_t =
+        core::com::signal<void (std::optional<std::string>)>;
+    SIGHT_DATA_API static const core::com::signals::key_t FIDUCIAL_REMOVED_SIG;
     /**
      * @}
      */
@@ -443,7 +437,7 @@ public:
      * @{
      * @brief Get the value of an element
      *
-     * @tparam T Type in which the pointer will be returned
+     * @param T Type in which the pointer will be returned
      * @param _id Item image index
      *
      * @return Buffer value cast to T
@@ -460,7 +454,7 @@ public:
      * @{
      * @brief Get the value of an element
      *
-     * @tparam T Type in which the pointer will be returned
+     * @param T Type in which the pointer will be returned
      * @param _x x index
      * @param _y y index
      * @param _z z index

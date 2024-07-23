@@ -22,12 +22,13 @@
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
-        <param name="DISTANCE_ACTIVATION_CHANNEL" />
-        <param name="DISTANCE_DEACTIVATION_CHANNEL" />
+        <param name="RULER_ACTIVATION_CHANNEL" />
+        <param name="RULER_DEACTIVATION_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
         <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
         <param name="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" />
-        <param name="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" />
+        <param name="REMOVE_ALL_RULERS_RECEIVER_CHANNEL" />
+        <param name="VISIBILITY_RULERS_RECEIVER_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
     </parameters>
     <config>
@@ -97,12 +98,13 @@
             <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="${AXIS_VISIBILITY_RECEIVER_CHANNEL}" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="${WORLD_COORDS_LANDMARKS_CHANNEL}" />
             <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="${NEGATO3D_TRANSPARENCY_CHANNEL}" />
-            <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
-            <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_ACTIVATION_CHANNEL" by="${RULER_ACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_DEACTIVATION_CHANNEL" by="${RULER_DEACTIVATION_CHANNEL}" />
             <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
             <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
-            <parameter replace="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" by="${REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL}" />
+            <parameter replace="REMOVE_ALL_RULERS_RECEIVER_CHANNEL" by="${REMOVE_ALL_RULERS_RECEIVER_CHANNEL}" />
+            <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="${VISIBILITY_RULERS_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}" />
             <parameter replace="maximized" by="true" />
             <parameter replace="restored" by="false" />
@@ -121,8 +123,9 @@
             <parameter replace="WID_PARENT" by="axialSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_AXIAL_VISIBILITY_RECEIVER_CHANNEL" />
-            <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
-            <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_ACTIVATION_CHANNEL" by="${RULER_ACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_DEACTIVATION_CHANNEL" by="${RULER_DEACTIVATION_CHANNEL}" />
+            <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="${VISIBILITY_RULERS_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
             <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
@@ -139,8 +142,9 @@
             <parameter replace="WID_PARENT" by="sagittalSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_SAGITTAL_VISIBILITY_RECEIVER_CHANNEL" />
-            <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
-            <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_ACTIVATION_CHANNEL" by="${RULER_ACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_DEACTIVATION_CHANNEL" by="${RULER_DEACTIVATION_CHANNEL}" />
+            <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="${VISIBILITY_RULERS_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
             <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
@@ -157,8 +161,9 @@
             <parameter replace="WID_PARENT" by="frontalSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_FRONTAL_VISIBILITY_RECEIVER_CHANNEL" />
-            <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
-            <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_ACTIVATION_CHANNEL" by="${RULER_ACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_DEACTIVATION_CHANNEL" by="${RULER_DEACTIVATION_CHANNEL}" />
+            <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="${VISIBILITY_RULERS_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
             <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />

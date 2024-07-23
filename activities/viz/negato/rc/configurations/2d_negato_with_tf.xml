@@ -75,7 +75,7 @@
                     <adaptor uid="negatoCameraAdp" />
                     <adaptor uid="pickerInteractorAdp" />
                     <adaptor uid="negatoAdp" />
-                    <adaptor uid="multiDistancesAdp" />
+                    <adaptor uid="ruler_fiducial_adp" />
                     <adaptor uid="landmarksAdp" />
                 </layer>
             </scene>
@@ -101,9 +101,9 @@
             <config sliceIndex="${orientation}" filtering="none" />
         </service>
 
-        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
+        <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
             <inout key="image" uid="${image}" />
-            <config fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
+            <config font_size="32" radius="1.5" query_flags="0x40000000" priority="3" />
         </service>
 
         <service uid="landmarksAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
@@ -160,7 +160,7 @@
         <start uid="negatoCameraAdp" />
         <start uid="pickerInteractorAdp" />
         <start uid="negatoAdp" />
-        <start uid="multiDistancesAdp" />
+        <start uid="ruler_fiducial_adp" />
         <start uid="landmarksAdp" />
     </config>
 </extension>

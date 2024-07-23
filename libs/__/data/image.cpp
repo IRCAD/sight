@@ -59,12 +59,10 @@ const core::com::signals::key_t image::BUFFER_MODIFIED_SIG      = "buffer_modifi
 const core::com::signals::key_t image::LANDMARK_ADDED_SIG       = "landmarkAdded";
 const core::com::signals::key_t image::LANDMARK_REMOVED_SIG     = "landmarkRemoved";
 const core::com::signals::key_t image::LANDMARK_DISPLAYED_SIG   = "landmarkDisplayed";
-const core::com::signals::key_t image::DISTANCE_ADDED_SIG       = "distanceAdded";
-const core::com::signals::key_t image::DISTANCE_MODIFIED_SIG    = "distanceModified";
-const core::com::signals::key_t image::DISTANCE_REMOVED_SIG     = "distanceRemoved";
-const core::com::signals::key_t image::DISTANCE_DISPLAYED_SIG   = "distanceDisplayed";
 const core::com::signals::key_t image::SLICE_INDEX_MODIFIED_SIG = "sliceIndexModified";
 const core::com::signals::key_t image::SLICE_TYPE_MODIFIED_SIG  = "sliceTypeModified";
+const core::com::signals::key_t image::RULER_MODIFIED_SIG       = "ruler_modified";
+const core::com::signals::key_t image::FIDUCIAL_REMOVED_SIG     = "fiducial_removed";
 
 //------------------------------------------------------------------------------
 
@@ -75,12 +73,10 @@ image::image() :
     new_signal<landmark_added_signal_t>(LANDMARK_ADDED_SIG);
     new_signal<landmark_removed_signal_t>(LANDMARK_REMOVED_SIG);
     new_signal<landmark_displayed_signal_t>(LANDMARK_DISPLAYED_SIG);
-    new_signal<distance_displayed_signal_t>(DISTANCE_DISPLAYED_SIG);
-    new_signal<distance_added_signal_t>(DISTANCE_ADDED_SIG);
-    new_signal<distance_modified_signal_t>(DISTANCE_MODIFIED_SIG);
-    new_signal<distance_removed_signal_t>(DISTANCE_REMOVED_SIG);
     new_signal<slice_index_modified_signal_t>(SLICE_INDEX_MODIFIED_SIG);
     new_signal<slice_type_modified_signal_t>(SLICE_TYPE_MODIFIED_SIG);
+    new_signal<ruler_modified_signal_t>(RULER_MODIFIED_SIG);
+    new_signal<fiducial_removed_signal_t>(FIDUCIAL_REMOVED_SIG);
 
     auto pl = std::make_shared<data::point_list>();
     data::helper::medical_image::set_landmarks(*this, pl);

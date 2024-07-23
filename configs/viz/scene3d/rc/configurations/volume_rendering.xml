@@ -22,13 +22,14 @@
         <param name="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" />
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
-        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL" />
-        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL" />
+        <param name="RULER_ACTIVATION_CHANNEL" default="RULER_ACTIVATION_CHANNEL" />
+        <param name="RULER_DEACTIVATION_CHANNEL" default="RULER_DEACTIVATION_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
         <param name="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" />
-        <param name="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" />
+        <param name="REMOVE_ALL_RULERS_RECEIVER_CHANNEL" />
+        <param name="VISIBILITY_RULERS_RECEIVER_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
         <param name="maximized" default="false" />
         <param name="restored" default="true" />
@@ -119,7 +120,7 @@
                     <adaptor uid="3DNegatoAdp" />
                     <adaptor uid="volumeAdp" />
                     <adaptor uid="landmarksAdp" />
-                    <adaptor uid="multiDistancesAdp" />
+                    <adaptor uid="ruler_fiducial_adp" />
                     <adaptor uid="axisAdp" />
                     <adaptor uid="pickedVoxelTextAdp" />
                     <adaptor uid="shapeExtruderAdp" />
@@ -174,9 +175,9 @@
             <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" />
         </service>
 
-        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
+        <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
             <inout key="image" uid="${image}" />
-            <config fontSize="16" radius="4.5" queryFlags="0x40000000" priority="3" />
+            <config font_size="16" radius="1.5" query_flags="0x40000000" always_display_all="true" priority="3" />
         </service>
 
         <service uid="axisAdp" type="sight::module::viz::scene3d::adaptor::axis">
@@ -340,8 +341,12 @@
             <slot>landmarksAdp/remove_all</slot>
         </connect>
 
-        <connect channel="${REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL}">
-            <slot>multiDistancesAdp/remove_all</slot>
+        <connect channel="${REMOVE_ALL_RULERS_RECEIVER_CHANNEL}">
+            <slot>ruler_fiducial_adp/remove_all</slot>
+        </connect>
+
+        <connect channel="${VISIBILITY_RULERS_RECEIVER_CHANNEL}">
+            <slot>ruler_fiducial_adp/toggle_visibility</slot>
         </connect>
 
         <connect channel="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}">
@@ -406,12 +411,12 @@
 
         <!-- distance channels -->
 
-        <connect channel="${DISTANCE_ACTIVATION_CHANNEL}">
-            <slot>multiDistancesAdp/activate_distance_tool</slot>
+        <connect channel="${RULER_ACTIVATION_CHANNEL}">
+            <slot>ruler_fiducial_adp/activate_tool</slot>
         </connect>
 
-        <connect channel="${DISTANCE_DEACTIVATION_CHANNEL}">
-            <signal>multiDistancesAdp/deactivate_distance_tool</signal>
+        <connect channel="${RULER_DEACTIVATION_CHANNEL}">
+            <signal>ruler_fiducial_adp/tool_deactivated</signal>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->
@@ -428,7 +433,7 @@
         <start uid="modeSeriesAdp" />
         <start uid="volumeAdp" />
         <start uid="landmarksAdp" />
-        <start uid="multiDistancesAdp" />
+        <start uid="ruler_fiducial_adp" />
         <start uid="axisAdp" />
         <start uid="pickedVoxelTextAdp" />
         <start uid="shapeExtruderAdp" />

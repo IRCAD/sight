@@ -10,7 +10,6 @@ Contains adaptors available for the generic scene.
 - **fragments_info**: takes a snapshot of layer fragments information and output it as a sight::data::image.
 - **frustum**: displays the frustum of a sight::data::camera.
 - **frustumList**: displays a new Frustum each time the transform is updated.
-- **image_multi_distances**: displays distances retrieved from the image fields.
 - **landmarks**: displays landmarks.
 - **light**: adds a light to the scene manager.
 - **line**: shows a simple line.

@@ -541,7 +541,7 @@ void slice_index_position_editor::slice_type_notification(int _type)
     const auto old_type = m_orientation;
 
     // Change slice type
-    m_orientation = static_cast<orientation_t>(type);
+    m_orientation = type;
 
     // Fire the signal
     {
@@ -596,8 +596,8 @@ service::connections_t slice_index_position_editor::auto_connections() const
     connections.push(IMAGE_INOUT, data::image::SLICE_INDEX_MODIFIED_SIG, UPDATE_SLICE_INDEX_SLOT);
     connections.push(IMAGE_INOUT, data::image::SLICE_TYPE_MODIFIED_SIG, UPDATE_SLICE_TYPE_SLOT);
     connections.push(IMAGE_INOUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_INOUT, data::image::DISTANCE_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_INOUT, data::image::DISTANCE_REMOVED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INOUT, data::image::RULER_MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(IMAGE_INOUT, data::image::FIDUCIAL_REMOVED_SIG, service::slots::UPDATE);
 
     const auto image        = m_image.lock();
     const auto image_series = std::dynamic_pointer_cast<const sight::data::image_series>(image.get_shared());
