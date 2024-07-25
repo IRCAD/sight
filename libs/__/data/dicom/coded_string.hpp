@@ -735,4 +735,106 @@ static constexpr std::optional<position_measuring_device_used_t> to_position_mea
     return std::nullopt;
 }
 
+/// Enum that defines the Pixel Data cc
+enum class pixel_data_characteristics_t : std::uint8_t
+{
+    unknown = 0,
+    original,
+    derived
+};
+
+//------------------------------------------------------------------------------
+
+static constexpr std::optional<std::string_view> to_string(
+    pixel_data_characteristics_t _pixel_data_characteristics
+)
+{
+    // See: https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.html
+    switch(_pixel_data_characteristics)
+    {
+        case pixel_data_characteristics_t::original:
+            return "ORIGINAL";
+
+        case pixel_data_characteristics_t::derived:
+            return "DERIVED";
+
+        case pixel_data_characteristics_t::unknown:
+            return std::nullopt;
+
+        default:
+            throw std::invalid_argument("Invalid pixel data characteristics");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+static constexpr std::optional<pixel_data_characteristics_t> to_pixel_data_characteristics(
+    const std::string_view& _pixel_data_characteristics
+) noexcept
+{
+    // See: https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.html
+    if(_pixel_data_characteristics == to_string(pixel_data_characteristics_t::original))
+    {
+        return pixel_data_characteristics_t::original;
+    }
+
+    if(_pixel_data_characteristics == to_string(pixel_data_characteristics_t::derived))
+    {
+        return pixel_data_characteristics_t::derived;
+    }
+
+    return std::nullopt;
+}
+
+/// Enum that defines the Patient Examination Characteristics
+enum class patient_examination_characteristics_t : std::uint8_t
+{
+    unknown = 0,
+    primary,
+    secondary
+};
+
+//------------------------------------------------------------------------------
+
+static constexpr std::optional<std::string_view> to_string(
+    patient_examination_characteristics_t _patient_examination_characteristics
+)
+{
+    // See: https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.html
+    switch(_patient_examination_characteristics)
+    {
+        case patient_examination_characteristics_t::primary:
+            return "PRIMARY";
+
+        case patient_examination_characteristics_t::secondary:
+            return "SECONDARY";
+
+        case patient_examination_characteristics_t::unknown:
+            return std::nullopt;
+
+        default:
+            throw std::invalid_argument("Invalid patient examination characteristics");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+static constexpr std::optional<patient_examination_characteristics_t> to_patient_examination_characteristics(
+    const std::string_view& _patient_examination_characteristics
+) noexcept
+{
+    // See: https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.7.6.html
+    if(_patient_examination_characteristics == to_string(patient_examination_characteristics_t::primary))
+    {
+        return patient_examination_characteristics_t::primary;
+    }
+
+    if(_patient_examination_characteristics == to_string(patient_examination_characteristics_t::secondary))
+    {
+        return patient_examination_characteristics_t::secondary;
+    }
+
+    return std::nullopt;
+}
+
 } // namespace sight::data::dicom

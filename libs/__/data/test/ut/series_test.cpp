@@ -568,6 +568,16 @@ void series_test::equality_test()
     series2->set_dimension_organization_type(series1->get_dimension_organization_type());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
+    CPPUNIT_ASSERT_NO_THROW(series1->set_referenced_sop_class_uid("54b"));
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_referenced_sop_class_uid(series1->get_referenced_sop_class_uid());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    CPPUNIT_ASSERT_NO_THROW(series1->set_referenced_sop_instance_uid("54c"));
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_referenced_sop_instance_uid(series1->get_referenced_sop_instance_uid());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
     series1->set_slice_thickness(0.55);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->set_slice_thickness(series1->get_slice_thickness());
@@ -617,6 +627,16 @@ void series_test::equality_test()
     series1->set_volume_to_table_mapping_matrix(matrix);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->set_volume_to_table_mapping_matrix(series1->get_volume_to_table_mapping_matrix());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_image_type(
+        {
+            dicom::pixel_data_characteristics_t::derived,
+            dicom::patient_examination_characteristics_t::secondary,
+            {"AXIAL"}
+        });
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_image_type(series1->get_image_type());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
     // Test also deepcopy, just for fun
@@ -2691,9 +2711,7 @@ void series_test::frame_acquisition_time_point_test()
         const std::string destination_0(*(destination->get_frame_acquisition_date_time(0)));
         const std::string destination_1(*(destination->get_frame_acquisition_date_time(1)));
         const std::string destination_2(*(destination->get_frame_acquisition_date_time(2)));
-        const std::string destination_3(*(destination->get_frame_acquisition_date_time(3)));
         const std::string destination_4(*(destination->get_frame_acquisition_date_time(4)));
-        const std::string destination_5(*(destination->get_frame_acquisition_date_time(5)));
 
         CPPUNIT_ASSERT_EQUAL(s_EXPECTED_0, destination_0);
         CPPUNIT_ASSERT_EQUAL(s_EXPECTED_1, destination_1);
@@ -2757,7 +2775,6 @@ void series_test::private_tag_test()
 {
     const std::string expected1 {uuid::generate()};
     const std::string expected2 {uuid::generate()};
-    const std::string expected3 {uuid::generate()};
 
     {
         auto series = std::make_shared<data::image_series>();

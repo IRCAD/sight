@@ -258,18 +258,4 @@ void image_series::set_origin(const origin_t& _origin)
     }
 }
 
-//------------------------------------------------------------------------------
-
-fiducials_series::csptr image_series::get_fiducials() const
-{
-    return m_fiducials_series;
-}
-
-//------------------------------------------------------------------------------
-
-fiducials_series::sptr image_series::get_fiducials()
-{
-    return m_fiducials_series;
-}
-
 } // namespace sight::data

@@ -136,16 +136,10 @@ public:
     SIGHT_DATA_API std::size_t resize(const size_t& _size, const core::type& _type, enum pixel_format _format) override;
     /// @}
 
-    SIGHT_DATA_API fiducials_series::csptr get_fiducials() const;
-    SIGHT_DATA_API fiducials_series::sptr get_fiducials();
-
 private:
 
     /// Contains the DICOM reference used to generate a valid DICOM Segmentation.
     dicom_series::sptr m_dicom_reference;
-
-    /// Contains the associated Spatial Fiducials file
-    fiducials_series::sptr m_fiducials_series {std::make_shared<fiducials_series>()};
 };
 
 //-----------------------------------------------------------------------------

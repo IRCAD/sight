@@ -114,18 +114,4 @@ bool model_series::operator!=(const model_series& _other) const noexcept
     return !(*this == _other);
 }
 
-//------------------------------------------------------------------------------
-
-fiducials_series::csptr model_series::get_fiducials() const
-{
-    return m_fiducials_series;
-}
-
-//------------------------------------------------------------------------------
-
-fiducials_series::sptr model_series::get_fiducials()
-{
-    return m_fiducials_series;
-}
-
 } // namespace sight::data

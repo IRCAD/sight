@@ -35,6 +35,8 @@
 #include <core/clock.hpp>
 #include <core/compare.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 #include <gdcmDict.h>
 #include <gdcmDicts.h>
 #include <gdcmGlobal.h>
@@ -2656,6 +2658,69 @@ std::string series::sops_to_string(const SopKeywords& _keywords) noexcept
 
 //------------------------------------------------------------------------------
 
+series::image_type_t series::get_image_type() const
+{
+    // GDCM stores the ImageType as a string with elements joined with a backslash separator
+    auto value = m_pimpl->get_joined_values<gdcm::Keywords::ImageType>(0);
+
+    // Retrieve the values (using value multiplicity 2-n and returning a vector would be too simple...)
+    std::vector<std::string> values;
+    boost::split(values, value, boost::is_any_of("\\"));
+
+    auto pixel_data_characteristics = dicom::pixel_data_characteristics_t::unknown;
+
+    if(!values.empty())
+    {
+        pixel_data_characteristics =
+            dicom::to_pixel_data_characteristics(values[0]).value_or(pixel_data_characteristics);
+    }
+
+    auto patient_examination_characteristics = dicom::patient_examination_characteristics_t::unknown;
+
+    if(values.size() > 1)
+    {
+        patient_examination_characteristics =
+            dicom::to_patient_examination_characteristics(values[1]).value_or(patient_examination_characteristics);
+    }
+
+    std::vector<std::string> other_values;
+
+    if(values.size() > 2)
+    {
+        other_values.insert(other_values.end(), values.cbegin() + 2, values.cend());
+    }
+
+    return {
+        pixel_data_characteristics,
+        patient_examination_characteristics,
+        other_values
+    };
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_image_type(const series::image_type_t& _image_type)
+{
+    auto pixel_data_characteristics = dicom::to_string(_image_type.pixel_data_characteristics);
+    SIGHT_ASSERT("pixel_data_characteristics should be present", pixel_data_characteristics);
+
+    auto patient_examination_characteristics = dicom::to_string(_image_type.patient_examination_characteristics);
+    SIGHT_ASSERT("patient_examination_characteristics should be present", patient_examination_characteristics);
+
+    std::vector<gdcm::String<92, 16, 32> > values;
+    values.emplace_back(std::string(*pixel_data_characteristics));
+    values.emplace_back(std::string(*patient_examination_characteristics));
+
+    for(const auto& other_value : _image_type.other_values)
+    {
+        values.emplace_back(other_value);
+    }
+
+    m_pimpl->set_values<gdcm::Keywords::ImageType>(values, 0);
+}
+
+//------------------------------------------------------------------------------
+
 std::string series::get_acquisition_date(std::size_t _instance) const
 {
     return m_pimpl->get_string_value<gdcm::Keywords::AcquisitionDate>(_instance);
@@ -3692,6 +3757,52 @@ void series::set_dimension_organization_type(dicom::dimension_organization_t _di
             )
         )
     );
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> series::get_referenced_sop_class_uid() const
+{
+    return m_pimpl->get_value<gdcm::Keywords::ReferencedSOPClassUID>(
+        0,
+        {
+            {gdcm::Keywords::SourceImageSequence::GetTag(), 0}
+        });
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_referenced_sop_class_uid(const std::optional<std::string>& _sop_class_uid)
+{
+    m_pimpl->set_value<gdcm::Keywords::ReferencedSOPClassUID>(
+        _sop_class_uid,
+        0,
+        {
+            {gdcm::Keywords::SourceImageSequence::GetTag(), 0}
+        });
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> series::get_referenced_sop_instance_uid() const
+{
+    return m_pimpl->get_value<gdcm::Keywords::ReferencedSOPInstanceUID>(
+        0,
+        {
+            {gdcm::Keywords::SourceImageSequence::GetTag(), 0}
+        });
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_referenced_sop_instance_uid(const std::optional<std::string>& _sop_instance_uid)
+{
+    m_pimpl->set_value<gdcm::Keywords::ReferencedSOPInstanceUID>(
+        _sop_instance_uid,
+        0,
+        {
+            {gdcm::Keywords::SourceImageSequence::GetTag(), 0}
+        });
 }
 
 //------------------------------------------------------------------------------

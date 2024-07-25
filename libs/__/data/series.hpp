@@ -262,6 +262,23 @@ public:
 
     /// Getter/Setter of DICOM General Image Module related attributes
     /// @{
+
+    struct image_type_t
+    {
+        dicom::pixel_data_characteristics_t pixel_data_characteristics {
+            dicom::pixel_data_characteristics_t::unknown
+        };
+
+        dicom::patient_examination_characteristics_t patient_examination_characteristics {
+            dicom::patient_examination_characteristics_t::unknown
+        };
+
+        std::vector<std::string> other_values {};
+    };
+
+    SIGHT_DATA_API image_type_t get_image_type() const;
+    SIGHT_DATA_API void set_image_type(const image_type_t& _image_type);
+
     SIGHT_DATA_API std::string get_acquisition_date(std::size_t _instance                                = 0) const;
     SIGHT_DATA_API void set_acquisition_date(const std::string& _acquisition_date, std::size_t _instance = 0);
 
@@ -496,6 +513,19 @@ public:
         const std::optional<std::size_t>& _frame_index = std::nullopt
     );
 
+    /// @}
+
+    /// Getter/Setter of DICOM SourceImageSequence
+    /// We assume to only have one element in the sequence, thus we can only reference one DICOM instance
+    /// If we want more, then we need to handle a SourceImageSequence index as parameter of the getter/setter
+    /// @{
+    SIGHT_DATA_API std::optional<std::string> get_referenced_sop_class_uid() const;
+    SIGHT_DATA_API void set_referenced_sop_class_uid(const std::optional<std::string>& _sop_class_uid = std::nullopt);
+
+    SIGHT_DATA_API std::optional<std::string> get_referenced_sop_instance_uid() const;
+    SIGHT_DATA_API void set_referenced_sop_instance_uid(
+        const std::optional<std::string>& _sop_instance_uid = std::nullopt
+    );
     /// @}
 
     /// Equality comparison operators
