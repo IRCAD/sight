@@ -104,9 +104,9 @@ private:
 
     /**
      * @brief Attaches a node in the scene graph.
-     * @param _node node to attach.
+     * @param _object node to attach.
      */
-    void attach_node(Ogre::MovableObject* _node);
+    void attach_node(Ogre::MovableObject* _object);
 
     /**
      * @brief Draws a line.

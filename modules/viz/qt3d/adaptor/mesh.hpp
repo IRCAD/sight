@@ -112,7 +112,7 @@ private:
     bool m_auto_reset_camera {false};
 
     static constexpr std::string_view MESH_INOUT = "mesh";
-    data::ptr<data::mesh, data::access::inout> m_mesh_data {this, MESH_INOUT, true};
+    data::ptr<data::mesh, data::access::inout> m_mesh_data {this, MESH_INOUT};
 };
 
 } // namespace sight::module::viz::qt3d::adaptor.

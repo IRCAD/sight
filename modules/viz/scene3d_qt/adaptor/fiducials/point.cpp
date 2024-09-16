@@ -450,7 +450,7 @@ void point::configuring()
 
     // Initial color
     auto color = std::make_shared<sight::data::color>();
-    color->set_rgba(config.get<std::string>(s_INITIAL_COLOR, "#FFFF00FF"));
+    color->from_string(config.get<std::string>(s_INITIAL_COLOR, "#FFFF00FF"));
     m_current_color = {color->red(), color->green(), color->blue(), color->alpha()};
 
     // Initial size
@@ -1068,7 +1068,7 @@ std::shared_ptr<point::landmark> point::create_manual_object(
         text->set_font_size(m_font_size);
         text->set_text(point_name);
         text->set_text_color(color);
-        text->set_visible(_group_data.m_visibility && m_visible);
+        text->set_visible(_group_data.m_visibility && visible());
         text->set_text_alignment("center", "");
 
         // Attach data.

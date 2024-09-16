@@ -32,7 +32,7 @@ namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
- * @brief Defines an adaptor to display a composite of TF and interact with them.
+ * @brief Defines an adaptor to display a map of TF and interact with them.
  *
  * The following actions are available:
  * - Left mouse click: selects a new current TF or move the current clicked TF point.
@@ -105,9 +105,9 @@ protected:
      * module::viz::scene2d::adaptor::transfer_function::service::slots::UPDATE.
      * Connect data::object::MODIFIED_SIG of s_TF_POOL_INOUT to
      * module::viz::scene2d::adaptor::transfer_function::service::slots::UPDATE.
-     * Connect data::composite::ADDED_OBJECTS_SIGof s_TF_POOL_INOUT to
+     * Connect data::map::ADDED_OBJECTS_SIGof s_TF_POOL_INOUT to
      * module::viz::scene2d::adaptor::transfer_function::service::slots::UPDATE.
-     * Connect data::composite::REMOVED_OBJECTS_SIG of s_TF_POOL_INOUT to
+     * Connect data::map::REMOVED_OBJECTS_SIG of s_TF_POOL_INOUT to
      * module::viz::scene2d::adaptor::transfer_function::service::slots::UPDATE.
      */
     connections_t auto_connections() const override;
@@ -115,14 +115,14 @@ protected:
     /// Release all graphics items and draw all TF, all TF connections a established here.
     void updating() override;
 
-    /// Release all graphic items and disconect all TF in the composite.
+    /// Release all graphic items and disconect all TF in the map.
     void stopping() override;
 
 private:
 
     using vec2d_t = sight::viz::scene2d::vec2d_t;
 
-    /// Represents a sub-TF which is a TF of the input composite.
+    /// Represents a sub-TF which is a TF of the input map.
     struct piece_view
     {
         /// Contains the TF data.
@@ -142,7 +142,7 @@ private:
     void release_tf_data();
 
     /**
-     * @brief Creates pieceView for each TF in the composite, fills basic data and create graphic points.
+     * @brief Creates pieceView for each TF in the map, fills basic data and create graphic points.
      *
      * @see createPieceView(const data::transfer_function::sptr _tf, int _zIndex)
      */
@@ -352,32 +352,32 @@ private:
     void toggle_linear_current_tf(bool _linear);
 
     /**
-     * @brief Adds a new TF to the composite and re draw the scene.
+     * @brief Adds a new TF to the map and re draw the scene.
      * @param _tf the new TF to add.
      */
     void add_new_tf(const data::transfer_function_piece::sptr _tf);
 
     /**
-     * @brief Adds a left ramp pieceView and update the composite.
+     * @brief Adds a left ramp pieceView and update the map.
      * @param _event the 2D scene event.
      *
-     * @see addNewTF(const data::transfer_function::sptr, const data::composite::key_t&)
+     * @see addNewTF(const data::transfer_function::sptr, const data::map::key_t&)
      */
     void add_left_ramp(const sight::viz::scene2d::data::event& _event);
 
     /**
-     * @brief Adds a right ramp pieceView and update the composite.
+     * @brief Adds a right ramp pieceView and update the map.
      * @param _event the 2D scene event.
      *
-     * @see addNewTF(const data::transfer_function::sptr, const data::composite::key_t&)
+     * @see addNewTF(const data::transfer_function::sptr, const data::map::key_t&)
      */
     void add_right_ramp(const sight::viz::scene2d::data::event& _event);
 
     /**
-     * @brief Adds a trapeze pieceView and update the composite.
+     * @brief Adds a trapeze pieceView and update the map.
      * @param _event the 2D scene event.
      *
-     * @see addNewTF(const data::transfer_function::sptr, const data::composite::key_t&)
+     * @see addNewTF(const data::transfer_function::sptr, const data::map::key_t&)
      */
     void add_trapeze(const sight::viz::scene2d::data::event& _event);
 
@@ -430,8 +430,8 @@ private:
     static constexpr std::string_view VIEWPORT_INPUT   = "viewport";
     static constexpr std::string_view CURRENT_TF_INOUT = "tf";
 
-    data::ptr<sight::viz::scene2d::data::viewport, sight::data::access::in> m_viewport {this, VIEWPORT_INPUT, true};
-    data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, CURRENT_TF_INOUT, true};
+    data::ptr<sight::viz::scene2d::data::viewport, sight::data::access::in> m_viewport {this, VIEWPORT_INPUT};
+    data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, CURRENT_TF_INOUT};
 };
 
 } // namespace sight::module::viz::scene2d::adaptor

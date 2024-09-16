@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -341,7 +341,7 @@ void axis::starting()
         );
     }
 
-    this->update_visibility(m_visible);
+    this->apply_visibility();
 
     this->request_render();
 }

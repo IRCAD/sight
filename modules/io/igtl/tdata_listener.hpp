@@ -33,7 +33,7 @@
 namespace sight::data
 {
 
-class composite;
+class map;
 
 } // namespace sight::data
 
@@ -91,7 +91,7 @@ private:
     using matrix_name_index_t = std::map<std::string, std::uint64_t>;
 
     ///Push received matrices in timeline
-    void manage_timeline(const SPTR(data::composite)& _obj, double _timestamp = 0);
+    void manage_timeline(const SPTR(data::map)& _obj, double _timestamp = 0);
 
     /**
      * @brief method contain a loop with receive and when we receive we emit m_sigReceiveObject

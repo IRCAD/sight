@@ -452,10 +452,10 @@ public:
     static constexpr std::string_view IMAGE_SERIES_INOUT     = "imageSeries";
     static constexpr std::string_view MATRIX_IN              = "matrix";
     static constexpr std::string_view CURRENT_LANDMARK_INOUT = "currentLandmark";
-    data::ptr<data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_IN, false, true};
-    data::ptr<data::landmarks, sight::data::access::inout> m_landmarks {this, LANDMARKS_INOUT, true};
-    data::ptr<data::image_series, sight::data::access::inout> m_image_series {this, IMAGE_SERIES_INOUT, true};
-    data::ptr<data::point, sight::data::access::inout> m_current_landmark {this, CURRENT_LANDMARK_INOUT, false, true};
+    data::ptr<data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_IN, true};
+    data::ptr<data::landmarks, sight::data::access::inout> m_landmarks {this, LANDMARKS_INOUT};
+    data::ptr<data::image_series, sight::data::access::inout> m_image_series {this, IMAGE_SERIES_INOUT};
+    data::ptr<data::point, sight::data::access::inout> m_current_landmark {this, CURRENT_LANDMARK_INOUT, true};
 
     /// Used to generate random color
     std::uniform_real_distribution<float> m_distributor {0.0F, 1.0F};

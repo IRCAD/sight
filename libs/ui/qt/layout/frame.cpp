@@ -71,6 +71,7 @@ void frame::create_frame()
         frame_info.m_max_size.first == -1 ? QWIDGETSIZE_MAX : frame_info.m_max_size.first,
         frame_info.m_max_size.second == -1 ? QWIDGETSIZE_MAX : frame_info.m_max_size.second
     );
+    m_qt_window->adjustSize();
 
     if(!frame_info.m_icon_path.empty())
     {
@@ -103,11 +104,6 @@ void frame::create_frame()
             if(frame_info.m_size.first > 0 && frame_info.m_size.second > 0)
             {
                 return frame_info.m_size;
-            }
-
-            if(frame_info.m_default_size.first > 0 && frame_info.m_default_size.second > 0)
-            {
-                return frame_info.m_default_size;
             }
 
             return std::make_pair(m_qt_window->width(), m_qt_window->height());

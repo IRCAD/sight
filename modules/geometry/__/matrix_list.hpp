@@ -92,7 +92,7 @@ public:
 
 protected:
 
-    /// Gets parameters from composite.
+    /// Gets parameters from map.
     void starting() override;
 
     /// Does nothing.

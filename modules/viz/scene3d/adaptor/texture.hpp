@@ -140,7 +140,7 @@ private:
     texture_swapped_signal_t::sptr m_sig_texture_swapped;
 
     static constexpr std::string_view TEXTURE_INOUT = "image";
-    data::ptr<data::image, data::access::in> m_image {this, TEXTURE_INOUT, true};
+    data::ptr<data::image, data::access::in> m_image {this, TEXTURE_INOUT};
 };
 
 //------------------------------------------------------------------------------

@@ -21,7 +21,9 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
 #include <data/matrix4.hpp>
+#include <data/real.hpp>
 
 #include <service/filter.hpp>
 
@@ -37,9 +39,6 @@ namespace sight::module::geometry
  * @brief Computed a weighted mean using the input matrix over time
  * the output will be = current_input * weight + current_weighted * (1 - weight).
  *
- * @section Slots Slots
- * - \b set_parameter(ui::parameter_t, std::string): set the weight value or enable/disable from the UI.
- *
  * @section XML XML configuration
  * @code{.xml}
    <service uid="..." type="sight::module::geometry::weighted_mean_matrix" >
@@ -54,7 +53,7 @@ namespace sight::module::geometry
  * @subsection In-Out In-Out
  * - \b damped: the current weighted output
  *
- * @subsection Config Config
+ * @subsection Properties Properties
  * - \b weight: between 0.1 and 1.0 the weight used to ponderate current matrix (1.0 means no averaging,
  * 0.1 means that we use only 10% of the current matrix).
  * - \b enabled: enable the filter, output = input, equivalent to weight = 1.0.
@@ -106,18 +105,6 @@ protected:
 
 private:
 
-    static constexpr std::string_view MATRIX_INPUT = "raw";
-    static constexpr std::string_view MATRIX_INOUT = "damped";
-
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_matrix_in {this, MATRIX_INPUT, true};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_matrix_out {this, MATRIX_INOUT};
-
-    /// Weight, default 0.5
-    double m_weight {0.5};
-
-    /// Enabled or passthrough mode
-    bool m_enabled {true};
-
     /// The first matrix can not be averaged, but need to be saved to use it a next update.
     /// The boolean store this state.
     bool m_initialized {false};
@@ -127,6 +114,15 @@ private:
 
     /// Current weighted translation.
     glm::dvec3 m_current_weighted_translation {};
+
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_matrix_in {this, "raw"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_matrix_out {this, "damped"};
+
+    /// Enabled or passthrough mode
+    sight::data::property<sight::data::boolean> m_enabled {this, "enabled", true};
+
+    /// Weight, default 0.5
+    sight::data::property<sight::data::real> m_weight {this, "weight", 0.5};
 };
 
 } // namespace sight::module::geometry

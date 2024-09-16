@@ -25,9 +25,9 @@
 #include "data/helper/field.hpp"
 
 #include <data/boolean.hpp>
-#include <data/composite.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
+#include <data/map.hpp>
 #include <data/point.hpp>
 #include <data/point_list.hpp>
 #include <data/real.hpp>
@@ -123,13 +123,11 @@ bool check_image_slice_index(data::image::sptr _p_img)
 
 //------------------------------------------------------------------------------
 
-bool is_buf_null(const data::image::buffer_t* _buf, const unsigned int _len)
+bool is_buf_null(const data::image::buffer_t* _buffer, const unsigned int _len)
 {
-    bool is_null       = false;
-    const auto* buffer = static_cast<const data::image::buffer_t*>(_buf);
-    is_null = 0 == std::accumulate(
-        buffer,
-        buffer + _len,
+    bool is_null = 0 == std::accumulate(
+        _buffer,
+        _buffer + _len,
         0,
         std::bit_or<>()
     );

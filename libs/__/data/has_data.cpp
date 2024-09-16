@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -88,7 +88,7 @@ void has_data::set_inout(
 
 //-----------------------------------------------------------------------------
 
-void has_data::set_output(std::string_view _key, data::object::sptr _obj, std::optional<std::size_t> _index)
+void has_data::set_output(data::object::sptr _obj, std::string_view _key, std::optional<std::size_t> _index)
 {
     auto data = m_data_container.find({_key, {}});
     SIGHT_ASSERT(

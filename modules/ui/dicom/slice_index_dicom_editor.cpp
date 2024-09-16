@@ -28,10 +28,10 @@
 #include <core/thread/timer.hpp>
 
 #include <data/array.hpp>
-#include <data/composite.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
+#include <data/map.hpp>
 #include <data/series_set.hpp>
 
 #include <service/op.hpp>
@@ -319,7 +319,7 @@ void slice_index_dicom_editor::read_image(std::size_t _selected_slice_index)
             m_sagittal_index->value()
         );
 
-        this->set_output(IMAGE, image_series);
+        this->set_output(image_series, IMAGE);
     }
 }
 

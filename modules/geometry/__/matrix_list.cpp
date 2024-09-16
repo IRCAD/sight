@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,7 +112,7 @@ void matrix_list::updating()
             }
 
             computed_vector->push_back(computed_matrix);
-            this->set_output(VECTOR_INOUT, computed_vector, i);
+            this->set_output(computed_vector, VECTOR_INOUT, i);
             auto sig = computed_vector->signal<data::vector::added_signal_t>
                            (data::vector::ADDED_OBJECTS_SIG);
             sig->async_emit(computed_vector->get_content());

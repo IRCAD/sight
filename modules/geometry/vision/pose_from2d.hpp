@@ -186,11 +186,11 @@ private:
     static constexpr std::string_view MATRIX_INOUT    = "matrix";
     static constexpr std::string_view POINTLIST_INOUT = "pointList";
 
-    data::ptr_vector<data::marker_map, data::access::in> m_marker_map {this, MARKERMAP_INPUT, true};
-    data::ptr_vector<data::camera, data::access::in> m_camera {this, CAMERA_INPUT, true};
+    data::ptr_vector<data::marker_map, data::access::in> m_marker_map {this, MARKERMAP_INPUT};
+    data::ptr_vector<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
     data::ptr<data::matrix4, data::access::in> m_extrinsic {this, EXTRINSIC_INPUT};
     data::ptr_vector<data::matrix4, data::access::inout> m_matrix {this, MATRIX_INOUT};
-    data::ptr<data::point_list, data::access::inout> m_point_list {this, POINTLIST_INOUT, false, true};
+    data::ptr<data::point_list, data::access::inout> m_point_list {this, POINTLIST_INOUT, true};
 };
 
 } // namespace sight::module::geometry::vision

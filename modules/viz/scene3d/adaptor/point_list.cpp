@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,11 +104,8 @@ void point_list::configuring()
 
     const std::string color = config.get<std::string>(s_COLOR_CONFIG, "");
 
-    const bool visible = config.get<bool>(s_VISIBLE_CONFIG, m_visible);
-    this->update_visibility(visible);
-
     SIGHT_ASSERT("Material not found", m_material);
-    m_material->diffuse()->set_rgba(color.empty() ? "#FFFFFFFF" : color);
+    m_material->diffuse()->from_string(color.empty() ? "#FFFFFFFF" : color);
 
     m_auto_reset_camera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 
@@ -153,7 +150,7 @@ void point_list::configuring()
 
     const std::string label_color = config.get(s_LABEL_COLOR_CONFIG, "#FFFFFF");
     m_label_color = std::make_shared<data::color>();
-    m_label_color->set_rgba(label_color);
+    m_label_color->from_string(label_color);
 }
 
 //-----------------------------------------------------------------------------
@@ -191,13 +188,15 @@ void point_list::starting()
             SIGHT_ERROR("No '" << POINTLIST_INPUT << "' or '" << MESH_INPUT << "' specified.")
         }
     }
+
+    this->apply_visibility();
 }
 
 //-----------------------------------------------------------------------------
 
 service::connections_t point_list::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(POINTLIST_INPUT, data::point_list::POINT_ADDED_SIG, service::slots::UPDATE);
     connections.push(POINTLIST_INPUT, data::point_list::POINT_REMOVED_SIG, service::slots::UPDATE);
     connections.push(POINTLIST_INPUT, data::point_list::MODIFIED_SIG, service::slots::UPDATE);
@@ -345,7 +344,7 @@ void point_list::update_mesh(const data::point_list::csptr& _point_list)
     if(m_entity == nullptr)
     {
         m_entity = m_mesh_geometry->create_entity(*scene_mgr);
-        m_entity->setVisible(m_visible);
+        m_entity->setVisible(visible());
         m_entity->setQueryFlags(m_query_flags);
     }
 
@@ -362,7 +361,7 @@ void point_list::update_mesh(const data::point_list::csptr& _point_list)
 
     this->attach_node(m_entity);
 
-    m_mesh_geometry->set_visible(m_visible);
+    m_mesh_geometry->set_visible(visible());
 
     if(m_auto_reset_camera)
     {
@@ -399,7 +398,7 @@ void point_list::update_mesh(const data::mesh::csptr& _mesh)
     if(m_entity == nullptr)
     {
         m_entity = m_mesh_geometry->create_entity(*scene_mgr);
-        m_entity->setVisible(m_visible);
+        m_entity->setVisible(visible());
         m_entity->setQueryFlags(m_query_flags);
     }
 
@@ -417,7 +416,7 @@ void point_list::update_mesh(const data::mesh::csptr& _mesh)
 
     this->attach_node(m_entity);
 
-    m_mesh_geometry->set_visible(m_visible);
+    m_mesh_geometry->set_visible(visible());
 
     if(m_auto_reset_camera)
     {

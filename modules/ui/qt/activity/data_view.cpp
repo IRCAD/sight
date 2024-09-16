@@ -29,9 +29,9 @@
 #include <core/runtime/helper.hpp>
 
 #include <data/boolean.hpp>
-#include <data/composite.hpp>
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
+#include <data/map.hpp>
 #include <data/matrix4.hpp>
 #include <data/real.hpp>
 #include <data/series.hpp>
@@ -348,7 +348,7 @@ void data_view::fill_information(const activity_info& _info)
         );
         layout->addLayout(tree_layout, 1);
 
-        //TODO better management of composite container
+        //TODO better management of map container
     }
 
     for(int i = 1 ; i < this->count() ; ++i)
@@ -398,19 +398,19 @@ void data_view::fill_information(const data::activity::sptr& _activity)
                         SIGHT_ERROR("Object param '" + req.name + "' must be a 'data::vector'");
                     }
                 }
-                else // container == composite
+                else // container == map
                 {
-                    data::composite::sptr composite = std::dynamic_pointer_cast<data::composite>(obj);
-                    if(composite)
+                    data::map::sptr map = std::dynamic_pointer_cast<data::map>(obj);
+                    if(map)
                     {
-                        for(const auto& sub_obj : *composite)
+                        for(const auto& sub_obj : *map)
                         {
                             this->add_object_item(i, sub_obj.second);
                         }
                     }
                     else
                     {
-                        SIGHT_ERROR("Object param '" + req.name + "' must be a 'data::composite'");
+                        SIGHT_ERROR("Object param '" + req.name + "' must be a 'data::map'");
                     }
                 }
             }
@@ -506,9 +506,9 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
                     object = vector;
                 }
             }
-            else // container == composite
+            else // container == map
             {
-                data::composite::sptr composite = std::make_shared<data::composite>();
+                data::map::sptr map = std::make_shared<data::map>();
 
                 for(unsigned int i = 0 ; i < nb_obj ; ++i)
                 {
@@ -520,7 +520,7 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
                     if(obj && obj->is_a(req.type))
                     {
                         std::string key = req.keys[i].key;
-                        (*composite)[key] = obj;
+                        (*map)[key] = obj;
                     }
                     else
                     {
@@ -531,7 +531,7 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
 
                 if(ok)
                 {
-                    object = composite;
+                    object = map;
                 }
             }
         }

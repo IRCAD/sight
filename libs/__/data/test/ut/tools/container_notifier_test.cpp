@@ -31,7 +31,7 @@
 
 #include <data/activity_set.hpp>
 #include <data/camera_set.hpp>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/series_set.hpp>
 #include <data/string.hpp>
 #include <data/vector.hpp>
@@ -375,9 +375,9 @@ void container_notifier_test::vector_test()
 
 //------------------------------------------------------------------------------
 
-void container_notifier_test::composite_test()
+void container_notifier_test::map_test()
 {
-    container_notifier_test_fn<composite>();
+    container_notifier_test_fn<map>();
 }
 
 //------------------------------------------------------------------------------

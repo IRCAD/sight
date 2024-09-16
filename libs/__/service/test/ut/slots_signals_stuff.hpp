@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ public:
 
 protected:
 
-    data::ptr<buffer, data::access::inout> m_buffer {this, BUFFER_INOUT, true};
+    data::ptr<buffer, data::access::inout> m_buffer {this, BUFFER_INOUT};
 };
 
 class s_basic_test : public basic_srv,

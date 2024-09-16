@@ -108,7 +108,7 @@ void model_series::starting()
 
 service::connections_t model_series::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(MODEL_INPUT, data::model_series::MODIFIED_SIG, service::slots::UPDATE);
     connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE);
     connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
@@ -137,6 +137,7 @@ void model_series::updating()
             "sight::module::viz::scene3d::adaptor::reconstruction"
         );
         adaptor->set_input(reconstruction, "reconstruction", true);
+        adaptor->configure();
 
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
         adaptor->set_id(this->get_id(), adaptor->get_id());
@@ -152,7 +153,7 @@ void model_series::updating()
 
         if(m_is_visible_tag)
         {
-            adaptor->update_visibility(!m_visible);
+            adaptor->update_visibility(!visible());
             SIGHT_WARN("The value of the modelSeries field will not be taken into account");
         }
         else

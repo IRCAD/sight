@@ -28,10 +28,10 @@
 #include <core/base.hpp>
 #include <core/tools/dispatcher.hpp>
 
-#include <data/composite.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
+#include <data/map.hpp>
 #include <data/transfer_function.hpp>
 
 #include <itkImageSeriesWriter.h>

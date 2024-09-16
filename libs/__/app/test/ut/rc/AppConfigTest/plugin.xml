@@ -84,7 +84,7 @@
             </service>
 
             <service uid="TestService1Uid" type="sight::app::ut::test1_input">
-                <in key="data1" uid="data1Id" />
+                <in key="data1" uid="data1Id" auto_connect="false" />
             </service>
             <service uid="TestService2Uid" type="sight::app::ut::test2_inputs" auto_connect="true">
                 <in key="data1" uid="data1Id" />
@@ -95,7 +95,7 @@
                 <in key="data2" uid="data2Id" auto_connect="true" />
             </service>
             <service uid="TestService4Uid" type="sight::app::ut::test1_input">
-                <in key="data1" uid="data3Id" />
+                <in key="data1" uid="data3Id" auto_connect="false" />
             </service>
             <service uid="TestService5Uid" type="sight::app::ut::test2_inputs_v2" auto_connect="true">
                 <in key="data1" uid="data1Id" />
@@ -288,13 +288,13 @@
 
             <service uid="TestService2Uid" type="sight::app::ut::test2_input_groups">
                 <in group="dataGroup0">
-                    <key uid="data1Id" />
+                    <key uid="data1Id" auto_connect="false" />
                     <key uid="data2Id" auto_connect="true" optional="true" />
                 </in>
                 <in group="dataGroup1">
-                    <key uid="data3Id" />
+                    <key uid="data3Id" auto_connect="false" />
                     <key uid="data4Id" auto_connect="true" />
-                    <key uid="data5Id" />
+                    <key uid="data5Id" auto_connect="false" />
                 </in>
             </service>
 
@@ -378,7 +378,7 @@
             <object uid="${data2}" type="sight::data::boolean" src="ref" />
 
             <service uid="TestServiceUid" type="sight::app::ut::test2_inputs">
-                <in key="data1" uid="${data1}" />
+                <in key="data1" uid="${data1}" auto_connect="false" />
                 <in key="data2" uid="${data2}" />
                 <view wid="${WID_PARENT}" />
             </service>
@@ -399,8 +399,8 @@
         <id>objectConfigTest</id>
         <desc>Test configuration for start and stop</desc>
         <config>
-            <object uid="compo1Id" type="sight::data::composite">
-                <item key="dataInComposite">
+            <object uid="compo1Id" type="sight::data::map">
+                <item key="data_in_map">
                     <object uid="data2Id" type="sight::data::string">
                         <value>Hello</value>
                     </object>
@@ -451,6 +451,64 @@
                 <param1>${param1}</param1>
             </service>
             <start uid="srv" />
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>properties_cfg_test</id>
+        <desc>Test configuration for properties</desc>
+        <config>
+            <object uid="integer_object" type="sight::data::integer">
+                <value>23</value>
+            </object>
+
+            <object uid="string_object" type="sight::data::string" value="hello" />
+
+            <object uid="vec_object" type="sight::data::dvec3">
+                <value>64;-94;-21.467</value>
+            </object>
+
+            <object uid="properties_map" type="sight::data::map">
+                <item key="integer">
+                    <object type="sight::data::integer" value="45" />
+                </item>
+                <item key="vec">
+                    <object type="sight::data::dvec3" value="-0.6;2.41;78" />
+                </item>
+            </object>
+
+            <service uid="test_service_default_props" type="sight::app::ut::test_service_with_properties" />
+
+            <service uid="test_service_parse_props_1" type="sight::app::ut::test_service_with_properties">
+                <properties integer="12" string="foo" vec="78.2;54;14.3" />
+            </service>
+
+            <service uid="test_service_parse_props_2" type="sight::app::ut::test_service_with_properties">
+                <properties>
+                    <property integer="-45" />
+                    <property string="bar" />
+                    <property vec="-8.7;79;7.48" />
+                </properties>
+            </service>
+
+            <service uid="test_service_object_props_1" type="sight::app::ut::test_service_with_properties">
+                <properties integer="integer_object" string="string_object" vec="vec_object" />
+            </service>
+
+            <service uid="test_service_mix_props_1" type="sight::app::ut::test_service_with_properties">
+                <properties string="bye" vec="vec_object" />
+            </service>
+
+            <service uid="test_service_map_props_1" type="sight::app::ut::test_service_with_properties">
+                <properties from="properties_map" />
+            </service>
+
+            <start uid="test_service_default_props" />
+            <start uid="test_service_parse_props_1" />
+            <start uid="test_service_parse_props_2" />
+            <start uid="test_service_object_props_1" />
+            <start uid="test_service_mix_props_1" />
+            <start uid="test_service_map_props_1" />
         </config>
     </extension>
 </plugin>

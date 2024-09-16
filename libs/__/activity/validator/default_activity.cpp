@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "activity/validator/registry/macros.hpp"
 
 #include <data/activity.hpp>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/vector.hpp>
 
 namespace sight::activity::validator

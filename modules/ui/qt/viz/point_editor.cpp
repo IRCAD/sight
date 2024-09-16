@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/string.hpp>
 
 #include <geometry/data/types.hpp>

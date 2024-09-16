@@ -141,9 +141,9 @@ protected:
     /// Do nothing.
     SIGHT_VIZ_SCENE2D_API void updating() override;
 
-    /// Stop all the adaptors attached to the render related composite,
+    /// Stop all the adaptors attached to the render related map,
     /// stop all those attached to the objects contained
-    /// by the render related composite, clear the maps and call stopContext().
+    /// by the render related map, clear the maps and call stopContext().
     SIGHT_VIZ_SCENE2D_API void stopping() override;
 
 private:

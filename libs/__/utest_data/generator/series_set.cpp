@@ -29,9 +29,9 @@
 #include <core/type.hpp>
 
 #include <data/activity.hpp>
-#include <data/composite.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
+#include <data/map.hpp>
 #include <data/material.hpp>
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,7 +104,7 @@ void vector::starting()
 
     this->create_vector();
 
-    this->update_visibility(m_visible);
+    this->apply_visibility();
 
     this->request_render();
 }
@@ -118,7 +118,7 @@ void vector::updating()
     this->delete_vector();
     this->create_vector();
 
-    this->set_visible(m_visible);
+    this->set_visible(visible());
 
     this->request_render();
 }

@@ -27,7 +27,7 @@
 
 #include <data/calibration_info.hpp>
 #include <data/camera.hpp>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/vector.hpp>
 
 #include <io/__/service/io_types.hpp>
@@ -412,8 +412,11 @@ void camera_config_launcher::start_intrinsic_config(std::size_t _index)
         const auto activity = m_activity.lock();
         auto calib_info     = std::dynamic_pointer_cast<data::calibration_info>((*activity)[calibration_info_key]);
 
-        replace_map["camera"]          = camera->get_id();
-        replace_map["calibrationInfo"] = calib_info->get_id();
+        const auto board_properties = m_board_properties.lock();
+
+        replace_map["camera"]           = camera->get_id();
+        replace_map["calibrationInfo"]  = calib_info->get_id();
+        replace_map["board_properties"] = board_properties->get_id();
     }
 
     m_extrinsic_launcher.stop_config();
@@ -465,11 +468,15 @@ void camera_config_launcher::start_extrinsic_config(std::size_t _index)
             calib_info2 = std::dynamic_pointer_cast<data::calibration_info>((*activity)[calibration_info2_key]);
         }
 
+        const auto board_properties = m_board_properties.lock();
+
         replace_map["camera1"]          = camera1->get_id();
         replace_map["camera2"]          = camera2->get_id();
         replace_map["calibrationInfo1"] = calib_info1->get_id();
         replace_map["calibrationInfo2"] = calib_info2->get_id();
         replace_map["camIndex"]         = std::to_string(_index);
+        replace_map["board_properties"] = board_properties->get_id();
+        replace_map["cameraSet"]        = camera_set->get_id();
     }
 
     m_extrinsic_launcher.stop_config();

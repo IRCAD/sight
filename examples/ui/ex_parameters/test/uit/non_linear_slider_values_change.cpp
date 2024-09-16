@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -49,8 +49,6 @@ void non_linear_slider_values_change::test()
         "NonLinearSliderValuesChange",
         [](sight::ui::test::tester& _tester)
         {
-            _tester.get_main_window()->dumpObjectTree();
-
             namespace helper = sight::ui::test::helper;
             using selector   = helper::selector;
 

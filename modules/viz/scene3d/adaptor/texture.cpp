@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,7 +94,7 @@ void texture::starting()
 
 service::connections_t texture::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(TEXTURE_INOUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
     connections.push(TEXTURE_INOUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
     return connections;

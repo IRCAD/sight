@@ -28,7 +28,7 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 #define FW_PROFILING_DISABLED
 #include <core/profiling.hpp>
@@ -44,7 +44,7 @@
 
 #include <stack>
 
-SIGHT_REGISTER_SERVICE(sight::viz::render, sight::viz::scene3d::render, sight::data::composite);
+SIGHT_REGISTER_SERVICE(sight::viz::render, sight::viz::scene3d::render, sight::data::map);
 
 namespace sight::viz::scene3d
 {

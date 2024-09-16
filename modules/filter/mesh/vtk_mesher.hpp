@@ -23,7 +23,9 @@
 #pragma once
 
 #include <data/image_series.hpp>
+#include <data/integer.hpp>
 #include <data/model_series.hpp>
+#include <data/real.hpp>
 
 #include <service/filter.hpp>
 
@@ -40,7 +42,7 @@ namespace sight::module::filter::mesh
    <service type="sight::module::filter::mesh::vtk_mesher" >
        <in key="imageSeries" uid="..."/>
        <out key="modelSeries" uid="..." />
-       <config percentReduction="80" threshold="255" />
+       <properties percent_reduction="80" threshold="255" />
     </service>
     @endcode
  *
@@ -48,8 +50,8 @@ namespace sight::module::filter::mesh
  * - \b imageSeries [sight::data::image_series] : image used to generate the output mesh
  * @subsection Output Output
  * - \b modelSeries [sight::data::model_series]: mesh generated from ImageSeries
- * @subsection Configuration Configuration
- * - \b percentReduction : Specify the desired reduction in the total number of polygons (e.g., if
+ * @subsection Properties Properties
+ * - \b percent_reduction : Specify the desired reduction in the total number of polygons (e.g., if
  *      TargetReduction is set to 90, this filter will try to reduce the data set to 10% of its original size)
  * - \b threshold : This value is used for threshold of the image means that Pixels below threshold value are converted
  *      to black (bit value of zero), and pixels above the threshold value are converted to white (a bit value of one).
@@ -73,16 +75,17 @@ protected:
 
     void updating() override;
 
+    connections_t auto_connections() const override;
+
 private:
 
-    unsigned int m_reduction {0};
-    unsigned int m_threshold {0};
-    void update_threshold(int);
-
     /// Input image mask
-    data::ptr<data::image_series, data::access::in> m_image {this, "imageSeries", false};
+    data::ptr<data::image_series, data::access::in> m_image {this, "imageSeries"};
     /// Output segmentation
-    data::ptr<data::model_series, data::access::out> m_model {this, "modelSeries", false};
+    data::ptr<data::model_series, data::access::out> m_model {this, "modelSeries"};
+
+    data::property<data::real> m_reduction {this, "percent_reduction", 0.};
+    data::property<data::integer> m_threshold {this, "threshold", 0};
 };
 
 } // namespace sight::module::filter::mesh

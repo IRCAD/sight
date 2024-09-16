@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,10 @@
 
 #include <data/activity.hpp>
 #include <data/boolean.hpp>
-#include <data/composite.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
+#include <data/map.hpp>
 #include <data/matrix4.hpp>
 #include <data/model_series.hpp>
 #include <data/real.hpp>
@@ -92,7 +92,7 @@ void default_activity_test::requirements_test()
     data::model_series::sptr model_series  = std::make_shared<data::model_series>();
     data::model_series::sptr model_series2 = std::make_shared<data::model_series>();
     data::model_series::sptr model_series3 = std::make_shared<data::model_series>();
-    data::composite::sptr model_compo      = std::make_shared<data::composite>();
+    data::map::sptr model_compo            = std::make_shared<data::map>();
 
     {
         // Empty data should NOT be valid
@@ -107,78 +107,78 @@ void default_activity_test::requirements_test()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("data with only an image should NOT be valid", false, validation.first);
     }
     {
-        // data with an image and an empty model composite should be valid
+        // data with an image and an empty model map should be valid
         (*activity)["modelSeries"] = model_compo;
 
         validation = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with an image and an empty model composite should be valid",
+            "data with an image and an empty model map should be valid",
             true,
             validation.first
         );
     }
     {
-        // data with an image and a model in the composite should be valid
+        // data with an image and a model in the map should be valid
         (*model_compo)["key1"] = model_series;
 
         validation = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with an image and a model in the composite should be valid",
+            "data with an image and a model in the map should be valid",
             true,
             validation.first
         );
     }
     {
-        // data with an image and two models in the composite should be valid
+        // data with an image and two models in the map should be valid
         (*model_compo)["key2"] = model_series2;
 
         validation = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with an image and two models in the composite should be valid",
+            "data with an image and two models in the map should be valid",
             true,
             validation.first
         );
     }
     {
-        // data with an image and 3 models in the composite should NOT be valid
+        // data with an image and 3 models in the map should NOT be valid
         (*model_compo)["key3"] = model_series2;
 
         validation = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with an image and 3 models in the composite should NOT be valid",
+            "data with an image and 3 models in the map should NOT be valid",
             false,
             validation.first
         );
     }
     {
-        // data with an image and an image in the model composite should NOT be valid
+        // data with an image and an image in the model map should NOT be valid
         model_compo->erase("key3");
         (*model_compo)["key2"] = image_series;
         validation             = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with an image and an image in the model composite should NOT be valid",
+            "data with an image and an image in the model map should NOT be valid",
             false,
             validation.first
         );
     }
     {
-        // data with a null image and a model in the composite should NOT be valid
+        // data with a null image and a model in the map should NOT be valid
         model_compo->erase("key2");
         (*activity)["imageSeries"] = nullptr;
         validation                 = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with a null image and a model in the composite should NOT be valid",
+            "data with a null image and a model in the map should NOT be valid",
             false,
             validation.first
         );
     }
     {
-        // data with a null image and a wrong key in the model composite should NOT be valid
+        // data with a null image and a wrong key in the model map should NOT be valid
         (*model_compo)["myKey"]    = model_series2;
         (*activity)["imageSeries"] = image_series;
         validation                 = activity_validator->check_requirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with a null image and a wrong key in the model composite should NOT be valid",
+            "data with a null image and a wrong key in the model map should NOT be valid",
             false,
             validation.first
         );
@@ -277,7 +277,7 @@ void default_activity_test::validator_test()
     data::model_series::sptr model_series  = std::make_shared<data::model_series>();
     data::model_series::sptr model_series2 = std::make_shared<data::model_series>();
     data::model_series::sptr model_series3 = std::make_shared<data::model_series>();
-    data::composite::sptr model_compo      = std::make_shared<data::composite>();
+    data::map::sptr model_compo            = std::make_shared<data::map>();
 
     utest_data::generator::image::generate_random_image(image_series, core::type::UINT8);
 
@@ -294,78 +294,78 @@ void default_activity_test::validator_test()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("data with only an image should NOT be valid", false, validation.first);
     }
     {
-        // data with an image and an empty model composite should be valid
+        // data with an image and an empty model map should be valid
         (*activity)["modelSeries"] = model_compo;
 
         validation = activity_validator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with an image and an empty model composite should be valid",
+            "data with an image and an empty model map should be valid",
             true,
             validation.first
         );
     }
     {
-        // data with an image and a model in the composite should be valid
+        // data with an image and a model in the map should be valid
         (*model_compo)["key1"] = model_series;
 
         validation = activity_validator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with an image and a model in the composite should be valid",
+            "data with an image and a model in the map should be valid",
             true,
             validation.first
         );
     }
     {
-        // data with an image and two models in the composite should be valid
+        // data with an image and two models in the map should be valid
         (*model_compo)["key2"] = model_series2;
 
         validation = activity_validator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with an image and two models in the composite should be valid",
+            "data with an image and two models in the map should be valid",
             true,
             validation.first
         );
     }
     {
-        // data with an image and 3 models in the composite should NOT be valid
+        // data with an image and 3 models in the map should NOT be valid
         (*model_compo)["key3"] = model_series2;
 
         validation = activity_validator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with an image and 3 models in the composite should NOT be valid",
+            "data with an image and 3 models in the map should NOT be valid",
             false,
             validation.first
         );
     }
     {
-        // data with an image and an image in the model composite should NOT be valid
+        // data with an image and an image in the model map should NOT be valid
         model_compo->erase("key3");
         (*model_compo)["key2"] = image_series;
         validation             = activity_validator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with an image and an image in the model composite should NOT be valid",
+            "data with an image and an image in the model map should NOT be valid",
             false,
             validation.first
         );
     }
     {
-        // data with a null image and a model in the composite should NOT be valid
+        // data with a null image and a model in the map should NOT be valid
         model_compo->erase("key2");
         (*activity)["imageSeries"] = nullptr;
         validation                 = activity_validator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with a null image and a model in the composite should NOT be valid",
+            "data with a null image and a model in the map should NOT be valid",
             false,
             validation.first
         );
     }
     {
-        // data with a null image and a wrong key in the model composite should NOT be valid
+        // data with a null image and a wrong key in the model map should NOT be valid
         (*model_compo)["myKey"]    = model_series2;
         (*activity)["imageSeries"] = image_series;
         validation                 = activity_validator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "data with a null image and a wrong key in the model composite should NOT be valid",
+            "data with a null image and a wrong key in the model map should NOT be valid",
             false,
             validation.first
         );
@@ -402,7 +402,7 @@ void default_activity_test::big_activity_test()
     data::integer::sptr int_obj  = std::make_shared<data::integer>();
     data::boolean::sptr bool_obj = std::make_shared<data::boolean>();
 
-    data::composite::sptr compo_str = std::make_shared<data::composite>();
+    data::map::sptr compo_str = std::make_shared<data::map>();
 
     (*compo_str)["Item1"] = std::make_shared<data::string>("myItem1");
     (*compo_str)["Item2"] = std::make_shared<data::string>("myItem3");

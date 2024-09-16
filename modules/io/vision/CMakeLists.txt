@@ -5,13 +5,4 @@ target_link_libraries(module_io_vision PRIVATE opencv_core opencv_imgcodecs)
 
 add_dependencies(module_io_vision data module_service)
 
-target_link_libraries(
-    module_io_vision
-    PUBLIC core
-           data
-           service
-           ui
-           io
-           io_opencv
-           geometry_vision
-)
+target_link_libraries(module_io_vision PUBLIC core data service io io_opencv geometry_vision)

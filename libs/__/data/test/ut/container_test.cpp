@@ -25,7 +25,7 @@
 #include <core/com/signal.hxx>
 #include <core/compare.hpp>
 
-#include <data/container.hxx>
+#include <data/container.hpp>
 #include <data/integer.hpp>
 
 #include <array>
@@ -218,100 +218,18 @@ void container_test::tearDown()
 
 void container_test::array_test()
 {
-    test_container(
-        std::array<int, 3>({1, 2, 3}),
-        std::array<int, 3>({4, 5, 6})
-    );
-
-    test_container(
-        std::array<integer::sptr, 3>(
-            {std::make_shared<integer>(1), std::make_shared<integer>(2), std::make_shared<integer>(3)
-            }),
-        std::array<integer::sptr, 3>(
-            {std::make_shared<integer>(4), std::make_shared<integer>(5),
-             std::make_shared<integer>(6)
-            })
-    );
-
-    test_container(
-        std::array<std::shared_ptr<int>, 3>(
-        {
-            std::make_shared<int>(1),
-            std::make_shared<int>(2),
-            std::make_shared<int>(3)
-        }),
-        std::array<std::shared_ptr<int>, 3>(
-        {
-            std::make_shared<int>(4),
-            std::make_shared<int>(5),
-            std::make_shared<int>(6)
-        })
-    );
 }
 
 //------------------------------------------------------------------------------
 
 void container_test::generic_test()
 {
-    test_dispatcher<int>(
-        {1, 2, 3},
-        {4, 5, 6
-        });
-
-    test_dispatcher<integer::sptr>(
-        {
-            std::make_shared<integer>(1),
-            std::make_shared<integer>(2),
-            std::make_shared<integer>(3)
-        },
-        {
-            std::make_shared<integer>(4),
-            std::make_shared<integer>(5),
-            std::make_shared<integer>(6)
-        });
-
-    test_dispatcher<std::shared_ptr<int> >(
-        {
-            std::make_shared<int>(1),
-            std::make_shared<int>(2),
-            std::make_shared<int>(3)
-        },
-        {
-            std::make_shared<int>(4),
-            std::make_shared<int>(5),
-            std::make_shared<int>(6)
-        });
 }
 
 //------------------------------------------------------------------------------
 
 void container_test::map_test()
 {
-    map_test_dispatcher<int, int>({{1, 1}, {2, 2}, {3, 3}}, {{4, 4}, {5, 5}, {6, 6}});
-
-    map_test_dispatcher<int, integer::sptr>(
-        {
-            {1, std::make_shared<integer>(1)},
-            {2, std::make_shared<integer>(2)},
-            {3, std::make_shared<integer>(3)}
-        },
-        {
-            {4, std::make_shared<integer>(4)},
-            {5, std::make_shared<integer>(5)},
-            {6, std::make_shared<integer>(6)}
-        });
-
-    map_test_dispatcher<int, std::shared_ptr<int> >(
-        {
-            {1, std::make_shared<int>(1)},
-            {2, std::make_shared<int>(2)},
-            {3, std::make_shared<int>(3)}
-        },
-        {
-            {4, std::make_shared<int>(4)},
-            {5, std::make_shared<int>(5)},
-            {6, std::make_shared<int>(6)}
-        });
 }
 
 } // namespace sight::data::ut

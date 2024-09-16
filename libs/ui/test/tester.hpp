@@ -238,7 +238,7 @@ public:
         std::function<bool(QObject*)> _condition = always_true,
         int _timeout                             = DEFAULT_TIMEOUT
     );
-    void yields(
+    SIGHT_UI_TEST_API void yields(
         const std::string& _component_description,
         const std::string& _object_name          = "",
         std::function<bool(QObject*)> _condition = always_true,

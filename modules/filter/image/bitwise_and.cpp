@@ -147,7 +147,7 @@ void bitwise_and::updating()
     const auto type = image->type();
     core::tools::dispatcher<core::tools::integer_types, and_image_filter_caller>::invoke(type, params);
 
-    this->set_output(OUTPUTIMAGE_OUT, output_image);
+    this->set_output(output_image, OUTPUTIMAGE_OUT);
 
     this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
 }

@@ -37,3 +37,6 @@ sight-git
 compile_commands.json
 
 CMakeUserPresets.json
+# coverage
+.coverage
+cobertura-coverage*.xml

@@ -44,7 +44,6 @@ static const core::com::signals::key_t ERROR_COMPUTED_SIG = "error_computed";
 open_cv_intrinsic::open_cv_intrinsic() noexcept
 {
     new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
-    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &open_cv_intrinsic::update_chessboard_size, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -56,27 +55,12 @@ open_cv_intrinsic::~open_cv_intrinsic() noexcept =
 
 void open_cv_intrinsic::configuring()
 {
-    const auto config    = this->get_config();
-    const auto cfg_board = config.get_child("board.<xmlattr>");
-
-    m_width_key = cfg_board.get<std::string>("width");
-    SIGHT_ASSERT("Attribute 'width' is empty", !m_width_key.empty());
-
-    m_height_key = cfg_board.get<std::string>("height");
-    SIGHT_ASSERT("Attribute 'height' is empty", !m_height_key.empty());
-
-    if(const auto square_size_key = cfg_board.get_optional<std::string>("squareSize"); square_size_key.has_value())
-    {
-        m_square_size_key = square_size_key.value();
-        SIGHT_ASSERT("Attribute 'squareSize' is empty", !m_square_size_key.empty());
-    }
 }
 
 // ----------------------------------------------------------------------------
 
 void open_cv_intrinsic::starting()
 {
-    this->update_chessboard_size();
 }
 
 // ----------------------------------------------------------------------------
@@ -99,13 +83,13 @@ void open_cv_intrinsic::updating()
         std::vector<std::vector<cv::Point3f> > object_points;
 
         std::vector<cv::Point3f> points;
-        for(unsigned int y = 0 ; y < m_height - 1 ; ++y)
+        for(unsigned int y = 0 ; y < static_cast<unsigned int>(*m_height - 1) ; ++y)
         {
-            for(unsigned int x = 0 ; x < m_width - 1 ; ++x)
+            for(unsigned int x = 0 ; x < static_cast<unsigned int>(*m_width - 1) ; ++x)
             {
                 points.emplace_back(
-                    static_cast<float>(x) * m_square_size,
-                    static_cast<float>(y) * m_square_size,
+                    static_cast<float>(x * m_square_size.value()),
+                    static_cast<float>(y * m_square_size.value()),
                     0.F
 
                 );
@@ -178,41 +162,8 @@ void open_cv_intrinsic::updating()
 
         cam->set_is_calibrated(true);
 
-        data::camera::intrinsic_calibrated_signal_t::sptr sig;
-        sig = cam->signal<data::camera::intrinsic_calibrated_signal_t>(
-            data::camera::INTRINSIC_CALIBRATED_SIG
-        );
-
+        auto sig = cam->signal<data::camera::intrinsic_calibrated_signal_t>(data::camera::INTRINSIC_CALIBRATED_SIG);
         sig->async_emit();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void open_cv_intrinsic::update_chessboard_size()
-{
-    try
-    {
-        ui::preferences preferences;
-
-        if(const auto& saved = preferences.get_optional<decltype(m_width)>(m_width_key); saved)
-        {
-            m_width = *saved;
-        }
-
-        if(const auto& saved = preferences.get_optional<decltype(m_height)>(m_height_key); saved)
-        {
-            m_height = *saved;
-        }
-
-        if(const auto& saved = preferences.get_optional<decltype(m_square_size)>(m_square_size_key); saved)
-        {
-            m_square_size = *saved;
-        }
-    }
-    catch(const ui::preferences_disabled&)
-    {
-        // Nothing to do..
     }
 }
 

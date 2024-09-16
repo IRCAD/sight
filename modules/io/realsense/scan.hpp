@@ -457,13 +457,13 @@ private:
     /// Mutex used for the Condition Variable
     std::mutex m_pauseMutex;
 
-    data::ptr<data::camera, data::access::in> m_camera {this, s_CAMERA_INPUT, false, true};
+    data::ptr<data::camera, data::access::in> m_camera {this, s_CAMERA_INPUT, true};
 
     static constexpr std::string_view s_CAMERA_SET_INOUT = "cameraSet";
-    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, s_CAMERA_SET_INOUT, false, true};
+    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, s_CAMERA_SET_INOUT, true};
 
     static constexpr std::string_view s_POINTCLOUD_OUTPUT = "pointcloud";
-    data::ptr<data::mesh, data::access::out> m_pointCloudOutput {this, s_POINTCLOUD_OUTPUT, false, true};
+    data::ptr<data::mesh, data::access::out> m_pointCloudOutput {this, s_POINTCLOUD_OUTPUT, true};
     data::mesh::sptr m_pointCloud;
 };
 

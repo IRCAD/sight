@@ -181,10 +181,11 @@ void data_parser_test::test_transfer_function_parser()
 
     auto parser = sight::service::add<sight::app::parser::transfer_function>("sight::app::parser::transfer_function");
     CPPUNIT_ASSERT(parser->is_a("sight::app::parser::transfer_function"));
-    parser->set_object_config(config);
 
     auto tf = std::make_shared<sight::data::transfer_function>();
-    parser->create_config(tf);
+
+    service::object_parser::objects_t sub_objects;
+    parser->parse(config, tf, sub_objects);
 
     const auto piece = tf->pieces().front();
     CPPUNIT_ASSERT_EQUAL(std::size_t(7), piece->size());

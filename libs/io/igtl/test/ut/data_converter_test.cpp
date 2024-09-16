@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include <core/type.hpp>
 
-#include <data/composite.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
 #include <data/line.hpp>
+#include <data/map.hpp>
 #include <data/matrix4.hpp>
 #include <data/mesh.hpp>
 #include <data/object.hpp>
@@ -35,7 +35,7 @@
 #include <data/real.hpp>
 #include <data/string.hpp>
 
-#include <io/igtl/detail/converter/composite_converter.hpp>
+#include <io/igtl/detail/converter/map_converter.hpp>
 #include <io/igtl/detail/data_converter.hpp>
 #include <io/igtl/detail/raw_message.hpp>
 
@@ -410,18 +410,18 @@ void data_converter_test::scalar_converter_test()
 
 //------------------------------------------------------------------------------
 
-void data_converter_test::composite_converter_test()
+void data_converter_test::map_converter_test()
 {
-    //FIXME : there is 3 converter that can convert a data::composite (aka CompositeConverter, TrackingStartConverter
-    ///and TrackingStopConverter). To avoid asserts CompositeConverter should be called explicitly.
-    io::igtl::detail::converter::composite_converter::sptr converter =
-        io::igtl::detail::converter::composite_converter::New();
+    //FIXME : there is 3 converter that can convert a data::map (aka MapConverter, TrackingStartConverter
+    ///and TrackingStopConverter). To avoid asserts MapConverter should be called explicitly.
+    io::igtl::detail::converter::map_converter::sptr converter =
+        io::igtl::detail::converter::map_converter::New();
 
     ::igtl::TrackingDataMessage::Pointer tracking_msg;
 
-    data::matrix4::sptr matrix      = std::make_shared<data::matrix4>();
-    data::composite::sptr composite = std::make_shared<data::composite>();
-    (*composite)["H_marker1_2_polaris"] = matrix;
+    data::matrix4::sptr matrix = std::make_shared<data::matrix4>();
+    data::map::sptr map        = std::make_shared<data::map>();
+    (*map)["H_marker1_2_polaris"] = matrix;
 
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
@@ -434,7 +434,7 @@ void data_converter_test::composite_converter_test()
     tracking_msg =
         ::igtl::TrackingDataMessage::Pointer(
             dynamic_cast< ::igtl::TrackingDataMessage*>(converter->from_fw_data_object(
-                                                            composite
+                                                            map
             ).
                                                         GetPointer())
         );
@@ -457,10 +457,10 @@ void data_converter_test::composite_converter_test()
 
     data::object::sptr dest_object =
         converter->from_igtl_message(::igtl::MessageBase::Pointer(tracking_msg.GetPointer()));
-    data::composite::sptr dest_composite = std::dynamic_pointer_cast<data::composite>(dest_object);
+    data::map::sptr dest_map = std::dynamic_pointer_cast<data::map>(dest_object);
 
-    auto iter = dest_composite->find("H_marker1_2_polaris");
-    CPPUNIT_ASSERT(iter != dest_composite->end());
+    auto iter = dest_map->find("H_marker1_2_polaris");
+    CPPUNIT_ASSERT(iter != dest_map->end());
 
     data::matrix4::sptr dest_matrix = std::dynamic_pointer_cast<data::matrix4>(iter->second);
     for(std::size_t i = 0 ; i < 4 ; ++i)

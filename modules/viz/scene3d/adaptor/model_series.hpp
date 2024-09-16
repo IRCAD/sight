@@ -154,7 +154,7 @@ private:
     bool m_is_visible_tag {false};
 
     static constexpr std::string_view MODEL_INPUT = "model";
-    data::ptr<data::model_series, data::access::in> m_model {this, MODEL_INPUT, true};
+    data::ptr<data::model_series, data::access::in> m_model {this, MODEL_INPUT};
 };
 
 //------------------------------------------------------------------------------

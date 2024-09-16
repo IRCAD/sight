@@ -27,7 +27,7 @@
 #include "activity/launcher.hpp"
 
 #include <data/activity_set.hpp>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 namespace sight::activity
 {
@@ -60,7 +60,7 @@ protected:
     SIGHT_ACTIVITY_API void store_activity_data(
         const data::activity_set& _activity_set,
         std::size_t _index,
-        const data::composite::csptr& _overrides = nullptr
+        const data::map::csptr& _overrides = nullptr
     );
 
     /**

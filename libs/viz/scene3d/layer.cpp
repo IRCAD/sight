@@ -313,6 +313,9 @@ void layer::create_scene()
             m_default_light_diffuse_color,
             m_default_light_specular_color
         );
+        service::config_t config;
+        config.put("config.<xmlattr>.name", "default");
+        m_light_adaptor->configure(config);
         m_light_adaptor->set_name(layer::DEFAULT_LIGHT_NAME);
         m_light_adaptor->set_type(Ogre::Light::LT_DIRECTIONAL);
         m_light_adaptor->set_transform_id(camera_node->getName());

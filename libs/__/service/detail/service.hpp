@@ -120,6 +120,13 @@ public:
 
     /// Reference to the service
     sight::service::base& m_service;
+
+    /// List of created properties during configuring in order to keep them alive
+    using properties_t = std::vector<sight::data::object::sptr>;
+    properties_t m_created_properties;
+
+    using property_slot_t = core::com::slot<void ()>;
+    std::vector<SPTR(property_slot_t)> m_properties_slots;
 };
 
 } // namespace sight::service::detail

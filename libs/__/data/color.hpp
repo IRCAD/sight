@@ -24,10 +24,7 @@
 
 #include <sight/data/config.hpp>
 
-#include "data/factory/new.hpp"
-#include "data/object.hpp"
-
-#include <array>
+#include "data/vec.hpp"
 
 namespace sight::data
 {
@@ -36,14 +33,14 @@ namespace sight::data
  * @brief   This class defines color object.
  */
 
-class SIGHT_DATA_CLASS_API color final : public object
+class SIGHT_DATA_CLASS_API color final : public sight::data::vec<float,
+                                                                 4>
 {
 public:
 
-    using color_t       = float;
-    using color_array_t = std::array<color_t, 4>;
+    using color_t = float;
 
-    SIGHT_DECLARE_CLASS(color, object);
+    SIGHT_DECLARE_CLASS(color, data::string_serializable);
 
     SIGHT_DATA_API color();
     SIGHT_DATA_API color(color_t _red, color_t _green = 1.F, color_t _blue = 1.F, color_t _alpha = 1.F);
@@ -51,12 +48,15 @@ public:
     /// Destructor
     SIGHT_DATA_API ~color() noexcept override = default;
 
+    using sight::data::vec<float, 4>::vec;
+    using sight::data::vec<float, 4>::operator=;
+
     /** Get/Set the array of color values (red, green, blue, alpha).
-     *  @name color_array_t accessor
+     *  @name array_t accessor
      *  @{  */
-    color_array_t& rgba();
-    const color_array_t& rgba() const;
-    void set_rgba(const color_array_t& _v_rgba);
+    array_t& rgba();
+    const array_t& rgba() const;
+    void set_rgba(const array_t& _v_rgba);
     /** @} */
 
     ///@{
@@ -67,10 +67,20 @@ public:
         color_t _blue,
         color_t _alpha = 1.0
     );
+    SIGHT_DATA_API void set_rgba(
+        std::uint8_t _red,
+        std::uint8_t _green,
+        std::uint8_t _blue,
+        std::uint8_t _alpha = 255
+    );
+
+    //------------------------------------------------------------------------------
+    SIGHT_DATA_API std::string to_string() const               final;
+    SIGHT_DATA_API void from_string(const std::string& _value) final;
 
     ///@brief set RGBA from hexadecimal format (\#ffffff)
     ///@param[in] _hexa_color c hexadecimal format (\#ffffff)
-    SIGHT_DATA_API void set_rgba(const std::string& _hexa_color);
+    [[deprecated("Use from_string() instead")]] SIGHT_DATA_API void set_rgba(const std::string& _hexa_color);
     ///@}
 
     /** @name color attributes accessor
@@ -91,52 +101,27 @@ public:
     SIGHT_DATA_API const color_t& blue() const;
     SIGHT_DATA_API const color_t& alpha() const;
     //@}
-
-    /// Equality comparison operators
-    /// @{
-    SIGHT_DATA_API bool operator==(const color& _other) const noexcept;
-    SIGHT_DATA_API bool operator!=(const color& _other) const noexcept;
-    /// @}
-
-    /// Defines shallow copy
-    /// @throws data::exception if an errors occurs during copy
-    /// @param[in] _source the source object to copy
-    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
-
-    /// Defines deep copy
-    /// @throws data::exception if an errors occurs during copy
-    /// @param _source source object to copy
-    /// @param _cache cache used to deduplicate pointers
-    SIGHT_DATA_API void deep_copy(
-        const object::csptr& _source,
-        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
-    ) override;
-
-protected:
-
-    //! RGBA of the image (in terms of points)
-    color_array_t m_v_rgba {};
 }; // end class color
 
 //-----------------------------------------------------------------------------
 
-inline color::color_array_t& color::rgba()
+inline color::array_t& color::rgba()
 {
-    return this->m_v_rgba;
+    return this->value();
 }
 
 //-----------------------------------------------------------------------------
 
-inline const color::color_array_t& color::rgba() const
+inline const color::array_t& color::rgba() const
 {
-    return this->m_v_rgba;
+    return this->value();
 }
 
 //-----------------------------------------------------------------------------
 
-inline void color::set_rgba(const color::color_array_t& _v_rgba)
+inline void color::set_rgba(const color::array_t& _v_rgba)
 {
-    this->m_v_rgba = _v_rgba;
+    this->value() = _v_rgba;
 }
 
 //-----------------------------------------------------------------------------

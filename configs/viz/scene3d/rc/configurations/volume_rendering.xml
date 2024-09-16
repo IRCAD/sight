@@ -6,21 +6,22 @@
         <object uid="volumeTF" type="sight::data::transfer_function" />
         <object uid="extrudedModelSeries" type="sight::data::model_series" />
 
+        <object uid="vr_visibility" type="sight::data::boolean" />
+        <object uid="negato_visibility" type="sight::data::boolean" />
+        <object uid="model_visibility" type="sight::data::boolean" />
+        <object uid="axis_visibility" type="sight::data::boolean" />
+
         <param name="WID_PARENT" />
         <param name="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" />
         <param name="VR_BOOL_PARAM_RECEIVER_CHANNEL" />
         <param name="VR_INT_PARAM_RECEIVER_CHANNEL" />
         <param name="VR_DOUBLE_PARAM_RECEIVER_CHANNEL" />
-        <param name="VR_VISIBILITY_RECEIVER_CHANNEL" />
-        <param name="3DNEGATO_VISIBILITY_RECEIVER_CHANNEL" />
-        <param name="MESHES_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="BOX_WIDGET_RESET_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" />
-        <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
         <param name="RULER_ACTIVATION_CHANNEL" default="RULER_ACTIVATION_CHANNEL" />
         <param name="RULER_DEACTIVATION_CHANNEL" default="RULER_DEACTIVATION_CHANNEL" />
@@ -116,7 +117,7 @@
                     <adaptor uid="globalCameraAdp" />
                     <adaptor uid="trackballInteractorAdp" />
                     <adaptor uid="pickerInteractorAdp" />
-                    <adaptor uid="modeSeriesAdp" />
+                    <adaptor uid="modelSeriesAdp" />
                     <adaptor uid="3DNegatoAdp" />
                     <adaptor uid="volumeAdp" />
                     <adaptor uid="landmarksAdp" />
@@ -151,9 +152,10 @@
             <config queryMask="0x40000000" priority="1" />
         </service>
 
-        <service uid="modeSeriesAdp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
+        <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
             <in key="model" uid="${modelSeries}" />
             <config queryFlags="0x40000000" autoresetcamera="true" />
+            <properties visible="${model_visibility}" />
         </service>
 
         <service uid="volumeAdp" type="sight::module::viz::scene3d::adaptor::volume_render">
@@ -162,12 +164,14 @@
             <in key="tf" uid="${volumeTF}" />
             <inout key="clippingMatrix" uid="clippingMatrix" />
             <config widgets="false" preintegration="false" autoresetcamera="true" samples="1200" />
+            <properties visible="${vr_visibility}" />
         </service>
 
         <service uid="3DNegatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d">
             <in key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config queryFlags="0x40000000" interactive="true" priority="2" />
+            <properties visible="${negato_visibility}" />
         </service>
 
         <service uid="landmarksAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
@@ -182,6 +186,7 @@
 
         <service uid="axisAdp" type="sight::module::viz::scene3d::adaptor::axis">
             <config visible="false" origin="true" label="false" />
+            <properties visible="${axis_visibility}" />
         </service>
 
         <service uid="pickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::text">
@@ -280,18 +285,6 @@
         </connect>
 
         <!-- Adaptors visibility -->
-        <connect channel="${VR_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>volumeAdp/update_visibility</slot>
-        </connect>
-
-        <connect channel="${3DNEGATO_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>3DNegatoAdp/update_visibility</slot>
-        </connect>
-
-        <connect channel="${MESHES_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>modeSeriesAdp/update_visibility</slot>
-        </connect>
-
         <connect channel="${BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL}">
             <slot>volumeAdp/toggle_widgets</slot>
         </connect>
@@ -315,10 +308,6 @@
 
         <connect channel="${SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL}">
             <slot>shapeExtruderAdp/reset</slot>
-        </connect>
-
-        <connect channel="${AXIS_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>axisAdp/update_visibility</slot>
         </connect>
 
         <connect channel="${WORLD_COORDS_LANDMARKS_CHANNEL}">
@@ -430,7 +419,7 @@
         <start uid="globalCameraAdp" />
         <start uid="trackballInteractorAdp" />
         <start uid="pickerInteractorAdp" />
-        <start uid="modeSeriesAdp" />
+        <start uid="modelSeriesAdp" />
         <start uid="volumeAdp" />
         <start uid="landmarksAdp" />
         <start uid="ruler_fiducial_adp" />

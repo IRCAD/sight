@@ -46,6 +46,7 @@ SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_input1_in
 SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test1_input1_opt_input1_opt_in_out);
 SIGHT_REGISTER_SERVICE(sight::app::ut::test_srv, sight::app::ut::test_out);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_data);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::app::ut::test_service_with_properties);
 
 namespace sight::app::ut
 {
@@ -56,10 +57,6 @@ unsigned int test_service::s_update_counter = 0;
 const std::string test_service::OPTION_KEY   = "option";
 const std::string test_service::UNCONFIGURED = "UNCONFIGURED";
 const std::string test_service::NOT_DEFINED  = "NOT_DEFINED";
-
-const service::base::key_t test_service_with_data::INPUT       = "input";
-const service::base::key_t test_service_with_data::INOUT_GROUP = "inoutGroup";
-const service::base::key_t test_service_with_data::OUTPUT      = "output";
 
 //------------------------------------------------------------------------------
 

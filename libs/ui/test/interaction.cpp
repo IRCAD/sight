@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -419,7 +419,7 @@ void keyboard_sequence::interact_with(T _thing) const
 
 std::string keyboard_sequence::to_string() const
 {
-    std::string res             = "type \"" + m_text + '"';
+    std::string res             = "type '" + m_text + "'";
     const std::string modifiers = modifiers_to_string(m_modifiers);
     if(!modifiers.empty())
     {

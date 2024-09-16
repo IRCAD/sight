@@ -92,13 +92,10 @@ public:
         std::filesystem::path m_icon_path;
 
         /// Frame minimum size (min width and min height)
-        std::pair<int, int> m_min_size;
+        std::pair<int, int> m_min_size {-1, -1};
 
         /// Frame maximum size (max width and max height)
         std::pair<int, int> m_max_size {-1, -1};
-
-        /// Frame default size (width and height)
-        std::pair<int, int> m_default_size {-1, -1};
 
         /// Frame style
         style m_style {DEFAULT};

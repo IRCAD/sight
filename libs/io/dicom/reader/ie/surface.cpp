@@ -278,7 +278,7 @@ void surface::read_surface_mesh_module(
     color_vector.push_back(_surface->GetRecommendedPresentationOpacity());
 
     // Adapt color to material
-    data::color::color_array_t rgba;
+    data::color::array_t rgba;
     boost::algorithm::clamp_range(color_vector.begin(), color_vector.end(), rgba.begin(), 0.F, 1.F);
 
     // Set reconstruction's visibility

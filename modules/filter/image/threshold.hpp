@@ -87,7 +87,7 @@ private:
     static constexpr std::string_view IMAGE_IN  = "source";
     static constexpr std::string_view IMAGE_OUT = "target";
 
-    sight::data::ptr<sight::data::object, sight::data::access::in> m_source {this, IMAGE_IN, true};
+    sight::data::ptr<sight::data::object, sight::data::access::in> m_source {this, IMAGE_IN};
     sight::data::ptr<sight::data::object, sight::data::access::out> m_target {this, IMAGE_OUT};
 };
 

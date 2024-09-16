@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,10 +46,15 @@ void string_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void string_test::methode1()
+void string_test::basic()
 {
-    using namespace std::literals::string_literals;
-    const std::array values = {""s, "chaine_caractere"s};
+    {
+        sight::data::string s;
+        CPPUNIT_ASSERT(s.is_type_of("sight::data::string"));
+        CPPUNIT_ASSERT(s.is_type_of("sight::data::string_serializable"));
+    }
+
+    const std::array<std::string, 2> values = {"", "chaine_caractere"};
 
     for(const std::string& value : values)
     {

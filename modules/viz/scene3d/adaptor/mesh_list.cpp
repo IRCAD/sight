@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -150,7 +150,7 @@ void mesh_list::starting()
 
 service::connections_t mesh_list::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, ADD_SLOT);
     return connections;
 }
@@ -290,7 +290,7 @@ void mesh_list::add()
 
         // update mesh adaptor visibility
         const sight::viz::scene3d::adaptor::sptr mesh_adp = instance.m_mesh;
-        mesh_adp->update_visibility(m_visible);
+        mesh_adp->update_visibility(visible());
     }
 
     ++m_drop_count;

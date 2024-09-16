@@ -25,7 +25,7 @@
 #include <activity/extension/activity.hpp>
 
 #include <data/activity.hpp>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 #include <QEvent>
 #include <QPointer>
@@ -111,10 +111,10 @@ public:
     void fill_information(const data::activity::sptr& _activity);
 
     /**
-     * @brief Checks if all the required data are selected and fill activity data composite.
+     * @brief Checks if all the required data are selected and fill activity data map.
      *
-     * It checks if all required data are present in the widget, and create the activity data composite.
-     * Then it checks if the activity parameters are accessible from the composite of data (it checks if the object are
+     * It checks if all required data are present in the widget, and create the activity data map.
+     * Then it checks if the activity parameters are accessible from the map of data (it checks if the object are
      * accessible from the object paths.
      *
      * @return True if data are correct, else false and errorMsg contains detailled error.

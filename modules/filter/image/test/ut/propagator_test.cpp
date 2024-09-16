@@ -26,6 +26,7 @@
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/point_list.hpp>
+#include <data/string.hpp>
 
 #include <service/op.hpp>
 
@@ -104,10 +105,12 @@ void propagator_test::propagate()
 
     service::config_t config;
     std::stringstream config_string;
-    config_string << R"(<config value="50" mode="minmax"/>)";
+    config_string << R"(<properties value="50"/>)";
 
     auto point_list = std::make_shared<sight::data::point_list>();
     auto mask       = std::make_shared<sight::data::image>();
+    auto mode       = std::make_shared<sight::data::string>();
+    mode->set_value("minmax");
     boost::property_tree::read_xml(config_string, config);
 
     srv->set_worker(sight::core::thread::get_default_worker());
@@ -115,6 +118,7 @@ void propagator_test::propagate()
     srv->set_input(image, "image_in");
     srv->set_input(point_list, "seeds");
     srv->set_inout(mask, "image_out");
+    srv->set_inout(mode, "mode");
     srv->configure();
     srv->start().wait();
     srv->update().wait();
@@ -240,9 +244,9 @@ void propagator_test::propagate()
     }
 
     // Switch to standard deviation mode
-    // auto sl = srv->slot<core::com::slot<void (std::string, std::string)> >("set_enum_parameter");
-
-    srv->slot("set_enum_parameter")->run(std::string("stddev"), std::string("mode"));
+    mode->set_value("stddev");
+    auto sig = mode->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG);
+    sig->emit();
 
     point_list->push_back(std::make_shared<sight::data::point>(105., -190., 52.));
 

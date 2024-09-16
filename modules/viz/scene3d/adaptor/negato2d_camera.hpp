@@ -257,8 +257,8 @@ private:
     static constexpr std::string_view IMAGE_INOUT = "image";
     static constexpr std::string_view TF_INOUT    = "tf";
 
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, IMAGE_INOUT, true};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, TF_INOUT, false, true};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, IMAGE_INOUT};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, TF_INOUT, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

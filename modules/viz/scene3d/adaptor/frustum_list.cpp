@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,7 +88,7 @@ void frustum_list::starting()
 
     // Create material
     m_material = std::make_shared<data::material>();
-    m_material->diffuse()->set_rgba(m_color);
+    m_material->diffuse()->from_string(m_color);
 
     m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
         "sight::module::viz::scene3d::adaptor::material"
@@ -109,7 +109,7 @@ void frustum_list::starting()
 
 service::connections_t frustum_list::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, ADD_FRUSTUM_SLOT);
     return connections;
 }

@@ -158,8 +158,8 @@ private:
     static constexpr std::string_view IMAGE_IN = "image";
     static constexpr std::string_view TF_INOUT = "tf";
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_IN, true};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, TF_INOUT, true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_IN};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, TF_INOUT};
     sight::data::ptr<sight::viz::scene2d::data::viewport, sight::data::access::inout> m_viewport {this, "viewport"};
 
     /// Stores current slice index on each orientation.

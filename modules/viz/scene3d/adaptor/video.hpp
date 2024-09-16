@@ -246,9 +246,9 @@ private:
     static constexpr std::string_view TF_INPUT    = "tf";
     static constexpr std::string_view PL_INPUT    = "pointList";
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT, true};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, TF_INPUT, true, true};
-    sight::data::ptr<sight::data::point_list, sight::data::access::in> m_pl {this, PL_INPUT, true, true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, TF_INPUT, true};
+    sight::data::ptr<sight::data::point_list, sight::data::access::in> m_pl {this, PL_INPUT, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

@@ -114,7 +114,7 @@ private:
     /// Stores connection with the camera transform.
     core::com::helper::sig_slot_connection m_connections;
 
-    data::ptr<data::mesh, data::access::in> m_mesh {this, "mesh", false};
+    data::ptr<data::mesh, data::access::in> m_mesh {this, "mesh"};
 };
 
 } // namespace sight::module::viz::sample.

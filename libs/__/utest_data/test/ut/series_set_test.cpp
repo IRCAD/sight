@@ -23,8 +23,8 @@
 #include "series_set_test.hpp"
 
 #include <data/activity.hpp>
-#include <data/composite.hpp>
 #include <data/image_series.hpp>
+#include <data/map.hpp>
 #include <data/model_series.hpp>
 #include <data/series.hpp>
 #include <data/series_set.hpp>

@@ -22,9 +22,10 @@
 
 #pragma once
 
-#include <io/__/service/reader.hpp>
+#include <data/integer.hpp>
+#include <data/real.hpp>
 
-#include <string>
+#include <io/__/service/reader.hpp>
 
 namespace sight::module::io::vision
 {
@@ -56,10 +57,10 @@ public:
     SIGHT_DECLARE_SERVICE(calibration_info_reader, sight::io::service::reader);
 
     /// Constructor.
-    calibration_info_reader() noexcept;
+    calibration_info_reader() noexcept = default;
 
     /// Destructor.
-    ~calibration_info_reader() noexcept override;
+    ~calibration_info_reader() noexcept override = default;
 
     /// Configures the folder path.
     void open_location_dialog() override;
@@ -83,26 +84,14 @@ protected:
 
 private:
 
-    /// SLOT: updates the chessboard size from the preferences.
-    void update_chessboard_size();
-
-    /// Preference key to retrieve the chessboard width.
-    std::string m_width_key;
-
-    /// Preference key to retrieve the chessboard height.
-    std::string m_height_key;
-
-    /// Preference key to retrieve the scaling factor applied to the image before detection.
-    std::string m_scale_key;
-
     /// Width of the chessboard we're looking for.
-    std::size_t m_width {11};
+    sight::data::property<sight::data::integer> m_width {this, "board_width", 11};
 
     /// Height of the chessboard we're looking for.
-    std::size_t m_height {8};
+    sight::data::property<sight::data::integer> m_height {this, "board_height", 8};
 
     /// Scale applied to the images before running the detection algorithm.
-    float m_scale {1.F};
+    sight::data::property<sight::data::real> m_scale {this, "board_scale", 1.};
 };
 
 } // namespace sight::module::io::vision

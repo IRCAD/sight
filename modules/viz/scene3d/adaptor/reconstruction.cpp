@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,7 +86,7 @@ void reconstruction::starting()
 
 service::connections_t module::viz::scene3d::adaptor::reconstruction::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(RECONSTRUCTION_INPUT, data::reconstruction::MESH_CHANGED_SIG, CHANGE_MESH_SLOT);
     connections.push(RECONSTRUCTION_INPUT, data::reconstruction::VISIBILITY_MODIFIED_SIG, VISIBILITY_SLOT);
     return connections;
@@ -140,6 +140,7 @@ void reconstruction::create_mesh_service()
         );
         mesh_adaptor->set_input(mesh, "mesh", true);
 
+        mesh_adaptor->configure();
         mesh_adaptor->set_id(this->get_id() + mesh_adaptor->get_id());
         mesh_adaptor->set_layer_id(m_layer_id);
         mesh_adaptor->set_render_service(this->render_service());
@@ -163,7 +164,7 @@ void reconstruction::create_mesh_service()
 
 //------------------------------------------------------------------------------
 
-void reconstruction::set_visible(bool _hide)
+void reconstruction::set_visible(bool _visible)
 {
     if(!m_mesh_adaptor.expired())
     {
@@ -172,7 +173,7 @@ void reconstruction::set_visible(bool _hide)
         if(mesh_adaptor)
         {
             const auto reconstruction = m_reconstruction.lock();
-            mesh_adaptor->set_visible(_hide ? false : reconstruction->get_is_visible());
+            mesh_adaptor->set_visible(_visible ? false : reconstruction->get_is_visible());
         }
     }
 }

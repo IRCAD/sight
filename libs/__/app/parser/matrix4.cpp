@@ -33,19 +33,17 @@ namespace sight::app::parser
 
 //------------------------------------------------------------------------------
 
-void matrix4::updating()
-{
-    SIGHT_FATAL("This method is deprecated, and thus shouldn't be used.");
-}
-
-//------------------------------------------------------------------------------
-
-void matrix4::create_config(core::object::sptr _obj)
+void matrix4::parse(
+    const service::config_t& _cfg,
+    core::object::sptr _obj,
+    objects_t&
+    /*_sub_objects*/
+)
 {
     data::matrix4::sptr matrix = std::dynamic_pointer_cast<data::matrix4>(_obj);
     SIGHT_ASSERT("matrix not instanced", matrix);
 
-    for(const auto& elem : m_cfg)
+    for(const auto& elem : _cfg)
     {
         if(elem.first == "matrix")
         {

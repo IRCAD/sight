@@ -145,7 +145,7 @@ private:
     std::array<int, 2> m_rotation_range {};
 
     static constexpr std::string_view MATRIX_INOUT = "matrix";
-    data::ptr<data::matrix4, sight::data::access::inout> m_matrix {this, MATRIX_INOUT, true};
+    data::ptr<data::matrix4, sight::data::access::inout> m_matrix {this, MATRIX_INOUT};
 };
 
 } // namespace sight::module::ui::qt::viz

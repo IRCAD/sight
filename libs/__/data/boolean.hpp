@@ -24,9 +24,12 @@
 
 #include <sight/data/config.hpp>
 
+#include "data/exception.hpp"
 #include "data/factory/new.hpp"
-#include "data/generic_field.hpp"
 #include "data/object.hpp"
+#include "data/scalar.hpp"
+
+#include <boost/algorithm/string.hpp>
 
 namespace sight::data
 {
@@ -36,37 +39,40 @@ namespace sight::data
  *
  * boolean object is essentially used as a field in other objects.
  */
-class SIGHT_DATA_CLASS_API boolean final : public generic_field<bool>
+class SIGHT_DATA_CLASS_API boolean final : public scalar<bool>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(boolean, data::object);
+    SIGHT_DECLARE_CLASS(boolean, scalar<bool>);
+
+    using scalar<bool>::scalar;
+    using scalar<bool>::operator=;
 
     //------------------------------------------------------------------------------
 
-    SIGHT_DATA_API boolean(bool _val = false)
+    std::string to_string() const final
     {
-        value() = _val;
+        return this->value() ? "true" : "false";
     }
 
-    /**
-     * @brief Destructor.
-     */
-    SIGHT_DATA_API ~boolean() noexcept override = default;
+    //------------------------------------------------------------------------------
 
-    /// Defines shallow copy
-    /// @throws data::exception if an errors occurs during copy
-    /// @param[in] _source the source object to copy
-    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
-
-    /// Defines deep copy
-    /// @throws data::exception if an errors occurs during copy
-    /// @param _source source object to copy
-    /// @param _cache cache used to deduplicate pointers
-    SIGHT_DATA_API void deep_copy(
-        const object::csptr& _source,
-        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
-    ) override;
+    void from_string(const std::string& _value) final
+    {
+        const auto value = boost::trim_copy(_value);
+        if(value == "true")
+        {
+            this->value() = true;
+        }
+        else if(value == "false")
+        {
+            this->value() = false;
+        }
+        else
+        {
+            throw data::exception("Value " + _value + " can not be converted to a boolean.");
+        }
+    }
 };
 
 } // namespace sight::data

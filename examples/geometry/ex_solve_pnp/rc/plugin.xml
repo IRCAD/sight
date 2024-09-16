@@ -299,7 +299,7 @@
                 </inout>
             </service>
 
-            <service uid="solvePnPSrv" type="sight::module::geometry::vision::solve_pn_p">
+            <service uid="solvePnPSrv" type="sight::module::geometry::vision::solve_pnp">
                 <in key="pointList2d" uid="2dPixels" />
                 <in key="pointList3d" uid="3dPoints" />
                 <in key="calibration" uid="camera" />

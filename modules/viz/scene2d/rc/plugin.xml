@@ -32,7 +32,7 @@
         <service>sight::module::viz::scene2d::adaptor::transfer_function</service>
         <object key="viewport">sight::viz::scene2d::data::viewport</object>
         <object key="tf">sight::data::transfer_function</object>
-        <desc>Defines an adaptor to display a composite of TF and interact with them.</desc>
+        <desc>Defines an adaptor to display a map of TF and interact with them.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">

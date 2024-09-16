@@ -8,7 +8,7 @@ Tool calibration is performed using a tracked aruco tag.
 
 ## Activities
 
-- **calExtrinsicView**
+- **sight::navigation::calibration::cal_extrinsic_view**
 Defines required configuration and service for extrinsic calibration using standard checkboard.
 
 - **calibration**
@@ -45,7 +45,7 @@ add_dependencies(my_target activity_navigation_calibration ... )
 
 ### XML
 
-Example with `calIntrinsicView` & `calExtrinsicView`
+Example with `sight::navigation::calibration::cal_intrinsic_view` & `sight::navigation::calibration::cal_extrinsic_view`
 
 ```xml
     <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::camera_config_launcher">
@@ -53,12 +53,12 @@ Example with `calIntrinsicView` & `calExtrinsicView`
         <inout key="activity" uid="${AS_UID}" />
         <config>
             <intrinsic>
-                <appConfig id="calIntrinsicView" />
+                <appConfig id="sight::navigation::calibration::cal_intrinsic_view" />
                 <parameter replace="WID_PARENT" by="calibrationView" />
                 <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
             </intrinsic>
             <extrinsic>
-                <appConfig id="calExtrinsicView" />
+                <appConfig id="sight::navigation::calibration::cal_extrinsic_view" />
                 <inout key="cameraSet" uid="${cameraSet}" />
                 <parameter replace="WID_PARENT" by="calibrationView" />
                 <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />

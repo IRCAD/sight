@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -138,7 +138,8 @@ void camera::starting()
 
 service::connections_t camera::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
+
     connections.push(TRANSFORM_INOUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
     connections.push(CALIBRATION_INPUT, data::camera::MODIFIED_SIG, CALIBRATE_SLOT);
     connections.push(CALIBRATION_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);

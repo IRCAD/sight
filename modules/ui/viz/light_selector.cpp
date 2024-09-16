@@ -28,7 +28,7 @@
 #include <core/com/slots.hxx>
 
 #include <data/color.hpp>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/matrix4.hpp>
 
 #include <service/macros.hpp>

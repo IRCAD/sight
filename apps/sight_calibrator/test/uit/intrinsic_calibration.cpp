@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,6 +25,7 @@
 #include <core/runtime/runtime.hpp>
 
 #include <ui/test/helper/button.hpp>
+#include <ui/test/helper/dialog.hpp>
 #include <ui/test/helper/label.hpp>
 #include <ui/test/helper/list_widget.hpp>
 #include <ui/test/helper/preferences_configuration.hpp>
@@ -35,6 +36,7 @@
 #include <utest_data/data.hpp>
 
 #include <QLabel>
+#include <QSpinBox>
 
 #include <array>
 
@@ -70,7 +72,23 @@ void intrinsic_calibration::test()
 
             // Configure the chessboard size (the size of the example chessboard is 10*8)
             helper::button::push(_tester, "toolBarView/Chessboard size");
-            helper::preferences_configuration::fill(_tester, {{"CHESSBOARD_WIDTH", "10"}, {"CHESSBOARD_HEIGHT", "8"}});
+
+            auto bt = _tester.add_in_backtrace("fill chessboard configuration window");
+            helper::dialog::take(_tester, "Chessboard settings");
+            QPointer<QWidget> window = _tester.get<QWidget*>();
+            _tester.take("Chessboard settings", window);
+            _tester.yields("'Chessboard width' field", "board_width");
+            _tester.get<QSpinBox*>()->setValue(10);
+            _tester.take("Chessboard settings", window);
+            _tester.yields("'Chessboard height' field", "board_height");
+            _tester.get<QSpinBox*>()->setValue(8);
+            window->close();
+            _tester.doubt(
+                "the preferences configuration window is closed",
+                [&window](QObject*) -> bool
+            {
+                return window == nullptr || !window->isVisible();
+            });
 
             // We didn't load the chessboard yet: trying to add captures gives no result
             helper::tool_button::tool_tip_matches(_tester, "detectionStatusSrv/0", "Points are NOT visible");

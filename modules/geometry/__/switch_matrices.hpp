@@ -107,7 +107,7 @@ private:
     static constexpr std::string_view MATRIX_INPUT  = "matrix";
     static constexpr std::string_view MATRIX_OUTPUT = "output";
 
-    data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, MATRIX_INPUT, true};
+    data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, MATRIX_INPUT};
     data::ptr<data::matrix4, data::access::inout> m_output {this, MATRIX_OUTPUT};
 };
 

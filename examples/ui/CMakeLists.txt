@@ -1,4 +1,5 @@
 add_subdirectory(ex_notifications)
 add_subdirectory(ex_parameters)
 add_subdirectory(ex_progress_bar)
+add_subdirectory(ex_settings)
 add_subdirectory(ex_collapsible_section)

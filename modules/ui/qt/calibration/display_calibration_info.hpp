@@ -37,7 +37,7 @@ namespace sight::module::ui::qt::calibration
 /**
  * @brief   Launches an config to display calibration images.
  *
- *  This service works on a data::composite.
+ *  This service works on a data::map.
  *  It starts/stops a template configuration. This service can display one or two images.
  *
  *  If there is one calibration info in the service parameters, the template configuration used is
@@ -66,7 +66,7 @@ namespace sight::module::ui::qt::calibration
  *   an external window.
  * - \b stopConfig() : Stop the displayed configuration.
  */
-class display_calibration_info : public service::controller
+class display_calibration_info final : public service::controller
 {
 public:
 
@@ -76,21 +76,21 @@ public:
     display_calibration_info() noexcept;
 
     /// Destructor. Does nothing.
-    ~display_calibration_info() noexcept override;
+    ~display_calibration_info() noexcept final = default;
 
 protected:
 
+    /// Set the configurations to start for intrinsic and extrinsic
+    void configuring(const config_t& _config) final;
+
     /// Starts the config
-    void starting() override;
+    void starting() final;
 
     /// Stops the config
-    void stopping() override;
+    void stopping() final;
 
     /// Does nothing
-    void updating() override;
-
-    /// Does nothing
-    void configuring() override;
+    void updating() final;
 
 private:
 
@@ -117,8 +117,8 @@ private:
 
     static constexpr std::string_view CALIBRATION_INFO_1 = "calInfo1";
     static constexpr std::string_view CALIBRATION_INFO_2 = "calInfo2";
-    data::ptr<data::calibration_info, data::access::in> m_calibration_info1 {this, CALIBRATION_INFO_1, false};
-    data::ptr<data::calibration_info, data::access::in> m_calibration_info2 {this, CALIBRATION_INFO_2, false, true};
+    data::ptr<data::calibration_info, data::access::in> m_calibration_info1 {this, CALIBRATION_INFO_1};
+    data::ptr<data::calibration_info, data::access::in> m_calibration_info2 {this, CALIBRATION_INFO_2, true};
 };
 
 } // namespace sight::module::ui::qt::calibration

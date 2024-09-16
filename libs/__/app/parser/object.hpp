@@ -45,20 +45,13 @@ public:
 
     SIGHT_DECLARE_SERVICE(object, service::object_parser);
 
-    SIGHT_APP_API object()           = default;
     SIGHT_APP_API ~object() override = default;
 
-    SIGHT_APP_API void create_config(core::object::sptr _obj) override;
-    SIGHT_APP_API void start_config() override;
-    SIGHT_APP_API void update_config() override;
-    SIGHT_APP_API void stop_config() override;
-    SIGHT_APP_API void destroy_config() override;
-
-protected:
-
-    void updating() override;
-
-    std::vector<app::config_manager::sptr> m_ctm_container;
+    SIGHT_APP_API void parse(
+        const service::config_t& _cfg,
+        core::object::sptr _obj,
+        objects_t& _sub_objects
+    ) override;
 };
 
 } // namespace sight::app::parser

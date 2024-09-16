@@ -70,6 +70,11 @@
 
             <object uid="volumeTF" type="sight::data::transfer_function" />
 
+            <object uid="vr_visibility" type="sight::data::boolean" value="false" />
+            <object uid="negato_visibility" type="sight::data::boolean" value="false" />
+            <object uid="model_visibility" type="sight::data::boolean" value="false" />
+            <object uid="axis_visibility" type="sight::data::boolean" value="false" />
+
             <!-- ******************************* UI declaration *********************************** -->
 
             <service uid="mainView" type="sight::module::ui::frame">
@@ -388,15 +393,15 @@
 
             <!-- Adaptors visibility -->
             <service uid="volumeVisibilityAct" type="sight::module::ui::action">
-                <state enabled="false" />
+                <properties checked="${vr_visibility}" enabled="false" />
             </service>
 
             <service uid="negato3DVisibilityAct" type="sight::module::ui::action">
-                <state enabled="false" />
+                <properties checked="${negato_visibility}" enabled="false" />
             </service>
 
             <service uid="meshVisibilityAct" type="sight::module::ui::action">
-                <state enabled="false" />
+                <properties checked="${model_visibility}" enabled="false" />
             </service>
 
             <service uid="boxWidgetVisibilityAct" type="sight::module::ui::action">
@@ -415,7 +420,9 @@
                 <state enabled="true" />
             </service>
 
-            <service uid="axisVisibilityAct" type="sight::module::ui::action" />
+            <service uid="axisVisibilityAct" type="sight::module::ui::action">
+                <properties checked="${axis_visibility}" />
+            </service>
 
             <service uid="landmarksEditModeAct" type="sight::module::ui::action">
                 <state enabled="false" />
@@ -442,16 +449,12 @@
                 <parameter replace="VR_BOOL_PARAM_RECEIVER_CHANNEL" by="VOLUME_BOOL_SENDER_CHANNEL" />
                 <parameter replace="VR_INT_PARAM_RECEIVER_CHANNEL" by="VOLUME_INT_SENDER_CHANNEL" />
                 <parameter replace="VR_DOUBLE_PARAM_RECEIVER_CHANNEL" by="VOLUME_DOUBLE_SENDER_CHANNEL" />
-                <parameter replace="VR_VISIBILITY_RECEIVER_CHANNEL" by="VR_VISIBILITY_SENDER_CHANNEL" />
-                <parameter replace="3DNEGATO_VISIBILITY_RECEIVER_CHANNEL" by="3DNEGATO_VISIBILITY_SENDER_CHANNEL" />
-                <parameter replace="MESHES_VISIBILITY_RECEIVER_CHANNEL" by="MESHES_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL" by="BOX_WIDGET_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="BOX_WIDGET_RESET_RECEIVER_CHANNEL" by="BOX_WIDGET_RESET_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_ENABLE_TOOL_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" by="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_UNDO_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_RESET_SENDER_CHANNEL" />
-                <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
                 <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="NEGATO3D_TRANSPARENCY_CHANNEL" />
                 <parameter replace="RULER_ACTIVATION_CHANNEL" by="RULER_ACTIVATION_CHANNEL" />
@@ -467,6 +470,10 @@
                     <key name="image" uid="image" optional="true" />
                     <key name="volumeTF" uid="volumeTF" />
                     <key name="extrudedModelSeries" uid="extrudedModelSeries" />
+                    <key name="vr_visibility" uid="${vr_visibility}" />
+                    <key name="negato_visibility" uid="${negato_visibility}" />
+                    <key name="model_visibility" uid="${model_visibility}" />
+                    <key name="axis_visibility" uid="${axis_visibility}" />
                 </inout>
             </service>
 
@@ -509,13 +516,10 @@
                     <param type="int" name="Samples" key="sampling" defaultValue="1200" min="128" max="8192" reset="false" />
                     <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="0" max="200" reset="false" />
                     <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" reset="false" />
-                    <param type="bool" name="Soft shadows" key="shadows" defaultValue="false" reset="false" />
                     <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" reset="false" />
                     <param type="bool" name="Color bleeding" key="colorBleeding" defaultValue="false" reset="false" />
                     <param type="double" name="Color bleeding factor" key="colorBleedingFactor" defaultValue="1.0" min="0.1" max="10.0" reset="false" depends="colorBleeding" />
                     <param type="int" name="SAT size ratio" key="satSizeRatio" defaultValue="1" min="1" max="4" reset="false" emitOnRelease="true" />
-                    <param type="double" name="SAT cone angle" key="satConeAngle" defaultValue="0.1" min="0.01" max="360.0" reset="false" depends="ambientOcclusion" />
-                    <param type="int" name="SAT cone samples" key="satConeSamples" defaultValue="50" min="1" max="1024" reset="false" depends="ambientOcclusion" emitOnRelease="true" />
                     <param type="double" name="AO factor" key="aoFactor" defaultValue="1.0" min="0.1" max="10.0" reset="false" depends="ambientOcclusion" />
                     <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="4" min="1" max="10" reset="false" depends="ambientOcclusion" emitOnRelease="true" />
                     <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="4" min="1" max="10" reset="false" depends="ambientOcclusion" emitOnRelease="true" />
@@ -542,18 +546,6 @@
 
             <!-- ******************************* Connections ***************************************** -->
 
-            <connect channel="VR_VISIBILITY_SENDER_CHANNEL">
-                <signal>volumeVisibilityAct/is_checked</signal>
-            </connect>
-
-            <connect channel="3DNEGATO_VISIBILITY_SENDER_CHANNEL">
-                <signal>negato3DVisibilityAct/is_checked</signal>
-            </connect>
-
-            <connect channel="MESHES_VISIBILITY_SENDER_CHANNEL">
-                <signal>meshVisibilityAct/is_checked</signal>
-            </connect>
-
             <connect channel="BOX_WIDGET_VISIBILITY_SENDER_CHANNEL">
                 <signal>boxWidgetVisibilityAct/is_checked</signal>
             </connect>
@@ -577,10 +569,6 @@
 
             <connect channel="SHAPE_EXTRUDER_UNDO_SENDER_CHANNEL">
                 <signal>shapeExtruderUndoAct/clicked</signal>
-            </connect>
-
-            <connect channel="AXIS_VISIBILITY_SENDER_CHANNEL">
-                <signal>axisVisibilityAct/is_checked</signal>
             </connect>
 
             <connect channel="NEGATO3D_TRANSPARENCY_CHANNEL">

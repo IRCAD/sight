@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,7 +85,7 @@ void orientation_marker::starting()
     auto mesh      = mesh_mgr.createOrRetrieve(m_patient_mesh_rc, sight::viz::scene3d::RESOURCE_GROUP);
     mesh.first->load();
 
-    this->update_visibility(m_visible);
+    this->apply_visibility();
 
     this->request_render();
 }
@@ -163,7 +163,7 @@ void orientation_marker::set_visible(bool _visible)
 
 service::connections_t orientation_marker::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(MATRIX_IN, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }

@@ -23,24 +23,19 @@
 
 #include <sight/app/config.hpp>
 
-#include <app/parser/generic_field.hpp>
+#include <app/parser/generic.hpp>
 
-namespace sight::app
-{
-
-namespace parser
+namespace sight::app::parser
 {
 
 /**
- * @brief Specialisation of generic_field parser for boolean
+ * @brief Specialisation of property parser for boolean
  */
-class boolean : public generic_field
+class boolean : public generic
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(boolean, service::object_parser);
+    SIGHT_DECLARE_SERVICE(boolean, app::parser::generic);
 };
-
-} //namespace parser
 
 } //namespace sight::app

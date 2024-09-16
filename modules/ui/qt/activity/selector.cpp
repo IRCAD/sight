@@ -35,7 +35,7 @@
 #include <core/runtime/path.hpp>
 
 #include <data/activity.hpp>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/string.hpp>
 #include <data/vector.hpp>
 

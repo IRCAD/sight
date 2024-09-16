@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -303,7 +303,7 @@ activity_info::data_count_t activity::get_data_count(const data::vector::csptr& 
 
 std::vector<activity_info> activity::get_infos(const data::vector::csptr& _data) const
 {
-    activity_info::data_count_t data_count = this->get_data_count(_data);
+    activity_info::data_count_t data_count = get_data_count(_data);
     std::vector<activity_info> infos;
 
     core::mt::read_lock lock(m_registry_mutex);
@@ -372,7 +372,7 @@ std::map<std::string, std::string> activity::get_replacement_map(
 {
     std::map<std::string, std::string> replacement_map;
 
-    // First, use requirements to populate replacement map with an object from the root composite
+    // First, use requirements to populate replacement map with an object from the root map
     for(const auto& requirement : _info.requirements)
     {
         // Use the name as "key" for the config parameter

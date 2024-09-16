@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,6 @@
 #include <QGraphicsItemGroup>
 
 #include <cmath>
-
-using sight::viz::scene2d::vec2d_t;
 
 namespace sight::module::viz::scene2d::adaptor
 {
@@ -267,6 +265,8 @@ void axis::update_axis()
     const double min = this->get_start_val();
     const double max = this->get_end_val();
 
+    using sight::viz::scene2d::vec2d_t;
+
     double pos = NAN;
     vec2d_t tick_size;
     vec2d_t tick_pos {0., 0.};
@@ -358,6 +358,8 @@ void axis::update_axis()
 
 void axis::update_labels()
 {
+    using sight::viz::scene2d::vec2d_t;
+
     const auto viewport = m_viewport.lock();
 
     const auto view_to_viewport = this->view_to_viewport(*viewport);

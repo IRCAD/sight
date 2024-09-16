@@ -25,7 +25,7 @@
 #include <core/runtime/helper.hpp>
 #include <core/runtime/runtime.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/string.hpp>
 
 #include <regex>

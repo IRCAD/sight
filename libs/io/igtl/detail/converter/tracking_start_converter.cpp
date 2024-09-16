@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "io/igtl/detail/data_converter.hpp"
 
 #include <data/boolean.hpp>
-#include <data/composite.hpp>
 #include <data/integer.hpp>
+#include <data/map.hpp>
 #include <data/string.hpp>
 
 #include <igtlTrackingDataMessage.h>
@@ -35,7 +35,7 @@ namespace sight::io::igtl::detail::converter
 {
 
 const std::string tracking_start_converter::IGTL_TYPE          = "STT_TDATA";
-const std::string tracking_start_converter::FWDATA_OBJECT_TYPE = data::composite::classname();
+const std::string tracking_start_converter::FWDATA_OBJECT_TYPE = data::map::classname();
 const std::string STATUS_KEY                                   = "Status";
 const std::string RESOLUTION_KEY                               = "Resolution";
 const std::string COORDINATE_NAME_KEY                          = "CoordinateName";
@@ -70,27 +70,27 @@ data::object::sptr tracking_start_converter::from_igtl_message(const ::igtl::Mes
 
     ::igtl::StartTrackingDataMessage::Pointer tracking_msg = ::igtl::StartTrackingDataMessage::Pointer(msg);
 
-    data::composite::sptr composite = std::make_shared<data::composite>();
+    data::map::sptr map = std::make_shared<data::map>();
     {
         data::boolean::sptr status = std::make_shared<data::boolean>();
-        (*composite)[STATUS_KEY] = status;
+        (*map)[STATUS_KEY] = status;
 
         status->set_value(true);
     }
     {
         data::integer::sptr resolution = std::make_shared<data::integer>();
-        (*composite)[RESOLUTION_KEY] = resolution;
+        (*map)[RESOLUTION_KEY] = resolution;
 
         resolution->set_value(tracking_msg->GetResolution());
     }
     {
         data::string::sptr coordinate_name = std::make_shared<data::string>();
-        (*composite)[COORDINATE_NAME_KEY] = coordinate_name;
+        (*map)[COORDINATE_NAME_KEY] = coordinate_name;
 
         coordinate_name->set_value(tracking_msg->GetCoordinateName());
     }
 
-    return composite;
+    return map;
 }
 
 //-----------------------------------------------------------------------------

@@ -24,6 +24,8 @@
 
 #include <sight/ui/__/config.hpp>
 
+#include <data/boolean.hpp>
+
 #include <service/base.hpp>
 
 namespace sight::ui
@@ -37,7 +39,8 @@ class action;
 }
 
 /**
- * @brief   Defines the service interface managing menu or toolbar items.
+ * @brief   Defines the service interface managing menu or toolbar items. It can be used with properties or only with
+ * signals.
  *
  * @section Signals Signals
  * - \b is_checked(bool): Emitted when the action is checked or unchecked.
@@ -62,9 +65,17 @@ class action;
  * - \b enable(): make the action interactive.
  * - \b disable(): make the action not interactive.
  *
- * Example of configuration
+ * Example of configuration using properties
  * @code{.xml}
-    <service uid="item" type="sight::module::ui::action" auto_connect="false" >
+    <service uid="item" type="sight::module::ui::action" >
+        <properties checked="false" enabled="false" inverse="true" visible="true" />
+        <confirmation message="..." />
+    </service>
+   @endcode
+ *
+ * Example of configuration using signals
+ * @code{.xml}
+    <service uid="item" type="sight::module::ui::action" >
         <state checked="false" enabled="false" inverse="true" visible="true" />
         <confirmation message="..." />
     </service>
@@ -91,74 +102,38 @@ public:
     SIGHT_DECLARE_SERVICE(action, service::base);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    /**
-     * @name Signals
-     * @{
-     */
-    using bool_signal_t = core::com::signal<void (bool)>;
-    using void_signal_t = core::com::signal<void ()>;
+    struct signals
+    {
+        using bool_t = core::com::signal<void (bool)>;
+        using void_t = core::com::signal<void ()>;
 
-    /// Signal emitted when action is checked/unchecked
-    static const core::com::signals::key_t IS_ENABLED_SIG;
+        static inline const core::com::signals::key_t IS_ENABLED = "is_enabled";
+        static inline const core::com::signals::key_t ENABLED    = "enabled";
+        static inline const core::com::signals::key_t DISABLED   = "disabled";
+        static inline const core::com::signals::key_t IS_CHECKED = "is_checked";
+        static inline const core::com::signals::key_t CHECKED    = "checked";
+        static inline const core::com::signals::key_t UNCHECKED  = "unchecked";
+        static inline const core::com::signals::key_t IS_VISIBLE = "is_visible";
+    };
 
-    /// Signal emitted when action is enabled
-    static const core::com::signals::key_t ENABLED_SIG;
-
-    /// Signal emitted when action is disabled
-    static const core::com::signals::key_t DISABLED_SIG;
-
-    /// Signal emitted when action is checked/unchecked
-    static const core::com::signals::key_t IS_CHECKED_SIG;
-
-    /// Signal emitted when action is checked
-    static const core::com::signals::key_t CHECKED_SIG;
-
-    /// Signal emitted when action is unchecked
-    static const core::com::signals::key_t UNCHECKED_SIG;
-
-    /// Signal emitted when action is visible/invisible
-    static const core::com::signals::key_t IS_VISIBLE_SIG;
-    /**
-     * @}
-     */
-
-    /**
-     * @name Slots Keys
-     * @{
-     */
-
-    /// Slot to show/hide the action
-    /// @{
-    static const core::com::slots::key_t SET_VISIBLE_SLOT;
-    static const core::com::slots::key_t SET_HIDDEN_SLOT;
-    static const core::com::slots::key_t SHOW_SLOT;
-    static const core::com::slots::key_t HIDE_SLOT;
-    static const core::com::slots::key_t TOGGLE_VISIBILITY_SLOT;
-    /// @}
-
-    /// Slot to check or uncheck the action
-    static const core::com::slots::key_t SET_CHECKED_SLOT;
-
-    /// Slot to check the action
-    static const core::com::slots::key_t CHECK_SLOT;
-
-    /// Slot to check the action
-    static const core::com::slots::key_t UNCHECK_SLOT;
-
-    /// Slot to enable or disable the action
-    static const core::com::slots::key_t SET_ENABLED_SLOT;
-
-    /// Slot to enable or disable the action
-    static const core::com::slots::key_t SET_DISABLED_SLOT;
-
-    /// Slot to enable the action
-    static const core::com::slots::key_t ENABLE_SLOT;
-
-    /// Slot to disable the action
-    static const core::com::slots::key_t DISABLE_SLOT;
-    /**
-     * @}
-     */
+    struct slots
+    {
+        static inline const core::com::slots::key_t SET_CHECKED       = "set_checked";
+        static inline const core::com::slots::key_t CHECK             = "check";
+        static inline const core::com::slots::key_t UNCHECK           = "uncheck";
+        static inline const core::com::slots::key_t APPLY_CHECKED     = "apply_checked";
+        static inline const core::com::slots::key_t SET_VISIBLE       = "set_visible";
+        static inline const core::com::slots::key_t SET_HIDDEN        = "set_hidden";
+        static inline const core::com::slots::key_t SHOW              = "show";
+        static inline const core::com::slots::key_t HIDE              = "hide";
+        static inline const core::com::slots::key_t TOGGLE_VISIBILITY = "toggle_visibility";
+        static inline const core::com::slots::key_t APPLY_VISIBLE     = "apply_visible";
+        static inline const core::com::slots::key_t SET_ENABLED       = "set_enabled";
+        static inline const core::com::slots::key_t SET_DISABLED      = "set_disabled";
+        static inline const core::com::slots::key_t ENABLE            = "enable";
+        static inline const core::com::slots::key_t DISABLE           = "disable";
+        static inline const core::com::slots::key_t APPLY_ENABLED     = "apply_enabled";
+    };
 
     /// Method called when the action service is stopping
     SIGHT_UI_API void action_service_stopping();
@@ -206,24 +181,28 @@ public:
 protected:
 
     SIGHT_UI_API action();
-    SIGHT_UI_API ~action() override;
+    SIGHT_UI_API ~action() override = default;
 
     /// Initializes the action. This should be called in the configuring() method in derived classes.
     SIGHT_UI_API void initialize();
+
+    /// Connects the properties
+    SIGHT_UI_API service::connections_t auto_connections() const override;
 
 private:
 
     SPTR(ui::detail::registry::action) m_registry;
 
-    /// Handles the information of the action state inversion.
-    bool m_inverted {false};
-    bool m_checked {false};
-    bool m_enabled {true};
-    bool m_visible {true};
+    sight::data::property<sight::data::boolean> m_checked {this, "checked", false};
+    sight::data::property<sight::data::boolean> m_enabled {this, "enabled", true};
+    sight::data::property<sight::data::boolean> m_visible {this, "visible", true};
+    sight::data::property<sight::data::boolean> m_inverse {this, "inverse", false};
+
     bool m_confirm_action {false};
     bool m_default_button {false};
-    bool m_emit_at_start {true};
     std::string m_confirm_message;
+    // Prevent sending signals when data is modified from the outside
+    bool m_block_signals {false};
 };
 
 //-----------------------------------------------------------------------------

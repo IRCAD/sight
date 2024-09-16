@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,11 +31,11 @@ namespace sight::ui::test::helper
 void list_widget::count_equals(tester& _tester, const selector& _list, int _expected)
 {
     auto bt = _tester.add_in_backtrace(
-        "checking if \"" + _list.get_description(_tester) + "\" list has " + std::to_string(_expected) + " elements"
+        "checking if '" + _list.get_description(_tester) + "' list has " + std::to_string(_expected) + " elements"
     );
     _list.select(_tester);
     _tester.doubt<QListWidget*>(
-        '"' + _list.get_description(_tester) + "\" list has " + std::to_string(_expected) + " elements",
+        "'" + _list.get_description(_tester) + "' list has " + std::to_string(_expected) + " elements",
         [&_expected](QListWidget* _list)
         {
             return _list->count() == _expected;
@@ -47,7 +47,7 @@ void list_widget::count_equals(tester& _tester, const selector& _list, int _expe
 void list_widget::set_current_row(tester& _tester, const selector& _list, int _index)
 {
     auto bt = _tester.add_in_backtrace(
-        "setting \"" + _list.get_description(_tester) + "\" list current index to " + std::to_string(_index)
+        "setting '" + _list.get_description(_tester) + "' list current index to " + std::to_string(_index)
     );
     _list.select(_tester);
     _tester.do_something_asynchronously<QListWidget*>([_index](QListWidget* _l){_l->setCurrentRow(_index);});
@@ -58,7 +58,7 @@ void list_widget::set_current_row(tester& _tester, const selector& _list, int _i
 void list_widget::set_current_text(tester& _tester, const selector& _list, const std::string& _text)
 {
     auto bt = _tester.add_in_backtrace(
-        "setting \"" + _list.get_description(_tester) + "\" list current text to \"" + _text + '"'
+        "setting '" + _list.get_description(_tester) + "' list current text to '" + _text + "'"
     );
     _list.select(_tester);
     QString q_text = QString::fromStdString(_text);

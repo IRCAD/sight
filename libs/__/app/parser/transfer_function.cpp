@@ -30,19 +30,17 @@ namespace sight::app::parser
 
 // ------------------------------------------------------------------------------
 
-void transfer_function::updating()
-{
-    SIGHT_FATAL("This method is deprecated, and this shouldn't be used.");
-}
-
-// ------------------------------------------------------------------------------
-
-void transfer_function::create_config(core::object::sptr _obj)
+void transfer_function::parse(
+    const service::config_t& _cfg,
+    core::object::sptr _obj,
+    objects_t&
+    /*_sub_objects*/
+)
 {
     data::transfer_function::sptr tf = std::dynamic_pointer_cast<data::transfer_function>(_obj);
     SIGHT_ASSERT("transfer_function not instanced", tf);
 
-    if(const auto color_cfg = m_cfg.get_child_optional("colors"); color_cfg.has_value())
+    if(const auto color_cfg = _cfg.get_child_optional("colors"); color_cfg.has_value())
     {
         const bool is_default = color_cfg->get("<xmlattr>.default", false);
         if(is_default)
@@ -55,7 +53,7 @@ void transfer_function::create_config(core::object::sptr _obj)
             const auto steps_config = color_cfg->equal_range("step");
 
             auto tf_data           = tf->pieces().emplace_back(std::make_shared<data::transfer_function_piece>());
-            const std::string name = m_cfg.get<std::string>("name", "");
+            const std::string name = _cfg.get<std::string>("name", "");
             if(!name.empty())
             {
                 tf->set_name(name);
@@ -67,7 +65,7 @@ void transfer_function::create_config(core::object::sptr _obj)
                 const auto str_color = it_step_cfg->second.get<std::string>("<xmlattr>.color");
 
                 data::color::sptr new_color = std::make_shared<data::color>();
-                new_color->set_rgba(str_color);
+                new_color->from_string(str_color);
 
                 const data::transfer_function::color_t color(new_color->red(), new_color->green(),
                                                              new_color->blue(), new_color->alpha());

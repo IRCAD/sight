@@ -165,7 +165,7 @@ private:
 
     sight::ui::qt::slice_selector* m_slice_selector_with_index {};
     sight::ui::qt::slice_selector* m_slice_selector_with_position {};
-    data::ptr<data::image, data::access::inout> m_image {this, "image", true};
+    data::ptr<data::image, data::access::inout> m_image {this, "image"};
 
     std::int64_t m_axial_index {-1};
     std::int64_t m_frontal_index {-1};

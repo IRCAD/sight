@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ SIGHT_REGISTER_PLUGIN("sight::module::app::plugin");
 
 void plugin::start()
 {
-    sight::app::extension::config::get_default()->parse_plugin_infos();
+    sight::app::extension::config::get()->parse_plugin_infos();
     sight::app::extension::parameters::get_default()->parse_plugin_infos();
 
     auto worker = core::thread::get_default_worker();
@@ -89,7 +89,7 @@ void plugin::stop() noexcept
     }
 
     // Clear all app configuration
-    sight::app::extension::config::get_default()->clear_registry();
+    sight::app::extension::config::get()->clear_registry();
 
     // Clear all app configuration parameters
     sight::app::extension::parameters::get_default()->clear_registry();

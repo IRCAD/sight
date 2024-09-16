@@ -185,14 +185,14 @@ void negato3d::starting()
     }
 
     // Set the visibility of the 3D Negato
-    this->set_visible(m_visible);
+    this->set_visible(visible());
 }
 
 //-----------------------------------------------------------------------------
 
 service::connections_t negato3d::auto_connections() const
 {
-    return {
+    service::connections_t connections = {
         {IMAGE_IN, data::image::MODIFIED_SIG, NEWIMAGE_SLOT},
         {IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, NEWIMAGE_SLOT},
         {IMAGE_IN, data::image::SLICE_TYPE_MODIFIED_SIG, SLICETYPE_SLOT},
@@ -201,6 +201,7 @@ service::connections_t negato3d::auto_connections() const
         {TF_INOUT, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
         {TF_INOUT, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT}
     };
+    return connections + adaptor::auto_connections();
 }
 
 //------------------------------------------------------------------------------
@@ -280,12 +281,7 @@ void negato3d::new_image()
     // Update transfer function in Gpu programs
     this->update_tf();
 
-    if(m_auto_reset_camera)
-    {
-        this->render_service()->reset_camera_coordinates(m_layer_id);
-    }
-
-    this->set_visible(m_visible);
+    this->apply_visibility();
 
     this->request_render();
 }
@@ -360,6 +356,11 @@ void negato3d::set_transparency(double _transparency)
 void negato3d::set_visible(bool _visible)
 {
     std::ranges::for_each(m_planes, [_visible](auto& _p){_p->set_visible(_visible);});
+    if(m_auto_reset_camera)
+    {
+        this->render_service()->reset_camera_coordinates(m_layer_id);
+    }
+
     this->request_render();
 }
 

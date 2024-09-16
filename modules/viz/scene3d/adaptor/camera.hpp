@@ -155,9 +155,9 @@ private:
     static constexpr std::string_view CAMERA_SET_INPUT  = "cameraSet";
     static constexpr std::string_view TRANSFORM_INOUT   = "transform";
 
-    data::ptr<data::camera, data::access::in> m_camera_calibration {this, CALIBRATION_INPUT, true, true};
-    data::ptr<data::camera_set, data::access::in> m_camera_set {this, CAMERA_SET_INPUT, true, true};
-    data::ptr<data::matrix4, data::access::inout> m_transform {this, TRANSFORM_INOUT, true};
+    data::ptr<data::camera, data::access::in> m_camera_calibration {this, CALIBRATION_INPUT, true};
+    data::ptr<data::camera_set, data::access::in> m_camera_set {this, CAMERA_SET_INPUT, true};
+    data::ptr<data::matrix4, data::access::inout> m_transform {this, TRANSFORM_INOUT};
 
     bool m_use_orthographic_projection {false};
 };

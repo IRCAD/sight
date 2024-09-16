@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -45,13 +45,8 @@ sight::data::object::sptr create(const std::string& _type, const activity::exten
 
     service::base::sptr srv = srv_factory->create(srv_impl);
     auto obj_parser         = std::dynamic_pointer_cast<service::object_parser>(srv);
-
-    obj_parser->set_object_config(_config);
-    obj_parser->create_config(object);
-    obj_parser->start_config();
-    obj_parser->update_config();
-    obj_parser->stop_config();
-    obj_parser->destroy_config();
+    service::object_parser::objects_t sub_objects;
+    obj_parser->parse(_config, object, sub_objects);
 
     return object;
 }

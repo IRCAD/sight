@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <data/composite.hpp>
 #include <data/image.hpp>
+#include <data/map.hpp>
 #include <data/transfer_function.hpp>
 
 #include <ui/__/editor.hpp>
@@ -66,7 +66,7 @@ namespace sight::module::ui::qt::image
  * @subsection In-Out In-Out
  * - \b current [sight::data::transfer_function]: current transfer function used to change editor
  * selection. It should be the same as the output.
- * - \b presets [sight::data::composite](optional): map of sight::data::transfer_function that should be used as
+ * - \b presets [sight::data::map](optional): map of sight::data::transfer_function that should be used as
  * presets, instead of loading it from the specified path(s).
  *
  * @subsection Configuration Configuration
@@ -120,12 +120,12 @@ private:
     connections_t auto_connections() const override;
 
     /**
-     * @brief Checks if the composite contains the specified key.
+     * @brief Checks if the map contains the specified key.
      * @param _presets list of transfer functions.
      * @param _name the name used to search.
      * @return True if the preset named _name is found.
      */
-    static bool has_preset_name(const sight::data::composite& _presets, const std::string& _name);
+    static bool has_preset_name(const sight::data::map& _presets, const std::string& _name);
 
     /**
      * @brief Create a string that represents a TF preset name not already present in a preset list.
@@ -136,12 +136,12 @@ private:
      * @param _basename the name of the TF preset to create.
      * @return The new name of the TF preset.
      */
-    static std::string create_preset_name(const sight::data::composite& _presets, const std::string& _basename);
+    static std::string create_preset_name(const sight::data::map& _presets, const std::string& _basename);
 
     /**
-     * @brief Initializes the composite.
+     * @brief Initializes the map.
      *
-     * Add their names to m_presetComboBox. If the composite does not contain any TF (or only the default grey level TF,
+     * Add their names to m_presetComboBox. If the map does not contain any TF (or only the default grey level TF,
      * the service creates a few from the resources of the module.
      */
     void initialize_presets(
@@ -168,7 +168,7 @@ private Q_SLOTS:
     /// Copies the current TF preset.
     void copy_preset();
 
-    /// Resets the composite.
+    /// Resets the map.
     void reinitialize_presets();
 
     /// Renames the current selected TF preset.
@@ -237,14 +237,14 @@ private:
     unsigned int m_icon_height {16};
 
     /// Working copy of the TF presets, can be internal or use the optional "presets" input
-    data::composite::sptr m_tf_presets;
+    data::map::sptr m_tf_presets;
 
     static constexpr std::string_view CURRENT_INPUT = "tf";
     static constexpr std::string_view IMAGE_INPUT   = "image";
     static constexpr std::string_view PRESETS_INOUT = "presets";
-    data::ptr<data::transfer_function, data::access::inout> m_current_tf {this, CURRENT_INPUT, true};
-    data::ptr<data::composite, data::access::inout> m_opt_presets {this, PRESETS_INOUT, true, true};
-    data::ptr<data::image, data::access::in> m_image {this, IMAGE_INPUT, true, true};
+    data::ptr<data::transfer_function, data::access::inout> m_current_tf {this, CURRENT_INPUT};
+    data::ptr<data::map, data::access::inout> m_opt_presets {this, PRESETS_INOUT, true};
+    data::ptr<data::image, data::access::in> m_image {this, IMAGE_INPUT, true};
 };
 
 } // namespace sight::module::ui::qt::image.

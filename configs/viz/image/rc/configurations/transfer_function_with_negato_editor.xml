@@ -30,7 +30,7 @@ Example:
         <object uid="${histogram}" type="sight::data::histogram" src="ref" />
         <object uid="${landmarks}" type="sight::data::landmarks" src="ref" />
 
-        <object uid="TFSet" type="sight::data::composite" src="deferred" />
+        <object uid="TFSet" type="sight::data::map" src="deferred" />
         <object uid="${transferFunctionOutput}" type="sight::data::transfer_function" src="deferred" />
 
         <service uid="tfEditor" type="sight::module::ui::view">

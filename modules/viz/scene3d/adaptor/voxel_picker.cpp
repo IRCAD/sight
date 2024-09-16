@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -103,7 +103,7 @@ void voxel_picker::starting()
 
 service::connections_t voxel_picker::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(IMAGE_INPUT, data::image::SLICE_TYPE_MODIFIED_SIG, SLICETYPE_SLOT);
 
     return connections;

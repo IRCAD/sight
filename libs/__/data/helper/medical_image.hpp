@@ -105,13 +105,13 @@ SIGHT_DATA_API bool check_image_validity(const data::image& _p_img);
 SIGHT_DATA_API bool check_image_slice_index(data::image::sptr _p_img);
 
 /**
- * @brief Checks if buf contains zero, from begin to begin + len
+ * @brief Checks if image buffer contains zero, from begin to begin + len
  *
- * @param _buf data::image::buffer_t* begin of the buffer.
+ * @param _buffer data::image::buffer_t* begin of the buffer.
  * @param _len unsigned int length, as begin+len.
  * @return boolean, true if null, false otherwise.
  */
-SIGHT_DATA_API bool is_buf_null(const data::image::buffer_t* _buf, unsigned int _len);
+SIGHT_DATA_API bool is_buf_null(const data::image::buffer_t* _buffer, unsigned int _len);
 
 /**
  * @brief Return a buffer of image type's size, containing 'value' casted to image data type

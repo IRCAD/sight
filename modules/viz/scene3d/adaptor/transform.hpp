@@ -102,7 +102,7 @@ private:
     /// Defines the Ogre transformation of this service
     Ogre::Affine3 m_ogre_transform;
 
-    data::ptr<data::matrix4, data::access::inout> m_matrix {this, TRANSFORM_INOUT, true};
+    data::ptr<data::matrix4, data::access::inout> m_matrix {this, TRANSFORM_INOUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

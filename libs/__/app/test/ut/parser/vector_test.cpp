@@ -51,7 +51,6 @@ void vector_test::setUp()
 
 void vector_test::tearDown()
 {
-    CPPUNIT_ASSERT_NO_THROW(m_vector_parser.destroy_config());
 }
 
 //------------------------------------------------------------------------------
@@ -72,9 +71,10 @@ void vector_test::basic_test()
     second.put("object.value", "Second");
     root.add_child("item", second);
     auto vector = std::make_shared<data::vector>();
-    CPPUNIT_ASSERT(m_vector_parser.is_a("sight::app::parser::vector"));
-    m_vector_parser.set_object_config(root);
-    m_vector_parser.create_config(vector);
+    parser::vector vector_parser;
+    CPPUNIT_ASSERT(vector_parser.is_a("sight::app::parser::vector"));
+    service::object_parser::objects_t sub_objects;
+    vector_parser.parse(root, vector, sub_objects);
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), vector->size());
     CPPUNIT_ASSERT_EQUAL("First"s, std::dynamic_pointer_cast<data::string>((*vector)[0])->get_value());
     CPPUNIT_ASSERT_EQUAL("Second"s, std::dynamic_pointer_cast<data::string>((*vector)[1])->get_value());

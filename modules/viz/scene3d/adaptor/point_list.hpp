@@ -246,15 +246,15 @@ private:
     static constexpr std::string_view POINTLIST_INPUT = "pointList";
     static constexpr std::string_view MESH_INPUT      = "mesh";
 
-    data::ptr<data::point_list, data::access::in> m_point_list {this, POINTLIST_INPUT, true, true};
-    data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_INPUT, true, true};
+    data::ptr<data::point_list, data::access::in> m_point_list {this, POINTLIST_INPUT, true};
+    data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_INPUT, true};
 };
 
 //------------------------------------------------------------------------------
 
 inline bool point_list::get_visibility() const
 {
-    return m_entity != nullptr ? m_entity->getVisible() : m_visible;
+    return m_entity != nullptr ? m_entity->getVisible() : visible();
 }
 
 } // namespace sight::module::viz::scene3d::adaptor.

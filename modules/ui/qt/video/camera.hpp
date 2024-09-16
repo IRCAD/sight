@@ -192,8 +192,8 @@ private:
     static constexpr std::string_view CAMERA     = "camera";
     static constexpr std::string_view CAMERA_SET = "cameraSet";
 
-    data::ptr<data::camera, data::access::inout> m_camera {this, CAMERA, false, true};
-    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, CAMERA_SET, false, true};
+    data::ptr<data::camera, data::access::inout> m_camera {this, CAMERA, true};
+    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, CAMERA_SET, true};
 
     int m_old_index {};
 };

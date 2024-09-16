@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "activity/builder/data.hpp"
 #include "activity/builder/registry/macros.hpp"
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/vector.hpp>
 
 namespace sight::activity::builder
@@ -35,13 +35,13 @@ SIGHT_REGISTER_ACTIVITY_BUILDER(sight::activity::builder::activity, "sight::acti
 
 //-----------------------------------------------------------------------------
 
-data::composite::sptr vector_to_composite(
+data::map::sptr vector_to_map(
     const data::vector::csptr& _vector,
     const sight::activity::extension::activity_requirement& _req
 )
 {
     namespace ActReg = sight::activity::extension;
-    data::composite::sptr composite = std::make_shared<data::composite>();
+    data::map::sptr map = std::make_shared<data::map>();
 
     SIGHT_ASSERT("Each possible items in requirement need to have a matching key", _req.keys.size() >= _req.max_occurs);
 
@@ -50,10 +50,10 @@ data::composite::sptr vector_to_composite(
     for(const auto& obj : *_vector)
     {
         const ActReg::activity_requirement_key& key_tag = (*iter++);
-        (*composite)[key_tag.key] = obj;
+        (*map)[key_tag.key] = obj;
     }
 
-    return composite;
+    return map;
 }
 
 //-----------------------------------------------------------------------------
@@ -90,15 +90,15 @@ data::activity::sptr activity::build_data(
                 "Unknown specified container: '" + req.container + "'.",
                 req.container.empty()
                 || req.container == "vector"
-                || req.container == "composite"
+                || req.container == "map"
             );
             if(req.container == "vector")
             {
                 (*activity)[req.name] = vector_type;
             }
-            else if(req.container == "composite" || req.container.empty())
+            else if(req.container == "map" || req.container.empty())
             {
-                (*activity)[req.name] = vector_to_composite(vector_type, req);
+                (*activity)[req.name] = vector_to_map(vector_type, req);
             }
         }
     }

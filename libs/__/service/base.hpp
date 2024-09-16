@@ -31,6 +31,7 @@
 #include <core/com/slot.hpp>
 #include <core/object.hpp>
 
+#include <data/map.hpp>
 #include <data/mt/locked_ptr.hpp>
 #include <data/ptr.hpp>
 
@@ -97,10 +98,12 @@ struct SIGHT_SERVICE_CLASS_API connections_t
         const core::com::signals::key_t& _sig,
         const core::com::slots::key_t& _slot
     );
+    [[nodiscard]] SIGHT_SERVICE_API bool contains(std::string_view _key) const;
     [[nodiscard]] SIGHT_SERVICE_API key_connections_map_t::const_iterator find(std::string_view _key) const;
     [[nodiscard]] SIGHT_SERVICE_API key_connections_map_t::const_iterator end() const;
     [[nodiscard]] SIGHT_SERVICE_API bool empty() const;
     [[nodiscard]] SIGHT_SERVICE_API std::size_t size() const;
+    SIGHT_SERVICE_API connections_t operator+(const connections_t& _other) const;
 
     private:
 
@@ -342,6 +345,11 @@ protected:
     SIGHT_SERVICE_API virtual connections_t auto_connections() const;
 
     /**
+     * @brief Called when a property is modified, only if no auto connection is provided
+     */
+    SIGHT_SERVICE_API virtual void on_property_set(std::string_view);
+
+    /**
      * @brief Write information in a stream.
      *
      * This method is used by operator<<(std::ostream & _sstream, base& _service)
@@ -361,6 +369,9 @@ private:
     friend class manager;
     friend class detail::service;
     std::unique_ptr<detail::service> m_pimpl;
+
+    // Object storing properties when passed as a map instead of individual objects
+    sight::data::ptr<sight::data::map, sight::data::access::inout> m_properties_map {this, "from"};
 };
 
 //------------------------------------------------------------------------------

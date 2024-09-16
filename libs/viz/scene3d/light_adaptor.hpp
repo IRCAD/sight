@@ -212,8 +212,8 @@ public:
 
 protected:
 
-    data::ptr<data::color, data::access::inout> m_diffuse {this, "diffuseColor", true};
-    data::ptr<data::color, data::access::inout> m_specular {this, "specularColor", true};
+    data::ptr<data::color, data::access::inout> m_diffuse {this, "diffuseColor"};
+    data::ptr<data::color, data::access::inout> m_specular {this, "specularColor"};
 };
 
 } // namespace sight::viz::scene3d

@@ -30,7 +30,7 @@ fragment_program SummedAreaTable_FP glsl
 
 //---------------------------------------------------------------------------
 
-material SummedAreaTableInit
+material summed_area_table_init
 {
     technique
     {

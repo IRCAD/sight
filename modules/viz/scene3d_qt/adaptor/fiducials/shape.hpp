@@ -339,10 +339,10 @@ private:
     std::unique_ptr<delete_bin_button_when_focus_out> m_eventFilter {nullptr};
 
     static constexpr std::string_view s_IMAGE_INOUT = "image";
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, s_IMAGE_INOUT, true};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, s_IMAGE_INOUT};
 
     static constexpr std::string_view s_MASK_INOUT = "mask";
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_mask {this, s_MASK_INOUT, true};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_mask {this, s_MASK_INOUT};
 };
 
 } // namespace sight::module::viz::scene3d_qt::adaptor

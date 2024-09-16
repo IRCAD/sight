@@ -140,7 +140,7 @@ private:
     /// Dirty flag to know if we must trigger an update or not
     bool m_dirty {true};
 
-    data::ptr<data::object, data::access::inout> m_parameter {this, PARAMETER_INOUT, true};
+    data::ptr<data::object, data::access::inout> m_parameter {this, PARAMETER_INOUT};
 };
 
 //------------------------------------------------------------------------------

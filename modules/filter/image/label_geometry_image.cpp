@@ -136,7 +136,7 @@ void label_geometry_image::update_selected_point_list(std::string _value, std::s
         selected_point_list->get_points().at(id_point)->set_label(std::to_string(id_point));
     }
 
-    this->set_output("pointList", m_l_point_list_centroids.at(index_plane));
+    this->set_output(m_l_point_list_centroids.at(index_plane), "pointList");
 }
 
 //-----------------------------------------------------------------------------

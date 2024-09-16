@@ -35,8 +35,7 @@ namespace sight::module::filter::image
 //-----------------------------------------------------------------------------
 
 propagator::propagator() :
-    filter(m_signals),
-    has_parameters(m_slots)
+    filter(m_signals)
 {
     new_signal<signals::job_created_t>(signals::JOB_CREATED);
 
@@ -46,36 +45,8 @@ propagator::propagator() :
 
 //-----------------------------------------------------------------------------
 
-void propagator::configuring(const config_t& _config)
+void propagator::configuring(const config_t& /* _config */)
 {
-    service::config_t config = _config.get_child("config.<xmlattr>");
-
-    m_value     = config.get<int>("value", 1);
-    m_overwrite = config.get<bool>("overwrite", true);
-    m_radius    = config.get<double>("radius", m_radius);
-
-    const std::string mode = config.get<std::string>("mode", "min");
-
-    if(mode == "min")
-    {
-        m_mode = sight::filter::image::min_max_propagation::min;
-    }
-    else if(mode == "max")
-    {
-        m_mode = sight::filter::image::min_max_propagation::max;
-    }
-    else if(mode == "minmax")
-    {
-        m_mode = sight::filter::image::min_max_propagation::minmax;
-    }
-    else if(mode == "stddev")
-    {
-        m_mode = sight::filter::image::min_max_propagation::stddev;
-    }
-    else
-    {
-        SIGHT_FATAL("Unknown mode '" + mode + "'. Accepted values are 'min', 'max', 'minmax', or 'stddev'.");
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -158,6 +129,35 @@ void propagator::propagate()
             _running_job.done_work(1);
 
             {
+                const auto mode = [this]()
+                                  {
+                                      if(*m_mode == "min")
+                                      {
+                                          return sight::filter::image::min_max_propagation::min;
+                                      }
+
+                                      if(*m_mode == "max")
+                                      {
+                                          return sight::filter::image::min_max_propagation::max;
+                                      }
+
+                                      if(*m_mode == "minmax")
+                                      {
+                                          return sight::filter::image::min_max_propagation::minmax;
+                                      }
+
+                                      if(*m_mode == "stddev")
+                                      {
+                                          return sight::filter::image::min_max_propagation::stddev;
+                                      }
+
+                                      SIGHT_FATAL(
+                                          "Unknown mode '" + *m_mode
+                                          + "'. Accepted values are 'min', 'max', 'minmax', or 'stddev'."
+                                      );
+                                      return sight::filter::image::min_max_propagation::min;
+                                  }();
+
                 const auto image_in    = m_image_in.lock();
                 const auto image_out   = m_image_out.lock();
                 const auto propag_diff = sight::filter::image::min_max_propagation::process(
@@ -165,10 +165,10 @@ void propagator::propagate()
                     image_out.get_shared(),
                     nullptr,
                     seeds,
-                    static_cast<std::uint8_t>(m_value),
-                    m_radius,
-                    m_overwrite,
-                    m_mode
+                    static_cast<std::uint8_t>(*m_value),
+                    *m_radius,
+                    *m_overwrite,
+                    mode
                 );
                 _running_job.done_work(6);
 
@@ -242,74 +242,11 @@ void propagator::stopping()
 
 //-----------------------------------------------------------------------------
 
-void propagator::set_bool_parameter(bool _val, std::string _key)
-{
-    SIGHT_WARN_IF("Key must be 'overwrite' for this slot to have an effect.", _key != "overwrite");
-    if(_key == "overwrite")
-    {
-        m_overwrite = _val;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void propagator::set_int_parameter(int _val, std::string _key)
-{
-    SIGHT_WARN_IF("Key must be 'value' for this slot to have an effect.", _key != "value");
-    if(_key == "value")
-    {
-        m_value = _val;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void propagator::set_double_parameter(double _val, std::string _key)
-{
-    SIGHT_WARN_IF("Key must be 'radius' for this slot to have an effect.", _key != "radius");
-    if(_key == "radius")
-    {
-        m_radius = _val;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void propagator::set_enum_parameter(std::string _val, std::string _key)
-{
-    SIGHT_WARN_IF("Key must be 'mode' for this slot to have an effect.", _key != "mode");
-    if(_key == "mode")
-    {
-        if(_val == "min")
-        {
-            m_mode = sight::filter::image::min_max_propagation::min;
-        }
-        else if(_val == "max")
-        {
-            m_mode = sight::filter::image::min_max_propagation::max;
-        }
-        else if(_val == "minmax")
-        {
-            m_mode = sight::filter::image::min_max_propagation::minmax;
-        }
-        else if(_val == "stddev")
-        {
-            m_mode = sight::filter::image::min_max_propagation::stddev;
-        }
-        else
-        {
-            SIGHT_WARN("Unknown mode '" + _val + "'. Accepted values are 'min', 'max', 'minmax' or 'stddev'.");
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 service::connections_t propagator::auto_connections() const
 {
     return {
-        {IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {SEEDS_IN, data::point_list::MODIFIED_SIG, slots::PROPAGATE}
+        {m_image_in, data::image::MODIFIED_SIG, service::slots::UPDATE},
+        {m_seeds_in, data::point_list::MODIFIED_SIG, slots::PROPAGATE}
     };
 }
 

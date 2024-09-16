@@ -70,6 +70,43 @@ public:
     /// @}
 };
 
-} // namespace sight::ui::testCore::helper
+//------------------------------------------------------------------------------
 
-#include "dialog.hxx"
+template<typename T>
+inline void dialog::take(tester& _tester, const std::string& _desc, const std::string& _child_name)
+{
+    auto bt = _tester.add_in_backtrace("take " + _desc + " dialog");
+    _tester.take<T>(
+        _desc,
+        []{return qobject_cast<T>(qApp->activeModalWidget());},
+        [&_child_name](T _o)
+        {
+            return _o->isVisible()
+                   && (_child_name.empty() || _o->template findChild<QObject*>(
+                           QString::fromStdString(
+                               _child_name
+                           )
+                       ) != nullptr);
+        });
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline void dialog::maybe_take(tester& _tester, const std::string& _desc, const std::string& _child_name)
+{
+    _tester.maybe_take<T>(
+        _desc,
+        []{return qobject_cast<T>(qApp->activeModalWidget());},
+        [&_child_name](T _o)
+        {
+            return _o->isVisible()
+                   && (_child_name.empty() || _o->template findChild<QObject*>(
+                           QString::fromStdString(
+                               _child_name
+                           )
+                       ) != nullptr);
+        });
+}
+
+} // namespace sight::ui::testCore::helper

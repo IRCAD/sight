@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <activity/validator/base.hpp>
 #include <activity/validator/object.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
 #include <data/vector.hpp>
@@ -280,7 +280,7 @@ void contain_one_tool_test::test_validator_with_vector()
 
 //------------------------------------------------------------------------------
 
-void contain_one_tool_test::test_validator_with_composite()
+void contain_one_tool_test::test_validator_with_map()
 {
     auto validator = factory::make("sight::module::activity::validator::model_series::contain_one_tool");
     CPPUNIT_ASSERT(validator);
@@ -290,7 +290,7 @@ void contain_one_tool_test::test_validator_with_composite()
 
     sight::activity::validator::return_t validation;
 
-    data::composite::sptr composite = std::make_shared<data::composite>();
+    data::map::sptr map = std::make_shared<data::map>();
 
     data::model_series::sptr model_series1 = std::make_shared<data::model_series>();
     data::model_series::sptr model_series2 = std::make_shared<data::model_series>();
@@ -317,12 +317,12 @@ void contain_one_tool_test::test_validator_with_composite()
     model_series3->set_reconstruction_db(vec_rec3);
 
     {
-        validation = obj_validator->validate(composite);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Composite series should be valid", true, validation.first);
+        validation = obj_validator->validate(map);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Map series should be valid", true, validation.first);
     }
     {
-        (*composite)["model1"] = model_series1;
-        validation             = obj_validator->validate(composite);
+        (*map)["model1"] = model_series1;
+        validation       = obj_validator->validate(map);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Vector with one ModelSeries (without Tool) should NOT be valid",
             false,
@@ -331,46 +331,46 @@ void contain_one_tool_test::test_validator_with_composite()
     }
     {
         rec11->set_structure_type("Tool");
-        validation = obj_validator->validate(composite);
+        validation = obj_validator->validate(map);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with one ModelSeries (with one Tool) should be valid",
+            "Map with one ModelSeries (with one Tool) should be valid",
             true,
             validation.first
         );
     }
     {
         rec12->set_structure_type("Tool");
-        validation = obj_validator->validate(composite);
+        validation = obj_validator->validate(map);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with one ModelSeries (with two Tool) should be NOT valid",
+            "Map with one ModelSeries (with two Tool) should be NOT valid",
             false,
             validation.first
         );
     }
     {
         rec12->set_structure_type("Bones");
-        (*composite)["model2"] = model_series2;
-        validation             = obj_validator->validate(composite);
+        (*map)["model2"] = model_series2;
+        validation       = obj_validator->validate(map);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with two ModelSeries (one without Tool) should be NOT valid",
+            "Map with two ModelSeries (one without Tool) should be NOT valid",
             false,
             validation.first
         );
     }
     {
         rec21->set_structure_type("Tool");
-        validation = obj_validator->validate(composite);
+        validation = obj_validator->validate(map);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with two ModelSeries (each with one Tool) should be valid",
+            "Map with two ModelSeries (each with one Tool) should be valid",
             true,
             validation.first
         );
     }
     {
         rec22->set_structure_type("Tool");
-        validation = obj_validator->validate(composite);
+        validation = obj_validator->validate(map);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with two ModelSeries (one with one Tool and one with two skin) should "
+            "Map with two ModelSeries (one with one Tool and one with two skin) should "
             " NOT be valid",
             false,
             validation.first
@@ -378,10 +378,10 @@ void contain_one_tool_test::test_validator_with_composite()
     }
     {
         rec22->set_structure_type("Bone");
-        (*composite)["model3"] = model_series3;
-        validation             = obj_validator->validate(composite);
+        (*map)["model3"] = model_series3;
+        validation       = obj_validator->validate(map);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with three ModelSeries (two with one Tool and one without skin) should "
+            "Map with three ModelSeries (two with one Tool and one without skin) should "
             "NOT be valid",
             false,
             validation.first
@@ -389,18 +389,18 @@ void contain_one_tool_test::test_validator_with_composite()
     }
     {
         rec32->set_structure_type("Tool");
-        validation = obj_validator->validate(composite);
+        validation = obj_validator->validate(map);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with three ModelSeries (each with one Tool) should be valid",
+            "Map with three ModelSeries (each with one Tool) should be valid",
             true,
             validation.first
         );
     }
     {
         rec21->set_structure_type("Tumor");
-        validation = obj_validator->validate(composite);
+        validation = obj_validator->validate(map);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "Composite with three ModelSeries (two with one Tool and one without skin) should "
+            "Map with three ModelSeries (two with one Tool and one without skin) should "
             "NOT be valid",
             false,
             validation.first

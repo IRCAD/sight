@@ -44,28 +44,11 @@ public:
     vector()           = default;
     ~vector() override = default;
 
-    SIGHT_APP_API void create_config(core::object::sptr _obj) override;
-
-    SIGHT_APP_API void start_config() override;
-
-    SIGHT_APP_API void update_config() override;
-
-    SIGHT_APP_API void stop_config() override;
-
-    SIGHT_APP_API void destroy_config() override;
-
-protected:
-
-    /**
-     * @brief   Updating method : create vector object.
-     *
-     * Parse the vector configuration element to configure and add its objects.
-     */
-    SIGHT_APP_API void updating() override;
-
-private:
-
-    std::vector<app::config_manager::sptr> m_ctm_container;
+    SIGHT_APP_API virtual void parse(
+        const service::config_t& _cfg,
+        core::object::sptr _obj,
+        objects_t& _sub_objects
+    ) override;
 };
 
 } // namespace sight::app::parser

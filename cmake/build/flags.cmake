@@ -247,7 +247,7 @@ add_link_options(
 )
 
 # Coverage (only supported for GCC and Clang)
-if(CXX_COMPILER_ID STREQUAL "GNU" OR CXX_COMPILER_ID STREQUAL "Clang")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     option(SIGHT_ENABLE_COVERAGE "Enable coverage information generation" OFF)
     mark_as_advanced(SIGHT_ENABLE_COVERAGE)
 endif()
@@ -259,7 +259,7 @@ if(NOT TARGET coverage)
         add_link_options("$<$<COMPILE_LANG_AND_ID:C,GNU,Clang>:--coverage>")
         add_link_options("$<$<COMPILE_LANG_AND_ID:CXX,GNU,Clang>:--coverage>")
 
-        if(CMAKE_COMPILER_IS_GNUCXX)
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
             link_libraries(gcov)
         endif()
 
@@ -281,7 +281,7 @@ if(NOT TARGET coverage)
             VERBATIM
         )
         unset(coverage_script)
-    elseif(CXX_COMPILER_ID STREQUAL "GNU" OR CXX_COMPILER_ID STREQUAL "Clang")
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_custom_target(
             coverage
             COMMAND

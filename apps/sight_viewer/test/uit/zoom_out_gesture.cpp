@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -59,6 +59,8 @@ void zoom_out_gesture::test()
             _tester.take("ogre scene", "sceneSrv");
             // We need to a reference to it for later
             auto* ogre_scene = _tester.get<QWidget*>();
+            ogre_scene->raise();
+            ogre_scene->activateWindow();
             _tester.interact(
                 // Pinch fingers...
                 std::make_unique<sight::ui::test::pinch_gesture>(

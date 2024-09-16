@@ -26,9 +26,12 @@
 #include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
 
+#include <data/dvec3.hpp>
+#include <data/generic.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
 #include <data/ptr.hpp>
+#include <data/string.hpp>
 
 #include <service/base.hpp>
 
@@ -311,7 +314,7 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::in> m_input {this, "data1", false};
+    data::ptr<data::object, data::access::in> m_input {this, "data1"};
 };
 
 class test1_opt_input : public test_srv
@@ -322,7 +325,7 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::in> m_input {this, "data1", true, true};
+    data::ptr<data::object, data::access::in> m_input {this, "data1", true};
 };
 
 class test2_inputs : public test_srv
@@ -355,8 +358,8 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::in> m_input1 {this, "data1", true};
-    data::ptr<data::object, data::access::in> m_input2 {this, "data2", true};
+    data::ptr<data::object, data::access::in> m_input1 {this, "data1"};
+    data::ptr<data::object, data::access::in> m_input2 {this, "data2"};
 };
 
 class test4_inputs : public test_srv
@@ -367,10 +370,10 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::in> m_inout1 {this, "data1", true};
-    data::ptr<data::object, data::access::in> m_inout2 {this, "data2", true, true};
-    data::ptr<data::object, data::access::in> m_inout3 {this, "data3", true, true};
-    data::ptr<data::object, data::access::in> m_inout4 {this, "data4", true, true};
+    data::ptr<data::object, data::access::in> m_inout1 {this, "data1"};
+    data::ptr<data::object, data::access::in> m_inout2 {this, "data2", true};
+    data::ptr<data::object, data::access::in> m_inout3 {this, "data3", true};
+    data::ptr<data::object, data::access::in> m_inout4 {this, "data4", true};
 };
 
 class test1_inout : public test_srv
@@ -381,7 +384,7 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::inout> m_inout {this, "data1", true};
+    data::ptr<data::object, data::access::inout> m_inout {this, "data1"};
 };
 
 class test3_inouts : public test_srv
@@ -392,9 +395,9 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1", true};
-    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2", true};
-    data::ptr<data::object, data::access::inout> m_inout3 {this, "data3", true};
+    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1"};
+    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2"};
+    data::ptr<data::object, data::access::inout> m_inout3 {this, "data3"};
 };
 
 class test3_inouts_v2 : public test_srv
@@ -416,9 +419,9 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1", true};
-    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2", true};
-    data::ptr<data::object, data::access::inout> m_inout3 {this, "data3", false};
+    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1"};
+    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2"};
+    data::ptr<data::object, data::access::inout> m_inout3 {this, "data3"};
 };
 
 class test2_inouts1_input : public test_srv
@@ -429,9 +432,9 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1", true};
-    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2", true};
-    data::ptr<data::object, data::access::in> m_input3 {this, "data3", true};
+    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1"};
+    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2"};
+    data::ptr<data::object, data::access::in> m_input3 {this, "data3"};
 };
 
 class test1_input1_opt_input1_opt_in_out : public test_srv
@@ -453,9 +456,9 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::in> m_input1 {this, "data1", true};
-    data::ptr<data::object, data::access::in> m_input2 {this, "data2", true, true};
-    data::ptr<data::object, data::access::inout> m_inout {this, "data3", false, true};
+    data::ptr<data::object, data::access::in> m_input1 {this, "data1"};
+    data::ptr<data::object, data::access::in> m_input2 {this, "data2", true};
+    data::ptr<data::object, data::access::inout> m_inout {this, "data3", true};
 };
 
 class test2_input_groups : public test_srv
@@ -464,8 +467,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(test2_input_groups, app::ut::test_srv);
 
-    data::ptr_vector<data::object, data::access::in> m_input1 {this, "dataGroup0", false};
-    data::ptr_vector<data::object, data::access::in> m_input2 {this, "dataGroup1", false};
+    data::ptr_vector<data::object, data::access::in> m_input1 {this, "dataGroup0"};
+    data::ptr_vector<data::object, data::access::in> m_input2 {this, "dataGroup1"};
 };
 
 class test1_input1_input_group : public test_srv
@@ -474,8 +477,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(test1_input1_input_group, app::ut::test_srv);
 
-    data::ptr<data::object, data::access::in> m_input {this, "data1", true, true};
-    data::ptr_vector<data::object, data::access::in> m_input_group {this, "dataGroup", true};
+    data::ptr<data::object, data::access::in> m_input {this, "data1", true};
+    data::ptr_vector<data::object, data::access::in> m_input_group {this, "dataGroup"};
 };
 
 class test1_input1_output2_inouts : public test_srv
@@ -486,10 +489,22 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::in> m_input1 {this, "data1", true};
-    data::ptr<data::object, data::access::out> m_out2 {this, "data2", true};
-    data::ptr<data::object, data::access::inout> m_inout3 {this, "data3", true};
-    data::ptr<data::object, data::access::inout> m_inout4 {this, "data4", true};
+    data::ptr<data::object, data::access::in> m_input1 {this, "data1"};
+    data::ptr<data::object, data::access::out> m_out2 {this, "data2"};
+    data::ptr<data::object, data::access::inout> m_inout3 {this, "data3"};
+    data::ptr<data::object, data::access::inout> m_inout4 {this, "data4"};
+};
+
+class test1_input1_property : public test_srv
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test1_input1_property, app::ut::test_srv);
+
+private:
+
+    sight::data::ptr<data::object, data::access::in> m_input1 {this, "data1"};
+    sight::data::ptr<data::integer> m_int_property1 {this, "int_property1"};
 };
 
 class test_out : public test_srv
@@ -509,10 +524,6 @@ public:
 class test_service_with_data : public service::base
 {
 public:
-
-    static const key_t INPUT;
-    static const key_t INOUT_GROUP;
-    static const key_t OUTPUT;
 
     SIGHT_DECLARE_SERVICE(test_service_with_data, service::base);
     test_service_with_data() noexcept = default;
@@ -535,9 +546,65 @@ public:
     void stopping() override;
     void updating() override;
 
-    data::ptr<data::object, data::access::in> m_input {this, "input", true};
-    data::ptr_vector<data::integer, data::access::inout> m_inout_group {this, "inoutGroup", true};
-    data::ptr<data::object, data::access::out> m_output {this, "output", false, true};
+    data::ptr<data::object, data::access::in> m_input {this, "input"};
+    data::ptr_vector<data::integer, data::access::inout> m_inout_group {this, "inoutGroup"};
+    data::ptr<data::object, data::access::out> m_output {this, "output", true};
+};
+
+class test_service_with_properties : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_service_with_properties, service::base);
+    test_service_with_properties() noexcept = default;
+    ~test_service_with_properties() noexcept override = default;
+
+    //------------------------------------------------------------------------------
+
+    void configuring() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() override
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() override
+    {
+        m_slot_called = true;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void on_property_set(std::string_view _key) override
+    {
+        m_callback_called_parameter = _key;
+    }
+
+    //------------------------------------------------------------------------------
+
+    connections_t auto_connections() const override
+    {
+        return {
+            {m_vec_prop, data::object::MODIFIED_SIG, service::slots::UPDATE}
+        };
+    }
+
+    data::property<data::integer> m_int_prop {this, "integer", 42};
+    data::property<data::string> m_string_prop {this, "string", {"default_value"}};
+    data::property<data::dvec3> m_vec_prop {this, "vec", {12.123, 56.0, 78.56}};
+    bool m_slot_called {false};
+    std::string_view m_callback_called_parameter {};
 };
 
 } // namespace sight::app::ut

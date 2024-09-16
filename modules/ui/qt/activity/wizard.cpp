@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 #include <core/runtime/runtime.hpp>
 
 #include <data/activity_set.hpp>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/series.hpp>
 
 #include <ui/__/dialog/input.hpp>

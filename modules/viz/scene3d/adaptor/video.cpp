@@ -72,9 +72,6 @@ void video::configuring()
 
     const config_t config = this->get_config();
 
-    const bool visible = config.get<bool>(config::VISIBLE, m_visible);
-    this->update_visibility(visible);
-
     m_material_template_name = config.get<std::string>(config::MATERIAL_TEMPLATE, m_material_template_name);
     m_texture_name           = config.get<std::string>(config::TEXTURE_NAME, m_texture_name);
     m_filtering              = config.get<bool>(config::FILTERING, m_filtering);
@@ -176,13 +173,15 @@ void video::starting()
         const auto image = m_image.lock();
         m_texture = std::make_shared<sight::viz::scene3d::texture>(image.get_shared());
     }
+
+    this->apply_visibility();
 }
 
 //-----------------------------------------------------------------------------
 
 service::connections_t video::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
     connections.push(IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
 
@@ -312,7 +311,7 @@ void video::updating()
 
         // Slightly offset the plane in Z to allow some space for other entities, thus they can be rendered on top
         m_scene_node->setPosition(0, 0, -1);
-        m_scene_node->setVisible(m_visible);
+        m_scene_node->setVisible(visible());
 
         Ogre::Camera* cam = layer->get_default_camera();
         SIGHT_ASSERT("Default camera not found", cam);

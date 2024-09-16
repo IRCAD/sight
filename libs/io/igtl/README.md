@@ -30,7 +30,7 @@ The present converters transform (forward and backward) various sight native dat
 - **TrackingStartConverter**: starts the conversion between the sight data and the igtl message
 - **TrackingStopConverter**: tops the conversion between the sight data and the igtl message
 - **AtomConverter**: manages the conversion between `data::object` and `igtl::RawMessage` (contain serialized atom)
-- **CompositeConverter**: manages the conversion between `data::composite` and `igtl::TrackingDataMessage`
+- **MapConverter**: manages the conversion between `data::map` and `igtl::TrackingDataMessage`
 - **ImageConverter**: manages the conversion between `data::image` and `igtl::ImageMessage`
 - **LineConverter**: manages the conversion between `data::line` and `igtl::PositionMessage`
 - **MatrixConverter**: manages the conversion between `data::matrix4` and `igtl::TransformationMessage`

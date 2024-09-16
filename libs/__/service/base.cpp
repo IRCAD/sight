@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,9 +61,14 @@ void connections_t::push(
 
 //------------------------------------------------------------------------------
 
-connections_t::key_connections_map_t::const_iterator connections_t::find(
-    std::string_view _key
-) const
+bool connections_t::contains(std::string_view _key) const
+{
+    return m_key_connections_map.contains(_key);
+}
+
+//------------------------------------------------------------------------------
+
+connections_t::key_connections_map_t::const_iterator connections_t::find(std::string_view _key) const
 {
     return m_key_connections_map.find(_key);
 }
@@ -87,6 +92,16 @@ bool connections_t::empty() const
 std::size_t connections_t::size() const
 {
     return m_key_connections_map.size();
+}
+
+//------------------------------------------------------------------------------
+
+connections_t connections_t::operator+(const connections_t& _other) const
+{
+    connections_t result;
+    result.m_key_connections_map.insert(m_key_connections_map.begin(), m_key_connections_map.end());
+    result.m_key_connections_map.insert(_other.m_key_connections_map.begin(), _other.m_key_connections_map.end());
+    return result;
 }
 
 //-----------------------------------------------------------------------------
@@ -247,6 +262,12 @@ connections_t base::auto_connections() const
 {
     connections_t connections;
     return connections;
+}
+
+//------------------------------------------------------------------------------
+
+void base::on_property_set(std::string_view /*unused*/)
+{
 }
 
 //-----------------------------------------------------------------------------

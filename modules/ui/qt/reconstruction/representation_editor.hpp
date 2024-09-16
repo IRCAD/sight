@@ -114,7 +114,7 @@ private:
     data::material::sptr m_material;
 
     static constexpr std::string_view RECONSTRUCTION = "reconstruction";
-    data::ptr<data::reconstruction, data::access::inout> m_rec {this, RECONSTRUCTION, true};
+    data::ptr<data::reconstruction, data::access::inout> m_rec {this, RECONSTRUCTION};
 };
 
 } // namespace sight::module::ui::qt::reconstruction

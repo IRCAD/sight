@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,7 @@ class container_notifier_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(container_notifier_test);
 CPPUNIT_TEST(vector_test);
-CPPUNIT_TEST(composite_test);
+CPPUNIT_TEST(map_test);
 CPPUNIT_TEST(series_set_test);
 CPPUNIT_TEST(activity_set_test);
 CPPUNIT_TEST(camera_set_test);
@@ -42,7 +42,7 @@ public:
     void tearDown() override;
 
     static void vector_test();
-    static void composite_test();
+    static void map_test();
     static void series_set_test();
     static void activity_set_test();
     static void camera_set_test();

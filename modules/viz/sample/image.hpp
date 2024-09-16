@@ -36,7 +36,7 @@ namespace sight::module::viz::sample
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="..." type="sight::module::viz::sample::image" >
-      <in key="image" uid="..." auto_connect="true" />
+      <in key="image" uid="..."/>
    </service>
  *
  * @subsection Input Input
@@ -63,16 +63,6 @@ protected:
     /// Registers and starts sub-services.
     void starting() override;
 
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     * @note This is actually useless since the sub-service already listens to the data,
-     * but this prevents a warning in fwServices from being raised.
-     *
-     * Connect data::image::MODIFIED_SIG to service::slots::UPDATE
-     */
-    connections_t auto_connections() const override;
-
     /// Does nothing.
     void updating() override;
 
@@ -93,7 +83,7 @@ private:
     /// Default transfer function
     data::transfer_function::sptr m_tf;
 
-    data::ptr<data::image, data::access::in> m_image {this, "image", false};
+    data::ptr<data::image, data::access::in> m_image {this, "image"};
 };
 
 } // namespace sight::module::viz::sample.

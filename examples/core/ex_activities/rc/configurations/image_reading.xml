@@ -34,7 +34,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="imageScene" type="sight::module::viz::sample::image" auto_connect="true">
+        <service uid="imageScene" type="sight::module::viz::sample::image">
             <in key="image" uid="${imageSeries}" />
         </service>
 

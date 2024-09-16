@@ -125,9 +125,9 @@ private:
     int m_width {400};
 
     static constexpr std::string_view MATRIX_INPUT = "matrix";
-    data::ptr<data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_INPUT, true};
-    data::ptr<data::landmarks, sight::data::access::in> m_landmark {this, "landmark", false};
-    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "pointList", false};
+    data::ptr<data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_INPUT};
+    data::ptr<data::landmarks, sight::data::access::in> m_landmark {this, "landmark"};
+    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "pointList"};
 };
 
 } // namespace sight::module::geometry

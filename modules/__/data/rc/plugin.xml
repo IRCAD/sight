@@ -11,7 +11,7 @@
         <service>sight::module::data::manage</service>
         <object key="object">sight::data::object</object>
         <object key="container">sight::data::object</object>
-        <desc>This service manages an object (add/swap/remove) into a container object (Composite, Vector, SeriesSet).</desc>
+        <desc>This service manages an object (add/swap/remove) into a container object (Map, Vector, SeriesSet).</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
@@ -24,7 +24,7 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::data::select_object</service>
-        <object>sight::data::composite</object>
+        <object>sight::data::map</object>
         <desc>Registers/unregisters the object given by the slots.</desc>
     </extension>
 

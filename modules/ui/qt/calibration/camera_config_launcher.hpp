@@ -52,12 +52,12 @@ namespace sight::module::ui::qt::calibration
        <inout key="activity" uid="..." />
        <config>
            <intrinsic>
-               <appConfig id="calIntrinsicView" />
+               <appConfig id="sight::navigation::calibration::cal_intrinsic_view" />
                <parameter replace="WID_PARENT" by="calibrationView" />
                <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
            </intrinsic>
            <extrinsic>
-               <appConfig id="calExtrinsicView" />
+               <appConfig id="sight::navigation::calibration::cal_extrinsic_view" />
                <inout key="cameraSet" uid="..." />
                <parameter replace="WID_PARENT" by="calibrationView" />
                <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
@@ -136,6 +136,7 @@ private:
 
     data::ptr<data::camera_set, data::access::inout> m_camera_set {this, "cameraSet"};
     data::ptr<data::activity, data::access::inout> m_activity {this, "activity"};
+    data::ptr<data::map, data::access::inout> m_board_properties {this, "board_properties"};
 };
 
 } // namespace sight::module::ui::qt::calibration

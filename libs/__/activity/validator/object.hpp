@@ -41,7 +41,7 @@ namespace sight::activity::validator
 /**
  * @brief Base class for all activity data validator's classes.
  *
- * This validator works on one type of data. The validated data can be a single data, or a Vector or a Composite
+ * This validator works on one type of data. The validated data can be a single data, or a Vector or a Map
  * containing multiple data of the same type.
  */
 class SIGHT_ACTIVITY_CLASS_API object : public validator::base
@@ -65,7 +65,7 @@ public:
 
     /**
      * @brief Performs the validation of the given data.
-     * @note  This data could be a single data, or a Vector or a Composite of one type of data.
+     * @note  This data could be a single data, or a Vector or a Map of one type of data.
      */
     SIGHT_ACTIVITY_API virtual return_t validate(const CSPTR(data::object)& _current_data) const = 0;
 };

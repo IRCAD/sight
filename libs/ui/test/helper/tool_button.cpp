@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,11 +31,11 @@ namespace sight::ui::test::helper
 void tool_button::tool_tip_matches(tester& _tester, const selector& _label, const std::string& _expected)
 {
     auto bt = _tester.add_in_backtrace(
-        "checking if \"" + _label.get_description(_tester) + "\" tool_button tooltip is equal to \"" + _expected + '"'
+        "checking if '" + _label.get_description(_tester) + "' tool_button tooltip is equal to '" + _expected + "'"
     );
     _label.select(_tester);
     _tester.doubt<QToolButton*>(
-        '"' + _label.get_description(_tester) + "\" tool_button tooltip should be equal to \"" + _expected + '"',
+        "'" + _label.get_description(_tester) + "' tool_button tooltip should be equal to '" + _expected + "'",
         [&_expected](QToolButton* _obj){return _obj->toolTip() == QString::fromStdString(_expected);});
 }
 

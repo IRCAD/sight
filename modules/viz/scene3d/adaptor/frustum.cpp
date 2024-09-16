@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,7 +83,7 @@ void frustum::starting()
 
     // Create camera
     m_ogre_camera = this->get_scene_manager()->createCamera(Ogre::String(this->get_id() + std::string(CAMERA_INPUT)));
-    m_ogre_camera->setVisible(m_visible);
+    m_ogre_camera->setVisible(visible());
 
     // Clipping
     if(m_near != 0.F)
@@ -142,7 +142,7 @@ void frustum::starting()
 
 service::connections_t frustum::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(CAMERA_INPUT, data::camera::MODIFIED_SIG, service::slots::UPDATE);
     connections.push(CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE);
 
@@ -154,7 +154,7 @@ service::connections_t frustum::auto_connections() const
 void frustum::updating()
 {
     this->set_ogre_cam_from_data();
-    m_frustum->setVisible(m_visible);
+    m_frustum->setVisible(visible());
     this->request_render();
 }
 

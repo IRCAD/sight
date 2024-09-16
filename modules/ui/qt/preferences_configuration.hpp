@@ -144,7 +144,7 @@ protected:
     /// Configures the service.
     void configuring() override;
 
-    /// Gets the preference composite.
+    /// Gets the preference map.
     void starting() override;
 
     /// Shows a dialog to configure preferences declared in xml.

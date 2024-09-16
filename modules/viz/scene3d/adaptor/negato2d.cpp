@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -150,7 +150,7 @@ void negato2d::starting()
     );
 
     this->new_image();
-    this->set_visible(m_visible);
+    this->set_visible(visible());
 
     if(m_interactive)
     {
@@ -184,7 +184,7 @@ void negato2d::stopping()
 void negato2d::updating()
 {
     this->new_image();
-    this->set_visible(m_visible);
+    this->set_visible(visible());
 }
 
 //------------------------------------------------------------------------------
@@ -389,7 +389,7 @@ void negato2d::button_release_event(mouse_button /*_button*/, modifier /*_mods*/
 
 service::connections_t negato2d::auto_connections() const
 {
-    return {
+    service::connections_t connections = {
         {IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
         {IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
         {IMAGE_IN, data::image::SLICE_TYPE_MODIFIED_SIG, SLICETYPE_SLOT},
@@ -398,6 +398,7 @@ service::connections_t negato2d::auto_connections() const
         {TF_IN, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
         {TF_IN, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT}
     };
+    return connections + adaptor::auto_connections();
 }
 
 //------------------------------------------------------------------------------

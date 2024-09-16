@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/matrix4.hpp>
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
@@ -45,17 +45,17 @@ namespace sight::module::ui::qt::model
 {
 
 /**
- * @brief Display the organs list and allow an interactive selection to set the corresponding meshes in a composite
+ * @brief Display the organs list and allow an interactive selection to set the corresponding meshes in a map
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::model::organ_transformation">
        <inout key="modelSeries" uid="..." />
-       <inout key="composite" uid="..." />
+       <inout key="map" uid="..." />
    </service>
    @endcode
  * @subsection InOut InOut
  * - \b modelSeries [sight::data::model_series]: modelSeries to modify.
- * - \b composite [sight::data::composite]: composite.
+ * - \b map [sight::data::map]: map.
  */
 class organ_transformation : public QObject,
                              public sight::ui::editor
@@ -86,10 +86,10 @@ protected:
      * Connect ModelSeries::MODIFIED_SIG to this::service::slots::UPDATE
      * Connect ModelSeries::RECONSTRUCTIONS_ADDED_SIG to this::service::slots::UPDATE
      * Connect ModelSeries::RECONSTRUCTIONS_REMOVED_SIG to this::service::slots::UPDATE
-     * Connect Composite::MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect Composite::ADDED_OBJECTS_SIG to this::service::slots::UPDATE
-     * Connect Composite::REMOVED_OBJECTS_SIG to this::service::slots::UPDATE
-     * Connect Composite::CHANGED_OBJECTS_SIG to this::service::slots::UPDATE
+     * Connect Map::MODIFIED_SIG to this::service::slots::UPDATE
+     * Connect Map::ADDED_OBJECTS_SIG to this::service::slots::UPDATE
+     * Connect Map::REMOVED_OBJECTS_SIG to this::service::slots::UPDATE
+     * Connect Map::CHANGED_OBJECTS_SIG to this::service::slots::UPDATE
      */
     connections_t auto_connections() const override;
 
@@ -129,9 +129,9 @@ private:
     unsigned int m_save_count {0};
 
     static constexpr std::string_view MODEL_SERIES = "modelSeries";
-    static constexpr std::string_view COMPOSITE    = "composite";
-    data::ptr<data::model_series, data::access::inout> m_model_series {this, "modelSeries", true};
-    data::ptr<data::composite, data::access::inout> m_composite {this, "composite", true};
+    static constexpr std::string_view MAP          = "map";
+    data::ptr<data::model_series, data::access::inout> m_model_series {this, "modelSeries"};
+    data::ptr<data::map, data::access::inout> m_map {this, "map"};
 };
 
 } // namespace sight::module::ui::qt::model

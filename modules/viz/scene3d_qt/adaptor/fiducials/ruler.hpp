@@ -330,7 +330,7 @@ private:
     std::unique_ptr<delete_bin_button_when_focus_out> m_event_filter = nullptr;
 
     static constexpr std::string_view s_IMAGE_INOUT = "image";
-    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, s_IMAGE_INOUT, true};
+    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, s_IMAGE_INOUT};
 };
 
 } // sight::module::viz::scene3d_qt::adaptor::fiducials

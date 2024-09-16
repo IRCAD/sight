@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -46,12 +46,12 @@ void combo_box::value_equals(tester& _tester, const selector& _combo_box, const 
     auto bt = _tester.add_in_backtrace(
         "checking whether " + _combo_box.get_description(
             _tester
-        ) + " combo box value is \"" + _expected + '"'
+        ) + " combo box value is '" + _expected + "'"
     );
     _combo_box.select(_tester);
     QString q_expected = QString::fromStdString(_expected);
     _tester.doubt<QComboBox*>(
-        _combo_box.get_description(_tester) + " combo box value should be \"" + _expected + '"',
+        _combo_box.get_description(_tester) + " combo box value should be '" + _expected + "'",
         [&q_expected](QComboBox* _obj){return _obj->currentText() == q_expected;});
 }
 

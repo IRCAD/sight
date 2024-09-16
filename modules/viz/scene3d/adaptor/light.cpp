@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -193,7 +193,7 @@ void light::starting()
 
 service::connections_t light::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(DIFFUSE_COLOR_INOUT, data::color::MODIFIED_SIG, service::slots::UPDATE);
     connections.push(SPECULAR_COLOR_INOUT, data::color::MODIFIED_SIG, service::slots::UPDATE);
 

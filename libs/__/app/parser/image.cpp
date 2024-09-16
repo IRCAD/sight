@@ -30,14 +30,19 @@ namespace sight::app::parser
 
 //------------------------------------------------------------------------------
 
-void image::create_config(core::object::sptr _obj)
+void image::parse(
+    const service::config_t& _cfg,
+    core::object::sptr _obj,
+    objects_t&
+    /*_sub_objects*/
+)
 {
     const auto image = std::dynamic_pointer_cast<data::image>(_obj);
     SIGHT_ASSERT("image does not exist.", image);
 
-    if(m_cfg.count("color") != 0U)
+    if(_cfg.count("color") != 0U)
     {
-        const auto color_str = m_cfg.get<std::string>("color");
+        const auto color_str = _cfg.get<std::string>("color");
 
         std::array<std::uint8_t, 4> color {};
         data::tools::color::hexa_string_to_rgba(color_str, color);
@@ -59,9 +64,9 @@ void image::create_config(core::object::sptr _obj)
             itr->a = color[3];
         }
     }
-    else if(m_cfg.count("gray") != 0U)
+    else if(_cfg.count("gray") != 0U)
     {
-        const auto value = m_cfg.get<std::uint8_t>("gray", 0);
+        const auto value = _cfg.get<std::uint8_t>("gray", 0);
 
         // Initialize with a dummy 4x4 black image
         image->set_spacing({1, 1, 1});

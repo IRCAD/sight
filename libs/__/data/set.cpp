@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #include "set.hpp"
 
-#include "data/container.hxx"
+#include "data/container.hpp"
 #include "data/registry/macros.hpp"
 
 #include <core/com/signal.hxx>

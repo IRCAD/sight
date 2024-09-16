@@ -61,23 +61,10 @@ chessboard_reprojection::chessboard_reprojection()
 
 //-----------------------------------------------------------------------------
 
-chessboard_reprojection::~chessboard_reprojection()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void chessboard_reprojection::configuring()
 {
-    const config_t config_tree  = this->get_config();
-    const config_t board_config = config_tree.get_child("board");
-    const config_t config       = config_tree.get_child("config.<xmlattr>");
-
-    m_width_key = board_config.get<std::string>("<xmlattr>.width");
-    SIGHT_ASSERT("Missing board width preference key.", !m_width_key.empty());
-    m_height_key = board_config.get<std::string>("<xmlattr>.height");
-    SIGHT_ASSERT("Missing board height preference key.", !m_height_key.empty());
-    m_square_size_key = board_config.get<std::string>("<xmlattr>.squareSize");
-    SIGHT_ASSERT("Missing board square size preference key.", !m_square_size_key.empty());
+    const config_t config_tree = this->get_config();
+    const config_t config      = config_tree.get_child("config.<xmlattr>");
 
     const std::string output_key = config_tree.get_optional<std::string>("out.<xmlattr>.key").get_value_or("");
     if(output_key == CHESSBOARD_MODEL_OUTPUT)
@@ -278,21 +265,9 @@ void chessboard_reprojection::toggle_distortion()
 
 void chessboard_reprojection::update_chessboard_size()
 {
-    std::uint64_t width(1);
-    std::uint64_t height(1);
-    double square_size(0.);
-
-    try
-    {
-        ui::preferences preferences;
-        width       = preferences.get(m_width_key, width);
-        height      = preferences.get(m_height_key, height);
-        square_size = preferences.get(m_square_size_key, square_size);
-    }
-    catch(const ui::preferences_disabled&)
-    {
-        // Nothing to do..
-    }
+    auto width  = static_cast<std::uint64_t>(*m_width);
+    auto height = static_cast<std::uint64_t>(*m_height);
+    double square_size(*m_square_size);
 
     m_chessboard_model.clear();
 
@@ -324,7 +299,10 @@ service::connections_t chessboard_reprojection::auto_connections() const
         {TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE},
         {DETECTED_CHESSBOARD_INPUT, data::point_list::MODIFIED_SIG, service::slots::UPDATE},
         {CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE},
-        {CAMERA_INPUT, data::camera::MODIFIED_SIG, service::slots::UPDATE}
+        {CAMERA_INPUT, data::camera::MODIFIED_SIG, service::slots::UPDATE},
+        {m_width, data::object::MODIFIED_SIG, UPDATE_CHESSBOARD_SIZE_SLOT},
+        {m_height, data::object::MODIFIED_SIG, UPDATE_CHESSBOARD_SIZE_SLOT},
+        {m_square_size, data::object::MODIFIED_SIG, UPDATE_CHESSBOARD_SIZE_SLOT}
     };
 }
 

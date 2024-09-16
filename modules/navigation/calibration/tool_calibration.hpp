@@ -95,7 +95,7 @@ private:
     static constexpr std::string_view MATRICES_VECTOR_INPUT     = "matricesVector";
 
     sight::data::ptr<sight::data::matrix4, sight::data::access::out> m_matrix_center {this, MATRIX_CENTER_OUTPUT,
-                                                                                      false, true
+                                                                                      true
     };
     sight::data::ptr<sight::data::matrix4, sight::data::access::out> m_matrix_calibration {this,
                                                                                            MATRIX_CALIBRATION_OUTPUT

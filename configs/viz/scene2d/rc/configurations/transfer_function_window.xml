@@ -15,7 +15,7 @@
 
         <object uid="${image}" type="sight::data::image" src="ref" />
         <object uid="${currentTF}" type="sight::data::transfer_function" src="ref" />
-        <object uid="${presets}" type="sight::data::composite" src="deferred" />
+        <object uid="${presets}" type="sight::data::map" src="deferred" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

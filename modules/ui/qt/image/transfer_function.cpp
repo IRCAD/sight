@@ -25,7 +25,7 @@
 #include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/transfer_function.hpp>
 
 #include <io/__/service/reader.hpp>
@@ -266,9 +266,9 @@ void transfer_function::updating()
     }
 
     // Now updates the TF
-    const auto opt_presets          = m_opt_presets.lock();
-    sight::data::composite& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
-    const auto new_selected_tf      = std::dynamic_pointer_cast<data::transfer_function>(presets[selected_tf_key]);
+    const auto opt_presets     = m_opt_presets.lock();
+    sight::data::map& presets  = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
+    const auto new_selected_tf = std::dynamic_pointer_cast<data::transfer_function>(presets[selected_tf_key]);
     {
         auto tf_lock          = data::mt::locked_ptr(new_selected_tf);
         const auto current_tf = m_current_tf.lock();
@@ -296,16 +296,16 @@ service::connections_t transfer_function::auto_connections() const
         {CURRENT_INPUT, data::transfer_function::MODIFIED_SIG, service::slots::UPDATE},
         {CURRENT_INPUT, data::transfer_function::POINTS_MODIFIED_SIG, service::slots::UPDATE},
         {CURRENT_INPUT, data::transfer_function::WINDOWING_MODIFIED_SIG, service::slots::UPDATE},
-        {PRESETS_INOUT, data::composite::MODIFIED_SIG, UPDATE_PRESETS_SLOT},
-        {PRESETS_INOUT, data::composite::ADDED_OBJECTS_SIG, UPDATE_PRESETS_SLOT},
-        {PRESETS_INOUT, data::composite::CHANGED_OBJECTS_SIG, UPDATE_PRESETS_SLOT},
-        {PRESETS_INOUT, data::composite::REMOVED_OBJECTS_SIG, UPDATE_PRESETS_SLOT}
+        {PRESETS_INOUT, data::map::MODIFIED_SIG, UPDATE_PRESETS_SLOT},
+        {PRESETS_INOUT, data::map::ADDED_OBJECTS_SIG, UPDATE_PRESETS_SLOT},
+        {PRESETS_INOUT, data::map::CHANGED_OBJECTS_SIG, UPDATE_PRESETS_SLOT},
+        {PRESETS_INOUT, data::map::REMOVED_OBJECTS_SIG, UPDATE_PRESETS_SLOT}
     };
 }
 
 //------------------------------------------------------------------------------
 
-bool transfer_function::has_preset_name(const sight::data::composite& _presets, const std::string& _name)
+bool transfer_function::has_preset_name(const sight::data::map& _presets, const std::string& _name)
 {
     return _presets.find(_name) != _presets.end();
 }
@@ -313,7 +313,7 @@ bool transfer_function::has_preset_name(const sight::data::composite& _presets, 
 //------------------------------------------------------------------------------
 
 std::string transfer_function::create_preset_name(
-    const sight::data::composite& _presets,
+    const sight::data::map& _presets,
     const std::string& _basename
 )
 {
@@ -339,12 +339,12 @@ std::string transfer_function::create_preset_name(
 
 void transfer_function::initialize_presets(const std::string& _current_preset_name)
 {
-    m_tf_presets = std::make_shared<sight::data::composite>();
+    m_tf_presets = std::make_shared<sight::data::map>();
     std::string current_preset_name = _current_preset_name;
 
     {
-        const auto opt_presets          = m_opt_presets.lock();
-        sight::data::composite& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
+        const auto opt_presets    = m_opt_presets.lock();
+        sight::data::map& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
         if(opt_presets != nullptr)
         {
             // If we specify the presets, use the internal map to save initial state
@@ -374,7 +374,7 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
                 }
             }
 
-            // Test if transfer function composite has few TF
+            // Test if transfer function map has few TF
             if(presets.size() <= 1)
             {
                 // Creates the TF reader.
@@ -399,7 +399,7 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
                         {
                             const std::filesystem::path file = *it;
 
-                            // Add a new composite for each TF path.
+                            // Add a new map for each TF path.
                             service::config_t config;
                             config.put("file", file.string());
                             config.put("archive.<xmlattr>.format", "filesystem");
@@ -443,7 +443,7 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
 
         {
             // Gets TF presets.
-            // Iterate over each composite to add them to the presets selector.
+            // Iterate over each map to add them to the presets selector.
             for(const auto& elt : presets)
             {
                 m_preset_combo_box->addItem(elt.first.c_str());
@@ -474,7 +474,7 @@ void transfer_function::initialize_presets(const std::string& _current_preset_na
         index = m_preset_combo_box->findText(QString::fromStdString(data::transfer_function::DEFAULT_TF_NAME));
     }
 
-    // Set the current composite
+    // Set the current map
     this->preset_choice(index);
 }
 
@@ -499,9 +499,9 @@ void transfer_function::set_current_preset()
 {
     const std::string new_selected_tf_key = m_preset_combo_box->currentText().toStdString();
 
-    const auto opt_presets          = m_opt_presets.lock();
-    sight::data::composite& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
-    const auto new_selected_tf      = std::dynamic_pointer_cast<data::transfer_function>(presets[new_selected_tf_key]);
+    const auto opt_presets     = m_opt_presets.lock();
+    sight::data::map& presets  = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
+    const auto new_selected_tf = std::dynamic_pointer_cast<data::transfer_function>(presets[new_selected_tf_key]);
 
     const auto current_tf = m_current_tf.lock();
     if(new_selected_tf && new_selected_tf->name() != current_tf->name())
@@ -560,10 +560,10 @@ void transfer_function::delete_preset()
     {
         const int index = std::max(m_preset_combo_box->currentIndex() - 1, 0);
         {
-            // Remove the current TF preset from the Composite.
+            // Remove the current TF preset from the Map.
             const std::string selected_tf_preset_key = m_preset_combo_box->currentText().toStdString();
             const auto opt_presets                   = m_opt_presets.lock();
-            sight::data::composite& presets          = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
+            sight::data::map& presets                = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
 
             const auto scoped_emitter = presets.scoped_emit();
             scoped_emitter->block(slot(UPDATE_PRESETS_SLOT));
@@ -579,7 +579,7 @@ void transfer_function::delete_preset()
             );
         }
 
-        // Set the current composite
+        // Set the current map
         this->preset_choice(index);
     }
 }
@@ -603,13 +603,13 @@ void transfer_function::create_preset()
     if(!newName.empty())
     {
         {
-            const auto opt_presets          = m_opt_presets.lock();
-            sight::data::composite& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
+            const auto opt_presets    = m_opt_presets.lock();
+            sight::data::map& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
 
             // Gets TF presets.
             if(!sight::module::ui::qt::image::transfer_function::has_preset_name(presets, newName))
             {
-                // Create the new composite.
+                // Create the new map.
                 const auto image = m_image.lock();
                 auto default_tf  = image
                                    ? data::transfer_function::create_default_tf(image->type())
@@ -640,7 +640,7 @@ void transfer_function::create_preset()
             }
         }
 
-        // Set the current composite.
+        // Set the current map.
         this->preset_choice(m_preset_combo_box->findText(QString::fromStdString(newName)));
     }
 }
@@ -665,8 +665,8 @@ void transfer_function::copy_preset()
     if(!newName.empty())
     {
         {
-            const auto opt_presets          = m_opt_presets.lock();
-            sight::data::composite& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
+            const auto opt_presets    = m_opt_presets.lock();
+            sight::data::map& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
             // Gets TF presets.
             if(sight::module::ui::qt::image::transfer_function::has_preset_name(presets, newName))
             {
@@ -697,7 +697,7 @@ void transfer_function::copy_preset()
                 m_preset_combo_box->addItem(elt.first.c_str());
             }
         }
-        // Set the current composite.
+        // Set the current map.
         this->preset_choice(m_preset_combo_box->findText(QString::fromStdString(newName)));
     }
     else
@@ -754,14 +754,14 @@ void transfer_function::rename_preset()
     if(!newName.empty() && newName != old_name)
     {
         {
-            const auto opt_presets          = m_opt_presets.lock();
-            sight::data::composite& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
+            const auto opt_presets    = m_opt_presets.lock();
+            sight::data::map& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
             // Gets TF presets.
             if(!sight::module::ui::qt::image::transfer_function::has_preset_name(presets, newName))
             {
                 auto tf = std::dynamic_pointer_cast<data::transfer_function>(presets[old_name]);
 
-                // Rename the composite.
+                // Rename the map.
                 presets.erase(old_name);
                 presets[newName] = tf;
 
@@ -786,7 +786,7 @@ void transfer_function::rename_preset()
             }
         }
 
-        // Set the current composite.
+        // Set the current map.
         this->preset_choice(m_preset_combo_box->findText(QString::fromStdString(newName)));
     }
 }
@@ -811,15 +811,15 @@ void transfer_function::import_preset()
     reader->open_location_dialog();
     reader->update().wait();
 
-    // Check the loaded composite.
+    // Check the loaded map.
     if(!new_tf->empty())
     {
         int index = 0;
         {
             std::string preset_name(new_tf->name());
 
-            const auto opt_presets          = m_opt_presets.lock();
-            sight::data::composite& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
+            const auto opt_presets    = m_opt_presets.lock();
+            sight::data::map& presets = (opt_presets != nullptr) ? *opt_presets : *m_tf_presets;
             if(sight::module::ui::qt::image::transfer_function::has_preset_name(presets, preset_name))
             {
                 preset_name = sight::module::ui::qt::image::transfer_function::create_preset_name(presets, preset_name);

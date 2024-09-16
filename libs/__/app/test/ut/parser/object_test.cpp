@@ -50,7 +50,6 @@ void object_test::setUp()
 
 void object_test::tearDown()
 {
-    CPPUNIT_ASSERT_NO_THROW(m_object_parser.destroy_config());
 }
 
 //------------------------------------------------------------------------------
@@ -65,9 +64,12 @@ void object_test::basic_test()
     ptree.put("item.object.<xmlattr>.type", "sight::data::string");
     ptree.put("item.object.value", "Hello world");
     auto object = std::make_shared<data::string>();
-    CPPUNIT_ASSERT(m_object_parser.is_a("sight::app::parser::object"));
-    m_object_parser.set_object_config(ptree);
-    m_object_parser.create_config(object);
+
+    parser::object object_parser;
+    CPPUNIT_ASSERT(object_parser.is_a("sight::app::parser::object"));
+
+    service::object_parser::objects_t sub_objects;
+    object_parser.parse(ptree, object, sub_objects);
     CPPUNIT_ASSERT(std::dynamic_pointer_cast<data::string>(object->get_field("data")) != nullptr);
     CPPUNIT_ASSERT_EQUAL(
         "Hello world"s,

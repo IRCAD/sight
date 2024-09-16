@@ -51,7 +51,7 @@ void tester::take(
     );
     if(!ok)
     {
-        fail("\"" + _component_description + "\" has never showed up");
+        fail("'" + _component_description + "' has never showed up");
     }
 
     m_graphic_component     = component;
@@ -87,9 +87,9 @@ void tester::doubt(const std::string& _result_description, std::function<bool(T)
     if(!ok)
     {
         fail(
-            "The interaction on the component \"" + m_component_description + "\" didn't yield the result \""
+            "The interaction on the component '" + m_component_description + "' didn't yield the result '"
             + _result_description
-            + '"'
+            + "'"
         );
     }
 
@@ -131,7 +131,7 @@ void tester::yields(
     );
     if(!ok)
     {
-        fail("\"" + m_component_description + " didn't yield the component \"" + _component_description + '"');
+        fail("'" + m_component_description + "' didn't yield the component '" + _component_description + "'");
     }
 
     m_graphic_component     = new_graphic_component;
@@ -227,7 +227,7 @@ T tester::get()
     T res = qobject_cast<T>(m_graphic_component);
     if(res == nullptr)
     {
-        fail("Couldn't cast \"" + m_component_description + "\" to \"" + typeid(T).name() + '"');
+        fail("Couldn't cast '" + m_component_description + "' to '" + typeid(T).name() + "'");
     }
 
     return res;

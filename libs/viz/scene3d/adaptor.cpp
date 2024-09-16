@@ -33,21 +33,17 @@
 namespace sight::viz::scene3d
 {
 
-const core::com::slots::key_t adaptor::UPDATE_VISIBILITY_SLOT = "update_visibility";
-const core::com::slots::key_t adaptor::TOGGLE_VISIBILITY_SLOT = "toggle_visibility";
-const core::com::slots::key_t adaptor::SHOW_SLOT              = "show";
-const core::com::slots::key_t adaptor::HIDE_SLOT              = "hide";
-
 const std::string adaptor::CONFIG = "config.<xmlattr>.";
 
 //------------------------------------------------------------------------------
 
 adaptor::adaptor() noexcept
 {
-    new_slot(UPDATE_VISIBILITY_SLOT, &adaptor::update_visibility, this);
-    new_slot(TOGGLE_VISIBILITY_SLOT, &adaptor::toggle_visibility, this);
-    new_slot(SHOW_SLOT, &adaptor::show, this);
-    new_slot(HIDE_SLOT, &adaptor::hide, this);
+    new_slot(slots::UPDATE_VISIBILITY, &adaptor::update_visibility, this);
+    new_slot(slots::APPLY_VISIBILITY, &adaptor::apply_visibility, this);
+    new_slot(slots::TOGGLE_VISIBILITY, &adaptor::toggle_visibility, this);
+    new_slot(slots::SHOW, &adaptor::show, this);
+    new_slot(slots::HIDE, &adaptor::hide, this);
 }
 
 //------------------------------------------------------------------------------
@@ -64,7 +60,12 @@ void adaptor::configure_params()
 {
     const config_t config = this->get_config();
     m_cfg_layer_id = config.get<std::string>("config.<xmlattr>.layer", "");
-    m_visible      = config.get<bool>("config.<xmlattr>.visible", m_visible);
+
+    if(auto properties = config.get_child_optional("properties"); not properties.has_value())
+    {
+        const auto visible = m_visible.lock();
+        *visible = config.get<bool>("config.<xmlattr>.visible", true);
+    }
 
     SIGHT_WARN_IF(
         "In [" + this->get_id() + "] adaptor, specifying a layer is now deprecated. "
@@ -150,7 +151,7 @@ Ogre::SceneManager* adaptor::get_scene_manager()
 void adaptor::request_render()
 {
     auto render_service = this->render_service();
-    if(m_visible || !m_visibility_applied)
+    if(*m_visible || !m_visibility_applied)
     {
         render_service->request_render();
     }
@@ -160,18 +161,36 @@ void adaptor::request_render()
 
 //-----------------------------------------------------------------------------
 
-void adaptor::update_visibility(bool _is_visible)
+void adaptor::update_visibility(bool _visible)
 {
-    m_visible            = _is_visible;
+    {
+        const auto visible = m_visible.lock();
+        *visible = _visible;
+    }
     m_visibility_applied = false;
-    this->set_visible(m_visible);
+    this->set_visible(_visible);
+}
+
+//-----------------------------------------------------------------------------
+
+void adaptor::apply_visibility()
+{
+    m_visibility_applied = false;
+    this->set_visible(*m_visible);
+}
+
+//------------------------------------------------------------------------------
+
+bool adaptor::visible() const
+{
+    return *m_visible;
 }
 
 //------------------------------------------------------------------------------
 
 void adaptor::toggle_visibility()
 {
-    this->update_visibility(!m_visible);
+    this->update_visibility(not * m_visible);
 }
 
 //------------------------------------------------------------------------------
@@ -192,7 +211,14 @@ void adaptor::hide()
 
 void adaptor::set_visible(bool /*unused*/)
 {
-    SIGHT_WARN("This adaptor has no method 'setVisible(bool)', it needs to be overridden to be called.");
+    SIGHT_WARN("This adaptor has no method 'set_visible(bool)', it needs to be overridden to be called.");
+}
+
+//-----------------------------------------------------------------------------
+
+service::connections_t adaptor::auto_connections() const
+{
+    return {{m_visible, data::object::MODIFIED_SIG, slots::APPLY_VISIBILITY}};
 }
 
 //------------------------------------------------------------------------------

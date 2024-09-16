@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,6 @@
 
 namespace sight::module::viz::sample
 {
-
-static const std::string IMAGE_INPUT = "image";
 
 //------------------------------------------------------------------------------
 
@@ -102,18 +100,6 @@ void image::starting()
     m_render_srv->start().wait();
     m_interactor_srv->start().wait();
     m_negato_srv->start().wait();
-}
-
-//------------------------------------------------------------------------------
-
-service::connections_t image::auto_connections() const
-{
-    // This is actually useless since the sub-service already listens to the data,
-    // but this prevents a warning in fwServices from being raised.
-    connections_t connections;
-    connections.push(IMAGE_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
-
-    return connections;
 }
 
 //------------------------------------------------------------------------------

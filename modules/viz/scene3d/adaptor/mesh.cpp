@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,7 +80,7 @@ void mesh::configuring()
     const std::string color = config.get<std::string>(CONFIG + "color", "");
 
     SIGHT_ASSERT("Material not found", m_material);
-    m_material->diffuse()->set_rgba(color.empty() ? "#FFFFFFFF" : color);
+    m_material->diffuse()->from_string(color.empty() ? "#FFFFFFFF" : color);
 
     m_auto_reset_camera = config.get<bool>(CONFIG + "autoresetcamera", true);
 
@@ -177,7 +177,7 @@ void mesh::starting()
 
 service::connections_t mesh::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(MESH_IN, data::mesh::VERTEX_MODIFIED_SIG, MODIFY_VERTICES_SLOT);
     connections.push(MESH_IN, data::mesh::POINT_COLORS_MODIFIED_SIG, MODIFY_COLORS_SLOT);
     connections.push(MESH_IN, data::mesh::CELL_COLORS_MODIFIED_SIG, MODIFY_COLORS_SLOT);
@@ -285,7 +285,7 @@ void mesh::update_mesh(data::mesh::csptr _mesh)
     if(m_entity == nullptr)
     {
         m_entity = m_mesh_geometry->create_entity(*scene_mgr);
-        m_entity->setVisible(m_visible);
+        m_entity->setVisible(visible());
         m_entity->setQueryFlags(m_query_flags);
     }
     else
@@ -356,7 +356,7 @@ void mesh::update_mesh(data::mesh::csptr _mesh)
         }
     }
 
-    m_mesh_geometry->set_visible(m_visible);
+    m_mesh_geometry->set_visible(visible());
 
     if(m_auto_reset_camera)
     {

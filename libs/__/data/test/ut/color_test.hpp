@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,9 +32,9 @@ class color_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(color_test);
-    CPPUNIT_TEST(methode1);
-    CPPUNIT_TEST(methode2);
-    CPPUNIT_TEST(methode3);
+    CPPUNIT_TEST(basic);
+    CPPUNIT_TEST(accessors);
+    CPPUNIT_TEST(string);
     CPPUNIT_TEST(equality_test);
     CPPUNIT_TEST_SUITE_END();
 
@@ -44,9 +44,9 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void methode1();
-    static void methode2();
-    static void methode3();
+    static void basic();
+    static void accessors();
+    static void string();
     static void equality_test();
 };
 

@@ -1,6 +1,7 @@
 <extension implements="sight::app::extension::config">
-    <id>calExtrinsicView</id>
+    <id>sight::navigation::calibration::cal_extrinsic_view</id>
     <parameters>
+        <object uid="board_properties" type="sight::data::map" />
         <param name="WID_PARENT" />
         <param name="cameraSet" />
         <param name="camera1" />
@@ -294,7 +295,7 @@
                 <key uid="${calibrationInfo1}" />
                 <key uid="${calibrationInfo2}" />
             </inout>
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
+            <properties from="${board_properties}" />
         </service>
 
         <service uid="displayCalibrationInfoSrv" type="sight::module::ui::qt::calibration::display_calibration_info">
@@ -324,7 +325,7 @@
             <inout key="cameraSet" uid="${cameraSet}" />
             <out key="matrix" uid="exportExtrinsicMat" />
             <camIndex>${camIndex}</camIndex>
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <properties from="${board_properties}" />
         </service>
 
         <service uid="cameraSetInfoSrv" type="sight::module::ui::qt::calibration::camera_set_editor" auto_connect="true">
@@ -353,13 +354,13 @@
         <service uid="calibrationDataReader1Srv" type="sight::module::io::vision::calibration_info_reader">
             <windowTitle>Load left images.</windowTitle>
             <inout key="data" uid="${calibrationInfo1}" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
+            <properties from="${board_properties}" />
         </service>
 
         <service uid="calibrationDataReader2Srv" type="sight::module::io::vision::calibration_info_reader">
             <windowTitle>Load right images.</windowTitle>
             <inout key="data" uid="${calibrationInfo2}" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
+            <properties from="${board_properties}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
@@ -520,13 +521,6 @@
         <connect>
             <signal>openCVExtrinsicCalSrv/error_computed</signal>
             <slot>errorLabelSrv/set_double_parameter</slot>
-        </connect>
-
-        <connect channel="${preferencesModifiedProxy}">
-            <slot>openCVExtrinsicCalSrv/update_chessboard_size</slot>
-            <slot>chessboardDetectorSrv/update_chessboard_size</slot>
-            <slot>calibrationDataReader1Srv/update_chessboard_size</slot>
-            <slot>calibrationDataReader2Srv/update_chessboard_size</slot>
         </connect>
 
         <connect>

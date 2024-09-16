@@ -80,7 +80,7 @@ protected:
     disconnect_signal_t::sptr m_sig_disconnected;
 
     static constexpr std::string_view OBJECTS_INPUT = "objects";
-    data::ptr_vector<data::object, sight::data::access::in> m_objects {this, OBJECTS_INPUT, true};
+    data::ptr_vector<data::object, sight::data::access::in> m_objects {this, OBJECTS_INPUT};
 };
 
 } // namespace sight::module::io::igtl.

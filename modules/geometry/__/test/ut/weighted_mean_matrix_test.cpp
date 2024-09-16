@@ -79,7 +79,7 @@ public:
         config_string
         << "<in key=\"raw\" uid=\"raw\" />"
            "<inout key=\"damped\" uid=\"damped\" />"
-           "<config weight=\"" << _weight << R"(" enabled="true" />)";
+           "<properties weight=\"" << _weight << R"(" enabled="true" />)";
 
         sight::service::base::config_t config;
         boost::property_tree::read_xml(config_string, config);

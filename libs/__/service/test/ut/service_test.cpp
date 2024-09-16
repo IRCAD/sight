@@ -28,8 +28,8 @@
 #include <core/thread/worker.hpp>
 #include <core/time_stamp.hpp>
 
-#include <data/composite.hpp>
 #include <data/image.hpp>
+#include <data/map.hpp>
 #include <data/object.hpp>
 
 #include <service/op.hpp>
@@ -65,7 +65,7 @@ void service_test::tearDown()
     {
         if(srv->started())
         {
-            srv->stop();
+            srv->stop().wait();
         }
 
         service::unregister_service(srv);
@@ -86,11 +86,11 @@ void service_test::test_service_configuration()
     CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv->config_status());
     CPPUNIT_ASSERT_EQUAL(test_service::NOT_DEFINED, srv->get_option());
 
-    const std::string optio_n1 = "configuredOption1";
-    const std::string optio_n2 = "configuredOption2";
+    const std::string option_1 = "configuredOption1";
+    const std::string option_2 = "configuredOption2";
 
     service::config_t config;
-    config.add(test_service::OPTION_KEY, optio_n1);
+    config.add(test_service::OPTION_KEY, option_1);
 
     srv->set_config(config);
     CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::unconfigured, srv->config_status());
@@ -98,10 +98,10 @@ void service_test::test_service_configuration()
     srv->configure();
 
     CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv->config_status());
-    CPPUNIT_ASSERT_EQUAL(optio_n1, srv->get_option());
+    CPPUNIT_ASSERT_EQUAL(option_1, srv->get_option());
 
     service::config_t config2;
-    config2.add(test_service::OPTION_KEY, optio_n2);
+    config2.add(test_service::OPTION_KEY, option_2);
 
     CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::unconfigured, srv2->config_status());
     CPPUNIT_ASSERT_EQUAL(test_service::UNCONFIGURED, srv2->get_option());
@@ -109,7 +109,7 @@ void service_test::test_service_configuration()
     srv2->configure(config2);
 
     CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv2->config_status());
-    CPPUNIT_ASSERT_EQUAL(optio_n2, srv2->get_option());
+    CPPUNIT_ASSERT_EQUAL(option_2, srv2->get_option());
 
     // Test erasing service
     service::unregister_service(srv);
@@ -379,7 +379,7 @@ void service_test::test_communication()
     const std::string service1_uuid = "service1UUID";
     const std::string service2_uuid = "service2UUID";
 
-    data::composite::sptr obj = std::make_shared<data::composite>();
+    data::map::sptr obj = std::make_shared<data::map>();
     service::ut::test_service::sptr service1;
     service::ut::test_service::sptr service2;
 
@@ -646,6 +646,60 @@ void service_test::test_with_in_and_out()
     );
 
     service::unregister_service(service);
+}
+
+//------------------------------------------------------------------------------
+
+void service_test::test_properties()
+{
+    {
+        // Default value, property object automatically created
+        auto service = service::add<service::ut::test1_property>("sight::service::ut::test1_property");
+        service::config_t config;
+        CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::unconfigured, service->config_status());
+        service->set_config(config);
+        service->configure();
+        CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, service->config_status());
+
+        service->start().wait();
+        CPPUNIT_ASSERT(service->started());
+        CPPUNIT_ASSERT(nullptr != service->data::has_data::object("prop1", data::access::inout));
+        service->update().wait();
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(12), *service->m_prop1);
+        service->stop().wait();
+    }
+    {
+        // Value set directly in configuring
+        auto service = service::add<service::ut::test1_property>("sight::service::ut::test1_property");
+        service::config_t config;
+        config.add("properties.<xmlattr>.prop1", 1234);
+
+        service->set_config(config);
+        service->configure();
+
+        service->start().wait();
+        CPPUNIT_ASSERT(service->started());
+        CPPUNIT_ASSERT(nullptr != service->data::has_data::object("prop1", data::access::inout));
+        service->update().wait();
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(1234), service->m_prop1.value());
+        service->stop().wait();
+    }
+    {
+        // Value set as object
+        auto service  = service::add<service::ut::test1_property>("sight::service::ut::test1_property");
+        const auto i1 = std::make_shared<data::integer>(18);
+        service::config_t config;
+        service->set_config(config);
+        service->set_inout(i1, "prop1");
+
+        service->start().wait();
+        CPPUNIT_ASSERT(service->started());
+        CPPUNIT_ASSERT(nullptr != service->data::has_data::object("prop1", data::access::inout));
+        service->update().wait();
+        CPPUNIT_ASSERT_EQUAL(i1->value(), *service->m_prop1);
+        service->stop().wait();
+        service::unregister_service(service);
+    }
 }
 
 //------------------------------------------------------------------------------

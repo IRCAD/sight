@@ -36,65 +36,60 @@ namespace sight::service
  * configuration.
  * As each specific (data) object has a specific structure (attributes), it must be specialized for each one.
  *
- * The updating() method of this base class parses the XML description: each object named XML children corresponds to a
- * field
- * added to the object (see core::object). The New() method on the related child is invoked, therefore
- * allowing to build tree like composite object which services.
+ * The parse() method of this base class parses the XML description: each object named XML children corresponds to a
+ * field added to the object (see core::object).
  */
 class SIGHT_SERVICE_CLASS_API object_parser : public service::base
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(object_parser, service::base);
+    SIGHT_DECLARE_CLASS(object_parser, service::base);
 
-    SIGHT_SERVICE_API void set_object_config(const service::config_t& _cfg_elem);
+    // Contains created objects indexed by uid
+    using objects_map_t = std::unordered_map<std::string, sight::data::object::sptr>;
+    // Contains uids of objects
+    using objects_set_t = std::set<std::string>;
+    // Contains created objects, deferred objects and preferences objects
+    struct objects_t
+    {
+        objects_map_t created;
+        objects_set_t deferred;
+        objects_set_t prefs;
 
-    SIGHT_SERVICE_API virtual void create_config(core::object::sptr _obj);
+        //------------------------------------------------------------------------------
 
-    SIGHT_SERVICE_API virtual void start_config();
+        void merge(const objects_t& _other)
+        {
+            std::ranges::copy(_other.created, std::inserter(this->created, this->created.begin()));
+            std::ranges::copy(_other.prefs, std::inserter(this->prefs, this->prefs.begin()));
+        }
+    };
 
-    SIGHT_SERVICE_API virtual void update_config();
-
-    SIGHT_SERVICE_API virtual void stop_config();
-
-    SIGHT_SERVICE_API virtual void destroy_config();
-
-    service::config_t m_cfg;
+    SIGHT_SERVICE_API virtual void parse(
+        const service::config_t& _cfg_elem,
+        core::object::sptr _obj,
+        objects_t& _sub_objects
+    ) = 0;
 
 protected:
 
-    /**
-     * @brief Constructor. Does nothing.
-     */
+    /// Constructor. Does nothing.
     SIGHT_SERVICE_API object_parser() = default;
 
-    /**
-     * @brief Destructor. Does nothing.
-     */
+    /// Destructor. Does nothing.
     SIGHT_SERVICE_API ~object_parser() override = default;
 
-    /**
-     * @brief Does nothing
-     */
-    SIGHT_SERVICE_API void starting() override;
+    /// Does nothing
+    SIGHT_SERVICE_API void configuring() final;
 
-    /**
-     * @brief Does nothing
-     */
-    SIGHT_SERVICE_API void stopping() override;
+    /// Does nothing
+    SIGHT_SERVICE_API void starting() final;
 
-    /**
-     * @brief Does nothing
-     */
-    SIGHT_SERVICE_API void configuring() override;
+    /// Does nothing
+    SIGHT_SERVICE_API void updating() final;
 
-    /**
-     * @brief Parse the XML configuration
-     * @note Should invoked ( this->::object_parser::updating() ) from specific XMLParsers updating method to support
-     * both
-     *       specific compositions and this generic one
-     */
-    SIGHT_SERVICE_API void updating() override;
+    /// Does nothing
+    SIGHT_SERVICE_API void stopping() final;
 };
 
 } // namespace sight::service

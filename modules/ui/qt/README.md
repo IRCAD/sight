@@ -73,7 +73,7 @@ Here is the list of uncategorised services:
 ### Model
 
 - **model_series_list**: editor displaying the list of the organs in a ModelSeries.
-- **organ_transformation**: displays the organs list and allow an interactive selection to set the corresponding meshes in a composite.
+- **organ_transformation**: displays the organs list and allow an interactive selection to set the corresponding meshes in a map.
 
 ### Reconstruction
 

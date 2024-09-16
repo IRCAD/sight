@@ -101,7 +101,7 @@ private:
     QPointer<QLabel> m_transparency_value;
 
     static constexpr std::string_view RECONSTRUCTION = "reconstruction";
-    data::ptr<data::reconstruction, data::access::inout> m_rec {this, RECONSTRUCTION, true};
+    data::ptr<data::reconstruction, data::access::inout> m_rec {this, RECONSTRUCTION};
 
 private Q_SLOTS:
 

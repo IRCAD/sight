@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ int sequencer::parse_activities(data::activity_set& _activity_set)
 void sequencer::store_activity_data(
     const data::activity_set& _activity_set,
     std::size_t _index,
-    const data::composite::csptr& _overrides
+    const data::map::csptr& _overrides
 )
 {
     // Retrives the current activity data
@@ -144,8 +144,8 @@ data::activity::sptr sequencer::get_activity(
             }
             else if(req.min_occurs == 0)
             {
-                // Create an empty composite for optional data
-                auto object = std::make_shared<data::composite>();
+                // Create an empty map for optional data
+                auto object = std::make_shared<data::map>();
                 activity->insert_or_assign(req.name, object);
                 m_requirements.insert_or_assign(req.name, object);
             }
@@ -208,7 +208,7 @@ void sequencer::reset_requirements()
 
                 if(!requirement.create && requirement.max_occurs != 0)
                 {
-                    object->shallow_copy(std::make_shared<data::composite>());
+                    object->shallow_copy(std::make_shared<data::map>());
                 }
                 else
                 {

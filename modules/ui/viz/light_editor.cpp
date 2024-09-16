@@ -26,7 +26,7 @@
 
 #include <core/com/slots.hxx>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 #include <service/macros.hpp>
 

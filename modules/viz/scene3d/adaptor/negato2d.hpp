@@ -245,8 +245,8 @@ private:
     static constexpr std::string_view IMAGE_IN = "image";
     static constexpr std::string_view TF_IN    = "tf";
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_IN, true};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, TF_IN, true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_IN};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, TF_IN};
 };
 
 //------------------------------------------------------------------------------

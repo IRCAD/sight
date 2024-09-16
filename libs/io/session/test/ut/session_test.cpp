@@ -35,13 +35,13 @@
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
 #include <data/color.hpp>
-#include <data/composite.hpp>
 #include <data/dicom_series.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
 #include <data/landmarks.hpp>
 #include <data/line.hpp>
+#include <data/map.hpp>
 #include <data/material.hpp>
 #include <data/matrix4.hpp>
 #include <data/model_series.hpp>
@@ -347,9 +347,9 @@ void session_test::string_test()
 //------------------------------------------------------------------------------
 
 template<>
-inline data::composite::sptr generate<data::composite>(const std::size_t _variant)
+inline data::map::sptr generate<data::map>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::composite>();
+    auto object = std::make_shared<data::map>();
     (*object)[data::boolean::classname()] = create<data::boolean>(_variant);
     (*object)[data::integer::classname()] = create<data::integer>(_variant);
     (*object)[data::real::classname()]    = create<data::real>(_variant);
@@ -360,9 +360,9 @@ inline data::composite::sptr generate<data::composite>(const std::size_t _varian
 
 //------------------------------------------------------------------------------
 
-void session_test::composite_test()
+void session_test::map_test()
 {
-    test_combine<data::composite>();
+    test_combine<data::map>();
 }
 
 //------------------------------------------------------------------------------

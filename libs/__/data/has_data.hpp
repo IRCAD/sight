@@ -130,8 +130,8 @@ public:
      * its outputs by calling set_output(key, nullptr). Otherwise, a service may work on an expired object.
      */
     SIGHT_DATA_API void set_output(
-        std::string_view _key,
         data::object::sptr _object,
+        std::string_view _key,
         std::optional<std::size_t> _index = {});
 
 protected:

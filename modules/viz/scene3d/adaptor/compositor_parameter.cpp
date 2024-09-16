@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,9 +114,9 @@ void compositor_parameter::starting()
 
     sight::viz::scene3d::layer::sptr layer = this->layer();
 
-    if(!m_visible)
+    if(!visible())
     {
-        this->slot(UPDATE_VISIBILITY_SLOT)->async_run(m_visible);
+        this->slot(slots::UPDATE_VISIBILITY)->async_run(visible());
     }
 
     this->add_listener();

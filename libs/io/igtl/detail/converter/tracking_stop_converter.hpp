@@ -30,7 +30,7 @@ namespace sight::io::igtl::detail::converter
 
 /**
  *
- * @brief class to manage conversion between data::composite and STP_TDATA in igtl::TrackingDataMessage
+ * @brief class to manage conversion between data::map and STP_TDATA in igtl::TrackingDataMessage
  */
 class SIGHT_IO_IGTL_CLASS_API tracking_stop_converter : public base
 {
@@ -47,8 +47,8 @@ public:
     override;
 
     /**
-     * @brief convert a data::composite to a igtl::TrackingDataMessage
-     * @return an igtl::TrackingDataMessage converted from an data::composite
+     * @brief convert a data::map to a igtl::TrackingDataMessage
+     * @return an igtl::TrackingDataMessage converted from an data::map
      */
     [[nodiscard]] SIGHT_IO_IGTL_API ::igtl::MessageBase::Pointer from_fw_data_object(data::object::csptr _src) const
     override;

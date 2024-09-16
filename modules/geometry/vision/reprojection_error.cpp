@@ -43,25 +43,18 @@ static const core::com::signals::key_t ERROR_COMPUTED_SIG = "error_computed";
 
 //-----------------------------------------------------------------------------
 
-reprojection_error::reprojection_error() :
-
-    m_cv_color(cv::Scalar(255, 255, 255, 255))
+reprojection_error::reprojection_error()
 {
     new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
 
     new_slot(COMPUTE_SLOT, &reprojection_error::compute, this);
-    new_slot(SET_PARAMETER_SLOT, &reprojection_error::set_parameter, this);
 }
 
 //-----------------------------------------------------------------------------
 
-void reprojection_error::configuring()
+void reprojection_error::configuring(const config_t& _config)
 {
-    service::config_t config = this->get_config();
-    m_pattern_width = config.get<double>("patternWidth", m_pattern_width);
-    SIGHT_ASSERT("patternWidth setting is set to " << m_pattern_width << " but should be > 0.", m_pattern_width > 0);
-
-    auto in_cfg = config.equal_range("in");
+    auto in_cfg = _config.equal_range("in");
     for(auto it_cfg = in_cfg.first ; it_cfg != in_cfg.second ; ++it_cfg)
     {
         const auto group = it_cfg->second.get<std::string>("<xmlattr>.group", "");
@@ -84,7 +77,7 @@ void reprojection_error::configuring()
 void reprojection_error::starting()
 {
     //3D Points
-    const float half_width = static_cast<float>(m_pattern_width) * .5F;
+    const float half_width = static_cast<float>(*m_pattern_width) * .5F;
 
     m_object_points.emplace_back(-half_width, half_width, 0.F);
     m_object_points.emplace_back(half_width, half_width, 0.F);
@@ -198,7 +191,7 @@ void reprojection_error::compute(core::clock::type _timestamp)
         }
 
         // draw reprojected points
-        if(m_display)
+        if(*m_display)
         {
             for(const auto& err : errors)
             {
@@ -213,30 +206,17 @@ void reprojection_error::compute(core::clock::type _timestamp)
 
                     for(auto& j : reprojected_p)
                     {
-                        cv::circle(cv_image, j, 7, m_cv_color, 1, cv::LINE_8);
+                        const auto cv_color = cv::Scalar(
+                            (*m_color)[0] * 255.,
+                            (*m_color)[1] * 255.,
+                            (*m_color)[2] * 255.,
+                            255.
+                        );
+                        cv::circle(cv_image, j, 7, cv_color, 1, cv::LINE_8);
                     }
                 }
             }
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void reprojection_error::set_parameter(sight::ui::parameter_t _val, std::string _key)
-{
-    if(_key == "display")
-    {
-        m_display = std::get<bool>(_val);
-    }
-    else if(_key == "color")
-    {
-        const auto color = std::get<sight::ui::color_t>(_val);
-        m_cv_color = cv::Scalar(color[0], color[1], color[2], 255);
-    }
-    else
-    {
-        SIGHT_ERROR("the key '" + _key + "' is not handled");
     }
 }
 
@@ -255,9 +235,9 @@ void reprojection_error::updating()
 
 service::connections_t reprojection_error::auto_connections() const
 {
-    connections_t connections;
-    connections.push(MATRIX_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
-    return connections;
+    return {
+        {MATRIX_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE}
+    };
 }
 
 //-----------------------------------------------------------------------------

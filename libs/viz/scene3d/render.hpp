@@ -299,7 +299,7 @@ private:
     bool m_flip {false};
 
     static constexpr std::string_view OFFSCREEN_INOUT = "offScreen";
-    data::ptr<data::image, data::access::inout> m_off_screen_image {this, OFFSCREEN_INOUT, false, true};
+    data::ptr<data::image, data::access::inout> m_off_screen_image {this, OFFSCREEN_INOUT, true};
 };
 
 //-----------------------------------------------------------------------------

@@ -33,57 +33,54 @@
 namespace sight::ui
 {
 
-const core::com::slots::key_t action::SET_CHECKED_SLOT       = "set_checked";
-const core::com::slots::key_t action::CHECK_SLOT             = "check";
-const core::com::slots::key_t action::UNCHECK_SLOT           = "uncheck";
-const core::com::slots::key_t action::SET_VISIBLE_SLOT       = "set_visible";
-const core::com::slots::key_t action::SET_HIDDEN_SLOT        = "set_hidden";
-const core::com::slots::key_t action::SHOW_SLOT              = "show";
-const core::com::slots::key_t action::HIDE_SLOT              = "hide";
-const core::com::slots::key_t action::TOGGLE_VISIBILITY_SLOT = "toggle_visibility";
-const core::com::slots::key_t action::SET_ENABLED_SLOT       = "set_enabled";
-const core::com::slots::key_t action::SET_DISABLED_SLOT      = "set_disabled";
-const core::com::slots::key_t action::ENABLE_SLOT            = "enable";
-const core::com::slots::key_t action::DISABLE_SLOT           = "disable";
-
-const core::com::signals::key_t action::IS_ENABLED_SIG = "is_enabled";
-const core::com::signals::key_t action::ENABLED_SIG    = "enabled";
-const core::com::signals::key_t action::DISABLED_SIG   = "disabled";
-const core::com::signals::key_t action::IS_CHECKED_SIG = "is_checked";
-const core::com::signals::key_t action::CHECKED_SIG    = "checked";
-const core::com::signals::key_t action::UNCHECKED_SIG  = "unchecked";
-const core::com::signals::key_t action::IS_VISIBLE_SIG = "is_visible";
-
 action::action()
 {
-    new_slot(SET_CHECKED_SLOT, &action::set_checked, this);
-    new_slot(CHECK_SLOT, [this](){this->set_checked(true);});
-    new_slot(UNCHECK_SLOT, [this](){this->set_checked(false);});
+    new_slot(slots::SET_CHECKED, &action::set_checked, this);
+    new_slot(slots::CHECK, [this](){this->set_checked(true);});
+    new_slot(slots::UNCHECK, [this](){this->set_checked(false);});
+    new_slot(
+        slots::APPLY_CHECKED,
+        [this]()
+        {
+            m_block_signals = true;
+            this->set_checked(*m_checked);
+            m_block_signals = false;
+        });
+    new_slot(slots::SET_ENABLED, &action::set_enabled, this);
+    new_slot(slots::SET_DISABLED, [this](bool _disabled){this->set_enabled(!_disabled);});
+    new_slot(slots::ENABLE, [this](){this->set_enabled(true);});
+    new_slot(slots::DISABLE, [this](){this->set_enabled(false);});
+    new_slot(
+        slots::APPLY_ENABLED,
+        [this]()
+        {
+            m_block_signals = true;
+            this->set_checked(*m_enabled);
+            m_block_signals = false;
+        });
 
-    new_slot(SET_ENABLED_SLOT, &action::set_enabled, this);
-    new_slot(SET_DISABLED_SLOT, [this](bool _disabled){this->set_enabled(!_disabled);});
-    new_slot(ENABLE_SLOT, [this](){this->set_enabled(true);});
-    new_slot(DISABLE_SLOT, [this](){this->set_enabled(false);});
+    new_slot(slots::SET_VISIBLE, &action::set_visible, this);
+    new_slot(slots::SET_HIDDEN, [this](bool _hidden){this->set_visible(!_hidden);});
+    new_slot(slots::SHOW, [this](){this->set_visible(true);});
+    new_slot(slots::HIDE, [this](){this->set_visible(false);});
+    new_slot(slots::TOGGLE_VISIBILITY, [this]{this->set_visible(!*m_visible);});
+    new_slot(
+        slots::APPLY_VISIBLE,
+        [this]()
+        {
+            m_block_signals = true;
+            this->set_checked(*m_visible);
+            m_block_signals = false;
+        });
 
-    new_slot(SET_VISIBLE_SLOT, &action::set_visible, this);
-    new_slot(SET_HIDDEN_SLOT, [this](bool _hidden){this->set_visible(!_hidden);});
-    new_slot(SHOW_SLOT, [this](){this->set_visible(true);});
-    new_slot(HIDE_SLOT, [this](){this->set_visible(false);});
-    new_slot(TOGGLE_VISIBILITY_SLOT, [this]{this->set_visible(!m_visible);});
-
-    new_signal<bool_signal_t>(IS_ENABLED_SIG);
-    new_signal<void_signal_t>(ENABLED_SIG);
-    new_signal<void_signal_t>(DISABLED_SIG);
-    new_signal<bool_signal_t>(IS_CHECKED_SIG);
-    new_signal<void_signal_t>(CHECKED_SIG);
-    new_signal<void_signal_t>(UNCHECKED_SIG);
-    new_signal<bool_signal_t>(IS_VISIBLE_SIG);
+    new_signal<signals::bool_t>(signals::IS_ENABLED);
+    new_signal<signals::void_t>(signals::ENABLED);
+    new_signal<signals::void_t>(signals::DISABLED);
+    new_signal<signals::bool_t>(signals::IS_CHECKED);
+    new_signal<signals::void_t>(signals::CHECKED);
+    new_signal<signals::void_t>(signals::UNCHECKED);
+    new_signal<signals::bool_t>(signals::IS_VISIBLE);
 }
-
-//-----------------------------------------------------------------------------
-
-action::~action()
-= default;
 
 //-----------------------------------------------------------------------------
 
@@ -93,12 +90,22 @@ void action::initialize()
 
     auto config = this->get_config();
 
-    m_checked = core::runtime::get_ptree_value(config, "state.<xmlattr>.checked", m_checked);
-    m_enabled = core::runtime::get_ptree_value(config, "state.<xmlattr>.enabled", m_enabled);
+    if(auto properties = config.get_child_optional("properties"); not properties.has_value())
+    {
+        const auto checked = m_checked.lock();
+        *checked = core::runtime::get_ptree_value(config, "state.<xmlattr>.checked", false);
+        const auto enabled = m_enabled.lock();
+        *enabled = core::runtime::get_ptree_value(config, "state.<xmlattr>.enabled", true);
 
-    m_inverted      = core::runtime::get_ptree_value(config, "state.<xmlattr>.inverse", m_inverted);
-    m_visible       = core::runtime::get_ptree_value(config, "state.<xmlattr>.visible", m_visible);
-    m_emit_at_start = core::runtime::get_ptree_value(config, "state.<xmlattr>.emit_at_start", m_emit_at_start);
+        const auto inverse = m_inverse.lock();
+        *inverse = core::runtime::get_ptree_value(config, "state.<xmlattr>.inverse", false);
+        const auto visible = m_visible.lock();
+        *visible = core::runtime::get_ptree_value(config, "state.<xmlattr>.visible", true);
+    }
+    else
+    {
+        SIGHT_ASSERT("Do not mix properties with pure signals", !config.get_child_optional("state").has_value());
+    }
 
     m_confirm_action  = config.get_child_optional("confirmation").has_value();
     m_confirm_message = config.get<std::string>("confirmation.<xmlattr>.message", "");
@@ -118,34 +125,43 @@ void action::action_service_stopping()
 void action::action_service_starting()
 {
     this->m_registry->action_service_starting();
-    if(m_emit_at_start)
-    {
-        this->set_checked(m_checked);
-    }
 }
 
 //-----------------------------------------------------------------------------
 
 void action::set_checked(bool _checked)
 {
-    m_checked = _checked;
-
     if(this->confirm_action())
     {
-        this->m_registry->action_service_set_checked(m_checked);
-        if(m_checked)
         {
-            auto sig = this->signal<void_signal_t>(CHECKED_SIG);
-            sig->async_emit();
-        }
-        else
-        {
-            auto sig = this->signal<void_signal_t>(UNCHECKED_SIG);
-            sig->async_emit();
-        }
+            const auto checked = m_checked.lock();
+            *checked = _checked;
 
-        auto sig = this->signal<bool_signal_t>(IS_CHECKED_SIG);
-        sig->async_emit(m_checked);
+            if(!m_block_signals)
+            {
+                auto sig = checked->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+                core::com::connection::blocker block(sig->get_connection(slot(slots::APPLY_CHECKED)));
+                sig->async_emit();
+            }
+        }
+        this->m_registry->action_service_set_checked(_checked);
+
+        if(!m_block_signals)
+        {
+            if(_checked)
+            {
+                auto sig = this->signal<signals::void_t>(signals::CHECKED);
+                sig->async_emit();
+            }
+            else
+            {
+                auto sig = this->signal<signals::void_t>(signals::UNCHECKED);
+                sig->async_emit();
+            }
+
+            auto sig = this->signal<signals::bool_t>(signals::IS_CHECKED);
+            sig->async_emit(_checked);
+        }
     }
 }
 
@@ -153,45 +169,73 @@ void action::set_checked(bool _checked)
 
 bool action::checked() const
 {
-    return m_checked;
+    return *m_checked;
 }
 
 //-----------------------------------------------------------------------------
 
 void action::set_enabled(bool _enabled)
 {
-    m_enabled = _enabled;
+    {
+        const auto enabled = m_enabled.lock();
+        *enabled = _enabled;
 
-    this->m_registry->action_service_set_enabled(m_enabled);
-    if(m_enabled)
-    {
-        auto sig = this->signal<void_signal_t>(ENABLED_SIG);
-        sig->async_emit();
-    }
-    else
-    {
-        auto sig = this->signal<void_signal_t>(DISABLED_SIG);
-        sig->async_emit();
+        if(!m_block_signals)
+        {
+            auto sig = enabled->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            core::com::connection::blocker block(sig->get_connection(slot(slots::APPLY_ENABLED)));
+            sig->async_emit();
+        }
     }
 
-    auto sig = this->signal<bool_signal_t>(IS_ENABLED_SIG);
-    sig->async_emit(m_enabled);
+    this->m_registry->action_service_set_enabled(_enabled);
+
+    if(!m_block_signals)
+    {
+        if(_enabled)
+        {
+            auto sig = this->signal<signals::void_t>(signals::ENABLED);
+            sig->async_emit();
+        }
+        else
+        {
+            auto sig = this->signal<signals::void_t>(signals::DISABLED);
+            sig->async_emit();
+        }
+
+        auto sig = this->signal<signals::bool_t>(signals::IS_ENABLED);
+        sig->async_emit(_enabled);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 bool action::enabled() const
 {
-    return m_enabled;
+    return *m_enabled;
 }
 
 //-----------------------------------------------------------------------------
 
 void action::set_visible(bool _visible)
 {
-    m_visible = _visible;
+    {
+        const auto visible = m_visible.lock();
+        *visible = _visible;
+
+        if(!m_block_signals)
+        {
+            auto sig = visible->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            core::com::connection::blocker block(sig->get_connection(slot(slots::APPLY_VISIBLE)));
+            sig->async_emit();
+        }
+    }
     this->m_registry->action_service_set_visible(_visible);
-    signal<bool_signal_t>(IS_VISIBLE_SIG)->async_emit(_visible);
+
+    if(!m_block_signals)
+    {
+        signal<signals::bool_t>(signals::IS_VISIBLE)->async_emit(_visible);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -212,14 +256,14 @@ void action::hide()
 
 bool action::visible() const
 {
-    return m_visible;
+    return *m_visible;
 }
 
 //-----------------------------------------------------------------------------
 
 bool action::inverted() const
 {
-    return m_inverted;
+    return *m_inverse;
 }
 
 //-----------------------------------------------------------------------------
@@ -260,5 +304,14 @@ bool action::confirm_action()
 }
 
 //-----------------------------------------------------------------------------
+
+service::connections_t action::auto_connections() const
+{
+    return {
+        {m_checked, sight::data::object::MODIFIED_SIG, slots::APPLY_CHECKED},
+        {m_enabled, sight::data::object::MODIFIED_SIG, slots::APPLY_ENABLED},
+        {m_visible, sight::data::object::MODIFIED_SIG, slots::APPLY_VISIBLE}
+    };
+}
 
 } // namespace sight::ui

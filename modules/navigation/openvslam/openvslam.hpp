@@ -351,17 +351,13 @@ private:
     static constexpr std::string_view POINTCLOUD_OUTPUT     = "pointCloud";
 
     sight::data::ptr<sight::data::camera, sight::data::access::in> m_camera {this, CAMERA_INPUT};
-    sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_timeline2 {this, TIMELIN_E2_INPUT, false,
-                                                                                  true
-    };
+    sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_timeline2 {this, TIMELIN_E2_INPUT, true};
     sight::data::ptr<sight::data::matrix_tl, sight::data::access::inout> m_camera_matrix_tl {this,
                                                                                              CAMERA_MATRIXTL_INOUT,
-                                                                                             false, true
+                                                                                             true
     };
-    sight::data::ptr<sight::data::mesh, sight::data::access::out> m_point_cloud {this, POINTCLOUD_OUTPUT, false,
-                                                                                 true
-    };
-    sight::data::ptr<sight::data::real, sight::data::access::in> m_scale {this, SCALE_INPUT, false, true};
+    sight::data::ptr<sight::data::mesh, sight::data::access::out> m_point_cloud {this, POINTCLOUD_OUTPUT, true};
+    sight::data::ptr<sight::data::real, sight::data::access::in> m_scale {this, SCALE_INPUT, true};
 };
 
 } // namespace sight::module::navigation::openvslam

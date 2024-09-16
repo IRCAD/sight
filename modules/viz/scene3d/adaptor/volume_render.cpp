@@ -76,7 +76,7 @@ volume_render::~volume_render() noexcept =
 
 service::connections_t volume_render::auto_connections() const
 {
-    return {
+    service::connections_t connections = {
         {objects::IMAGE_IN, data::image::MODIFIED_SIG, NEW_IMAGE_SLOT},
         {objects::IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, BUFFER_IMAGE_SLOT},
         {objects::MASK_IN, data::image::MODIFIED_SIG, NEW_IMAGE_SLOT},
@@ -86,6 +86,8 @@ service::connections_t volume_render::auto_connections() const
         {objects::VOLUME_TF_IN, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
         {objects::VOLUME_TF_IN, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT},
     };
+
+    return connections + adaptor::auto_connections();
 }
 
 //-----------------------------------------------------------------------------
@@ -187,7 +189,7 @@ void volume_render::starting()
         m_volume_renderer->update(tf.get_shared());
     }
 
-    m_volume_scene_node->setVisible(m_visible);
+    m_volume_scene_node->setVisible(visible());
 
     // Initially focus on the image center.
     this->set_focal_distance(50);
@@ -835,6 +837,15 @@ void volume_render::set_visible(bool _visible)
         if(m_widget)
         {
             m_widget->set_box_visibility(_visible && m_config.visible);
+        }
+
+        if(m_config.camera_autoreset)
+        {
+            this->render_service()->reset_camera_coordinates(m_layer_id);
+        }
+        else
+        {
+            this->layer()->compute_camera_parameters();
         }
 
         this->request_render();

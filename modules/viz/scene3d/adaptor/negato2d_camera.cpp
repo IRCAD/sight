@@ -133,10 +133,11 @@ void negato2d_camera::stopping()
 
 service::connections_t negato2d_camera::auto_connections() const
 {
-    return {
+    service::connections_t connections = {
         {IMAGE_INOUT, data::image::MODIFIED_SIG, RESET_CAMERA_SLOT},
         {IMAGE_INOUT, data::image::SLICE_TYPE_MODIFIED_SIG, CHANGE_ORIENTATION_SLOT}
     };
+    return connections + adaptor::auto_connections();
 }
 
 //-----------------------------------------------------------------------------

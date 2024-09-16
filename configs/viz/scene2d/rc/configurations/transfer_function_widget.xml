@@ -3,7 +3,7 @@
     <parameters>
         <object uid="image" type="sight::data::image" />
         <object uid="currentTF" type="sight::data::transfer_function" />
-        <object uid="presets" type="sight::data::composite" optional="true" />
+        <object uid="presets" type="sight::data::map" optional="true" />
 
         <param name="WID_PARENT" />
         <param name="USE_DEFAULT_TF" default="true" />

@@ -168,7 +168,7 @@ private:
     std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     static constexpr std::string_view RECONSTRUCTION_INPUT = "reconstruction";
-    data::ptr<data::reconstruction, data::access::in> m_reconstruction {this, RECONSTRUCTION_INPUT, true};
+    data::ptr<data::reconstruction, data::access::in> m_reconstruction {this, RECONSTRUCTION_INPUT};
 };
 
 //------------------------------------------------------------------------------

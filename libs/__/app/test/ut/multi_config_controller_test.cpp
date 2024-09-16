@@ -75,7 +75,7 @@ void multi_config_controller_test::setUp()
     core::runtime::load_module("sight::module::app");
     core::runtime::load_module("config_test");
 
-    app::extension::config::sptr app_config = app::extension::config::get_default();
+    app::extension::config::sptr app_config = app::extension::config::get();
     app_config->clear_registry();
     app_config->parse_plugin_infos();
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -131,14 +131,14 @@ void line::starting()
 
     this->attach_node(m_line);
 
-    this->set_visible(m_visible);
+    this->set_visible(visible());
 }
 
 //-----------------------------------------------------------------------------
 
 void line::updating()
 {
-    if(m_visible)
+    if(visible())
     {
         this->render_service()->make_current();
         // Draw
@@ -177,7 +177,7 @@ void line::attach_node(Ogre::MovableObject* _object)
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
     SIGHT_ASSERT("Transform node shouldn't be null", trans_node);
 
-    trans_node->setVisible(m_visible);
+    trans_node->setVisible(visible());
     trans_node->attachObject(_object);
 }
 
@@ -226,7 +226,7 @@ void line::set_visible(bool /*_visible*/)
 {
     Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
-    trans_node->setVisible(m_visible);
+    trans_node->setVisible(visible());
     this->updating();
 }
 

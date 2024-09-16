@@ -46,8 +46,8 @@ void matrix4_test::basic_test()
     auto matrix = std::make_shared<data::matrix4>();
     parser::matrix4 matrix_parser;
     CPPUNIT_ASSERT(matrix_parser.is_a("sight::app::parser::matrix4"));
-    matrix_parser.set_object_config(ptree);
-    matrix_parser.create_config(matrix);
+    service::object_parser::objects_t sub_objects;
+    matrix_parser.parse(ptree, matrix, sub_objects);
     for(std::uint8_t i = 0 ; i < 4 ; i++)
     {
         for(std::uint8_t j = 0 ; j < 4 ; j++)

@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "data/container.hpp"
 #include "data/exception.hpp"
 
 #include <core/com/signal.hpp>

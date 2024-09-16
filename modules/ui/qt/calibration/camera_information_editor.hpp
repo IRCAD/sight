@@ -183,7 +183,7 @@ protected:
     QLabel* m_skew {};
 
     static constexpr std::string_view CAMERA = "camera";
-    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA, true};
+    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA};
 };
 
 } // namespace sight::module::ui::qt::calibration

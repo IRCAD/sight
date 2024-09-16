@@ -17,6 +17,13 @@
         <object uid="${dataSet}" type="sight::data::set" src="ref" />
         <object uid="${cameraSet}" type="sight::data::camera_set" src="ref" />
 
+        <object uid="board_properties" type="sight::data::map" src="preference">
+            <item key="board_width" type="sight::data::integer" value="8" />
+            <item key="board_height" type="sight::data::integer" value="6" />
+            <item key="board_scale" type="sight::data::real" value="1." />
+            <item key="board_square_size" type="sight::data::real" value="0.5" />
+        </object>
+
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="mainView" type="sight::module::ui::view">
@@ -44,7 +51,7 @@
                     <separator />
                     <editor />
                     <separator />
-                    <menuItem name="Chessboard size" icon="sight::module::ui::icons/chessboard.svg" />
+                    <menuItem name="Chessboard size" icon="sight::module::ui::icons/chessboard.svg" style="check" />
                 </layout>
             </gui>
             <registry>
@@ -53,7 +60,7 @@
                 <menuItem sid="exportAct" start="true" />
                 <menuItem sid="writeCalibrationAct" start="true" />
                 <editor sid="cameraLauncherAct" start="false" />
-                <menuItem sid="chessboardSizeAct" start="true" />
+                <menuItem sid="chessboard_size_act" start="true" />
             </registry>
         </service>
 
@@ -63,47 +70,30 @@
 
         <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::camera_config_launcher">
             <inout key="cameraSet" uid="${cameraSet}" />
+            <inout key="board_properties" uid="${board_properties}" />
             <inout key="activity" uid="${AS_UID}" />
             <config>
                 <intrinsic>
-                    <appConfig id="calIntrinsicView" />
+                    <appConfig id="sight::navigation::calibration::cal_intrinsic_view" />
+                    <inout key="board_properties" uid="${board_properties}" />
                     <parameter replace="WID_PARENT" by="calibrationView" />
                     <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
                 </intrinsic>
                 <extrinsic>
-                    <appConfig id="calExtrinsicView" />
+                    <appConfig id="sight::navigation::calibration::cal_extrinsic_view" />
                     <inout key="cameraSet" uid="${cameraSet}" />
+                    <inout key="board_properties" uid="${board_properties}" />
                     <parameter replace="WID_PARENT" by="calibrationView" />
                     <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
                 </extrinsic>
             </config>
         </service>
 
-        <service uid="chessboardSizeAct" type="sight::module::ui::qt::preferences_configuration">
-            <preference>
-                <type>int</type>
-                <name>Chessboard width</name>
-                <key>CHESSBOARD_WIDTH</key>
-                <default_value>11</default_value>
-            </preference>
-            <preference>
-                <type>int</type>
-                <name>Chessboard height</name>
-                <key>CHESSBOARD_HEIGHT</key>
-                <default_value>8</default_value>
-            </preference>
-            <preference>
-                <type>int</type>
-                <name>Chessboard square size (mm)</name>
-                <key>CHESSBOARD_SQUARE_SIZE</key>
-                <default_value>20</default_value>
-            </preference>
-            <preference>
-                <type>double</type>
-                <name>Input scaling for chessboard detection</name>
-                <key>CHESSBOARD_SCALE</key>
-                <default_value>0.25</default_value>
-            </preference>
+        <service uid="chessboard_size_act" type="sight::module::ui::config_launcher">
+            <appConfig id="sight::navigation::calibration::chessboard_settings" />
+            <inout group="data">
+                <key name="board_properties" uid="${board_properties}" />
+            </inout>
         </service>
 
         <service uid="exportAct" type="sight::module::ui::export_set" auto_connect="true">
@@ -132,10 +122,6 @@
         <connect>
             <signal>writeCalibrationAct/clicked</signal>
             <slot>calibrationWriterSrv/update</slot>
-        </connect>
-
-        <connect channel="preferencesModifiedProxy">
-            <signal>chessboardSizeAct/parameters_modified</signal>
         </connect>
 
         <!-- Connection to enable "previous" action. It should be connected to a sequencer in the application configuration.-->

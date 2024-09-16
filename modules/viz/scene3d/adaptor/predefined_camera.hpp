@@ -148,7 +148,7 @@ private:
     /// Input transform.
     static constexpr std::string_view REGISTRATION_TRANSFORM_IN = "transform";
     sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {
-        this, REGISTRATION_TRANSFORM_IN, true, true
+        this, REGISTRATION_TRANSFORM_IN, true
     };
 };
 

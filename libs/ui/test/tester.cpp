@@ -409,7 +409,7 @@ void tester::should_be_hidden(
     );
     if(exists())
     {
-        fail('"' + _component_description + "\" is present, though it should be hidden");
+        fail("'" + _component_description + "' is present, though it should be hidden");
     }
 }
 

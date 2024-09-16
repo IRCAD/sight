@@ -99,7 +99,7 @@
         <service uid="mesherAct" type="sight::module::filter::mesh::vtk_mesher">
             <in key="imageSeries" uid="${imageSeries}" />
             <out key="modelSeries" uid="modelSeries" />
-            <config percentReduction="0" threshold="255" />
+            <config percent_reduction="0" threshold="255" />
         </service>
 
         <service uid="exportAct" type="sight::module::ui::series::exporter" auto_connect="true">

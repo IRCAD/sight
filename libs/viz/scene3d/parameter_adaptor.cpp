@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -374,8 +374,8 @@ bool parameter_adaptor::set_parameter(Ogre::Technique& _technique)
                 update_texture = true;
             }
         }
-        // We allow to work on the render composite and interact with slots instead
-        else if(obj_class != "sight::data::composite")
+        // We allow to work on the render map and interact with slots instead
+        else if(obj_class != "sight::data::map")
         {
             SIGHT_ERROR("This Type " << obj_class << " isn't supported.");
         }

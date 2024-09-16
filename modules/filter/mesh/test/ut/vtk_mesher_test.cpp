@@ -141,7 +141,7 @@ void vtk_mesher_test::generate_mesh()
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
        "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<config percentReduction=\"50\" threshold=\"255\"/>";
+       "<properties percent_reduction=\"50\" threshold=\"255\"/>";
 
     boost::property_tree::read_xml(config_string, config);
     mesherService->set_config(config);
@@ -172,7 +172,7 @@ void vtk_mesher_test::generate_mesh_with_min_reduction()
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
        "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<config percentReduction=\"0\" threshold=\"255\"/>";
+       "<properties percent_reduction=\"0\" threshold=\"255\"/>";
 
     boost::property_tree::read_xml(config_string, config);
     mesherService->set_config(config);
@@ -203,49 +203,12 @@ void vtk_mesher_test::no_mesh_generated()
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
        "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<config percentReduction=\"90\" threshold=\"30\"/>";
+       "<properties percent_reduction=\"90\" threshold=\"30\"/>";
 
     boost::property_tree::read_xml(config_string, config);
     mesherService->set_config(config);
     mesherService->set_input(imageSeries, "imageSeries");
     mesherService->configure();
-    mesherService->start().wait();
-    mesherService->update().wait();
-    {
-        auto model_series          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
-        unsigned int number_points = 0;
-        unsigned int number_cells  = 0;
-        CPPUNIT_ASSERT_EQUAL(model_series->get_reconstruction_db()[0]->get_mesh()->num_points(), number_points);
-        CPPUNIT_ASSERT_EQUAL(model_series->get_reconstruction_db()[0]->get_mesh()->num_cells(), number_cells);
-    }
-    mesherService->stop().wait();
-    sight::service::remove(mesherService);
-}
-
-//------------------------------------------------------------------------------
-
-void vtk_mesher_test::update_threshold_test()
-{
-    // Create service
-    auto [mesherService, imageSeries] = generate_mesh_service();
-    service::config_t config;
-    std::stringstream config_string;
-
-    //threshold is set to 255 by the configuration
-    config_string
-    << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
-       "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<config percentReduction=\"0\" threshold=\"255\"/>";
-
-    boost::property_tree::read_xml(config_string, config);
-    mesherService->set_config(config);
-    mesherService->set_input(imageSeries, "imageSeries");
-    mesherService->configure();
-
-    //threshold is modified by the slot updateThreshold
-    const int new_threshold = 50;
-    mesherService->slot("update_threshold")->run(new_threshold);
-
     mesherService->start().wait();
     mesherService->update().wait();
     {

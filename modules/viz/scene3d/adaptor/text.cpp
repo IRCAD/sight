@@ -24,7 +24,7 @@
 
 #include <core/com/slots.hxx>
 
-#include <data/generic_field_base.hpp>
+#include <data/string_serializable.hpp>
 
 #include <viz/scene3d/render.hpp>
 #include <viz/scene3d/window_interactor.hpp>
@@ -128,7 +128,7 @@ void text::starting()
 
 service::connections_t text::auto_connections() const
 {
-    connections_t connections;
+    connections_t connections = adaptor::auto_connections();
     connections.push(OBJECT_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
     return connections;
 }
@@ -182,7 +182,7 @@ void text::update_text()
 
     if(obj)
     {
-        const auto field = std::dynamic_pointer_cast<const data::generic_field_base>(obj.get_shared());
+        const auto field = std::dynamic_pointer_cast<const data::string_serializable>(obj.get_shared());
 
         if(field)
         {

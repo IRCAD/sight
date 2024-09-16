@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ void activity::shallow_copy(const object::csptr& _source)
 
     m_activity_config_id = other->m_activity_config_id;
 
-    data::composite::shallow_copy(other);
+    data::map::shallow_copy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ void activity::deep_copy(const object::csptr& _source, const std::unique_ptr<dee
 
     m_activity_config_id = other->m_activity_config_id;
 
-    data::composite::deep_copy(other, _cache);
+    data::map::deep_copy(other, _cache);
 }
 
 //------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ bool activity::operator==(const activity& _other) const noexcept
     }
 
     // Super class last
-    return data::composite::operator==(_other);
+    return data::map::operator==(_other);
 }
 
 //------------------------------------------------------------------------------

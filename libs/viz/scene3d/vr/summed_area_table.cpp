@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,11 +47,11 @@ namespace sight::viz::scene3d::vr
 {
 
 /// Listener dedicated to watching the initialisation.
-class summed_area_table::summed_area_tableInitCompositorListener : public Ogre::CompositorInstance::Listener
+class summed_area_table::summed_area_table_init_compositor_listener : public Ogre::CompositorInstance::Listener
 {
 public:
 
-    explicit summed_area_tableInitCompositorListener(float& _current_slice_index) :
+    explicit summed_area_table_init_compositor_listener(float& _current_slice_index) :
         m_current_slice_depth(_current_slice_index)
     {
     }
@@ -80,11 +80,15 @@ private:
 };
 
 /// Listener dedicated to the compositor.
-class summed_area_table::summed_area_tableCompositorListener : public Ogre::CompositorInstance::Listener
+class summed_area_table::summed_area_table_compositor_listener : public Ogre::CompositorInstance::Listener
 {
 public:
 
-    summed_area_tableCompositorListener(int& _read_offset, int& _pass_orientation, std::size_t& _current_slice_index) :
+    summed_area_table_compositor_listener(
+        int& _read_offset,
+        int& _pass_orientation,
+        std::size_t& _current_slice_index
+    ) :
         m_read_offset(_read_offset),
         m_pass_orientation(_pass_orientation),
         m_current_slice_index(_current_slice_index)
@@ -181,7 +185,7 @@ void summed_area_table::compute_parallel(
     //Material (init)
     {
         Ogre::MaterialPtr init_pass_mtl =
-            Ogre::MaterialManager::getSingleton().getByName("summed_area_tableInit", RESOURCE_GROUP);
+            Ogre::MaterialManager::getSingleton().getByName("summed_area_table_init", RESOURCE_GROUP);
 
         if(init_pass_mtl->getNumTechniques() > 0)
         {
@@ -215,9 +219,9 @@ void summed_area_table::compute_parallel(
         {
             Ogre::Viewport* const vp = target->getViewport(0);
 
-            compositor_manager.setCompositorEnabled(vp, "summed_area_tableInit", true);
+            compositor_manager.setCompositorEnabled(vp, "summed_area_table_init", true);
             target->update(false);
-            compositor_manager.setCompositorEnabled(vp, "summed_area_tableInit", false);
+            compositor_manager.setCompositorEnabled(vp, "summed_area_table_init", false);
         }
     }
 
@@ -419,10 +423,10 @@ void summed_area_table::update_buffers()
 
         //Listeners updated with the current parameters
         auto* const new_initlistener =
-            new summed_area_tableInitCompositorListener(m_current_slice_depth);
+            new summed_area_table_init_compositor_listener(m_current_slice_depth);
 
         auto* const new_tablelistener =
-            new summed_area_tableCompositorListener(
+            new summed_area_table_compositor_listener(
                 m_read_offset,
                 m_pass_orientation,
                 m_slice_index
@@ -437,13 +441,13 @@ void summed_area_table::update_buffers()
 
                 vp->setOverlaysEnabled(false);
 
-                compositor_manager.addCompositor(vp, "summed_area_tableInit");
+                compositor_manager.addCompositor(vp, "summed_area_table_init");
                 compositor_manager.addCompositor(vp, "summed_area_table");
 
                 //Init listener
                 {
                     Ogre::CompositorInstance* const comp_instance =
-                        compositor_manager.getCompositorChain(vp)->getCompositor("summed_area_tableInit");
+                        compositor_manager.getCompositorChain(vp)->getCompositor("summed_area_table_init");
 
                     //Remove the old listener
                     if(m_listeners.init != nullptr)
@@ -478,13 +482,13 @@ void summed_area_table::update_buffers()
 
                 vp->setOverlaysEnabled(false);
 
-                compositor_manager.addCompositor(vp, "summed_area_tableInit");
+                compositor_manager.addCompositor(vp, "summed_area_table_init");
                 compositor_manager.addCompositor(vp, "summed_area_table");
 
                 //Init listener
                 {
                     Ogre::CompositorInstance* const comp_instance =
-                        compositor_manager.getCompositorChain(vp)->getCompositor("summed_area_tableInit");
+                        compositor_manager.getCompositorChain(vp)->getCompositor("summed_area_table_init");
 
                     //Remove the old listener
                     if(m_listeners.init != nullptr)

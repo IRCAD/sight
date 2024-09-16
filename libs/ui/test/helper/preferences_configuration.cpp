@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@ void preferences_configuration::fill(tester& _tester, const std::map<std::string
         auto key   = e.first;
         auto value = e.second;
         _tester.take("preferences configuration window", window);
-        _tester.yields('"' + key + "\" field", key);
+        _tester.yields("'" + key + "' field", key);
         QString q_value = QString::fromStdString(value);
         if(_tester.is_a<QLineEdit*>())
         {

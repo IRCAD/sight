@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/matrix4.hpp>
 
 #include <service/macros.hpp>
@@ -79,7 +79,7 @@ void tdata_listener::configuring()
 
 void tdata_listener::run_client()
 {
-    data::composite::sptr composite = std::make_shared<data::composite>();
+    data::map::sptr map = std::make_shared<data::map>();
 
     // 1. Connection
     try
@@ -130,8 +130,8 @@ void tdata_listener::run_client()
             data::object::sptr receive_object = m_client.receive_object(device_name, timestamp);
             if(receive_object)
             {
-                composite->shallow_copy(receive_object);
-                this->manage_timeline(composite, timestamp);
+                map->shallow_copy(receive_object);
+                this->manage_timeline(map, timestamp);
             }
         }
     }
@@ -175,7 +175,7 @@ void tdata_listener::stopping()
 
 //-----------------------------------------------------------------------------
 
-void tdata_listener::manage_timeline(const data::composite::sptr& _obj, double _timestamp)
+void tdata_listener::manage_timeline(const data::map::sptr& _obj, double _timestamp)
 {
     const auto mat_tl = m_timeline.lock();
     SPTR(data::matrix_tl::buffer_t) matrix_buf;

@@ -27,7 +27,7 @@
 #include <core/runtime/module.hpp>
 #include <core/runtime/runtime.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/string.hpp>
 
 #include <boost/algorithm/string.hpp>
@@ -53,7 +53,7 @@ static const std::regex IS_VARIABLE(R"(\$\{.*\}.*)");
 
 //-----------------------------------------------------------------------------
 
-config::sptr config::get_default()
+config::sptr config::get()
 {
     static config::sptr s_current_app_config = std::make_shared<config>();
     return s_current_app_config;
@@ -162,7 +162,7 @@ core::runtime::config_t config::get_adapted_template_config(
     const std::string& _config_id,
     const field_adaptor_t _field_adaptors,
     bool _auto_prefix_id
-) const
+)
 {
     core::mt::read_lock lock(m_registry_mutex);
     // Get config template
@@ -226,10 +226,27 @@ core::runtime::config_t config::get_adapted_template_config(
         new_config.add_child("object", object_ref_cfg);
     }
 
+    auto object_cfgs = new_config.equal_range("object");
+
     std::string auto_prefix_name;
     if(_auto_prefix_id)
     {
         auto_prefix_name = sight::app::extension::config::get_unique_identifier(_config_id);
+
+        for(auto it = object_cfgs.first ; it != object_cfgs.second ; ++it)
+        {
+            if(const auto& attributes = it->second.get_child_optional("<xmlattr>"); attributes.has_value())
+            {
+                for(const auto& attribute : *attributes)
+                {
+                    const auto attr_value = attribute.second.get_value<std::string>();
+                    if("uid" == attribute.first && !std::regex_match(attr_value, IS_VARIABLE))
+                    {
+                        fields[parse_key(attr_value)] = core::id::join(auto_prefix_name, attr_value);
+                    }
+                }
+            }
+        }
     }
 
     uid_parameter_replace_t parameter_replace_adaptors;
@@ -246,19 +263,6 @@ core::runtime::config_t config::get_adapted_template_config(
     );
 
     return new_config;
-}
-
-//-----------------------------------------------------------------------------
-
-core::runtime::config_t config::get_adapted_template_config(
-    const std::string& _config_id,
-    data::composite::csptr _replace_fields,
-    bool _auto_prefix_id
-)
-const
-{
-    field_adaptor_t field_adaptors = composite_to_field_adaptor(_replace_fields);
-    return this->get_adapted_template_config(_config_id, field_adaptors, _auto_prefix_id);
 }
 
 //-----------------------------------------------------------------------------
@@ -310,7 +314,7 @@ std::vector<std::string> config::get_configs_from_group(const std::string& _grou
 
 //-----------------------------------------------------------------------------
 
-field_adaptor_t config::composite_to_field_adaptor(data::composite::csptr _field_adaptors)
+field_adaptor_t config::map_to_field_adaptor(data::map::csptr _field_adaptors)
 {
     field_adaptor_t fields;
     for(const auto& elem : *_field_adaptors)
@@ -387,11 +391,9 @@ core::runtime::config_t config::adapt_config(
 )
 {
     core::runtime::config_t result;
-    result.put_value<std::string>(adapt_field(_cfg_elem.get_value<std::string>(), _field_adaptors));
+    result.put_value<std::string>(subst_var(_cfg_elem.get_value<std::string>(), _field_adaptors));
 
-    const auto& attributes = _cfg_elem.get_child_optional("<xmlattr>");
-
-    if(attributes)
+    if(const auto& attributes = _cfg_elem.get_child_optional("<xmlattr>"); attributes.has_value())
     {
         for(const auto& attribute : *attributes)
         {
@@ -409,10 +411,7 @@ core::runtime::config_t config::adapt_config(
                     if(!std::regex_match(attribute_value, IS_VARIABLE))
                     {
                         // This is not a variable, add the prefix
-                        result.put(
-                            "<xmlattr>." + attribute.first,
-                            core::id::join(_auto_prefix_id, adapt_field(attribute_value, _field_adaptors))
-                        );
+                        result.put("<xmlattr>." + attribute.first, core::id::join(_auto_prefix_id, attribute_value));
                         continue;
                     }
                 }
@@ -428,10 +427,7 @@ core::runtime::config_t config::adapt_config(
                         {
                             result.put(
                                 "<xmlattr>." + attribute.first,
-                                core::id::join(
-                                    _auto_prefix_id,
-                                    adapt_field(attribute_value, _field_adaptors)
-                                )
+                                core::id::join(_auto_prefix_id, attribute_value)
                             );
                             continue;
                         }
@@ -439,7 +435,7 @@ core::runtime::config_t config::adapt_config(
                 }
             }
 
-            result.put("<xmlattr>." + attribute.first, adapt_field(attribute_value, _field_adaptors));
+            result.put("<xmlattr>." + attribute.first, subst_var(attribute_value, _field_adaptors));
         }
     }
 
@@ -481,7 +477,7 @@ core::runtime::config_t config::adapt_config(
 
 //-----------------------------------------------------------------------------
 
-std::string config::adapt_field(const std::string& _str, const field_adaptor_t& _variables_map)
+std::string config::subst_var(const std::string& _str, const field_adaptor_t& _variables_map)
 {
     std::string new_str = _str;
     if(!_str.empty())
@@ -495,7 +491,7 @@ std::string config::adapt_field(const std::string& _str, const field_adaptor_t& 
             for(const auto& field_adaptor : _variables_map)
             {
                 const std::regex var_regex("(.*)" + field_adaptor.first + "(.*)");
-                if(std::regex_match(_str, var_regex))
+                if(std::regex_match(new_str, var_regex))
                 {
                     const std::string var_replace("\\1" + field_adaptor.second + "\\2");
                     new_str = std::regex_replace(
@@ -506,6 +502,8 @@ std::string config::adapt_field(const std::string& _str, const field_adaptor_t& 
                         | std::regex_constants::format_sed
                     );
                 }
+
+                // Do not break to allow multiple replacements if there are other variables in the string
             }
         }
     }

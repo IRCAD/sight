@@ -126,11 +126,6 @@ void frame_manager::initialize(const ui::config_t& _configuration)
         m_frame_info.m_max_size.second
     );
 
-    m_frame_info.m_default_size = std::make_pair(
-        _configuration.get<int>("size.<xmlattr>.width", m_frame_info.m_default_size.first),
-        _configuration.get<int>("size.<xmlattr>.height", m_frame_info.m_default_size.second)
-    );
-
     if(const auto mode = _configuration.get_optional<std::string>("style.<xmlattr>.mode"); mode.has_value())
     {
         if(mode.value() == "DEFAULT")

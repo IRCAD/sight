@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,7 +35,6 @@ CPPUNIT_TEST_SUITE(vtk_mesher_test);
 CPPUNIT_TEST(generate_mesh);
 CPPUNIT_TEST(generate_mesh_with_min_reduction);
 CPPUNIT_TEST(no_mesh_generated);
-CPPUNIT_TEST(update_threshold_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,7 +46,6 @@ public:
     static void generate_mesh();
     static void generate_mesh_with_min_reduction();
     static void no_mesh_generated();
-    static void update_threshold_test();
 };
 
 } // namespace sight::module::filter::mesh::ut

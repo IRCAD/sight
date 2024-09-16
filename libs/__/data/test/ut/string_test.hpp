@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ class string_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(string_test);
-    CPPUNIT_TEST(methode1);
+    CPPUNIT_TEST(basic);
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -43,7 +43,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void methode1();
+    static void basic();
 };
 
 } // namespace sight::data::ut

@@ -113,7 +113,7 @@
                 the data image. So, when the image is loaded, the visualization will be updated.
             -->
             <service uid="imageRenderSrv" type="sight::module::viz::sample::image">
-                <in key="image" uid="image" auto_connect="true" />
+                <in key="image" uid="image" />
             </service>
 
             <connect>

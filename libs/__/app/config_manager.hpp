@@ -28,7 +28,7 @@
 
 #include <core/object.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 #include <service/manager.hpp>
 

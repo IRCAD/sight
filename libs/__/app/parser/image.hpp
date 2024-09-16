@@ -47,7 +47,11 @@ public:
 
     SIGHT_DECLARE_SERVICE(image, service::object_parser);
 
-    SIGHT_APP_API void create_config(core::object::sptr _obj) override;
+    SIGHT_APP_API void parse(
+        const service::config_t& _cfg,
+        core::object::sptr _obj,
+        objects_t&
+    ) override;
 };
 
 } // namespace sight::app::parser

@@ -26,7 +26,7 @@
 #include <core/com/slots.hxx>
 #include <core/profiling.hpp>
 
-#include <data/container.hxx>
+#include <data/container.hpp>
 
 #include <viz/scene2d/data/init_qt_pen.hpp>
 #include <viz/scene2d/graphics_view.hpp>

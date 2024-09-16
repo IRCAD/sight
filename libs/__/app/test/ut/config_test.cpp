@@ -72,7 +72,7 @@ void config_test::setUp()
     core::runtime::load_module("sight::module::app");
     core::runtime::load_module("config_test");
 
-    auto app_config = app::extension::config::get_default();
+    auto app_config = app::extension::config::get();
     app_config->clear_registry();
     app_config->parse_plugin_infos();
 
@@ -100,7 +100,7 @@ void config_test::tearDown()
 
 void config_test::add_config_test()
 {
-    auto current_app_config = app::extension::config::get_default();
+    auto current_app_config = app::extension::config::get();
 
     const std::string config_id(app::extension::config::get_unique_identifier());
     const std::string group("TestGroup");
@@ -142,10 +142,9 @@ void config_test::add_config_test()
 
 void config_test::parameters_config_test()
 {
-    app::extension::config::sptr current_app_config = app::extension::config::get_default();
+    app::extension::config::sptr current_app_config = app::extension::config::get();
 
     const std::string config_id("parametersConfigTest1");
-    const std::string group("parametersGroup");
 
     app::field_adaptor_t replace_fields;
     replace_fields["TEST_IMAGE"] = "objectUUID";
@@ -193,7 +192,7 @@ app::config_manager::sptr config_test::launch_app_config_mgr(
 
 void config_test::start_stop_test()
 {
-    m_app_config_mgr = this->launch_app_config_mgr("startStopTest");
+    m_app_config_mgr = config_test::launch_app_config_mgr("startStopTest");
 
     // =================================================================================================================
     // Test manual start and stop of services, with or without data
@@ -249,7 +248,7 @@ void config_test::start_stop_test()
     // Create the data
     data::boolean::sptr data2 = std::make_shared<data::boolean>();
     {
-        gen_data_srv->set_output("out2", data2);
+        gen_data_srv->set_output(data2, "out2");
         wait_service_started("TestService4Uid");
 
         // Now the service should have been started automatically
@@ -261,7 +260,7 @@ void config_test::start_stop_test()
         }
 
         // Remove the data
-        gen_data_srv->set_output("out2", nullptr);
+        gen_data_srv->set_output(nullptr, "out2");
         SIGHT_TEST_WAIT(core::id::exist("TestService4Uid") == false);
 
         // Now the service should have been stopped and destroyed automatically
@@ -271,7 +270,7 @@ void config_test::start_stop_test()
         }
 
         // Register the data once again
-        gen_data_srv->set_output("out2", data2);
+        gen_data_srv->set_output(data2, "out2");
         wait_service_started("TestService4Uid");
 
         // Check again that the service was started automatically
@@ -297,7 +296,7 @@ void config_test::start_stop_test()
         // Create the remaining data
         data::boolean::sptr data4 = std::make_shared<data::boolean>();
 
-        gen_data_srv->set_output("out4", data4);
+        gen_data_srv->set_output(data4, "out4");
         wait_service_started("TestService5Uid");
 
         // Now the service should have been started automatically
@@ -309,7 +308,7 @@ void config_test::start_stop_test()
         }
 
         // Remove one data
-        gen_data_srv->set_output("out2", nullptr);
+        gen_data_srv->set_output(nullptr, "out2");
 
         // Now the service should have been stopped and destroyed automatically
         {
@@ -326,7 +325,7 @@ void config_test::start_stop_test()
         // Put everything back
         app::ut::test_service::s_start_counter  = 0;
         app::ut::test_service::s_update_counter = 0;
-        gen_data_srv->set_output("out2", data2);
+        gen_data_srv->set_output(data2, "out2");
         wait_service_started("TestService5Uid");
 
         // Now the service should have been started automatically, check start order as well
@@ -366,9 +365,9 @@ void config_test::start_stop_test()
         // Swap the data
         data::boolean::sptr data5 = std::make_shared<data::boolean>();
 
-        gen_data_srv->set_output("out2", nullptr);
+        gen_data_srv->set_output(nullptr, "out2");
         SIGHT_TEST_WAIT(core::id::exist("TestService5Uid") == false);
-        gen_data_srv->set_output("out2", data5);
+        gen_data_srv->set_output(data5, "out2");
         wait_service_started("TestService5Uid");
 
         {
@@ -388,7 +387,7 @@ void config_test::start_stop_test()
 
 void config_test::auto_connect_test()
 {
-    m_app_config_mgr = this->launch_app_config_mgr("autoConnectTest");
+    m_app_config_mgr = config_test::launch_app_config_mgr("autoConnectTest");
 
     // =================================================================================================================
     // Test autoconnect with available data
@@ -460,7 +459,7 @@ void config_test::auto_connect_test()
 
         // Create the data
         data::boolean::sptr data3 = std::make_shared<data::boolean>();
-        gen_data_srv->set_output("out3", data3);
+        gen_data_srv->set_output(data3, "out3");
 
         wait_service_started("TestService4Uid");
         wait_service_started("TestService5Uid");
@@ -490,7 +489,7 @@ void config_test::auto_connect_test()
         }
 
         // Remove one data
-        gen_data_srv->set_output("out3", nullptr);
+        gen_data_srv->set_output(nullptr, "out3");
         SIGHT_TEST_WAIT(
             core::id::exist("TestService4Uid") == false
             && core::id::exist("TestService5Uid") == false
@@ -503,7 +502,7 @@ void config_test::auto_connect_test()
         }
 
         // Emit, that should be ok
-        gen_data_srv->set_output("out3", data3);
+        gen_data_srv->set_output(data3, "out3");
 
         wait_service_started("TestService4Uid");
         wait_service_started("TestService5Uid");
@@ -545,13 +544,13 @@ void config_test::auto_connect_test()
 
 void config_test::connection_test()
 {
-    m_app_config_mgr = this->launch_app_config_mgr("connectionTest");
+    m_app_config_mgr = config_test::launch_app_config_mgr("connectionTest");
 
     // =================================================================================================================
     // Test connection without data
     // =================================================================================================================
 
-    data::composite::sptr composite;
+    data::map::sptr map;
 
     auto data1 = std::dynamic_pointer_cast<data::object>(core::id::get_object("data1Id"));
     CPPUNIT_ASSERT(data1 != nullptr);
@@ -622,8 +621,8 @@ void config_test::connection_test()
     // Create the missing data
     data::boolean::sptr data2 = std::make_shared<data::boolean>();
     data::boolean::sptr data3 = std::make_shared<data::boolean>();
-    gen_data_srv->set_output("out2", data2);
-    gen_data_srv->set_output("out3", data3);
+    gen_data_srv->set_output(data2, "out2");
+    gen_data_srv->set_output(data3, "out3");
     wait_service_started("TestService3Uid");
     {
         core::object::sptr gn_srv3 = core::id::get_object("TestService3Uid");
@@ -685,7 +684,7 @@ void config_test::connection_test()
     }
 
     // Remove one data
-    gen_data_srv->set_output("out3", nullptr);
+    gen_data_srv->set_output(nullptr, "out3");
 
     SIGHT_TEST_WAIT(core::id::exist("TestService3Uid") == false);
 
@@ -726,7 +725,7 @@ void config_test::connection_test()
     CPPUNIT_ASSERT(!srv4->get_is_updated2());
 
     // Add back data 3 and check connection again
-    gen_data_srv->set_output("out3", data3);
+    gen_data_srv->set_output(data3, "out3");
     wait_service_started("TestService3Uid");
 
     {
@@ -792,7 +791,7 @@ void config_test::connection_test()
 void config_test::start_stop_connection_test()
 {
     {
-        m_app_config_mgr = this->launch_app_config_mgr("startStopConnectionTest");
+        m_app_config_mgr = config_test::launch_app_config_mgr("startStopConnectionTest");
 
         // Check TestService5 starts TestService6
         // Check TestService5 stops TestService6
@@ -825,7 +824,7 @@ void config_test::start_stop_connection_test()
     }
 
     {
-        m_app_config_mgr = this->launch_app_config_mgr("startStopConnectionTest");
+        m_app_config_mgr = config_test::launch_app_config_mgr("startStopConnectionTest");
 
         // Check TestService5 starts TestService6
         // Check TestService5 stops TestService6
@@ -874,7 +873,7 @@ void config_test::start_stop_connection_test()
 
 void config_test::optional_key_test()
 {
-    m_app_config_mgr = this->launch_app_config_mgr("optionalKeyTest");
+    m_app_config_mgr = config_test::launch_app_config_mgr("optionalKeyTest");
 
     // Service used to generate data
     auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object("SGenerateData"));
@@ -908,7 +907,7 @@ void config_test::optional_key_test()
     // Create data 2
     data::boolean::sptr data2 = std::make_shared<data::boolean>();
 
-    gen_data_srv->set_output("out2", data2);
+    gen_data_srv->set_output(data2, "out2");
     SIGHT_TEST_WAIT(
         !srv1->input("data2").expired()
         && srv1->input("data2").lock() == data2
@@ -932,8 +931,8 @@ void config_test::optional_key_test()
     data::boolean::sptr data3 = std::make_shared<data::boolean>();
     data::boolean::sptr data4 = std::make_shared<data::boolean>();
 
-    gen_data_srv->set_output("out3", data3);
-    gen_data_srv->set_output("out4", data4);
+    gen_data_srv->set_output(data3, "out3");
+    gen_data_srv->set_output(data4, "out4");
 
     SIGHT_TEST_WAIT(
         !srv1->input("data3").expired()
@@ -961,7 +960,7 @@ void config_test::optional_key_test()
     CPPUNIT_ASSERT(srv1->get_is_updated());
 
     // Remove data 2 and 3
-    gen_data_srv->set_output("out2", nullptr);
+    gen_data_srv->set_output(nullptr, "out2");
     SIGHT_TEST_WAIT(srv1->input("data2").expired());
 
     SIGHT_TEST_WAIT("data2" == srv1->get_swapped_object_key());
@@ -969,7 +968,7 @@ void config_test::optional_key_test()
     CPPUNIT_ASSERT(nullptr == srv1->get_swapped_object());
     CPPUNIT_ASSERT(srv1->input("data2").expired());
 
-    gen_data_srv->set_output("out3", nullptr);
+    gen_data_srv->set_output(nullptr, "out3");
     SIGHT_TEST_WAIT(
         !srv1->input(
             "data3"
@@ -984,7 +983,7 @@ void config_test::optional_key_test()
     CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv1->status());
 
     // Create data 3
-    gen_data_srv->set_output("out3", data3);
+    gen_data_srv->set_output(data3, "out3");
     SIGHT_TEST_WAIT(
         !srv1->input(
             "data3"
@@ -1005,7 +1004,7 @@ void config_test::optional_key_test()
         core::object::sptr gn_srv2 = core::id::get_object("TestService2Uid");
         CPPUNIT_ASSERT(gn_srv2 == nullptr);
 
-        gen_data_srv->set_output("out5", data5);
+        gen_data_srv->set_output(data5, "out5");
         wait_service_started("TestService2Uid");
 
         gn_srv2 = core::id::get_object("TestService2Uid");
@@ -1027,8 +1026,8 @@ void config_test::optional_key_test()
         SIGHT_TEST_WAIT(srv2->get_is_updated());
 
         // Remove data 3 and 4
-        gen_data_srv->set_output("out3", nullptr);
-        gen_data_srv->set_output("out4", nullptr);
+        gen_data_srv->set_output(nullptr, "out3");
+        gen_data_srv->set_output(nullptr, "out4");
 
         SIGHT_TEST_WAIT(
             !srv2->input("data3").expired()
@@ -1041,7 +1040,7 @@ void config_test::optional_key_test()
         CPPUNIT_ASSERT(srv2->input("data4").expired());
 
         // Create data 3
-        gen_data_srv->set_output("out3", data3);
+        gen_data_srv->set_output(data3, "out3");
         SIGHT_TEST_WAIT(!srv2->input("data3").expired());
 
         CPPUNIT_ASSERT(srv2->input("data1").lock() == data5);
@@ -1052,7 +1051,7 @@ void config_test::optional_key_test()
 
     // Remove data 5
     {
-        gen_data_srv->set_output("out5", nullptr);
+        gen_data_srv->set_output(nullptr, "out5");
         SIGHT_TEST_WAIT(false == core::id::exist("TestService2Uid"));
 
         core::object::sptr gn_srv5 = core::id::get_object("TestService2Uid");
@@ -1061,7 +1060,7 @@ void config_test::optional_key_test()
 
     {
         // Create data 5
-        gen_data_srv->set_output("out5", data5);
+        gen_data_srv->set_output(data5, "out5");
         wait_service_started("TestService2Uid");
 
         auto gn_srv2 = core::id::get_object("TestService2Uid");
@@ -1085,7 +1084,7 @@ void config_test::optional_key_test()
         // Create data 2
         data::boolean::sptr data2b = std::make_shared<data::boolean>();
 
-        gen_data_srv->set_output("out2", data2b);
+        gen_data_srv->set_output(data2b, "out2");
         SIGHT_TEST_WAIT(
             !srv2->input(
                 "data2"
@@ -1113,7 +1112,7 @@ void config_test::optional_key_test()
             std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object("SGenerateData2"));
         CPPUNIT_ASSERT(gen_data_srv2 != nullptr);
 
-        gen_data_srv2->set_output("out", data2bis);
+        gen_data_srv2->set_output(data2bis, "out");
         SIGHT_TEST_WAIT(
             !srv2->input(
                 "data2"
@@ -1133,7 +1132,7 @@ void config_test::optional_key_test()
         CPPUNIT_ASSERT(data2bis == gen_data_srv->data::has_data::output("out2").lock().get_shared());
 
         // Revert that
-        gen_data_srv2->set_output("out", data2b);
+        gen_data_srv2->set_output(data2b, "out");
         SIGHT_TEST_WAIT(
             !srv2->input("data2").expired()
             && srv2->input("data2").lock() == data2b
@@ -1155,7 +1154,7 @@ void config_test::optional_key_test()
 
 void config_test::key_group_test()
 {
-    m_app_config_mgr = this->launch_app_config_mgr("keyGroupTest");
+    m_app_config_mgr = config_test::launch_app_config_mgr("keyGroupTest");
 
     // Service used to generate data
     auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_out>(core::id::get_object("SGenerateData"));
@@ -1181,7 +1180,7 @@ void config_test::key_group_test()
 
         // Create data 2b
         data::boolean::sptr data2b = std::make_shared<data::boolean>();
-        gen_data_srv->set_output("out2", data2b);
+        gen_data_srv->set_output(data2b, "out2");
         wait_service_started("TestService1Uid");
 
         gn_srv1 = core::id::get_object("TestService1Uid");
@@ -1217,7 +1216,7 @@ void config_test::key_group_test()
         swapped_slot->set_worker(core::thread::get_default_worker());
         core::com::connection connection = srv1->signal(service::signals::SWAPPED)->connect(swapped_slot);
 
-        gen_data_srv->set_output("out3", data3);
+        gen_data_srv->set_output(data3, "out3");
 
         SIGHT_TEST_WAIT(
             !srv1->input(
@@ -1247,7 +1246,7 @@ void config_test::key_group_test()
 
     // Remove data 2
     {
-        gen_data_srv->set_output("out2", nullptr);
+        gen_data_srv->set_output(nullptr, "out2");
 
         SIGHT_TEST_WAIT(false == core::id::exist("TestService1Uid"));
 
@@ -1370,8 +1369,8 @@ void config_test::concurrent_access_to_config_test()
         future.get(); // Trigger exceptions
     }
 
-    app::extension::config::get_default()->clear_registry();
-    std::vector<std::string> all_configs = app::extension::config::get_default()->get_all_configs();
+    app::extension::config::get()->clear_registry();
+    std::vector<std::string> all_configs = app::extension::config::get()->get_all_configs();
     CPPUNIT_ASSERT(all_configs.empty());
 }
 
@@ -1379,7 +1378,7 @@ void config_test::concurrent_access_to_config_test()
 
 void config_test::parameter_replace_test()
 {
-    m_app_config_mgr = this->launch_app_config_mgr("parameterReplaceTest", true);
+    m_app_config_mgr = config_test::launch_app_config_mgr("parameterReplaceTest", true);
 
     unsigned int i = 0;
     unsigned int j = 0;
@@ -1467,33 +1466,196 @@ void config_test::parameter_replace_test()
 
 void config_test::object_config_test()
 {
-    m_app_config_mgr = this->launch_app_config_mgr("objectConfigTest");
+    m_app_config_mgr = config_test::launch_app_config_mgr("objectConfigTest");
 
     // =================================================================================================================
-    // Test a service with an external configuration and test Composite with sub-object parsing
+    // Test a service with an external configuration and test Map with sub-object parsing
     // =================================================================================================================
 
-    auto compo1 = std::dynamic_pointer_cast<data::composite>(core::id::get_object("compo1Id"));
+    auto compo1 = std::dynamic_pointer_cast<data::map>(core::id::get_object("compo1Id"));
     CPPUNIT_ASSERT(compo1 != nullptr);
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), compo1->count("dataInComposite"));
-    auto data2 = compo1->get<data::string>("dataInComposite");
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), compo1->count("data_in_map"));
+    auto data2 = compo1->get<data::string>("data_in_map");
     CPPUNIT_ASSERT(data2);
     CPPUNIT_ASSERT_EQUAL(std::string("data2Id"), data2->get_id());
     CPPUNIT_ASSERT_EQUAL(std::string("Hello"), data2->value());
 
-    // This service should have a composite data and contain an external configuration with 2 parameters
+    // This service should have a map data and contain an external configuration with 2 parameters
     core::object::sptr service = core::id::get_object("TestService1Uid");
     auto srv1                  = std::dynamic_pointer_cast<app::ut::test_service>(service);
     CPPUNIT_ASSERT(srv1 != nullptr);
     CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv1->config_status());
 
-    auto srv_data1 = srv1->input<data::composite>("data1");
+    auto srv_data1 = srv1->input<data::map>("data1");
     CPPUNIT_ASSERT(!srv_data1.expired());
     CPPUNIT_ASSERT(srv_data1.lock() == compo1);
 
     auto config = srv1->get_config();
     CPPUNIT_ASSERT_EQUAL(std::string("value1"), config.get<std::string>("param1"));
     CPPUNIT_ASSERT_EQUAL(std::string("value2"), config.get<std::string>("param2"));
+}
+
+//------------------------------------------------------------------------------
+
+void config_test::properties_test()
+{
+    m_app_config_mgr = config_test::launch_app_config_mgr("properties_cfg_test");
+
+    // =================================================================================================================
+    // Test all possible initializations of properties in services
+    // =================================================================================================================
+
+    {
+        core::object::sptr service = core::id::get_object("test_service_default_props");
+        auto srv                   = std::dynamic_pointer_cast<app::ut::test_service_with_properties>(service);
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv->config_status());
+
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(true, srv->started());
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(42), *srv->m_int_prop);
+        CPPUNIT_ASSERT_EQUAL(std::string("default_value"), *srv->m_string_prop);
+        CPPUNIT_ASSERT(sight::vec3d_t({12.123, 56.0, 78.56}) == *srv->m_vec_prop);
+    }
+    {
+        core::object::sptr service = core::id::get_object("test_service_parse_props_1");
+        auto srv                   = std::dynamic_pointer_cast<app::ut::test_service_with_properties>(service);
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv->config_status());
+
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(true, srv->started());
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(12), *srv->m_int_prop);
+        CPPUNIT_ASSERT_EQUAL(std::string("foo"), *srv->m_string_prop);
+        CPPUNIT_ASSERT(sight::vec3d_t({78.2, 54, 14.3}) == *srv->m_vec_prop);
+    }
+    {
+        core::object::sptr service = core::id::get_object("test_service_parse_props_2");
+        auto srv                   = std::dynamic_pointer_cast<app::ut::test_service_with_properties>(service);
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv->config_status());
+
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(true, srv->started());
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(-45), *srv->m_int_prop);
+        CPPUNIT_ASSERT_EQUAL(std::string("bar"), *srv->m_string_prop);
+        CPPUNIT_ASSERT(sight::vec3d_t({-8.7, 79, 7.48}) == *srv->m_vec_prop);
+    }
+    {
+        core::object::sptr service = core::id::get_object("test_service_object_props_1");
+        auto srv                   = std::dynamic_pointer_cast<app::ut::test_service_with_properties>(service);
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv->config_status());
+
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(true, srv->started());
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(23), *srv->m_int_prop);
+        CPPUNIT_ASSERT_EQUAL(std::string("hello"), *srv->m_string_prop);
+        CPPUNIT_ASSERT(sight::vec3d_t({64, -94, -21.467}) == *srv->m_vec_prop);
+        {
+            auto int_object = std::dynamic_pointer_cast<data::object>(core::id::get_object("integer_object"));
+            CPPUNIT_ASSERT(int_object != nullptr);
+            auto sig = int_object->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            sig->async_emit();
+
+            SIGHT_TEST_WAIT(srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(false, srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(std::string_view("integer"), srv->m_callback_called_parameter);
+        }
+        srv->m_callback_called_parameter = "";
+        {
+            auto vec_object = std::dynamic_pointer_cast<data::object>(core::id::get_object("vec_object"));
+            CPPUNIT_ASSERT(vec_object != nullptr);
+            auto sig = vec_object->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            sig->async_emit();
+
+            SIGHT_TEST_WAIT(srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(true, srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(std::string_view(), srv->m_callback_called_parameter);
+        }
+    }
+    {
+        core::object::sptr service = core::id::get_object("test_service_mix_props_1");
+        auto srv                   = std::dynamic_pointer_cast<app::ut::test_service_with_properties>(service);
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv->config_status());
+
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(true, srv->started());
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(42), *srv->m_int_prop);
+        CPPUNIT_ASSERT_EQUAL(std::string("bye"), *srv->m_string_prop);
+        CPPUNIT_ASSERT(sight::vec3d_t({64, -94, -21.467}) == *srv->m_vec_prop);
+
+        srv->m_slot_called = false;
+        CPPUNIT_ASSERT_EQUAL(false, srv->m_slot_called);
+
+        srv->m_callback_called_parameter = "";
+        {
+            auto int_object = std::dynamic_pointer_cast<data::object>(core::id::get_object("integer_object"));
+            CPPUNIT_ASSERT(int_object != nullptr);
+            auto sig = int_object->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            sig->async_emit();
+
+            SIGHT_TEST_WAIT(srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(false, srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(std::string_view(), srv->m_callback_called_parameter);
+        }
+        {
+            auto vec_object = std::dynamic_pointer_cast<data::object>(core::id::get_object("vec_object"));
+            CPPUNIT_ASSERT(vec_object != nullptr);
+            auto sig = vec_object->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            sig->async_emit();
+
+            SIGHT_TEST_WAIT(srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(true, srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(std::string_view(), srv->m_callback_called_parameter);
+        }
+    }
+    {
+        core::object::sptr service = core::id::get_object("test_service_map_props_1");
+        auto srv                   = std::dynamic_pointer_cast<app::ut::test_service_with_properties>(service);
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv->config_status());
+
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(true, srv->started());
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(45), *srv->m_int_prop);
+        CPPUNIT_ASSERT_EQUAL(std::string("default_value"), *srv->m_string_prop);
+        CPPUNIT_ASSERT(sight::vec3d_t({-0.6, 2.41, 78}) == *srv->m_vec_prop);
+
+        CPPUNIT_ASSERT_EQUAL(false, srv->m_slot_called);
+
+        auto map_object = std::dynamic_pointer_cast<data::map>(core::id::get_object("properties_map"));
+        CPPUNIT_ASSERT(map_object != nullptr);
+
+        // "vec" is connected thus only the slot is called
+        {
+            auto sig = (*map_object)["vec"]->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            sig->async_emit();
+
+            SIGHT_TEST_WAIT(srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(true, srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(std::string_view(), srv->m_callback_called_parameter);
+        }
+
+        srv->m_slot_called = false;
+
+        // "integer" is not connected thus only the callback is called
+        {
+            auto sig = (*map_object)["integer"]->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            sig->async_emit();
+
+            SIGHT_TEST_WAIT(srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(false, srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(std::string_view("integer"), srv->m_callback_called_parameter);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

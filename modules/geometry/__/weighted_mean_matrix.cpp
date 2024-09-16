@@ -38,20 +38,12 @@ namespace sight::module::geometry
 weighted_mean_matrix::weighted_mean_matrix() :
     filter(m_signals)
 {
-    new_slot(slots::SET_PARAMETER, &weighted_mean_matrix::set_parameter, this);
 }
 
 //-----------------------------------------------------------------------------
 
-void weighted_mean_matrix::configuring(const config_t& _config)
+void weighted_mean_matrix::configuring(const config_t& /*unused*/)
 {
-    const auto config = _config.get_child_optional("config.<xmlattr>");
-    if(config)
-    {
-        m_weight = config->get<double>(config::WEIGHT, m_weight);
-        SIGHT_ASSERT("Weight value (" << m_weight << ") should be > 0 and <= 1", m_weight > 0. && m_weight <= 1.);
-        m_enabled = config->get<bool>(config::ENABLED, m_enabled);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -65,7 +57,7 @@ void weighted_mean_matrix::starting()
 service::connections_t weighted_mean_matrix::auto_connections() const
 {
     return {
-        {MATRIX_INPUT, data::object::MODIFIED_SIG, sight::service::slots::UPDATE}
+        {m_matrix_in, data::object::MODIFIED_SIG, sight::service::slots::UPDATE}
     };
 }
 
@@ -75,7 +67,7 @@ void weighted_mean_matrix::updating()
 {
     auto current_mat = m_matrix_in.const_lock();
 
-    if(!m_enabled)
+    if(!m_enabled.value())
     {
         auto output = m_matrix_out.lock();
         output->deep_copy(current_mat.get_shared());
@@ -96,11 +88,13 @@ void weighted_mean_matrix::updating()
         m_initialized                  = true;
     }
 
+    SIGHT_ASSERT("Weight value (" << *m_weight << ") should be > 0 and <= 1", *m_weight > 0. && *m_weight <= 1.);
+
     // slerp rotation
-    m_current_weighted_orientation = glm::slerp(m_current_weighted_orientation, orientation, m_weight);
+    m_current_weighted_orientation = glm::slerp(m_current_weighted_orientation, orientation, *m_weight);
 
     // interpolate position
-    m_current_weighted_translation = glm::mix(m_current_weighted_translation, translation, m_weight);
+    m_current_weighted_translation = glm::mix(m_current_weighted_translation, translation, *m_weight);
 
     // recombine to a matrix
     glm::dmat4 glm_output = glm::mat4_cast(m_current_weighted_orientation);
@@ -123,26 +117,6 @@ void weighted_mean_matrix::updating()
 void weighted_mean_matrix::stopping()
 {
     m_initialized = false;
-}
-
-//-----------------------------------------------------------------------------
-
-void weighted_mean_matrix::set_parameter(sight::ui::parameter_t _value, std::string _key)
-{
-    if(_key == config::WEIGHT)
-    {
-        const double w = std::get<double>(_value);
-        SIGHT_ASSERT("Weight value (" << w << ") should be > 0 and <= 1", w > 0. && w <= 1.);
-        m_weight = w;
-    }
-    else if(_key == config::ENABLED)
-    {
-        m_enabled = std::get<bool>(_value);
-    }
-    else
-    {
-        SIGHT_WARN("Only 'weight' and 'passthrough' keys are supported (current key value is : '" << _key << "').");
-    }
 }
 
 } // namespace sight::module::geometry

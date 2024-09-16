@@ -60,7 +60,7 @@
             <requirement name="String" type="sight::data::string" minOccurs="0" maxOccurs="4">
                 <desc>
                     <![CDATA[
-                Currently, it is not visible in the editor, but the following strings will be store into a <b>sight::data::composite</b>
+                Currently, it is not visible in the editor, but the following strings will be store into a <b>sight::data::map</b>
                 with the keys:<br />
                 - Item1 <br />
                 - Item2 <br />

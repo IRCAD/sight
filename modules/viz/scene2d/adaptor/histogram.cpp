@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,8 +31,6 @@
 
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
-
-using sight::viz::scene2d::vec2d_t;
 
 namespace sight::module::viz::scene2d::adaptor
 {
@@ -159,8 +157,8 @@ void histogram::updating()
             // Build the graphic items:
             for(std::size_t i = 0 ; i < values.size() ; ++i)
             {
-                vec2d_t pt1 = this->map_adaptor_to_scene({min + static_cast<double>(i) * bins_width, values[i]});
-                vec2d_t pt2 = this->map_adaptor_to_scene({min + static_cast<double>(i + 1) * bins_width, values[i]});
+                glm::dvec2 pt1 = this->map_adaptor_to_scene({min + static_cast<double>(i) * bins_width, values[i]});
+                glm::dvec2 pt2 = this->map_adaptor_to_scene({min + static_cast<double>(i + 1) * bins_width, values[i]});
 
                 QPainterPath painter(QPointF(pt1.x, 0));
                 painter.lineTo(pt1.x, pt1.y);
@@ -331,22 +329,22 @@ void histogram::update_current_point(sight::viz::scene2d::data::event& _event)
         const auto histogram_bins_width  = static_cast<double>(m_histogram_bins_width);
 
         // Event coordinates in scene
-        sight::viz::scene2d::vec2d_t scene_coord = this->get_scene_2d_render()->map_to_scene(_event.get_coord());
-        const double hist_index                  = scene_coord.x;
-        const double index                       = hist_index - histogram_min_value;
-        const std::size_t nb_values              = values.size() * m_histogram_bins_width;
+        glm::dvec2 scene_coord      = this->get_scene_2d_render()->map_to_scene(_event.get_coord());
+        const double hist_index     = scene_coord.x;
+        const double index          = hist_index - histogram_min_value;
+        const std::size_t nb_values = values.size() * m_histogram_bins_width;
 
         const auto viewport         = m_viewport.lock();
         const auto view_to_viewport = this->view_to_viewport(*viewport);
 
         if(index >= 0.F && index < static_cast<double>(nb_values) && m_entered)
         {
-            sight::viz::scene2d::vec2d_t coord;
+            glm::dvec2 coord;
             coord.x = scene_coord.x;
             coord.y = static_cast<double>(values.at(static_cast<std::size_t>(index / histogram_bins_width))) * m_scale;
 
             // Draw the cursor
-            const vec2d_t diameter = vec2d_t(m_cursor_size, m_cursor_size) * view_to_viewport;
+            const glm::dvec2 diameter = glm::dvec2(m_cursor_size, m_cursor_size) * view_to_viewport;
 
             const double x = coord.x - diameter.x / 2;
             const double y = coord.y - diameter.y / 2;
@@ -357,7 +355,7 @@ void histogram::update_current_point(sight::viz::scene2d::data::event& _event)
             if(m_is_interacting)
             {
                 // Draw the cursor text
-                const vec2d_t scale = vec2d_t(m_font_size, m_font_size) * view_to_viewport;
+                const glm::dvec2 scale = glm::dvec2(m_font_size, m_font_size) * view_to_viewport;
 
                 // Event coordinates in scene
                 m_cursor_label->setText(QString::number(static_cast<int>((coord.x))));

@@ -24,7 +24,6 @@
 
 #include <sight/ui/qt/config.hpp>
 
-#include <QDebug>
 #include <QPainter>
 #include <QPointer>
 #include <QWidget>

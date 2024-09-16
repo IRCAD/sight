@@ -95,7 +95,6 @@ service::connections_t resampler::auto_connections() const
     connections.push(IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE);
     connections.push(IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
     connections.push(TRANSFORM_IN, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(TARGET_IN, data::image::MODIFIED_SIG, service::slots::UPDATE);
 
     return connections;
 }

@@ -221,7 +221,7 @@ private:
     show_reconstructions_slot_t::sptr m_slot_show_reconstructions;
 
     static constexpr std::string_view MODEL_SERIES = "modelSeries";
-    data::ptr<data::model_series, data::access::inout> m_model_series {this, "modelSeries", true};
+    data::ptr<data::model_series, data::access::inout> m_model_series {this, "modelSeries"};
 };
 
 } // namespace sight::module::ui::qt::model

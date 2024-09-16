@@ -30,7 +30,7 @@
 #include <core/object.hpp>
 #include <core/runtime/extension.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 #include <map>
 #include <unordered_set>
@@ -119,20 +119,7 @@ public:
         const std::string& _config_id,
         const field_adaptor_t _replace_fields,
         bool _auto_prefix_id
-    ) const;
-
-    /**
-     * @brief  Return the adapted config with the identifier configId.
-     * @param _config_id the identifier of the requested config.
-     * @param _replace_fields composite of association between the value and the pattern to replace in the config.
-     * @note This method is thread safe.
-     */
-    SIGHT_APP_API core::runtime::config_t get_adapted_template_config(
-        const std::string& _config_id,
-        data::composite::csptr _replace_fields,
-        bool _auto_prefix_id
-    )
-    const;
+    );
 
     /**
      * @brief Retrieves the module from the config id
@@ -165,7 +152,7 @@ public:
     SIGHT_APP_API static std::string get_unique_identifier(const std::string& _service_uid = "");
 
     /// Return an instance of config.
-    SIGHT_APP_API static config::sptr get_default();
+    SIGHT_APP_API static config::sptr get();
 
 protected:
 
@@ -178,8 +165,8 @@ private:
 
     using uid_parameter_replace_t = std::unordered_set<std::string>;
 
-    /// Convert the composite into map <pattern, value>.
-    static field_adaptor_t composite_to_field_adaptor(data::composite::csptr _field_adaptors);
+    /// Convert the map into map <pattern, value>.
+    static field_adaptor_t map_to_field_adaptor(data::map::csptr _field_adaptors);
 
     static void collect_uid_for_parameter_replace(
         const std::string& _name,
@@ -196,7 +183,7 @@ private:
     );
 
     /// Adapts field thanks to field adaptors
-    static std::string adapt_field(const std::string& _str, const field_adaptor_t& _variables_map);
+    static std::string subst_var(const std::string& _str, const field_adaptor_t& _variables_map);
 
     /// Used to protect the registry access.
     mutable core::mt::read_write_mutex m_registry_mutex;

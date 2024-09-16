@@ -28,8 +28,8 @@
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
-#include <data/composite.hpp>
 #include <data/helper/field.hpp>
+#include <data/map.hpp>
 #include <data/matrix4.hpp>
 #include <data/string.hpp>
 
@@ -111,6 +111,7 @@ void material::configure(
     const std::string& _template
 )
 {
+    this->base::configure(service::config_t());
     this->set_id(_id);
     this->set_material_name(_name);
     this->set_render_service(_service);
@@ -200,7 +201,7 @@ void material::starting()
 
 service::connections_t material::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(MATERIAL_INOUT, data::material::MODIFIED_SIG, service::slots::UPDATE);
     connections.push(MATERIAL_INOUT, data::material::ADDED_FIELDS_SIG, UPDATE_FIELD_SLOT);
     connections.push(MATERIAL_INOUT, data::material::CHANGED_FIELDS_SIG, UPDATE_FIELD_SLOT);
@@ -300,14 +301,14 @@ void material::create_shader_parameter_adaptors()
             srv->configure();
             srv->start();
 
-            // Add the object to the shaderParameter composite of the Material to keep the object alive
+            // Add the object to the shaderParameter map of the Material to keep the object alive
             const auto material_data = m_material_data.lock();
 
-            data::composite::sptr composite = material_data->set_default_field(
+            data::map::sptr map = material_data->set_default_field(
                 "shaderParameters",
-                std::make_shared<data::composite>()
+                std::make_shared<data::map>()
             );
-            (*composite)[constant_name] = obj;
+            (*map)[constant_name] = obj;
         }
     }
 }

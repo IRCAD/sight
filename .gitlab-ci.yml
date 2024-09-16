@@ -17,7 +17,6 @@ lint:sheldon:
     extends: .lint
     variables:
         ENABLE_CLANG_TIDY: "ON"
-        SIGHT_GIT_BRANCH: dev
     tags:
         - linux-power-runner
 
@@ -26,7 +25,6 @@ lint:ubuntu-24.04:
     image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         ENABLE_CLANG_TIDY: "ON"
-        SIGHT_GIT_BRANCH: dev
     tags:
         - linux-power-runner
 

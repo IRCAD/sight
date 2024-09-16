@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "activity/validator/registry/macros.hpp"
 
-#include <data/composite.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
+#include <data/map.hpp>
 #include <data/vector.hpp>
 
 namespace sight::activity::validator
@@ -94,8 +94,8 @@ validator::return_t image_properties::validate(const data::object::csptr& _curre
 {
     validator::return_t validation;
 
-    data::vector::csptr vector       = std::dynamic_pointer_cast<const data::vector>(_current_data);
-    data::composite::csptr composite = std::dynamic_pointer_cast<const data::composite>(_current_data);
+    data::vector::csptr vector = std::dynamic_pointer_cast<const data::vector>(_current_data);
+    data::map::csptr map       = std::dynamic_pointer_cast<const data::map>(_current_data);
 
     validation.first  = true;
     validation.second = "Input images have the same properties.";
@@ -141,9 +141,9 @@ validator::return_t image_properties::validate(const data::object::csptr& _curre
             }
         }
     }
-    else if(composite)
+    else if(map)
     {
-        for(const auto& elt : *composite)
+        for(const auto& elt : *map)
         {
             const auto img = std::dynamic_pointer_cast<data::image>(elt.second);
 
@@ -183,7 +183,7 @@ validator::return_t image_properties::validate(const data::object::csptr& _curre
     else
     {
         validation.first  = false;
-        validation.second = "Given data is not a Vector or Composite of images. The validation can not be performed.";
+        validation.second = "Given data is not a Vector or Map of images. The validation can not be performed.";
     }
 
     return validation;

@@ -270,10 +270,10 @@ private:
     picked_voxel_sig_t::sptr m_picked_voxel_signal {nullptr};
 
     static constexpr std::string_view IMAGE_IN = "image";
-    data::ptr<data::image, data::access::in> m_image {this, IMAGE_IN, true};
+    data::ptr<data::image, data::access::in> m_image {this, IMAGE_IN};
 
     static constexpr std::string_view TF_INOUT = "tf";
-    data::ptr<data::transfer_function, data::access::inout> m_tf {this, TF_INOUT, true};
+    data::ptr<data::transfer_function, data::access::inout> m_tf {this, TF_INOUT};
 };
 
 //------------------------------------------------------------------------------

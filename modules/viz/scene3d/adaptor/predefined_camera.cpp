@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -169,7 +169,10 @@ void predefined_camera::update_transform()
 
 predefined_camera::connections_t predefined_camera::auto_connections() const
 {
-    return {{REGISTRATION_TRANSFORM_IN, sight::data::matrix4::MODIFIED_SIG, slots::UPDATE_TRANSFORM}};
+    service::connections_t connections = {
+        {REGISTRATION_TRANSFORM_IN, sight::data::matrix4::MODIFIED_SIG, slots::UPDATE_TRANSFORM}
+    };
+    return connections + adaptor::auto_connections();
 }
 
 //-----------------------------------------------------------------------------

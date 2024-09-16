@@ -54,8 +54,8 @@ namespace sight::module::ui::qt::calibration
  * - \b calInfo1 [sight::data::calibration_info]: calibration information for first camera.
  * - \b calInfo2 [sight::data::calibration_info] (optional): calibration information for optional second camera.
  */
-class calibration_info_editor : public QObject,
-                                public sight::ui::editor
+class calibration_info_editor final : public QObject,
+                                      public sight::ui::editor
 {
 Q_OBJECT;
 
@@ -72,36 +72,28 @@ public:
     static const core::com::slots::key_t GET_SELECTION_SLOT;
     ///@}
 
-    /**
-     * @brief Constructor.
-     */
     calibration_info_editor() noexcept;
-
-    /**
-     * @brief Destructor.
-     */
-    ~calibration_info_editor() noexcept override =
-        default;
+    ~calibration_info_editor() noexcept final = default;
 
 protected:
 
     /// Initializes the editor
-    void configuring() override;
+    void configuring() final;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
      */
-    void starting() override;
+    void starting() final;
 
     /**
      * @brief Stopping method : This method is used to stop the service.
      */
-    void stopping() override;
+    void stopping() final;
 
     /**
      * @brief Updating method : This method is used to update the service.
      */
-    void updating() override;
+    void updating() final;
 
     /**
      * @brief Slot: removes the current selected image.
@@ -122,7 +114,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      */
-    connections_t auto_connections() const override;
+    connections_t auto_connections() const final;
 
 private Q_SLOTS:
 
@@ -150,8 +142,8 @@ private:
 
     static constexpr std::string_view CALIBRATION_INFO_1 = "calInfo1";
     static constexpr std::string_view CALIBRATION_INFO_2 = "calInfo2";
-    data::ptr<data::calibration_info, data::access::inout> m_calibration_info1 {this, CALIBRATION_INFO_1, true};
-    data::ptr<data::calibration_info, data::access::inout> m_calibration_info2 {this, CALIBRATION_INFO_2, true, true};
+    data::ptr<data::calibration_info, data::access::inout> m_calibration_info1 {this, CALIBRATION_INFO_1};
+    data::ptr<data::calibration_info, data::access::inout> m_calibration_info2 {this, CALIBRATION_INFO_2, true};
 };
 
 } // namespace sight::module::ui::qt::calibration

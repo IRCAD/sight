@@ -1,6 +1,7 @@
 <extension implements="sight::app::extension::config">
-    <id>calIntrinsicView</id>
+    <id>sight::navigation::calibration::cal_intrinsic_view</id>
     <parameters>
+        <object uid="board_properties" type="sight::data::map" />
         <param name="WID_PARENT" />
         <param name="camera" />
         <param name="calibrationInfo" />
@@ -228,17 +229,17 @@
             <in key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
-        <service uid="calibrationInfoEditorSrv" type="sight::module::ui::qt::calibration::calibration_info_editor" auto_connect="true">
+        <service uid="calibrationInfoEditorSrv" type="sight::module::ui::qt::calibration::calibration_info_editor">
             <inout key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
         <service uid="intrinsicCalibrationSrv" type="sight::module::geometry::vision::open_cv_intrinsic">
             <in key="calibrationInfo" uid="${calibrationInfo}" />
             <inout key="camera" uid="${camera}" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <properties from="${board_properties}" />
         </service>
 
-        <service uid="computeCameraPoseSrv" type="sight::module::geometry::vision::solve_pn_p" worker="intr_chess_checker">
+        <service uid="computeCameraPoseSrv" type="sight::module::geometry::vision::solve_pnp" worker="chess_checker">
             <in key="pointList2d" uid="detectedChessboard" />
             <in key="pointList3d" uid="chessboardModel" />
             <in key="calibration" uid="${camera}" />
@@ -246,7 +247,7 @@
             <config inverse="false" />
         </service>
 
-        <service uid="cameraInfoSrv" type="sight::module::ui::qt::calibration::camera_information_editor" auto_connect="true">
+        <service uid="cameraInfoSrv" type="sight::module::ui::qt::calibration::camera_information_editor">
             <in key="camera" uid="${camera}" />
         </service>
 
@@ -261,7 +262,7 @@
 
         <service uid="calibrationDataReaderSrv" type="sight::module::io::vision::calibration_info_reader">
             <inout key="data" uid="${calibrationInfo}" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
+            <properties from="${board_properties}" />
         </service>
 
         <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
@@ -292,7 +293,7 @@
             <mode>undistort</mode>
         </service>
 
-        <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" worker="intr_chess_checker">
+        <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" worker="chess_checker">
             <in group="image" auto_connect="true">
                 <key uid="videoFrame" />
             </in>
@@ -302,7 +303,7 @@
             <inout group="detection">
                 <key uid="detectedChessboard" />
             </inout>
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
+            <properties from="${board_properties}" />
         </service>
 
         <service uid="chessboardReprojectionSrv" type="sight::module::geometry::vision::chessboard_reprojection">
@@ -311,7 +312,7 @@
             <in key="detectedChessboard" uid="detectedChessboard" />
             <inout key="videoImage" uid="distortedFrame" />
             <out key="chessboardModel" uid="chessboardModel" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <properties from="${board_properties}" />
             <config drawDetected="true" drawReprojection="true" distortReprojection="true" />
         </service>
 
@@ -530,14 +531,6 @@
 
         <connect>
             <signal>visibilityParameters/bool_changed</signal>
-        </connect>
-
-        <connect channel="${preferencesModifiedProxy}">
-            <slot>intrinsicCalibrationSrv/update_chessboard_size</slot>
-            <slot>chessboardDetectorSrv/update_chessboard_size</slot>
-            <slot>chessboardReprojectionSrv/update_chessboard_size</slot>
-            <slot>calibrationDataReaderSrv/update_chessboard_size</slot>
-            <slot>frameSynchronizerSrv/request_sync</slot>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

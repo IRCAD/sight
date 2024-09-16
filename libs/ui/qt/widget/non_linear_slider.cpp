@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -70,6 +70,13 @@ void non_linear_slider::set_value(int _value)
     auto it = std::ranges::find(m_values, _value);
     SIGHT_ASSERT("The value should exist in the list of possible values", it != m_values.end());
     m_slider->setValue(static_cast<int>(std::distance(m_values.begin(), it)));
+}
+
+//------------------------------------------------------------------------------
+
+void non_linear_slider::set_index(std::size_t _index)
+{
+    m_slider->setValue(static_cast<int>(_index));
 }
 
 //------------------------------------------------------------------------------

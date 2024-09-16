@@ -4,13 +4,11 @@ add_dependencies(
     sight_calibrator
     sightrun
     module_app
-    module_ui
-    module_ui_qt
     module_service
     module_sync
     data
     module_ui
-    module_ui_icons
+    module_ui_qt
     module_ui_icons
     module_io_vision
     module_io_video

@@ -169,7 +169,7 @@ void landmarks::configuring()
 
     // Initial color
     auto color = std::make_shared<sight::data::color>();
-    color->set_rgba(config.get<std::string>(s_INITIAL_COLOR, "#FFFF00FF"));
+    color->from_string(config.get<std::string>(s_INITIAL_COLOR, "#FFFF00FF"));
     m_current_color = {color->red(), color->green(), color->blue(), color->alpha()};
 
     // Initial size
@@ -238,7 +238,7 @@ void landmarks::starting()
 
 service::connections_t landmarks::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
 
     connections.push(TRANSFORM_CONFIG, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
 
@@ -614,7 +614,7 @@ std::shared_ptr<landmarks::landmark> landmarks::insert_my_point(
         text->set_font_size(m_font_size);
         text->set_text(point_name);
         text->set_text_color(color);
-        text->set_visible(group.m_visibility && m_visible);
+        text->set_visible(group.m_visibility && visible());
 
         // Attach data.
         text->attach_to_node(node, this->layer()->get_default_camera());

@@ -308,7 +308,7 @@ private:
     std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     static constexpr std::string_view MESH_IN = "mesh";
-    data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_IN, true};
+    data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_IN};
 };
 
 //------------------------------------------------------------------------------
@@ -350,7 +350,7 @@ inline Ogre::Entity* mesh::get_entity() const
 
 inline bool mesh::get_visibility() const
 {
-    return m_entity != nullptr ? m_entity->getVisible() : m_visible;
+    return m_entity != nullptr ? m_entity->getVisible() : visible();
 }
 
 //------------------------------------------------------------------------------

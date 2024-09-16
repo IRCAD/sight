@@ -27,6 +27,7 @@
 #include "core/com/helper/proxy_connections.hpp"
 
 #include "service/manager.hpp"
+#include "service/object_parser.hpp"
 
 #include <core/base.hpp>
 #include <core/com/signals.hpp>
@@ -97,6 +98,9 @@ struct service_config
     /// list of required object groups information (inputs, inouts and outputs), indexed by key name
     std::map<std::string, object_serviceconfig> m_groups;
 
+    /// list of required properties, indexed by key name and index
+    std::map<std::string, object_serviceconfig> m_properties;
+
     /// Service configuration (only used with XML config)
     service::config_t m_config;
 };
@@ -117,9 +121,11 @@ public:
     using slot_info_t           = std::pair<std::string, core::com::slots::key_t>;
     using slot_info_container_t = std::vector<slot_info_t>;
 
+    using config_attribute_t       = std::pair<std::string, bool>;
     using object_id_t              = std::string;
     using proxy_connections_vect_t = std::vector<core::com::helper::proxy_connections>;
     using proxy_connections_map_t  = std::map<object_id_t, proxy_connections_vect_t>;
+    using objects_set_t            = std::set<std::string>;
 
     /**
      * @brief Parses "<connect>" tags from given configuration and return a structure containing the signal and
@@ -133,10 +139,24 @@ public:
         std::function<std::string()> _generate_channel_name_fn
     );
 
+    /** Parse an object configuration, creates it and its subobjects recursively.
+     * @param _cfg input configuration of the object
+     * @param _objects found objects
+     */
+    SIGHT_APP_API static void parse_object(
+        const boost::property_tree::ptree& _cfg,
+        service::object_parser::objects_t& _objects
+    );
+
+    static data::object::sptr get_new_object(config_attribute_t _type, config_attribute_t _uid);
+
+    static data::object::sptr get_object(config_attribute_t _type, const std::string& _uid);
+
     /// Parse a service and return a service configuration
     SIGHT_APP_API static app::detail::service_config parse_service(
         const boost::property_tree::ptree& _srv_elem,
-        const std::string& _err_msg_head
+        const std::string& _err_msg_head,
+        const service::object_parser::objects_set_t& _objects
     );
 
     SIGHT_APP_API static std::pair<bool, bool> get_object_key_attrs(

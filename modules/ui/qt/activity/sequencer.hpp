@@ -47,7 +47,7 @@ namespace sight::module::ui::qt::activity
  * force the user to re-generate the data.
  *
  * @warning If an activity can not be launched with the existing parameters, the signal 'dataRequired' is emitted. It
- * can be connected to an activity wizard to add the missing data, or you can supplied 'requirementOverrides' composite.
+ * can be connected to an activity wizard to add the missing data, or you can supplied 'requirementOverrides' map.
  *
  * @note If the inout ActivitySet already contains activities, their are parsed and the sequencer open on the last
  * activities. Be careful to store them in the right order.
@@ -89,7 +89,7 @@ namespace sight::module::ui::qt::activity
     </service>
    @endcode
  * @subsection In In
- * - \b requirementOverrides [sight::data::composite] (optional): provide some data that will be passed as activity
+ * - \b requirementOverrides [sight::data::map] (optional): provide some data that will be passed as activity
  *   requirements. Can be used to supply required data that cannot be created by the activity, or to override
  *   data that would normally be passed from an activity to the next.
  *
@@ -291,7 +291,7 @@ private:
     };
 
     static constexpr std::string_view ACTIVITY_SET_INOUT = "activitySet";
-    data::ptr<data::activity_set, data::access::inout> m_activity_set {this, ACTIVITY_SET_INOUT, true};
+    data::ptr<data::activity_set, data::access::inout> m_activity_set {this, ACTIVITY_SET_INOUT};
 };
 
 } // namespace sight::module::ui::qt::activity

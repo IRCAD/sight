@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,6 +28,8 @@
 #include <core/runtime/helper.hpp>
 #include <core/thread/worker.hpp>
 
+#include <ranges>
+
 namespace sight::service::detail
 {
 
@@ -37,6 +39,8 @@ service::service(sight::service::base& _service) :
     m_service(_service)
 {
 }
+
+//-----------------------------------------------------------------------------
 
 service::~service()
 {
@@ -69,6 +73,89 @@ void service::configure()
         {
             try
             {
+                // Collect all input/output configurations
+                std::map<std::string, std::string> properties_cfgs;
+                if(const auto& properties = m_configuration.get_child_optional("properties"); properties.has_value())
+                {
+                    if(const auto& attributes = properties->get_child_optional("<xmlattr>"); attributes.has_value())
+                    {
+                        for(const auto& attribute : *attributes)
+                        {
+                            properties_cfgs[attribute.first] = attribute.second.get_value<std::string>();
+                        }
+                    }
+
+                    auto properties_attrs = properties->equal_range("property");
+                    for(auto it_prop = properties_attrs.first ; it_prop != properties_attrs.second ; ++it_prop)
+                    {
+                        if(auto obj_cfg = it_prop->second.get_child_optional("<xmlattr>"); obj_cfg.has_value())
+                        {
+                            // We take only the first element
+                            auto first_element = *obj_cfg->begin();
+                            properties_cfgs[first_element.first] = first_element.second.get_value<std::string>();
+                        }
+                    }
+                }
+
+                const auto properties_obj = m_service.m_properties_map.lock();
+                const auto properties_map = std::dynamic_pointer_cast<data::map>(properties_obj.get_shared());
+
+                // Look for properties
+                auto is_property = [](auto& _p){return dynamic_cast<data::property_base*>(_p.second) != nullptr;};
+
+                auto obj_from_property_map = [&](const std::string& _key) -> sight::data::object::sptr
+                                             {
+                                                 if(properties_map != nullptr)
+                                                 {
+                                                     if(const auto& prop_key = properties_map->find(_key);
+                                                        prop_key != properties_map->end())
+                                                     {
+                                                         return prop_key->second;
+                                                     }
+                                                 }
+
+                                                 return nullptr;
+                                             };
+
+                for(const auto& [key, ptr] : m_service.container() | std::views::filter(is_property))
+                {
+                    auto weak_obj = m_service.inout(key.first);
+                    auto obj      = weak_obj.lock();
+
+                    const auto& obj_from_map = obj_from_property_map(std::string(key.first));
+
+                    if(obj == nullptr)
+                    {
+                        auto* property = dynamic_cast<data::property_base*>(ptr);
+                        SIGHT_ASSERT("Data pointer is not convertible to a property", property);
+
+                        if(obj_from_map != nullptr)
+                        {
+                            // We found a key in the map
+                            m_service.set_object(obj_from_map, key.first, {}, ptr->access(), true, false);
+                        }
+                        else
+                        {
+                            auto new_obj = property->make_default();
+                            m_created_properties.emplace_back(new_obj);
+
+                            if(const auto& prop_cfg = properties_cfgs.find(std::string(key.first));
+                               prop_cfg != properties_cfgs.end())
+                            {
+                                new_obj->from_string(prop_cfg->second);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        SIGHT_ERROR_IF(
+                            "Properties " << std::quoted(key.first)
+                            << " set with an object while there is already a key in the property map",
+                            obj_from_map != nullptr
+                        );
+                    }
+                }
+
                 m_service.configuring();
                 m_service.configuring(m_configuration);
             }
@@ -303,33 +390,36 @@ void service::auto_connect()
 
     for(const auto& [key, ptr] : m_service.container())
     {
+        const auto& key_str     = key.first;
         data::object::csptr obj = ptr->get();
 
         if(ptr->auto_connect() && obj)
         {
             core::com::helper::sig_slot_connection::key_connections_t connections;
-            if(!connection_map.empty())
-            {
-                if(auto it = connection_map.find(key.first); it != connection_map.end())
-                {
-                    connections = it->second;
-                }
+            bool connected = false;
 
-                SIGHT_ERROR_IF(
-                    "Object '" << key.first << "' of '" << m_service.get_id() << "'(" << m_service.get_classname()
-                    << ") set to 'auto_connect=\"true\"' but no matching connection defined in auto_connections().",
-                    connections.empty() && ptr->auto_connect()
-                );
-            }
-            else
+            if(auto it = connection_map.find(key_str); it != connection_map.end())
             {
-                SIGHT_ERROR(
-                    "Object '" << key.first << "' of '" << m_service.get_id() << "'(" << m_service.get_classname()
-                    << ") set to 'auto_connect=\"true\"' but no matching connection is defined in auto_connections()."
-                );
+                connections = it->second;
+                m_auto_connections.connect(obj, m_service.get_sptr(), connections);
+                connected = true;
             }
 
-            m_auto_connections.connect(obj, m_service.get_sptr(), connections);
+            // Connect the properties
+            if(!connected && dynamic_cast<data::property_base*>(ptr) != nullptr)
+            {
+                const auto sig = obj->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+
+                const auto slot = core::com::new_slot(
+                    [&]()
+                    {
+                        m_service.on_property_set(key_str);
+                    });
+                slot->set_worker(m_service.worker());
+
+                m_properties_slots.push_back(slot);
+                sig->connect(slot);
+            }
         }
     }
 }
@@ -338,6 +428,7 @@ void service::auto_connect()
 
 void service::auto_disconnect()
 {
+    m_properties_slots.clear();
     m_auto_connections.disconnect();
 }
 
@@ -348,7 +439,9 @@ std::pair<bool, bool> service::get_object_key_attrs(const std::string& _key) con
     const auto& container = m_service.container();
     if(auto it_data = container.find({_key, {}}); it_data != container.end())
     {
-        return {it_data->second->auto_connect(), it_data->second->optional()};
+        sight::service::connections_t connection_map = m_service.auto_connections();
+        const bool auto_connect                      = connection_map.contains(it_data->first.first);
+        return {auto_connect, it_data->second->optional()};
     }
 
     return {false, false};
