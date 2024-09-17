@@ -163,7 +163,7 @@ are already displayed and where they are displayed on screen.
                 </channels>
             </service>
 
-            <service uid="sight::module::ui::qtChangerSrv" type="sight::module::ui::qt::style_selector" />
+            <service uid="qt_style_changer_srv" type="sight::module::ui::qt::style_selector" />
 
             <!-- ******************************* Connections ***************************************** -->
 
@@ -210,7 +210,7 @@ are already displayed and where they are displayed on screen.
 
             <connect>
                 <signal>changeThemeAct/parameters_modified</signal>
-                <slot>styleChangerSrv/update_from_preferences</slot>
+                <slot>qt_style_changer_srv/update_from_preferences</slot>
             </connect>
 
             <connect>
@@ -228,7 +228,7 @@ are already displayed and where they are displayed on screen.
             <start uid="mainFrame" />
             <start uid="notifierSrv" />
             <start uid="testNotifierSrv" />
-            <start uid="sight::module::ui::qtChangerSrv" />
+            <start uid="qt_style_changer_srv" />
         </config>
     </extension>
 </plugin>

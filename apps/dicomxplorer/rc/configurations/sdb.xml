@@ -220,8 +220,6 @@
             <signal>action_newActivity/activity_launched</signal>
             <signal>action_2DVisualization/activity_launched</signal>
             <signal>action_3DVisualization/activity_launched</signal>
-            <signal>action_volumeRendering/activity_launched</signal>
-            <signal>action_blend/activity_launched</signal>
             <signal>action_dicomPacsReader/activity_launched</signal>
             <signal>action_dicomPacsWriter/activity_launched</signal>
             <signal>action_dicomFiltering/activity_launched</signal>

@@ -694,6 +694,19 @@ service::base::sptr config_manager::create_service(const detail::service_config&
 
 void config_manager::create_connections()
 {
+#ifdef DEBUG
+    std::set<std::string> services;
+    for(const auto& elem : m_cfg_elem)
+    {
+        if(elem.first == "service")
+        {
+            auto uid = elem.second.get<std::string>("<xmlattr>.uid");
+            SIGHT_ASSERT("'uid' attribute is empty.", !uid.empty());
+            services.insert(uid);
+        }
+    }
+#endif
+
     for(const auto& elem : m_cfg_elem)
     {
         if(elem.first == "connect")
@@ -731,6 +744,10 @@ void config_manager::create_connections()
                     else
                     {
                         // Service
+                        SIGHT_ASSERT(
+                            "Can not connect signal of unknown data/service " << std::quoted(signal_info.first) << ".",
+                            services.contains(signal_info.first)
+                        );
                         auto& it_srv               = m_services_proxies[signal_info.first];
                         proxy_connections_t& proxy = it_srv.m_proxy_cnt[connection_infos.m_channel];
                         proxy.add_signal_connection(signal_info);
@@ -760,6 +777,10 @@ void config_manager::create_connections()
                     else
                     {
                         // Service
+                        SIGHT_ASSERT(
+                            "Can not connect slot of unknown service " << std::quoted(slot_info.first) << ".",
+                            services.contains(slot_info.first)
+                        );
                         auto& it_srv               = m_services_proxies[slot_info.first];
                         proxy_connections_t& proxy = it_srv.m_proxy_cnt[connection_infos.m_channel];
                         proxy.add_slot_connection(slot_info);

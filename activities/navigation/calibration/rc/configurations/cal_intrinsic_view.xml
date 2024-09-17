@@ -529,10 +529,6 @@
             <slot>frameSynchronizerSrv/request_sync</slot>
         </connect>
 
-        <connect>
-            <signal>visibilityParameters/bool_changed</signal>
-        </connect>
-
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainView" />

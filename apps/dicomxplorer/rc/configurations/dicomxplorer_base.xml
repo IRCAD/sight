@@ -124,7 +124,7 @@
 
         <service uid="progress_statusbar" type="sight::module::ui::job_bar" />
 
-        <service uid="qtSelector" type="sight::module::ui::qt::style_selector" />
+        <service uid="styleSelector" type="sight::module::ui::qt::style_selector" />
 
         <connect channel="progressStatus">
             <signal>SDBWriter/job_created</signal>
@@ -147,7 +147,7 @@
 
         <start uid="mainFrame" />
         <start uid="progress_statusbar" />
-        <start uid="qtSelector" />
+        <start uid="styleSelector" />
         <start uid="SDBWriter" />
     </config>
 </extension>

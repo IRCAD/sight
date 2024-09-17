@@ -252,7 +252,7 @@ Usage:
         </connect>
 
         <connect>
-            <signal>camera/id_modified</signal>
+            <signal>${camera}/id_modified</signal>
             <slot>grabberProxySrv/stop_camera</slot>
         </connect>
 
@@ -261,7 +261,7 @@ Usage:
         </connect>
 
         <connect>
-            <signal>camera/modified</signal>
+            <signal>${camera}/modified</signal>
             <slot>startVideoAct/enable</slot>
             <slot>stopVideoAct/update</slot>
         </connect>
