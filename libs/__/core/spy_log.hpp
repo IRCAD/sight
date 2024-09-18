@@ -209,7 +209,7 @@ constexpr static const char* strip_source_path(const char* const _path)
 // -----------------------------------------------------------------------------
 
 #  define SPYLOG_SPYLOGGER \
-        sight::core::log::spy_logger::get()
+        sight::core::log::g_logger
 
 // -----------------------------------------------------------------------------
 

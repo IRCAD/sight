@@ -7,6 +7,7 @@ target_compile_definitions(${TARGET_OBJECT_LIB} PUBLIC BOOST_BIND_GLOBAL_PLACEHO
 
 if(CMAKE_SYSTEM_NAME MATCHES "Windows")
     target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE psapi)
+
     # Boost >= 1.67 changes the default random provider on Windows to use BCrypt
     target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE bcrypt)
 endif()
@@ -29,7 +30,15 @@ endif()
 if(WIN32)
     target_include_directories(${TARGET_OBJECT_LIB} PRIVATE ${Iconv_INCLUDE_DIR})
 endif()
+
 target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC OpenMP::OpenMP_CXX)
+
+if(NOT WIN32 AND ZSTD_FOUND)
+    target_include_directories(${TARGET_OBJECT_LIB} SYSTEM PRIVATE ${ZSTD_INCLUDE_DIRS})
+    target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE ${ZSTD_LINK_LIBRARIES})
+else()
+    target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE zstd::libzstd_shared)
+endif()
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/api)

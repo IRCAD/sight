@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2023 IRCAD France
+ * Copyright (C) 2004-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -152,14 +152,14 @@ void init_log_output()
         if(err.value() != 0)
         {
             // replace log file appender by stream appender: current dir and temp dir unreachable
-            sight::core::log::spy_logger::add_console_log();
+            sight::core::log::spy_logger::add_global_console_log();
         }
         else
         {
             // creates fwTest.log in temp directory: current dir unreachable
             sysTmp  = sysTmp / logFile;
             logFile = sysTmp.string();
-            sight::core::log::spy_logger::add_file_log(logFile);
+            sight::core::log::spy_logger::add_global_file_log(logFile);
         }
     }
     else
@@ -170,7 +170,7 @@ void init_log_output()
             perror("fclose");
         }
 
-        sight::core::log::spy_logger::add_file_log(logFile);
+        sight::core::log::spy_logger::add_global_file_log(logFile);
     }
 }
 

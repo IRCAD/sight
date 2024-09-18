@@ -1155,9 +1155,7 @@ function(find_target_dependencies TARGET TARGETS_FILTER RESULT_VAR)
             list(REMOVE_DUPLICATES DEPENDS)
             set(DEPENDS_COPY ${DEPENDS})
             foreach(dep ${DEPENDS})
-                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" STREQUAL "sightrun" AND NOT "${dep}" STREQUAL
-                                                                                              "sightlog"
-                )
+                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" STREQUAL "sightrun")
                     list(REMOVE_ITEM DEPENDS_COPY ${dep})
                 endif()
             endforeach()

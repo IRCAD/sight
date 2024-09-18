@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,12 +19,9 @@
  *
  ***********************************************************************/
 
-// cspell:ignore NOLINT
-// NOLINTBEGIN(clang-analyzer-optin.cplusplus.VirtualCall)
-
 #include "encrypted_log_test.hpp"
 
-#include <core/crypto/base64.hpp>
+#include <core/crypto/sha256.hpp>
 #include <core/log/spy_logger.hpp>
 #include <core/os/temp_path.hpp>
 #include <core/spy_log.hpp>
@@ -33,6 +30,11 @@
 #include <boost/dll.hpp>
 #include <boost/log/core.hpp>
 #include <boost/process.hpp>
+
+#include <openssl/err.h>
+#include <openssl/evp.h>
+
+#include <zstd.h>
 
 #include <array>
 #include <filesystem>
@@ -53,17 +55,16 @@ inline static std::smatch parse_log_line(const std::string& _line)
     static const std::regex s_REGEX =
         []
         {
-            constexpr auto date_group      = R"(\[([^\]]*)\])";
-            constexpr auto time_group      = R"(\[([^\]]*)\])";
-            constexpr auto process_group   = R"(\[([^\]]*)\])";
-            constexpr auto thread_group    = R"(\[([^\]]*)\])";
-            constexpr auto level_group     = R"(\[([^\]]*)\] )";
-            constexpr auto file_line_group = R"(\[([^\]]*):([^\]]*)\] )";
-            constexpr auto message_group   = "(.*)";
+            constexpr auto date      = R"(\[([^\]]*)\])";
+            constexpr auto time      = R"(\[([^\]]*)\])";
+            constexpr auto process   = R"(\[([^\]]*)\])";
+            constexpr auto thread    = R"(\[([^\]]*)\])";
+            constexpr auto level     = R"(\[([^\]]*)\] )";
+            constexpr auto file_line = R"(\[([^\]]*):([^\]]*)\] )";
+            constexpr auto message   = "(.*)";
 
             std::stringstream ss;
-            ss << date_group << time_group << process_group << thread_group << level_group << file_line_group
-            << message_group;
+            ss << date << time << process << thread << level << file_line << message;
 
             return std::regex(ss.str());
         }();
@@ -77,160 +78,137 @@ inline static std::smatch parse_log_line(const std::string& _line)
 
 //------------------------------------------------------------------------------
 
-inline static std::filesystem::path decrypt(
-    const std::filesystem::path& _log_archive,
-    const core::crypto::secure_string& _password
+inline static void check_log(
+    const std::filesystem::path& _log_path,
+    const auto& _messages,
+    const std::optional<std::reference_wrapper<const core::crypto::secure_string> >& _password = std::nullopt,
+    bool _bad_password                                                                         = false,
+    bool _truncated                                                                            = false
 )
 {
-    if(!std::filesystem::exists(_log_archive) || !std::filesystem::is_regular_file(_log_archive))
+    std::filesystem::path raw_log_path;
+    core::os::temp_dir temp_dir;
+
+    if(_password)
     {
-        throw std::runtime_error("Log archive '" + _log_archive.string() + "' doesn't exist.");
-    }
+        // Create the raw log
+        raw_log_path = temp_dir / "raw.log";
+        std::ofstream raw_stream_output(raw_log_path);
 
-    // Find the logger binary
-    const auto& logger_path = core::log::spy_logger::get_logger_path();
-
-    boost::process::ipstream remote_err;
-
-    auto child = boost::process::child(
-        logger_path.string(),
-        boost::process::args = {
-            "-b",
-            "-i",
-            core::crypto::to_base64(_log_archive.string()),
-            "-p",
-            core::crypto::to_base64(_password).c_str(), // NOLINT(readability-redundant-string-cstr)
-            "-d",
-            core::crypto::to_base64(_log_archive.parent_path().string())
-        },
-        boost::process::std_out > boost::process::null,
-        boost::process::std_err > remote_err,
-        boost::process::std_in < boost::process::null
-    );
-
-    // Wait for the logger to finish
-    child.join();
-
-    // Find the decrypted log
-    if(child.exit_code() != 0)
-    {
-        std::stringstream ss;
-        ss << "TEST: Sightlog error [" << child.exit_code() << "]: " << remote_err.rdbuf();
-        throw std::runtime_error(ss.str());
-    }
-
-    const auto& log_file = _log_archive.parent_path() / LOG_FILE;
-    if(std::filesystem::exists(log_file) && std::filesystem::is_regular_file(log_file))
-    {
-        return log_file;
-    }
-
-    throw std::runtime_error("Failed to decrypt the log archive");
-}
-
-//------------------------------------------------------------------------------
-
-inline static std::filesystem::path setup_encrypted_log()
-{
-    // Create a temporary directory
-    const auto& tmp_folder  = core::os::temp_dir::shared_directory();
-    const auto& log_archive = tmp_folder / ENCRYPTED_LOG_FILE;
-    std::filesystem::remove(log_archive);
-
-    auto& log = core::log::spy_logger::get();
-    CPPUNIT_ASSERT_NO_THROW(log.start_encrypted_logger(log_archive, sight::core::log::spy_logger::sl_trace, PASSWORD));
-
-    const auto& real_log_archive = log.get_current_log_path();
-
-    CPPUNIT_ASSERT_MESSAGE(
-        real_log_archive.string() + " doesn't exist.",
-        std::filesystem::exists(real_log_archive) && std::filesystem::is_regular_file(real_log_archive)
-    );
-
-    return real_log_archive;
-}
-
-//------------------------------------------------------------------------------
-
-inline static std::filesystem::path setup_log()
-{
-    // Create a temporary directory
-    const auto& tmp_folder  = core::os::temp_dir::shared_directory();
-    const auto& log_archive = tmp_folder / LOG_FILE;
-    std::filesystem::remove(log_archive);
-
-    auto& log = core::log::spy_logger::get();
-    CPPUNIT_ASSERT_NO_THROW(log.start_logger(log_archive, sight::core::log::spy_logger::sl_trace));
-
-    const auto& real_log_archive = log.get_current_log_path();
-
-    CPPUNIT_ASSERT_MESSAGE(
-        real_log_archive.string() + " doesn't exist.",
-        std::filesystem::exists(real_log_archive) && std::filesystem::is_regular_file(real_log_archive)
-    );
-
-    return real_log_archive;
-}
-
-//------------------------------------------------------------------------------
-
-inline static void stop_logger()
-{
-    auto& log = core::log::spy_logger::get();
-
-    // Log archive name is computed in start_encrypted_logger()
-    const auto& log_archive = log.get_current_log_path();
-
-    // This will remove the sink and close the sightlog process
-    log.stop_logger();
-
-    if(!log_archive.empty())
-    {
         CPPUNIT_ASSERT_MESSAGE(
-            log_archive.string() + " doesn't exist.",
-            std::filesystem::exists(log_archive) && std::filesystem::is_regular_file(log_archive)
+            raw_log_path.string() + " doesn't exist or cannot be opened.",
+            raw_stream_output.good()
         );
+
+        // Open the encrypted/compressed log
+        std::ifstream log_stream_input(_log_path, std::ios::binary);
+
+        CPPUNIT_ASSERT_MESSAGE(
+            _log_path.string() + " doesn't exist or cannot be opened.",
+            log_stream_input.good()
+        );
+
+        // Extract the log
+        if(_bad_password)
+        {
+            CPPUNIT_ASSERT_THROW(
+                spy_logger::extract(log_stream_input, raw_stream_output, _password),
+                spy_logger::bad_password
+            );
+
+            // No need to check the content
+            return;
+        }
+
+        if(!_truncated)
+        {
+            CPPUNIT_ASSERT_NO_THROW(spy_logger::extract(log_stream_input, raw_stream_output, _password));
+        }
+        else
+        {
+            CPPUNIT_ASSERT_THROW(
+                spy_logger::extract(log_stream_input, raw_stream_output, _password),
+                spy_logger::premature_end
+            );
+        }
+    }
+    else
+    {
+        // Raw log
+        raw_log_path = _log_path;
     }
 
-    // To be sure in case one added a custom sink for testing purpose...
-    boost::log::core::get()->remove_all_sinks();
-}
-
-//------------------------------------------------------------------------------
-
-template<typename T>
-inline static void test_log_archive(
-    const std::filesystem::path& _log_archive,
-    const char* const _password,
-    const T& _messages
-)
-{
-    // Try to decrypt the first log archive
-    std::filesystem::path decrypted_log_path;
-    CPPUNIT_ASSERT_NO_THROW(decrypted_log_path = decrypt(_log_archive, _password));
+    // open the log file
+    std::ifstream raw_stream_input(raw_log_path.string());
 
     CPPUNIT_ASSERT_MESSAGE(
-        decrypted_log_path.string() + " doesn't exist.",
-        std::filesystem::exists(decrypted_log_path) && std::filesystem::is_regular_file(decrypted_log_path)
+        raw_log_path.string() + " doesn't exist or cannot be opened.",
+        std::filesystem::exists(raw_log_path) && raw_stream_input.good()
     );
-
-    // Read the first decrypted log
-    std::ifstream decrypted_stream(decrypted_log_path.string());
 
     for(const auto& message : _messages)
     {
         std::string line;
-        std::getline(decrypted_stream, line);
+        std::getline(raw_stream_input, line);
 
         const auto& smatch = parse_log_line(line);
 
         CPPUNIT_ASSERT_EQUAL(message, smatch[8].str());
 
         // Also test source path stripping from strip_source_path()
-        const auto& reconstructed_path = (std::filesystem::path(SIGHT_SOURCE_DIR) / smatch[6].str()).lexically_normal();
-        const auto& file_macro_path    = std::filesystem::path(__FILE__).lexically_normal();
+        const auto& stored_path   = (std::filesystem::path(SIGHT_SOURCE_DIR) / smatch[6].str()).lexically_normal();
+        const auto& expected_path = std::filesystem::path(__FILE__).lexically_normal();
 
-        CPPUNIT_ASSERT_EQUAL(file_macro_path, reconstructed_path);
+        CPPUNIT_ASSERT_EQUAL(expected_path, stored_path);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::unique_ptr<core::os::temp_dir> setup_log(
+    const std::optional<std::reference_wrapper<const core::crypto::secure_string> >& _password = std::nullopt,
+    bool _asynchronous                                                                         = false
+)
+{
+    // Create a temporary directory
+    auto temp_dir       = std::make_unique<core::os::temp_dir>();
+    const auto log_path = *temp_dir / (_password ? ENCRYPTED_LOG_FILE : LOG_FILE);
+
+    CPPUNIT_ASSERT_NO_THROW(
+        core::log::g_logger.start(
+            log_path,
+            sight::core::log::spy_logger::level_t::trace,
+            _password,
+            _asynchronous
+        )
+    );
+
+    const auto real_log_path = core::log::g_logger.get_current_log_path();
+
+    CPPUNIT_ASSERT_MESSAGE(
+        real_log_path.string() + " doesn't exist.",
+        std::filesystem::exists(real_log_path) && std::filesystem::is_regular_file(real_log_path)
+    );
+
+    return temp_dir;
+}
+
+//------------------------------------------------------------------------------
+
+inline static void stop_logger(bool _check = true)
+{
+    // Log archive name is computed in start_encrypted_logger()
+    const auto& log_path = core::log::g_logger.get_current_log_path();
+
+    // This will remove the sink
+    CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.stop());
+
+    if(_check && !log_path.empty())
+    {
+        CPPUNIT_ASSERT_MESSAGE(
+            log_path.string() + " doesn't exist.",
+            std::filesystem::exists(log_path) && std::filesystem::is_regular_file(log_path)
+        );
     }
 }
 
@@ -244,29 +222,200 @@ void encrypted_log_test::setUp()
 
 void encrypted_log_test::tearDown()
 {
+    // To be sure there is no logger still running
+    stop_logger(false);
 }
 
 //------------------------------------------------------------------------------
 
 void encrypted_log_test::log_without_sink_test()
 {
-    auto& log = core::log::spy_logger::get();
-    CPPUNIT_ASSERT_NO_THROW(log.trace(core::tools::uuid::generate(), SIGHT_SOURCE_FILE, __LINE__));
+    CPPUNIT_ASSERT_NO_THROW(
+        core::log::g_logger.trace(
+            core::tools::uuid::generate(),
+            SIGHT_SOURCE_FILE,
+            __LINE__
+        )
+    );
 }
 
 //------------------------------------------------------------------------------
 
-void encrypted_log_test::nominal_test()
+void encrypted_log_test::nominal_raw_log_test()
 {
-    // Start logger
-    setup_encrypted_log();
+    const std::array messages = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
 
-    // Write a simple trace message
-    auto& log = core::log::spy_logger::get();
-    CPPUNIT_ASSERT_NO_THROW(log.trace(core::tools::uuid::generate(), SIGHT_SOURCE_FILE, __LINE__));
+    // Start logger
+    decltype(setup_log()) temp_dir;
+    CPPUNIT_ASSERT_NO_THROW(temp_dir = setup_log());
+
+    // Write a couple of simple trace messages
+    const auto& log_path = core::log::g_logger.get_current_log_path();
+
+    for(const auto& message : messages)
+    {
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
 
     // Final cleanup
-    stop_logger();
+    CPPUNIT_ASSERT_NO_THROW(stop_logger());
+
+    // Check the log content
+    CPPUNIT_ASSERT_NO_THROW(check_log(log_path, messages));
+}
+
+//------------------------------------------------------------------------------
+
+void encrypted_log_test::nominal_compressed_log_test()
+{
+    const std::array messages = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
+    // Start logger - empty password means compressed log
+    core::crypto::secure_string empty_password;
+    decltype(setup_log()) temp_dir;
+    CPPUNIT_ASSERT_NO_THROW(temp_dir = setup_log(empty_password));
+
+    // Write a couple of simple trace messages
+    const auto& log_path = core::log::g_logger.get_current_log_path();
+
+    for(const auto& message : messages)
+    {
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    // Final cleanup
+    CPPUNIT_ASSERT_NO_THROW(stop_logger());
+
+    // Check the log content
+    CPPUNIT_ASSERT_NO_THROW(check_log(log_path, messages, empty_password));
+}
+
+//------------------------------------------------------------------------------
+
+void encrypted_log_test::nominal_encrypted_log_test()
+{
+    const std::array messages = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
+    // Start logger
+    const core::crypto::secure_string password(PASSWORD);
+    decltype(setup_log()) temp_dir;
+    CPPUNIT_ASSERT_NO_THROW(temp_dir = setup_log(password));
+
+    // Write a couple of simple trace messages
+    const auto& log_path = core::log::g_logger.get_current_log_path();
+
+    for(const auto& message : messages)
+    {
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    // Final cleanup
+    CPPUNIT_ASSERT_NO_THROW(stop_logger());
+
+    // Check the log content
+    CPPUNIT_ASSERT_NO_THROW(check_log(log_path, messages, password));
+}
+
+//------------------------------------------------------------------------------
+
+void encrypted_log_test::multiple_logger_test()
+{
+    // Create a temporary directory
+    auto temp_dir = core::os::temp_dir();
+
+    const auto log_1_path         = temp_dir / "log_1.log";
+    auto logger_1                 = spy_logger::make(log_1_path);
+    const auto current_log_1_path = logger_1->get_current_log_path();
+
+    const std::array messages_1 = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
+    for(const auto& message : messages_1)
+    {
+        CPPUNIT_ASSERT_NO_THROW(logger_1->trace(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    const auto log_2_path         = temp_dir / "log_2.log";
+    auto logger_2                 = spy_logger::make(log_2_path, spy_logger::level_t::error);
+    const auto current_log_2_path = logger_2->get_current_log_path();
+
+    // Those messages should be ignored since spy_logger::level_t::error > spy_logger::level_t::trace
+    for(const auto& message : messages_1)
+    {
+        CPPUNIT_ASSERT_NO_THROW(logger_2->trace(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    // ...But not those
+    const std::array messages_2 = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
+    for(const auto& message : messages_2)
+    {
+        CPPUNIT_ASSERT_NO_THROW(logger_2->error(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    // Test asynchronous writing
+    const auto log_3_path         = temp_dir / "log_3.log";
+    auto logger_3                 = spy_logger::make(log_3_path, spy_logger::level_t::debug, std::nullopt, true);
+    const auto current_log_3_path = logger_3->get_current_log_path();
+
+    const std::array messages_3 = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
+    for(const auto& message : messages_3)
+    {
+        CPPUNIT_ASSERT_NO_THROW(logger_3->error(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    // Test asynchronous writing with encryption
+    const auto log_4_path = temp_dir / "log_4.log.aes";
+    const core::crypto::secure_string password(PASSWORD);
+    auto logger_4                 = spy_logger::make(log_4_path, spy_logger::level_t::debug, password, true);
+    const auto current_log_4_path = logger_4->get_current_log_path();
+
+    const std::array messages_4 = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
+    for(const auto& message : messages_4)
+    {
+        CPPUNIT_ASSERT_NO_THROW(logger_4->error(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    logger_1.reset();
+    check_log(current_log_1_path, messages_1);
+
+    logger_2.reset();
+    check_log(current_log_2_path, messages_2);
+
+    logger_3.reset();
+    check_log(current_log_3_path, messages_3);
+
+    logger_4.reset();
+    check_log(current_log_4_path, messages_4, password);
 }
 
 //------------------------------------------------------------------------------
@@ -279,209 +428,319 @@ void encrypted_log_test::bad_path_test()
     constexpr auto path = "/proc/cpuinfo";
 #endif
 
-    auto& log = core::log::spy_logger::get();
+    const core::crypto::secure_string password(PASSWORD);
     CPPUNIT_ASSERT_THROW(
-        log.start_encrypted_logger(path, sight::core::log::spy_logger::sl_trace, PASSWORD),
+        core::log::g_logger.start(path, sight::core::log::spy_logger::level_t::trace, password),
         std::runtime_error
     );
 
     // Since we test a bad path, we need to reset the logger
-    log.stop_logger();
+    CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.stop());
 
     // Final cleanup
-    stop_logger();
+    CPPUNIT_ASSERT_NO_THROW(stop_logger());
 }
 
 //------------------------------------------------------------------------------
 
-void encrypted_log_test::basic_decryption_test()
+void encrypted_log_test::bad_password_test()
 {
-    // Start logger
-    setup_encrypted_log();
-
-    // Write a simple trace message
-    auto& log = core::log::spy_logger::get();
-
-    const std::array<const std::string, 3> messages = {
+    const std::array messages = {
         core::tools::uuid::generate(),
         core::tools::uuid::generate(),
         core::tools::uuid::generate()
     };
 
-    // Write some log messages
+    // Start logger
+    const core::crypto::secure_string password(PASSWORD);
+    decltype(setup_log()) temp_dir;
+    CPPUNIT_ASSERT_NO_THROW(temp_dir = setup_log(password));
+
+    // Write a couple of simple trace messages
+    const auto& log_path = core::log::g_logger.get_current_log_path();
+
     for(const auto& message : messages)
     {
-        CPPUNIT_ASSERT_NO_THROW(log.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
     }
 
-    // Save the real log archive path
-    const auto& log_archive = log.get_current_log_path();
-
-    // This will remove the sink and close the sightlog process
-    log.stop_logger();
-
-    // Try to decrypt the log archive
-    test_log_archive(log_archive, PASSWORD, messages);
-
     // Final cleanup
-    stop_logger();
+    CPPUNIT_ASSERT_NO_THROW(stop_logger());
+
+    // Check the log content
+    CPPUNIT_ASSERT_NO_THROW(check_log(log_path, messages, password));
+
+    // Check the log content with a bad password
+    core::crypto::secure_string bad_password("This_is_a_bad_password");
+    CPPUNIT_ASSERT_NO_THROW(check_log(log_path, messages, bad_password, true));
 }
 
 //------------------------------------------------------------------------------
 
-void encrypted_log_test::password_change_decryption_test()
+void encrypted_log_test::corner_case_test()
 {
+    core::os::temp_dir temp_dir;
+
+    CPPUNIT_ASSERT_NO_THROW(
+        core::log::g_logger.start(
+            temp_dir,
+            sight::core::log::spy_logger::level_t::trace
+        )
+    );
+
+    const core::crypto::secure_string password(PASSWORD);
+    core::log::g_logger.relocate(temp_dir / (core::tools::uuid::generate() + ".log.aes"), password);
+    const auto& log_path = core::log::g_logger.get_current_log_path();
+
+    const std::array messages_1 = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
+    // Write a couple of simple trace messages
+    for(const auto& message : messages_1)
+    {
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    // Final cleanup
+    CPPUNIT_ASSERT_NO_THROW(stop_logger());
+
+    // Check the log content.
+    CPPUNIT_ASSERT_NO_THROW(check_log(log_path, messages_1, password));
+}
+
+//------------------------------------------------------------------------------
+
+void encrypted_log_test::raw_to_encrypted_test()
+{
+    const std::array messages_1 = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
+    // Start logger - without password means raw log
+    decltype(setup_log()) temp_dir;
+    CPPUNIT_ASSERT_NO_THROW(temp_dir = setup_log());
+
+    // Write a couple of simple trace messages
+    for(const auto& message : messages_1)
+    {
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    // Change the password
+    const core::crypto::secure_string password(PASSWORD);
+    const auto& relocated_log_path = core::log::g_logger.change_password(password);
+    const auto& new_log_path       = core::log::g_logger.get_current_log_path();
+
+    // Write another couple of simple trace messages
+    const std::array messages_2 = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
+    for(const auto& message : messages_2)
+    {
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    // Final cleanup
+    CPPUNIT_ASSERT_NO_THROW(stop_logger());
+
+    // Check the log content. Both files should be decrypted with the new password
+    CPPUNIT_ASSERT_NO_THROW(check_log(relocated_log_path, messages_1, password));
+    CPPUNIT_ASSERT_NO_THROW(check_log(new_log_path, messages_2, password));
+}
+
+//------------------------------------------------------------------------------
+
+void encrypted_log_test::compressed_to_encrypted_test()
+{
+    const std::array messages_1 = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
+    // Start logger - with empty password means compressed log
+    const core::crypto::secure_string empty_password;
+    decltype(setup_log()) temp_dir;
+    CPPUNIT_ASSERT_NO_THROW(temp_dir = setup_log(empty_password));
+
+    // Write a couple of simple trace messages
+    for(const auto& message : messages_1)
+    {
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    // Change the password
+    const core::crypto::secure_string password(PASSWORD);
+    const auto& relocated_log_path = core::log::g_logger.change_password(password, empty_password);
+    const auto& new_log_path       = core::log::g_logger.get_current_log_path();
+
+    // Write another couple of simple trace messages
+    const std::array messages_2 = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
+    for(const auto& message : messages_2)
+    {
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    // Final cleanup
+    CPPUNIT_ASSERT_NO_THROW(stop_logger());
+
+    // Check the log content. Both files should be decrypted with the new password
+    CPPUNIT_ASSERT_NO_THROW(check_log(relocated_log_path, messages_1, password));
+    CPPUNIT_ASSERT_NO_THROW(check_log(new_log_path, messages_2, password));
+}
+
+//------------------------------------------------------------------------------
+
+void encrypted_log_test::password_change_test()
+{
+    const std::array messages_1 = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
     // Start logger
-    setup_encrypted_log();
+    const core::crypto::secure_string password(PASSWORD);
+    decltype(setup_log()) temp_dir;
+    CPPUNIT_ASSERT_NO_THROW(temp_dir = setup_log(password));
 
-    // Write a simple trace message
-    auto& log = core::log::spy_logger::get();
+    // Write a couple of simple trace messages
+    for(const auto& message : messages_1)
+    {
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
 
-    const std::array<const std::string, 3> first_messages = {
+    // Change the password
+    const core::crypto::secure_string new_password("This_is_a_new_password");
+    const auto& relocated_log_path = core::log::g_logger.change_password(new_password, password);
+    const auto& new_log_path       = core::log::g_logger.get_current_log_path();
+
+    // Write another couple of simple trace messages
+    const std::array messages_2 = {
         core::tools::uuid::generate(),
         core::tools::uuid::generate(),
         core::tools::uuid::generate()
     };
 
-    const std::array<const std::string, 3> last_messages = {
-        core::tools::uuid::generate(),
-        core::tools::uuid::generate(),
-        core::tools::uuid::generate()
-    };
-
-    // Write some log messages
-    for(const auto& message : first_messages)
+    for(const auto& message : messages_2)
     {
-        CPPUNIT_ASSERT_NO_THROW(log.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
     }
-
-    // Change the current password, it will also close the current log archive
-    constexpr static auto s_NEW_PASSWORD = "this_is_a_new_password";
-    log.change_log_password(s_NEW_PASSWORD, PASSWORD);
-
-    // Write again some log messages
-    for(const auto& message : last_messages)
-    {
-        CPPUNIT_ASSERT_NO_THROW(log.trace(message, SIGHT_SOURCE_FILE, __LINE__));
-    }
-
-    // Save the last real log archive path
-    const auto& last_log_archive = log.get_current_log_path();
-
-    // This will remove the sink and close the sightlog process
-    log.stop_logger();
-
-    // Try to decrypt the first log archive
-    auto merged_log_archive = last_log_archive;
-    merged_log_archive.replace_filename("sight.1.log.zip");
-    test_log_archive(merged_log_archive, s_NEW_PASSWORD, first_messages);
-
-    // Try to decrypt the last log archive
-    test_log_archive(last_log_archive, s_NEW_PASSWORD, last_messages);
 
     // Final cleanup
-    stop_logger();
+    CPPUNIT_ASSERT_NO_THROW(stop_logger());
+
+    // Check the log content. Both files should be decrypted with the new password
+    CPPUNIT_ASSERT_NO_THROW(check_log(relocated_log_path, messages_1, new_password));
+    CPPUNIT_ASSERT_NO_THROW(check_log(new_log_path, messages_2, new_password));
 }
 
 //------------------------------------------------------------------------------
 
-void encrypted_log_test::relocate_log_test()
+void encrypted_log_test::relocate_test()
 {
-    const std::array first_messages = {
+    const std::array messages_1 = {
         core::tools::uuid::generate(),
         core::tools::uuid::generate(),
         core::tools::uuid::generate()
     };
 
-    const std::array next_messages = {
-        core::tools::uuid::generate(),
-        core::tools::uuid::generate(),
-        core::tools::uuid::generate()
-    };
+    // Start logger
+    const core::crypto::secure_string password(PASSWORD);
+    decltype(setup_log()) temp_dir;
+    CPPUNIT_ASSERT_NO_THROW(temp_dir = setup_log(password));
+    const auto old_log_path = core::log::g_logger.get_current_log_path();
 
-    const std::array last_messages = {
-        core::tools::uuid::generate(),
-        core::tools::uuid::generate(),
-        core::tools::uuid::generate()
-    };
-
-    const auto test =
-        [&]
-        {
-            // Write some log messages
-            auto& log = core::log::spy_logger::get();
-
-            for(const auto& message : first_messages)
-            {
-                CPPUNIT_ASSERT_NO_THROW(log.trace(message, SIGHT_SOURCE_FILE, __LINE__));
-            }
-
-            // Relocate the log to a new directory (and relocate also current log archive)
-            core::os::temp_dir first_temp_dir;
-            log.relocate_log(first_temp_dir / "LOG-20230226-163932.zip", PASSWORD, true);
-
-            const auto& merged_logs_path         = first_temp_dir / "LOG-20230226-163932.0.zip";
-            const auto& first_relocated_log_path = first_temp_dir / "LOG-20230226-163932.1.zip";
-
-            CPPUNIT_ASSERT(std::filesystem::exists(merged_logs_path));
-            CPPUNIT_ASSERT(std::filesystem::exists(first_relocated_log_path));
-
-            // Write again some log messages, in the new location
-            for(const auto& message : next_messages)
-            {
-                CPPUNIT_ASSERT_NO_THROW(log.trace(message, SIGHT_SOURCE_FILE, __LINE__));
-            }
-
-            // Relocate the log a second time to a new directory (without relocating previous log archives)
-            core::os::temp_dir second_temp_dir;
-            log.relocate_log(second_temp_dir / "LOG-20230226-165223.zip", PASSWORD, false);
-
-            const auto& second_relocated_log_path = second_temp_dir / "LOG-20230226-165223.0.zip";
-
-            CPPUNIT_ASSERT(std::filesystem::exists(second_relocated_log_path));
-            CPPUNIT_ASSERT(!std::filesystem::exists(second_temp_dir / "LOG-20230226-165223.1.zip"));
-
-            // Write the last log messages, in the last location
-            for(const auto& message : last_messages)
-            {
-                CPPUNIT_ASSERT_NO_THROW(log.trace(message, SIGHT_SOURCE_FILE, __LINE__));
-            }
-
-            // This will remove the sink and close the sightlog process
-            log.stop_logger();
-
-            // Try to decrypt the merged log archive
-            test_log_archive(merged_logs_path, PASSWORD, first_messages);
-
-            // Try to decrypt the second log archive
-            test_log_archive(first_relocated_log_path, PASSWORD, next_messages);
-
-            // Try to decrypt the last log archive
-            test_log_archive(second_relocated_log_path, PASSWORD, last_messages);
-        };
-
-    // Test when starting clear log
+    // Write a couple of simple trace messages
+    for(const auto& message : messages_1)
     {
-        setup_log();
-
-        test();
-
-        // Final cleanup
-        stop_logger();
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
     }
 
-    // Test when starting with encrypted log
+    // Relocate the log
+    auto new_temp_dir   = std::make_unique<core::os::temp_dir>();
+    const auto new_path = *new_temp_dir / ENCRYPTED_LOG_FILE;
+    const core::crypto::secure_string new_password("This_is_a_new_password");
+
+    const auto& relocated_log_path = core::log::g_logger.relocate(new_path, new_password, password);
+    const auto& new_log_path       = core::log::g_logger.get_current_log_path();
+
+    // Verify that the old log has been removed
+    CPPUNIT_ASSERT(old_log_path != relocated_log_path);
+    CPPUNIT_ASSERT_EQUAL(false, std::filesystem::exists(old_log_path));
+
+    // Write another couple of simple trace messages
+    const std::array messages_2 = {
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate(),
+        core::tools::uuid::generate()
+    };
+
+    for(const auto& message : messages_2)
     {
-        // Start logger
-        setup_encrypted_log();
-
-        test();
-
-        // Final cleanup
-        stop_logger();
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
     }
+
+    // Final cleanup
+    CPPUNIT_ASSERT_NO_THROW(stop_logger());
+
+    // Check the log content. Both files should be decrypted with the new password
+    CPPUNIT_ASSERT_NO_THROW(check_log(relocated_log_path, messages_1, new_password));
+    CPPUNIT_ASSERT_NO_THROW(check_log(new_log_path, messages_2, new_password));
+}
+
+//------------------------------------------------------------------------------
+
+void encrypted_log_test::crash_test()
+{
+    std::vector<std::string> messages;
+    messages.reserve(1000);
+
+    for(std::size_t i = 0 ; i < 1000 ; ++i)
+    {
+        messages.emplace_back(core::tools::uuid::generate());
+    }
+
+    // Start logger - worst case scenario: encrypted and asynchronous log
+    const core::crypto::secure_string password(PASSWORD);
+    decltype(setup_log()) temp_dir;
+    CPPUNIT_ASSERT_NO_THROW(temp_dir = setup_log(password, true));
+
+    // Store the log path
+    const auto& log_path = core::log::g_logger.get_current_log_path();
+
+    // Write 100 of simple trace messages
+    for(const auto& message : messages)
+    {
+        CPPUNIT_ASSERT_NO_THROW(core::log::g_logger.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+    }
+
+    // Stop and truncate the log file to simulate a crash
+    CPPUNIT_ASSERT_NO_THROW(stop_logger());
+
+    const auto file_size = std::filesystem::file_size(log_path);
+    std::filesystem::resize_file(log_path, file_size - (10 * file_size / 100));
+
+    // The log file is truncated, some messages will be lost, depending of the zstd block size, the size of the data...
+    // IF zstd < 1.5, ZSTD_e_flush doesn't finish the block, meaning we may loose more as the block is always big.
+    // That's why we stay conservative here.
+    messages.resize(100);
+
+    // Check the log content
+    CPPUNIT_ASSERT_NO_THROW(check_log(log_path, messages, password, false, true));
 }
 
 } // namespace sight::core::log::ut
-
-// NOLINTEND(clang-analyzer-optin.cplusplus.VirtualCall)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -217,27 +217,19 @@ inline static secure_string compute_password()
     if(s_encryption_policy == password_keeper::encryption_policy::forced
        && (!s_password_keeper || s_password_keeper->get_password().empty()))
     {
-        if constexpr(password_keeper::has_default_password())
-        {
-            return password_keeper::get_default_password();
-        }
-        else
-        {
-            // NOLINTNEXTLINE(readability-redundant-string-cstr)
-            return password_keeper::get_pseudo_password_hash(core::runtime::get_current_profile()->name().c_str());
-        }
+        // NOLINTNEXTLINE(readability-redundant-string-cstr)
+        return password_keeper::get_pseudo_password_hash(core::runtime::get_current_profile()->name().c_str());
     }
-    else if(s_encryption_policy == password_keeper::encryption_policy::salted)
+
+    if(s_encryption_policy == password_keeper::encryption_policy::salted)
     {
         return password_keeper::get_pseudo_password_hash(
             // NOLINTNEXTLINE(readability-redundant-string-cstr)
             s_password_keeper->get_password() + core::runtime::get_current_profile()->name().c_str()
         );
     }
-    else
-    {
-        return s_password_keeper->get_password();
-    }
+
+    return s_password_keeper->get_password();
 }
 
 //------------------------------------------------------------------------------

@@ -52,7 +52,6 @@
 
 namespace po = boost::program_options;
 
-using sight::core::crypto::password_keeper;
 using sight::core::crypto::secure_string;
 
 //------------------------------------------------------------------------------
@@ -107,7 +106,10 @@ void signal_handler(int _signal)
 
 //------------------------------------------------------------------------------
 
-inline static std::filesystem::path build_log_file_path(const std::filesystem::path& _log_dir, bool _encrypted_log)
+inline static std::filesystem::path build_log_file_path(
+    const std::filesystem::path& _log_dir,
+    bool _encrypted_log
+)
 {
     // Use the default log file name as base
     std::filesystem::path log_file_path = _encrypted_log
@@ -181,35 +183,28 @@ int main(int argc, char* argv[])
     ;
 
     // Log options
-#if defined(SIGHT_ENABLE_ENCRYPTED_LOG)
-    const bool encrypted_log = true;
-
-    // By default, don't ask for a password if there is a default password
-    bool ask_password = !password_keeper::has_default_password();
-#else
-    const bool encrypted_log = false;
-    bool ask_password        = false;
-#endif
-
-    /// @warning file_log cannot work with console_log on
-    /// @todo fix this
-    bool console_log = false;
-    bool file_log    = true;
+    bool encrypted_log = false;
+    bool console_log   = false;
+    bool file_log      = true;
 
     std::string log_file;
 
     using spy_logger = sight::core::log::spy_logger;
-    int log_level = spy_logger::sl_warn;
+    using level_t    = spy_logger::level_t;
+    auto log_level = std::underlying_type_t<level_t>(level_t::warning);
 
     po::options_description log_options("Log options");
     log_options.add_options()
-#if defined(SIGHT_ENABLE_ENCRYPTED_LOG)
     (
-        "ask-password",
-        po::value(&ask_password)->implicit_value(true)->zero_tokens(),
-        "Force asking for a password"
+        "encrypted-log",
+        po::value(&encrypted_log)->implicit_value(true)->zero_tokens(),
+        "Enable log encryption. Implies compression."
     )
-#endif
+    (
+        "no-encrypted-log",
+        po::value(&encrypted_log)->implicit_value(false)->zero_tokens(),
+        "Disable log encryption."
+    )
     (
         "clog",
         po::value(&console_log)->implicit_value(true)->zero_tokens(),
@@ -237,32 +232,32 @@ int main(int argc, char* argv[])
     )
     (
         "log-trace",
-        po::value(&log_level)->implicit_value(spy_logger::sl_trace)->zero_tokens(),
+        po::value(&log_level)->implicit_value(std::underlying_type_t<level_t>(level_t::trace))->zero_tokens(),
         "Set log_level to trace"
     )
     (
         "log-debug",
-        po::value(&log_level)->implicit_value(spy_logger::sl_debug)->zero_tokens(),
+        po::value(&log_level)->implicit_value(std::underlying_type_t<level_t>(level_t::debug))->zero_tokens(),
         "Set log_level to debug"
     )
     (
         "log-info",
-        po::value(&log_level)->implicit_value(spy_logger::sl_info)->zero_tokens(),
+        po::value(&log_level)->implicit_value(std::underlying_type_t<level_t>(level_t::info))->zero_tokens(),
         "Set log_level to info"
     )
     (
         "log-warn",
-        po::value(&log_level)->implicit_value(spy_logger::sl_warn)->zero_tokens(),
+        po::value(&log_level)->implicit_value(std::underlying_type_t<level_t>(level_t::warning))->zero_tokens(),
         "Set log_level to warn"
     )
     (
         "log-error",
-        po::value(&log_level)->implicit_value(spy_logger::sl_error)->zero_tokens(),
+        po::value(&log_level)->implicit_value(std::underlying_type_t<level_t>(level_t::error))->zero_tokens(),
         "Set log_level to error"
     )
     (
         "log-fatal",
-        po::value(&log_level)->implicit_value(spy_logger::sl_fatal)->zero_tokens(),
+        po::value(&log_level)->implicit_value(std::underlying_type_t<level_t>(level_t::fatal))->zero_tokens(),
         "Set log_level to fatal"
     );
 
@@ -362,6 +357,34 @@ int main(int argc, char* argv[])
     boost::property_tree::read_xml(profile_file.string(), profile_tree);
     const auto& profile_name = profile_tree.get<std::string>("profile.<xmlattr>.name");
 
+    // Log file
+    if(console_log)
+    {
+        spy_logger::add_global_console_log(std::clog, level_t(log_level));
+    }
+
+    if(file_log)
+    {
+        const auto& log_file_path = find_log_file_path(log_file, profile_name, encrypted_log);
+
+        if(encrypted_log)
+        {
+            // Use an empty password
+            secure_string password;
+
+#ifdef _DEBUG
+            sight::core::log::g_logger.start(log_file_path, level_t(log_level), password, false);
+#else
+            // Use asynchronous mode in release
+            sight::core::log::g_logger.start(log_file_path, level_t(log_level), password, true);
+#endif
+        }
+        else
+        {
+            sight::core::log::g_logger.start(log_file_path, level_t(log_level));
+        }
+    }
+
     // This will hold the pid file if required
     std::unique_ptr<sight::core::os::temp_file> temp_pid_file;
 
@@ -403,38 +426,6 @@ int main(int argc, char* argv[])
         temp_pid_file->stream().close();
 
         SIGHT_DEBUG("Created pid file " << temp_pid_file->string());
-    }
-
-    // Log file
-    spy_logger& logger = spy_logger::get();
-
-    if(console_log)
-    {
-        spy_logger::add_console_log(std::clog, static_cast<spy_logger::level_t>(log_level));
-    }
-
-    if(file_log)
-    {
-        const auto& log_file_path = find_log_file_path(log_file, profile_name, encrypted_log);
-
-        if(encrypted_log)
-        {
-            const secure_string& password =
-                password_keeper::has_default_password()
-                ? password_keeper::get_default_password()
-                : secure_string();
-
-            logger.start_encrypted_logger(
-                log_file_path,
-                static_cast<spy_logger::level_t>(log_level),
-                password,
-                ask_password
-            );
-        }
-        else
-        {
-            logger.start_logger(log_file_path, static_cast<spy_logger::level_t>(log_level));
-        }
     }
 
     // Automatically adds the module folders where the profile.xml is located if it was not already there

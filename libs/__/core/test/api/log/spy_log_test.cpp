@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,14 +51,15 @@ static utest::exception e("");
 
 void spy_log_test::setUp()
 {
-    core::log::spy_logger::add_console_log(m_ostream);
+    m_sink = core::log::spy_logger::add_global_console_log(m_ostream);
 }
 
 //-----------------------------------------------------------------------------
 
 void spy_log_test::tearDown()
 {
-    boost::log::core::get()->remove_all_sinks();
+    boost::log::core::get()->remove_sink(m_sink);
+    m_sink.reset();
     m_ostream.clear();
 }
 
@@ -69,27 +70,27 @@ void spy_log_test::log_message_test()
     std::vector<std::string> logs;
 
     logs.emplace_back("trace message");
-    core::log::spy_logger::trace(logs.back(), __FILE__, __LINE__);
+    sight::core::log::g_logger.trace(logs.back(), __FILE__, __LINE__);
     sight::core::log::ut::spy_log_test::check_log(logs, sight::core::log::ut::spy_log_test::log_to_vector(m_ostream));
 
     logs.emplace_back("debug message");
-    core::log::spy_logger::debug(logs.back(), __FILE__, __LINE__);
+    sight::core::log::g_logger.debug(logs.back(), __FILE__, __LINE__);
     sight::core::log::ut::spy_log_test::check_log(logs, sight::core::log::ut::spy_log_test::log_to_vector(m_ostream));
 
     logs.emplace_back("info message");
-    core::log::spy_logger::info(logs.back(), __FILE__, __LINE__);
+    sight::core::log::g_logger.info(logs.back(), __FILE__, __LINE__);
     sight::core::log::ut::spy_log_test::check_log(logs, sight::core::log::ut::spy_log_test::log_to_vector(m_ostream));
 
     logs.emplace_back("warn message");
-    core::log::spy_logger::warn(logs.back(), __FILE__, __LINE__);
+    sight::core::log::g_logger.warn(logs.back(), __FILE__, __LINE__);
     sight::core::log::ut::spy_log_test::check_log(logs, sight::core::log::ut::spy_log_test::log_to_vector(m_ostream));
 
     logs.emplace_back("error message");
-    core::log::spy_logger::error(logs.back(), __FILE__, __LINE__);
+    sight::core::log::g_logger.error(logs.back(), __FILE__, __LINE__);
     sight::core::log::ut::spy_log_test::check_log(logs, sight::core::log::ut::spy_log_test::log_to_vector(m_ostream));
 
     logs.emplace_back("fatal message");
-    core::log::spy_logger::fatal(logs.back(), __FILE__, __LINE__);
+    sight::core::log::g_logger.fatal(logs.back(), __FILE__, __LINE__);
     sight::core::log::ut::spy_log_test::check_log(logs, sight::core::log::ut::spy_log_test::log_to_vector(m_ostream));
 }
 
@@ -115,7 +116,7 @@ struct log_producer_thread
             ss.fill('0');
             ss << i;
             _logs[i] = ss.str();
-            core::log::spy_logger::fatal(_logs[i], __FILE__, __LINE__);
+            sight::core::log::g_logger.fatal(_logs[i], __FILE__, __LINE__);
         }
     }
 };
@@ -155,7 +156,7 @@ void spy_log_test::thread_safety_test()
     {
         log_producer_thread::sptr ct = std::make_shared<log_producer_thread>();
         std::size_t offset           = i * nb_log;
-        tg.emplace_back([&, offset](auto&& ...){return log_producer_thread::run(logs, nb_log, offset);});
+        tg.emplace_back([&, offset](auto&& ...){log_producer_thread::run(logs, nb_log, offset);});
     }
 
     for(auto& t : tg)

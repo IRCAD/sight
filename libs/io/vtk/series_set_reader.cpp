@@ -41,10 +41,6 @@
 #include <data/reconstruction.hpp>
 
 #include <boost/algorithm/string/join.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/iostreams/categories.hpp>
-#include <boost/iostreams/filtering_stream.hpp>
-#include <boost/iostreams/stream.hpp>
 
 #include <vtkDataSetAttributes.h>
 #include <vtkGenericDataObjectReader.h>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,7 @@ namespace sight::core::crypto
 
 //------------------------------------------------------------------------------
 
-void hash(const secure_string& _message, std::array<unsigned char, HASH_SIZE>& _output)
+void hash(const secure_string& _message, std::array<std::uint8_t, HASH_SIZE>& _output)
 {
     // Compute SHA256 using openssl
     SHA256(reinterpret_cast<const std::uint8_t*>(_message.data()), _message.size(), _output.data());
@@ -43,7 +43,7 @@ void hash(const secure_string& _message, std::array<unsigned char, HASH_SIZE>& _
 secure_string hash(const secure_string& _message)
 {
     // The hash array
-    std::array<unsigned char, HASH_SIZE> output {};
+    std::array<std::uint8_t, HASH_SIZE> output {};
 
     // Compute SHA256 using openssl
     hash(_message, output);

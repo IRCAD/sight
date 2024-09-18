@@ -23,7 +23,7 @@
 
 #include <sight/core/config.hpp>
 
-#include "core/crypto/secure_string.hpp"
+#include "secure_string.hpp"
 
 namespace sight::core::crypto
 {

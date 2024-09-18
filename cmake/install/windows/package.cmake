@@ -13,7 +13,7 @@ macro(win_package PRJ_NAME)
     if("${TYPE}" STREQUAL "APP")
         if(${FW_BUILD_EXTERNAL})
             # install the launcher
-            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" "${Sight_BINARY_DIR}/sightlog.exe" DESTINATION "bin")
+            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin")
         endif()
     elseif("${TYPE}" STREQUAL "EXECUTABLE")
 

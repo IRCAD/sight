@@ -85,8 +85,8 @@ protected:
 
 private:
 
-    class ExtractImpl;
-    std::unique_ptr<ExtractImpl> m_pimpl;
+    class extract_impl;
+    std::unique_ptr<extract_impl> m_pimpl;
 };
 
 } // namespace sight::module::io::zip

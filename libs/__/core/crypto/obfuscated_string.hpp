@@ -52,7 +52,7 @@ struct linear_generator
 template<std::uint32_t S, std::size_t index>
 struct generate
 {
-    static const std::uint8_t VALUE = generate<linear_generator<S>::state, index - 1>::VALUE;
+    static const std::uint8_t VALUE = generate<linear_generator<S>::STATE, index - 1>::VALUE;
 };
 
 template<std::uint32_t S>

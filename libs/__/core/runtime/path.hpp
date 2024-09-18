@@ -118,7 +118,7 @@ SIGHT_CORE_API std::filesystem::path get_module_resource_path(
 ) noexcept;
 
 /**
- * @brief   Retrieve all valid filesystem binaries paths. These paths contain binaries like sightrun or sightlog.
+ * @brief   Retrieve all valid filesystem binaries paths. These paths contain binaries like sightrun.
  *
  * @return  set of valid system paths
  */
