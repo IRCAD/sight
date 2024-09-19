@@ -98,6 +98,15 @@ public:
     SIGHT_DATA_API void set_origin(const origin_t& _origin) override;
     /// @}
 
+    /// Overriden methods used to also set fiducial data
+    SIGHT_DATA_API void set_patient_id(const std::string& _patient_id) override;
+    SIGHT_DATA_API void set_patient_name(const std::string& _patient_name) override;
+    SIGHT_DATA_API void set_study_instance_uid(const std::string& _study_instance_uid) override;
+    /// @}
+
+    // Overriden to make sure the spacing matches the set thickness
+    SIGHT_DATA_API void set_slice_thickness(const std::optional<double>& _slice_thickness = std::nullopt) override;
+
     /// Equality comparison operators
     /// @{
     SIGHT_DATA_API bool operator==(const image_series& _other) const noexcept;

@@ -215,10 +215,10 @@ public:
     /// Getter/Setter of DICOM Patient Module related attributes
     /// @{
     SIGHT_DATA_API std::string get_patient_name() const noexcept;
-    SIGHT_DATA_API void set_patient_name(const std::string& _patient_name);
+    SIGHT_DATA_API virtual void set_patient_name(const std::string& _patient_name);
 
     SIGHT_DATA_API std::string get_patient_id() const noexcept;
-    SIGHT_DATA_API void set_patient_id(const std::string& _patient_id);
+    SIGHT_DATA_API virtual void set_patient_id(const std::string& _patient_id);
 
     SIGHT_DATA_API std::string get_patient_birth_date() const noexcept;
     SIGHT_DATA_API void set_patient_birth_date(const std::string& _patient_birth_date);
@@ -235,6 +235,9 @@ public:
     SIGHT_DATA_API std::string get_study_time() const noexcept;
     SIGHT_DATA_API void set_study_time(const std::string& _study_time);
 
+    SIGHT_DATA_API std::string get_accession_number() const noexcept;
+    SIGHT_DATA_API void set_accession_number(const std::string& _accession_number);
+
     SIGHT_DATA_API std::string get_referring_physician_name() const noexcept;
     SIGHT_DATA_API void set_referring_physician_name(const std::string& _referring_physician_name);
 
@@ -242,7 +245,7 @@ public:
     SIGHT_DATA_API void set_study_description(const std::string& _study_description);
 
     SIGHT_DATA_API std::string get_study_instance_uid() const noexcept;
-    SIGHT_DATA_API void set_study_instance_uid(const std::string& _study_instance_uid);
+    SIGHT_DATA_API virtual void set_study_instance_uid(const std::string& _study_instance_uid);
 
     SIGHT_DATA_API std::string get_study_id() const noexcept;
     SIGHT_DATA_API void set_study_id(const std::string& _study_id);
@@ -417,7 +420,7 @@ public:
     );
 
     SIGHT_DATA_API std::optional<double> get_slice_thickness() const noexcept;
-    SIGHT_DATA_API void set_slice_thickness(const std::optional<double>& _slice_thickness = std::nullopt);
+    SIGHT_DATA_API virtual void set_slice_thickness(const std::optional<double>& _slice_thickness = std::nullopt);
     /// @}
 
     /// Getter/Setter of DICOM Ultrasound Frame of Reference Module
@@ -510,6 +513,15 @@ public:
 
     SIGHT_DATA_API void set_frame_label(
         const std::optional<std::string>& _frame_label = std::nullopt,
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    );
+
+    SIGHT_DATA_API std::optional<double> get_spacing_between_slices(
+        const std::optional<std::size_t>& _frame_index
+    ) const;
+
+    SIGHT_DATA_API void set_spacing_between_slices(
+        std::optional<double> _spacing_between_slices,
         const std::optional<std::size_t>& _frame_index = std::nullopt
     );
 

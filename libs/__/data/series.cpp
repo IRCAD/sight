@@ -853,7 +853,7 @@ bool series::operator!=(const series& _other) const noexcept
     return !(*this == _other);
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 std::string series::get_byte_value(std::uint16_t _group, std::uint16_t _element, std::size_t _instance) const
 {
@@ -2189,6 +2189,20 @@ std::string series::get_study_time() const noexcept
 void series::set_study_time(const std::string& _study_time)
 {
     m_pimpl->set_value<gdcm::Keywords::StudyTime>(_study_time);
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::get_accession_number() const noexcept
+{
+    return m_pimpl->get_string_value<gdcm::Keywords::AccessionNumber>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_accession_number(const std::string& _accession_number)
+{
+    m_pimpl->set_value<gdcm::Keywords::AccessionNumber>(_accession_number);
 }
 
 //------------------------------------------------------------------------------
@@ -3544,6 +3558,36 @@ void series::set_frame_label(
         gdcm::Keywords::FrameContentSequence,
         gdcm::Keywords::FrameLabel
     >(_frame_label, _frame_index);
+}
+
+//------------------------------------------------------------------------------
+
+SIGHT_DATA_API std::optional<double> series::get_spacing_between_slices(
+    const std::optional<std::size_t>& _frame_index
+) const
+{
+    if(const auto& value = m_pimpl->get_multi_frame_value<
+           gdcm::Keywords::PixelMeasuresSequence,
+           gdcm::Keywords::SpacingBetweenSlices
+                           >(_frame_index); value)
+    {
+        return value;
+    }
+
+    return std::nullopt;
+}
+
+//------------------------------------------------------------------------------
+
+SIGHT_DATA_API void series::set_spacing_between_slices(
+    std::optional<double> _spacing_between_slices,
+    const std::optional<std::size_t>& _frame_index
+)
+{
+    m_pimpl->set_multi_frame_value<
+        gdcm::Keywords::PixelMeasuresSequence,
+        gdcm::Keywords::SpacingBetweenSlices
+    >(_spacing_between_slices, _frame_index);
 }
 
 //------------------------------------------------------------------------------

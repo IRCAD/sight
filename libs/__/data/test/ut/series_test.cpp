@@ -89,6 +89,7 @@ void series_test::attr_study_test()
     const std::string instance_uid = "1346357.1664.643101.421337.4123403";
     const std::string date         = "02-14-2015";
     const std::string time         = "11:59";
+    const std::string accession    = "2819497684894126";
     const std::string rpn          = "Dr^Jekyl";
     const std::string desc         = "Say 33.";
     const std::string age          = "42";
@@ -103,6 +104,9 @@ void series_test::attr_study_test()
 
         series->set_study_time(time);
         CPPUNIT_ASSERT(series->get_study_time() == time);
+
+        series->set_accession_number(accession);
+        CPPUNIT_ASSERT(series->get_accession_number() == accession);
 
         series->set_referring_physician_name(rpn);
         CPPUNIT_ASSERT(series->get_referring_physician_name() == rpn);
@@ -603,6 +607,7 @@ void series_test::equality_test()
     series2->set_frame_comments(series1->get_frame_comments(std::nullopt), std::nullopt);
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
+    // Frame label
     series1->set_frame_label("59", 0);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->set_frame_label(series1->get_frame_label(0), 0);
@@ -613,6 +618,18 @@ void series_test::equality_test()
     series2->set_frame_label(series1->get_frame_label(std::nullopt), std::nullopt);
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
+    // Spacing between slices
+    series1->set_spacing_between_slices(1.0, 0);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_spacing_between_slices(series1->get_spacing_between_slices(0), 0);
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_spacing_between_slices(1.0, std::nullopt);
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_spacing_between_slices(series1->get_spacing_between_slices(std::nullopt), std::nullopt);
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    // Apex position
     series1->set_apex_position({60.0, 61.0, 62.0});
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->set_apex_position(series1->get_apex_position());

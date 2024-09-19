@@ -258,4 +258,41 @@ void image_series::set_origin(const origin_t& _origin)
     }
 }
 
+//------------------------------------------------------------------------------
+
+void image_series::set_patient_id(const std::string& _patient_id)
+{
+    this->series::set_patient_id(_patient_id);
+    this->m_fiducials_series->set_patient_id(_patient_id);
+}
+
+//------------------------------------------------------------------------------
+
+void image_series::set_patient_name(const std::string& _patient_name)
+{
+    this->series::set_patient_name(_patient_name);
+    this->m_fiducials_series->set_patient_id(_patient_name);
+}
+
+//------------------------------------------------------------------------------
+
+void image_series::set_study_instance_uid(const std::string& _study_instance_uid)
+{
+    this->series::set_study_instance_uid(_study_instance_uid);
+    this->m_fiducials_series->set_study_instance_uid(_study_instance_uid);
+}
+
+//------------------------------------------------------------------------------
+
+void image_series::set_slice_thickness(const std::optional<double>& _slice_thickness)
+{
+    this->series::set_slice_thickness(_slice_thickness);
+    if(_slice_thickness)
+    {
+        spacing_t spacing = this->spacing();
+        spacing[2] = *_slice_thickness;
+        this->set_spacing(spacing);
+    }
+}
+
 } // namespace sight::data
