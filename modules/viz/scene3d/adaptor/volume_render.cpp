@@ -843,10 +843,6 @@ void volume_render::set_visible(bool _visible)
         {
             this->render_service()->reset_camera_coordinates(m_layer_id);
         }
-        else
-        {
-            this->layer()->compute_camera_parameters();
-        }
 
         this->request_render();
     }

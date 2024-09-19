@@ -125,6 +125,7 @@ void action::action_service_stopping()
 void action::action_service_starting()
 {
     this->m_registry->action_service_starting();
+    this->set_checked(*m_checked);
 }
 
 //-----------------------------------------------------------------------------
