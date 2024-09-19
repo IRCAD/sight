@@ -444,7 +444,17 @@ inline static void write_enhanced_us_volume(
 
                     nvjpeg2k_codec = std::make_unique<codec::nv_jpeg2_k>();
                     transfer_syntax_changer.SetUserCodec(nvjpeg2k_codec.get());
+
+                    SIGHT_INFO("nvJPEG2000 will be used for JPEG2000 compression.");
                 }
+                else
+                {
+                    SIGHT_WARN(
+                        "nvJPEG2000 support is available, but OpenJPEG has been forced for JPEG2000 compression."
+                    );
+                }
+#else
+                SIGHT_INFO("OpenJPEG will be used for JPEG2000 compression.");
 #endif
             }
             else
@@ -563,27 +573,27 @@ public:
     writer_impl& operator=(writer_impl&&)      = delete;
 
     /// Constructor
-    inline explicit writer_impl(file* const _writer) noexcept :
+    explicit writer_impl(file* const _writer) noexcept :
         m_writer(_writer)
     {
     }
 
     /// Default destructor
-    inline ~writer_impl() noexcept = default;
+    ~writer_impl() noexcept = default;
 
     /// Pointer to the public interface
     file* const m_writer;
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline bool cancel_requested() const noexcept
+    [[nodiscard]] bool cancel_requested() const noexcept
     {
         return m_job && m_job->cancel_requested();
     }
 
     //------------------------------------------------------------------------------
 
-    inline void progress(std::uint64_t _units) const
+    void progress(std::uint64_t _units) const
     {
         if(m_job)
         {
