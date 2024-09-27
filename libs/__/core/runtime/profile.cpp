@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,27 +52,9 @@ struct apply
 
 //------------------------------------------------------------------------------
 
-profile::profile()
-= default;
-
-//------------------------------------------------------------------------------
-
 profile::~profile()
 {
     delete[] m_argv;
-}
-
-//------------------------------------------------------------------------------
-
-void profile::set_params(int _argc, char** _argv)
-{
-    params_container params;
-    for(int i = 0 ; i < _argc ; ++i)
-    {
-        params.emplace_back(_argv[i]);
-    }
-
-    this->set_params(params);
 }
 
 //------------------------------------------------------------------------------
@@ -99,12 +81,6 @@ void profile::set_params(const profile::params_container& _params)
         strncpy_s(m_argv[i], param_size + 1, m_params[i].c_str(), param_size);
 #endif
     }
-}
-
-//------------------------------------------------------------------------------
-
-void set_current_profile(profile::sptr /*unused*/)
-{
 }
 
 //------------------------------------------------------------------------------

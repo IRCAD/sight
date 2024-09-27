@@ -1409,7 +1409,7 @@ void macro_saver::save()
     s_WRITE(cpp, 4, "const std::filesystem::path cwd = std::filesystem::path(");
     s_WRITE(cpp, 8, "boost::dll::this_line_location().parent_path().parent_path().string()");
     s_WRITE(cpp, 4, ");");
-    std::filesystem::path absolute_profile_path(sight::core::runtime::get_current_profile()->get_file_path());
+    std::filesystem::path absolute_profile_path(sight::core::runtime::get_current_profile()->file_path());
     QString profile_path(QString::fromStdString(std::filesystem::relative(absolute_profile_path).string()));
     s_WRITE(cpp, 4, QString("return cwd / \"%1\";").arg(profile_path).toLatin1());
     s_WRITE(cpp, 0, "}");

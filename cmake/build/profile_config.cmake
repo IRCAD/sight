@@ -7,7 +7,7 @@ macro(profile_setup PROJECT REQUIREMENTS)
     get_target_property(UNIQUE ${PROJECT} SIGHT_UNIQUE)
 
     # set a variable used in the configure_file command
-    set(PROJECT_VERSION ${${PROJECT}_VERSION})
+    get_target_property(PROJECT_VERSION ${PROJECT} SIGHT_PROJECT_VERSION)
 
     set(START_MODULES "")
     set(PRIORITY_MODULES "")

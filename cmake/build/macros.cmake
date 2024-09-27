@@ -1039,6 +1039,7 @@ macro(sight_add_target)
         else()
             set(SIGHT_TARGET_UNIQUE "true")
         endif()
+        set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_PROJECT_VERSION "${${SIGHT_TARGET}_VERSION}")
         set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_UNIQUE "${SIGHT_TARGET_UNIQUE}")
     endif()
 

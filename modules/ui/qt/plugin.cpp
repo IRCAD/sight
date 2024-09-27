@@ -113,7 +113,7 @@ void plugin::start()
             return QSharedPointer<QApplication>(new sight::ui::qt::app(_argc, _argv, true));
         };
 
-    auto worker_qt = sight::ui::qt::get_qt_worker(argc, argv, callback, profile->name(), profile->get_version());
+    auto worker_qt = sight::ui::qt::get_qt_worker(argc, argv, callback, profile->name(), profile->version());
     core::thread::set_default_worker(worker_qt);
 
     worker_qt->post([this](auto&& ...){load_style_sheet();});

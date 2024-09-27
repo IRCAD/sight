@@ -1,0 +1,7 @@
+<plugin id="app_test_app">
+    <requirement id="sight::module::service" />
+    <extension implements="sight::app::extension::config">
+        <id>app_test_app_cfg</id>
+        <config />
+    </extension>
+</plugin>

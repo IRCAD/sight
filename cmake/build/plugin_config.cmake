@@ -2,8 +2,8 @@
 function(plugin_setup PROJECT)
 
     # set variables used in the configure_file command
-    set(PROJECT_VERSION ${${PROJECT}_VERSION})
     set(PROJECT_NAME ${PROJECT})
+    get_target_property(PROJECT_VERSION ${PROJECT} SIGHT_PROJECT_VERSION)
 
     # Filter modules and app requirements from the requirement list
     foreach(CURRENT_REQUIREMENT ${${PROJECT}_REQUIREMENTS})

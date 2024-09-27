@@ -60,22 +60,22 @@ public:
     /// Define the callback to be called when running the profile
     SIGHT_CORE_API virtual void set_run_callback(run_callback_type _callback) = 0;
 
-    /// Get profile m_filePath
-    std::filesystem::path get_file_path() const
+    /// Get profile path
+    const std::filesystem::path& file_path() const
     {
         return m_file_path;
     }
 
-    /// Set profile m_filePath
+    /// Set profile path
     void set_file_path(const std::filesystem::path& _file_path)
     {
         m_file_path = _file_path;
     }
 
     /// Return profile name.
-    std::string name() const
+    const std::string& name() const
     {
-        return m_s_name;
+        return m_name;
     }
 
     /**
@@ -85,15 +85,15 @@ public:
      */
     void set_name(std::string _s_name)
     {
-        m_s_name = _s_name;
+        m_name = _s_name;
     }
 
     /**
      * @brief   Return profile version.
      */
-    std::string get_version() const
+    const std::string& version() const
     {
-        return m_s_version;
+        return m_version;
     }
 
     /**
@@ -103,7 +103,7 @@ public:
      */
     void set_version(std::string _s_version)
     {
-        m_s_version = _s_version;
+        m_version = _s_version;
     }
 
     //------------------------------------------------------------------------------
@@ -114,7 +114,6 @@ public:
     }
 
     SIGHT_CORE_API void set_params(const params_container& _params);
-    SIGHT_CORE_API void set_params(int _argc, char** _argv);
 
     /**
      * @brief Returns internal arg count.
@@ -141,22 +140,20 @@ protected:
     /**
      * @brief   Constructor : does nothing.
      */
-    SIGHT_CORE_API profile();
+    SIGHT_CORE_API profile() = default;
 
 private:
 
     std::filesystem::path m_file_path; ///< xml parsed file used to generate profile
-    std::string m_s_name;              ///< name profile
-    std::string m_s_version;           ///< profile app version
+    std::string m_name;                ///< name profile
+    std::string m_version;             ///< profile app version
 
     params_container m_params;
     int m_argc {0};
     char** m_argv {nullptr};
 };
 
-/**
- * @brief       Get current profile.
- */
+/// Get current profile.
 SIGHT_CORE_API core::runtime::profile::sptr get_current_profile();
 
 } // namespace sight::core::runtime
