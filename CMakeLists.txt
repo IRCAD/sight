@@ -121,10 +121,6 @@ endif()
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER automoc)
 
-# Make openvslam optional on Linux
-if(NOT MSVC)
-    option(SIGHT_ENABLE_OPENVSLAM "Enable OpenVSLAM" OFF)
-endif()
 # Make Realsense optional
 option(SIGHT_ENABLE_REALSENSE "Enable RealSense" OFF)
 
@@ -166,10 +162,10 @@ if(UNIX)
     mark_as_advanced(SIGHT_EXTERNAL_LIBRARIES)
 
     # Use directly SIGHT_EXTERNAL_LIBRARIES if set, otherwise, download and install sight-deps package
-    # OpenVSLAM is the only package provided by sight-deps
-    if(NOT SIGHT_EXTERNAL_LIBRARIES AND SIGHT_ENABLE_OPENVSLAM)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/download_deps.cmake)
-    endif()
+    # Comment out this if one need to include a dependency from sight-deps one day
+    #if(NOT SIGHT_EXTERNAL_LIBRARIES AND SIGHT_ENABLE_LIBRARY)
+    #    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/download_deps.cmake)
+    #endif()
 
     if(SIGHT_EXTERNAL_LIBRARIES)
         get_filename_component(ABSOLUTE_SIGHT_EXTERNAL_LIBRARIES ${SIGHT_EXTERNAL_LIBRARIES} REALPATH)
