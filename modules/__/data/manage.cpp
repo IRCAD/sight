@@ -133,7 +133,7 @@ void manage::add_or_swap()
         }
         else if(const auto vector = std::dynamic_pointer_cast<sight::data::vector>(container.get_shared()); vector)
         {
-            if(const auto& it = std::find(vector->cbegin(), vector->cend(), obj.get_shared()); it == vector->end())
+            if(const auto it = std::find(vector->cbegin(), vector->cend(), obj.get_shared()); it == vector->end())
             {
                 const auto scoped_emitter = vector->scoped_emit();
                 vector->push_back(obj.get_shared());

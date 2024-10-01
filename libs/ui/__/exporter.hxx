@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -68,7 +68,7 @@ void exporter<C>::starting()
     auto container = m_container.lock();
     auto data      = m_data.lock();
 
-    if(const auto& it = std::find(container->cbegin(), container->cend(), data.get_shared());
+    if(const auto it = std::find(container->cbegin(), container->cend(), data.get_shared());
        it != container->cend())
     {
         set_enabled(false);
@@ -128,7 +128,7 @@ constexpr void exporter<C>::check_added_objects(typename C::container_t _added_o
 {
     auto data = m_data.lock();
 
-    if(const auto& it = std::find(_added_objects.cbegin(), _added_objects.cend(), data.get_shared());
+    if(const auto it = std::find(_added_objects.cbegin(), _added_objects.cend(), data.get_shared());
        it != _added_objects.cend())
     {
         set_enabled(false);
@@ -142,7 +142,7 @@ constexpr void exporter<C>::check_removed_objects(typename C::container_t _remov
 {
     auto data = m_data.lock();
 
-    if(const auto& it = std::find(_removed_objects.cbegin(), _removed_objects.cend(), data.get_shared());
+    if(const auto it = std::find(_removed_objects.cbegin(), _removed_objects.cend(), data.get_shared());
        it != _removed_objects.cend())
     {
         set_enabled(true);
