@@ -24,7 +24,8 @@
 
 #include "modules/viz/scene3d/adaptor/material.hpp"
 
-#include <core/com/slot.hpp>
+#include <data/color.hpp>
+#include <data/real.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/transformable.hpp>
@@ -47,20 +48,21 @@ namespace sight::module::viz::scene3d::adaptor
  * @section Slots Slots
  * - \b update_visibility(bool): Sets whether the vector is shown or not.
  * - \b toggle_visibility(): Toggle whether the vector is shown or not.
- * - \b update_length(float): set the length of the vector.
  * - \b show(): Shows the vector.
  * - \b hide(): Hides the vector.
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::vector">
-        <config transform="..." length="30" color="#FFFFFF" visible="true"/>
+        <config transform="..." />
+        <properties transform="..." length="30" color="#FFFFFF" visible="true"/>
     </service>
    @endcode
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified in the transform adaptor.
+ * @subsection Properties Properties:
  * - \b length (optional, float, default=1.): axis length in mm.
  * - \b color (optional, hexadecimal, default=#FFFFFF): color of the vector.
  * - \b visible (optional, bool, default=true): visibility of the vector.
@@ -75,12 +77,15 @@ public:
     SIGHT_DECLARE_SERVICE(vector, sight::viz::scene3d::adaptor);
 
     /// Initialise slots.
-    vector() noexcept;
+    vector() noexcept = default;
 
     /// Destroys the adaptor.
     ~vector() noexcept final = default;
 
 protected:
+
+    /// Connects the input matrix modified to the update slot.
+    sight::service::connections_t auto_connections() const final;
 
     /// Configures the adaptor
     void configuring() final;
@@ -102,12 +107,6 @@ protected:
 
 private:
 
-    /**
-     * @brief Updates the length of the vector.
-     * @param _length length of the vector.
-     */
-    void update_length(float _length);
-
     /// Create the vector.
     void create_vector();
 
@@ -116,12 +115,6 @@ private:
 
     /// Contains the material data.
     data::material::sptr m_material {nullptr};
-
-    /// Defines the axis length (in mm).
-    float m_length {1.F};
-
-    /// Defines the color of the vector.
-    std::string m_color {"#FFFFFF"};
 
     /// Contains the line along the z axis.
     Ogre::ManualObject* m_line {nullptr};
@@ -134,6 +127,9 @@ private:
 
     /// Contains the material used to draw the vector.
     module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
+
+    sight::data::property<sight::data::real> m_length {this, "length", 1.0};
+    sight::data::property<sight::data::color> m_color {this, "color", {1.0, 1.0, 1.0, 1.0}};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

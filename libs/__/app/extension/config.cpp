@@ -39,6 +39,9 @@ std::string config::s_mandatory_parameter_identifier = "@mandatory@";
 
 config::uid_definition_t config::s_uid_definition_dictionary = {{"object", "uid"},
     {"service", "uid"},
+    {"updater", "uid"},
+    {"sequence", "uid"},
+    {"parallel", "uid"},
     {"view", "sid"},
     {"view", "wid"},
     {"editor", "wid"},

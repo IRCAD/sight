@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -367,7 +367,7 @@ void predefined_position_interactor::to_predefined_position(std::size_t _idx, bo
 
             // Convert to short angle if needed.
             const Ogre::Degree short_angle = angle > Ogre::Degree(180) ? Ogre::Degree(360) - angle : angle;
-            const float nb_step            = std::ceil(short_angle.valueDegrees() * 100.F / 180.F);
+            const float nb_step            = std::ceil(short_angle.valueDegrees() * 40.F / 180.F);
 
             // Avoid to have gigantic step.
             const float step = (nb_step > 0.001F) ? 1.F / nb_step : 1.F;

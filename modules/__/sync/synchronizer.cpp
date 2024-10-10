@@ -213,6 +213,7 @@ void synchronizer::starting()
 
 void synchronizer::updating()
 {
+    this->synchronize();
 }
 
 // ----------------------------------------------------------------------------

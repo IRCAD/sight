@@ -140,7 +140,7 @@ private:
     /// Destroyes all created services
     void destroy_created_services();
 
-    void process_start_items();
+    void process_start_items(const core::runtime::config_t&);
 
     void process_update_items();
 
@@ -155,6 +155,12 @@ private:
 
     /// Parses connection sections and creates them.
     void create_connections();
+
+    /// Create a preference service if required.
+    void create_preferences_service();
+
+    /// Creates updater services.
+    void create_updater_services();
 
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
     std::string msg_head() const;
@@ -251,6 +257,9 @@ private:
 
     /// UID of the preference service, if it is required
     std::string m_pref_service_uid;
+
+    /// Configuration element built to start updaters
+    service::config_t m_updater_srv_start;
 };
 
 // ------------------------------------------------------------------------

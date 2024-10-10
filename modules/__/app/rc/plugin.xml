@@ -128,4 +128,16 @@
         <service>sight::app::parser::camera</service>
         <object>sight::data::camera</object>
     </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::app::updater</type>
+        <service>sight::app::update_sequence</service>
+        <desc>This service triggers a signal each time all configured signals are received. Once it triggers the signal</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::app::updater</type>
+        <service>sight::app::update_parallel</service>
+        <desc>This service triggers a signal each time all configured signals are received. Once it triggers the signal</desc>
+    </extension>
 </plugin>

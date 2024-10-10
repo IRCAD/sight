@@ -41,16 +41,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-//-----------------------------------------------------------------------------
-
-frustum::frustum() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
-frustum::~frustum() noexcept =
-    default;
-
 //------------------------------------------------------------------------------
 
 void frustum::configuring()
@@ -79,7 +69,7 @@ void frustum::configuring()
 
 void frustum::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     // Create camera
     m_ogre_camera = this->get_scene_manager()->createCamera(Ogre::String(this->get_id() + std::string(CAMERA_INPUT)));
@@ -143,8 +133,8 @@ void frustum::starting()
 service::connections_t frustum::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(CAMERA_INPUT, data::camera::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE);
+    connections.push(CAMERA_INPUT, data::camera::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, adaptor::slots::LAZY_UPDATE);
 
     return connections;
 }
@@ -155,6 +145,8 @@ void frustum::updating()
 {
     this->set_ogre_cam_from_data();
     m_frustum->setVisible(visible());
+
+    this->update_done();
     this->request_render();
 }
 
@@ -171,6 +163,8 @@ void frustum::stopping()
 
     m_ogre_camera = nullptr;
     m_material    = nullptr;
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

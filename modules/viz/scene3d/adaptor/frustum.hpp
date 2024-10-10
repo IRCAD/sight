@@ -63,9 +63,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b color (optional, hexadecimal, default=0xFF0000): frustum's color
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
-class frustum final :
-    public sight::viz::scene3d::adaptor,
-    public sight::viz::scene3d::transformable
+class frustum final : public sight::viz::scene3d::adaptor,
+                      public sight::viz::scene3d::transformable
 {
 public:
 
@@ -73,10 +72,10 @@ public:
     SIGHT_DECLARE_SERVICE(frustum, sight::viz::scene3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
-    frustum() noexcept;
+    frustum() noexcept = default;
 
     /// Destroys the adaptor.
-    ~frustum() noexcept override;
+    ~frustum() noexcept override = default;
 
 protected:
 
@@ -90,8 +89,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::camera::INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to CALIBRATE_SLOT
-     * Connect data::camera::MODIFIED_SIG of s_CAMERA_INPUT to CALIBRATE_SLOT
+     * Connect data::camera::INTRINSIC_CALIBRATED_SIG of s_CAMERA_INPUT to adaptor::slots::LAZY_UPDATE
+     * Connect data::camera::MODIFIED_SIG of s_CAMERA_INPUT to adaptor::slots::LAZY_UPDATE
      */
     service::connections_t auto_connections() const override;
 

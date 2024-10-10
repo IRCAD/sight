@@ -45,12 +45,10 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor displays a reconstruction.
  *
  * @section Slots Slots
- * - \b changeMesh(data::mesh::sptr): called when the associated mesh changes.
+ * - \b update(): called when the associated mesh changes.
  * - \b update_visibility(bool): sets whether the reconstruction is to be seen or not.
- * - \b toggle_visibility(): toggle whether the reconstruction is shown or not.
  * - \b show(): shows the reconstruction.
  * - \b hide(): hides the reconstruction.
- * - \b modifyVisibility(): called to show or hide the reconstruction.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -70,17 +68,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b queryFlags (optional, unit32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *      match the flag.
  */
-class reconstruction final :
-    public sight::viz::scene3d::adaptor,
-    public sight::viz::scene3d::transformable
+class reconstruction final : public sight::viz::scene3d::adaptor,
+                             public sight::viz::scene3d::transformable
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(reconstruction, sight::viz::scene3d::adaptor);
-
-    /// Initialise slots.
-    reconstruction() noexcept;
 
     /// Destroys the adaptor.
     ~reconstruction() noexcept final = default;
@@ -121,8 +115,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::reconstruction::MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to CHANGE_MESH_SLOT
-     * Connect data::reconstruction::VISIBILITY_MODIFIED_SIG of s_RECONSTRUCTION_INPUT to VISIBILITY_SLOT
+     * Connect data::reconstruction::MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to adaptor::slots::LAZY_UPDATE
      */
     service::connections_t auto_connections() const final;
 
@@ -139,12 +132,6 @@ protected:
     void set_visible(bool _visible) final;
 
 private:
-
-    /// Changes the attached mesh.
-    void change_mesh(data::mesh::sptr /*unused*/);
-
-    /// Modifies the visibility.
-    void modify_visibility();
 
     /// Creates the mesh service.
     void create_mesh_service();

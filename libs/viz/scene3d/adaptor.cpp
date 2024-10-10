@@ -44,6 +44,7 @@ adaptor::adaptor() noexcept
     new_slot(slots::TOGGLE_VISIBILITY, &adaptor::toggle_visibility, this);
     new_slot(slots::SHOW, &adaptor::show, this);
     new_slot(slots::HIDE, &adaptor::hide, this);
+    new_slot(slots::LAZY_UPDATE, [this](){this->lazy_update();});
 }
 
 //------------------------------------------------------------------------------
@@ -76,7 +77,7 @@ void adaptor::configure_params()
 
 //------------------------------------------------------------------------------
 
-void adaptor::initialize()
+void adaptor::init()
 {
     if(m_render_service.expired())
     {
@@ -99,6 +100,17 @@ void adaptor::initialize()
 
         m_layer_id = layer_cfg.layer.empty() ? m_cfg_layer_id : layer_cfg.layer;
     }
+
+    m_render_service.lock()->register_adaptor(dynamic_pointer_cast<self_t>(shared_from_this()));
+}
+
+//------------------------------------------------------------------------------
+
+void adaptor::deinit()
+{
+    auto render_service = m_render_service.lock();
+    SIGHT_ASSERT("Render service is null", render_service);
+    render_service->unregister_adaptor(dynamic_pointer_cast<self_t>(shared_from_this()));
 }
 
 //------------------------------------------------------------------------------
@@ -219,6 +231,13 @@ void adaptor::set_visible(bool /*unused*/)
 service::connections_t adaptor::auto_connections() const
 {
     return {{m_visible, data::object::MODIFIED_SIG, slots::APPLY_VISIBILITY}};
+}
+
+//-----------------------------------------------------------------------------
+
+void adaptor::do_update()
+{
+    updating();
 }
 
 //------------------------------------------------------------------------------

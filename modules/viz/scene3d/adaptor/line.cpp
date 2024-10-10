@@ -39,19 +39,17 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t UPDATE_LENGTH_SLOT = "update_length";
-
 //-----------------------------------------------------------------------------
 
-line::line() noexcept
+service::connections_t line::auto_connections() const
 {
-    new_slot(UPDATE_LENGTH_SLOT, &line::update_length, this);
+    return {
+        {m_length, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {m_color, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {m_dash_length, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {m_dashed, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}
+    };
 }
-
-//-----------------------------------------------------------------------------
-
-line::~line() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 
@@ -68,31 +66,13 @@ void line::configuring()
             this->get_id() + "_transform"
         )
     );
-
-    static const std::string s_LENGTH_CONFIG     = CONFIG + "length";
-    static const std::string s_DASHED_CONFIG     = CONFIG + "dashed";
-    static const std::string s_DASHLENGTH_CONFIG = CONFIG + "dashLength";
-    static const std::string s_COLOR_CONFIG      = CONFIG + "color";
-
-    m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
-
-    const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
-    std::array<std::uint8_t, 4> rgba {};
-    data::tools::color::hexa_string_to_rgba(color, rgba);
-    m_color.r = static_cast<float>(rgba[0]) / 255.F;
-    m_color.g = static_cast<float>(rgba[1]) / 255.F;
-    m_color.b = static_cast<float>(rgba[2]) / 255.F;
-    m_color.a = static_cast<float>(rgba[3]) / 255.F;
-
-    m_dashed      = config.get(s_DASHED_CONFIG, m_dashed);
-    m_dash_length = config.get(s_DASHLENGTH_CONFIG, m_dash_length);
 }
 
 //-----------------------------------------------------------------------------
 
 void line::starting()
 {
-    this->initialize();
+    adaptor::init();
     this->render_service()->make_current();
 
     Ogre::SceneManager* scene_mgr = this->get_scene_manager();
@@ -125,7 +105,7 @@ void line::starting()
 
     // Set the bounding box of your Manual Object
     Ogre::Vector3 bb_min(-0.1F, -0.1F, 0.F);
-    Ogre::Vector3 bb_max(0.1F, 0.1F, m_length);
+    Ogre::Vector3 bb_max(0.1F, 0.1F, static_cast<float>(*m_length));
     Ogre::AxisAlignedBox box(bb_min, bb_max);
     m_line->setBoundingBox(box);
 
@@ -146,11 +126,12 @@ void line::updating()
 
         // Set the bounding box of your Manual Object
         Ogre::Vector3 bb_min(-0.1F, -0.1F, 0.F);
-        Ogre::Vector3 bb_max(0.1F, 0.1F, m_length);
+        Ogre::Vector3 bb_max(0.1F, 0.1F, static_cast<float>(*m_length));
         Ogre::AxisAlignedBox box(bb_min, bb_max);
         m_line->setBoundingBox(box);
     }
 
+    this->update_done();
     this->request_render();
 }
 
@@ -167,6 +148,8 @@ void line::stopping()
         this->get_scene_manager()->destroyManualObject(m_line);
         m_line = nullptr;
     }
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -198,23 +181,27 @@ void line::draw_line(bool _existing_line)
         m_line->beginUpdate(0);
     }
 
-    m_line->colour(m_color);
+    const auto color = *m_color;
+    Ogre::ColourValue ogre_color(color[0], color[1], color[2], color[3]);
+    m_line->colour(ogre_color);
 
-    if(m_dashed)
+    const auto length      = static_cast<float>(*m_length);
+    const auto dash_length = static_cast<float>(*m_dash_length);
+    if(*m_dashed)
     {
         float f = 0.F;
-        for(std::size_t i = 0 ; i <= static_cast<std::size_t>(m_length / (m_dash_length * 2)) ; i++)
+        for(std::size_t i = 0 ; i <= static_cast<std::size_t>(length / (dash_length * 2)) ; i++)
         {
             m_line->position(0, 0, f);
-            m_line->position(0, 0, f + m_dash_length);
+            m_line->position(0, 0, f + static_cast<float>(dash_length));
 
-            f += m_dash_length * 2;
+            f += dash_length * 2;
         }
     }
     else
     {
         m_line->position(0, 0, 0);
-        m_line->position(0, 0, m_length);
+        m_line->position(0, 0, length);
     }
 
     m_line->end();
@@ -227,14 +214,6 @@ void line::set_visible(bool /*_visible*/)
     Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
     trans_node->setVisible(visible());
-    this->updating();
-}
-
-//-----------------------------------------------------------------------------
-
-void line::update_length(float _length)
-{
-    m_length = _length;
     this->updating();
 }
 

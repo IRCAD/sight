@@ -99,7 +99,7 @@ void model_series::configuring()
 
 void model_series::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->updating();
 }
@@ -109,9 +109,9 @@ void model_series::starting()
 service::connections_t model_series::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(MODEL_INPUT, data::model_series::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE);
-    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
+    connections.push(MODEL_INPUT, data::model_series::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, adaptor::slots::LAZY_UPDATE);
     connections.push(MODEL_INPUT, data::model_series::ADDED_FIELDS_SIG, CHANGE_FIELD_SLOT);
     connections.push(MODEL_INPUT, data::model_series::REMOVED_FIELDS_SIG, CHANGE_FIELD_SLOT);
     connections.push(MODEL_INPUT, data::model_series::CHANGED_FIELDS_SIG, CHANGE_FIELD_SLOT);
@@ -165,6 +165,9 @@ void model_series::updating()
         mesh_adaptor->set_dynamic(m_is_dynamic);
         mesh_adaptor->set_dynamic_vertices(m_is_dynamic_vertices);
     }
+
+    this->update_done();
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
@@ -172,6 +175,8 @@ void model_series::updating()
 void model_series::stopping()
 {
     this->unregister_services();
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

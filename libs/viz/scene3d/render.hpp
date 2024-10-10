@@ -230,6 +230,15 @@ public:
     template<class T>
     std::vector<SPTR(T)> get_adaptors() const;
 
+    /// Registers the adaptor for update
+    void register_adaptor(const SPTR(viz::scene3d::adaptor)& _adaptor);
+
+    /// Unregisters the adaptor
+    void unregister_adaptor(const SPTR(viz::scene3d::adaptor)& _adaptor);
+
+    /// Sets the rendering mode
+    void set_render_mode(bool _manual) const;
+
     /// Returns the rendering mode
     render_mode get_render_mode() const;
 
@@ -297,6 +306,13 @@ private:
     /// Defines if the scene will be rendered upside down.
     /// @warning the scene must be rendered off-screen.
     bool m_flip {false};
+
+    /// List of adaptors, each adaptor registers itself at start().
+    /// The order of declaration is respected because it is required for the update
+    std::vector<SPTR(viz::scene3d::adaptor)> m_adaptors;
+
+    /// Index of the adaptor according to its uid
+    std::map<std::string, std::size_t> m_adaptors_index;
 
     static constexpr std::string_view OFFSCREEN_INOUT = "offScreen";
     data::ptr<data::image, data::access::inout> m_off_screen_image {this, OFFSCREEN_INOUT, true};

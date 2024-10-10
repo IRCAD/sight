@@ -288,7 +288,7 @@ void service_test::test_start_stop_update()
 
     // Update service
     service->update().wait();
-    CPPUNIT_ASSERT(service->get_is_updated());
+    CPPUNIT_ASSERT(service->is_updated());
 
     // Stop service
     service->stop().wait();
@@ -436,7 +436,7 @@ void service_test::test_communication()
         service::ut::test_srv::slots::UPDATE2
     );
 
-    CPPUNIT_ASSERT(!service2->get_is_updated2());
+    CPPUNIT_ASSERT(!service2->is_updated2());
 
     // Service1 send notification
     {
@@ -449,7 +449,7 @@ void service_test::test_communication()
 
     service1->update().wait();
     service2->update().wait();
-    CPPUNIT_ASSERT(service2->get_is_updated2());
+    CPPUNIT_ASSERT(service2->is_updated2());
 
     SIGHT_TEST_WAIT(receiver1->m_updated && receiver2->m_updated)
     CPPUNIT_ASSERT_EQUAL(true, receiver1->m_started);
@@ -518,9 +518,9 @@ void service_test::start_stop_update_exceptions(test_service::sptr _service)
 
     // Update service
     _service->update().wait();
-    CPPUNIT_ASSERT(_service->get_is_updated());
+    CPPUNIT_ASSERT(_service->is_updated());
     _service->reset_is_updated();
-    CPPUNIT_ASSERT(!_service->get_is_updated());
+    CPPUNIT_ASSERT(!_service->is_updated());
 
     // Update service with exception caught
     _service->set_raise_exception(true);
@@ -535,16 +535,16 @@ void service_test::start_stop_update_exceptions(test_service::sptr _service)
         CPPUNIT_ASSERT_EQUAL(std::string("update error"), std::string(e.what()));
     }
     CPPUNIT_ASSERT(exception_caught);
-    CPPUNIT_ASSERT(!_service->get_is_updated());
+    CPPUNIT_ASSERT(!_service->is_updated());
 
     // Update service without exception caught
     _service->update().wait();
-    CPPUNIT_ASSERT(!_service->get_is_updated());
+    CPPUNIT_ASSERT(!_service->is_updated());
 
     // Update service
     _service->set_raise_exception(false);
     _service->update().wait();
-    CPPUNIT_ASSERT(_service->get_is_updated());
+    CPPUNIT_ASSERT(_service->is_updated());
 
     // Stop service with exception caught
     _service->set_raise_exception(true);

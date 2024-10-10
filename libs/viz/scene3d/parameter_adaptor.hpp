@@ -62,7 +62,7 @@ public:
     SIGHT_VIZ_SCENE3D_API parameter_adaptor() noexcept;
 
     /// Destructor. Does nothing
-    SIGHT_VIZ_SCENE3D_API ~parameter_adaptor() noexcept override;
+    SIGHT_VIZ_SCENE3D_API ~parameter_adaptor() noexcept override = default;
 
     /// Set the shaderType by passing the value of the shader_enum_t of this adaptor.
     SIGHT_VIZ_SCENE3D_API void set_shader_type(Ogre::GpuProgramType _shader_type);
@@ -75,9 +75,6 @@ public:
 
     /// Get the name of the parameter m_paramName.
     SIGHT_VIZ_SCENE3D_API const std::string& get_default_value() const;
-
-    /// Inform that the parameter value has changed. Its value will be uploaded on next update
-    void set_dirty();
 
 protected:
 
@@ -137,17 +134,8 @@ private:
     Ogre::MaterialPtr m_material;
     /// Pointer on a texture if the parameter is an image
     sight::viz::scene3d::texture::sptr m_texture;
-    /// Dirty flag to know if we must trigger an update or not
-    bool m_dirty {true};
 
     data::ptr<data::object, data::access::inout> m_parameter {this, PARAMETER_INOUT};
 };
-
-//------------------------------------------------------------------------------
-
-inline void parameter_adaptor::set_dirty()
-{
-    m_dirty = true;
-}
 
 } // namespace sight::viz::scene3d

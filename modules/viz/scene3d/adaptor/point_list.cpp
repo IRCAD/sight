@@ -157,7 +157,7 @@ void point_list::configuring()
 
 void point_list::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
@@ -197,12 +197,12 @@ void point_list::starting()
 service::connections_t point_list::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(POINTLIST_INPUT, data::point_list::POINT_ADDED_SIG, service::slots::UPDATE);
-    connections.push(POINTLIST_INPUT, data::point_list::POINT_REMOVED_SIG, service::slots::UPDATE);
-    connections.push(POINTLIST_INPUT, data::point_list::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(POINTLIST_INPUT, data::point_list::POINT_ADDED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(POINTLIST_INPUT, data::point_list::POINT_REMOVED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(POINTLIST_INPUT, data::point_list::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
 
-    connections.push(MESH_INPUT, data::mesh::VERTEX_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(MESH_INPUT, data::mesh::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MESH_INPUT, data::mesh::VERTEX_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(MESH_INPUT, data::mesh::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
 
     return connections;
 }
@@ -226,6 +226,8 @@ void point_list::stopping()
     }
 
     m_mesh_geometry.reset();
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -259,6 +261,7 @@ void point_list::updating()
         }
     }
 
+    this->update_done();
     this->request_render();
 }
 
@@ -501,7 +504,7 @@ void point_list::update_material_adaptor(const std::string& _mesh_id)
 
         m_entity->setMaterialName(m_material_adaptor->get_material_name());
 
-        m_material_adaptor->slot(service::slots::UPDATE)->run();
+        m_material_adaptor->slot(adaptor::slots::LAZY_UPDATE)->run();
     }
 }
 

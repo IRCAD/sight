@@ -87,7 +87,7 @@ struct service_config
     std::string m_type;
 
     /// True if the service is autoConnected to all of its inputs/inouts according to the auto-connection map
-    bool m_global_auto_connect {false};
+    bool m_global_auto_connect {true};
 
     /// Service worker
     std::string m_worker;

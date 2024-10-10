@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ void trackball_camera::configuring()
 
 void trackball_camera::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     const auto layer = this->layer();
     m_trackball =
@@ -62,6 +62,8 @@ void trackball_camera::stopping()
 {
     const auto layer = this->layer();
     layer->remove_interactor(m_trackball);
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

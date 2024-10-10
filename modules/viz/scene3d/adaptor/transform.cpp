@@ -37,7 +37,7 @@ namespace sight::module::viz::scene3d::adaptor
 service::connections_t transform::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(TRANSFORM_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(TRANSFORM_INOUT, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 
@@ -58,7 +58,7 @@ void transform::configuring()
 
 void transform::starting()
 {
-    this->initialize();
+    adaptor::init();
     Ogre::SceneManager* const scene_manager = this->get_scene_manager();
 
     Ogre::SceneNode* const root_scene_node = scene_manager->getRootSceneNode();
@@ -116,6 +116,7 @@ void transform::updating()
         m_transform_node->setScale(scale);
     }
 
+    this->update_done();
     this->request_render();
 }
 
@@ -123,6 +124,7 @@ void transform::updating()
 
 void transform::stopping()
 {
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

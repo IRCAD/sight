@@ -124,7 +124,7 @@ void material::configure(
 
 void material::starting()
 {
-    this->initialize();
+    adaptor::init();
     {
         const auto material = m_material_data.lock();
 
@@ -202,7 +202,7 @@ void material::starting()
 service::connections_t material::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(MATERIAL_INOUT, data::material::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MATERIAL_INOUT, data::material::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
     connections.push(MATERIAL_INOUT, data::material::ADDED_FIELDS_SIG, UPDATE_FIELD_SLOT);
     connections.push(MATERIAL_INOUT, data::material::CHANGED_FIELDS_SIG, UPDATE_FIELD_SLOT);
     connections.push(MATERIAL_INOUT, data::material::ADDED_TEXTURE_SIG, ADD_TEXTURE_SLOT);
@@ -231,6 +231,8 @@ void material::updating()
         m_tex_adaptor ? m_tex_adaptor->get_use_alpha() : false
     );
     m_material_fw->update_rgba_mode(material.get_shared());
+
+    this->update_done();
     this->request_render();
 }
 
@@ -248,6 +250,8 @@ void material::stopping()
     {
         material->remove_field("shaderParameters");
     }
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

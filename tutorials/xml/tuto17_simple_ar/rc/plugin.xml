@@ -253,7 +253,7 @@
             </service>
 
             <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video">
-                <in key="image" uid="sourceFrame" auto_connect="false" />
+                <in key="image" uid="sourceFrame" />
             </service>
 
             <service uid="undistortAdp" type="sight::module::viz::scene3d::adaptor::compositor_parameter" auto_connect="true">
@@ -266,7 +266,7 @@
             </service>
 
             <!-- Camera for the 3D layer -->
-            <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
+            <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::camera">
                 <inout key="transform" uid="cameraToMarkerDamped" />
                 <in key="calibration" uid="camera" />
             </service>
@@ -374,7 +374,7 @@
 
             <!-- Consumes a frame in the timeline, picks the latest one to be processed -->
             <!-- It is overkill in this sample, but mandatory when we use multiple grabbers to synchronize them. -->
-            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer">
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" auto_connect="false">
                 <in group="frameTL">
                     <key uid="frameTL" />
                 </in>
@@ -385,9 +385,9 @@
             </service>
 
             <!-- Aruco tracker service -->
-            <service uid="trackerSrv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking">
+            <service uid="trackerSrv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking" auto_connect="false">
                 <in key="camera" uid="camera" />
-                <inout key="frame" uid="sourceFrame" auto_connect="true" />
+                <inout key="frame" uid="sourceFrame" />
                 <inout group="markerMap">
                     <!-- timeline of detected tag(s) -->
                     <key uid="markerMap" />
@@ -426,8 +426,8 @@
 
             <!-- Multiply matrices (here only used to inverse "markerToCamera") -->
             <service uid="matrixReverserSrv" type="sight::module::geometry::concatenate_matrices">
-                <in group="matrix">
-                    <key uid="markerToCamera" auto_connect="true" inverse="true" />
+                <in group="matrix" auto_connect="false">
+                    <key uid="markerToCamera" inverse="true" />
                 </in>
                 <inout key="output" uid="cameraToMarker" />
             </service>
@@ -444,18 +444,12 @@
                 <mode>distort</mode>
             </service>
 
-            <!-- Wait for the undistortion and the matrix inversion to be finished -->
-            <service uid="syncGenericSceneSrv" type="sight::module::sync::signal_gate">
-                <signal>sourceFrame/buffer_modified</signal>
-                <signal>cameraAdp/updated</signal>
-            </service>
-
             <service uid="material_opacity_editor" type="sight::module::ui::qt::material_opacity_editor">
                 <inout key="material" uid="cubeMaterial" />
                 <label>Cube opacity</label>
             </service>
 
-            <service uid="damp_matrix_srv" type="sight::module::geometry::weighted_mean_matrix">
+            <service uid="damp_matrix_srv" type="sight::module::geometry::weighted_mean_matrix" auto_connect="false">
                 <in key="raw" uid="cameraToMarker" />
                 <inout key="damped" uid="cameraToMarkerDamped" />
                 <properties from="${damping_params}" />
@@ -516,23 +510,6 @@
             </connect>
 
             <connect>
-                <signal>trackerSrv/updated</signal>
-                <slot>videoAdp/update</slot>
-            </connect>
-
-            <!-- When the undistortion and the matrix inversion are done, trigger the rendering -->
-            <!-- then process a new frame -->
-            <connect>
-                <signal>syncGenericSceneSrv/all_received</signal>
-                <slot>genericSceneSrv/render</slot>
-            </connect>
-
-            <connect>
-                <signal>genericSceneSrv/rendered</signal>
-                <slot>frameUpdaterSrv/request_sync</slot>
-            </connect>
-
-            <connect>
                 <signal>loadCalibAct/updated</signal>
                 <slot>calibrationReaderSrv/update</slot>
             </connect>
@@ -540,10 +517,12 @@
             <connect>
                 <signal>startVideoAct/updated</signal>
                 <slot>videoGrabberSrv/start_camera</slot>
+                <slot>updater/start</slot>
             </connect>
 
             <connect>
                 <signal>pauseVideoAct/updated</signal>
+                <slot>updater/stop</slot>
                 <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/show</slot>
                 <slot>pauseVideoAct/hide</slot>
@@ -552,6 +531,7 @@
             <connect>
                 <signal>resumeVideoAct/updated</signal>
                 <slot>videoGrabberSrv/pause_camera</slot>
+                <slot>updater/start</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/show</slot>
             </connect>
@@ -559,6 +539,7 @@
             <connect>
                 <signal>stopVideoAct/updated</signal>
                 <slot>videoGrabberSrv/stop_camera</slot>
+                <slot>updater/stop</slot>
                 <slot>startVideoAct/show</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/hide</slot>
@@ -611,7 +592,6 @@
             <start uid="hideAxisSrv" />
             <start uid="undistorterSrv" />
             <start uid="distorterSrv" />
-            <start uid="syncGenericSceneSrv" />
             <start uid="loadMeshSrv" />
             <start uid="genericSceneSrv" />
             <start uid="materialAdp" />
@@ -626,10 +606,19 @@
             <!-- ******************************* Update services ***************************************** -->
 
             <!-- At launch, enable the synchronization with the non-offscreen rendering -->
-            <update uid="showParametersAct" />
-            <update uid="hideAxisSrv" />
-            <update uid="loadMeshSrv" />
-            <update uid="damp_matrix_srv" />
+            <update>
+                <service uid="showParametersAct" />
+                <service uid="hideAxisSrv" />
+                <service uid="loadMeshSrv" />
+
+                <sequence uid="updater" loop="true">
+                    <service uid="frameUpdaterSrv" />
+                    <service uid="trackerSrv" />
+                    <service uid="matrixReverserSrv" />
+                    <service uid="damp_matrix_srv" />
+                    <service uid="genericSceneSrv" />
+                </sequence>
+            </update>
         </config>
     </extension>
 </plugin>

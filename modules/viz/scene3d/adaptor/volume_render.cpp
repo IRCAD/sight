@@ -50,27 +50,24 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-//-----------------------------------------------------------------------------
-
 volume_render::volume_render() noexcept
 {
-    // Handle connections between the layer and the volume renderer.
-    new_slot(NEW_IMAGE_SLOT, &volume_render::new_image, this);
-    new_slot(BUFFER_IMAGE_SLOT, &volume_render::buffer_image, this);
-    new_slot(UPDATE_IMAGE_SLOT, &volume_render::update_image, this);
+    // Auto-connected slots
+    new_slot(NEW_IMAGE_SLOT, [this](){lazy_update(update_flags::IMAGE);});
+    new_slot(BUFFER_IMAGE_SLOT, [this](){lazy_update(update_flags::IMAGE_BUFFER);});
+    new_slot(UPDATE_MASK_SLOT, [this](){lazy_update(update_flags::MASK_BUFFER);});
+    new_slot(UPDATE_TF_SLOT, [this](){lazy_update(update_flags::TF);});
+    new_slot(UPDATE_CLIPPING_BOX_SLOT, [this](){lazy_update(update_flags::CLIPPING_BOX);});
+
+    // Interaction slots
     new_slot(TOGGLE_WIDGETS_SLOT, &volume_render::toggle_widgets, this);
     new_slot(SET_BOOL_PARAMETER_SLOT, &volume_render::set_bool_parameter, this);
     new_slot(SET_INT_PARAMETER_SLOT, &volume_render::set_int_parameter, this);
     new_slot(SET_DOUBLE_PARAMETER_SLOT, &volume_render::set_double_parameter, this);
-    new_slot(UPDATE_CLIPPING_BOX_SLOT, &volume_render::update_clipping_box, this);
-    new_slot(UPDATE_MASK_SLOT, &volume_render::update_mask, this);
-    new_slot(UPDATE_TF_SLOT, &volume_render::update_volume_tf, this);
+
+    // Slot for async update
+    new_slot(UPDATE_IMAGE_SLOT, &volume_render::update_image, this);
 }
-
-//-----------------------------------------------------------------------------
-
-volume_render::~volume_render() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 
@@ -152,7 +149,7 @@ void volume_render::configuring(const config_t& _config)
 
 void volume_render::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     auto render_service = this->render_service();
     render_service->make_current();
@@ -213,6 +210,29 @@ void volume_render::starting()
 
 void volume_render::updating()
 {
+    if(update_needed(update_flags::IMAGE))
+    {
+        new_image();
+    }
+    else if(update_needed(update_flags::IMAGE_BUFFER))
+    {
+        buffer_image();
+    }
+    else if(update_needed(update_flags::MASK_BUFFER))
+    {
+        update_mask();
+    }
+    else if(update_needed(update_flags::TF))
+    {
+        update_volume_tf();
+    }
+    else if(update_needed(update_flags::CLIPPING_BOX))
+    {
+        update_clipping_box();
+    }
+
+    update_done();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
@@ -236,6 +256,8 @@ void volume_render::stopping()
     }
 
     this->destroy_widget();
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

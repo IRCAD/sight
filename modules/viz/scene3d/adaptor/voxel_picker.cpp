@@ -34,7 +34,7 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::slots::key_t SLICETYPE_SLOT = "sliceType";
+const core::com::slots::key_t SLICE_TYPE_SLOT = "sliceType";
 
 static const core::com::signals::key_t PICKED_SIG = "picked";
 
@@ -42,7 +42,7 @@ static const core::com::signals::key_t PICKED_SIG = "picked";
 
 voxel_picker::voxel_picker() noexcept
 {
-    new_slot(SLICETYPE_SLOT, &voxel_picker::change_slice_type, this);
+    new_slot(SLICE_TYPE_SLOT, &voxel_picker::change_slice_type, this);
 
     m_picked_sig = new_signal<core::com::signal<void(data::tools::picking_info)> >(PICKED_SIG);
 }
@@ -93,7 +93,7 @@ void voxel_picker::configuring()
 
 void voxel_picker::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     const auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     this->layer()->add_interactor(interactor, m_priority);
@@ -104,7 +104,7 @@ void voxel_picker::starting()
 service::connections_t voxel_picker::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(IMAGE_INPUT, data::image::SLICE_TYPE_MODIFIED_SIG, SLICETYPE_SLOT);
+    connections.push(IMAGE_INPUT, data::image::SLICE_TYPE_MODIFIED_SIG, SLICE_TYPE_SLOT);
 
     return connections;
 }
@@ -121,6 +121,8 @@ void voxel_picker::stopping()
 {
     const auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     this->layer()->remove_interactor(interactor);
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

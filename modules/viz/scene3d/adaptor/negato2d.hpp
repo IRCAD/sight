@@ -90,6 +90,23 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(negato2d, sight::viz::scene3d::adaptor);
 
+    struct signals
+    {
+        using slice_index_changed_t = core::com::signal<void ()>;
+        using picked_voxel_t        = core::com::signal<void (std::string)>;
+        static inline const core::com::signals::key_t SLICE_INDEX_CHANGED = "slice_index_changed";
+        static inline const core::com::signals::key_t PICKED_VOXEL        = "picked_voxel";
+    };
+
+    struct slots
+    {
+        static inline const core::com::slots::key_t UPDATE_IMAGE             = "update_image";
+        static inline const core::com::slots::key_t UPDATE_TF                = "update_tf";
+        static inline const core::com::slots::key_t SLICE_TYPE               = "slice_type";
+        static inline const core::com::slots::key_t SLICE_INDEX              = "slice_index";
+        static inline const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
+    };
+
     /// Creates the service and initializes slots.
     negato2d() noexcept;
 
@@ -109,10 +126,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::MODIFIED_SIG of s_IMAGE_INOUT to service::slots::UPDATE
-     * Connect data::image::BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to service::slots::UPDATE
-     * Connect data::image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to SLICETYPE_SLOT
-     * Connect data::image::SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to SLICEINDEX_SLOT
+     * Connect data::image::MODIFIED of s_IMAGE_INOUT to service::slots::UPDATE
+     * Connect data::image::BUFFER_MODIFIED of s_IMAGE_INOUT to service::slots::UPDATE
+     * Connect data::image::SLICE_TYPE_MODIFIED of s_IMAGE_INOUT to SLICE_TYPE
+     * Connect data::image::SLICE_INDEX_MODIFIED of s_IMAGE_INOUT to SLICE_INDEX
      */
     service::connections_t auto_connections() const final;
 
@@ -235,18 +252,14 @@ private:
     /// True if the plane is being picked
     bool m_picked {false};
 
-    using slice_index_changed_signal_type = core::com::signal<void ()>;
-    slice_index_changed_signal_type::sptr m_slice_index_changed_sig;
+    enum class update_flags : std::uint8_t
+    {
+        IMAGE,
+        TF
+    };
 
-    /// Defines the signal sent when a voxel is picked using the left mouse button.
-    using picked_voxel_sig_t = core::com::signal<void (std::string)>;
-    picked_voxel_sig_t::sptr m_picked_voxel_signal {nullptr};
-
-    static constexpr std::string_view IMAGE_IN = "image";
-    static constexpr std::string_view TF_IN    = "tf";
-
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_IN};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, TF_IN};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, "tf"};
 };
 
 //------------------------------------------------------------------------------

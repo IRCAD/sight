@@ -43,6 +43,7 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
+static const core::com::slots::key_t MODIFY_MESH_SLOT             = "modifyMesh";
 static const core::com::slots::key_t MODIFY_COLORS_SLOT           = "modifyColors";
 static const core::com::slots::key_t MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
 static const core::com::slots::key_t MODIFY_VERTICES_SLOT         = "modifyVertices";
@@ -53,9 +54,10 @@ mesh::mesh() noexcept
 {
     m_material = std::make_shared<data::material>();
 
-    new_slot(MODIFY_COLORS_SLOT, &mesh::modify_point_colors, this);
-    new_slot(MODIFY_POINT_TEX_COORDS_SLOT, &mesh::modify_tex_coords, this);
-    new_slot(MODIFY_VERTICES_SLOT, &mesh::modify_vertices, this);
+    new_slot(MODIFY_MESH_SLOT, [this](){lazy_update(update_flags::MESH);});
+    new_slot(MODIFY_COLORS_SLOT, [this](){lazy_update(update_flags::COLORS);});
+    new_slot(MODIFY_POINT_TEX_COORDS_SLOT, [this](){lazy_update(update_flags::TEX_COORDS);});
+    new_slot(MODIFY_VERTICES_SLOT, [this](){lazy_update(update_flags::VERTICES);});
 }
 
 //-----------------------------------------------------------------------------
@@ -129,7 +131,7 @@ void mesh::configuring()
 
 void mesh::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
@@ -182,7 +184,7 @@ service::connections_t mesh::auto_connections() const
     connections.push(MESH_IN, data::mesh::POINT_COLORS_MODIFIED_SIG, MODIFY_COLORS_SLOT);
     connections.push(MESH_IN, data::mesh::CELL_COLORS_MODIFIED_SIG, MODIFY_COLORS_SLOT);
     connections.push(MESH_IN, data::mesh::POINT_TEX_COORDS_MODIFIED_SIG, MODIFY_POINT_TEX_COORDS_SLOT);
-    connections.push(MESH_IN, data::mesh::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MESH_IN, data::mesh::MODIFIED_SIG, MODIFY_MESH_SLOT);
     return connections;
 }
 
@@ -195,16 +197,33 @@ void mesh::updating()
         return;
     }
 
-    const auto mesh = m_mesh.lock();
-
-    if(m_mesh_geometry->has_color_layer_changed(mesh.get_shared()))
+    if(update_needed(update_flags::MESH))
     {
-        Ogre::SceneManager* scene_mgr = this->get_scene_manager();
-        SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
-        m_mesh_geometry->clear_mesh(*scene_mgr);
+        const auto mesh = m_mesh.lock();
+
+        if(m_mesh_geometry->has_color_layer_changed(mesh.get_shared()))
+        {
+            Ogre::SceneManager* scene_mgr = this->get_scene_manager();
+            SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
+            m_mesh_geometry->clear_mesh(*scene_mgr);
+        }
+
+        this->update_mesh(mesh.get_shared());
+    }
+    else if(update_needed(update_flags::VERTICES))
+    {
+        this->modify_vertices();
+    }
+    else if(update_needed(update_flags::COLORS))
+    {
+        this->modify_point_colors();
+    }
+    else if(update_needed(update_flags::TEX_COORDS))
+    {
+        this->modify_tex_coords();
     }
 
-    this->update_mesh(mesh.get_shared());
+    this->update_done();
 }
 
 //-----------------------------------------------------------------------------
@@ -228,6 +247,8 @@ void mesh::stopping()
     }
 
     m_mesh_geometry.reset();
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

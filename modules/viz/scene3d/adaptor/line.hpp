@@ -24,6 +24,10 @@
 
 #include "modules/viz/scene3d/adaptor/material.hpp"
 
+#include <data/boolean.hpp>
+#include <data/color.hpp>
+#include <data/real.hpp>
+
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/transformable.hpp>
 
@@ -47,20 +51,21 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b toggle_visibility(): Toggle whether the line is shown or not.
  * - \b show(): shows the line.
  * - \b hide(): hides the line.
- * - \b update_length(float): Update the line length
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::line">
-        <config transform="transformUID" length="30" dashLength="2.5" color="#0000FF" dashed="false" />
+        <config transform="transformUID"  />
+        <properties length="30" dashLength="2.5" color="#0000FF" dashed="false" />
     </service>
    @endcode
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified in the transform adaptor
+ * @subsection Properties Properties:
  * - \b length (optional, float, default=50.0): length of the line in mm (default 50)
- * - \b dashLength (optional, float, default=2.5): length of a dash
+ * - \b dash_length (optional, float, default=2.5): length of a dash
  * - \b color (optional, hexadecimal, default=#FFFFFF): color of the line
  * - \b dashed (optional, bool, default=false): display a dashed line instead of a solid line
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
@@ -75,12 +80,15 @@ public:
     SIGHT_DECLARE_SERVICE(line, sight::viz::scene3d::adaptor);
 
     /// Sets default parameters and initializes necessary members.
-    line() noexcept;
+    line() noexcept = default;
 
     /// Destroys the adaptor.
-    ~line() noexcept override;
+    ~line() noexcept override = default;
 
 protected:
+
+    /// Connects the input matrix modified to the update slot.
+    sight::service::connections_t auto_connections() const final;
 
     /// Configures the adaptor
     void configuring() override;
@@ -129,17 +137,10 @@ private:
     /// Contains the manual object of the line.
     Ogre::ManualObject* m_line {nullptr};
 
-    /// Defines the length of the line (in mm).
-    float m_length {50.F};
-
-    /// Defines the color of the line.
-    Ogre::ColourValue m_color;
-
-    /// Enables if the line is dashed or not.
-    bool m_dashed {false};
-
-    /// Defines the length of one dash.
-    float m_dash_length {2.5F};
+    sight::data::property<sight::data::real> m_length {this, "length", 50.0};
+    sight::data::property<sight::data::color> m_color {this, "color", {1.0, 1.0, 1.0, 1.0}};
+    sight::data::property<sight::data::boolean> m_dashed {this, "dashed", false};
+    sight::data::property<sight::data::real> m_dash_length {this, "dash_length", 2.5};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

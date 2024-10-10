@@ -112,7 +112,7 @@ void text::configuring()
 
 void text::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     auto render_srv = this->render_service();
 
@@ -129,7 +129,7 @@ void text::starting()
 service::connections_t text::auto_connections() const
 {
     connections_t connections = adaptor::auto_connections();
-    connections.push(OBJECT_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(OBJECT_INPUT, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 
@@ -139,6 +139,8 @@ void text::updating()
 {
     this->render_service()->make_current();
     this->update_text();
+    this->update_done();
+    this->request_render();
 }
 
 //----------------------------------------------------------------------------
@@ -146,6 +148,8 @@ void text::updating()
 void text::stopping()
 {
     m_text = nullptr;
+
+    adaptor::deinit();
 }
 
 //----------------------------------------------------------------------------

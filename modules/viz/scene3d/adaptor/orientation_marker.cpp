@@ -55,7 +55,7 @@ void orientation_marker::configuring()
 
 void orientation_marker::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
@@ -95,6 +95,7 @@ void orientation_marker::starting()
 void orientation_marker::updating()
 {
     this->update_camera_matrix();
+    this->update_done();
     this->request_render();
 }
 
@@ -145,6 +146,8 @@ void orientation_marker::stopping()
     m_patient_entity = nullptr;
 
     m_material.reset();
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -164,7 +167,7 @@ void orientation_marker::set_visible(bool _visible)
 service::connections_t orientation_marker::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(MATRIX_IN, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MATRIX_IN, data::matrix4::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 

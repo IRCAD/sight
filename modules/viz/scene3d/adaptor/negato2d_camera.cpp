@@ -93,7 +93,7 @@ void negato2d_camera::configuring()
 
 void negato2d_camera::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     const auto layer = this->layer();
     auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
@@ -127,6 +127,8 @@ void negato2d_camera::stopping()
     const auto layer = this->layer();
     auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     layer->remove_interactor(interactor);
+
+    adaptor::deinit();
 }
 
 // ----------------------------------------------------------------------------

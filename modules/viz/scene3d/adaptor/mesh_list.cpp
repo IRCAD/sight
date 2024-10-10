@@ -66,7 +66,7 @@ void mesh_list::configuring()
 
 void mesh_list::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     // Get the inputs.
     const auto transform_in_out = m_transform.lock();
@@ -174,6 +174,8 @@ void mesh_list::stopping()
 
     m_meshes.clear();
     m_mesh_count = 0;
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

@@ -101,6 +101,18 @@ void has_data::set_output(data::object::sptr _obj, std::string_view _key, std::o
 
 //------------------------------------------------------------------------------
 
+bool has_data::is_auto_connected() const
+{
+    return std::ranges::any_of(
+        m_data_container,
+        [](const auto& _x)
+        {
+            return _x.second->auto_connect() && dynamic_cast<data::property_base*>(_x.second) == nullptr;
+        });
+}
+
+//------------------------------------------------------------------------------
+
 void has_data::set_object(
     data::object::sptr _obj,
     std::string_view _key,

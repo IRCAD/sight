@@ -41,11 +41,7 @@ public:
 
 protected:
 
-    ///@brief controller constructor. Do nothing.
-    SIGHT_SERVICE_API controller();
-
-    ///@brief controller destructor. Do nothing.
-    SIGHT_SERVICE_API ~controller() override;
+    SIGHT_SERVICE_API ~controller() override = default;
 };
 
 } // namespace sight::service

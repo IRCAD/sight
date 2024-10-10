@@ -74,11 +74,6 @@ private:
 
     static service::config_t build_config();
 
-    static app::config_manager::sptr launch_app_config_mgr(
-        const std::string& _name,
-        bool _auto_prefix = false
-    );
-
     app::config_manager::sptr m_app_config_mgr;
 };
 

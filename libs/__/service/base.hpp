@@ -135,7 +135,7 @@ class SIGHT_SERVICE_CLASS_API base : public core::object,
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(base, core::object);
+    SIGHT_DECLARE_CLASS(base, core::object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     using config_t = service::config_t;

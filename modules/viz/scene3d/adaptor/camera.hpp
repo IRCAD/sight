@@ -78,7 +78,7 @@ public:
     camera() noexcept;
 
     /// Destroys the adaptor.
-    ~camera() noexcept override;
+    ~camera() noexcept override = default;
 
 protected:
 
@@ -121,7 +121,7 @@ private:
     void calibrate_camera_set(const data::camera_set& _cs);
 
     /// Updates Transformation Matrix.
-    void update_t_f_3d();
+    void update_tf_3d();
 
     /// Defines the near clipping plane position.
     void set_near_clip_distance(Ogre::Real _near_clip_distance);
@@ -150,6 +150,12 @@ private:
 
     /// Indicates if the calibration has been done successfully. If not, no update can be done without a calibrate
     bool m_calibration_done {false};
+
+    enum class update_flags : std::uint8_t
+    {
+        TRANSFORM,
+        CALIBRATION
+    };
 
     static constexpr std::string_view CALIBRATION_INPUT = "calibration";
     static constexpr std::string_view CAMERA_SET_INPUT  = "cameraSet";

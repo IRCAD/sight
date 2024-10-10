@@ -1,0 +1,136 @@
+<plugin id="config_update_test">
+    <extension implements="sight::app::extension::config">
+        <id>sequence_cfg_test</id>
+        <desc>Test configuration for simple update sequence</desc>
+        <config>
+            <service uid="test1_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test2_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test3_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test4_srv" type="sight::app::ut::test_reset_order_srv" />
+
+            <connect>
+                <signal>test3_srv/started</signal>
+                <slot>updater1/start</slot>
+            </connect>
+
+            <start uid="test1_srv" />
+            <start uid="test2_srv" />
+            <start uid="test3_srv" />
+            <start uid="test4_srv" />
+
+            <update>
+                <sequence uid="updater1" loop="true">
+                    <service uid="test1_srv" />
+                    <service uid="test2_srv" />
+                    <service uid="test3_srv" />
+                    <service uid="test4_srv" />
+                </sequence>
+            </update>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>imbricated_sequence_cfg_test</id>
+        <desc>Test configuration for imbricated sequences</desc>
+        <config>
+            <service uid="test1_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test2_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test3_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test4_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test5_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test6_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test7_srv" type="sight::app::ut::test_reset_order_srv" />
+
+            <connect>
+                <signal>test7_srv/started</signal>
+                <slot>updater1/start</slot>
+            </connect>
+
+            <start uid="test1_srv" />
+            <start uid="test2_srv" />
+            <start uid="test3_srv" />
+            <start uid="test4_srv" />
+            <start uid="test5_srv" />
+            <start uid="test6_srv" />
+            <start uid="test7_srv" />
+
+            <update>
+                <sequence uid="updater1" loop="true">
+                    <service uid="test1_srv" />
+                    <service uid="test2_srv" />
+                    <parallel>
+                        <service uid="test3_srv" />
+                        <service uid="test4_srv" />
+                    </parallel>
+                    <parallel>
+                        <service uid="test5_srv" />
+                        <service uid="test6_srv" />
+                    </parallel>
+                    <service uid="test7_srv" />
+                </sequence>
+            </update>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>sub_sequence_cfg_test</id>
+        <parameters>
+            <param name="updater" />
+        </parameters>
+        <desc>Test configuration for a subconfig update sequence</desc>
+        <config>
+            <service uid="test1_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test2_srv" type="sight::app::ut::test_order_srv" />
+
+            <start uid="test1_srv" />
+            <start uid="test2_srv" />
+
+            <update>
+                <sequence parent="${updater}">
+                    <service uid="test1_srv" />
+                    <service uid="test2_srv" />
+                </sequence>
+            </update>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>mutiple_config_sequence_cfg_test</id>
+        <desc>Test configuration for sequences over multiple configuration</desc>
+        <config>
+            <service uid="test1_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test4_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test7_srv" type="sight::app::ut::test_order_srv" />
+            <service uid="test8_srv" type="sight::app::ut::test_reset_order_srv" />
+
+            <service uid="sub_cfg1_srv" type="sight::app::config_controller">
+                <appConfig id="sub_sequence_cfg_test" />
+                <parameter replace="updater" by="sub_updater1" />
+            </service>
+
+            <service uid="sub_cfg2_srv" type="sight::app::config_controller">
+                <appConfig id="sub_sequence_cfg_test" />
+                <parameter replace="updater" by="sub_updater2" />
+            </service>
+
+            <start uid="test1_srv" />
+            <start uid="test4_srv" />
+            <start uid="test7_srv" />
+            <start uid="test8_srv" />
+            <start uid="sub_cfg1_srv" />
+            <start uid="sub_cfg2_srv" />
+            <start uid="updater1" />
+
+            <update>
+                <sequence uid="updater1" loop="true">
+                    <service uid="test1_srv" />
+                    <updater uid="sub_updater1" />
+                    <service uid="test4_srv" />
+                    <updater uid="sub_updater2" />
+                    <service uid="test7_srv" />
+                    <service uid="test8_srv" />
+                </sequence>
+            </update>
+        </config>
+    </extension>
+</plugin>

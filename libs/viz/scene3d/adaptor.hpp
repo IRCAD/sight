@@ -26,6 +26,8 @@
 
 #include "viz/scene3d/render.hpp"
 
+#include <core/updater.hpp>
+
 #include <data/boolean.hpp>
 
 #include <service/base.hpp>
@@ -59,7 +61,8 @@ namespace sight::viz::scene3d
  */
 class SIGHT_VIZ_SCENE3D_CLASS_API adaptor :
     public service::base,
-    public service::has_services
+    public service::has_services,
+    public sight::core::updater<16>
 {
 friend class render;
 
@@ -110,6 +113,7 @@ protected:
         static inline const core::com::slots::key_t TOGGLE_VISIBILITY = "toggle_visibility";
         static inline const core::com::slots::key_t SHOW              = "show";
         static inline const core::com::slots::key_t HIDE              = "hide";
+        static inline const core::com::slots::key_t LAZY_UPDATE       = "lazy_update";
     };
 
     /// Initializes slots.
@@ -130,7 +134,10 @@ protected:
     SIGHT_VIZ_SCENE3D_API void configure_params();
 
     /// Registers the adaptor into its render service.
-    SIGHT_VIZ_SCENE3D_API void initialize();
+    SIGHT_VIZ_SCENE3D_API void init();
+
+    /// Unregisters the adaptor from its render service.
+    SIGHT_VIZ_SCENE3D_API void deinit();
 
     /**
      * @brief Gets the Ogre SceneManager
@@ -155,6 +162,9 @@ protected:
 
     /// Connects the properties signals, this must be explicitly called by children classes.
     SIGHT_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
+
+    /// Calls updating when the update is required
+    SIGHT_VIZ_SCENE3D_API void do_update() final;
 
     /// Defines the layer ID:
     std::string m_layer_id;

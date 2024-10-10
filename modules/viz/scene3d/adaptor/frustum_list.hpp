@@ -44,7 +44,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b toggle_visibility(): toggles whether frustums are shown or not.
  * - \b show(): shows frustums.
  * - \b hide(): hides frustums.
- * - \b addFrustum(bool): adds a frustum in the list and displays it.
+ * - \b update(bool): adds a frustum in the list and displays it.
  * - \b clear(): clears frustum list.
  *
  * @section XML XML Configuration
@@ -81,7 +81,7 @@ public:
     frustum_list() noexcept;
 
     /// Destroys the adaptor.
-    ~frustum_list() noexcept override;
+    ~frustum_list() noexcept override = default;
 
 protected:
 
@@ -95,11 +95,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INPUT to ADD_FRUSTUM_SLOT
+     * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INPUT to adaptor::slots::LAZY_UPDATE
      */
     service::connections_t auto_connections() const override;
 
-    /// Updates the adaptor by attaching new cameras to scene nodes (called after addFrustum slot).
+    /// Updates the adaptor by attaching new cameras to scene nodes.
     void updating() override;
 
     /// Clears data.

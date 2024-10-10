@@ -79,19 +79,19 @@ public:
     }
 
     /// return true if the service is updated with update() method
-    bool get_is_updated() const
+    bool is_updated() const
     {
         return m_is_updated;
     }
 
-    /// return true if the service is updated with update() method
-    bool get_is_updated2() const
+    /// return true if the update2() slot has been called
+    bool is_updated2() const
     {
         return m_is_updated2;
     }
 
     /// return true if the service is updated with update(msg) method
-    bool get_is_updated_message() const
+    bool is_updated_message() const
     {
         return m_is_updated_message;
     }

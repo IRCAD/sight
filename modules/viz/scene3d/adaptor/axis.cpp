@@ -107,7 +107,7 @@ void axis::configuring()
 
 void axis::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
@@ -350,7 +350,6 @@ void axis::starting()
 
 void axis::updating()
 {
-    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
@@ -414,6 +413,8 @@ void axis::stopping()
 
     this->unregister_services();
     m_material.reset();
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

@@ -37,6 +37,7 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
+static const core::com::slots::key_t TRANSFORM_SLOT = "transform";
 static const core::com::slots::key_t CALIBRATE_SLOT = "calibrate";
 static const core::com::slots::key_t UPDATE_TF_SLOT = "updateTransformation";
 
@@ -57,7 +58,7 @@ struct camera::CameraNodeListener : public Ogre::MovableObject::Listener
 
     void objectMoved(Ogre::MovableObject* /*unused*/) override
     {
-        m_layer->update_t_f_3d();
+        m_layer->update_tf_3d();
     }
 };
 
@@ -65,14 +66,10 @@ struct camera::CameraNodeListener : public Ogre::MovableObject::Listener
 
 camera::camera() noexcept
 {
-    new_slot(UPDATE_TF_SLOT, &camera::update_t_f_3d, this);
-    new_slot(CALIBRATE_SLOT, &camera::calibrate, this);
+    new_slot(TRANSFORM_SLOT, [this](){lazy_update(update_flags::TRANSFORM);});
+    new_slot(CALIBRATE_SLOT, [this](){lazy_update(update_flags::CALIBRATION);});
+    new_slot(UPDATE_TF_SLOT, &camera::update_tf_3d, this);
 }
-
-//------------------------------------------------------------------------------
-
-camera::~camera() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -104,7 +101,7 @@ void camera::configuring()
 
 void camera::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     m_camera = this->layer()->get_default_camera();
 
@@ -131,6 +128,7 @@ void camera::starting()
         CALIBRATE_SLOT
     );
 
+    this->lazy_update();
     this->updating();
 }
 
@@ -140,7 +138,7 @@ service::connections_t camera::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
 
-    connections.push(TRANSFORM_INOUT, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(TRANSFORM_INOUT, data::matrix4::MODIFIED_SIG, TRANSFORM_SLOT);
     connections.push(CALIBRATION_INPUT, data::camera::MODIFIED_SIG, CALIBRATE_SLOT);
     connections.push(CALIBRATION_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, CALIBRATE_SLOT);
     connections.push(CAMERA_SET_INPUT, data::camera_set::MODIFIED_SIG, CALIBRATE_SLOT);
@@ -153,48 +151,57 @@ service::connections_t camera::auto_connections() const
 
 void camera::updating()
 {
-    if(m_calibration_done || this->calibrate())
+    if(update_needed(update_flags::TRANSFORM))
     {
-        Ogre::Affine3 ogre_matrix;
+        if(m_calibration_done || this->calibrate())
         {
-            const auto transform = m_transform.lock();
-
-            // Received input line and column data from Sight transformation matrix
-            for(std::size_t lt = 0 ; lt < 4 ; lt++)
+            Ogre::Affine3 ogre_matrix;
             {
-                for(std::size_t ct = 0 ; ct < 4 ; ct++)
+                const auto transform = m_transform.lock();
+
+                // Received input line and column data from Sight transformation matrix
+                for(std::size_t lt = 0 ; lt < 4 ; lt++)
                 {
-                    ogre_matrix[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
+                    for(std::size_t ct = 0 ; ct < 4 ; ct++)
+                    {
+                        ogre_matrix[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
+                    }
                 }
             }
+
+            // Decompose the camera matrix
+            Ogre::Vector3 position;
+            Ogre::Vector3 scale;
+            Ogre::Quaternion orientation;
+            ogre_matrix.decomposition(position, scale, orientation);
+
+            // Reverse view-up and direction for AR
+            const Ogre::Quaternion rotate_y(Ogre::Degree(180), Ogre::Vector3(0, 1, 0));
+            const Ogre::Quaternion rotate_z(Ogre::Degree(180), Ogre::Vector3(0, 0, 1));
+            orientation = orientation * rotate_z * rotate_y;
+
+            // Flag to skip update_tf3D() when called from the camera listener
+            m_skip_update = true;
+
+            Ogre::Node* parent = m_camera->getParentNode();
+
+            // Reset the camera position
+            parent->setPosition(0, 0, 0);
+            parent->setOrientation(Ogre::Quaternion::IDENTITY);
+
+            // Update the camera position
+            parent->rotate(orientation);
+            parent->translate(position);
         }
-
-        // Decompose the camera matrix
-        Ogre::Vector3 position;
-        Ogre::Vector3 scale;
-        Ogre::Quaternion orientation;
-        ogre_matrix.decomposition(position, scale, orientation);
-
-        // Reverse view-up and direction for AR
-        const Ogre::Quaternion rotate_y(Ogre::Degree(180), Ogre::Vector3(0, 1, 0));
-        const Ogre::Quaternion rotate_z(Ogre::Degree(180), Ogre::Vector3(0, 0, 1));
-        orientation = orientation * rotate_z * rotate_y;
-
-        // Flag to skip update_tf3D() when called from the camera listener
-        m_skip_update = true;
-
-        Ogre::Node* parent = m_camera->getParentNode();
-
-        // Reset the camera position
-        parent->setPosition(0, 0, 0);
-        parent->setOrientation(Ogre::Quaternion::IDENTITY);
-
-        // Update the camera position
-        parent->rotate(orientation);
-        parent->translate(position);
-
-        this->request_render();
     }
+
+    if(update_needed(update_flags::CALIBRATION))
+    {
+        this->calibrate();
+    }
+
+    this->update_done();
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
@@ -209,11 +216,13 @@ void camera::stopping()
         delete m_camera_node_listener;
         m_camera_node_listener = nullptr;
     }
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------
 
-void camera::update_t_f_3d()
+void camera::update_tf_3d()
 {
     if(m_skip_update)
     {
@@ -368,8 +377,6 @@ void camera::calibrate_mono_camera(const data::camera& _cam)
         );
 
         m_camera->setCustomProjectionMatrix(true, m);
-
-        this->updating();
     }
 }
 
@@ -435,7 +442,6 @@ void camera::calibrate_camera_set(const data::camera_set& _cs)
         if(!calibrations.empty())
         {
             layer->set_camera_calibrations(calibrations);
-            this->updating();
         }
     }
 }

@@ -46,7 +46,7 @@ public:
         default;
 
     /// return true if the service is updated with updating() method
-    bool get_is_updated() const
+    bool is_updated() const
     {
         return m_is_updated;
     }
@@ -125,6 +125,94 @@ public:
     }
 
     data::ptr<data::image, data::access::in> m_input {this, "data", true};
+};
+
+/**
+ * @brief Service for updater tests
+ */
+class test_order_srv final : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_order_srv, service::base);
+
+    static unsigned int s_ORDER;
+
+    //------------------------------------------------------------------------------
+
+    ~test_order_srv() noexcept final = default;
+
+    //------------------------------------------------------------------------------
+
+    void configuring(const config_t&) final
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() final
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() final
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() final
+    {
+        m_update_order = s_ORDER++;
+    }
+
+    //------------------------------------------------------------------------------
+
+    unsigned int update_order() const
+    {
+        return m_update_order;
+    }
+
+protected:
+
+    unsigned int m_update_order {0};
+};
+
+class test_reset_order_srv final : public service::base
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test_reset_order_srv, service::base);
+
+    //------------------------------------------------------------------------------
+
+    ~test_reset_order_srv() noexcept final = default;
+
+    //------------------------------------------------------------------------------
+
+    void configuring(const config_t&) final
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void starting() final
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void stopping() final
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void updating() final
+    {
+        test_order_srv::s_ORDER = 1;
+    }
 };
 
 } // namespace sight::app::ut

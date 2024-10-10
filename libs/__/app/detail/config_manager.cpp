@@ -45,6 +45,7 @@
 #include <boost/thread/futures/wait_for_all.hpp>
 #include <ranges>
 
+#include <boost/property_tree/xml_parser.hpp>
 namespace sight::app::detail
 {
 
@@ -167,37 +168,10 @@ void config_manager::create()
     this->create_objects(m_cfg_elem);
     this->create_connections();
 
-    // Inject a service to load/save preferences automatically
-    // It implies a dependency the UI library, so using a service allows to delegate it at a higher level
-    if(!m_pref_objects.empty())
-    {
-        static unsigned int srv_cpt = 1;
-        // We need a unique identifier here, do it manually
-        m_pref_service_uid = core::id::join(PREFERENCES_SRV, srv_cpt++);
-
-        config_t service_cfg;
-        service_cfg.put("<xmlattr>.uid", m_pref_service_uid);
-        service_cfg.put("<xmlattr>.type", "sight::module::ui::preferences");
-
-        config_t inout_cfg;
-        inout_cfg.put("<xmlattr>.group", "keys");
-        std::ranges::for_each(
-            m_pref_objects,
-            [&inout_cfg](const auto& _uid)
-            {
-                config_t objects_cfg;
-                // Note: These objects uids are already "adapted", in other words there are truly unique
-                objects_cfg.put("<xmlattr>.uid", _uid);
-                inout_cfg.add_child("key", objects_cfg);
-            });
-        service_cfg.add_child("inout", inout_cfg);
-
-        config_t preference_service_cfg;
-        preference_service_cfg.add_child("service", service_cfg);
-        this->create_services(preference_service_cfg);
-    }
+    this->create_preferences_service();
 
     this->create_services(m_cfg_elem);
+    this->create_updater_services();
 
     m_state = state_created;
 }
@@ -210,7 +184,23 @@ void config_manager::start()
 
     core::com::has_slots::m_slots.set_worker(core::thread::get_default_worker());
 
-    this->process_start_items();
+    service::config_t start_config;
+    const auto add_start_elements =
+        [&start_config](const service::config_t& _cfg)
+        {
+            for(const auto& elem : _cfg)
+            {
+                if(elem.first == "start")
+                {
+                    config_t srv_cfg;
+                    start_config.add_child(elem.first, elem.second);
+                }
+            }
+        };
+    add_start_elements(m_cfg_elem);
+    add_start_elements(m_updater_srv_start);
+
+    this->process_start_items(start_config);
 
     m_state = state_started;
 }
@@ -390,7 +380,7 @@ void config_manager::destroy_created_services()
 
 // ------------------------------------------------------------------------
 
-void config_manager::process_start_items()
+void config_manager::process_start_items(const core::runtime::config_t& _element)
 {
     std::vector<service::base::shared_future_t> futures;
 
@@ -404,7 +394,7 @@ void config_manager::process_start_items()
         m_started_srv.push_back(srv);
     }
 
-    for(const auto& elem : m_cfg_elem)
+    for(const auto& elem : _element)
     {
         if(elem.first == "start")
         {
@@ -455,11 +445,10 @@ void config_manager::process_update_items()
 {
     std::vector<service::base::shared_future_t> futures;
 
-    for(const auto& elem : m_cfg_elem)
-    {
-        if(elem.first == "update")
+    const auto process_update_once =
+        [&futures, this](const service::config_t& _elem)
         {
-            const auto uid = elem.second.get<std::string>("<xmlattr>.uid");
+            const auto uid = _elem.get<std::string>("<xmlattr>.uid", "");
             SIGHT_ASSERT("\"uid\" attribute is empty.", !uid.empty());
 
             if(!core::id::exist(uid))
@@ -468,9 +457,9 @@ void config_manager::process_update_items()
                 {
                     m_deferred_update_srv.push_back(uid);
                     SIGHT_DEBUG(
-                        this->msg_head() + "Update for service '" + uid + "'will be deferred since at least one "
-                                                                          "of its data is missing. With DEBUG log level, you can know which are the "
-                                                                          "missing objects."
+                        this->msg_head() + "Update for service '" + uid
+                        + "'will be deferred since at least one of its data is missing. "
+                          "With DEBUG log level, you can know which are the missing objects."
                     );
                 }
                 else
@@ -491,6 +480,35 @@ void config_manager::process_update_items()
                 );
 
                 futures.emplace_back(srv->update());
+            }
+        };
+
+    [[maybe_unused]] bool old_style_config = false;
+    [[maybe_unused]] bool new_style_config = false;
+    for(const auto& elem : m_cfg_elem)
+    {
+        if(elem.first == "update")
+        {
+            if(auto attr = elem.second.get_child_optional("<xmlattr>"); attr.has_value())
+            {
+                SIGHT_ASSERT("Can not mix old-style <update uid=" "> tags with new syntax", !new_style_config);
+                // Sight < 25.0 configuration style
+                process_update_once(elem.second);
+                old_style_config = true;
+            }
+            else
+            {
+                SIGHT_ASSERT("Can not mix new-style <update> with old <update uid=" "> syntax", !old_style_config);
+                SIGHT_ASSERT("Can not have more than one <update> tag with new-style syntax", !new_style_config);
+                new_style_config = true;
+                // Sight >= 25.0 configuration style
+                for(const auto& elem_update : elem.second)
+                {
+                    if(elem_update.first == "service")
+                    {
+                        process_update_once(elem_update.second);
+                    }
+                }
             }
         }
     }
@@ -637,7 +655,7 @@ service::base::sptr config_manager::create_service(const detail::service_config&
                 key.first,
                 key.second,
                 objectCfg.m_access,
-                objectCfg.m_auto_connect || _srv_config.m_global_auto_connect,
+                objectCfg.m_auto_connect && _srv_config.m_global_auto_connect,
                 objectCfg.m_optional
             );
         }
@@ -703,6 +721,20 @@ void config_manager::create_connections()
             auto uid = elem.second.get<std::string>("<xmlattr>.uid");
             SIGHT_ASSERT("'uid' attribute is empty.", !uid.empty());
             services.insert(uid);
+        }
+        else if(elem.first == "update")
+        {
+            for(const auto& update_elem : elem.second)
+            {
+                if(update_elem.first == "sequence" || update_elem.first == "parallel")
+                {
+                    auto uid = update_elem.second.get<std::string>("<xmlattr>.uid", "");
+                    if(!uid.empty())
+                    {
+                        services.insert(uid);
+                    }
+                }
+            }
         }
     }
 #endif
@@ -791,6 +823,134 @@ void config_manager::create_connections()
 
             m_created_objects_proxies[connection_infos.m_channel] = created_objects_proxy;
             this->connect_proxy(connection_infos.m_channel, created_objects_proxy);
+        }
+    }
+}
+
+// ------------------------------------------------------------------------
+
+void config_manager::create_preferences_service()
+{
+    // Inject a service to load/save preferences automatically
+    // It implies a dependency on the UI library, so using a service allows to delegate it at a higher level
+    if(!m_pref_objects.empty())
+    {
+        static std::uint64_t srv_cpt = 1;
+        // We need a unique identifier here, do it manually
+        m_pref_service_uid = core::id::join(PREFERENCES_SRV, srv_cpt++);
+
+        config_t service_cfg;
+        service_cfg.put("<xmlattr>.uid", m_pref_service_uid);
+        service_cfg.put("<xmlattr>.type", "sight::module::ui::preferences");
+
+        config_t inout_cfg;
+        inout_cfg.put("<xmlattr>.group", "keys");
+        std::ranges::for_each(
+            m_pref_objects,
+            [&inout_cfg](const auto& _uid)
+            {
+                config_t objects_cfg;
+                // Note: These objects uids are already "adapted", in other words there are truly unique
+                objects_cfg.put("<xmlattr>.uid", _uid);
+                inout_cfg.add_child("key", objects_cfg);
+            });
+        service_cfg.add_child("inout", inout_cfg);
+
+        config_t preference_service_cfg;
+        preference_service_cfg.add_child("service", service_cfg);
+        this->create_services(preference_service_cfg);
+    }
+}
+
+// ------------------------------------------------------------------------
+
+void config_manager::create_updater_services()
+{
+    const std::function<std::string(const service::config_t&, bool, bool)> process_update =
+        [this, &process_update](const service::config_t& _elem, bool _sequence, bool _root)
+        {
+            auto uid = _elem.get<std::string>("<xmlattr>.uid", "");
+            if(uid.empty())
+            {
+                static std::uint64_t srv_cpt = 1;
+                // We need a unique identifier here, do it manually
+                uid = core::id::join("updater", srv_cpt++);
+            }
+
+            config_t service_cfg;
+            service_cfg.put("<xmlattr>.uid", uid);
+            if(_sequence)
+            {
+                service_cfg.put("<xmlattr>.type", "sight::app::update_sequence");
+            }
+            else
+            {
+                service_cfg.put("<xmlattr>.type", "sight::app::update_parallel");
+            }
+
+            config_t config;
+            for(const auto& elem : _elem)
+            {
+                if(elem.first == "service" || elem.first == "updater")
+                {
+                    config.add_child(elem.first, elem.second);
+                }
+                else if(elem.first == "sequence" || elem.first == "parallel")
+                {
+                    config_t srv_cfg;
+                    const auto updater_uid = process_update(elem.second, elem.first == "sequence", false);
+                    srv_cfg.add("<xmlattr>.uid", updater_uid);
+                    config.add_child("service", srv_cfg);
+                }
+            }
+
+            const auto parent = _elem.get<std::string>("<xmlattr>.parent", "");
+            SIGHT_ASSERT(
+                "Parent attribute can only be specified at the root level of the <update> tag.",
+                _root || parent.empty()
+            );
+            config.put("<xmlattr>.parent", parent);
+
+            const auto loop = _elem.get("<xmlattr>.loop", false);
+            SIGHT_ASSERT(
+                "Loop attribute can only be specified at the root level of the <update> tag.",
+                _root || !loop
+            );
+            SIGHT_ASSERT(
+                "Loop attribute can not be specified if a parent is set in the <update> tag.",
+                parent.empty() || !loop
+            );
+            config.put("<xmlattr>.loop", loop);
+
+            service_cfg.add_child("config", config);
+
+            if(!parent.empty() || not _root)
+            {
+                config_t updater_start_cfg;
+                updater_start_cfg.add("<xmlattr>.uid", uid);
+                m_updater_srv_start.add_child("start", updater_start_cfg);
+            }
+
+            config_t updater_service_cfg;
+            updater_service_cfg.add_child("service", service_cfg);
+            this->create_services(updater_service_cfg);
+
+            return uid;
+        };
+
+    if(m_cfg_elem.count("update") == 1)
+    {
+        // Sight >= 25.0 configuration style
+        for(const auto& elem : m_cfg_elem.get_child("update"))
+        {
+            if(elem.first == "sequence")
+            {
+                process_update(elem.second, true, true);
+            }
+            else if(elem.first == "parallel")
+            {
+                process_update(elem.second, false, true);
+            }
         }
     }
 }
@@ -1006,7 +1166,7 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
                                 key.first,
                                 key.second,
                                 objCfg.m_access,
-                                objCfg.m_auto_connect || srv_cfg->m_global_auto_connect,
+                                objCfg.m_auto_connect && srv_cfg->m_global_auto_connect,
                                 objCfg.m_optional
                             );
 

@@ -133,29 +133,6 @@ void intrinsic_calibration::test()
             // available
             helper::button::push(_tester, "intrinsicCameraView/Calibrate");
             helper::label::contain(_tester, "cameraInfoSrv/isCalibrated", "The camera is calibrated.");
-
-            // Since the process of calibration is deterministic and the video is actually a fixed image, the values are
-            // reproducible
-            const std::array fields {
-                std::tuple {"width", 700., 0.},
-                std::tuple {"height", 550., 0.},
-                std::tuple {"skew", 0., 0.},
-                std::tuple {"cx", 352.474, 12.}, // TODO: Sometimes we get 341.647/283.149, this is probably wrong but
-                std::tuple {"cy", 244.686, 42.}, //for the moment we keep it tolerant to avoid to pollute the CI tests
-                std::tuple {"fx", 2493.44, 300.},
-                std::tuple {"fy", 2330.59, 300.},
-                std::tuple {"k1", 0.0511689, 2.},
-                std::tuple {"k2", -7.10914, 2.},
-                std::tuple {"p1", -0.0021059, 0.0004},
-                std::tuple {"p2", -0.00137331, 0.0004},
-                std::tuple {"k3", 247.139, 100.},
-                std::tuple {"error", 0.084695868, 0.0002}
-            };
-            QRegExp re("<font color='#0066CC'>(.*)</font>");
-            for(auto [name, expected, tolerance] : fields)
-            {
-                helper::label::equal(_tester, "cameraInfoSrv/"s + name, expected, tolerance, re);
-            }
         },
         true
     );

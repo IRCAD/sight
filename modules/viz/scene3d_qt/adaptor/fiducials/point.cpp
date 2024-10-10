@@ -499,7 +499,7 @@ void point::configuring()
 
 void point::starting()
 {
-    initialize();
+    adaptor::init();
 
     render_service()->make_current();
 
@@ -681,6 +681,8 @@ void point::stopping()
     unregister_services();
 
     m_event_filter = nullptr;
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

@@ -88,7 +88,7 @@ void light::configuring()
 
 void light::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
@@ -194,8 +194,8 @@ void light::starting()
 service::connections_t light::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(DIFFUSE_COLOR_INOUT, data::color::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(SPECULAR_COLOR_INOUT, data::color::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(DIFFUSE_COLOR_INOUT, data::color::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(SPECULAR_COLOR_INOUT, data::color::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
 
     return connections;
 }
@@ -223,6 +223,7 @@ void light::updating()
     m_light->setSpecularColour(specular_color);
     m_light->setType(m_light_type);
 
+    this->update_done();
     this->request_render();
 }
 
@@ -255,6 +256,8 @@ void light::stopping()
 
     m_light      = nullptr;
     m_light_node = nullptr;
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

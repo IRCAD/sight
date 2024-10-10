@@ -110,7 +110,7 @@ public:
     volume_render() noexcept;
 
     /// Destroys the adaptor.
-    ~volume_render() noexcept override;
+    ~volume_render() noexcept override = default;
 
 protected:
 
@@ -410,6 +410,16 @@ private:
 
     /// Updates the inout clipping matrix from the clipping box positions.
     void update_clipping_matrix();
+
+    enum class update_flags : std::uint8_t
+    {
+        IMAGE,
+        IMAGE_BUFFER,
+        MASK_BUFFER,
+        CLIPPING_BOX,
+        TF,
+        _NUM
+    };
 
     ///Prevents concurrent access on certain operations (texture update, etc.)
     std::mutex m_mutex;

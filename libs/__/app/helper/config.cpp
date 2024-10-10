@@ -281,7 +281,7 @@ app::detail::service_config config::parse_service(
     );
 
     // AutoConnect
-    srvconfig.m_global_auto_connect = core::runtime::get_ptree_value(_srv_elem, "<xmlattr>.auto_connect", false);
+    srvconfig.m_global_auto_connect = core::runtime::get_ptree_value(_srv_elem, "<xmlattr>.auto_connect", true);
 
     // Worker key
     srvconfig.m_worker = _srv_elem.get<std::string>("<xmlattr>.worker", "");

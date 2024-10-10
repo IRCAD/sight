@@ -300,6 +300,7 @@
 
             <start uid="mainFrame" />
             <start uid="imageReaderSrv" />
+            <start uid="imageWriterSrv" />
             <start uid="meshReaderSrv" />
             <start uid="textureReaderSrv" />
             <start uid="trackballInteractorAdp" />

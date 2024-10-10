@@ -69,7 +69,7 @@ public:
     {
         auto adaptor = m_adaptor.lock();
         SIGHT_ASSERT("Adaptor has expired.", adaptor);
-        adaptor->set_dirty();
+        adaptor->lazy_update();
     }
 
     //------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ void compositor_parameter::configuring()
 
 void compositor_parameter::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     sight::viz::scene3d::layer::sptr layer = this->layer();
 
@@ -127,16 +127,6 @@ void compositor_parameter::starting()
         this->get_sptr(),
         ADD_LISTENER_SLOT
     );
-}
-
-//------------------------------------------------------------------------------
-
-void compositor_parameter::updating()
-{
-    // This is typically called when the data has changed through autoconnect
-    // So set the parameter as dirty and perform the update
-    this->set_dirty();
-    this->parameter_adaptor::updating();
 }
 
 //------------------------------------------------------------------------------
@@ -160,6 +150,8 @@ void compositor_parameter::stopping()
     compositor->removeListener(m_listener);
     delete m_listener;
     m_listener = nullptr;
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

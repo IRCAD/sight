@@ -50,8 +50,6 @@
             <xs:element name="matrix"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="value"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="item"  type="item_t"  minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="node"  type="node_t"  minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="edge"  type="edge_t"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="colors"  type="color_t"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="color"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="file"  type="xs:string"  minOccurs="0" maxOccurs="1" />
@@ -104,7 +102,45 @@
     </xs:complexType>
 
     <xs:complexType name="update_t">
+        <xs:sequence>
+            <xs:element name="service" type="start_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="sequence" type="sequence_t" />
+                <xs:element name="parallel" type="parallel_t" />
+            </xs:choice>
+        </xs:sequence>
         <xs:attribute name='uid' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="sequence_t">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="service" type="service_update_t" />
+                <xs:element name="updater" type="start_t" />
+                <xs:element name="parallel" type="parallel_t" />
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='loop' type='xs:string' />
+        <xs:attribute name='parent' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="parallel_t">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="service" type="service_update_t" />
+                <xs:element name="updater" type="start_t" />
+                <xs:element name="sequence" type="sequence_t" />
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='loop' type='xs:string' />
+        <xs:attribute name='parent' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="service_update_t">
+        <xs:attribute name="uid" type="xs:string" use="required" />
+        <xs:attribute name="slot" type="xs:string" use="optional" />
     </xs:complexType>
 
     <xs:simpleType name="auto_connect_t">
@@ -119,35 +155,6 @@
         <xs:sequence>
             <xs:element name="service" type="service_t" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
-    </xs:complexType>
-
-    <!-- node_t Type -->
-    <xs:complexType name="node_t"> <!-- Almost the same as object_t -->
-        <xs:sequence>
-            <xs:element name="object" type="object_t" minOccurs="0" maxOccurs="1" />
-            <xs:element name="serviceList" type="service_list_t" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="service" type="service_t" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="start" type="start_t" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="update" type="update_t" minOccurs="0" maxOccurs="unbounded" />
-        </xs:sequence>
-        <xs:attribute name="uid" type="xs:string" use="required" />
-        <xs:attribute name="src" type="xs:string" />
-    </xs:complexType>
-
-    <!-- edge_t Type -->
-    <xs:complexType name="edge_t"> <!-- Same as node_t, but with optional "weight" attribute -->
-        <xs:sequence>
-            <xs:element name="object" type="object_t" minOccurs="0" maxOccurs="1" />
-            <xs:element name="serviceList" type="service_list_t" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="service" type="service_t" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="start" type="start_t" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="update" type="update_t" minOccurs="0" maxOccurs="unbounded" />
-        </xs:sequence>
-        <xs:attribute name="origin" type="xs:string" use="required" />
-        <xs:attribute name="target" type="xs:string" use="required" />
-        <xs:attribute name="weight" type="xs:string" />
-        <xs:attribute name="uid" type="xs:string" />
-        <xs:attribute name="src" type="xs:string" />
     </xs:complexType>
 
     <xs:complexType name="color_t">

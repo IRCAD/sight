@@ -134,6 +134,8 @@ public:
         std::string_view _key,
         std::optional<std::size_t> _index = {});
 
+    SIGHT_DATA_API bool is_auto_connected() const;
+
 protected:
 
     /**

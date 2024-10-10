@@ -80,7 +80,7 @@ void grid::configuring()
 
 void grid::starting()
 {
-    this->initialize();
+    adaptor::init();
     this->render_service()->make_current();
 
     Ogre::SceneManager* scene_mgr = this->get_scene_manager();
@@ -127,6 +127,7 @@ void grid::updating()
         this->draw_grid(true);
     }
 
+    this->update_done();
     this->request_render();
 }
 
@@ -143,6 +144,8 @@ void grid::stopping()
         this->get_scene_manager()->destroyManualObject(m_line);
         m_line = nullptr;
     }
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

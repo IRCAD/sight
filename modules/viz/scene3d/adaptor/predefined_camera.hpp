@@ -73,7 +73,7 @@ namespace sight::module::viz::scene3d::adaptor
  * then goes to that position if found.
  * - \b nextPosition: Go to the next position (cyclic iteration).
  * - \b previousPosition: Go to the previous position (cyclic iteration).
- * - \b updateTransform: Update adaptor using the input transformation,
+ * - \b update: Update adaptor using the input transformation,
  * this slot is called automatically if auto_connect="true".
  */
 class predefined_camera final : public sight::viz::scene3d::adaptor
@@ -87,7 +87,6 @@ public:
         inline static const slots_t SET_PARAMETER     = "set_parameter";
         inline static const slots_t NEXT_POSITION     = "nextPosition";
         inline static const slots_t PREVIOUS_POSITION = "previousPosition";
-        inline static const slots_t UPDATE_TRANSFORM  = "updateTransform";
     };
 
     /// Generates default methods as New, dynamicCast, ...
@@ -117,7 +116,6 @@ private:
 
     connections_t auto_connections() const final;
 
-    void update_transform();
     void set_parameter(ui::parameter_t _value, std::string _key);
 
     using predefined_position_t =
@@ -146,10 +144,7 @@ private:
     float m_zoom {1.0};
 
     /// Input transform.
-    static constexpr std::string_view REGISTRATION_TRANSFORM_IN = "transform";
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {
-        this, REGISTRATION_TRANSFORM_IN, true
-    };
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, "transform", true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

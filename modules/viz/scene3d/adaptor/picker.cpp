@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ void picker::configuring()
 
 void picker::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     const auto layer = this->layer();
     m_interactor = std::make_shared<sight::viz::scene3d::interactor::mesh_picker_interactor>(
@@ -93,6 +93,8 @@ void picker::stopping()
 {
     const auto layer = this->layer();
     layer->remove_interactor(m_interactor);
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

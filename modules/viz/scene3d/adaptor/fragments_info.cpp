@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,7 +113,7 @@ void fragments_info::configuring()
 
 void fragments_info::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
@@ -158,48 +158,6 @@ void fragments_info::starting()
 
 void fragments_info::updating() noexcept
 {
-    {
-        const auto image = m_image.lock();
-        if(image)
-        {
-            const Ogre::TexturePtr text = m_compositor->getTextureInstance(m_target_name, 0);
-            sight::viz::scene3d::utils::convert_from_ogre_texture(text, image.get_shared(), m_flip_image);
-
-            const auto sig =
-                image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            sig->async_emit();
-        }
-    }
-
-    {
-        const auto depth = m_depth.lock();
-        if(depth)
-        {
-            const Ogre::TexturePtr depth_text = m_compositor->getTextureInstance(m_target_name, 1);
-            sight::viz::scene3d::utils::convert_from_ogre_texture(depth_text, depth.get_shared(), m_flip_image);
-
-            const auto depth_sig =
-                depth->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            depth_sig->async_emit();
-        }
-    }
-
-    {
-        const auto primitive_id = m_primitive.lock();
-        if(primitive_id)
-        {
-            const Ogre::TexturePtr primitive_id_text = m_compositor->getTextureInstance(m_target_primitive_id_name, 0);
-            sight::viz::scene3d::utils::convert_from_ogre_texture(
-                primitive_id_text,
-                primitive_id.get_shared(),
-                m_flip_image
-            );
-
-            const auto primitive_id_sig =
-                primitive_id->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            primitive_id_sig->async_emit();
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -212,6 +170,8 @@ void fragments_info::stopping()
 
     const sight::viz::scene3d::layer::sptr layer = this->layer();
     layer->get_render_target()->removeListener(this);
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -383,7 +343,48 @@ void fragments_info::resize_viewport()
 
 void fragments_info::postRenderTargetUpdate(const Ogre::RenderTargetEvent& /*evt*/)
 {
-    this->updating();
+    {
+        const auto image = m_image.lock();
+        if(image)
+        {
+            const Ogre::TexturePtr text = m_compositor->getTextureInstance(m_target_name, 0);
+            sight::viz::scene3d::utils::convert_from_ogre_texture(text, image.get_shared(), m_flip_image);
+
+            const auto sig =
+                image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            sig->async_emit();
+        }
+    }
+
+    {
+        const auto depth = m_depth.lock();
+        if(depth)
+        {
+            const Ogre::TexturePtr depth_text = m_compositor->getTextureInstance(m_target_name, 1);
+            sight::viz::scene3d::utils::convert_from_ogre_texture(depth_text, depth.get_shared(), m_flip_image);
+
+            const auto depth_sig =
+                depth->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            depth_sig->async_emit();
+        }
+    }
+
+    {
+        const auto primitive_id = m_primitive.lock();
+        if(primitive_id)
+        {
+            const Ogre::TexturePtr primitive_id_text = m_compositor->getTextureInstance(m_target_primitive_id_name, 0);
+            sight::viz::scene3d::utils::convert_from_ogre_texture(
+                primitive_id_text,
+                primitive_id.get_shared(),
+                m_flip_image
+            );
+
+            const auto primitive_id_sig =
+                primitive_id->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+            primitive_id_sig->async_emit();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

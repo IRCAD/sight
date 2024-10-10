@@ -52,7 +52,6 @@ predefined_camera::predefined_camera() noexcept
                 m_interactor->previous_position();
             }
         });
-    new_slot(slots::UPDATE_TRANSFORM, &predefined_camera::update_transform, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -100,7 +99,7 @@ void predefined_camera::configuring()
 
 void predefined_camera::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     const auto layer = this->layer();
 
@@ -118,6 +117,13 @@ void predefined_camera::starting()
 
     layer->add_interactor(m_interactor, m_priority);
 
+    this->updating();
+}
+
+//-----------------------------------------------------------------------------
+
+void predefined_camera::updating() noexcept
+{
     if(const auto& transform = m_transform.const_lock(); transform)
     {
         const auto ogre_mat = ::sight::viz::scene3d::utils::to_ogre_matrix(transform.get_shared());
@@ -125,13 +131,8 @@ void predefined_camera::starting()
         m_interactor->set_transform(ogre_mat);
     }
 
+    update_done();
     this->request_render();
-}
-
-//-----------------------------------------------------------------------------
-
-void predefined_camera::updating() noexcept
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -141,6 +142,8 @@ void predefined_camera::stopping()
     const auto layer = this->layer();
     layer->remove_interactor(m_interactor);
     m_interactor.reset();
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------
@@ -155,22 +158,10 @@ void predefined_camera::set_parameter(ui::parameter_t _value, std::string _key)
 
 //-----------------------------------------------------------------------------
 
-void predefined_camera::update_transform()
-{
-    if(const auto& transform = m_transform.const_lock(); transform)
-    {
-        const auto ogre_mat = ::sight::viz::scene3d::utils::to_ogre_matrix(transform.get_shared());
-
-        m_interactor->set_transform(ogre_mat);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 predefined_camera::connections_t predefined_camera::auto_connections() const
 {
     service::connections_t connections = {
-        {REGISTRATION_TRANSFORM_IN, sight::data::matrix4::MODIFIED_SIG, slots::UPDATE_TRANSFORM}
+        {m_transform, sight::data::matrix4::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}
     };
     return connections + adaptor::auto_connections();
 }

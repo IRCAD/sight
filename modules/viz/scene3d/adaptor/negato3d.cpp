@@ -44,33 +44,22 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t NEWIMAGE_SLOT            = "new_image";
-static const core::com::slots::key_t SLICETYPE_SLOT           = "sliceType";
-static const core::com::slots::key_t SLICEINDEX_SLOT          = "sliceIndex";
-static const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
-static const core::com::slots::key_t SET_TRANSPARENCY_SLOT    = "set_transparency";
-static const core::com::slots::key_t UPDATE_TF_SLOT           = "update_tf";
-
-static const core::com::signals::key_t PICKED_VOXEL_SIG = "picked_voxel";
-
 //------------------------------------------------------------------------------
 
 negato3d::negato3d() noexcept
 {
-    new_slot(NEWIMAGE_SLOT, &negato3d::new_image, this);
-    new_slot(SLICETYPE_SLOT, &negato3d::change_slice_type, this);
-    new_slot(SLICEINDEX_SLOT, &negato3d::change_slice_index, this);
-    new_slot(SET_TRANSPARENCY_SLOT, &negato3d::set_transparency, this);
-    new_slot(UPDATE_SLICES_FROM_WORLD, &negato3d::update_slices_from_world, this);
-    new_slot(UPDATE_TF_SLOT, &negato3d::update_tf, this);
+    // Auto-connected slots
+    new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::IMAGE);});
+    new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::TF);});
 
-    m_picked_voxel_signal = new_signal<picked_voxel_sig_t>(PICKED_VOXEL_SIG);
+    // Interaction slots
+    new_slot(slots::SLICE_TYPE, &negato3d::change_slice_type, this);
+    new_slot(slots::SLICE_INDEX, &negato3d::change_slice_index, this);
+    new_slot(slots::UPDATE_SLICES_FROM_WORLD, &negato3d::update_slices_from_world, this);
+    new_slot(slots::SET_TRANSPARENCY, &negato3d::set_transparency, this);
+
+    new_signal<signals::picked_voxel_t>(signals::PICKED_VOXEL);
 }
-
-//------------------------------------------------------------------------------
-
-negato3d::~negato3d() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -133,7 +122,7 @@ void negato3d::configuring()
 
 void negato3d::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
     {
@@ -193,13 +182,13 @@ void negato3d::starting()
 service::connections_t negato3d::auto_connections() const
 {
     service::connections_t connections = {
-        {IMAGE_IN, data::image::MODIFIED_SIG, NEWIMAGE_SLOT},
-        {IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, NEWIMAGE_SLOT},
-        {IMAGE_IN, data::image::SLICE_TYPE_MODIFIED_SIG, SLICETYPE_SLOT},
-        {IMAGE_IN, data::image::SLICE_INDEX_MODIFIED_SIG, SLICEINDEX_SLOT},
-        {TF_INOUT, data::transfer_function::MODIFIED_SIG, UPDATE_TF_SLOT},
-        {TF_INOUT, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
-        {TF_INOUT, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT}
+        {m_image, data::image::MODIFIED_SIG, slots::UPDATE_IMAGE},
+        {m_image, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_IMAGE},
+        {m_tf, data::transfer_function::POINTS_MODIFIED_SIG, slots::UPDATE_TF},
+        {m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF},
+        {m_tf, data::transfer_function::MODIFIED_SIG, slots::UPDATE_TF},
+        {m_image, data::image::SLICE_TYPE_MODIFIED_SIG, slots::SLICE_TYPE},
+        {m_image, data::image::SLICE_INDEX_MODIFIED_SIG, slots::SLICE_INDEX}
     };
     return connections + adaptor::auto_connections();
 }
@@ -208,6 +197,16 @@ service::connections_t negato3d::auto_connections() const
 
 void negato3d::updating()
 {
+    if(update_needed(update_flags::IMAGE))
+    {
+        this->new_image();
+    }
+    else if(update_needed(update_flags::TF))
+    {
+        this->update_tf();
+    }
+
+    this->update_done();
     this->request_render();
 }
 
@@ -234,7 +233,7 @@ void negato3d::stopping()
     m_3d_ogre_texture.reset();
     m_gpu_tf.reset();
 
-    this->request_render();
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------
@@ -442,7 +441,7 @@ void negato3d::button_release_event(mouse_button /*_button*/, modifier /*_mods*/
     }
 
     m_picking_cross->set_visible(false);
-    m_picked_voxel_signal->async_emit("");
+    this->signal<signals::picked_voxel_t>(signals::PICKED_VOXEL)->async_emit("");
     this->set_planes_query_flags(m_query_flags); // Make all planes pickable again.
 }
 
@@ -506,7 +505,8 @@ void negato3d::update_slices_from_world(double _x, double _y, double _z)
 
 void negato3d::pick_intensity(int _x, int _y)
 {
-    if(m_picked_voxel_signal->num_connections() > 0)
+    auto sig = this->signal<signals::picked_voxel_t>(signals::PICKED_VOXEL);
+    if(sig->num_connections() > 0)
     {
         const auto picked_pos = this->get_picked_slices(_x, _y);
 
@@ -525,9 +525,8 @@ void negato3d::pick_intensity(int _x, int _y)
 
             auto cross_lines = m_picked_plane->compute_cross(*picked_pos, origin);
             m_picking_cross->update(cross_lines[0], cross_lines[1], cross_lines[2], cross_lines[3]);
-            const std::string picking_text =
-                sight::viz::scene3d::utils::pick_image(*image, *picked_pos, origin, spacing);
-            m_picked_voxel_signal->async_emit(picking_text);
+            const auto picking_text = sight::viz::scene3d::utils::pick_image(*image, *picked_pos, origin, spacing);
+            sig->async_emit(picking_text);
 
             this->request_render();
 

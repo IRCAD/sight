@@ -109,8 +109,8 @@ void data_parser_test::test_object_creation_with_config()
 
     // Test update services
     config_manager->update();
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::test_config_service>(srv1)->get_is_updated());
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::test_config_service>(srv2)->get_is_updated() == false);
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::test_config_service>(srv1)->is_updated());
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::test_config_service>(srv2)->is_updated() == false);
 
     // Test stop services
     config_manager->stop();

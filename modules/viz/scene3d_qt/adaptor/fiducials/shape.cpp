@@ -134,7 +134,7 @@ void shape::configuring()
 
 void shape::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
@@ -334,6 +334,8 @@ void shape::stopping()
     }
 
     m_eventFilter = nullptr;
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

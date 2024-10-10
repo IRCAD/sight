@@ -36,21 +36,14 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t CLEAR_SLOT       = "clear";
-static const core::com::slots::key_t ADD_FRUSTUM_SLOT = "addFrustum";
+static const core::com::slots::key_t CLEAR_SLOT = "clear";
 
 //-----------------------------------------------------------------------------
 
 frustum_list::frustum_list() noexcept
 {
     new_slot(CLEAR_SLOT, &frustum_list::clear, this);
-    new_slot(ADD_FRUSTUM_SLOT, &frustum_list::add_frustum, this);
 }
-
-//-----------------------------------------------------------------------------
-
-frustum_list::~frustum_list() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 
@@ -82,7 +75,7 @@ void frustum_list::configuring()
 
 void frustum_list::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     m_frustum_list.set_capacity(m_capacity);
 
@@ -110,7 +103,7 @@ void frustum_list::starting()
 service::connections_t frustum_list::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, ADD_FRUSTUM_SLOT);
+    connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 
@@ -118,6 +111,8 @@ service::connections_t frustum_list::auto_connections() const
 
 void frustum_list::updating()
 {
+    this->add_frustum();
+    this->update_done();
     this->request_render();
 }
 
@@ -130,6 +125,8 @@ void frustum_list::stopping()
     m_material_adaptor.reset();
     m_material_adaptor = nullptr;
     m_material         = nullptr;
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

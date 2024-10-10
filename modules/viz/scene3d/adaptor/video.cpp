@@ -45,11 +45,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t UPDATE_TF_SLOT     = "update_tf";
-static const core::com::slots::key_t UPDATE_PL_SLOT     = "updatePL";
-static const core::com::slots::key_t SET_FILTERING_SLOT = "set_filtering";
-static const core::com::slots::key_t SCALE_SLOT         = "scale";
-
 static const std::string VIDEO_MATERIAL_NAME             = "Video";
 static const std::string VIDEO_WITH_TF_MATERIAL_NAME     = "VideoWithTF";
 static const std::string VIDEO_WITH_TF_INT_MATERIAL_NAME = "VideoWithTF_Int";
@@ -58,10 +53,11 @@ static const std::string VIDEO_WITH_TF_INT_MATERIAL_NAME = "VideoWithTF_Int";
 
 video::video() noexcept
 {
-    new_slot(UPDATE_TF_SLOT, &video::update_tf, this);
-    new_slot(UPDATE_PL_SLOT, &video::update_pl, this);
-    new_slot(SET_FILTERING_SLOT, &video::set_filtering, this);
-    new_slot(SCALE_SLOT, &video::scale, this);
+    new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::IMAGE);});
+    new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::TF);});
+    new_slot(slots::UPDATE_PL, [this](){lazy_update(update_flags::POINT_LIST);});
+    new_slot(slots::SET_FILTERING, &video::set_filtering, this);
+    new_slot(slots::SCALE, &video::scale, this);
 }
 
 //------------------------------------------------------------------------------
@@ -90,7 +86,7 @@ void video::configuring()
 
 void video::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     const auto pl_w = m_pl.lock();
 
@@ -104,7 +100,7 @@ void video::starting()
             "sight::module::viz::scene3d::adaptor::point_list"
         );
 
-        m_point_list_adaptor->set_input(m_point_list, PL_INPUT, true);
+        m_point_list_adaptor->set_input(m_point_list, m_pl.key(), true);
 
         service::config_t config;
         config.add(CONFIG + "autoresetcamera", "false");
@@ -182,16 +178,16 @@ void video::starting()
 service::connections_t video::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(IMAGE_INPUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(IMAGE_INPUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(m_image, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_IMAGE);
+    connections.push(m_image, data::image::MODIFIED_SIG, slots::UPDATE_IMAGE);
 
-    connections.push(TF_INPUT, data::transfer_function::MODIFIED_SIG, UPDATE_TF_SLOT);
-    connections.push(TF_INPUT, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT);
-    connections.push(TF_INPUT, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT);
+    connections.push(m_tf, data::transfer_function::MODIFIED_SIG, slots::UPDATE_TF);
+    connections.push(m_tf, data::transfer_function::POINTS_MODIFIED_SIG, slots::UPDATE_TF);
+    connections.push(m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF);
 
-    connections.push(PL_INPUT, data::point_list::MODIFIED_SIG, UPDATE_PL_SLOT);
-    connections.push(PL_INPUT, data::point_list::POINT_ADDED_SIG, UPDATE_PL_SLOT);
-    connections.push(PL_INPUT, data::point_list::POINT_REMOVED_SIG, UPDATE_PL_SLOT);
+    connections.push(m_pl, data::point_list::MODIFIED_SIG, slots::UPDATE_PL);
+    connections.push(m_pl, data::point_list::POINT_ADDED_SIG, slots::UPDATE_PL);
+    connections.push(m_pl, data::point_list::POINT_REMOVED_SIG, slots::UPDATE_PL);
 
     return connections;
 }
@@ -202,143 +198,159 @@ void video::updating()
 {
     this->render_service()->make_current();
 
-    const auto&& type_and_size = [this]
-                                 {
-                                     const auto image = m_image.lock();
-                                     return std::make_pair(image->type(), image->size());
-                                 }();
-    const auto type = type_and_size.first;
-    const auto size = type_and_size.second;
-    if(size[0] == 0 || size[1] == 0)
+    if(update_needed(update_flags::POINT_LIST))
     {
-        return;
+        this->update_pl();
     }
 
-    if(!m_is_texture_init || type != m_previous_type)
+    if(update_needed(update_flags::TF))
     {
-        auto& mtl_mgr = Ogre::MaterialManager::getSingleton();
-        const auto tf = m_tf.lock();
-
-        Ogre::MaterialPtr default_mat;
-        if(tf)
+        this->update_tf();
+    }
+    else if(update_needed(update_flags::IMAGE))
+    {
+        const auto&& type_and_size = [this]
+                                     {
+                                         const auto image = m_image.lock();
+                                         return std::make_pair(image->type(), image->size());
+                                     }();
+        const auto type = type_and_size.first;
+        const auto size = type_and_size.second;
+        if(size[0] == 0 || size[1] == 0)
         {
-            if(type == core::type::FLOAT || type == core::type::DOUBLE)
+            return;
+        }
+
+        if(!m_is_texture_init || type != m_previous_type)
+        {
+            auto& mtl_mgr = Ogre::MaterialManager::getSingleton();
+            const auto tf = m_tf.lock();
+
+            Ogre::MaterialPtr default_mat;
+            if(tf)
             {
-                default_mat = mtl_mgr.getByName(VIDEO_WITH_TF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                if(type == core::type::FLOAT || type == core::type::DOUBLE)
+                {
+                    default_mat = mtl_mgr.getByName(VIDEO_WITH_TF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                }
+                else
+                {
+                    default_mat = mtl_mgr.getByName(
+                        VIDEO_WITH_TF_INT_MATERIAL_NAME,
+                        sight::viz::scene3d::RESOURCE_GROUP
+                    );
+                }
             }
             else
             {
-                default_mat = mtl_mgr.getByName(VIDEO_WITH_TF_INT_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+                default_mat = mtl_mgr.getByName(VIDEO_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
             }
+
+            // Duplicate the template material to create our own material
+            auto material = Ogre::MaterialManager::getSingletonPtr()->createOrRetrieve(
+                this->get_id() + "_VideoMaterial",
+                sight::viz::scene3d::RESOURCE_GROUP,
+                true
+            ).first;
+            m_material = Ogre::dynamic_pointer_cast<Ogre::Material>(material);
+
+            default_mat->copyDetailsTo(m_material);
+
+            // Set the texture to the main material pass
+            this->update_texture_filtering();
+
+            if(tf)
+            {
+                // TF texture initialization
+                m_gpu_tf = std::make_unique<sight::viz::scene3d::transfer_function>(tf.get_shared());
+                this->update_tf();
+            }
+
+            m_previous_type = type;
         }
-        else
+
+        m_texture->update();
+
+        const auto layer                     = this->layer();
+        const Ogre::Viewport* const viewport = layer->get_viewport();
+        SIGHT_ASSERT("The current viewport cannot be retrieved.", viewport);
+
+        if(!m_is_texture_init || size[0] != m_previous_width || size[1] != m_previous_height
+           // If scaling is disabled and one of the viewport coordinate is modified
+           // Then we need to trigger an update of the viewport displaying the texture
+           || (!m_scaling
+               && (viewport->getActualWidth() != m_previous_viewport_width
+                   || viewport->getActualHeight() != m_previous_viewport_height))
+           || m_force_plane_update)
         {
-            default_mat = mtl_mgr.getByName(VIDEO_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
+            Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
+            m_texture->bind(pass, "image");
+
+            this->clear_entity();
+
+            // /////////////////////////////////////////////////////////////////////
+            // Create the plane entity
+            // /////////////////////////////////////////////////////////////////////
+            const std::string this_id         = this->get_id();
+            const std::string video_mesh_name = this_id + "_VideoMesh";
+            const std::string entity_name     = this_id + "_VideoEntity";
+            const std::string node_name       = this_id + "_VideoSceneNode";
+
+            Ogre::MovablePlane plane(Ogre::Vector3::UNIT_Z, 0);
+
+            Ogre::MeshManager& mesh_manager = Ogre::MeshManager::getSingleton();
+
+            m_mesh = mesh_manager.createPlane(
+                video_mesh_name,
+                sight::viz::scene3d::RESOURCE_GROUP,
+                plane,
+                static_cast<Ogre::Real>(size[0]),
+                static_cast<Ogre::Real>(size[1])
+            );
+
+            Ogre::SceneManager* scene_manager = this->get_scene_manager();
+            SIGHT_ASSERT("The current scene manager cannot be retrieved.", scene_manager);
+
+            // Create Ogre Entity
+            m_entity = scene_manager->createEntity(entity_name, video_mesh_name);
+            m_entity->setMaterial(m_material);
+
+            // Add the entity to the scene
+            m_scene_node = scene_manager->getRootSceneNode()->createChildSceneNode(node_name);
+            m_scene_node->attachObject(m_entity);
+
+            // Slightly offset the plane in Z to allow some space for other entities, thus they can be rendered on top
+            m_scene_node->setPosition(0, 0, -1);
+            m_scene_node->setVisible(visible());
+
+            Ogre::Camera* cam = layer->get_default_camera();
+            SIGHT_ASSERT("Default camera not found", cam);
+            cam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
+
+            if(m_scaling)
+            {
+                cam->setOrthoWindowHeight(static_cast<Ogre::Real>(size[1]));
+            }
+            else
+            {
+                cam->setOrthoWindowHeight(static_cast<Ogre::Real>(viewport->getActualHeight()));
+                cam->setOrthoWindowWidth(static_cast<Ogre::Real>(viewport->getActualWidth()));
+            }
+
+            // Make sure no further scaling request is required
+            m_force_plane_update = false;
+
+            m_is_texture_init = true;
         }
 
-        // Duplicate the template material to create our own material
-        auto material = Ogre::MaterialManager::getSingletonPtr()->createOrRetrieve(
-            this->get_id() + "_VideoMaterial",
-            sight::viz::scene3d::RESOURCE_GROUP,
-            true
-        ).first;
-        m_material = Ogre::dynamic_pointer_cast<Ogre::Material>(material);
+        m_previous_width  = size[0];
+        m_previous_height = size[1];
 
-        default_mat->copyDetailsTo(m_material);
-
-        // Set the texture to the main material pass
-        this->update_texture_filtering();
-
-        if(tf)
-        {
-            // TF texture initialization
-            m_gpu_tf = std::make_unique<sight::viz::scene3d::transfer_function>(tf.get_shared());
-            this->update_tf();
-        }
-
-        m_previous_type = type;
+        m_previous_viewport_width  = viewport->getActualWidth();
+        m_previous_viewport_height = viewport->getActualHeight();
     }
 
-    m_texture->update();
-
-    const auto layer                     = this->layer();
-    const Ogre::Viewport* const viewport = layer->get_viewport();
-    SIGHT_ASSERT("The current viewport cannot be retrieved.", viewport);
-
-    if(!m_is_texture_init || size[0] != m_previous_width || size[1] != m_previous_height
-       // If scaling is disabled and one of the viewport coordinate is modified
-       // Then we need to trigger an update of the viewport displaying the texture
-       || (!m_scaling
-           && (viewport->getActualWidth() != m_previous_viewport_width
-               || viewport->getActualHeight() != m_previous_viewport_height))
-       || m_force_plane_update)
-    {
-        Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
-        m_texture->bind(pass, "image");
-
-        this->clear_entity();
-
-        // /////////////////////////////////////////////////////////////////////
-        // Create the plane entity
-        // /////////////////////////////////////////////////////////////////////
-        const std::string this_id         = this->get_id();
-        const std::string video_mesh_name = this_id + "_VideoMesh";
-        const std::string entity_name     = this_id + "_VideoEntity";
-        const std::string node_name       = this_id + "_VideoSceneNode";
-
-        Ogre::MovablePlane plane(Ogre::Vector3::UNIT_Z, 0);
-
-        Ogre::MeshManager& mesh_manager = Ogre::MeshManager::getSingleton();
-
-        m_mesh = mesh_manager.createPlane(
-            video_mesh_name,
-            sight::viz::scene3d::RESOURCE_GROUP,
-            plane,
-            static_cast<Ogre::Real>(size[0]),
-            static_cast<Ogre::Real>(size[1])
-        );
-
-        Ogre::SceneManager* scene_manager = this->get_scene_manager();
-        SIGHT_ASSERT("The current scene manager cannot be retrieved.", scene_manager);
-
-        // Create Ogre Entity
-        m_entity = scene_manager->createEntity(entity_name, video_mesh_name);
-        m_entity->setMaterial(m_material);
-
-        // Add the entity to the scene
-        m_scene_node = scene_manager->getRootSceneNode()->createChildSceneNode(node_name);
-        m_scene_node->attachObject(m_entity);
-
-        // Slightly offset the plane in Z to allow some space for other entities, thus they can be rendered on top
-        m_scene_node->setPosition(0, 0, -1);
-        m_scene_node->setVisible(visible());
-
-        Ogre::Camera* cam = layer->get_default_camera();
-        SIGHT_ASSERT("Default camera not found", cam);
-        cam->setProjectionType(Ogre::PT_ORTHOGRAPHIC);
-
-        if(m_scaling)
-        {
-            cam->setOrthoWindowHeight(static_cast<Ogre::Real>(size[1]));
-        }
-        else
-        {
-            cam->setOrthoWindowHeight(static_cast<Ogre::Real>(viewport->getActualHeight()));
-            cam->setOrthoWindowWidth(static_cast<Ogre::Real>(viewport->getActualWidth()));
-        }
-
-        // Make sure no further scaling request is required
-        m_force_plane_update = false;
-
-        m_is_texture_init = true;
-    }
-
-    m_previous_width  = size[0];
-    m_previous_height = size[1];
-
-    m_previous_viewport_width  = viewport->getActualWidth();
-    m_previous_viewport_height = viewport->getActualHeight();
-
+    update_done();
     this->request_render();
 }
 
@@ -361,6 +373,8 @@ void video::stopping()
     m_gpu_tf.reset();
 
     m_is_texture_init = false;
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

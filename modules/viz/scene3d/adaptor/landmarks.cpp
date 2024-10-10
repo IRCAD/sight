@@ -195,7 +195,7 @@ void landmarks::configuring()
 
 void landmarks::starting()
 {
-    initialize();
+    adaptor::init();
 
     render_service()->make_current();
 
@@ -299,6 +299,8 @@ void landmarks::stopping()
 
     // Unregister the material adaptor.
     unregister_services();
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

@@ -39,13 +39,14 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t UPDATE_LENGTH_SLOT = "update_length";
-
 //-----------------------------------------------------------------------------
 
-vector::vector() noexcept
+service::connections_t vector::auto_connections() const
 {
-    new_slot(UPDATE_LENGTH_SLOT, &vector::update_length, this);
+    return {
+        {m_length, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {m_color, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}
+    };
 }
 
 //-----------------------------------------------------------------------------
@@ -62,21 +63,13 @@ void vector::configuring()
     );
 
     this->set_transform_id(transform_id);
-    m_length = config.get<float>(CONFIG + "length", m_length);
-    m_color  = config.get<std::string>(CONFIG + "color", m_color);
-    SIGHT_ASSERT(
-        "Color string should start with '#' and followed by 6 or 8 "
-        "hexadecimal digits. Given color: " << m_color,
-        m_color[0] == '#'
-        && (m_color.length() == 7 || m_color.length() == 9)
-    );
 }
 
 //-----------------------------------------------------------------------------
 
 void vector::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
@@ -120,6 +113,7 @@ void vector::updating()
 
     this->set_visible(visible());
 
+    this->update_done();
     this->request_render();
 }
 
@@ -139,23 +133,25 @@ void vector::stopping()
 
     this->unregister_services();
     m_material.reset();
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
 
 void vector::create_vector()
 {
+    const auto length = static_cast<float>(*m_length);
     // Size, these value allow to display a vector with good enough ratio.
-    const float cylinder_length = m_length - m_length / 10;
-    const float cylinder_radius = m_length / 80;
-    const float cone_length     = m_length - cylinder_length;
+    const float cylinder_length = length - length / 10;
+    const float cylinder_radius = length / 80;
+    const float cone_length     = length - cylinder_length;
     const float cone_radius     = cylinder_radius * 2;
     const unsigned sample       = 64;
 
     // Color
-    std::array<std::uint8_t, 4> color {};
-    data::tools::color::hexa_string_to_rgba(m_color, color);
-    Ogre::ColourValue ogre_color(float(color[0]) / 255.F, float(color[1]) / 255.F, float(color[2]) / 255.F);
+    const auto color = *m_color;
+    Ogre::ColourValue ogre_color(color[0], color[1], color[2], color[3]);
 
     // Draw
     Ogre::SceneManager* scene_mgr = this->get_scene_manager();
@@ -218,15 +214,6 @@ void vector::set_visible(bool _visible)
     }
 
     this->request_render();
-}
-
-//-----------------------------------------------------------------------------
-
-void vector::update_length(float _length)
-{
-    m_length = _length;
-
-    this->update();
 }
 
 //-----------------------------------------------------------------------------

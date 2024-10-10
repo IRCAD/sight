@@ -145,7 +145,7 @@ void ruler::configuring()
 
 void ruler::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 

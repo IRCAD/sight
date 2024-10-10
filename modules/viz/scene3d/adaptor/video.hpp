@@ -42,7 +42,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b show(): shows the video.
  * - \b hide(): hides the video.
  * - \b update_tf(): updates the displayed transfer function.
- * - \b updatePL(): updates the displayed point list.
+ * - \b update_pl(): updates the displayed point list.
  * - \b set_filtering(bool): toggles between nearest (false) and bilinear (true) filtering.
  * - \b scale(bool): displays the video at its original size (false) or scales the video to the viewport size (true).
  *
@@ -84,6 +84,15 @@ public:
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(video, sight::viz::scene3d::adaptor);
+
+    struct slots
+    {
+        inline static const core::com::slots::key_t UPDATE_IMAGE  = "update_image";
+        inline static const core::com::slots::key_t UPDATE_TF     = "update_tf";
+        inline static const core::com::slots::key_t UPDATE_PL     = "update_pl";
+        inline static const core::com::slots::key_t SET_FILTERING = "set_filtering";
+        inline static const core::com::slots::key_t SCALE         = "scale";
+    };
 
     /// Creates the adaptor an initialize slots.
     video() noexcept;
@@ -242,13 +251,16 @@ private:
     /// Defines the font size in points.
     std::string m_font_size;
 
-    static constexpr std::string_view IMAGE_INPUT = "image";
-    static constexpr std::string_view TF_INPUT    = "tf";
-    static constexpr std::string_view PL_INPUT    = "pointList";
+    enum class update_flags : std::uint8_t
+    {
+        IMAGE,
+        TF,
+        POINT_LIST
+    };
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, TF_INPUT, true};
-    sight::data::ptr<sight::data::point_list, sight::data::access::in> m_pl {this, PL_INPUT, true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, "tf", true};
+    sight::data::ptr<sight::data::point_list, sight::data::access::in> m_pl {this, "pointList", true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

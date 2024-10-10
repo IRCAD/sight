@@ -185,7 +185,7 @@ void shape_extruder::configuring()
 
 void shape_extruder::starting()
 {
-    this->adaptor::initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
@@ -256,6 +256,8 @@ void shape_extruder::stopping()
     const sight::viz::scene3d::interactor::base::sptr interactor =
         std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     layer->remove_interactor(interactor);
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -417,7 +419,7 @@ void shape_extruder::modify_lasso(action _action, int _x, int _y)
             // Compute the plane where the tool will work.
             // This plane allows to generate all points of the lasso on the same plane to simplify further algorithms.
             const Ogre::Camera* const camera = layer->get_default_camera();
-            const Ogre::Vector3 direction    = this->get_cam_direction(camera);
+            const Ogre::Vector3 direction    = shape_extruder::get_cam_direction(camera);
 
             // Compute the near plane and the far plane.
             const Ogre::Vector3 cam_pos = camera->getDerivedPosition();
@@ -1116,7 +1118,7 @@ std::list<Ogre::Vector2> shape_extruder::add_constraints(
     if(!found)
     {
         const Ogre::Vector2 mid_point = (_edge.a + _edge.b) / 2.F;
-        this->add_delaunay_point(_triangulation, mid_point);
+        shape_extruder::add_delaunay_point(_triangulation, mid_point);
 
         const int depth                      = _depth + 1;
         std::list<Ogre::Vector2> front_added = this->add_constraints(_triangulation, edge(_edge.a, mid_point), depth);

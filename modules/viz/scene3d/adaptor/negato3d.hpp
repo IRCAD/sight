@@ -95,11 +95,27 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(negato3d, sight::viz::scene3d::adaptor);
 
+    struct signals
+    {
+        using picked_voxel_t = core::com::signal<void (std::string)>;
+        static inline const core::com::signals::key_t PICKED_VOXEL = "picked_voxel";
+    };
+
+    struct slots
+    {
+        static inline const core::com::slots::key_t UPDATE_IMAGE             = "update_image";
+        static inline const core::com::slots::key_t UPDATE_TF                = "update_tf";
+        static inline const core::com::slots::key_t SLICE_TYPE               = "slice_type";
+        static inline const core::com::slots::key_t SLICE_INDEX              = "slice_index";
+        static inline const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
+        static inline const core::com::slots::key_t SET_TRANSPARENCY         = "set_transparency";
+    };
+
     /// Creates slots.
     negato3d() noexcept;
 
     /// Destroys the adaptor.
-    ~negato3d() noexcept override;
+    ~negato3d() noexcept override = default;
 
 protected:
 
@@ -265,15 +281,14 @@ private:
     /// Defines if the plane border is used or not.
     bool m_border {true};
 
-    /// Defines the signal sent when a voxel is picked using the left mouse button.
-    using picked_voxel_sig_t = core::com::signal<void (std::string)>;
-    picked_voxel_sig_t::sptr m_picked_voxel_signal {nullptr};
+    enum class update_flags : std::uint8_t
+    {
+        IMAGE,
+        TF
+    };
 
-    static constexpr std::string_view IMAGE_IN = "image";
-    data::ptr<data::image, data::access::in> m_image {this, IMAGE_IN};
-
-    static constexpr std::string_view TF_INOUT = "tf";
-    data::ptr<data::transfer_function, data::access::inout> m_tf {this, TF_INOUT};
+    data::ptr<data::image, data::access::in> m_image {this, "image"};
+    data::ptr<data::transfer_function, data::access::inout> m_tf {this, "tf"};
 };
 
 //------------------------------------------------------------------------------
