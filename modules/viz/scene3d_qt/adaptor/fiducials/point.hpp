@@ -684,6 +684,7 @@ private:
     /// Initial group configuration
     /// @{
     std::string m_current_group {INITIAL_GROUP_NAME};
+    std::string m_initial_group {INITIAL_GROUP_NAME};
     sight::data::landmarks::color_t m_current_color {1.0F, 1.0F, 0.0F, 1.0F};
     sight::data::landmarks::size_t m_current_size {32.0F};
     sight::data::landmarks::shape m_current_shape {sight::data::landmarks::shape::sphere};

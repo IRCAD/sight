@@ -447,6 +447,7 @@ void point::configuring()
 
     // Initial group
     m_current_group = config.get<std::string>(s_INITIAL_GROUP, m_current_group);
+    m_initial_group = m_current_group;
 
     // Initial color
     auto color = std::make_shared<sight::data::color>();
@@ -817,7 +818,10 @@ void point::remove_group(std::string _group_name)
         }
     }
 
-    m_current_group = INITIAL_GROUP_NAME;
+    if(m_current_group == _group_name)
+    {
+        m_current_group = m_initial_group;
+    }
 
     // Request the rendering.
     request_render();

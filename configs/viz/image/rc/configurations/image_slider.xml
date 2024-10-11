@@ -24,8 +24,7 @@ Example:
         <param name="enableOpacity" default="false" />
         <param name="sliceIndex" default="axial" />
     </parameters>
-    <desc>This configuration displays a tab layout containing a negato and a transfer function
-        editor</desc>
+    <desc>This configuration displays a tab layout containing a negato and a transfer function editor</desc>
     <config>
         <service uid="view" type="sight::module::ui::view">
             <gui>
