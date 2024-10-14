@@ -71,6 +71,7 @@ data::camera::sptr init_camera()
     const std::string videofile                       = "/tmp/video.mp4";
     const std::string streamurl                       = "rtsp://192.168.0.1/h264.sdp";
     const double scale                                = 0.9996;
+    const double error                                = 0.023;
 
     data::camera::sptr camera = std::make_shared<data::camera>();
     camera->set_cx(cx);
@@ -90,6 +91,7 @@ data::camera::sptr init_camera()
     camera->set_video_file(videofile);
     camera->set_stream_url(streamurl);
     camera->set_scale(scale);
+    camera->set_calibration_error(error);
 
     return camera;
 }
@@ -119,6 +121,7 @@ void camera_test::param_test()
     const std::string videofile                       = "/tmp/video.mp4";
     const std::string streamurl                       = "rtsp://192.168.0.1/h264.sdp";
     const double scale                                = 0.9796;
+    const double error                                = 0.123;
 
     data::camera::sptr camera = std::make_shared<data::camera>();
     camera->set_cx(cx);
@@ -139,6 +142,7 @@ void camera_test::param_test()
     camera->set_video_file(videofile);
     camera->set_stream_url(streamurl);
     camera->set_scale(scale);
+    camera->set_calibration_error(error);
 
     CPPUNIT_ASSERT_EQUAL(cx, camera->get_cx());
     CPPUNIT_ASSERT_EQUAL(cy, camera->get_cy());
@@ -164,6 +168,7 @@ void camera_test::param_test()
     CPPUNIT_ASSERT_EQUAL(videofile, camera->get_video_file().string());
     CPPUNIT_ASSERT_EQUAL(streamurl, camera->get_stream_url());
     CPPUNIT_ASSERT_EQUAL(scale, camera->get_scale());
+    CPPUNIT_ASSERT_EQUAL(error, camera->calibration_error());
 }
 
 //------------------------------------------------------------------------------
@@ -204,6 +209,7 @@ void camera_test::shallow_copy_test()
     CPPUNIT_ASSERT_EQUAL(camera->get_video_file(), camera2->get_video_file());
     CPPUNIT_ASSERT_EQUAL(camera->get_stream_url(), camera2->get_stream_url());
     CPPUNIT_ASSERT_EQUAL(camera->get_scale(), camera2->get_scale());
+    CPPUNIT_ASSERT_EQUAL(camera->calibration_error(), camera2->calibration_error());
 }
 
 //------------------------------------------------------------------------------
@@ -255,6 +261,7 @@ void camera_test::equality_test()
     TEST(set_scale(19));
     TEST(set_is_calibrated(true));
     TEST(set_camera_source(data::camera::device));
+    TEST(set_calibration_error(0.569));
 
     #undef TEST
 }

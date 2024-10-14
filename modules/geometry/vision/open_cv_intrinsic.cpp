@@ -22,7 +22,6 @@
 
 #include "open_cv_intrinsic.hpp"
 
-#include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
 #include <io/opencv/matrix.hpp>
@@ -36,20 +35,6 @@ namespace sight::module::geometry::vision
 {
 
 static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "update_chessboard_size";
-
-static const core::com::signals::key_t ERROR_COMPUTED_SIG = "error_computed";
-
-// ----------------------------------------------------------------------------
-
-open_cv_intrinsic::open_cv_intrinsic() noexcept
-{
-    new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
-}
-
-// ----------------------------------------------------------------------------
-
-open_cv_intrinsic::~open_cv_intrinsic() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -91,7 +76,6 @@ void open_cv_intrinsic::updating()
                     static_cast<float>(x * m_square_size.value()),
                     static_cast<float>(y * m_square_size.value()),
                     0.F
-
                 );
             }
         }
@@ -124,11 +108,6 @@ void open_cv_intrinsic::updating()
         std::vector<cv::Mat> tvecs;
         cv::Size2i imgsize(static_cast<int>(img->size()[0]), static_cast<int>(img->size()[1]));
 
-        double err =
-            cv::calibrateCamera(object_points, image_points, imgsize, camera_matrix, dist_coeffs, rvecs, tvecs);
-
-        this->signal<error_computed_t>(ERROR_COMPUTED_SIG)->async_emit(err);
-
         const auto pose_camera = m_pose_vector.lock();
         if(pose_camera)
         {
@@ -148,6 +127,8 @@ void open_cv_intrinsic::updating()
             }
         }
 
+        const double err =
+            cv::calibrateCamera(object_points, image_points, imgsize, camera_matrix, dist_coeffs, rvecs, tvecs);
         SIGHT_DEBUG("Calibration error :" << err);
 
         const auto cam = m_camera.lock();
@@ -159,6 +140,7 @@ void open_cv_intrinsic::updating()
         cam->set_width(img->size()[0]);
         cam->set_height(img->size()[1]);
         cam->set_distortion_coefficient(dist_coeffs[0], dist_coeffs[1], dist_coeffs[2], dist_coeffs[3], dist_coeffs[4]);
+        cam->set_calibration_error(err);
 
         cam->set_is_calibrated(true);
 

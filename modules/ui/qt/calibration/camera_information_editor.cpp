@@ -110,10 +110,13 @@ void camera_information_editor::starting()
     m_k3->setObjectName(service_id + "/k3");
     m_skew = new QLabel();
     m_skew->setObjectName(service_id + "/skew");
+    m_error = new QLabel();
+    m_error->setObjectName(service_id + "/error");
 
     info_layout->addWidget(m_width, 0, 0);
     info_layout->addWidget(m_height, 0, 1);
     info_layout->addWidget(m_skew, 0, 2);
+    info_layout->addWidget(m_error, 0, 3);
 
     info_layout->addWidget(m_cx, 1, 0);
     info_layout->addWidget(m_cy, 1, 1);
@@ -143,7 +146,6 @@ void camera_information_editor::stopping()
 void camera_information_editor::update_informations()
 {
     const auto camera = m_camera.lock();
-    std::stringstream out;
 
     m_description->setText(QString::fromStdString(camera->get_description()));
 
@@ -159,76 +161,28 @@ void camera_information_editor::update_informations()
         return;
     }
 
-    //Height
-    out << "Height: <font color='#0066CC'>" << camera->get_height() << "</font>";
-    m_height->setText(out.str().c_str());
+    const auto fill_label = [](QLabel* _label, const auto& _title, const auto& _value)
+                            {
+                                std::stringstream out;
+                                out << _title << ": <font color='#0066CC'>" << _value << "</font>";
+                                _label->setText(out.str().c_str());
+                            };
 
-    out.str("");
-
-    //Width
-    out << "Width: <font color='#0066CC'>" << camera->get_width() << "</font>";
-    m_width->setText(out.str().c_str());
-
-    out.str("");
-    //CX
-    out << "Cx: <font color='#0066CC'>" << camera->get_cx() << "</font>";
-    m_cx->setText(out.str().c_str());
-
-    out.str("");
-
-    //CY
-    out << "Cy: <font color='#0066CC'>" << camera->get_cy() << "</font>";
-    m_cy->setText(out.str().c_str());
-
-    out.str("");
-
-    //FX
-    out << "Fx: <font color='#0066CC'>" << camera->get_fx() << "</font>";
-    m_fx->setText(out.str().c_str());
-
-    out.str("");
-
-    //FY
-    out << "Fy: <font color='#0066CC'>" << camera->get_fy() << "</font>";
-    m_fy->setText(out.str().c_str());
+    fill_label(m_height, "Height", camera->get_height());
+    fill_label(m_width, "Width", camera->get_width());
+    fill_label(m_cx, "Cx", camera->get_cx());
+    fill_label(m_cy, "Cy", camera->get_cy());
+    fill_label(m_fx, "Fx", camera->get_fx());
+    fill_label(m_fy, "Fy", camera->get_fy());
 
     const data::camera::dist_array_t& dist = camera->get_distortion_coefficient();
-
-    out.str("");
-
-    //K1
-    out << "K1: <font color='#0066CC'>" << dist[0] << "</font>";
-    m_k1->setText(out.str().c_str());
-
-    out.str("");
-
-    //K2
-    out << "K2: <font color='#0066CC'>" << dist[1] << "</font>";
-    m_k2->setText(out.str().c_str());
-
-    out.str("");
-
-    //P1
-    out << "P1: <font color='#0066CC'>" << dist[2] << "</font>";
-    m_p1->setText(out.str().c_str());
-
-    out.str("");
-
-    //P2
-    out << "P2: <font color='#0066CC'>" << dist[3] << "</font>";
-    m_p2->setText(out.str().c_str());
-
-    out.str("");
-
-    //K3
-    out << "K3: <font color='#0066CC'>" << dist[4] << "</font>";
-    m_k3->setText(out.str().c_str());
-
-    out.str("");
-
-    //SKEW
-    out << "Skew: <font color='#0066CC'>" << camera->get_skew() << "</font>";
-    m_skew->setText(out.str().c_str());
+    fill_label(m_k1, "K1", dist[0]);
+    fill_label(m_k2, "K2", dist[1]);
+    fill_label(m_p1, "P1", dist[2]);
+    fill_label(m_p2, "P2", dist[3]);
+    fill_label(m_k3, "K3", dist[4]);
+    fill_label(m_skew, "Skew", camera->get_skew());
+    fill_label(m_error, "Error", camera->calibration_error());
 }
 
 // -------------------------------------------------------------------------
@@ -247,6 +201,7 @@ void camera_information_editor::clear_labels()
     m_p2->setText("");
     m_k3->setText("");
     m_skew->setText("");
+    m_error->setText("");
 }
 
 // ----------------------------------------------------------------------------

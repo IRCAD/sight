@@ -68,11 +68,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(open_cv_intrinsic, sight::geometry::vision::calibrator);
 
-    /// Constructor.
-    open_cv_intrinsic() noexcept;
-
     /// Destructor.
-    ~open_cv_intrinsic() noexcept override;
+    ~open_cv_intrinsic() noexcept override = default;
 
 protected:
 

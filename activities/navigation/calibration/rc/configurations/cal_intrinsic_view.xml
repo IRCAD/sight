@@ -32,22 +32,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="leftPanelView" start="true" />
-                <view sid="cameraView" start="true" />
-            </registry>
-        </service>
-
-        <service uid="leftPanelView" type="sight::module::ui::view">
-            <gui>
-                <layout type="sight::ui::layout::line">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <view proportion="0" />
-                </layout>
-            </gui>
-            <registry>
                 <view sid="toolboxView" start="true" />
-                <view sid="errorLabelSrv" start="true" />
+                <view sid="cameraView" start="true" />
             </registry>
         </service>
 
@@ -218,11 +204,6 @@
             <labels>
                 <name />
             </labels>
-        </service>
-
-        <service uid="errorLabelSrv" type="sight::module::ui::qt::text_status">
-            <label>Reprojection error (RMSE)</label>
-            <color>#D25252</color>
         </service>
 
         <service uid="displayCalibrationInfoSrv" type="sight::module::ui::qt::calibration::display_calibration_info">
@@ -496,11 +477,6 @@
             <signal>${calibrationInfo}/removed_record</signal>
             <signal>${calibrationInfo}/reset_record</signal>
             <slot>calibrationInfoEditorSrv/update</slot>
-        </connect>
-
-        <connect>
-            <signal>intrinsicCalibrationSrv/error_computed</signal>
-            <slot>errorLabelSrv/set_double_parameter</slot>
         </connect>
 
         <connect>

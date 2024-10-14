@@ -21,7 +21,7 @@
             <item key="board_width" type="sight::data::integer" value="8" />
             <item key="board_height" type="sight::data::integer" value="6" />
             <item key="board_scale" type="sight::data::real" value="1." />
-            <item key="board_square_size" type="sight::data::real" value="0.5" />
+            <item key="board_square_size" type="sight::data::real" value="10" />
         </object>
 
         <!-- ******************************* UI declaration *********************************** -->

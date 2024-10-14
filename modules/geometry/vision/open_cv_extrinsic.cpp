@@ -22,8 +22,6 @@
 
 #include "open_cv_extrinsic.hpp"
 
-#include <core/com/signal.hxx>
-#include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
 
 #include <data/calibration_info.hpp>
@@ -41,15 +39,6 @@
 
 namespace sight::module::geometry::vision
 {
-
-static const core::com::signals::key_t ERROR_COMPUTED_SIG = "error_computed";
-
-// ----------------------------------------------------------------------------
-
-open_cv_extrinsic::open_cv_extrinsic() noexcept
-{
-    new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
-}
 
 //------------------------------------------------------------------------------
 
@@ -209,8 +198,6 @@ void open_cv_extrinsic::updating()
             )
         );
 
-        this->signal<error_computed_t>(ERROR_COMPUTED_SIG)->async_emit(err);
-
         data::matrix4::sptr matrix = std::make_shared<data::matrix4>();
         cv::Mat cv4x4              = cv::Mat::eye(4, 4, CV_64F);
         rotation_matrix.copyTo(cv4x4(cv::Rect(0, 0, 3, 3)));
@@ -218,9 +205,8 @@ void open_cv_extrinsic::updating()
 
         io::opencv::matrix::copy_from_cv(cv4x4, matrix);
 
-        {
-            cam_series->set_extrinsic_matrix(m_cam_index, matrix);
-        }
+        cam_series->set_extrinsic_matrix(m_cam_index, matrix);
+        cam_series->set_calibration_error(err);
 
         auto sig = cam_series->signal<data::camera_set::extrinsic_calibrated_signal_t>(
             data::camera_set::EXTRINSIC_CALIBRATED_SIG

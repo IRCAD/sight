@@ -51,6 +51,8 @@ void camera_set::shallow_copy(const object::csptr& _source)
         !other
     );
 
+    m_calibration_error = other->m_calibration_error;
+
     base_class_t::shallow_copy(other);
 }
 
@@ -58,7 +60,7 @@ void camera_set::shallow_copy(const object::csptr& _source)
 
 bool camera_set::operator==(const camera_set& _other) const noexcept
 {
-    return base_class_t::operator==(_other);
+    return base_class_t::operator==(_other) && m_calibration_error == _other.m_calibration_error;
 }
 
 //------------------------------------------------------------------------------
@@ -91,6 +93,8 @@ void camera_set::deep_copy(const object::csptr& _source, const std::unique_ptr<d
         {
             return std::make_pair(object::copy(_value.first, _cache), _value.second);
         });
+
+    m_calibration_error = other->m_calibration_error;
 
     base_class_t::deep_copy(other, _cache);
 }

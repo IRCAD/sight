@@ -149,6 +149,7 @@ void camera::shallow_copy(const object::csptr& _source)
     m_stream_url             = other->m_stream_url;
     m_camera_source          = other->m_camera_source;
     m_scale                  = other->m_scale;
+    m_calibration_error      = other->m_calibration_error;
 
     base_class_t::shallow_copy(other);
 }
@@ -180,6 +181,7 @@ void camera::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_
     m_stream_url             = other->m_stream_url;
     m_camera_source          = other->m_camera_source;
     m_scale                  = other->m_scale;
+    m_calibration_error      = other->m_calibration_error;
 
     base_class_t::deep_copy(other, _cache);
 }
@@ -211,7 +213,8 @@ bool camera::operator==(const camera& _other) const noexcept
        || m_video_file != _other.m_video_file
        || m_stream_url != _other.m_stream_url
        || m_camera_source != _other.m_camera_source
-       || !core::is_equal(m_scale, _other.m_scale))
+       || !core::is_equal(m_scale, _other.m_scale)
+       || !core::is_equal(m_calibration_error, _other.m_calibration_error))
     {
         return false;
     }

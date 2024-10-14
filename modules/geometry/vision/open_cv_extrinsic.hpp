@@ -72,9 +72,6 @@ public:
     /// Double changed signal type
     using error_computed_t = core::com::signal<void (double)>;
 
-    /// Constructor.
-    open_cv_extrinsic() noexcept;
-
     /// Destructor.
     ~open_cv_extrinsic() noexcept final = default;
 

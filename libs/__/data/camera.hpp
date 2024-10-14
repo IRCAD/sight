@@ -337,6 +337,17 @@ public:
     double get_scale() const;
 
     /**
+     * @brief set the calibration error
+     * @param _error double (default 0.0)
+     */
+    void set_calibration_error(double _error);
+    /**
+     * @brief get the calibration error of the camera
+     * @return the calibration error in double.
+     */
+    double calibration_error() const;
+
+    /**
      * @brief getIndex returns index of the device as Qt give us in module::ui::qt::video::CameraDeviceDlg.
      * The index is the first character of m_description. (ex: "1. Microsoft HD camera")
      * @return an integer of the index, -1 if invalid (if source_t isn't DEVICES)
@@ -406,6 +417,9 @@ protected:
 
     //! Used for depth sensor: scale of the depth values (default: 1.)
     double m_scale {1.};
+
+    /// Error of the computed calibration
+    double m_calibration_error {0.};
 };
 
 //-----------------------------------------------------------------------------
@@ -420,6 +434,20 @@ inline void camera::set_scale(double _scale)
 inline double camera::get_scale() const
 {
     return m_scale;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void camera::set_calibration_error(double _calibration_error)
+{
+    m_calibration_error = _calibration_error;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double camera::calibration_error() const
+{
+    return m_calibration_error;
 }
 
 //-----------------------------------------------------------------------------

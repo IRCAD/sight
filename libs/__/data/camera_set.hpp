@@ -117,6 +117,36 @@ public:
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
+
+    /**
+     * @brief set the stereo calibration error
+     * @param _error double (default 0.0)
+     */
+    void set_calibration_error(double _error);
+    /**
+     * @brief get the calibration error of the stereo calibration
+     * @return the calibration error in double.
+     */
+    double calibration_error() const;
+
+private:
+
+    /// Error of the computed calibration
+    double m_calibration_error {0.};
 };
+
+//-----------------------------------------------------------------------------
+
+inline void camera_set::set_calibration_error(double _calibration_error)
+{
+    m_calibration_error = _calibration_error;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double camera_set::calibration_error() const
+{
+    return m_calibration_error;
+}
 
 } // namespace sight::data

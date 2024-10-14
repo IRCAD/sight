@@ -40,22 +40,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="leftPanelView" start="true" />
-                <view sid="videoView" start="true" />
-            </registry>
-        </service>
-
-        <service uid="leftPanelView" type="sight::module::ui::view">
-            <gui>
-                <layout type="sight::ui::layout::line">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <view proportion="0" />
-                </layout>
-            </gui>
-            <registry>
                 <view sid="toolboxView" start="true" />
-                <view sid="errorLabelSrv" start="true" />
+                <view sid="videoView" start="true" />
             </registry>
         </service>
 
@@ -279,11 +265,6 @@
             <labels>
                 <name />
             </labels>
-        </service>
-
-        <service uid="errorLabelSrv" type="sight::module::ui::qt::text_status">
-            <label>Reprojection error (RMSE)</label>
-            <color>#D25252</color>
         </service>
 
         <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" worker="extr_chess_checker">
@@ -516,11 +497,6 @@
             <signal>${calibrationInfo2}/reset_record</signal>
             <signal>calibrationDataReader2Srv/updated</signal>
             <slot>calibrationInfoEditorSrv/update</slot>
-        </connect>
-
-        <connect>
-            <signal>openCVExtrinsicCalSrv/error_computed</signal>
-            <slot>errorLabelSrv/set_double_parameter</slot>
         </connect>
 
         <connect>
