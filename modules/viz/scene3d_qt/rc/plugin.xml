@@ -20,7 +20,7 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::viz::scene3d::adaptor</type>
         <service>sight::module::viz::scene3d_qt::adaptor::fiducials::shape</service>
-        <object key="image">sight::data::image</object>
+        <object key="image">sight::data::image_series</object>
         <desc>Displays shape fiducials.</desc>
     </extension>
 </plugin>
