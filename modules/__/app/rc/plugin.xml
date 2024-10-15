@@ -122,4 +122,10 @@
         <service>sight::app::parser::dvec4</service>
         <object>sight::data::dvec4</object>
     </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::camera</service>
+        <object>sight::data::camera</object>
+    </extension>
 </plugin>

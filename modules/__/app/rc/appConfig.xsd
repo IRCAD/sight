@@ -54,6 +54,8 @@
             <xs:element name="edge"  type="edge_t"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="colors"  type="color_t"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="color"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="file"  type="xs:string"  minOccurs="0" maxOccurs="1" />
+            <xs:element name="resource"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="gray"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="param" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="config" minOccurs="0" maxOccurs="unbounded" />
