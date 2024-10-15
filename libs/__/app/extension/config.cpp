@@ -32,8 +32,6 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include <regex>
-
 namespace sight::app::extension
 {
 
@@ -49,7 +47,36 @@ config::uid_definition_t config::s_uid_definition_dictionary = {{"object", "uid"
     {"menuItem", "sid"},
     {"channel", "uid"},
 };
-static const std::regex IS_VARIABLE(R"(\$\{.*\}.*)");
+
+static constexpr auto VARIABLE_PREFIX = "${";
+static constexpr auto VARIABLE_SUFFIX = "}";
+
+//------------------------------------------------------------------------------
+
+static constexpr bool is_variable(const std::string_view& _str)
+{
+    return _str.starts_with(VARIABLE_PREFIX);
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string to_variable(const std::string_view& _str)
+{
+    std::string variable(VARIABLE_PREFIX);
+    return variable.append(_str).append(VARIABLE_SUFFIX);
+}
+
+/// Boost algorithm replace_all is less efficient (but still better than a regex)
+/// This kind of replace_all is the best we can get for moderate size strings
+inline static void replace_all(std::string& _str, const std::string_view& _old, const std::string_view& _new)
+{
+    for(size_t find_pos = _str.find(_old) ;
+        find_pos != std::string::npos ;
+        find_pos = _str.find(_old, _new.length() + find_pos))
+    {
+        _str.replace(find_pos, _old.length(), _new);
+    }
+}
 
 //-----------------------------------------------------------------------------
 
@@ -176,19 +203,17 @@ core::runtime::config_t config::get_adapted_template_config(
     core::runtime::config_t new_config = iter->second->config;
 
     field_adaptor_t fields;
-    const auto parse_key = [](const std::string& _s){return "\\$\\{" + _s + "\\}";};
 
     for(const auto& param : iter->second->parameters)
     {
-        auto iter_field       = _field_adaptors.find(param.first);
-        const std::string key = parse_key(param.first);
-        if(iter_field != _field_adaptors.end())
+        const std::string variable = to_variable(param.first);
+        if(auto iter_field = _field_adaptors.find(param.first); iter_field != _field_adaptors.end())
         {
-            fields[key] = iter_field->second;
+            fields[variable] = iter_field->second;
         }
         else if(param.second != s_mandatory_parameter_identifier)
         {
-            fields[key] = param.second;
+            fields[variable] = param.second;
         }
         else
         {
@@ -198,11 +223,10 @@ core::runtime::config_t config::get_adapted_template_config(
 
     for(const auto& object : iter->second->objects)
     {
-        auto iter_field       = _field_adaptors.find(object.first);
-        const std::string key = parse_key(object.first);
-        if(iter_field != _field_adaptors.end())
+        const std::string variable = to_variable(object.first);
+        if(const auto iter_field = _field_adaptors.find(object.first); iter_field != _field_adaptors.end())
         {
-            fields[key] = iter_field->second;
+            fields[variable] = iter_field->second;
         }
         else
         {
@@ -220,7 +244,7 @@ core::runtime::config_t config::get_adapted_template_config(
         }
 
         core::runtime::config_t object_ref_cfg;
-        object_ref_cfg.put("<xmlattr>.uid", "${" + object.first + "}");
+        object_ref_cfg.put("<xmlattr>.uid", variable);
         object_ref_cfg.put("<xmlattr>.type", object.second.first);
         object_ref_cfg.put("<xmlattr>.src", object.second.second ? "deferred" : "ref");
         new_config.add_child("object", object_ref_cfg);
@@ -240,9 +264,9 @@ core::runtime::config_t config::get_adapted_template_config(
                 for(const auto& attribute : *attributes)
                 {
                     const auto attr_value = attribute.second.get_value<std::string>();
-                    if("uid" == attribute.first && !std::regex_match(attr_value, IS_VARIABLE))
+                    if("uid" == attribute.first && !is_variable(attr_value))
                     {
-                        fields[parse_key(attr_value)] = core::id::join(auto_prefix_name, attr_value);
+                        fields[to_variable(attr_value)] = core::id::join(auto_prefix_name, attr_value);
                     }
                 }
             }
@@ -359,7 +383,7 @@ void config::collect_uid_for_parameter_replace(
             for(auto it = range.first ; it != range.second ; ++it)
             {
                 const auto attr_value = attribute.second.get_value<std::string>();
-                if(it->second == attribute.first && !std::regex_match(attr_value, IS_VARIABLE))
+                if(it->second == attribute.first && !is_variable(attr_value))
                 {
                     _replace_map.insert(attr_value);
                 }
@@ -400,37 +424,29 @@ core::runtime::config_t config::adapt_config(
             const auto attribute_value = attribute.second.get_value<std::string>();
 
             // Add the config prefix for unique identifiers
-            if(!_auto_prefix_id.empty())
+            if(!_auto_prefix_id.empty() && !is_variable(attribute_value))
             {
                 if(attribute.first == "uid"
                    || attribute.first == "sid"
                    || attribute.first == "wid"
                    || attribute.first == "channel")
                 {
-                    // Detect if we have a variable name
-                    if(!std::regex_match(attribute_value, IS_VARIABLE))
-                    {
-                        // This is not a variable, add the prefix
-                        result.put("<xmlattr>." + attribute.first, core::id::join(_auto_prefix_id, attribute_value));
-                        continue;
-                    }
+                    // This is not a variable, add the prefix
+                    result.put("<xmlattr>." + attribute.first, core::id::join(_auto_prefix_id, attribute_value));
+                    continue;
                 }
+
                 // Special case for <parameter replace="..." by="..." />
-                else if(attribute.first == "by")
+                if(attribute.first == "by")
                 {
-                    // Detect if we have a variable name
-                    if(!std::regex_match(attribute_value, IS_VARIABLE))
+                    // Look inside the map of potential replacements
+                    if(_uid_parameter_replace.find(attribute_value) != _uid_parameter_replace.end())
                     {
-                        // Look inside the map of potential replacements
-                        auto it_param = _uid_parameter_replace.find(attribute_value);
-                        if(it_param != _uid_parameter_replace.end())
-                        {
-                            result.put(
-                                "<xmlattr>." + attribute.first,
-                                core::id::join(_auto_prefix_id, attribute_value)
-                            );
-                            continue;
-                        }
+                        result.put(
+                            "<xmlattr>." + attribute.first,
+                            core::id::join(_auto_prefix_id, attribute_value)
+                        );
+                        continue;
                     }
                 }
             }
@@ -445,15 +461,13 @@ core::runtime::config_t config::adapt_config(
         if(!_auto_prefix_id.empty() && (sub_elem.first == "signal" || sub_elem.first == "slot"))
         {
             // Detect if we have a variable name
-            if(!std::regex_match(sub_elem.second.get_value<std::string>(), IS_VARIABLE))
+            if(const auto& sub_elem_value = sub_elem.second.get_value<std::string>(); !is_variable(sub_elem_value))
             {
                 // This is not a variable, add the prefix
                 core::runtime::config_t elt;
-                elt.put_value(core::id::join(_auto_prefix_id, sub_elem.second.get_value<std::string>()));
+                elt.put_value(core::id::join(_auto_prefix_id, sub_elem_value));
 
-                const auto& sub_attributes = _cfg_elem.get_child_optional("<xmlattr>");
-
-                if(sub_attributes)
+                if(const auto& sub_attributes = _cfg_elem.get_child_optional("<xmlattr>"); sub_attributes)
                 {
                     for(const auto& attribute : *sub_attributes)
                     {
@@ -477,38 +491,21 @@ core::runtime::config_t config::adapt_config(
 
 //-----------------------------------------------------------------------------
 
-std::string config::subst_var(const std::string& _str, const field_adaptor_t& _variables_map)
+std::string config::subst_var(std::string _str, const field_adaptor_t& _variables_map)
 {
-    std::string new_str = _str;
-    if(!_str.empty())
+    if(!_str.empty() && is_variable(_str))
     {
         // Discriminate first variable expressions only, looking through all keys of the replace map is not for free
         // However we look inside the whole string instead of only at the beginning because we want  to replace "inner"
         // variables as well, i.e. not only ${uid} but also uid${suffix}
-        if(std::regex_search(_str, IS_VARIABLE))
+        // Iterate over all variables
+        for(const auto& [variable, value] : _variables_map)
         {
-            // Iterate over all variables
-            for(const auto& field_adaptor : _variables_map)
-            {
-                const std::regex var_regex("(.*)" + field_adaptor.first + "(.*)");
-                if(std::regex_match(new_str, var_regex))
-                {
-                    const std::string var_replace("\\1" + field_adaptor.second + "\\2");
-                    new_str = std::regex_replace(
-                        new_str,
-                        var_regex,
-                        var_replace,
-                        std::regex_constants::match_default
-                        | std::regex_constants::format_sed
-                    );
-                }
-
-                // Do not break to allow multiple replacements if there are other variables in the string
-            }
+            replace_all(_str, variable, value);
         }
     }
 
-    return new_str;
+    return _str;
 }
 
 //-----------------------------------------------------------------------------

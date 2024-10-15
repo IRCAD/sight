@@ -183,7 +183,7 @@ private:
     );
 
     /// Adapts field thanks to field adaptors
-    static std::string subst_var(const std::string& _str, const field_adaptor_t& _variables_map);
+    static std::string subst_var(std::string _str, const field_adaptor_t& _variables_map);
 
     /// Used to protect the registry access.
     mutable core::mt::read_write_mutex m_registry_mutex;
