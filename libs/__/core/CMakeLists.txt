@@ -10,6 +10,9 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 
     # Boost >= 1.67 changes the default random provider on Windows to use BCrypt
     target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE bcrypt)
+
+    # For timeBeginPeriod  and timeEndPeriod
+    target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE winmm)
 endif()
 
 # This is the only place where we should pass these variables to the C++ code
@@ -25,10 +28,6 @@ target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE OpenSSL::Crypto)
 if(UNIX)
     # We use dlopen, dlerror, ...
     target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE ${CMAKE_DL_LIBS})
-endif()
-
-if(WIN32)
-    target_include_directories(${TARGET_OBJECT_LIB} PRIVATE ${Iconv_INCLUDE_DIR})
 endif()
 
 target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC OpenMP::OpenMP_CXX)

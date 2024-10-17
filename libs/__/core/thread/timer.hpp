@@ -89,7 +89,7 @@ protected:
      * @brief Constructs a Timer.
      * By default, a the Timer mode is repetitive.
      */
-    SIGHT_CORE_API timer();
+    SIGHT_CORE_API timer() = default;
 
     /// Copy constructor forbidden.
     timer(const timer&);
