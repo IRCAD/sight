@@ -78,8 +78,9 @@ toolbox::~toolbox()
 
 //-----------------------------------------------------------------------------
 
-toolbox::toolbox(QWidget* _parent) :
+toolbox::toolbox(QWidget* _parent, QColor _icon_color) :
     QFrame(_parent),
+    m_icon_color(std::move(_icon_color)),
     m_layout(new QFormLayout(this))
 {
     this->m_layout->setMargin(0);
@@ -202,6 +203,9 @@ int toolbox::insert_item(int _index, QWidget* _widget, const QString& _text)
     c.button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     c.button->setFocusPolicy(Qt::NoFocus);
     c.button->setCheckable(true);
+    // handle the color of the closing and opening icons.
+    branch_open.at(1)   = (std::string("- c ") + m_icon_color.name().toStdString()).c_str();
+    branch_closed.at(1) = (std::string("- c ") + m_icon_color.name().toStdString()).c_str();
     QPixmap pix_open(branch_open.data());
     QPixmap pix_close(branch_closed.data());
     QIcon b_icon;
@@ -221,7 +225,7 @@ int toolbox::insert_item(int _index, QWidget* _widget, const QString& _text)
 
     c.set_text(_text);
 
-    if(_index < 0 || _index >= (int) this->m_page_list.count())
+    if(_index < 0 || _index >= this->m_page_list.count())
     {
         _index = this->m_page_list.count();
         this->m_page_list.append(c);
@@ -316,7 +320,7 @@ void toolbox::remove_item(int _index)
 
 QWidget* toolbox::widget(int _index) const
 {
-    if(_index < 0 || _index >= (int) this->m_page_list.size())
+    if(_index < 0 || _index >= this->m_page_list.size())
     {
         return nullptr;
     }

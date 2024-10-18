@@ -80,6 +80,7 @@ public:
        <service uid="subView2" type="sight::module::ui::view" auto_connect="false" >
            <gui>
                <layout type="ui::layout::toolbox">
+                    <icon_color value="#FFFFFF" />
                    <view caption="My view 1" expanded="true" />
                    <view caption="My view 2" expanded="true" />
                    <view caption="My view 3" expanded="false" />
@@ -93,7 +94,8 @@ public:
            </registry>
        </service>
        @endcode
-     *  - \<layout type="ui::layout::toolbox" \> : define a toolbox layout.
+     *  - \<layout type="ui::layout::toolbox" /\> : define a toolbox layout.
+     *  - \<icon_color  value="#FFFFFF" /\> : determines the color fo the triangle-like icon that expands sub-views.
      *  - \<view caption="My view 1" expanded="true" minWidth="30" /\> : define a new view which can have the following
      * attributes
      *   - \b border : defines the size of the border in the layout
@@ -121,10 +123,20 @@ protected:
         return m_views;
     }
 
+    //------------------------------------------------------------------------------
+
+    std::string get_icon_color()
+    {
+        return m_icon_color;
+    }
+
 private:
 
     /// Save layout configuration definition
     std::list<view_info> m_views;
+
+    /// Determines the color fo the triangle-like icon that expands sub-views.
+    std::string m_icon_color;
 };
 
 } // namespace sight::ui::layout

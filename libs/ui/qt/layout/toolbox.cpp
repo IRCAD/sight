@@ -57,7 +57,7 @@ void toolbox::create_layout(ui::container::widget::sptr _parent, const std::stri
     layout->setContentsMargins(0, 0, 0, 0);
 
     auto* sv      = new QScrollArea();
-    auto* toolbox = new ui::qt::widget::toolbox(sv);
+    auto* toolbox = new ui::qt::widget::toolbox(sv, this->get_icon_color().c_str());
     sv->setWidget(toolbox);
     sv->setWidgetResizable(true);
     layout->addWidget(sv);

@@ -306,7 +306,7 @@ QToolButton:checked,
 QToolButton:pressed,
 QToolButton::menu-button:pressed
 {
-    background: #C0B3D8;
+    background: rgba(192, 179, 216, 50%);
 }
 
 /************************************************************************/
@@ -316,8 +316,7 @@ QToolButton::menu-button:pressed
 QToolButton.buttonBar:pressed,
 QToolButton.buttonBar:checked
 {
-    background: #C0B3D8;
-    border: 1px solid #C0B3D8;
+    background: rgba(192, 179, 216, 50%);
 }
 
 QToolButton.buttonBar
@@ -408,7 +407,6 @@ QPlainTextEdit
 QPushButton
 {
     border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 50%);
     background: rgba(255, 255, 255, 10%);
     padding: 5px;
     color: rgb(255, 255, 255);
@@ -423,13 +421,13 @@ QPushButton:disabled
 
 QPushButton:hover
 {
-    background: #C0B3D8;
+    background: rgba(48, 58, 101, 75%);
 }
 
 QPushButton:pressed,
 QPushButton:checked
 {
-    background: #C0B3D8;
+    background: rgba(192, 179, 216, 50%);
 }
 
 /************************************************************************/
@@ -1145,107 +1143,28 @@ QTreeView::branch:open:has-children:has-siblings:hover
 /****************************** QTabWidget ******************************/
 /************************************************************************/
 
-QTabBar
-{
-    border: none;
-    background: transparent;
-    padding: 0px;
-    icon-size: 20px;
+QTabBar::tab {
+    background: rgba(0, 0, 0, 10%);
+    color: white;
+    padding: 9px;
+    font-size: 13pt;
+    border: 0;
+} 
+
+QTabBar::tab:selected {
+    background: rgba(255, 255, 255, 10%); 
+    border: 1px solid rgba(55, 60, 91, 100%); 
+    border-bottom : 0px;
 }
 
-QTabBar::close-button
-{
-    image: url(:/resources/close.png);
-    background: transparent;
-}
-
-QTabBar::close-button:hover
-{
-    image: url(:/resources/close-hover.png);
-    background: transparent;
-}
-
-QTabBar::close-button:pressed
-{
-    image: url(:/resources/close-pressed.png);
-    background: transparent;
-}
-
-QTabWidget::pane
-{
-    border: 3px solid rgb(54, 57, 62);
-    background: rgb(54, 57, 62);
-    border-radius: 6px;
-    padding: 3px;
-}
-
-QTabWidget::pane:left,
-QTabWidget::pane:top
-{
-    border-top-left-radius: 0px;
-}
-
-QTabWidget::pane:right
-{
-    border-top-right-radius: 0px;
-}
-
-QTabWidget::pane:bottom
-{
-    border-bottom-left-radius: 0px;
-}
-
-QTabBar::tab
-{
-    color: rgb(255, 255, 255);
-    background: rgb(54, 57, 62);
-    border: 3px solid rgb(54, 57, 62);
-}
-
-/********************************** Top *********************************/
-
-QTabBar::tab:top
-{
-    padding: 3px 15px 3px 15px;
-    border-top-left-radius: 4px;
-    border-top-right-radius: 4px;
-    min-width: 50px;
-}
-
-/******************************** Right *********************************/
-
-QTabBar::tab:right
-{
-    padding: 15px 3px 15px 3px;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-    min-height: 50px;
-}
-
-/******************************** Bottom ********************************/
-
-QTabBar::tab:bottom
-{
-    padding: 3px 15px 3px 15px;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    min-width: 50px;
-}
-
-/********************************* Left *********************************/
-
-QTabBar::tab:left
-{
-    padding: 15px 3px 15px 3px;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-    min-height: 50px;
+QTabWidget::pane { 
+    background: rgba(255, 255, 255, 0%);
+    border: 1px solid rgba(55, 60, 91, 100%);
 }
 
 QTabBar::tab:!selected
 {
-    border-color: rgb(86, 90, 94);
-    background: rgb(86, 90, 94);
+    background: rgba(86, 90, 94, 10%);
 }
 
 QTabBar::tab:!selected:hover
@@ -1491,7 +1410,7 @@ QProgressBar::chunk
 .toolbox_button:hover
 {
     background-color: #303A65;
-    border-color: rgba(255, 255, 255, 50%);
+    border-color: rgba(255, 255, 255, 30%);
 }
 .toolbox_frame
 {

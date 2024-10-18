@@ -101,7 +101,7 @@ Q_OBJECT
 
 public:
 
-    SIGHT_UI_QT_API_QT toolbox(QWidget* _parent = nullptr);
+    SIGHT_UI_QT_API_QT toolbox(QWidget* _parent = nullptr, QColor icon_color = "#000000");
     SIGHT_UI_QT_API_QT ~toolbox() override;
 
     SIGHT_UI_QT_API_QT int add_item(QWidget* _widget, const QString& _text);
@@ -147,6 +147,7 @@ private:
     void relayout();
 
     page_list m_page_list;
+    QColor m_icon_color;
     QFormLayout* m_layout;
 };
 
