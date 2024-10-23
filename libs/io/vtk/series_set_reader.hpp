@@ -36,7 +36,7 @@
 namespace sight::core::jobs
 {
 
-class observer;
+class aggregator;
 
 }
 
@@ -81,7 +81,7 @@ public:
 private:
 
     ///Internal job
-    SPTR(core::jobs::observer) m_job;
+    SPTR(core::jobs::aggregator) m_job;
 
     bool m_lazy_mode;
 };

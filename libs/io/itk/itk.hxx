@@ -84,7 +84,7 @@ void move_from_itk(
             pixel_type,
             v_size,
             data::image::gray_scale,
-            std::make_shared<core::memory::buffer_new_policy>()
+            std::make_shared<core::memory::buffer_malloc_policy>()
         );
         /// itk image release its management buffer. dataImage must now deal memory
         _itk_image->GetPixelContainer()->SetContainerManageMemory(false);

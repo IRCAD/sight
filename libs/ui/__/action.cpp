@@ -38,40 +38,19 @@ action::action()
     new_slot(slots::SET_CHECKED, &action::set_checked, this);
     new_slot(slots::CHECK, [this](){this->set_checked(true);});
     new_slot(slots::UNCHECK, [this](){this->set_checked(false);});
-    new_slot(
-        slots::APPLY_CHECKED,
-        [this]()
-        {
-            m_block_signals = true;
-            this->set_checked(*m_checked);
-            m_block_signals = false;
-        });
+    new_slot(slots::APPLY_CHECKED, [this](){this->set_checked(*m_checked);});
     new_slot(slots::SET_ENABLED, &action::set_enabled, this);
     new_slot(slots::SET_DISABLED, [this](bool _disabled){this->set_enabled(!_disabled);});
     new_slot(slots::ENABLE, [this](){this->set_enabled(true);});
     new_slot(slots::DISABLE, [this](){this->set_enabled(false);});
-    new_slot(
-        slots::APPLY_ENABLED,
-        [this]()
-        {
-            m_block_signals = true;
-            this->set_checked(*m_enabled);
-            m_block_signals = false;
-        });
+    new_slot(slots::APPLY_ENABLED, [this](){this->set_enabled(*m_enabled);});
 
     new_slot(slots::SET_VISIBLE, &action::set_visible, this);
     new_slot(slots::SET_HIDDEN, [this](bool _hidden){this->set_visible(!_hidden);});
     new_slot(slots::SHOW, [this](){this->set_visible(true);});
     new_slot(slots::HIDE, [this](){this->set_visible(false);});
     new_slot(slots::TOGGLE_VISIBILITY, [this]{this->set_visible(!*m_visible);});
-    new_slot(
-        slots::APPLY_VISIBLE,
-        [this]()
-        {
-            m_block_signals = true;
-            this->set_checked(*m_visible);
-            m_block_signals = false;
-        });
+    new_slot(slots::APPLY_VISIBLE, [this](){this->set_visible(*m_visible);});
 
     new_signal<signals::bool_t>(signals::IS_ENABLED);
     new_signal<signals::void_t>(signals::ENABLED);
@@ -136,10 +115,10 @@ void action::set_checked(bool _checked)
     {
         {
             const auto checked = m_checked.lock();
-            *checked = _checked;
 
-            if(!m_block_signals)
+            if(_checked != checked->value())
             {
+                *checked = _checked;
                 auto sig = checked->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
                 core::com::connection::blocker block(sig->get_connection(slot(slots::APPLY_CHECKED)));
                 sig->async_emit();
@@ -147,8 +126,9 @@ void action::set_checked(bool _checked)
         }
         this->m_registry->action_service_set_checked(_checked);
 
-        if(!m_block_signals)
+        if(!m_prev_checked.has_value() || *m_prev_checked != _checked)
         {
+            m_prev_checked = _checked;
             if(_checked)
             {
                 auto sig = this->signal<signals::void_t>(signals::CHECKED);
@@ -181,7 +161,7 @@ void action::set_enabled(bool _enabled)
         const auto enabled = m_enabled.lock();
         *enabled = _enabled;
 
-        if(!m_block_signals)
+        if(_enabled != enabled->value())
         {
             auto sig = enabled->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             core::com::connection::blocker block(sig->get_connection(slot(slots::APPLY_ENABLED)));
@@ -191,8 +171,10 @@ void action::set_enabled(bool _enabled)
 
     this->m_registry->action_service_set_enabled(_enabled);
 
-    if(!m_block_signals)
+    if(!m_prev_enabled.has_value() || *m_prev_enabled != _enabled)
     {
+        m_prev_enabled = _enabled;
+
         if(_enabled)
         {
             auto sig = this->signal<signals::void_t>(signals::ENABLED);
@@ -224,7 +206,7 @@ void action::set_visible(bool _visible)
         const auto visible = m_visible.lock();
         *visible = _visible;
 
-        if(!m_block_signals)
+        if(_visible != visible->value())
         {
             auto sig = visible->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             core::com::connection::blocker block(sig->get_connection(slot(slots::APPLY_VISIBLE)));
@@ -233,8 +215,10 @@ void action::set_visible(bool _visible)
     }
     this->m_registry->action_service_set_visible(_visible);
 
-    if(!m_block_signals)
+    if(!m_prev_visible.has_value() || *m_prev_visible != _visible)
     {
+        m_prev_visible = _visible;
+
         signal<signals::bool_t>(signals::IS_VISIBLE)->async_emit(_visible);
     }
 }

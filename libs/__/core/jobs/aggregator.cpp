@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -95,7 +95,7 @@ void aggregator::add(const core::jobs::base::sptr& _i_job, double _weight)
 
     core::mt::read_to_write_lock lock(m_mutex);
 
-    SIGHT_ASSERT("Jobs can't be added when aggregator is running", m_state == waiting || m_state == running);
+    SIGHT_ASSERT("Jobs can't be added when aggregator is finished", m_state == waiting || m_state == running);
 
     const auto norm_value = std::uint64_t(_weight * 100);
 

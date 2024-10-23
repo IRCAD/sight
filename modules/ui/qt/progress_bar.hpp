@@ -42,10 +42,6 @@ namespace sight::module::ui::qt
 /**
  * @brief Service displaying a progress bar.
  *
- * @section Signals Signals
- * - \b started(core::jobs::base::wptr _job) : Emitted when a job is started
- * - \b ended(core::jobs::base::wptr _job) : Emitted when a job is canceled or finished
- *
  * @section Slots Slots
  * - \b show_job(core::jobs::base::sptr _job): visualize the progression of jobs.
  *
@@ -82,15 +78,6 @@ public:
      */
     ~progress_bar() noexcept override = default;
 
-    struct signals final
-    {
-        using key_t = sight::core::com::signals::key_t;
-        static inline const key_t STARTED = "started";
-        static inline const key_t ENDED   = "ended";
-
-        using void_job_signal_t = sight::core::com::signal<void (core::jobs::base::wptr _job)>;
-    };
-
     struct slots final
     {
         using key_t = sight::core::com::slots::key_t;
@@ -99,11 +86,8 @@ public:
 
     /**
      * @brief Update widgets visibility. This method is called by the job hooks.
-     *
-     * @note It need to be public because we hold a weak pointer.
-     * @warning This method is not thread safe and must be called on main thread.
      */
-    void update_widgets(core::jobs::base::wptr _job_to_remove = core::jobs::base::wptr());
+    void update_widgets();
 
 protected:
 
@@ -156,6 +140,9 @@ private:
     QPointer<QToolButton> m_cancel_button;
 
     std::vector<core::jobs::base::wptr> m_jobs;
+
+    /// Protect the jobs list
+    std::mutex m_mutex;
 };
 
 } // namespace sight::module::ui::qt

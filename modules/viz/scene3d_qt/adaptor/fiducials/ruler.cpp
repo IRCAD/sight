@@ -323,6 +323,8 @@ void ruler::stopping()
     this->layer()->remove_interactor(interactor);
 
     m_event_filter = nullptr;
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

@@ -195,7 +195,7 @@ shape::shape() noexcept
 sight::service::connections_t shape::auto_connections() const
 {
     return {
-        {s_IMAGE_INOUT, sight::data::object::MODIFIED_SIG, sight::service::slots::UPDATE},
+        {s_IMAGE_INOUT, sight::data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
         {s_IMAGE_INOUT, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG, private_slots::SHOW_ON_CURRENT_SLICE},
         {s_IMAGE_INOUT, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG, private_slots::SHOW_ON_CURRENT_SLICE},
     };
@@ -438,7 +438,8 @@ void shape::updating()
             m_shapes.emplace_back(shapes);
         });
 
-    this->render_service()->request_render();
+    update_done();
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------

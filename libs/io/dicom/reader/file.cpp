@@ -1847,7 +1847,6 @@ void file::set_job(core::jobs::job::sptr _job)
     SIGHT_ASSERT("Some work have already be reported.", _job->get_done_work_units() == 0);
     m_pimpl->m_job = _job;
     m_pimpl->m_job->set_total_work_units(100);
-    m_pimpl->m_job->done_work(10);
 }
 
 } // namespace sight::io::dicom::reader

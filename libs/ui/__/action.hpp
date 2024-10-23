@@ -198,11 +198,13 @@ private:
     sight::data::property<sight::data::boolean> m_visible {this, "visible", true};
     sight::data::property<sight::data::boolean> m_inverse {this, "inverse", false};
 
+    std::optional<bool> m_prev_checked;
+    std::optional<bool> m_prev_enabled;
+    std::optional<bool> m_prev_visible;
+
     bool m_confirm_action {false};
     bool m_default_button {false};
     std::string m_confirm_message;
-    // Prevent sending signals when data is modified from the outside
-    bool m_block_signals {false};
 };
 
 //-----------------------------------------------------------------------------

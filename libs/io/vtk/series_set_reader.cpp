@@ -26,8 +26,7 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/base.hpp>
-#include <core/jobs/base.hpp>
+#include <core/jobs/aggregator.hpp>
 #include <core/jobs/observer.hpp>
 #include <core/memory/buffer_object.hpp>
 #include <core/memory/stream/in/factory.hpp>
@@ -85,7 +84,7 @@ void init_series(data::series::sptr _series, const std::string& _instance_uid)
 //------------------------------------------------------------------------------
 
 series_set_reader::series_set_reader() :
-    m_job(std::make_shared<core::jobs::observer>("series_set reader")),
+    m_job(std::make_shared<core::jobs::aggregator>("series_set reader")),
     m_lazy_mode(true)
 {
 }
@@ -207,6 +206,9 @@ void series_set_reader::read()
     std::vector<std::string> error_files;
     for(const auto& file : files)
     {
+        const auto job_observer = std::make_shared<core::jobs::observer>(file.string());
+        m_job->add(job_observer);
+
         vtkSmartPointer<vtkDataObject> obj;
         data::image::sptr img;
         data::reconstruction::sptr rec;
@@ -215,35 +217,35 @@ void series_set_reader::read()
         {
             if(!img)
             {
-                obj = get_obj<vtkGenericDataObjectReader>(file, m_job);
+                obj = get_obj<vtkGenericDataObjectReader>(file, job_observer);
             }
         }
         else if(file.extension().string() == ".vti")
         {
             if(!img)
             {
-                obj = get_obj<vtkXMLGenericDataObjectReader>(file, m_job);
+                obj = get_obj<vtkXMLGenericDataObjectReader>(file, job_observer);
             }
         }
         else if(file.extension().string() == ".mhd")
         {
-            obj = get_obj<vtkMetaImageReader>(file, m_job);
+            obj = get_obj<vtkMetaImageReader>(file, job_observer);
         }
         else if(file.extension().string() == ".vtu" || file.extension().string() == ".vtp")
         {
-            obj = get_obj<vtkXMLGenericDataObjectReader>(file, m_job);
+            obj = get_obj<vtkXMLGenericDataObjectReader>(file, job_observer);
         }
         else if(file.extension().string() == ".obj")
         {
-            obj = get_obj<vtkOBJReader>(file, m_job);
+            obj = get_obj<vtkOBJReader>(file, job_observer);
         }
         else if(file.extension().string() == ".stl")
         {
-            obj = get_obj<vtkSTLReader>(file, m_job);
+            obj = get_obj<vtkSTLReader>(file, job_observer);
         }
         else if(file.extension().string() == ".ply")
         {
-            obj = get_obj<vtkPLYReader>(file, m_job);
+            obj = get_obj<vtkPLYReader>(file, job_observer);
         }
 
         if(!img)

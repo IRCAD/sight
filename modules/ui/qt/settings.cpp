@@ -1611,16 +1611,14 @@ void settings::create_enum_combobox_widget(
     combo_box->setProperty(qt_property::key, QString::fromStdString(_setup.key));
     combo_box->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
 
-    int idx = 0;
-    for(const auto& value : _values)
+    for(int idx = 0 ; const auto& value : _values)
     {
         combo_box->insertItem(idx, QString::fromStdString(value));
         ++idx;
     }
 
     // Add optional data
-    idx = 0;
-    for(const auto& choice : _data)
+    for(int idx = 0 ; const auto& choice : _data)
     {
         combo_box->setItemData(idx, QString::fromStdString(choice));
         ++idx;
@@ -1635,7 +1633,17 @@ void settings::create_enum_combobox_widget(
     {
         const auto obj        = data<sight::data::string>(combo_box);
         const auto init_value = obj->value();
-        combo_box->setCurrentText(QString::fromStdString(init_value));
+
+        for(std::size_t idx = 0 ; const auto& choice : _data)
+        {
+            if(choice == init_value)
+            {
+                combo_box->setCurrentText(QString::fromStdString(_values[idx]));
+            }
+
+            ++idx;
+        }
+
         connect_data(obj, _setup.key);
 
         QObject::connect(

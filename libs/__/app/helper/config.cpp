@@ -489,7 +489,7 @@ app::detail::service_config config::parse_service(
                 .m_key          = key,
                 .m_uid          = value,
                 .m_access       = data::access::inout,
-                .m_auto_connect = true,
+                .m_auto_connect = key != "from",
                 .m_optional     = false
             };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -408,6 +408,7 @@ void base::add_state_hook_no_lock(state_hook _callback)
 
 void base::done_work(std::uint64_t _units)
 {
+    SIGHT_ASSERT("Can not report done work while the job is not running.", m_state == running || m_state == canceling);
     core::mt::read_to_write_lock lock(m_mutex);
     this->done_work(_units, lock);
 }

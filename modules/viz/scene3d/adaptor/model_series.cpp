@@ -125,7 +125,7 @@ void model_series::updating()
     // Retrieves the associated Sight ModelSeries object
     const auto model_series = m_model.lock();
 
-    this->stopping();
+    this->unregister_services();
 
     // showRec indicates if we have to show the associated reconstructions or not
     const bool show_rec =

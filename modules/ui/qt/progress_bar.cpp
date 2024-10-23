@@ -48,8 +48,6 @@ namespace sight::module::ui::qt
 progress_bar::progress_bar() noexcept
 {
     new_slot(slots::SHOW_JOB, &progress_bar::show_job, this);
-    new_signal<signals::void_job_signal_t>(signals::STARTED);
-    new_signal<signals::void_job_signal_t>(signals::ENDED);
 }
 
 //-----------------------------------------------------------------------------
@@ -165,7 +163,10 @@ void progress_bar::starting()
 
 void progress_bar::stopping()
 {
-    m_jobs.clear();
+    {
+        std::lock_guard m_lock(m_mutex);
+        m_jobs.clear();
+    }
 
     if(!m_title.isNull())
     {
@@ -198,7 +199,7 @@ void progress_bar::stopping()
     }
 
     this->destroy();
-}
+} // namespace sight::module::ui::qt
 
 //-----------------------------------------------------------------------------
 
@@ -230,17 +231,9 @@ void progress_bar::configuring()
 
 //------------------------------------------------------------------------------
 
-void progress_bar::update_widgets(core::jobs::base::wptr _weak_job_to_remove)
+void progress_bar::update_widgets()
 {
-    // We assume we are on the main thread.
-    // Some cleanup to remove expired jobs.
-    std::erase_if(
-        m_jobs,
-        [_weak_job_to_remove](const auto& _weak_job)
-        {
-            return _weak_job.expired() || (_weak_job.lock() == _weak_job_to_remove.lock());
-        });
-
+    std::lock_guard m_lock(m_mutex);
     // Update visibility of the widgets.
     const bool visible = !m_jobs.empty();
 
@@ -307,17 +300,20 @@ void progress_bar::update_widgets(core::jobs::base::wptr _weak_job_to_remove)
 
 void progress_bar::show_job(core::jobs::base::sptr _job)
 {
-    // Add the job to the list.
-    // We use weak pointer to avoid taking ownership of the job.
-    if(std::find_if(
-           m_jobs.cbegin(),
-           m_jobs.cend(),
-           [&_job](const auto& _other_job)
-        {
-            return _other_job.lock() == _job;
-        }) == m_jobs.cend())
     {
-        m_jobs.push_back(_job);
+        std::lock_guard m_lock(m_mutex);
+        // Add the job to the list.
+        // We use weak pointer to avoid taking ownership of the job.
+        if(std::find_if(
+               m_jobs.cbegin(),
+               m_jobs.cend(),
+               [&_job](const auto& _other_job)
+            {
+                return _other_job.lock() == _job;
+            }) == m_jobs.cend())
+        {
+            m_jobs.push_back(_job);
+        }
     }
 
     // Use a "weak" this to avoid ownership to be passed to the lambdas which can be executed in different threads.
@@ -344,9 +340,15 @@ void progress_bar::show_job(core::jobs::base::sptr _job)
             {
                 if(_state == core::jobs::base::canceled || _state == core::jobs::base::finished)
                 {
-                    if(const auto sig = shared_this->signal<signals::void_job_signal_t>(signals::ENDED); sig)
                     {
-                        sig->emit(weak_job);
+                        // Some cleanup to remove expired jobs.
+                        std::lock_guard m_lock(shared_this->m_mutex);
+                        std::erase_if(
+                            shared_this->m_jobs,
+                            [weak_job](const auto& _weak_job)
+                        {
+                            return _weak_job.expired() || (_weak_job.lock() == weak_job.lock());
+                        });
                     }
 
                     core::thread::get_default_worker()->post_task<void>(
@@ -354,16 +356,9 @@ void progress_bar::show_job(core::jobs::base::sptr _job)
                     {
                         if(auto shared_this = dynamic_pointer_cast<progress_bar>(weak_this.lock()); shared_this)
                         {
-                            shared_this->update_widgets(weak_job);
+                            shared_this->update_widgets();
                         }
                     });
-                }
-                else if(_state == core::jobs::base::running)
-                {
-                    if(const auto sig = shared_this->signal<signals::void_job_signal_t>(signals::STARTED); sig)
-                    {
-                        sig->emit(weak_job);
-                    }
                 }
             }
         });
