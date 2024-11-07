@@ -72,7 +72,7 @@ void update_sequence::updating()
 
         if(srv != nullptr)
         {
-            if(srv->started())
+            if(srv->started() || element.slot == service::base::slots::START)
             {
                 services.emplace_back(srv, element.slot);
                 if(srv->is_auto_connected())
@@ -83,7 +83,7 @@ void update_sequence::updating()
                     );
                 }
             }
-            else
+            else if(element.slot != service::base::slots::STOP)
             {
                 SIGHT_WARN(
                     "[sight::app::update_sequence] Service " << std::quoted(element.uid)

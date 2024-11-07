@@ -33,6 +33,8 @@ class update_sequence_test : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(update_sequence_test);
 CPPUNIT_TEST(basic);
 CPPUNIT_TEST(parent);
+CPPUNIT_TEST(call_start_stop);
+CPPUNIT_TEST(call_slot_while_stopped);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,6 +44,8 @@ public:
 
     static void basic();
     static void parent();
+    static void call_start_stop();
+    static void call_slot_while_stopped();
 };
 
 } // namespace sight::app::ut
