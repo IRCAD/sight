@@ -23,7 +23,7 @@
 
 #include <sight/viz/scene3d/config.hpp>
 
-#include <data/landmarks.hpp>
+#include <data/fiducials_series.hpp>
 
 #include <optional>
 #include <set>
@@ -32,29 +32,29 @@
 namespace sight::viz::scene3d
 {
 
-/// Landmarks configuration used in signals/slots
+/// Fiducials configuration used in signals/slots
 /// Parameter with `std::nullopt`, means "no change".
-struct SIGHT_VIZ_SCENE3D_CLASS_API landmarks_configuration
+struct SIGHT_VIZ_SCENE3D_CLASS_API fiducials_configuration
 {
-    /// Group name of the landmarks to configure.
+    /// Group name of the fiducials to configure.
     std::optional<std::string> group {std::nullopt};
 
-    /// Color of the landmarks.
-    std::optional<sight::data::landmarks::color_t> color {std::nullopt};
+    /// Color of the fiducials.
+    std::optional<std::array<float, 4> > color {std::nullopt};
 
-    /// Size of the landmarks.
-    std::optional<sight::data::landmarks::size_t> size {std::nullopt};
+    /// Size of the fiducials.
+    std::optional<float> size {std::nullopt};
 
-    /// Shape of the landmarks.
-    std::optional<sight::data::landmarks::shape> shape {std::nullopt};
+    /// Shape of the fiducials.
+    std::optional<sight::data::fiducials_series::private_shape> shape {std::nullopt};
 
-    /// Maximum number of landmark in the group. Value < 0 means "no limit".
+    /// Maximum number of fiducials in the group. Value < 0 means "no limit".
     std::optional<int> group_max {std::nullopt};
 
-    /// Maximum number of visible landmark. Value < 0 means "no limit".
-    std::optional<int> visible_max {std::nullopt};
+    /// Maximum number of fiducials in the current slice. Value < 0 means "no limit".
+    std::optional<int> slice_max {std::nullopt};
 
-    /// Maximum number of total landmark. Value < 0 means "no limit".
+    /// Maximum number of total fiducials. Value < 0 means "no limit".
     std::optional<int> total_max {std::nullopt};
 
     /// List of movable groups if `modify="group"` is used. If empty, only current group is movable.

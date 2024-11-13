@@ -45,6 +45,15 @@ namespace kw = gdcm::Keywords;
 namespace
 {
 
+enum class fiducial_set_element : std::uint8_t
+{
+    group_name    = 0,
+    color         = 1,
+    size          = 2,
+    private_shape = 3,
+    visible       = 4
+};
+
 //------------------------------------------------------------------------------
 
 std::string shape_to_string(fiducials_series::shape _shape)
@@ -83,6 +92,34 @@ std::string shape_to_string(fiducials_series::shape _shape)
 
 //------------------------------------------------------------------------------
 
+fiducials_series::shape string_to_shape(const std::optional<std::string>& _string)
+{
+    if(!_string)
+    {
+        return fiducials_series::shape::invalid;
+    }
+
+    static const std::map<std::string_view, fiducials_series::shape> s_STRING_TO_SHAPE_MAP {
+        {"POINT", fiducials_series::shape::point},
+        {"LINE", fiducials_series::shape::line},
+        {"PLANE", fiducials_series::shape::plane},
+        {"SURFACE", fiducials_series::shape::surface},
+        {"RULER", fiducials_series::shape::ruler},
+        {"L_SHAPE", fiducials_series::shape::l_shape},
+        {"T_SHAPE", fiducials_series::shape::t_shape},
+        {"SHAPE", fiducials_series::shape::shape}
+    };
+
+    if(const auto it = s_STRING_TO_SHAPE_MAP.find(*_string); it != s_STRING_TO_SHAPE_MAP.end())
+    {
+        return it->second;
+    }
+
+    return fiducials_series::shape::invalid;
+}
+
+//------------------------------------------------------------------------------
+
 std::optional<std::string> color_to_string(const std::optional<std::array<float, 4> >& _color)
 {
     if(!_color.has_value())
@@ -90,8 +127,31 @@ std::optional<std::string> color_to_string(const std::optional<std::array<float,
         return std::nullopt;
     }
 
-    return std::to_string((*_color)[0]) + ',' + std::to_string((*_color)[1]) + ',' + std::to_string((*_color)[2]) + ','
-           + std::to_string((*_color)[3]);
+    std::stringstream ss;
+    ss << (*_color)[0] << ',' << (*_color)[1] << ',' << (*_color)[2] << ',' << (*_color)[3];
+
+    return ss.str();
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::array<float, 4> > string_to_color(const std::optional<std::string>& _string)
+{
+    if(!_string.has_value())
+    {
+        return std::nullopt;
+    }
+
+    std::vector<std::string> splits;
+    boost::split(splits, *_string, boost::is_any_of(","));
+    if(splits.size() != 4)
+    {
+        return std::nullopt;
+    }
+
+    std::array<float, 4> res {};
+    std::ranges::transform(splits, res.begin(), [](const std::string& _value){return std::stof(_value);});
+    return res;
 }
 
 //------------------------------------------------------------------------------
@@ -114,6 +174,28 @@ std::optional<std::string> private_shape_to_string(const std::optional<fiducials
         default:
             return std::nullopt;
     }
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<fiducials_series::private_shape> string_to_private_shape(
+    const std::optional<std::string>& _string
+)
+{
+    if(_string)
+    {
+        if(*_string == "SPHERE")
+        {
+            return fiducials_series::private_shape::sphere;
+        }
+
+        if(*_string == "CUBE")
+        {
+            return fiducials_series::private_shape::cube;
+        }
+    }
+
+    return std::nullopt;
 }
 
 //------------------------------------------------------------------------------
@@ -244,19 +326,44 @@ gdcm::DataSet to_gdcm(detail::series_impl& _pimpl, fiducials_series::fiducial_se
     }
 
     _pimpl.set_sequence(kw::FiducialSequence::GetTag(), fiducial_sequence, data_set);
-    _pimpl.set_private_value(0, _fiducial_set.group_name, data_set);
-    _pimpl.set_private_value(1, color_to_string(_fiducial_set.color), data_set);
+
+    _pimpl.set_private_value(
+        std::uint8_t(fiducial_set_element::group_name),
+        _fiducial_set.group_name,
+        data_set
+    );
+
+    _pimpl.set_private_value(
+        std::uint8_t(fiducial_set_element::color),
+        color_to_string(_fiducial_set.color),
+        data_set
+    );
+
     std::optional<std::string> size;
     if(_fiducial_set.size.has_value())
     {
         size = std::to_string(*_fiducial_set.size);
     }
 
-    _pimpl.set_private_value(2, size, data_set);
-    _pimpl.set_private_value(3, private_shape_to_string(_fiducial_set.shape), data_set);
+    _pimpl.set_private_value(
+        std::uint8_t(fiducial_set_element::size),
+        size,
+        data_set
+    );
+
+    _pimpl.set_private_value(
+        std::uint8_t(fiducial_set_element::private_shape),
+        private_shape_to_string(_fiducial_set.shape),
+        data_set
+    );
+
     if(_fiducial_set.visibility.has_value())
     {
-        _pimpl.set_private_value(4, *_fiducial_set.visibility ? "true" : "false", data_set);
+        _pimpl.set_private_value(
+            std::uint8_t(fiducial_set_element::visible),
+            *_fiducial_set.visibility ? "true" : "false",
+            data_set
+        );
     }
 
     return data_set;
@@ -288,6 +395,307 @@ void append_in_sequence(
     const std::vector<std::pair<gdcm::Tag, std::size_t> >& _indices = {})
 {
     _pimpl.set_sequence(_tag, append_in_sequence(_pimpl, _pimpl.get_sequence(_tag, 0, _indices), _element));
+}
+
+//------------------------------------------------------------------------------
+
+void modify_fiducial(
+    detail::series_impl& _pimpl,
+    const fiducials_series::fiducial_query& _query,
+    gdcm::DataSet& _fiducial_set_dataset,
+    gdcm::DataSet& _fiducial_dataset
+)
+{
+    // Store the fiducial set part in gdcm
+    if(_query.m_frame_of_reference_uid)
+    {
+        _pimpl.set_value<kw::FrameOfReferenceUID>(_query.m_frame_of_reference_uid, _fiducial_set_dataset);
+    }
+
+    if(_query.m_group_name)
+    {
+        _pimpl.set_private_value(
+            std::uint8_t(fiducial_set_element::group_name),
+            _query.m_group_name,
+            _fiducial_set_dataset
+        );
+    }
+
+    if(_query.m_color)
+    {
+        _pimpl.set_private_value(
+            std::uint8_t(fiducial_set_element::color),
+            color_to_string(_query.m_color),
+            _fiducial_set_dataset
+        );
+    }
+
+    if(_query.m_size)
+    {
+        _pimpl.set_private_value(
+            std::uint8_t(fiducial_set_element::size),
+            _query.m_size ? std::make_optional(std::to_string(*_query.m_size)) : std::nullopt,
+            _fiducial_set_dataset
+        );
+    }
+
+    if(_query.m_private_shape)
+    {
+        _pimpl.set_private_value(
+            std::uint8_t(fiducial_set_element::private_shape),
+            private_shape_to_string(_query.m_private_shape),
+            _fiducial_set_dataset
+        );
+    }
+
+    if(_query.m_visible)
+    {
+        _pimpl.set_private_value(
+            std::uint8_t(fiducial_set_element::visible),
+            _query.m_visible.has_value() ? std::make_optional(*_query.m_visible ? "true" : "false")
+                                         : std::nullopt,
+            _fiducial_set_dataset
+        );
+    }
+
+    // Store the fiducial set part in gdcm
+    if(_query.m_shape)
+    {
+        _pimpl.set_string_value<kw::ShapeType>(shape_to_string(*_query.m_shape), _fiducial_dataset);
+    }
+
+    if(_query.m_fiducial_description)
+    {
+        _pimpl.set_string_value<kw::FiducialDescription>(*_query.m_fiducial_description, _fiducial_dataset);
+    }
+
+    if(_query.m_fiducial_identifier)
+    {
+        _pimpl.set_string_value<kw::FiducialIdentifier>(*_query.m_fiducial_identifier, _fiducial_dataset);
+    }
+
+    if(_query.m_fiducial_uid)
+    {
+        _pimpl.set_string_value<kw::FiducialUID>(*_query.m_fiducial_uid, _fiducial_dataset);
+    }
+
+    if(_query.m_contour_data)
+    {
+        SIGHT_ASSERT("The contour data is not a multiple of 3.", _query.m_contour_data->size() % 3 == 0);
+
+        _pimpl.set_value<kw::NumberOfContourPoints>(
+            std::int32_t(_query.m_contour_data->size() / 3),
+            _fiducial_dataset
+        );
+
+        _pimpl.set_values<kw::ContourData>(*_query.m_contour_data, _fiducial_dataset);
+    }
+
+    ///@todo store also the GraphicCoordinatesDataSequence when we have an use for it...
+}
+
+//------------------------------------------------------------------------------
+
+enum class query_mode : std::uint8_t
+{
+    query,
+    modify,
+    remove
+};
+
+//------------------------------------------------------------------------------
+
+void read_fiducial_set(
+    detail::series_impl& _pimpl,
+    const auto& _fiducial_set_dataset,
+    fiducials_series::fiducial_query& _fiducial_set_query
+)
+{
+    // Get the frame of reference uid
+    _fiducial_set_query.m_frame_of_reference_uid = _pimpl.get_value<kw::FrameOfReferenceUID>(_fiducial_set_dataset);
+
+    // Get the visibility
+    const auto& visible_value = _pimpl.get_private_value(
+        std::uint8_t(fiducial_set_element::visible),
+        _fiducial_set_dataset
+    );
+
+    if(visible_value)
+    {
+        _fiducial_set_query.m_visible = *visible_value != "false";
+    }
+
+    // Get the private shape
+    _fiducial_set_query.m_private_shape = string_to_private_shape(
+        _pimpl.get_private_value(std::uint8_t(fiducial_set_element::private_shape), _fiducial_set_dataset)
+    );
+
+    // Get the color
+    _fiducial_set_query.m_color = string_to_color(
+        _pimpl.get_private_value(std::uint8_t(fiducial_set_element::color), _fiducial_set_dataset)
+    );
+
+    // Get the size
+    const auto& size_value = _pimpl.get_private_value(
+        std::uint8_t(fiducial_set_element::size),
+        _fiducial_set_dataset
+    );
+
+    if(size_value)
+    {
+        _fiducial_set_query.m_size = std::stof(*size_value);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::pair<std::vector<fiducials_series::fiducial_query>, std::set<std::string> > query_or_modify_fiducials(
+    detail::series_impl& _pimpl,
+    query_mode _query_mode,
+    const std::optional<std::function<bool(fiducials_series::fiducial_query&)> >& _predicate,
+    const std::optional<fiducials_series::shape>& _shape,
+    const std::optional<std::string_view>& _group_name,
+    const std::optional<std::size_t>& _shape_fiducial_index
+)
+{
+    std::unique_lock lock(_pimpl.m_mutex);
+
+    std::size_t removed_fiducial_sets = 0;
+
+    std::pair<std::vector<fiducials_series::fiducial_query>, std::set<std::string> > result {{}, {}};
+
+    const auto& fiducial_set_sequence = _pimpl.get_sequence<kw::FiducialSetSequence>();
+
+    // Early return if no sequence
+    if(fiducial_set_sequence == nullptr || fiducial_set_sequence->IsEmpty())
+    {
+        return result;
+    }
+
+    bool stop = false;
+
+    // GDCM Sequence of Items is 1-indexed
+    for(std::size_t i = 1 ; !stop && i <= fiducial_set_sequence->GetNumberOfItems() ; ++i)
+    {
+        auto& fiducial_set_dataset = fiducial_set_sequence->GetItem(i).GetNestedDataSet();
+
+        // Continue if the dataset is empty
+        if(fiducial_set_dataset.IsEmpty())
+        {
+            continue;
+        }
+
+        const auto& group_name = _pimpl.get_private_value(
+            std::uint8_t(fiducial_set_element::group_name),
+            fiducial_set_dataset
+        );
+
+        // Continue if the group name doesn't match
+        if(_group_name && group_name != _group_name)
+        {
+            continue;
+        }
+
+        // Continue if there is no fiducials
+        const auto& fiducial_sequence = _pimpl.get_sequence(kw::FiducialSequence::GetTag(), fiducial_set_dataset);
+
+        if(fiducial_sequence == nullptr || fiducial_sequence->IsEmpty())
+        {
+            continue;
+        }
+
+        fiducials_series::fiducial_query fiducial_set_query;
+        read_fiducial_set(_pimpl, fiducial_set_dataset, fiducial_set_query);
+
+        std::map<fiducials_series::shape, std::size_t> m_shape_indexes;
+        std::size_t removed_fiducials = 0;
+
+        // Iterate on fiducial - GDCM Sequence of Items is 1-indexed
+        for(std::size_t j = 1 ; !stop && j <= fiducial_sequence->GetNumberOfItems() ; ++j)
+        {
+            auto& fiducial_dataset = fiducial_sequence->GetItem(j).GetNestedDataSet();
+
+            if(fiducial_dataset.IsEmpty())
+            {
+                continue;
+            }
+
+            const auto& shape = string_to_shape(_pimpl.get_value<kw::ShapeType>(fiducial_dataset));
+
+            if((_shape && shape == fiducials_series::shape::invalid) || (_shape && *_shape != shape))
+            {
+                continue;
+            }
+
+            const auto current_shape_index =
+                [&m_shape_indexes, &shape]() -> std::size_t
+                {
+                    if(m_shape_indexes.contains(shape))
+                    {
+                        return ++m_shape_indexes[shape];
+                    }
+
+                    m_shape_indexes[shape] = 0;
+                    return 0;
+                }();
+
+            fiducials_series::fiducial_query query_result {
+                .m_fiducial_set_index     = i - 1 + removed_fiducial_sets,
+                .m_fiducial_index         = j - 1 + removed_fiducials,
+                .m_shape_index            = current_shape_index,
+                .m_frame_of_reference_uid = fiducial_set_query.m_frame_of_reference_uid,
+                .m_group_name             = group_name,
+                .m_visible                = fiducial_set_query.m_visible,
+                .m_size                   = fiducial_set_query.m_size,
+                .m_private_shape          = fiducial_set_query.m_private_shape,
+                .m_color                  = fiducial_set_query.m_color,
+                .m_shape                  = shape,
+                .m_contour_data           = _pimpl.get_values<kw::ContourData>(fiducial_dataset),
+                .m_fiducial_description   = _pimpl.get_value<kw::FiducialDescription>(fiducial_dataset),
+                .m_fiducial_identifier    = _pimpl.get_value<kw::FiducialIdentifier>(fiducial_dataset),
+                .m_fiducial_uid           = _pimpl.get_value<kw::FiducialUID>(fiducial_dataset)
+            };
+
+            // Execute the predicate if it exists
+            // We only add the wanted, if any, fiducial in the group
+            if((!_shape_fiducial_index || query_result.m_shape_index == *_shape_fiducial_index)
+               && (!_predicate || (*_predicate)(query_result)))
+            {
+                result.first.emplace_back(query_result);
+
+                // Remove or modify the fiducial if needed
+                if(_query_mode == query_mode::remove)
+                {
+                    fiducial_sequence->RemoveItemByIndex(j--);
+                    removed_fiducials++;
+                }
+                else if(_query_mode == query_mode::modify)
+                {
+                    modify_fiducial(_pimpl, query_result, fiducial_set_dataset, fiducial_dataset);
+                }
+            }
+
+            // If we reached the wanted fiducial in the group, we can do an early return
+            if(_shape_fiducial_index && query_result.m_shape_index == *_shape_fiducial_index)
+            {
+                stop = true;
+            }
+        }
+
+        // Also check if we must remove fiducial_set without fiducial sequence
+        if(_query_mode == query_mode::remove && fiducial_sequence->IsEmpty())
+        {
+            fiducial_set_sequence->RemoveItemByIndex(i--);
+            removed_fiducial_sets++;
+
+            if(group_name)
+            {
+                result.second.insert(*group_name);
+            }
+        }
+    }
+
+    return result;
 }
 
 } // namespace
@@ -1302,14 +1710,25 @@ void fiducials_series::set_contour_data(
 
 std::optional<std::string> fiducials_series::get_group_name(std::size_t _fiducial_set_number) const noexcept
 {
-    return m_pimpl->get_private_value(0, 0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}});
+    return m_pimpl->get_private_value(
+        std::uint8_t(fiducial_set_element::group_name),
+        0,
+        {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
+        }
+        });
 }
 
 //------------------------------------------------------------------------------
 
 void fiducials_series::set_group_name(std::size_t _fiducial_set_number, const std::string& _group_name)
 {
-    m_pimpl->set_private_value(0, _group_name, 0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}});
+    m_pimpl->set_private_value(
+        std::uint8_t(fiducial_set_element::group_name),
+        _group_name,
+        0,
+        {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
+        }
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -1318,7 +1737,7 @@ std::optional<std::array<float, 4> > fiducials_series::get_color(std::size_t _fi
 {
     return string_to_color(
         m_pimpl->get_private_value(
-            1,
+            std::uint8_t(fiducial_set_element::color),
             0,
             {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
             }
@@ -1331,7 +1750,7 @@ std::optional<std::array<float, 4> > fiducials_series::get_color(std::size_t _fi
 void fiducials_series::set_color(std::size_t _fiducial_set_number, const std::array<float, 4>& _color)
 {
     m_pimpl->set_private_value(
-        1,
+        std::uint8_t(fiducial_set_element::color),
         color_to_string(_color),
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1344,11 +1763,12 @@ void fiducials_series::set_color(std::size_t _fiducial_set_number, const std::ar
 std::optional<float> fiducials_series::get_size(std::size_t _fiducial_set_number) const noexcept
 {
     std::optional<std::string> private_value = m_pimpl->get_private_value(
-        2,
+        std::uint8_t(fiducial_set_element::size),
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }
         });
+
     if(!private_value.has_value())
     {
         return std::nullopt;
@@ -1362,7 +1782,7 @@ std::optional<float> fiducials_series::get_size(std::size_t _fiducial_set_number
 void fiducials_series::set_size(std::size_t _fiducial_set_number, float _size)
 {
     m_pimpl->set_private_value(
-        2,
+        std::uint8_t(fiducial_set_element::size),
         std::to_string(_size),
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1376,7 +1796,12 @@ std::optional<fiducials_series::private_shape> fiducials_series::get_shape(std::
 noexcept
 {
     return string_to_private_shape(
-        m_pimpl->get_private_value(3, 0, {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number}})
+        m_pimpl->get_private_value(
+            std::uint8_t(fiducial_set_element::private_shape),
+            0,
+            {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
+            }
+            })
     );
 }
 
@@ -1385,7 +1810,7 @@ noexcept
 void fiducials_series::set_shape(std::size_t _fiducial_set_number, private_shape _shape)
 {
     m_pimpl->set_private_value(
-        3,
+        std::uint8_t(fiducial_set_element::private_shape),
         private_shape_to_string(_shape),
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1398,7 +1823,7 @@ void fiducials_series::set_shape(std::size_t _fiducial_set_number, private_shape
 std::optional<bool> fiducials_series::get_visibility(std::size_t _fiducial_set_number) const noexcept
 {
     if(std::optional<std::string> visibility = m_pimpl->get_private_value(
-           4,
+           std::uint8_t(fiducial_set_element::visible),
            0,
            {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
            }
@@ -1415,7 +1840,7 @@ std::optional<bool> fiducials_series::get_visibility(std::size_t _fiducial_set_n
 void fiducials_series::set_visibility(std::size_t _fiducial_set_number, bool _visibility)
 {
     m_pimpl->set_private_value(
-        4,
+        std::uint8_t(fiducial_set_element::visible),
         _visibility ? "true" : "false",
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
@@ -1523,6 +1948,159 @@ std::optional<std::pair<fiducials_series::fiducial_set, std::size_t> > fiducials
 
 //------------------------------------------------------------------------------
 
+std::vector<fiducials_series::fiducial_query> fiducials_series::query_fiducials(
+    const std::optional<std::function<bool(const fiducial_query&)> >& _predicate,
+    const std::optional<shape>& _shape,
+    const std::optional<std::string_view>& _group_name,
+    const std::optional<std::size_t>& _shape_fiducial_index
+) const
+{
+    return query_or_modify_fiducials(
+        *m_pimpl,
+        query_mode::query,
+        _predicate,
+        _shape,
+        _group_name,
+        _shape_fiducial_index
+    ).first;
+}
+
+//------------------------------------------------------------------------------
+
+std::pair<std::vector<fiducials_series::fiducial_query>,
+          std::set<std::string> > fiducials_series::remove_fiducials(
+    const std::optional<std::function<bool(const fiducial_query&)> >& _predicate,
+    const std::optional<shape>& _shape,
+    const std::optional<std::string_view>& _group_name,
+    const std::optional<std::size_t>& _shape_fiducial_index
+)
+{
+    return query_or_modify_fiducials(
+        *m_pimpl,
+        query_mode::remove,
+        _predicate,
+        _shape,
+        _group_name,
+        _shape_fiducial_index
+    );
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<fiducials_series::fiducial_query> fiducials_series::modify_fiducials(
+    const std::optional<std::function<bool(fiducial_query&)> >& _predicate,
+    const std::optional<shape>& _shape,
+    const std::optional<std::string_view>& _group_name,
+    const std::optional<std::size_t>& _shape_fiducial_index
+)
+{
+    return query_or_modify_fiducials(
+        *m_pimpl,
+        query_mode::modify,
+        _predicate,
+        _shape,
+        _group_name,
+        _shape_fiducial_index
+    ).first;
+}
+
+//------------------------------------------------------------------------------
+
+std::pair<std::optional<fiducials_series::fiducial_query>, bool> fiducials_series::add_fiducial(
+    const std::function<bool(fiducial_query&)>& _predicate,
+    shape _shape,
+    const std::string& _group_name
+)
+{
+    SIGHT_ASSERT("The predicate is not callable.", _predicate);
+    SIGHT_ASSERT("The shape is not a valid shape.", _shape != shape::invalid);
+    SIGHT_ASSERT("The group name is empty.", !_group_name.empty());
+
+    std::unique_lock lock(m_pimpl->m_mutex);
+
+    std::pair<std::optional<fiducials_series::fiducial_query>, bool> result {std::nullopt, false};
+
+    const auto& fiducial_set_sequence = m_pimpl->get_or_create_sequence<kw::FiducialSetSequence>();
+    SIGHT_ASSERT("The fiducial set sequence should be created.", fiducial_set_sequence);
+
+    fiducial_query query_result {.m_group_name = _group_name, .m_shape = _shape};
+
+    // Find or create the fiducial set
+    auto& fiducial_set_dataset =
+        [this, &fiducial_set_sequence, &_group_name, &query_result, &result]() -> gdcm::DataSet&
+        {
+            // GDCM Sequence of Items is 1-indexed
+            for(std::size_t i = 1 ; i <= fiducial_set_sequence->GetNumberOfItems() ; ++i)
+            {
+                if(auto& fiducial_set_dataset = fiducial_set_sequence->GetItem(i).GetNestedDataSet();
+                   !fiducial_set_dataset.IsEmpty())
+                {
+                    // Get the group name
+                    const auto& group_name = m_pimpl->get_private_value(
+                        std::uint8_t(fiducial_set_element::group_name),
+                        fiducial_set_dataset
+                    );
+
+                    if(group_name == _group_name)
+                    {
+                        read_fiducial_set(*m_pimpl, fiducial_set_dataset, query_result);
+                        query_result.m_fiducial_set_index = i - 1;
+                        return fiducial_set_dataset;
+                    }
+                }
+            }
+
+            // Create a new fiducial set, since we didn't found the group name
+            append_fiducial_set({.group_name = _group_name});
+
+            // We created a new fiducial set
+            result.second = true;
+
+            const auto item_index = fiducial_set_sequence->GetNumberOfItems();
+            query_result.m_fiducial_set_index = item_index - 1;
+            return fiducial_set_sequence->GetItem(item_index).GetNestedDataSet();
+        }();
+
+    // Create the new fiducial
+    append_fiducial(query_result.m_fiducial_set_index, {.shape_type = _shape});
+
+    auto fiducial_sequence = m_pimpl->get_sequence(kw::FiducialSequence::GetTag(), fiducial_set_dataset);
+
+    // Recompute the shape indexes of the new fiducial
+    std::size_t fiducial_count = 0;
+
+    for(std::size_t j = 1 ; j <= fiducial_sequence->GetNumberOfItems() ; ++j)
+    {
+        auto& fiducial_dataset = fiducial_sequence->GetItem(j).GetNestedDataSet();
+
+        if(string_to_shape(m_pimpl->get_value<kw::ShapeType>(fiducial_dataset)) == _shape)
+        {
+            ++fiducial_count;
+        }
+    }
+
+    query_result.m_fiducial_index = fiducial_sequence->GetNumberOfItems() - 1;
+    query_result.m_shape_index    = fiducial_count - 1;
+
+    // Decode fiducial set
+
+    // Execute the predicate
+    if(_predicate(query_result))
+    {
+        // Store the fiducial in gdcm
+        // Get the added fiducial dataset
+        auto& fiducial_dataset = fiducial_sequence->GetItem(fiducial_sequence->GetNumberOfItems()).GetNestedDataSet();
+        SIGHT_ASSERT("The fiducial dataset is empty.", !fiducial_dataset.IsEmpty());
+
+        modify_fiducial(*m_pimpl, query_result, fiducial_set_dataset, fiducial_dataset);
+        result.first = query_result;
+    }
+
+    return result;
+}
+
+//------------------------------------------------------------------------------
+
 std::optional<std::size_t> fiducials_series::get_number_of_points_in_group(const std::string& _group_name) const
 {
     std::optional<std::pair<fiducial_set, std::size_t> > fiducial_set = get_fiducial_set_and_index(_group_name);
@@ -1589,51 +2167,6 @@ std::optional<std::size_t> fiducials_series::get_number_of_points_in_group(const
     }
 
     return std::nullopt;
-}
-
-//------------------------------------------------------------------------------
-
-[[nodiscard]] std::optional<landmarks::landmarks_group> fiducials_series::get_group(const std::string& _group_name)
-const
-{
-    std::optional<std::pair<fiducial_set, std::size_t> > fiducial_set = get_fiducial_set_and_index(_group_name);
-    if(!fiducial_set.has_value())
-    {
-        return std::nullopt;
-    }
-
-    landmarks::color_t color = fiducial_set->first.color.value_or(
-        std::array {1.F, 1.F, 1.F, 1.F
-        });
-    landmarks::size_t size                                 = fiducial_set->first.size.value_or(10);
-    fiducials_series::private_shape fiducial_private_shape = fiducial_set->first.shape.value_or(private_shape::sphere);
-    landmarks::shape shape                                 = landmarks::shape::sphere;
-    switch(fiducial_private_shape)
-    {
-        case private_shape::sphere:
-            shape = landmarks::shape::sphere;
-            break;
-
-        case private_shape::cube:
-            shape = landmarks::shape::cube;
-
-        default:
-            break;
-    }
-
-    bool visibility = fiducial_set->first.visibility.value_or(true);
-
-    landmarks::landmarks_group group(color, size, shape, visibility);
-    std::ranges::for_each(
-        data::helper::fiducials_series::filter_fiducials(fiducial_set->first, data::fiducials_series::shape::point),
-        [&group](const data::fiducials_series::fiducial& _fiducial)
-        {
-            if(auto point = get_point(_fiducial))
-            {
-                group.m_points.push_back(*point);
-            }
-        });
-    return group;
 }
 
 //------------------------------------------------------------------------------
@@ -1716,72 +2249,6 @@ void fiducials_series::add_point(const std::string& _group_name, const std::arra
 
 //------------------------------------------------------------------------------
 
-fiducials_series::shape fiducials_series::string_to_shape(const std::optional<std::string>& _string)
-{
-    static const std::map<std::string, shape> s_STRING_TO_SHAPE_MAP {{"POINT", shape::point
-    }, {"LINE", shape::line
-        }, {"PLANE", shape::point
-        }, {"SURFACE", shape::surface
-        }, {"RULER", shape::ruler
-        }, {"L_SHAPE", shape::l_shape
-        }, {"T_SHAPE", shape::t_shape
-        }, {"SHAPE", shape::shape
-        }
-    };
-    if(!_string || !s_STRING_TO_SHAPE_MAP.contains(*_string))
-    {
-        return shape::invalid;
-    }
-
-    return s_STRING_TO_SHAPE_MAP.at(*_string);
-}
-
-//------------------------------------------------------------------------------
-
-std::optional<std::array<float, 4> > fiducials_series::string_to_color(const std::optional<std::string>& _string)
-{
-    if(!_string.has_value())
-    {
-        return std::nullopt;
-    }
-
-    std::vector<std::string> splits;
-    boost::split(splits, *_string, boost::is_any_of(","));
-    if(splits.size() != 4)
-    {
-        return std::nullopt;
-    }
-
-    std::array<float, 4> res {};
-    std::ranges::transform(splits, res.begin(), [](const std::string& _value){return std::stof(_value);});
-    return res;
-}
-
-//------------------------------------------------------------------------------
-
-std::optional<fiducials_series::private_shape> fiducials_series::string_to_private_shape(
-    const std::optional<std::string>& _string
-)
-{
-    static const std::map<std::string, private_shape> s_STRING_TO_PRIVATE_SHAPE_MAP {
-        {"SPHERE", private_shape::sphere},
-        {"CUBE", private_shape::cube}
-    };
-    if(!_string.has_value())
-    {
-        return std::nullopt;
-    }
-
-    if(!s_STRING_TO_PRIVATE_SHAPE_MAP.contains(*_string))
-    {
-        return std::nullopt;
-    }
-
-    return s_STRING_TO_PRIVATE_SHAPE_MAP.at(*_string);
-}
-
-//------------------------------------------------------------------------------
-
 fiducials_series::fiducial_set fiducials_series::to_fiducial_set(const gdcm::DataSet& _data_set) const
 {
     fiducial_set fiducial_set;
@@ -1803,15 +2270,28 @@ fiducials_series::fiducial_set fiducials_series::to_fiducial_set(const gdcm::Dat
         }
     }
 
-    fiducial_set.group_name = m_pimpl->get_private_value(0, _data_set);
-    fiducial_set.color      = string_to_color(m_pimpl->get_private_value(1, _data_set));
-    if(std::optional<std::string> size = m_pimpl->get_private_value(2, _data_set))
+    fiducial_set.group_name = m_pimpl->get_private_value(std::uint8_t(fiducial_set_element::group_name), _data_set);
+    fiducial_set.color      = string_to_color(
+        m_pimpl->get_private_value(
+            std::uint8_t(fiducial_set_element::color),
+            _data_set
+        )
+    );
+
+    if(std::optional<std::string> size = m_pimpl->get_private_value(
+           std::uint8_t(fiducial_set_element::size),
+           _data_set
+    ))
     {
         fiducial_set.size = std::stof(*size);
     }
 
-    fiducial_set.shape = string_to_private_shape(m_pimpl->get_private_value(3, _data_set));
-    if(std::optional<std::string> visibility = m_pimpl->get_private_value(4, _data_set))
+    fiducial_set.shape = string_to_private_shape(
+        m_pimpl->get_private_value(std::uint8_t(fiducial_set_element::private_shape), _data_set)
+    );
+
+    if(std::optional<std::string> visibility =
+           m_pimpl->get_private_value(std::uint8_t(fiducial_set_element::visible), _data_set))
     {
         fiducial_set.visibility = (*visibility == "true");
     }

@@ -34,6 +34,7 @@
 #include <core/com/slots.hxx>
 
 #include <data/fiducials_series.hpp>
+#include <data/helper/fiducials_series.hpp>
 
 #include <geometry/data/matrix4.hpp>
 
@@ -106,6 +107,56 @@ namespace
     return {};
 }
 
+/**
+ * Get a fiducial set as a structure compatible with data::landmarks
+ * @param _group_name The name of the group to fetch
+ * @return The fiducial set as a structure compatible with data::landmarks
+ */
+[[nodiscard]] std::optional<data::landmarks::landmarks_group> get_group(
+    const data::fiducials_series& _fiducials,
+    const std::string& _group_name
+)
+{
+    const auto fiducial_set = _fiducials.get_fiducial_set_and_index(_group_name);
+    if(!fiducial_set.has_value())
+    {
+        return std::nullopt;
+    }
+
+    data::landmarks::color_t color = fiducial_set->first.color.value_or(std::array {1.F, 1.F, 1.F, 1.F});
+    data::landmarks::size_t size   = fiducial_set->first.size.value_or(10);
+
+    data::landmarks::shape shape = data::landmarks::shape::sphere;
+
+    switch(fiducial_set->first.shape.value_or(data::fiducials_series::private_shape::sphere))
+    {
+        case data::fiducials_series::private_shape::sphere:
+            shape = data::landmarks::shape::sphere;
+            break;
+
+        case data::fiducials_series::private_shape::cube:
+            shape = data::landmarks::shape::cube;
+
+        default:
+            break;
+    }
+
+    bool visibility = fiducial_set->first.visibility.value_or(true);
+
+    data::landmarks::landmarks_group group(color, size, shape, visibility);
+
+    std::ranges::for_each(
+        data::helper::fiducials_series::filter_fiducials(fiducial_set->first, data::fiducials_series::shape::point),
+        [&group](const data::fiducials_series::fiducial& _fiducial)
+            {
+                if(auto point = sight::data::fiducials_series::get_point(_fiducial))
+                {
+                    group.m_points.push_back(*point);
+                }
+            });
+    return group;
+}
+
 //------------------------------------------------------------------------------
 
 [[nodiscard]] std::optional<data::landmarks::landmarks_group> get_group(
@@ -125,7 +176,7 @@ namespace
 
     if(_li.image_series != nullptr)
     {
-        return _li.image_series->get_fiducials()->get_group(_group_name);
+        return get_group(*_li.image_series->get_fiducials(), _group_name);
     }
 
     SIGHT_ASSERT("Either 'landmarks' or 'fiducialsSeries' must be configured as inout", false);
@@ -1247,10 +1298,6 @@ void landmarks::remove_group(std::string _name) const
             QTreeWidgetItem* const child = item->child(0);
             item->removeChild(child);
         }
-
-        const int index                 = m_tree_widget->indexOfTopLevelItem(item);
-        QTreeWidgetItem* const top_item = m_tree_widget->takeTopLevelItem(index);
-        delete top_item;
     }
     catch(const std::exception& e)
     {

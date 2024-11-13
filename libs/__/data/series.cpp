@@ -244,6 +244,9 @@ void series::new_series_instance()
     // Set series date, time and uid
     set_series_instance_uid(gdcm_loader.generate_uid());
 
+    // Generate the frame of reference UID
+    set_frame_of_reference_uid(gdcm_loader.generate_uid());
+
     // DICOM date time format is YYYYMMDDHHMMSS.FFFFFF, but may include null components
     /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
     const auto& date_time = series::time_point_to_date_time(std::chrono::system_clock::now());
@@ -3851,6 +3854,20 @@ void series::set_referenced_sop_instance_uid(const std::optional<std::string>& _
 
 //------------------------------------------------------------------------------
 
+std::optional<std::string> series::get_frame_of_reference_uid() const noexcept
+{
+    return m_pimpl->get_value<gdcm::Keywords::FrameOfReferenceUID>(0);
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_frame_of_reference_uid(const std::optional<std::string>& _frame_of_reference_uid)
+{
+    m_pimpl->set_value<gdcm::Keywords::FrameOfReferenceUID>(_frame_of_reference_uid, 0);
+}
+
+//------------------------------------------------------------------------------
+
 std::optional<std::uint16_t> series::get_rows() const noexcept
 {
     return m_pimpl->get_value<gdcm::Keywords::Rows>();
@@ -3925,6 +3942,13 @@ std::filesystem::path series::file_path(
 ) const
 {
     return std::filesystem::weakly_canonical(folder(_root) / file_name(_suffix));
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::generate_uid()
+{
+    return gdcm_loader.generate_uid();
 }
 
 } // namespace sight::data

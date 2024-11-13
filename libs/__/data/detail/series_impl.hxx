@@ -510,10 +510,11 @@ public:
                 }
                 else
                 {
-                    return std::optional<return_t> {std::vector<typename A::ArrayType> {attribute.GetValues(),
-                                                                                        attribute.GetValues()
-                                                                                        + attribute.GetNumberOfValues()
-                                                    }
+                    return std::optional<return_t> {
+                        std::vector<typename A::ArrayType> {
+                            attribute.GetValues(),
+                            attribute.GetValues() + attribute.GetNumberOfValues()
+                        }
                     };
                 }
             }
@@ -595,13 +596,44 @@ public:
     {
         std::unique_lock lock(m_mutex);
 
-        gdcm::DataSet data_set = get_data_set(_instance);
-        if(!data_set.FindDataElement(A::GetTag()))
+        const auto& data_set = get_data_set(_instance);
+        const auto& tag      = A::GetTag();
+
+        if(data_set.FindDataElement(tag))
         {
-            return nullptr;
+            return data_set.GetDataElement(tag).GetValueAsSQ();
         }
 
-        return data_set.GetDataElement(A::GetTag()).GetValueAsSQ();
+        return nullptr;
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<typename A>
+    [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_or_create_sequence(std::size_t _instance = 0)
+    noexcept
+    {
+        std::unique_lock lock(m_mutex);
+
+        auto& data_set  = get_or_create_data_set(_instance);
+        const auto& tag = A::GetTag();
+
+        if(data_set.FindDataElement(tag))
+        {
+            return data_set.GetDataElement(tag).GetValueAsSQ();
+        }
+
+        // No Sequence found, create it
+        auto sequence = gdcm::SequenceOfItems::New();
+        sequence->SetLengthToUndefined();
+
+        gdcm::DataElement element(tag);
+        element.SetVR(gdcm::VR::SQ);
+        element.SetVLToUndefined();
+        element.SetValue(*sequence);
+        data_set.Insert(element);
+
+        return element.GetValueAsSQ();
     }
 
     /// Set a DICOM tag value. If the value is null, the tag is replaced by an empty element.
@@ -960,13 +992,13 @@ public:
         if(!dataset.FindDataElement(group_tag))
         {
             // No Frame Sequence found, create it
-            auto group_sequence = gdcm::SequenceOfItems::New();
-            group_sequence->SetLengthToUndefined();
+            auto sequence = gdcm::SequenceOfItems::New();
+            sequence->SetLengthToUndefined();
 
             gdcm::DataElement group_element(group_tag);
             group_element.SetVR(gdcm::VR::SQ);
             group_element.SetVLToUndefined();
-            group_element.SetValue(*group_sequence);
+            group_element.SetValue(*sequence);
 
             dataset.Insert(group_element);
         }
@@ -1012,13 +1044,13 @@ public:
         if(!frame_dataset.FindDataElement(attribute_sequence_tag))
         {
             // No Attribute Sequence found, create it
-            auto attribute_sequence = gdcm::SequenceOfItems::New();
-            attribute_sequence->SetLengthToUndefined();
+            auto sequence = gdcm::SequenceOfItems::New();
+            sequence->SetLengthToUndefined();
 
             gdcm::DataElement attribute_sequence_element(attribute_sequence_tag);
             attribute_sequence_element.SetVR(gdcm::VR::SQ);
             attribute_sequence_element.SetVLToUndefined();
-            attribute_sequence_element.SetValue(*attribute_sequence);
+            attribute_sequence_element.SetValue(*sequence);
 
             frame_dataset.Insert(attribute_sequence_element);
         }
@@ -1184,13 +1216,13 @@ public:
         if(!frame_dataset.FindDataElement(attribute_sequence_tag))
         {
             // No Attribute Sequence found, create it
-            auto attribute_sequence = gdcm::SequenceOfItems::New();
-            attribute_sequence->SetLengthToUndefined();
+            auto sequence = gdcm::SequenceOfItems::New();
+            sequence->SetLengthToUndefined();
 
             gdcm::DataElement attribute_sequence_element(attribute_sequence_tag);
             attribute_sequence_element.SetVR(gdcm::VR::SQ);
             attribute_sequence_element.SetVLToUndefined();
-            attribute_sequence_element.SetValue(*attribute_sequence);
+            attribute_sequence_element.SetValue(*sequence);
 
             frame_dataset.Insert(attribute_sequence_element);
         }
@@ -1432,7 +1464,7 @@ public:
         {
             if(!current_data_set->FindDataElement(tag))
             {
-                auto* sequence = new gdcm::SequenceOfItems();
+                auto sequence = gdcm::SequenceOfItems::New();
                 sequence->SetLengthToUndefined();
 
                 gdcm::DataElement element(tag);
@@ -1451,8 +1483,8 @@ public:
                 sequence->AddItem(gdcm::Item {});
             }
 
-            current_data_set = &sequence->GetItem(index + 1).GetNestedDataSet(); // GDCM SequenceOfItems are
-                                                                                 // 1-indexed...
+            // GDCM SequenceOfItems are 1-indexed...
+            current_data_set = &sequence->GetItem(index + 1).GetNestedDataSet();
         }
 
         return *current_data_set;

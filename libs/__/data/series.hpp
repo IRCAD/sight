@@ -540,6 +540,14 @@ public:
     );
     /// @}
 
+    /// Getter/Setter of DICOM Frame of Reference Module related attributes
+    /// @{
+    SIGHT_DATA_API std::optional<std::string> get_frame_of_reference_uid() const noexcept;
+    SIGHT_DATA_API void set_frame_of_reference_uid(
+        const std::optional<std::string>& _frame_of_reference_uid = std::nullopt
+    );
+    /// @}
+
     /// Equality comparison operators
     /// @{
     SIGHT_DATA_API bool operator==(const series& _other) const noexcept;
@@ -898,6 +906,9 @@ public:
         const std::optional<std::string>& _suffix         = std::string(".dcm")
     ) const;
     /// @}
+
+    /// Helper function to generate a DICOM UID.
+    SIGHT_DATA_API static std::string generate_uid();
 
 protected:
 

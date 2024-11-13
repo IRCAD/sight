@@ -19,9 +19,6 @@
             <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
                 <desc>Image to display.</desc>
             </requirement>
-            <requirement name="landmarks" type="sight::data::landmarks" minOccurs="0" maxOccurs="0">
-                <desc>Landmarks to display.</desc>
-            </requirement>
         </requirements>
         <appConfig id="2DVisualization" />
     </extension>

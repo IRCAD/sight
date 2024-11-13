@@ -12,8 +12,6 @@
         <object uid="${seriesSet}" type="sight::data::series_set" src="ref" />
         <object uid="${imageSeries}" type="sight::data::image_series" src="ref" />
         <object uid="imageSeriesMask" type="sight::data::image_series" src="deferred" />
-        <object uid="landmarks1" type="sight::data::landmarks" />
-        <object uid="landmarks2" type="sight::data::landmarks" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -68,7 +66,6 @@
             <appConfig id="2DNegato" />
             <inout group="data">
                 <key name="image" uid="${imageSeries}" />
-                <key name="landmarks" uid="landmarks1" />
             </inout>
             <parameter replace="WID_PARENT" by="negato1View" />
             <parameter replace="patient_name" by="Source Image" />
@@ -78,7 +75,6 @@
             <appConfig id="2DNegato" />
             <inout group="data">
                 <key name="image" uid="imageSeriesMask" />
-                <key name="landmarks" uid="landmarks2" />
             </inout>
             <parameter replace="WID_PARENT" by="negato2View" />
             <parameter replace="patient_name" by="Mask Image" />

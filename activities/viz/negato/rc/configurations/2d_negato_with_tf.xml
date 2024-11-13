@@ -3,7 +3,6 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="image" />
-        <param name="landmarks" />
         <param name="patient_name" default="" />
         <!-- axial, frontal, sagittal -->
         <param name="orientation" default="axial" />
@@ -12,8 +11,7 @@
         <param name="PickingChannel" default="pickingChannel" />
     </parameters>
     <config>
-        <object uid="${image}" type="sight::data::image" src="ref" />
-        <object uid="${landmarks}" type="sight::data::landmarks" src="ref" />
+        <object uid="${image}" type="sight::data::image_series" src="ref" />
         <object uid="snapshot" type="sight::data::image" />
         <object uid="${transferFunctionDeferred}" type="sight::data::transfer_function" src="deferred" />
 
@@ -107,7 +105,7 @@
         </service>
 
         <service uid="landmarksAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
-            <inout key="landmarks" uid="${landmarks}" />
+            <inout key="imageSeries" uid="${image}" />
             <config priority="4" />
         </service>
 
