@@ -431,7 +431,7 @@
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesSet" uid="localSeriesSet" />
-            <config dicomReader="sight::module::io::dicom::series_set_reader" readerConfig="SightViewerDicomReaderConfig" />
+            <config dicomReader="sight::module::io::dicom::series_set_reader" readerConfig="sight::config::io::dimse::reader_config" />
         </service>
 
         <service uid="localSelectorSrv" type="sight::module::ui::qt::series::selector" auto_connect="true">

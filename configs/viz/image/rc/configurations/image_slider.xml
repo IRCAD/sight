@@ -108,7 +108,7 @@ Example:
 
         <service uid="windowLevelImage" type="sight::module::ui::qt::image::window_level">
             <config minimal="true" />
-            <inout key="image" uid="${image}" />
+            <in key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunction}" />
         </service>
 

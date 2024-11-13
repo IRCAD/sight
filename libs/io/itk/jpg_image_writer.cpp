@@ -92,9 +92,7 @@ struct jpg_itk_saver_functor
         using rescale_filter_t = ::itk::IntensityWindowingImageFilter<itk_image_type, itk_image_type>;
         typename rescale_filter_t::Pointer rescale_filter = rescale_filter_t::New();
 
-        double min = NAN;
-        double max = NAN;
-        data::helper::medical_image::get_min_max(image, min, max);
+        const auto& [min, max] = data::helper::medical_image::get_min_max<double>(image);
 
         rescale_filter->SetWindowMinimum(PIXELTYPE(min));
         rescale_filter->SetWindowMaximum(PIXELTYPE(max));

@@ -318,9 +318,7 @@ void plane_slicer::update_default_value()
     const auto image = m_image.lock();
     SIGHT_ASSERT("No " << IMAGE_IN << " found.", image);
 
-    double min = NAN;
-    double max = NAN;
-    data::helper::medical_image::get_min_max(image.get_shared(), min, max);
+    const auto& [min, max] = data::helper::medical_image::get_min_max<double>(image.get_shared());
 
     m_reslicer->SetBackgroundLevel(min);
 }

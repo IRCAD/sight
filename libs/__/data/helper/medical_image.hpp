@@ -123,14 +123,12 @@ SPTR(data::image::buffer_t) get_pixel_in_image_space(data::image::sptr _image, T
 
 /**
  * @brief Return minimum and maximum values contained in image. If image
- * min or max value is out of MINMAXTYPE range, they are clamped to
- * MINMAXTYPE capacity
+ * min or max value is out of T range, they are clamped to T capacity
  * @param[in] _img : image
- * @param[out] _min : minimum value
- * @param[out] _max : maximum value
+ * @return: minimum value and maximum value
  */
-template<typename MINMAXTYPE>
-void get_min_max(data::image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
+template<typename T>
+[[nodiscard]] std::pair<T, T> get_min_max(data::image::csptr _img);
 
 /**
  * @brief Compute the indices of a 3D position inside an image. Beware, to be as generic as possible, no boundary check
@@ -534,13 +532,17 @@ public:
 
 // ------------------------------------------------------------------------------
 
-template<typename MINMAXTYPE>
-void get_min_max(const data::image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max)
+template<typename T>
+std::pair<T, T> get_min_max(const data::image::csptr _img)
 {
-    typename min_max_functor<MINMAXTYPE>::param param(_img, _min, _max);
+    T min = std::numeric_limits<T>::max();
+    T max = std::numeric_limits<T>::min();
+    typename min_max_functor<T>::param param(_img, min, max);
 
     core::type type = _img->type();
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, min_max_functor<MINMAXTYPE> >::invoke(type, param);
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, min_max_functor<T> >::invoke(type, param);
+
+    return {min, max};
 }
 
 } // namespace sight::data::helper::medical_image

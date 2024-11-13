@@ -164,13 +164,10 @@ void medical_image_helpers_test::get_min_max_test()
             *itr = static_cast<type>(min + (safe_rand() % range));
         }
 
-        type res_min = 0;
-        type res_max = 0;
-
         image->at<type>(156) = min;
         image->at<type>(245) = max;
 
-        med_im_helper::get_min_max(image, res_min, res_max);
+        const auto& [res_min, res_max] = med_im_helper::get_min_max<type>(image);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", min, res_min);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("max values are not equal", max, res_max);
     }
@@ -206,13 +203,10 @@ void medical_image_helpers_test::get_min_max_test()
             *itr = min + static_cast<type>(safe_rand() % static_cast<int>(range));
         }
 
-        type res_min = NAN;
-        type res_max = NAN;
-
         image->at<type>(16)  = min;
         image->at<type>(286) = max;
 
-        med_im_helper::get_min_max(image, res_min, res_max);
+        const auto& [res_min, res_max] = med_im_helper::get_min_max<type>(image);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", min, res_min);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("max values are not equal", max, res_max);
     }
@@ -250,13 +244,10 @@ void medical_image_helpers_test::get_min_max_test()
             *itr = min + static_cast<type>(safe_rand() % static_cast<int>(range));
         }
 
-        type res_min = 0;
-        type res_max = 0;
-
         image->at<type>(5)    = min;
         image->at<type>(2155) = max;
 
-        med_im_helper::get_min_max(image, res_min, res_max);
+        const auto& [res_min, res_max] = med_im_helper::get_min_max<type>(image);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", min, res_min);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("max values are not equal", max, res_max);
     }

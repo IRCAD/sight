@@ -171,56 +171,12 @@ void transfer_function::starting()
     // Get the Qt container
     const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
 
-    // Buttons creation
-    m_preset_combo_box = new QComboBox();
-
-    m_delete_button = new QPushButton(QIcon(m_delete_icon.string().c_str()), "");
-    m_delete_button->setToolTip(QString("Delete"));
-
-    m_new_button = new QPushButton(QIcon(m_new_icon.string().c_str()), "");
-    m_new_button->setToolTip(QString("New"));
-
-    m_copy_button = new QPushButton(QIcon(m_copy_icon.string().c_str()), "");
-    m_copy_button->setToolTip(QString("Copy"));
-
-    m_reinitialize_button = new QPushButton(QIcon(m_reinitialize_icon.string().c_str()), "");
-    m_reinitialize_button->setToolTip(QString("Reinitialize"));
-
-    m_rename_button = new QPushButton(QIcon(m_rename_icon.string().c_str()), "");
-    m_rename_button->setToolTip(QString("Rename"));
-
-    m_import_button = new QPushButton(QIcon(m_import_icon.string().c_str()), "");
-    m_import_button->setToolTip(QString("Import"));
-
-    m_export_button = new QPushButton(QIcon(m_export_icon.string().c_str()), "");
-    m_export_button->setToolTip(QString("Export"));
-
-    if(m_icon_width > 0 && m_icon_height > 0)
-    {
-        int icon_width  = int(m_icon_width);
-        int icon_height = int(m_icon_height);
-        m_delete_button->setIconSize(QSize(icon_width, icon_height));
-        m_new_button->setIconSize(QSize(icon_width, icon_height));
-        m_copy_button->setIconSize(QSize(icon_width, icon_height));
-        m_reinitialize_button->setIconSize(QSize(icon_width, icon_height));
-        m_rename_button->setIconSize(QSize(icon_width, icon_height));
-        m_import_button->setIconSize(QSize(icon_width, icon_height));
-        m_export_button->setIconSize(QSize(icon_width, icon_height));
-    }
-
     // Layout management
     auto* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
 
+    // Buttons creation
+    m_preset_combo_box = new QComboBox();
     layout->addWidget(m_preset_combo_box);
-    layout->addWidget(m_delete_button);
-    layout->addWidget(m_new_button);
-    layout->addWidget(m_copy_button);
-    layout->addWidget(m_reinitialize_button);
-    layout->addWidget(m_rename_button);
-    layout->addWidget(m_import_button);
-    layout->addWidget(m_export_button);
-
-    qt_container->set_layout(layout);
 
     // Manage connection with the editor.
     QObject::connect(
@@ -229,13 +185,61 @@ void transfer_function::starting()
         this,
         &transfer_function::preset_choice
     );
-    QObject::connect(m_delete_button, &QPushButton::clicked, this, &transfer_function::delete_preset);
-    QObject::connect(m_new_button, &QPushButton::clicked, this, &transfer_function::create_preset);
-    QObject::connect(m_copy_button, &QPushButton::clicked, this, &transfer_function::copy_preset);
-    QObject::connect(m_reinitialize_button, &QPushButton::clicked, this, &transfer_function::reinitialize_presets);
-    QObject::connect(m_rename_button, &QPushButton::clicked, this, &transfer_function::rename_preset);
-    QObject::connect(m_import_button, &QPushButton::clicked, this, &transfer_function::import_preset);
-    QObject::connect(m_export_button, &QPushButton::clicked, this, &transfer_function::export_preset);
+
+    if(*m_editable)
+    {
+        m_delete_button = new QPushButton(QIcon(m_delete_icon.string().c_str()), "");
+        m_delete_button->setToolTip(QString("Delete"));
+
+        m_new_button = new QPushButton(QIcon(m_new_icon.string().c_str()), "");
+        m_new_button->setToolTip(QString("New"));
+
+        m_copy_button = new QPushButton(QIcon(m_copy_icon.string().c_str()), "");
+        m_copy_button->setToolTip(QString("Copy"));
+
+        m_reinitialize_button = new QPushButton(QIcon(m_reinitialize_icon.string().c_str()), "");
+        m_reinitialize_button->setToolTip(QString("Reinitialize"));
+
+        m_rename_button = new QPushButton(QIcon(m_rename_icon.string().c_str()), "");
+        m_rename_button->setToolTip(QString("Rename"));
+
+        m_import_button = new QPushButton(QIcon(m_import_icon.string().c_str()), "");
+        m_import_button->setToolTip(QString("Import"));
+
+        m_export_button = new QPushButton(QIcon(m_export_icon.string().c_str()), "");
+        m_export_button->setToolTip(QString("Export"));
+
+        if(m_icon_width > 0 && m_icon_height > 0)
+        {
+            int icon_width  = int(m_icon_width);
+            int icon_height = int(m_icon_height);
+            m_delete_button->setIconSize(QSize(icon_width, icon_height));
+            m_new_button->setIconSize(QSize(icon_width, icon_height));
+            m_copy_button->setIconSize(QSize(icon_width, icon_height));
+            m_reinitialize_button->setIconSize(QSize(icon_width, icon_height));
+            m_rename_button->setIconSize(QSize(icon_width, icon_height));
+            m_import_button->setIconSize(QSize(icon_width, icon_height));
+            m_export_button->setIconSize(QSize(icon_width, icon_height));
+        }
+
+        layout->addWidget(m_delete_button);
+        layout->addWidget(m_new_button);
+        layout->addWidget(m_copy_button);
+        layout->addWidget(m_reinitialize_button);
+        layout->addWidget(m_rename_button);
+        layout->addWidget(m_import_button);
+        layout->addWidget(m_export_button);
+
+        QObject::connect(m_delete_button, &QPushButton::clicked, this, &transfer_function::delete_preset);
+        QObject::connect(m_new_button, &QPushButton::clicked, this, &transfer_function::create_preset);
+        QObject::connect(m_copy_button, &QPushButton::clicked, this, &transfer_function::copy_preset);
+        QObject::connect(m_reinitialize_button, &QPushButton::clicked, this, &transfer_function::reinitialize_presets);
+        QObject::connect(m_rename_button, &QPushButton::clicked, this, &transfer_function::rename_preset);
+        QObject::connect(m_import_button, &QPushButton::clicked, this, &transfer_function::import_preset);
+        QObject::connect(m_export_button, &QPushButton::clicked, this, &transfer_function::export_preset);
+    }
+
+    qt_container->set_layout(layout);
 
     // Initializes the TF preset from paths.
     this->initialize_presets();
@@ -487,10 +491,14 @@ void transfer_function::preset_choice(int _index)
     this->set_current_preset();
 
     const std::string tf_name = m_preset_combo_box->currentText().toStdString();
-    const bool is_enabled     = (tf_name != data::transfer_function::DEFAULT_TF_NAME);
 
-    m_rename_button->setEnabled(is_enabled);
-    m_delete_button->setEnabled(is_enabled);
+    if(*m_editable)
+    {
+        const bool is_enabled = (tf_name != data::transfer_function::DEFAULT_TF_NAME);
+
+        m_rename_button->setEnabled(is_enabled);
+        m_delete_button->setEnabled(is_enabled);
+    }
 }
 
 //------------------------------------------------------------------------------

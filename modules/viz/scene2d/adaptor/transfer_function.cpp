@@ -1177,11 +1177,15 @@ void transfer_function::left_button_double_click_on_point_event(
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
-    const auto tf = m_tf.lock();
+    QColor old_color;
+    {
+        // Lock in a scope to avoid potential dead_locks because of the exec() implied by QColorDialog static function
+        const auto tf = m_tf.lock();
 
-    // Opens a QColorDialog with the selected circle color and the tf point alpha as default rgba color.
-    QColor old_color = _tf_point.second->brush().color();
-    old_color.setAlphaF(-_tf_point.first.y);
+        // Opens a QColorDialog with the selected circle color and the tf point alpha as default rgba color.
+        old_color = _tf_point.second->brush().color();
+        old_color.setAlphaF(-_tf_point.first.y);
+    }
 
     QColor new_color = QColorDialog::getColor(
         old_color,
@@ -1225,6 +1229,7 @@ void transfer_function::left_button_double_click_on_point_event(
             tf_piece->insert({tf_value, color_t});
         }
 
+        const auto tf = m_tf.lock();
         tf->fit_window();
 
         points_modified(*tf);

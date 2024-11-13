@@ -149,7 +149,7 @@ void viewport_range_selector::update_viewport(bool _signal_selected_viewport)
 
     if(image)
     {
-        sight::data::helper::medical_image::get_min_max(image.get_shared(), m_image_min, m_image_max);
+        std::tie(m_image_min, m_image_max) = data::helper::medical_image::get_min_max<double>(image.get_shared());
 
         m_min = std::min(m_min, m_image_min);
         m_max = std::max(m_max, m_image_max);

@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
 #include <data/image.hpp>
 #include <data/map.hpp>
 #include <data/transfer_function.hpp>
@@ -55,6 +56,7 @@ namespace sight::module::ui::qt::image
            <path>....</path>
            <path>....</path>
        </config>
+       <properties editable="true" />
    </service>
    @endcode
  *
@@ -81,6 +83,9 @@ namespace sight::module::ui::qt::image
  * - \b exportIcon (optional): path of the export button icon.
  * - \b iconWidth (optional, default="16"): icon width.
  * - \b iconHeight (optional, default="16"): icon height.
+ *
+ * @subsection Properties Properties
+ * - \b editable (optional, default="true"): if false, only display the combo box selector.
  */
 class transfer_function final : public QObject,
                                 public sight::ui::editor
@@ -245,6 +250,8 @@ private:
     data::ptr<data::transfer_function, data::access::inout> m_current_tf {this, CURRENT_INPUT};
     data::ptr<data::map, data::access::inout> m_opt_presets {this, PRESETS_INOUT, true};
     data::ptr<data::image, data::access::in> m_image {this, IMAGE_INPUT, true};
+
+    data::property<data::boolean> m_editable {this, "editable", true};
 };
 
 } // namespace sight::module::ui::qt::image.

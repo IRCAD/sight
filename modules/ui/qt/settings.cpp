@@ -297,15 +297,13 @@ void settings::starting()
                 const std::uint8_t decimals = cfg.get<std::uint8_t>("<xmlattr>.decimals", 2);
                 const bool on_release       = cfg.get<bool>("<xmlattr>.emit_on_release", false);
 
-                if(auto* reset =
-                       this->create_double_slider_widget(
-                           *param_box_layout,
-                           widget_double,
-                           decimals,
-                           orientation,
-                           on_release
-                       )
-                )
+                if(auto* reset = this->create_double_slider_widget(
+                       *param_box_layout,
+                       widget_double,
+                       decimals,
+                       orientation,
+                       on_release
+                ))
                 {
                     // Looks better under the rest
                     if(orientation == Qt::Vertical)
@@ -638,7 +636,12 @@ void settings::on_color_button()
     SIGHT_ASSERT(get_id() << ": Container not instantiated yet.", container);
 
     const auto old_color  = sender->property("color").value<QColor>();
-    const QColor color_qt = QColorDialog::getColor(old_color, container);
+    const QColor color_qt = QColorDialog::getColor(
+        old_color,
+        container,
+        "pick a color",
+        QColorDialog::ShowAlphaChannel
+    );
     if(color_qt.isValid())
     {
         auto* colour_button = dynamic_cast<QPushButton*>(sender);
@@ -1016,7 +1019,7 @@ QPushButton* settings::create_bool_widget(QBoxLayout& _layout, const param_widge
 [[nodiscard]]
 QPushButton* settings::create_color_widget(QBoxLayout& _layout, const param_widget& _setup)
 {
-    auto* colour_button = new QPushButton("Color");
+    auto* colour_button = new QPushButton();
     {
         // Base properties
         colour_button->setObjectName(QString::fromStdString(_setup.key));
@@ -2230,7 +2233,7 @@ void settings::update_double_min_parameter(double _min, std::string _key)
     }
     else if(slider != nullptr)
     {
-        const double value = get_double_slider_value(slider);
+        const auto value = data<sight::data::real>(slider)->value();
         slider->setProperty("min", _min);
         set_double_slider_range(slider, value);
     }
@@ -2270,7 +2273,7 @@ void settings::update_double_max_parameter(double _max, std::string _key)
     }
     else if(slider != nullptr)
     {
-        const double value = get_double_slider_value(slider);
+        const auto value = data<sight::data::real>(slider)->value();
         slider->setProperty("max", _max);
         set_double_slider_range(slider, value);
     }
@@ -2630,7 +2633,12 @@ void settings::set_parameter<sight::data::real>(const double& _val, std::string 
         const double min         = slider->property("min").toDouble();
         const double max         = slider->property("max").toDouble();
         const double value_range = max - min;
-        const int slider_val     = int(std::round(((_val - min) / value_range) * double(slider->maximum())));
+        const int slider_val     = int(std::round(
+                                           ((std::max(
+                                                 _val,
+                                                 min
+                                             ) - min) / value_range) * double(slider->maximum())
+        ));
         slider->setValue(slider_val);
     }
     else

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ bool shading::is_color_technique(const Ogre::Technique& _tech)
     const bool peel_tech        = std::regex_match(name, PEEL_REGEX);
     const bool weight_pass      = std::regex_match(name, WEIGHT_BLEND_REGEX);
     const bool peel_init_pass   = std::regex_match(name, regex_dual_peel_init);
-    const bool ray_entry_points = name == "FrontFacesMin";
+    const bool ray_entry_points = name == "VolumeEntries_FrontFacesMin";
 
     return name.empty() || (peel_tech && !peel_init_pass) || weight_pass || ray_entry_points;
 }
