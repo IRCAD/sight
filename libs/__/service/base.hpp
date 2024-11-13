@@ -287,6 +287,9 @@ public:
 
     //@}
 
+    /// Returns a boolean to indicate if the service is autoconnected
+    SIGHT_SERVICE_API bool is_auto_connected() const;
+
     /**
      * @name Misc
      */

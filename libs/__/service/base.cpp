@@ -256,6 +256,13 @@ enum base::updating_status base::updating_status() const noexcept
     return m_pimpl->m_updating_state;
 }
 
+//------------------------------------------------------------------------------
+
+bool base::is_auto_connected() const
+{
+    return m_pimpl->is_auto_connected();
+}
+
 //-----------------------------------------------------------------------------
 
 connections_t base::auto_connections() const

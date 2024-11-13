@@ -349,15 +349,11 @@ app::detail::service_config config::parse_service(
         const auto group = cfg.second.get_optional<std::string>("<xmlattr>.group");
         if(group)
         {
-            auto key_cfgs          = cfg.second.equal_range("key");
-            const std::string& key = group.value();
-            const auto default_cfg = get_object_key_attrs(srvconfig.m_type, key);
+            auto key_cfgs                   = cfg.second.equal_range("key");
+            const std::string& key          = group.value();
+            const auto default_optional_cfg = is_key_optional(srvconfig.m_type, key);
 
-            objconfig.m_auto_connect = core::runtime::get_ptree_value(
-                cfg.second,
-                "<xmlattr>.auto_connect",
-                default_cfg.first
-            );
+            objconfig.m_auto_connect = cfg.second.get_optional<bool>("<xmlattr>.auto_connect");
 
             // Optional is global to all keys in the group
             if(objconfig.m_access != data::access::out)
@@ -365,7 +361,7 @@ app::detail::service_config config::parse_service(
                 objconfig.m_optional = core::runtime::get_ptree_value(
                     cfg.second,
                     "<xmlattr>.optional",
-                    default_cfg.second
+                    default_optional_cfg
                 );
             }
             else
@@ -388,11 +384,8 @@ app::detail::service_config config::parse_service(
                 group_objconfig.m_key = key;
 
                 // AutoConnect can be overriden by element in the group
-                group_objconfig.m_auto_connect = core::runtime::get_ptree_value(
-                    group_cfg->second,
-                    "<xmlattr>.auto_connect",
-                    group_objconfig.m_auto_connect
-                );
+                const auto auto_connect = group_cfg->second.get_optional<bool>("<xmlattr>.auto_connect");
+                group_objconfig.m_auto_connect = auto_connect.has_value() ? auto_connect : objconfig.m_auto_connect;
 
                 // Optional can be overriden by element in the group
                 if(group_objconfig.m_access != data::access::out)
@@ -400,7 +393,7 @@ app::detail::service_config config::parse_service(
                     group_objconfig.m_optional = core::runtime::get_ptree_value(
                         group_cfg->second,
                         "<xmlattr>.optional",
-                        group_objconfig.m_optional
+                        objconfig.m_optional
                     );
                 }
                 else
@@ -428,14 +421,10 @@ app::detail::service_config config::parse_service(
                 !objconfig.m_key.empty()
             );
 
-            const auto default_cfg = get_object_key_attrs(srvconfig.m_type, objconfig.m_key);
+            const auto default_optional_cfg = is_key_optional(srvconfig.m_type, objconfig.m_key);
 
             // AutoConnect
-            objconfig.m_auto_connect = core::runtime::get_ptree_value(
-                cfg.second,
-                "<xmlattr>.auto_connect",
-                default_cfg.first
-            );
+            objconfig.m_auto_connect = cfg.second.get_optional<bool>("<xmlattr>.auto_connect");
 
             // Optional
             if(objconfig.m_access != data::access::out)
@@ -443,7 +432,7 @@ app::detail::service_config config::parse_service(
                 objconfig.m_optional = core::runtime::get_ptree_value(
                     cfg.second,
                     "<xmlattr>.optional",
-                    default_cfg.second
+                    default_optional_cfg
                 );
             }
             else
@@ -502,10 +491,7 @@ app::detail::service_config config::parse_service(
 
 //------------------------------------------------------------------------------
 
-std::pair<bool, bool> config::get_object_key_attrs(
-    const std::string& _service_type,
-    const std::string& _key
-)
+bool config::is_key_optional(const std::string& _service_type, const std::string& _key)
 {
     std::lock_guard guard(s_services_props_mutex);
 
@@ -522,7 +508,7 @@ std::pair<bool, bool> config::get_object_key_attrs(
         srv = it->second;
     }
 
-    return service::manager::get_object_key_attrs(srv, _key);
+    return service::manager::is_key_optional(srv, _key);
 }
 
 // ----------------------------------------------------------------------------

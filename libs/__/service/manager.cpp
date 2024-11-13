@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ void manager::set_object(
     std::string_view _key,
     std::optional<std::size_t> _index,
     data::access _access,
-    const bool _auto_connect,
+    std::optional<bool> _auto_connect,
     const bool _optional
 )
 {
@@ -126,9 +126,9 @@ void manager::notify_unregister_out(data::object::sptr _obj, const std::string& 
 
 //------------------------------------------------------------------------------
 
-std::pair<bool, bool> manager::get_object_key_attrs(const service::base::sptr& _srv, const std::string& _key)
+bool manager::is_key_optional(const service::base::sptr& _srv, const std::string& _key)
 {
-    return _srv->m_pimpl->get_object_key_attrs(_key);
+    return _srv->m_pimpl->is_key_optional(_key);
 }
 
 } // namespace sight::service

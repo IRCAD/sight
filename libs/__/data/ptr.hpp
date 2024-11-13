@@ -60,7 +60,7 @@ public:
     SIGHT_DATA_API virtual ~base_ptr();
 
     [[nodiscard]] std::string_view key() const;
-    [[nodiscard]] bool auto_connect() const;
+    [[nodiscard]] std::optional<bool> auto_connect() const;
     [[nodiscard]] bool optional() const;
     [[nodiscard]] enum access access () const;
 
@@ -91,7 +91,7 @@ protected:
 
     has_data* m_holder {nullptr};
     std::string_view m_key;
-    bool m_auto_connect {false};
+    std::optional<bool> m_auto_connect;
     bool m_optional {false};
     enum access m_access
     {
@@ -108,7 +108,7 @@ inline std::string_view base_ptr::key() const
 
 //------------------------------------------------------------------------------
 
-inline bool base_ptr::auto_connect() const
+inline std::optional<bool> base_ptr::auto_connect() const
 {
     return m_auto_connect;
 }
@@ -263,7 +263,7 @@ private:
         std::string_view _key,
         bool _optional,
         std::optional<std::size_t> _index,
-        bool _auto_connect
+        std::optional<bool> _auto_connect
     ) noexcept :
         base_ptr(_holder, _key, _optional, ACCESS, _index)
     {

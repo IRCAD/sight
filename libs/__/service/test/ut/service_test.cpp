@@ -51,6 +51,7 @@ namespace sight::service::ut
 void service_test::setUp()
 {
     // Set up context before running a test.
+    m_worker = core::thread::worker::make();
 }
 
 //------------------------------------------------------------------------------
@@ -70,6 +71,9 @@ void service_test::tearDown()
 
         service::unregister_service(srv);
     }
+
+    m_worker->stop();
+    m_worker.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -700,6 +704,76 @@ void service_test::test_properties()
         service->stop().wait();
         service::unregister_service(service);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void service_test::test_auto_connections()
+{
+    const std::string data_key1 = "data1";
+    const std::string data_key2 = "data2";
+    const std::string data_key3 = "data3";
+    data::integer::sptr obj1    = std::make_shared<data::integer>();
+    data::integer::sptr obj2    = std::make_shared<data::integer>();
+    data::integer::sptr obj3    = std::make_shared<data::integer>();
+
+    // Test if the object support the service
+    CPPUNIT_ASSERT(
+        service::extension::factory::get()->support(
+            obj1->get_classname(),
+            "sight::service::ut::test_service"
+        )
+    );
+
+    // Test adding service
+    auto srv = service::add<sight::service::ut::test_srv>("sight::service::ut::test2_inouts1_input");
+    srv->set_inout(obj1, data_key1);
+    srv->set_inout(obj2, data_key2);
+    srv->set_input(obj3, data_key3);
+    srv->set_worker(m_worker);
+
+    srv->start().wait();
+
+    CPPUNIT_ASSERT(not srv->is_updated());
+    CPPUNIT_ASSERT(not srv->is_updated2());
+
+    // Auto-connected by default because there is a match in the auto_connections() map
+    obj1->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG)->emit();
+
+    CPPUNIT_ASSERT(srv->is_updated());
+    CPPUNIT_ASSERT(not srv->is_updated2());
+
+    srv->reset_is_updated();
+
+    // Auto-connected by default because there is a match in the auto_connections() map
+    obj2->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG)->emit();
+
+    CPPUNIT_ASSERT(not srv->is_updated());
+    CPPUNIT_ASSERT(srv->is_updated2());
+
+    srv->stop().wait();
+
+    // Auto-connected by default because there is a match in the auto_connections() map
+    // BUT, it has been configured to false in set_inout()
+    srv->set_inout(obj2, data_key2, false, false);
+    srv->start().wait();
+
+    srv->reset_is_updated2();
+
+    obj2->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG)->emit();
+
+    CPPUNIT_ASSERT(not srv->is_updated());
+    CPPUNIT_ASSERT(not srv->is_updated2());
+
+    // Not auto-connected by default because there is no match in the auto_connections() map
+    obj3->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG)->emit();
+
+    CPPUNIT_ASSERT(not srv->is_updated());
+    CPPUNIT_ASSERT(not srv->is_updated2());
+
+    srv->stop().wait();
+
+    service::unregister_service(srv);
 }
 
 //------------------------------------------------------------------------------

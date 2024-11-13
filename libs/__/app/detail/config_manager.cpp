@@ -649,13 +649,18 @@ service::base::sptr config_manager::create_service(const detail::service_config&
         );
         if((obj || !objectCfg.m_optional) && objectCfg.m_access != data::access::out)
         {
+            const std::optional<bool> auto_connect =
+                objectCfg.m_auto_connect.has_value()
+                ? std::make_optional(objectCfg.m_auto_connect.value() && _srv_config.m_global_auto_connect)
+                : not _srv_config.m_global_auto_connect ? std::make_optional(false) : std::nullopt;
+
             set_object(
                 srv,
                 obj,
                 key.first,
                 key.second,
                 objectCfg.m_access,
-                objectCfg.m_auto_connect && _srv_config.m_global_auto_connect,
+                auto_connect,
                 objectCfg.m_optional
             );
         }
@@ -1159,6 +1164,11 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
                             // a remove_object/add_object sequence
                             set_deferred_id(srv, key.first, objCfg.m_uid, key.second);
 
+                            const std::optional<bool> auto_connect =
+                                objCfg.m_auto_connect.has_value()
+                                ? std::make_optional(objCfg.m_auto_connect.value() && srv_cfg->m_global_auto_connect)
+                                : not srv_cfg->m_global_auto_connect ? std::make_optional(false) : std::nullopt;
+
                             // Register the key on the service
                             set_object(
                                 srv,
@@ -1166,7 +1176,7 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
                                 key.first,
                                 key.second,
                                 objCfg.m_access,
-                                objCfg.m_auto_connect && srv_cfg->m_global_auto_connect,
+                                auto_connect,
                                 objCfg.m_optional
                             );
 

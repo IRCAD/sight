@@ -387,13 +387,14 @@ base::shared_future_t service::update(bool _async)
 void service::auto_connect()
 {
     sight::service::connections_t connection_map = m_service.auto_connections();
+    m_auto_connected = false;
 
     for(const auto& [key, ptr] : m_service.container())
     {
         const auto& key_str     = key.first;
         data::object::csptr obj = ptr->get();
-
-        if(ptr->auto_connect() && obj)
+        const bool auto_connect = !ptr->auto_connect().has_value() || ptr->auto_connect().value();
+        if(auto_connect && obj)
         {
             core::com::helper::sig_slot_connection::key_connections_t connections;
             bool connected = false;
@@ -403,6 +404,10 @@ void service::auto_connect()
                 connections = it->second;
                 m_auto_connections.connect(obj, m_service.get_sptr(), connections);
                 connected = true;
+                if(dynamic_cast<data::property_base*>(ptr) == nullptr)
+                {
+                    m_auto_connected = true;
+                }
             }
 
             // Connect the properties
@@ -430,21 +435,27 @@ void service::auto_disconnect()
 {
     m_properties_slots.clear();
     m_auto_connections.disconnect();
+    m_auto_connected = false;
 }
 
 //------------------------------------------------------------------------------
 
-std::pair<bool, bool> service::get_object_key_attrs(const std::string& _key) const
+bool service::is_auto_connected() const
+{
+    return m_auto_connected;
+}
+
+//------------------------------------------------------------------------------
+
+bool service::is_key_optional(const std::string& _key) const
 {
     const auto& container = m_service.container();
     if(auto it_data = container.find({_key, {}}); it_data != container.end())
     {
-        sight::service::connections_t connection_map = m_service.auto_connections();
-        const bool auto_connect                      = connection_map.contains(it_data->first.first);
-        return {auto_connect, it_data->second->optional()};
+        return it_data->second->optional();
     }
 
-    return {false, false};
+    return false;
 }
 
 //-----------------------------------------------------------------------------

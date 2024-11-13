@@ -45,6 +45,7 @@ CPPUNIT_TEST(test_start_stop_update_exceptions);
 CPPUNIT_TEST(test_communication);
 CPPUNIT_TEST(test_with_in_and_out);
 CPPUNIT_TEST(test_properties);
+CPPUNIT_TEST(test_auto_connections);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -80,9 +81,14 @@ public:
     /// test service with properties
     static void test_properties();
 
+    /// test auto-connections
+    void test_auto_connections();
+
 private:
 
     static void start_stop_update_exceptions(service::ut::test_service::sptr _service);
+
+    core::thread::worker::sptr m_worker;
 };
 
 } // namespace sight::service::ut

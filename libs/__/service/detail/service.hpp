@@ -84,9 +84,11 @@ public:
     /// Disconnects the service from its data
     void auto_disconnect();
 
-    /// Returns the information about the required key
-    //// @return a pair of booleans to indicate if the object is auto_connected and optional
-    std::pair<bool, bool> get_object_key_attrs(const std::string& _key) const;
+    /// Returns a boolean to indicate if the service is autoconnected
+    bool is_auto_connected() const;
+
+    /// Returns a boolean to indicate if the object at the given key is optional
+    bool is_key_optional(const std::string& _key) const;
 
     /// Connections with data and other services, connected at start, and disconnected at stop
     service_connection m_connections;
@@ -127,6 +129,9 @@ public:
 
     using property_slot_t = core::com::slot<void ()>;
     std::vector<SPTR(property_slot_t)> m_properties_slots;
+
+    /// Tells if the service is auto-connected or not. Could be reevaluated but normally safe to store.
+    bool m_auto_connected {false};
 };
 
 } // namespace sight::service::detail

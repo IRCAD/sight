@@ -72,7 +72,7 @@ struct object_serviceconfig
     data::access m_access {data::access::inout};
 
     /// True if the service is autoConnected this object according to the auto-connection map
-    bool m_auto_connect {false};
+    boost::optional<bool> m_auto_connect {};
 
     /// True if the object is optional (i.e. the service can start even if the object is not present)
     bool m_optional {false};
@@ -159,10 +159,7 @@ public:
         const service::object_parser::objects_set_t& _objects
     );
 
-    SIGHT_APP_API static std::pair<bool, bool> get_object_key_attrs(
-        const std::string& _service_type,
-        const std::string& _key
-    );
+    SIGHT_APP_API static bool is_key_optional(const std::string& _service_type, const std::string& _key);
 
     SIGHT_APP_API static void clear_props();
 };

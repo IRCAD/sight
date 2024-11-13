@@ -93,7 +93,7 @@ struct testhas_services : public service::has_services
             auto test_service = this->register_service<service::ut::test_srv>("sight::service::ut::test3_inouts_v2");
             test_service->set_inout(data1, "data1", true);
             test_service->set_inout(data2, "data2", true);
-            test_service->set_inout(data3, "data3");
+            test_service->set_inout(data3, "data3", false);
             test_service->start().wait();
 
             CPPUNIT_ASSERT(!test_service->is_updated());
@@ -112,7 +112,7 @@ struct testhas_services : public service::has_services
             auto test_service = this->register_service<service::ut::test_srv>("sight::service::ut::test3_inouts_v2");
             test_service->set_inout(data1, "data1", true);
             test_service->set_inout(data2, "data2", true);
-            test_service->set_inout(data3, "data3");
+            test_service->set_inout(data3, "data3", false);
             test_service->start().wait();
 
             CPPUNIT_ASSERT(!test_service->is_updated());

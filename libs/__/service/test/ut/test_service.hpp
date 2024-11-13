@@ -49,11 +49,9 @@ public:
     static const std::string NOT_DEFINED;
 
     SIGHT_DECLARE_SERVICE(test_service, service::base);
-    test_service() noexcept =
-        default;
 
-    ~test_service() noexcept override =
-        default;
+    test_service() noexcept = default;
+    ~test_service() noexcept override = default;
 
     //------------------------------------------------------------------------------
 
@@ -251,15 +249,8 @@ public:
     connections_t auto_connections() const override
     {
         return {
-            {"data", data::object::MODIFIED_SIG, service::slots::UPDATE},
             {"data1", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data2", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data3", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data4", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data5", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"dataGroup", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"dataGroup0", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"dataGroup1", data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE}
+            {"data2", data::object::MODIFIED_SIG, slots::UPDATE2}
         };
     }
 
