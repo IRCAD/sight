@@ -37,45 +37,46 @@ void plugin::start()
     sight::app::extension::config::get()->parse_plugin_infos();
     sight::app::extension::parameters::get_default()->parse_plugin_infos();
 
-    auto worker = core::thread::get_default_worker();
-    worker->post([this](auto&& ...){run();});
+    if(this->get_module()->has_parameter("config"))
+    {
+        auto worker = core::thread::get_default_worker();
+        worker->post([this](auto&& ...){run();});
+    }
+    else
+    {
+        SIGHT_DEBUG("Module app, missing param config in profile");
+    }
 }
 
 //------------------------------------------------------------------------------
 
 void plugin::run()
 {
-    if(this->get_module()->has_parameter("config"))
+    const auto module = this->get_module();
+    m_configuration_name = module->get_parameter_value("config");
+    if(module->has_parameter("parameters"))
     {
-        m_configuration_name = this->get_module()->get_parameter_value("config");
-        if(this->get_module()->has_parameter("parameters"))
-        {
-            m_parameters_name = this->get_module()->get_parameter_value("parameters");
-        }
+        m_parameters_name = module->get_parameter_value("parameters");
+    }
 
-        SIGHT_ASSERT("The OSR is already initialized.", !m_app_config_mng);
-        SIGHT_ASSERT("The configuration name parameter is not initialized.", !m_configuration_name.empty());
+    SIGHT_ASSERT("The OSR is already initialized.", !m_app_config_mng);
+    SIGHT_ASSERT("The configuration name parameter is not initialized.", !m_configuration_name.empty());
 
-        m_app_config_mng = sight::app::config_manager::make();
+    m_app_config_mng = sight::app::config_manager::make();
 
-        if(m_parameters_name.empty())
-        {
-            const sight::app::field_adaptor_t fields;
-            m_app_config_mng->set_config(m_configuration_name, fields);
-        }
-        else
-        {
-            const sight::app::field_adaptor_t& fields =
-                sight::app::extension::parameters::get_default()->get_parameters(m_parameters_name);
-            m_app_config_mng->set_config(m_configuration_name, fields);
-        }
-
-        m_app_config_mng->launch();
+    if(m_parameters_name.empty())
+    {
+        const sight::app::field_adaptor_t fields;
+        m_app_config_mng->set_config(m_configuration_name, fields);
     }
     else
     {
-        SIGHT_DEBUG("Module app, missing param config in profile");
+        const sight::app::field_adaptor_t& fields =
+            sight::app::extension::parameters::get_default()->get_parameters(m_parameters_name);
+        m_app_config_mng->set_config(m_configuration_name, fields);
     }
+
+    m_app_config_mng->launch();
 }
 
 //------------------------------------------------------------------------------

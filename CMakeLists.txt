@@ -267,7 +267,7 @@ install(FILES "${CMAKE_SOURCE_DIR}/cmake/modules/CppUnitConfig.cmake" DESTINATIO
 install(
     FILES "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
           "${CMAKE_SOURCE_DIR}/cmake/build/flags.cmake"
-          "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp"
+          "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp.in"
           "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp"
           "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
           "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"

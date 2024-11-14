@@ -383,9 +383,7 @@ macro(sight_generic_test SIGHT_TARGET)
         set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}>)
     endif()
 
-    string(REGEX REPLACE "_ui?t$" "" DIRNAME "${SIGHT_TARGET}")
-
-    set(BASE_TARGET "${DIRNAME}")
+    string(REGEX REPLACE "_m?ui?t$" "" BASE_TARGET "${SIGHT_TARGET}")
 
     if(TARGET ${BASE_TARGET})
         get_target_property(TARGET_TYPE ${BASE_TARGET} SIGHT_TARGET_TYPE)
@@ -394,12 +392,25 @@ macro(sight_generic_test SIGHT_TARGET)
 
             # This variable is used in cppunit_main.cpp to automatically load the module of the test
             set(TESTED_MODULE "${PROJECT_NAME}::${BASE_MODULE}")
+            set(TESTED_MODULE_PATH "${SIGHT_MODULE_RC_PREFIX}")
+        endif()
+    else()
+        cmake_path(
+            RELATIVE_PATH CMAKE_CURRENT_SOURCE_DIR BASE_DIRECTORY ${CMAKE_SOURCE_DIR} OUTPUT_VARIABLE
+            CURRENT_SOURCE_DIR_REL
+        )
+
+        if(${CURRENT_SOURCE_DIR_REL} MATCHES "modules/")
+            message(
+                FATAL_ERROR "${CURRENT_SOURCE_DIR_REL} No matching module target '${BASE_TARGET}' for unit-test target "
+                            "'${SIGHT_TARGET}'."
+            )
         endif()
     endif()
 
     configure_file(
-        "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp" "${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp" IMMEDIATE
-        @ONLY
+        "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp"
+        IMMEDIATE @ONLY
     )
 
     add_executable(

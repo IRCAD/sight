@@ -265,7 +265,11 @@ public:
             m_default_worker.use_count() > 1
         );
 
-        m_default_worker->stop();
+        if(m_default_worker)
+        {
+            m_default_worker->stop();
+        }
+
         m_default_worker = _worker;
     }
 

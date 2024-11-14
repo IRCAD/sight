@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,12 +57,12 @@ SPTR(module) module::get_loading_module()
 module::module(
     const std::filesystem::path& _location,
     std::string _id,
-    std::string _c,
+    std::string _plugin_class,
     int _priority
 ) :
     m_resources_location(std::filesystem::weakly_canonical(_location)),
     m_identifier(std::move(_id)),
-    m_class(std::move(_c)),
+    m_class(std::move(_plugin_class)),
     m_priority(_priority)
 {
     // Post-condition.
@@ -475,6 +475,7 @@ void module::stop()
         try
         {
             m_plugin->stop();
+            m_plugin.reset();
             m_started = false;
         }
         catch(std::exception& e)

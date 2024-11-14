@@ -30,6 +30,8 @@
 #include <core/log/spy_logger.hpp>
 #include <core/runtime/runtime.hpp>
 
+#include <boost/dll/runtime_symbol_info.hpp>
+
 #include <cppunit/BriefTestProgressListener.h>
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
@@ -184,6 +186,8 @@ void init_runtime()
     {
         SIGHT_INFO("Automatic loading of module '" + moduleName + "'");
         sight::core::runtime::init();
+        const auto lib_location = boost::dll::this_line_location().parent_path().parent_path() / "@TESTED_MODULE_PATH@";
+        sight::core::runtime::add_modules(lib_location.string());
         sight::core::runtime::load_module(moduleName);
     }
 }
