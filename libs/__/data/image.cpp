@@ -183,6 +183,7 @@ void image::copy_information(image::csptr _source)
     m_size           = _source->m_size;
     m_spacing        = _source->m_spacing;
     m_origin         = _source->m_origin;
+    m_orientation    = _source->m_orientation;
     m_stride         = _source->m_stride;
     m_type           = _source->m_type;
     m_window_centers = _source->m_window_centers;
@@ -420,6 +421,7 @@ bool image::operator==(const image& _other) const noexcept
     if(!core::is_equal(m_size, _other.m_size)
        || !core::is_equal(m_spacing, _other.m_spacing)
        || !core::is_equal(m_origin, _other.m_origin)
+       || !core::is_equal(m_orientation, _other.m_orientation)
        || m_type != _other.m_type
        || !core::is_equal(m_window_centers, _other.m_window_centers)
        || !core::is_equal(m_window_widths, _other.m_window_widths)

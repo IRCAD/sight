@@ -157,28 +157,26 @@ public:
     >
     [[nodiscard]] constexpr T values() const noexcept;
 
-    /// Helper function to set the orientation (6-9 cosines) from a container
+    /// Helper function to set the orientation (9 cosines - row major) from a container
     /// @param [in] _orientation in a container
-    template<typename T, typename = std::enable_if_t<core::is_container_ordered<T>::value> >
+    template<typename T = std::array<double, 9>, typename = std::enable_if_t<core::is_container_ordered<T>::value> >
     inline void set_orientation(const T& _orientation);
 
-    /// Helper function to return the orientation part of the matrix (6-9 cosines) to a container
-    /// @param [in] _full (default=true) to return the full orientation (9 cosines), false for the 6 first, which is
-    ///                   common when dealing with DICOM
+    /// Helper function to return the orientation part of the matrix (9 cosines - row major) to a container
     template<
-        typename T = container_t,
+        typename T = std::array<double, 9>,
         typename = std::enable_if_t<core::is_container_ordered<T>::value>
     >
-    [[nodiscard]] constexpr T orientation(bool _full = true) const noexcept;
+    [[nodiscard]] constexpr T orientation() const noexcept;
 
     /// Helper function to set the position from a container
     /// @param [in] _position in DICOM format
-    template<typename T, typename = std::enable_if_t<core::is_container_ordered<T>::value> >
+    template<typename T = std::array<double, 3>, typename = std::enable_if_t<core::is_container_ordered<T>::value> >
     inline void set_position(const T& _position);
 
     /// Helper function to return the position part of the matrix (3 doubles) to a container
     template<
-        typename T = container_t,
+        typename T = std::array<double, 3>,
         typename = std::enable_if_t<core::is_container_ordered<T>::value>
     >
     [[nodiscard]] constexpr T position() const noexcept;
@@ -283,55 +281,28 @@ template<typename T, typename enable>
 template<typename T, typename enable>
 inline void matrix4::set_orientation(const T& _orientation)
 {
-    ///@todo make this functions constexpr once we support C++23 which will support SIGHT_ASSERT
     SIGHT_ASSERT(
-        std::string(__func__) + " need either 6 or 9 elements: " + std::to_string(_orientation.size()) + " given.",
-        _orientation.size() == 6 || _orientation.size() == 9
+        std::string(__func__) + " need 9 elements: " + std::to_string(_orientation.size()) + " given.",
+        _orientation.size() == 9
     );
 
-    if(_orientation.size() == 6)
-    {
-        const glm::dvec3 u(_orientation[0], _orientation[1], _orientation[2]);
-        const glm::dvec3 v(_orientation[3], _orientation[4], _orientation[5]);
-
-        // Cross product to get the missing part
-        const glm::dvec3 w = glm::cross(u, v);
-
-        *this = {
-            _orientation[0], _orientation[3], w.x, (*this)(0, 3),
-            _orientation[1], _orientation[4], w.y, (*this)(1, 3),
-            _orientation[2], _orientation[5], w.z, (*this)(2, 3),
-            0.0, 0.0, 0.0, 1.0
-        };
-    }
-    else
-    {
-        *this = {
-            _orientation[0], _orientation[3], _orientation[6], (*this)(0, 3),
-            _orientation[1], _orientation[4], _orientation[7], (*this)(1, 3),
-            _orientation[2], _orientation[5], _orientation[8], (*this)(2, 3),
-            0.0, 0.0, 0.0, 1.0
-        };
-    }
+    *this = {
+        _orientation[0], _orientation[1], _orientation[2], (*this)(0, 3),
+        _orientation[3], _orientation[4], _orientation[5], (*this)(1, 3),
+        _orientation[6], _orientation[7], _orientation[8], (*this)(2, 3),
+        0.0, 0.0, 0.0, 1.0
+    };
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T, typename enable>
-[[nodiscard]] constexpr T matrix4::orientation(bool _full) const noexcept
+[[nodiscard]] constexpr T matrix4::orientation() const noexcept
 {
-    if(_full)
-    {
-        return T {
-            (*this)(0, 0), (*this)(1, 0), (*this)(2, 0),
-            (*this)(0, 1), (*this)(1, 1), (*this)(2, 1),
-            (*this)(0, 2), (*this)(1, 2), (*this)(2, 2)
-        };
-    }
-
     return T {
-        (*this)(0, 0), (*this)(1, 0), (*this)(2, 0),
-        (*this)(0, 1), (*this)(1, 1), (*this)(2, 1)
+        (*this)(0, 0), (*this)(0, 1), (*this)(0, 2),
+        (*this)(1, 0), (*this)(1, 1), (*this)(1, 2),
+        (*this)(2, 0), (*this)(2, 1), (*this)(2, 2)
     };
 }
 

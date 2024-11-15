@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,6 +35,7 @@ CPPUNIT_TEST_SUITE(image_series_test);
 CPPUNIT_TEST(image_test);
 CPPUNIT_TEST(equality_test);
 CPPUNIT_TEST(resize_test);
+CPPUNIT_TEST(origin_orientation_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,6 +47,7 @@ public:
     void image_test();
     static void equality_test();
     static void resize_test();
+    static void origin_orientation_test();
 
 private:
 

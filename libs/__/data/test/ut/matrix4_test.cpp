@@ -296,43 +296,29 @@ void matrix4_test::orientation_test()
             .3, 1.21, -3.1, 1.2
         });
 
-    const auto& sparse = matrix.orientation(false);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(2., sparse[0], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(4., sparse[1], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.8, sparse[2], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-2., sparse[3], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(8.9, sparse[4], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-12.1, sparse[5], 1e-6);
-
-    const auto& full = matrix.orientation(true);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(.3, full[6], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.2, full[7], 1e-6);
+    const auto& full = matrix.orientation();
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(2., full[0], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-2., full[1], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(.3, full[2], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4, full[3], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(8.9, full[4], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.2, full[5], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.8, full[6], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-12.1, full[7], 1e-6);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(2.3, full[8], 1e-6);
 
-    matrix.set_orientation(std::vector<double> {1.1, 2.2, 3.3, 4.4, 5.5, 6.6});
+    matrix.set_orientation(std::vector<double> {1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9});
 
-    const auto& modified = matrix.orientation(true);
+    const auto& modified = matrix.orientation();
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.1, modified[0], 1e-6);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(2.2, modified[1], 1e-6);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(3.3, modified[2], 1e-6);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(4.4, modified[3], 1e-6);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(5.5, modified[4], 1e-6);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(6.6, modified[5], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.63, modified[6], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.26, modified[7], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-3.63, modified[8], 1e-6);
-
-    matrix.set_orientation(std::vector<double> {1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9});
-    const auto& modified_b = matrix.orientation(true);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.1, modified_b[0], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(2.2, modified_b[1], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(3.3, modified_b[2], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(4.4, modified_b[3], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.5, modified_b[4], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(6.6, modified_b[5], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.7, modified_b[6], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(8.8, modified_b[7], 1e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(9.9, modified_b[8], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.7, modified[6], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(8.8, modified[7], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(9.9, modified[8], 1e-6);
 }
 
 //------------------------------------------------------------------------------

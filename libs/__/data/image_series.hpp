@@ -98,7 +98,21 @@ public:
     SIGHT_DATA_API void set_origin(const origin_t& _origin) override;
     /// @}
 
+    /// Getter/Setter of DICOM Image Plane Module related attributes
+    /// ...and Multi-frame Functional Groups Module
+    /// @warning column major order
+    /// @{
+    SIGHT_DATA_API void set_image_orientation_patient(
+        const std::vector<double>& _image_orientation_patient,
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) override;
+
+    /// Override the origin setter to also update DICOM image position patient (row major)
+    SIGHT_DATA_API void set_orientation(const orientation_t& _orientation) override;
+    /// @}
+
     /// Overriden methods used to also set fiducial data
+    /// @{
     SIGHT_DATA_API void set_patient_id(const std::string& _patient_id) override;
     SIGHT_DATA_API void set_patient_name(const std::string& _patient_name) override;
     SIGHT_DATA_API void set_study_instance_uid(const std::string& _study_instance_uid) override;
@@ -128,7 +142,6 @@ public:
     ) override;
 
     /**
-       @{
      * @brief Resize the image and allocate the memory if needed.
      *
      * @param _size array of size in each direction (x,y,z)
@@ -143,6 +156,16 @@ public:
      * @return Allocated size in bytes
      */
     SIGHT_DATA_API std::size_t resize(const size_t& _size, const core::type& _type, enum pixel_format _format) override;
+
+    /**
+     * @brief helper function to convert back and to dicom orientation.
+     *
+     * @note DICOM uses only 6 direction cosines in column major order. We use 9 in row major order.
+     *
+     * @{
+     */
+    inline static std::vector<double> to_dicom_orientation(const orientation_t& _orientation);
+    inline static orientation_t from_dicom_orientation(const std::vector<double>& _orientation);
     /// @}
 
 private:
@@ -163,6 +186,31 @@ inline dicom_series::csptr image_series::get_dicom_reference() const
 inline void image_series::set_dicom_reference(const dicom_series::csptr& _reference)
 {
     m_dicom_reference = std::const_pointer_cast<dicom_series>(_reference);
+}
+
+//------------------------------------------------------------------------------
+
+inline std::vector<double> image_series::to_dicom_orientation(const image::orientation_t& _orientation)
+{
+    return {
+        _orientation[0], _orientation[3], _orientation[6],
+        _orientation[1], _orientation[4], _orientation[7]
+    };
+}
+
+//------------------------------------------------------------------------------
+
+inline image::orientation_t image_series::from_dicom_orientation(const std::vector<double>& _orientation)
+{
+    const glm::dvec3 u(_orientation[0], _orientation[1], _orientation[2]);
+    const glm::dvec3 v(_orientation[3], _orientation[4], _orientation[5]);
+    const glm::dvec3 w = glm::cross(u, v);
+
+    return {
+        _orientation[0], _orientation[3], w[0],
+        _orientation[1], _orientation[4], w[1],
+        _orientation[2], _orientation[5], w[2],
+    };
 }
 
 } //end namespace sight::data.

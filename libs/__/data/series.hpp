@@ -403,7 +403,7 @@ public:
         const std::optional<std::size_t>& _frame_index = std::nullopt
     ) const;
 
-    SIGHT_DATA_API void set_image_orientation_patient(
+    SIGHT_DATA_API virtual void set_image_orientation_patient(
         const std::vector<double>& _image_orientation_patient,
         const std::optional<std::size_t>& _frame_index = std::nullopt
     );

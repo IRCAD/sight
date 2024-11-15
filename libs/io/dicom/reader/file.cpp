@@ -830,6 +830,7 @@ inline static bool read_buffer(
 
 /// Make direction cosines orthogonal. Also found in ITK
 /// This is for some strange DICOM files that have non orthogonal direction cosines.
+/// @warning column major order
 inline static std::vector<double> orthogonalize(const double* const _direction_cosines)
 {
     fw_vec3d u = {_direction_cosines[0], _direction_cosines[1], _direction_cosines[2]};
@@ -877,19 +878,24 @@ inline static data::matrix4 compute_image_transform(
             if(const auto& orientation = _image_series->get_image_orientation_patient(std::nullopt);
                orientation.size() == 6)
             {
-                const auto& orthogonal_directions = orthogonalize(orientation.data());
-
-                // Having more than 6 elements makes GDCM assert
-                auto image_orientation = orthogonal_directions;
-                image_orientation.resize(6);
-
-                _image_series->set_image_orientation_patient(
-                    image_orientation,
-                    std::nullopt
-                );
+                auto orthogonal_directions = orthogonalize(orientation.data());
 
                 // Store the orientation to use it later if there is no Volume to Table Mapping Matrix
-                transform.set_orientation(orthogonal_directions);
+                // Convert to row major order
+                transform.set_orientation(
+                    {
+                        orthogonal_directions[0], orthogonal_directions[3], orthogonal_directions[6],
+                        orthogonal_directions[1], orthogonal_directions[4], orthogonal_directions[7],
+                        orthogonal_directions[2], orthogonal_directions[5], orthogonal_directions[8]
+                    });
+
+                // Having more than 6 elements makes GDCM assert
+                orthogonal_directions.resize(6);
+
+                _image_series->set_image_orientation_patient(
+                    orthogonal_directions,
+                    std::nullopt
+                );
             }
 
             // Tune the per-frame orientation
@@ -900,22 +906,26 @@ inline static data::matrix4 compute_image_transform(
                 if(const auto& orientation = _image_series->get_image_orientation_patient(frame);
                    orientation.size() == 6)
                 {
-                    const auto& orthogonal_directions = orthogonalize(orientation.data());
-
-                    // Having more than 6 elements makes GDCM assert
-                    auto image_orientation = orthogonal_directions;
-                    image_orientation.resize(6);
-
-                    _image_series->set_image_orientation_patient(
-                        image_orientation,
-                        frame
-                    );
+                    auto orthogonal_directions = orthogonalize(orientation.data());
 
                     if(frame == 0)
                     {
                         // Store the orientation to use it later if there is no Volume to Table Mapping Matrix
-                        transform.set_orientation(orthogonal_directions);
+                        transform.set_orientation(
+                            {
+                                orthogonal_directions[0], orthogonal_directions[3], orthogonal_directions[6],
+                                orthogonal_directions[1], orthogonal_directions[4], orthogonal_directions[7],
+                                orthogonal_directions[2], orthogonal_directions[5], orthogonal_directions[8]
+                            });
                     }
+
+                    // Having more than 6 elements makes GDCM assert
+                    orthogonal_directions.resize(6);
+
+                    _image_series->set_image_orientation_patient(
+                        orthogonal_directions,
+                        frame
+                    );
                 }
             }
 
@@ -1068,7 +1078,8 @@ inline static data::series_set::sptr read_image_instance(
             image_series->set_file(filename);
 
             const auto& transform = compute_image_transform(gdcm_image, image_series);
-            image_series->data::image::set_origin(transform.position<data::image::origin_t>());
+            image_series->data::image::set_origin(transform.position());
+            image_series->data::image::set_orientation(transform.orientation());
 
             ///@todo remove that once we remove field 'direction' from image_series
             data::helper::medical_image::set_direction(

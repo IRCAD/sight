@@ -3606,11 +3606,9 @@ std::optional<matrix4> series::get_image_transform_patient(const std::optional<s
     }
 
     matrix4 matrix;
-
     matrix.set_position(position);
-    matrix.set_orientation(orientation);
+    matrix.set_orientation(image_series::from_dicom_orientation(orientation));
 
-    // This is needed because we don't have public copy constructor for matrix
     return std::make_optional<matrix4>(matrix.values());
 }
 
@@ -3626,12 +3624,20 @@ void series::set_image_transform_patient(
         _frame_index
     );
 
-    SIGHT_ASSERT("Unexpected orientation vector size", is_orthogonal(*_transform));
+    if(_transform)
+    {
+        SIGHT_ASSERT("Unexpected orientation vector size", is_orthogonal(*_transform));
 
-    this->set_image_orientation_patient(
-        _transform ? _transform->get().orientation<std::vector<double> >(false) : std::vector<double> {},
-        _frame_index
-    );
+        // We must convert to column major
+        this->set_image_orientation_patient(
+            image_series::to_dicom_orientation(_transform->get().orientation()),
+            _frame_index
+        );
+    }
+    else
+    {
+        this->set_image_orientation_patient({}, _frame_index);
+    }
 }
 
 //------------------------------------------------------------------------------

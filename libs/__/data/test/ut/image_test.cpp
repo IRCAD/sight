@@ -62,22 +62,25 @@ void image_test::tearDown()
 
 void image_test::test_getter_setter()
 {
-    const data::image::spacing_t spacing = {2.5, 2.6};
-    const data::image::origin_t origin   = {2.7, 2.8};
-    const double windowcenter            = 10.10;
-    const double windowwidth             = 11.34;
+    const data::image::spacing_t spacing         = {2.5, 2.6};
+    const data::image::origin_t origin           = {2.7, 2.8};
+    const data::image::orientation_t orientation = {0.36, -0.8, 0.48, 0.48, 0.6, 0.64, -0.8, 0.0, 0.6};
+    const double windowcenter                    = 10.10;
+    const double windowwidth                     = 11.34;
 
     // process
     data::image::sptr img1 = std::make_shared<data::image>();
 
     img1->set_spacing(spacing);
     img1->set_origin(origin);
+    img1->set_orientation(orientation);
     img1->set_window_center({windowcenter});
     img1->set_window_width({windowwidth});
 
     // check
     CPPUNIT_ASSERT(img1->spacing() == spacing);
     CPPUNIT_ASSERT(img1->origin() == origin);
+    CPPUNIT_ASSERT(img1->orientation() == orientation);
     CPPUNIT_ASSERT_EQUAL(windowcenter, img1->window_center().front());
     CPPUNIT_ASSERT_EQUAL(windowwidth, img1->window_width().front());
 }
@@ -959,6 +962,7 @@ void image_test::equality_test()
 
     TEST(set_spacing({1, 2, 3}));
     TEST(set_origin({4, 5, 6}));
+    TEST(set_orientation({0.36, -0.8, 0.48, 0.48, 0.6, 0.64, -0.8, 0.0, 0.6}));
     TEST(set_window_center({7, 8, 9}));
     TEST(set_window_width({10, 11, 12}));
     image1->resize({1, 0, 0}, core::type::UINT8, data::image::pixel_format::rgb);

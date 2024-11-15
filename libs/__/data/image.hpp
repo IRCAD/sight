@@ -178,9 +178,10 @@ public:
     SIGHT_DECLARE_CLASS(image, object);
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
-    using size_t    = std::array<std::size_t, 3>;
-    using origin_t  = std::array<double, 3>;
-    using spacing_t = std::array<double, 3>;
+    using size_t        = std::array<std::size_t, 3>;
+    using origin_t      = std::array<double, 3>;
+    using orientation_t = std::array<double, 9>;
+    using spacing_t     = std::array<double, 3>;
 
     using index_t  = size_t::value_type;
     using buffer_t = std::uint8_t;
@@ -211,15 +212,28 @@ public:
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
     SIGHT_DATA_API void copy_information(image::csptr _source);
 
-    /// Get image spacing
+    /** @{
+     *  @brief Get/set image spacing
+     */
     const spacing_t& spacing() const;
-    /// Set image spacing
     void set_spacing(const spacing_t& _spacing);
+    /// @}
 
-    /// Get image origin
+    /** @{
+     *  @brief Get/set image origin
+     */
     const origin_t& origin() const;
-    /// Set image origin
     virtual void set_origin(const origin_t& _origin);
+    /// @}
+
+    /** @{
+     *  @brief Get/set image orientation.
+     *
+     *  @note The orientation is a 3x3 direction cosines matrix in row-major order.
+     */
+    const orientation_t& orientation() const;
+    virtual void set_orientation(const orientation_t& _orientation);
+    /// @}
 
     /// Get image size
     const image::size_t& size() const;
@@ -579,8 +593,11 @@ private:
     //! An array on the voxel size of the image
     spacing_t m_spacing {0., 0., 0.};
 
-    //! origin_t of the image in 3D repair
+    //! origin_t of the image in 3D coordinate system
     origin_t m_origin {0., 0., 0.};
+
+    //! orientation_t of the image in 3D coordinate system (row-major order)
+    orientation_t m_orientation {1., 0., 0., 0., 1., 0., 0., 0., 1.};
 
     //! Preferred window center/width
     ///@{
@@ -675,6 +692,20 @@ inline const image::origin_t& image::origin() const
 inline void image::set_origin(const origin_t& _origin)
 {
     m_origin = _origin;
+}
+
+//------------------------------------------------------------------------------
+
+inline const image::orientation_t& image::orientation() const
+{
+    return m_orientation;
+}
+
+//------------------------------------------------------------------------------
+
+inline void image::set_orientation(const orientation_t& _orientation)
+{
+    m_orientation = _orientation;
 }
 
 //------------------------------------------------------------------------------

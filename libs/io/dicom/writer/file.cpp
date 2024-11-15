@@ -45,8 +45,6 @@
 namespace sight::io::dicom::writer
 {
 
-//------------------------------------------------------------------------------
-
 /// Decode image orientation / position
 /// GDCM doesn't handle Enhanced US Volume (which is rather a complicated case)
 /// see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.8.24.2.html
@@ -78,7 +76,7 @@ inline static void compute_transform(
         if(const auto& shared_orientation = _image_series.get_image_orientation_volume(std::nullopt);
            shared_orientation.size() == 6)
         {
-            _matrix.set_orientation(shared_orientation);
+            _matrix.set_orientation(data::image_series::from_dicom_orientation(shared_orientation));
         }
 
         if(const auto& shared_position = _image_series.get_image_position_volume(std::nullopt);
@@ -91,7 +89,7 @@ inline static void compute_transform(
         if(const auto& frame_orientation = _image_series.get_image_orientation_volume(0);
            frame_orientation.size() == 6)
         {
-            _matrix.set_orientation(frame_orientation);
+            _matrix.set_orientation(data::image_series::from_dicom_orientation(frame_orientation));
         }
 
         if(const auto& frame_position = _image_series.get_image_position_volume(0);
@@ -106,7 +104,7 @@ inline static void compute_transform(
         if(const auto& shared_orientation = _image_series.get_image_orientation_patient(std::nullopt);
            shared_orientation.size() == 6)
         {
-            _matrix.set_orientation(shared_orientation);
+            _matrix.set_orientation(data::image_series::from_dicom_orientation(shared_orientation));
         }
 
         if(const auto& shared_position = _image_series.get_image_position_patient(std::nullopt);
@@ -205,7 +203,10 @@ inline static void write_enhanced_us_volume(
         {
             // Orientation can be shared for all frames
             // It won't overwrite the per-frame orientation
-            _series_copy.set_image_orientation_volume(transform.orientation<std::vector<double> >(false), std::nullopt);
+            _series_copy.set_image_orientation_volume(
+                data::image_series::to_dicom_orientation(transform.orientation()),
+                std::nullopt
+            );
         }
 
         // Position
@@ -242,7 +243,7 @@ inline static void write_enhanced_us_volume(
             // Orientation can be shared for all frames
             // It won't overwrite the per-frame orientation
             _series_copy.set_image_orientation_patient(
-                transform.orientation<std::vector<double> >(false),
+                data::image_series::to_dicom_orientation(transform.orientation()),
                 std::nullopt
             );
         }

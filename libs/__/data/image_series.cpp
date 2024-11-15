@@ -200,7 +200,7 @@ void image_series::set_origin(const origin_t& _origin)
 {
     image::set_origin(_origin);
 
-    if(get_sop_keyword() != dicom::sop::Keyword::INVALID)
+    if(get_sop_keyword() != dicom::sop::Keyword::INVALID && is_multi_frame())
     {
         // We know if we are multi-frame or not, so we can use series method
         // Check if we are an ultrasound volume and if we have a specific acquisition geometry
@@ -209,7 +209,6 @@ void image_series::set_origin(const origin_t& _origin)
             case data::dicom::ultrasound_acquisition_geometry_t::apex:
             {
                 // Search for Volume to Transducer Mapping Matrix
-
                 if(auto transducer_mapping = get_volume_to_transducer_mapping_matrix(); transducer_mapping)
                 {
                     transducer_mapping->set_position(_origin);
@@ -255,6 +254,102 @@ void image_series::set_origin(const origin_t& _origin)
     {
         // Store it as "global" ImagePositionPatient
         m_pimpl->set_values<gdcm::Keywords::ImagePositionPatient>({_origin[0], _origin[1], _origin[2]}, 0);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void image_series::set_image_orientation_patient(
+    const std::vector<double>& _orientation,
+    const std::optional<std::size_t>& _frame_index
+)
+{
+    SIGHT_ASSERT(
+        "The image orientation patient must have 6 direction cosines.",
+        _orientation.size() == 6
+    );
+
+    // If we set the orientation the shared group, we also set the image orientation
+    if(!_frame_index)
+    {
+        image::set_orientation(from_dicom_orientation(_orientation));
+    }
+
+    series::set_image_orientation_patient(_orientation, _frame_index);
+}
+
+//------------------------------------------------------------------------------
+
+void image_series::set_orientation(const orientation_t& _orientation)
+{
+    image::set_orientation(_orientation);
+
+    if(get_sop_keyword() != dicom::sop::Keyword::INVALID && is_multi_frame())
+    {
+        // We know if we are multi-frame or not, so we can use series method
+        // Check if we are an ultrasound volume and if we have a specific acquisition geometry
+        switch(get_ultrasound_acquisition_geometry())
+        {
+            case data::dicom::ultrasound_acquisition_geometry_t::apex:
+            {
+                // Search for Volume to Transducer Mapping Matrix
+                if(auto transducer_mapping = get_volume_to_transducer_mapping_matrix(); transducer_mapping)
+                {
+                    transducer_mapping->set_orientation(_orientation);
+                    set_volume_to_transducer_mapping_matrix(transducer_mapping);
+                }
+                else
+                {
+                    matrix4 new_mapping;
+                    new_mapping.set_orientation(_orientation);
+                    set_volume_to_transducer_mapping_matrix(new_mapping);
+                }
+
+                break;
+            }
+
+            case data::dicom::ultrasound_acquisition_geometry_t::patient:
+            {
+                if(auto table_mapping = get_volume_to_table_mapping_matrix(); table_mapping)
+                {
+                    table_mapping->set_orientation(_orientation);
+                    set_volume_to_table_mapping_matrix(table_mapping);
+                }
+                else
+                {
+                    matrix4 new_mapping;
+                    new_mapping.set_orientation(_orientation);
+                    set_volume_to_table_mapping_matrix(new_mapping);
+                }
+
+                break;
+            }
+
+            default:
+            {
+                // This is the default case, we set the shared group if multi-frame or the root ImageOrientationPatient
+                // In either case it won't overwrite per-frame positions
+                set_image_orientation_patient(
+                    {
+                        _orientation[0], _orientation[3], _orientation[6],
+                        _orientation[1], _orientation[4], _orientation[7],
+                    },
+                    std::nullopt
+                );
+                break;
+            }
+        }
+    }
+    else
+    {
+        // Store it as "global" ImageOrientationPatient
+        m_pimpl->set_values<gdcm::Keywords::ImageOrientationPatient>(
+            {
+                _orientation[0], _orientation[3], _orientation[6],
+                _orientation[1], _orientation[4], _orientation[7]
+            },
+            0
+        );
     }
 }
 
