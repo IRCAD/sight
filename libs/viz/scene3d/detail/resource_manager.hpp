@@ -107,8 +107,8 @@ private:
     {
         std::shared_ptr<RESOURCE> resource;
         CWPTR(OBJECT) object;
-        std::size_t use_count;
-        std::uint64_t last_modified;
+        std::size_t use_count {0};
+        std::uint64_t last_modified {0UL};
         typename LOADER::return_t loading_result {0}; // Extra attribute to store resource-specific loading data
     };
 
@@ -149,7 +149,7 @@ std::shared_ptr<RESOURCE> resource_manager<OBJECT, RESOURCE, LOADER>::instantiat
         true
     );
 
-    m_registry[full_id] = {resource, _object, 1, ~0UL, {}};
+    m_registry[full_id] = {.resource = resource, .object = _object, .use_count = 1};
 
     return resource;
 }

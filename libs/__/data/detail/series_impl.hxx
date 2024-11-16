@@ -23,6 +23,7 @@
 
 #include "data/series.hpp"
 
+#include "series_impl.hpp"
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -59,16 +60,6 @@ namespace sight::data::detail
 using series_dataset = std::pair<gdcm::DataSet, std::filesystem::path>;
 using frame_datasets = std::vector<series_dataset>;
 
-static constexpr char SPACE_PADDING_CHAR  = ' ';
-static constexpr char NULL_PADDING_CHAR   = '\0';
-static constexpr auto BACKSLASH_SEPARATOR = "\\";
-
-/// @see https://dicom.nema.org/medical/dicom/current/output/html/part05.html#sect_7.8
-static constexpr std::uint16_t PRIVATE_GROUP {0x0099};
-static constexpr std::uint16_t PRIVATE_CREATOR_ELEMENT {0x0099};
-static constexpr std::uint16_t PRIVATE_DATA_ELEMENT {0x9910};
-static const std::string PRIVATE_CREATOR {"Sight"};
-
 /// Allows to check if a VM is fixed (NOT 1..n). Since GDCM Attribute API differs if VM is fixed or not, we need to
 /// check to choose the right gdcm::Attributes::SetValues() version.
 /// @{
@@ -93,16 +84,6 @@ struct has_fixed_multiplicity<
     >
 >: std::false_type {};
 /// @}
-
-/// Remove the trailing padding \0 characters from a string.
-/// @param[in] _source The string to be trimmed.
-/// @return The trimmed string.
-static inline std::string shrink(const std::string& _source)
-{
-    std::string result(_source);
-    result.erase(result.find_last_not_of(NULL_PADDING_CHAR) + 1);
-    return result;
-}
 
 /// Returns the maximum or fixed size of a Value Representation and its padding character.
 /// @note the data come from https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
@@ -230,32 +211,6 @@ static inline std::string arithmetic_to_string(const V& _value, gdcm::VR::VRType
     }
 
     return oss.str();
-}
-
-//------------------------------------------------------------------------------
-
-inline static std::optional<std::string> get_private_string_value(const gdcm::DataSet& _dataset, const gdcm::Tag& _tag)
-{
-    if(!_dataset.FindDataElement(_tag))
-    {
-        return std::nullopt;
-    }
-
-    const auto& data_element = _dataset.GetDataElement(_tag);
-
-    if(data_element.IsEmpty())
-    {
-        return std::nullopt;
-    }
-
-    const auto* byte_value = data_element.GetByteValue();
-
-    if(byte_value == nullptr || byte_value->GetPointer() == nullptr)
-    {
-        return std::nullopt;
-    }
-
-    return shrink(gdcm::String<>(byte_value->GetPointer(), byte_value->GetLength()).Trim());
 }
 
 //------------------------------------------------------------------------------

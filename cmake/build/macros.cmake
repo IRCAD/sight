@@ -1123,16 +1123,24 @@ macro(fw_manage_warnings PROJECT)
         ${PROJECT} PRIVATE "$<$<CXX_COMPILER_ID:GNU,Clang>:-Werror;-Wno-error=deprecated-declarations>"
     )
 
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 12
-       AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13
-    )
-        # disable specific buggy warnings with GCC12, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
-        target_compile_options(
-            ${PROJECT}
-            PRIVATE
-                "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-Wno-restrict;-Wno-stringop-overflow;-Wno-array-bounds>"
-        )
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 12)
+            # disable specific buggy warnings with GCC12, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
+            target_compile_options(
+                ${PROJECT} PRIVATE "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-Wno-restrict;-Wno-stringop-overflow;"
+                                   "-Wno-array-bounds>"
+            )
+        endif()
+
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 13)
+            # disable specific buggy warnings with GCC12, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
+            target_compile_options(
+                ${PROJECT} PRIVATE "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:"
+                                   "-Wno-stringop-overread;-Wno-error=nonnull>"
+            )
+        endif()
     endif()
+
 endmacro()
 
 # Find link and manual dependencies for a target

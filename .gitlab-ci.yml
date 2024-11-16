@@ -16,13 +16,6 @@ include:
 variables:
     TEST_DATA_REF: "dev"
 
-lint:sheldon:
-    extends: .lint
-    variables:
-        ENABLE_CLANG_TIDY: "ON"
-    tags:
-        - linux-power-runner
-
 lint:ubuntu-24.04:
     extends: .lint
     image: "${SIGHT_UBUNTU_24_IMAGE}"
@@ -35,7 +28,7 @@ lint:ubuntu-24.04:
     extends: .linux_before
     stage: build
     needs:
-        - job: lint:sheldon
+        - job: lint:ubuntu-24.04
           optional: true
     variables:
         SIGHT_BUILD_DOC: "OFF"
@@ -129,7 +122,7 @@ lint:ubuntu-24.04:
             metrics: .build/metrics.txt
 
 .linux_deploy_test:
-    image: "${SIGHT_UBUNTU_22_IMAGE}"
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     stage: deploy-test
     variables:
         BUILD_TYPE: "Debug"
@@ -150,28 +143,15 @@ lint:ubuntu-24.04:
         - >
             if [ "${SIGHT_TEST_SDK}" == "ON" ]; then
               tar -xf packages/sight-*.tar.zst
-              PACKAGE_NAME=$(cmake -DGET_ARCHIVE_FOLDER=ON -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -P "${CI_PROJECT_DIR}/cmake/build/download_deps.cmake" 2>&1)
               for program in sight-*/bin/{ex*,tuto*,sight_viewer,sight_calibrator,dicomxplorer}; do
                   echo Testing $(basename $program):
-                  LD_LIBRARY_PATH=/cache/.sight-deps/$PACKAGE_NAME/lib timeout 5s xvfb-run -a $program || [ $? -eq 124 ]
+                  timeout 5s xvfb-run -a $program || [ $? -eq 124 ]
               done
               for program in sight-*/bin/{aruco_marker,dicom_anonymizer,network_proxy}; do
                   echo Testing $(basename $program):
                   $program --help
               done
             fi
-
-build:linux-22.04-debug-gcc:
-    extends: .linux_build
-    variables:
-        BUILD_TYPE: "Debug"
-        SIGHT_BUILD_SDK: "ON"
-        SIGHT_ENABLE_GDB: "ON"
-        CC: "gcc"
-        CXX: "g++"
-    rules:
-        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
-        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:ubuntu-24.04-debug-gcc:
     extends: .linux_build
@@ -186,8 +166,9 @@ build:ubuntu-24.04-debug-gcc:
         - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
-build:linux-22.04-release-gcc:
+build:ubuntu-24.04-release-gcc:
     extends: .linux_build
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         BUILD_TYPE: "Release"
         SIGHT_BUILD_SDK: "ON"
@@ -212,8 +193,21 @@ build:ubuntu-24.04-RelWithDebInfo-clang:
         - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
-build:linux-22.04-coverage-gcc:
+build:ubuntu-22.04-RelWithDebInfo-clang:
     extends: .linux_build
+    image: "${SIGHT_UBUNTU_22_IMAGE}"
+    variables:
+        BUILD_TYPE: "RelWithDebInfo"
+        SIGHT_IGNORE_UNSTABLE_TESTS: 1
+        CC: "clang"
+        CXX: "clang++"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+
+build:ubuntu-24.04-coverage-gcc:
+    extends: .linux_build
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_BUILD_DOC: "ON"
@@ -225,8 +219,9 @@ build:linux-22.04-coverage-gcc:
         - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
-build:linux-22.04-coverage-gcc-draft:
+build:ubuntu-24.04-coverage-gcc-draft:
     extends: .linux_build
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_ENABLE_COVERAGE: "ON"
@@ -239,7 +234,7 @@ build:linux-22.04-coverage-gcc-draft:
 deploy-test:linux-debug:
     extends: .linux_deploy_test
     needs:
-        - job: build:linux-22.04-debug-gcc
+        - job: build:ubuntu-24.04-debug-gcc
           artifacts: true
     variables:
         BUILD_TYPE: "Debug"
@@ -250,8 +245,9 @@ deploy-test:linux-debug:
 
 deploy:linux-debug:
     extends: .linux_deploy
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     needs:
-        - job: build:linux-22.04-debug-gcc
+        - job: build:ubuntu-24.04-debug-gcc
           artifacts: true
         - job: deploy-test:linux-debug
     variables:
@@ -263,7 +259,7 @@ deploy:linux-debug:
 deploy-test:linux-release:
     extends: .linux_deploy_test
     needs:
-        - job: build:linux-22.04-release-gcc
+        - job: build:ubuntu-24.04-release-gcc
           artifacts: true
     variables:
         BUILD_TYPE: "Release"
@@ -275,8 +271,9 @@ deploy-test:linux-release:
 
 deploy:linux-release:
     extends: .linux_deploy
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     needs:
-        - job: build:linux-22.04-release-gcc
+        - job: build:ubuntu-24.04-release-gcc
           artifacts: true
         - job: deploy-test:linux-release
     variables:
@@ -287,8 +284,9 @@ deploy:linux-release:
 
 deploy:apps-linux-release:
     extends: .linux_deploy
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     needs:
-        - job: build:linux-22.04-release-gcc
+        - job: build:ubuntu-24.04-release-gcc
           artifacts: true
         - job: deploy-test:linux-release
     variables:
@@ -300,7 +298,7 @@ deploy:apps-linux-release:
 .windows_build:
     extends: .windows_before
     needs:
-        - job: lint:sheldon
+        - job: lint:ubuntu-24.04
           optional: true
         - job: prebuild:windows
     variables:
@@ -504,10 +502,10 @@ deploy:apps-windows-release:
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 pages:
-    image: "${SIGHT_UBUNTU_22_IMAGE}"
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     stage: deploy
     needs:
-        - job: build:linux-22.04-coverage-gcc
+        - job: build:ubuntu-24.04-coverage-gcc
           artifacts: true
     script:
         - mv .build/Documentation/Doxygen/html/ public/
