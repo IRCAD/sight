@@ -268,8 +268,12 @@ public:
     /// @returns the light adaptors used in this layer.
     SIGHT_VIZ_SCENE3D_API std::vector<SPTR(viz::scene3d::light_adaptor)> get_light_adaptors() const;
 
-    /// @returns the computed bounding box of the scene.
-    SIGHT_VIZ_SCENE3D_API Ogre::AxisAlignedBox compute_world_bounding_box() const;
+    /**
+     * Computes the bounding box of the scene.
+     * @param _exclude_static Exclude static objects from the bounding box computation.
+     * @return the computed bounding box of the scene.
+     */
+    SIGHT_VIZ_SCENE3D_API Ogre::AxisAlignedBox compute_world_bounding_box(bool _exclude_static = false) const;
 
     /// @returns the OIT selected.
     SIGHT_VIZ_SCENE3D_API compositor::transparency_technique get_transparency_technique();

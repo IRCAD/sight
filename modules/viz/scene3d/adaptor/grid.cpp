@@ -88,6 +88,7 @@ void grid::starting()
     m_line = scene_mgr->createManualObject(this->get_id() + "_grid");
     // Set the line as dynamic, so we can update it later on, when the length changes
     m_line->setDynamic(true);
+    m_line->setQueryFlags(Ogre::SceneManager::STATICGEOMETRY_TYPE_MASK);
 
     // Set the material
     m_material = std::make_shared<data::material>();

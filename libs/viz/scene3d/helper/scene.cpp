@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2024 IRCAD France
  * Copyright (C) 2015-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ Ogre::SceneNode* scene::get_node_by_id(
 
 //------------------------------------------------------------------------------
 
-Ogre::AxisAlignedBox scene::compute_bounding_box(const Ogre::SceneNode* _root_scene_node)
+Ogre::AxisAlignedBox scene::compute_bounding_box(const Ogre::SceneNode* _root_scene_node, bool _exclude_static)
 {
     // The bounding box in which all the object's bounding boxes will be merged
     Ogre::AxisAlignedBox world_coord_bounding_box;
@@ -85,25 +85,28 @@ Ogre::AxisAlignedBox scene::compute_bounding_box(const Ogre::SceneNode* _root_sc
         const Ogre::SceneNode::ObjectMap& entities = temp_scene_node->getAttachedObjects();
         for(auto* const movable : entities)
         {
-            if(const Ogre::Entity* entity = dynamic_cast<Ogre::Entity*>(movable))
+            if(!_exclude_static || movable->getQueryFlags() != Ogre::SceneManager::STATICGEOMETRY_TYPE_MASK)
             {
-                if(entity->isVisible())
+                if(const Ogre::Entity* entity = dynamic_cast<Ogre::Entity*>(movable))
                 {
-                    world_coord_bounding_box.merge(entity->getWorldBoundingBox());
+                    if(entity->isVisible())
+                    {
+                        world_coord_bounding_box.merge(entity->getWorldBoundingBox());
+                    }
                 }
-            }
-            else if(const Ogre::ManualObject* manual_object = dynamic_cast<Ogre::ManualObject*>(movable))
-            {
-                if(manual_object->isVisible())
+                else if(const Ogre::ManualObject* manual_object = dynamic_cast<Ogre::ManualObject*>(movable))
                 {
-                    world_coord_bounding_box.merge(manual_object->getWorldBoundingBox());
+                    if(manual_object->isVisible())
+                    {
+                        world_coord_bounding_box.merge(manual_object->getWorldBoundingBox());
+                    }
                 }
-            }
-            else if(const Ogre::Camera* camera_object = dynamic_cast<Ogre::Camera*>(movable))
-            {
-                if(camera_object->isDebugDisplayEnabled())
+                else if(const Ogre::Camera* camera_object = dynamic_cast<Ogre::Camera*>(movable))
                 {
-                    world_coord_bounding_box.merge(camera_object->getWorldBoundingBox());
+                    if(camera_object->isDebugDisplayEnabled())
+                    {
+                        world_coord_bounding_box.merge(camera_object->getWorldBoundingBox());
+                    }
                 }
             }
         }

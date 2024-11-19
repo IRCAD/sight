@@ -108,12 +108,8 @@
             <scene>
                 <background material="bkg_gradient" />
 
-                <layer id="gridLayer" order="1">
-                    <adaptor uid="gridCameraAdp" />
+                <layer id="defaultLayer" order="1" transparency="Default">
                     <adaptor uid="gridAdp" />
-                </layer>
-
-                <layer id="defaultLayer" order="2" transparency="Default">
                     <adaptor uid="globalCameraAdp" />
                     <adaptor uid="trackballInteractorAdp" />
                     <adaptor uid="pickerInteractorAdp" />
@@ -137,10 +133,6 @@
         </service>
 
         <service uid="globalCameraAdp" type="sight::module::viz::scene3d::adaptor::camera">
-            <inout key="transform" uid="globalCamera" />
-        </service>
-
-        <service uid="gridCameraAdp" type="sight::module::viz::scene3d::adaptor::camera">
             <inout key="transform" uid="globalCamera" />
         </service>
 
@@ -430,7 +422,6 @@
         <start uid="eventAdp" />
         <start uid="orientationMarkerAdp" />
         <start uid="3DNegatoAdp" />
-        <start uid="gridCameraAdp" />
         <start uid="gridAdp" />
         <start uid="sliderCfg" />
 

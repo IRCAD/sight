@@ -645,7 +645,7 @@ void layer::remove_interactor(const viz::scene3d::interactor::base::sptr& _inter
 
 //-----------------------------------------------------------------------------
 
-Ogre::AxisAlignedBox layer::compute_world_bounding_box() const
+Ogre::AxisAlignedBox layer::compute_world_bounding_box(bool _exclude_static) const
 {
     // Getting this render service scene manager
     Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
@@ -653,7 +653,7 @@ Ogre::AxisAlignedBox layer::compute_world_bounding_box() const
     // Needed to recompute world bounding boxes
     root_scene_node->_update(true, false);
 
-    return helper::scene::compute_bounding_box(root_scene_node);
+    return helper::scene::compute_bounding_box(root_scene_node, _exclude_static);
 }
 
 //------------------------------------------------------------------------------
@@ -760,7 +760,7 @@ float layer::compute_scene_length(const Ogre::AxisAlignedBox& _world_bounding_bo
 
 void layer::reset_camera_coordinates()
 {
-    const Ogre::AxisAlignedBox world_bounding_box = this->compute_world_bounding_box();
+    const Ogre::AxisAlignedBox world_bounding_box = this->compute_world_bounding_box(true);
 
     if((m_camera != nullptr))
     {
@@ -791,7 +791,7 @@ void layer::reset_camera_coordinates()
 
 void layer::compute_camera_parameters()
 {
-    const Ogre::AxisAlignedBox world_bounding_box = this->compute_world_bounding_box();
+    const Ogre::AxisAlignedBox world_bounding_box = this->compute_world_bounding_box(true);
 
     if((m_camera != nullptr))
     {
