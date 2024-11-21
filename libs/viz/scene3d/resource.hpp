@@ -49,18 +49,18 @@ public:
     virtual void update() = 0;
 
     /// Return the Ogre resource.
-    [[nodiscard]] Ogre::SharedPtr<RESOURCE> get() const;
+    [[nodiscard]] std::shared_ptr<RESOURCE> get() const;
 
 protected:
 
     /// Shared resource
-    Ogre::SharedPtr<RESOURCE> m_resource;
+    std::shared_ptr<RESOURCE> m_resource;
 };
 
 //-----------------------------------------------------------------------------
 
 template<class OBJECT, class RESOURCE, class IMPL>
-inline Ogre::SharedPtr<RESOURCE> resource<OBJECT, RESOURCE, IMPL>::get() const
+inline std::shared_ptr<RESOURCE> resource<OBJECT, RESOURCE, IMPL>::get() const
 {
     return m_resource;
 }

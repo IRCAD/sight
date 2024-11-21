@@ -62,7 +62,7 @@ public:
     void bind(
         const Ogre::Pass* _pass,
         const std::string& _tex_unit_name,
-        Ogre::SharedPtr<GPU_PARAMETERS> _params,
+        std::shared_ptr<GPU_PARAMETERS> _params,
         const std::string& _uniform = "u_f3TFWindow"
     ) const;
 
@@ -78,7 +78,7 @@ template<class GPU_PARAMETERS>
 inline void transfer_function::bind(
     const Ogre::Pass* const _pass,
     const std::string& _tex_unit_name,
-    Ogre::SharedPtr<GPU_PARAMETERS> _params,
+    std::shared_ptr<GPU_PARAMETERS> _params,
     const std::string& _uniform
 ) const
 {
