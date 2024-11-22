@@ -73,7 +73,7 @@ void propagator_test::propagate()
         spacing,
         origin,
         core::type::get<std::int16_t>(),
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
 
     for(std::size_t x = 3 ; x < 6 ; ++x)

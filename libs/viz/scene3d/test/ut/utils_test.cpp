@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -159,7 +159,7 @@ void utils_test::world_to_slice_test()
         {1., 1., 1.},
         {0., 0., 0.},
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
 
     Ogre::Vector3i slice_idx;

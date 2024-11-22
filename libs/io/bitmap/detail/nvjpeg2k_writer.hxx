@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -92,21 +92,21 @@ public:
             && pixel_type != core::type::UINT16
         );
 
-        const auto& pixel_format = _image.pixel_format();
+        const auto pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image format: " << pixel_format,
-            pixel_format != data::image::pixel_format::gray_scale
-            && pixel_format != data::image::pixel_format::rgb
-            && pixel_format != data::image::pixel_format::rgba
-            && pixel_format != data::image::pixel_format::bgr
-            && pixel_format != data::image::pixel_format::bgra
+            pixel_format != data::image::pixel_format_t::gray_scale
+            && pixel_format != data::image::pixel_format_t::rgb
+            && pixel_format != data::image::pixel_format_t::rgba
+            && pixel_format != data::image::pixel_format_t::bgr
+            && pixel_format != data::image::pixel_format_t::bgra
         );
 
         /// @todo Check new version of nvjpeg2k (>0.6).
         /// No idea why the decoding fails with unsigned 16 bits and 4 components images, we mark this as unsupported.
         SIGHT_THROW_IF(
             m_name << " - Unsupported format (" << pixel_format << ") and type (" << pixel_type << ") combination",
-            (pixel_format == data::image::pixel_format::rgba || pixel_format == data::image::pixel_format::bgra)
+            (pixel_format == data::image::pixel_format_t::rgba || pixel_format == data::image::pixel_format_t::bgra)
             && pixel_type == core::type::UINT16
         );
 
@@ -404,7 +404,7 @@ private:
 
                 if(num_components == 3)
                 {
-                    if(pixel_format == data::image::pixel_format::rgb)
+                    if(pixel_format == data::image::pixel_format_t::rgb)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[0]),
@@ -423,7 +423,7 @@ private:
                             NPP_SUCCESS
                         );
                     }
-                    else if(pixel_format == data::image::pixel_format::bgr)
+                    else if(pixel_format == data::image::pixel_format_t::bgr)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[2]),
@@ -449,7 +449,7 @@ private:
                 }
                 else if(num_components == 4)
                 {
-                    if(pixel_format == data::image::pixel_format::rgba)
+                    if(pixel_format == data::image::pixel_format_t::rgba)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[0]),
@@ -469,7 +469,7 @@ private:
                             NPP_SUCCESS
                         );
                     }
-                    else if(pixel_format == data::image::pixel_format::bgra)
+                    else if(pixel_format == data::image::pixel_format_t::bgra)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[2]),
@@ -502,7 +502,7 @@ private:
 
                 if(num_components == 3)
                 {
-                    if(pixel_format == data::image::pixel_format::rgb)
+                    if(pixel_format == data::image::pixel_format_t::rgb)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[0]),
@@ -521,7 +521,7 @@ private:
                             NPP_SUCCESS
                         );
                     }
-                    else if(pixel_format == data::image::pixel_format::bgr)
+                    else if(pixel_format == data::image::pixel_format_t::bgr)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[2]),
@@ -547,7 +547,7 @@ private:
                 }
                 else
                 {
-                    if(pixel_format == data::image::pixel_format::rgba)
+                    if(pixel_format == data::image::pixel_format_t::rgba)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[0]),
@@ -567,7 +567,7 @@ private:
                             NPP_SUCCESS
                         );
                     }
-                    else if(pixel_format == data::image::pixel_format::bgra)
+                    else if(pixel_format == data::image::pixel_format_t::bgra)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[2]),
@@ -600,7 +600,7 @@ private:
 
                 if(num_components == 3)
                 {
-                    if(pixel_format == data::image::pixel_format::rgb)
+                    if(pixel_format == data::image::pixel_format_t::rgb)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16s*>(m_planar_gpu_buffers[0]),
@@ -619,7 +619,7 @@ private:
                             NPP_SUCCESS
                         );
                     }
-                    else if(pixel_format == data::image::pixel_format::bgr)
+                    else if(pixel_format == data::image::pixel_format_t::bgr)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16s*>(m_planar_gpu_buffers[2]),
@@ -645,7 +645,7 @@ private:
                 }
                 else
                 {
-                    if(pixel_format == data::image::pixel_format::rgba)
+                    if(pixel_format == data::image::pixel_format_t::rgba)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16s*>(m_planar_gpu_buffers[0]),
@@ -665,7 +665,7 @@ private:
                             NPP_SUCCESS
                         );
                     }
-                    else if(pixel_format == data::image::pixel_format::bgra)
+                    else if(pixel_format == data::image::pixel_format_t::bgra)
                     {
                         std::array out_buffer {
                             reinterpret_cast<Npp16s*>(m_planar_gpu_buffers[2]),

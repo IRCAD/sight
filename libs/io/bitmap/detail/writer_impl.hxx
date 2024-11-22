@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -96,17 +96,18 @@ public:
 
                 // Check if the rerror is because of unsupported pixel format
                 const auto& pixel_format = image->pixel_format();
-                if(pixel_format != data::image::pixel_format::gray_scale
-                   && pixel_format != data::image::pixel_format::rgb
-                   && pixel_format != data::image::pixel_format::rgba
-                   && pixel_format != data::image::pixel_format::bgr
-                   && pixel_format != data::image::pixel_format::bgra)
+                if(pixel_format != data::image::pixel_format_t::gray_scale
+                   && pixel_format != data::image::pixel_format_t::rgb
+                   && pixel_format != data::image::pixel_format_t::rgba
+                   && pixel_format != data::image::pixel_format_t::bgr
+                   && pixel_format != data::image::pixel_format_t::bgra)
                 {
                     throw;
                 }
 
                 /// @todo Check new version of nvjpeg2k (>0.6).
-                if((pixel_format == data::image::pixel_format::rgba || pixel_format == data::image::pixel_format::bgra)
+                if((pixel_format == data::image::pixel_format_t::rgba
+                    || pixel_format == data::image::pixel_format_t::bgra)
                    && pixel_type == core::type::UINT16)
                 {
                     throw;

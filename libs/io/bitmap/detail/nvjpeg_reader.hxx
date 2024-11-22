@@ -178,7 +178,7 @@ public:
         _image.resize(
             {width, height, 0},
             core::type::UINT8,
-            data::image::pixel_format::rgb
+            data::image::pixel_format_t::rgb
         );
 
         // Synchronize CUDA streams

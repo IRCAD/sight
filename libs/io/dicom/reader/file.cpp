@@ -400,7 +400,7 @@ inline static core::type compute_type(
 
 //------------------------------------------------------------------------------
 
-inline static enum data::image::pixel_format compute_format(
+inline static enum data::image::pixel_format_t compute_format(
     const gdcm::Image& _gdcm_image,
     const std::string& _filename
 )
@@ -410,7 +410,7 @@ inline static enum data::image::pixel_format compute_format(
     if(gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::PALETTE_COLOR)
     {
         // PALETTE_COLOR is always expended as RGB
-        return data::image::pixel_format::rgb;
+        return data::image::pixel_format_t::rgb;
     }
 
     const auto gdcm_sample_per_pixel = _gdcm_image.GetPixelFormat().GetSamplesPerPixel();
@@ -418,7 +418,7 @@ inline static enum data::image::pixel_format compute_format(
     if(gdcm_sample_per_pixel == 1)
     {
         // No need to check, no color space conversion...
-        return data::image::pixel_format::gray_scale;
+        return data::image::pixel_format_t::gray_scale;
     }
 
     if(gdcm_sample_per_pixel == 3
@@ -428,7 +428,7 @@ inline static enum data::image::pixel_format compute_format(
            || gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::YBR_RCT
            || gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::RGB))
     {
-        return data::image::pixel_format::rgb;
+        return data::image::pixel_format_t::rgb;
     }
 
     SIGHT_THROW_IF(
@@ -441,7 +441,7 @@ inline static enum data::image::pixel_format compute_format(
     );
 
     // Unsupported...
-    return data::image::pixel_format::undefined;
+    return data::image::pixel_format_t::undefined;
 }
 
 //------------------------------------------------------------------------------
@@ -614,11 +614,11 @@ inline static data::image_series::sptr new_image_series(
     const core::type& type = compute_type(_gdcm_image, _gdcm_rescaler);
 
     // Target PixelFormat, even more complicated
-    const enum data::image::pixel_format& format = compute_format(_gdcm_image, _filename);
+    const enum data::image::pixel_format_t& format = compute_format(_gdcm_image, _filename);
 
     SIGHT_THROW_IF(
         "Cannot guess the target pixel format to use while reading DICOM file '" << _filename << "'.",
-        type == core::type::NONE || format == data::image::pixel_format::undefined
+        type == core::type::NONE || format == data::image::pixel_format_t::undefined
     );
 
     if(_job && _job->cancel_requested())

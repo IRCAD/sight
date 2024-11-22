@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -242,23 +242,23 @@ void client_listener::manage_timeline(data::object::sptr _obj, std::size_t _inde
         if(!m_tl_initialized)
         {
             const auto frame_pixel_format =
-                [](enum data::image::pixel_format _image_pixel_format)
+                [](data::image::pixel_format_t _image_pixel_format)
                 {
                     switch(_image_pixel_format)
                     {
-                        case data::image::pixel_format::bgr:
+                        case data::image::pixel_format_t::bgr:
                             return data::frame_tl::pixel_format::bgr;
 
-                        case data::image::pixel_format::rgb:
+                        case data::image::pixel_format_t::rgb:
                             return data::frame_tl::pixel_format::rgb;
 
-                        case data::image::pixel_format::rgba:
+                        case data::image::pixel_format_t::rgba:
                             return data::frame_tl::pixel_format::rgba;
 
-                        case data::image::pixel_format::bgra:
+                        case data::image::pixel_format_t::bgra:
                             return data::frame_tl::pixel_format::bgra;
 
-                        case data::image::pixel_format::gray_scale:
+                        case data::image::pixel_format_t::gray_scale:
                             return data::frame_tl::pixel_format::gray_scale;
 
                         default:

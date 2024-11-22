@@ -427,7 +427,7 @@ void synchronizer::copy_frame_from_tl_to_output(
             // Check if frame dimensions have changed
             if(frame_tl_size != frame->size() || frame_tl_num_components != frame->num_components())
             {
-                enum data::image::pixel_format format
+                enum data::image::pixel_format_t format
                 {
                     data::image::undefined
                 };

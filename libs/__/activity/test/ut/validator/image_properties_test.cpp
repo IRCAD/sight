@@ -122,7 +122,7 @@ void image_properties_test::properties_test()
             img1->spacing(),
             img1->origin(),
             img1->type(),
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
 
         data::vector::sptr vector = std::make_shared<data::vector>();

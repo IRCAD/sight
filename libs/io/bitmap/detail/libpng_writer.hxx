@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -102,21 +102,21 @@ public:
             png_infop m_png_info {nullptr};
         } keeper;
 
-        const auto& pixel_format = _image.pixel_format();
-        const int png_format     =
+        const auto pixel_format = _image.pixel_format();
+        const int png_format    =
             [&]
             {
                 switch(pixel_format)
                 {
-                    case data::image::pixel_format::rgb:
-                    case data::image::pixel_format::bgr:
+                    case data::image::pixel_format_t::rgb:
+                    case data::image::pixel_format_t::bgr:
                         return PNG_COLOR_TYPE_RGB;
 
-                    case data::image::pixel_format::rgba:
-                    case data::image::pixel_format::bgra:
+                    case data::image::pixel_format_t::rgba:
+                    case data::image::pixel_format_t::bgra:
                         return PNG_COLOR_TYPE_RGB_ALPHA;
 
-                    case data::image::pixel_format::gray_scale:
+                    case data::image::pixel_format_t::gray_scale:
                         return PNG_COLOR_TYPE_GRAY;
 
                     default:
@@ -184,7 +184,7 @@ public:
 
         int transform = PNG_TRANSFORM_IDENTITY;
 
-        if(pixel_format == data::image::pixel_format::bgr || pixel_format == data::image::pixel_format::bgra)
+        if(pixel_format == data::image::pixel_format_t::bgr || pixel_format == data::image::pixel_format_t::bgra)
         {
             transform |= PNG_TRANSFORM_BGR;
         }

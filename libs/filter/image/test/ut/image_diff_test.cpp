@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -182,11 +182,11 @@ void image_diff_test::store_diffs_test()
 
 void image_diff_test::undo_redo_test()
 {
-    const data::image::size_t size              = {{32, 32, 32}};
-    const data::image::spacing_t spacing        = {{1., 1., 1.}};
-    const data::image::origin_t origin          = {{0., 0., 0.}};
-    const core::type type                       = core::type::UINT8;
-    const enum data::image::pixel_format format = data::image::pixel_format::gray_scale;
+    const data::image::size_t size                = {{32, 32, 32}};
+    const data::image::spacing_t spacing          = {{1., 1., 1.}};
+    const data::image::origin_t origin            = {{0., 0., 0.}};
+    const core::type type                         = core::type::UINT8;
+    const enum data::image::pixel_format_t format = data::image::pixel_format_t::gray_scale;
 
     data::image::sptr image = std::make_shared<data::image>();
 

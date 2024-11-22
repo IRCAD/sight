@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,7 +113,7 @@ void image_to_vtk_test(const core::type _imgtype, const std::set<int>& _vtk_type
         spacing,
         origin,
         _imgtype,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
 
     const auto dump_lock = image->dump_lock();
@@ -376,7 +376,7 @@ void image_test::test_from_vtk()
 // ------------------------------------------------------------------------------
 
 template<typename TYPE>
-void from_to_test(enum data::image::pixel_format _format)
+void from_to_test(enum data::image::pixel_format_t _format)
 {
     const data::image::size_t size       = {10, 20, 0};
     const data::image::spacing_t spacing = {1., 1., 0};
@@ -597,6 +597,7 @@ void image_test::vtk_reader_test()
     reader->read();
 
     data::image::size_t vtk_size {{230, 170, 58}};
+    // NOLINTNEXTLINE(modernize-use-std-numbers)
     data::image::spacing_t vtk_spacing {{1.732, 1.732, 3.2}};
     data::image::origin_t vtk_origin {{34.64, 86.6, 56}};
 

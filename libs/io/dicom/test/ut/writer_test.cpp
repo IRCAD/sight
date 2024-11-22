@@ -78,13 +78,13 @@ inline static std::string format_date_time(const std::chrono::time_point<std::ch
 //------------------------------------------------------------------------------
 
 inline static data::image_series::sptr get_us_volume_image(
-    std::uint32_t _seed                    = 0,
-    std::size_t _num_frames                = 1,
-    core::type _type                       = core::type::UINT8,
-    enum data::image::pixel_format _format = data::image::rgb
+    std::uint32_t _seed                      = 0,
+    std::size_t _num_frames                  = 1,
+    core::type _type                         = core::type::UINT8,
+    enum data::image::pixel_format_t _format = data::image::rgb
 )
 {
-    using key_t = std::tuple<std::size_t, core::type, enum data::image::pixel_format, std::uint32_t>;
+    using key_t = std::tuple<std::size_t, core::type, enum data::image::pixel_format_t, std::uint32_t>;
     static std::map<key_t, data::image_series::sptr> generated;
 
     const key_t key {_num_frames, _type, _format, _seed};
@@ -358,7 +358,7 @@ void writer_test::write_enhanced_us_volume_test()
 
     {
         core::os::temp_dir tmp_dir;
-        const auto& expected = get_us_volume_image(2, 4, core::type::UINT16, data::image::pixel_format::gray_scale);
+        const auto& expected = get_us_volume_image(2, 4, core::type::UINT16, data::image::pixel_format_t::gray_scale);
 
         // Write a 4 frames monochrome uint16 image
         {

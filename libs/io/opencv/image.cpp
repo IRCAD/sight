@@ -131,23 +131,23 @@ void image::copy_from_cv(data::image& _image, const cv::Mat& _cv_image)
     const auto prev_image_size = _image.size();
     if(prev_image_comp != image_comp || prev_image_type != image_type || image_size != prev_image_size)
     {
-        enum data::image::pixel_format format = data::image::pixel_format::gray_scale;
+        enum data::image::pixel_format_t format = data::image::pixel_format_t::gray_scale;
         switch(image_comp)
         {
             case 1:
-                format = data::image::pixel_format::gray_scale;
+                format = data::image::pixel_format_t::gray_scale;
                 break;
 
             case 2:
-                format = data::image::pixel_format::rg;
+                format = data::image::pixel_format_t::rg;
                 break;
 
             case 3:
-                format = data::image::pixel_format::rgb;
+                format = data::image::pixel_format_t::rgb;
                 break;
 
             case 4:
-                format = data::image::pixel_format::rgba;
+                format = data::image::pixel_format_t::rgba;
                 break;
 
             default:

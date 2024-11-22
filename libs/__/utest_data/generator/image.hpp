@@ -58,12 +58,12 @@ public:
     /// @param [in] _seed [optional] random seed used to generate the buffer. If not set, fill the buffer with 0.
     SIGHT_UTEST_DATA_API static void generate_image(
         data::image::sptr _image,
-        const data::image::size_t& _sizes             = {64, 64, 64},
-        const data::image::spacing_t& _spacing        = {0, 0, 0},
-        const data::image::origin_t& _origin          = {0, 0, 0},
-        const core::type& _type                       = core::type::UINT8,
-        const enum data::image::pixel_format& _format = data::image::pixel_format::gray_scale,
-        const std::optional<std::uint32_t>& _seed     = std::nullopt
+        const data::image::size_t& _sizes               = {64, 64, 64},
+        const data::image::spacing_t& _spacing          = {0, 0, 0},
+        const data::image::origin_t& _origin            = {0, 0, 0},
+        const core::type& _type                         = core::type::UINT8,
+        const enum data::image::pixel_format_t& _format = data::image::pixel_format_t::gray_scale,
+        const std::optional<std::uint32_t>& _seed       = std::nullopt
     );
 
     /// Fill image array with random value

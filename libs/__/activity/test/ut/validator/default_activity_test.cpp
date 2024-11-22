@@ -209,7 +209,7 @@ void default_activity_test::object_test()
         img1->spacing(),
         img1->origin(),
         img1->type(),
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     utest_data::generator::image::generate_random_image(img3, core::type::UINT8);
 
@@ -419,7 +419,7 @@ void default_activity_test::big_activity_test()
         image_series2->spacing(),
         image_series2->origin(),
         image_series2->type(),
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
 
     model_vector->push_back(model_series2);

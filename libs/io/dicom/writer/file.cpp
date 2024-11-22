@@ -351,17 +351,17 @@ inline static void write_enhanced_us_volume(
     // Photometric Interpretation
     switch(_image_series.pixel_format())
     {
-        case data::image::pixel_format::gray_scale:
+        case data::image::pixel_format_t::gray_scale:
             gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::MONOCHROME2);
             gdcm_image.GetPixelFormat().SetSamplesPerPixel(1);
             break;
 
-        case data::image::pixel_format::rgb:
+        case data::image::pixel_format_t::rgb:
             gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::RGB);
             gdcm_image.GetPixelFormat().SetSamplesPerPixel(3);
             break;
 
-        case data::image::pixel_format::rgba:
+        case data::image::pixel_format_t::rgba:
             gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::RGB);
             gdcm_image.GetPixelFormat().SetSamplesPerPixel(4);
             break;
@@ -511,7 +511,7 @@ inline static void write_enhanced_us_volume(
     auto& changed_gdcm_image = const_cast<gdcm::Image&>(transfer_syntax_changer.GetOutput());
 
     // Correct the Photometric Interpretation (This avoid a warning when GDCM decodes back the image)
-    if(_image_series.pixel_format() != data::image::pixel_format::gray_scale)
+    if(_image_series.pixel_format() != data::image::pixel_format_t::gray_scale)
     {
         switch(_transfer_syntax)
         {

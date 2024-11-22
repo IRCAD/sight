@@ -54,50 +54,50 @@ camera::camera()
 
 //------------------------------------------------------------------------------
 
-using pixel_format_translator_t = boost::bimaps::bimap<enum camera::pixel_format, std::string>;
+using pixel_format_translator_t = boost::bimaps::bimap<enum camera::pixel_format_t, std::string>;
 pixel_format_translator_t pixel_format_translator =
     boost::assign::list_of<pixel_format_translator_t::relation>
-        (camera::pixel_format::invalid, std::string("invalid"))
-        (camera::pixel_format::argb32, std::string("argb32"))
-        (camera::pixel_format::argb32_premultiplied, std::string("argb32_premultiplied"))
-        (camera::pixel_format::rgb32, std::string("rgb32"))
-        (camera::pixel_format::rgb24, std::string("rgb24"))
-        (camera::pixel_format::rgb565, std::string("rgb565"))
-        (camera::pixel_format::rgb555, std::string("rgb555"))
-        (camera::pixel_format::argb8565_premultiplied, std::string("argb8565_premultiplied"))
-        (camera::pixel_format::bgra32, std::string("bgra32"))
-        (camera::pixel_format::bgra32_premultiplied, std::string("bgra32_premultiplied"))
-        (camera::pixel_format::bgr32, std::string("bgr32"))
-        (camera::pixel_format::bgr24, std::string("bgr24"))
-        (camera::pixel_format::bgr565, std::string("bgr565"))
-        (camera::pixel_format::bgr555, std::string("bgr555"))
-        (camera::pixel_format::bgra5658_premultiplied, std::string("bgra5658_premultiplied"))
-        (camera::pixel_format::ayuv444, std::string("ayuv444"))
-        (camera::pixel_format::ayuv444_premultiplied, std::string("ayuv444_premultiplied"))
-        (camera::pixel_format::yuv444, std::string("yuv444"))
-        (camera::pixel_format::yuv420_p, std::string("yuv420_p"))
-        (camera::pixel_format::yv12, std::string("yv12"))
-        (camera::pixel_format::uyvy, std::string("uyvy"))
-        (camera::pixel_format::yuyv, std::string("yuyv"))
-        (camera::pixel_format::nv12, std::string("nv12"))
-        (camera::pixel_format::nv21, std::string("nv21"))
-        (camera::pixel_format::imc1, std::string("imc1"))
-        (camera::pixel_format::imc2, std::string("imc2"))
-        (camera::pixel_format::imc3, std::string("imc3"))
-        (camera::pixel_format::imc4, std::string("imc4"))
-        (camera::pixel_format::y8, std::string("y8"))
-        (camera::pixel_format::y16, std::string("y16"))
-        (camera::pixel_format::jpeg, std::string("jpeg"))
-        (camera::pixel_format::cameraraw, std::string("cameraraw"))
-        (camera::pixel_format::adobedng, std::string("adobedng"))
-        (camera::pixel_format::rgba32, std::string("rgba32"))
-        (camera::pixel_format::user, std::string("user"));
+        (camera::pixel_format_t::invalid, std::string("invalid"))
+        (camera::pixel_format_t::argb32, std::string("argb32"))
+        (camera::pixel_format_t::argb32_premultiplied, std::string("argb32_premultiplied"))
+        (camera::pixel_format_t::rgb32, std::string("rgb32"))
+        (camera::pixel_format_t::rgb24, std::string("rgb24"))
+        (camera::pixel_format_t::rgb565, std::string("rgb565"))
+        (camera::pixel_format_t::rgb555, std::string("rgb555"))
+        (camera::pixel_format_t::argb8565_premultiplied, std::string("argb8565_premultiplied"))
+        (camera::pixel_format_t::bgra32, std::string("bgra32"))
+        (camera::pixel_format_t::bgra32_premultiplied, std::string("bgra32_premultiplied"))
+        (camera::pixel_format_t::bgr32, std::string("bgr32"))
+        (camera::pixel_format_t::bgr24, std::string("bgr24"))
+        (camera::pixel_format_t::bgr565, std::string("bgr565"))
+        (camera::pixel_format_t::bgr555, std::string("bgr555"))
+        (camera::pixel_format_t::bgra5658_premultiplied, std::string("bgra5658_premultiplied"))
+        (camera::pixel_format_t::ayuv444, std::string("ayuv444"))
+        (camera::pixel_format_t::ayuv444_premultiplied, std::string("ayuv444_premultiplied"))
+        (camera::pixel_format_t::yuv444, std::string("yuv444"))
+        (camera::pixel_format_t::yuv420_p, std::string("yuv420_p"))
+        (camera::pixel_format_t::yv12, std::string("yv12"))
+        (camera::pixel_format_t::uyvy, std::string("uyvy"))
+        (camera::pixel_format_t::yuyv, std::string("yuyv"))
+        (camera::pixel_format_t::nv12, std::string("nv12"))
+        (camera::pixel_format_t::nv21, std::string("nv21"))
+        (camera::pixel_format_t::imc1, std::string("imc1"))
+        (camera::pixel_format_t::imc2, std::string("imc2"))
+        (camera::pixel_format_t::imc3, std::string("imc3"))
+        (camera::pixel_format_t::imc4, std::string("imc4"))
+        (camera::pixel_format_t::y8, std::string("y8"))
+        (camera::pixel_format_t::y16, std::string("y16"))
+        (camera::pixel_format_t::jpeg, std::string("jpeg"))
+        (camera::pixel_format_t::cameraraw, std::string("cameraraw"))
+        (camera::pixel_format_t::adobedng, std::string("adobedng"))
+        (camera::pixel_format_t::rgba32, std::string("rgba32"))
+        (camera::pixel_format_t::user, std::string("user"));
 
 //------------------------------------------------------------------------------
 
-enum camera::pixel_format camera::pixel_format(const std::string& _name)
+enum camera::pixel_format_t camera::pixel_format(const std::string& _name)
 {
-    enum pixel_format format = pixel_format::invalid;
+    enum pixel_format_t format = pixel_format_t::invalid;
 
     pixel_format_translator_t::right_const_iterator right_iter = pixel_format_translator.right.find(_name);
     if(right_iter != pixel_format_translator.right.end())
@@ -110,7 +110,7 @@ enum camera::pixel_format camera::pixel_format(const std::string& _name)
 
 //------------------------------------------------------------------------------
 
-std::string camera::get_pixel_format_name(enum pixel_format _format)
+std::string camera::get_pixel_format_name(pixel_format_t _format)
 {
     std::string name                                         = "invalid";
     pixel_format_translator_t::left_const_iterator left_iter = pixel_format_translator.left.find(_format);

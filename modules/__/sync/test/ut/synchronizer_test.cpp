@@ -154,7 +154,7 @@ public:
         frame1->resize(
             frame_size,
             core::type::UINT8,
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
         {
             auto dump_lock_frame1 = frame1->dump_lock();
@@ -165,7 +165,7 @@ public:
         frame2->resize(
             frame_size,
             core::type::UINT8,
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
         {
             auto dump_lock_frame2 = frame2->dump_lock();
@@ -1060,7 +1060,7 @@ void synchronizer_test::single_frame_tl_config_test()
     frame->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame = frame->dump_lock();
@@ -1154,7 +1154,7 @@ void synchronizer_test::mixt_frame_tl_config_test()
     frame1->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame1 = frame1->dump_lock();
@@ -1164,7 +1164,7 @@ void synchronizer_test::mixt_frame_tl_config_test()
     frame4->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame4 = frame4->dump_lock();
@@ -1174,7 +1174,7 @@ void synchronizer_test::mixt_frame_tl_config_test()
     frame6->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame6 = frame6->dump_lock();
@@ -1184,7 +1184,7 @@ void synchronizer_test::mixt_frame_tl_config_test()
     frame11->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame11 = frame11->dump_lock();
@@ -1300,7 +1300,7 @@ void synchronizer_test::full_config_test()
     frame1->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame1 = frame1->dump_lock();
@@ -1310,7 +1310,7 @@ void synchronizer_test::full_config_test()
     frame4->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame4 = frame4->dump_lock();
@@ -1320,7 +1320,7 @@ void synchronizer_test::full_config_test()
     frame6->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame6 = frame6->dump_lock();
@@ -1330,7 +1330,7 @@ void synchronizer_test::full_config_test()
     frame11->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame11 = frame11->dump_lock();
@@ -1928,7 +1928,7 @@ void synchronizer_test::image_series_time_tagging_test()
     frame1->resize(
         frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame1 = frame1->dump_lock();
@@ -2034,7 +2034,7 @@ void synchronizer_test::single_image_series_tl_population()
     frame1->resize(
         frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame1 = frame1->dump_lock();
@@ -2045,7 +2045,7 @@ void synchronizer_test::single_image_series_tl_population()
     frame2->resize(
         frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame2 = frame2->dump_lock();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ void gz_buffer_image_writer_test::basic_test()
     std::filesystem::path filepath = std::filesystem::temp_directory_path()
                                      / ("test" + gz_buffer_image_writer->extension());
     auto image_in = std::make_shared<data::image>();
-    image_in->resize({16}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    image_in->resize({16}, core::type::UINT8, data::image::pixel_format_t::gray_scale);
     {
         auto image_lock = image_in->dump_lock();
         std::iota(image_in->begin<std::uint8_t>(), image_in->end<std::uint8_t>(), std::uint8_t(0));

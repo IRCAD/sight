@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -57,16 +57,16 @@ void dicom_data_tools_test::get_photometric_interpretation_test()
 
     auto image = std::make_shared<data::image>();
 
-    image->resize({1}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    image->resize({1}, core::type::UINT8, data::image::pixel_format_t::gray_scale);
     CPPUNIT_ASSERT_EQUAL(gdcm_pi(gdcm_pi::MONOCHROME2), helper::get_photometric_interpretation(image));
 
-    image->resize({1}, core::type::UINT8, data::image::pixel_format::rg);
+    image->resize({1}, core::type::UINT8, data::image::pixel_format_t::rg);
     CPPUNIT_ASSERT_EQUAL(gdcm_pi(gdcm_pi::UNKNOWN), helper::get_photometric_interpretation(image));
 
-    image->resize({1}, core::type::UINT8, data::image::pixel_format::rgb);
+    image->resize({1}, core::type::UINT8, data::image::pixel_format_t::rgb);
     CPPUNIT_ASSERT_EQUAL(gdcm_pi(gdcm_pi::RGB), helper::get_photometric_interpretation(image));
 
-    image->resize({1}, core::type::UINT8, data::image::pixel_format::rgba);
+    image->resize({1}, core::type::UINT8, data::image::pixel_format_t::rgba);
     CPPUNIT_ASSERT_EQUAL(gdcm_pi(gdcm_pi::ARGB), helper::get_photometric_interpretation(image));
 }
 
@@ -94,7 +94,7 @@ void dicom_data_tools_test::convert_to_representation_mode_test()
 void dicom_data_tools_test::convert_point_to_frame_number_nominal_test()
 {
     auto image = std::make_shared<data::image>();
-    image->resize({1, 2, 3}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    image->resize({1, 2, 3}, core::type::UINT8, data::image::pixel_format_t::gray_scale);
     image->set_spacing({1, 1, 1});
     CPPUNIT_ASSERT_EQUAL(
         std::size_t(3),
@@ -107,7 +107,7 @@ void dicom_data_tools_test::convert_point_to_frame_number_nominal_test()
 void dicom_data_tools_test::convert_point_to_frame_number_failure_test()
 {
     auto image = std::make_shared<data::image>();
-    image->resize({1, 2, 3}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    image->resize({1, 2, 3}, core::type::UINT8, data::image::pixel_format_t::gray_scale);
     image->set_spacing({1, 1, 1});
     CPPUNIT_ASSERT_THROW(
         helper::convert_point_to_frame_number(image, std::make_shared<data::point>(1., 2., 3.)),
@@ -120,7 +120,7 @@ void dicom_data_tools_test::convert_point_to_frame_number_failure_test()
 void dicom_data_tools_test::convert_frame_number_to_z_coordinate_nominal_test()
 {
     auto image = std::make_shared<data::image>();
-    image->resize({1, 2, 3}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    image->resize({1, 2, 3}, core::type::UINT8, data::image::pixel_format_t::gray_scale);
     image->set_spacing({1, 1, 1});
     CPPUNIT_ASSERT_EQUAL(2., helper::convert_frame_number_to_z_coordinate(image, 3));
 }
@@ -130,7 +130,7 @@ void dicom_data_tools_test::convert_frame_number_to_z_coordinate_nominal_test()
 void dicom_data_tools_test::convert_frame_number_to_z_coordinate_failure_test()
 {
     auto image = std::make_shared<data::image>();
-    image->resize({1, 2, 3}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    image->resize({1, 2, 3}, core::type::UINT8, data::image::pixel_format_t::gray_scale);
     image->set_spacing({1, 1, 1});
     CPPUNIT_ASSERT_THROW(helper::convert_frame_number_to_z_coordinate(image, 0), io::dicom::exception::failed);
 }

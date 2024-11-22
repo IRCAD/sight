@@ -213,7 +213,7 @@ inline static data::image::sptr read(
 
     core::type type(_tree.get<std::string>(TYPE));
 
-    const auto format = static_cast<enum data::image::pixel_format>(_tree.get<int>(PIXEL_FORMAT));
+    const auto format = static_cast<enum data::image::pixel_format_t>(_tree.get<int>(PIXEL_FORMAT));
 
     ///@note This is not saved in VTK files.
     std::vector<double> window_centers;
@@ -263,7 +263,7 @@ inline static data::image::sptr read(
         });
 
     // If pixelFormart == UNDEFINED it is ALWAYS an empty image, so early return here.
-    if(format == data::image::pixel_format::undefined)
+    if(format == data::image::pixel_format_t::undefined)
     {
         return image;
     }

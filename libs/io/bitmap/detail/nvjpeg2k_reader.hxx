@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -178,12 +178,12 @@ public:
             ? core::type::UINT16
             : core::type::UINT8,
             image_info.num_components == 2
-            ? data::image::pixel_format::rg
+            ? data::image::pixel_format_t::rg
             : image_info.num_components == 3
-            ? data::image::pixel_format::rgb
+            ? data::image::pixel_format_t::rgb
             : image_info.num_components == 4
-            ? data::image::pixel_format::rgba
-            : data::image::pixel_format::gray_scale
+            ? data::image::pixel_format_t::rgba
+            : data::image::pixel_format_t::gray_scale
         );
 
         // Synchronize CUDA streams

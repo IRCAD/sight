@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ void line_drawer_test::circle_test()
             spacing,
             origin,
             type,
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
 
         const auto dump_lock = image->dump_lock();
@@ -117,7 +117,7 @@ void line_drawer_test::circle_test()
             spacing,
             origin,
             type,
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
         const auto dump_lock = image->dump_lock();
 
@@ -258,7 +258,7 @@ void line_drawer_test::ellipse_test()
             spacing,
             origin,
             type,
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
 
         const auto dump_lock = image->dump_lock();
@@ -366,7 +366,7 @@ void line_drawer_test::border_test()
             spacing,
             origin,
             type,
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
 
         const auto dump_lock = image->dump_lock();
@@ -446,7 +446,7 @@ void line_drawer_test::roi_test()
             spacing,
             origin,
             type,
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
         utest_data::generator::image::generate_image(
             roi_image,
@@ -454,7 +454,7 @@ void line_drawer_test::roi_test()
             spacing,
             origin,
             type,
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
 
         const auto roi_dump_lock = roi_image->dump_lock();

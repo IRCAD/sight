@@ -155,7 +155,11 @@ public:
      *
      * @return Allocated size in bytes
      */
-    SIGHT_DATA_API std::size_t resize(const size_t& _size, const core::type& _type, enum pixel_format _format) override;
+    SIGHT_DATA_API std::size_t resize(
+        const size_t& _size,
+        const core::type& _type,
+        enum pixel_format_t _format
+    ) override;
 
     /**
      * @brief helper function to convert back and to dicom orientation.

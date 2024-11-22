@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ void labeling_test::compute_centroids()
 
     img->set_spacing(img_spacing);
     img->set_origin(img_origin);
-    img->resize(img_size, type, data::image::pixel_format::gray_scale);
+    img->resize(img_size, type, data::image::pixel_format_t::gray_scale);
 
     const auto dump_lock = img->dump_lock();
 

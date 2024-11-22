@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -72,7 +72,7 @@ static inline core::type gdcm_to_sight_pf(const gdcm::PixelFormat& _pf)
 
 //------------------------------------------------------------------------------
 
-static inline enum data::image::pixel_format gdcm_to_sight_pi(
+static inline enum data::image::pixel_format_t gdcm_to_sight_pi(
     const gdcm::PhotometricInterpretation& _pi,
     const gdcm::PixelFormat& _pf
 )
@@ -80,7 +80,7 @@ static inline enum data::image::pixel_format gdcm_to_sight_pi(
     if(_pi == gdcm::PhotometricInterpretation::PALETTE_COLOR)
     {
         // PALETTE_COLOR is always expended as RGB
-        return data::image::pixel_format::rgb;
+        return data::image::pixel_format_t::rgb;
     }
 
     const auto gdcm_sample_per_pixel = _pf.GetSamplesPerPixel();
@@ -88,7 +88,7 @@ static inline enum data::image::pixel_format gdcm_to_sight_pi(
     if(gdcm_sample_per_pixel == 1)
     {
         // No need to check, no color space conversion...
-        return data::image::pixel_format::gray_scale;
+        return data::image::pixel_format_t::gray_scale;
     }
 
     if(gdcm_sample_per_pixel == 3
@@ -98,11 +98,11 @@ static inline enum data::image::pixel_format gdcm_to_sight_pi(
            || _pi == gdcm::PhotometricInterpretation::YBR_RCT
            || _pi == gdcm::PhotometricInterpretation::RGB))
     {
-        return data::image::pixel_format::rgb;
+        return data::image::pixel_format_t::rgb;
     }
 
     // Unsupported...
-    return data::image::pixel_format::undefined;
+    return data::image::pixel_format_t::undefined;
 }
 
 //------------------------------------------------------------------------------

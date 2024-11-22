@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -69,7 +69,7 @@ void fiducial_test::contains_3d_distances_test()
 {
     auto series_set   = std::make_shared<data::series_set>();
     auto image_series = std::make_shared<data::image_series>();
-    image_series->resize({3, 5, 7}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    image_series->resize({3, 5, 7}, core::type::UINT8, data::image::pixel_format_t::gray_scale);
     image_series->set_spacing({1, 1, 1});
     series_set->push_back(image_series);
     CPPUNIT_ASSERT(!fiducial::contains_3d_distances(series_set));

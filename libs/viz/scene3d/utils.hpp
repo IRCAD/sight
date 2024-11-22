@@ -117,7 +117,7 @@ public:
      * @brief get the image pixel format from an Ogre pixel format
      * @param _format Pixel format of Ogre
      */
-    SIGHT_VIZ_SCENE3D_API static std::pair<core::type, enum data::image::pixel_format> get_pixel_format_from_ogre(
+    SIGHT_VIZ_SCENE3D_API static std::pair<core::type, enum data::image::pixel_format_t> get_pixel_format_from_ogre(
         Ogre::PixelFormat _format
     );
     /**

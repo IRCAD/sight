@@ -364,7 +364,7 @@ void reader_test::lib_png_test()
     test_backend(
         "libPNG_RGBA_UINT8.png",
         backend::libpng,
-        get_synthetic_image(1, core::type::UINT8, data::image::pixel_format::rgba)
+        get_synthetic_image(1, core::type::UINT8, data::image::pixel_format_t::rgba)
     );
 }
 
@@ -396,13 +396,13 @@ void reader_test::lib_tiff_test()
     test_backend(
         "libTIFF_RGBA_UINT16.tiff",
         backend::libtiff,
-        get_synthetic_image(1, core::type::UINT16, data::image::pixel_format::rgba)
+        get_synthetic_image(1, core::type::UINT16, data::image::pixel_format_t::rgba)
     );
 
     test_backend(
         "libTIFF_GRAYSCALE_DOUBLE.tiff",
         backend::libtiff,
-        get_synthetic_image(2, core::type::DOUBLE, data::image::pixel_format::gray_scale)
+        get_synthetic_image(2, core::type::DOUBLE, data::image::pixel_format_t::gray_scale)
     );
 }
 

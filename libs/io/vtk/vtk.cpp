@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -303,22 +303,22 @@ void from_vtk_image(vtkImageData* _source, data::image::sptr _destination)
     {
         void* dest_buffer = nullptr;
 
-        enum sight::data::image::pixel_format format = data::image::pixel_format::gray_scale;
+        enum sight::data::image::pixel_format_t format = data::image::pixel_format_t::gray_scale;
         if(nb_components == 1)
         {
-            format = data::image::pixel_format::gray_scale;
+            format = data::image::pixel_format_t::gray_scale;
         }
         else if(nb_components == 2)
         {
-            format = data::image::pixel_format::rg;
+            format = data::image::pixel_format_t::rg;
         }
         else if(nb_components == 3)
         {
-            format = data::image::pixel_format::rgb;
+            format = data::image::pixel_format_t::rgb;
         }
         else if(nb_components == 4)
         {
-            format = data::image::pixel_format::rgba;
+            format = data::image::pixel_format_t::rgba;
         }
         else
         {

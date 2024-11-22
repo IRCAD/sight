@@ -86,7 +86,7 @@ inline static std::pair<sight::service::base::sptr, sight::data::image_series::s
         spacing,
         origin,
         core::type::get<std::int16_t>(),
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
 
     for(std::size_t x = 0 ; x < size[0] ; ++x)

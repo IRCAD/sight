@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,139 +31,139 @@ namespace sight::module::ui::qt::video
 pixel_format_translator_t pixel_format_translator = boost::assign::list_of<pixel_format_translator_t::relation>
                                                     (
     QVideoFrame::PixelFormat::Format_Invalid,
-    data::camera::pixel_format::invalid
+    data::camera::pixel_format_t::invalid
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_ARGB32,
-    data::camera::pixel_format::argb32
+    data::camera::pixel_format_t::argb32
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_ARGB32_Premultiplied,
-    data::camera::pixel_format::argb32_premultiplied
+    data::camera::pixel_format_t::argb32_premultiplied
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_RGB32,
-    data::camera::pixel_format::rgb32
+    data::camera::pixel_format_t::rgb32
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_RGB24,
-    data::camera::pixel_format::rgb24
+    data::camera::pixel_format_t::rgb24
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_RGB565,
-    data::camera::pixel_format::rgb565
+    data::camera::pixel_format_t::rgb565
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_RGB555,
-    data::camera::pixel_format::rgb555
+    data::camera::pixel_format_t::rgb555
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_ARGB8565_Premultiplied,
-    data::camera::pixel_format::argb8565_premultiplied
+    data::camera::pixel_format_t::argb8565_premultiplied
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_BGRA32,
-    data::camera::pixel_format::bgra32
+    data::camera::pixel_format_t::bgra32
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_BGRA32_Premultiplied,
-    data::camera::pixel_format::bgra32_premultiplied
+    data::camera::pixel_format_t::bgra32_premultiplied
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_BGR32,
-    data::camera::pixel_format::bgr32
+    data::camera::pixel_format_t::bgr32
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_BGR24,
-    data::camera::pixel_format::bgr24
+    data::camera::pixel_format_t::bgr24
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_BGR565,
-    data::camera::pixel_format::bgr565
+    data::camera::pixel_format_t::bgr565
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_BGR555,
-    data::camera::pixel_format::bgr555
+    data::camera::pixel_format_t::bgr555
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_BGRA5658_Premultiplied,
-    data::camera::pixel_format::bgra5658_premultiplied
+    data::camera::pixel_format_t::bgra5658_premultiplied
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_AYUV444,
-    data::camera::pixel_format::ayuv444
+    data::camera::pixel_format_t::ayuv444
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_AYUV444_Premultiplied,
-    data::camera::pixel_format::ayuv444_premultiplied
+    data::camera::pixel_format_t::ayuv444_premultiplied
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_YUV444,
-    data::camera::pixel_format::yuv444
+    data::camera::pixel_format_t::yuv444
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_YUV420P,
-    data::camera::pixel_format::yuv420_p
+    data::camera::pixel_format_t::yuv420_p
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_YV12,
-    data::camera::pixel_format::yv12
+    data::camera::pixel_format_t::yv12
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_UYVY,
-    data::camera::pixel_format::uyvy
+    data::camera::pixel_format_t::uyvy
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_YUYV,
-    data::camera::pixel_format::yuyv
+    data::camera::pixel_format_t::yuyv
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_NV12,
-    data::camera::pixel_format::nv12
+    data::camera::pixel_format_t::nv12
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_NV21,
-    data::camera::pixel_format::nv21
+    data::camera::pixel_format_t::nv21
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_IMC1,
-    data::camera::pixel_format::imc1
+    data::camera::pixel_format_t::imc1
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_IMC2,
-    data::camera::pixel_format::imc2
+    data::camera::pixel_format_t::imc2
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_IMC3,
-    data::camera::pixel_format::imc3
+    data::camera::pixel_format_t::imc3
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_IMC4,
-    data::camera::pixel_format::imc4
+    data::camera::pixel_format_t::imc4
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_Y8,
-    data::camera::pixel_format::y8
+    data::camera::pixel_format_t::y8
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_Y16,
-    data::camera::pixel_format::y16
+    data::camera::pixel_format_t::y16
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_Jpeg,
-    data::camera::pixel_format::jpeg
+    data::camera::pixel_format_t::jpeg
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_CameraRaw,
-    data::camera::pixel_format::cameraraw
+    data::camera::pixel_format_t::cameraraw
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_AdobeDng,
-    data::camera::pixel_format::adobedng
+    data::camera::pixel_format_t::adobedng
                                                     )
                                                     (
     QVideoFrame::PixelFormat::Format_User,
-    data::camera::pixel_format::user
+    data::camera::pixel_format_t::user
                                                     );
 
 } // namespace sight::module::ui::qt::video

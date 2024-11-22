@@ -61,7 +61,7 @@ public:
         unknown = 0xFF
     };
 
-    enum pixel_format
+    enum pixel_format_t
     {
         invalid,
         argb32,
@@ -107,9 +107,9 @@ public:
     /// Destructor
     SIGHT_DATA_API ~camera() noexcept override = default;
 
-    SIGHT_DATA_API static enum pixel_format pixel_format(const std::string& _name);
+    SIGHT_DATA_API static pixel_format_t pixel_format(const std::string& _name);
 
-    SIGHT_DATA_API static std::string get_pixel_format_name(enum pixel_format _format);
+    SIGHT_DATA_API static std::string get_pixel_format_name(pixel_format_t _format);
 
     /**@name Signals API
      * @{
@@ -289,13 +289,13 @@ public:
     }
 
     /// Gets the color format of a video frame (only available in source_t DEVICE mode).
-    enum pixel_format pixel_format() const
+    pixel_format_t pixel_format() const
     {
         return m_pixel_format;
     }
 
     /// Sets the color format of a video frame (only available in source_t DEVICE mode).
-    void set_pixel_format(enum pixel_format _pixel_format)
+    void set_pixel_format(pixel_format_t _pixel_format)
     {
         m_pixel_format = _pixel_format;
     }
@@ -401,7 +401,7 @@ protected:
     float m_max_frame_rate {30.F};
 
     //! Color format of a video frame.
-    enum pixel_format m_pixel_format
+    enum pixel_format_t m_pixel_format
     {
         invalid
     };

@@ -48,49 +48,49 @@ struct typeToPixelFormat;
 template<>
 struct typeToPixelFormat<std::array<unsigned char, 1> >
 {
-    static constexpr enum sight::data::image::pixel_format VALUE = sight::data::image::pixel_format::gray_scale;
+    static constexpr enum sight::data::image::pixel_format_t VALUE = sight::data::image::pixel_format_t::gray_scale;
 };
 
 template<>
 struct typeToPixelFormat<std::array<unsigned char, 3> >
 {
-    static const auto VALUE = sight::data::image::pixel_format::rgb;
+    static const auto VALUE = sight::data::image::pixel_format_t::rgb;
 };
 
 template<>
 struct typeToPixelFormat<std::array<unsigned int, 1> >
 {
-    static constexpr enum sight::data::image::pixel_format VALUE = sight::data::image::pixel_format::gray_scale;
+    static constexpr enum sight::data::image::pixel_format_t VALUE = sight::data::image::pixel_format_t::gray_scale;
 };
 
 template<>
 struct typeToPixelFormat<std::array<unsigned int, 3> >
 {
-    static const auto VALUE = sight::data::image::pixel_format::rgb;
+    static const auto VALUE = sight::data::image::pixel_format_t::rgb;
 };
 
 template<>
 struct typeToPixelFormat<std::array<float, 1> >
 {
-    static constexpr enum sight::data::image::pixel_format VALUE = sight::data::image::pixel_format::gray_scale;
+    static constexpr enum sight::data::image::pixel_format_t VALUE = sight::data::image::pixel_format_t::gray_scale;
 };
 
 template<>
 struct typeToPixelFormat<std::array<float, 3> >
 {
-    static const auto VALUE = sight::data::image::pixel_format::rgb;
+    static const auto VALUE = sight::data::image::pixel_format_t::rgb;
 };
 
 template<>
 struct typeToPixelFormat<std::array<double, 1> >
 {
-    static const auto VALUE = sight::data::image::pixel_format::gray_scale;
+    static const auto VALUE = sight::data::image::pixel_format_t::gray_scale;
 };
 
 template<>
 struct typeToPixelFormat<std::array<double, 3> >
 {
-    static const auto VALUE = sight::data::image::pixel_format::rgb;
+    static const auto VALUE = sight::data::image::pixel_format_t::rgb;
 };
 
 //------------------------------------------------------------------------------
@@ -108,7 +108,7 @@ sight::data::image::sptr generate_image()
         spacing,
         origin,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
 
     return image;
@@ -151,7 +151,7 @@ void medical_image_helpers_test::get_min_max_test()
             spacing,
             origin,
             core::type::get<type>(),
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
 
         const auto dump_lock = image->dump_lock();
@@ -190,7 +190,7 @@ void medical_image_helpers_test::get_min_max_test()
             spacing,
             origin,
             core::type::get<type>(),
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
 
         const auto dump_lock = image->dump_lock();
@@ -231,7 +231,7 @@ void medical_image_helpers_test::get_min_max_test()
             spacing,
             origin,
             core::type::get<type>(),
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
 
         const auto dump_lock = image->dump_lock();

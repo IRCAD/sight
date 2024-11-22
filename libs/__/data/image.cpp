@@ -40,9 +40,9 @@ namespace sight::data
 {
 
 auto pixel_format_to_num_components =
-    [](enum image::pixel_format _format)
+    [](image::pixel_format_t _format)
     {
-        static const std::array<std::size_t, image::pixel_format::count> s_PIXEL_FORMAT_TO_NUM_COMPONENTS =
+        static const std::array<std::size_t, image::pixel_format_t::count> s_PIXEL_FORMAT_TO_NUM_COMPONENTS =
         {
             ~0UL,
             3,
@@ -131,14 +131,14 @@ void image::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_c
 
 //------------------------------------------------------------------------------
 
-std::size_t image::resize(const size_t& _size, const core::type& _type, enum pixel_format _format)
+std::size_t image::resize(const size_t& _size, const core::type& _type, enum pixel_format_t _format)
 {
     return this->resize(_size, _type, _format, true);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t image::resize(const size_t& _size, const core::type& _type, enum pixel_format _format, bool _realloc)
+std::size_t image::resize(const size_t& _size, const core::type& _type, enum pixel_format_t _format, bool _realloc)
 {
     m_size           = _size;
     m_type           = _type;
@@ -370,7 +370,7 @@ void image::set_buffer(
     bool _take_ownership,
     const core::type& _type,
     const data::image::size_t& _size,
-    enum pixel_format _format,
+    enum pixel_format_t _format,
     core::memory::buffer_allocation_policy::sptr _policy
 )
 {

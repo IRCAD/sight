@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,7 +69,7 @@ void resource_test::texture_test()
         {1., 1., 1.},
         {0., 0., 0.},
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     image->set_id("image1");
 

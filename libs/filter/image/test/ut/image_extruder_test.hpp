@@ -53,9 +53,9 @@ private:
 
     const core::type m_type {core::type::INT8};
 
-    const enum data::image::pixel_format m_format
+    const enum data::image::pixel_format_t m_format
     {
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     };
     const data::image::size_t m_size {8, 16, 24};
     const data::image::origin_t m_origin {0.F, 0.F, 0.F};

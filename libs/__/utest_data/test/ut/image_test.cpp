@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ void image_test::generator_3d_test()
         spacing,
         origin,
         type,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
 
     CPPUNIT_ASSERT(image->size() == size);
@@ -87,7 +87,7 @@ void image_test::generator_2d_test()
         spacing,
         origin,
         type,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     CPPUNIT_ASSERT(image->size() == size);
     CPPUNIT_ASSERT(image->spacing() == spacing);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ void test_roi_apply(const core::type _image_type, const core::type _roi_type)
         spacing,
         origin,
         _roi_type,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
 
     image_ref = data::object::copy(img_roi_applied);

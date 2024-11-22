@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -105,18 +105,18 @@ data::object::sptr image_converter::from_igtl_message(const ::igtl::MessageBase:
     dest_img->set_origin(origins);
     dest_img->set_spacing(spacing);
 
-    enum sight::data::image::pixel_format format = data::image::pixel_format::gray_scale;
+    enum sight::data::image::pixel_format_t format = data::image::pixel_format_t::gray_scale;
     if(src_img->GetNumComponents() == 1)
     {
-        format = data::image::pixel_format::gray_scale;
+        format = data::image::pixel_format_t::gray_scale;
     }
     else if(src_img->GetNumComponents() == 3)
     {
-        format = data::image::pixel_format::rgb;
+        format = data::image::pixel_format_t::rgb;
     }
     else if(src_img->GetNumComponents() == 4)
     {
-        format = data::image::pixel_format::rgba;
+        format = data::image::pixel_format_t::rgba;
     }
     else
     {

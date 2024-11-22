@@ -141,7 +141,7 @@ void image_series::set_rows(const std::optional<std::uint16_t>& _rows)
     series::set_rows(_rows);
 
     // Resize the image (if possible and needed...)
-    if(const auto pixel_format = this->pixel_format(); pixel_format != sight::data::image::pixel_format::undefined)
+    if(const auto pixel_format = this->pixel_format(); pixel_format != sight::data::image::pixel_format_t::undefined)
     {
         const auto rows_value = _rows.value_or(1);
 
@@ -159,7 +159,7 @@ void image_series::set_columns(const std::optional<std::uint16_t>& _columns)
     series::set_columns(_columns);
 
     // Resize the image (if possible and needed...)
-    if(const auto pixel_format = this->pixel_format(); pixel_format != sight::data::image::pixel_format::undefined)
+    if(const auto pixel_format = this->pixel_format(); pixel_format != sight::data::image::pixel_format_t::undefined)
     {
         const auto columns_value = _columns.value_or(1);
 
@@ -172,7 +172,7 @@ void image_series::set_columns(const std::optional<std::uint16_t>& _columns)
 
 //------------------------------------------------------------------------------
 
-std::size_t image_series::resize(const image::size_t& _size, const core::type& _type, enum pixel_format _format)
+std::size_t image_series::resize(const image::size_t& _size, const core::type& _type, pixel_format_t _format)
 {
     series::shrink_frames(_size[2]);
     return image::resize(_size, _type, _format);

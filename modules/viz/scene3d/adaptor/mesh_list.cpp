@@ -217,7 +217,7 @@ void mesh_list::add()
             const auto texture_input = m_texture.lock();
 
             if(m_generate_alpha && texture_input->type() == core::type::UINT8
-               && (texture_input->pixel_format() == data::image::pixel_format::gray_scale
+               && (texture_input->pixel_format() == data::image::pixel_format_t::gray_scale
                    || texture_input->num_components() == 1))
             {
                 // transform the image into RGBA with a transparent texture
@@ -227,7 +227,7 @@ void mesh_list::add()
                     instance.m_image->resize(
                         instance.m_image->size(),
                         instance.m_image->type(),
-                        data::image::pixel_format::rgba
+                        data::image::pixel_format_t::rgba
                     );
                 }
 
@@ -244,7 +244,7 @@ void mesh_list::add()
                 }
             }
             else if(m_generate_alpha && texture_input->type() == core::type::UINT8
-                    && (texture_input->pixel_format() == data::image::pixel_format::rgb
+                    && (texture_input->pixel_format() == data::image::pixel_format_t::rgb
                         || texture_input->num_components() == 3))
             {
                 // transform the image into RGBA with a transparent texture
@@ -255,7 +255,7 @@ void mesh_list::add()
                     instance.m_image->resize(
                         instance.m_image->size(),
                         instance.m_image->type(),
-                        data::image::pixel_format::rgba
+                        data::image::pixel_format_t::rgba
                     );
                 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,7 +118,7 @@ void image::generate_image(
     const data::image::spacing_t& _spacing,
     const data::image::origin_t& _origin,
     const core::type& _type,
-    const enum data::image::pixel_format& _format,
+    const enum data::image::pixel_format_t& _format,
     const std::optional<std::uint32_t>& _seed
 )
 {

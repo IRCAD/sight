@@ -87,7 +87,7 @@ void image_extruder::updating()
             const auto image_out = m_extruded_image.lock();
             SIGHT_ASSERT("The image must be in 3 dimensions", image->num_dimensions() == 3);
 
-            image_out->resize(image->size(), core::type::UINT8, data::image::pixel_format::gray_scale);
+            image_out->resize(image->size(), core::type::UINT8, data::image::pixel_format_t::gray_scale);
             image_out->set_spacing(image->spacing());
             image_out->set_origin(image->origin());
             std::fill(image_out->begin(), image_out->end(), std::uint8_t(255));

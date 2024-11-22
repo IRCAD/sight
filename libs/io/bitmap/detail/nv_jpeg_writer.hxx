@@ -121,10 +121,10 @@ public:
         flag = flag::none
 )
     {
-        const auto& pixel_format = _image.pixel_format();
+        const auto pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel format: " << pixel_format,
-            pixel_format != data::image::pixel_format::rgb && pixel_format != data::image::pixel_format::bgr
+            pixel_format != data::image::pixel_format_t::rgb && pixel_format != data::image::pixel_format_t::bgr
         );
 
         const auto& pixel_type = _image.type();
@@ -182,7 +182,7 @@ public:
                 m_state,
                 m_params,
                 &nv_image,
-                pixel_format == data::image::pixel_format::rgb ? NVJPEG_INPUT_RGBI : NVJPEG_INPUT_BGRI,
+                pixel_format == data::image::pixel_format_t::rgb ? NVJPEG_INPUT_RGBI : NVJPEG_INPUT_BGRI,
                 int(sizes[0]),
                 int(sizes[1]),
                 m_stream

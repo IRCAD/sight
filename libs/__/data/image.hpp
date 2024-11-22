@@ -187,7 +187,7 @@ public:
     using buffer_t = std::uint8_t;
 
     /// image format
-    enum pixel_format
+    enum pixel_format_t
     {
         undefined = 0, ///< Undefined pixel format
         rgb,           ///< image with 3 component RGB.
@@ -265,7 +265,7 @@ public:
     SIGHT_DATA_API core::type type() const;
 
     /// Get pixel format
-    pixel_format pixel_format() const;
+    pixel_format_t pixel_format() const;
 
     /**
        @{
@@ -285,7 +285,7 @@ public:
     SIGHT_DATA_API virtual std::size_t resize(
         const image::size_t& _size,
         const core::type& _type,
-        enum pixel_format _format
+        pixel_format_t _format
     );
     /// @}
 
@@ -443,7 +443,7 @@ public:
         bool _take_ownership,
         const core::type& _type,
         const image::size_t& _size,
-        enum pixel_format _format,
+        pixel_format_t _format,
         core::memory::buffer_allocation_policy::sptr _policy = std::make_shared<core::memory::buffer_malloc_policy>()
     );
 
@@ -568,7 +568,7 @@ private:
     SIGHT_DATA_API std::size_t resize(
         const image::size_t& _size,
         const core::type& _type,
-        enum pixel_format _format,
+        pixel_format_t _format,
         bool _realloc
     );
     /// @}
@@ -615,9 +615,9 @@ private:
     std::size_t m_stride {1};
 
     //! image format
-    enum pixel_format m_pixel_format
+    enum pixel_format_t m_pixel_format
     {
-        pixel_format::undefined
+        pixel_format_t::undefined
     };
 
     //! image buffer
@@ -661,7 +661,7 @@ inline std::size_t image::num_components() const
 
 //-----------------------------------------------------------------------------
 
-inline enum image::pixel_format image::pixel_format() const
+inline enum image::pixel_format_t image::pixel_format() const
 {
     return m_pixel_format;
 }

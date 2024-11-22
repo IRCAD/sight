@@ -358,22 +358,22 @@ void image::read_image_pixel_module()
     }
 
     // TODO_FB: This should probably be finer-tuned, but we would need to add new pixel formats before
-    enum sight::data::image::pixel_format format
+    enum sight::data::image::pixel_format_t format
     {
-        sight::data::image::pixel_format::undefined
+        sight::data::image::pixel_format_t::undefined
     };
     if(photometric_interpretation == "MONOCHROME2")
     {
-        format = data::image::pixel_format::gray_scale;
+        format = data::image::pixel_format_t::gray_scale;
     }
     else if(photometric_interpretation == "RGB" || photometric_interpretation == "YBR"
             || photometric_interpretation == "PALETTE COLOR" || pixel_presentation == "COLOR")
     {
-        format = data::image::pixel_format::rgb;
+        format = data::image::pixel_format_t::rgb;
     }
     else if(photometric_interpretation == "ARGB" || photometric_interpretation == "CMYK")
     {
-        format = data::image::pixel_format::rgba;
+        format = data::image::pixel_format_t::rgba;
     }
     else
     {

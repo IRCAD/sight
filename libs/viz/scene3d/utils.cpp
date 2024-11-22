@@ -238,14 +238,14 @@ Ogre::Root* utils::get_ogre_root()
                             }
 
                             // Line starts with a plugin name
-                            if(line.rfind(plugin_token, 0) == 0)
+                            if(line.starts_with(plugin_token))
                             {
                                 plugins << line << std::endl;
                                 SIGHT_DEBUG("Adding " << line << " to Ogre plugins");
                             }
 
                             // Line starts with plugin folder path
-                            if(line.rfind(plugin_folder_token, 0) == 0)
+                            if(line.starts_with(plugin_folder_token))
                             {
                                 constexpr std::size_t offset = std::string_view(plugin_folder_token).size();
 
@@ -591,9 +591,9 @@ Ogre::Vector2 utils::get_texture_window(core::type _format)
 
 //------------------------------------------------------------------------------
 
-std::pair<core::type, enum data::image::pixel_format> utils::get_pixel_format_from_ogre(Ogre::PixelFormat _format)
+std::pair<core::type, enum data::image::pixel_format_t> utils::get_pixel_format_from_ogre(Ogre::PixelFormat _format)
 {
-    enum data::image::pixel_format pixel_format = data::image::pixel_format::undefined;
+    enum data::image::pixel_format_t pixel_format = data::image::pixel_format_t::undefined;
 
     switch(_format)
     {
@@ -602,7 +602,7 @@ std::pair<core::type, enum data::image::pixel_format> utils::get_pixel_format_fr
         case Ogre::PF_R16_UINT:
         case Ogre::PF_R32_SINT:
         case Ogre::PF_FLOAT32_R:
-            pixel_format = data::image::pixel_format::gray_scale;
+            pixel_format = data::image::pixel_format_t::gray_scale;
             break;
 
         case Ogre::PF_RG8:
@@ -619,7 +619,7 @@ std::pair<core::type, enum data::image::pixel_format> utils::get_pixel_format_fr
         case Ogre::PF_R32G32B32_SINT:
         case Ogre::PF_SHORT_RGB:
         case Ogre::PF_FLOAT32_RGB:
-            pixel_format = data::image::pixel_format::rgb;
+            pixel_format = data::image::pixel_format_t::rgb;
             break;
 
         case Ogre::PF_BYTE_RGBA:
@@ -635,7 +635,7 @@ std::pair<core::type, enum data::image::pixel_format> utils::get_pixel_format_fr
         case Ogre::PF_R32G32B32A32_SINT:
         case Ogre::PF_SHORT_RGBA:
         case Ogre::PF_FLOAT32_RGBA:
-            pixel_format = data::image::pixel_format::rgba;
+            pixel_format = data::image::pixel_format_t::rgba;
             break;
 
         default:

@@ -661,26 +661,26 @@ inline data::image::sptr generate<data::image>(const std::size_t _variant)
                 : core::type::NONE,
 
                 std::is_same_v<type, double>
-                ? data::image::pixel_format::gray_scale
+                ? data::image::pixel_format_t::gray_scale
                 : std::is_same_v<type, float>
-                ? data::image::pixel_format::gray_scale
+                ? data::image::pixel_format_t::gray_scale
                 : std::is_same_v<type, std::uint8_t>
-                ? data::image::pixel_format::bgr
+                ? data::image::pixel_format_t::bgr
                 : std::is_same_v<type, std::uint16_t>
-                ? data::image::pixel_format::bgra
+                ? data::image::pixel_format_t::bgra
                 : std::is_same_v<type, std::uint32_t>
-                ? data::image::pixel_format::rgb
+                ? data::image::pixel_format_t::rgb
                 : std::is_same_v<type, std::uint64_t>
-                ? data::image::pixel_format::rgba
+                ? data::image::pixel_format_t::rgba
                 : std::is_same_v<type, std::int8_t>
-                ? data::image::pixel_format::gray_scale
+                ? data::image::pixel_format_t::gray_scale
                 : std::is_same_v<type, std::int16_t>
-                ? data::image::pixel_format::bgr
+                ? data::image::pixel_format_t::bgr
                 : std::is_same_v<type, std::int32_t>
-                ? data::image::pixel_format::bgra
+                ? data::image::pixel_format_t::bgra
                 : std::is_same_v<type, std::int64_t>
-                ? data::image::pixel_format::rgb
-                : data::image::pixel_format::undefined,
+                ? data::image::pixel_format_t::rgb
+                : data::image::pixel_format_t::undefined,
                 std::uint32_t(_variant)
             );
         };
@@ -840,42 +840,42 @@ inline data::camera::sptr generate<data::camera>(const std::size_t _variant)
     object->set_camera_id(uuid::generate());
     object->set_maximum_frame_rate(random<float>());
     constexpr std::array pixel_formats {
-        data::camera::pixel_format::adobedng,
-        data::camera::pixel_format::argb32,
-        data::camera::pixel_format::argb32_premultiplied,
-        data::camera::pixel_format::rgb32,
-        data::camera::pixel_format::rgb24,
-        data::camera::pixel_format::rgb565,
-        data::camera::pixel_format::rgb555,
-        data::camera::pixel_format::argb8565_premultiplied,
-        data::camera::pixel_format::bgra32,
-        data::camera::pixel_format::bgra32_premultiplied,
-        data::camera::pixel_format::bgr32,
-        data::camera::pixel_format::bgr24,
-        data::camera::pixel_format::bgr565,
-        data::camera::pixel_format::bgr555,
-        data::camera::pixel_format::bgra5658_premultiplied,
-        data::camera::pixel_format::ayuv444,
-        data::camera::pixel_format::ayuv444_premultiplied,
-        data::camera::pixel_format::yuv444,
-        data::camera::pixel_format::yuv420_p,
-        data::camera::pixel_format::yv12,
-        data::camera::pixel_format::uyvy,
-        data::camera::pixel_format::yuyv,
-        data::camera::pixel_format::nv12,
-        data::camera::pixel_format::nv21,
-        data::camera::pixel_format::imc1,
-        data::camera::pixel_format::imc2,
-        data::camera::pixel_format::imc3,
-        data::camera::pixel_format::imc4,
-        data::camera::pixel_format::y8,
-        data::camera::pixel_format::y16,
-        data::camera::pixel_format::jpeg,
-        data::camera::pixel_format::cameraraw,
-        data::camera::pixel_format::adobedng,
-        data::camera::pixel_format::rgba32,
-        data::camera::pixel_format::user,
-        data::camera::pixel_format::invalid
+        data::camera::pixel_format_t::adobedng,
+        data::camera::pixel_format_t::argb32,
+        data::camera::pixel_format_t::argb32_premultiplied,
+        data::camera::pixel_format_t::rgb32,
+        data::camera::pixel_format_t::rgb24,
+        data::camera::pixel_format_t::rgb565,
+        data::camera::pixel_format_t::rgb555,
+        data::camera::pixel_format_t::argb8565_premultiplied,
+        data::camera::pixel_format_t::bgra32,
+        data::camera::pixel_format_t::bgra32_premultiplied,
+        data::camera::pixel_format_t::bgr32,
+        data::camera::pixel_format_t::bgr24,
+        data::camera::pixel_format_t::bgr565,
+        data::camera::pixel_format_t::bgr555,
+        data::camera::pixel_format_t::bgra5658_premultiplied,
+        data::camera::pixel_format_t::ayuv444,
+        data::camera::pixel_format_t::ayuv444_premultiplied,
+        data::camera::pixel_format_t::yuv444,
+        data::camera::pixel_format_t::yuv420_p,
+        data::camera::pixel_format_t::yv12,
+        data::camera::pixel_format_t::uyvy,
+        data::camera::pixel_format_t::yuyv,
+        data::camera::pixel_format_t::nv12,
+        data::camera::pixel_format_t::nv21,
+        data::camera::pixel_format_t::imc1,
+        data::camera::pixel_format_t::imc2,
+        data::camera::pixel_format_t::imc3,
+        data::camera::pixel_format_t::imc4,
+        data::camera::pixel_format_t::y8,
+        data::camera::pixel_format_t::y16,
+        data::camera::pixel_format_t::jpeg,
+        data::camera::pixel_format_t::cameraraw,
+        data::camera::pixel_format_t::adobedng,
+        data::camera::pixel_format_t::rgba32,
+        data::camera::pixel_format_t::user,
+        data::camera::pixel_format_t::invalid
     };
     object->set_pixel_format(pixel_formats[_variant % 35]);
     object->set_video_file("/" + uuid::generate());
