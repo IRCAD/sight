@@ -127,9 +127,6 @@ public:
     using properties_t = std::vector<sight::data::object::sptr>;
     properties_t m_created_properties;
 
-    using property_slot_t = core::com::slot<void ()>;
-    std::vector<SPTR(property_slot_t)> m_properties_slots;
-
     /// Tells if the service is auto-connected or not. Could be reevaluated but normally safe to store.
     bool m_auto_connected {false};
 };

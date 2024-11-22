@@ -444,11 +444,7 @@ void service_test::test_communication()
 
     // Service1 send notification
     {
-        auto sig =
-            service1->signal<service::ut::test_srv::signals::msg_sent_t>(service::ut::test_srv::signals::MSG_SENT);
-        auto slot = service1->slot(service::slots::UPDATE);
-        core::com::connection::blocker block(sig->get_connection(slot));
-        sig->async_emit(event);
+        service1->async_emit(service1.get(), service::ut::test_srv::signals::MSG_SENT, event);
     }
 
     service1->update().wait();
@@ -695,6 +691,7 @@ void service_test::test_properties()
         service::config_t config;
         service->set_config(config);
         service->set_inout(i1, "prop1");
+        service->configure();
 
         service->start().wait();
         CPPUNIT_ASSERT(service->started());

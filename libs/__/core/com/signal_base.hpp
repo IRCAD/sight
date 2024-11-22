@@ -66,6 +66,12 @@ struct SIGHT_CORE_CLASS_API signal_base : virtual core::base_object
     /// Returns number of connections.
     virtual std::size_t num_connections() const = 0;
 
+    /**
+     * @brief Returns the connection handler matching given slot.
+     * @throws BadSlot if given slot is not connected and `throws` is true.
+     */
+    virtual connection get_connection(SPTR(slot_base) _slot, bool _throws = false) = 0;
+
     protected:
 
         /// Copy constructor forbidden

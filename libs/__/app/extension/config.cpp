@@ -253,28 +253,33 @@ core::runtime::config_t config::get_adapted_template_config(
         new_config.add_child("object", object_ref_cfg);
     }
 
-    auto object_cfgs = new_config.equal_range("object");
+    const std::string auto_prefix_name =
+        _auto_prefix_id ? sight::app::extension::config::get_unique_identifier(_config_id) : "";
 
-    std::string auto_prefix_name;
-    if(_auto_prefix_id)
-    {
-        auto_prefix_name = sight::app::extension::config::get_unique_identifier(_config_id);
-
-        for(auto it = object_cfgs.first ; it != object_cfgs.second ; ++it)
+    std::function<void(const boost::property_tree::ptree&)> find_object_uids =
+        [&](const boost::property_tree::ptree& _tree)
         {
-            if(const auto& attributes = it->second.get_child_optional("<xmlattr>"); attributes.has_value())
+            for(const auto& it : _tree)
             {
-                for(const auto& attribute : *attributes)
+                if(it.first == "object")
                 {
-                    const auto attr_value = attribute.second.get_value<std::string>();
-                    if("uid" == attribute.first && !is_variable(attr_value))
+                    if(const auto& attributes = it.second.get_child_optional("<xmlattr>"); attributes.has_value())
                     {
-                        fields[to_variable(attr_value)] = core::id::join(auto_prefix_name, attr_value);
+                        for(const auto& attribute : *attributes)
+                        {
+                            const auto attr_value = attribute.second.get_value<std::string>();
+                            if("uid" == attribute.first && !is_variable(attr_value))
+                            {
+                                fields[to_variable(attr_value)] = core::id::join(auto_prefix_name, attr_value);
+                            }
+                        }
                     }
                 }
+
+                find_object_uids(it.second);
             }
-        }
-    }
+        };
+    find_object_uids(new_config);
 
     uid_parameter_replace_t parameter_replace_adaptors;
     sight::app::extension::config::collect_uid_for_parameter_replace(

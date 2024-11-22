@@ -119,9 +119,7 @@ void action::set_checked(bool _checked)
             if(_checked != checked->value())
             {
                 *checked = _checked;
-                auto sig = checked->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-                core::com::connection::blocker block(sig->get_connection(slot(slots::APPLY_CHECKED)));
-                sig->async_emit();
+                checked->async_emit(this, data::object::MODIFIED_SIG);
             }
         }
         this->m_registry->action_service_set_checked(_checked);
@@ -131,17 +129,14 @@ void action::set_checked(bool _checked)
             m_prev_checked = _checked;
             if(_checked)
             {
-                auto sig = this->signal<signals::void_t>(signals::CHECKED);
-                sig->async_emit();
+                this->async_emit(signals::CHECKED);
             }
             else
             {
-                auto sig = this->signal<signals::void_t>(signals::UNCHECKED);
-                sig->async_emit();
+                this->async_emit(signals::UNCHECKED);
             }
 
-            auto sig = this->signal<signals::bool_t>(signals::IS_CHECKED);
-            sig->async_emit(_checked);
+            this->async_emit(signals::IS_CHECKED, _checked);
         }
     }
 }
@@ -163,9 +158,7 @@ void action::set_enabled(bool _enabled)
 
         if(_enabled != enabled->value())
         {
-            auto sig = enabled->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            core::com::connection::blocker block(sig->get_connection(slot(slots::APPLY_ENABLED)));
-            sig->async_emit();
+            enabled->async_emit(this, data::object::MODIFIED_SIG);
         }
     }
 
@@ -177,17 +170,14 @@ void action::set_enabled(bool _enabled)
 
         if(_enabled)
         {
-            auto sig = this->signal<signals::void_t>(signals::ENABLED);
-            sig->async_emit();
+            this->async_emit(signals::ENABLED);
         }
         else
         {
-            auto sig = this->signal<signals::void_t>(signals::DISABLED);
-            sig->async_emit();
+            this->async_emit(signals::DISABLED);
         }
 
-        auto sig = this->signal<signals::bool_t>(signals::IS_ENABLED);
-        sig->async_emit(_enabled);
+        this->async_emit(signals::IS_ENABLED, _enabled);
     }
 }
 
@@ -208,9 +198,7 @@ void action::set_visible(bool _visible)
 
         if(_visible != visible->value())
         {
-            auto sig = visible->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            core::com::connection::blocker block(sig->get_connection(slot(slots::APPLY_VISIBLE)));
-            sig->async_emit();
+            visible->async_emit(this, data::object::MODIFIED_SIG);
         }
     }
     this->m_registry->action_service_set_visible(_visible);
@@ -219,7 +207,7 @@ void action::set_visible(bool _visible)
     {
         m_prev_visible = _visible;
 
-        signal<signals::bool_t>(signals::IS_VISIBLE)->async_emit(_visible);
+        this->async_emit(signals::IS_VISIBLE, _visible);
     }
 }
 

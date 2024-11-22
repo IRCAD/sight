@@ -470,7 +470,7 @@
 
             <object uid="properties_map" type="sight::data::map">
                 <item key="integer">
-                    <object type="sight::data::integer" value="45" />
+                    <object uid="integer_uid" type="sight::data::integer" value="45" />
                 </item>
                 <item key="vec">
                     <object type="sight::data::dvec3" value="-0.6;2.41;78" />
@@ -492,7 +492,7 @@
             </service>
 
             <service uid="test_service_object_props_1" type="sight::app::ut::test_service_with_properties">
-                <properties integer="integer_object" string="string_object" vec="vec_object" />
+                <properties integer="${integer_object}" string="string_object" vec="vec_object" />
             </service>
 
             <service uid="test_service_mix_props_1" type="sight::app::ut::test_service_with_properties">
@@ -503,12 +503,17 @@
                 <properties from="properties_map" />
             </service>
 
+            <service uid="test_service_map_object_props_1" type="sight::app::ut::test_service_with_properties">
+                <properties integer="${integer_uid}" />
+            </service>
+
             <start uid="test_service_default_props" />
             <start uid="test_service_parse_props_1" />
             <start uid="test_service_parse_props_2" />
             <start uid="test_service_object_props_1" />
             <start uid="test_service_mix_props_1" />
             <start uid="test_service_map_props_1" />
+            <start uid="test_service_map_object_props_1" />
         </config>
     </extension>
 </plugin>

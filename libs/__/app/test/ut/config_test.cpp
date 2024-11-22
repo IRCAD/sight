@@ -403,9 +403,7 @@ void config_test::auto_connect_test()
         CPPUNIT_ASSERT(!srv3->is_updated());
         CPPUNIT_ASSERT(!srv3->get_received());
 
-        auto sig1 = data1->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig1->async_emit();
-
+        data1->async_emit(data::object::MODIFIED_SIG);
         SIGHT_TEST_WAIT(srv2->is_updated() && srv3->is_updated());
         CPPUNIT_ASSERT(!srv1->is_updated());
         CPPUNIT_ASSERT(srv2->is_updated());
@@ -418,8 +416,7 @@ void config_test::auto_connect_test()
         CPPUNIT_ASSERT(!srv2->is_updated());
         CPPUNIT_ASSERT(!srv3->is_updated());
 
-        auto sig2 = data2->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig2->async_emit();
+        data2->async_emit(data::object::MODIFIED_SIG);
         SIGHT_TEST_WAIT(srv2->is_updated() && srv3->get_received());
         CPPUNIT_ASSERT(!srv1->is_updated());
         CPPUNIT_ASSERT(srv2->is_updated());
@@ -508,8 +505,7 @@ void config_test::auto_connect_test()
             CPPUNIT_ASSERT(!srv5->is_updated());
             CPPUNIT_ASSERT(!srv5->get_received());
 
-            auto sig = data3->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            sig->async_emit();
+            data3->async_emit(data::object::MODIFIED_SIG);
             SIGHT_TEST_WAIT(srv5->get_received());
             CPPUNIT_ASSERT(srv5->get_received());
 
@@ -517,8 +513,7 @@ void config_test::auto_connect_test()
             CPPUNIT_ASSERT(!srv5->is_updated());
             CPPUNIT_ASSERT(srv5->get_received());
 
-            auto sig1 = data1->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            sig1->async_emit();
+            data1->async_emit(data::object::MODIFIED_SIG);
             SIGHT_TEST_WAIT(srv5->is_updated());
 
             CPPUNIT_ASSERT(srv5->is_updated());
@@ -738,8 +733,7 @@ void config_test::connection_test()
         CPPUNIT_ASSERT(!srv1->is_updated());
         CPPUNIT_ASSERT(!srv3->is_updated());
 
-        auto modified_sig2 = data2->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        modified_sig2->async_emit();
+        data2->async_emit(data::object::MODIFIED_SIG);
         SIGHT_TEST_WAIT(srv1->is_updated() && srv3->is_updated());
 
         CPPUNIT_ASSERT(srv1->is_updated());
@@ -763,8 +757,7 @@ void config_test::connection_test()
         CPPUNIT_ASSERT(!srv2->is_updated());
         CPPUNIT_ASSERT(!srv3->is_updated());
 
-        auto sig3 = data3->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig3->async_emit();
+        data3->async_emit(data::object::MODIFIED_SIG);
         SIGHT_TEST_WAIT(srv2->is_updated() && srv3->is_updated());
 
         CPPUNIT_ASSERT(srv2->is_updated());
@@ -1182,8 +1175,8 @@ void config_test::key_group_test()
 
         // Check connection with data 2
         CPPUNIT_ASSERT(!srv1->is_updated());
-        auto sig2 = data2b->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig2->async_emit();
+        data2b->async_emit(data::object::MODIFIED_SIG);
+
         SIGHT_TEST_WAIT(srv1->is_updated());
         CPPUNIT_ASSERT(srv1->is_updated());
 
@@ -1269,38 +1262,32 @@ void config_test::key_group_test()
 
         // Check connection with data 1
         srv2->reset_is_updated();
-        auto sig1 = data1->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig1->async_emit();
+        data1->async_emit(data::object::MODIFIED_SIG);
         SIGHT_TEST_WAIT(srv2->is_updated());
         CPPUNIT_ASSERT(srv2->is_updated());
 
         // Check no connection with data 3
         srv2->reset_is_updated();
-        auto sig3 = data3->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig3->async_emit();
+        data3->async_emit(data::object::MODIFIED_SIG);
         SIGHT_TEST_WAIT(!srv2->is_updated());
         CPPUNIT_ASSERT(!srv2->is_updated());
 
         // Check connection with data 4
         srv2->reset_is_updated();
-        auto sig4 = data4->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig4->async_emit();
+        data4->async_emit(data::object::MODIFIED_SIG);
         SIGHT_TEST_WAIT(srv2->is_updated(), 2500);
         CPPUNIT_ASSERT(!srv2->is_updated());
-        auto sig_im4 = data4->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
-        sig_im4->async_emit();
+        data4->async_emit(data::image::BUFFER_MODIFIED_SIG);
         SIGHT_TEST_WAIT(srv2->is_updated());
         CPPUNIT_ASSERT(srv2->is_updated());
 
         // Check no connection with data 5
         srv2->reset_is_updated();
-        auto sig5 = data5->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig5->async_emit();
+        data5->async_emit(data::object::MODIFIED_SIG);
         SIGHT_TEST_WAIT(!srv2->is_updated());
         CPPUNIT_ASSERT(!srv2->is_updated());
 
-        auto sig_im5 = data5->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG);
-        sig_im5->async_emit();
+        data5->async_emit(data::image::BUFFER_MODIFIED_SIG);
         SIGHT_TEST_WAIT(srv2->is_updated(), 2500);
         CPPUNIT_ASSERT(!srv2->is_updated());
     }
@@ -1641,6 +1628,57 @@ void config_test::properties_test()
             CPPUNIT_ASSERT_EQUAL(false, srv->m_slot_called);
             CPPUNIT_ASSERT_EQUAL(std::string_view("integer"), srv->m_callback_called_parameter);
         }
+    }
+    {
+        core::object::sptr service = core::id::get_object("test_service_map_object_props_1");
+        auto srv                   = std::dynamic_pointer_cast<app::ut::test_service_with_properties>(service);
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(true, srv->started());
+        srv->m_slot_called = false;
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(45), *srv->m_int_prop);
+        {
+            auto map_object = std::dynamic_pointer_cast<data::map>(core::id::get_object("properties_map"));
+            CPPUNIT_ASSERT(map_object != nullptr);
+            (*map_object)["integer"]->async_emit(data::object::MODIFIED_SIG);
+
+            SIGHT_TEST_WAIT(srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(false, srv->m_slot_called);
+
+            CPPUNIT_ASSERT_EQUAL(std::string_view("integer"), srv->m_callback_called_parameter);
+        }
+        srv->m_callback_called_parameter = "";
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void config_test::properties_signals_test()
+{
+    m_app_config_mgr = app::ut::launch_app_config_mgr("properties_cfg_test");
+
+    {
+        core::object::sptr service = core::id::get_object("test_service_object_props_1");
+        auto srv                   = std::dynamic_pointer_cast<app::ut::test_service_with_properties>(service);
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(true, srv->started());
+        srv->m_slot_called = false;
+        srv->m_emit_signal = true;
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(23), *srv->m_int_prop);
+        {
+            auto int_object = std::dynamic_pointer_cast<data::object>(core::id::get_object("integer_object"));
+            CPPUNIT_ASSERT(int_object != nullptr);
+            int_object->async_emit(data::object::MODIFIED_SIG);
+
+            SIGHT_TEST_WAIT(srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(false, srv->m_slot_called);
+
+            CPPUNIT_ASSERT_EQUAL(std::string_view("integer"), srv->m_callback_called_parameter);
+            // Verify we did not enter an infinite loop
+            CPPUNIT_ASSERT_EQUAL(std::size_t(1), srv->m_signal_count);
+        }
+        srv->m_callback_called_parameter = "";
     }
 }
 

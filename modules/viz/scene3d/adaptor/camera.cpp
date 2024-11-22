@@ -282,11 +282,7 @@ void camera::update_tf_3d()
         }
     }
 
-    auto sig = transform->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker blocker(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    transform->async_emit(this, data::object::MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------

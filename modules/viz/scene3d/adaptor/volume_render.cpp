@@ -833,13 +833,7 @@ void volume_render::update_clipping_matrix()
     if(clipping_matrix)
     {
         sight::viz::scene3d::utils::from_ogre_matrix(m_widget->get_clipping_transform(), clipping_matrix.get_shared());
-
-        const auto sig =
-            clipping_matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-
-        core::com::connection::blocker blocker(sig->get_connection(this->slot(UPDATE_CLIPPING_BOX_SLOT)));
-
-        sig->async_emit();
+        clipping_matrix->async_emit(this, data::object::MODIFIED_SIG);
     }
 
     std::lock_guard<std::mutex> swap_lock(m_mutex);

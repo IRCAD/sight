@@ -405,11 +405,7 @@ void slice_index_position_editor::slice_index_notification(int _index)
         ).value_or(0))
     };
 
-    auto sig = image->signal<data::image::slice_index_modified_signal_t>(
-        data::image::SLICE_INDEX_MODIFIED_SIG
-    );
-    core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_SLICE_INDEX_SLOT)));
-    sig->async_emit(idx[2], idx[1], idx[0]);
+    image->async_emit(this, data::image::SLICE_INDEX_MODIFIED_SIG, idx[2], idx[1], idx[0]);
 }
 
 //------------------------------------------------------------------------
@@ -546,14 +542,8 @@ void slice_index_position_editor::slice_type_notification(int _type)
     // Fire the signal
     {
         const auto image = m_image.const_lock();
+        image->async_emit(this, data::image::SLICE_TYPE_MODIFIED_SIG, static_cast<int>(old_type), _type);
 
-        auto sig = image->signal<data::image::slice_type_modified_signal_t>(
-            data::image::SLICE_TYPE_MODIFIED_SIG
-        );
-        {
-            core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_SLICE_TYPE_SLOT)));
-            sig->async_emit(old_type, _type);
-        }
         this->update_slice_index_from_img(*image);
     }
 }

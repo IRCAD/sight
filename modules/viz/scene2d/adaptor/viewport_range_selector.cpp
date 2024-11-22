@@ -185,22 +185,12 @@ void viewport_range_selector::update_viewport(bool _signal_selected_viewport)
     viewport->set_width(m_max - m_min);
     this->get_scene_2d_render()->get_view()->update_from_viewport(*viewport);
 
-    auto sig = viewport->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    viewport->async_emit(this, data::object::MODIFIED_SIG);
 
     if(_signal_selected_viewport)
     {
         auto selected_viewport = m_selected_viewport.lock();
-        auto sig_selected      = selected_viewport->signal<data::object::modified_signal_t>(
-            data::object::MODIFIED_SIG
-        );
-        {
-            core::com::connection::blocker block(sig_selected->get_connection(slot(service::slots::UPDATE)));
-            sig_selected->async_emit();
-        }
+        selected_viewport->async_emit(this, data::object::MODIFIED_SIG);
     }
 
     m_click_catch_range = static_cast<int>(m_max - m_min) / 100;
@@ -364,13 +354,7 @@ void viewport_range_selector::process_interaction(sight::viz::scene2d::data::eve
             this->update_viewport_from_shutter(rect.x(), rect.y(), rect.width(), rect.height());
             {
                 auto selected_viewport = m_selected_viewport.lock();
-                auto sig               = selected_viewport->signal<data::object::modified_signal_t>(
-                    data::object::MODIFIED_SIG
-                );
-                {
-                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                    sig->async_emit();
-                }
+                selected_viewport->async_emit(this, data::object::MODIFIED_SIG);
             }
         }
     }

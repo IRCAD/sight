@@ -589,6 +589,14 @@ public:
     void on_property_set(std::string_view _key) override
     {
         m_callback_called_parameter = _key;
+        if(_key == "integer")
+        {
+            if(m_emit_signal)
+            {
+                set_integer(*m_int_prop);
+                ++m_signal_count;
+            }
+        }
     }
 
     //------------------------------------------------------------------------------
@@ -600,10 +608,22 @@ public:
         };
     }
 
+    //------------------------------------------------------------------------------
+
+    void set_integer(std::int64_t _value)
+    {
+        auto int_prop = m_int_prop.lock();
+        *int_prop     = _value;
+
+        int_prop->async_emit(this, data::object::MODIFIED_SIG);
+    }
+
     data::property<data::integer> m_int_prop {this, "integer", 42};
     data::property<data::string> m_string_prop {this, "string", {"default_value"}};
     data::property<data::dvec3> m_vec_prop {this, "vec", {12.123, 56.0, 78.56}};
     bool m_slot_called {false};
+    bool m_emit_signal {false};
+    std::size_t m_signal_count {0U};
     std::string_view m_callback_called_parameter {};
 };
 

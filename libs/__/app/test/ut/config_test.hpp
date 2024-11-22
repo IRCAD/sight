@@ -49,6 +49,7 @@ CPPUNIT_TEST(concurrent_access_to_config_test);
 CPPUNIT_TEST(parameter_replace_test);
 CPPUNIT_TEST(object_config_test);
 CPPUNIT_TEST(properties_test);
+CPPUNIT_TEST(properties_signals_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -69,6 +70,7 @@ public:
     void parameter_replace_test();
     void object_config_test();
     void properties_test();
+    void properties_signals_test();
 
 private:
 

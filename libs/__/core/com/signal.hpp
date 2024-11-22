@@ -114,7 +114,7 @@ struct SIGHT_CORE_CLASS_API signal<R(A ...)>: signal_base
      * @brief Returns the connection handler matching given slot.
      * @throws BadSlot if given slot is not connected and `throws` is true.
      */
-    connection get_connection(SPTR(slot_base) _slot, bool _throws = false);
+    connection get_connection(SPTR(slot_base) _slot, bool _throws = false) override;
 
     protected:
 

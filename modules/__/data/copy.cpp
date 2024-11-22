@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -124,14 +124,7 @@ void copy::make_copy()
                     // Copy the object to the inout.
                     const auto target = m_target.lock();
                     target->deep_copy(source);
-
-                    auto sig = target->signal<sight::data::object::modified_signal_t>(
-                        sight::data::object::MODIFIED_SIG
-                    );
-                    {
-                        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                        sig->async_emit();
-                    }
+                    target->async_emit(this, sight::data::object::MODIFIED_SIG);
                 }
             };
 

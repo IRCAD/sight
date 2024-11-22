@@ -383,8 +383,6 @@ private:
 
     /// Updates the transfer function.
     void update_tf();
-    /// Sends the point modified signal of input _tf.
-    void points_modified(const sight::data::transfer_function& _tf) const;
 
     /// Defines the size of TF points in a ratio relative to the window.
     float m_point_size {0.03F};

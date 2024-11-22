@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -426,10 +426,10 @@ void negato::process_interaction(sight::viz::scene2d::data::event& _event)
             double scene_width  = static_cast<double>(this->get_scene_2d_render()->get_view()->width());
             double scene_height = static_cast<double>(this->get_scene_2d_render()->get_view()->height());
 
-            double ratio_yon_ximage = rec_image.height() / rec_image.width();
-            double scene_ratio      = scene_height / scene_width;
+            double ratio_y_on_x_image = rec_image.height() / rec_image.width();
+            double scene_ratio        = scene_height / scene_width;
 
-            if(scene_ratio > ratio_yon_ximage) // used scene ratio
+            if(scene_ratio > ratio_y_on_x_image) // used scene ratio
             {
                 double width_view_port_new  = rec_image.width();
                 double height_view_port_new = width_view_port_new * scene_ratio;
@@ -531,13 +531,7 @@ void negato::change_image_min_max_from_coord(
     // Send signal
     tf->set_window(new_img_window);
     tf->set_level(new_img_level);
-    auto sig = tf->signal<data::transfer_function::windowing_modified_signal_t>(
-        data::transfer_function::WINDOWING_MODIFIED_SIG
-    );
-    {
-        const core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_TF_SLOT)));
-        sig->async_emit(new_img_window, new_img_level);
-    }
+    tf->async_emit(this, data::transfer_function::WINDOWING_MODIFIED_SIG, new_img_window, new_img_level);
 }
 
 //------------------------------------------------------------------------------

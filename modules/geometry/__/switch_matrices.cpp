@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,12 +75,7 @@ void switch_matrices::updating()
 
     auto desired_matrix = m_matrix[m_index_of_desired_matrix].lock();
     matrix->shallow_copy(desired_matrix.get_shared());
-
-    auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    matrix->async_emit(this, data::object::MODIFIED_SIG);
 }
 
 // ----------------------------------------------------------------------------

@@ -25,6 +25,7 @@
 
 #include <core/com/helper/sig_slot_connection.hpp>
 #include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 #include <core/runtime/helper.hpp>
 #include <core/thread/worker.hpp>
 
@@ -153,6 +154,23 @@ void service::configure()
                             << " set with an object while there is already a key in the property map",
                             obj_from_map != nullptr
                         );
+                    }
+                }
+
+                // Create a slot for each property
+                for(const auto& [key, ptr] : m_service.container())
+                {
+                    const auto& key_str = key.first;
+
+                    if(dynamic_cast<data::property_base*>(ptr) != nullptr)
+                    {
+                        auto slot = m_service.new_slot(
+                            std::string(key_str),
+                            [&]()
+                            {
+                                m_service.on_property_set(key_str);
+                            });
+                        slot->set_worker(m_service.worker());
                     }
                 }
 
@@ -415,15 +433,9 @@ void service::auto_connect()
             {
                 const auto sig = obj->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
 
-                const auto slot = core::com::new_slot(
-                    [&]()
-                    {
-                        m_service.on_property_set(key_str);
-                    });
-                slot->set_worker(m_service.worker());
-
-                m_properties_slots.push_back(slot);
-                sig->connect(slot);
+                auto slot = m_service.slot(std::string(key_str));
+                SIGHT_ASSERT("Slot not found for property: " << key_str, slot);
+                m_auto_connections.add_connection(sig->connect(slot));
             }
         }
     }
@@ -433,7 +445,6 @@ void service::auto_connect()
 
 void service::auto_disconnect()
 {
-    m_properties_slots.clear();
     m_auto_connections.disconnect();
     m_auto_connected = false;
 }

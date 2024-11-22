@@ -89,11 +89,7 @@ void concatenate_matrices::updating()
         }
     }
 
-    auto sig = output_matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    output_matrix->async_emit(this, data::object::MODIFIED_SIG);
 }
 
 // ----------------------------------------------------------------------------

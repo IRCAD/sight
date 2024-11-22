@@ -332,13 +332,7 @@ void window_level::update_image_window_level(double _image_min, double _image_ma
         tf->set_window_min_max({_image_min, _image_max});
     }
 
-    auto sig = tf->signal<data::transfer_function::windowing_modified_signal_t>(
-        data::transfer_function::WINDOWING_MODIFIED_SIG
-    );
-    {
-        const core::com::connection::blocker block(sig->get_connection(this->slot(service::slots::UPDATE)));
-        sig->async_emit(tf->window(), tf->level());
-    }
+    tf->async_emit(this, data::transfer_function::WINDOWING_MODIFIED_SIG, tf->window(), tf->level());
 }
 
 //------------------------------------------------------------------------------
@@ -460,13 +454,7 @@ void window_level::on_toggle_tf(bool _square_tf)
     current_tf->deep_copy(new_tf);
 
     // Send signal
-    auto sig = current_tf->signal<data::transfer_function::points_modified_signal_t>(
-        data::transfer_function::POINTS_MODIFIED_SIG
-    );
-    {
-        const core::com::connection::blocker block(sig->get_connection(this->slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    current_tf->async_emit(this, data::transfer_function::POINTS_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------

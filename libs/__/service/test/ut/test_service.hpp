@@ -158,7 +158,7 @@ public:
         static inline const core::com::signals::key_t MSG_SENT = "msgSent";
 
         using int_sent_t = core::com::signal<void (int)>;
-        using msg_sent_t = core::com::signal<void (const std::string&)>;
+        using msg_sent_t = core::com::signal<void (std::string)>;
     };
     struct slots
     {

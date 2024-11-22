@@ -277,8 +277,7 @@ void transfer_function::updating()
         auto tf_lock          = data::mt::locked_ptr(new_selected_tf);
         const auto current_tf = m_current_tf.lock();
         new_selected_tf->deep_copy(current_tf.get_shared());
-        auto sig = new_selected_tf->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig->async_emit();
+        new_selected_tf->async_emit(data::object::MODIFIED_SIG);
     }
 }
 
@@ -515,9 +514,7 @@ void transfer_function::set_current_preset()
     if(new_selected_tf && new_selected_tf->name() != current_tf->name())
     {
         current_tf->deep_copy(new_selected_tf);
-        auto sig = current_tf->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
+        current_tf->async_emit(this, data::object::MODIFIED_SIG);
     }
 }
 
@@ -536,8 +533,7 @@ void transfer_function::update_default_preset()
 
         const auto current_tf = m_current_tf.lock();
         current_tf->deep_copy(default_tf);
-        auto sig = current_tf->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        sig->async_emit();
+        current_tf->async_emit(data::object::MODIFIED_SIG);
     }
 }
 
