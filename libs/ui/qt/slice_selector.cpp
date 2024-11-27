@@ -75,6 +75,7 @@ public:
             "border-bottom-right-radius: 30px; "
             "}"
         );
+        m_button->setObjectName("LabelButton");
 
         connect(m_button, &QToolButton::clicked, this, &slice_text_editor::call_update_label);
     }
@@ -118,7 +119,7 @@ public:
     {
         if(m_parent_selector != nullptr)
         {
-            m_parent_selector->update_label();
+            this->m_parent_selector->update_label();
         }
     }
 
@@ -310,12 +311,14 @@ slice_selector::slice_selector(
 ) noexcept :
     QWidget(_parent),
     m_slice_index_style(new absolute_proxy_style()),
-    m_slice_index_text(new slice_text_editor(this)),
+    m_slice_index_text(new slice_text_editor(this, this)),
     m_slider(new custom_slider(Qt::Horizontal, this))
 {
     m_slider->setStyle(m_slice_index_style);
+
     m_fct_change_index_callback = [](int){};
     m_fct_change_type_callback  = [](int){};
+    m_fct_change_label_callback = [](){};
 
     auto* layout = new QHBoxLayout(this);
 
@@ -335,6 +338,7 @@ slice_selector::slice_selector(
 
     m_slice_index_text->setReadOnly(true);
     m_slice_index_text->setAlignment(Qt::AlignVCenter | Qt::AlignRight | Qt::AlignAbsolute);
+    m_slice_index_text->setObjectName("Label");
 
     layout->addWidget(m_slider, 1);
     layout->addWidget(m_slice_index_text, 0);
@@ -398,14 +402,15 @@ slice_selector::slice_selector(
 ) noexcept :
     QWidget(_parent_pos),
     m_slice_position_slider(new custom_slider(Qt::Horizontal, this)),
-    m_slice_position_text(new slice_text_editor(this, this)),
+    m_slice_position_text(new slice_text_editor(this)),
     m_slice_position_style(new second_proxy_style())
 {
     auto* layout = new QHBoxLayout(this);
 
     m_slice_position_slider->setStyle(m_slice_position_style);
 
-    m_fct_change_type_callback = [](int){};
+    m_fct_change_type_callback  = [](int){};
+    m_fct_change_label_callback = [](){};
 
     if(_display_axis_selector_pos)
     {
@@ -422,6 +427,7 @@ slice_selector::slice_selector(
     static_cast<slice_text_editor*>(m_slice_position_text.data())->set_digits_position(_pos_digits);
     m_slice_position_text->setReadOnly(true);
     m_slice_position_text->setAlignment(Qt::AlignVCenter | Qt::AlignRight | Qt::AlignAbsolute);
+    m_slice_position_text->setObjectName("Label");
 
     layout->addWidget(m_slice_position_slider, 1);
     layout->addWidget(m_slice_position_text, 0);
@@ -488,6 +494,11 @@ slice_selector::~slice_selector() noexcept
     {
         m_slice_index_style->deleteLater();
     }
+
+    if(!m_slice_position_style.isNull())
+    {
+        m_slice_position_style->deleteLater();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -521,6 +532,12 @@ void slice_selector::add_slider_position(std::int64_t _position, const QColor& _
     m_slider_widget->blockSignals(true);
     m_slider_widget->add_slider_position(_position, _color);
     m_slider_widget->blockSignals(false);
+}
+
+//------------------------------------------------
+void slice_selector::set_change_label_callback(ChangeLabelCallback _fct_label)
+{
+    m_fct_change_label_callback = _fct_label;
 }
 
 //------------------------------------------------------------------------------
@@ -572,6 +589,8 @@ void slice_selector::set_prefix(const std::string& _orientation_prefix)
 //-------------------------------------------------------------------------------
 void slice_selector::update_label()
 {
+    m_fct_change_label_callback();
+
     if(m_slice_index_text != nullptr && m_slider != nullptr)
     {
         const int number = m_slider->value();
@@ -595,7 +614,7 @@ void slice_selector::update_label()
 void slice_selector::set_position_value(int _index)
 {
     m_slice_position_slider->blockSignals(true);
-    m_slice_position_slider->setValue(static_cast<int>(_index));
+    m_slice_position_slider->setValue(_index);
     m_slice_position_slider->blockSignals(false);
 }
 

@@ -138,68 +138,52 @@ void slice_index_position_editor::starting()
     const QString service_id = QString::fromStdString(base_id());
 
     auto* layout = new QVBoxLayout();
+    sight::ui::qt::slice_selector::ChangeIndexCallback fct_index = [this](int _index)
+                                                                   {
+                                                                       slice_index_notification(_index);
+                                                                   };
+    sight::ui::qt::slice_selector::ChangeTypeCallback fct_type = [this](int _type){slice_type_notification(_type);};
+    sight::ui::qt::slice_selector::ChangeLabelCallback fct_label = [this](){slice_label_notification();};
 
     if(m_label_option == label_option_t::index)
     {
-        sight::ui::qt::slice_selector::ChangeIndexCallback fct_index = [this](int _index)
-                                                                       {
-                                                                           slice_index_notification(_index);
-                                                                       };
-        sight::ui::qt::slice_selector::ChangeTypeCallback fct_type = [this](int _type){slice_type_notification(_type);};
-
         m_slice_selector_with_index = new sight::ui::qt::slice_selector(
             m_display_axis_selector,
             m_display_step_buttons,
             static_cast<std::uint8_t>(1)
 
         );
-
-        m_slice_selector_with_index->setProperty("class", "slice_selector");
-        m_slice_selector_with_index->set_enable(false);
-        m_slice_selector_with_index->setObjectName(service_id);
-
-        m_slice_selector_with_index->set_change_index_callback(fct_index);
-        m_slice_selector_with_index->set_change_type_callback(fct_type);
-        m_slice_selector_with_index->set_type_selection(m_orientation);
-
-        layout->addWidget(m_slice_selector_with_index);
-
-        layout->setContentsMargins(0, 0, 0, 0);
-
-        qt_container->set_layout(layout);
-
-        this->updating();
     }
     else if(m_label_option == label_option_t::position)
     {
-        sight::ui::qt::slice_selector::ChangeIndexCallback fct_index = [this](int _t){slice_index_notification(_t);};
-        sight::ui::qt::slice_selector::ChangeTypeCallback fct_type = [this](int _t){slice_type_notification(_t);};
-
-        m_slice_selector_with_position = new sight::ui::qt::slice_selector(
+        m_slice_selector_with_index = new sight::ui::qt::slice_selector(
             m_display_axis_selector,
             m_display_step_buttons,
             0.0
 
         );
-        m_slice_selector_with_position->setProperty("class", "slice_selector");
-        m_slice_selector_with_position->set_enabled(false);
-        m_slice_selector_with_position->setObjectName(service_id);
-
-        m_slice_selector_with_position->set_change_index_callback(fct_index);
-        m_slice_selector_with_position->set_change_type_callback(fct_type);
-        m_slice_selector_with_position->set_type_selection(m_orientation);
-
-        layout->addWidget(m_slice_selector_with_position);
-
-        m_slice_selector_with_position->set_prefix(orientation_prefix_map.at(m_orientation));
-
-        layout->setContentsMargins(0, 0, 0, 0);
-
-        qt_container->set_layout(layout);
-
-        this->updating();
     }
-    else
+
+    m_slice_selector_with_index->setProperty("class", "slice_selector");
+    m_slice_selector_with_index->set_enabled(false);
+    m_slice_selector_with_index->setObjectName(service_id);
+
+    m_slice_selector_with_index->set_change_index_callback(fct_index);
+    m_slice_selector_with_index->set_change_type_callback(fct_type);
+    m_slice_selector_with_index->set_change_label_callback(fct_label);
+
+    m_slice_selector_with_index->set_type_selection(m_orientation);
+
+    layout->addWidget(m_slice_selector_with_index);
+
+    m_slice_selector_with_index->set_prefix(orientation_prefix_map.at(m_orientation));
+
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    qt_container->set_layout(layout);
+
+    this->updating();
+
     {
         SIGHT_ERROR("not a known value of label .");
     }
@@ -232,13 +216,12 @@ void slice_index_position_editor::updating()
             );
 
             this->update_slice_index_from_img(*image);
-            this->update_label(*image);
         }
         else if(m_label_option == label_option_t::position)
         {
             const bool image_is_valid = imHelper::check_image_validity(image.get_shared());
 
-            m_slice_selector_with_position->set_enabled(image_is_valid);
+            m_slice_selector_with_index->set_enabled(image_is_valid);
 
             m_axial_position =
                 static_cast<double>(imHelper::get_slice_position(*image, imHelper::orientation_t::axial)
@@ -253,7 +236,6 @@ void slice_index_position_editor::updating()
                                     .value_or(image->origin()[0]));
 
             this->update_slice_index_from_img(*image);
-            this->update_label(*image);
         }
     }
 
@@ -267,8 +249,17 @@ void slice_index_position_editor::stopping()
     m_slice_selector_with_index = nullptr;
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------
 
+void slice_index_position_editor::destroyEditorContainer()
+{
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+        this->get_container()
+    );
+    qt_container->destroy_container();
+}
+
+//------------------------------------------------------
 void slice_index_position_editor::update_slice_index(int _axial, int _frontal, int _sagittal)
 {
     if(m_label_option == label_option_t::index)
@@ -371,14 +362,14 @@ void slice_index_position_editor::update_slice_index_from_img(const sight::data:
 
             double min_position = 0.00;
 
-            m_slice_selector_with_position->set_position_range(min_position, max_position);
+            m_slice_selector_with_index->set_position_range(min_position, max_position);
 
             const auto index_position =
                 imHelper::get_slice_index(_image, m_orientation).value_or(image_size[m_orientation] / 2);
 
-            m_slice_selector_with_position->set_image_info(origin[m_orientation], spacing[m_orientation]);
-            m_slice_selector_with_position->set_position_text(static_cast<double>(index_position));
-            m_slice_selector_with_position->set_position_value(static_cast<int>(index_position));
+            m_slice_selector_with_index->set_image_info(origin[m_orientation], spacing[m_orientation]);
+            m_slice_selector_with_index->set_position_text(static_cast<double>(index_position));
+            m_slice_selector_with_index->set_position_value(static_cast<int>(index_position));
         }
     }
 }
@@ -409,6 +400,64 @@ void slice_index_position_editor::slice_index_notification(int _index)
 }
 
 //------------------------------------------------------------------------
+void slice_index_position_editor::slice_label_notification()
+{
+    m_label_option = (m_label_option == label_option_t::index) ? label_option_t::position : label_option_t::index;
+
+    this->destroyEditorContainer();
+    this->create();
+    auto* layout = new QVBoxLayout();
+
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
+        this->get_container()
+    );
+
+    qt_container->set_layout(layout);
+
+    const QString service_id = QString::fromStdString(base_id());
+
+    if(m_label_option == label_option_t::index)
+    {
+        m_slice_selector_with_index = new sight::ui::qt::slice_selector(
+            m_display_axis_selector,
+            m_display_step_buttons,
+            static_cast<std::uint8_t>(1)
+
+        );
+    }
+    else if(m_label_option == label_option_t::position)
+    {
+        m_slice_selector_with_index = new sight::ui::qt::slice_selector(
+            m_display_axis_selector,
+            m_display_step_buttons,
+            0.0
+
+        );
+    }
+
+    sight::ui::qt::slice_selector::ChangeIndexCallback fct_index = [this](int _t){slice_index_notification(_t);};
+    sight::ui::qt::slice_selector::ChangeTypeCallback fct_type = [this](int _t){slice_type_notification(_t);};
+    sight::ui::qt::slice_selector::ChangeLabelCallback fct_label = [this](){slice_label_notification();};
+
+    m_slice_selector_with_index->setProperty("class", "slice_selector");
+    m_slice_selector_with_index->set_enable(true);
+
+    m_slice_selector_with_index->set_change_index_callback(fct_index);
+    m_slice_selector_with_index->set_change_type_callback(fct_type);
+    m_slice_selector_with_index->set_change_label_callback(fct_label);
+    m_slice_selector_with_index->set_type_selection(m_orientation);
+    m_slice_selector_with_index->set_prefix(orientation_prefix_map.at(m_orientation));
+
+    m_slice_selector_with_index->setObjectName(service_id);
+
+    layout->addWidget(m_slice_selector_with_index);
+
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    this->updating();
+}
+
+//------------------------------------------------------------------------
 void slice_index_position_editor::update_slice_type(int _from, int _to)
 {
     if(_to == static_cast<int>(m_orientation))
@@ -426,7 +475,7 @@ void slice_index_position_editor::update_slice_type(int _from, int _to)
     }
     else if(m_label_option == label_option_t::position)
     {
-        m_slice_selector_with_position->clear_slider_position();
+        m_slice_selector_with_index->clear_slider_position();
     }
 
     this->update_slice_type_from_img(m_orientation);
@@ -439,14 +488,12 @@ void slice_index_position_editor::update_slice_type_from_img(const orientation_t
     if(m_label_option == label_option_t::position)
     {
         const std::string& new_orientation_prefix = orientation_prefix_map.at(_type);
-        m_slice_selector_with_position->set_prefix(new_orientation_prefix);
-        m_slice_selector_with_position->set_type_selection(static_cast<int>(_type));
-        m_slice_selector_with_position->update_label();
+        m_slice_selector_with_index->set_prefix(new_orientation_prefix);
+        m_slice_selector_with_index->set_type_selection(static_cast<int>(_type));
     }
     else if(m_label_option == label_option_t::index)
     {
         m_slice_selector_with_index->set_type_selection(static_cast<int>(_type));
-        m_slice_selector_with_index->update_label();
     }
 
     const auto image = m_image.const_lock();
@@ -468,7 +515,7 @@ void slice_index_position_editor::update_slider_fiducial()
         }
         else
         {
-            m_slice_selector_with_position->clear_slider_position();
+            m_slice_selector_with_index->clear_slider_position();
         }
 
         const auto fiducials_series = image_series->get_fiducials();
@@ -510,7 +557,7 @@ void slice_index_position_editor::update_slider_fiducial()
                         }
                         else
                         {
-                            m_slice_selector_with_position->add_position_slider(
+                            m_slice_selector_with_index->add_position_slider(
                                 static_cast<double>(fiducial_position.value()),
                                 color
                             );
@@ -549,35 +596,6 @@ void slice_index_position_editor::slice_type_notification(int _type)
 }
 
 //------------------------------------------------------------------------------
-void slice_index_position_editor::update_label(const sight::data::image& _image)
-{
-    if(m_label_option == label_option_t::position)
-    {
-        if(m_slice_selector_with_position != nullptr)
-        {
-            m_slice_selector_with_position->update_label();
-        }
-    }
-    else if(m_label_option == label_option_t::index)
-    {
-        if(m_slice_selector_with_index != nullptr)
-        {
-            const auto& spacing = _image.spacing();
-            const auto& origin  = _image.origin();
-
-            m_slice_selector_with_index->set_image_info(origin[m_orientation], spacing[m_orientation]);
-
-            const std::string& new_orientation_prefix = orientation_prefix_map.at(m_orientation);
-            m_slice_selector_with_index->set_prefix(new_orientation_prefix);
-
-            m_slice_selector_with_index->update_label();
-        }
-    }
-
-    this->update_slice_index_from_img(_image);
-}
-
-//------------------------------------------------------------------------------
 service::connections_t slice_index_position_editor::auto_connections() const
 {
     connections_t connections;
@@ -585,6 +603,7 @@ service::connections_t slice_index_position_editor::auto_connections() const
     connections.push(IMAGE_INOUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
     connections.push(IMAGE_INOUT, data::image::SLICE_INDEX_MODIFIED_SIG, UPDATE_SLICE_INDEX_SLOT);
     connections.push(IMAGE_INOUT, data::image::SLICE_TYPE_MODIFIED_SIG, UPDATE_SLICE_TYPE_SLOT);
+
     connections.push(IMAGE_INOUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
     connections.push(IMAGE_INOUT, data::image::RULER_MODIFIED_SIG, service::slots::UPDATE);
     connections.push(IMAGE_INOUT, data::image::FIDUCIAL_REMOVED_SIG, service::slots::UPDATE);

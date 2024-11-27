@@ -38,7 +38,7 @@ namespace sight::module::ui::qt::image
 
 enum label_option_t
 {
-    index,
+    index = 0,
     position
 };
 enum orientation_t
@@ -142,7 +142,11 @@ protected:
     ///update the slider verticals lines.
     void update_slider_fiducial();
 
-    void update_label(const sight::data::image& image);
+    // This method is called when the label type changes, to destroy the previous type of `qt_container`.
+    void destroyEditorContainer();
+
+    /// This method is called when the slice label text change. Notify the slice label text is modified.
+    void slice_label_notification();
 
 private:
 
@@ -164,7 +168,6 @@ private:
      */
 
     sight::ui::qt::slice_selector* m_slice_selector_with_index {};
-    sight::ui::qt::slice_selector* m_slice_selector_with_position {};
     data::ptr<data::image, data::access::inout> m_image {this, "image"};
 
     std::int64_t m_axial_index {-1};
