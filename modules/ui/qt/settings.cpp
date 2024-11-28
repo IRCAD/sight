@@ -1228,7 +1228,7 @@ QPushButton* settings::create_double_slider_widget(
 
     auto* const min_value_label = new QLabel();
     min_value_label->setFont(min_max_labels_font);
-    min_value_label->setText(QString::number(_setup.min, 'g', _decimals));
+    min_value_label->setText(QString::number(_setup.min, 'f', _decimals));
     min_value_label->setToolTip("Minimum value.");
     min_value_label->setObjectName(QString::fromStdString(_setup.key + "/minValueLabel"));
     min_value_label->setAlignment(Qt::AlignCenter);
@@ -1236,7 +1236,7 @@ QPushButton* settings::create_double_slider_widget(
 
     auto* const max_value_label = new QLabel();
     max_value_label->setFont(min_max_labels_font);
-    max_value_label->setText(QString::number(_setup.max, 'g', _decimals));
+    max_value_label->setText(QString::number(_setup.max, 'f', _decimals));
     max_value_label->setToolTip("Maximum value.");
     max_value_label->setObjectName(QString::fromStdString(_setup.key + "/maxValueLabel"));
     max_value_label->setAlignment(Qt::AlignCenter);
