@@ -277,7 +277,7 @@ private:
      * @brief Sets the SAT size ratio.
      * @param _size_ratio value of the SAT size ratio.
      */
-    void update_sat_size_ratio(unsigned _size_ratio);
+    void update_sat_size_ratio(float _size_ratio);
 
     /**
      * @brief Sets the SAT shells number.

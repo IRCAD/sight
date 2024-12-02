@@ -213,7 +213,7 @@ public:
      * @brief Sets the SAT size ratio.
      * @param _ratio value of the SAT size ratio.
      */
-    SIGHT_VIZ_SCENE3D_API void update_sat_size_ratio(unsigned _ratio);
+    SIGHT_VIZ_SCENE3D_API void update_sat_size_ratio(float _ratio);
 
     /**
      * @brief Sets the SAT shells number.

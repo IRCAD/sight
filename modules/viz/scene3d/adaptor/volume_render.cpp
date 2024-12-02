@@ -441,7 +441,7 @@ void volume_render::update_color_bleeding_factor(float _color_bleeding_factor)
 
 //-----------------------------------------------------------------------------
 
-void volume_render::update_sat_size_ratio(unsigned _size_ratio)
+void volume_render::update_sat_size_ratio(float _size_ratio)
 {
     if(m_volume_renderer->shadows().parameters.enabled())
     {
@@ -622,7 +622,6 @@ void volume_render::set_int_parameter(int _val, std::string _key)
         "Invalid slot key " + _key,
         _key == "sampling"
         || _key == "opacityCorrection"
-        || _key == "satSizeRatio"
         || _key == "satShellsNumber"
         || _key == "satShellRadius"
         || _key == "satConeSamples"
@@ -642,10 +641,6 @@ void volume_render::set_int_parameter(int _val, std::string _key)
     else if(_key == "opacityCorrection")
     {
         this->update_opacity_correction(param);
-    }
-    else if(_key == "satSizeRatio")
-    {
-        this->update_sat_size_ratio(param);
     }
     else if(_key == "satShellsNumber")
     {
@@ -672,6 +667,7 @@ void volume_render::set_double_parameter(double _val, std::string _key)
         _key == "colorBleedingFactor"
         || _key == "aoFactor"
         || _key == "satConeAngle"
+        || _key == "satSizeRatio"
     );
 
     this->render_service()->make_current();
@@ -690,6 +686,10 @@ void volume_render::set_double_parameter(double _val, std::string _key)
     else if(_key == "satConeAngle")
     {
         this->update_sat_cone_angle(param);
+    }
+    else if(_key == "satSizeRatio")
+    {
+        this->update_sat_size_ratio(param);
     }
 
     this->request_render();

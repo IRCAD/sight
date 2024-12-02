@@ -351,11 +351,11 @@ void ray_tracing_volume_renderer::update_clipping_box(const data::image::csptr _
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::update_sat_size_ratio(unsigned _ratio)
+void ray_tracing_volume_renderer::update_sat_size_ratio(float _ratio)
 {
     if(m_shadows.parameters.enabled())
     {
-        m_sat.update_sat_from_ratio(static_cast<float>(_ratio));
+        m_sat.update_sat_from_ratio(_ratio);
         update_sat();
     }
 }
@@ -818,7 +818,8 @@ void ray_tracing_volume_renderer::update_ray_tracing_material()
     // Create the technique
     {
         // Ensure that we have the color parameters set for the current material
-        this->set_material_light_params(mat);
+        set_material_light_params(mat);
+
         // Get the already created pass through the already created technique
         const Ogre::Technique* const tech = mat->getTechnique(0);
 
