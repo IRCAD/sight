@@ -172,12 +172,11 @@ void propagator::propagate()
                 );
                 _running_job.done_work(6);
 
+                bool filled = false;
                 if(propag_diff.num_elements() > 0)
                 {
-                    image_out->signal<data::image::buffer_modified_signal_t>(
-                        data::image::BUFFER_MODIFIED_SIG
-                    )->async_emit();
-                    this->signal<filter::signals::computed_t>(filter::signals::COMPUTED)->async_emit();
+                    image_out->async_emit(data::image::BUFFER_MODIFIED_SIG);
+                    this->async_emit(filter::signals::COMPUTED);
 
                     const auto samples_out = m_samples_out.lock();
                     if(samples_out)
@@ -192,8 +191,17 @@ void propagator::propagate()
                             samples_out->set_pixel(i, propag_diff.get_element(i).m_old_value);
                         }
 
-                        samples_out->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG)->async_emit();
+                        samples_out->async_emit(data::image::MODIFIED_SIG);
                     }
+
+                    filled = true;
+                }
+
+                const auto mask_filled = m_mask_filled_out.lock();
+                if(mask_filled)
+                {
+                    *mask_filled = filled;
+                    mask_filled->async_emit(this, data::object::MODIFIED_SIG);
                 }
             }
 
@@ -217,8 +225,7 @@ void propagator::clear()
         const auto lock      = image_out->dump_lock();
 
         std::fill(image_out->begin(), image_out->end(), std::uint8_t(0));
-
-        image_out->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG)->async_emit();
+        image_out->async_emit(data::image::BUFFER_MODIFIED_SIG);
     }
     {
         const auto image_in = m_image_in.lock();
@@ -229,8 +236,14 @@ void propagator::clear()
 
         sight::data::image::size_t voxels_size {0, 1, 1};
         samples_out->resize(voxels_size, image_in->type(), image_in->pixel_format());
+        samples_out->async_emit(data::image::MODIFIED_SIG);
 
-        samples_out->signal<data::image::buffer_modified_signal_t>(data::image::MODIFIED_SIG)->async_emit();
+        const auto mask_filled = m_mask_filled_out.lock();
+        if(mask_filled)
+        {
+            *mask_filled = false;
+            mask_filled->async_emit(this, data::object::MODIFIED_SIG);
+        }
     }
 }
 

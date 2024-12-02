@@ -139,8 +139,9 @@ private:
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image_in {this, IMAGE_IN};
     sight::data::ptr<sight::data::point_list, sight::data::access::in> m_seeds_in {this, SEEDS_IN};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image_out {this, IMAGE_INOUT, false};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_samples_out {this, SAMPLES_INOUT, true};
+    sight::data::ptr<sight::data::image> m_image_out {this, IMAGE_INOUT, false};
+    sight::data::ptr<sight::data::image> m_samples_out {this, SAMPLES_INOUT, true};
+    sight::data::ptr<sight::data::boolean> m_mask_filled_out {this, "mask_filled_out", true};
 
     sight::data::property<sight::data::real> m_radius {this, "radius", 25.0};
     sight::data::property<sight::data::integer> m_value {this, "value", 1};

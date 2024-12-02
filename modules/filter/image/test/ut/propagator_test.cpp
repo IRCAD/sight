@@ -23,6 +23,7 @@
 
 #include <core/runtime/runtime.hpp>
 
+#include <data/boolean.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/point_list.hpp>
@@ -180,6 +181,8 @@ void propagator_test::propagate()
     point_list->push_back(std::make_shared<sight::data::point>(105., -190., 55.));
     auto samples_out = std::make_shared<sight::data::image>();
     srv->set_inout(samples_out, "samples_out");
+    auto mask_filled_out = std::make_shared<sight::data::boolean>(false);
+    srv->set_inout(mask_filled_out, "mask_filled_out");
 
     srv->update().wait();
     {
@@ -220,6 +223,8 @@ void propagator_test::propagate()
 
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(900), count_1);
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(300), count_2);
+
+        CPPUNIT_ASSERT_EQUAL(true, mask_filled_out->value());
     }
 
     // Clear the output image
@@ -241,6 +246,8 @@ void propagator_test::propagate()
                 }
             }
         }
+
+        CPPUNIT_ASSERT_EQUAL(false, mask_filled_out->value());
     }
 
     // Switch to standard deviation mode
@@ -306,6 +313,7 @@ void propagator_test::propagate()
         }
 
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(300), count);
+        CPPUNIT_ASSERT_EQUAL(true, mask_filled_out->value());
     }
 
     srv->stop().wait();
