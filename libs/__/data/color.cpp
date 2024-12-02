@@ -54,6 +54,13 @@ color::color(
 
 //------------------------------------------------------------------------------
 
+color::color(const std::string& _string_color)
+{
+    from_string(_string_color);
+}
+
+//------------------------------------------------------------------------------
+
 void color::set_rgba(const color_t _red, const color_t _green, const color_t _blue, const color_t _alpha)
 {
     this->value() = {_red, _green, _blue, _alpha};

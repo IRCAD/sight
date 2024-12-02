@@ -139,6 +139,9 @@ void color_test::string()
     data::color color3;
     color3.from_string("1.0;0.;0.4314;1.0");
     CPPUNIT_ASSERT_EQUAL(color->to_string(), color3.to_string());
+
+    data::color color4("#339966CC");
+    CPPUNIT_ASSERT_EQUAL(data::color(0.2F, 0.6F, 0.4F, 0.8F), color4);
 }
 
 //------------------------------------------------------------------------------

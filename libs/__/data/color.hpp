@@ -44,6 +44,7 @@ public:
 
     SIGHT_DATA_API color();
     SIGHT_DATA_API color(color_t _red, color_t _green = 1.F, color_t _blue = 1.F, color_t _alpha = 1.F);
+    SIGHT_DATA_API color(const std::string& _string_color);
 
     /// Destructor
     SIGHT_DATA_API ~color() noexcept override = default;
