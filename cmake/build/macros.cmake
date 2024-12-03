@@ -164,16 +164,11 @@ macro(init_project PRJ_NAME PRJ_TYPE)
     if(NOT "${PRJ_TYPE}" STREQUAL "TEST" AND NOT "${PRJ_TYPE}" STREQUAL "GUI_TEST")
         list(FILTER SOURCES EXCLUDE REGEX "/test/api")
         list(FILTER SOURCES EXCLUDE REGEX "/test/detail")
-        list(FILTER SOURCES EXCLUDE REGEX "/test/tu")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/mut")
         list(FILTER SOURCES EXCLUDE REGEX "/test/ui")
         list(FILTER SOURCES EXCLUDE REGEX "/test/uit")
         list(FILTER SOURCES EXCLUDE REGEX "/test/ut")
-        list(FILTER HEADERS EXCLUDE REGEX "/test/api")
-        list(FILTER HEADERS EXCLUDE REGEX "/test/detail")
-        list(FILTER HEADERS EXCLUDE REGEX "/test/tu")
-        list(FILTER HEADERS EXCLUDE REGEX "/test/ui")
-        list(FILTER HEADERS EXCLUDE REGEX "/test/uit")
-        list(FILTER HEADERS EXCLUDE REGEX "/test/ut")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/tu") # Normally obsolete
     endif()
 
     list(APPEND ${SIGHT_TARGET}_HEADERS ${HEADERS})
@@ -658,7 +653,12 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
             PATTERN "*.hpp"
             PATTERN "*.hxx"
             PATTERN "*.cuh" # CUDA
-            PATTERN "test/*" EXCLUDE
+            PATTERN "test/api*" EXCLUDE
+            PATTERN "test/detail*" EXCLUDE
+            PATTERN "test/mut*" EXCLUDE
+            PATTERN "test/ui*" EXCLUDE
+            PATTERN "test/uit*" EXCLUDE
+            PATTERN "test/ut*" EXCLUDE
         )
 
         set(TARGETS_TO_EXPORT ${SIGHT_TARGET})
