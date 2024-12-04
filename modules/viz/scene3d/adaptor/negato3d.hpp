@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <data/string.hpp>
+
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
 #include <viz/scene3d/picking_cross.hpp>
@@ -61,6 +63,7 @@ namespace sight::module::viz::scene3d::adaptor
         <in key="image" uid="..." />
         <inout key="tf" uid="..." />
         <config sliceIndex="axial" filtering="none" tfAlpha="true" />
+        <properties classification="pre" />
     </service>
    @endcode
  *
@@ -81,6 +84,11 @@ namespace sight::module::viz::scene3d::adaptor
  *      was specified in the transform adaptor.
  * - \b queryFlags (optional, uint32, default=0x40000000): Mask set to planes for picking request.
  * - \b border (optional, bool, default=true): allows to display plane borders.
+ *
+ * @subsection Properties Properties:
+ * - \b classification (optional, pre/post, default=pre): classification of voxels. "pre" means the filtering is applied
+ * after the sampling of the transfer function, and "post" after. When using labelled images, it is highly recommended
+ * to use "pre", otherwise it is likely that class of objects can be confounded.
  * - \b visible (optional, bool, default=true): set the initial visibility of the 3D negato.
  */
 class negato3d final :
@@ -292,6 +300,8 @@ private:
 
     data::ptr<data::image, data::access::in> m_image {this, "image"};
     data::ptr<data::transfer_function, data::access::inout> m_tf {this, "tf"};
+
+    sight::data::property<sight::data::string> m_classification {this, "classification", std::string("post")};
 };
 
 //------------------------------------------------------------------------------

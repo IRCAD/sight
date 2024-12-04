@@ -29,6 +29,25 @@ fragment_program Default/Negato_FP glsl
     }
 }
 
+//-----------------------------------------------------------------------------
+
+fragment_program Default/Negato_pre_FP glsl
+{
+    source Negato_pre_FP.glsl
+    default_params
+    {
+        // Negato
+        param_named u_slice float 0
+        param_named u_orientation int 2
+        param_named u_texture int 0
+        param_named u_s2TFTexture int 1
+        param_named u_f3TFWindow float3 0 0
+        param_named u_enableAlpha int 0
+        param_named u_window float 2
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
 //---------------------------------------------------------------------------
 
 material Negato
@@ -47,6 +66,55 @@ material Negato
             }
 
             fragment_program_ref Default/Negato_FP
+            {
+            }
+
+            // This will be used by Plane class
+            texture_unit image
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+            texture_unit tfTexture
+            {
+                tex_address_mode clamp
+                filtering bilinear
+            }
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            depth_bias -1 -1
+
+            vertex_program_ref Render_VP
+            {
+            }
+        }
+    }
+
+}
+
+//---------------------------------------------------------------------------
+
+material Negato_pre
+{
+    // Default technique
+    technique
+    {
+        pass
+        {
+            scene_blend alpha_blend
+            cull_hardware none
+            depth_bias -1 -1
+
+            vertex_program_ref Negato_VP
+            {
+            }
+
+            fragment_program_ref Default/Negato_pre_FP
             {
             }
 

@@ -444,7 +444,7 @@ void settings::starting()
             }
             else
             {
-                SIGHT_ERROR("Unknown widget for this data type: " + widget_type);
+                SIGHT_ERROR("Unknown widget type for key: " + widget.key);
             }
         }
     }

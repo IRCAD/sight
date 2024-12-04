@@ -49,7 +49,8 @@ plane::plane(
     filter_t _filtering,
     bool _display_border,
     bool _display_other_planes,
-    float _entity_opacity
+    float _entity_opacity,
+    bool _post_classification
 ) :
     m_border({.shape       = nullptr, .material = nullptr, .enabled = _display_border}),
     m_slices_cross({.shape = nullptr, .material = nullptr, .enabled = _display_other_planes}),
@@ -69,7 +70,7 @@ plane::plane(
     m_plane_scene_node = m_parent_scene_node->createChildSceneNode(m_scene_node_name);
 
     const auto plane_material_name = core::id::join(m_slice_plane_name + "plane_material");
-    m_plane_material = std::make_unique<viz::scene3d::material::generic>(plane_material_name, "Negato");
+    m_plane_material = std::make_unique<viz::scene3d::material::generic>(plane_material_name, _post_classification ? "Negato" : "Negato_pre");
 
     const Ogre::ColourValue diffuse(1.F, 1.F, 1.F, m_entity_opacity);
     m_plane_material->material()->setDiffuse(diffuse);

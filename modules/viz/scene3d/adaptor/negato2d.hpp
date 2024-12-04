@@ -22,9 +22,8 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-
 #include <data/helper/medical_image.hpp>
+#include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
@@ -58,7 +57,8 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::negato2d">
         <in key="image" uid="..." />
         <in key="tf" uid="..." />
-        <config sliceIndex="axial" filtering="none" tfAlpha="true" visible="true" />
+        <config sliceIndex="axial" filtering="none" tfAlpha="true" />
+        <properties classification="pre" visible="true" />
    </service>
    @endcode
  *
@@ -73,10 +73,15 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b tfAlpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
  * - \b border (optional, bool, default=true): displays a border around the plane.
  * - \b slicesCross (optional, bool, default=true): display the two other slices location as two lines.
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the negato, as it
  *      was specified in the transform adaptor.
  * * - \b interactive (optional, bool, default=false): enables interactions on the negato.
+ *
+ * @subsection Properties Properties:
+ * - \b classification (optional, pre/post, default=pre): classification of voxels. "pre" means the filtering is applied
+ * after the sampling of the transfer function, and "post" after. When using labelled images, it is highly recommended
+ * to use "pre", otherwise it is likely that class of objects can be confounded.
+ * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class negato2d final :
     public sight::viz::scene3d::adaptor,
@@ -263,6 +268,8 @@ private:
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
     sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, "tf"};
+
+    sight::data::property<sight::data::string> m_classification {this, "classification", std::string("post")};
 };
 
 //------------------------------------------------------------------------------

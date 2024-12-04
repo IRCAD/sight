@@ -142,7 +142,9 @@ void negato2d::starting()
         m_3d_ogre_texture,
         m_filtering,
         m_border,
-        m_slices_cross
+        m_slices_cross,
+        1.0F,
+        *m_classification == std::string("post")
     );
 
     this->new_image();

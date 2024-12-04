@@ -153,7 +153,9 @@ void negato3d::starting()
             m_3d_ogre_texture,
             m_filtering,
             m_border,
-            false
+            false,
+            1.0F,
+            *m_classification == std::string("post")
         );
     }
 
