@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -142,14 +142,10 @@ struct signal_test_class
 void signal_test::connect_test()
 {
     signal_test_class test_object;
-    core::com::slot<void()>::sptr slot0 =
-        core::com::new_slot(&signal_test_class::method0, &test_object);
-    core::com::slot<float(float)>::sptr slot1 =
-        core::com::new_slot(&signal_test_class::method1, &test_object);
-    core::com::slot<float(float, int)>::sptr slot2 =
-        core::com::new_slot(&signal_test_class::method2, &test_object);
-    core::com::slot<float(float, double, std::string)>::sptr slot3 =
-        core::com::new_slot(&signal_test_class::method3, &test_object);
+    auto slot0 = core::com::new_slot(&signal_test_class::method0, &test_object);
+    auto slot1 = core::com::new_slot(&signal_test_class::method1, &test_object);
+    auto slot2 = core::com::new_slot(&signal_test_class::method2, &test_object);
+    auto slot3 = core::com::new_slot(&signal_test_class::method3, &test_object);
 
     core::com::connection connection;
     CPPUNIT_ASSERT(connection.expired());
@@ -282,6 +278,18 @@ void signal_test::connect_test()
         CPPUNIT_ASSERT_THROW(sig->disconnect(slot3), core::com::exception::bad_slot);
 
         sig->disconnect(slot0);
+    }
+
+    // Test for a specific cast that used to cause a stack overflow
+    // When we have more arguments than the slot and the type is different we try to remove arguments
+    // Until we can cast, but we have to stop somewhere, when the arity is 0
+    {
+        using signature = void (int, int, int, int);
+        core::com::signal<signature>::sptr sig = std::make_shared<core::com::signal<signature> >();
+
+        CPPUNIT_ASSERT_THROW(sig->connect(slot1), core::com::exception::bad_slot);
+        CPPUNIT_ASSERT_THROW(sig->connect(slot2), core::com::exception::bad_slot);
+        CPPUNIT_ASSERT_THROW(sig->connect(slot3), core::com::exception::bad_slot);
     }
 
     {

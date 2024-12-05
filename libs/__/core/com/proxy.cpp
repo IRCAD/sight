@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,7 @@
 
 #include "core/com/proxy.hpp"
 
+#include <core/com/exception/bad_slot.hpp>
 namespace sight::core::com
 {
 
@@ -47,34 +48,31 @@ proxy::sptr proxy::get()
 
 void proxy::connect(channel_key_type _channel, core::com::signal_base::sptr _signal)
 {
-    SPTR(sig_slots) sigslots;
-
-    {
-        core::mt::read_to_write_lock lock(m_channel_mutex);
-        auto iter = m_channels.find(_channel);
-
-        if(iter == m_channels.end())
-        {
-            sigslots = SPTR(sig_slots)(new sig_slots);
-
-            core::mt::upgrade_to_write_lock write_lock(lock);
-            m_channels[_channel] = sigslots;
-        }
-        else
-        {
-            sigslots = iter->second;
-        }
-    }
+    auto sigslots = find_or_create_channel(_channel);
 
     core::mt::write_lock lock(sigslots->m_mutex);
     auto ret = sigslots->m_signals.insert(_signal);
 
     if(ret.second)
     {
-        // Only connect if the signal was not already in the proxy
-        for(const core::com::slot_base::sptr& slot : sigslots->m_slots)
+        try
         {
-            _signal->connect(slot);
+            // Only connect if the signal was not already in the proxy
+            for(const auto& slot : sigslots->m_slots)
+            {
+                _signal->connect(slot);
+            }
+        }
+        catch(core::com::exception::bad_slot& e)
+        {
+            SIGHT_ERROR("Can't connect signal with slot in proxy '" << _channel << "' : " << e.what() << ".");
+            if(ret.second)
+            {
+                sigslots->m_signals.erase(_signal);
+            }
+
+            // No need to remove the channel, if there is an incompatibility, this implies the channel was created for
+            // a slot, thus it will be removed symmetrically
         }
     }
 }
@@ -83,34 +81,31 @@ void proxy::connect(channel_key_type _channel, core::com::signal_base::sptr _sig
 
 void proxy::connect(channel_key_type _channel, core::com::slot_base::sptr _slot)
 {
-    SPTR(sig_slots) sigslots;
-
-    {
-        core::mt::read_to_write_lock lock(m_channel_mutex);
-        auto iter = m_channels.find(_channel);
-
-        if(iter == m_channels.end())
-        {
-            sigslots = SPTR(sig_slots)(new sig_slots);
-
-            core::mt::upgrade_to_write_lock write_lock(lock);
-            m_channels[_channel] = sigslots;
-        }
-        else
-        {
-            sigslots = iter->second;
-        }
-    }
+    auto sigslots = find_or_create_channel(_channel);
 
     core::mt::write_lock lock(sigslots->m_mutex);
     auto ret = sigslots->m_slots.insert(_slot);
 
     if(ret.second)
     {
-        // Only connect if the slot was not already in the proxy
-        for(const core::com::signal_base::sptr& signal : sigslots->m_signals)
+        try
         {
-            signal->connect(_slot);
+            // Only connect if the slot was not already in the proxy
+            for(const core::com::signal_base::sptr& signal : sigslots->m_signals)
+            {
+                signal->connect(_slot);
+            }
+        }
+        catch(core::com::exception::bad_slot& e)
+        {
+            SIGHT_ERROR("Can't connect signal with slot in proxy '" << _channel << "' : " << e.what() << ".");
+            if(ret.second)
+            {
+                sigslots->m_slots.erase(_slot);
+            }
+
+            // No need to remove the channel, if there is an incompatibility, this implies the channel was created for
+            // a signal, thus it will be removed symmetrically
         }
     }
 }
@@ -123,17 +118,16 @@ void proxy::disconnect(channel_key_type _channel, core::com::signal_base::sptr _
     auto iter = m_channels.find(_channel);
 
     SIGHT_ASSERT("channel '" << _channel << "' doesn't exist in Proxy.", iter != m_channels.end());
-    SPTR(sig_slots) sigslots = iter->second;
+    auto sigslots = iter->second;
 
     core::mt::write_lock sig_slot_lock(sigslots->m_mutex);
 
-    for(const core::com::slot_base::sptr& slot : sigslots->m_slots)
+    for(const auto& slot : sigslots->m_slots)
     {
         _signal->disconnect(slot);
     }
 
-    sig_slots::signal_container_t::iterator sig_iter;
-    sig_iter = std::find(sigslots->m_signals.begin(), sigslots->m_signals.end(), _signal);
+    const auto sig_iter = std::find(sigslots->m_signals.begin(), sigslots->m_signals.end(), _signal);
     SIGHT_ASSERT("Signal is not found", sig_iter != sigslots->m_signals.end());
     sigslots->m_signals.erase(sig_iter);
 
@@ -152,17 +146,16 @@ void proxy::disconnect(channel_key_type _channel, core::com::slot_base::sptr _sl
     auto iter = m_channels.find(_channel);
 
     SIGHT_ASSERT("channel '" << _channel << "' doesn't exist in Proxy.", iter != m_channels.end());
-    SPTR(sig_slots) sigslots = iter->second;
+    auto sigslots = iter->second;
 
     core::mt::write_lock sig_slot_lock(sigslots->m_mutex);
 
-    for(const core::com::signal_base::sptr& signal : sigslots->m_signals)
+    for(const auto& signal : sigslots->m_signals)
     {
         signal->disconnect(_slot);
     }
 
-    sig_slots::slot_container_t::iterator slot_iter;
-    slot_iter = std::find(sigslots->m_slots.begin(), sigslots->m_slots.end(), _slot);
+    const auto slot_iter = std::find(sigslots->m_slots.begin(), sigslots->m_slots.end(), _slot);
     SIGHT_ASSERT("Slot is not found", slot_iter != sigslots->m_slots.end());
     sigslots->m_slots.erase(slot_iter);
 
@@ -171,6 +164,32 @@ void proxy::disconnect(channel_key_type _channel, core::com::slot_base::sptr _sl
         core::mt::upgrade_to_write_lock write_lock(lock);
         m_channels.erase(_channel);
     }
+}
+
+//------------------------------------------------------------------------------
+
+SPTR(proxy::sig_slots_t) proxy::find_or_create_channel(channel_key_type _channel)
+{
+    SPTR(sig_slots_t) sigslots;
+
+    {
+        core::mt::read_to_write_lock lock(m_channel_mutex);
+        auto iter = m_channels.find(_channel);
+
+        if(iter == m_channels.end())
+        {
+            sigslots = std::make_shared<sig_slots_t>();
+
+            core::mt::upgrade_to_write_lock write_lock(lock);
+            m_channels[_channel] = sigslots;
+        }
+        else
+        {
+            sigslots = iter->second;
+        }
+    }
+
+    return sigslots;
 }
 
 //-----------------------------------------------------------------------------

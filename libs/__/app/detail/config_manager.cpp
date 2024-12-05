@@ -749,7 +749,7 @@ void config_manager::create_connections()
         if(elem.first == "connect")
         {
             // Parse all connections
-            auto gen_id_fn = [this](){return "proxy_" + this->get_id() + "_" + std::to_string(m_proxy_id++);};
+            auto gen_id_fn = [this](){return m_config_id + "_channel_" + std::to_string(m_proxy_id++);};
 
             proxy_connections_t connection_infos = app::helper::config::parse_connections(
                 elem.second,

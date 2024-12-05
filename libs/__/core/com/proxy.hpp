@@ -74,7 +74,7 @@ private:
      * @brief Structure to regsiter signal and slot informations
      * Contains a signal container, a slot container and a mutex to protect access
      */
-    struct sig_slots
+    struct sig_slots_t
     {
         using signal_container_t = std::set<core::com::signal_base::sptr>;
         using slot_container_t   = std::set<core::com::slot_base::sptr>;
@@ -85,7 +85,14 @@ private:
         core::mt::read_write_mutex m_mutex;
     };
 
-    using channel_map_type = std::map<channel_key_type, SPTR(sig_slots)>;
+    /**
+     * @brief Return the sigslot structure for a given channel
+     * @param _channel identifier of the channel
+     * @return the sigslot structure for a given channel
+     */
+    [[nodiscard]] SPTR(sig_slots_t) find_or_create_channel(channel_key_type _channel);
+
+    using channel_map_type = std::map<channel_key_type, SPTR(sig_slots_t)>;
 
     /// Association channels, SigSlot
     channel_map_type m_channels;
