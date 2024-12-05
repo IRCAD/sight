@@ -1,6 +1,9 @@
 sight_add_target(ui_qt TYPE LIBRARY)
 
-target_compile_definitions(ui_qt PUBLIC "-DQT_NO_KEYWORDS")
+target_compile_definitions(
+    ui_qt PUBLIC "-DQT_NO_KEYWORDS" PRIVATE "-DSIGHT_APP_VENDOR=\"${SIGHT_APP_VENDOR}\""
+                                            "-DSIGHT_APP_VENDOR_URL=\"${SIGHT_APP_VENDOR_URL}\""
+)
 
 # find_package(Qt5 ... ) is performed in Dependencies.cmake
 
