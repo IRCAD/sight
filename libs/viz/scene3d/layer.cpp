@@ -214,7 +214,7 @@ void layer::create_scene()
     SIGHT_ASSERT("scene manager must be initialized", m_scene_manager);
     SIGHT_ASSERT("Render window must be initialized", m_render_target);
 
-    m_scene_manager->setAmbientLight(Ogre::ColourValue(0.8F, 0.8F, 0.8F));
+    m_scene_manager->setAmbientLight(Ogre::ColourValue(0.05F, 0.05F, 0.05F));
 
     // Create the camera
     m_camera = m_scene_manager->createCamera(layer::DEFAULT_CAMERA_NAME);

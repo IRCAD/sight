@@ -189,8 +189,7 @@ void axis::starting()
     {
         const data::color::sptr origin_color = std::make_shared<data::color>();
         origin_color->set_rgba(m_origin_color);
-        m_origin_material->set_ambient(origin_color);
-        m_origin_material->set_diffuse(std::make_shared<data::color>(0.F, 0.F, 0.F, 1.F));
+        m_origin_material->set_diffuse(origin_color);
 
         const auto sig = m_origin_material->signal<core::com::signal<void()> >(data::material::MODIFIED_SIG);
         sig->async_emit();

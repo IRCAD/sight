@@ -42,7 +42,7 @@ const core::com::signals::key_t material::REMOVED_TEXTURE_SIG = "removedTexture"
 
 material::material() :
 
-    m_ambient(std::make_shared<color>(0.05F, 0.05F, 0.05F, 1.F)),
+    m_ambient(std::make_shared<color>(0.8F, 0.8F, 0.8F, 1.F)),
     m_diffuse(std::make_shared<color>())
 {
     new_signal<added_texture_signal_t>(ADDED_TEXTURE_SIG);

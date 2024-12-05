@@ -849,6 +849,7 @@ void ray_tracing_volume_renderer::update_ray_tracing_material()
         fp_params->setNamedAutoConstant("u_f3CameraPos", Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
         fp_params->setNamedAutoConstant("u_fShininess", Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
         fp_params->setNamedAutoConstant("u_fNumLights", Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
+        fp_params->setNamedAutoConstant("u_f4LightAmbientCol", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
         fp_params->setNamedAutoConstant(
             "u_f4LightPos",
             Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY,
