@@ -48,10 +48,11 @@ namespace sight::module::ui::viz
  * @code{.xml}
         <service type="sight::module::ui::viz::material_selector">
             <inout key="reconstruction" uid="..." />
+            <config materials="Basic,Default,OrenNayar,Foggy" />
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b reconstruction [sight::data::object]: .
+ * - \b reconstruction [sight::data::object]: reconstruction used to select the material to change.
  */
 
 /**
@@ -70,7 +71,7 @@ public:
     material_selector() noexcept;
 
     /// Destructor. Does nothing
-    ~material_selector() noexcept override;
+    ~material_selector() noexcept override = default;
 
     /**
      * @name Signals API
@@ -82,14 +83,8 @@ public:
 
 protected:
 
-    /**
-     * @brief method description:
-     * @code{.xml}
-        <service uid="material_selectorInstance" type="sight::module::ui::viz::material_selector">
-        </service>
-       @endcode
-     */
-    void configuring() override;
+    /// Get the list of supported materials
+    void configuring(const config_t& _config) override;
 
     /// Start the service. Create UI
     void starting() override;
@@ -114,6 +109,9 @@ private:
 
     QPointer<QComboBox> m_material_box;
     QPointer<QPushButton> m_reload_button;
+
+    /// Configurable list of material that will be exposed, if they are loaded
+    std::set<std::string> m_supported_materials {"Default"};
 
     data::ptr<data::reconstruction, data::access::inout> m_reconstruction {this, "reconstruction"};
 };

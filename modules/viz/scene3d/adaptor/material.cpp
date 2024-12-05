@@ -378,12 +378,15 @@ void material::update_field(data::object::fields_container_t _fields)
             this->create_shader_parameter_adaptors();
             this->updating();
 
-            // When resetting the material template, all techniques and passes will be destroyed,
-            // so we need to reset the texture unit states
-            Ogre::TexturePtr current_texture = m_tex_adaptor->get_texture();
-            if(current_texture)
+            if(m_tex_adaptor)
             {
-                m_material_fw->set_diffuse_texture(current_texture);
+                // When resetting the material template, all techniques and passes will be destroyed,
+                // so we need to reset the texture unit states
+                Ogre::TexturePtr current_texture = m_tex_adaptor->get_texture();
+                if(current_texture)
+                {
+                    m_material_fw->set_diffuse_texture(current_texture);
+                }
             }
         }
     }

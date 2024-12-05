@@ -62,8 +62,14 @@ material_selector::material_selector() noexcept
 
 //------------------------------------------------------------------------------
 
-material_selector::~material_selector() noexcept =
-    default;
+void material_selector::configuring(const config_t& _config)
+{
+    this->initialize();
+
+    const auto supported_materials_str = _config.get("config.<xmlattr>.materials", "Default");
+    std::vector<std::string> supported_materials;
+    boost::split(m_supported_materials, supported_materials_str, boost::is_any_of(",;"));
+}
 
 //------------------------------------------------------------------------------
 
@@ -87,8 +93,9 @@ void material_selector::starting()
     Ogre::ResourceManager::ResourceMapIterator iter = Ogre::MaterialManager::getSingleton().getResourceIterator();
     while(iter.hasMoreElements())
     {
-        Ogre::ResourcePtr mat = iter.getNext();
-        if(mat->getGroup() == MATERIAL_RESOURCEGROUP_NAME)
+        Ogre::ResourcePtr resource = iter.getNext();
+        const auto mat             = std::dynamic_pointer_cast<Ogre::Material>(resource);
+        if(mat && m_supported_materials.contains(mat->getName()))
         {
             m_material_box->addItem(QString::fromStdString(mat->getName()));
         }
@@ -126,13 +133,6 @@ void material_selector::starting()
 void material_selector::stopping()
 {
     this->destroy();
-}
-
-//------------------------------------------------------------------------------
-
-void material_selector::configuring()
-{
-    this->initialize();
 }
 
 //------------------------------------------------------------------------------
@@ -185,7 +185,8 @@ void material_selector::on_reload_material()
 
     if(!material)
     {
-        SIGHT_ERROR("Could not find material" << material_name);
+        SIGHT_ERROR("Could not find material" << std::quoted(material_name));
+        return;
     }
 
     material->reload();

@@ -67,6 +67,12 @@ vec4 getFragmentColor()
     return finalColor;
 }
 
+// Compute alpha channel
+float getFragmentAlpha()
+{
+    return v_f4Color.a;
+}
+
 #include "Transparency.inc.glsl"
 
 void main(void)
