@@ -142,10 +142,11 @@ protected:
     ///update the slider verticals lines.
     void update_slider_fiducial();
 
-    // This method is called when the label type changes, to destroy the previous type of `qt_container`.
+    /// This method is called when the label type changes, to destroy the previous type of `qt_container`.
     void destroyEditorContainer();
 
-    /// This method is called when the slice label text change. Notify the slice label text is modified.
+    /// This method is called when the slice label option changes. It notifies that the slice label option has been
+    /// toggled.
     void slice_label_notification();
 
 private:

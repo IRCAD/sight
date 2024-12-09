@@ -100,7 +100,7 @@ public:
     void set_digits_position(double _value)
     {
         std::ostringstream stream;
-        stream << std::setw(24) << _value;
+        stream << std::setw(30) << _value;
         std::string value_str = stream.str();
 
         const size_t dot_pos        = value_str.find('.');
