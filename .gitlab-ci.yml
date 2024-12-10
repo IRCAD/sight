@@ -187,6 +187,7 @@ build:ubuntu-24.04-RelWithDebInfo-clang:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_IGNORE_UNSTABLE_TESTS: 1
         SIGHT_ENABLE_GDB: "ON"
+        SIGHT_BUILD_DOC: "ON"
         CC: "clang"
         CXX: "clang++"
     rules:
@@ -210,7 +211,6 @@ build:ubuntu-24.04-coverage-gcc:
     image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
-        SIGHT_BUILD_DOC: "ON"
         SIGHT_ENABLE_COVERAGE: "ON"
         SIGHT_IGNORE_UNSTABLE_TESTS: 1
         CC: "gcc"
@@ -505,7 +505,7 @@ pages:
     image: "${SIGHT_UBUNTU_24_IMAGE}"
     stage: deploy
     needs:
-        - job: build:ubuntu-24.04-coverage-gcc
+        - job: build:ubuntu-24.04-RelWithDebInfo-clang
           artifacts: true
     script:
         - mv .build/Documentation/Doxygen/html/ public/

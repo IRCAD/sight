@@ -265,7 +265,8 @@ if(NOT TARGET coverage)
 
         string(
             CONCAT coverage_script
-                   "gcovr -j$RUNNER_THREADS -r .. --filter ../libs --filter ../modules --exclude '.*test.*' --html"
+                   "gcovr -j$RUNNER_THREADS -r .. --filter ../libs --filter ../modules --exclude '.*test.*' "
+                   "--exclude '../libs/__/data/dicom/attribute.cpp' --html"
                    " --html-details coverage/index.html --xml coverage/cobertura-coverage.xml --print-summary ."
                    "| grep lines"
                    [=[| sed -sE 's/.* \((.*) out of (.*)\)/\1\/\2/']=]
