@@ -181,14 +181,6 @@ Ogre::ColourValue scene::generate_color(int _color_index)
         Ogre::ColourValue(29 / 255.0F, 45 / 255.0F, 168 / 255.0F)
     };
 
-    if(std::getenv("GUI_TESTS_ARE_RUNNING") != nullptr)
-    {
-        // on windows and linux, the color is not the same and prevent comparison
-        // with a reference image in GUI tests.
-        // For that reason, the color is fixed in gui tests.
-        return Ogre::ColourValue(236 / 255.0F, 219 / 255.0F, 84 / 255.0F);
-    }
-
     return colors.at(static_cast<std::size_t>(std::abs(_color_index)) % colors.size());
 }
 
