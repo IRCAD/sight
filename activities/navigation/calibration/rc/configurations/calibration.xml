@@ -17,7 +17,7 @@
         <object uid="${dataSet}" type="sight::data::set" src="ref" />
         <object uid="${cameraSet}" type="sight::data::camera_set" src="ref" />
 
-        <object uid="board_properties" type="sight::data::map" src="preference">
+        <object uid="board_properties" type="sight::data::map" preference="true">
             <item key="board_width" type="sight::data::integer" value="8" />
             <item key="board_height" type="sight::data::integer" value="6" />
             <item key="board_scale" type="sight::data::real" value="1." />

@@ -16,7 +16,7 @@ This example shows the possibilities of properties:
 
             <!-- We set an uid for each object, because in this sample, we pass the map to the first service -->
             <!-- and we pass each object to the second service -->
-            <object uid="properties_map" type="sight::data::map" src="preference">
+            <object uid="properties_map" type="sight::data::map" preference="true">
                 <item key="enable" uid="enable_obj" type="sight::data::boolean" value="true" />
                 <item key="bool_1" uid="bool_obj" type="sight::data::boolean" value="false" />
                 <item key="text" uid="text_obj" type="sight::data::string" value="Hello" />

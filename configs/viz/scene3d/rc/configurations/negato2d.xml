@@ -1,7 +1,7 @@
 <extension implements="sight::app::extension::config">
     <id>sight::config::viz::scene3d::negato2d</id>
     <parameters>
-        <object uid="image" type="sight::data::image_series" optional="true" />
+        <object uid="image" type="sight::data::image_series" deferred="true" />
         <object uid="transferFunction" type="sight::data::transfer_function" />
 
         <param name="WID_PARENT" />

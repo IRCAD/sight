@@ -3,6 +3,13 @@
 
     <xs:element name="extension" type="extension_t" />
 
+    <xs:simpleType name="boolean_t">
+        <xs:restriction base="xs:string">
+        <xs:enumeration value="true"/>
+        <xs:enumeration value="false"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="extension_t">
         <xs:sequence>
             <xs:element name="id" type="xs:string" />
@@ -29,7 +36,11 @@
     <xs:complexType name="object_param_t">
         <xs:attribute name='uid' type='xs:string' use="required" />
         <xs:attribute name='type' type='xs:string' use="required" />
-        <xs:attribute name='optional' type='xs:string' />
+        <xs:attribute name='optional' type='boolean_t' />
+        <xs:attribute name='value' type='xs:string' />
+        <xs:attribute name='deferred' type='boolean_t' />
+        <xs:attribute name='reference' type='boolean_t' />
+        <xs:attribute name='preference' type='boolean_t' />
     </xs:complexType>
 
     <xs:complexType name="config_t">
@@ -62,6 +73,8 @@
         <xs:attribute name='type' type='xs:string' />
         <xs:attribute name='src' type='xs:string' />
         <xs:attribute name='value' type='xs:string' />
+        <xs:attribute name='deferred' type='boolean_t' />
+        <xs:attribute name='preference' type='boolean_t' />
     </xs:complexType>
 
     <!-- Item Type -->
@@ -82,7 +95,7 @@
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' use="required"/>
         <xs:attribute name='type' type='xs:string' use="required" />
-        <xs:attribute name='auto_connect' type='auto_connect_t' />
+        <xs:attribute name='auto_connect' type='boolean_t' />
         <xs:attribute name='worker' type='xs:string' />
         <xs:attribute name='config' type='xs:string' />
     </xs:complexType>
@@ -142,13 +155,6 @@
         <xs:attribute name="uid" type="xs:string" use="required" />
         <xs:attribute name="slot" type="xs:string" use="optional" />
     </xs:complexType>
-
-    <xs:simpleType name="auto_connect_t">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="true" />
-            <xs:enumeration value="false" />
-        </xs:restriction>
-    </xs:simpleType>
 
     <!-- ServiceList Type -->
     <xs:complexType name="service_list_t">

@@ -39,7 +39,7 @@ namespace sight::module::ui
  * application preferences file in the user folder. It restores them when the app is launched.
  *
  * For a sake of simplicity, this service is automatically instantiated in every XML configuration for objects
- * declared with src="preference" attribute. So normally, no one should ever need to use it explicitly.
+ * declared with preference="true" attribute. So normally, no one should ever need to use it explicitly.
  *
  * @section XML XML Configuration
  *

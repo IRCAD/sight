@@ -129,9 +129,11 @@ void config::parse_plugin_infos()
                     !parameters.contains(uid)
                 );
 
-                objects[uid] = {
-                    object.second.get<std::string>("<xmlattr>.type"),
-                    object.second.get<bool>("<xmlattr>.optional", false)
+                objects[uid]  = {
+                    .type     = object.second.get<std::string>("<xmlattr>.type"),
+                    .deferred = object.second.get<bool>("<xmlattr>.deferred", false),
+                    .optional = object.second.get<bool>("<xmlattr>.optional", false),
+                    .value    = object.second.get<std::string>("<xmlattr>.value", "")
                 };
             }
         }
@@ -191,7 +193,7 @@ void config::clear_registry()
 core::runtime::config_t config::get_adapted_template_config(
     const std::string& _config_id,
     const field_adaptor_t _field_adaptors,
-    bool _auto_prefix_id
+    const std::string& _auto_prefix_id
 )
 {
     core::mt::read_lock lock(m_registry_mutex);
@@ -226,17 +228,21 @@ core::runtime::config_t config::get_adapted_template_config(
 
     for(const auto& object : iter->second->objects)
     {
-        const std::string variable = to_variable(object.first);
+        const std::string variable      = to_variable(object.first);
+        bool object_passed_as_parameter = false;
+
         if(const auto iter_field = _field_adaptors.find(object.first); iter_field != _field_adaptors.end())
         {
-            fields[variable] = iter_field->second;
+            fields[variable]           = iter_field->second;
+            object_passed_as_parameter = true;
         }
         else
         {
-            if(object.second.second)
+            // The object is not passed as parameter
+            if(object.second.deferred || object.second.optional)
             {
                 SIGHT_INFO(
-                    "[" << _config_id << "] optional parameter " << std::quoted(object.first)
+                    "[" << _config_id << "] deferred or optional object parameter " << std::quoted(object.first)
                     << " not provided"
                 );
             }
@@ -248,13 +254,35 @@ core::runtime::config_t config::get_adapted_template_config(
 
         core::runtime::config_t object_ref_cfg;
         object_ref_cfg.put("<xmlattr>.uid", variable);
-        object_ref_cfg.put("<xmlattr>.type", object.second.first);
-        object_ref_cfg.put("<xmlattr>.src", object.second.second ? "deferred" : "ref");
+        object_ref_cfg.put("<xmlattr>.type", object.second.type);
+        if(object.second.deferred)
+        {
+            object_ref_cfg.put("<xmlattr>.deferred", "true");
+
+            SIGHT_ERROR_IF(
+                "Value specified for non-optional object parameter : " << std::quoted(variable),
+                !object.second.value.empty()
+            );
+        }
+        else if(object_passed_as_parameter)
+        {
+            object_ref_cfg.put("<xmlattr>.reference", "true");
+
+            SIGHT_ERROR_IF(
+                "Value specified for non-optional object parameter : " << std::quoted(variable),
+                !object.second.value.empty()
+            );
+        }
+        else if(object.second.optional)
+        {
+            if(!object.second.value.empty())
+            {
+                object_ref_cfg.put("<xmlattr>.value", object.second.value);
+            }
+        }
+
         new_config.add_child("object", object_ref_cfg);
     }
-
-    const std::string auto_prefix_name =
-        _auto_prefix_id ? sight::app::extension::config::get_unique_identifier(_config_id) : "";
 
     std::function<void(const boost::property_tree::ptree&)> find_object_uids =
         [&](const boost::property_tree::ptree& _tree)
@@ -270,7 +298,7 @@ core::runtime::config_t config::get_adapted_template_config(
                             const auto attr_value = attribute.second.get_value<std::string>();
                             if("uid" == attribute.first && !is_variable(attr_value))
                             {
-                                fields[to_variable(attr_value)] = core::id::join(auto_prefix_name, attr_value);
+                                fields[to_variable(attr_value)] = core::id::join(_auto_prefix_id, attr_value);
                             }
                         }
                     }
@@ -291,7 +319,7 @@ core::runtime::config_t config::get_adapted_template_config(
         new_config,
         fields,
         parameter_replace_adaptors,
-        auto_prefix_name
+        _auto_prefix_id
     );
 
     return new_config;

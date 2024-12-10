@@ -327,6 +327,7 @@
         <config>
             <object uid="${data1}" type="sight::data::string" />
             <object uid="data2Id" type="sight::data::boolean" />
+            <object uid="data3Id" type="sight::data::string" value="value" />
 
             <service uid="TestService1Uid" type="sight::app::ut::test2_inputs">
                 <in key="data1" uid="${data1}" />
@@ -335,10 +336,11 @@
             </service>
 
             <service uid="TestService2Uid" type="sight::app::config_controller">
-                <appConfig id="parameterReplaceTestSubConfig" />
+                <appConfig id="parameter_replace_test_sub_config" />
                 <inout group="data">
                     <key name="data1" uid="${data1}" />
                     <key name="data2" uid="data2Id" />
+                    <key name="data3" uid="data3Id" />
                 </inout>
                 <parameter replace="patient" by="name" />
                 <parameter replace="channel1" by="Channel No5" />
@@ -361,10 +363,12 @@
     </extension>
 
     <extension implements="sight::app::extension::config">
-        <id>parameterReplaceTestSubConfig</id>
+        <id>parameter_replace_test_sub_config</id>
         <parameters>
             <!-- new syntax -->
             <object uid="data1" type="sight::data::string" />
+            <object uid="data3" type="sight::data::string" optional="true" value="default_value" />
+            <object uid="data4" type="sight::data::string" optional="true" value="default_value" />
 
             <param name="data2" />
             <param name="patient" />
@@ -377,21 +381,27 @@
             <!-- old syntax -->
             <object uid="${data2}" type="sight::data::boolean" src="ref" />
 
-            <service uid="TestServiceUid" type="sight::app::ut::test2_inputs">
+            <service uid="test_service1_uid" type="sight::app::ut::test2_inputs">
                 <in key="data1" uid="${data1}" auto_connect="false" />
                 <in key="data2" uid="${data2}" />
                 <view wid="${WID_PARENT}" />
             </service>
 
+            <service uid="test_service2_uid" type="sight::app::ut::test2_inputs">
+                <in key="data1" uid="${data3}" />
+                <in key="data2" uid="${data4}" />
+            </service>
+
             <connect channel="${channel1}">
-                <slot>TestServiceUid/update</slot>
+                <slot>test_service1_uid/update</slot>
             </connect>
 
             <connect channel="${channel2}">
                 <signal>${data1}/modified</signal>
             </connect>
 
-            <start uid="TestServiceUid" />
+            <start uid="test_service1_uid" />
+            <start uid="test_service2_uid" />
         </config>
     </extension>
 

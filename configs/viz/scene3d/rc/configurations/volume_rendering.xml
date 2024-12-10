@@ -1,8 +1,8 @@
 <extension implements="sight::app::extension::config">
     <id>sight::config::viz::scene3d::volumeRendering</id>
     <parameters>
-        <object uid="modelSeries" type="sight::data::model_series" optional="true" />
-        <object uid="image" type="sight::data::image_series" optional="true" />
+        <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
+        <object uid="image" type="sight::data::image_series" deferred="true" />
         <object uid="volumeTF" type="sight::data::transfer_function" />
         <object uid="extrudedModelSeries" type="sight::data::model_series" />
 

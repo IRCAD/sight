@@ -223,8 +223,11 @@ private:
     };
     std::unordered_map<std::string, service_proxy_t> m_services_proxies;
 
-    /// Identifier of this configuration.
+    /// Identifier of this configuration, i.e. the name of the app_config in the XML.
     std::string m_config_id;
+
+    /// Unique identifier of this configuration.
+    std::string m_config_uid;
 
     using service_container = std::vector<service::base::wptr>;
 

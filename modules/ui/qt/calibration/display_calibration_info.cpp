@@ -135,7 +135,7 @@ void display_calibration_info::display_image(std::size_t _idx)
         const auto config = app::extension::config::get()->get_adapted_template_config(
             str_config,
             replace_map,
-            true
+            sight::app::extension::config::get_unique_identifier(str_config)
         );
 
         // Launch configuration

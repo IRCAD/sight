@@ -106,8 +106,11 @@ void config_manager::set_config(
     bool _auto_prefix_id
 )
 {
-    m_config_id = _config_id;
-    m_cfg_elem  = extension::config::get()->get_adapted_template_config(_config_id, _replace_fields, _auto_prefix_id);
+    m_config_id  = _config_id;
+    m_config_uid = sight::app::extension::config::get_unique_identifier(_config_id);
+
+    const std::string auto_prefix_name = _auto_prefix_id ? m_config_uid : "";
+    m_cfg_elem = extension::config::get()->get_adapted_template_config(_config_id, _replace_fields, auto_prefix_name);
 }
 
 // ------------------------------------------------------------------------
@@ -749,7 +752,7 @@ void config_manager::create_connections()
         if(elem.first == "connect")
         {
             // Parse all connections
-            auto gen_id_fn = [this](){return m_config_id + "_channel_" + std::to_string(m_proxy_id++);};
+            auto gen_id_fn = [this](){return m_config_uid + "_channel_" + std::to_string(m_proxy_id++);};
 
             proxy_connections_t connection_infos = app::helper::config::parse_connections(
                 elem.second,

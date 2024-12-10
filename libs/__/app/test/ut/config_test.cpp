@@ -131,7 +131,7 @@ void config_test::add_config_test()
     core::runtime::config_t config_adapted = current_app_config->get_adapted_template_config(
         config_id,
         replace_fields,
-        false
+        ""
     );
     const auto uid = config_adapted.get<std::string>("object.<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("image"), uid);
@@ -158,7 +158,7 @@ void config_test::parameters_config_test()
     core::runtime::config_t config_adapted = current_app_config->get_adapted_template_config(
         config_id,
         replace_fields,
-        false
+        ""
     );
 
     const auto uid = config_adapted.get<std::string>("object.<xmlattr>.uid");
@@ -1354,7 +1354,6 @@ void config_test::parameter_replace_test()
     m_app_config_mgr = app::ut::launch_app_config_mgr("parameterReplaceTest", true);
 
     unsigned int i = 0;
-    unsigned int j = 0;
     core::object::sptr gn_srv1;
     core::object::sptr gn_srv2;
 
@@ -1391,12 +1390,12 @@ void config_test::parameter_replace_test()
     replace_by = params_cfg[3].get<std::string>("<xmlattr>.by");
     CPPUNIT_ASSERT_EQUAL(core::id::join("parameterReplaceTest", i, "view1"), replace_by);
 
-    core::object::sptr gn_sub_srv;
-
     // Not really elegant, but we have to "guess" how it is replaced
+    core::object::sptr gn_sub_srv;
+    unsigned int j = 0;
     while(gn_sub_srv == nullptr && j++ < 200)
     {
-        gn_sub_srv = core::id::get_object("parameterReplaceTestSubConfig", j, "TestServiceUid");
+        gn_sub_srv = core::id::get_object("parameter_replace_test_sub_config", j, "test_service1_uid");
     }
 
     auto srv_in_sub_config = std::dynamic_pointer_cast<app::ut::test_service>(gn_sub_srv);
@@ -1416,6 +1415,28 @@ void config_test::parameter_replace_test()
 
     auto data2_sub_srv = srv_in_sub_config->input("data2").lock();
     CPPUNIT_ASSERT(data2 == data2_sub_srv);
+
+    // Not really elegant, but we have to "guess" how it is replaced
+    core::object::sptr gn_sub_srv2;
+    j = 0;
+    while(gn_sub_srv2 == nullptr && j++ < 200)
+    {
+        gn_sub_srv2 = core::id::get_object("parameter_replace_test_sub_config", j, "test_service2_uid");
+    }
+
+    auto srv2_in_sub_config = std::dynamic_pointer_cast<app::ut::test_service>(gn_sub_srv2);
+
+    // Optional object, passed as parameter
+    auto data3 = srv2_in_sub_config->input("data1").lock();
+    CPPUNIT_ASSERT(data3 != nullptr);
+    auto str_data3 = std::dynamic_pointer_cast<const sight::data::string>(data3.get_shared());
+    CPPUNIT_ASSERT(str_data3->value() == "value");
+
+    // Optional object, not passed as parameter
+    auto data4 = srv2_in_sub_config->input("data2").lock();
+    CPPUNIT_ASSERT(data4 != nullptr);
+    auto str_data4 = std::dynamic_pointer_cast<const sight::data::string>(data4.get_shared());
+    CPPUNIT_ASSERT(str_data4->value() == "default_value");
 
     // check connections through the subconfig channel
     CPPUNIT_ASSERT(!srv1->is_updated());

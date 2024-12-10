@@ -56,7 +56,14 @@ public:
     std::string desc;
     using parameters_t = std::map<std::string, std::string>;
     parameters_t parameters;
-    using objects_t = std::map<std::string, std::pair<std::string, bool> >; ///< uid, type, optional
+    struct objects_info_t
+    {
+        std::string type;
+        bool deferred;
+        bool optional;
+        std::string value;
+    };
+    using objects_t = std::map<std::string, objects_info_t>;
     objects_t objects;
     core::runtime::config_t config;
     std::string module_id;      ///< Module identifier (used to start the module when the appConfig is launched)
@@ -118,7 +125,7 @@ public:
     SIGHT_APP_API core::runtime::config_t get_adapted_template_config(
         const std::string& _config_id,
         const field_adaptor_t _replace_fields,
-        bool _auto_prefix_id
+        const std::string& _auto_prefix_id
     );
 
     /**

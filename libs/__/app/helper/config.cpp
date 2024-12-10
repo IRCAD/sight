@@ -132,22 +132,58 @@ void config::parse_object(
         type.second = true;
     }
 
-    // Build mode
-    config_attribute_t build_mode("", false);
-    if(const auto build_mode_cfg = config.get_optional<std::string>("<xmlattr>.src"); build_mode_cfg.has_value())
+    enum modifier_t : std::uint8_t
     {
-        build_mode.first = build_mode_cfg.value();
-        SIGHT_THROW_IF("\"src\" attribute is empty.", build_mode.first.empty());
+        none,
+        deferred,
+        reference,
+        preference
+    } modifier = none;
 
-        SIGHT_ASSERT(
-            "Unhandled build mode (bad \"src\" attribute). Must be \"new\", \"deferred\", \"ref\", or \"preference\".",
-            build_mode.first == "ref" || build_mode.first == "src"
-            || build_mode.first == "deferred" || build_mode.first == "preference"
-        );
-        build_mode.second = true;
+    if(const auto deferred_cfg = config.get_optional<bool>("<xmlattr>.deferred"); deferred_cfg.has_value())
+    {
+        modifier = deferred;
     }
 
-    if(build_mode.first == "deferred")
+    if(const auto ref_cfg = config.get_optional<bool>("<xmlattr>.reference"); ref_cfg.has_value())
+    {
+        SIGHT_ASSERT("Deferred object cannot also be a reference", modifier == none);
+        modifier = reference;
+    }
+
+    if(const auto preference_cfg = config.get_optional<bool>("<xmlattr>.preference"); preference_cfg.has_value())
+    {
+        SIGHT_ASSERT("Deferred and reference objects cannot be set as preference", modifier == none);
+        modifier = preference;
+    }
+
+    if(const auto modifier_cfg = config.get_optional<std::string>("<xmlattr>.src"); modifier_cfg.has_value())
+    {
+        SIGHT_ASSERT(
+            "Do not use obsolete 'src' attribute with 'deferred', 'reference' or 'preference' attribute.",
+            modifier == none
+        );
+
+        modifier =
+            *modifier_cfg == "deferred" ? deferred
+                                        : (*modifier_cfg == "ref") ? reference
+                                                                   : (*modifier_cfg
+                                                                      == "preference") ? preference : none;
+        SIGHT_THROW_IF(
+            "\"src\" attribute is empty or invalid: " << std::quoted(*modifier_cfg) << ". "
+            << "Must be \"new\", \"deferred\", \"ref\", or \"preference\".",
+            modifier == none
+        );
+
+        FW_DEPRECATED_MSG(
+            "'src' attribute for <object> will be removed. For deferred objects, please use deferred=\"true\" "
+            "instead of src=\"deferred\", for preferences use preference=\"true\" and to pass objects as src=\"ref\", "
+            "just pass them as parameters, it is no longer required to declare them twice.",
+            "26.0"
+        );
+    }
+
+    if(modifier == deferred)
     {
         SIGHT_THROW_IF("Missing attribute \"id\".", !id.second);
         [[maybe_unused]] const auto ret = _objects.deferred.insert(id.first);
@@ -159,7 +195,7 @@ void config::parse_object(
         data::object::sptr obj;
 
         // Create new or get the referenced object
-        if(build_mode.second && build_mode.first == "ref")
+        if(modifier == reference)
         {
             SIGHT_THROW_IF("Missing attribute \"id\".", !id.second);
             obj = get_object(type, id.first);
@@ -188,7 +224,7 @@ void config::parse_object(
         const auto real_id = id.second ? id.first : obj->get_id();
         _objects.created[real_id] = obj;
 
-        if(build_mode.first == "preference")
+        if(modifier == preference)
         {
             SIGHT_THROW_IF("Missing attribute \"id\".", !id.second);
             [[maybe_unused]] const auto ret = _objects.prefs.insert(id.first);
