@@ -501,28 +501,16 @@ deploy:apps-windows-release:
     rules:
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
-deploy-doxygen:
+# Pages must be deployed in a single job, named "pages"
+pages:
     image: "${SIGHT_UBUNTU_24_IMAGE}"
     stage: deploy
     needs:
         - job: build:ubuntu-24.04-RelWithDebInfo-clang
-          artifacts: true
-    script:
-        - mv .build/Documentation/Doxygen/html/ public/
-    artifacts:
-        paths:
-            - public
-    only:
-        - dev
-
-deploy-coverage:
-    image: "${SIGHT_UBUNTU_24_IMAGE}"
-    stage: deploy
-    needs:
         - job: build:ubuntu-24.04-coverage-gcc
           artifacts: true
     script:
-        - mkdir -p public
+        - mv .build/Documentation/Doxygen/html/ public/
         - mv .build/coverage/ public/coverage
     artifacts:
         paths:
