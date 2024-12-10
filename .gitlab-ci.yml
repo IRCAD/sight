@@ -7,10 +7,10 @@ stages:
 
 include:
     - project: "sight/sight-gitlab"
-      ref: a05db919f7f163231e369aefe27c33ce6dd15a49
+      ref: 8d212bf32b05fbf1dcf714d70fc870995723392c
       file: "/.templates/deploy.yml"
     - project: "sight/sight-gitlab"
-      ref: a05db919f7f163231e369aefe27c33ce6dd15a49
+      ref: 8d212bf32b05fbf1dcf714d70fc870995723392c
       file: "/.templates/build.yml"
 
 variables:
@@ -18,7 +18,6 @@ variables:
 
 lint:ubuntu-24.04:
     extends: .lint
-    image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         ENABLE_CLANG_TIDY: "ON"
     tags:
@@ -155,7 +154,6 @@ lint:ubuntu-24.04:
 
 build:ubuntu-24.04-debug-gcc:
     extends: .linux_build
-    image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         BUILD_TYPE: "Debug"
         SIGHT_BUILD_SDK: "ON"
@@ -168,7 +166,6 @@ build:ubuntu-24.04-debug-gcc:
 
 build:ubuntu-24.04-release-gcc:
     extends: .linux_build
-    image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         BUILD_TYPE: "Release"
         SIGHT_BUILD_SDK: "ON"
@@ -182,7 +179,6 @@ build:ubuntu-24.04-release-gcc:
 
 build:ubuntu-24.04-RelWithDebInfo-clang:
     extends: .linux_build
-    image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_IGNORE_UNSTABLE_TESTS: 1
@@ -208,7 +204,6 @@ build:ubuntu-22.04-RelWithDebInfo-clang:
 
 build:ubuntu-24.04-coverage-gcc:
     extends: .linux_build
-    image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_ENABLE_COVERAGE: "ON"
@@ -221,7 +216,6 @@ build:ubuntu-24.04-coverage-gcc:
 
 build:ubuntu-24.04-coverage-gcc-draft:
     extends: .linux_build
-    image: "${SIGHT_UBUNTU_24_IMAGE}"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_ENABLE_COVERAGE: "ON"
@@ -245,7 +239,6 @@ deploy-test:linux-debug:
 
 deploy:linux-debug:
     extends: .linux_deploy
-    image: "${SIGHT_UBUNTU_24_IMAGE}"
     needs:
         - job: build:ubuntu-24.04-debug-gcc
           artifacts: true
@@ -271,7 +264,6 @@ deploy-test:linux-release:
 
 deploy:linux-release:
     extends: .linux_deploy
-    image: "${SIGHT_UBUNTU_24_IMAGE}"
     needs:
         - job: build:ubuntu-24.04-release-gcc
           artifacts: true
@@ -284,7 +276,6 @@ deploy:linux-release:
 
 deploy:apps-linux-release:
     extends: .linux_deploy
-    image: "${SIGHT_UBUNTU_24_IMAGE}"
     needs:
         - job: build:ubuntu-24.04-release-gcc
           artifacts: true
