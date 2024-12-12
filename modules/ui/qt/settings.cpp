@@ -2095,6 +2095,7 @@ void settings::update_enum_range(std::string _options, std::string _key)
 
     if(combobox != nullptr)
     {
+        combobox->blockSignals(true);
         combobox->clear();
 
         std::vector<std::string> values;
@@ -2116,6 +2117,8 @@ void settings::update_enum_range(std::string _options, std::string _key)
             combobox->setItemData(idx, QString::fromStdString(choice));
             ++idx;
         }
+
+        combobox->blockSignals(false);
     }
 
     this->block_signals(false);
