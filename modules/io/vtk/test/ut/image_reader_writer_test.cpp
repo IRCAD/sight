@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,7 +112,9 @@ void image_reader_writer_test::test_vtk_image_reader()
 
     // Data expected
     data::image::spacing_t spacing_expected;
+    // NOLINTNEXTLINE(modernize-use-std-numbers)
     spacing_expected[0] = 1.732;
+    // NOLINTNEXTLINE(modernize-use-std-numbers)
     spacing_expected[1] = 1.732;
     spacing_expected[2] = 3.2;
 
@@ -294,13 +296,11 @@ void image_reader_writer_test::test_image_reader_extension()
 void image_reader_writer_test::test_vtk_image_writer()
 {
     // Data to write
-    core::type type                         = core::type::UINT8;
-    const data::image::size_t size_expected = {10, 20, 30
-    };
-    const data::image::spacing_t spacing_expected = {0.24, 1.07, 2.21
-    };
-    const data::image::origin_t origin_expected = {-5.6, 15.16, 11.11
-    };
+    core::type type                                       = core::type::UINT8;
+    const data::image::size_t size_expected               = {10, 20, 30};
+    const data::image::spacing_t spacing_expected         = {0.24, 1.07, 2.21};
+    const data::image::origin_t origin_expected           = {-5.6, 15.16, 11.11};
+    const data::image::orientation_t orientation_expected = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
 
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generate_image(
@@ -308,6 +308,7 @@ void image_reader_writer_test::test_vtk_image_writer()
         size_expected,
         spacing_expected,
         origin_expected,
+        orientation_expected,
         type,
         data::image::rgba,
         0
@@ -368,6 +369,9 @@ void image_reader_writer_test::test_vtk_image_series_writer()
     auto image_series = std::make_shared<data::image_series>();
     utest_data::generator::image::generate_random_image(image_series, type);
 
+    // Orientation seems to be unsupported by VTK
+    image_series->set_orientation({1, 0, 0, 0, 1, 0, 0, 0, 1});
+
     core::os::temp_dir tmp_dir;
     const auto file = tmp_dir / "imageSeries.vtk";
 
@@ -389,13 +393,11 @@ void image_reader_writer_test::test_vtk_image_series_writer()
 void image_reader_writer_test::test_vti_image_writer()
 {
     // Data to write
-    core::type type                         = core::type::UINT8;
-    const data::image::size_t size_expected = {10, 20, 30
-    };
-    const data::image::spacing_t spacing_expected = {0.24, 1.07, 2.21
-    };
-    const data::image::origin_t origin_expected = {-5.6, 15.16, 11.11
-    };
+    core::type type                                       = core::type::UINT8;
+    const data::image::size_t size_expected               = {10, 20, 30};
+    const data::image::spacing_t spacing_expected         = {0.24, 1.07, 2.21};
+    const data::image::origin_t origin_expected           = {-5.6, 15.16, 11.11};
+    const data::image::orientation_t orientation_expected = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
 
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generate_image(
@@ -403,6 +405,7 @@ void image_reader_writer_test::test_vti_image_writer()
         size_expected,
         spacing_expected,
         origin_expected,
+        orientation_expected,
         type,
         data::image::gray_scale,
         0
@@ -419,9 +422,10 @@ void image_reader_writer_test::test_vti_image_writer()
     run_image_srv("sight::module::io::vtk::image_reader", get_io_configuration(file), image_from_disk);
 
     // Data read
-    data::image::spacing_t spacing_read = image->spacing();
-    data::image::origin_t origin_read   = image->origin();
-    data::image::size_t size_read       = image->size();
+    data::image::spacing_t spacing_read         = image->spacing();
+    data::image::origin_t origin_read           = image->origin();
+    data::image::orientation_t orientation_read = image->orientation();
+    data::image::size_t size_read               = image->size();
 
     CPPUNIT_ASSERT_EQUAL(spacing_expected.size(), spacing_read.size());
     CPPUNIT_ASSERT_EQUAL(origin_expected.size(), origin_read.size());
@@ -434,6 +438,11 @@ void image_reader_writer_test::test_vti_image_writer()
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on x", origin_expected[0], origin_read[0], EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on y", origin_expected[1], origin_read[1], EPSILON);
     CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Incorrect origin on z", origin_expected[2], origin_read[2], EPSILON);
+
+    for(std::size_t i = 0 ; i < orientation_read.size() ; ++i)
+    {
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(orientation_expected[i], orientation_read[i], EPSILON);
+    }
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on x", size_expected[0], size_read[0]);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect size on y", size_expected[1], size_read[1]);
@@ -460,13 +469,11 @@ void image_reader_writer_test::test_vti_image_writer()
 void image_reader_writer_test::test_mhd_image_writer()
 {
     // Data to write
-    core::type type                         = core::type::UINT8;
-    const data::image::size_t size_expected = {10, 20, 30
-    };
-    const data::image::spacing_t spacing_expected = {0.24, 1.07, 2.21
-    };
-    const data::image::origin_t origin_expected = {-5.6, 15.16, 11.11
-    };
+    core::type type                                       = core::type::UINT8;
+    const data::image::size_t size_expected               = {10, 20, 30};
+    const data::image::spacing_t spacing_expected         = {0.24, 1.07, 2.21};
+    const data::image::origin_t origin_expected           = {-5.6, 15.16, 11.11};
+    const data::image::orientation_t orientation_expected = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
 
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generate_image(
@@ -474,6 +481,7 @@ void image_reader_writer_test::test_mhd_image_writer()
         size_expected,
         spacing_expected,
         origin_expected,
+        orientation_expected,
         type,
         data::image::rgb,
         0
@@ -535,6 +543,7 @@ void image_reader_writer_test::test_image_writer_extension()
     const data::image::size_t size_expected {10, 20, 30};
     const data::image::spacing_t spacing_expected {0.24, 1.07, 2.21};
     const data::image::origin_t origin_expected {-5.6, 15.16, 11.11};
+    const data::image::orientation_t orientation_expected = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
 
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generate_image(
@@ -542,6 +551,7 @@ void image_reader_writer_test::test_image_writer_extension()
         size_expected,
         spacing_expected,
         origin_expected,
+        orientation_expected,
         type,
         data::image::gray_scale,
         0

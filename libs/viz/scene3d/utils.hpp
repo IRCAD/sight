@@ -35,7 +35,6 @@
 #include <OGRE/OgreTexture.h>
 
 #include <optional>
-#include <string>
 
 namespace sight::viz::scene3d
 {
@@ -162,16 +161,18 @@ public:
     /// Copies an ogre matrix to a Sight matrix.
     SIGHT_VIZ_SCENE3D_API static void from_ogre_matrix(const Ogre::Matrix4& _mx, const data::matrix4::sptr& _tm3d);
 
-    /// Copies the image's spacing and origin into Ogre vectors.
-    SIGHT_VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convert_spacing_and_origin(
-        const data::image::csptr& _img
-    );
-
-    /// Copies the image's spacing and origin into Ogre vectors.
-    /// Version with const reference of image
-    SIGHT_VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convert_spacing_and_origin(
-        const data::image& _img
-    );
+    /**
+     * @brief Returns image spacing, origin and orientation to Ogre types.
+     *
+     * @param _image
+     * @return image spacing, origin and orientation
+     *
+     * @{
+     */
+    SIGHT_VIZ_SCENE3D_API static Ogre::Vector3 get_ogre_spacing(const data::image& _image);
+    SIGHT_VIZ_SCENE3D_API static Ogre::Vector3 get_ogre_origin(const data::image& _image);
+    SIGHT_VIZ_SCENE3D_API static Ogre::Quaternion get_ogre_orientation(const data::image& _image);
+    /// @}
 
     /// Converts world coordinates to slices indexes of _image if possible, thrown an exception if not.
     SIGHT_VIZ_SCENE3D_API static Ogre::Vector3i world_to_slices(const data::image& _image, const Ogre::Vector3& _world);
@@ -196,16 +197,9 @@ public:
      * @brief Pick a voxel in a 3D image at a world-space position.
      * @param _image source image.
      * @param _position 3D world-space position.
-     * @param _origin image origin.
-     * @param _spacing image spacing.
      * @return True if an object has been selected.
      */
-    SIGHT_VIZ_SCENE3D_API static std::string pick_image(
-        const data::image& _image,
-        const Ogre::Vector3& _position,
-        const Ogre::Vector3& _origin,
-        const Ogre::Vector3& _spacing
-    );
+    SIGHT_VIZ_SCENE3D_API static std::string pick_image(const data::image& _image, const Ogre::Vector3& _position);
 
 private:
 

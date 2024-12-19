@@ -80,15 +80,15 @@ void negato::configuring()
 
         if(orientation_value == "axial")
         {
-            m_orientation = orientation_t::axial;
+            m_axis = axis_t::axial;
         }
         else if(orientation_value == "sagittal")
         {
-            m_orientation = orientation_t::sagittal;
+            m_axis = axis_t::sagittal;
         }
         else if(orientation_value == "frontal")
         {
-            m_orientation = orientation_t::frontal;
+            m_axis = axis_t::frontal;
         }
     }
 
@@ -128,7 +128,7 @@ void negato::update_buffer_from_image(QImage* _img)
     std::uint8_t* p_dest = _img->bits();
 
     // Fill image according to current slice type:
-    if(m_orientation == orientation_t::sagittal) // sagittal
+    if(m_axis == axis_t::sagittal) // sagittal
     {
         const auto sagital_index = static_cast<std::size_t>(m_sagittal_index);
 
@@ -151,7 +151,7 @@ void negato::update_buffer_from_image(QImage* _img)
             }
         }
     }
-    else if(m_orientation == orientation_t::frontal) // frontal
+    else if(m_axis == axis_t::frontal) // frontal
     {
         const auto frontal_index   = static_cast<std::size_t>(m_frontal_index);
         const std::size_t y_offset = frontal_index * size[0];
@@ -172,7 +172,7 @@ void negato::update_buffer_from_image(QImage* _img)
             }
         }
     }
-    else if(m_orientation == orientation_t::axial) // axial
+    else if(m_axis == axis_t::axial) // axial
     {
         const auto axial_index     = static_cast<std::size_t>(m_axial_index);
         const std::size_t z_offset = axial_index * image_z_offset;
@@ -233,9 +233,9 @@ QImage* negato::create_q_image()
     std::array<double, 2> q_image_origin {};
     std::array<int, 2> q_image_size {};
 
-    switch(m_orientation)
+    switch(m_axis)
     {
-        case orientation_t::x_axis: // sagittal
+        case axis_t::x_axis: // sagittal
             this->m_y_axis->set_scale(-1);
             q_image_size[0]    = static_cast<int>(size[1]);
             q_image_size[1]    = static_cast<int>(size[2]);
@@ -245,7 +245,7 @@ QImage* negato::create_q_image()
             q_image_origin[1]  = -(origin[2] + static_cast<double>(size[2]) * spacing[2] - 0.5 * spacing[2]);
             break;
 
-        case orientation_t::y_axis: // frontal
+        case axis_t::y_axis: // frontal
             q_image_size[0]    = static_cast<int>(size[0]);
             q_image_size[1]    = static_cast<int>(size[2]);
             q_image_spacing[0] = spacing[0];
@@ -254,7 +254,7 @@ QImage* negato::create_q_image()
             q_image_origin[1]  = -(origin[2] + static_cast<double>(size[2]) * spacing[2] - 0.5 * spacing[2]);
             break;
 
-        case orientation_t::z_axis: // axial
+        case axis_t::z_axis: // axial
             q_image_size[0]    = static_cast<int>(size[0]);
             q_image_size[1]    = static_cast<int>(size[1]);
             q_image_spacing[0] = spacing[0];
@@ -294,11 +294,11 @@ void negato::starting()
 
     auto image = m_image.lock();
 
-    m_axial_index   = std::max(0, int(medHelper::get_slice_index(*image, medHelper::orientation_t::axial).value_or(0)));
+    m_axial_index   = std::max(0, int(medHelper::get_slice_index(*image, medHelper::axis_t::axial).value_or(0)));
     m_frontal_index =
-        std::max(0, int(medHelper::get_slice_index(*image, medHelper::orientation_t::frontal).value_or(0)));
+        std::max(0, int(medHelper::get_slice_index(*image, medHelper::axis_t::frontal).value_or(0)));
     m_sagittal_index =
-        std::max(0, int(medHelper::get_slice_index(*image, medHelper::orientation_t::sagittal).value_or(0)));
+        std::max(0, int(medHelper::get_slice_index(*image, medHelper::axis_t::sagittal).value_or(0)));
 
     m_pixmap_item = new QGraphicsPixmapItem();
     m_pixmap_item->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
@@ -346,17 +346,17 @@ void negato::update_slice_type(int _from, int _to)
 {
     if(m_change_slice_type_allowed)
     {
-        if(_to == static_cast<int>(m_orientation))
+        if(_to == static_cast<int>(m_axis))
         {
-            m_orientation = static_cast<orientation_t>(_from);
+            m_axis = static_cast<axis_t>(_from);
         }
-        else if(_from == static_cast<int>(m_orientation))
+        else if(_from == static_cast<int>(m_axis))
         {
-            m_orientation = static_cast<orientation_t>(_to);
+            m_axis = static_cast<axis_t>(_to);
         }
 
         // manages the modification of axes
-        if(m_orientation == orientation_t::z_axis)
+        if(m_axis == axis_t::z_axis)
         {
             this->m_y_axis->set_scale(1);
         }

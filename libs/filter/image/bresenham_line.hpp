@@ -39,7 +39,7 @@ class SIGHT_FILTER_IMAGE_CLASS_API bresenham_line
 public:
 
     /// image orientation.
-    using Orientation = data::helper::medical_image::orientation_t;
+    using Orientation = data::helper::medical_image::axis_t;
 
     /// Voxel coordinate type.
     using coordinates_t = std::array<data::image::index_t, 3>;

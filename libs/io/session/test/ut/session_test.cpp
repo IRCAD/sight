@@ -627,7 +627,11 @@ inline data::image::sptr generate<data::image>(const std::size_t _variant)
             // thus the 0.1 + static_cast<double>(variant)
             utest_data::generator::image::generate_image(
                 object,
-                {_variant + 5, _variant + 5, _variant + 5},
+            {
+                _variant + 5,
+                _variant + 5,
+                _variant + 5
+            },
             {
                 0.1 + static_cast<double>(_variant),
                 0.2 + static_cast<double>(_variant),
@@ -637,6 +641,9 @@ inline data::image::sptr generate<data::image>(const std::size_t _variant)
                 0.4 + static_cast<double>(_variant),
                 0.5 + static_cast<double>(_variant),
                 0.6 + static_cast<double>(_variant)
+            },
+            {
+                0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6
             },
                 std::is_same_v<type, double>
                 ? core::type::DOUBLE

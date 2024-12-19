@@ -118,7 +118,7 @@ private:
     void update_default_value();
 
     /// Slicing orientation. Determines the two axes defining the plane.
-    data::helper::medical_image::orientation_t m_orientation {data::helper::medical_image::orientation_t::z_axis};
+    data::helper::medical_image::axis_t m_orientation {data::helper::medical_image::axis_t::z_axis};
 
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;

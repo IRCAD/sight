@@ -215,15 +215,15 @@ void point::configuring()
     const std::string orientation = config.get<std::string>(s_ORIENTATION_CONFIG, "axial");
     if(orientation == "axial")
     {
-        m_orientation = orientation_t::z_axis;
+        m_axis = axis_t::z_axis;
     }
     else if(orientation == "frontal")
     {
-        m_orientation = orientation_t::y_axis;
+        m_axis = axis_t::y_axis;
     }
     else if(orientation == "sagittal")
     {
-        m_orientation = orientation_t::x_axis;
+        m_axis = axis_t::x_axis;
     }
     else
     {
@@ -1263,19 +1263,19 @@ void point::highlight(std::shared_ptr<selected_ogre_fiducial> _selected_ogre_fid
 
 void point::change_slice_type(int _from, int _to)
 {
-    const auto to_orientation   = static_cast<orientation_t>(_to);
-    const auto from_orientation = static_cast<orientation_t>(_from);
+    const auto to_orientation   = static_cast<axis_t>(_to);
+    const auto from_orientation = static_cast<axis_t>(_from);
 
-    const auto plane_orientation = m_orientation;
-    const auto new_orientation   = m_orientation == to_orientation
+    const auto plane_orientation = m_axis;
+    const auto new_orientation   = m_axis == to_orientation
                                    ? from_orientation
-                                   : m_orientation == from_orientation
+                                   : m_axis == from_orientation
                                    ? to_orientation
-                                   : m_orientation;
+                                   : m_axis;
 
     if(plane_orientation != new_orientation)
     {
-        m_orientation = new_orientation;
+        m_axis = new_orientation;
 
         apply_visibility();
     }
@@ -1646,48 +1646,36 @@ bool point::is_max_fiducials_reached()
 //------------------------------------------------------------------------------
 
 bool point::check_fiducial_visibility(
-    double _fiducial_position,
-    float _fiducial_size,
-    double _spacing,
-    double _slice_position,
-    point::view_distance _view_distance
-)
-{
-    if(_view_distance == point::view_distance::slices_in_range)
-    {
-        // Check if the position is the same than slice position
-        const auto group_half_size = _fiducial_size * 0.5;
-        const auto max_size        = std::max(group_half_size, _spacing);
-
-        return core::is_greater(_fiducial_position, (_slice_position - _fiducial_size))
-               && core::is_less(_fiducial_position, (_slice_position + max_size));
-    }
-
-    if(_view_distance == point::view_distance::current_slice)
-    {
-        // Check if the position is the same than slice position
-        const auto rounded_position       = std::round(_fiducial_position / _spacing);
-        const auto rounded_slice_position = std::round(_slice_position / _spacing);
-
-        return core::is_equal(rounded_position, rounded_slice_position);
-    }
-
-    return true;
-}
-
-//------------------------------------------------------------------------------
-
-bool point::check_fiducial_visibility(
     const std::vector<double>& _fiducial_position,
     float _fiducial_size,
     const data::image_series& _image
 ) const
 {
-    const auto fiducial_position = _fiducial_position[m_orientation];
-    const auto spacing           = _image.spacing()[m_orientation];
-    const auto slice_position    = data::helper::medical_image::get_slice_position(_image, m_orientation).value_or(0);
+    const auto axis_spacing = _image.spacing()[m_axis];
 
-    return check_fiducial_visibility(fiducial_position, _fiducial_size, spacing, slice_position, m_view_distance);
+    const auto slice_index = sight::data::helper::medical_image::get_slice_index(
+        _image,
+        m_axis
+    ).value_or(0);
+
+    const auto fiducial_axis_position = _image.world_to_image(_fiducial_position, true)[m_axis];
+
+    if(m_view_distance == point::view_distance::slices_in_range)
+    {
+        // Check if the position is the same than slice position
+        const auto fiducial_axis_size = _fiducial_size / axis_spacing;
+
+        return fiducial_axis_position >= std::int64_t(slice_index) - std::int64_t(std::ceil(fiducial_axis_size))
+               && fiducial_axis_position <= std::int64_t(slice_index) + std::int64_t(std::ceil(fiducial_axis_size));
+    }
+
+    if(m_view_distance == point::view_distance::current_slice)
+    {
+        // Check if the position is the same than slice position
+        return fiducial_axis_position == slice_index;
+    }
+
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -1796,7 +1784,7 @@ void point::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
         m_must_show_contextual_menu = false;
 
         // Find the place to put the new fiducial.
-        if(const auto pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *get_scene_manager(), true);
+        if(const auto pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *get_scene_manager());
            pos)
         {
             set_cursor(Qt::ClosedHandCursor);
@@ -1831,7 +1819,7 @@ void point::mouse_move_event(mouse_button /*_button*/, modifier /*_mods*/, int _
         {
             Ogre::SceneManager* const scene_mgr = layer->get_scene_manager();
             // If something is picked, we will snap the fiducial to it
-            auto picked_pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *scene_mgr, true);
+            auto picked_pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *scene_mgr);
             if(picked_pos.has_value())
             {
                 new_pos              = picked_pos->second;

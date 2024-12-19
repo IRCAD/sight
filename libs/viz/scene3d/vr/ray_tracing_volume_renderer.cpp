@@ -288,7 +288,7 @@ void ray_tracing_volume_renderer::update_image(
         return;
     }
 
-    this->scale_translate_cube(_image->spacing(), _image->origin());
+    scale_translate_cube(*_image);
 
     const data::image::size_t& new_size = _image->size();
 

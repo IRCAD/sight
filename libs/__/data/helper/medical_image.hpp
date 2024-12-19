@@ -62,7 +62,7 @@ namespace medical_image
 using index_t = std::array<int, 3>;
 using vec3_t  = std::array<double, 3>;
 
-enum orientation_t
+enum axis_t
 {
     /// Directions.
     x_axis = 0,
@@ -130,23 +130,6 @@ SPTR(data::image::buffer_t) get_pixel_in_image_space(data::image::sptr _image, T
 template<typename T>
 [[nodiscard]] std::pair<T, T> get_min_max(data::image::csptr _img);
 
-/**
- * @brief Compute the indices of a 3D position inside an image. Beware, to be as generic as possible, no boundary check
- * is performed so it can lie outside the image. If you want to use it to access a voxel inside the image, be sure to
- * make these checks first and handle what you want to do in this case.
- * @param[in] _image : input image
- * @param[in] _pos : the 3D coordinates of the voxel
- * @return: the indices of the voxel
- */
-SIGHT_DATA_API index_t compute_voxel_indices(const data::image& _image, const vec3_t& _pos);
-
-/**
- * @brief Return the bounding box surrounding an image.
- * @param[in] _image : input image
- * @return: the bounding box as the minimum and a maximum coordinates
- */
-SIGHT_DATA_API std::pair<vec3_t, vec3_t> compute_bounding_box(const data::image& _image);
-
 // Getter/Setter for specific image fields
 
 /**
@@ -154,51 +137,52 @@ SIGHT_DATA_API std::pair<vec3_t, vec3_t> compute_bounding_box(const data::image&
  * Frontal).
  *
  * @param _image : input image reference
- * @param _orientation : desired orientation
+ * @param _axis : desired orientation
  * @return the current index as a std::int64_t.
  */
 SIGHT_DATA_API std::optional<std::int64_t> get_slice_index(
     const data::image& _image,
-    const orientation_t& _orientation
+    const axis_t& _axis
 );
 
 /**
- * @brief Helper function to get current slice position on a medical image in a specific orientation (Axial, Sagittal,
+ * @brief Helper function to set current slice index on a medical image in a specific axis (Axial, Sagittal,
  * Frontal).
  *
  * @param _image : input image reference
- * @param _orientation : desired orientation
- * @return the current position as a double_t.
- */
-
-SIGHT_DATA_API std::optional<double_t> get_slice_position(const data::image& _image, const orientation_t& _orientation);
-/**
- * @brief Helper function to set current slice index on a medical image in a specific orientation (Axial, Sagittal,
- * Frontal).
- *
- * @param _image : input image reference
- * @param _orientation : desired orientation.
+ * @param _axis : desired orientation.
  * @param _slice_count : current slice index to set as std::int64_t.
  */
 SIGHT_DATA_API void set_slice_index(
     data::image& _image,
-    const orientation_t& _orientation,
+    const axis_t& _axis,
     std::int64_t _slice_count
 );
 
 /**
- * @brief Helper function to set current slice position on a medical image in a specific orientation (Axial, Sagittal,
- * Frontal).
+ * @brief Helper function to get current slice position on a medical image in a specific orientation (Axial, Sagittal,
+ * Frontal). The position (in mm) is in image coordinates, as the image orientation is ignored.
  *
  * @param _image : input image reference
- * @param _orientation : desired orientation.
- * @param _position  : current slice position to set as double_t.
+ * @param _axis : desired orientation
+ * @return the current slice position (mm) in image.
+ */
+
+SIGHT_DATA_API std::optional<double> get_slice_position(const data::image& _image, const axis_t& _axis);
+
+/**
+ * @brief Helper function to set current slice position on a medical image in a specific axis (Axial, Sagittal,
+ * Frontal). The position (in mm) is in image coordinates, as the image orientation is ignored.
+ *
+ * @param _image : input image reference
+ * @param _axis : desired orientation.
+ * @param _position  : slice position (mm) in image to set.
  */
 
 SIGHT_DATA_API void set_slice_position(
     data::image& _image,
-    const orientation_t& _orientation,
-    const double_t& _position
+    const axis_t& _axis,
+    double _position
 );
 
 /**
@@ -223,15 +207,14 @@ SIGHT_DATA_API void set_landmarks(data::image& _image, const data::point_list::s
  *
  * @param _image : The input image as a constant reference to data::image.
  * @param _point : The coordinates of the fiducial point as a std::array of three doubles.
- * @param _orientation : The orientation (axial, sagittal, or frontal) to calculate the slice index.
+ * @param _axis : The orientation (axial, sagittal, or frontal) to calculate the slice index.
  * @return std::optional<std::int64_t> : The calculated slice index as an integer.
  */
 
 SIGHT_DATA_API std::optional<std::int64_t> get_fiducial_slice_index(
     const data::image& _image,
-    const std::array<double,
-                     3>& _point,
-    orientation_t _orientation
+    const vec3_t& _point,
+    axis_t _axis
 );
 
 /**
@@ -315,18 +298,25 @@ SIGHT_DATA_API std::string get_label(const data::image& _image);
 SIGHT_DATA_API void set_label(data::image& _image, const std::string& _label);
 
 /**
+ * @deprecated Use sight::data::image::get_direction() instead
  * @brief Helper function to get the direction field from an image data.
  *
  * @param _image : input image reference.
  */
-SIGHT_DATA_API data::matrix4::sptr get_direction(const data::image& _image);
+[[deprecated("Use sight::data::image::orientation() instead")]] SIGHT_DATA_API data::matrix4::sptr get_direction(
+    const data::image& _image
+);
 
 /**
+ * @deprecated Use sight::data::image::set_orientation() instead
  * @brief Helper function to set the direction field from an image data.
  *
  * @param _image : input image reference.
  */
-SIGHT_DATA_API void set_direction(data::image& _image, data::matrix4::sptr _direction);
+[[deprecated("Use sight::data::image::set_orientation() instead")]] SIGHT_DATA_API void set_direction(
+    data::image& _image,
+    data::matrix4::sptr _direction
+);
 
 // ------------------------------------------------------------------------------
 

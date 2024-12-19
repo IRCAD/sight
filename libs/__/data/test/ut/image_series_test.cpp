@@ -83,7 +83,7 @@ void image_series_test::equality_test()
     series2->set_origin(series1->origin());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->set_orientation({0.36, -0.8, 0.48, 0.48, 0.6, 0.64, -0.8, 0.0, 0.6});
+    series1->set_orientation({0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6});
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->set_orientation(series1->orientation());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));

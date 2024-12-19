@@ -257,14 +257,14 @@ private:
     /// Returns true if the given ruler is on current slice
     bool is_visible_on_current_slice(std::array<double, 3> _begin, std::array<double, 3> _end);
 
-    using orientation_t = sight::data::helper::medical_image::orientation_t;
+    using axis_t = sight::data::helper::medical_image::axis_t;
 
-    orientation_t m_orientation {
-        orientation_t::z_axis
+    axis_t m_axis {
+        axis_t::z_axis
     };
 
     /// Defines the radius of spheres.
-    float m_sphere_radius {3.0F};
+    float m_sphere_radius {10.0F};
 
     /// Defines the font size in points.
     std::size_t m_font_size {16};

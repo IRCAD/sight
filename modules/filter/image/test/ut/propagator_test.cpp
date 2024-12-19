@@ -36,9 +36,9 @@
 #include <boost/property_tree/xml_parser.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::filter::mesh::ut::propagator_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::filter::image::ut::propagator_test);
 
-namespace sight::module::filter::mesh::ut
+namespace sight::module::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -64,15 +64,17 @@ void propagator_test::propagate()
     auto image           = std::make_shared<sight::data::image>();
     const auto dump_lock = image->dump_lock();
 
-    const data::image::size_t size       = {10, 20, 90};
-    const data::image::spacing_t spacing = {1.4, 3.5, 0.5};
-    const data::image::origin_t origin   = {100., -208.2, 14.};
+    const data::image::size_t size               = {10, 20, 90};
+    const data::image::spacing_t spacing         = {1.4, 3.5, 0.5};
+    const data::image::origin_t origin           = {100., -208.2, 14.};
+    const data::image::orientation_t orientation = {1, 0, 0, 0, 1, 0, 0, 0, 1};
 
     utest_data::generator::image::generate_image(
         image,
         size,
         spacing,
         origin,
+        orientation,
         core::type::get<std::int16_t>(),
         data::image::pixel_format_t::gray_scale
     );
@@ -320,4 +322,4 @@ void propagator_test::propagate()
     sight::service::remove(srv);
 }
 
-} // namespace sight::module::filter::mesh::ut
+} // namespace sight::module::filter::image::ut

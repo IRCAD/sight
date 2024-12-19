@@ -64,7 +64,7 @@ void image_test::test_getter_setter()
 {
     const data::image::spacing_t spacing         = {2.5, 2.6};
     const data::image::origin_t origin           = {2.7, 2.8};
-    const data::image::orientation_t orientation = {0.36, -0.8, 0.48, 0.48, 0.6, 0.64, -0.8, 0.0, 0.6};
+    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
     const double windowcenter                    = 10.10;
     const double windowwidth                     = 11.34;
 
@@ -369,7 +369,10 @@ void image_test::test_set_get_pixel_rgba()
                                       static_cast<std::uint8_t>((index * 4 + 2) * 2),
                                       static_cast<std::uint8_t>((index * 4 + 3) * 2)
                     };
-                    img->set_pixel(index, reinterpret_cast<data::image::buffer_t*>(&val));
+                    img->set_pixel(
+                        index,
+                        reinterpret_cast<data::image::buffer_t*>(&val)
+                    );
                 }
             }
         }
@@ -858,11 +861,12 @@ void image_test::image_deep_copy()
         const data::image::sptr img = std::make_shared<data::image>();
         const data::image::size_t size {32, 32, 32};
         const data::image::origin_t origin {0.2, 123.4, 999.666};
+        const data::image::orientation_t orientation {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
         const data::image::spacing_t spacing {0.6, 0.6, 1.8};
         const auto type   = core::type::UINT8;
         const auto format = data::image::pixel_format_t::rgb;
 
-        utest_data::generator::image::generate_image(img, size, spacing, origin, type, format, 0);
+        utest_data::generator::image::generate_image(img, size, spacing, origin, orientation, type, format, 0);
 
         const data::image::sptr img_copy = std::make_shared<data::image>();
 
@@ -872,7 +876,7 @@ void image_test::image_deep_copy()
         const auto img_copy_lock = img_copy->dump_lock();
 
         // Test a bit more image equality operator, which ensure the copy test is really working
-        utest_data::generator::image::generate_image(img_copy, size, spacing, origin, type, format, 1);
+        utest_data::generator::image::generate_image(img_copy, size, spacing, origin, orientation, type, format, 1);
 
         CPPUNIT_ASSERT(*img != *img_copy);
 
@@ -885,11 +889,12 @@ void image_test::image_deep_copy()
         const data::image::sptr img = std::make_shared<data::image>();
         const data::image::size_t size {156, 126, 0};
         const data::image::origin_t origin {1., 1., 0.};
+        const data::image::orientation_t orientation {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
         const data::image::spacing_t spacing {10., 10., 0.};
         const auto type   = core::type::FLOAT;
         const auto format = data::image::pixel_format_t::gray_scale;
 
-        utest_data::generator::image::generate_image(img, size, spacing, origin, type, format, 0);
+        utest_data::generator::image::generate_image(img, size, spacing, origin, orientation, type, format, 0);
 
         const data::image::sptr img_copy = std::make_shared<data::image>();
 
@@ -898,7 +903,7 @@ void image_test::image_deep_copy()
         const auto img_copy_lock = img_copy->dump_lock();
 
         // Test a bit more image equality operator, which ensure the copy test is really working
-        utest_data::generator::image::generate_image(img_copy, size, spacing, origin, type, format, 1);
+        utest_data::generator::image::generate_image(img_copy, size, spacing, origin, orientation, type, format, 1);
 
         CPPUNIT_ASSERT(*img != *img_copy);
 
@@ -962,7 +967,7 @@ void image_test::equality_test()
 
     TEST(set_spacing({1, 2, 3}));
     TEST(set_origin({4, 5, 6}));
-    TEST(set_orientation({0.36, -0.8, 0.48, 0.48, 0.6, 0.64, -0.8, 0.0, 0.6}));
+    TEST(set_orientation({0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6}));
     TEST(set_window_center({7, 8, 9}));
     TEST(set_window_width({10, 11, 12}));
     image1->resize({1, 0, 0}, core::type::UINT8, data::image::pixel_format_t::rgb);
@@ -979,6 +984,310 @@ void image_test::equality_test()
     TEST(set_pixel(0, s_BLACK_PIXEL.data()));
 
     #undef TEST
+}
+
+//------------------------------------------------------------------------------
+
+void image_test::world_test()
+{
+    // Origin at (0, 0, 0) with no rotation
+    // Image(0, 0, 0) -> world(0, 0, 0)
+    // World(0, 0, 0) -> image(0, 0, 0)
+    {
+        auto image = std::make_shared<data::image>();
+        image->set_spacing({1.0, 1.0, 1.0});
+        image->set_origin({0, 0, 0});
+        image->set_orientation({1, 0, 0, 0, 1, 0, 0, 0, 1});
+
+        const auto& actual_world = image->image_to_world({0, 0, 0});
+        const glm::dvec3 expected_world {0.0, 0.0, 0.0};
+        CPPUNIT_ASSERT_EQUAL(expected_world[0], actual_world[0]);
+        CPPUNIT_ASSERT_EQUAL(expected_world[1], actual_world[1]);
+        CPPUNIT_ASSERT_EQUAL(expected_world[2], actual_world[2]);
+
+        const auto actual_image = image->world_to_image({0, 0, 0});
+        const glm::ivec3 expected_image {0, 0, 0};
+        CPPUNIT_ASSERT_EQUAL(expected_image[0], actual_image[0]);
+        CPPUNIT_ASSERT_EQUAL(expected_image[1], actual_image[1]);
+        CPPUNIT_ASSERT_EQUAL(expected_image[2], actual_image[2]);
+    }
+
+    // Origin at (2, 3, 4) with no rotation
+    // Image(0, 0, 0) -> world(2, 3, 4)
+    // World(2, 3, 4) -> image(0, 0, 0)
+    {
+        auto image = std::make_shared<data::image>();
+        image->set_spacing({1.0, 1.0, 1.0});
+        image->set_origin({2.0, 3.0, 4.0});
+        image->set_orientation({1, 0, 0, 0, 1, 0, 0, 0, 1});
+
+        const auto& actual_world = image->image_to_world({0, 0, 0});
+        const glm::dvec3 expected_world {2.0, 3.0, 4.0};
+        CPPUNIT_ASSERT_EQUAL(expected_world[0], actual_world[0]);
+        CPPUNIT_ASSERT_EQUAL(expected_world[1], actual_world[1]);
+        CPPUNIT_ASSERT_EQUAL(expected_world[2], actual_world[2]);
+
+        const auto& actual_image = image->world_to_image({2.0, 3.0, 4.0});
+        const glm::ivec3 expected_image {0, 0, 0};
+        CPPUNIT_ASSERT_EQUAL(expected_image[0], actual_image[0]);
+        CPPUNIT_ASSERT_EQUAL(expected_image[1], actual_image[1]);
+        CPPUNIT_ASSERT_EQUAL(expected_image[2], actual_image[2]);
+    }
+
+    // Origin at (2, 3, 4) with 90° X rotation
+    // Image(0, 0, 0) -> world(2, 3, 4)
+    // World(2, 3, 4) -> image(0, 0, 0)
+    {
+        auto image = std::make_shared<data::image>();
+
+        image->set_spacing({1.0, 1.0, 1.0});
+        image->set_origin({2.0, 3.0, 4.0});
+
+        // 90° rotation around X axis
+        image->set_orientation({1, 0, 0, 0, 0, -1, 0, 1, 0});
+
+        const auto& actual_world = image->image_to_world({0, 0, 0});
+        const glm::dvec3 expected_world {2.0, 3.0, 4.0};
+        CPPUNIT_ASSERT_EQUAL(expected_world[0], actual_world[0]);
+        CPPUNIT_ASSERT_EQUAL(expected_world[1], actual_world[1]);
+        CPPUNIT_ASSERT_EQUAL(expected_world[2], actual_world[2]);
+
+        const auto& actual_image = image->world_to_image({2.0, 3.0, 4.0});
+        const glm::ivec3 expected_image {0, 0, 0};
+        CPPUNIT_ASSERT_EQUAL(expected_image[0], actual_image[0]);
+        CPPUNIT_ASSERT_EQUAL(expected_image[1], actual_image[1]);
+        CPPUNIT_ASSERT_EQUAL(expected_image[2], actual_image[2]);
+    }
+
+    // Origin at (2, 3, 4) with 90° X rotation
+    // Image(5, 6, 7) -> world(7, -4, 10)
+    // World(5, 6, 7) -> image(3, 3, -3)
+    {
+        auto image = std::make_shared<data::image>();
+        image->set_spacing({1.0, 1.0, 1.0});
+        image->set_origin({2.0, 3.0, 4.0});
+
+        // 90° rotation around X axis
+        image->set_orientation({1, 0, 0, 0, 0, -1, 0, 1, 0});
+
+        const auto& actual_world = image->image_to_world({5, 6, 7});
+        const glm::dvec3 expected_world {7.0, -4.0, 10.0};
+        CPPUNIT_ASSERT_EQUAL(expected_world[0], actual_world[0]);
+        CPPUNIT_ASSERT_EQUAL(expected_world[1], actual_world[1]);
+        CPPUNIT_ASSERT_EQUAL(expected_world[2], actual_world[2]);
+
+        const auto& actual_image = image->world_to_image({5.0, 6.0, 7.0});
+        const glm::ivec3 expected_image {3, 3, -3};
+        CPPUNIT_ASSERT_EQUAL(expected_image[0], actual_image[0]);
+        CPPUNIT_ASSERT_EQUAL(expected_image[1], actual_image[1]);
+        CPPUNIT_ASSERT_EQUAL(expected_image[2], actual_image[2]);
+    }
+
+    // Rounding test
+    {
+        auto image = std::make_shared<data::image>();
+        image->resize({567, 789, 39}, core::type::INT16, data::image::gray_scale);
+        image->set_spacing({1.4, 0.8, 0.5});
+        image->set_origin({-18.3, 54.0, 230.0});
+
+        {
+            const auto indices = image->world_to_image({16, 543.65, 456.}, true);
+            const glm::ivec3 expected_indices {25, 612, 452};
+
+            CPPUNIT_ASSERT_EQUAL(expected_indices[0], indices[0]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[1], indices[1]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[2], indices[2]);
+        }
+
+        {
+            const auto indices = image->world_to_image({2., 34.4, 7.}, true);
+            const glm::ivec3 expected_indices {15, -25, -446};
+
+            CPPUNIT_ASSERT_EQUAL(expected_indices[0], indices[0]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[1], indices[1]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[2], indices[2]);
+        }
+
+        // 90° rotation around the x-axis
+        image->set_orientation(
+            {
+                1.0000000, 0.0000000, 0.0000000,
+                0.0000000, 0.0000000, -1.0000000,
+                0.0000000, 1.0000000, 0.0000000
+            });
+
+        {
+            const auto indices = image->world_to_image({16, 543.65, 456.}, true);
+            const glm::ivec3 expected_indices {25, 283, -979};
+
+            CPPUNIT_ASSERT_EQUAL(expected_indices[0], indices[0]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[1], indices[1]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[2], indices[2]);
+        }
+
+        {
+            const auto indices = image->world_to_image({2., 34.4, 7.}, true);
+            const glm::ivec3 expected_indices {15, -279, 39};
+
+            CPPUNIT_ASSERT_EQUAL(expected_indices[0], indices[0]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[1], indices[1]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[2], indices[2]);
+        }
+    }
+
+    // Clamp test
+    {
+        const data::image::size_t size {100, 110, 120};
+        const data::image::spacing_t spacing {0.5, 0.6, 0.7};
+        const data::image::origin_t origin {1, 2, 3};
+
+        auto image = std::make_shared<data::image>();
+
+        image->resize(size, core::type::INT8, data::image::gray_scale);
+        image->set_spacing(spacing);
+        image->set_origin(origin);
+
+        // Lower bound
+        {
+            const auto indices = image->world_to_image(origin, false, true);
+            const glm::ivec3 expected_indices {0, 0, 0};
+
+            CPPUNIT_ASSERT_EQUAL(expected_indices[0], indices[0]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[1], indices[1]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[2], indices[2]);
+        }
+
+        {
+            const auto indices = image->world_to_image(
+                {
+                    origin[0] + spacing[0],
+                    origin[1] + spacing[1],
+                    origin[2] + spacing[2]
+                },
+                false,
+                true
+            );
+
+            const glm::ivec3 expected_indices {1, 1, 1};
+
+            CPPUNIT_ASSERT_EQUAL(expected_indices[0], indices[0]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[1], indices[1]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[2], indices[2]);
+        }
+
+        {
+            const auto indices = image->world_to_image(
+                {
+                    origin[0] - spacing[0],
+                    origin[1] - spacing[1],
+                    origin[2] - spacing[2]
+                },
+                false,
+                true
+            );
+
+            const glm::ivec3 expected_indices {0, 0, 0};
+
+            CPPUNIT_ASSERT_EQUAL(expected_indices[0], indices[0]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[1], indices[1]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[2], indices[2]);
+        }
+
+        {
+            const auto indices = image->world_to_image(
+                {
+                    origin[0] - spacing[0],
+                    origin[1] - spacing[1],
+                    origin[2] - spacing[2]
+                },
+                false,
+                false
+            );
+
+            const glm::ivec3 expected_indices {-1, -1, -1};
+
+            CPPUNIT_ASSERT_EQUAL(expected_indices[0], indices[0]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[1], indices[1]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[2], indices[2]);
+        }
+
+        const double upper_bound_x = double(size[0]) * spacing[0] + origin[0];
+        const double upper_bound_y = double(size[1]) * spacing[1] + origin[1];
+        const double upper_bound_z = double(size[2]) * spacing[2] + origin[2];
+
+        // Upper bound
+        {
+            const auto indices = image->world_to_image({upper_bound_x, upper_bound_y, upper_bound_z}, false, true);
+            const glm::ivec3 expected_indices {
+                std::int64_t(size[0]) - 1,
+                std::int64_t(size[1]) - 1,
+                std::int64_t(size[2]) - 1
+            };
+
+            CPPUNIT_ASSERT_EQUAL(expected_indices[0], indices[0]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[1], indices[1]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[2], indices[2]);
+        }
+
+        {
+            const auto indices = image->world_to_image(
+                {
+                    upper_bound_x + spacing[0],
+                    upper_bound_y + spacing[1],
+                    upper_bound_z + spacing[2],
+                },
+                false,
+                true
+            );
+
+            const glm::ivec3 expected_indices {
+                std::int64_t(size[0]) - 1,
+                std::int64_t(size[1]) - 1,
+                std::int64_t(size[2]) - 1
+            };
+
+            CPPUNIT_ASSERT_EQUAL(expected_indices[0], indices[0]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[1], indices[1]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[2], indices[2]);
+        }
+
+        {
+            const auto indices = image->world_to_image(
+                {
+                    upper_bound_x - 2 * spacing[0],
+                    upper_bound_y - 2 * spacing[1],
+                    upper_bound_z - 2 * spacing[2],
+                },
+                true,
+                true
+            );
+
+            const glm::ivec3 expected_indices {
+                std::int64_t(size[0]) - 2,
+                std::int64_t(size[1]) - 2,
+                std::int64_t(size[2]) - 2
+            };
+
+            CPPUNIT_ASSERT_EQUAL(expected_indices[0], indices[0]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[1], indices[1]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[2], indices[2]);
+        }
+
+        {
+            const auto image_to_world = image->image_to_world(size);
+            const auto indices        = image->world_to_image(image_to_world, false, false);
+
+            const glm::ivec3 expected_indices {
+                std::int64_t(size[0]),
+                std::int64_t(size[1]),
+                std::int64_t(size[2])
+            };
+
+            CPPUNIT_ASSERT_EQUAL(expected_indices[0], indices[0]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[1], indices[1]);
+            CPPUNIT_ASSERT_EQUAL(expected_indices[2], indices[2]);
+        }
+    }
 }
 
 } // namespace sight::data::ut

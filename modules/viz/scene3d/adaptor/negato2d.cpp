@@ -72,18 +72,18 @@ void negato2d::configuring()
     static const std::string s_SLICES_CROSS_CONFIG = CONFIG + "slicesCross";
     static const std::string s_INTERACTIVE_CONFIG  = CONFIG + "interactive";
 
-    const auto orientation = config.get<std::string>(s_SLICE_INDEX_CONFIG, "axial");
-    if(orientation == "axial")
+    const auto axis = config.get<std::string>(s_SLICE_INDEX_CONFIG, "axial");
+    if(axis == "axial")
     {
-        m_orientation = orientation_mode::z_axis;
+        m_axis = axis_t::z_axis;
     }
-    else if(orientation == "frontal")
+    else if(axis == "frontal")
     {
-        m_orientation = orientation_mode::y_axis;
+        m_axis = axis_t::y_axis;
     }
-    else if(orientation == "sagittal")
+    else if(axis == "sagittal")
     {
-        m_orientation = orientation_mode::x_axis;
+        m_axis = axis_t::x_axis;
     }
 
     if(const auto filtering_cfg = config.get_optional<std::string>(s_FILTERING_CONFIG); filtering_cfg.has_value())
@@ -131,7 +131,8 @@ void negato2d::starting()
     // scene node's instantiation
     Ogre::SceneNode* const root_scene_node = this->get_scene_manager()->getRootSceneNode();
     Ogre::SceneNode* const transform_node  = this->get_or_create_transform_node(root_scene_node);
-    m_negato_scene_node = transform_node->createChildSceneNode();
+    m_origin_scene_node = transform_node->createChildSceneNode();
+    m_negato_scene_node = m_origin_scene_node->createChildSceneNode();
 
     // Plane's instantiation
     m_plane = std::make_unique<sight::viz::scene3d::plane>(
@@ -165,8 +166,19 @@ void negato2d::stopping()
 {
     this->render_service()->make_current();
 
-    m_picking_cross.reset();
+    // Do it before destroying parent scene nodes
     m_plane.reset();
+
+    auto* const scene_manager = this->get_scene_manager();
+    m_negato_scene_node->removeAndDestroyAllChildren();
+    scene_manager->destroySceneNode(m_negato_scene_node);
+    m_negato_scene_node = nullptr;
+
+    m_origin_scene_node->removeAndDestroyAllChildren();
+    scene_manager->destroySceneNode(m_origin_scene_node);
+    m_origin_scene_node = nullptr;
+
+    m_picking_cross.reset();
     m_3d_ogre_texture.reset();
     m_gpu_tf.reset();
 
@@ -213,25 +225,24 @@ void negato2d::new_image()
             return;
         }
 
-        // Retrieves or creates the slice index fields
+        // Update the texture
         m_3d_ogre_texture->update();
 
-        const auto [spacing, origin] = sight::viz::scene3d::utils::convert_spacing_and_origin(image.get_shared());
+        m_origin_scene_node->setPosition(sight::viz::scene3d::utils::get_ogre_origin(*image));
+        m_origin_scene_node->setOrientation(sight::viz::scene3d::utils::get_ogre_orientation(*image));
 
         // Fits the plane to the new texture
-        m_plane->update(m_orientation, spacing, origin, m_enable_alpha);
+        m_plane->update(m_axis, sight::viz::scene3d::utils::get_ogre_spacing(*image), m_enable_alpha);
 
         // Render the picked plane before the picking cross
         m_plane->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::NEGATO_WIDGET_ID, 0);
 
         // Update Slice
-        namespace imHelper = data::helper::medical_image;
+        namespace medical_image = data::helper::medical_image;
 
-        axial_idx   = std::max(0, int(imHelper::get_slice_index(*image, imHelper::orientation_t::axial).value_or(0)));
-        frontal_idx =
-            std::max(0, int(imHelper::get_slice_index(*image, imHelper::orientation_t::frontal).value_or(0)));
-        sagittal_idx =
-            std::max(0, int(imHelper::get_slice_index(*image, imHelper::orientation_t::sagittal).value_or(0)));
+        axial_idx    = std::max(0, int(medical_image::get_slice_index(*image, axis_t::axial).value_or(0)));
+        frontal_idx  = std::max(0, int(medical_image::get_slice_index(*image, axis_t::frontal).value_or(0)));
+        sagittal_idx = std::max(0, int(medical_image::get_slice_index(*image, axis_t::sagittal).value_or(0)));
     }
 
     this->change_slice_index(axial_idx, frontal_idx, sagittal_idx);
@@ -247,21 +258,20 @@ void negato2d::change_slice_type(int _from, int _to)
 {
     const auto image = m_image.lock();
 
-    const auto to_orientation   = static_cast<orientation_mode>(_to);
-    const auto from_orientation = static_cast<orientation_mode>(_from);
+    const auto to_axis   = static_cast<axis_t>(_to);
+    const auto from_axis = static_cast<axis_t>(_from);
 
-    const auto plane_orientation = m_orientation;
-    const auto new_orientation   = m_orientation == to_orientation ? from_orientation
-                                                                   : plane_orientation
-                                   == from_orientation ? to_orientation : plane_orientation;
+    const auto plane_axis = m_axis;
+    const auto new_axis   = m_axis == to_axis ? from_axis
+                                              : plane_axis
+                            == from_axis ? to_axis : plane_axis;
 
-    if(plane_orientation != new_orientation)
+    if(plane_axis != new_axis)
     {
-        m_orientation = new_orientation;
+        m_axis = new_axis;
         this->render_service()->make_current();
 
-        const auto& [spacing, origin] = sight::viz::scene3d::utils::convert_spacing_and_origin(image.get_shared());
-        m_plane->update(m_orientation, spacing, origin, m_enable_alpha);
+        m_plane->update(m_axis, sight::viz::scene3d::utils::get_ogre_spacing(*image), m_enable_alpha);
 
         // Update threshold if necessary
         this->update_tf();
@@ -430,13 +440,11 @@ void negato2d::pick_intensity(int _x, int _y)
                 return;
             }
 
-            const auto image_buffer_lock = image->dump_lock();
+            const auto cross_lines = m_plane->compute_cross(result->second, *image);
 
-            const auto [spacing, origin] = sight::viz::scene3d::utils::convert_spacing_and_origin(image.get_shared());
-            auto cross_lines = m_plane->compute_cross(result->second, origin);
             m_picking_cross->update(cross_lines[0], cross_lines[1], cross_lines[2], cross_lines[3]);
 
-            const auto picking_text = sight::viz::scene3d::utils::pick_image(*image, result->second, origin, spacing);
+            const auto picking_text = sight::viz::scene3d::utils::pick_image(*image, result->second);
             this->signal<signals::picked_voxel_t>(signals::PICKED_VOXEL)->async_emit(picking_text);
 
             this->request_render();

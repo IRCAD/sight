@@ -369,7 +369,7 @@ private:
         bool m_show {false};
     };
 
-    using orientation_mode = data::helper::medical_image::orientation_t;
+    using orientation_mode = data::helper::medical_image::axis_t;
 
     /// Show the landmark at the given index.
     enum class view_distance : std::uint8_t

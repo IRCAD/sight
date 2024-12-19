@@ -67,6 +67,7 @@ inline static data::image::sptr get_synthetic_image(
             {256, 256, 0},
             {0, 0, 0},
             {0, 0, 0},
+            {1, 0, 0, 0, 1, 0, 0, 0, 1},
             _type,
             _format,
             _seed

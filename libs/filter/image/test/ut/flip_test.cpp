@@ -38,9 +38,10 @@ namespace sight::filter::image::ut
 
 void flip_test::flip_along_x_axis_test()
 {
-    const data::image::size_t size                = {{3, 3, 3}};
-    const data::image::spacing_t spacing          = {{0.1, 0.4, 1.6}};
-    const data::image::origin_t origin            = {{0., 0., 0.}};
+    const data::image::size_t size                = {3, 3, 3};
+    const data::image::spacing_t spacing          = {0.1, 0.4, 1.6};
+    const data::image::origin_t origin            = {0., 0., 0.};
+    const data::image::orientation_t orientation  = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
     const core::type type                         = core::type::UINT8;
     const enum data::image::pixel_format_t format = data::image::gray_scale;
     std::array<bool, 3> flip_axes {true, false, false};
@@ -48,7 +49,7 @@ void flip_test::flip_along_x_axis_test()
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, format, 0);
+    utest_data::generator::image::generate_image(image_in, size, spacing, origin, orientation, type, format, 0);
 
     const auto in_dump_lock = image_in->dump_lock();
     filter::image::flipper::flip(image_in, image_out, flip_axes);
@@ -74,9 +75,10 @@ void flip_test::flip_along_x_axis_test()
 
 void flip_test::flip_along_y_axis_test()
 {
-    const data::image::size_t size                = {{3, 3, 3}};
-    const data::image::spacing_t spacing          = {{0.5, 0.5, 0.5}};
-    const data::image::origin_t origin            = {{8., 4., 2.}};
+    const data::image::size_t size                = {3, 3, 3};
+    const data::image::spacing_t spacing          = {0.5, 0.5, 0.5};
+    const data::image::origin_t origin            = {8., 4., 2.};
+    const data::image::orientation_t orientation  = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
     const core::type type                         = core::type::UINT8;
     const enum data::image::pixel_format_t format = data::image::gray_scale;
     std::array<bool, 3> flip_axes {false, true, false};
@@ -84,7 +86,7 @@ void flip_test::flip_along_y_axis_test()
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, format, 0);
+    utest_data::generator::image::generate_image(image_in, size, spacing, origin, orientation, type, format, 0);
 
     const auto in_dump_lock = image_in->dump_lock();
     filter::image::flipper::flip(image_in, image_out, flip_axes);
@@ -110,9 +112,10 @@ void flip_test::flip_along_y_axis_test()
 
 void flip_test::flip_along_z_axis_test()
 {
-    const data::image::size_t size                = {{3, 3, 3}};
-    const data::image::spacing_t spacing          = {{2.0, 2.0, 2.0}};
-    const data::image::origin_t origin            = {{0., 0., 0.}};
+    const data::image::size_t size                = {3, 3, 3};
+    const data::image::spacing_t spacing          = {2.0, 2.0, 2.0};
+    const data::image::origin_t origin            = {0., 0., 0.};
+    const data::image::orientation_t orientation  = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
     const core::type type                         = core::type::UINT8;
     const enum data::image::pixel_format_t format = data::image::gray_scale;
     std::array<bool, 3> flip_axes {false, false, true};
@@ -120,7 +123,7 @@ void flip_test::flip_along_z_axis_test()
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, format, 0);
+    utest_data::generator::image::generate_image(image_in, size, spacing, origin, orientation, type, format, 0);
 
     const auto in_dump_lock = image_in->dump_lock();
     filter::image::flipper::flip(image_in, image_out, flip_axes);
@@ -147,9 +150,10 @@ void flip_test::flip_along_z_axis_test()
 void flip_test::flip_along_multiple_axes_test()
 {
     {
-        const data::image::size_t size                = {{3, 3, 3}};
-        const data::image::spacing_t spacing          = {{0.5, 0.5, 0.5}};
-        const data::image::origin_t origin            = {{0., 0., 0.}};
+        const data::image::size_t size                = {3, 3, 3};
+        const data::image::spacing_t spacing          = {0.5, 0.5, 0.5};
+        const data::image::origin_t origin            = {0., 0., 0.};
+        const data::image::orientation_t orientation  = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
         const core::type type                         = core::type::UINT8;
         const enum data::image::pixel_format_t format = data::image::gray_scale;
         std::array<bool, 3> flip_axes {true, true, false};
@@ -157,7 +161,7 @@ void flip_test::flip_along_multiple_axes_test()
         data::image::sptr image_in  = std::make_shared<data::image>();
         data::image::sptr image_out = std::make_shared<data::image>();
 
-        utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, format, 0);
+        utest_data::generator::image::generate_image(image_in, size, spacing, origin, orientation, type, format, 0);
 
         const auto in_dump_lock = image_in->dump_lock();
         filter::image::flipper::flip(image_in, image_out, flip_axes);
@@ -180,9 +184,10 @@ void flip_test::flip_along_multiple_axes_test()
     }
 
     {
-        const data::image::size_t size                = {{3, 3, 3}};
-        const data::image::spacing_t spacing          = {{0.5, 0.5, 0.5}};
-        const data::image::origin_t origin            = {{0., 0., 0.}};
+        const data::image::size_t size                = {3, 3, 3};
+        const data::image::spacing_t spacing          = {0.5, 0.5, 0.5};
+        const data::image::origin_t origin            = {0., 0., 0.};
+        const data::image::orientation_t orientation  = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
         const core::type type                         = core::type::UINT8;
         const enum data::image::pixel_format_t format = data::image::gray_scale;
         std::array<bool, 3> flip_axes {true, true, true};
@@ -190,7 +195,7 @@ void flip_test::flip_along_multiple_axes_test()
         data::image::sptr image_in  = std::make_shared<data::image>();
         data::image::sptr image_out = std::make_shared<data::image>();
 
-        utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, format, 0);
+        utest_data::generator::image::generate_image(image_in, size, spacing, origin, orientation, type, format, 0);
 
         const auto in_dump_lock = image_in->dump_lock();
         filter::image::flipper::flip(image_in, image_out, flip_axes);
@@ -224,6 +229,7 @@ void flip_test::flip_empty_image_test()
     const data::image::size_t size                = {0, 0, 0};
     const data::image::spacing_t spacing          = {0., 0., 0.};
     const data::image::origin_t origin            = {0., 0., 0.};
+    const data::image::orientation_t orientation  = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
     const core::type type                         = core::type::UINT8;
     const enum data::image::pixel_format_t format = data::image::gray_scale;
     std::array<bool, 3> flip_axes {false, true, false};
@@ -231,7 +237,7 @@ void flip_test::flip_empty_image_test()
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, format, 0);
+    utest_data::generator::image::generate_image(image_in, size, spacing, origin, orientation, type, format, 0);
 
     const auto in_dump_lock = image_in->dump_lock();
     filter::image::flipper::flip(image_in, image_out, flip_axes);

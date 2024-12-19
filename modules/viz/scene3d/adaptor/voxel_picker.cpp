@@ -163,8 +163,9 @@ void voxel_picker::pick(mouse_button _button, modifier _mod, int _x, int _y, boo
         const Ogre::Ray vp_ray = camera->getCameraToViewportRay(vp_pos.x, vp_pos.y);
 
         // Get image information.
-        const auto image = m_image.lock();
-        const auto [spacing, origin] = sight::viz::scene3d::utils::convert_spacing_and_origin(image.get_shared());
+        const auto image   = m_image.lock();
+        const auto spacing = sight::viz::scene3d::utils::get_ogre_spacing(*image);
+        const auto origin  = sight::viz::scene3d::utils::get_ogre_origin(*image);
 
         const std::pair<bool, Ogre::Vector3> result =
             this->compute_ray_image_intersection(vp_ray, image.get_shared(), origin, spacing);
@@ -253,9 +254,9 @@ std::pair<bool, Ogre::Vector3> voxel_picker::compute_ray_image_intersection(
 )
 {
     namespace imHelper = data::helper::medical_image;
-    const auto axial_idx    = imHelper::get_slice_index(*_image, imHelper::orientation_t::axial).value_or(0);
-    const auto frontal_idx  = imHelper::get_slice_index(*_image, imHelper::orientation_t::frontal).value_or(0);
-    const auto sagittal_idx = imHelper::get_slice_index(*_image, imHelper::orientation_t::sagittal).value_or(0);
+    const auto axial_idx    = imHelper::get_slice_index(*_image, imHelper::axis_t::axial).value_or(0);
+    const auto frontal_idx  = imHelper::get_slice_index(*_image, imHelper::axis_t::frontal).value_or(0);
+    const auto sagittal_idx = imHelper::get_slice_index(*_image, imHelper::axis_t::sagittal).value_or(0);
 
     const auto axial_index    = static_cast<Ogre::Real>(axial_idx);
     const auto frontal_index  = static_cast<Ogre::Real>(frontal_idx);

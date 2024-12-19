@@ -201,6 +201,7 @@ void data_converter_test::image_converter_test()
     image2->set_window_width(image->window_width());
     image2->set_spacing(image->spacing());
     image2->set_origin(image->origin());
+    image2->set_orientation(image->orientation());
 
     CPPUNIT_ASSERT(*image == *image2);
 }

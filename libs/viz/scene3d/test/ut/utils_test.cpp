@@ -158,6 +158,7 @@ void utils_test::world_to_slice_test()
         {40, 40, 40},
         {1., 1., 1.},
         {0., 0., 0.},
+        {1, 0, 0, 0, 1, 0, 0, 0, 1},
         core::type::UINT8,
         data::image::pixel_format_t::gray_scale
     );

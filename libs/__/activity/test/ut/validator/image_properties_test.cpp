@@ -121,6 +121,7 @@ void image_properties_test::properties_test()
             img1->size(),
             img1->spacing(),
             img1->origin(),
+            img1->orientation(),
             img1->type(),
             data::image::pixel_format_t::gray_scale
         );

@@ -318,17 +318,17 @@ void slice_index_dicom_puller_editor::read_image(
 
         data::helper::medical_image::set_slice_index(
             *image_series,
-            data::helper::medical_image::orientation_t::axial,
+            data::helper::medical_image::axis_t::axial,
             m_axial_index->value()
         );
         data::helper::medical_image::set_slice_index(
             *image_series,
-            data::helper::medical_image::orientation_t::axial,
+            data::helper::medical_image::axis_t::axial,
             m_frontal_index->value()
         );
         data::helper::medical_image::set_slice_index(
             *image_series,
-            data::helper::medical_image::orientation_t::axial,
+            data::helper::medical_image::axis_t::axial,
             m_sagittal_index->value()
         );
 

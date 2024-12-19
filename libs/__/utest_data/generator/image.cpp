@@ -27,6 +27,9 @@
 
 #include <data/helper/medical_image.hpp>
 
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/glm.hpp>
+
 #include <ctime>
 #include <random>
 
@@ -117,6 +120,7 @@ void image::generate_image(
     const data::image::size_t& _sizes,
     const data::image::spacing_t& _spacing,
     const data::image::origin_t& _origin,
+    const data::image::orientation_t& _orientation,
     const core::type& _type,
     const enum data::image::pixel_format_t& _format,
     const std::optional<std::uint32_t>& _seed
@@ -129,6 +133,7 @@ void image::generate_image(
     _image->resize(_sizes, _type, _format);
     _image->set_spacing(_spacing);
     _image->set_origin(_origin);
+    _image->set_orientation(_orientation);
 
     if(_seed)
     {
@@ -165,6 +170,16 @@ void image::generate_random_image(data::image::sptr _image, core::type _type, st
     origin[1] = (safe_rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.);
     origin[2] = (safe_rand() % s_DOUBLE_SIZE - s_SIZE) / (s_SIZE / 10.);
     _image->set_origin(origin);
+
+    auto rotate_x     = glm::rotate(glm::dmat4(1), glm::radians(double(safe_rand() % 360)), glm::dvec3(1, 0, 0));
+    auto rotate_x_y   = glm::rotate(rotate_x, glm::radians(double(safe_rand() % 360)), glm::dvec3(0, 1, 0));
+    auto rotate_x_y_z = glm::rotate(rotate_x_y, glm::radians(double(safe_rand() % 360)), glm::dvec3(0, 0, 1));
+
+    _image->set_orientation(
+        {rotate_x_y_z[0][0], rotate_x_y_z[1][0], rotate_x_y_z[2][0],
+         rotate_x_y_z[0][1], rotate_x_y_z[1][1], rotate_x_y_z[2][1],
+         rotate_x_y_z[0][2], rotate_x_y_z[1][2], rotate_x_y_z[2][2]
+        });
 
     _image->resize(size, _type, data::image::gray_scale);
 

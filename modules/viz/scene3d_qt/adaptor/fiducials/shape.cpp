@@ -230,15 +230,15 @@ void shape::configuring()
     {
         if(*orientation == "axial")
         {
-            m_orientation = orientation_t::z_axis;
+            m_axis = axis_t::z_axis;
         }
         else if(*orientation == "frontal")
         {
-            m_orientation = orientation_t::y_axis;
+            m_axis = axis_t::y_axis;
         }
         else if(*orientation == "sagittal")
         {
-            m_orientation = orientation_t::x_axis;
+            m_axis = axis_t::x_axis;
         }
         else
         {
@@ -498,23 +498,13 @@ void shape::activate_shape_tool(bool _activate)
 
 void shape::show_on_current_slice()
 {
-    // Get the current slice position
-    const auto& [spacing, slice_position] =
-        [this]
-        {
-            const auto image_series = m_image.const_lock();
-            const auto& spacing     = image_series->spacing();
-            const auto& origin      = image_series->origin();
-            const auto slice_index  = sight::data::helper::medical_image::get_slice_index(
-                *image_series,
-                m_orientation
-            ).value_or(0);
+    const auto image = m_image.const_lock();
 
-            return std::make_tuple(
-                spacing[m_orientation],
-                origin[m_orientation] + (double(slice_index) * spacing[m_orientation])
-            );
-        }();
+    // Get the current slice position
+    const auto slice_index = sight::data::helper::medical_image::get_slice_index(
+        *image,
+        m_axis
+    ).value_or(0);
 
     this->render_service()->make_current();
 
@@ -524,20 +514,22 @@ void shape::show_on_current_slice()
         {
             for(auto& element : shape->elements)
             {
-                // Check if the element is on the current slice
-                const auto position =
-                    m_orientation == orientation_t::z_axis
-                    ? element.position.z
-                    : m_orientation == orientation_t::y_axis
-                    ? element.position.y
-                    : element.position.x;
-
-                const auto rounded_position       = static_cast<int>(std::floor(position / spacing));
-                const auto rounded_slice_position = static_cast<int>(std::floor(slice_position / spacing));
-                const bool visible                = sight::core::is_equal(
-                    rounded_position,
-                    rounded_slice_position
+                const auto image_position = image->world_to_image(
+                    {
+                        element.position.x,
+                        element.position.y,
+                        element.position.z
+                    },
+                    true
                 );
+
+                // Check if the element is on the current slice
+                const bool visible =
+                    m_axis == axis_t::z_axis
+                    ? image_position[axis_t::z_axis] == slice_index
+                    : m_axis == axis_t::y_axis
+                    ? image_position[axis_t::y_axis] == slice_index
+                    : image_position[axis_t::x_axis] == slice_index;
 
                 // Set the visibility
                 element.sphere->setVisible(visible || m_show_on_all_slices);

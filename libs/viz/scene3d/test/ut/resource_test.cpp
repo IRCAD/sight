@@ -68,6 +68,7 @@ void resource_test::texture_test()
         {40, 40, 40},
         {1., 1., 1.},
         {0., 0., 0.},
+        {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6},
         core::type::UINT8,
         data::image::pixel_format_t::gray_scale
     );

@@ -295,9 +295,19 @@ void layer::create_scene()
     m_camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
     // Creating Camera scene Node
-    Ogre::SceneNode* camera_node = m_scene_manager->getRootSceneNode()->createChildSceneNode(
-        layer::DEFAULT_CAMERA_NODE_NAME
-    );
+    auto* const root_scene_node = m_scene_manager->getRootSceneNode();
+
+    // Cleanup
+    if(m_camera_origin_node != nullptr)
+    {
+        m_camera_origin_node->removeAndDestroyAllChildren();
+        m_scene_manager->destroySceneNode(m_camera_origin_node);
+        m_camera_origin_node = nullptr;
+    }
+
+    m_camera_origin_node = root_scene_node->createChildSceneNode();
+
+    auto* const camera_node = m_camera_origin_node->createChildSceneNode(layer::DEFAULT_CAMERA_NODE_NAME);
     camera_node->setPosition(Ogre::Vector3(0, 0, 5));
     camera_node->lookAt(Ogre::Vector3(0, 0, 1), Ogre::Node::TS_WORLD);
 
@@ -819,12 +829,12 @@ void layer::reset_camera_clipping_range() const
             return;
         }
 
-        Ogre::SceneNode* cam_node = m_camera->getParentSceneNode();
+        //Ogre::SceneNode* cam_node = m_camera->getParentSceneNode();
 
         // Set the direction of the camera
-        Ogre::Quaternion quat   = cam_node->getOrientation();
+        Ogre::Quaternion quat   = m_camera->getRealOrientation();
         Ogre::Vector3 direction = quat.zAxis();
-        Ogre::Vector3 position  = cam_node->getPosition();
+        Ogre::Vector3 position  = m_camera->getRealPosition();
 
         // Set near and far plan
         Ogre::Vector3 minimum = world_bounding_box.getMinimum();

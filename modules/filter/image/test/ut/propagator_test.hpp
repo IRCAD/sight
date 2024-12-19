@@ -23,7 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::filter::mesh::ut
+namespace sight::module::filter::image::ut
 {
 
 /**
@@ -44,4 +44,4 @@ public:
     static void propagate();
 };
 
-} // namespace sight::module::filter::mesh::ut
+} // namespace sight::module::filter::image::ut

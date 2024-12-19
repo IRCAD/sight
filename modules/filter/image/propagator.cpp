@@ -73,6 +73,7 @@ void propagator::updating()
             image_out->resize(image_in->size(), sight::core::type::UINT8, sight::data::image::gray_scale);
             image_out->set_spacing(image_in->spacing());
             image_out->set_origin(image_in->origin());
+            image_out->set_orientation(image_in->orientation());
             const auto lock = image_out->dump_lock();
             std::fill(image_out->begin(), image_out->end(), std::uint8_t(0));
         }
@@ -106,23 +107,26 @@ void propagator::propagate()
                 const auto image_in = m_image_in.lock();
                 SIGHT_ASSERT("No " << std::quoted(IMAGE_IN) << " found.", image_in);
                 SIGHT_ASSERT("Invalid image", data::helper::medical_image::check_image_validity(image_in.get_shared()));
-                const auto& bbox = sight::data::helper::medical_image::compute_bounding_box(*image_in);
+
+                const auto& sizes = image_in->size();
 
                 std::ranges::for_each(
                     point_list->get_points(),
                     [&](const auto& _x)
                 {
-                    const auto& pt = _x->get_coord();
-                    if(pt[0] >= bbox.first[0] && pt[1] >= bbox.first[1] && pt[2] >= bbox.first[2]
-                       && pt[0] <= bbox.second[0] && pt[1] <= bbox.second[1] && pt[2] <= bbox.second[2])
+                    const auto& pt     = _x->get_coord();
+                    const auto indices = image_in->world_to_image(pt, true);
+
+                    if(indices[0] >= 0 && indices[0] < std::int64_t(sizes[0])
+                       && indices[1] >= 0 && indices[1] < std::int64_t(sizes[1])
+                       && indices[2] >= 0 && indices[2] < std::int64_t(sizes[2]))
                     {
-                        const auto indices = sight::data::helper::medical_image::compute_voxel_indices(*image_in, pt);
-                        sight::filter::image::bresenham_line::coordinates_t indices_rounded;
-                        std::ranges::transform(
-                            indices,
-                            indices_rounded.begin(),
-                            [](const auto& _x){return static_cast<std::size_t>(_x);});
-                        seeds.insert(indices_rounded);
+                        seeds.insert(
+                        {
+                            std::size_t(indices[0]),
+                            std::size_t(indices[1]),
+                            std::size_t(indices[2])
+                        });
                     }
                 });
             }

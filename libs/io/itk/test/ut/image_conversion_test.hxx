@@ -38,7 +38,9 @@ void image_conversion_test::stress_test_for_a_type()
     {
         data::image::sptr image = std::make_shared<data::image>();
         utest_data::generator::image::generate_random_image(image, core::type::get<TYPE>());
-        sight::data::helper::medical_image::set_direction(*image, std::make_shared<data::matrix4>());
+
+        constexpr data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+        image->set_orientation(orientation);
 
         typedef ::itk::Image<TYPE, 3> image_t;
         typename image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(image);

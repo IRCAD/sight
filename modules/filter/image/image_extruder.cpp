@@ -90,6 +90,7 @@ void image_extruder::updating()
             image_out->resize(image->size(), core::type::UINT8, data::image::pixel_format_t::gray_scale);
             image_out->set_spacing(image->spacing());
             image_out->set_origin(image->origin());
+            image_out->set_orientation(image->orientation());
             std::fill(image_out->begin(), image_out->end(), std::uint8_t(255));
         }
 

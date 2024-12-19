@@ -102,9 +102,10 @@ void compare_image_attributes(
 
 void image_to_vtk_test(const core::type _imgtype, const std::set<int>& _vtk_types)
 {
-    const data::image::size_t size       = {10, 15, 23};
-    const data::image::spacing_t spacing = {0.85, 2.6, 1.87};
-    const data::image::origin_t origin   = {-45.6, 25.97, -53.9};
+    const data::image::size_t size               = {10, 15, 23};
+    const data::image::spacing_t spacing         = {0.85, 2.6, 1.87};
+    const data::image::origin_t origin           = {-45.6, 25.97, -53.9};
+    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
 
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generate_image(
@@ -112,6 +113,7 @@ void image_to_vtk_test(const core::type _imgtype, const std::set<int>& _vtk_type
         size,
         spacing,
         origin,
+        orientation,
         _imgtype,
         data::image::pixel_format_t::gray_scale
     );
@@ -378,13 +380,14 @@ void image_test::test_from_vtk()
 template<typename TYPE>
 void from_to_test(enum data::image::pixel_format_t _format)
 {
-    const data::image::size_t size       = {10, 20, 0};
-    const data::image::spacing_t spacing = {1., 1., 0};
-    const data::image::origin_t origin   = {0., 0., 0.};
-    const core::type type                = core::type::get<TYPE>();
+    const data::image::size_t size               = {10, 20, 0};
+    const data::image::spacing_t spacing         = {1., 1., 0};
+    const data::image::origin_t origin           = {0., 0., 0.};
+    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+    const core::type type                        = core::type::get<TYPE>();
 
     data::image::sptr image = std::make_shared<data::image>();
-    utest_data::generator::image::generate_image(image, size, spacing, origin, type, _format, 0);
+    utest_data::generator::image::generate_image(image, size, spacing, origin, orientation, type, _format, 0);
 
     vtkSmartPointer<vtkImageData> vtk_image = vtkSmartPointer<vtkImageData>::New();
     io::vtk::to_vtk_image(image, vtk_image);

@@ -55,13 +55,7 @@ public:
     constexpr matrix4() noexcept;
     inline matrix4(std::initializer_list<value_type> _init_list);
 
-    template<
-        typename T,
-        typename = std::enable_if_t<
-            core::is_container_ordered<T>::value
-            || std::is_base_of_v<std::initializer_list<value_type>, T>
-        >
-    >
+    template<typename T>
     inline matrix4(const T& _data);
     /// @}
 
@@ -72,13 +66,7 @@ public:
     /// @{
     inline matrix4& operator=(std::initializer_list<value_type> _init_list);
 
-    template<
-        typename T,
-        typename = std::enable_if_t<
-            core::is_container_ordered<T>::value
-            || std::is_base_of_v<std::initializer_list<value_type>, T>
-        >
-    >
+    template<typename T>
     inline matrix4& operator=(const T& _data);
     /// @}
 
@@ -128,22 +116,10 @@ public:
     constexpr bool operator==(const matrix4& _other) const noexcept;
     constexpr bool operator!=(const matrix4& _other) const noexcept;
 
-    template<
-        typename T,
-        typename = std::enable_if_t<
-            core::is_container_ordered<T>::value
-            || std::is_base_of_v<std::initializer_list<value_type>, T>
-        >
-    >
+    template<typename T>
     constexpr bool operator==(const T& _other) const noexcept;
 
-    template<
-        typename T,
-        typename = std::enable_if_t<
-            core::is_container_ordered<T>::value
-            || std::is_base_of_v<std::initializer_list<value_type>, T>
-        >
-    >
+    template<typename T>
     constexpr bool operator!=(const T& _other) const noexcept;
     /// @}
 
@@ -151,34 +127,25 @@ public:
     [[nodiscard]] constexpr bool is_identity() noexcept;
 
     /// Convert the matrix to any "ordered" container type.
-    template<
-        typename T = container_t,
-        typename = std::enable_if_t<core::is_container_ordered<T>::value>
-    >
+    template<typename T = container_t>
     [[nodiscard]] constexpr T values() const noexcept;
 
     /// Helper function to set the orientation (9 cosines - row major) from a container
     /// @param [in] _orientation in a container
-    template<typename T = std::array<double, 9>, typename = std::enable_if_t<core::is_container_ordered<T>::value> >
+    template<typename T = std::array<double, 9> >
     inline void set_orientation(const T& _orientation);
 
     /// Helper function to return the orientation part of the matrix (9 cosines - row major) to a container
-    template<
-        typename T = std::array<double, 9>,
-        typename = std::enable_if_t<core::is_container_ordered<T>::value>
-    >
+    template<typename T = std::array<double, 9> >
     [[nodiscard]] constexpr T orientation() const noexcept;
 
     /// Helper function to set the position from a container
     /// @param [in] _position in DICOM format
-    template<typename T = std::array<double, 3>, typename = std::enable_if_t<core::is_container_ordered<T>::value> >
+    template<typename T = std::array<double, 3> >
     inline void set_position(const T& _position);
 
     /// Helper function to return the position part of the matrix (3 doubles) to a container
-    template<
-        typename T = std::array<double, 3>,
-        typename = std::enable_if_t<core::is_container_ordered<T>::value>
-    >
+    template<typename T = std::array<double, 3> >
     [[nodiscard]] constexpr T position() const noexcept;
 
 protected:
@@ -213,7 +180,7 @@ inline matrix4& matrix4::operator=(std::initializer_list<value_type> _init_list)
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename enable>
+template<typename T>
 inline matrix4::matrix4(const T& _data)
 {
     ///@todo make this functions constexpr once we support C++23 which will support SIGHT_ASSERT
@@ -227,7 +194,7 @@ inline matrix4::matrix4(const T& _data)
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename enable>
+template<typename T>
 inline matrix4& matrix4::operator=(const T& _data)
 {
     ///@todo make this functions constexpr once we support C++23 which will support SIGHT_ASSERT
@@ -242,7 +209,7 @@ inline matrix4& matrix4::operator=(const T& _data)
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename enable>
+template<typename T>
 constexpr bool matrix4::operator==(const T& _other) const noexcept
 {
     return core::is_equal(*this, _other);
@@ -250,7 +217,7 @@ constexpr bool matrix4::operator==(const T& _other) const noexcept
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename enable>
+template<typename T>
 constexpr bool matrix4::operator!=(const T& _other) const noexcept
 {
     return !(*this == _other);
@@ -258,7 +225,7 @@ constexpr bool matrix4::operator!=(const T& _other) const noexcept
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename enable>
+template<typename T>
 [[nodiscard]] constexpr T matrix4::values() const noexcept
 {
     T values;
@@ -278,13 +245,18 @@ template<typename T, typename enable>
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename enable>
+template<typename T>
 inline void matrix4::set_orientation(const T& _orientation)
 {
-    SIGHT_ASSERT(
-        std::string(__func__) + " need 9 elements: " + std::to_string(_orientation.size()) + " given.",
-        _orientation.size() == 9
-    );
+    /// @todo make this constexpr once we support C++23 which will support std::stringstream
+    // If size() is available, check the size of the container.
+    if constexpr(core::is_container<T>::value)
+    {
+        SIGHT_ASSERT(
+            "matrix4::set_orientation() need 9 elements.",
+            _orientation.size() >= 9
+        );
+    }
 
     *this = {
         _orientation[0], _orientation[1], _orientation[2], (*this)(0, 3),
@@ -296,7 +268,7 @@ inline void matrix4::set_orientation(const T& _orientation)
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename enable>
+template<typename T>
 [[nodiscard]] constexpr T matrix4::orientation() const noexcept
 {
     return T {
@@ -308,14 +280,18 @@ template<typename T, typename enable>
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename enable>
+template<typename T>
 inline void matrix4::set_position(const T& _position)
 {
-    ///@todo make this functions constexpr once we support C++23 which will support SIGHT_ASSERT
-    SIGHT_ASSERT(
-        std::string(__func__) + " need 3 elements: " + std::to_string(_position.size()) + " given.",
-        _position.size() == 3
-    );
+    /// @todo make this constexpr once we support C++23 which will support std::stringstream
+    // If size() is available, check the size of the container.
+    if constexpr(core::is_container<T>::value)
+    {
+        SIGHT_ASSERT(
+            "matrix4::set_position() need 3 elements.",
+            _position.size() >= 3
+        );
+    }
 
     (*this)(0, 3) = _position[0];
     (*this)(1, 3) = _position[1];
@@ -324,7 +300,7 @@ inline void matrix4::set_position(const T& _position)
 
 //------------------------------------------------------------------------------
 
-template<typename T, typename enable>
+template<typename T>
 [[nodiscard]] constexpr T matrix4::position() const noexcept
 {
     return T {(*this)(0, 3), (*this)(1, 3), (*this)(2, 3)};

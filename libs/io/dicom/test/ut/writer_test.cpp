@@ -100,6 +100,7 @@ inline static data::image_series::sptr get_us_volume_image(
             {64, 64, _num_frames},
             {1.0, 1.0, 1.0},
             {0, 0, 0},
+            {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6},
             _type,
             _format,
             _seed

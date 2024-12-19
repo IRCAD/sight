@@ -126,15 +126,15 @@ void plane_slicer::configuring()
 
     if(orientation == "axial")
     {
-        m_orientation = data::helper::medical_image::orientation_t::z_axis;
+        m_orientation = data::helper::medical_image::axis_t::z_axis;
     }
     else if(orientation == "sagittal")
     {
-        m_orientation = data::helper::medical_image::orientation_t::x_axis;
+        m_orientation = data::helper::medical_image::axis_t::x_axis;
     }
     else if(orientation == "frontal")
     {
-        m_orientation = data::helper::medical_image::orientation_t::y_axis;
+        m_orientation = data::helper::medical_image::axis_t::y_axis;
     }
     else
     {
@@ -181,19 +181,19 @@ void plane_slicer::set_reslicer_extent()
 
     switch(m_orientation)
     {
-        case data::helper::medical_image::orientation_t::x_axis:
+        case data::helper::medical_image::axis_t::x_axis:
             m_reslicer->SetOutputExtent(0, int_size[1], 0, int_size[2], 0, 0);
             m_reslicer->SetOutputOrigin(origin[1], origin[2], origin[0]);
             m_reslicer->SetOutputSpacing(spacing[1], spacing[2], spacing[0]);
             break;
 
-        case data::helper::medical_image::orientation_t::y_axis:
+        case data::helper::medical_image::axis_t::y_axis:
             m_reslicer->SetOutputExtent(0, int_size[0], 0, int_size[2], 0, 0);
             m_reslicer->SetOutputOrigin(origin[0], origin[2], origin[1]);
             m_reslicer->SetOutputSpacing(spacing[0], spacing[2], spacing[1]);
             break;
 
-        case data::helper::medical_image::orientation_t::z_axis:
+        case data::helper::medical_image::axis_t::z_axis:
             m_reslicer->SetOutputExtent(0, int_size[0], 0, int_size[1], 0, 0);
             m_reslicer->SetOutputOrigin(origin[0], origin[1], origin[2]);
             m_reslicer->SetOutputSpacing(spacing[0], spacing[1], spacing[2]);
@@ -216,7 +216,7 @@ void plane_slicer::set_reslicer_axes()
     // permutate axes.
     switch(m_orientation)
     {
-        case data::helper::medical_image::orientation_t::x_axis:
+        case data::helper::medical_image::axis_t::x_axis:
             // permutate X with Y and Y with Z
             for(std::uint8_t i = 0 ; i < 4 ; ++i)
             {
@@ -230,7 +230,7 @@ void plane_slicer::set_reslicer_axes()
 
             break;
 
-        case data::helper::medical_image::orientation_t::y_axis:
+        case data::helper::medical_image::axis_t::y_axis:
             // permutate Y with Z
             for(std::uint8_t i = 0 ; i < 4 ; ++i)
             {
@@ -242,7 +242,7 @@ void plane_slicer::set_reslicer_axes()
 
             break;
 
-        case data::helper::medical_image::orientation_t::z_axis:
+        case data::helper::medical_image::axis_t::z_axis:
             break; // Nothing to do.
     }
 
@@ -259,24 +259,24 @@ void plane_slicer::apply_slice_translation(vtkSmartPointer<vtkMatrix4x4> _vtk_ma
     std::int64_t idx = 0;
     switch(m_orientation)
     {
-        case data::helper::medical_image::orientation_t::x_axis:
+        case data::helper::medical_image::axis_t::x_axis:
             idx = data::helper::medical_image::get_slice_index(
                 *image,
-                data::helper::medical_image::orientation_t::sagittal
+                data::helper::medical_image::axis_t::sagittal
             ).value_or(0);
             break;
 
-        case data::helper::medical_image::orientation_t::y_axis:
+        case data::helper::medical_image::axis_t::y_axis:
             idx = data::helper::medical_image::get_slice_index(
                 *image,
-                data::helper::medical_image::orientation_t::frontal
+                data::helper::medical_image::axis_t::frontal
             ).value_or(0);
             break;
 
-        case data::helper::medical_image::orientation_t::z_axis:
+        case data::helper::medical_image::axis_t::z_axis:
             idx = data::helper::medical_image::get_slice_index(
                 *image,
-                data::helper::medical_image::orientation_t::axial
+                data::helper::medical_image::axis_t::axial
             ).value_or(0);
             break;
     }
@@ -301,11 +301,11 @@ void plane_slicer::updateorientation_t(int _from, int _to)
 {
     if(_to == static_cast<int>(m_orientation))
     {
-        m_orientation = static_cast<data::helper::medical_image::orientation_t>(_from);
+        m_orientation = static_cast<data::helper::medical_image::axis_t>(_from);
     }
     else if(_from == static_cast<int>(m_orientation))
     {
-        m_orientation = static_cast<data::helper::medical_image::orientation_t>(_to);
+        m_orientation = static_cast<data::helper::medical_image::axis_t>(_to);
     }
 
     this->updating();

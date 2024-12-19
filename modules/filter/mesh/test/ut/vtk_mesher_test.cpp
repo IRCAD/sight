@@ -76,15 +76,17 @@ inline static std::pair<sight::service::base::sptr, sight::data::image_series::s
     auto image_series    = std::make_shared<sight::data::image_series>();
     const auto dump_lock = image_series->dump_lock();
 
-    const data::image::size_t size       = {10, 20, 90};
-    const data::image::spacing_t spacing = {1., 1., 1.};
-    const data::image::origin_t origin   = {0., 0., 0.};
+    const data::image::size_t size               = {10, 20, 90};
+    const data::image::spacing_t spacing         = {1., 1., 1.};
+    const data::image::origin_t origin           = {0., 0., 0.};
+    const data::image::orientation_t orientation = {1., 0., 0., 0., 1., 0., 0., 0., 1.};
 
     utest_data::generator::image::generate_image(
         image_series,
         size,
         spacing,
         origin,
+        orientation,
         core::type::get<std::int16_t>(),
         data::image::pixel_format_t::gray_scale
     );

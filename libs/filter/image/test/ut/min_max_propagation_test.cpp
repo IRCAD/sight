@@ -85,16 +85,33 @@ void min_max_propagation_test::tearDown()
 void min_max_propagation_test::min_propag_test()
 {
     // Create two 32*32*32*8 images
-    const data::image::size_t size       = {{32, 32, 32}};
-    const data::image::spacing_t spacing = {{1., 1., 1.}};
-    const data::image::origin_t origin   = {{0., 0., 0.}};
-    const core::type type                = core::type::UINT8;
+    const data::image::size_t size               = {32, 32, 32};
+    const data::image::spacing_t spacing         = {1., 1., 1.};
+    const data::image::origin_t origin           = {0., 0., 0.};
+    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+    const core::type type                        = core::type::UINT8;
 
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
-    utest_data::generator::image::generate_image(image_out, size, spacing, origin, type, data::image::gray_scale);
+    utest_data::generator::image::generate_image(
+        image_in,
+        size,
+        spacing,
+        origin,
+        orientation,
+        type,
+        data::image::gray_scale
+    );
+    utest_data::generator::image::generate_image(
+        image_out,
+        size,
+        spacing,
+        origin,
+        orientation,
+        type,
+        data::image::gray_scale
+    );
 
     // Draw a cube at 10,10,10 with a 255 value
     draw_cube(image_in, 255);
@@ -188,16 +205,33 @@ void min_max_propagation_test::min_propag_test()
 void min_max_propagation_test::max_propag_test()
 {
     // Create two 32*32*32*8 images
-    const data::image::size_t size       = {{32, 32, 32}};
-    const data::image::spacing_t spacing = {{1., 1., 1.}};
-    const data::image::origin_t origin   = {{0., 0., 0.}};
-    const core::type type                = core::type::UINT8;
+    const data::image::size_t size               = {32, 32, 32};
+    const data::image::spacing_t spacing         = {1., 1., 1.};
+    const data::image::origin_t origin           = {0., 0., 0.};
+    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+    const core::type type                        = core::type::UINT8;
 
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
-    utest_data::generator::image::generate_image(image_out, size, spacing, origin, type, data::image::gray_scale);
+    utest_data::generator::image::generate_image(
+        image_in,
+        size,
+        spacing,
+        origin,
+        orientation,
+        type,
+        data::image::gray_scale
+    );
+    utest_data::generator::image::generate_image(
+        image_out,
+        size,
+        spacing,
+        origin,
+        orientation,
+        type,
+        data::image::gray_scale
+    );
 
     // Draw a cube at 10,10,10 with a 2 value
     draw_cube(image_in, 2);
@@ -266,16 +300,33 @@ void min_max_propagation_test::max_propag_test()
 void min_max_propagation_test::radius_test()
 {
     // Create two 32*32*32*8 images
-    const data::image::size_t size       = {{33, 33, 33}};
-    const data::image::spacing_t spacing = {{1., 1., 1.}};
-    const data::image::origin_t origin   = {{0., 0., 0.}};
-    const core::type type                = core::type::UINT8;
+    const data::image::size_t size               = {33, 33, 33};
+    const data::image::spacing_t spacing         = {1., 1., 1.};
+    const data::image::origin_t origin           = {0., 0., 0.};
+    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+    const core::type type                        = core::type::UINT8;
 
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
-    utest_data::generator::image::generate_image(image_out, size, spacing, origin, type, data::image::gray_scale);
+    utest_data::generator::image::generate_image(
+        image_in,
+        size,
+        spacing,
+        origin,
+        orientation,
+        type,
+        data::image::gray_scale
+    );
+    utest_data::generator::image::generate_image(
+        image_out,
+        size,
+        spacing,
+        origin,
+        orientation,
+        type,
+        data::image::gray_scale
+    );
 
     min_max_propagation::seeds_t seed = {{{16, 16, 16}}};
 

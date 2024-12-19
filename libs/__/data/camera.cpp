@@ -95,9 +95,9 @@ pixel_format_translator_t pixel_format_translator =
 
 //------------------------------------------------------------------------------
 
-enum camera::pixel_format_t camera::pixel_format(const std::string& _name)
+camera::pixel_format_t camera::pixel_format(const std::string& _name)
 {
-    enum pixel_format_t format = pixel_format_t::invalid;
+    auto format = pixel_format_t::invalid;
 
     pixel_format_translator_t::right_const_iterator right_iter = pixel_format_translator.right.find(_name);
     if(right_iter != pixel_format_translator.right.end())

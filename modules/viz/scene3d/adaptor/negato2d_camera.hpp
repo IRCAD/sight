@@ -203,7 +203,7 @@ protected:
 
 private:
 
-    using orientation_t = data::helper::medical_image::orientation_t;
+    using axis_t = data::helper::medical_image::axis_t;
 
     /// SLOT: resets the camera's zoom.
     void reset_camera();
@@ -221,11 +221,14 @@ private:
     /// Updates the transfer function window and level by adding the input values.
     void update_windowing(double _dw, double _dl);
 
+    /// Get the inverse transformation matrix from camera to origin
+    Ogre::Matrix4 get_camera_to_origin_transform() const;
+
     /// Defines the current interaction status.
     bool m_is_interacting {false};
 
     /// Defines the image current orientation.
-    orientation_t m_current_negato_orientation {data::helper::medical_image::orientation_t::z_axis};
+    axis_t m_axis {axis_t::z_axis};
 
     /// Defines the interaction priority.
     int m_priority {0};

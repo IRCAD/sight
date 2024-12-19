@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -151,30 +151,25 @@ void volume_renderer::resize_viewport(int /*w*/, int /*h*/)
 
 //-----------------------------------------------------------------------------
 
-void volume_renderer::scale_translate_cube(
-    const data::image::spacing_t& _spacing,
-    const data::image::origin_t& _origin
-)
+void volume_renderer::scale_translate_cube(const data::image& _image)
 {
     // Scale the volume based on the image's spacing and move it to the image origin.
     m_volume_scene_node->resetToInitialState();
 
-    const double width  = static_cast<double>(m_3d_ogre_texture->width()) * _spacing[0];
-    const double height = static_cast<double>(m_3d_ogre_texture->height()) * _spacing[1];
-    const double depth  = static_cast<double>(m_3d_ogre_texture->depth()) * _spacing[2];
+    const auto& spacing = _image.spacing();
+    const double width  = static_cast<double>(m_3d_ogre_texture->width()) * spacing[0];
+    const double height = static_cast<double>(m_3d_ogre_texture->height()) * spacing[1];
+    const double depth  = static_cast<double>(m_3d_ogre_texture->depth()) * spacing[2];
 
     const Ogre::Vector3 scale_factors(
-        static_cast<float>(width),
-        static_cast<float>(height),
-        static_cast<float>(depth));
-
-    const Ogre::Vector3 ogre_origin(
-        static_cast<float>(_origin[0]),
-        static_cast<float>(_origin[1]),
-        static_cast<float>(_origin[2]));
+        static_cast<Ogre::Real>(width),
+        static_cast<Ogre::Real>(height),
+        static_cast<Ogre::Real>(depth)
+    );
 
     m_volume_scene_node->setScale(scale_factors);
-    m_volume_scene_node->setPosition(ogre_origin);
+    m_volume_scene_node->setPosition(utils::get_ogre_origin(_image));
+    m_volume_scene_node->setOrientation(utils::get_ogre_orientation(_image));
 }
 
 //-----------------------------------------------------------------------------

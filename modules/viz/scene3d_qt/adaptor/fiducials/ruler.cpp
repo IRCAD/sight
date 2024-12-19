@@ -96,19 +96,19 @@ void ruler::configuring()
     m_color              = config.get<std::string>(s_COLOR_CONFIG, m_color);
     m_always_display_all = config.get<bool>(s_ALWAYS_DISPLAY_ALL_CONFIG, m_always_display_all);
 
-    if(const auto& orientation = config.get_optional<std::string>(s_ORIENTATION_CONFIG); orientation)
+    if(const auto& axis = config.get_optional<std::string>(s_ORIENTATION_CONFIG); axis)
     {
-        if(*orientation == "axial")
+        if(*axis == "axial")
         {
-            m_orientation = orientation_t::z_axis;
+            m_axis = axis_t::z_axis;
         }
-        else if(*orientation == "frontal")
+        else if(*axis == "frontal")
         {
-            m_orientation = orientation_t::y_axis;
+            m_axis = axis_t::y_axis;
         }
-        else if(*orientation == "sagittal")
+        else if(*axis == "sagittal")
         {
-            m_orientation = orientation_t::x_axis;
+            m_axis = axis_t::x_axis;
         }
         else
         {
@@ -381,7 +381,7 @@ void ruler::create_ruler_fiducial(
 
             const int slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
                                                          *image_series,
-                                                         sight::data::helper::medical_image::orientation_t::axial
+                                                         sight::data::helper::medical_image::axis_t::axial
             ).value_or(-1));
 
             /// ReferencedFrameNumber (0008,1160)
@@ -414,21 +414,33 @@ void ruler::create_ruler_ogre_set(
     auto* const root_node = this->get_scene_manager()->getRootSceneNode();
     const auto color      = Ogre::ColourValue(_color[0], _color[1], _color[2], _color[3]);
 
+    const Ogre::Vector3 sphere1_pos(
+        static_cast<Ogre::Real>(_begin[0]),
+        static_cast<Ogre::Real>(_begin[1]),
+        static_cast<Ogre::Real>(_begin[2])
+    );
+
+    const Ogre::Vector3 sphere2_pos(
+        static_cast<Ogre::Real>(_end[0]),
+        static_cast<Ogre::Real>(_end[1]),
+        static_cast<Ogre::Real>(_end[2])
+    );
+
     // In case the z coord is an integer, we should to set it a tiny bit behind.
     // Otherwise the ogre line will flicker.
     const auto begin_z_coord = std::trunc(_begin[2]) == _begin[2] ? _begin[2] - 0.001 : _begin[2];
     const auto end_z_coord   = std::trunc(_end[2]) == _end[2] ? _end[2] - 0.001 : _end[2];
 
-    const Ogre::Vector3 v1(
-        static_cast<float>(_begin[0]),
-        static_cast<float>(_begin[1]),
-        static_cast<float>(begin_z_coord)
+    const Ogre::Vector3 line1_pos(
+        static_cast<Ogre::Real>(_begin[0]),
+        static_cast<Ogre::Real>(_begin[1]),
+        static_cast<Ogre::Real>(begin_z_coord)
     );
 
-    const Ogre::Vector3 v2(
-        static_cast<float>(_end[0]),
-        static_cast<float>(_end[1]),
-        static_cast<float>(end_z_coord)
+    const Ogre::Vector3 line2_pos(
+        static_cast<Ogre::Real>(_end[0]),
+        static_cast<Ogre::Real>(_end[1]),
+        static_cast<Ogre::Real>(end_z_coord)
     );
 
     const auto id =
@@ -453,7 +465,7 @@ void ruler::create_ruler_ogre_set(
     // Render this sphere over all others objects.
     sphere1->setRenderQueueGroup(RULER_RQ_GROUP_ID);
 
-    Ogre::SceneNode* const node1 = root_node->createChildSceneNode(id("node1"), v1);
+    Ogre::SceneNode* const node1 = root_node->createChildSceneNode(id("node1"), sphere1_pos);
     SIGHT_ASSERT("Can't create the first node", node1);
     node1->attachObject(sphere1);
 
@@ -472,7 +484,7 @@ void ruler::create_ruler_ogre_set(
     // Render this sphere over all others objects.
     sphere2->setRenderQueueGroup(RULER_RQ_GROUP_ID);
 
-    Ogre::SceneNode* const node2 = root_node->createChildSceneNode(id("node2"), v2);
+    Ogre::SceneNode* const node2 = root_node->createChildSceneNode(id("node2"), sphere2_pos);
     SIGHT_ASSERT("Can't create the second node", node2);
     node2->attachObject(sphere2);
 
@@ -485,8 +497,8 @@ void ruler::create_ruler_ogre_set(
         sight::viz::scene3d::RESOURCE_GROUP
     );
     line->colour(color);
-    line->position(v1);
-    line->position(v2);
+    line->position(line1_pos);
+    line->position(line2_pos);
     line->end();
     line->setQueryFlags(0x0);
     root_node->attachObject(line);
@@ -500,11 +512,11 @@ void ruler::create_ruler_ogre_set(
         sight::viz::scene3d::RESOURCE_GROUP
     );
     dashed_line->colour(color);
-    dashed_line->position(v1);
+    dashed_line->position(line1_pos);
     sight::viz::scene3d::helper::manual_object::draw_dashed_line(
         dashed_line,
-        v1,
-        v2,
+        line1_pos,
+        line2_pos,
         _sphere_radius,
         _sphere_radius
     );
@@ -518,11 +530,11 @@ void ruler::create_ruler_ogre_set(
     sight::viz::scene3d::text::sptr label = sight::viz::scene3d::text::make(this->layer());
 
     // NOLINTNEXTLINE(readability-suspicious-call-argument)
-    const std::string length = sight::viz::scene3d::helper::scene::get_length(v1, v2);
+    const std::string length = sight::viz::scene3d::helper::scene::get_length(sphere1_pos, sphere2_pos);
     label->set_text(length);
     label->set_text_color(color);
     label->set_font_size(m_font_size);
-    Ogre::SceneNode* const label_node = root_node->createChildSceneNode(id("label_node"), v2);
+    Ogre::SceneNode* const label_node = root_node->createChildSceneNode(id("label_node"), sphere2_pos);
     SIGHT_ASSERT("Can't create the label node", label_node);
     label->attach_to_node(label_node, this->layer()->get_default_camera());
 
@@ -815,8 +827,7 @@ void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
                             _x,
                             _y,
                             m_query_mask,
-                            *scene_mgr,
-                            true
+                            *scene_mgr
                         );
 
                         if(pick_result.has_value())
@@ -895,7 +906,7 @@ void ruler::mouse_move_event(
             {
                 Ogre::SceneManager* const scene_mgr = layer->get_scene_manager();
                 // If something is picked, we will snap data to it.
-                auto picked_pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *scene_mgr, true);
+                auto picked_pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *scene_mgr);
                 if(picked_pos.has_value())
                 {
                     new_pos              = picked_pos->second;
@@ -967,6 +978,7 @@ void ruler::mouse_move_event(
             const auto& sig  = image->signal<sight::data::image_series::ruler_modified_signal_t>(
                 sight::data::image_series::RULER_MODIFIED_SIG
             );
+
             sig->async_emit(
                 m_picked_ruler.m_data->id.value_or(
                     ""
@@ -1298,46 +1310,19 @@ Ogre::ColourValue ruler::get_default_color()
 
 bool ruler::is_visible_on_current_slice(std::array<double, 3> _begin, std::array<double, 3> _end)
 {
-    bool visible               = false;
-    const auto& slice_position =
-        [this]
-        {
-            const auto image_series = m_image.const_lock();
-            const auto& spacing     = image_series->spacing();
-            const auto& origin      = image_series->origin();
-            const auto slice_index  = sight::data::helper::medical_image::get_slice_index(
-                *image_series,
-                m_orientation
-            ).value_or(0);
+    const auto image = m_image.const_lock();
 
-            return origin[m_orientation] + (double(slice_index) * spacing[m_orientation]);
-        }();
+    // Get the current slice position
+    const auto slice_index = sight::data::helper::medical_image::get_slice_index(
+        *image,
+        m_axis
+    ).value_or(0);
 
-    const auto position1 =
-        m_orientation == orientation_t::z_axis
-        ? _begin[2]
-        : m_orientation == orientation_t::y_axis
-        ? _begin[1]
-        : _begin[0];
-
-    const auto position2 =
-        m_orientation == orientation_t::z_axis
-        ? _end[2]
-        : m_orientation == orientation_t::y_axis
-        ? _end[1]
-        : _end[0];
-
-    const auto rounded_position1      = std::round(position1);
-    const auto rounded_position2      = std::round(position2);
-    const auto rounded_slice_position = std::round(slice_position);
+    const auto begin_position = image->world_to_image(_begin, true);
+    const auto end_position   = image->world_to_image(_end, true);
 
     // Check if the ruler positions are on the current slice or in between.
-    if((rounded_slice_position - rounded_position1) * (rounded_slice_position - rounded_position2) <= 0)
-    {
-        visible = true;
-    }
-
-    return visible;
+    return (slice_index - begin_position[m_axis]) * (slice_index - end_position[m_axis]) <= 0;
 }
 
 } // namespace sight::module::viz::scene3d_qt::adaptor::fiducials.

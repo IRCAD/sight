@@ -79,9 +79,9 @@ bool check_image_slice_index(data::image::sptr _p_img)
 
     const data::image::size_t& image_size = _p_img->size();
 
-    const auto axial_idx    = get_slice_index(*_p_img, orientation_t::axial);
-    const auto frontal_idx  = get_slice_index(*_p_img, orientation_t::frontal);
-    const auto sagittal_idx = get_slice_index(*_p_img, orientation_t::sagittal);
+    const auto axial_idx    = get_slice_index(*_p_img, axis_t::axial);
+    const auto frontal_idx  = get_slice_index(*_p_img, axis_t::frontal);
+    const auto sagittal_idx = get_slice_index(*_p_img, axis_t::sagittal);
 
     std::array<std::int64_t, 3> index_values = {0, 0, 0};
 
@@ -113,9 +113,9 @@ bool check_image_slice_index(data::image::sptr _p_img)
     // Update or create fields.
     if(field_is_modified)
     {
-        set_slice_index(*_p_img, orientation_t::axial, index_values[orientation_t::axial]);
-        set_slice_index(*_p_img, orientation_t::frontal, index_values[orientation_t::frontal]);
-        set_slice_index(*_p_img, orientation_t::sagittal, index_values[orientation_t::sagittal]);
+        set_slice_index(*_p_img, axis_t::axial, index_values[axis_t::axial]);
+        set_slice_index(*_p_img, axis_t::frontal, index_values[axis_t::frontal]);
+        set_slice_index(*_p_img, axis_t::sagittal, index_values[axis_t::sagittal]);
     }
 
     return field_is_modified;
@@ -134,68 +134,37 @@ bool is_buf_null(const data::image::buffer_t* _buffer, const unsigned int _len)
     return is_null;
 }
 
-//------------------------------------------------------------------------------
-
-index_t compute_voxel_indices(const data::image& _image, const vec3_t& _pos)
-{
-    const auto& spacing = _image.spacing();
-    const auto& origin  = _image.origin();
-
-    return {
-        static_cast<index_t::value_type>(std::round((_pos[0] - origin[0]) / spacing[0])),
-        static_cast<index_t::value_type>(std::round((_pos[1] - origin[1]) / spacing[1])),
-        static_cast<index_t::value_type>(std::round((_pos[2] - origin[2]) / spacing[2]))
-    };
-}
-
-//------------------------------------------------------------------------------
-
-std::pair<vec3_t, vec3_t> compute_bounding_box(const data::image& _image)
-{
-    const auto& spacing = _image.spacing();
-    const auto& origin  = _image.origin();
-    const auto& size    = _image.size();
-
-    const vec3_t max {origin[0] + spacing[0] * static_cast<double>(size[0]),
-                      origin[1] + spacing[1] * static_cast<double>(size[1]),
-                      origin[2] + spacing[2] * static_cast<double>(size[2])
-    };
-
-    return {origin, max};
-}
-
 //-------------------------------------------------------------------------------
 std::optional<std::int64_t> get_slice_index(
     const data::image& _image,
-    const orientation_t& _orientation
+    const axis_t& _axis
 )
 {
-    std::string orientation_index;
-    switch(_orientation)
+    std::string axis_name;
+    switch(_axis)
     {
-        case orientation_t::axial:
-            orientation_index = std::string(id::AXIAL_SLICE_INDEX);
+        case axis_t::axial:
+            axis_name = std::string(id::AXIAL_SLICE_INDEX);
             break;
 
-        case orientation_t::sagittal:
-            orientation_index = std::string(id::SAGITTAL_SLICE_INDEX);
+        case axis_t::sagittal:
+            axis_name = std::string(id::SAGITTAL_SLICE_INDEX);
             break;
 
-        case orientation_t::frontal:
-            orientation_index = std::string(id::FRONTAL_SLICE_INDEX);
+        case axis_t::frontal:
+            axis_name = std::string(id::FRONTAL_SLICE_INDEX);
             break;
 
         default:
             SIGHT_THROW_EXCEPTION(data::exception("Wrong orientation type."));
-            break;
     }
 
     // Test if field exists
-    const auto field = _image.get_field(orientation_index);
+    const auto field = _image.get_field(axis_name);
     if(field)
     {
         // Test if the type is data::integer.
-        const auto field_int = _image.get_field<data::integer>(orientation_index);
+        const auto field_int = std::dynamic_pointer_cast<data::integer>(field);
         if(field_int)
         {
             // Get value.
@@ -209,44 +178,43 @@ std::optional<std::int64_t> get_slice_index(
 //-------------------------------------------------------------------------------
 void set_slice_index(
     data::image& _image,
-    const orientation_t& _orientation,
+    const axis_t& _axis,
     std::int64_t _slice_idx
 )
 {
     data::integer::sptr value = std::make_shared<data::integer>();
     value->set_value(_slice_idx);
 
-    std::string orientation_index;
-    switch(_orientation)
+    std::string axis_name;
+    switch(_axis)
     {
-        case orientation_t::axial:
-            orientation_index = std::string(id::AXIAL_SLICE_INDEX);
+        case axis_t::axial:
+            axis_name = std::string(id::AXIAL_SLICE_INDEX);
             break;
 
-        case orientation_t::sagittal:
-            orientation_index = std::string(id::SAGITTAL_SLICE_INDEX);
+        case axis_t::sagittal:
+            axis_name = std::string(id::SAGITTAL_SLICE_INDEX);
             break;
 
-        case orientation_t::frontal:
-            orientation_index = std::string(id::FRONTAL_SLICE_INDEX);
+        case axis_t::frontal:
+            axis_name = std::string(id::FRONTAL_SLICE_INDEX);
             break;
 
         default:
             SIGHT_THROW_EXCEPTION(data::exception("Wrong orientation type."));
-            break;
     }
 
-    _image.set_field(orientation_index, value);
+    _image.set_field(axis_name, value);
 }
 
 //-------------------------------------------------------------------------------
 
 std::optional<double_t> get_slice_position(
     const data::image& _image,
-    const orientation_t& _orientation
+    const axis_t& _axis
 )
 {
-    const auto slice_idx_opt = get_slice_index(_image, _orientation);
+    const auto slice_idx_opt = get_slice_index(_image, _axis);
     if(!slice_idx_opt)
     {
         return {};
@@ -255,50 +223,40 @@ std::optional<double_t> get_slice_position(
     const auto& spacing          = _image.spacing();
     const auto& origin           = _image.origin();
     const std::int64_t slice_idx = slice_idx_opt.value();
-    return origin[_orientation] + static_cast<double>(slice_idx) * spacing[_orientation];
+    return origin[_axis] + static_cast<double>(slice_idx) * spacing[_axis];
 }
 
 //------------------------------------------------------------------------------
 void set_slice_position(
     data::image& _image,
-    const orientation_t& _orientation,
-    const double& _position
+    const axis_t& _orientation,
+    double _position_in_image
 )
 {
     const auto& spacing = _image.spacing();
-    const auto& origin  = _image.origin();
+    SIGHT_ASSERT("Spacing cannot be zero", !core::is_equal(0.0, spacing[_orientation]));
 
-    const auto new_index =
-        static_cast<std::int64_t>((_position - origin[_orientation]) / spacing[_orientation]);
+    const auto& origin   = _image.origin();
+    const auto new_index = std::int64_t(
+        std::round((_position_in_image - origin[_orientation]) / spacing[_orientation])
+    );
+
     set_slice_index(_image, _orientation, new_index);
 }
 
 //----------------------------------------------------------------------------
 std::optional<std::int64_t> get_fiducial_slice_index(
     const data::image& _image,
-    const std::array<double, 3>& _point,
-    orientation_t _orientation
+    const vec3_t& _point,
+    axis_t _axis
 )
 {
-    std::optional<std::int64_t> slice_index;
+    const auto point_in_image = _image.world_to_image(_point, true);
+    const auto slice_index    = point_in_image[_axis];
 
-    switch(_orientation)
+    if(slice_index < 0 || slice_index >= std::int64_t(_image.size()[_axis]))
     {
-        case orientation_t::sagittal:
-            slice_index = static_cast<std::int64_t>(std::round((_point[0] - _image.origin()[0]) / _image.spacing()[0]));
-            break;
-
-        case orientation_t::frontal:
-            slice_index = static_cast<std::int64_t>(std::round((_point[1] - _image.origin()[1]) / _image.spacing()[1]));
-            break;
-
-        case orientation_t::axial:
-            slice_index = static_cast<std::int64_t>(std::round((_point[2] - _image.origin()[2]) / _image.spacing()[2]));
-            break;
-
-        default:
-            slice_index = std::nullopt;
-            break;
+        return std::nullopt;
     }
 
     return slice_index;
@@ -394,21 +352,34 @@ void set_landmarks_visibility(data::image& _image, bool _visibility)
 
 data::matrix4::sptr get_direction(const data::image& _image)
 {
+    FW_DEPRECATED_MSG("medical_image::get_direction() is deprecated, use image::orientation() instead.", "26.0");
+
     if(auto direction = _image.get_field<data::matrix4>(std::string(id::DIRECTION)); direction)
     {
         return direction;
     }
 
-    return std::make_shared<data::matrix4>();
+    // Compatibility code while we still use medical_image::get_direction()
+    // medical_image::get_direction() will be removed in the future and replaced by image::orientation()
+    auto matrix4 = std::make_shared<data::matrix4>();
+    matrix4->set_orientation(_image.orientation());
+
+    return matrix4;
 }
 
 //------------------------------------------------------------------------------
 
 void set_direction(data::image& _image, data::matrix4::sptr _direction)
 {
+    FW_DEPRECATED_MSG("medical_image::set_direction() is deprecated, use image::set_orientation() instead.", "26.0");
+
     if(_direction)
     {
         _image.set_field(std::string(id::DIRECTION), _direction);
+
+        // Compatibility code while we still use medical_image::set_direction()
+        // medical_image::set_direction() will be removed in the future and replaced by image::set_orientation()
+        _image.set_orientation(_direction->orientation());
     }
 }
 

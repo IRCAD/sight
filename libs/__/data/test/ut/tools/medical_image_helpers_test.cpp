@@ -99,14 +99,16 @@ sight::data::image::sptr generate_image()
 {
     data::image::sptr image = std::make_shared<data::image>();
 
-    const data::image::size_t size       = {256, 150, 100};
-    const data::image::spacing_t spacing = {1., 1., 0.5};
-    const data::image::origin_t origin   = {0., 0., 0.};
+    const data::image::size_t size               = {256, 150, 100};
+    const data::image::spacing_t spacing         = {1., 1., 0.5};
+    const data::image::origin_t origin           = {0., 0., 0.};
+    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
     utest_data::generator::image::generate_image(
         image,
         size,
         spacing,
         origin,
+        orientation,
         core::type::UINT8,
         data::image::pixel_format_t::gray_scale
     );
@@ -142,14 +144,17 @@ void medical_image_helpers_test::get_min_max_test()
 
         data::image::sptr image = std::make_shared<data::image>();
 
-        const data::image::size_t size       = {125, 110, 45};
-        const data::image::spacing_t spacing = {1., 1., 1.};
-        const data::image::origin_t origin   = {0., 0., 0.};
+        const data::image::size_t size               = {125, 110, 45};
+        const data::image::spacing_t spacing         = {1., 1., 1.};
+        const data::image::origin_t origin           = {0., 0., 0.};
+        const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+
         utest_data::generator::image::generate_image(
             image,
             size,
             spacing,
             origin,
+            orientation,
             core::type::get<type>(),
             data::image::pixel_format_t::gray_scale
         );
@@ -181,14 +186,17 @@ void medical_image_helpers_test::get_min_max_test()
 
         data::image::sptr image = std::make_shared<data::image>();
 
-        const data::image::size_t size       = {42, 34, 75};
-        const data::image::spacing_t spacing = {1., 1., 1.};
-        const data::image::origin_t origin   = {0., 0., 0.};
+        const data::image::size_t size               = {42, 34, 75};
+        const data::image::spacing_t spacing         = {1., 1., 1.};
+        const data::image::origin_t origin           = {0., 0., 0.};
+        const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+
         utest_data::generator::image::generate_image(
             image,
             size,
             spacing,
             origin,
+            orientation,
             core::type::get<type>(),
             data::image::pixel_format_t::gray_scale
         );
@@ -222,14 +230,17 @@ void medical_image_helpers_test::get_min_max_test()
 
         data::image::sptr image = std::make_shared<data::image>();
 
-        const data::image::size_t size       = {156, 208, 0};
-        const data::image::spacing_t spacing = {1., 1., 0.};
-        const data::image::origin_t origin   = {0., 0., 0.};
+        const data::image::size_t size               = {156, 208, 0};
+        const data::image::spacing_t spacing         = {1., 1., 0.};
+        const data::image::origin_t origin           = {0., 0., 0.};
+        const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+
         utest_data::generator::image::generate_image(
             image,
             size,
             spacing,
             origin,
+            orientation,
             core::type::get<type>(),
             data::image::pixel_format_t::gray_scale
         );
@@ -448,68 +459,6 @@ void data::tools::ut::medical_image_helpers_test::is_buf_null()
 
 //------------------------------------------------------------------------------
 
-void data::tools::ut::medical_image_helpers_test::compute_voxel_indices()
-{
-    data::image image;
-
-    const data::image::size_t size       = {567, 789, 39};
-    const data::image::spacing_t spacing = {1.4, 0.8, 0.5};
-    const data::image::origin_t origin   = {-18.3, 54., 230.};
-
-    image.resize(size, core::type::INT16, data::image::gray_scale);
-    image.set_spacing(spacing);
-    image.set_origin(origin);
-
-    {
-        const auto indices = med_im_helper::compute_voxel_indices(image, {16, 543.65, 456.});
-
-        med_im_helper::index_t expected_indices {25, 612, 452};
-        for(std::size_t i = 0 ; i < 3 ; ++i)
-        {
-            CPPUNIT_ASSERT_EQUAL(expected_indices[i], indices[i]);
-        }
-    }
-    {
-        const auto indices = med_im_helper::compute_voxel_indices(image, {2., 34.4, 7.});
-        med_im_helper::index_t expected_indices {15, -25, -446};
-        for(std::size_t i = 0 ; i < 3 ; ++i)
-        {
-            CPPUNIT_ASSERT_EQUAL(expected_indices[i], indices[i]);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void data::tools::ut::medical_image_helpers_test::compute_bounding_box()
-{
-    data::image image;
-
-    const data::image::size_t size       = {567, 789, 39};
-    const data::image::spacing_t spacing = {1.4, 0.8, 0.5};
-    const data::image::origin_t origin   = {-18.3, 54., 230.};
-
-    image.resize(size, core::type::INT16, data::image::gray_scale);
-    image.set_spacing(spacing);
-    image.set_origin(origin);
-
-    const auto& [min, max] = med_im_helper::compute_bounding_box(image);
-
-    med_im_helper::vec3_t expected_min {-18.3, 54., 230.};
-    for(std::size_t i = 0 ; i < 3 ; ++i)
-    {
-        CPPUNIT_ASSERT_EQUAL(expected_min[i], min[i]);
-    }
-
-    med_im_helper::vec3_t expected_max {775.5, 685.2, 249.5};
-    for(std::size_t i = 0 ; i < 3 ; ++i)
-    {
-        CPPUNIT_ASSERT_EQUAL(expected_max[i], max[i]);
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void medical_image_helpers_test::test_landmarks()
 {
     data::image::sptr image = generate_image();
@@ -566,7 +515,7 @@ void medical_image_helpers_test::test_slice_position()
     const auto image = generate_image();
     // AXIAL
     {
-        auto orientation = med_im_helper::orientation_t::axial;
+        auto orientation = med_im_helper::axis_t::axial;
 
         auto position = med_im_helper::get_slice_position(*image, orientation);
 
@@ -585,7 +534,7 @@ void medical_image_helpers_test::test_slice_position()
 
     // SAGITTAL
     {
-        auto orientation = med_im_helper::orientation_t::sagittal;
+        auto orientation = med_im_helper::axis_t::sagittal;
 
         auto index = med_im_helper::get_slice_position(*image, orientation);
 
@@ -603,7 +552,7 @@ void medical_image_helpers_test::test_slice_position()
     }
     // FRONTAL
     {
-        auto orientation = med_im_helper::orientation_t::frontal;
+        auto orientation = med_im_helper::axis_t::frontal;
 
         auto index = med_im_helper::get_slice_position(*image, orientation);
 
@@ -623,8 +572,8 @@ void medical_image_helpers_test::test_slice_position()
     // No slice index
     {
         const auto image_no_slices = std::make_shared<data::image>();
-        auto orientation           = med_im_helper::orientation_t::axial;
-        const auto index           = med_im_helper::get_slice_position(*image_no_slices, orientation);
+        auto axis                  = med_im_helper::axis_t::axial;
+        const auto index           = med_im_helper::get_slice_position(*image_no_slices, axis);
 
         CPPUNIT_ASSERT_EQUAL(false, index.has_value());
     }
@@ -637,17 +586,17 @@ void medical_image_helpers_test::test_slice_index()
 
     // AXIAL
     {
-        auto orientation = med_im_helper::orientation_t::axial;
+        auto axis = med_im_helper::axis_t::axial;
 
-        auto index = med_im_helper::get_slice_index(*image, orientation);
+        auto index = med_im_helper::get_slice_index(*image, axis);
 
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
 
         CPPUNIT_ASSERT_EQUAL(std::int64_t(50), index.value());
 
-        med_im_helper::set_slice_index(*image, orientation, std::int64_t(35));
+        med_im_helper::set_slice_index(*image, axis, std::int64_t(35));
 
-        index = med_im_helper::get_slice_index(*image, orientation);
+        index = med_im_helper::get_slice_index(*image, axis);
 
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
 
@@ -656,17 +605,17 @@ void medical_image_helpers_test::test_slice_index()
 
     // SAGITTAL
     {
-        auto orientation = med_im_helper::orientation_t::sagittal;
+        auto axis = med_im_helper::axis_t::sagittal;
 
-        auto index = med_im_helper::get_slice_index(*image, orientation);
+        auto index = med_im_helper::get_slice_index(*image, axis);
 
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
 
         CPPUNIT_ASSERT_EQUAL(std::int64_t(128), index.value());
 
-        med_im_helper::set_slice_index(*image, orientation, std::int64_t(0));
+        med_im_helper::set_slice_index(*image, axis, std::int64_t(0));
 
-        index = med_im_helper::get_slice_index(*image, orientation);
+        index = med_im_helper::get_slice_index(*image, axis);
 
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
 
@@ -675,17 +624,17 @@ void medical_image_helpers_test::test_slice_index()
 
     // FRONTAL
     {
-        auto orientation = med_im_helper::orientation_t::frontal;
+        auto axis = med_im_helper::axis_t::frontal;
 
-        auto index = med_im_helper::get_slice_index(*image, orientation);
+        auto index = med_im_helper::get_slice_index(*image, axis);
 
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
 
         CPPUNIT_ASSERT_EQUAL(std::int64_t(75), index.value());
 
-        med_im_helper::set_slice_index(*image, orientation, std::int64_t(17));
+        med_im_helper::set_slice_index(*image, axis, std::int64_t(17));
 
-        index = med_im_helper::get_slice_index(*image, orientation);
+        index = med_im_helper::get_slice_index(*image, axis);
 
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
 
@@ -695,8 +644,8 @@ void medical_image_helpers_test::test_slice_index()
     // No slice index
     {
         const auto image_no_slices = std::make_shared<data::image>();
-        auto orientation           = med_im_helper::orientation_t::axial;
-        const auto index           = med_im_helper::get_slice_index(*image_no_slices, orientation);
+        auto axis                  = med_im_helper::axis_t::axial;
+        const auto index           = med_im_helper::get_slice_index(*image_no_slices, axis);
 
         CPPUNIT_ASSERT_EQUAL(false, index.has_value());
     }
@@ -705,29 +654,62 @@ void medical_image_helpers_test::test_slice_index()
 //------------------------------------
 void medical_image_helpers_test::test_slice_index_fiducial()
 {
-    const auto image                   = generate_image();
+    const auto image = generate_image();
+
+    // No rotation
+    image->set_orientation({1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0});
     const std::array<double, 3> point1 = {1.0, 2.0, 3.0};
 
     {
-        auto orientation = med_im_helper::orientation_t::sagittal;
+        auto axis = med_im_helper::axis_t::sagittal;
 
-        auto index = med_im_helper::get_fiducial_slice_index(*image, point1, orientation);
+        auto index = med_im_helper::get_fiducial_slice_index(*image, point1, axis);
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
         CPPUNIT_ASSERT_EQUAL(std::int64_t(1), index.value());
     }
-    {
-        auto orientation = med_im_helper::orientation_t::axial;
 
-        auto index = med_im_helper::get_fiducial_slice_index(*image, point1, orientation);
+    {
+        auto axis = med_im_helper::axis_t::frontal;
+
+        auto index = med_im_helper::get_fiducial_slice_index(*image, point1, axis);
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(2), index.value());
+    }
+
+    {
+        auto axis = med_im_helper::axis_t::axial;
+
+        auto index = med_im_helper::get_fiducial_slice_index(*image, point1, axis);
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
         CPPUNIT_ASSERT_EQUAL(std::int64_t(6), index.value());
     }
-    {
-        auto orientation = med_im_helper::orientation_t::frontal;
 
-        auto index = med_im_helper::get_fiducial_slice_index(*image, point1, orientation);
+    // 90° rotation around X axis
+    image->set_orientation({1, 0, 0, 0, 0, -1, 0, 1, 0});
+    const std::array<double, 3> point2 {1.0, -3.0, 2.0};
+
+    {
+        auto axis = med_im_helper::axis_t::sagittal;
+
+        auto index = med_im_helper::get_fiducial_slice_index(*image, point2, axis);
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(1), index.value());
+    }
+
+    {
+        auto axis = med_im_helper::axis_t::frontal;
+
+        auto index = med_im_helper::get_fiducial_slice_index(*image, point2, axis);
         CPPUNIT_ASSERT_EQUAL(true, index.has_value());
         CPPUNIT_ASSERT_EQUAL(std::int64_t(2), index.value());
+    }
+
+    {
+        auto axis = med_im_helper::axis_t::axial;
+
+        auto index = med_im_helper::get_fiducial_slice_index(*image, point2, axis);
+        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(6), index.value());
     }
 }
 

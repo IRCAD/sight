@@ -304,6 +304,13 @@ public:
     /// Returns value of setOrthographicCamera.
     SIGHT_VIZ_SCENE3D_API bool is_orthographic_camera_force() const;
 
+    /**
+     * @brief Get the origin scene node used for image origin and image orientation
+     *
+     * @return Ogre::SceneNode*
+     */
+    inline Ogre::SceneNode* camera_origin_node();
+
 private:
 
     /// Slot: interacts with the scene.
@@ -418,6 +425,16 @@ private:
 
     /// True when we are using dedicated camera adaptor with orthographic projection.
     bool m_camera_orthographic {false};
+
+    /// Contains the scene node used for image origin and orientation.
+    Ogre::SceneNode* m_camera_origin_node {nullptr};
 };
+
+//------------------------------------------------------------------------------
+
+inline Ogre::SceneNode* layer::camera_origin_node()
+{
+    return m_camera_origin_node;
+}
 
 } // namespace sight::viz::scene3d.

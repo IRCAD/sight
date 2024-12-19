@@ -208,6 +208,7 @@ void default_activity_test::object_test()
         img1->size(),
         img1->spacing(),
         img1->origin(),
+        img1->orientation(),
         img1->type(),
         data::image::pixel_format_t::gray_scale
     );
@@ -418,6 +419,7 @@ void default_activity_test::big_activity_test()
         image_series2->size(),
         image_series2->spacing(),
         image_series2->origin(),
+        image_series2->orientation(),
         image_series2->type(),
         data::image::pixel_format_t::gray_scale
     );

@@ -55,12 +55,13 @@ void line_drawer_test::tearDown()
 void line_drawer_test::circle_test()
 {
     {
-        const data::image::size_t size       = {{120, 120, 120}};
-        const data::image::spacing_t spacing = {{1., 1., 1.}};
-        const data::image::origin_t origin   = {{0., 0., 0.}};
-        const core::type type                = core::type::INT16;
+        const data::image::size_t size               = {120, 120, 120};
+        const data::image::spacing_t spacing         = {1., 1., 1.};
+        const data::image::origin_t origin           = {0., 0., 0.};
+        const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+        const core::type type                        = core::type::INT16;
 
-        const filter::image::line_drawer::coordinates_t point = {{20, 20, 20}};
+        const filter::image::line_drawer::coordinates_t point = {20, 20, 20};
         const double thickness                                = 0.0001;
         const std::int16_t value                              = 152;
 
@@ -71,6 +72,7 @@ void line_drawer_test::circle_test()
             size,
             spacing,
             origin,
+            orientation,
             type,
             data::image::pixel_format_t::gray_scale
         );
@@ -99,12 +101,13 @@ void line_drawer_test::circle_test()
     }
 
     {
-        const data::image::size_t size       = {{120, 120, 120}};
-        const data::image::spacing_t spacing = {{1., 1., 1.}};
-        const data::image::origin_t origin   = {{0., 0., 0.}};
-        const core::type type                = core::type::INT16;
+        const data::image::size_t size               = {120, 120, 120};
+        const data::image::spacing_t spacing         = {1., 1., 1.};
+        const data::image::origin_t origin           = {0., 0., 0.};
+        const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+        const core::type type                        = core::type::INT16;
 
-        const filter::image::line_drawer::coordinates_t point = {{20, 20, 20}};
+        const filter::image::line_drawer::coordinates_t point = {20, 20, 20};
 
         const double thickness   = 5;
         const std::int16_t value = 152;
@@ -116,6 +119,7 @@ void line_drawer_test::circle_test()
             size,
             spacing,
             origin,
+            orientation,
             type,
             data::image::pixel_format_t::gray_scale
         );
@@ -240,12 +244,13 @@ void line_drawer_test::circle_test()
 void line_drawer_test::ellipse_test()
 {
     {
-        const data::image::size_t size       = {{120, 120, 120}};
-        const data::image::spacing_t spacing = {{1., 4., 1.}};
-        const data::image::origin_t origin   = {{0., 0., 0.}};
-        const core::type type                = core::type::INT16;
+        const data::image::size_t size               = {120, 120, 120};
+        const data::image::spacing_t spacing         = {1., 4., 1.};
+        const data::image::origin_t origin           = {0., 0., 0.};
+        const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+        const core::type type                        = core::type::INT16;
 
-        const filter::image::line_drawer::coordinates_t point = {{50, 50, 50}};
+        const filter::image::line_drawer::coordinates_t point = {50, 50, 50};
 
         const double thickness   = 10;
         const std::int16_t value = 152;
@@ -257,6 +262,7 @@ void line_drawer_test::ellipse_test()
             size,
             spacing,
             origin,
+            orientation,
             type,
             data::image::pixel_format_t::gray_scale
         );
@@ -348,12 +354,13 @@ void line_drawer_test::ellipse_test()
 void line_drawer_test::border_test()
 {
     {
-        const data::image::size_t size       = {{50, 50, 50}};
-        const data::image::spacing_t spacing = {{2., 4., 8.}};
-        const data::image::origin_t origin   = {{0., 0., 0.}};
-        const core::type type                = core::type::INT16;
+        const data::image::size_t size               = {50, 50, 50};
+        const data::image::spacing_t spacing         = {2., 4., 8.};
+        const data::image::origin_t origin           = {0., 0., 0.};
+        const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+        const core::type type                        = core::type::INT16;
 
-        const filter::image::line_drawer::coordinates_t point = {{45, 3, 20}};
+        const filter::image::line_drawer::coordinates_t point = {45, 3, 20};
 
         const double thickness   = 15;
         const std::int16_t value = 1952;
@@ -365,6 +372,7 @@ void line_drawer_test::border_test()
             size,
             spacing,
             origin,
+            orientation,
             type,
             data::image::pixel_format_t::gray_scale
         );
@@ -425,14 +433,15 @@ void line_drawer_test::border_test()
 void line_drawer_test::roi_test()
 {
     {
-        const data::image::size_t size       = {{150, 150, 150}};
-        const data::image::spacing_t spacing = {{2., 4., 8.}};
-        const data::image::origin_t origin   = {{0., 0., 0.}};
-        const core::type type                = core::type::INT16;
+        const data::image::size_t size             = {150, 150, 150};
+        const data::image::spacing_t spacing       = {2., 4., 8.};
+        const data::image::origin_t origin         = {0., 0., 0.};
+        const data::image::orientation_t direction = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+        const core::type type                      = core::type::INT16;
 
-        const filter::image::line_drawer::coordinates_t point = {{45, 45, 40}};
+        const filter::image::line_drawer::coordinates_t point = {45, 45, 40};
 
-        const data::helper::medical_image::orientation_t orientation =
+        const data::helper::medical_image::axis_t orientation =
             data::helper::medical_image::z_axis;
         const double thickness   = 15;
         const std::int16_t value = 1952;
@@ -445,6 +454,7 @@ void line_drawer_test::roi_test()
             size,
             spacing,
             origin,
+            direction,
             type,
             data::image::pixel_format_t::gray_scale
         );
@@ -453,6 +463,7 @@ void line_drawer_test::roi_test()
             size,
             spacing,
             origin,
+            direction,
             type,
             data::image::pixel_format_t::gray_scale
         );

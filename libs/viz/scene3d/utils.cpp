@@ -766,65 +766,79 @@ void utils::from_ogre_matrix(const Ogre::Matrix4& _mx, const data::matrix4::sptr
 
 //------------------------------------------------------------------------------
 
-std::pair<Ogre::Vector3, Ogre::Vector3> utils::convert_spacing_and_origin(const data::image::csptr& _img)
+Ogre::Vector3 utils::get_ogre_spacing(const data::image& _image)
 {
-    return utils::convert_spacing_and_origin(*_img);
+    const auto& spacing = _image.spacing();
+
+    return {
+        static_cast<Ogre::Real>(spacing[0]),
+        static_cast<Ogre::Real>(spacing[1]),
+        static_cast<Ogre::Real>(spacing[2])
+    };
 }
 
 //------------------------------------------------------------------------------
 
-std::pair<Ogre::Vector3, Ogre::Vector3> utils::convert_spacing_and_origin(const data::image& _img)
+Ogre::Vector3 utils::get_ogre_origin(const data::image& _image)
 {
-    const auto& img_origin = _img.origin();
-    const Ogre::Vector3 origin(static_cast<float>(img_origin[0]),
-                               static_cast<float>(img_origin[1]),
-                               static_cast<float>(img_origin[2]));
+    const auto& origin = _image.origin();
 
-    const auto& img_spacing = _img.spacing();
-    const Ogre::Vector3 spacing(static_cast<float>(img_spacing[0]),
-                                static_cast<float>(img_spacing[1]),
-                                static_cast<float>(img_spacing[2]));
+    return {
+        static_cast<Ogre::Real>(origin[0]),
+        static_cast<Ogre::Real>(origin[1]),
+        static_cast<Ogre::Real>(origin[2])
+    };
+}
 
-    return std::make_pair(spacing, origin);
+//------------------------------------------------------------------------------
+
+Ogre::Quaternion utils::get_ogre_orientation(const data::image& _image)
+{
+    const auto& orientation = _image.orientation();
+
+    return Ogre::Matrix3 {
+        static_cast<Ogre::Real>(orientation[0]),
+        static_cast<Ogre::Real>(orientation[1]),
+        static_cast<Ogre::Real>(orientation[2]),
+        static_cast<Ogre::Real>(orientation[3]),
+        static_cast<Ogre::Real>(orientation[4]),
+        static_cast<Ogre::Real>(orientation[5]),
+        static_cast<Ogre::Real>(orientation[6]),
+        static_cast<Ogre::Real>(orientation[7]),
+        static_cast<Ogre::Real>(orientation[8])
+    };
 }
 
 //------------------------------------------------------------------------------
 
 Ogre::Vector3i utils::world_to_slices(const data::image& _image, const Ogre::Vector3& _world)
 {
-    const auto [spacing, origin] = sight::viz::scene3d::utils::convert_spacing_and_origin(_image);
-
-    // avoid 0 division
+    // Avoid 0 division
+    const auto& spacing = _image.spacing();
 
     SIGHT_THROW_EXCEPTION_IF(
         core::exception("image spacing cannot be '0'"),
-        spacing[0] == 0.F || spacing[1] == 0.F || spacing[2] == 0.F
+        core::is_equal(0.0, spacing[0])
+        || core::is_equal(0.0, spacing[1])
+        || core::is_equal(0.0, spacing[2])
     );
 
-    const auto point = (_world - origin) / spacing;
+    const auto voxel  = _image.world_to_image(_world, true);
+    const auto& sizes = _image.size();
 
-    const Ogre::Vector3i slices_idx(point);
-
-    // Ensure that the point is within bounds of the image, do nothing otherwise.
-    std::array<std::pair<int, int>, 3> boundaries = {{
-        {0, static_cast<int>(_image.size()[1])},
-        {0, static_cast<int>(_image.size()[0])},
-        {0, static_cast<int>(_image.size()[2])}
-    }
-    };
-
-    size_t i = 0;
-    for(const auto& [min, max] : boundaries)
+    for(std::size_t i = 0 ; i < sizes.size() ; ++i)
     {
-        if(slices_idx[i] < min || slices_idx[i] > max)
+        if(voxel[int(i)] < 0 || voxel[int(i)] >= int(sizes[i]))
         {
             SIGHT_THROW_EXCEPTION(core::exception("Point is outside image boundaries"));
         }
-
-        ++i;
     }
 
-    return slices_idx;
+    return {
+        static_cast<int>(voxel[0]),
+        static_cast<int>(voxel[1]),
+        static_cast<int>(voxel[2])
+    };
 }
 
 //------------------------------------------------------------------------------
@@ -866,26 +880,20 @@ std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > utils::pick_objec
 
 std::string utils::pick_image(
     const data::image& _image,
-    const Ogre::Vector3& _position,
-    const Ogre::Vector3& _origin,
-    const Ogre::Vector3& _spacing
+    const Ogre::Vector3& _position
 )
 {
-    const auto picked_pos_image_space = (_position - _origin) / _spacing;
-    const auto& img_size              = _image.size();
-    data::image::size_t picked_voxel;
-    for(size_t i = 0 ; i < picked_voxel.size() ; ++i)
-    {
-        picked_voxel[i] = std::clamp(
-            static_cast<std::size_t>(picked_pos_image_space[i]),
-            std::size_t(0),
-            img_size[i] - 1
-        );
-    }
+    const auto picked_voxel = _image.world_to_image(_position, true, true);
+    const auto intensity    = _image.get_pixel_as_string(
+        data::image::index_t(picked_voxel[0]),
+        data::image::index_t(picked_voxel[1]),
+        data::image::index_t(picked_voxel[2])
+    );
 
-    const auto intensity = _image.get_pixel_as_string(picked_voxel[0], picked_voxel[1], picked_voxel[2]);
-    return "(" + std::to_string(picked_voxel[0]) + ", " + std::to_string(picked_voxel[1])
-           + ", " + std::to_string(picked_voxel[2]) + "): " + intensity;
+    return "(" + std::to_string(picked_voxel[0]) + ", "
+           + std::to_string(picked_voxel[1]) + ", "
+           + std::to_string(picked_voxel[2]) + "): "
+           + intensity;
 }
 
 //------------------------------------------------------------------------------

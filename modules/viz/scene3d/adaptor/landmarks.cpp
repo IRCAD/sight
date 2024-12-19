@@ -753,17 +753,17 @@ void landmarks::initialize_image()
 
         const auto axial_index = std::max(
             std::int64_t(0),
-            Helper::get_slice_index(*image, Helper::orientation_t::axial).value_or(0)
+            Helper::get_slice_index(*image, Helper::axis_t::axial).value_or(0)
         );
 
         const auto frontal_index = std::max(
             std::int64_t(0),
-            Helper::get_slice_index(*image, Helper::orientation_t::frontal).value_or(0)
+            Helper::get_slice_index(*image, Helper::axis_t::frontal).value_or(0)
         );
 
         const auto m_sagittal_index = std::max(
             std::int64_t(0),
-            Helper::get_slice_index(*image, Helper::orientation_t::sagittal).value_or(0)
+            Helper::get_slice_index(*image, Helper::axis_t::sagittal).value_or(0)
         );
 
         this->change_slice_index(int(axial_index), int(frontal_index), int(m_sagittal_index));

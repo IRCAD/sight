@@ -85,7 +85,7 @@ class negato2d final :
 {
 public:
 
-    using orientation_mode = data::helper::medical_image::orientation_t;
+    using axis_t = data::helper::medical_image::axis_t;
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(negato2d, sight::viz::scene3d::adaptor);
@@ -234,6 +234,9 @@ private:
     /// Contains the scene node allowing to move the entire negato.
     Ogre::SceneNode* m_negato_scene_node {nullptr};
 
+    /// Contains the scene node used for image origin and orientation.
+    Ogre::SceneNode* m_origin_scene_node {nullptr};
+
     /// Defines the filtering type for this negato.
     sight::viz::scene3d::plane::filter_t m_filtering {sight::viz::scene3d::plane::filter_t::none};
 
@@ -241,7 +244,7 @@ private:
     std::array<float, 3> m_current_slice_index {0.F, 0.F, 0.F};
 
     /// Defines the image orientation.
-    orientation_mode m_orientation {orientation_mode::z_axis};
+    axis_t m_axis {axis_t::z_axis};
 
     /// Defines if the plane border is used or not.
     bool m_border {true};

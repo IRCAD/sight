@@ -182,15 +182,16 @@ void image_diff_test::store_diffs_test()
 
 void image_diff_test::undo_redo_test()
 {
-    const data::image::size_t size                = {{32, 32, 32}};
-    const data::image::spacing_t spacing          = {{1., 1., 1.}};
-    const data::image::origin_t origin            = {{0., 0., 0.}};
-    const core::type type                         = core::type::UINT8;
-    const enum data::image::pixel_format_t format = data::image::pixel_format_t::gray_scale;
+    const data::image::size_t size               = {32, 32, 32};
+    const data::image::spacing_t spacing         = {1., 1., 1.};
+    const data::image::origin_t origin           = {0., 0., 0.};
+    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+    const core::type type                        = core::type::UINT8;
+    const data::image::pixel_format_t format     = data::image::pixel_format_t::gray_scale;
 
     data::image::sptr image = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image, size, spacing, origin, type, format);
+    utest_data::generator::image::generate_image(image, size, spacing, origin, orientation, type, format);
 
     const auto dump_lock = image->dump_lock();
 

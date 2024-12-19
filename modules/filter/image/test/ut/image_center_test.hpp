@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,19 +21,27 @@
 
 #pragma once
 
-#include <core/macros.hpp>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data
+namespace sight::module::filter::image::ut
 {
 
-class image;
-
-} // namespace sight::data
-
-namespace sight::io::itk::ut::helper
+/**
+ * @brief Test apply the threshold value on the image.
+ */
+class image_center_test : public CPPUNIT_NS::TestFixture
 {
+CPPUNIT_TEST_SUITE(image_center_test);
+CPPUNIT_TEST(nominal_test);
+CPPUNIT_TEST_SUITE_END();
 
-void round_spacing(SPTR(data::image) _image);
-void round_orientation(SPTR(data::image) _image);
+public:
 
-} // namespace sight::io::itk::ut::helper
+    // interface
+    void setUp();
+    void tearDown();
+
+    static void nominal_test();
+};
+
+} // namespace sight::module::filter::image::ut

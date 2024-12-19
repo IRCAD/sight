@@ -25,16 +25,20 @@
 #include "data/array.hpp"
 #include "data/factory/new.hpp"
 #include "data/iterator.hpp"
-#include "data/object.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/com/signals.hpp>
 #include <core/memory/buffered.hpp>
+#include <core/profiling.hpp>
 #include <core/type.hpp>
 
 #include <data/iterator.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
+
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <array>
 #include <filesystem>
@@ -234,6 +238,30 @@ public:
     const orientation_t& orientation() const;
     virtual void set_orientation(const orientation_t& _orientation);
     /// @}
+
+    /**
+     * @brief Convert to world coordinates
+     *
+     * @tparam W input container type (default glm::dvec3), I output container type (default glm::ivec3)
+     * @param _world image coordinates
+     * @param _round if true, round final computed values using std::round so 0.9877.. will be 1.
+     *               This mitigate floating point precision issues
+     * @param _clamp if true, returns the closest valid image coordinates, if the world coordinate is out of bounds
+     * @return ivec3 image coordinates
+     */
+    template<typename I = glm::ivec3, typename W = glm::dvec3>
+    I world_to_image(const W& _world, bool _round = false, bool _clamp = false) const;
+
+    /**
+     * @brief Convert to world coordinates
+     *
+     * @tparam I input container type (default glm::ivec3), W output container type (default glm::dvec3)
+     * @param _image image coordinates
+     * @param _center if true, return the center of the voxel
+     * @return dvec3 world coordinates
+     */
+    template<typename W = glm::dvec3, typename I = glm::ivec3>
+    W image_to_world(const I& _image, bool _center = false) const;
 
     /// Get image size
     const image::size_t& size() const;
@@ -615,10 +643,7 @@ private:
     std::size_t m_stride {1};
 
     //! image format
-    enum pixel_format_t m_pixel_format
-    {
-        pixel_format_t::undefined
-    };
+    pixel_format_t m_pixel_format {pixel_format_t::undefined};
 
     //! image buffer
     array::sptr m_data_array;
@@ -821,6 +846,89 @@ inline T image::at(index_t _x, index_t _y, index_t _z, index_t _c) const
 {
     const index_t offset = _x + m_size[0] * _y + _z * m_size[0] * m_size[1];
     return *(reinterpret_cast<const T*>(this->get_pixel(offset)) + _c);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename I, typename W>
+I image::world_to_image(const W& _world, bool _round, bool _clamp) const
+{
+    const glm::dvec4 world_vector {
+        glm::dvec4::value_type(_world[0]),
+        glm::dvec4::value_type(_world[1]),
+        glm::dvec4::value_type(_world[2]),
+        glm::dvec4::value_type(1)
+    };
+
+    const glm::dvec4 inverse_origin = {-m_origin[0], -m_origin[1], -m_origin[2], 0.};
+    const glm::dmat4 rotation {
+        m_orientation[0], m_orientation[3], m_orientation[6], 0.,
+        m_orientation[1], m_orientation[4], m_orientation[7], 0.,
+        m_orientation[2], m_orientation[5], m_orientation[8], 0.,
+        0., 0., 0., 1.
+    };
+
+    const glm::dvec3 rotated_translation = inverse_origin * rotation;
+
+    glm::dmat4 inverse_transform = {
+        m_orientation[0], m_orientation[1], m_orientation[2], 0.,
+        m_orientation[3], m_orientation[4], m_orientation[5], 0.,
+        m_orientation[6], m_orientation[7], m_orientation[8], 0.,
+        rotated_translation[0], rotated_translation[1], rotated_translation[2], 1.
+    };
+
+    auto image_vector = inverse_transform * world_vector;
+
+    SIGHT_ASSERT("Spacing is null", m_spacing[0] != 0. && m_spacing[1] != 0. && m_spacing[2] != 0.);
+    auto voxel = _round ? I {
+        int(std::round(image_vector.x / m_spacing[0])),
+        int(std::round(image_vector.y / m_spacing[1])),
+        int(std::round(image_vector.z / m_spacing[2]))
+    } : I {
+        int(image_vector.x / m_spacing[0]),
+        int(image_vector.y / m_spacing[1]),
+        int(image_vector.z / m_spacing[2])
+    };
+
+    if(_clamp)
+    {
+        voxel[0] = m_size[0] > 0 ? std::clamp(int(voxel[0]), int(0), int(m_size[0] - 1)) : 0;
+        voxel[1] = m_size[1] > 0 ? std::clamp(int(voxel[1]), int(0), int(m_size[1] - 1)) : 0;
+        voxel[2] = m_size[2] > 0 ? std::clamp(int(voxel[2]), int(0), int(m_size[2] - 1)) : 0;
+    }
+
+    return voxel;
+}
+
+//------------------------------------------------------------------------------
+
+template<typename W, typename I>
+W image::image_to_world(const I& _image, bool _center) const
+{
+    glm::dvec4 image_vector {
+        glm::dvec4::value_type(_image[0]) * m_spacing[0],
+        glm::dvec4::value_type(_image[1]) * m_spacing[1],
+        glm::dvec4::value_type(_image[2]) * m_spacing[2],
+        glm::dvec4::value_type(1)
+    };
+
+    if(_center)
+    {
+        image_vector.x += m_spacing[0] / 2;
+        image_vector.y += m_spacing[1] / 2;
+        image_vector.z += m_spacing[2] / 2;
+    }
+
+    const glm::dmat4 transform {
+        m_orientation[0], m_orientation[3], m_orientation[6], 0.,
+        m_orientation[1], m_orientation[4], m_orientation[7], 0.,
+        m_orientation[2], m_orientation[5], m_orientation[8], 0.,
+        m_origin[0], m_origin[1], m_origin[2], 1
+    };
+
+    const auto world_vector = transform * image_vector;
+
+    return {world_vector.x, world_vector.y, world_vector.z};
 }
 
 } // namespace sight::data

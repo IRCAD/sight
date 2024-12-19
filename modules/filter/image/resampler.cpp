@@ -73,7 +73,7 @@ void resampler::updating()
         in_img.get_shared(),
         out_img.get_shared(),
         transform.get_shared(),
-        std::make_tuple(target->size(), target->origin(), target->spacing())
+        std::make_tuple(target->size(), target->origin(), target->orientation(), target->spacing())
     );
 
     this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();

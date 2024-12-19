@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,13 @@
 
 #include <core/tools/dispatcher.hpp>
 
+#include <geometry/data/matrix4.hpp>
+
 #include <io/itk/helper/transform.hpp>
 #include <io/itk/itk.hpp>
+
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/glm.hpp>
 
 #include <itkAffineTransform.h>
 #include <itkBoundingBox.h>
@@ -46,6 +51,7 @@ struct resampling
         data::image::sptr o_image;
         std::optional<std::tuple<data::image::size_t,
                                  data::image::origin_t,
+                                 data::image::orientation_t,
                                  data::image::spacing_t> > i_parameters;
     };
 
@@ -79,17 +85,28 @@ struct resampling
 
         if(_params.i_parameters.has_value())
         {
-            auto& [outSize, outOrigin, outSpacing] = _params.i_parameters.value();
+            const auto& [out_size, out_origin, out_orientation, out_spacing] = _params.i_parameters.value();
+
             for(std::uint8_t i = 0 ; i < 3 ; ++i)
             {
                 // ITK uses unsigned long to store sizes.
-                size[i] = static_cast<typename image_t::SizeType::SizeValueType>(outSize[i]);
+                size[i] = static_cast<typename image_t::SizeType::SizeValueType>(out_size[i]);
 
-                origin[i]  = outOrigin[i];
-                spacing[i] = outSpacing[i];
+                origin[i]  = out_origin[i];
+                spacing[i] = out_spacing[i];
 
                 SIGHT_ASSERT("Output spacing can't be null along any axis.", spacing[i] > 0);
             }
+
+            direction(0, 0) = out_orientation[0];
+            direction(0, 1) = out_orientation[1];
+            direction(0, 2) = out_orientation[2];
+            direction(1, 0) = out_orientation[3];
+            direction(1, 1) = out_orientation[4];
+            direction(1, 2) = out_orientation[5];
+            direction(2, 0) = out_orientation[6];
+            direction(2, 1) = out_orientation[7];
+            direction(2, 2) = out_orientation[8];
         }
 
         resampler->SetSize(size);
@@ -113,6 +130,7 @@ void resampler::resample(
     const data::matrix4::csptr& _trf,
     std::optional<std::tuple<data::image::size_t,
                              data::image::origin_t,
+                             data::image::orientation_t,
                              data::image::spacing_t> > _parameters
 )
 {
@@ -158,69 +176,64 @@ data::image::sptr resampler::resample(
     const data::image::spacing_t& _output_spacing
 )
 {
-    using point_t            = itk::Point<double, 3>;
-    using vector_container_t = itk::VectorContainer<int, point_t>;
-    using bounding_box_t     = itk::BoundingBox<int, 3, double, vector_container_t>;
+    const auto& input_origin      = _img->origin();
+    const auto& input_orientation = _img->orientation();
 
-    const auto& input_size    = _img->size();
-    const auto& input_origin  = _img->origin();
-    const auto& input_spacing = _img->spacing();
+    const glm::dmat4 image_to_world_transform {
+        input_orientation[0], input_orientation[3], input_orientation[6], 0,
+        input_orientation[1], input_orientation[4], input_orientation[7], 0,
+        input_orientation[2], input_orientation[5], input_orientation[8], 0,
+        input_origin[0], input_origin[1], input_origin[2], 1
+    };
 
-    SIGHT_ASSERT(
-        "image dimension must be 3.",
-        input_origin.size() == 3 && input_spacing.size() == 3 && input_size.size() == 3
-    );
+    // Get the inverse transform
+    const auto glm_inverse = glm::inverse(geometry::data::to_glm_mat(*_trf));
 
-    typename bounding_box_t::Pointer input_bb = bounding_box_t::New();
+    // Compute the new origin and orientation.
+    const auto glm_origin_world = image_to_world_transform * glm_inverse;
+    const data::image::origin_t output_origin {
+        glm_origin_world[3][0],
+        glm_origin_world[3][1],
+        glm_origin_world[3][2]
+    };
 
-    const point_t min(input_origin.data());
-    point_t max;
-    for(std::uint8_t i = 0 ; i < 3 ; ++i)
-    {
-        max[i] = input_origin[i] + static_cast<double>(input_size[i]) * input_spacing[i];
-    }
+    const data::image::orientation_t output_orientation {
+        glm_origin_world[0][0], glm_origin_world[1][0], glm_origin_world[2][0],
+        glm_origin_world[0][1], glm_origin_world[1][1], glm_origin_world[2][1],
+        glm_origin_world[0][2], glm_origin_world[1][2], glm_origin_world[2][2]
+    };
 
-    input_bb->SetMinimum(min);
-    input_bb->SetMaximum(max);
+    // Compute the new size
+    // Get the max point in current world.
+    const auto max = _img->image_to_world(_img->size());
+    glm::dvec4 glm_max {max[0], max[1], max[2], 1.};
 
-    const auto input_corners = input_bb->ComputeCorners();
-    const itk::Matrix<double, 4, 4> matrix(io::itk::helper::transform::convert_to_itk(_trf).GetInverse());
+    // Apply original and new transforms
+    glm_max = glm_max * glm_origin_world;
 
-    // Apply transform matrix to all bounding box corners.
-    typename vector_container_t::Pointer output_corners = vector_container_t::New();
-    output_corners->Reserve(input_corners.size());
-    std::transform(
-        input_corners.begin(),
-        input_corners.end(),
-        output_corners->begin(),
-        [&matrix](const point_t& _in)
-        {
-            // Convert input to homogeneous coordinates.
-            const itk::Point<double, 4> input(std::array<double, 4>({{_in[0], _in[1], _in[2], 1.}}).data());
-            const auto p = matrix * input;
-            return point_t(p.GetDataPointer());
-        });
+    // Use the new given spacing to compute the new size.
+    const data::image::size_t output_size {
+        data::image::size_t::value_type(std::round(glm_max[0] / _output_spacing[0])),
+        data::image::size_t::value_type(std::round(glm_max[1] / _output_spacing[1])),
+        data::image::size_t::value_type(std::round(glm_max[2] / _output_spacing[2])),
+    };
 
-    // Compute the transformed axis aligned bounding box.
-    typename bounding_box_t::Pointer output_bb = bounding_box_t::New();
-    output_bb->SetPoints(output_corners);
-    output_bb->ComputeBoundingBox();
-
-    // Compute output size and origin.
     data::image::sptr output = std::make_shared<data::image>();
-    data::image::origin_t output_origin;
-    data::image::size_t output_size;
-
-    for(std::uint8_t i = 0 ; i < 3 ; ++i)
-    {
-        output_origin[i] = output_bb->GetMinimum()[i];
-        output_size[i]   = std::size_t((output_bb->GetMaximum()[i] - output_origin[i]) / _output_spacing[i]);
-    }
-
-    output->set_spacing(_output_spacing);
     output->set_origin(output_origin);
+    output->set_orientation(output_orientation);
+    output->set_spacing(_output_spacing);
 
-    resample(_img, output, _trf, std::make_tuple(output_size, output_origin, _output_spacing));
+    resample(
+        _img,
+        output,
+        _trf,
+        std::make_tuple(
+            output_size,
+            output->origin(),
+            output->orientation(),
+            _output_spacing
+        )
+    );
 
     return output;
 }

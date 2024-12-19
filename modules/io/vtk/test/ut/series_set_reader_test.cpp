@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,6 +100,7 @@ void series_set_reader_test::test_series_set_reader()
     service::remove(srv);
 
     // Data expected
+    // NOLINTNEXTLINE(modernize-use-std-numbers)
     const data::image::spacing_t spacing_expected = {1.732, 1.732, 3.2};
     const data::image::origin_t origin_expected   = {34.64, 86.6, 56};
     const data::image::size_t size_expected       = {230, 170, 58};

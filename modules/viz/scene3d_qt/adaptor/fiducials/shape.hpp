@@ -124,10 +124,10 @@ private:
     /// The indexes match the indexes of the fiducial_set in the fiducial_series from the image_series.
     std::vector<std::vector<std::shared_ptr<ogre_shape> > > m_shapes;
 
-    using orientation_t = sight::data::helper::medical_image::orientation_t;
+    using axis_t = sight::data::helper::medical_image::axis_t;
 
-    orientation_t m_orientation {
-        orientation_t::z_axis
+    axis_t m_axis {
+        axis_t::z_axis
     };
 
     /// Defines whether or not interactions are enabled with shapes.

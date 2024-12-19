@@ -36,8 +36,6 @@ CPPUNIT_TEST(get_min_max_test);
 CPPUNIT_TEST(get_pixel_test);
 CPPUNIT_TEST(set_pixel_test);
 CPPUNIT_TEST(is_buf_null);
-CPPUNIT_TEST(compute_voxel_indices);
-CPPUNIT_TEST(compute_bounding_box);
 CPPUNIT_TEST(test_landmarks);
 CPPUNIT_TEST(test_slice_index_fiducial);
 CPPUNIT_TEST(test_image_validity);
@@ -67,12 +65,6 @@ public:
 
     /// Tests is_buf_null method.
     static void is_buf_null();
-
-    /// Tests compute_voxel_indices method.
-    static void compute_voxel_indices();
-
-    /// Tests compute_bounding_box method.
-    static void compute_bounding_box();
 
     /// Tests helper method around landmarks (get/set).
     static void test_landmarks();

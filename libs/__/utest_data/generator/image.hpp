@@ -61,6 +61,7 @@ public:
         const data::image::size_t& _sizes               = {64, 64, 64},
         const data::image::spacing_t& _spacing          = {0, 0, 0},
         const data::image::origin_t& _origin            = {0, 0, 0},
+        const data::image::orientation_t& _orientation  = {1, 0, 0, 0, 1, 0, 0, 0, 1},
         const core::type& _type                         = core::type::UINT8,
         const enum data::image::pixel_format_t& _format = data::image::pixel_format_t::gray_scale,
         const std::optional<std::uint32_t>& _seed       = std::nullopt

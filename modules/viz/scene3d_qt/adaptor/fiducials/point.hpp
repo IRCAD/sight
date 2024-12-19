@@ -531,24 +531,6 @@ private:
     bool is_max_fiducials_reached();
 
     /**
-     * @brief Check if the fiducial should be visible or not.
-     *
-     * @param _fiducial_position The position of the fiducial in the current orientation
-     * @param _fiducial_size The size of the fiducial
-     * @param _spacing The spacing of the image in the current orientation
-     * @param _slice_position The position of the slice in the current orientation
-     * @param _view_distance The way to display the fiducials
-     * @return true if the fiducial is visible
-     */
-    static bool check_fiducial_visibility(
-        double _fiducial_position,
-        float _fiducial_size,
-        double _spacing,
-        double _slice_position,
-        point::view_distance _view_distance
-    );
-
-    /**
      * @brief Wrapper function to check the visibility of a fiducial.
      *
      * @param _fiducial_position The position of the fiducial
@@ -618,8 +600,8 @@ private:
     std::mutex m_selected_mutex;
 
     /// Defines the image orientation.
-    using orientation_t = data::helper::medical_image::orientation_t;
-    orientation_t m_orientation {orientation_t::z_axis};
+    using axis_t = data::helper::medical_image::axis_t;
+    axis_t m_axis {axis_t::z_axis};
 
     /// Defines the view distance of the fiducials.
     view_distance m_view_distance {view_distance::slices_in_range};

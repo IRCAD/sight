@@ -141,10 +141,10 @@ private:
 
     QGraphicsItemGroup* m_layer {nullptr};
 
-    using orientation_t = data::helper::medical_image::orientation_t;
+    using axis_t = data::helper::medical_image::axis_t;
 
     /// The current orientation of the negato
-    orientation_t m_orientation {orientation_t::z_axis};
+    axis_t m_axis {axis_t::z_axis};
 
     /// Used during negato interaction to manage window/level
     bool m_point_is_captured {false};
