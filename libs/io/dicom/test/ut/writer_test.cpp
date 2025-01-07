@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,7 +25,7 @@
 
 #include <data/image_series.hpp>
 
-#include <geometry/data/vector_functions.hpp>
+#include <geometry/__/vector.hpp>
 
 #include <io/bitmap/backend.hpp>
 #include <io/dicom/reader/file.hpp>
@@ -151,11 +151,11 @@ inline static data::image_series::sptr get_us_volume_image(
                 frame_index
             );
 
-            fw_vec3d u = {double(_seed + 1) * 0.4, double(_seed + 1) * 0.5, double(_seed + 1) * 0.6};
-            fw_vec3d v = {double(_seed + 1) * 0.7, double(_seed + 1) * 0.8, double(_seed + 1) * 0.9};
+            glm::dvec3 u = {double(_seed + 1) * 0.4, double(_seed + 1) * 0.5, double(_seed + 1) * 0.6};
+            glm::dvec3 v = {double(_seed + 1) * 0.7, double(_seed + 1) * 0.8, double(_seed + 1) * 0.9};
 
             // We really want orthogonal directions
-            geometry::data::orthogonalize(u, v);
+            geometry::orthogonalize(u, v);
             image->set_image_orientation_patient({u[0], u[1], u[2], v[0], v[1], v[2]}, frame_index);
 
             // set the Frame Acquisition Date Time, which is our "timestamp"

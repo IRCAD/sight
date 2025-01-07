@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,6 @@
 #include "core/jobs/job.hpp"
 
 #include <core/compare.hpp>
-#include <core/macros.hpp>
 
 #include <data/dicom/sop.hpp>
 #include <data/helper/medical_image.hpp>
@@ -32,7 +31,7 @@
 #include <data/matrix4.hpp>
 #include <data/model_series.hpp>
 
-#include <geometry/data/vector_functions.hpp>
+#include <geometry/__/vector.hpp>
 
 #include <gdcmDirectory.h>
 #include <gdcmImageApplyLookupTable.h>
@@ -833,11 +832,11 @@ inline static bool read_buffer(
 /// @warning column major order
 inline static std::vector<double> orthogonalize(const double* const _direction_cosines)
 {
-    fw_vec3d u = {_direction_cosines[0], _direction_cosines[1], _direction_cosines[2]};
-    fw_vec3d v = {_direction_cosines[3], _direction_cosines[4], _direction_cosines[5]};
-    fw_vec3d w;
+    glm::dvec3 u = {_direction_cosines[0], _direction_cosines[1], _direction_cosines[2]};
+    glm::dvec3 v = {_direction_cosines[3], _direction_cosines[4], _direction_cosines[5]};
+    glm::dvec3 w;
 
-    if(geometry::data::orthogonalize(u, v, w))
+    if(geometry::orthogonalize(u, v, w))
     {
         SIGHT_WARN("Direction cosines are not orthogonal, they will be corrected, but the result must be checked.");
     }

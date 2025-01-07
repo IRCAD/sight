@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include <core/tools/dispatcher.hpp>
 
+#include <geometry/data/image.hpp>
 #include <geometry/data/matrix4.hpp>
 
 #include <io/itk/helper/transform.hpp>
@@ -205,7 +206,7 @@ data::image::sptr resampler::resample(
 
     // Compute the new size
     // Get the max point in current world.
-    const auto max = _img->image_to_world(_img->size());
+    const auto max = sight::geometry::data::image_to_world(*_img, _img->size());
     glm::dvec4 glm_max {max[0], max[1], max[2], 1.};
 
     // Apply original and new transforms

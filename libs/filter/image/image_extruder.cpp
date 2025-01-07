@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include <core/tools/dispatcher.hpp>
 
+#include <geometry/data/image.hpp>
 #include <geometry/data/matrix4.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -111,9 +112,10 @@ void image_extruder::operator()(parameters& _param)
 
             triangles.push_back(triangle {tri_a, tri_b, tri_c});
 
-            const auto a = _param.m_image->world_to_image<std::array<std::int64_t, 3> >(tri_a, false, false);
-            const auto b = _param.m_image->world_to_image<std::array<std::int64_t, 3> >(tri_b, false, false);
-            const auto c = _param.m_image->world_to_image<std::array<std::int64_t, 3> >(tri_c, false, false);
+            using sight::geometry::data::world_to_image;
+            const auto a = world_to_image<std::array<std::int64_t, 3> >(*_param.m_image, tri_a, false, false);
+            const auto b = world_to_image<std::array<std::int64_t, 3> >(*_param.m_image, tri_b, false, false);
+            const auto c = world_to_image<std::array<std::int64_t, 3> >(*_param.m_image, tri_c, false, false);
 
             index_x_beg = std::min(index_x_beg, std::min(a[0], std::min(b[0], c[0])));
             index_y_beg = std::min(index_y_beg, std::min(a[1], std::min(b[1], c[1])));
@@ -226,6 +228,9 @@ void image_extruder::operator()(parameters& _param)
     const glm::vec3 orientation_y(orientation[1], orientation[4], orientation[7]);
     const glm::vec3 orientation_z(orientation[2], orientation[5], orientation[8]);
 
+    const auto image_to_world_trf = sight::geometry::data::image_to_world_transform<glm::mat4>(*_param.m_image);
+    const auto half               = glm::vec4(0.5, 0.5, 0.5, 0.);
+
     // We loop over two dimensions out of three, for each voxel, we launch a ray on the third dimension and get a
     // list of intersections. After that, we iterate over the voxel line on the third dimension and with the
     // intersections list, we know if the voxel is inside or outside of the mesh. So to improve performance, we need
@@ -240,7 +245,7 @@ void image_extruder::operator()(parameters& _param)
                 for(std::int64_t y = index_y_beg ; y < index_y_end ; ++y)
                 {
                     // For each voxel of the slice, launch a ray to the third axis.
-                    const auto ray_orig = _param.m_image->image_to_world<glm::vec3>({x, y, index_z_beg}, true);
+                    const auto ray_orig = glm::xyz(image_to_world_trf * (glm::vec4(x, y, index_z_beg, 1.0) + half));
 
                     // Check if the first voxel is inside or not, and stores all intersections.
                     std::vector<glm::vec3> intersections;
@@ -255,7 +260,7 @@ void image_extruder::operator()(parameters& _param)
                         const auto intersection_end = intersections.end();
                         for(std::int64_t z = index_z_beg ; z < index_z_end ; ++z)
                         {
-                            const auto voxel = _param.m_image->image_to_world<glm::vec3>({x, y, z}, true);
+                            const auto voxel = glm::xyz(image_to_world_trf * (glm::vec4(x, y, z, 1.0) + half));
 
                             // While the current ray position is near to the next intersection, set the
                             // voxel to the value if
@@ -309,7 +314,7 @@ void image_extruder::operator()(parameters& _param)
             {
                 for(std::int64_t z = index_z_beg ; z < index_z_end ; ++z)
                 {
-                    const auto ray_orig = _param.m_image->image_to_world<glm::vec3>({x, index_y_beg, z}, true);
+                    const auto ray_orig = glm::xyz(image_to_world_trf * (glm::vec4(x, index_y_beg, z, 1.0) + half));
 
                     std::vector<glm::vec3> intersections;
                     bool inside = get_intersections(ray_orig, orientation_y, intersections);
@@ -320,7 +325,7 @@ void image_extruder::operator()(parameters& _param)
                         const auto intersection_end = intersections.end();
                         for(std::int64_t y = index_y_beg ; y < index_y_end ; ++y)
                         {
-                            const auto voxel = _param.m_image->image_to_world<glm::vec3>({x, y, z}, true);
+                            const auto voxel = glm::xyz(image_to_world_trf * (glm::vec4(x, y, z, 1.0) + half));
 
                             if(glm::distance(ray_orig, voxel) < glm::distance(ray_orig, *next_intersection))
                             {
@@ -369,7 +374,7 @@ void image_extruder::operator()(parameters& _param)
             {
                 for(std::int64_t z = index_z_beg ; z < index_z_end ; ++z)
                 {
-                    const auto ray_orig = _param.m_image->image_to_world<glm::vec3>({index_x_beg, y, z}, true);
+                    const auto ray_orig = glm::xyz(image_to_world_trf * (glm::vec4(index_x_beg, y, z, 1.0) + half));
 
                     std::vector<glm::vec3> intersections;
                     bool inside = get_intersections(ray_orig, orientation_x, intersections);
@@ -380,7 +385,7 @@ void image_extruder::operator()(parameters& _param)
                         const auto intersection_end = intersections.end();
                         for(std::int64_t x = index_x_beg ; x < index_x_end ; ++x)
                         {
-                            const auto voxel = _param.m_image->image_to_world<glm::vec3>({x, y, z}, true);
+                            const auto voxel = glm::xyz(image_to_world_trf * (glm::vec4(x, y, z, 1.0) + half));
 
                             if(glm::distance(ray_orig, voxel) < glm::distance(ray_orig, *next_intersection))
                             {

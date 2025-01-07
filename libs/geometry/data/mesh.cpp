@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,6 @@
 
 #include <core/com/signal.hxx>
 #include <core/tools/random/generator.hpp>
-
-#include <geometry/data/mesh_functions.hpp>
 
 #include <boost/multi_array/multi_array_ref.hpp>
 
@@ -207,7 +205,7 @@ void mesh::generate_cell_normals(sight::data::mesh::sptr _mesh)
         rt(
             [_mesh](std::size_t _p_h1, std::ptrdiff_t _p_h2, auto&& ...)
             {
-                return generate_region_cell_normals(_mesh, _p_h1, std::size_t(_p_h2));
+                generate_region_cell_normals(_mesh, _p_h1, std::size_t(_p_h2));
             },
             number_of_cells
         );
@@ -363,7 +361,7 @@ void mesh::generate_point_normals(sight::data::mesh::sptr _mesh)
         rt(
             [&normals_data, _mesh](std::size_t _p_h1, std::ptrdiff_t _p_h2, std::size_t _p_h3, auto&& ...)
             {
-                return generate_region_cell_normals_by_points(
+                generate_region_cell_normals_by_points(
                     normals_data,
                     _p_h3,
                     _mesh,
@@ -377,7 +375,7 @@ void mesh::generate_point_normals(sight::data::mesh::sptr _mesh)
         rt(
             [&normals_data](std::size_t _p_h1, std::ptrdiff_t _p_h2, auto&& ...)
             {
-                return vector_sum<float_vectors_t::value_type::value_type>(
+                vector_sum<float_vectors_t::value_type::value_type>(
                     normals_data,
                     _p_h1,
                     std::size_t(_p_h2)
@@ -389,7 +387,7 @@ void mesh::generate_point_normals(sight::data::mesh::sptr _mesh)
         rt(
             [&capture0 = normals_data[0], _mesh](std::size_t _p_h1, std::ptrdiff_t _p_h2, auto&& ...)
             {
-                return normalize_region_cell_normals_by_points(
+                normalize_region_cell_normals_by_points(
                     capture0,
                     _mesh,
                     _p_h1,
@@ -719,6 +717,19 @@ void mesh::colorize_mesh_cells(
     sig->async_emit();
 }
 
+//-----------------------------------------------------------------------------
+
+template<typename T, typename U>
+std::pair<T, U> make_ordered_pair(const T _first, const U _second)
+{
+    if(_first < _second)
+    {
+        return std::pair<T, U>(_first, _second);
+    }
+
+    return std::pair<T, U>(_second, _first);
+}
+
 //------------------------------------------------------------------------------
 
 bool mesh::is_closed(const sight::data::mesh::csptr& _mesh)
@@ -733,7 +744,7 @@ bool mesh::is_closed(const sight::data::mesh::csptr& _mesh)
 
     auto add_edge = [&edges_histogram](const sight::data::mesh::point_t& _p1, const sight::data::mesh::point_t& _p2)
                     {
-                        const auto edge = geometry::data::make_ordered_pair(_p1, _p2);
+                        const auto edge = make_ordered_pair(_p1, _p2);
 
                         if(edges_histogram.find(edge) == edges_histogram.end())
                         {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,6 @@ private:
     CPPUNIT_TEST(image_deep_copy);
     CPPUNIT_TEST(empty_iterator_test);
     CPPUNIT_TEST(equality_test);
-    CPPUNIT_TEST(world_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -69,7 +68,6 @@ public:
     static void image_deep_copy();
     static void empty_iterator_test();
     static void equality_test();
-    static void world_test();
 };
 
 } // namespace sight::data::ut

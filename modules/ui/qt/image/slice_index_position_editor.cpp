@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,9 +31,10 @@
 #include <core/spy_log.hpp>
 
 #include <data/helper/fiducials_series.hpp>
-#include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
+
+#include <geometry/data/image.hpp>
 
 #include <service/macros.hpp>
 
@@ -509,7 +510,7 @@ void slice_index_position_editor::update_slider_fiducial()
                     std::optional<std::int64_t> fiducial_position;
                     const std::array<double, 3> array_point = {point.x, point.y, point.z};
 
-                    fiducial_position = medical_image::get_fiducial_slice_index(*image, array_point, m_axis);
+                    fiducial_position = geometry::data::get_fiducial_slice_index(*image, array_point, m_axis);
 
                     if(fiducial_position.has_value())
                     {

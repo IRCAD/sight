@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #include "viz/scene3d/plane.hpp"
+
+#include <geometry/data/image.hpp>
 
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/shading.hpp>
@@ -606,7 +608,7 @@ void plane::set_render_queuer_group_and_priority(std::uint8_t _group_id, std::ui
 
 std::array<Ogre::Vector3, 4> plane::compute_cross(const Ogre::Vector3& _center, const data::image& _image) const
 {
-    const auto center   = _image.world_to_image(_center);
+    const auto center   = geometry::data::world_to_image(_image, _center);
     const auto& spacing = _image.spacing();
 
     std::array<Ogre::Vector3, 4> cross_lines;

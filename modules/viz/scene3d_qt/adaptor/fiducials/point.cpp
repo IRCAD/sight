@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,6 +30,8 @@
 #include <data/fiducials_series.hpp>
 #include <data/helper/fiducials_series.hpp>
 #include <data/image_series.hpp>
+
+#include <geometry/data/image.hpp>
 
 #include <ui/__/cursor.hpp>
 
@@ -1651,28 +1653,31 @@ bool point::check_fiducial_visibility(
     const data::image_series& _image
 ) const
 {
-    const auto axis_spacing = _image.spacing()[m_axis];
-
-    const auto slice_index = sight::data::helper::medical_image::get_slice_index(
-        _image,
-        m_axis
-    ).value_or(0);
-
-    const auto fiducial_axis_position = _image.world_to_image(_fiducial_position, true)[m_axis];
-
-    if(m_view_distance == point::view_distance::slices_in_range)
+    if(sight::data::helper::medical_image::check_image_validity(_image))
     {
-        // Check if the position is the same than slice position
-        const auto fiducial_axis_size = _fiducial_size / axis_spacing;
+        const auto axis_spacing = _image.spacing()[m_axis];
 
-        return fiducial_axis_position >= std::int64_t(slice_index) - std::int64_t(std::ceil(fiducial_axis_size))
-               && fiducial_axis_position <= std::int64_t(slice_index) + std::int64_t(std::ceil(fiducial_axis_size));
-    }
+        const auto slice_index = sight::data::helper::medical_image::get_slice_index(
+            _image,
+            m_axis
+        ).value_or(0);
 
-    if(m_view_distance == point::view_distance::current_slice)
-    {
-        // Check if the position is the same than slice position
-        return fiducial_axis_position == slice_index;
+        const auto fiducial_axis_position = geometry::data::world_to_image(_image, _fiducial_position, true)[m_axis];
+
+        if(m_view_distance == point::view_distance::slices_in_range)
+        {
+            // Check if the position is the same than slice position
+            const auto fiducial_axis_size = _fiducial_size / axis_spacing;
+
+            return fiducial_axis_position >= std::int64_t(slice_index) - std::int64_t(std::ceil(fiducial_axis_size))
+                   && fiducial_axis_position <= std::int64_t(slice_index) + std::int64_t(std::ceil(fiducial_axis_size));
+        }
+
+        if(m_view_distance == point::view_distance::current_slice)
+        {
+            // Check if the position is the same than slice position
+            return fiducial_axis_position == slice_index;
+        }
     }
 
     return true;

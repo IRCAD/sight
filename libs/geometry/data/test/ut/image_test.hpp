@@ -1,6 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,35 +22,30 @@
 
 #pragma once
 
-#include <array>
-#include <vector>
+#include <cppunit/extensions/HelperMacros.h>
 
-/**
- * @brief Definition of a type for a vector of tree double.
- */
-using fw_vec3d = std::array<double, 3>;
+namespace sight::geometry::data::ut
+{
 
-/**
- * @brief Definition of a type for a line defined by a position and a direction
- */
-using fw_line = std::pair<fw_vec3d, fw_vec3d>;
+class image_test : public CPPUNIT_NS::TestFixture
+{
+private:
 
-/**
- * @brief Definition of type for a plane defined by a normal and a distance
- */
-using fw_plane = std::array<double, 4>;
+    CPPUNIT_TEST_SUITE(image_test);
+    CPPUNIT_TEST(transform_test);
+    CPPUNIT_TEST(transform_coordinates_test);
+    CPPUNIT_TEST(slice_index_fiducial_test);
+    CPPUNIT_TEST_SUITE_END();
 
-/**
- * @brief Definition of a type for a matrix 4*4
- */
-using fw_matrix4x4 = std::array<std::array<double, 4>, 4>;
+public:
 
-/**
- * @brief Definition of a type for vertex positions
- */
-using fw_vertex_position = std::vector<std::vector<float> >;
+    // interface
+    void setUp() override;
+    void tearDown() override;
 
-/**
- * @brief Definition of a type for vertex index
- */
-using fw_vertex_index = std::vector<std::vector<int> >;
+    static void transform_test();
+    static void transform_coordinates_test();
+    static void slice_index_fiducial_test();
+};
+
+} // namespace sight::geometry::data::ut

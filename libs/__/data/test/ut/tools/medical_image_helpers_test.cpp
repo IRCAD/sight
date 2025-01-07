@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -648,68 +648,6 @@ void medical_image_helpers_test::test_slice_index()
         const auto index           = med_im_helper::get_slice_index(*image_no_slices, axis);
 
         CPPUNIT_ASSERT_EQUAL(false, index.has_value());
-    }
-}
-
-//------------------------------------
-void medical_image_helpers_test::test_slice_index_fiducial()
-{
-    const auto image = generate_image();
-
-    // No rotation
-    image->set_orientation({1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0});
-    const std::array<double, 3> point1 = {1.0, 2.0, 3.0};
-
-    {
-        auto axis = med_im_helper::axis_t::sagittal;
-
-        auto index = med_im_helper::get_fiducial_slice_index(*image, point1, axis);
-        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(1), index.value());
-    }
-
-    {
-        auto axis = med_im_helper::axis_t::frontal;
-
-        auto index = med_im_helper::get_fiducial_slice_index(*image, point1, axis);
-        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(2), index.value());
-    }
-
-    {
-        auto axis = med_im_helper::axis_t::axial;
-
-        auto index = med_im_helper::get_fiducial_slice_index(*image, point1, axis);
-        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(6), index.value());
-    }
-
-    // 90° rotation around X axis
-    image->set_orientation({1, 0, 0, 0, 0, -1, 0, 1, 0});
-    const std::array<double, 3> point2 {1.0, -3.0, 2.0};
-
-    {
-        auto axis = med_im_helper::axis_t::sagittal;
-
-        auto index = med_im_helper::get_fiducial_slice_index(*image, point2, axis);
-        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(1), index.value());
-    }
-
-    {
-        auto axis = med_im_helper::axis_t::frontal;
-
-        auto index = med_im_helper::get_fiducial_slice_index(*image, point2, axis);
-        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(2), index.value());
-    }
-
-    {
-        auto axis = med_im_helper::axis_t::axial;
-
-        auto index = med_im_helper::get_fiducial_slice_index(*image, point2, axis);
-        CPPUNIT_ASSERT_EQUAL(true, index.has_value());
-        CPPUNIT_ASSERT_EQUAL(std::int64_t(6), index.value());
     }
 }
 

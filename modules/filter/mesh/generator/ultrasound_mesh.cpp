@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,10 @@
 #include <core/com/slots.hxx>
 
 #include <geometry/data/mesh.hpp>
-#include <geometry/data/types.hpp>
-#include <geometry/data/vector_functions.hpp>
-
-#include <service/macros.hpp>
 
 #include <boost/math/constants/constants.hpp>
+
+#include <glm/vec3.hpp>
 
 namespace sight::module::filter::mesh::generator
 {
@@ -128,16 +126,16 @@ void ultrasound_mesh::update_mesh_position()
     const double d_depth = m_depth / (double(m_resolution_y) - 1.);
     const double d_width = m_width / (double(m_resolution_x) - 1.);
 
-    const fw_vec3d center_position = {{0., 0., 0.}};
-    const fw_vec3d direction       = {{0., 1., 0.}};
-    const fw_vec3d normal          = {{1., 0., 0.}};
+    const glm::dvec3 center_position = {0., 0., 0.};
+    const glm::dvec3 direction       = {0., 1., 0.};
+    const glm::dvec3 normal          = {1., 0., 0.};
 
     for(unsigned int width_grid = 0 ;
         width_grid < m_resolution_x ;
         ++width_grid)
     {
-        fw_vec3d direction_live;
-        fw_vec3d center_live;
+        glm::dvec3 direction_live;
+        glm::dvec3 center_live;
         if(m_shape)
         {
             const double angle_live = theta_init + delta_theta * double(m_resolution_x - width_grid - 1);
@@ -154,7 +152,7 @@ void ultrasound_mesh::update_mesh_position()
             depth_grid < m_resolution_y ;
             ++depth_grid)
         {
-            const fw_vec3d pos_real = center_live + (depth_grid * d_depth + m_delta_depth) * direction_live;
+            const glm::dvec3 pos_real = center_live + (depth_grid * d_depth + m_delta_depth) * direction_live;
 
             m_mesh_position_array[width_grid][depth_grid][0] = static_cast<float>(pos_real[0]);
             m_mesh_position_array[width_grid][depth_grid][1] = static_cast<float>(pos_real[1]);

@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,16 +25,16 @@
 
 #include <glm/glm.hpp>
 
-namespace sight::geometry::glm::ut
+namespace sight::geometry::ut
 {
 
-class mesh_functions_test : public CPPUNIT_NS::TestFixture
+class mesh_test : public CPPUNIT_NS::TestFixture
 {
 private:
 
-    CPPUNIT_TEST_SUITE(mesh_functions_test);
-    CPPUNIT_TEST(compute_barycenter_ab_c_2d);
-    CPPUNIT_TEST(compute_barycenter_ab_c_3d);
+    CPPUNIT_TEST_SUITE(mesh_test);
+    CPPUNIT_TEST(compute_barycenter_abc_2d);
+    CPPUNIT_TEST(compute_barycenter_abc_3d);
     CPPUNIT_TEST(compute_barycenter_outside_abc);
     CPPUNIT_TEST(compute_barycenter_abc_real_coords);
     CPPUNIT_TEST(compute_barycenter_tetrahedron);
@@ -50,19 +49,19 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void check_barycentric_coords();
+    static void check_barycentric_coords();
     /// Computes barrycentric coordinates on a point inside a ABC triangle in 2D (same value for Z).
-    void compute_barycenter_ab_c_2d();
+    static void compute_barycenter_abc_2d();
     /// Computes barrycentric coordinates on a point inside a ABC triangle in 3D.
-    void compute_barycenter_ab_c_3d();
+    static void compute_barycenter_abc_3d();
     /// Computes barrycentric coordinates on a point inside a ABC triangle in 3D (real case).
-    void compute_barycenter_abc_real_coords();
+    static void compute_barycenter_abc_real_coords();
     /// Computes barrycentric coordinates on a point outside a ABC triangle.
     static void compute_barycenter_outside_abc();
     /// Computes barycentric coordinates on a point inside a ABCD Tetrahedron in 3D.
-    void compute_barycenter_tetrahedron();
+    static void compute_barycenter_tetrahedron();
     /// Computes barycentric coordinates on a point outside a ABCD Tetrahedron.
     static void compute_barycenter_outside_tetrahedron();
 };
 
-} // namespace sight::geometry::glm::ut
+} // namespace sight::geometry::ut

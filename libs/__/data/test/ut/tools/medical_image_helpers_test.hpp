@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,6 @@ CPPUNIT_TEST(get_pixel_test);
 CPPUNIT_TEST(set_pixel_test);
 CPPUNIT_TEST(is_buf_null);
 CPPUNIT_TEST(test_landmarks);
-CPPUNIT_TEST(test_slice_index_fiducial);
 CPPUNIT_TEST(test_image_validity);
 CPPUNIT_TEST(test_slice_index);
 CPPUNIT_TEST(test_slice_position);
@@ -74,9 +73,6 @@ public:
 
     /// Tests helper methods around slice count.
     void test_slice_count();
-
-    /// Tests helper methods for slice indexes based on the position of fiducials.
-    static void test_slice_index_fiducial();
 
     /// Tests helper methods around slice indexes.
     static void test_slice_index();

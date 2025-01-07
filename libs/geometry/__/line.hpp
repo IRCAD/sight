@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
- * Copyright (C) 2012-2016 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,14 +21,24 @@
 
 #pragma once
 
-#include <sight/geometry/data/config.hpp>
+#include <sight/geometry/__/config.hpp>
 
-#include "geometry/data/types.hpp"
+#include <glm/vec3.hpp>
 
-#include <core/base.hpp>
+#include <utility>
 
-namespace sight::geometry::data
+namespace sight::geometry
 {
+
+/**
+ * @brief Definition of a type for a line defined by two positions
+ */
+using line_t = std::pair<glm::dvec3, glm::dvec3>;
+
+/**
+ * @brief Definition of a type for a ray defined by a position and a direction
+ */
+using ray_t = std::pair<glm::dvec3, glm::dvec3>;
 
 //------------------------------------------------------------------------------
 
@@ -37,8 +46,8 @@ namespace sight::geometry::data
  * @brief Compute the closest points between two rays.
  *  @param [in]  _ray1 ray (origin,direction). Direction vector is assumed be normalized.
  *  @param [in]  _ray2 ray (origin,direction). Direction vector is assumed be normalized.
- *  @param [out] _point_on_this intersection point.
- *  @param [out] _point_onfw_line barycenter of the triangle defined by the three points of the place.
+ *  @param [out] _point_on_ray1 closest point on the first ray.
+ *  @param [out] _point_on_ray2 closest point on the second ray.
  * Return FALSE if the lines are parallel, TRUE otherwise.
  * @verbatim
    p1 + t1 * d1
@@ -54,11 +63,11 @@ namespace sight::geometry::data
    t1 = [-d1.(p1-p2) + d2.(p1-p2) * (d1.d2)]/delta
    @endverbatim
  */
-SIGHT_GEOMETRY_DATA_API bool get_closest_points(
-    const fw_line& _ray1,
-    const fw_line& _ray2,
-    fw_vec3d& _point_on_this,
-    fw_vec3d& _point_onfw_line
+SIGHT_GEOMETRY_API bool get_closest_points(
+    const ray_t& _ray1,
+    const ray_t& _ray2,
+    glm::dvec3& _point_on_ray1,
+    glm::dvec3& _point_on_ray2
 );
 
 /**
@@ -67,7 +76,7 @@ SIGHT_GEOMETRY_DATA_API bool get_closest_points(
  *  @param [in]  _point point to be projected
  *  @return closest point of the line if an intersection is found.
  */
-SIGHT_GEOMETRY_DATA_API fw_vec3d get_closest_point(const fw_line& _ray, const fw_vec3d& _point);
+SIGHT_GEOMETRY_API glm::dvec3 get_closest_point(const ray_t& _ray, const glm::dvec3& _point);
 
 /**
  * @brief Compute the projection of a point in a given direction and test if this intersection is inside a given radius.
@@ -76,7 +85,7 @@ SIGHT_GEOMETRY_DATA_API fw_vec3d get_closest_point(const fw_line& _ray, const fw
  *  @param [in]  _point point to be projected
  *  @return closest point of the line if an intersection is found.
  */
-SIGHT_GEOMETRY_DATA_API bool intersect(const fw_line& _ray, double _radius, const fw_vec3d& _point);
+SIGHT_GEOMETRY_API bool intersect(const ray_t& _ray, double _radius, const glm::dvec3& _point);
 
 /**
  * @brief Compute the closest points between two rays and test these points lie inside a sphere of a given radius.
@@ -87,12 +96,12 @@ SIGHT_GEOMETRY_DATA_API bool intersect(const fw_line& _ray, double _radius, cons
  *  @param [in]  _point point to be projected
  *  @return closest point of the line if an intersection is found.
  */
-SIGHT_GEOMETRY_DATA_API bool intersect(
-    const fw_line& _line,
+SIGHT_GEOMETRY_API bool intersect(
+    const ray_t& _line,
     double _radius,
-    const fw_vec3d& _origin,
-    const fw_vec3d& _direction,
-    fw_vec3d& _point
+    const glm::dvec3& _origin,
+    const glm::dvec3& _direction,
+    glm::dvec3& _point
 );
 
 /**
@@ -107,14 +116,14 @@ SIGHT_GEOMETRY_DATA_API bool intersect(
  *  @param [out] _front true if the dot product of the plane normal and ths positive Z axis (0,0,1) is positive.
  *  @return true if an intersection is found.
  */
-SIGHT_GEOMETRY_DATA_API bool intersect(
-    const fw_line& _line,
-    const fw_vec3d& _v1,
-    const fw_vec3d& _v2,
-    const fw_vec3d& _v3,
-    fw_vec3d& _point,
-    fw_vec3d& _barycentric,
+SIGHT_GEOMETRY_API bool intersect(
+    const line_t& _line,
+    const glm::dvec3& _v1,
+    const glm::dvec3& _v2,
+    const glm::dvec3& _v3,
+    glm::dvec3& _point,
+    glm::dvec3& _barycentric,
     bool& _front
 );
 
-} // namespace sight::geometry::data
+} // namespace sight::geometry

@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,33 +21,22 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <sight/geometry/__/config.hpp>
 
-namespace sight::geometry::data::ut
+#include <glm/vec3.hpp>
+
+#include <functional>
+#include <optional>
+
+// cspell: ignore orthogonalize
+
+namespace sight::geometry
 {
 
-class line_functions_test : public CPPUNIT_NS::TestFixture
-{
-private:
+SIGHT_GEOMETRY_API bool orthogonalize(
+    glm::dvec3& _vec1,
+    glm::dvec3& _vec2,
+    const std::optional<std::reference_wrapper<glm::dvec3> >& _vec3 = std::nullopt
+);
 
-    CPPUNIT_TEST_SUITE(line_functions_test);
-    CPPUNIT_TEST(check_get_closest_point);
-    CPPUNIT_TEST(check_get_closest_points);
-    CPPUNIT_TEST(check_intersect1);
-    CPPUNIT_TEST(check_intersect2);
-    CPPUNIT_TEST(check_intersect3);
-    CPPUNIT_TEST_SUITE_END();
-
-public:
-
-    void setUp() override;
-    void tearDown() override;
-
-    static void check_get_closest_point();
-    static void check_get_closest_points();
-    static void check_intersect1();
-    static void check_intersect2();
-    void check_intersect3();
-};
-
-} // namespace sight::geometry::data::ut
+} // namespace sight::geometry

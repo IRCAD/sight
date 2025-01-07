@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,8 @@
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/tools/color.hpp>
+
+#include <geometry/data/image.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
@@ -482,7 +484,7 @@ void negato3d::move_slices(int _x, int _y)
                 }
             });
 
-        const auto picked_voxel = image->world_to_image(picked_pt, true, true);
+        const auto picked_voxel = geometry::data::world_to_image(*image, picked_pt, true, true);
 
         image->async_emit(
             data::image::SLICE_INDEX_MODIFIED_SIG,

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,14 +25,14 @@
 #include "filter/dicom/exceptions/filter_failure.hpp"
 #include "filter/dicom/registry/macros.hpp"
 
-#include <geometry/data/vector_functions.hpp>
-
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcdeftag.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmdata/dcistrmb.h>
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
+
+#include <glm/glm.hpp>
 
 SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::splitter::image_position_patient_splitter);
 
@@ -108,25 +108,25 @@ const
             throw sight::filter::dicom::exceptions::filter_failure(msg);
         }
 
-        fw_vec3d image_position;
+        glm::dvec3 image_position;
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            dataset->findAndGetFloat64(DCM_ImagePositionPatient, image_position[i], i);
+            dataset->findAndGetFloat64(DCM_ImagePositionPatient, image_position[int(i)], i);
         }
 
-        fw_vec3d image_orientation_u;
-        fw_vec3d image_orientation_v;
+        glm::dvec3 image_orientation_u;
+        glm::dvec3 image_orientation_v;
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, image_orientation_u[i], i);
-            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, image_orientation_v[i], i + std::size_t(3));
+            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, image_orientation_u[int(i)], i);
+            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, image_orientation_v[int(i)], i + std::size_t(3));
         }
 
         //Compute Z direction (cross product)
-        const fw_vec3d z_vector = geometry::data::cross(image_orientation_u, image_orientation_v);
+        const glm::dvec3 z_vector = glm::cross(image_orientation_u, image_orientation_v);
 
         //Compute dot product to get the index
-        const double index = geometry::data::dot(image_position, z_vector);
+        const double index = glm::dot(image_position, z_vector);
 
         //Compute spacing
         const double spacing = index - previous_index;

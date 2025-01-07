@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,6 +28,8 @@
 #include <data/helper/medical_image.hpp>
 
 #include <filter/image/image_diff.hpp>
+
+#include <geometry/data/image.hpp>
 
 namespace sight::module::filter::image
 {
@@ -115,7 +117,7 @@ void propagator::propagate()
                     [&](const auto& _x)
                 {
                     const auto& pt     = _x->get_coord();
-                    const auto indices = image_in->world_to_image(pt, true);
+                    const auto indices = geometry::data::world_to_image(*image_in, pt, true);
 
                     if(indices[0] >= 0 && indices[0] < std::int64_t(sizes[0])
                        && indices[1] >= 0 && indices[1] < std::int64_t(sizes[1])

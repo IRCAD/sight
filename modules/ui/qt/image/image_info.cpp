@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,11 +29,6 @@
 #include <core/com/slots.hxx>
 
 #include <data/helper/medical_image.hpp>
-
-#include <geometry/data/types.hpp>
-
-#include <service/base.hpp>
-#include <service/macros.hpp>
 
 #include <ui/qt/container/widget.hpp>
 

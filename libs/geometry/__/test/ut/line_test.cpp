@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,68 +19,67 @@
  *
  ***********************************************************************/
 
-#include "line_functions_test.hpp"
+#include "line_test.hpp"
 
 #define FW_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
-#include <geometry/data/line_functions.hpp>
-#include <geometry/data/vector_functions.hpp>
+#include <geometry/__/line.hpp>
 
 #include <glm/glm.hpp>
 
 #include <limits>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::line_functions_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::ut::line_test);
 
-namespace sight::geometry::data::ut
+namespace sight::geometry::ut
 {
 
 //------------------------------------------------------------------------------
 
-void line_functions_test::setUp()
+void line_test::setUp()
 {
     // Set up context before running a test.
 }
 
 //------------------------------------------------------------------------------
 
-void line_functions_test::tearDown()
+void line_test::tearDown()
 {
     // Clean up after the test run.
 }
 
 //------------------------------------------------------------------------------
 
-void line_functions_test::check_get_closest_point()
+void line_test::check_get_closest_point()
 {
     {
-        fw_line line = {{{0, 0, 0}}, {{1, 0, 0}}};
-        fw_vec3d pt  = {{5, 10, 0}};
+        ray_t ray     = {{0, 0, 0}, {1, 0, 0}};
+        glm::dvec3 pt = {5, 10, 0};
 
-        fw_vec3d closest_pt = geometry::data::get_closest_point(line, pt);
+        glm::dvec3 closest_pt = geometry::get_closest_point(ray, pt);
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(5., closest_pt[0], 0.001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0., closest_pt[1], 0.001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(0., closest_pt[2], 0.001);
     }
     {
-        fw_line line = {{{2, -3, 1}}, {{1, 4, -3}}};
-        geometry::data::normalize(line.second);
-        fw_vec3d pt = {{1, 42, 2}};
+        ray_t ray = {{2, -3, 1}, {1, 4, -3}};
+        ray.second = glm::normalize(ray.second);
+        glm::dvec3 pt = {1, 42, 2};
 
-        fw_vec3d closest_pt;
+        glm::dvec3 closest_pt;
 #ifndef FW_PROFILING_DISABLED
         {
             FW_PROFILE("::geometry::data::getClosestPoint");
             for(int i = 0 ; i < 1000000 ; ++i)
             {
-                closestPt = geometry::data::getClosestPoint(line, pt);
+                closestPt = geometry::data::getClosestPoint(ray, pt);
             }
         }
 #else
-        closest_pt = geometry::data::get_closest_point(line, pt);
+        closest_pt = geometry::get_closest_point(ray, pt);
 #endif
         CPPUNIT_ASSERT_DOUBLES_EQUAL(8.76923, closest_pt[0], 0.001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(24.0769, closest_pt[1], 0.001);
@@ -91,29 +89,29 @@ void line_functions_test::check_get_closest_point()
 
 //------------------------------------------------------------------------------
 
-void line_functions_test::check_get_closest_points()
+void line_test::check_get_closest_points()
 {
-    fw_vec3d point_on_this;
-    fw_vec3d point_on_line;
+    glm::dvec3 point_on_this;
+    glm::dvec3 point_on_ray;
 
-    // No intersection, parallel lines
+    // No intersection, parallel rays
     {
-        fw_line line1 = {{{0, 0, 0}}, {{1, 0, 0}}};
-        fw_line line2 = {{{0, 1, 0}}, {{1, 0, 0}}};
+        ray_t ray1 = {{0, 0, 0}, {1, 0, 0}};
+        ray_t ray2 = {{0, 1, 0}, {1, 0, 0}};
 
-        bool b_intersection = geometry::data::get_closest_points(line1, line2, point_on_this, point_on_line);
+        bool b_intersection = geometry::get_closest_points(ray1, ray2, point_on_this, point_on_ray);
 
         CPPUNIT_ASSERT(b_intersection == false);
     }
 
     // Intersection
     {
-        fw_line line1 = {{{1, 1, 1}}, {{1, 0, 0}}};
-        fw_line line2 = {{{0, 0, 0}}, {{1, 1, 1}}};
+        ray_t ray1 = {{1, 1, 1}, {1, 0, 0}};
+        ray_t ray2 = {{0, 0, 0}, {1, 1, 1}};
 
-        geometry::data::normalize(line2.second);
+        ray2.second = glm::normalize(ray2.second);
 
-        bool b_intersection = geometry::data::get_closest_points(line1, line2, point_on_this, point_on_line);
+        bool b_intersection = geometry::get_closest_points(ray1, ray2, point_on_this, point_on_ray);
 
         CPPUNIT_ASSERT(b_intersection == true);
 
@@ -121,17 +119,17 @@ void line_functions_test::check_get_closest_points()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_this[1], 0.001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_this[2], 0.001);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[0], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[1], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[2], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_ray[0], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_ray[1], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_ray[2], 0.001);
     }
 
-    // No intersection, but lines are not parallel
+    // No intersection, but rays are not parallel
     {
-        fw_line line1 = {{{1, 1, 1}}, {{-1, 0, 0}}};
-        fw_line line2 = {{{-2, -1, -3}}, {{-1, -1, -1}}};
+        ray_t ray1 = {{1, 1, 1}, {-1, 0, 0}};
+        ray_t ray2 = {{-2, -1, -3}, {-1, -1, -1}};
 
-        geometry::data::normalize(line2.second);
+        ray2.second = glm::normalize(ray2.second);
 
         bool b_intersection = false;
 #ifndef FW_PROFILING_DISABLED
@@ -139,11 +137,11 @@ void line_functions_test::check_get_closest_points()
             FW_PROFILE("::geometry::data::getClosestPoints");
             for(int i = 0 ; i < 1000000 ; ++i)
             {
-                bIntersection = geometry::data::getClosestPoints(line1, line2, pointOnThis, pointOnLine);
+                bIntersection = geometry::data::getClosestPoints(ray1, ray2, pointOnThis, pointOnray);
             }
         }
 #else
-        b_intersection = geometry::data::get_closest_points(line1, line2, point_on_this, point_on_line);
+        b_intersection = geometry::get_closest_points(ray1, ray2, point_on_this, point_on_ray);
 #endif
 
         CPPUNIT_ASSERT(b_intersection == true);
@@ -152,34 +150,34 @@ void line_functions_test::check_get_closest_points()
         CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_this[1], 0.001);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_this[2], 0.001);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[0], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(2., point_on_line[1], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., point_on_line[2], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_ray[0], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(2., point_on_ray[1], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(0., point_on_ray[2], 0.001);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void line_functions_test::check_intersect1()
+void line_test::check_intersect1()
 {
     {
-        fw_line line = {{{0, 0, 0}}, {{1, 0, 0}}};
-        fw_vec3d pt  = {{5, 10, 0}};
+        ray_t ray     = {{0, 0, 0}, {1, 0, 0}};
+        glm::dvec3 pt = {5, 10, 0};
 
         bool b_intersection = false;
-        b_intersection = geometry::data::intersect(line, 11.0, pt);
+        b_intersection = geometry::intersect(ray, 11.0, pt);
         CPPUNIT_ASSERT(b_intersection == true);
 
-        b_intersection = geometry::data::intersect(line, 10.0, pt);
+        b_intersection = geometry::intersect(ray, 10.0, pt);
         CPPUNIT_ASSERT(b_intersection == true);
 
-        b_intersection = geometry::data::intersect(line, 9.0, pt);
+        b_intersection = geometry::intersect(ray, 9.0, pt);
         CPPUNIT_ASSERT(b_intersection == false);
     }
     {
-        fw_line line = {{{2, -3, 1}}, {{1, 4, -3}}};
-        geometry::data::normalize(line.second);
-        fw_vec3d pt = {{1, 42, 2}};
+        ray_t ray = {{2, -3, 1}, {1, 4, -3}};
+        ray.second = glm::normalize(ray.second);
+        glm::dvec3 pt = {1, 42, 2};
 
         bool b_intersection = false;
 #ifndef FW_PROFILING_DISABLED
@@ -187,47 +185,47 @@ void line_functions_test::check_intersect1()
             FW_PROFILE("::geometry::data::intersect1");
             for(int i = 0 ; i < 1000000 ; ++i)
             {
-                bIntersection = geometry::data::intersect(line, 10.0, pt);
+                bIntersection = geometry::data::intersect(ray, 10.0, pt);
             }
         }
 #else
-        b_intersection = geometry::data::intersect(line, 10.0, pt);
+        b_intersection = geometry::intersect(ray, 10.0, pt);
 #endif
         CPPUNIT_ASSERT(b_intersection == false);
 
-        b_intersection = geometry::data::intersect(line, 28.0, pt);
+        b_intersection = geometry::intersect(ray, 28.0, pt);
         CPPUNIT_ASSERT(b_intersection == false);
 
-        b_intersection = geometry::data::intersect(line, 29.0, pt);
+        b_intersection = geometry::intersect(ray, 29.0, pt);
         CPPUNIT_ASSERT(b_intersection == true);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void line_functions_test::check_intersect2()
+void line_test::check_intersect2()
 {
-    // No intersection, parallel lines
+    // No intersection, parallel rays
     {
-        fw_line line1      = {{{0, 0, 0}}, {{1, 0, 0}}};
-        fw_vec3d origin    = {{0, 1, 0}};
-        fw_vec3d direction = {{1, 0, 0}};
-        fw_vec3d point_on_line;
+        ray_t ray1           = {{0, 0, 0}, {1, 0, 0}};
+        glm::dvec3 origin    = {0, 1, 0};
+        glm::dvec3 direction = {1, 0, 0};
+        glm::dvec3 point_on_ray;
 
-        bool b_intersection = geometry::data::intersect(line1, 100.0, origin, direction, point_on_line);
+        bool b_intersection = geometry::intersect(ray1, 100.0, origin, direction, point_on_ray);
 
         CPPUNIT_ASSERT(b_intersection == false);
     }
 
     // Intersection
     {
-        fw_line line1 = {{{1, 1, 1}}, {{1, 0, 0}}};
+        ray_t ray1 = {{1, 1, 1}, {1, 0, 0}};
 
-        fw_vec3d origin    = {{0, 0, 0}};
-        fw_vec3d direction = {{1, 1, 1}};
-        fw_vec3d point_on_line;
+        glm::dvec3 origin    = {0, 0, 0};
+        glm::dvec3 direction = {1, 1, 1};
+        glm::dvec3 point_on_ray;
 
-        geometry::data::normalize(direction);
+        direction = glm::normalize(direction);
 
         bool b_intersection = false;
 #ifndef FW_PROFILING_DISABLED
@@ -235,27 +233,27 @@ void line_functions_test::check_intersect2()
             FW_PROFILE("::geometry::data::intersect1");
             for(int i = 0 ; i < 1000000 ; ++i)
             {
-                bIntersection = geometry::data::intersect(line1, 2.0, origin, direction, pointOnLine);
+                bIntersection = geometry::data::intersect(ray1, 2.0, origin, direction, pointOnray);
             }
         }
 #else
-        b_intersection = geometry::data::intersect(line1, 2.0, origin, direction, point_on_line);
+        b_intersection = geometry::intersect(ray1, 2.0, origin, direction, point_on_ray);
 #endif
 
         CPPUNIT_ASSERT(b_intersection == true);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[0], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[1], 0.001);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_line[2], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_ray[0], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_ray[1], 0.001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(1., point_on_ray[2], 0.001);
     }
 }
 
 //------------------------------------------------------------------------------
 
-void line_functions_test::check_intersect3()
+void line_test::check_intersect3()
 {
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::geometry::data::ut
+} // namespace sight::geometry::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,11 +30,6 @@
 
 #include <data/map.hpp>
 #include <data/string.hpp>
-
-#include <geometry/data/types.hpp>
-
-#include <service/base.hpp>
-#include <service/macros.hpp>
 
 #include <ui/qt/container/widget.hpp>
 

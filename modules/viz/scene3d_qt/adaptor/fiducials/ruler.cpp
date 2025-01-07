@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,8 @@
 #include <core/tools/uuid.hpp>
 
 #include <data/tools/color.hpp>
+
+#include <geometry/data/image.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
@@ -1318,8 +1320,8 @@ bool ruler::is_visible_on_current_slice(std::array<double, 3> _begin, std::array
         m_axis
     ).value_or(0);
 
-    const auto begin_position = image->world_to_image(_begin, true);
-    const auto end_position   = image->world_to_image(_end, true);
+    const auto begin_position = geometry::data::world_to_image(*image, _begin, true);
+    const auto end_position   = geometry::data::world_to_image(*image, _end, true);
 
     // Check if the ruler positions are on the current slice or in between.
     return (slice_index - begin_position[m_axis]) * (slice_index - end_position[m_axis]) <= 0;

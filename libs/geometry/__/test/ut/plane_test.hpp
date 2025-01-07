@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,26 +26,37 @@
 namespace sight::geometry::data::ut
 {
 
-class matrix_functions_test : public CPPUNIT_NS::TestFixture
+class plane_test : public CPPUNIT_NS::TestFixture
 {
 private:
 
-    CPPUNIT_TEST_SUITE(matrix_functions_test);
-    CPPUNIT_TEST(check_mult_vec_matrix);
-    CPPUNIT_TEST(check_rotation_matrix);
-    CPPUNIT_TEST(check_inverse);
-    CPPUNIT_TEST(multiplication_test);
+    CPPUNIT_TEST_SUITE(plane_test);
+    CPPUNIT_TEST(check_get_plane);
+    CPPUNIT_TEST(check_set_plane);
+    CPPUNIT_TEST(check_distance);
+    CPPUNIT_TEST(check_normal);
+    CPPUNIT_TEST(check_intersect);
+    CPPUNIT_TEST(check_is_in_half_space);
+    CPPUNIT_TEST(check_offset);
+    CPPUNIT_TEST(check_transform);
+    CPPUNIT_TEST(check_operator);
     CPPUNIT_TEST_SUITE_END();
 
 public:
 
+    // interface
     void setUp() override;
     void tearDown() override;
 
-    static void check_mult_vec_matrix();
-    static void check_rotation_matrix();
-    static void check_inverse();
-    static void multiplication_test();
+    static void check_get_plane();
+    static void check_set_plane();
+    static void check_distance();
+    static void check_normal();
+    static void check_intersect();
+    static void check_is_in_half_space();
+    static void check_offset();
+    static void check_transform();
+    static void check_operator();
 };
 
 } // namespace sight::geometry::data::ut

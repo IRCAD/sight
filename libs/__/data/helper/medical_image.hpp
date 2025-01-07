@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -200,22 +200,6 @@ SIGHT_DATA_API data::point_list::sptr get_landmarks(const data::image& _image);
  * @param _landmarks : landmarks pointer as data::point_list::sptr.
  */
 SIGHT_DATA_API void set_landmarks(data::image& _image, const data::point_list::sptr& _landmarks);
-
-/**
- * @brief Helper function to calculate the slice index of a given fiducial point in a specified orientation within a
- * medical image.
- *
- * @param _image : The input image as a constant reference to data::image.
- * @param _point : The coordinates of the fiducial point as a std::array of three doubles.
- * @param _axis : The orientation (axial, sagittal, or frontal) to calculate the slice index.
- * @return std::optional<std::int64_t> : The calculated slice index as an integer.
- */
-
-SIGHT_DATA_API std::optional<std::int64_t> get_fiducial_slice_index(
-    const data::image& _image,
-    const vec3_t& _point,
-    axis_t _axis
-);
 
 /**
  * @brief Helper function to get distances vector of a medical image.

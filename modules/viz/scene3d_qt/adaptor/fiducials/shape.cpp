@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,8 @@
 
 #include <data/material.hpp>
 #include <data/tools/color.hpp>
+
+#include <geometry/data/image.hpp>
 
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
@@ -514,7 +516,8 @@ void shape::show_on_current_slice()
         {
             for(auto& element : shape->elements)
             {
-                const auto image_position = image->world_to_image(
+                const auto image_position = geometry::data::world_to_image(
+                    *image,
                     {
                         element.position.x,
                         element.position.y,

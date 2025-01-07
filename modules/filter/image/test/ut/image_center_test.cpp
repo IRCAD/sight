@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,6 +25,7 @@
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
 
+#include <geometry/data/image.hpp>
 #include <geometry/data/matrix4.hpp>
 
 #include <service/op.hpp>
@@ -121,7 +122,7 @@ void image_center_test::nominal_test()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_center[2], world_center[2], 1e-6);
 
     // Go back to image
-    const auto image_position = image->world_to_image(world_center, true);
+    const auto image_position = geometry::data::world_to_image(*image, world_center, true);
 
     // We use an epsilon of 1, because rounding "errors" is possible, with odd size
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(size[0]) / 2.0, double(image_position[0]), .5);

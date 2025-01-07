@@ -1559,12 +1559,7 @@ macro(sight_create_pch_target _og)
     target_compile_definitions(${SIGHT_PCH_NAME} PUBLIC BOOST_BIND_GLOBAL_PLACEHOLDERS)
 
     # Glm
-    if(WIN32)
-        target_link_libraries(${SIGHT_PCH_NAME} PRIVATE glm::glm)
-    else()
-        # Hacky, no longer needed when glm-0.9.9.8+ds-3 is available
-        target_include_directories(${SIGHT_PCH_NAME} SYSTEM PRIVATE ${GLM_INCLUDE_DIRS})
-    endif()
+    target_link_libraries(${SIGHT_PCH_NAME} PRIVATE "$<$<VERSION_GREATER_EQUAL:glm_VERSION,0.9.9.8>:glm::glm>")
 endmacro()
 
 # Enable precompiled headers for the project

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,6 +37,8 @@
 #include <core/tools/os.hpp>
 
 #include <data/helper/medical_image.hpp>
+
+#include <geometry/data/image.hpp>
 
 #include <OGRE/OgreMaterialManager.h>
 
@@ -823,7 +825,7 @@ Ogre::Vector3i utils::world_to_slices(const data::image& _image, const Ogre::Vec
         || core::is_equal(0.0, spacing[2])
     );
 
-    const auto voxel  = _image.world_to_image(_world, true);
+    const auto voxel  = geometry::data::world_to_image(_image, _world, true);
     const auto& sizes = _image.size();
 
     for(std::size_t i = 0 ; i < sizes.size() ; ++i)
@@ -883,7 +885,7 @@ std::string utils::pick_image(
     const Ogre::Vector3& _position
 )
 {
-    const auto picked_voxel = _image.world_to_image(_position, true, true);
+    const auto picked_voxel = geometry::data::world_to_image(_image, _position, true, true);
     const auto intensity    = _image.get_pixel_as_string(
         data::image::index_t(picked_voxel[0]),
         data::image::index_t(picked_voxel[1]),

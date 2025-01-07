@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,40 +23,31 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-// cspell: ignore orthogonalize
-
-namespace sight::geometry::data::ut
+namespace sight::geometry::ut
 {
 
-class vector_functions_test : public CPPUNIT_NS::TestFixture
+class line_test : public CPPUNIT_NS::TestFixture
 {
 private:
 
-    CPPUNIT_TEST_SUITE(vector_functions_test);
-    CPPUNIT_TEST(check_normalize);
-    CPPUNIT_TEST(check_dot);
-    CPPUNIT_TEST(check_cross);
-    CPPUNIT_TEST(check_negate);
-    CPPUNIT_TEST(check_vec_length);
-    CPPUNIT_TEST(check_operators);
-    CPPUNIT_TEST(check_orthogonalize);
+    CPPUNIT_TEST_SUITE(line_test);
+    CPPUNIT_TEST(check_get_closest_point);
+    CPPUNIT_TEST(check_get_closest_points);
+    CPPUNIT_TEST(check_intersect1);
+    CPPUNIT_TEST(check_intersect2);
+    CPPUNIT_TEST(check_intersect3);
     CPPUNIT_TEST_SUITE_END();
-
-protected:
 
 public:
 
-    // interface
     void setUp() override;
     void tearDown() override;
 
-    static void check_dot();
-    static void check_cross();
-    static void check_normalize();
-    static void check_negate();
-    static void check_vec_length();
-    static void check_operators();
-    static void check_orthogonalize();
+    static void check_get_closest_point();
+    static void check_get_closest_points();
+    static void check_intersect1();
+    static void check_intersect2();
+    void check_intersect3();
 };
 
-} // namespace sight::geometry::data::ut
+} // namespace sight::geometry::ut

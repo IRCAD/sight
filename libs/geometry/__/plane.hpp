@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,31 +21,34 @@
 
 #pragma once
 
-#include <sight/geometry/data/config.hpp>
+#include <sight/geometry/__/config.hpp>
 
-#include "geometry/data/line_functions.hpp"
-#include "geometry/data/matrix_functions.hpp"
-#include "geometry/data/types.hpp"
-#include "geometry/data/vector_functions.hpp"
+#include "geometry/__/line.hpp"
 
-#include <core/base.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/vec4.hpp>
 
-namespace sight::geometry::data
+namespace sight::geometry
 {
+
+/**
+ * @brief Definition of type for a plane defined by a normal and a distance
+ */
+using plane_t = glm::dvec4;
 
 static const double EPSILON = 0.001;
 
 /**
  * @brief
  */
-SIGHT_GEOMETRY_DATA_API fw_plane get_plane(const fw_vec3d& _point1, const fw_vec3d& _point2, const fw_vec3d& _point3);
+SIGHT_GEOMETRY_API plane_t get_plane(const glm::dvec3& _point1, const glm::dvec3& _point2, const glm::dvec3& _point3);
 /**
  * @brief compute a plane from a normal and a point which must be in the plane.
  * @param [in] _point a point of the plan/
  * @param [in] _normal the normal of the new plane.
  * @return the new plane.
  */
-SIGHT_GEOMETRY_DATA_API fw_plane get_plane(const fw_vec3d& _normal, const fw_vec3d& _point);
+SIGHT_GEOMETRY_API plane_t get_plane(const glm::dvec3& _normal, const glm::dvec3& _point);
 
 /**
  * @brief Initialize a plane _plane with three points (_point1, _point2, _point3).
@@ -56,11 +58,11 @@ SIGHT_GEOMETRY_DATA_API fw_plane get_plane(const fw_vec3d& _normal, const fw_vec
  * @param [in] _point2 a point of the plan.
  * @param [in] _point3 a point of the plan.
  */
-SIGHT_GEOMETRY_DATA_API void set_values(
-    fw_plane& _plane,
-    const fw_vec3d& _point1,
-    const fw_vec3d& _point2,
-    const fw_vec3d& _point3
+SIGHT_GEOMETRY_API void set_plane(
+    plane_t& _plane,
+    const glm::dvec3& _point1,
+    const glm::dvec3& _point2,
+    const glm::dvec3& _point3
 );
 
 /**
@@ -68,34 +70,34 @@ SIGHT_GEOMETRY_DATA_API void set_values(
  * @param [in] _plane
  * @return the normalize normal of the plane.
  */
-SIGHT_GEOMETRY_DATA_API fw_vec3d get_normal(const fw_plane& _plane);
+SIGHT_GEOMETRY_API glm::dvec3 get_normal(const plane_t& _plane);
 /**
  * @brief Set the normal of the given plane _plane.
  *  @param [in] _plane
  *  @param [in] _normal
  */
-SIGHT_GEOMETRY_DATA_API void set_normal(fw_plane& _plane, const fw_vec3d& _normal);
+SIGHT_GEOMETRY_API void set_normal(plane_t& _plane, const glm::dvec3& _normal);
 /**
  * @brief Get the distance from origin for the given plan (_plane).
  *  @param [in] _plane
  *  @return the distance of origin of the plane.
  */
-SIGHT_GEOMETRY_DATA_API double get_distance(const fw_plane& _plane);
+SIGHT_GEOMETRY_API double get_distance(const plane_t& _plane);
 /**
  * @brief Set the distance from origin (_distance) for the given plan (_plane).
  *  @param [in]  _distance
  *  @param [in] _plane
  *  @return [out] _plane
  */
-SIGHT_GEOMETRY_DATA_API void set_distance(fw_plane& _plane, double _distance);
+SIGHT_GEOMETRY_API void set_distance(plane_t& _plane, double _distance);
 /**
  *  @brief Give the intersection between a plane and a line. The result is returned in a point (_point)
- *  @param [in]  _fw_plane
+ *  @param [in]  _plane_t
  *  @param [in]  _line
  *  @param [out] _point intersection point.
  *  @return true if an intersection is found.
  */
-SIGHT_GEOMETRY_DATA_API bool intersect(const fw_plane& _fw_plane, const fw_line& _line, fw_vec3d& _point);
+SIGHT_GEOMETRY_API bool intersect(const plane_t& _plane_t, const line_t& _line, glm::dvec3& _point);
 
 /**
  *  @brief Compute if a point is in a half plane.
@@ -103,7 +105,7 @@ SIGHT_GEOMETRY_DATA_API bool intersect(const fw_plane& _fw_plane, const fw_line&
  *  @param [in]  _point
  *  @return true if point is in a half plane.
  */
-SIGHT_GEOMETRY_DATA_API bool is_in_half_space(const fw_plane& _plane, const fw_vec3d& _point);
+SIGHT_GEOMETRY_API bool is_in_half_space(const plane_t& _plane, const glm::dvec3& _point);
 
 /**
  *  @brief Apply a transformation to a plane. The transformation is defined by a matrix 4x4.
@@ -111,7 +113,7 @@ SIGHT_GEOMETRY_DATA_API bool is_in_half_space(const fw_plane& _plane, const fw_v
  *  @param [in]  _matrix
  *  @param [out] _plane
  */
-SIGHT_GEOMETRY_DATA_API void transform(fw_plane& _plane, const fw_matrix4x4& _matrix);
+SIGHT_GEOMETRY_API void transform(plane_t& _plane, const glm::dmat4& _matrix);
 
 /**
  *  @brief Add an offset at the distance of origin which define the plane (_plane).
@@ -119,9 +121,9 @@ SIGHT_GEOMETRY_DATA_API void transform(fw_plane& _plane, const fw_matrix4x4& _ma
  *  @param [in]  _offset
  *  @param [out] _plane
  */
-SIGHT_GEOMETRY_DATA_API void offset(fw_plane& _plane, double _offset);
+SIGHT_GEOMETRY_API void offset(plane_t& _plane, double _offset);
 
-} // namespace sight::geometry::data
+} // namespace sight::geometry
 
 /**
  *  @brief Compares if two planes are equal
@@ -129,4 +131,4 @@ SIGHT_GEOMETRY_DATA_API void offset(fw_plane& _plane, double _offset);
  *  @param [in]  _plane2
  *  @return true if the planes are equal and false if they are not.
  */
-SIGHT_GEOMETRY_DATA_API bool operator==(fw_plane& _plane1, fw_plane& _plane2);
+SIGHT_GEOMETRY_API bool operator==(sight::geometry::plane_t& _plane1, sight::geometry::plane_t& _plane2);

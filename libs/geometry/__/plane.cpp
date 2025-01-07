@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,29 +19,30 @@
  *
  ***********************************************************************/
 
-#include "geometry/data/plane_functions.hpp"
+#include "geometry/__/plane.hpp"
 
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
+#include <glm/gtx/vec_swizzle.hpp>
 
 constexpr double EPSILON = 0.00000001;
 
-namespace sight::geometry::data
+namespace sight::geometry
 {
 
 //------------------------------------------------------------------------------
 
-fw_plane get_plane(const fw_vec3d& _point1, const fw_vec3d& _point2, const fw_vec3d& _point3)
+plane_t get_plane(const glm::dvec3& _point1, const glm::dvec3& _point2, const glm::dvec3& _point3)
 {
-    fw_plane plane;
-    set_values(plane, _point1, _point2, _point3);
+    plane_t plane;
+    set_plane(plane, _point1, _point2, _point3);
 
     return plane;
 }
 
 //------------------------------------------------------------------------------
 
-void set_values(fw_plane& _plane, const fw_vec3d& _point1, const fw_vec3d& _point2, const fw_vec3d& _point3)
+void set_plane(plane_t& _plane, const glm::dvec3& _point1, const glm::dvec3& _point2, const glm::dvec3& _point3)
 {
     glm::dvec3 p1(_point1[0], _point1[1], _point1[2]);
     glm::dvec3 p2(_point2[0], _point2[1], _point2[2]);
@@ -67,14 +67,14 @@ void set_values(fw_plane& _plane, const fw_vec3d& _point1, const fw_vec3d& _poin
 
 //------------------------------------------------------------------------------
 
-fw_vec3d get_normal(const fw_plane& _plane)
+glm::dvec3 get_normal(const plane_t& _plane)
 {
-    return {{_plane[0], _plane[1], _plane[2]}};
+    return glm::xyz(_plane);
 }
 
 //------------------------------------------------------------------------------
 
-void set_normal(fw_plane& _plane, const fw_vec3d& _normal)
+void set_normal(plane_t& _plane, const glm::dvec3& _normal)
 {
     glm::dvec3 vec_normal(_normal[0], _normal[1], _normal[2]);
     vec_normal = glm::normalize(vec_normal);
@@ -86,21 +86,21 @@ void set_normal(fw_plane& _plane, const fw_vec3d& _normal)
 
 //------------------------------------------------------------------------------
 
-double get_distance(const fw_plane& _plane)
+double get_distance(const plane_t& _plane)
 {
     return _plane[3];
 }
 
 //------------------------------------------------------------------------------
 
-void set_distance(fw_plane& _plane, const double _distance)
+void set_distance(plane_t& _plane, const double _distance)
 {
     _plane[3] = _distance;
 }
 
 //------------------------------------------------------------------------------
 
-bool intersect(const fw_plane& _plane, const fw_line& _line, fw_vec3d& _point)
+bool intersect(const plane_t& _plane, const line_t& _line, glm::dvec3& _point)
 {
     glm::dvec3 normal(_plane[0], _plane[1], _plane[2]);
     normal = glm::normalize(normal);
@@ -130,7 +130,7 @@ bool intersect(const fw_plane& _plane, const fw_line& _line, fw_vec3d& _point)
 
 //------------------------------------------------------------------------------
 
-bool is_in_half_space(const fw_plane& _plane, const fw_vec3d& _point)
+bool is_in_half_space(const plane_t& _plane, const glm::dvec3& _point)
 {
     glm::dvec3 point_glm(_point[0], _point[1], _point[2]);
     glm::dvec3 normal(_plane[0], _plane[1], _plane[2]);
@@ -141,20 +141,16 @@ bool is_in_half_space(const fw_plane& _plane, const fw_vec3d& _point)
 
 //------------------------------------------------------------------------------
 
-void transform(fw_plane& _plane, const fw_matrix4x4& _matrix)
+void transform(plane_t& _plane, const glm::dmat4& _matrix)
 {
     glm::dvec3 normal(_plane[0], _plane[1], _plane[2]);
     glm::dvec3 beg(normal * _plane[3]);
     glm::dvec3 end(beg + normal);
     glm::dvec4 beg4(beg, 1.0);
     glm::dvec4 end4(end, 1.0);
-    glm::dmat4x4 mat(_matrix[0][0], _matrix[1][0], _matrix[2][0], _matrix[3][0],
-                     _matrix[0][1], _matrix[1][1], _matrix[2][1], _matrix[3][1],
-                     _matrix[0][2], _matrix[1][2], _matrix[2][2], _matrix[3][2],
-                     _matrix[0][3], _matrix[1][3], _matrix[2][3], _matrix[3][3]);
 
-    beg4 = mat * beg4;
-    end4 = mat * end4;
+    beg4 = beg4 * _matrix;
+    end4 = end4 * _matrix;
 
     end[0] = end4[0];
     end[1] = end4[1];
@@ -175,7 +171,7 @@ void transform(fw_plane& _plane, const fw_matrix4x4& _matrix)
 
 //------------------------------------------------------------------------------
 
-void offset(fw_plane& _plane, double _offset)
+void offset(plane_t& _plane, double _offset)
 {
     double distance = get_distance(_plane);
     distance += _offset;
@@ -184,12 +180,12 @@ void offset(fw_plane& _plane, double _offset)
 
 //------------------------------------------------------------------------------
 
-fw_plane get_plane(const fw_vec3d& _normal, const fw_vec3d& _point)
+plane_t get_plane(const glm::dvec3& _normal, const glm::dvec3& _point)
 {
     glm::dvec3 point_glm(_point[0], _point[1], _point[2]);
     glm::dvec3 normal_glm(_normal[0], _normal[1], _normal[2]);
     normal_glm = glm::normalize(normal_glm);
-    fw_plane plane;
+    plane_t plane;
     plane[0] = normal_glm[0];
     plane[1] = normal_glm[1];
     plane[2] = normal_glm[2];
@@ -197,11 +193,11 @@ fw_plane get_plane(const fw_vec3d& _normal, const fw_vec3d& _point)
     return plane;
 }
 
-} // namespace sight::geometry::data
+} // namespace sight::geometry
 
 //------------------------------------------------------------------------------
 
-bool operator==(fw_plane& _plane1, fw_plane& _plane2)
+bool operator==(sight::geometry::plane_t& _plane1, sight::geometry::plane_t& _plane2)
 {
     glm::dvec4 pl1(_plane1[0], _plane1[1], _plane1[2], _plane1[3]);
     glm::dvec4 pl2(_plane2[0], _plane2[1], _plane2[2], _plane2[3]);

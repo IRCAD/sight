@@ -1,13 +1,8 @@
 sight_add_target(geometry_data TYPE LIBRARY)
 
-target_link_libraries(geometry_data PUBLIC core data)
+target_link_libraries(geometry_data PUBLIC core data geometry)
 
-if(WIN32)
-    target_link_libraries(geometry_data PUBLIC glm::glm)
-else()
-    # Hacky, no longer needed when glm-0.9.9.8+ds-3 is available
-    target_include_directories(geometry_data SYSTEM PUBLIC ${GLM_INCLUDE_DIRS})
-endif()
+target_link_libraries(geometry_data PRIVATE "$<$<VERSION_GREATER_EQUAL:glm_VERSION,0.9.9.8>:glm::glm>")
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/ut)

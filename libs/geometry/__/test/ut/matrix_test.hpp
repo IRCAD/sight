@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,40 +23,25 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::geometry::data::ut
+#include <glm/glm.hpp>
+
+namespace sight::geometry::ut
 {
 
-class plane_functions_test : public CPPUNIT_NS::TestFixture
+class matrix_test : public CPPUNIT_NS::TestFixture
 {
 private:
 
-    CPPUNIT_TEST_SUITE(plane_functions_test);
-    CPPUNIT_TEST(check_get_plane);
-    CPPUNIT_TEST(check_set_values);
-    CPPUNIT_TEST(check_distance);
-    CPPUNIT_TEST(check_normal);
-//    CPPUNIT_TEST( checkIntersect );
-    CPPUNIT_TEST(check_is_in_half_space);
-    CPPUNIT_TEST(check_offset);
-    CPPUNIT_TEST(check_transform);
-    CPPUNIT_TEST(check_operator);
+    CPPUNIT_TEST_SUITE(matrix_test);
+    CPPUNIT_TEST(inverse_translation_rotation);
     CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    // interface
     void setUp() override;
     void tearDown() override;
 
-    static void check_set_values();
-    static void check_get_plane();
-    static void check_distance();
-    static void check_normal();
-    static void check_intersect();
-    static void check_is_in_half_space();
-    static void check_offset();
-    static void check_transform();
-    static void check_operator();
+    static void inverse_translation_rotation();
 };
 
-} // namespace sight::geometry::data::ut
+} // namespace sight::geometry::ut

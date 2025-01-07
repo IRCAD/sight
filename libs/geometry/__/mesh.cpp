@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
- * Copyright (C) 2012-2021 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,7 +19,7 @@
  *
  ***********************************************************************/
 
-#include "geometry/glm/mesh.hpp"
+#include "geometry/__/mesh.hpp"
 
 #include <core/spy_log.hpp>
 
@@ -28,7 +27,7 @@
 
 #include <string>
 
-namespace sight::geometry::glm
+namespace sight::geometry
 {
 
 //-----------------------------------------------------------------------------
@@ -238,4 +237,4 @@ bool is_inside_tetrahedron(const ::glm::dvec4 _barycentric_coord_p_inside_abcd)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::geometry::glm
+} // namespace sight::geometry

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -242,24 +242,6 @@ void set_slice_position(
     );
 
     set_slice_index(_image, _orientation, new_index);
-}
-
-//----------------------------------------------------------------------------
-std::optional<std::int64_t> get_fiducial_slice_index(
-    const data::image& _image,
-    const vec3_t& _point,
-    axis_t _axis
-)
-{
-    const auto point_in_image = _image.world_to_image(_point, true);
-    const auto slice_index    = point_in_image[_axis];
-
-    if(slice_index < 0 || slice_index >= std::int64_t(_image.size()[_axis]))
-    {
-        return std::nullopt;
-    }
-
-    return slice_index;
 }
 
 //------------------------------------------------------------------------------

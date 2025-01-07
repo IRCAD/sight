@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,13 +21,13 @@
 
 #pragma once
 
-#include <sight/geometry/glm/config.hpp>
+#include <sight/geometry/__/config.hpp>
 
 #include <boost/unordered_map.hpp>
 
 #include <glm/glm.hpp>
 
-namespace sight::geometry::glm
+namespace sight::geometry
 {
 
 /**
@@ -41,7 +40,7 @@ namespace sight::geometry::glm
  * @param _c third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return barycentric coordinates (u, v, w).
  */
-SIGHT_GEOMETRY_GLM_API ::glm::dvec3 to_barycentric_coord(
+SIGHT_GEOMETRY_API ::glm::dvec3 to_barycentric_coord(
     const ::glm::dvec3& _p,
     const ::glm::dvec3& _a,
     const ::glm::dvec3& _b,
@@ -57,7 +56,7 @@ SIGHT_GEOMETRY_GLM_API ::glm::dvec3 to_barycentric_coord(
  * @param _c third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return world coordinates (x, y, z).
  */
-SIGHT_GEOMETRY_GLM_API ::glm::dvec3 from_barycentric_coord(
+SIGHT_GEOMETRY_API ::glm::dvec3 from_barycentric_coord(
     const ::glm::dvec3& _bary_coord,
     const ::glm::dvec3& _a,
     const ::glm::dvec3& _b,
@@ -75,7 +74,7 @@ SIGHT_GEOMETRY_GLM_API ::glm::dvec3 from_barycentric_coord(
  * @param _d fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
  * @return barycentric coordinates (u, v, w, h).
  */
-SIGHT_GEOMETRY_GLM_API ::glm::dvec4 to_barycentric_coord(
+SIGHT_GEOMETRY_API ::glm::dvec4 to_barycentric_coord(
     const ::glm::dvec3& _p,
     const ::glm::dvec3& _a,
     const ::glm::dvec3& _b,
@@ -93,7 +92,7 @@ SIGHT_GEOMETRY_GLM_API ::glm::dvec4 to_barycentric_coord(
  * @param _d fourth vertex of the tetrahedron (_Dx, _Dy, _Dz) (can also be called v4).
  * @return world coordinates (x, y, z).
  */
-SIGHT_GEOMETRY_GLM_API ::glm::dvec3 from_barycentric_coord(
+SIGHT_GEOMETRY_API ::glm::dvec3 from_barycentric_coord(
     const ::glm::dvec4& _bary_coord,
     const ::glm::dvec3& _a,
     const ::glm::dvec3& _b,
@@ -110,7 +109,7 @@ SIGHT_GEOMETRY_GLM_API ::glm::dvec3 from_barycentric_coord(
  * @param _d fourth vertex of the tetrahedron (_Dx, _Dy, _Dz).
  * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
  */
-SIGHT_GEOMETRY_GLM_API bool is_inside_tetrahedron(
+SIGHT_GEOMETRY_API bool is_inside_tetrahedron(
     const ::glm::dvec3& _p,
     const ::glm::dvec3& _a,
     const ::glm::dvec3& _b,
@@ -124,19 +123,7 @@ SIGHT_GEOMETRY_GLM_API bool is_inside_tetrahedron(
  * @param _barycentric_coord_p_inside_abcd: P coordinates expressed as barycentric coordinates in (ABCD).
  * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
  */
-SIGHT_GEOMETRY_GLM_API bool is_inside_tetrahedron(::glm::dvec4 _barycentric_coord_p_inside_abcd);
-//-----------------------------------------------------------------------------
-
-template<typename T, typename U>
-std::pair<T, U> make_ordered_pair(const T _first, const U _second)
-{
-    if(_first < _second)
-    {
-        return std::pair<T, U>(_first, _second);
-    }
-
-    return std::pair<T, U>(_second, _first);
-}
+SIGHT_GEOMETRY_API bool is_inside_tetrahedron(::glm::dvec4 _barycentric_coord_p_inside_abcd);
 
 //-----------------------------------------------------------------------------
 
@@ -194,4 +181,4 @@ bool is_borderless_surface(
     return is_borderless;
 }
 
-} // namespace sight::geometry::glm
+} // namespace sight::geometry
