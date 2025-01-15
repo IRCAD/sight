@@ -127,7 +127,7 @@ material Negato_pre
             texture_unit tfTexture
             {
                 tex_address_mode clamp
-                filtering bilinear
+                filtering none
             }
         }
     }

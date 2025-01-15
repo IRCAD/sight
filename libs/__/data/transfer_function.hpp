@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -248,16 +248,22 @@ public:
         const sight::data::transfer_function& _src
     );
 
-    /// Gets the transfert function name.
+    /// Gets the transfer function name.
     [[nodiscard]] const std::string& name() const;
 
-    /// Sets the transfert function name.
+    /// Sets the transfer function name.
     void set_name(const std::string& _value);
 
-    /// Gets the TF background color when tf 'IsClamped' is true.
+    /// Gets whether the transfer function will be resample or not.
+    [[nodiscard]] bool resample_to_max_texture_size() const;
+
+    /// Sets whether the transfer function will be resampled or nor.
+    void set_resample_to_max_texture_size(const bool _value);
+
+    /// Gets the TF background color when tf 'isClamped' is true.
     [[nodiscard]] const color_t& background_color() const;
 
-    /// Set the TF background color when tf 'IsClamped' is true.
+    /// Set the TF background color when tf 'isClamped' is true.
     void set_background_color(const color_t& _value);
 
     /// Returns all the pieces of the piecewise function
@@ -316,6 +322,9 @@ private:
 
     /// Sets the transfer function name.
     std::string m_name;
+
+    /// Resamples the transfer function to the max texture size when uploading as a texture.
+    bool m_resample_to_max_texture_size {true};
 
     /// Sets the recommended background color to use this TF.
     color_t m_background_color {0., 0., 0., 0.};
@@ -439,6 +448,20 @@ inline void transfer_function_piece::set_generated(bool _value)
 inline const std::string& transfer_function::name() const
 {
     return m_name;
+}
+
+//------------------------------------------------------------------------------
+
+inline bool transfer_function::resample_to_max_texture_size() const
+{
+    return m_resample_to_max_texture_size;
+}
+
+//------------------------------------------------------------------------------
+
+inline void transfer_function::set_resample_to_max_texture_size(bool _value)
+{
+    m_resample_to_max_texture_size = _value;
 }
 
 //-----------------------------------------------------------------------------

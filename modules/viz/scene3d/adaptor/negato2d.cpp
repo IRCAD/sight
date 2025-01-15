@@ -67,7 +67,7 @@ void negato2d::configuring()
 
     static const std::string s_SLICE_INDEX_CONFIG  = CONFIG + "sliceIndex";
     static const std::string s_FILTERING_CONFIG    = CONFIG + "filtering";
-    static const std::string s_TF_ALPHA_CONFIG     = CONFIG + "tfAlpha";
+    static const std::string s_TF_ALPHA_CONFIG     = CONFIG + "tf_alpha";
     static const std::string s_BORDER_CONFIG       = CONFIG + "border";
     static const std::string s_SLICES_CROSS_CONFIG = CONFIG + "slicesCross";
     static const std::string s_INTERACTIVE_CONFIG  = CONFIG + "interactive";

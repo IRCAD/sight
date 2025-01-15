@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,6 +76,12 @@ void transfer_function::parse(
 
             const bool is_clamped = color_cfg->get<bool>("<xmlattr>.isClamped", true);
             tf_data->set_clamped(is_clamped);
+
+            const bool resample_to_max_texture_size = color_cfg->get<bool>(
+                "<xmlattr>.resample_to_max_texture_size",
+                true
+            );
+            tf->set_resample_to_max_texture_size(resample_to_max_texture_size);
 
             tf->fit_window();
         }

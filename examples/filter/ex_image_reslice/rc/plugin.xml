@@ -11,8 +11,12 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="input_image" type="sight::data::image" />
+            <object uid="input_mask" type="sight::data::image" />
+
             <object uid="axial_slice" type="sight::data::image" />
+            <object uid="axial_mask_slice" type="sight::data::image" />
             <object uid="frontal_slice" type="sight::data::image" />
+            <object uid="frontal_mask_slice" type="sight::data::image" />
 
             <object uid="tf" type="sight::data::transfer_function" />
             <object uid="id_matrix" type="sight::data::matrix4" />
@@ -31,6 +35,19 @@
             </object>
 
             <object uid="frontal_matrix" type="sight::data::matrix4" />
+
+            <object uid="classification" type="sight::data::string" value="pre" />
+
+            <object uid="mask_tf" type="sight::data::transfer_function">
+                <name>segmentations</name>
+                <colors isClamped="false" resample_to_max_texture_size="false">
+                    <step color="#00000000" value="0" />
+                    <step color="#0000FFFF" value="1" />
+                    <step color="#00FF00FF" value="2" />
+                    <step color="#00FFFFFF" value="3" />
+                    <step color="#FF0000FF" value="4" />
+                </colors>
+            </object>
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -63,11 +80,13 @@
             <service uid="tool_bar_view" type="sight::module::ui::toolbar">
                 <gui>
                     <layout>
-                        <menuItem name="Load series" icon="sight::module::ui::icons/load.svg" />
+                        <menuItem name="Load image series ..." icon="sight::module::ui::icons/load.svg" />
+                        <menuItem name="Load mask ..." icon="sight::module::ui::icons/load.svg" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="open_image_act" start="true" />
+                    <menuItem sid="open_mask_act" start="true" />
                 </registry>
             </service>
 
@@ -129,9 +148,36 @@
                 <inout key="output" uid="frontal_matrix" />
             </service>
 
+            <!-- ************************************* Reslice services ************************************ -->
+
+            <service uid="axial_slicer_srv" type="sight::module::filter::image::plane_slicer" auto_connect="true">
+                <in key="image" uid="input_image" />
+                <in key="axes" uid="axial_matrix" />
+                <inout key="slice" uid="axial_slice" />
+            </service>
+
+            <service uid="axial_mask_slicer_srv" type="sight::module::filter::image::plane_slicer" auto_connect="true">
+                <in key="image" uid="input_mask" />
+                <in key="axes" uid="axial_matrix" />
+                <inout key="slice" uid="axial_mask_slice" />
+            </service>
+
+            <service uid="frontal_slicer_srv" type="sight::module::filter::image::plane_slicer" auto_connect="true">
+                <in key="image" uid="input_image" />
+                <in key="axes" uid="frontal_matrix" />
+                <inout key="slice" uid="frontal_slice" />
+            </service>
+
+            <service uid="frontal_mask_slicer_srv" type="sight::module::filter::image::plane_slicer" auto_connect="true">
+                <in key="image" uid="input_mask" />
+                <in key="axes" uid="frontal_matrix" />
+                <inout key="slice" uid="frontal_mask_slice" />
+            </service>
+
             <!-- ************************************* Action ************************************ -->
 
             <service uid="open_image_act" type="sight::module::ui::action" />
+            <service uid="open_mask_act" type="sight::module::ui::action" />
 
             <!-- ******************************* Main 3D scene ******************************* -->
 
@@ -150,8 +196,10 @@
                         <adaptor uid="trackball_interactor_adp" />
 
                         <adaptor uid="3d_negato_adp" />
-                        <adaptor uid="2d_negato_adp_0" />
-                        <adaptor uid="2d_negato_adp_1" />
+                        <adaptor uid="reslice_axial_negato_adp" />
+                        <adaptor uid="reslice_axial_mask_negato_adp" />
+                        <adaptor uid="reslice_frontal_negato_adp" />
+                        <adaptor uid="reslice_frontal_mask_negato_adp" />
                     </layer>
                 </scene>
             </service>
@@ -180,10 +228,17 @@
                 <config visible="true" origin="true" originColor="#0000FF" label="false" />
             </service>
 
-            <service uid="2d_negato_adp_0" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
+            <service uid="reslice_axial_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
                 <in key="image" uid="axial_slice" />
                 <in key="tf" uid="tf" />
                 <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" />
+            </service>
+
+            <service uid="reslice_axial_mask_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
+                <in key="image" uid="axial_mask_slice" />
+                <in key="tf" uid="mask_tf" />
+                <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" tf_alpha="true" />
+                <properties classification="${classification}" />
             </service>
 
             <service uid="axial_slice_axis_adp" type="sight::module::viz::scene3d::adaptor::axis" auto_connect="true">
@@ -191,10 +246,17 @@
                 <config visible="true" origin="true" originColor="#FF0000" label="false" />
             </service>
 
-            <service uid="2d_negato_adp_1" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
+            <service uid="reslice_frontal_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
                 <in key="image" uid="frontal_slice" />
                 <in key="tf" uid="tf" />
                 <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" />
+            </service>
+
+            <service uid="reslice_frontal_mask_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
+                <in key="image" uid="frontal_mask_slice" />
+                <in key="tf" uid="mask_tf" />
+                <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" tf_alpha="true" />
+                <properties classification="${classification}" />
             </service>
 
             <service uid="frontal_slice_axis_adp" type="sight::module::viz::scene3d::adaptor::axis" auto_connect="true">
@@ -208,29 +270,31 @@
                 <scene>
                     <background topColor="#000000" bottomColor="#000000" />
 
-                    <layer id="defaultLayer" order="1">
+                    <layer id="first" order="1">
                         <adaptor uid="axial_negato_camera_adp" />
+                        <adaptor uid="axial_mask_negato_adp" />
                         <adaptor uid="axial_negato_adp" />
                     </layer>
                 </scene>
             </service>
 
-            <service uid="axial_slicer_srv" type="sight::module::filter::image::plane_slicer" auto_connect="true">
-                <in key="image" uid="input_image" />
-                <in key="axes" uid="axial_matrix" />
-                <inout key="slice" uid="axial_slice" />
-            </service>
-
             <service uid="axial_negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
                 <inout key="image" uid="axial_slice" />
                 <inout key="tf" uid="tf" />
-                <config priority="0" orientation="axial" margin="0.01" />
+                <config orientation="axial" margin="0.01" />
             </service>
 
             <service uid="axial_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
                 <in key="image" uid="axial_slice" />
                 <in key="tf" uid="tf" />
                 <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" />
+            </service>
+
+            <service uid="axial_mask_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
+                <in key="image" uid="axial_mask_slice" />
+                <in key="tf" uid="mask_tf" />
+                <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" tf_alpha="true" />
+                <properties classification="${classification}" />
             </service>
 
             <!-- ******************************* Frontal negato view ******************************* -->
@@ -242,14 +306,9 @@
                     <layer id="defaultLayer" order="1">
                         <adaptor uid="frontal_negato_camera_adp" />
                         <adaptor uid="frontal_negato_adp" />
+                        <adaptor uid="frontal_mask_negato_adp" />
                     </layer>
                 </scene>
-            </service>
-
-            <service uid="frontal_slicer_srv" type="sight::module::filter::image::plane_slicer" auto_connect="true">
-                <in key="image" uid="input_image" />
-                <in key="axes" uid="frontal_matrix" />
-                <inout key="slice" uid="frontal_slice" />
             </service>
 
             <service uid="frontal_negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
@@ -264,10 +323,22 @@
                 <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" />
             </service>
 
+            <service uid="frontal_mask_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
+                <in key="image" uid="frontal_mask_slice" />
+                <in key="tf" uid="mask_tf" />
+                <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" tf_alpha="true" />
+                <properties classification="${classification}" />
+            </service>
+
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="read_file_srv" type="sight::module::ui::io::selector">
+            <service uid="read_image_srv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="input_image" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="read_mask_srv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="input_mask" />
                 <type mode="reader" />
             </service>
 
@@ -275,7 +346,12 @@
 
             <connect>
                 <signal>open_image_act/clicked</signal>
-                <slot>read_file_srv/update</slot>
+                <slot>read_image_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>open_mask_act/clicked</signal>
+                <slot>read_mask_srv/update</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->
@@ -286,10 +362,17 @@
             <start uid="origin_axis_adp" />
             <start uid="concatenate_matrices" />
 
+            <start uid="axial_slicer_srv" />
+            <start uid="axial_mask_slicer_srv" />
+            <start uid="frontal_slicer_srv" />
+            <start uid="frontal_mask_slicer_srv" />
+
             <start uid="trackball_interactor_adp" />
             <start uid="3d_negato_adp" />
-            <start uid="2d_negato_adp_0" />
-            <start uid="2d_negato_adp_1" />
+            <start uid="reslice_axial_negato_adp" />
+            <start uid="reslice_axial_mask_negato_adp" />
+            <start uid="reslice_frontal_negato_adp" />
+            <start uid="reslice_frontal_mask_negato_adp" />
 
             <start uid="image_axis_adp" />
             <start uid="axial_slice_axis_adp" />
@@ -297,13 +380,14 @@
 
             <start uid="axial_negato_camera_adp" />
             <start uid="axial_negato_adp" />
-            <start uid="axial_slicer_srv" />
+            <start uid="axial_mask_negato_adp" />
 
             <start uid="frontal_negato_camera_adp" />
             <start uid="frontal_negato_adp" />
-            <start uid="frontal_slicer_srv" />
+            <start uid="frontal_mask_negato_adp" />
 
-            <start uid="read_file_srv" />
+            <start uid="read_image_srv" />
+            <start uid="read_mask_srv" />
 
             <update uid="concatenate_matrices" />
         </config>

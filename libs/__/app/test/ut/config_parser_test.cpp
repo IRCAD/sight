@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -165,54 +165,97 @@ void data_parser_test::test_image_parser()
 
 void data_parser_test::test_transfer_function_parser()
 {
-    service::config_t config;
+    {
+        service::config_t config;
 
-    std::stringstream config_string;
-    config_string << "<colors>"
-                     "<step color=\"#ffff00ff\" value=\"-200\" />"
-                     "<step color=\"#000000ff\" value=\"0\" />"
-                     "<step color=\"#0000ffff\" value=\"1\" />"
-                     "<step color=\"#0000ffff\" value=\"500\" />"
-                     "<step color=\"#00ff00ff\" value=\"1000\" />"
-                     "<step color=\"#ff0000ff\" value=\"1500\" />"
-                     "<step color=\"#000000ff\" value=\"5000\" />"
-                     "</colors>";
-    boost::property_tree::read_xml(config_string, config);
+        std::stringstream config_string;
+        config_string << "<colors default=\"true\" />";
+        boost::property_tree::read_xml(config_string, config);
 
-    auto parser = sight::service::add<sight::app::parser::transfer_function>("sight::app::parser::transfer_function");
-    CPPUNIT_ASSERT(parser->is_a("sight::app::parser::transfer_function"));
+        auto parser =
+            sight::service::add<sight::app::parser::transfer_function>("sight::app::parser::transfer_function");
+        CPPUNIT_ASSERT(parser->is_a("sight::app::parser::transfer_function"));
 
-    auto tf = std::make_shared<sight::data::transfer_function>();
+        auto tf = std::make_shared<sight::data::transfer_function>();
+        service::object_parser::objects_t sub_objects;
+        parser->parse(config, tf, sub_objects);
 
-    service::object_parser::objects_t sub_objects;
-    parser->parse(config, tf, sub_objects);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", 50.0, tf->level(), EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", 500.0, tf->window(), EPSILON);
 
-    const auto piece = tf->pieces().front();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(7), piece->size());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", 50.0, tf->pieces()[0]->level(), EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", 500.0, tf->pieces()[0]->window(), EPSILON);
 
-    CPPUNIT_ASSERT_EQUAL(-200., piece->min_max().first);
-    CPPUNIT_ASSERT_EQUAL(5000., piece->min_max().second);
-    CPPUNIT_ASSERT_EQUAL(5200., piece->window());
-    CPPUNIT_ASSERT_EQUAL(2400., piece->level());
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 1., 0., 1.), piece->sample_linear(-200));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), piece->sample_linear(0));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), piece->sample_linear(250));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), piece->sample_linear(500));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 1., 0., 1.), piece->sample_linear(1000));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 0., 0., 1.), piece->sample_linear(1500));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), piece->sample_linear(5000));
+        CPPUNIT_ASSERT_EQUAL(sight::data::transfer_function::DEFAULT_TF_NAME, tf->name());
+        CPPUNIT_ASSERT(sight::data::transfer_function::color_t() == tf->background_color());
 
-    CPPUNIT_ASSERT_EQUAL(-200., tf->min_max().first);
-    CPPUNIT_ASSERT_EQUAL(5000., tf->min_max().second);
-    CPPUNIT_ASSERT_EQUAL(5200., tf->window());
-    CPPUNIT_ASSERT_EQUAL(2400., tf->level());
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 1., 0., 1.), tf->sample_linear(-200));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), tf->sample_linear(0));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), tf->sample_linear(250));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), tf->sample_linear(500));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 1., 0., 1.), tf->sample_linear(1000));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 0., 0., 1.), tf->sample_linear(1500));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), tf->sample_linear(5000));
+        const auto first_piece = tf->pieces().front();
+
+        CPPUNIT_ASSERT_EQUAL(
+            sight::data::transfer_function::interpolation_mode::linear,
+            first_piece->get_interpolation_mode()
+        );
+        CPPUNIT_ASSERT_EQUAL(false, first_piece->clamped());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), first_piece->size());
+    }
+
+    {
+        service::config_t config;
+
+        std::string name = "test_tf";
+
+        std::stringstream config_string;
+        config_string
+        << "<name>" + name + "</name>"
+                             "<colors>"
+                             "<step color=\"#ffff00ff\" value=\"-200\" />"
+                             "<step color=\"#000000ff\" value=\"0\" />"
+                             "<step color=\"#0000ffff\" value=\"1\" />"
+                             "<step color=\"#0000ffff\" value=\"500\" />"
+                             "<step color=\"#00ff00ff\" value=\"1000\" />"
+                             "<step color=\"#ff0000ff\" value=\"1500\" />"
+                             "<step color=\"#000000ff\" value=\"5000\" />"
+                             "</colors>";
+        boost::property_tree::read_xml(config_string, config);
+
+        auto parser =
+            sight::service::add<sight::app::parser::transfer_function>("sight::app::parser::transfer_function");
+        CPPUNIT_ASSERT(parser->is_a("sight::app::parser::transfer_function"));
+
+        auto tf = std::make_shared<sight::data::transfer_function>();
+
+        service::object_parser::objects_t sub_objects;
+        parser->parse(config, tf, sub_objects);
+
+        CPPUNIT_ASSERT_EQUAL(tf->name(), name);
+
+        const auto piece = tf->pieces().front();
+        CPPUNIT_ASSERT_EQUAL(std::size_t(7), piece->size());
+
+        CPPUNIT_ASSERT_EQUAL(-200., piece->min_max().first);
+        CPPUNIT_ASSERT_EQUAL(5000., piece->min_max().second);
+        CPPUNIT_ASSERT_EQUAL(5200., piece->window());
+        CPPUNIT_ASSERT_EQUAL(2400., piece->level());
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 1., 0., 1.), piece->sample_linear(-200));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), piece->sample_linear(0));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), piece->sample_linear(250));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), piece->sample_linear(500));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 1., 0., 1.), piece->sample_linear(1000));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 0., 0., 1.), piece->sample_linear(1500));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), piece->sample_linear(5000));
+
+        CPPUNIT_ASSERT_EQUAL(-200., tf->min_max().first);
+        CPPUNIT_ASSERT_EQUAL(5000., tf->min_max().second);
+        CPPUNIT_ASSERT_EQUAL(5200., tf->window());
+        CPPUNIT_ASSERT_EQUAL(2400., tf->level());
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 1., 0., 1.), tf->sample_linear(-200));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), tf->sample_linear(0));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), tf->sample_linear(250));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), tf->sample_linear(500));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 1., 0., 1.), tf->sample_linear(1000));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 0., 0., 1.), tf->sample_linear(1500));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), tf->sample_linear(5000));
+    }
 }
 
 //------------------------------------------------------------------------------

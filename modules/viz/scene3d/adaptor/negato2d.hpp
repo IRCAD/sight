@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::negato2d">
         <in key="image" uid="..." />
         <in key="tf" uid="..." />
-        <config sliceIndex="axial" filtering="none" tfAlpha="true" />
+        <config sliceIndex="axial" filtering="none" tf_alpha="true" />
         <properties classification="pre" visible="true" />
    </service>
    @endcode
@@ -70,12 +70,12 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection Configuration Configuration:
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
- * - \b tfAlpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
+ * - \b tf_alpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
  * - \b border (optional, bool, default=true): displays a border around the plane.
  * - \b slicesCross (optional, bool, default=true): display the two other slices location as two lines.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the negato, as it
  *      was specified in the transform adaptor.
- * * - \b interactive (optional, bool, default=false): enables interactions on the negato.
+ * - \b interactive (optional, bool, default=false): enables interactions on the negato.
  *
  * @subsection Properties Properties:
  * - \b classification (optional, pre/post, default=pre): classification of voxels. "pre" means the filtering is applied

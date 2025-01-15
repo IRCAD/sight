@@ -70,7 +70,10 @@ plane::plane(
     m_plane_scene_node = m_parent_scene_node->createChildSceneNode(m_scene_node_name);
 
     const auto plane_material_name = core::id::join(m_slice_plane_name + "plane_material");
-    m_plane_material = std::make_unique<viz::scene3d::material::generic>(plane_material_name, _post_classification ? "Negato" : "Negato_pre");
+    m_plane_material = std::make_unique<viz::scene3d::material::generic>(
+        plane_material_name,
+        _post_classification ? "Negato" : "Negato_pre"
+    );
 
     const Ogre::ColourValue diffuse(1.F, 1.F, 1.F, m_entity_opacity);
     m_plane_material->material()->setDiffuse(diffuse);
@@ -327,7 +330,7 @@ void plane::update_position()
 void plane::set_tf_data(const viz::scene3d::transfer_function& _tf_texture)
 {
     m_plane_material->set_texture("tfTexture", _tf_texture.get());
-    m_plane_material->set_fragment_uniform("u_f3TFWindow", _tf_texture.window);
+    m_plane_material->set_fragment_uniform("u_f3TFWindow", _tf_texture.m_window);
 }
 
 //------------------------------------------------------------------------------

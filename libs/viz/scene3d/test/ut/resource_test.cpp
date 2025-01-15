@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,12 +104,29 @@ void resource_test::texture_test()
 
 void resource_test::tf_test()
 {
-    data::transfer_function::sptr tf = data::transfer_function::create_default_tf();
-    tf->set_id("default");
+    {
+        data::transfer_function::sptr tf = data::transfer_function::create_default_tf();
+        tf->set_id("default");
+
+        {
+            auto tf_instance1 = std::make_shared<sight::viz::scene3d::transfer_function>(tf);
+            tf_instance1->update();
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(tf_instance1->m_window.x), -201.0, 0.01);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(tf_instance1->m_window.y), 301.0, 0.01);
+        }
+    }
 
     {
-        auto tf_instance1 = std::make_shared<sight::viz::scene3d::transfer_function>(tf);
-        tf_instance1->update();
+        data::transfer_function::sptr tf = data::transfer_function::create_default_tf();
+        tf->set_id("default");
+        tf->set_resample_to_max_texture_size(false);
+
+        {
+            auto tf_instance1 = std::make_shared<sight::viz::scene3d::transfer_function>(tf);
+            tf_instance1->update();
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(tf_instance1->m_window.x), -200.0, 0.01);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<double>(tf_instance1->m_window.y), 300.0, 0.01);
+        }
     }
 }
 
