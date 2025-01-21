@@ -1,5 +1,6 @@
 add_subdirectory(ex_detect_cam_motion)
 add_subdirectory(ex_image_substraction)
+add_subdirectory(ex_image_reslice)
 add_subdirectory(ex_registration)
 if(SIGHT_ENABLE_REALSENSE)
     add_subdirectory(ex_rgbd_image_masking)

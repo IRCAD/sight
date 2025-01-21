@@ -2,6 +2,8 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::viz::scene3d::adaptor</type>
         <service>sight::module::viz::scene3d::adaptor::axis</service>
+        <object key="image">sight::data::image</object>
+        <object key="matrix">sight::data::matrix4</object>
         <desc>This adaptor shows a simple coordinate system.</desc>
     </extension>
 

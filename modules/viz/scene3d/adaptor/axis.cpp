@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -349,6 +349,60 @@ void axis::starting()
 
 void axis::updating()
 {
+    this->render_service()->make_current();
+
+    Ogre::SceneNode* const transform_node = this->get_transform_node();
+    if(transform_node != nullptr)
+    {
+        bool render_requested = false;
+
+        bool has_image = false;
+        data::image::origin_t position {0.0, 0.0, 0.0};
+        data::image::orientation_t orientation {
+            1.0, 0.0, 0.0,
+            0.0, 1.0, 0.0,
+            0.0, 0.0, 1.0
+        };
+
+        {
+            const auto image = m_image.lock();
+            if(image)
+            {
+                has_image   = true;
+                position    = image->origin();
+                orientation = image->orientation();
+            }
+        }
+        if(has_image)
+        {
+            // Decompose the matrix
+
+            transform_node->setOrientation(
+                Ogre::Matrix3 {
+                    static_cast<Ogre::Real>(orientation[0]),
+                    static_cast<Ogre::Real>(orientation[1]),
+                    static_cast<Ogre::Real>(orientation[2]),
+                    static_cast<Ogre::Real>(orientation[3]),
+                    static_cast<Ogre::Real>(orientation[4]),
+                    static_cast<Ogre::Real>(orientation[5]),
+                    static_cast<Ogre::Real>(orientation[6]),
+                    static_cast<Ogre::Real>(orientation[7]),
+                    static_cast<Ogre::Real>(orientation[8])
+                });
+            transform_node->setPosition(
+                Ogre::Vector3 {static_cast<Ogre::Real>(position[0]), static_cast<Ogre::Real>(position[1]),
+                               static_cast<Ogre::Real>(position[2])
+                });
+            transform_node->setScale(Ogre::Vector3 {1.0, 1.0, 1.0});
+
+            render_requested = true;
+        }
+
+        if(render_requested)
+        {
+            this->request_render();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -439,6 +493,15 @@ void axis::set_visible(bool _visible)
     }
 
     this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+service::connections_t axis::auto_connections() const
+{
+    service::connections_t connections = adaptor::auto_connections();
+    connections.push(m_image, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

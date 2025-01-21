@@ -34,6 +34,9 @@ sight-git
 # various logs
 *.log
 
+# clangd
+.cache/clangd
+
 compile_commands.json
 
 CMakeUserPresets.json

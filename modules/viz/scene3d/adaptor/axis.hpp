@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,8 @@
 #include "modules/viz/scene3d/adaptor/material.hpp"
 
 #include <core/com/slot.hpp>
+
+#include <data/image.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/text.hpp>
@@ -55,9 +57,14 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::axis">
+        <in key="image" uid="..." />
         <config transform="transformUID" length="30" label="true" name="A1" />
     </service>
    @endcode
+ *
+ * @subsection Input Input:
+ * - \b image [sight::data::image, optional]: if specified, the axis adaptor will use the origin and direction
+ * of the image.
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
@@ -83,27 +90,29 @@ public:
     axis() noexcept;
 
     /// Destroys the adaptor.
-    ~axis() noexcept override = default;
+    ~axis() noexcept final = default;
 
 protected:
 
     /// Configures the adaptor.
-    void configuring() override;
+    void configuring() final;
 
     /// Creates manual objects in the default ogre resource group.
-    void starting() override;
+    void starting() final;
 
     /// Sends a render request.
-    void updating() override;
+    void updating() final;
 
     /// Deletes ogre's resources.
-    void stopping() override;
+    void stopping() final;
 
     /**
      * @brief Sets the axis visibility.
      * @param _visible the visibility status of the axis.
      */
-    void set_visible(bool _visible) override;
+    void set_visible(bool _visible) final;
+
+    sight::service::connections_t auto_connections() const final;
 
 private:
 
@@ -165,6 +174,9 @@ private:
 
     /// Axis name, default empty.
     std::string m_axis_name;
+
+    /// Optional input image
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image", true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

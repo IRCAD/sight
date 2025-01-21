@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,33 +40,23 @@ namespace sight::module::filter::image
 /**
  * @brief Operator computing a 2D slice from a 3D image.
  *
- * @section Slots Slots
- * - \b updateSliceType(int, int) : change slice
- * - \b updateDefaultValue() : set the image minimum as the reslicer background value.
- *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="sight::module::filter::image::plane_slicer" auto_connect="true">
        <in key="image" uid="..." />
-       <in key="imageExtent" uid="..." />
        <in key="axes" uid="..." />
        <inout key="slice" uid="..." />
-       <config orientation="axial" />
    </service>
    @endcode
  *
  * @subsection Input Input
  * - \b image [sight::data::image]: image from which the slice is extracted.
- * - \b imageExtent [sight::data::image]: image used to pass the extent.
- * - \b axes [sight::data::matrix4]: Matrix containing axes defining the reslicing plane.
+ * - \b axes [sight::data::matrix4]: matrix containing axes defining the reslicing plane.
  *
  * @subsection In-Out In-Out
  * - \b slice [sight::data::image]: Extracted slice.
  *
- * @subsection Configuration Configuration
- * - \b config(mandatory) : operator configuration
- *    - \b orientation (mandatory, values=axial|sagital|frontal): image orientation, determines the slicing plane axes.
  */
 
 class plane_slicer : public service::filter
@@ -94,42 +84,23 @@ protected:
      * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
      * Connect image::BUFFER_MODIFIED_SIG to this::service::slots::UPDATE
      * Connect image::BUFFER_MODIFIED_SIG to this::UPDATE_DEFAULT_VALUE_SLOT
-     * Connect imageExtent::SLICE_INDEX_MODIFIED_SIG to this::UPDATE_SLICE_TYPE_SLOT
-     * Connect imageExtent::SLICE_TYPE_MODIFIED_SIG to this::service::slots::UPDATE
      * Connect axes::MODIFIED_SIG to this::service::slots::UPDATE
      */
     connections_t auto_connections() const override;
 
 private:
 
-    /// Set the extent based on the extentImage and orientation.
-    void set_reslicer_extent();
-
-    /// Set the plane axes using the input transform.
-    void set_reslicer_axes();
-
-    /// Modify the matrix parameter to align the plane with the current extent image slice.
-    void apply_slice_translation(vtkSmartPointer<vtkMatrix4x4> _vtk_mat) const;
-
-    /// Slot: called when the extent image orientation.
-    void updateorientation_t(int _from, int _to);
-
     /// Slot: sets the reslicer default value which is the minimum value of the input image.
     void update_default_value();
-
-    /// Slicing orientation. Determines the two axes defining the plane.
-    data::helper::medical_image::axis_t m_orientation {data::helper::medical_image::axis_t::z_axis};
 
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;
 
     static constexpr std::string_view IMAGE_IN    = "image";
-    static constexpr std::string_view EXTENT_IN   = "imageExtent";
     static constexpr std::string_view AXES_IN     = "axes";
     static constexpr std::string_view SLICE_INOUT = "slice";
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_IN};
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_extent {this, EXTENT_IN};
     sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_axes {this, AXES_IN};
     sight::data::ptr<sight::data::image, sight::data::access::inout> m_slice {this, SLICE_INOUT};
 };

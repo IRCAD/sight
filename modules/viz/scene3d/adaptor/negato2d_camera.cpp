@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -515,6 +515,12 @@ void negato2d_camera::reset_camera()
 
     // Special case, distance is equal to 0, so move camera to -1.
     cam_pos[axis] = core::is_equal(0.F, distance_pos) ? -1.F : distance_pos;
+
+    // Special case: single slice image, move the camera to -1.0
+    if(size[axis] == 1)
+    {
+        cam_pos[axis] = -1.F;
+    }
 
     cam_node->setPosition(cam_pos);
 
