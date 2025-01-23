@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
 
 #include "gz_array_reader_test.hpp"
 
+#include <core/os/temp_path.hpp>
+
 #include <data/array.hpp>
 
 #include <io/__/reader/gz_array_reader.hpp>
@@ -39,8 +41,9 @@ namespace sight::io::ut
 
 void gz_array_reader_test::basic_test()
 {
-    auto gz_array_reader           = std::make_shared<reader::gz_array_reader>();
-    std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + gz_array_reader->extension());
+    auto gz_array_reader = std::make_shared<reader::gz_array_reader>();
+    core::os::temp_dir temp_dir;
+    std::filesystem::path filepath = temp_dir / ("test" + gz_array_reader->extension());
     std::array<std::uint8_t, 16> array_in {};
     std::iota(array_in.begin(), array_in.end(), std::uint8_t(0));
     gzFile out = gzopen(filepath.string().c_str(), "wb");

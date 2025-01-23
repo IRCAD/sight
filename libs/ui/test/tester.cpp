@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,6 +22,7 @@
 
 #include "tester.hpp"
 
+#include <core/os/temp_path.hpp>
 #include <core/spy_log.hpp>
 
 #include <ui/__/preferences.hpp>
@@ -43,8 +44,10 @@ namespace sight::ui::test
 
 //------------------------------------------------------------------------------
 
-bool tester::s_already_loaded                     = false;
-std::filesystem::path tester::s_image_output_path = std::filesystem::temp_directory_path();
+bool tester::s_already_loaded = false;
+
+static core::os::temp_dir temp_dir;
+std::filesystem::path tester::s_image_output_path = temp_dir;
 
 //------------------------------------------------------------------------------
 

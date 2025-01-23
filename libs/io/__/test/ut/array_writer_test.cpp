@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,7 @@
 
 #include "array_writer_test.hpp"
 
+#include <core/os/temp_path.hpp>
 #include <core/type.hpp>
 
 #include <data/array.hpp>
@@ -39,8 +40,9 @@ namespace sight::io::ut
 
 void array_writer_test::basic_test()
 {
-    auto array_writer              = std::make_shared<writer::array_writer>();
-    std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + array_writer->extension());
+    auto array_writer = std::make_shared<writer::array_writer>();
+    core::os::temp_dir temp_dir;
+    std::filesystem::path filepath = temp_dir / ("test" + array_writer->extension());
     auto array_in                  = std::make_shared<data::array>();
     array_in->resize({16}, core::type::UINT8);
     {
