@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,6 +23,7 @@
 
 #include <ui/__/macros.hpp>
 
+#include <QApplication>
 #include <QBoxLayout>
 #include <QResizeEvent>
 #include <QWidget>
@@ -65,12 +66,161 @@ static int calculate_size(coord _configured_size, int _parent_size)
                                      : _configured_size.value;
 }
 
+/// This class makes the widget transparent for mouse events and restores visibility when destroyed
+class widget_hider
+{
+public:
+
+    explicit widget_hider(QWidget* _widget) :
+        m_was_transparent(_widget->testAttribute(Qt::WA_TransparentForMouseEvents)),
+        m_widget(_widget)
+    {
+        if(!m_was_transparent)
+        {
+            m_widget->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+        }
+    }
+
+    ~widget_hider()
+    {
+        if(!m_widget.isNull() && !m_was_transparent)
+        {
+            m_widget->setAttribute(Qt::WA_TransparentForMouseEvents, false);
+        }
+    }
+
+private:
+
+    const bool m_was_transparent;
+    const QPointer<QWidget> m_widget;
+};
+
+class event_forwarder : public QObject
+{
+public:
+
+    explicit event_forwarder(QWidget* _child) :
+        QObject(_child)
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    bool eventFilter(QObject* _target, QEvent* _event) override
+    {
+        switch(_event->type())
+        {
+            case QEvent::LayoutRequest:
+                if(auto* const widget = dynamic_cast<QWidget*>(_target); widget != nullptr)
+                {
+                    // Makes the container transparent to mouse events if there are no visible child in the layout
+                    // This is the only known way to make multi-touch events (pan, pinch) work
+                    const auto* const layout = widget->layout();
+                    const bool transparent   = layout == nullptr || layout->sizeHint().isNull();
+
+                    if(widget->testAttribute(Qt::WA_TransparentForMouseEvents) != transparent)
+                    {
+                        widget->setAttribute(Qt::WA_TransparentForMouseEvents, transparent);
+                    }
+                }
+
+                break;
+
+            case QEvent::MouseButtonPress:
+            case QEvent::MouseButtonRelease:
+            case QEvent::MouseButtonDblClick:
+            case QEvent::MouseMove:
+                if(auto* const mouse_event = dynamic_cast<QMouseEvent*>(_event); mouse_event != nullptr)
+                {
+                    if(forward_event(_target, _event, mouse_event->globalPos()))
+                    {
+                        return true;
+                    }
+                }
+
+                break;
+
+            case QEvent::Wheel:
+                if(auto* const wheel_event = dynamic_cast<QWheelEvent*>(_event); wheel_event != nullptr)
+                {
+                    if(forward_event(_target, _event, wheel_event->globalPos()))
+                    {
+                        return true;
+                    }
+                }
+
+                break;
+
+            case QEvent::HoverEnter:
+            case QEvent::HoverLeave:
+            case QEvent::HoverMove:
+                if(auto* const hover_event = dynamic_cast<QHoverEvent*>(_event); hover_event != nullptr)
+                {
+                    if(auto* const widget = dynamic_cast<QWidget*>(_target); widget != nullptr)
+                    {
+                        if(forward_event(_target, _event, widget->mapToGlobal(hover_event->pos())))
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+                break;
+
+            default:
+                break;
+        }
+
+        return QObject::eventFilter(_target, _event);
+    }
+
+private:
+
+    /// Forward the event to the sibling widget "under" the overlay (the scene)
+    static bool forward_event(QObject* _target, QEvent* _event, const QPoint& _global_pos)
+    {
+        auto* const widget = dynamic_cast<QWidget*>(_target);
+
+        if(widget == nullptr)
+        {
+            return false;
+        }
+
+        const auto* const parent = widget->parentWidget();
+
+        if(parent == nullptr)
+        {
+            return false;
+        }
+
+        // This will make the widget transparent for parent->childAt() method and will restore visibility when destroyed
+        widget_hider hider(widget);
+
+        // Find the child widget now that the widget is "transparent"
+        auto* const child = parent->childAt(parent->mapFromGlobal(_global_pos));
+
+        // If the child is the widget itself, then the event should not be forwarded to avoid infinite loop
+        if(child == nullptr || child == widget)
+        {
+            return false;
+        }
+
+        // Forward the event to the child
+        if(!qApp->sendEvent(child, _event))
+        {
+            return false;
+        }
+
+        return true;
+    }
+};
+
 /// Event filter which resizes the overlay if its parent size changed
 class overlay_resize_filter : public QObject
 {
 private:
 
-    QWidget* m_child = nullptr; // The widget to be resized
+    QPointer<QWidget> m_child {nullptr}; // The widget to be resized
     coord m_x;
     coord m_y;
     coord m_width;
@@ -98,7 +248,7 @@ public:
 
     bool eventFilter(QObject* _target, QEvent* _event) override
     {
-        if(_event->type() == QEvent::Resize)
+        if(_event->type() == QEvent::Resize && !m_child.isNull())
         {
             auto& resize_event = static_cast<QResizeEvent&>(*_event);
             if(m_width.value > 0 && m_width.relative)
@@ -111,7 +261,8 @@ public:
                 m_child->setFixedHeight(calculate_size(m_height, resize_event.size().height()));
             }
 
-            if((m_x.value <= 0 && m_x.negative) || m_x.relative || (m_y.value <= 0 && m_y.negative) || m_y.relative)
+            if((m_x.value <= 0 && m_x.negative) || m_x.relative || (m_y.value <= 0 && m_y.negative)
+               || m_y.relative)
             {
                 int x = calculate_offset(m_x, resize_event.size().width(), m_child->width());
                 int y = calculate_offset(m_y, resize_event.size().height(), m_child->height());
@@ -125,37 +276,42 @@ public:
     }
 };
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 void overlay::create_layout(ui::container::widget::sptr _parent, const std::string& _id)
 {
     m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
     SIGHT_ASSERT("dynamicCast widget to widget failed", m_parent_container);
-    const QString q_id = QString::fromStdString(_id);
-    m_parent_container->get_qt_container()->setObjectName(q_id);
+    const QString q_id       = QString::fromStdString(_id);
+    auto* const qt_container = m_parent_container->get_qt_container();
+
+    qt_container->setObjectName(q_id);
 
     auto* layout = new QBoxLayout(QBoxLayout::LeftToRight);
     m_parent_container->set_layout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    auto* viewport = new QWidget;
+    auto* const viewport = new QWidget(qt_container);
     layout->addWidget(viewport);
     auto viewport_container = ui::qt::container::widget::make();
     viewport_container->set_qt_container(viewport);
     m_sub_views.push_back(viewport_container);
-    for(std::size_t i = 1 ; i < views().size() ; i++)
+
+    const auto& views = this->views();
+
+    for(std::size_t i = 1 ; i < views.size() ; i++)
     {
-        const view& view = views()[i];
-        auto* widget     = new QWidget(m_parent_container->get_qt_container());
+        const view& view   = views[i];
+        auto* const widget = new QWidget(qt_container);
 
         if(view.width.value > 0)
         {
-            widget->setFixedWidth(calculate_size(view.width, m_parent_container->get_qt_container()->width()));
+            widget->setFixedWidth(calculate_size(view.width, qt_container->width()));
         }
 
         if(view.height.value > 0)
         {
-            widget->setFixedHeight(calculate_size(view.height, m_parent_container->get_qt_container()->height()));
+            widget->setFixedHeight(calculate_size(view.height, qt_container->height()));
         }
 
         if(view.min_width > 0)
@@ -173,14 +329,14 @@ void overlay::create_layout(ui::container::widget::sptr _parent, const std::stri
             widget->setStyleSheet("background-color: none");
         }
 
-        int x = calculate_offset(view.x, m_parent_container->get_qt_container()->width(), widget->width());
-        int y = calculate_offset(view.y, m_parent_container->get_qt_container()->height(), widget->height());
+        int x = calculate_offset(view.x, qt_container->width(), widget->width());
+        int y = calculate_offset(view.y, qt_container->height(), widget->height());
         widget->move(x, y);
         if((view.x.value <= 0 && view.x.negative) || view.x.relative
            || (view.y.value <= 0 && view.y.negative) || view.y.relative
            || (view.width.value > 0 && view.width.relative) || (view.height.value > 0 && view.height.relative))
         {
-            m_parent_container->get_qt_container()->installEventFilter(
+            qt_container->installEventFilter(
                 new overlay_resize_filter(
                     widget,
                     view.x,
@@ -190,6 +346,11 @@ void overlay::create_layout(ui::container::widget::sptr _parent, const std::stri
                 )
             );
         }
+
+        // This will allow to forward the events to the scene under the overlay to not confuse the user, since the
+        // overlay "container" is transparent
+        // Additionally, empty layout will make the widget transparent to mouse events
+        widget->installEventFilter(new event_forwarder(widget));
 
         auto widget_container = ui::qt::container::widget::make();
         widget_container->set_qt_container(widget);
