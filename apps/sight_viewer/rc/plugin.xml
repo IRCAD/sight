@@ -101,7 +101,7 @@
                     <toolbar align="left" />
                     <layout type="sight::ui::layout::overlay">
                         <view />
-                        <view x="-1" y="0" width="80" height="80" visible="false" />
+                        <view x="-1" y="0" visible="false" />
                     </layout>
                 </gui>
                 <registry>

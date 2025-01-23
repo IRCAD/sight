@@ -24,7 +24,7 @@
             <gui>
                 <layout type="sight::ui::layout::overlay">
                     <view />
-                    <view x="0" y="0" width="80" height="80" minHeight="0" minWidth="0" />
+                    <view x="0" y="0" />
                 </layout>
             </gui>
             <registry>

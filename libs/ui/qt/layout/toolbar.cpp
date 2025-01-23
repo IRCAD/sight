@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,7 @@
 #include <QActionGroup>
 #include <qboxlayout.h>
 #include <QMenu>
+#include <QTimer>
 #include <QToolBar>
 #include <QToolButton>
 
@@ -322,6 +323,9 @@ void toolbar::create_layout(ui::container::toolbar::sptr _parent, const std::str
 
     m_toggle_toolbar_visibility_action = tool_bar->toggleViewAction();
     m_toggle_toolbar_visibility_action->setVisible(false);
+
+    // Force a refresh of the toolbar size.
+    schedule_adjust_size();
 }
 
 //-----------------------------------------------------------------------------
@@ -337,10 +341,15 @@ void toolbar::destroy_layout()
 
 void toolbar::menu_item_set_visible(ui::container::menu_item::sptr _menu_item, bool _is_visible)
 {
-    ui::qt::container::menu_item::sptr menu_item_container =
-        std::dynamic_pointer_cast<ui::qt::container::menu_item>(_menu_item);
-    QAction* action = menu_item_container->get_qt_menu_item();
-    action->setVisible(_is_visible);
+    auto menu_item_container = std::dynamic_pointer_cast<ui::qt::container::menu_item>(_menu_item);
+
+    if(QAction* action = menu_item_container->get_qt_menu_item(); action->isVisible() != _is_visible)
+    {
+        action->setVisible(_is_visible);
+
+        // Visibility change may affect the toolbar size, so we need to adjust it.
+        schedule_adjust_size();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -384,6 +393,39 @@ bool toolbar::visible() const
     }
 
     return false;
+}
+
+//------------------------------------------------------------------------------
+
+void toolbar::schedule_adjust_size()
+{
+    if(!m_parent)
+    {
+        return;
+    }
+
+    const auto* const toolbar = m_parent->get_qt_tool_bar();
+
+    if(toolbar == nullptr)
+    {
+        return;
+    }
+
+    const auto* const parent_widget = toolbar->parentWidget();
+
+    if(parent_widget == nullptr)
+    {
+        return;
+    }
+
+    if(!m_timer)
+    {
+        m_timer = std::make_unique<QTimer>();
+        m_timer->setSingleShot(true);
+    }
+
+    m_timer->callOnTimeout(parent_widget, &QWidget::adjustSize);
+    m_timer->start(0);
 }
 
 } // namespace sight::ui::qt::layout

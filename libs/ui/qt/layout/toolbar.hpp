@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,6 +32,7 @@
 #include <ui/__/layout/toolbar_manager.hpp>
 
 #include <QAction>
+#include <QTimer>
 
 namespace sight::ui::qt::layout
 {
@@ -88,6 +89,18 @@ protected:
 
     // Hidden QAction which allows to change the toolbar visibility.
     QAction* m_toggle_toolbar_visibility_action {nullptr};
+
+private:
+
+    /// @brief  Schedule the toolbar size adjustment.
+    ///
+    /// This is necessary because the correct toolbar size is not immediately available after its creation.
+    /// In the case of overlay, re-layout is *not* done automatically when buttons are added or removed.
+    ///
+    /// @todo Investigate why this is mandatory.
+    void schedule_adjust_size();
+
+    std::unique_ptr<QTimer> m_timer;
 };
 
 } // namespace sight::ui::qt::layout

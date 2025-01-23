@@ -50,7 +50,7 @@
             <gui>
                 <layout type="sight::ui::layout::overlay">
                     <view />
-                    <view x="0" y="0" minWidth="200" minHeight="100" />
+                    <view x="0" y="0" />
                 </layout>
             </gui>
             <registry>
