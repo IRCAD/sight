@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/fiducials_configuration.hpp>
-#include <viz/scene3d/material_adaptor.hpp>
+#include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/text.hpp>
 #include <viz/scene3d/transformable.hpp>
 
@@ -578,11 +578,8 @@ private:
     /// Contains the root scene node.
     Ogre::SceneNode* m_transform_node {nullptr};
 
-    /// Contains the material data.
-    data::material::sptr m_material {nullptr};
-
     /// Contains the Ogre material adaptor.
-    sight::viz::scene3d::material_adaptor::sptr m_material_adaptor {nullptr};
+    sight::viz::scene3d::material::standard::uptr m_material {nullptr};
 
     /// Stores each Ogre fiducial points.
     std::set<std::shared_ptr<ogre_fiducial> > m_ogre_fiducials;
@@ -667,11 +664,7 @@ private:
     /// Auto-delete the event filter in the end
     std::unique_ptr<QObject> m_event_filter {nullptr};
 
-    static constexpr std::string_view IMAGE_SERIES_INOUT = "imageSeries";
-
-    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image_series {
-        this, IMAGE_SERIES_INOUT, false
-    };
+    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image_series {this, "imageSeries"};
 };
 
 } // namespace sight::module::viz::scene3d_qt::adaptor.

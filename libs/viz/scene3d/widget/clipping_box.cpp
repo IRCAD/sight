@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -193,7 +193,7 @@ void clipping_box::init_widgets()
     // Create widget materials
     {
         m_handle_mtl->setAmbient(0.1F, 0.1F, 0.1F);
-        m_handle_mtl->setDiffuse(1.F, 1.F, 1.F, 1.F);
+        m_handle_mtl->setDiffuse(0.8F, 0.8F, 0.8F, 1.F);
         m_handle_mtl->setSpecular(0.F, 0.F, 0.F, 1.F);
         m_handle_mtl->setShininess(1.F);
 
@@ -201,16 +201,16 @@ void clipping_box::init_widgets()
         m_handle_highlight_mtl->setAmbient(0.3F, 0.F, 0.F);
         m_handle_highlight_mtl->setDiffuse(0.5F, 0.1F, 0.1F, 1.F);
 
-        m_box_mtl->setAmbient(1.F, 1.F, 1.F);
-        m_box_mtl->setDiffuse(0.F, 0.F, 0.F, 1.F);
+        m_box_mtl->setAmbient(0.1F, 0.1F, 0.1F);
+        m_box_mtl->setDiffuse(0.8F, 0.8F, 0.8F, 1.F);
         m_box_mtl->setSpecular(0.F, 0.F, 0.F, 1.F);
 
         m_box_highlight_mtl = m_box_mtl->clone(m_id + "_FrameHighlight", true, RESOURCE_GROUP);
-        m_box_highlight_mtl->setAmbient(0.F, 1.F, 0.F);
+        m_box_highlight_mtl->setDiffuse(0.8F, 1.F, 0.8F, 1.F);
 
         m_box_face_mtl = m_box_mtl->clone(m_id + "_FaceHighlight", true, RESOURCE_GROUP);
-        m_box_face_mtl->setAmbient(1.F, 1.F, 0.F);
-        m_box_face_mtl->setDiffuse(0.F, 0.F, 0.F, 0.6F);
+        m_box_face_mtl->setAmbient(0.F, 0.F, 0.F);
+        m_box_face_mtl->setDiffuse(1.F, 1.F, 0.F, 0.6F);
         m_box_face_mtl->setSpecular(0.F, 0.F, 0.F, 0.6F);
         m_box_face_mtl->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
         m_box_face_mtl->setDepthWriteEnabled(false);

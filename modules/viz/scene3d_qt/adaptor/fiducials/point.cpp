@@ -328,32 +328,19 @@ void point::starting()
     auto* root_scene_node = get_scene_manager()->getRootSceneNode();
     m_transform_node = get_or_create_transform_node(root_scene_node);
 
-    m_material = std::make_shared<data::material>();
-    m_material->set_diffuse(std::make_shared<data::color>(1.F, 1.F, 1.F, 1.F));
-
-    // Register the material adaptor.
-    m_material_adaptor = this->register_service<sight::viz::scene3d::material_adaptor>(
-        "sight::module::viz::scene3d::adaptor::material"
-    );
-    m_material_adaptor->set_inout(m_material, sight::viz::scene3d::material_adaptor::MATERIAL_INOUT, true);
-    m_material_adaptor->configure(
-        this->get_id() + m_material_adaptor->get_id(),
-        this->get_id() + m_material_adaptor->get_id(),
-        this->render_service(),
-        m_layer_id
-    );
-    m_material_adaptor->start();
-
-    m_material_adaptor->get_material_fw()->set_has_vertex_color(true);
-    m_material_adaptor->update();
+    const auto mtl_name = gen_id("fiducial_point_material");
+    m_material = std::make_unique<sight::viz::scene3d::material::standard>(mtl_name);
+    m_material->set_layout(data::mesh::attribute::point_normals | data::mesh::attribute::point_colors);
+    const sight::viz::scene3d::layer::sptr layer = this->layer();
+    m_material->set_shading(sight::data::material::shading_t::phong, layer->num_lights(), false, false);
 
     if(m_interactive)
     {
         auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(get_sptr());
-        layer()->add_interactor(interactor, m_priority);
+        layer->add_interactor(interactor, m_priority);
     }
 
-    auto interactor     = layer()->render_service()->get_interactor_manager();
+    auto interactor     = layer->render_service()->get_interactor_manager();
     auto qt_interactor  = std::dynamic_pointer_cast<window_interactor>(interactor);
     auto* parent_widget = qt_interactor->get_qt_widget();
     m_contextual_menu = new QWidget(parent_widget);
@@ -422,22 +409,21 @@ void point::starting()
 service::connections_t point::auto_connections() const
 {
     return sight::service::connections_t {
-        {TRANSFORM_CONFIG, data::matrix4::MODIFIED_SIG, service::slots::UPDATE},
-        {IMAGE_SERIES_INOUT, data::image_series::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {m_image_series, data::image_series::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
 
-        {IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_RENAMED, private_slots::RENAME_GROUP},
-        {IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_REMOVED, private_slots::REMOVE_GROUP},
-        {IMAGE_SERIES_INOUT, data::has_fiducials::signals::GROUP_MODIFIED, private_slots::MODIFY_GROUP},
+        {m_image_series, data::has_fiducials::signals::GROUP_RENAMED, private_slots::RENAME_GROUP},
+        {m_image_series, data::has_fiducials::signals::GROUP_REMOVED, private_slots::REMOVE_GROUP},
+        {m_image_series, data::has_fiducials::signals::GROUP_MODIFIED, private_slots::MODIFY_GROUP},
 
-        {IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_ADDED, private_slots::ADD_POINT},
-        {IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_MODIFIED, private_slots::MODIFY_POINT},
-        {IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_REMOVED, private_slots::REMOVE_POINT},
-        {IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_INSERTED, private_slots::INSERT_POINT},
-        {IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_SELECTED, private_slots::SELECT_POINT},
-        {IMAGE_SERIES_INOUT, data::has_fiducials::signals::POINT_DESELECTED, private_slots::DESELECT_POINT},
+        {m_image_series, data::has_fiducials::signals::POINT_ADDED, private_slots::ADD_POINT},
+        {m_image_series, data::has_fiducials::signals::POINT_MODIFIED, private_slots::MODIFY_POINT},
+        {m_image_series, data::has_fiducials::signals::POINT_REMOVED, private_slots::REMOVE_POINT},
+        {m_image_series, data::has_fiducials::signals::POINT_INSERTED, private_slots::INSERT_POINT},
+        {m_image_series, data::has_fiducials::signals::POINT_SELECTED, private_slots::SELECT_POINT},
+        {m_image_series, data::has_fiducials::signals::POINT_DESELECTED, private_slots::DESELECT_POINT},
 
-        {IMAGE_SERIES_INOUT, data::image::SLICE_TYPE_MODIFIED_SIG, private_slots::SLICE_TYPE},
-        {IMAGE_SERIES_INOUT, data::image::SLICE_INDEX_MODIFIED_SIG, private_slots::SLICE_INDEX}
+        {m_image_series, data::image::SLICE_TYPE_MODIFIED_SIG, private_slots::SLICE_TYPE},
+        {m_image_series, data::image::SLICE_INDEX_MODIFIED_SIG, private_slots::SLICE_INDEX}
     } + adaptor::auto_connections();
 }
 
@@ -496,6 +482,7 @@ void point::stopping()
     unregister_services();
 
     m_event_filter.reset();
+    m_material.reset();
 
     adaptor::deinit();
 }
@@ -924,7 +911,7 @@ std::shared_ptr<point::ogre_fiducial> point::create_ogre_fiducial(
     {
         sight::viz::scene3d::helper::manual_object::create_cube(
             manual_object,
-            m_material_adaptor->get_material_name(),
+            m_material->name(),
             ogre_color,
             _size
         );
@@ -933,7 +920,7 @@ std::shared_ptr<point::ogre_fiducial> point::create_ogre_fiducial(
     {
         sight::viz::scene3d::helper::manual_object::create_sphere(
             manual_object,
-            m_material_adaptor->get_material_name(),
+            m_material->name(),
             ogre_color,
             _size
         );

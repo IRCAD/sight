@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -206,9 +206,9 @@ void layer::create_scene()
 
     namespace fwc = viz::scene3d::compositor;
     {
-        auto render_service = m_render_service.lock();
-        auto* root          = viz::scene3d::utils::get_ogre_root();
-        m_scene_manager = root->createSceneManager("DefaultSceneManager", render_service->get_id() + "_" + m_id);
+        auto render_srv = m_render_service.lock();
+        auto* root      = viz::scene3d::utils::get_ogre_root();
+        m_scene_manager = root->createSceneManager("DefaultSceneManager", core::id::join(render_srv->get_id(), m_id));
     }
 
     SIGHT_ASSERT("scene manager must be initialized", m_scene_manager);
@@ -338,10 +338,7 @@ void layer::create_scene()
     m_camera->addListener(m_camera_listener);
 
     // Setup transparency compositors
-    if(m_has_core_compositor)
-    {
-        this->setup_core();
-    }
+    this->setup_core();
 
     // Setup custom compositors and autostereo
     {
@@ -356,7 +353,7 @@ void layer::create_scene()
 
         if(m_stereo_mode != compositor::core::stereo_mode_t::none)
         {
-            m_autostereo_listener = new compositor::listener::auto_stereo_compositor_listener(this->num_cameras());
+            m_autostereo_listener = new compositor::manager::auto_stereo(this->num_cameras());
             Ogre::MaterialManager::getSingleton().addListener(m_autostereo_listener);
         }
 
@@ -670,57 +667,38 @@ Ogre::AxisAlignedBox layer::compute_world_bounding_box(bool _exclude_static) con
 
 compositor::transparency_technique layer::get_transparency_technique()
 {
-    if(m_core_compositor)
-    {
-        return m_core_compositor->get_transparency_technique();
-    }
-
-    return compositor::DEFAULT;
+    return m_core_compositor->get_transparency_technique();
 }
 
 //------------------------------------------------------------------------------
 
 int layer::get_transparency_depth()
 {
-    if(m_core_compositor)
-    {
-        return m_core_compositor->get_transparency_depth();
-    }
-
-    return 0;
+    return m_core_compositor->get_transparency_depth();
 }
 
 //------------------------------------------------------------------------------
 
-bool layer::set_transparency_technique(compositor::transparency_technique _technique)
+void layer::set_transparency_technique(compositor::transparency_technique _technique)
 {
-    bool success = false;
-    if(m_core_compositor)
-    {
-        // Playing with the transparency may create new compositors, thus new resources in OpenGL, thus we
-        // need to explicitly switch to our OpenGL context
-        this->render_service()->make_current();
-        success = m_core_compositor->set_transparency_technique(_technique);
-        m_core_compositor->update();
-        this->request_render();
-    }
-
-    return success;
+    m_transparency_technique = _technique;
+    // Playing with the transparency may create new compositors, thus new resources in OpenGL, thus we
+    // need to explicitly switch to our OpenGL context
+    this->render_service()->make_current();
+    m_core_compositor->set_transparency(m_transparency_technique, m_num_peels);
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
 
 void layer::set_transparency_depth(int _depth)
 {
-    if(m_core_compositor)
-    {
-        // Playing with the transparency may create new compositors, thus new resources in OpenGL, thus we
-        // need to explicitly switch to our OpenGL context
-        this->render_service()->make_current();
-        m_core_compositor->set_transparency_depth(_depth);
-        m_core_compositor->update();
-        this->request_render();
-    }
+    m_num_peels = _depth;
+    // Playing with the transparency may create new compositors, thus new resources in OpenGL, thus we
+    // need to explicitly switch to our OpenGL context
+    this->render_service()->make_current();
+    m_core_compositor->set_transparency(m_transparency_technique, m_num_peels);
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
@@ -954,11 +932,11 @@ void layer::set_stereo_mode(compositor::core::stereo_mode_t _mode)
 
     this->render_service()->make_current();
     m_core_compositor->set_stereo_mode(_mode);
-    m_core_compositor->update();
+    m_core_compositor->set_transparency(compositor::transparency_technique::DEFAULT);
 
     if(m_stereo_mode != compositor::core::stereo_mode_t::none)
     {
-        m_autostereo_listener = new compositor::listener::auto_stereo_compositor_listener(this->num_cameras());
+        m_autostereo_listener = new compositor::manager::auto_stereo(this->num_cameras());
         Ogre::MaterialManager::getSingleton().addListener(m_autostereo_listener);
     }
 
@@ -990,15 +968,13 @@ void layer::set_background_material(const std::string& _background)
 
 //-------------------------------------------------------------------------------------
 
-void layer::set_core_compositor_enabled(
-    bool _enabled,
+void layer::set_core_compositor(
     std::string _transparency_technique,
     std::string _num_peels,
     compositor::core::stereo_mode_t _stereo_mode
 )
 {
-    m_has_core_compositor = _enabled;
-    m_stereo_mode         = _stereo_mode;
+    m_stereo_mode = _stereo_mode;
     if(!_transparency_technique.empty())
     {
         if(_transparency_technique == "DepthPeeling")
@@ -1054,13 +1030,6 @@ void layer::set_viewport_config(const viewport_config_t& _vp_cfg)
 
 //-------------------------------------------------------------------------------------
 
-bool layer::is_core_compositor_enabled() const
-{
-    return m_has_core_compositor;
-}
-
-//-------------------------------------------------------------------------------------
-
 bool layer::is_compositor_chain_enabled() const
 {
     return m_has_compositor_chain;
@@ -1089,9 +1058,7 @@ void layer::setup_core()
 
     m_core_compositor = std::make_shared<viz::scene3d::compositor::core>(this->get_viewport());
     m_core_compositor->set_stereo_mode(m_stereo_mode);
-    m_core_compositor->set_transparency_technique(m_transparency_technique);
-    m_core_compositor->set_transparency_depth(m_num_peels);
-    m_core_compositor->update();
+    m_core_compositor->set_transparency(m_transparency_technique, m_num_peels);
 }
 
 //-------------------------------------------------------------------------------------

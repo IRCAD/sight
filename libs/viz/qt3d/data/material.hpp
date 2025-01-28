@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,7 +106,7 @@ public:
     SIGHT_VIZ_QT3D_API_QT Q_INVOKABLE void update_polygon_mode(int _polygon_mode);
 
     /// Updates material shading mode (ambient/flat/phong).
-    SIGHT_VIZ_QT3D_API_QT Q_INVOKABLE void update_shading_mode(int _shading_mode);
+    SIGHT_VIZ_QT3D_API_QT Q_INVOKABLE void set_shading(int _shading_mode);
 
     /// Updates material color.
     SIGHT_VIZ_QT3D_API_QT Q_INVOKABLE void update_rgba_mode(sight::data::material::sptr _sight_material);

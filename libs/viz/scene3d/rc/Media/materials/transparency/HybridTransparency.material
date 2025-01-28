@@ -60,7 +60,7 @@ material HybridTransparency/BlendFinal
             {
             }
 
-            fragment_program_ref DepthPeeling/Blend_FP
+            fragment_program_ref DepthPeeling/blend_FP
             {
             }
 

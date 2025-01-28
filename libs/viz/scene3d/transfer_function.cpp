@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2025 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ transfer_function::~transfer_function()
 
 void transfer_function::update()
 {
-    m_tf_window = viz::scene3d::detail::tf_manager::get()->load(m_resource).second;
+    window = viz::scene3d::detail::tf_manager::get()->load(m_resource).second;
 }
 
 //-----------------------------------------------------------------------------

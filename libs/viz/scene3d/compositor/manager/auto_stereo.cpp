@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "viz/scene3d/compositor/listener/auto_stereo.hpp"
+#include "viz/scene3d/compositor/manager/auto_stereo.hpp"
 
 #include "viz/scene3d/helper/camera.hpp"
 #include "viz/scene3d/helper/shading.hpp"
@@ -35,19 +35,19 @@
 #include <OGRE/OgrePass.h>
 #include <OGRE/OgreTechnique.h>
 
-namespace sight::viz::scene3d::compositor::listener
+namespace sight::viz::scene3d::compositor::manager
 {
 
 //-----------------------------------------------------------------------------
 
-auto_stereo_compositor_listener::auto_stereo_compositor_listener(std::uint8_t _viewpoint_number) :
+auto_stereo::auto_stereo(std::uint8_t _viewpoint_number) :
     m_viewpoint_number(_viewpoint_number)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-auto_stereo_compositor_listener::~auto_stereo_compositor_listener()
+auto_stereo::~auto_stereo()
 {
     auto& mtl_manager = Ogre::MaterialManager::getSingleton();
     // We need to clean the VR techniques because we want to set the correct textures
@@ -92,7 +92,7 @@ auto_stereo_compositor_listener::~auto_stereo_compositor_listener()
 
 //------------------------------------------------------------------------------
 
-Ogre::Technique* auto_stereo_compositor_listener::handleSchemeNotFound(
+Ogre::Technique* auto_stereo::handleSchemeNotFound(
     std::uint16_t /*_schemeIndex*/,
     const Ogre::String& _scheme_name,
     Ogre::Material* _original_material,
@@ -227,4 +227,4 @@ Ogre::Technique* auto_stereo_compositor_listener::handleSchemeNotFound(
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::viz::scene3d::compositor::listener
+} // namespace sight::viz::scene3d::compositor::manager

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,6 @@
 
 #include <service/op.hpp>
 
-#include <viz/scene3d/material.hpp>
-
 namespace sight::module::viz::scene3d::adaptor
 {
 
@@ -44,7 +42,7 @@ void reconstruction::configuring()
     this->set_transform_id(
         config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
     m_auto_reset_camera = config.get<bool>(CONFIG + "autoresetcamera", true);
@@ -134,7 +132,7 @@ void reconstruction::create_mesh_service()
         mesh_adaptor->set_input(mesh, "mesh", true);
 
         mesh_adaptor->configure();
-        mesh_adaptor->set_id(this->get_id() + mesh_adaptor->get_id());
+        mesh_adaptor->set_id(gen_id(mesh_adaptor->get_id()));
         mesh_adaptor->set_layer_id(m_layer_id);
         mesh_adaptor->set_render_service(this->render_service());
 

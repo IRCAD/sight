@@ -22,13 +22,11 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/adaptor/material.hpp"
-
-#include <core/com/slot.hpp>
-
+#include <data/color.hpp>
 #include <data/image.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/text.hpp>
 #include <viz/scene3d/transformable.hpp>
 
@@ -71,11 +69,13 @@ namespace sight::module::viz::scene3d::adaptor
  *      was specified in the transform adaptor.
  * - \b visible (optional, bool, default=true): the visibility of the axis.
  * - \b origin (optional, bool, default=false): the origin visibility.
- * - \b originColor (optional, hexadecimal, default=#FFFFFF): the color of the axis origin.
  * - \b length (optional, float, default=50.f): axis length in scene units.
  * - \b label (optional, bool, default=true): display axis names.
  * - \b fontSize (optional, unsigned int, default=16): label font size in points.
  * - \b name (optional, string): displayed name of the axis (default empty).
+ *
+ * @subsection Properties Properties:
+ * - \b origin_color (optional, hexadecimal, default=#FFFFFF): the color of the axis origin.
  */
 class axis final :
     public sight::viz::scene3d::adaptor,
@@ -120,10 +120,10 @@ private:
     void update_origin_color(sight::data::color::sptr _new_color);
 
     /// Contains the material data.
-    data::material::sptr m_material {nullptr};
+    sight::viz::scene3d::material::standard::uptr m_material;
 
     /// Contains the material for the origin (to change its color dynamically).
-    data::material::sptr m_origin_material {nullptr};
+    sight::viz::scene3d::material::standard::uptr m_origin_material;
 
     /// Defines the axis length in scene units.
     float m_length {50.F};
@@ -139,9 +139,6 @@ private:
 
     /// Enables the axes visibility.
     bool m_axis_visibility {true};
-
-    /// Defines the origin color.
-    std::string m_origin_color {"#FFFFFF"};
 
     /// Contains the line along the x axis.
     Ogre::ManualObject* m_x_line {nullptr};
@@ -177,6 +174,9 @@ private:
 
     /// Optional input image
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image", true};
+
+    /// Defines the origin color.
+    sight::data::property<sight::data::color> m_origin_color {this, "origin_color", {1., 1., 1., 1.}};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

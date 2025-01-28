@@ -6,13 +6,13 @@ compositor HybridTransparency
         // Color buffer - used for blending
         texture gbuffer target_width target_height PF_R8G8B8A8
         // Ping buffer
-        texture pingBuffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
+        texture ping_buffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
         // Pong buffer
-        texture pongBuffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
+        texture pong_buffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
         // Depth map
-        texture backDepth target_width target_height PF_R8G8B8A8
+        texture depth_map target_width target_height PF_R8G8B8A8
         // Fake texture for the first
-        texture peelInit target_width target_height PF_R8G8B8A8 depth_pool 0
+        texture init_buffer target_width target_height PF_R8G8B8A8 depth_pool 0
 
         // WBOIT texture
         // Occlusion computing
@@ -25,7 +25,7 @@ compositor HybridTransparency
         texture WBOIT_output target_width target_height PF_R8G8B8A8
 
         // Back depth buffer
-        target backDepth
+        target depth_map
         {
             input none
             pass clear
@@ -38,7 +38,7 @@ compositor HybridTransparency
             }
 
             shadows off
-            material_scheme HybridTransparency/backDepth
+            material_scheme HybridTransparency/depthMap
 
             pass render_scene
             {
@@ -48,7 +48,7 @@ compositor HybridTransparency
         }
 
         // Init the fake depth texture used for the first peel
-        target peelInit
+        target init_buffer
         {
             input none
             pass render_quad
@@ -60,7 +60,7 @@ compositor HybridTransparency
         /// Depth Peeling - core kernels
 
         // Init peel buffer
-        target pingBuffer
+        target ping_buffer
         {
             input none
             pass clear
@@ -68,7 +68,7 @@ compositor HybridTransparency
             }
 
             shadows off
-            material_scheme HybridTransparency/peelInit
+            material_scheme HybridTransparency/peel_init
 
             pass render_scene
             {
@@ -86,13 +86,13 @@ compositor HybridTransparency
             }
             pass render_quad
             {
-                material DepthPeeling/Blend
-                input 0 pingBuffer 0
+                material DepthPeeling/blend
+                input 0 ping_buffer 0
             }
         }
 
         // Peel 1
-        target pongBuffer
+        target pong_buffer
         {
             input none
             pass clear
@@ -100,7 +100,7 @@ compositor HybridTransparency
             }
 
             shadows off
-            material_scheme HybridTransparency/peelPong
+            material_scheme HybridTransparency/peel_pong
 
             pass render_scene
             {
@@ -114,13 +114,13 @@ compositor HybridTransparency
             input none
             pass render_quad
             {
-                material DepthPeeling/Blend
-                input 0 pongBuffer 0
+                material DepthPeeling/blend
+                input 0 pong_buffer 0
             }
         }
 
         // Peel 2
-        target pingBuffer
+        target ping_buffer
         {
             input none
             pass clear
@@ -128,7 +128,7 @@ compositor HybridTransparency
             }
 
             shadows off
-            material_scheme HybridTransparency/peelPing
+            material_scheme HybridTransparency/peel_ping
 
             pass render_scene
             {
@@ -142,8 +142,8 @@ compositor HybridTransparency
             input none
             pass render_quad
             {
-                material DepthPeeling/Blend
-                input 0 pingBuffer 0
+                material DepthPeeling/blend
+                input 0 ping_buffer 0
             }
         }
 
@@ -242,7 +242,7 @@ compositor HybridTransparency
             {
                 material HybridTransparency/Final
                 input 0 gbuffer
-                input 1 backDepth
+                input 1 depth_map
             }
 
             // Render volumes on top.

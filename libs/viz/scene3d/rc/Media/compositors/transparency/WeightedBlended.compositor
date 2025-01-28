@@ -9,7 +9,6 @@ compositor WeightedBlended
         // Transmittance computing
         texture transmittance target_width target_height PF_R8
 
-
         // Occlusion map
         target occlusion
         {

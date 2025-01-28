@@ -206,7 +206,7 @@ Detail of the ToolBar
 
             <service uid="N1PointListAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
                 <in key="pointList" uid="pointList1" />
-                <config color="#619647" radius="5.0" />
+                <config color="#619647" radius="1.0" fixedSize="true" textureName="cross.dds" />
             </service>
 
             <service uid="N1PickerAdp" type="sight::module::viz::scene3d::adaptor::picker" />

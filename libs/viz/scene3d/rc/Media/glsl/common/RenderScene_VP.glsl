@@ -1,4 +1,4 @@
-#version 410
+#version 450
 
 #ifdef GLSL_LANG_VALIDATOR
 #extension GL_GOOGLE_include_directive : enable
@@ -55,11 +55,7 @@ layout(location = 1) out vec3 v_f3Position_Ws;
 layout(location = 1) out vec3 v_f3Position_Vs;
 #   endif
 
-#   if defined(FLAT)
-layout(location = 2) flat out vec4 v_f4Color;
-#   else
 layout(location = 2) out vec4 v_f4Color;
-#   endif // FLAT
 
 #   ifdef DIFFUSE_TEX
 layout(location = 3) out vec2 v_f2TexCoord;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ public:
     SIGHT_VIZ_SCENE3D_API core(Ogre::Viewport* _viewport);
 
     /// Destructor of default compositor
-    SIGHT_VIZ_SCENE3D_API ~core();
+    SIGHT_VIZ_SCENE3D_API ~core() = default;
 
     /// Return the OIT selected
     SIGHT_VIZ_SCENE3D_API transparency_technique get_transparency_technique();
@@ -72,44 +72,20 @@ public:
     /// Return the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
     [[nodiscard]] SIGHT_VIZ_SCENE3D_API int get_transparency_depth() const;
 
-    /// Set the OIT desired
-    /// Deactivate OIT compositor
-    SIGHT_VIZ_SCENE3D_API bool set_transparency_technique(transparency_technique _technique);
-
-    /// Set the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
-    /// Deactivate OIT compositor
-    SIGHT_VIZ_SCENE3D_API void set_transparency_depth(int _depth);
-
     /// Set the stereo mode. Keep in mind that OIT techniques disable stereo for now.
     SIGHT_VIZ_SCENE3D_API void set_stereo_mode(stereo_mode_t _stereo_mode);
 
     /// Return the enabled stereo mode.
     [[nodiscard]] SIGHT_VIZ_SCENE3D_API stereo_mode_t get_stereo_mode() const;
 
-    /// Re/check OIT compositor
-    SIGHT_VIZ_SCENE3D_API void update();
+    /// Set the OIT desired and the number of peels computed by Depth Peeling or x2 Dual Depth Peeling
+    SIGHT_VIZ_SCENE3D_API void set_transparency(transparency_technique _technique, int _depth = 0);
 
 private:
 
     //virtual void notifyRenderSingleObject(Ogre::Renderable* rend, const Ogre::Pass* pass,
     //                                      const Ogre::AutoParamDataSource* source,
     //                                      const Ogre::LightList* pLightList, bool suppressRenderStateChanges);
-
-    /// Set number of ping pong peels for Depth Peeling compositor
-    SIGHT_VIZ_SCENE3D_API void set_transparency_depth_of_depth_peeling(int _depth);
-
-    /// Set number of ping pong peels for Dual Depth Peeling compositor
-    SIGHT_VIZ_SCENE3D_API void set_transparency_depth_of_dual_depth_peeling(int _depth);
-
-    /// Set number of Depth Peeling ping pong peels for Hybrid Transparency compositor
-    /// - other peels computed with Weighted Blended OIT
-    SIGHT_VIZ_SCENE3D_API void set_transparency_depth_of_hybrid_transparency(int _depth);
-
-    /// Setup Default compositor (without OIT)
-    SIGHT_VIZ_SCENE3D_API void setup_default_transparency();
-
-    /// Setup OIT current compositor
-    SIGHT_VIZ_SCENE3D_API void setup_transparency();
 
     //SIGHT_VIZ_SCENE3D_API void setupQueries();
 
@@ -122,9 +98,6 @@ private:
 
     /// OIT used - string name
     Ogre::String m_core_compositor_name;
-
-    /// OIT compositor instance used
-    Ogre::CompositorInstance* m_compositor_instance {nullptr};
 
     /// Cel shading activated
     Ogre::String m_cell_shading_name;

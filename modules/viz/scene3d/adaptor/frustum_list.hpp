@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,11 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/adaptor/frustum.hpp"
-
 #include <data/camera.hpp>
 #include <data/matrix4.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/transformable.hpp>
 
 #include <boost/circular_buffer.hpp>
@@ -142,11 +141,8 @@ private:
     /// Uses to generate unique ID for each Ogre::Camera.
     std::size_t m_current_cam_index {0};
 
-    /// Contains the Ogre material adaptor.
-    module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
-
-    /// Contains the material data.
-    data::material::sptr m_material {nullptr};
+    /// Contains the material.
+    sight::viz::scene3d::material::standard::uptr m_material;
 
     static constexpr std::string_view TRANSFORM_INPUT = "transform";
 

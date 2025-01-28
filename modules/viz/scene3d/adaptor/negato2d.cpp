@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,7 +108,7 @@ void negato2d::configuring()
     m_interactive  = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
 
     const std::string transform_id =
-        config.get<std::string>(sight::viz::scene3d::transformable::TRANSFORM_CONFIG, this->get_id() + "_transform");
+        config.get<std::string>(sight::viz::scene3d::transformable::TRANSFORM_CONFIG, gen_id("transform"));
     this->set_transform_id(transform_id);
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,54 +55,6 @@ static const std::string FLAT          = "Flat";
 static const std::string PIXELLIGHTING = "PixelLit";
 
 //-----------------------------------------------------------------------------
-
-bool shading::is_color_technique(const Ogre::Technique& _tech)
-{
-    const std::string& name = _tech.getName();
-    const std::regex regex_dual_peel_init("Dual.*/peelInit.*");
-
-    const bool peel_tech        = std::regex_match(name, PEEL_REGEX);
-    const bool weight_pass      = std::regex_match(name, WEIGHT_BLEND_REGEX);
-    const bool peel_init_pass   = std::regex_match(name, regex_dual_peel_init);
-    const bool ray_entry_points = name == "VolumeEntries_FrontFacesMin";
-
-    return name.empty() || (peel_tech && !peel_init_pass) || weight_pass || ray_entry_points;
-}
-
-//-----------------------------------------------------------------------------
-
-bool shading::is_peel_technique(const Ogre::Technique& _tech)
-{
-    const std::string& name = _tech.getName();
-    const bool peel_tech    = std::regex_match(name, PEEL_REGEX);
-
-    return peel_tech;
-}
-
-//-----------------------------------------------------------------------------
-
-bool shading::is_geometric_technique(const Ogre::Technique& _tech)
-{
-    const std::string& name = _tech.getName();
-
-    const bool peel_pass           = std::regex_match(name, PEEL_REGEX);
-    const bool weight_blend        = std::regex_match(name, WEIGHT_BLEND_REGEX);
-    const bool transmittance_blend = std::regex_match(name, TRANSMITTANCE_BLEND_REGEX);
-
-    return name.empty() || peel_pass || weight_blend || transmittance_blend;
-}
-
-//-----------------------------------------------------------------------------
-
-bool shading::is_depth_only_technique(const Ogre::Technique& _tech)
-{
-    const std::string& name = _tech.getName();
-    const bool depth        = std::regex_match(name, DEPTH_MAP_REGEX);
-
-    return depth;
-}
-
-//-----------------------------------------------------------------------------
 std::string shading::get_permutation(data::material::shading_t _mode, bool _diffuse_texture, bool _vertex_color)
 {
     std::string suffix;
@@ -137,7 +89,7 @@ std::string shading::get_permutation(data::material::shading_t _mode, bool _diff
 
 //-----------------------------------------------------------------------------
 
-std::string shading::get_r2_vb_geometry_program_name(
+std::string shading::get_r2vb_geometry_program_name(
     data::mesh::cell_type_t _primitive_type,
     bool _diffuse_texture,
     bool _vertex_color,

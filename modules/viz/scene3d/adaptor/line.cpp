@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,7 @@
 #include <service/macros.hpp>
 
 #include <viz/scene3d/helper/scene.hpp>
+#include <viz/scene3d/mesh.hpp>
 #include <viz/scene3d/ogre.hpp>
 
 #include <Ogre.h>
@@ -63,7 +64,7 @@ void line::configuring()
     this->set_transform_id(
         config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
 }
@@ -77,28 +78,14 @@ void line::starting()
 
     Ogre::SceneManager* scene_mgr = this->get_scene_manager();
 
-    m_line = scene_mgr->createManualObject(this->get_id() + "_line");
+    m_line = scene_mgr->createManualObject(gen_id("line"));
     // Set the line as dynamic, so we can update it later on, when the length changes
     m_line->setDynamic(true);
 
     // Set the material
-    m_material = std::make_shared<data::material>();
-
-    m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
-        "sight::module::viz::scene3d::adaptor::material"
-    );
-    m_material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
-    m_material_adaptor->configure(
-        this->get_id() + m_material_adaptor->get_id(),
-        this->get_id() + m_material_adaptor->get_id(),
-        this->render_service(),
-        m_layer_id,
-        "ambient"
-    );
-    m_material_adaptor->start();
-
-    m_material_adaptor->get_material_fw()->set_has_vertex_color(true);
-    m_material_adaptor->update();
+    m_material = std::make_unique<sight::viz::scene3d::material::standard>(gen_id("material"));
+    m_material->set_layout(sight::data::mesh::attribute::point_colors);
+    m_material->set_shading(sight::data::material::shading_t::ambient, this->layer()->num_lights());
 
     // Draw the line
     this->draw_line(false);
@@ -140,8 +127,8 @@ void line::updating()
 void line::stopping()
 {
     this->render_service()->make_current();
-    this->unregister_services();
-    m_material = nullptr;
+
+    m_material.reset();
     if(m_line != nullptr)
     {
         m_line->detachFromParent();
@@ -171,7 +158,7 @@ void line::draw_line(bool _existing_line)
     if(!_existing_line)
     {
         m_line->begin(
-            m_material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::RenderOperation::OT_LINE_LIST,
             sight::viz::scene3d::RESOURCE_GROUP
         );

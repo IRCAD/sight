@@ -2,7 +2,7 @@
 
 //---------------------------------------------------------------------------
 
-fragment_program CelShadingDepthPeeling/Blend_FP glsl
+fragment_program CelShadingDepthPeeling/blend_FP glsl
 {
         source CelShadingDepthPeelingBlend_FP.glsl
         default_params
@@ -18,7 +18,7 @@ fragment_program CelShadingDepthPeeling/Blend_FP glsl
 
 //---------------------------------------------------------------------------
 
-material CelShadingDepthPeeling/Blend
+material CelShadingDepthPeeling/blend
 {
     technique
     {
@@ -35,7 +35,7 @@ material CelShadingDepthPeeling/Blend
             {
             }
 
-            fragment_program_ref CelShadingDepthPeeling/Blend_FP
+            fragment_program_ref CelShadingDepthPeeling/blend_FP
             {
             }
 

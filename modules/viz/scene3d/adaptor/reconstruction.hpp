@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,7 @@
 #include <data/reconstruction.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/transformable.hpp>
 
 namespace sight::data
@@ -143,7 +144,7 @@ private:
     bool m_auto_reset_camera {true};
 
     /// Defines the material name.
-    std::string m_material_template_name {sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME};
+    std::string m_material_template_name {sight::viz::scene3d::material::standard::TEMPLATE};
 
     /// Defines if the mesh changes dynamically.
     bool m_is_dynamic {false};

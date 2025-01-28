@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,6 @@
 #include "modules/viz/scene3d/adaptor/frustum_list.hpp"
 
 #include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
@@ -56,7 +54,7 @@ void frustum_list::configuring()
     this->set_transform_id(
         config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            this->gen_id("transform")
         )
     );
 
@@ -80,22 +78,11 @@ void frustum_list::starting()
     m_frustum_list.set_capacity(m_capacity);
 
     // Create material
-    m_material = std::make_shared<data::material>();
-    m_material->diffuse()->from_string(m_color);
+    m_material = std::make_unique<sight::viz::scene3d::material::standard>(gen_id("material"));
+    m_material->set_shading(sight::data::material::shading_t::ambient, this->layer()->num_lights());
 
-    m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
-        "sight::module::viz::scene3d::adaptor::material"
-    );
-    m_material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
-    m_material_adaptor->configure(
-        this->get_id() + "_" + m_material_adaptor->get_id(),
-        this->get_id() + "_" + m_material_adaptor->get_id(),
-        this->render_service(),
-        m_layer_id,
-        "ambient"
-    );
-    m_material_adaptor->start();
-    m_material_adaptor->update();
+    sight::data::color color(m_color);
+    m_material->material()->setDiffuse(Ogre::ColourValue(color[0], color[1], color[2], color[3]));
 }
 
 //-----------------------------------------------------------------------------
@@ -120,11 +107,9 @@ void frustum_list::updating()
 
 void frustum_list::stopping()
 {
-    this->unregister_services();
     this->clear();
-    m_material_adaptor.reset();
-    m_material_adaptor = nullptr;
-    m_material         = nullptr;
+
+    m_material.reset();
 
     adaptor::deinit();
 }
@@ -144,17 +129,12 @@ void frustum_list::set_visible(bool _visible)
 void frustum_list::add_frustum()
 {
     //Get camera parameters
-    const auto camera_data    = m_camera.lock();
-    Ogre::Camera* ogre_camera =
-        this->get_scene_manager()->createCamera(
-            Ogre::String(
-                this->get_id() + "_camera" + std::to_string(
-                    m_current_cam_index
-                )
-            )
-        );
+    auto* scene_manager          = this->get_scene_manager();
+    const auto camera_data       = m_camera.lock();
+    const auto current_index_str = std::to_string(m_current_cam_index);
+    Ogre::Camera* ogre_camera    = scene_manager->createCamera(gen_id("camera" + current_index_str));
 
-    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    Ogre::SceneNode* root_scene_node = scene_manager->getRootSceneNode();
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
     trans_node->attachObject(ogre_camera);
 
@@ -184,21 +164,13 @@ void frustum_list::add_frustum()
             auto f = m_frustum_list.back();
 
             f.first->detachFromParent();
-            this->get_scene_manager()->destroyManualObject(f.first);
+            scene_manager->destroyManualObject(f.first);
         }
 
-        auto* const frustum = this->get_scene_manager()->createManualObject(
-            this->get_id() + "_frustum" + std::to_string(
-                m_current_cam_index
-            )
-        );
-        auto* const frustum_node = root_scene_node->createChildSceneNode("Node_" + std::to_string(m_current_cam_index));
+        auto* const frustum      = scene_manager->createManualObject(gen_id("frustum" + current_index_str));
+        auto* const frustum_node = root_scene_node->createChildSceneNode("Node_" + current_index_str);
 
-        sight::viz::scene3d::helper::manual_object::create_frustum(
-            frustum,
-            m_material_adaptor->get_material_name(),
-            *ogre_camera
-        );
+        sight::viz::scene3d::helper::manual_object::create_frustum(frustum, m_material->name(), *ogre_camera);
 
         this->set_transfrom_to_node(frustum_node);
         frustum_node->attachObject(frustum);

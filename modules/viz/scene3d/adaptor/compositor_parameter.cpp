@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #include "modules/viz/scene3d/adaptor/compositor_parameter.hpp"
-
-#include "modules/viz/scene3d/adaptor/material.hpp"
 
 #include <core/com/slots.hxx>
 

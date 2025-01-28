@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -199,31 +199,18 @@ void shape_extruder::starting()
     // Create entities.
     Ogre::SceneManager* const scene_mng = this->get_scene_manager();
 
-    m_lasso_node = scene_mng->getRootSceneNode()->createChildSceneNode(this->get_id() + "_lassoNode");
+    m_lasso_node = scene_mng->getRootSceneNode()->createChildSceneNode(gen_id("lassoNode"));
 
-    m_lasso           = scene_mng->createManualObject(this->get_id() + "_lasso");
-    m_last_lasso_line = scene_mng->createManualObject(this->get_id() + "_lastLassoLine");
+    m_lasso           = scene_mng->createManualObject(gen_id("lasso"));
+    m_last_lasso_line = scene_mng->createManualObject(gen_id("lastLassoLine"));
 
     m_lasso_node->attachObject(m_lasso);
     m_lasso_node->attachObject(m_last_lasso_line);
 
     // Create the material.
-    m_material = std::make_shared<data::material>();
-
-    m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
-        "sight::module::viz::scene3d::adaptor::material"
-    );
-    m_material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
-    m_material_adaptor->configure(
-        this->get_id() + m_material_adaptor->get_id(),
-        this->get_id() + m_material_adaptor->get_id(),
-        this->render_service(),
-        m_layer_id,
-        "ambient"
-    );
-    m_material_adaptor->start();
-    m_material_adaptor->get_material_fw()->set_has_vertex_color(true);
-    m_material_adaptor->update();
+    m_material = std::make_unique<sight::viz::scene3d::material::standard>(gen_id("material"));
+    m_material->set_layout(sight::data::mesh::attribute::point_colors);
+    m_material->set_shading(sight::data::material::shading_t::ambient, this->layer()->num_lights());
 }
 
 //-----------------------------------------------------------------------------
@@ -239,7 +226,6 @@ void shape_extruder::stopping()
     this->render_service()->make_current();
 
     // Destroy the material.
-    this->unregister_services();
     m_material.reset();
 
     // Destroy entities.
@@ -499,7 +485,7 @@ void shape_extruder::modify_lasso(action _action, int _x, int _y)
         SIGHT_ASSERT("Lasso positions must have at east one point", !m_lasso_tool_positions.empty());
 
         m_last_lasso_line->begin(
-            m_material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::RenderOperation::OT_LINE_STRIP,
             sight::viz::scene3d::RESOURCE_GROUP
         );
@@ -679,7 +665,7 @@ void shape_extruder::draw_lasso()
 
     // Draw the lasso line.
     m_lasso->begin(
-        m_material_adaptor->get_material_name(),
+        m_material->name(),
         Ogre::RenderOperation::OT_LINE_STRIP,
         sight::viz::scene3d::RESOURCE_GROUP
     );
@@ -700,7 +686,7 @@ void shape_extruder::draw_lasso()
     {
         // Begin a new section.
         m_lasso->begin(
-            m_material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::RenderOperation::OT_TRIANGLE_LIST,
             sight::viz::scene3d::RESOURCE_GROUP
         );

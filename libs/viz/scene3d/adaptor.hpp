@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,6 +67,12 @@ class SIGHT_VIZ_SCENE3D_CLASS_API adaptor :
 friend class render;
 
 public:
+
+    /// Helper function to generate unique identifiers for children objects
+    std::string gen_id(const std::string_view& _name) const
+    {
+        return sight::core::id::join(this->get_id(), _name);
+    }
 
     /// Configuration helper string that stores "config.<xmlattr>."
     SIGHT_VIZ_SCENE3D_API static const std::string CONFIG;

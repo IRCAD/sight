@@ -116,7 +116,7 @@ void negato3d::configuring()
     m_border       = config.get<bool>(s_BORDER_CONFIG, m_border);
 
     const std::string transform_id =
-        config.get<std::string>(sight::viz::scene3d::transformable::TRANSFORM_CONFIG, this->get_id() + "_transform");
+        config.get<std::string>(sight::viz::scene3d::transformable::TRANSFORM_CONFIG, gen_id("transform"));
     this->set_transform_id(transform_id);
 }
 

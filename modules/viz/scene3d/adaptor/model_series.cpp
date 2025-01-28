@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ void model_series::configuring()
     this->set_transform_id(
         config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
 

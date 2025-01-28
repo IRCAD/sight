@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
- * Copyright (C) 2017-2021 IHU Strasbourg
+ * Copyright (C) 2021-2025 IRCAD France
+ * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -26,37 +26,33 @@
 
 #include <OgreMaterialManager.h>
 
-namespace sight::viz::scene3d::compositor::listener
+namespace sight::viz::scene3d::compositor::manager
 {
 
 //-----------------------------------------------------------------------------
 
-class auto_stereo_compositor_listener : public Ogre::MaterialManager::Listener
+/**
+ * @brief Listener used in mixed surface/volume rendering.
+ * Creates volume entry point computation techniques for meshes.
+ */
+class SIGHT_VIZ_SCENE3D_CLASS_API ray_exit_depth final : public Ogre::MaterialManager::Listener
 {
 public:
 
-    /// Constructor, needs to know how many views are needed.
-    auto_stereo_compositor_listener(std::uint8_t _viewpoint_number);
+    /// Constructor.
+    SIGHT_VIZ_SCENE3D_API ray_exit_depth() = default;
 
-    /// Destructor, destroys created techniques.
-    ~auto_stereo_compositor_listener() override;
+    /// Destructor.
+    SIGHT_VIZ_SCENE3D_API ~ray_exit_depth() final = default;
 
-    /// Callback called each time a scheme is not found
-    Ogre::Technique* handleSchemeNotFound(
+    /// Called when an entry point scheme isn't found, creates the missing technique.
+    SIGHT_VIZ_SCENE3D_API Ogre::Technique* handleSchemeNotFound(
         std::uint16_t _scheme_index,
         const Ogre::String& _scheme_name,
         Ogre::Material* _original_material,
         std::uint16_t _lod_index,
         const Ogre::Renderable* _renderable
-    ) override;
-
-private:
-
-    /// list of techniques to be removed from the material when destroying the listener
-    std::vector<std::pair<Ogre::Technique*, std::string> > m_created_techniques;
-
-    /// Number of viewpoints used for stereo rendering.
-    const std::uint8_t m_viewpoint_number;
+    ) final;
 };
 
-} // namespace sight::viz::scene3d::compositor::listener
+} // namespace sight::viz::scene3d::compositor::manager

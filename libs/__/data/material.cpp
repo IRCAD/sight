@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,10 +40,7 @@ const core::com::signals::key_t material::REMOVED_TEXTURE_SIG = "removedTexture"
 
 //------------------------------------------------------------------------------
 
-material::material() :
-
-    m_ambient(std::make_shared<color>(0.8F, 0.8F, 0.8F, 1.F)),
-    m_diffuse(std::make_shared<color>())
+material::material()
 {
     new_signal<added_texture_signal_t>(ADDED_TEXTURE_SIG);
     new_signal<removed_texture_signal_t>(REMOVED_TEXTURE_SIG);

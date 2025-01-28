@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -356,7 +356,7 @@ void render::configure_layer(const config_t& _cfg)
     ogre_layer->set_id(id);
     ogre_layer->set_order(layer_order);
     ogre_layer->set_worker(this->worker());
-    ogre_layer->set_core_compositor_enabled(true, transparency_technique, num_peels, layer_stereo_mode);
+    ogre_layer->set_core_compositor(transparency_technique, num_peels, layer_stereo_mode);
     ogre_layer->set_compositor_chain_enabled(compositors);
     ogre_layer->set_viewport_config(viewport_config);
 

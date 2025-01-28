@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #include "viz/scene3d/vr/ray_tracing_volume_renderer.hpp"
 
 #include "viz/scene3d/compositor/core.hpp"
-#include "viz/scene3d/compositor/listener/ray_exit_depth.hpp"
+#include "viz/scene3d/compositor/manager/ray_exit_depth.hpp"
 #include "viz/scene3d/helper/camera.hpp"
 #include "viz/scene3d/helper/image.hpp"
 #include "viz/scene3d/helper/shading.hpp"
@@ -165,7 +165,7 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
 {
     //Listeners
     {
-        auto* exit_depth_listener = new compositor::listener::ray_exit_depth_listener();
+        auto* exit_depth_listener = new compositor::manager::ray_exit_depth();
         Ogre::MaterialManager::getSingleton().addListener(exit_depth_listener);
     }
 

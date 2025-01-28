@@ -213,7 +213,8 @@
         </service>
 
         <service uid="calibrationAxisAdp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config length="20" transform="calibrationAxisTrf" label="false" origin="true" originColor="#0000FF" />
+            <config length="20" transform="calibrationAxisTrf" label="false" origin="true" />
+            <properties origin_color="#0000FF" />
         </service>
 
         <service uid="toolCalibrationAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
@@ -222,15 +223,18 @@
         </service>
 
         <service uid="systemCenterAxisAdp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config length="20" transform="id" label="false" origin="true" originColor="#FFFFFF" />
+            <config length="20" transform="id" label="false" origin="true" />
+            <properties origin_color="#FFFFFF" />
         </service>
 
         <service uid="toolAxisAdp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config length="20" transform="toolCalibrationTrf" label="false" origin="true" originColor="#FF0000" />
+            <config length="20" transform="toolCalibrationTrf" label="false" origin="true" />
+            <properties origin_color="#FF0000" />
         </service>
 
         <service uid="trackerAxis0Adp" type="sight::module::viz::scene3d::adaptor::axis">
-            <config length="20" transform="trackerMatrix0Trf" label="false" origin="true" originColor="#00FF00" />
+            <config length="20" transform="trackerMatrix0Trf" label="false" origin="true" />
+            <properties origin_color="#00FF00" />
         </service>
 
         <service uid="pointlistAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">

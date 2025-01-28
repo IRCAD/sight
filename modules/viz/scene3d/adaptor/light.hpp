@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,8 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/adaptor/transform.hpp"
-
-#include <core/com/slot.hpp>
-#include <core/com/slots.hpp>
-
-#include <data/material.hpp>
-
 #include <viz/scene3d/light_adaptor.hpp>
+#include <viz/scene3d/material/standard.hpp>
 
 #include <OGRE/OgreMovableObject.h>
 
@@ -231,7 +225,7 @@ private:
     bool m_visual_feedback {false};
 
     /// Contains the material used for the feedback visualization.
-    data::material::sptr m_material {nullptr};
+    sight::viz::scene3d::material::standard::uptr m_material;
 
     /// Contains the sphere at the light position.
     Ogre::ManualObject* m_light_position {nullptr};

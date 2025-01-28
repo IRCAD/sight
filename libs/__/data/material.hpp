@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,9 +23,7 @@
 #pragma once
 
 #include "data/color.hpp"
-#include "data/factory/new.hpp"
 #include "data/image.hpp"
-#include "data/object.hpp"
 
 namespace sight::data
 {
@@ -39,6 +37,12 @@ class SIGHT_DATA_CLASS_API material final : public object
 public:
 
     SIGHT_DECLARE_CLASS(material, object);
+
+    struct defaults
+    {
+        static inline const sight::data::color AMBIENT = {0.8F, 0.8F, 0.8F, 1.0F};
+        static inline const sight::data::color DIFFUSE = {1.0F, 1.0F, 1.0F, 1.0F};
+    };
 
     /**
      * @brief Constructor
@@ -223,10 +227,10 @@ protected:
     options_t m_options_mode {standard};
 
     /// Ambient color
-    color::sptr m_ambient;
+    color::sptr m_ambient {std::make_shared<data::color>(defaults::AMBIENT)};
 
     /// Diffuse color
-    color::sptr m_diffuse;
+    color::sptr m_diffuse {std::make_shared<data::color>(defaults::DIFFUSE)};
 
     /// Diffuse texture
     image::sptr m_diffuse_texture;

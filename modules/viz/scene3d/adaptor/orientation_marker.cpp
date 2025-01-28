@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <data/matrix4.hpp>
 
 #include <viz/scene3d/layer.hpp>
-#include <viz/scene3d/material.hpp>
+#include <viz/scene3d/ogre.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -60,21 +60,14 @@ void orientation_marker::starting()
     this->render_service()->make_current();
 
     Ogre::SceneNode* const root_scene_node = this->get_scene_manager()->getRootSceneNode();
-    m_scene_node = root_scene_node->createChildSceneNode(this->get_id() + "_mainNode");
+    m_scene_node = root_scene_node->createChildSceneNode(gen_id("mainNode"));
 
     Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
 
     // Set the material
-    m_material = std::make_unique<sight::viz::scene3d::material>(
-        this->get_id() + "_patient_mesh_material",
-        sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    );
-    m_material->update_shading_mode(
-        data::material::shading_t::phong,
-        this->layer()->num_lights(),
-        false,
-        false
-    );
+    const auto mtl_name = gen_id("material");
+    m_material = std::make_unique<sight::viz::scene3d::material::standard>(mtl_name);
+    m_material->set_shading(data::material::shading_t::phong, this->layer()->num_lights());
 
     // Loads and attaches the marker
     m_patient_entity = scene_mgr->createEntity(m_patient_mesh_rc);

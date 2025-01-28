@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,11 +43,14 @@
 #include <OgreTextureManager.h>
 
 #include <cmath>
+#include <ranges>
 
 namespace sight::viz::scene3d
 {
 
 const unsigned int mesh::MAX_TEXTURE_SIZE;
+
+using attribute = data::mesh::attribute;
 
 //-----------------------------------------------------------------------------
 
@@ -201,9 +204,9 @@ void mesh::set_visible(bool _visible)
         m_r2vb_entity->setVisible(_visible);
     }
 
-    for(auto& it : m_r2vb_object)
+    for(auto& val : m_r2vb_object | std::views::values)
     {
-        it.second->setVisible(_visible);
+        val->setVisible(_visible);
     }
 }
 
@@ -215,11 +218,11 @@ void mesh::update_mesh(const data::mesh::csptr& _mesh, bool _points_only)
 
     /// The values in this table refer to vertices in the above table
     const std::size_t num_vertices = _mesh->num_points();
-    SIGHT_DEBUG("Vertices #" << num_vertices);
+    SIGHT_DEBUG("Vertices count: " << num_vertices);
 
     // Check if the mesh has normals - we assume we should have as many normals as points
     // If this is not the case, normals will be ignored or regenerated if needed and if the number of vertices changed
-    m_has_normal = _mesh->has<data::mesh::attribute::point_normals>();
+    m_layout = m_layout | (_mesh->attributes() & attribute::point_normals);
 
     //------------------------------------------
     // Create vertex arrays
@@ -238,7 +241,7 @@ void mesh::update_mesh(const data::mesh::csptr& _mesh, bool _points_only)
         prev_num_vertices = bind.getBuffer(m_binding[position_normal])->getNumVertices();
     }
 
-    if(!m_has_normal && !_points_only)
+    if(!data::mesh::has<attribute::point_normals>(m_layout) && !_points_only)
     {
         // Verify if mesh contains Tetra, Edge or Point
         // If not, generate normals
@@ -253,7 +256,7 @@ void mesh::update_mesh(const data::mesh::csptr& _mesh, bool _points_only)
             // /!\ DEPRECATED /!\: normals shouldn't be computed by an adaptor.
             // We need to remove the const of the _mesh to compute normals.
             geometry::data::mesh::generate_point_normals(std::const_pointer_cast<data::mesh>(_mesh));
-            m_has_normal = true;
+            m_layout = m_layout | attribute::point_normals;
         }
     }
 
@@ -284,7 +287,7 @@ void mesh::update_mesh(const data::mesh::csptr& _mesh, bool _points_only)
         decl_main->addElement(m_binding[position_normal], offset, Ogre::VET_FLOAT3, Ogre::VES_POSITION);
         offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
 
-        if(m_has_normal)
+        if(data::mesh::has<attribute::point_normals>(m_layout))
         {
             decl_main->addElement(m_binding[position_normal], offset, Ogre::VET_FLOAT3, Ogre::VES_NORMAL);
             offset += Ogre::VertexElement::getTypeSize(Ogre::VET_FLOAT3);
@@ -308,7 +311,7 @@ void mesh::update_mesh(const data::mesh::csptr& _mesh, bool _points_only)
     // 1 - Create a submesh for the primitive type
     const bool indices32_bits      = num_vertices >= (1 << 16);
     const bool indices_prev32_bits = prev_num_vertices >= (1 << 16);
-    const bool has_primitive_color = _mesh->has<data::mesh::attribute::cell_colors>();
+    const bool has_primitive_color = _mesh->has<attribute::cell_colors>();
     {
         FW_PROFILE_AVG("REALLOC INDEX", 5);
 
@@ -316,7 +319,7 @@ void mesh::update_mesh(const data::mesh::csptr& _mesh, bool _points_only)
         const data::mesh::cell_type_t prev_cell_type = m_cell_type;
 
         const bool destroy_mesh = _mesh->num_cells() == 0 || prev_cell_type != cell_type
-                                  || m_has_primitive_color != has_primitive_color;
+                                  || data::mesh::has<attribute::cell_colors>(m_layout) != has_primitive_color;
 
         // Destroy the submesh if it has been created before - a submesh with 0 index would be invalid
         if(destroy_mesh && (m_sub_mesh != nullptr))
@@ -449,8 +452,7 @@ void mesh::update_mesh(const data::point_list::csptr& _point_list)
     std::size_t ui_num_vertices = points.size();
     SIGHT_DEBUG("Vertices #" << ui_num_vertices);
 
-    // Check if mesh attributes
-    m_has_normal = false;
+    m_layout = m_layout & ~attribute::point_normals;
 
     //------------------------------------------
     // Create vertex arrays
@@ -518,7 +520,7 @@ void mesh::update_mesh(const data::point_list::csptr& _point_list)
 
 //------------------------------------------------------------------------------
 
-std::pair<bool, std::vector<r2vb_renderable*> > mesh::update_r2_vb(
+std::pair<bool, std::vector<r2vb_renderable*> > mesh::update_r2vb(
     const data::mesh::csptr& _mesh,
     Ogre::SceneManager& _scene_mgr,
     const std::string& _material_name
@@ -534,7 +536,7 @@ std::pair<bool, std::vector<r2vb_renderable*> > mesh::update_r2_vb(
     std::vector<r2vb_renderable*> r2vb_renderables;
     bool add = true;
 
-    const bool has_primitive_color = _mesh->has<data::mesh::attribute::cell_colors>();
+    const bool has_primitive_color = _mesh->has<attribute::cell_colors>();
     const bool b_quad              = m_cell_type == data::mesh::cell_type_t::quad;
     const bool b_tetra             = m_cell_type == data::mesh::cell_type_t::tetra;
     if(b_quad || b_tetra || has_primitive_color)
@@ -582,8 +584,8 @@ std::pair<bool, std::vector<r2vb_renderable*> > mesh::update_r2_vb(
 
             m_r2vb_object[cell_type]->set_output_settings(
                 static_cast<unsigned int>(sub_mesh->indexData->indexCount),
-                m_has_primitive_color || m_has_vertex_color,
-                m_has_uv
+                data::mesh::has<attribute::cell_colors>(m_layout) || data::mesh::has<attribute::point_colors>(m_layout),
+                data::mesh::has<attribute::point_tex_coords>(m_layout)
             );
 
             r2vb_renderables.push_back(m_r2vb_object[cell_type]);
@@ -594,9 +596,9 @@ std::pair<bool, std::vector<r2vb_renderable*> > mesh::update_r2_vb(
     else
     {
         // Clear if necessary
-        for(auto r2vb_object : m_r2vb_object)
+        for(auto* val : m_r2vb_object | std::views::values)
         {
-            r2vb_renderables.push_back(r2vb_object.second);
+            r2vb_renderables.push_back(val);
         }
 
         m_r2vb_object.clear();
@@ -630,7 +632,7 @@ void mesh::update_vertices(const data::mesh::csptr& _mesh)
     const auto dump_lock = _mesh->dump_lock();
 
     std::size_t ui_stride_float = 3;
-    if(m_has_normal)
+    if(data::mesh::has<attribute::point_normals>(m_layout))
     {
         ui_stride_float += 3;
     }
@@ -675,7 +677,7 @@ void mesh::update_vertices(const data::mesh::csptr& _mesh)
 
         normal_t* __restrict p_normal = nullptr;
 
-        if(m_has_normal)
+        if(data::mesh::has<attribute::point_normals>(m_layout))
         {
             p_normal = static_cast<normal_t*>(p_vertex) + 3;
 
@@ -856,8 +858,8 @@ void mesh::update_colors(const data::mesh::csptr& _mesh)
     Ogre::VertexBufferBinding* bind = m_ogre_mesh->sharedVertexData->vertexBufferBinding;
     SIGHT_ASSERT("Invalid vertex buffer binding", bind);
 
-    const bool has_vertex_color    = _mesh->has<data::mesh::attribute::point_colors>();
-    const bool has_primitive_color = _mesh->has<data::mesh::attribute::cell_colors>();
+    const bool has_vertex_color    = _mesh->has<attribute::point_colors>();
+    const bool has_primitive_color = _mesh->has<attribute::cell_colors>();
 
     // 1 - Initialization
     if(has_vertex_color)
@@ -969,10 +971,10 @@ void mesh::update_colors(const data::mesh::csptr& _mesh)
         pixel_buffer->unlock();
     }
 
-    if(has_vertex_color != m_has_vertex_color || has_primitive_color != m_has_primitive_color)
+    if(has_vertex_color != data::mesh::has<attribute::point_colors>(m_layout) || has_primitive_color != data::mesh::has<attribute::cell_colors>(m_layout))
     {
-        m_has_vertex_color    = has_vertex_color;
-        m_has_primitive_color = has_primitive_color;
+        m_layout = m_layout | (_mesh->attributes() & attribute::point_colors);
+        m_layout = m_layout | (_mesh->attributes() & attribute::cell_colors);
     }
 
     /// Notify mesh object that it has been modified
@@ -983,10 +985,10 @@ void mesh::update_colors(const data::mesh::csptr& _mesh)
 
 void mesh::update_tex_coords(const data::mesh::csptr& _mesh)
 {
-    m_has_uv = _mesh->has<data::mesh::attribute::point_tex_coords>();
+    m_layout = m_layout | (_mesh->attributes() & attribute::point_tex_coords);
 
     // . UV Buffer - By now, we just use one UV coordinates set for each mesh
-    if(m_has_uv)
+    if(data::mesh::has<attribute::point_tex_coords>(m_layout))
     {
         bind_layer(_mesh, texcoord, Ogre::VES_TEXTURE_COORDINATES, Ogre::VET_FLOAT2);
 
@@ -1022,7 +1024,7 @@ void mesh::clear_mesh(Ogre::SceneManager& _scene_mgr)
     {
         const data::mesh::cell_type_t cell_type = m_cell_type;
         const std::string name                  = std::to_string(static_cast<int>(cell_type));
-        if((cell_type == data::mesh::cell_type_t::triangle && m_has_primitive_color)
+        if((cell_type == data::mesh::cell_type_t::triangle && data::mesh::has<attribute::cell_colors>(m_layout))
            || (cell_type == data::mesh::cell_type_t::tetra || cell_type == data::mesh::cell_type_t::quad))
         {
             m_r2vb_mesh->destroySubMesh(name);
@@ -1051,35 +1053,10 @@ void mesh::clear_mesh(Ogre::SceneManager& _scene_mgr)
 
 //------------------------------------------------------------------------------
 
-void mesh::update_material(material* _material, bool _is_r2_vb) const
-{
-    auto bbox = m_ogre_mesh->getBounds();
-    _material->set_mesh_size(bbox.getSize().length());
-
-    _material->set_has_mesh_normal(m_has_normal);
-    _material->set_has_uv(m_has_uv);
-
-    // The r2vb pipeline outputs per-vertex color if we have per-primitive color
-    // Thus for the rendering pipeline it is only viewed as per-vertex color
-    if(_is_r2_vb)
-    {
-        _material->set_has_vertex_color(m_has_vertex_color);
-        _material->set_has_primitive_color(m_has_primitive_color, m_per_primitive_color_texture_name);
-    }
-    else
-    {
-        _material->set_has_vertex_color(m_has_vertex_color || m_has_primitive_color);
-    }
-}
-
-//------------------------------------------------------------------------------
-
 bool mesh::has_color_layer_changed(const data::mesh::csptr& _mesh) const
 {
-    const bool has_vertex_color    = _mesh->has<data::mesh::attribute::point_colors>();
-    const bool has_primitive_color = _mesh->has<data::mesh::attribute::cell_colors>();
-
-    return has_vertex_color != m_has_vertex_color || has_primitive_color != m_has_primitive_color;
+    return _mesh->has<attribute::point_colors>() != data::mesh::has<attribute::point_colors>(m_layout)
+           || _mesh->has<attribute::cell_colors>() != data::mesh::has<attribute::cell_colors>(m_layout);
 }
 
 //------------------------------------------------------------------------------
@@ -1091,11 +1068,11 @@ Ogre::Entity* mesh::create_entity(Ogre::SceneManager& _scene_mgr)
 
 //------------------------------------------------------------------------------
 
-void mesh::invalidate_r2_vb()
+void mesh::invalidate_r2vb()
 {
-    for(auto r2vb_object : m_r2vb_object)
+    for(auto* val : m_r2vb_object | std::views::values)
     {
-        r2vb_object.second->set_dirty();
+        val->set_dirty();
     }
 }
 

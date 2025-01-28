@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -248,7 +248,7 @@ void video::updating()
 
             // Duplicate the template material to create our own material
             auto material = Ogre::MaterialManager::getSingletonPtr()->createOrRetrieve(
-                this->get_id() + "_VideoMaterial",
+                gen_id("video_material"),
                 sight::viz::scene3d::RESOURCE_GROUP,
                 true
             ).first;
@@ -291,10 +291,9 @@ void video::updating()
             // /////////////////////////////////////////////////////////////////////
             // Create the plane entity
             // /////////////////////////////////////////////////////////////////////
-            const std::string this_id         = this->get_id();
-            const std::string video_mesh_name = this_id + "_VideoMesh";
-            const std::string entity_name     = this_id + "_VideoEntity";
-            const std::string node_name       = this_id + "_VideoSceneNode";
+            const std::string video_mesh_name = gen_id("video_mesh");
+            const std::string entity_name     = gen_id("video_entity");
+            const std::string node_name       = gen_id("video_scene_node");
 
             Ogre::MovablePlane plane(Ogre::Vector3::UNIT_Z, 0);
 

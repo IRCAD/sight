@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,62 +116,6 @@ void color::from_string(const std::string& _value)
 void color::set_rgba(const std::string& _value)
 {
     from_string(_value);
-}
-
-//------------------------------------------------------------------------------
-
-color::color_t& color::red()
-{
-    return this->value()[0];
-}
-
-//------------------------------------------------------------------------------
-
-color::color_t& color::green()
-{
-    return this->value()[1];
-}
-
-//------------------------------------------------------------------------------
-
-color::color_t& color::blue()
-{
-    return this->value()[2];
-}
-
-//------------------------------------------------------------------------------
-
-color::color_t& color::alpha()
-{
-    return this->value()[3];
-}
-
-//------------------------------------------------------------------------------
-
-const color::color_t& color::red() const
-{
-    return this->value()[0];
-}
-
-//------------------------------------------------------------------------------
-
-const color::color_t& color::green() const
-{
-    return this->value()[1];
-}
-
-//------------------------------------------------------------------------------
-
-const color::color_t& color::blue() const
-{
-    return this->value()[2];
-}
-
-//------------------------------------------------------------------------------
-
-const color::color_t& color::alpha() const
-{
-    return this->value()[3];
 }
 
 } // namespace sight::data

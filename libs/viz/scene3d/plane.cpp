@@ -61,29 +61,20 @@ plane::plane(
 {
     // We need an internal counter to avoid naming conflicts
     static std::uint32_t count = 0;
-    m_slice_plane_name = _negato_id + "_Mesh" + std::to_string(count);
-    m_entity_name      = _negato_id + "_Entity" + std::to_string(count);
-    m_scene_node_name  = _negato_id + "_SceneNode" + std::to_string(count++);
+    m_slice_plane_name = core::id::join(_negato_id, "mesh", std::to_string(count));
+    m_entity_name      = core::id::join(_negato_id, "entity", std::to_string(count));
+    m_scene_node_name  = core::id::join(_negato_id, "scene_node", std::to_string(count++));
 
     // Creates the parent's child scene node positionned at (0; 0; 0)
     m_plane_scene_node = m_parent_scene_node->createChildSceneNode(m_scene_node_name);
 
-    auto& material_mgr            = Ogre::MaterialManager::getSingleton();
-    Ogre::MaterialPtr default_mat = material_mgr.getByName("Negato", RESOURCE_GROUP);
-    SIGHT_ASSERT("Default material not found, the 'material' module may not be loaded.", default_mat);
-
-    // If the texture material exists, delete it.
-    if(m_tex_material)
-    {
-        material_mgr.remove(m_tex_material);
-        m_tex_material.reset();
-    }
-
-    m_tex_material = default_mat->clone(m_slice_plane_name + "_TextMaterial");
+    const auto plane_material_name = core::id::join(m_slice_plane_name + "plane_material");
+    m_plane_material = std::make_unique<viz::scene3d::material::generic>(plane_material_name, "Negato");
 
     const Ogre::ColourValue diffuse(1.F, 1.F, 1.F, m_entity_opacity);
-    m_tex_material->setDiffuse(diffuse);
+    m_plane_material->material()->setDiffuse(diffuse);
 
+    auto& material_mgr = Ogre::MaterialManager::getSingleton();
     if(m_border.enabled)
     {
         const auto material = material_mgr.getByName("BasicAmbient", RESOURCE_GROUP);
@@ -119,10 +110,7 @@ plane::~plane()
         m_scene_manager->destroyManualObject(m_border.shape);
     }
 
-    if(m_tex_material)
-    {
-        Ogre::MaterialManager::getSingleton().remove(m_tex_material);
-    }
+    m_plane_material.reset();
 
     if(m_slices_cross.shape != nullptr)
     {
@@ -200,46 +188,33 @@ void plane::update(
 
     // Entity creation.
     Ogre::Entity* plane_entity = m_scene_manager->createEntity(m_entity_name, m_slice_plane);
-    plane_entity->setMaterial(m_tex_material);
+    plane_entity->setMaterial(m_plane_material->material());
     m_plane_scene_node->attachObject(plane_entity);
 
     const int orientation_index = static_cast<int>(m_axis);
 
-    const Ogre::Material::Techniques& techniques = m_tex_material->getTechniques();
-
-    for(const auto* const tech : techniques)
+    // Sets the texture filtering in the current texture unit state according to the negato's interpolation flag
+    Ogre::TextureFilterOptions filter_type = Ogre::TFO_NONE;
+    switch(m_filtering)
     {
-        SIGHT_ASSERT("technique is not set", tech);
+        case filter_t::none:
+            filter_type = Ogre::TFO_NONE;
+            break;
 
-        if(viz::scene3d::helper::shading::is_color_technique(*tech))
-        {
-            // Sets the texture filtering in the current texture unit state according to the negato's interpolation flag
-            Ogre::TextureFilterOptions filter_type = Ogre::TFO_NONE;
-            switch(m_filtering)
-            {
-                case filter_t::none:
-                    filter_type = Ogre::TFO_NONE;
-                    break;
+        case filter_t::linear:
+            filter_type = Ogre::TFO_BILINEAR;
+            break;
 
-                case filter_t::linear:
-                    filter_type = Ogre::TFO_BILINEAR;
-                    break;
-
-                case filter_t::anisotropic:
-                    filter_type = Ogre::TFO_ANISOTROPIC;
-                    break;
-            }
-
-            Ogre::Pass* const pass = tech->getPass(0);
-            m_texture->bind(pass, "image", filter_type);
-
-            pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientation_index);
-
-            auto fp_params = pass->getFragmentProgramParameters();
-            fp_params->setNamedConstant("u_orientation", orientation_index);
-            fp_params->setNamedConstant("u_enableAlpha", static_cast<int>(_enable_transparency));
-        }
+        case filter_t::anisotropic:
+            filter_type = Ogre::TFO_ANISOTROPIC;
+            break;
     }
+
+    m_plane_material->set_texture("image", m_texture->get(), filter_type);
+    m_plane_material->set_vertex_uniform("u_orientation", orientation_index);
+    m_plane_material->set_fragment_uniform("u_window", m_texture->window());
+    m_plane_material->set_fragment_uniform("u_orientation", orientation_index);
+    m_plane_material->set_fragment_uniform("u_enableAlpha", static_cast<int>(_enable_transparency));
 
     if(m_border.enabled)
     {
@@ -350,18 +325,8 @@ void plane::update_position()
 
 void plane::set_tf_data(const viz::scene3d::transfer_function& _tf_texture)
 {
-    const Ogre::Material::Techniques& techniques = m_tex_material->getTechniques();
-
-    for(auto* const tech : techniques)
-    {
-        SIGHT_ASSERT("technique is not set", tech);
-
-        if(viz::scene3d::helper::shading::is_color_technique(*tech))
-        {
-            Ogre::Pass* pass = tech->getPass(0);
-            _tf_texture.bind(pass, "tfTexture", pass->getFragmentProgramParameters());
-        }
-    }
+    m_plane_material->set_texture("tfTexture", _tf_texture.get());
+    m_plane_material->set_fragment_uniform("u_f3TFWindow", _tf_texture.window);
 }
 
 //------------------------------------------------------------------------------
@@ -371,20 +336,7 @@ void plane::set_entity_opacity(float _f)
     m_entity_opacity = _f;
 
     Ogre::ColourValue diffuse(1.F, 1.F, 1.F, m_entity_opacity);
-    m_tex_material->setDiffuse(diffuse);
-
-    Ogre::Technique* tech = m_tex_material->getTechnique(0);
-    SIGHT_ASSERT("technique is not set", tech);
-
-    if(viz::scene3d::helper::shading::is_color_technique(*tech)
-       && !viz::scene3d::helper::shading::is_peel_technique(*tech))
-    {
-        Ogre::Pass* pass = tech->getPass(0);
-
-        // We don't want a depth check if we have non-OIT transparency
-        const bool need_depth_check = (m_entity_opacity - 1.F) < std::numeric_limits<float>::epsilon();
-        pass->setDepthCheckEnabled(need_depth_check);
-    }
+    m_plane_material->material()->setDiffuse(diffuse);
 }
 
 //------------------------------------------------------------------------------
@@ -398,22 +350,9 @@ void plane::set_visible(bool _visible)
 
 void plane::change_slice(const std::array<float, 3>& _slices_index)
 {
-    const auto current_slice                     = _slices_index[static_cast<std::size_t>(m_axis)];
-    const Ogre::Material::Techniques& techniques = m_tex_material->getTechniques();
+    const auto current_slice = _slices_index[static_cast<std::size_t>(m_axis)];
 
-    for(auto* const tech : techniques)
-    {
-        SIGHT_ASSERT("technique is not set", tech);
-
-        if(viz::scene3d::helper::shading::is_color_technique(*tech))
-        {
-            Ogre::Pass* pass = tech->getPass(0);
-
-            SIGHT_ASSERT("Can't find Ogre pass", pass);
-
-            pass->getFragmentProgramParameters()->setNamedConstant("u_slice", current_slice);
-        }
-    }
+    m_plane_material->set_fragment_uniform("u_slice", current_slice);
 
     // as close as possible from 1, but smaller.
     const float relative_position = std::clamp(current_slice, 0.F, 0.999999999999999F);

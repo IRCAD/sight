@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,7 +27,7 @@
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
-#include <viz/scene3d/material.hpp>
+#include <viz/scene3d/material/standard.hpp>
 
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
@@ -167,13 +167,13 @@ private:
     std::string m_dashed_line_material_name;
 
     /// Contains the material with no depth check for spheres.
-    sight::viz::scene3d::material::uptr m_sphere_material;
+    sight::viz::scene3d::material::standard::uptr m_sphere_material;
 
     /// Contains the material with depth check for lines.
-    sight::viz::scene3d::material::uptr m_line_material;
+    sight::viz::scene3d::material::standard::uptr m_line_material;
 
     /// Contains the material with no depth check for dashed lines.
-    sight::viz::scene3d::material::uptr m_dashed_line_material;
+    sight::viz::scene3d::material::standard::uptr m_dashed_line_material;
 
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, s_IMAGE_INOUT};

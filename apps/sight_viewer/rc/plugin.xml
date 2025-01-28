@@ -248,6 +248,7 @@
                 <registry>
                     <view sid="lightSelectorSrv" />
                     <view sid="lightEditorSrv" />
+                    <view sid="compositor_selector_srv" />
                 </registry>
             </service>
 
@@ -528,6 +529,7 @@
             <service uid="lightSelectorSrv" type="sight::module::ui::viz::light_selector" />
 
             <service uid="lightEditorSrv" type="sight::module::ui::viz::light_editor" />
+            <service uid="compositor_selector_srv" type="sight::module::ui::viz::compositor_selector" />
 
             <!-- Transparency for the 3D negato -->
             <service uid="transparencyParameterSrv" type="sight::module::ui::qt::parameters">
@@ -745,6 +747,7 @@
             <start uid="extractPacsImageSrv" />
             <start uid="lightSelectorSrv" />
             <start uid="lightEditorSrv" />
+            <start uid="compositor_selector_srv" />
             <start uid="landmarksParameterSrv" />
             <update uid="TFManagerAct" />
             <update uid="volumeParameterSrv" />

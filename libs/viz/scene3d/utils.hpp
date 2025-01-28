@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,10 +52,10 @@ namespace vr
 class grid_proxy_geometry_factory;
 
 } // namespace vr
-namespace compositor
+namespace compositor::manager
 {
 
-class material_mgr_listener;
+class oit;
 
 } // namespace compositor
 
@@ -221,10 +221,10 @@ private:
         const std::filesystem::path& _module_path
     );
 
-    static viz::scene3d::factory::r2vb_renderable* s_r2_vb_renderable_factory;
+    static viz::scene3d::factory::r2vb_renderable* s_r2vb_renderable_factory;
     static viz::scene3d::factory::Text* s_text_factory;
     static viz::scene3d::vr::grid_proxy_geometry_factory* s_grid_proxy_geometry_factory;
-    static viz::scene3d::compositor::material_mgr_listener* s_oit_material_listener;
+    static viz::scene3d::compositor::manager::oit* s_oit_manager;
 };
 
 } // namespace sight::viz::scene3d

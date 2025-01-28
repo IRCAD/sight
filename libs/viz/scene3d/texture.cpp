@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2025 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,7 +117,7 @@ void texture::bind(
 
 //------------------------------------------------------------------------------
 
-void texture::bind(
+void texture::create_binding(
     Ogre::Pass* _pass,
     const std::string& _sampler_name,
     const std::string& _uniform_name,
@@ -127,7 +127,7 @@ void texture::bind(
 {
     SIGHT_ASSERT("The pass is null.", _pass);
 
-    Ogre::TextureUnitState* tex_unit = _pass->getTextureUnitState(_sampler_name);
+    Ogre::TextureUnitState* const tex_unit = _pass->createTextureUnitState(_sampler_name);
     SIGHT_ASSERT("The sampler '" + _sampler_name + "' cannot be retrieved.", tex_unit);
 
     if(_filter_type != std::nullopt)

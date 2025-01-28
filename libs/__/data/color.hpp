@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -123,6 +123,62 @@ inline const color::array_t& color::rgba() const
 inline void color::set_rgba(const color::array_t& _v_rgba)
 {
     this->value() = _v_rgba;
+}
+
+//------------------------------------------------------------------------------
+
+inline color::color_t& color::red()
+{
+    return this->value()[0];
+}
+
+//------------------------------------------------------------------------------
+
+inline color::color_t& color::green()
+{
+    return this->value()[1];
+}
+
+//------------------------------------------------------------------------------
+
+inline color::color_t& color::blue()
+{
+    return this->value()[2];
+}
+
+//------------------------------------------------------------------------------
+
+inline color::color_t& color::alpha()
+{
+    return this->value()[3];
+}
+
+//------------------------------------------------------------------------------
+
+inline const color::color_t& color::red() const
+{
+    return this->value()[0];
+}
+
+//------------------------------------------------------------------------------
+
+inline const color::color_t& color::green() const
+{
+    return this->value()[1];
+}
+
+//------------------------------------------------------------------------------
+
+inline const color::color_t& color::blue() const
+{
+    return this->value()[2];
+}
+
+//------------------------------------------------------------------------------
+
+inline const color::color_t& color::alpha() const
+{
+    return this->value()[3];
 }
 
 //-----------------------------------------------------------------------------

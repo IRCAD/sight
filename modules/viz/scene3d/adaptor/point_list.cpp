@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,6 +46,8 @@
 
 namespace sight::module::viz::scene3d::adaptor
 {
+
+static const std::string BILLBOARD_SIZE_UNIFORM = "u_billboardSize";
 
 //-----------------------------------------------------------------------------
 
@@ -126,7 +128,7 @@ void point_list::configuring()
     this->set_transform_id(
         config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
 
@@ -294,7 +296,7 @@ void point_list::create_label(const data::point_list::csptr& _point_list)
                 m_label_color->blue()
             )
         );
-        m_nodes.push_back(m_scene_node->createChildSceneNode(this->get_id() + label_number));
+        m_nodes.push_back(m_scene_node->createChildSceneNode(gen_id(label_number)));
         m_labels[i]->attach_to_node(m_nodes[i], this->layer()->get_default_camera());
         data::point::point_coord_array_t coord = point->get_coord();
         m_nodes[i]->translate(static_cast<float>(coord[0]), static_cast<float>(coord[1]), static_cast<float>(coord[2]));
@@ -436,17 +438,15 @@ scene3d::adaptor::material::sptr point_list::create_material_service(const std::
     );
     material_adaptor->set_inout(m_material, "material", true);
 
-    const auto tpl_name =
-        !m_material_template_name.empty() ? m_material_template_name : sight::viz::scene3d::material::
-        DEFAULT_MATERIAL_TEMPLATE_NAME;
+    SIGHT_ASSERT("Template name empty", !m_material_template_name.empty());
 
     material_adaptor->configure(
-        this->get_id() + "_" + material_adaptor->get_id(),
-        _mesh_id + "_" + material_adaptor->get_id(),
+        gen_id(material_adaptor->get_id()),
+        core::id::join(_mesh_id, material_adaptor->get_id()),
         this->render_service(),
         m_layer_id,
         "",
-        tpl_name
+        m_material_template_name
     );
 
     return material_adaptor;
@@ -463,9 +463,9 @@ void point_list::update_material_adaptor(const std::string& _mesh_id)
             m_material_adaptor = this->create_material_service(_mesh_id);
             m_material_adaptor->start();
 
-            auto* material_fw = m_material_adaptor->get_material_fw();
-            m_mesh_geometry->update_material(material_fw, false);
-            material_fw->set_mesh_size(m_radius);
+            auto* material_impl = m_material_adaptor->get_material_impl();
+            material_impl->set_layout(*m_mesh_geometry);
+            material_impl->set_geometry_uniform(BILLBOARD_SIZE_UNIFORM, m_radius);
 
             m_entity->setMaterialName(m_material_adaptor->get_material_name());
 
@@ -475,32 +475,23 @@ void point_list::update_material_adaptor(const std::string& _mesh_id)
                     m_texture_name,
                     sight::viz::scene3d::RESOURCE_GROUP
                 );
-                Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName(
-                    m_material_adaptor->get_material_name(),
-                    sight::viz::scene3d::RESOURCE_GROUP
-                );
-
-                Ogre::TextureUnitState* tex_unit_state = material->getTechnique(0)->getPass(0)->getTextureUnitState(
-                    "sprite"
-                );
-                tex_unit_state->setTexture(texture);
+                material_impl->set_texture("sprite", texture);
             }
 
             m_material_adaptor->update();
         }
     }
-    else if(m_material_adaptor->inout<data::material>(material::MATERIAL_INOUT).lock()
-            != m_material)
+    else if(m_material_adaptor->inout<data::material>(material::MATERIAL_INOUT).lock() != m_material)
     {
-        auto* material_fw = m_material_adaptor->get_material_fw();
-        m_mesh_geometry->update_material(material_fw, false);
-        material_fw->set_mesh_size(m_radius);
+        auto* material_impl = m_material_adaptor->get_material_impl();
+        material_impl->set_layout(*m_mesh_geometry);
+        material_impl->set_geometry_uniform(BILLBOARD_SIZE_UNIFORM, m_radius);
     }
     else
     {
-        auto* material_fw = m_material_adaptor->get_material_fw();
-        m_mesh_geometry->update_material(material_fw, false);
-        material_fw->set_mesh_size(m_radius);
+        auto* material_impl = m_material_adaptor->get_material_impl();
+        material_impl->set_layout(*m_mesh_geometry);
+        material_impl->set_geometry_uniform(BILLBOARD_SIZE_UNIFORM, m_radius);
 
         m_entity->setMaterialName(m_material_adaptor->get_material_name());
 

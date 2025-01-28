@@ -44,7 +44,7 @@ fragment_program ClearDepth_FP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DepthPeeling/Blend_FP glsl
+fragment_program DepthPeeling/blend_FP glsl
 {
     source DepthPeelingBlend_FP.glsl
     default_params
@@ -67,7 +67,7 @@ fragment_program DepthPeeling/Final_FP glsl
 
 //---------------------------------------------------------------------------
 
-fragment_program DualDepthPeeling/peelInit_FP glsl
+fragment_program DualDepthPeeling/peel_init_FP glsl
 {
     source DualDepthPeelingInit_FP.glsl
 }

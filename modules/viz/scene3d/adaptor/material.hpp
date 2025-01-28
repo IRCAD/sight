@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,16 +24,13 @@
 
 #include "modules/viz/scene3d/adaptor/texture.hpp"
 
-#include <core/com/slot.hpp>
-#include <core/com/slots.hpp>
-
 #include <data/image.hpp>
 #include <data/material.hpp>
 #include <data/mesh.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/material.hpp>
-#include <viz/scene3d/material_adaptor.hpp>
+#include <viz/scene3d/material/generic.hpp>
+#include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/mesh.hpp>
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/r2vb_renderable.hpp>
@@ -87,12 +84,18 @@ namespace sight::module::viz::scene3d::adaptor
  *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
  *      representation mode as in data::material.
  */
-class material final : public sight::viz::scene3d::material_adaptor
+class material final : public sight::viz::scene3d::adaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(material, sight::viz::scene3d::material_adaptor);
+    SIGHT_DECLARE_SERVICE(material, sight::viz::scene3d::adaptor);
+
+    struct signals
+    {
+        using changed_t = core::com::signal<void (Ogre::MaterialPtr)>;
+        static inline const core::com::signals::key_t CHANGED = "changed";
+    };
 
     /**
      * @name Slots API
@@ -124,38 +127,35 @@ public:
         sight::viz::scene3d::render::sptr _service,
         const std::string& _layer,
         const std::string& _shading_mode = "",
-        const std::string& _template     = sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    ) override;
+        const std::string& _template     = sight::viz::scene3d::material::standard::TEMPLATE
+    );
 
     /// Gets Ogre associated material.
-    Ogre::MaterialPtr get_material() override;
+    Ogre::MaterialPtr get_material();
 
     /// Gets material name.
-    std::string get_material_name() const override;
+    std::string get_material_name() const;
 
     /// Retrieves the associated texture name.
-    void set_texture_name(const std::string& _texture_name) override;
+    void set_texture_name(const std::string& _texture_name);
 
     /// Sets material name.
-    void set_material_name(const std::string& _material_name) override;
+    void set_material_name(const std::string& _material_name);
 
     /// Sets material template name.
-    void set_material_template_name(const std::string& _material_name) override;
+    void set_material_template_name(const std::string& _material_name);
 
     /// Tells if there is a texture currently bound.
-    bool has_diffuse_texture() const override;
+    bool has_diffuse_texture() const;
 
     /// Gets the shading mode.
-    const std::string& get_shading_mode() const override;
+    const std::string& get_shading_mode() const;
 
     /// Sets the shading mode.
-    void set_shading_mode(const std::string& _shading_mode) override;
-
-    /// Set the renderable object.
-    void set_r2_vb_object(sight::viz::scene3d::r2vb_renderable* _r2vb_object) override;
+    void set_shading_mode(const std::string& _shading_mode);
 
     /// Gets the internal material code.
-    sight::viz::scene3d::material* get_material_fw() const override;
+    sight::viz::scene3d::material::generic* get_material_impl() const;
 
 protected:
 
@@ -210,7 +210,7 @@ private:
 
     /// Defines the default template name, given by xml configuration.
     /// It must refer an existing Ogre material which will be used in order to instantiate m_material
-    std::string m_material_template_name {sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME};
+    std::string m_material_template_name {sight::viz::scene3d::material::standard::TEMPLATE};
 
     /// Contains the texture adaptor the material adaptor is listening to.
     module::viz::scene3d::adaptor::texture::sptr m_tex_adaptor {nullptr};
@@ -233,11 +233,11 @@ private:
     /// Stores a map to convert from string to data::material::representation_t (ex: "SURFACE" = SURFACE).
     std::map<std::string, data::material::representation_t> m_representation_dict;
 
-    /// Contains the Ogre material.
-    sight::viz::scene3d::material::uptr m_material_fw;
+    /// Implementation when we instantiate the standard material
+    sight::viz::scene3d::material::standard::uptr m_standard_material_impl;
 
-    /// Contains the renderable object.
-    sight::viz::scene3d::r2vb_renderable* m_r2vb_object {nullptr};
+    /// Implementation of the material.
+    sight::viz::scene3d::material::generic::uptr m_material_impl;
 
     data::ptr<data::material, data::access::inout> m_material_data {this, MATERIAL_INOUT};
 };
@@ -293,16 +293,16 @@ inline void material::set_shading_mode(const std::string& _shading_mode)
 
 //------------------------------------------------------------------------------
 
-inline void material::set_r2_vb_object(sight::viz::scene3d::r2vb_renderable* _r2vb_object)
+inline sight::viz::scene3d::material::generic* material::get_material_impl() const
 {
-    m_r2vb_object = _r2vb_object;
-}
-
-//------------------------------------------------------------------------------
-
-inline sight::viz::scene3d::material* material::get_material_fw() const
-{
-    return m_material_fw.get();
+    if(m_material_impl != nullptr)
+    {
+        return m_material_impl.get();
+    }
+    else
+    {
+        return m_standard_material_impl.get();
+    }
 }
 
 //------------------------------------------------------------------------------

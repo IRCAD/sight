@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ void material_test::initialize_material()
     // Initializes qt3dMaterial according to sightMaterial.
     qt3d_material->update_polygon_mode(sight_material->get_representation_mode());
     qt3d_material->update_options_mode(sight_material->get_options_mode());
-    qt3d_material->update_shading_mode(static_cast<int>(sight_material->get_shading_mode()));
+    qt3d_material->set_shading(static_cast<int>(sight_material->get_shading_mode()));
     qt3d_material->update_rgba_mode(sight_material);
 
     // Asserts qt3dMaterial RBG is equal to sightMaterial RGB (Approximately equal due to float comparaison).

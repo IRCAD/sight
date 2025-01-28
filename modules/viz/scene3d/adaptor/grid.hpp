@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,8 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/adaptor/material.hpp"
-
 #include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/transformable.hpp>
 
 #include <Ogre.h>
@@ -107,11 +106,8 @@ private:
      */
     void update_size(float _size);
 
-    /// Contains the Ogre material adaptor.
-    module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
-
-    /// Contains the material data.
-    data::material::sptr m_material {nullptr};
+    /// Contains the Ogre material.
+    sight::viz::scene3d::material::standard::uptr m_material;
 
     /// Contains the manual object of the line.
     Ogre::ManualObject* m_line {nullptr};

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -199,13 +199,10 @@ void core_compositor_editor::refresh_renderers()
         for(auto& layer_map : render->get_layers())
         {
             // Adds default layers (3D scene)
-            if(layer_map.second->is_core_compositor_enabled())
-            {
-                const std::string id  = layer_map.first;
-                std::string render_id = render->get_id();
-                m_layers_box->addItem(QString::fromStdString(render_id + " : " + id));
-                m_layers.push_back(layer_map.second);
-            }
+            const std::string id  = layer_map.first;
+            std::string render_id = render->get_id();
+            m_layers_box->addItem(QString::fromStdString(render_id + " : " + id));
+            m_layers.push_back(layer_map.second);
         }
     }
 
@@ -306,41 +303,37 @@ void core_compositor_editor::on_edit_transparency(int _index)
     auto layer = m_current_layer.lock();
     if(layer)
     {
-        bool transparency_updated = false;
         switch(_index)
         {
             case 0:
-                transparency_updated = layer->set_transparency_technique(compositor::DEFAULT);
+                layer->set_transparency_technique(compositor::DEFAULT);
                 break;
 
             case 1:
-                transparency_updated = layer->set_transparency_technique(compositor::depthpeeling);
+                layer->set_transparency_technique(compositor::depthpeeling);
                 break;
 
             case 2:
-                transparency_updated = layer->set_transparency_technique(compositor::dualdepthpeeling);
+                layer->set_transparency_technique(compositor::dualdepthpeeling);
                 break;
 
             case 3:
-                transparency_updated = layer->set_transparency_technique(compositor::weightedblendedoit);
+                layer->set_transparency_technique(compositor::weightedblendedoit);
                 break;
 
             case 4:
-                transparency_updated = layer->set_transparency_technique(compositor::hybridtransparency);
+                layer->set_transparency_technique(compositor::hybridtransparency);
                 break;
 
             case 5:
-                transparency_updated = layer->set_transparency_technique(compositor::cellshading_depthpeeling);
+                layer->set_transparency_technique(compositor::cellshading_depthpeeling);
                 break;
 
             default:
-                transparency_updated = false;
+                break;
         }
 
-        if(!transparency_updated)
-        {
-            m_transparency_button_group->button(0)->setChecked(true);
-        }
+        m_transparency_button_group->button(0)->setChecked(true);
     }
 }
 

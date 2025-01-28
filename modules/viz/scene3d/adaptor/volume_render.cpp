@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -140,7 +140,7 @@ void volume_render::configuring(const config_t& _config)
     this->set_transform_id(
         _config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
 }
@@ -160,7 +160,7 @@ void volume_render::starting()
 
         Ogre::SceneNode* const root_scene_node = m_scene_manager->getRootSceneNode();
         Ogre::SceneNode* const transform_node  = this->get_or_create_transform_node(root_scene_node);
-        m_volume_scene_node = transform_node->createChildSceneNode(this->get_id() + "_transform_origin");
+        m_volume_scene_node = transform_node->createChildSceneNode(gen_id("transform_origin"));
     }
 
     //Renderer

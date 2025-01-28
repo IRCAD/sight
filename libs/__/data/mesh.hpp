@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -386,9 +386,13 @@ public:
     template<mesh::attribute A>
     void clear();
 
-    /// Return true if the mesh has a given point attribute set
+    /// Return true if the mesh has a given attribute set
     template<mesh::attribute A>
     bool has() const;
+
+    /// Return true if the given attributes has a given attribute set
+    template<mesh::attribute A>
+    static bool has(mesh::attribute _attributes);
 
     /// Get number of points.
     mesh::size_t num_points() const;
@@ -783,6 +787,14 @@ template<mesh::attribute A>
 inline bool mesh::has() const
 {
     return static_cast<bool>(m_attributes & A);
+}
+
+//------------------------------------------------------------------------------
+
+template<mesh::attribute A>
+inline bool mesh::has(data::mesh::attribute _attributes)
+{
+    return static_cast<bool>(_attributes & A);
 }
 
 //------------------------------------------------------------------------------

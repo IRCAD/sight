@@ -2,7 +2,7 @@
 
 //---------------------------------------------------------------------------
 
-fragment_program DualDepthPeeling/Blend_FP glsl
+fragment_program DualDepthPeeling/blend_FP glsl
 {
     source DualDepthPeelingBlend_FP.glsl
     default_params
@@ -67,7 +67,7 @@ material DualDepthPeeling/Final
 
 //---------------------------------------------------------------------------
 
-material DualDepthPeeling/Blend
+material DualDepthPeeling/blend
 {
     technique
     {
@@ -81,7 +81,7 @@ material DualDepthPeeling/Blend
             {
             }
 
-            fragment_program_ref DualDepthPeeling/Blend_FP
+            fragment_program_ref DualDepthPeeling/blend_FP
             {
             }
 

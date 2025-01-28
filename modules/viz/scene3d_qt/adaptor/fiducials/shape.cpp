@@ -283,18 +283,15 @@ void shape::starting()
 
     const sight::viz::scene3d::layer::sptr layer = this->layer();
 
-    m_sphere_material_name      = this->get_id() + "_sphereMaterialName";
-    m_line_material_name        = this->get_id() + "_lineMaterialName";
-    m_dashed_line_material_name = this->get_id() + "_dashedLineMaterialName";
+    m_sphere_material_name      = gen_id("_sphereMaterialName");
+    m_line_material_name        = gen_id("_lineMaterialName");
+    m_dashed_line_material_name = gen_id("_dashedLineMaterialName");
 
     // Create materials from our wrapper.
     // Sphere
-    m_sphere_material = std::make_unique<sight::viz::scene3d::material>(
-        m_sphere_material_name,
-        sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    );
-    m_sphere_material->set_has_vertex_color(true);
-    m_sphere_material->update_shading_mode(sight::data::material::shading_t::phong, layer->num_lights(), false, false);
+    m_sphere_material = std::make_unique<sight::viz::scene3d::material::standard>(m_sphere_material_name);
+    m_sphere_material->set_layout(data::mesh::attribute::point_normals | data::mesh::attribute::point_colors);
+    m_sphere_material->set_shading(sight::data::material::shading_t::phong, layer->num_lights(), false, false);
 
     // Retrieve the ogre material to change the depth check.
     const Ogre::MaterialPtr ogre_sphere_material = Ogre::MaterialManager::getSingleton().getByName(
@@ -309,12 +306,9 @@ void shape::starting()
     sphere_pass->setDepthCheckEnabled(false);
 
     // Line
-    m_line_material = std::make_unique<sight::viz::scene3d::material>(
-        m_line_material_name,
-        sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    );
-    m_line_material->set_has_vertex_color(true);
-    m_line_material->update_shading_mode(sight::data::material::shading_t::ambient, layer->num_lights(), false, false);
+    m_line_material = std::make_unique<sight::viz::scene3d::material::standard>(m_line_material_name);
+    m_line_material->set_layout(data::mesh::attribute::point_colors);
+    m_line_material->set_shading(sight::data::material::shading_t::ambient, layer->num_lights(), false, false);
 
     // Retrieve the ogre material to change the depth check.
     const Ogre::MaterialPtr ogre_line_material = Ogre::MaterialManager::getSingleton().getByName(
@@ -329,12 +323,9 @@ void shape::starting()
     line_pass->setDepthCheckEnabled(false);
 
     // Dashed line
-    m_dashed_line_material = std::make_unique<sight::viz::scene3d::material>(
-        m_dashed_line_material_name,
-        sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    );
-    m_dashed_line_material->set_has_vertex_color(true);
-    m_dashed_line_material->update_shading_mode(
+    m_dashed_line_material = std::make_unique<sight::viz::scene3d::material::standard>(m_dashed_line_material_name);
+    m_dashed_line_material->set_layout(data::mesh::attribute::point_colors);
+    m_dashed_line_material->set_shading(
         sight::data::material::shading_t::ambient,
         layer->num_lights(),
         false,

@@ -24,10 +24,11 @@
 
 #include "viz/scene3d/utils.hpp"
 
-#include "viz/scene3d/compositor/material_mgr_listener.hpp"
+#include "viz/scene3d/compositor/manager/oit.hpp"
 #include "viz/scene3d/detail/collision_tools.hpp"
 #include "viz/scene3d/factory/r2vb_renderable.hpp"
 #include "viz/scene3d/helper/camera.hpp"
+#include "viz/scene3d/layer.hpp"
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/vr/grid_proxy_geometry.hpp"
 
@@ -65,9 +66,9 @@ static std::list<std::string> s_module_with_resources_names;
 
 static std::set<std::string> s_ogre_plugins;
 
-viz::scene3d::factory::r2vb_renderable* utils::s_r2_vb_renderable_factory           = nullptr;
+viz::scene3d::factory::r2vb_renderable* utils::s_r2vb_renderable_factory            = nullptr;
 viz::scene3d::vr::grid_proxy_geometry_factory* utils::s_grid_proxy_geometry_factory = nullptr;
-viz::scene3d::compositor::material_mgr_listener* utils::s_oit_material_listener     = nullptr;
+viz::scene3d::compositor::manager::oit* utils::s_oit_manager                        = nullptr;
 
 //------------------------------------------------------------------------------
 
@@ -327,16 +328,16 @@ Ogre::Root* utils::get_ogre_root()
         load_resources();
 
         // Register factory for R2VB renderables objects
-        s_r2_vb_renderable_factory = OGRE_NEW viz::scene3d::factory::r2vb_renderable();
-        Ogre::Root::getSingleton().addMovableObjectFactory(s_r2_vb_renderable_factory);
+        s_r2vb_renderable_factory = OGRE_NEW viz::scene3d::factory::r2vb_renderable();
+        Ogre::Root::getSingleton().addMovableObjectFactory(s_r2vb_renderable_factory);
 
         // Register factory for grid_proxy_geometry objects
         s_grid_proxy_geometry_factory = OGRE_NEW viz::scene3d::vr::grid_proxy_geometry_factory();
         Ogre::Root::getSingleton().addMovableObjectFactory(s_grid_proxy_geometry_factory);
 
         // Add the material manager listener that allows us to generate OIT techniques
-        s_oit_material_listener = new viz::scene3d::compositor::material_mgr_listener();
-        Ogre::MaterialManager::getSingleton().addListener(s_oit_material_listener);
+        s_oit_manager = new viz::scene3d::compositor::manager::oit();
+        Ogre::MaterialManager::getSingleton().addListener(s_oit_manager);
     }
 
     return root;
@@ -346,14 +347,14 @@ Ogre::Root* utils::get_ogre_root()
 
 void utils::destroy_ogre_root()
 {
-    Ogre::MaterialManager::getSingleton().removeListener(s_oit_material_listener);
-    delete s_oit_material_listener;
+    Ogre::MaterialManager::getSingleton().removeListener(s_oit_manager);
+    delete s_oit_manager;
 
     Ogre::Root::getSingleton().removeMovableObjectFactory(s_grid_proxy_geometry_factory);
     delete s_grid_proxy_geometry_factory;
 
-    Ogre::Root::getSingleton().removeMovableObjectFactory(s_r2_vb_renderable_factory);
-    delete s_r2_vb_renderable_factory;
+    Ogre::Root::getSingleton().removeMovableObjectFactory(s_r2vb_renderable_factory);
+    delete s_r2vb_renderable_factory;
 
     Ogre::Root* root = viz::scene3d::utils::get_ogre_root();
     Ogre::ResourceGroupManager::getSingleton().shutdownAll();

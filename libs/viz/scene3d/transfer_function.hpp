@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2024 IRCAD France
+ * Copyright (C) 2015-2025 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,10 +66,8 @@ public:
         const std::string& _uniform = "u_f3TFWindow"
     ) const;
 
-private:
-
     /// Stores the tf window to upload it when necessary as a fragment shader uniform
-    Ogre::Vector3 m_tf_window;
+    Ogre::Vector3 window;
 };
 
 //------------------------------------------------------------------------------
@@ -96,7 +94,7 @@ inline void transfer_function::bind(
     tex_unit_state->setTextureFiltering(Ogre::TFO_BILINEAR);
     tex_unit_state->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
 
-    _params->setNamedConstant(_uniform, m_tf_window);
+    _params->setNamedConstant(_uniform, window);
 }
 
 //-----------------------------------------------------------------------------

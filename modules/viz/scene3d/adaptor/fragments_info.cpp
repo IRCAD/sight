@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,9 +117,9 @@ void fragments_info::starting()
 
     this->render_service()->make_current();
 
-    m_compositor_name          = this->get_id() + "_Snapshot_C";
-    m_target_name              = this->get_id() + "_global_RTT";
-    m_target_primitive_id_name = this->get_id() + "_primitiveID_RTT";
+    m_compositor_name          = gen_id("Snapshot_C");
+    m_target_name              = gen_id("global_RTT");
+    m_target_primitive_id_name = gen_id("primitiveID_RTT");
 
     const sight::viz::scene3d::layer::sptr layer = this->layer();
     layer->get_render_target()->addListener(this);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
-#include <viz/scene3d/material.hpp>
+#include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/text.hpp>
 
 #include <QPushButton>
@@ -303,13 +303,13 @@ private:
     std::string m_dashed_line_material_name;
 
     /// Contains the material with no depth check for spheres.
-    sight::viz::scene3d::material::uptr m_sphere_material;
+    sight::viz::scene3d::material::standard::uptr m_sphere_material;
 
     /// Contains the material with depth check for lines.
-    sight::viz::scene3d::material::uptr m_line_material;
+    sight::viz::scene3d::material::standard::uptr m_line_material;
 
     /// Contains the material with no depth check for dashed lines.
-    sight::viz::scene3d::material::uptr m_dashed_line_material;
+    sight::viz::scene3d::material::standard::uptr m_dashed_line_material;
 
     /// Defines whether to start using the ruler creation tool or not.
     bool m_tool_activated {false};

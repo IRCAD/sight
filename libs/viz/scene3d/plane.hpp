@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 
 #include <data/helper/medical_image.hpp>
 
+#include <viz/scene3d/material/generic.hpp>
 #include <viz/scene3d/texture.hpp>
 #include <viz/scene3d/transfer_function.hpp>
 
@@ -186,7 +187,7 @@ private:
     Ogre::MeshPtr m_slice_plane;
 
     /// Contains the plane material.
-    Ogre::MaterialPtr m_tex_material {nullptr};
+    viz::scene3d::material::generic::uptr m_plane_material;
 
     /// Contains the texture.
     viz::scene3d::texture::sptr m_texture;

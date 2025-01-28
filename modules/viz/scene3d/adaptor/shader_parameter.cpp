@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,10 +21,6 @@
  ***********************************************************************/
 
 #include "modules/viz/scene3d/adaptor/shader_parameter.hpp"
-
-#include "modules/viz/scene3d/adaptor/material.hpp"
-
-#include <service/macros.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 

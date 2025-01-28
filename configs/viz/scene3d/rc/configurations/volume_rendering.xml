@@ -125,7 +125,7 @@
                     <adaptor uid="eventAdp" />
                 </layer>
 
-                <layer id="orientationMarkerLayer" order="3">
+                <layer id="orientationMarkerLayer" order="2">
                     <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom" />
                     <adaptor uid="orientationMarkerAdp" />
                 </layer>

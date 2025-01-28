@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ void mesh_list::starting()
         const auto image     = data::image::copy(image_input.get_shared());
 
         // Create adaptors configurations
-        const std::string transform_id = this->get_id() + transform->get_id();
+        const std::string transform_id = gen_id(transform->get_id());
         service::config_t config;
         config.add("config.<xmlattr>.layer", m_layer_id);
         config.add("config.<xmlattr>." + std::string(TRANSFORM_INPUT), transform_id);

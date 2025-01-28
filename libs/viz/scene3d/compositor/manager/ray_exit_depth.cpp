@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "viz/scene3d/compositor/listener/ray_exit_depth.hpp"
+#include "viz/scene3d/compositor/manager/ray_exit_depth.hpp"
 
 #include "viz/scene3d/helper/shading.hpp"
 #include "viz/scene3d/helper/technique.hpp"
@@ -31,12 +31,12 @@
 #include <OGRE/OgrePass.h>
 #include <OGRE/OgreTechnique.h>
 
-namespace sight::viz::scene3d::compositor::listener
+namespace sight::viz::scene3d::compositor::manager
 {
 
 //------------------------------------------------------------------------------
 
-Ogre::Technique* ray_exit_depth_listener::handleSchemeNotFound(
+Ogre::Technique* ray_exit_depth::handleSchemeNotFound(
     std::uint16_t /*_schemeIndex*/,
     const Ogre::String& _scheme_name,
     Ogre::Material* _original_material,
@@ -107,4 +107,4 @@ Ogre::Technique* ray_exit_depth_listener::handleSchemeNotFound(
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::viz::scene3d::compositor::listener
+} // namespace sight::viz::scene3d::compositor::manager

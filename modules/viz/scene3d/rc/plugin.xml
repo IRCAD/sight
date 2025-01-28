@@ -49,14 +49,6 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
-        <type>sight::viz::scene3d::adaptor</type>
-        <service>sight::module::viz::scene3d::adaptor::landmarks</service>
-        <object key="landmarks">sight::data::landmarks</object>
-        <object key="image">sight::data::image</object>
-        <desc>This adaptor displays landmarks.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
         <type>sight::viz::scene3d::light_adaptor</type>
         <service>sight::module::viz::scene3d::adaptor::light</service>
         <object key="diffuseColor">sight::data::color</object>
