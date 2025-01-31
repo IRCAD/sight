@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #include "viz/scene3d/interactor/trackball_interactor.hpp"
+
+#include "viz/scene3d/interactor/detail/trackball.hpp"
 #include "viz/scene3d/layer.hpp"
 #include "viz/scene3d/registry/macros.hpp"
 
@@ -226,78 +228,8 @@ void trackball_interactor::resize_event(int _width, int _height)
 
 void trackball_interactor::camera_rotate(int _dx, int _dy)
 {
-    auto w_delta = static_cast<Ogre::Real>(_dx);
-    auto h_delta = static_cast<Ogre::Real>(_dy);
-
-    Ogre::Camera* const camera      = m_layer.lock()->get_default_camera();
-    Ogre::SceneNode* const cam_node = camera->getParentSceneNode();
-    const Ogre::Viewport* const vp  = camera->getViewport();
-
-    const auto height = static_cast<float>(vp->getActualHeight());
-    const auto width  = static_cast<float>(vp->getActualWidth());
-
-    // Current orientation of the camera
-    const Ogre::Quaternion orientation = cam_node->getOrientation();
-    const Ogre::Vector3 view_right     = orientation.xAxis();
-    const Ogre::Vector3 view_up        = orientation.yAxis();
-
-    // Rotate around the right vector according to the dy of the mouse
-    {
-        // 1 - Move to the center of the target
-        cam_node->translate(Ogre::Vector3(0.F, 0.F, -m_look_at_z), Ogre::Node::TS_LOCAL);
-
-        // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
-        // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
-        // Otherwise we would get a weird inversion
-        Ogre::Vector3 vec_x(std::abs(h_delta), 0.F, 0.F);
-        Ogre::Vector3 rotate_x = vec_x * view_right;
-        rotate_x.normalise();
-
-        // 3 - Now determine the rotation direction
-        if(rotate_x.dotProduct(Ogre::Vector3(1.F, 0.F, 0.F)) < 0.F)
-        {
-            h_delta *= -1;
-        }
-
-        // 4 - Compute the angle so that we can rotate around 180 degrees by sliding the whole window
-        const float angle = (h_delta * Ogre::Math::PI / height);
-
-        // 5 - Apply the rotation on the scene node
-        Ogre::Quaternion rotate(Ogre::Radian(angle), rotate_x);
-        cam_node->rotate(rotate);
-
-        // 6 - Go backward in the inverse direction
-        cam_node->translate(Ogre::Vector3(0.F, 0.F, m_look_at_z), Ogre::Node::TS_LOCAL);
-    }
-
-    // Rotate around the up vector according to the dx of the mouse
-    {
-        // 1 - Move to the center of the target
-        cam_node->translate(Ogre::Vector3(0.F, 0.F, -m_look_at_z), Ogre::Node::TS_LOCAL);
-
-        // 2 - Find rotation axis. We project the mouse movement onto the right and up vectors of the camera
-        // We take the absolute to get a positive axis, and then we invert the angle when needed to rotate smoothly
-        // Otherwise we would get a weird inversion
-        Ogre::Vector3 vec_y(0.F, std::abs(w_delta), 0.F);
-        Ogre::Vector3 rotate_y = vec_y * view_up;
-        rotate_y.normalise();
-
-        // 3 - Now determine the rotation direction
-        if(rotate_y.dotProduct(Ogre::Vector3(0.F, 1.F, 0.F)) < 0.F)
-        {
-            w_delta *= -1;
-        }
-
-        // 4 - Compute the angle so that we can rotate around 180 degrees by sliding the whole window
-        const float angle = (w_delta * Ogre::Math::PI / width);
-
-        // 5 - Apply the rotation on the scene node
-        Ogre::Quaternion rotate(Ogre::Radian(angle), rotate_y);
-        cam_node->rotate(rotate);
-
-        // 6 - Go backward in the inverse direction
-        cam_node->translate(Ogre::Vector3(0.F, 0.F, m_look_at_z), Ogre::Node::TS_LOCAL);
-    }
+    Ogre::Camera* const camera = m_layer.lock()->get_default_camera();
+    detail::camera_rotate(camera, _dx, _dy, m_look_at_z);
 }
 
 // ----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -110,6 +110,7 @@ void predefined_camera::starting()
             m_camera_positions,
             m_default_position,
             m_animate,
+            *m_follow_orientation,
             m_zoom
         );
 

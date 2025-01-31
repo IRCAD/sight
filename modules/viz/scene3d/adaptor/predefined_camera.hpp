@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -53,6 +53,7 @@ namespace sight::module::viz::scene3d::adaptor
             <position name="pos2" rx="-30.0" ry="90.0" />
             <position name="pos3" rx="-30.0" ry="-90.0"/>
         </positions>
+        <properties follow_orientation="false" />
    </service>
    @endcode
  *
@@ -66,6 +67,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b mouseRotation (optional, bool, default=true): defines if mouse rotation through mouse is activated or not.
  * - \b defaultPosition (optional, string, default=""): defines the default position to use.
  * - \b animate (optional, bool, default=true): defines if an animation is used when switching position or not.
+ * - \b follow_orientation (optional, bool, default=false) defines if we use a fixed orientation or if we follow the
+ * orientation of the target.
  * - \b zoom (optional, default="1.0"): defines the zoom ratio against the size of the scene.
  *
  * @section Slots Slots
@@ -145,6 +148,9 @@ private:
 
     /// Input transform.
     sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, "transform", true};
+
+    /// Defines if we use a fixed orientation or if we follow the orientation of the target.
+    sight::data::property<sight::data::boolean> m_follow_orientation {this, "follow_orientation", false};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.
