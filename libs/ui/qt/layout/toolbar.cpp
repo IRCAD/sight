@@ -286,6 +286,7 @@ void toolbar::create_layout(ui::container::toolbar::sptr _parent, const std::str
             if(!total_sequence.empty())
             {
                 action->setShortcuts(total_sequence);
+                action->setShortcutContext(Qt::ApplicationShortcut);
             }
 
             action->setAutoRepeat(false);
@@ -413,7 +414,7 @@ void toolbar::schedule_adjust_size()
 
     const auto* const parent_widget = toolbar->parentWidget();
 
-    if(parent_widget == nullptr)
+    if(parent_widget == nullptr || parent_widget->isWindow())
     {
         return;
     }

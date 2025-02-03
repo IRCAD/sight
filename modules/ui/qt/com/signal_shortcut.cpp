@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -161,6 +161,7 @@ void signal_shortcut::starting()
                 // Create a key sequence from the string and its associated QShortcut
                 QKeySequence shortcut_sequence = QKeySequence(QString::fromStdString(m_shortcut));
                 m_shortcut_object = new QShortcut(shortcut_sequence, widget);
+                m_shortcut_object->setContext(Qt::ApplicationShortcut);
             }
 
             // Connect the activated signal to the onActivation method of this class

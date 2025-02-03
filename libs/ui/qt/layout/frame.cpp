@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,11 +110,35 @@ void frame::create_frame()
         }();
 
     QPoint pos(frame_info.m_position.first, frame_info.m_position.second);
-    const QScreen* screen = QGuiApplication::screenAt(pos);
-    if(screen == nullptr)
+
+    // Get the screen at the position
+    auto* screen_at_pos = QGuiApplication::screenAt(pos);
+
+    // We need to disply the window on a specific screen
+    if(frame_info.m_screen >= 0)
     {
         QRect frame_rect(0, 0, width, height);
-        frame_rect.moveCenter(QGuiApplication::primaryScreen()->geometry().center());
+
+        // Get the position in the wanted screen - nothing to do if the screen is already the screen at pos
+        if(const auto& screens = QGuiApplication::screens();
+           frame_info.m_screen >= screens.size() && screen_at_pos == nullptr)
+        {
+            // Wanted screen doesn't exist and no screen at pos, use default screen
+            frame_rect.moveCenter(QGuiApplication::primaryScreen()->availableGeometry().center());
+            pos = frame_rect.topLeft();
+        }
+        else if(screen_at_pos == nullptr || screens.indexOf(screen_at_pos, 0) != frame_info.m_screen)
+        {
+            // Wanted screen is not the same as screen at, use it
+            frame_rect.moveCenter(screens.at(frame_info.m_screen)->availableGeometry().center());
+            pos = frame_rect.topLeft();
+        }
+    }
+    else if(screen_at_pos == nullptr)
+    {
+        // No screen information at all, use default screen
+        QRect frame_rect(0, 0, width, height);
+        frame_rect.moveCenter(QGuiApplication::primaryScreen()->availableGeometry().center());
         pos = frame_rect.topLeft();
     }
 

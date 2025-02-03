@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -158,6 +158,8 @@ void frame_manager::initialize(const ui::config_t& _configuration)
     {
         m_frame_info.m_qss_class = qss_class.get();
     }
+
+    m_frame_info.m_screen = _configuration.get<int>("screen.<xmlattr>.index", m_frame_info.m_screen);
 
     this->read_config();
 }
