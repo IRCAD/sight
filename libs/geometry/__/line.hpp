@@ -23,6 +23,7 @@
 
 #include <sight/geometry/__/config.hpp>
 
+#include <glm/mat3x3.hpp>
 #include <glm/vec3.hpp>
 
 #include <utility>
@@ -39,6 +40,16 @@ using line_t = std::pair<glm::dvec3, glm::dvec3>;
  * @brief Definition of a type for a ray defined by a position and a direction
  */
 using ray_t = std::pair<glm::dvec3, glm::dvec3>;
+
+/**
+ * @brief Definition of a type for a ray defined by a position and a direction
+ */
+struct oriented_box_t
+{
+    glm::dvec3 center;
+    glm::dvec3 extent; ///< distance from the center to the edge in each direction, always positive
+    glm::dmat3 orientation;
+};
 
 //------------------------------------------------------------------------------
 
@@ -125,5 +136,7 @@ SIGHT_GEOMETRY_API bool intersect(
     glm::dvec3& _barycentric,
     bool& _front
 );
+
+SIGHT_GEOMETRY_API bool intersect_box(line_t segment, oriented_box_t _box);
 
 } // namespace sight::geometry

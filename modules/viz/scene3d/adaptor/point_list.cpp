@@ -217,6 +217,8 @@ void point_list::stopping()
 
     this->unregister_services();
 
+    this->destroy_label();
+
     Ogre::SceneManager* scene_mgr = this->get_scene_manager();
     SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
     m_mesh_geometry->clear_mesh(*scene_mgr);
@@ -286,20 +288,23 @@ void point_list::create_label(const data::point_list::csptr& _point_list)
             label_number = std::to_string(i);
         }
 
-        m_labels.push_back(sight::viz::scene3d::text::make(this->layer()));
-        m_labels[i]->set_font_size(m_font_size);
-        m_labels[i]->set_text(label_number);
-        m_labels[i]->set_text_color(
+        auto text_label = sight::viz::scene3d::text::make(this->layer());
+        text_label->set_font_size(m_font_size);
+        text_label->set_text(label_number);
+        text_label->set_text_color(
             Ogre::ColourValue(
                 m_label_color->red(),
                 m_label_color->green(),
                 m_label_color->blue()
             )
         );
-        m_nodes.push_back(m_scene_node->createChildSceneNode(gen_id(label_number)));
-        m_labels[i]->attach_to_node(m_nodes[i], this->layer()->get_default_camera());
+        auto* node = m_scene_node->createChildSceneNode(gen_id(label_number));
+        m_nodes.push_back(node);
+        text_label->attach_to_node(node, this->layer()->get_default_camera());
+        m_labels.push_back(text_label);
+
         data::point::point_coord_array_t coord = point->get_coord();
-        m_nodes[i]->translate(static_cast<float>(coord[0]), static_cast<float>(coord[1]), static_cast<float>(coord[2]));
+        node->translate(static_cast<float>(coord[0]), static_cast<float>(coord[1]), static_cast<float>(coord[2]));
         i++;
     }
 }
@@ -308,11 +313,11 @@ void point_list::create_label(const data::point_list::csptr& _point_list)
 
 void point_list::destroy_label()
 {
-    std::ranges::for_each(m_nodes, [this](auto& _node){m_scene_node->removeAndDestroyChild(_node);});
-    m_nodes.clear();
-
     std::ranges::for_each(m_labels, [](auto& _label){_label->detach_from_node();});
     m_labels.clear();
+
+    std::ranges::for_each(m_nodes, [this](auto& _node){m_scene_node->removeAndDestroyChild(_node);});
+    m_nodes.clear();
 }
 
 //-----------------------------------------------------------------------------

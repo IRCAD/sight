@@ -157,4 +157,48 @@ bool intersect(
              || ((dot(normal, cross(v12, _point - _v2))) < 0.0) || ((dot(normal, cross(v20, _point - _v3))) < 0.0));
 }
 
+//------------------------------------------------------------------------------
+
+bool intersect_box(line_t _segment, oriented_box_t _box)
+{
+    const glm::dvec3 segment_center = (_segment.first + _segment.second) * 0.5;
+    const glm::dvec3 pm_c           = segment_center - _box.center;
+    glm::dvec3 a_dd_u;
+    glm::dvec3 pm_cd_u;
+    glm::dvec3 a_dx_pm_cd_u;
+
+    const double segment_extent  = glm::length(_segment.second - _segment.first) * 0.5;
+    const glm::dvec3 segment_dir = glm::normalize(_segment.second - _segment.first);
+    for(int i = 0 ; i < 3 ; ++i)
+    {
+        a_dd_u[i]  = std::abs(glm::dot(segment_dir, _box.orientation[i]));
+        pm_cd_u[i] = std::abs(glm::dot(pm_c, _box.orientation[i]));
+        if(pm_cd_u[i] > _box.extent[i] + segment_extent * a_dd_u[i])
+        {
+            return false;
+        }
+    }
+
+    const glm::dvec3 dx_pm_c = glm::cross(segment_dir, pm_c);
+    a_dx_pm_cd_u[0] = std::abs(glm::dot(dx_pm_c, _box.orientation[0]));
+    if(a_dx_pm_cd_u[0] > _box.extent[1] * a_dd_u[2] + _box.extent[2] * a_dd_u[1])
+    {
+        return false;
+    }
+
+    a_dx_pm_cd_u[1] = std::abs(glm::dot(dx_pm_c, _box.orientation[1]));
+    if(a_dx_pm_cd_u[1] > _box.extent[0] * a_dd_u[2] + _box.extent[2] * a_dd_u[0])
+    {
+        return false;
+    }
+
+    a_dx_pm_cd_u[2] = std::abs(glm::dot(dx_pm_c, _box.orientation[2]));
+    if(a_dx_pm_cd_u[2] > _box.extent[0] * a_dd_u[1] + _box.extent[1] * a_dd_u[0])
+    {
+        return false;
+    }
+
+    return true;
+}
+
 } //namespace sight::geometry

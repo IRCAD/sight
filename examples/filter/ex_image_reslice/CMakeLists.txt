@@ -25,4 +25,4 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_app PARAM_LIST config PARAM_VALUES sight::examples::filter::ex_image_reslice::config)
+module_param(module_app PARAM_LIST config PARAM_VALUES ex_image_reslice::config)

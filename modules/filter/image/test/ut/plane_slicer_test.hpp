@@ -23,31 +23,22 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::geometry::ut
+namespace sight::module::filter::image::ut
 {
 
-class line_test : public CPPUNIT_NS::TestFixture
+class plane_slicer_test : public CPPUNIT_NS::TestFixture
 {
-private:
-
-    CPPUNIT_TEST_SUITE(line_test);
-    CPPUNIT_TEST(get_closest_point);
-    CPPUNIT_TEST(get_closest_points);
-    CPPUNIT_TEST(intersect1);
-    CPPUNIT_TEST(intersect2);
-    CPPUNIT_TEST(intersect_box);
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE(plane_slicer_test);
+CPPUNIT_TEST(basic);
+CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void setUp() override;
-    void tearDown() override;
+    // interface
+    void setUp();
+    void tearDown();
 
-    static void get_closest_point();
-    static void get_closest_points();
-    static void intersect1();
-    static void intersect2();
-    static void intersect_box();
+    static void basic();
 };
 
-} // namespace sight::geometry::ut
+} // namespace sight::module::filter::image::ut

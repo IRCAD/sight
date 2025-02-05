@@ -22,9 +22,11 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
+#include <data/point_list.hpp>
 
 #include <service/filter.hpp>
 
@@ -40,12 +42,16 @@ namespace sight::module::filter::image
 /**
  * @brief Operator computing a 2D slice from a 3D image.
  *
+ * @section Signals Signals
+ * - \b slice_range_changed(): send the minimum and maximum translation value in the reslice direction.
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
    <service type="sight::module::filter::image::plane_slicer" auto_connect="true">
        <in key="image" uid="..." />
        <in key="axes" uid="..." />
+       <in key="offset" uid="..." />
        <inout key="slice" uid="..." />
    </service>
    @endcode
@@ -53,40 +59,55 @@ namespace sight::module::filter::image
  * @subsection Input Input
  * - \b image [sight::data::image]: image from which the slice is extracted.
  * - \b axes [sight::data::matrix4]: matrix containing axes defining the reslicing plane.
+ * - \b offset [sight::data::matrix4] (optional): matrix containing an extra offset, for instance allowing to translate
+ * along the direction plane (only set a translation in Z for this).
  *
  * @subsection In-Out In-Out
  * - \b slice [sight::data::image]: Extracted slice.
  *
+ * @subsection Properties Properties
+ * - \b center [sight::data::boolean]: Center the reslice at the location of the matrix.
  */
-
-class plane_slicer : public service::filter
+class plane_slicer final : public service::filter
 {
 public:
 
     SIGHT_DECLARE_SERVICE(plane_slicer, service::filter);
 
+    struct signals
+    {
+        using slice_range_changed_t = core::com::signal<void (double, double)>;
+        static inline const core::com::signals::key_t SLICE_RANGE_CHANGED = "slice_range_changed";
+    };
+
+    struct slots
+    {
+        static inline const core::com::slots::key_t UPDATE_DEFAULT_VALUE = "update_default_value";
+    };
+
     /// Constructor.
     plane_slicer() noexcept;
 
     /// Destructor.
-    ~plane_slicer() noexcept override;
+    ~plane_slicer() noexcept final = default;
 
 protected:
 
-    void configuring() override;
-    void starting() override;
-    void updating() override;
-    void stopping() override;
+    void configuring() final;
+    void starting() final;
+    void updating() final;
+    void stopping() final;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals.
      *
      * Connect image::MODIFIED_SIG to this::service::slots::UPDATE
      * Connect image::BUFFER_MODIFIED_SIG to this::service::slots::UPDATE
-     * Connect image::BUFFER_MODIFIED_SIG to this::UPDATE_DEFAULT_VALUE_SLOT
+     * Connect image::MODIFIED_SIG to slots::UPDATE_DEFAULT_VALUE
+     * Connect image::BUFFER_MODIFIED_SIG to slots::UPDATE_DEFAULT_VALUE
      * Connect axes::MODIFIED_SIG to this::service::slots::UPDATE
      */
-    connections_t auto_connections() const override;
+    connections_t auto_connections() const final;
 
 private:
 
@@ -96,13 +117,12 @@ private:
     /// Vtk reslicing algorithm.
     vtkSmartPointer<vtkImageReslice> m_reslicer;
 
-    static constexpr std::string_view IMAGE_IN    = "image";
-    static constexpr std::string_view AXES_IN     = "axes";
-    static constexpr std::string_view SLICE_INOUT = "slice";
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_axes {this, "axes"};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_offset {this, "offset", true};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_slice {this, "slice"};
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_IN};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_axes {this, AXES_IN};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_slice {this, SLICE_INOUT};
+    sight::data::property<sight::data::boolean> m_center {this, "center", false};
 };
 
 } //namespace sight::module::filter::image

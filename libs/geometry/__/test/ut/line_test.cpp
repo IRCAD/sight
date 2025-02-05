@@ -52,7 +52,7 @@ void line_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void line_test::check_get_closest_point()
+void line_test::get_closest_point()
 {
     {
         ray_t ray     = {{0, 0, 0}, {1, 0, 0}};
@@ -89,7 +89,7 @@ void line_test::check_get_closest_point()
 
 //------------------------------------------------------------------------------
 
-void line_test::check_get_closest_points()
+void line_test::get_closest_points()
 {
     glm::dvec3 point_on_this;
     glm::dvec3 point_on_ray;
@@ -158,7 +158,7 @@ void line_test::check_get_closest_points()
 
 //------------------------------------------------------------------------------
 
-void line_test::check_intersect1()
+void line_test::intersect1()
 {
     {
         ray_t ray     = {{0, 0, 0}, {1, 0, 0}};
@@ -203,7 +203,7 @@ void line_test::check_intersect1()
 
 //------------------------------------------------------------------------------
 
-void line_test::check_intersect2()
+void line_test::intersect2()
 {
     // No intersection, parallel rays
     {
@@ -250,8 +250,67 @@ void line_test::check_intersect2()
 
 //------------------------------------------------------------------------------
 
-void line_test::check_intersect3()
+void line_test::intersect_box()
 {
+    {
+        glm::dvec3 center            = {0, 0, 0};
+        glm::dvec3 extent            = {1, 1, 1};
+        glm::dmat3 orientation       = {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0};
+        geometry::oriented_box_t box = {.center = center, .extent = extent, .orientation = orientation};
+
+        {
+            geometry::line_t segment = {{0, 0, 0}, {10, 0, 0}};
+            bool intersect           = geometry::intersect_box(segment, box);
+            CPPUNIT_ASSERT(intersect == true);
+        }
+        {
+            geometry::line_t segment = {{-2, 0, 0}, {-1.1, 0, 0}};
+            bool intersect           = geometry::intersect_box(segment, box);
+            CPPUNIT_ASSERT(intersect == false);
+        }
+        {
+            geometry::line_t segment = {{-2, -1, -1}, {2, 0, 1}};
+            bool intersect           = geometry::intersect_box(segment, box);
+            CPPUNIT_ASSERT(intersect == true);
+        }
+        {
+            geometry::line_t segment = {{4, 5, 6}, {2, 3, 4}};
+            bool intersect           = geometry::intersect_box(segment, box);
+            CPPUNIT_ASSERT(intersect == false);
+        }
+    }
+    {
+        glm::dvec3 center            = {-10, 4, 8};
+        glm::dvec3 extent            = {1, 2, 3.5}; // Rotated: 3.5, 2, 1.0
+        glm::dmat3 orientation       = {0.0, 0.0, 1.0, 0.0, 1.0, 0.0, -1.0, 0.0, 0.0};
+        geometry::oriented_box_t box = {.center = center, .extent = extent, .orientation = orientation};
+
+        {
+            geometry::line_t segment = {{-6, 6, 12}, {-11, 5.5, 8}};
+            bool intersect           = geometry::intersect_box(segment, box);
+            CPPUNIT_ASSERT(intersect == true);
+        }
+        {
+            geometry::line_t segment = {{-15, 6, 12}, {-13, 3, 9}};
+            bool intersect           = geometry::intersect_box(segment, box);
+            CPPUNIT_ASSERT(intersect == true);
+        }
+        {
+            geometry::line_t segment = {{-15, 6, 12}, {-14, 3, 8}};
+            bool intersect           = geometry::intersect_box(segment, box);
+            CPPUNIT_ASSERT(intersect == false);
+        }
+        {
+            geometry::line_t segment = {{-15, 6, 12}, {-13, 3, 10}};
+            bool intersect           = geometry::intersect_box(segment, box);
+            CPPUNIT_ASSERT(intersect == false);
+        }
+        {
+            geometry::line_t segment = {{-15, 6.1, 12}, {-13, 6.2, 9}};
+            bool intersect           = geometry::intersect_box(segment, box);
+            CPPUNIT_ASSERT(intersect == false);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
