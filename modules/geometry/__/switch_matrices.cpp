@@ -84,11 +84,13 @@ void switch_matrices::updating()
 
 void switch_matrices::switch_matrix()
 {
-    auto current_index = m_current_index.lock();
-    *current_index = *current_index + 1;
-    if(static_cast<std::size_t>(*current_index) >= m_matrix.size())
     {
-        *current_index = 0;
+        auto current_index = m_current_index.lock();
+        *current_index = *current_index + 1;
+        if(static_cast<std::size_t>(*current_index) >= m_matrix.size())
+        {
+            *current_index = 0;
+        }
     }
 
     this->updating();
