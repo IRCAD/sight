@@ -125,6 +125,7 @@
             <service uid="organs_view" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::toolbox">
+                        <icon_color value="#FFFFFF" />
                         <view caption="Organs" expanded="true" />
                         <view caption="Material" expanded="true" />
                         <view caption="Representation" />

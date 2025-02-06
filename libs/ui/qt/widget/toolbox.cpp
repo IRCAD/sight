@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,56 +22,19 @@
 
 #include "ui/qt/widget/toolbox.hpp"
 
+#include <core/spy_log.hpp>
+
 #include <QApplication>
 #include <QFrame>
 #include <QIcon>
+#include <QPainter>
+#include <QPainterPath>
 #include <QPixmap>
 #include <QStyleOption>
 #include <QVBoxLayout>
 
-#include <array>
-
 namespace sight::ui::qt::widget
 {
-
-static std::array branch_closed {
-    "8 17 2 1",
-/* colors */
-    "- c #000000",
-    "a c None",
-/* pixels */
-    "aaaaaaaa",
-    "-aaaaaaa",
-    "--aaaaaa",
-    "---aaaaa",
-    "----aaaa",
-    "-----aaa",
-    "------aa",
-    "-------a",
-    "--------",
-    "-------a",
-    "------aa",
-    "-----aaa",
-    "----aaaa",
-    "---aaaaa",
-    "--aaaaaa",
-    "-aaaaaaa",
-    "aaaaaaaa"
-};
-
-static std::array branch_open {
-    "11 6 2 1",
-/* colors */
-    "- c #000000",
-    "a c None",
-/* pixels */
-    "-----------",
-    "a---------a",
-    "aa-------aa",
-    "aaa-----aaa",
-    "aaaa---aaaa",
-    "aaaaa-aaaaa"
-};
 
 toolbox::~toolbox()
 = default;
@@ -203,11 +166,30 @@ int toolbox::insert_item(int _index, QWidget* _widget, const QString& _text)
     c.button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     c.button->setFocusPolicy(Qt::NoFocus);
     c.button->setCheckable(true);
-    // handle the color of the closing and opening icons.
-    branch_open.at(1)   = (std::string("- c ") + m_icon_color.name().toStdString()).c_str();
-    branch_closed.at(1) = (std::string("- c ") + m_icon_color.name().toStdString()).c_str();
-    QPixmap pix_open(branch_open.data());
-    QPixmap pix_close(branch_closed.data());
+
+    // Opened and closed icons are drawn manually.
+    QPixmap pix_open(QSize(50, 80));
+    pix_open.fill(Qt::transparent); // Make sure background is transparent.
+    QPainter painter_open;
+    painter_open.begin(&pix_open);
+    QPolygonF triangle;
+    triangle << QPointF(0, 15) << QPointF(50, 15) << QPointF(25, 60);
+    QPainterPath path;
+    path.addPolygon(triangle);
+    painter_open.fillPath(path, m_icon_color);
+    painter_open.end();
+
+    QPixmap pix_close(QSize(50, 80));
+    pix_close.fill(Qt::transparent);
+    QPainter painter_close;
+    painter_close.begin(&pix_close);
+    triangle.clear();
+    triangle << QPointF(0, 15) << QPointF(0, 65) << QPointF(50, 40);
+    path.clear();
+    path.addPolygon(triangle);
+    painter_close.fillPath(path, m_icon_color);
+    painter_close.end();
+
     QIcon b_icon;
     b_icon.addPixmap(pix_close, QIcon::Normal, QIcon::Off);
     b_icon.addPixmap(pix_open, QIcon::Active, QIcon::On);
