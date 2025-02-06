@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,41 +25,21 @@
 #include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
+#include <service/base.hpp>
 #include <service/macros.hpp>
+
+#include <boost/algorithm/string.hpp>
 
 namespace sight::io::service
 {
 
-// Public slot
-const core::com::slots::key_t reader::SET_FILE_FOLDER = "setFileFolder";
-
-// Private slot
-static const core::com::slots::key_t READ_FOLDER_SLOT     = "readFolder";
-static const core::com::slots::key_t READ_FILE_SLOT       = "readFile";
-static const core::com::slots::key_t READ_FILES_SLOT      = "readFiles";
-static const core::com::slots::key_t OPEN_LOCATION_DIALOG = "open_location_dialog";
-
 //-----------------------------------------------------------------------------
 
-reader::reader() noexcept
+reader::reader(const std::string& _default_window_title) noexcept :
+    m_window_title(this, WINDOW_TITLE_KEY, _default_window_title)
 {
-    new_slot(READ_FOLDER_SLOT, &reader::read_folder, this);
-    new_slot(READ_FILE_SLOT, &reader::read_file, this);
-    new_slot(READ_FILES_SLOT, &reader::read_files, this);
-    new_slot(OPEN_LOCATION_DIALOG, &reader::open_location_dialog, this);
-    new_slot(SET_FILE_FOLDER, &reader::set_file_folder, this);
-}
-
-//-----------------------------------------------------------------------------
-
-reader::~reader() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
-std::string reader::get_selector_dialog_title()
-{
-    return "Choose a file";
+    new_slot(slots::OPEN_LOCATION_DIALOG, &reader::open_location_dialog, this);
+    new_slot(slots::UPDATE_DEFAULT_LOCATIONS, &reader::update_default_locations, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -124,23 +104,6 @@ void reader::set_folder(const std::filesystem::path& _folder)
 
 //-----------------------------------------------------------------------------
 
-void reader::set_file_folder(std::filesystem::path _folder)
-{
-    SIGHT_THROW_IF(
-        "This reader doesn't manage file or files",
-        !(this->get_path_type() & io::service::file)
-        && !(this->get_path_type() & io::service::files)
-    );
-
-    for(auto& file : m_locations)
-    {
-        file = file.filename();
-        file = _folder / file;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 const io::service::locations_t& reader::get_locations() const
 {
     SIGHT_THROW_IF("At least one path must be define in location", m_locations.empty());
@@ -158,86 +121,212 @@ void reader::clear_locations()
 
 void reader::configuring()
 {
-    const config_t config = this->get_config();
-
+    /// @todo check if this is still needed or useful or not a static assert at build time...
     SIGHT_ASSERT(
         "Generic configuring method is only available for io service that use paths.",
         !(this->get_path_type() & io::service::type_not_defined)
     );
 
     SIGHT_ASSERT(
-        "This reader does not manage folders and a folder path is given in the configuration",
-        (this->get_path_type() & io::service::folder) || (config.count("folder") == 0)
+        "This reader cannot manage both io::service::files and io::service::file.",
+        (this->get_path_type() & io::service::files) == 0 || (this->get_path_type() & io::service::file) == 0
     );
 
+    // Check if we use properties or XML configuration
+    const config_t config              = this->get_config();
+    const bool use_file_config         = config.count(OLD_FILE_KEY) > 0;
+    const bool use_folder_config       = config.count(FOLDER_KEY) > 0;
+    const bool use_resource_config     = config.count(OLD_RESOURCE_KEY) > 0;
+    const bool use_window_title_config = config.count(OLD_WINDOW_TITLE_KEY) > 0;
+
+    if(use_file_config || use_folder_config || use_resource_config || use_window_title_config)
+    {
+        // Use XML configuration
+        /// @todo remove me once deprecated configuration is removed
+
+        // Deprecation messages
+        if(use_file_config)
+        {
+            FW_DEPRECATED_MSG(
+                "<" + OLD_FILE_KEY + "> XML configuration is deprecated, use `" + FILES_KEY + "` property instead.",
+                "26.0"
+            );
+        }
+
+        if(use_folder_config)
+        {
+            FW_DEPRECATED_MSG(
+                "<" + FOLDER_KEY + "> XML configuration is deprecated, use `" + FOLDER_KEY + "` property instead.",
+                "26.0"
+            );
+        }
+
+        if(use_resource_config)
+        {
+            FW_DEPRECATED_MSG(
+                "<" + OLD_RESOURCE_KEY + "> XML configuration is deprecated, use `" + RESOURCES_KEY
+                + "` property instead.",
+                "26.0"
+            );
+        }
+
+        // windowTitle
+        if(use_window_title_config)
+        {
+            FW_DEPRECATED_MSG(
+                "<" + OLD_WINDOW_TITLE_KEY + "> XML configuration is deprecated, use `" + WINDOW_TITLE_KEY
+                + "` property instead.",
+                "26.0"
+            );
+
+            auto window_title = m_window_title.lock();
+            window_title->set_value(config.get<std::string>(OLD_WINDOW_TITLE_KEY));
+        }
+
+        // Files
+        io::service::locations_t files;
+        files.reserve(config.count(OLD_FILE_KEY));
+
+        const auto files_cfg = config.equal_range(OLD_FILE_KEY);
+        for(auto file_cfg = files_cfg.first ; file_cfg != files_cfg.second ; ++file_cfg)
+        {
+            files.emplace_back(file_cfg->second.get_value<std::filesystem::path>());
+        }
+
+        // Resources
+        std::vector<std::string> resources;
+        resources.reserve(config.count(OLD_RESOURCE_KEY));
+
+        const auto resources_cfg = config.equal_range(OLD_RESOURCE_KEY);
+        for(auto resource_cfg = resources_cfg.first ; resource_cfg != resources_cfg.second ; ++resource_cfg)
+        {
+            resources.emplace_back(resource_cfg->second.get_value<std::string>());
+        }
+
+        // Folder
+        auto folder = config.get<std::filesystem::path>(FOLDER_KEY, "");
+
+        // Perform validity checks and fill m_locations
+        this->update_locations(files, folder, resources);
+    }
+    else
+    {
+        // Use properties
+        this->update_default_locations();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+sight::service::base::connections_t reader::auto_connections() const
+{
+    return {
+        {m_files, data::object::MODIFIED_SIG, slots::UPDATE_DEFAULT_LOCATIONS},
+        {m_folder, data::object::MODIFIED_SIG, slots::UPDATE_DEFAULT_LOCATIONS},
+        {m_resources, data::object::MODIFIED_SIG, slots::UPDATE_DEFAULT_LOCATIONS}
+    };
+}
+
+//------------------------------------------------------------------------------
+
+void reader::update_default_locations()
+{
+    io::service::locations_t files;
+
+    if(const auto files_property = *m_files; !files_property.empty())
+    {
+        boost::split(files, files_property, boost::is_any_of(";"), boost::token_compress_on);
+    }
+
+    std::vector<std::string> resources;
+
+    if(const auto resources_property = *m_resources; !resources_property.empty())
+    {
+        boost::split(resources, resources_property, boost::is_any_of(";"), boost::token_compress_on);
+    }
+
+    this->update_locations(files, *m_folder, resources);
+}
+
+//------------------------------------------------------------------------------
+
+void reader::update_locations(
+    const io::service::locations_t& _files,
+    const std::filesystem::path& _folder,
+    const std::vector<std::string>& _resources
+)
+{
+    // Assertion checks
     SIGHT_ASSERT(
         "This reader does not manage files and a file path is given in the configuration",
-        (this->get_path_type() & io::service::file || this->get_path_type() & io::service::files)
-        || (config.count("file") == 0)
+        (this->get_path_type() & io::service::file || this->get_path_type() & io::service::files) || (_files.empty())
     );
 
-    m_window_title = config.get("windowTitle", "");
-
+    // Populate m_locations with files
     if((this->get_path_type() & io::service::file) != 0)
     {
-        SIGHT_THROW_IF("This reader cannot manages FILE and FILES.", this->get_path_type() & io::service::files);
-        SIGHT_THROW_IF("At least one file must be defined in configuration", config.count("file") > 1);
-        if(config.count("file") == 1)
+        if(!_files.empty())
         {
-            const auto file = config.get<std::string>("file");
-            this->set_file(std::filesystem::path(file));
+            SIGHT_ASSERT(
+                "This reader single file, but there is more than one file.",
+                _files.size() == 1
+            );
+
+            this->set_file(_files.front());
         }
-        else if(config.count("resource") == 1)
+        else if(!_resources.empty())
         {
-            const auto resource = config.get<std::string>("resource");
-            const auto file     = core::runtime::get_resource_file_path(resource);
+            SIGHT_ASSERT(
+                "This reader single file, but there is more than one resource.",
+                _resources.size() == 1
+            );
+
+            const auto file = core::runtime::get_resource_file_path(_resources.front());
             this->set_file(file);
         }
     }
-
-    if((this->get_path_type() & io::service::files) != 0)
+    else if((this->get_path_type() & io::service::files) != 0)
     {
-        SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->get_path_type() & io::service::file);
+        io::service::locations_t files(_files);
 
-        io::service::locations_t locations;
+        std::transform(
+            _resources.begin(),
+            _resources.end(),
+            std::back_inserter(files),
+            [](const std::string& _resource)
+            {
+                return core::runtime::get_resource_file_path(_resource);
+            });
 
-        const auto files_cfg = config.equal_range("file");
-        for(auto file_cfg = files_cfg.first ; file_cfg != files_cfg.second ; ++file_cfg)
-        {
-            const auto location = file_cfg->second.get_value<std::string>();
-            locations.emplace_back(location);
-        }
-
-        const auto resources_cfg = config.equal_range("resource");
-        for(auto resource_cfg = resources_cfg.first ; resource_cfg != resources_cfg.second ; ++resource_cfg)
-        {
-            const auto resource = resource_cfg->second.get_value<std::string>();
-            const auto file     = core::runtime::get_resource_file_path(resource);
-            locations.push_back(file);
-        }
-
-        this->set_files(locations);
+        this->set_files(files);
     }
 
+    // Populate m_locations with folder
     if((this->get_path_type() & io::service::folder) != 0)
     {
-        SIGHT_THROW_IF("At least one folder must be defined in configuration", config.count("folder") > 1);
-        if(config.count("folder") == 1)
+        if(!_folder.empty())
         {
-            const auto folder = config.get<std::string>("folder");
-            this->set_folder(std::filesystem::path(folder));
+            this->set_folder(_folder);
         }
-        else if(config.count("resource") == 1)
+        else if(!_resources.empty())
         {
-            const auto resource = config.get<std::string>("resource");
-            auto folder         = core::runtime::get_module_resource_file_path(resource);
+            SIGHT_ASSERT(
+                "This reader single folder, but there is more than one resource.",
+                _resources.size() == 1
+            );
+
+            const auto& resource = _resources.front();
+
+            // Look in the module
+            auto folder = core::runtime::get_module_resource_file_path(resource);
+
             if(folder.empty())
             {
                 // If not found in a module, look into libraries
                 folder = core::runtime::get_library_resource_file_path(resource);
-                SIGHT_ERROR_IF(
+                SIGHT_ASSERT(
                     "Resource '" + resource + "' has not been found in any module or library",
-                    folder.empty()
+                    !folder.empty()
                 );
             }
 
@@ -266,31 +355,5 @@ bool reader::has_failed() const
 {
     return m_read_failed;
 }
-
-//-----------------------------------------------------------------------------
-
-void reader::read_folder(std::filesystem::path _folder)
-{
-    this->set_folder(_folder);
-    this->updating();
-}
-
-//-----------------------------------------------------------------------------
-
-void reader::read_file(std::filesystem::path _file)
-{
-    this->set_file(_file);
-    this->updating();
-}
-
-//-----------------------------------------------------------------------------
-
-void reader::read_files(io::service::locations_t _files)
-{
-    this->set_files(_files);
-    this->updating();
-}
-
-//-----------------------------------------------------------------------------
 
 } // namespace sight::io::service

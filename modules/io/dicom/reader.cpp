@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -81,20 +81,20 @@ public:
     reader_impl& operator=(reader_impl&&)      = delete;
 
     /// Constructor
-    inline explicit reader_impl(reader* const _reader) noexcept :
+    explicit reader_impl(reader* const _reader) noexcept :
         m_owner(_reader),
         m_job_created_signal(_reader->new_signal<job_created_signal_t>("job_created"))
     {
     }
 
     /// Default destructor
-    inline ~reader_impl() noexcept = default;
+    ~reader_impl() noexcept = default;
 
     /// Pointer to the public interface
     reader* const m_owner;
 
     /// Clear location and selected series
-    inline void clear()
+    void clear()
     {
         m_owner->clear_locations();
         m_reader.reset();
@@ -103,7 +103,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline bool show_location() const
+    [[nodiscard]] bool show_location() const
     {
         static auto default_location = std::make_shared<core::location::single_folder>();
 
@@ -111,17 +111,7 @@ public:
            || (m_dialog_policy == dialog_policy::once && !m_owner->has_location_defined()))
         {
             sight::ui::dialog::location location_dialog;
-
-            // Set dialog options
-            if(!m_owner->m_window_title.empty())
-            {
-                location_dialog.set_title(m_owner->m_window_title);
-            }
-            else
-            {
-                location_dialog.set_title("Enter DICOM directory name");
-            }
-
+            location_dialog.set_title(*m_owner->m_window_title);
             location_dialog.set_default_location(default_location);
             location_dialog.set_option(ui::dialog::location::read);
             location_dialog.set_type(ui::dialog::location::folder);
@@ -151,7 +141,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool scan()
+    bool scan()
     {
         // Set cursor to busy state. It will be reset to default even if exception occurs
         const sight::ui::busy_cursor busy_cursor;
@@ -185,7 +175,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool show_selection()
+    bool show_selection()
     {
         // if we found more than one series, let the user choose them
         if(m_selection->size() > 1)
@@ -246,6 +236,7 @@ public:
 };
 
 reader::reader() noexcept :
+    sight::io::service::reader("Enter DICOM directory name"),
     m_pimpl(std::make_unique<reader_impl>(this))
 {
 }

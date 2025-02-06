@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,6 +44,11 @@ namespace sight::module::io::matrix
 {
 
 //-----------------------------------------------------------------------------
+
+matrix4_trf_reader::matrix4_trf_reader() noexcept :
+    reader("Choose a file to load a transformation matrix")
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -89,7 +94,7 @@ void matrix4_trf_reader::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose a file to load a transformation matrix" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("TRF files", "*.trf");
     dialog_file.set_option(ui::dialog::location::read);

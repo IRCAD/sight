@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,9 +52,10 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
 
 //------------------------------------------------------------------------------
 
-mesh_writer::mesh_writer() noexcept
+mesh_writer::mesh_writer() noexcept :
+    writer("Choose a vtk file to save Mesh"),
+    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
 {
-    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -71,7 +72,7 @@ void mesh_writer::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose a vtk file to save Mesh" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("OBJ File(.obj)", "*.obj");
     dialog_file.add_filter("PLY File(.ply)", "*.ply");

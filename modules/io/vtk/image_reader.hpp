@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,8 +74,9 @@ class image_reader : public sight::io::service::reader
 {
 public:
 
-    ~image_reader() noexcept override =
-        default;
+    image_reader() noexcept;
+
+    ~image_reader() noexcept override = default;
 
     SIGHT_DECLARE_SERVICE(image_reader, sight::io::service::reader);
 
@@ -87,11 +88,6 @@ public:
      * This method is used to find the file path using a file selector.
      */
     void open_location_dialog() override;
-
-    /**
-     * @brief Constructor. Do nothing.
-     */
-    image_reader() noexcept;
 
     /**
      * @brief This method is used to load an vtk image using a file path.

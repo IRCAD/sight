@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,8 @@
 
 #include <core/tools/failed.hpp>
 
+#include <data/string.hpp>
+
 #include <service/base.hpp>
 
 #include <filesystem>
@@ -38,18 +40,26 @@ namespace sight::io::service
 /**
  * @brief Reader service API. It manages extension points definition and extension configuration
  *
- * @section Slots Slots
- * - \b setFileFolder(const std::filesystem::path&) : Sets the folder when a path is configured in FILE or
- * FILES mode
+ * This abstract class defines the API for all reader services. It provides the basic methods to read data from files
+ * or a folder. The reader service can be configured using properties. Subclasses should implement the
+ * open_location_dialog(), get_path_type() and get_supported_extensions() methods. In updating(), which should perform
+ * the "read" and updating the m_data object, m_read_failed must be set to the correct value.
  *
- * This class represents the base interface for reader services.
- * Use the base service methods :
- * @li The service is configured with methods set_config(cfg) and configure()
- * @li The method start() initialize the service
- * @li To read the object use update() method
- * @li Finally we must call stop() before deleting the service
- * @todo ACH : remove some methods : getSupportedExtensions ? getSelectorDialogTitle ?
+ * @section Slots Slots
+ * - \b open_location_dialog() : Open a dialog to select a file or a folder.
+ *
+ * @subsection In-Out In-Out
+ * - \b data [sight::data::object]: Generic data inout. The reader should puplate this data with the read data.
+ *
+ * @subsection Properties Properties
+ * - \b window_title (optional) : The window title that can be used for open_location_dialog. This abstract class
+ *                   defines a default that can be overriden by calling the appropriate constructor, but the XML
+ *                   property definition have the precedence in all cases.
+ * - \b files : The file(s) to open. Depending of the path_type_t, it can be a single file or multiple files.
+ * - \b folder : The folder to open. Used when the path_type_t is "folder".
+ * - \b resources : When files / folder to open are resources and need to be found in the module or libraries.
  */
+
 class SIGHT_IO_CLASS_API reader : public sight::service::base
 {
 public:
@@ -69,8 +79,13 @@ public:
      * @name Slots API
      * @{
      */
-    SIGHT_IO_API static const core::com::slots::key_t SET_FILE_FOLDER;
-    /// @}
+    struct slots
+    {
+        using key_t = sight::core::com::slots::key_t;
+        static inline const key_t OPEN_LOCATION_DIALOG     = "open_location_dialog";
+        static inline const key_t UPDATE_DEFAULT_LOCATIONS = "update_default_locations";
+    };
+    //@}
 
     /**
      * @name    Specific service methods for reading
@@ -80,19 +95,14 @@ public:
     /**
      * @brief Configure the image path (by default does nothing).
      *
-     * This method is used to find
-     * the file path  using a file selector.
+     * This method is used to find the file path  using a file selector.
      */
     SIGHT_IO_API virtual void open_location_dialog() = 0;
+
     /**
      * @brief   returns  (filename) extension
      */
     SIGHT_IO_API virtual std::vector<std::string> get_supported_extensions();
-
-    /**
-     * @brief   returns  the title of selector dialog box
-     */
-    SIGHT_IO_API virtual std::string get_selector_dialog_title();
 
     /**
      * @brief This method must be implemented by concrete service readers
@@ -138,6 +148,12 @@ public:
     SIGHT_IO_API const std::filesystem::path& get_folder() const;
 
     /**
+     * @brief Sets folder path
+     * @pre exception if service does not support FOLDER mode
+     */
+    SIGHT_IO_API void set_folder(const std::filesystem::path& _folder);
+
+    /**
      * @brief Clear any location set by the set_file/set_files/set_folder setter
      */
     SIGHT_IO_API void clear_locations();
@@ -147,20 +163,6 @@ public:
      * @pre exception if a file path is not defined ( m_locations.empty() )
      */
     SIGHT_IO_API const io::service::locations_t& get_locations() const;
-
-    /**
-     * @brief Sets folder path
-     * @pre exception if service does not support FOLDER mode
-     */
-    SIGHT_IO_API void set_folder(const std::filesystem::path& _folder);
-
-    /**
-     * @brief Slot: Sets the folder when a path is configured in FILE or FILES mode
-     * This is ignored if a path is not configured
-     *
-     * @pre exception if service does not support FILE or FILES mode
-     */
-    SIGHT_IO_API void set_file_folder(std::filesystem::path _folder);
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     SIGHT_IO_API bool has_location_defined() const;
@@ -211,69 +213,18 @@ public:
 
 protected:
 
-    SIGHT_IO_API reader() noexcept;
+    SIGHT_IO_API reader(const std::string& _default_window_title = s_DEFAULT_WINDOW_TITLE) noexcept;
 
-    SIGHT_IO_API ~reader() noexcept override;
+    SIGHT_IO_API ~reader() noexcept override = default;
 
     /**
-     * @brief This method proposes to parse xml configuration to retrieve
-     * file/files/folder paths.
-     *
-     * You can implement your configuring method if you wan check another
-     * information or information not correspond to a path on filesystem,
-     * else you must use this generic approach.
-     *
-     * Sample configuration for a file:
-     * @code{.xml}
-     *  <service ... >
-     *      <file>/home/user/myFile.jpg</file>
-     *  </service>
-     * @endcode
-     * Sample configuration for many files:
-     * @code{.xml}
-     *  <service ... >
-     *      <file>/home/user/myFile01.jpg</file>
-     *      <file>/home/user/myFile02.jpg</file>
-     *      <file>/home/user/myFile03.jpg</file>
-     *  </service>
-     * @endcode
-     * Sample configuration for a folder:
-     * @code{.xml}
-     *  <service ... >
-     *      <folder>/home/user/myFolder</folder>
-     *  </service>
-     * @endcode
-     * Sample configuration for a resource (file stored in a module or a library):
-     * @code{.xml}
-     *  <service ... >
-     *      <resource>module/myFile.jpg</resource>
-     *  </service>
-     * Sample configuration for many resources (files stored in a module or a library):
-     * @code{.xml}
-     *  <service ... >
-     *      <resource>module/myFile01.jpg</resource>
-     *      <resource>module/myFile02.jpg</resource>
-     *      <resource>library/myFile03.jpg</resource>
-     *  </service>
-     * Sample configuration for a resource folder (module or library path):
-     * @code{.xml}
-     *  <service ... >
-     *      <resource>module</resource>
-     *  </service>
-     *
-     * You may specify the title of the modal file selection window with the `windowTitle` config attribute as such:
-     * @code{.xml}
-     *  <service ... >
-     *      <windowTitle>Example window title</windowTitle>
-     *  </service>
-     * @endcode
+     * @brief This method proposes to parse xml configuration to retrieve file/files/folder paths.
+     * @warning Using XML configuration is deprecated, use the properties instead.
      */
     SIGHT_IO_API void configuring() override;
 
-    /**
-     * @brief Title of the window that will open when the `open_location_dialog` slot is called
-     */
-    std::string m_window_title;
+    /// Defines the auto-connection between the file/folder properties and the 'set_file/set_folder'
+    SIGHT_IO_API connections_t auto_connections() const override;
 
     /// Defines whether reading was performed correctly, or if it has failed or if user has cancelled the process.
     bool m_read_failed {false};
@@ -281,17 +232,39 @@ protected:
     /// Generic output data
     data::ptr<data::object, data::access::inout> m_data {this, sight::io::service::DATA_KEY};
 
+    /// Window title for the file dialog
+    sight::data::property<sight::data::string> m_window_title {this, WINDOW_TITLE_KEY, s_DEFAULT_WINDOW_TITLE};
+
 private:
 
-    /// Slot to read folder
-    void read_folder(std::filesystem::path _folder);
-    /// Slot to read file
-    void read_file(std::filesystem::path _file);
-    /// Slot to read files
-    void read_files(io::service::locations_t _files);
+    /**
+     * @brief SLOT: Reads values from the file / folder properties and updates m_locations.
+     */
+    void update_default_locations();
+
+    /**
+     * @brief fill m_locations
+     *
+     * @param _files
+     * @param _folder
+     * @param _resources
+     */
+    void update_locations(
+        const io::service::locations_t& _files,
+        const std::filesystem::path& _folder,
+        const std::vector<std::string>& _resources
+    );
+
+    /// Default window title
+    inline static const std::string s_DEFAULT_WINDOW_TITLE = "Choose a file";
 
     /// Value to stock file or folder paths
     io::service::locations_t m_locations;
+
+    /// Default values for file/folder paths
+    sight::data::property<sight::data::string> m_files {this, FILES_KEY, std::string()};
+    sight::data::property<sight::data::string> m_folder {this, FOLDER_KEY, std::string()};
+    sight::data::property<sight::data::string> m_resources {this, RESOURCES_KEY, std::string()};
 };
 
 } //namespace sight::io::service

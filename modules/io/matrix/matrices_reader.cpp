@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,8 @@ static const core::com::slots::key_t SET_STEP      = "set_step";
 
 //------------------------------------------------------------------------------
 
-matrices_reader::matrices_reader() noexcept
+matrices_reader::matrices_reader() noexcept :
+    reader("Choose a csv file to read")
 {
     new_slot(START_READING, &matrices_reader::start_reading, this);
     new_slot(STOP_READING, &matrices_reader::stop_reading, this);
@@ -123,8 +124,9 @@ void matrices_reader::starting()
 void matrices_reader::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
+
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose a csv file to read" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.set_option(ui::dialog::location::read);
     dialog_file.set_type(ui::dialog::location::single_file);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,6 +43,13 @@ enum path_type_t
 /// List of paths managed by io services
 using locations_t = std::vector<std::filesystem::path>;
 
-SIGHT_IO_API extern const std::string DATA_KEY;
+inline static const std::string DATA_KEY             = "data";
+inline static const std::string OLD_FILE_KEY         = "file";
+inline static const std::string FILES_KEY            = "files";
+inline static const std::string FOLDER_KEY           = "folder";
+inline static const std::string OLD_RESOURCE_KEY     = "resource";
+inline static const std::string RESOURCES_KEY        = "resources";
+inline static const std::string WINDOW_TITLE_KEY     = "window_title";
+inline static const std::string OLD_WINDOW_TITLE_KEY = "windowTitle";
 
 } // namespace sight::io::service

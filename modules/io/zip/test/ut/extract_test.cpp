@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -55,6 +55,7 @@ void extract_test::basic_archive_test()
     service::base::sptr extract = service::add("sight::module::io::zip::extract");
     CPPUNIT_ASSERT(extract);
 
+    CPPUNIT_ASSERT_NO_THROW(extract->configure());
     CPPUNIT_ASSERT_NO_THROW(extract->start().get());
 
     // We select the archive we want to open.
@@ -127,6 +128,7 @@ void extract_test::encrypted_archive_test()
     service::base::sptr extract = service::add("sight::module::io::zip::extract");
     CPPUNIT_ASSERT(extract);
 
+    CPPUNIT_ASSERT_NO_THROW(extract->configure());
     CPPUNIT_ASSERT_NO_THROW(extract->start().get());
 
     // We select the archive we want to open.

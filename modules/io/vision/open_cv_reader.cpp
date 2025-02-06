@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,8 +42,10 @@ namespace sight::module::io::vision
 
 // ----------------------------------------------------------------------------
 
-open_cv_reader::open_cv_reader()
-= default;
+open_cv_reader::open_cv_reader() :
+    reader("Enter file name")
+{
+}
 
 // ----------------------------------------------------------------------------
 
@@ -74,7 +76,7 @@ bool open_cv_reader::define_location_gui()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Enter file name" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.set_option(ui::dialog::location::read);
     dialog_file.set_type(ui::dialog::location::single_file);

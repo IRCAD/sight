@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -67,8 +67,7 @@ public:
      */
     image_series_reader() noexcept;
 
-    ~image_series_reader() noexcept override =
-        default;
+    ~image_series_reader() noexcept override = default;
 
     SIGHT_DECLARE_SERVICE(image_series_reader, sight::io::service::reader);
 

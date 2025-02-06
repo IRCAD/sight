@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,6 +46,11 @@
 namespace sight::module::io::itk
 {
 
+series_set_reader::series_set_reader() noexcept :
+    reader("Choose an image file")
+{
+}
+
 //------------------------------------------------------------------------------
 
 sight::io::service::path_type_t series_set_reader::get_path_type() const
@@ -67,7 +72,7 @@ void series_set_reader::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose an image file" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");

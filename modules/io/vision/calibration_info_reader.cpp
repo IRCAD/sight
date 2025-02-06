@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,6 +47,11 @@ namespace sight::module::io::vision
 
 static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "update_chessboard_size";
 
+calibration_info_reader::calibration_info_reader() noexcept :
+    reader("Choose a folder holding calibration inputs")
+{
+}
+
 //------------------------------------------------------------------------------
 
 sight::io::service::path_type_t calibration_info_reader::get_path_type() const
@@ -61,7 +66,7 @@ void calibration_info_reader::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Select a folder holding calibration inputs" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.set_option(ui::dialog::location::read);
     dialog_file.set_type(ui::dialog::location::folder);

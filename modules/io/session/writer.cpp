@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -58,14 +58,14 @@ public:
     writer_impl& operator=(writer_impl&&)      = delete;
 
     /// Constructor
-    inline explicit writer_impl(writer* const _writer) noexcept :
+    explicit writer_impl(writer* const _writer) noexcept :
         m_writer(_writer),
         m_job_created_signal(_writer->new_signal<job_created_signal_t>("job_created"))
     {
     }
 
     /// Default destructor
-    inline ~writer_impl() noexcept = default;
+    ~writer_impl() noexcept = default;
 
     /// Pointer to the public interface
     writer* const m_writer;
@@ -93,6 +93,7 @@ public:
 };
 
 writer::writer() noexcept :
+    sight::io::service::writer("Choose a file to save a session"),
     m_pimpl(std::make_unique<writer_impl>(this))
 {
 }
@@ -325,17 +326,7 @@ void writer::open_location_dialog()
     static auto default_location = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location location_dialog;
-
-    // Set window title
-    if(!m_window_title.empty())
-    {
-        location_dialog.set_title(m_window_title);
-    }
-    else
-    {
-        location_dialog.set_title("Enter file name");
-    }
-
+    location_dialog.set_title(*m_window_title);
     location_dialog.set_default_location(default_location);
     location_dialog.set_option(ui::dialog::location::write);
     location_dialog.set_type(ui::dialog::location::single_file);

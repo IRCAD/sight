@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ public:
 
     image_series_writer() noexcept;
 
-    ~image_series_writer() noexcept override;
+    ~image_series_writer() noexcept override = default;
 
 protected:
 

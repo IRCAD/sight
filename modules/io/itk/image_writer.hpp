@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,9 +62,9 @@ public:
 
     image_writer() noexcept;
 
-    ~image_writer() noexcept override;
+    ~image_writer() noexcept override = default;
 
-    static bool save_image(const std::filesystem::path& _img_file, const CSPTR(data::image)& _image);
+    static bool save_image(const std::filesystem::path& _img_save_path, const CSPTR(data::image)& _image);
 
 protected:
 

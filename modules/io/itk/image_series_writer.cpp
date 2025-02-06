@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,15 +43,10 @@
 namespace sight::module::io::itk
 {
 
-//------------------------------------------------------------------------------
-
-image_series_writer::image_series_writer() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-image_series_writer::~image_series_writer() noexcept =
-    default;
+image_series_writer::image_series_writer() noexcept :
+    writer("Choose an image file to save image")
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -74,7 +69,7 @@ void image_series_writer::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose an image file to save image" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");

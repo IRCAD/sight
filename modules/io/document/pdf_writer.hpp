@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,7 +77,7 @@ public:
     /**
      * @brief Constructor : does nothing
      */
-    pdf_writer() = default;
+    pdf_writer() noexcept;
 
     /**
      * @brief Destructor

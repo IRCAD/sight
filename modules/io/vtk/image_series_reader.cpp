@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,9 +58,10 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
 
 //------------------------------------------------------------------------------
 
-image_series_reader::image_series_reader() noexcept
+image_series_reader::image_series_reader() noexcept :
+    reader("Choose a file to load an ImageSeries"),
+    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
 {
-    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +92,7 @@ void image_series_reader::open_location_dialog()
     }
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose a file to load an ImageSeries" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("Vtk", "*.vtk");
     dialog_file.add_filter("Vti", "*.vti");

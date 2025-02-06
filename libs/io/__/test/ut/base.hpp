@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
- * Copyright (C) 2018 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,11 +19,33 @@
  *
  ***********************************************************************/
 
-#include "io/__/service/io_types.hpp"
+#pragma once
 
-namespace sight::io::service
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace sight::io::ut
 {
 
-const std::string DATA_KEY = "data";
+class base_test : public CPPUNIT_NS::TestFixture
+{
+CPPUNIT_TEST_SUITE(base_test);
+CPPUNIT_TEST(file_test);
+CPPUNIT_TEST(files_test);
+CPPUNIT_TEST(folder_test);
+CPPUNIT_TEST(resource_test);
+CPPUNIT_TEST(open_location_dialog_test);
+CPPUNIT_TEST_SUITE_END();
 
-} // namespace sight::io::service
+public:
+
+    void setUp() override;
+    void tearDown() override;
+
+    static void file_test();
+    static void files_test();
+    static void folder_test();
+    static void resource_test();
+    static void open_location_dialog_test();
+};
+
+} // namespace sight::io::ut

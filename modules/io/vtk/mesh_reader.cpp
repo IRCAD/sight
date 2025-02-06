@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,9 +58,10 @@ sight::io::service::path_type_t mesh_reader::get_path_type() const
 
 //------------------------------------------------------------------------------
 
-mesh_reader::mesh_reader() noexcept
+mesh_reader::mesh_reader() noexcept :
+    reader("Choose a vtk file to load Mesh"),
+    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
 {
-    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -70,7 +71,7 @@ void mesh_reader::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose a vtk file to load Mesh" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("All supported files", "*.vtk *.vtp *.obj *.ply *.stl");
     dialog_file.add_filter("OBJ File(.obj)", "*.obj");

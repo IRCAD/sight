@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,6 +52,8 @@ public:
 
     /// Super class of writer services
     using super_class = sight::io::service::writer;
+
+    matrix4_trf_writer() noexcept;
 
     /** @name Specified writer service methods ( override from sight::io::service::writer )
      * @{

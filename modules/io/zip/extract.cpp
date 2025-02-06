@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -83,6 +83,7 @@ public:
 };
 
 extract::extract() noexcept :
+    reader("Select the archive file"),
     m_pimpl(std::make_unique<extract_impl>(this))
 {
 }
@@ -137,16 +138,6 @@ void extract::updating()
 
         sight::ui::dialog::location location_dialog;
         location_dialog.set_title("Enter the folder where the files must be extracted");
-
-        if(!m_window_title.empty())
-        {
-            location_dialog.set_title(m_window_title);
-        }
-        else
-        {
-            location_dialog.set_title("Enter the output path");
-        }
-
         location_dialog.set_default_location(default_location);
         location_dialog.set_option(ui::dialog::location::write);
         location_dialog.set_type(ui::dialog::location::folder);
@@ -351,16 +342,7 @@ void extract::open_location_dialog()
     default_location->set_folder("/");
 
     sight::ui::dialog::location location_dialog;
-
-    if(!m_window_title.empty())
-    {
-        location_dialog.set_title(m_window_title);
-    }
-    else
-    {
-        location_dialog.set_title("Enter archive file");
-    }
-
+    location_dialog.set_title(*m_window_title);
     location_dialog.set_default_location(default_location);
     location_dialog.set_option(ui::dialog::location::read);
     location_dialog.set_option(ui::dialog::location::file_must_exist);

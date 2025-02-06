@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ public:
     SIGHT_DECLARE_SERVICE(calibration_info_reader, sight::io::service::reader);
 
     /// Constructor.
-    calibration_info_reader() noexcept = default;
+    calibration_info_reader() noexcept;
 
     /// Destructor.
     ~calibration_info_reader() noexcept override = default;

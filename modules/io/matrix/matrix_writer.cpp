@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,13 +48,14 @@ static const core::com::slots::key_t WRITE        = "write";
 
 //------------------------------------------------------------------------------
 
-matrix_writer::matrix_writer() noexcept
+matrix_writer::matrix_writer() noexcept :
+    writer("Choose a folder to save the csv file")
 {
     new_slot(SAVE_MATRIX, &matrix_writer::save_matrix, this);
     new_slot(START_RECORD, &matrix_writer::start_record, this);
     new_slot(STOP_RECORD, &matrix_writer::stop_record, this);
     new_slot(WRITE, &matrix_writer::write, this);
-    new_slot(SET_BASE_FOLDER, &matrix_writer::set_base_folder, this);
+    new_slot(matrix_writer::slots::SET_BASE_FOLDER, &matrix_writer::set_base_folder, this);
 }
 
 //------------------------------------------------------------------------------
@@ -96,8 +97,9 @@ void matrix_writer::starting()
 void matrix_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
+
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose a folder to save the csv file" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.set_option(ui::dialog::location::write);
     dialog_file.set_type(ui::dialog::location::single_file);

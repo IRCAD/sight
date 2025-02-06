@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,15 +50,10 @@ namespace sight::module::io::itk
  * cspell:ignore nifti
  */
 
-//------------------------------------------------------------------------------
-
-image_writer::image_writer() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-image_writer::~image_writer() noexcept =
-    default;
+image_writer::image_writer() noexcept :
+    writer("Choose a file to save image")
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -74,7 +69,8 @@ void image_writer::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose a file to save an image" : m_window_title);
+
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");

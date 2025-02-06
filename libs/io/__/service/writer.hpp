@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,8 @@
 #include <core/com/signal.hpp>
 #include <core/tools/failed.hpp>
 
+#include <data/string.hpp>
+
 #include <service/base.hpp>
 
 #include <filesystem>
@@ -39,19 +41,25 @@ namespace sight::io::service
 /**
  * @brief Writer service API. It manages extension points definition and extension configuration
  *
+ * This abstract class defines the API for all writer services. It provides the basic methods to write data to files or
+ * folders. The writer service can be configured using properties. Subclasses should implement the
+ * open_location_dialog(), get_path_type() and get_supported_extensions() methods. In updating(), which should perform
+ * the "write" from m_data object, m_write_failed must be set to the correct value.
+ *
  * @section Signals Signals
  * - \b prefix_set(): Emitted when the prefix has been correctly updated,
  * - \b base_folder_set(): Emitted When the base folder has been correctly updated.
  *
  * @section Slots Slots
+ * - \b open_location_dialog() : Open a dialog to select a file or a folder.
  * - \b set_prefix(std::string): When connected to a string-emitting signal (or function),
  *   this slot will concatenate the string as a prefix of the output file/folder.
  * - \b set_base_folder(std::string): When connected to a string-emitting signal (or function),
  *   this slot will set the base folder used by writers.
  *
  * @subsection Configuration Configuration
- * - \b file: default file path.
- * - \b folder: default folder path.
+ * - \b file: @deprecated default file path.
+ * - \b folder: @deprecated default folder path.
  * - \b baseFolder: path or preference key specifying the root output path.
  *      If set, it will override user setting the path via GUI input,
  *      leading to a service that automatically saves data without user queries.
@@ -60,12 +68,12 @@ namespace sight::io::service
  *      If the output is a folder, then the output will be built as follows:
  *        <base_folder>(/<prefix>)^{0,1}/<folder>, where folder is the value in the folder tag.
  *
- * This class represents the base interface for writer services.
- * Use the base service methods :
- * @li The service is configured with methods set_config(cfg) and configure()
- * @li The method start() initialize the service
- * @li To write the object use update() method
- * @li Finally we must call stop() before deleting the service
+ * @subsection Properties Properties
+ * - \b window_title (optional) : The window title that can be used for open_location_dialog. This abstract class
+ *                   defines a default that can be overriden by calling the appropriate constructor, but the XML
+ *                   property definition have the precedence in all cases.
+ * - \b files : The file(s) to write. Depending of the path_type_t, it can be a single file or multiple files.
+ * - \b folder : The folder to open. Used when the path_type_t is "folder".
  */
 class SIGHT_IO_CLASS_API writer : public sight::service::base
 {
@@ -83,21 +91,31 @@ public:
     };
 
     /**
-     * @name Signals API
-     * @{
-     */
-
-    SIGHT_IO_API static const core::com::signals::key_t PREFIX_SET_SIG;
-    SIGHT_IO_API static const core::com::signals::key_t BASE_FOLDER_SET_SIG;
-    using void_signal_t = core::com::signal<void ()>;
-
-    /**
      * @name Slots API
      * @{
      */
-    SIGHT_IO_API static const core::com::slots::key_t SET_PREFIX;
-    SIGHT_IO_API static const core::com::slots::key_t SET_BASE_FOLDER;
-    /// @}
+    struct slots
+    {
+        using key_t = sight::core::com::slots::key_t;
+        static inline const key_t OPEN_LOCATION_DIALOG     = "open_location_dialog";
+        static inline const key_t SET_PREFIX               = "set_prefix";
+        static inline const key_t SET_BASE_FOLDER          = "set_base_folder";
+        static inline const key_t UPDATE_DEFAULT_LOCATIONS = "update_default_locations";
+    };
+    //@}
+
+    /**
+     * @name Signals API
+     * @{
+     */
+    struct signals
+    {
+        using void_signal_t = core::com::signal<void ()>;
+        using key_t         = core::com::signals::key_t;
+        static inline const key_t PREFIX_SET      = "prefix_set";
+        static inline const key_t BASE_FOLDER_SET = "base_folder_set";
+    };
+    //@}
 
     /**
      * @brief Configure the image path (by default does nothing).
@@ -226,51 +244,18 @@ public:
 
 protected:
 
-    SIGHT_IO_API writer() noexcept;
+    SIGHT_IO_API writer(const std::string& _default_window_title = s_DEFAULT_WINDOW_TITLE) noexcept;
 
-    SIGHT_IO_API ~writer() noexcept override;
+    SIGHT_IO_API ~writer() noexcept override = default;
 
     /**
-     * @brief This method proposes to parse xml configuration to retrieve
-     * file/files/folder paths.
-     *
-     * You can implement your configuring method if you wan check another
-     * information or information not correspond to a path on filesystem,
-     * else you must use this generic approach.
-     *
-     * Sample configuration for a file:
-     * @code{.xml}
-       <service ... >
-        <file>/home/user/myFile.jpg<file/>
-       </service>
-       @endcode
-     * Sample configuration for many files:
-     * @code{.xml}
-       <service ... >
-        <file>/home/user/myFile01.jpg<file/>
-        <file>/home/user/myFile02.jpg<file/>
-        <file>/home/user/myFile03.jpg<file/>
-       </service>
-       @endcode
-     * Sample configuration for a folder:
-     * @code{.xml}
-       <service ... >
-        <folder>/home/user/myFolder<folder/>
-       </service>
-       @endcode
-     * You may specify the title of the modal file selection window with the `windowTitle` config attribute as such:
-     * @code{.xml}
-       <service ... >
-        <windowTitle>Example window title</windowTitle>
-       </service>
-       @endcode
+     * @brief This method proposes to parse xml configuration to retrieve file/files/folder paths.
+     * @warning Using XML configuration is deprecated, use the properties instead.
      */
     SIGHT_IO_API void configuring() override;
 
-    /**
-     * @brief Title of the window that will open when the `open_location_dialog` slot is called
-     */
-    std::string m_window_title;
+    /// Defines the auto-connection between the file/folder properties and the 'set_file/set_folder'
+    SIGHT_IO_API connections_t auto_connections() const override;
 
     /// Defines whether writing was performed correctly, or if user has cancelled the process.
     bool m_write_failed {false};
@@ -278,12 +263,34 @@ protected:
     /// Generic input data
     data::ptr<data::object, data::access::in> m_data {this, sight::io::service::DATA_KEY};
 
+    /// Window title for the file dialog
+    sight::data::property<sight::data::string> m_window_title {this, WINDOW_TITLE_KEY, s_DEFAULT_WINDOW_TITLE};
+
 private:
+
+    /**
+     * @brief SLOT: Reads values from the file / folder properties and updates m_locations.
+     */
+    void update_default_locations();
+
+    /**
+     * @brief fill m_locations
+     *
+     * @param _files
+     * @param _folder
+     */
+    void update_locations(
+        const io::service::locations_t& _files,
+        const std::filesystem::path& _folder
+    );
 
     /// Triggers an update of the base folder, and outputs it via a reference.
     // We need to check for potential updates, notably in the case
     // where the user updates an associated preference during runtime.
-    void update_base_folder(std::string& /*outBaseFolder*/) const;
+    void update_base_folder(std::string& _out_base_folder) const;
+
+    /// Default window title
+    inline static const std::string s_DEFAULT_WINDOW_TITLE = "Choose a file";
 
     /// Value to store file or folder paths
     io::service::locations_t m_locations;
@@ -293,6 +300,9 @@ private:
 
     /// Base folder
     std::string m_base_folder;
+
+    sight::data::property<sight::data::string> m_files {this, FILES_KEY, std::string()};
+    sight::data::property<sight::data::string> m_folder {this, FOLDER_KEY, std::string()};
 };
 
 } //namespace sight::io::service
