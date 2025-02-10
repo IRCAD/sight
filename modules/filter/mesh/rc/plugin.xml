@@ -9,13 +9,6 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::service::generator</type>
-        <service>sight::module::filter::mesh::generator::needle</service>
-        <object>sight::data::mesh</object>
-        <desc>Generates a cylinder shape into a data::mesh using VTK.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::service::generator</type>
         <service>sight::module::filter::mesh::generator::ultrasound_mesh</service>
         <desc>Generate the mesh used to display the ultrasound image.</desc>
     </extension>

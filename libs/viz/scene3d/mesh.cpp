@@ -220,6 +220,9 @@ void mesh::update_mesh(const data::mesh::csptr& _mesh, bool _points_only)
     const std::size_t num_vertices = _mesh->num_points();
     SIGHT_DEBUG("Vertices count: " << num_vertices);
 
+    // Revert the state for the upcoming check
+    m_layout = m_layout & ~attribute::point_normals;
+
     // Check if the mesh has normals - we assume we should have as many normals as points
     // If this is not the case, normals will be ignored or regenerated if needed and if the number of vertices changed
     m_layout = m_layout | (_mesh->attributes() & attribute::point_normals);
