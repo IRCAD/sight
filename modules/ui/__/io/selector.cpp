@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -292,8 +292,9 @@ void selector::updating()
                 if(has_config_for_service)
                 {
                     reader->set_config(srv_cfg);
-                    reader->configure();
                 }
+
+                reader->configure();
 
                 auto job_created_signal_t = reader->signal("job_created");
                 if(job_created_signal_t)
@@ -342,8 +343,9 @@ void selector::updating()
                 if(has_config_for_service)
                 {
                     writer->set_config(srv_cfg);
-                    writer->configure();
                 }
+
+                writer->configure();
 
                 auto job_created_signal_t = writer->signal("job_created");
                 if(job_created_signal_t)
