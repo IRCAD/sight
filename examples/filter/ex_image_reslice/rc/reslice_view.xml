@@ -64,8 +64,11 @@
 
                 <layer id="defaultLayer" order="1">
                     <adaptor uid="negato_camera_adp" />
-                    <adaptor uid="mask_negato_adp" />
                     <adaptor uid="negato_adp" />
+                </layer>
+                <layer id="overlay" order="2">
+                    <adaptor uid="mask_negato_camera_adp" />
+                    <adaptor uid="mask_negato_adp" />
                 </layer>
             </scene>
         </service>
@@ -80,6 +83,12 @@
             <in key="image" uid="${slice}" />
             <in key="tf" uid="${tf}" />
             <config filtering="linear" border="false" interactive="false" slicesCross="false" />
+        </service>
+
+        <service uid="mask_negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">
+            <inout key="image" uid="${slice}" />
+            <inout key="tf" uid="${tf}" />
+            <config orientation="axial" margin="0.01" />
         </service>
 
         <service uid="mask_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
@@ -102,6 +111,7 @@
 
         <start uid="negato_camera_adp" />
         <start uid="negato_adp" />
+        <start uid="mask_negato_camera_adp" />
         <start uid="mask_negato_adp" />
         <start uid="slicer_srv" />
         <start uid="mask_slicer_srv" />

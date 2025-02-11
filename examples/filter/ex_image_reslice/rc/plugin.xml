@@ -42,10 +42,10 @@
                 <name>segmentations</name>
                 <colors isClamped="false" resample_to_max_texture_size="false">
                     <step color="#00000000" value="0" />
-                    <step color="#0000FFFF" value="1" />
-                    <step color="#00FF00FF" value="2" />
-                    <step color="#00FFFFFF" value="3" />
-                    <step color="#FF0000FF" value="4" />
+                    <step color="#0000FF90" value="1" />
+                    <step color="#00FF0090" value="2" />
+                    <step color="#00FFFF90" value="3" />
+                    <step color="#FF000090" value="4" />
                 </colors>
             </object>
 
