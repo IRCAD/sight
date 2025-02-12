@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,60 +19,64 @@
  *
  ***********************************************************************/
 
-#include "location_dummy.hpp"
+#include "location.hpp"
 
 #include <core/location/multiple_files.hpp>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
-namespace sight::ui::dialog
+#include <ui/__/macros.hpp>
+
+SIGHT_REGISTER_GUI(sight::ui::test::dialog::location, sight::ui::dialog::location_base::REGISTRY_KEY);
+
+namespace sight::ui::test::dialog
 {
 
-std::queue<std::vector<std::filesystem::path> > location_dummy::s_paths_list;
+std::queue<std::vector<std::filesystem::path> > location::s_paths_list;
 
 //------------------------------------------------------------------------------
 
-void location_dummy::set_type(types _type)
+void location::set_type(types _type)
 {
     m_type = _type;
 }
 
 //------------------------------------------------------------------------------
 
-void location_dummy::set_option(options /*option*/)
+void location::set_option(options /*option*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void location_dummy::add_filter(const std::string& /*filterName*/, const std::string& /*wildcardList*/)
+void location::add_filter(const std::string& /*filterName*/, const std::string& /*wildcardList*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-std::string location_dummy::get_current_selection() const
+std::string location::get_current_selection() const
 {
     return "";
 }
 
 //------------------------------------------------------------------------------
 
-void location_dummy::set_paths(const std::vector<std::filesystem::path>& _files)
+void location::set_paths(const std::vector<std::filesystem::path>& _files)
 {
     push_paths(_files);
 }
 
 //------------------------------------------------------------------------------
 
-void location_dummy::push_paths(const std::vector<std::filesystem::path>& _files)
+void location::push_paths(const std::vector<std::filesystem::path>& _files)
 {
     s_paths_list.push(_files);
 }
 
 //------------------------------------------------------------------------------
 
-bool location_dummy::clear()
+bool location::clear()
 {
     if(s_paths_list.empty())
     {
@@ -89,7 +93,7 @@ bool location_dummy::clear()
 
 //------------------------------------------------------------------------------
 
-sight::core::location::base::sptr location_dummy::show()
+sight::core::location::base::sptr location::show()
 {
     std::vector<std::filesystem::path> paths = s_paths_list.front();
     s_paths_list.pop();
@@ -112,4 +116,4 @@ sight::core::location::base::sptr location_dummy::show()
     return multiple_files;
 }
 
-} // namespace sight::ui::dialog
+} // namespace sight::ui::test::dialog

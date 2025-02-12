@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,73 +19,89 @@
  *
  ***********************************************************************/
 
-#include "input_dummy.hpp"
+#include "message.hpp"
 
-namespace sight::ui::dialog
+#include <ui/__/macros.hpp>
+
+SIGHT_REGISTER_GUI(sight::ui::test::dialog::message, sight::ui::dialog::message_base::REGISTRY_KEY);
+
+namespace sight::ui::test::dialog
 {
 
-std::queue<std::string> input_dummy::s_inputs;
+std::queue<sight::ui::test::dialog::message::buttons> message::s_actions;
 
 //------------------------------------------------------------------------------
 
-void input_dummy::set_title(const std::string& /*title*/)
+void message::set_title(const std::string& /*title*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void input_dummy::set_message(const std::string& /*msg*/)
+void message::set_message(const std::string& /*msg*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void input_dummy::set_echo_mode(echo_mode /*echoMode*/)
+void message::set_icon(icons /*icon*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void input_dummy::set_input(const std::string& /*text*/)
+void message::add_button(buttons /*button*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-std::pair<std::string, bool> input_dummy::get_input()
+void message::set_default_button(buttons /*button*/)
 {
-    std::string res;
-    if(!s_inputs.empty())
-    {
-        res = s_inputs.front();
-        s_inputs.pop();
-    }
-
-    return {res, true};
 }
 
 //------------------------------------------------------------------------------
 
-void input_dummy::push_input(const std::string& _input)
+void message::add_custom_button(const std::string& /*label*/, std::function<void()>/*clickedFn*/)
 {
-    s_inputs.push(_input);
 }
 
 //------------------------------------------------------------------------------
 
-bool input_dummy::clear()
+void message::push_action(buttons _action)
 {
-    if(s_inputs.empty())
+    s_actions.push(_action);
+}
+
+//------------------------------------------------------------------------------
+
+bool message::clear()
+{
+    if(s_actions.empty())
     {
         return true;
     }
 
-    while(!s_inputs.empty())
+    while(s_actions.empty())
     {
-        s_inputs.pop();
+        s_actions.pop();
     }
 
     return false;
 }
 
-} // namespace sight::ui::dialog
+//------------------------------------------------------------------------------
+
+message::buttons message::show()
+{
+    message::buttons res = nobutton;
+    if(!s_actions.empty())
+    {
+        res = s_actions.front();
+        s_actions.pop();
+    }
+
+    return res;
+}
+
+} // namespace sight::ui::test::dialog

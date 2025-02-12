@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,34 +21,34 @@
 
 #pragma once
 
-#include "input_base.hpp"
+#include <sight/ui/test/config.hpp>
+
+#include <ui/__/dialog/message_base.hpp>
 
 #include <queue>
 
-namespace sight::ui::dialog
+namespace sight::ui::test::dialog
 {
 
-class SIGHT_UI_CLASS_API input_dummy : public sight::ui::dialog::input_base
+class SIGHT_UI_TEST_CLASS_API message : public sight::ui::dialog::message_base
 {
 public:
 
-    SIGHT_DECLARE_CLASS(input_dummy, sight::ui::dialog::input_base);
+    SIGHT_UI_TEST_API void set_title(const std::string& _title) override;
+    SIGHT_UI_TEST_API void set_message(const std::string& _msg) override;
+    SIGHT_UI_TEST_API void set_icon(icons _icon) override;
+    SIGHT_UI_TEST_API void add_button(buttons _button) override;
+    SIGHT_UI_TEST_API void set_default_button(buttons _button) override;
+    SIGHT_UI_TEST_API void add_custom_button(const std::string& _label, std::function<void()> _clicked_fn) override;
 
-    SIGHT_UI_API ~input_dummy() override = default;
-    SIGHT_UI_API void set_title(const std::string& _title) override;
-    SIGHT_UI_API void set_message(const std::string& _msg) override;
-    SIGHT_UI_API void set_echo_mode(echo_mode _echo_mode) override;
-    SIGHT_UI_API void set_input(const std::string& _text) override;
+    SIGHT_UI_TEST_API buttons show() override;
 
-    SIGHT_UI_API std::pair<std::string, bool> get_input() override;
-
-    SIGHT_UI_API static void push_input(const std::string& _input);
-
-    SIGHT_UI_API static bool clear();
+    SIGHT_UI_TEST_API static void push_action(buttons _action);
+    SIGHT_UI_TEST_API static bool clear();
 
 private:
 
-    static std::queue<std::string> s_inputs;
+    static std::queue<buttons> s_actions;
 };
 
 }

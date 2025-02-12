@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,14 +25,11 @@
 
 #include <service/op.hpp>
 
-#include <ui/__/dialog/location_dummy.hpp>
-#include <ui/__/macros.hpp>
+#include <ui/test/dialog/location.hpp>
 
 #include <utest/wait.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::io::ut::folder_selector_test);
-
-SIGHT_REGISTER_GUI(sight::ui::dialog::location_dummy, sight::ui::dialog::location_base::REGISTRY_KEY);
 
 namespace sight::module::ui::io::ut
 {
@@ -75,13 +72,13 @@ void folder_selector_test::basic_test()
     folder_selected_slot->set_worker(m_worker);
     m_folder_selector->signal("folderSelected")->connect(folder_selected_slot);
 
-    sight::ui::dialog::location_dummy::set_paths({std::filesystem::temp_directory_path()});
+    sight::ui::test::dialog::location::set_paths({std::filesystem::temp_directory_path()});
 
     CPPUNIT_ASSERT_NO_THROW(m_folder_selector->update().get());
     SIGHT_TEST_WAIT(std::filesystem::temp_directory_path() == path);
     CPPUNIT_ASSERT_EQUAL(std::filesystem::temp_directory_path(), path);
 
-    CPPUNIT_ASSERT(sight::ui::dialog::location_dummy::clear());
+    CPPUNIT_ASSERT(sight::ui::test::dialog::location::clear());
 }
 
 //------------------------------------------------------------------------------

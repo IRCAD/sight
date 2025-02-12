@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,35 +21,37 @@
 
 #pragma once
 
+#include <sight/ui/test/config.hpp>
+
 #include <core/location/single_file.hpp>
 
 #include <ui/__/dialog/location_base.hpp>
 
 #include <queue>
 
-namespace sight::ui::dialog
+namespace sight::ui::test::dialog
 {
 
-class SIGHT_UI_CLASS_API location_dummy : public sight::ui::dialog::location_base
+class SIGHT_UI_TEST_CLASS_API location : public sight::ui::dialog::location_base
 {
 public:
 
-    SIGHT_UI_API void set_type(types _type) override;
-    SIGHT_UI_API void set_option(location_dummy::options _option) override;
-    SIGHT_UI_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
-    SIGHT_UI_API std::string get_current_selection() const override;
+    SIGHT_UI_TEST_API void set_type(types _type) override;
+    SIGHT_UI_TEST_API void set_option(location::options _option) override;
+    SIGHT_UI_TEST_API void add_filter(const std::string& _filter_name, const std::string& _wildcard_list) override;
+    SIGHT_UI_TEST_API std::string get_current_selection() const override;
 
-    SIGHT_UI_API sight::core::location::base::sptr show() override;
+    SIGHT_UI_TEST_API sight::core::location::base::sptr show() override;
 
-    SIGHT_UI_API static void set_paths(const std::vector<std::filesystem::path>& _files);
+    SIGHT_UI_TEST_API static void set_paths(const std::vector<std::filesystem::path>& _files);
 
-    SIGHT_UI_API static void push_paths(const std::vector<std::filesystem::path>& _files);
+    SIGHT_UI_TEST_API static void push_paths(const std::vector<std::filesystem::path>& _files);
 
-    SIGHT_UI_API static bool clear();
+    SIGHT_UI_TEST_API static bool clear();
 
 private:
 
-    location_dummy::types m_type {location_dummy::single_file};
+    location::types m_type {location::single_file};
 
     static std::queue<std::vector<std::filesystem::path> > s_paths_list;
 };
