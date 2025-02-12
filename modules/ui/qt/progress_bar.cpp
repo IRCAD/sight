@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -340,22 +340,20 @@ void progress_bar::show_job(core::jobs::base::sptr _job)
             {
                 if(_state == core::jobs::base::canceled || _state == core::jobs::base::finished)
                 {
-                    {
-                        // Some cleanup to remove expired jobs.
-                        std::lock_guard m_lock(shared_this->m_mutex);
-                        std::erase_if(
-                            shared_this->m_jobs,
-                            [weak_job](const auto& _weak_job)
-                        {
-                            return _weak_job.expired() || (_weak_job.lock() == weak_job.lock());
-                        });
-                    }
-
                     core::thread::get_default_worker()->post_task<void>(
                         [weak_this, weak_job]
                     {
                         if(auto shared_this = dynamic_pointer_cast<progress_bar>(weak_this.lock()); shared_this)
                         {
+                            { // Some cleanup to remove expired jobs.
+                                std::lock_guard m_lock(shared_this->m_mutex);
+                                std::erase_if(
+                                    shared_this->m_jobs,
+                                    [weak_job](const auto& _weak_job)
+                                {
+                                    return _weak_job.expired() || (_weak_job.lock() == weak_job.lock());
+                                });
+                            }
                             shared_this->update_widgets();
                         }
                     });
