@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,11 @@ class SIGHT_VIZ_SCENE3D_CLASS_API trackball_interactor final : public sight::viz
 public:
 
     /// Initializes the trackball.
-    SIGHT_VIZ_SCENE3D_API trackball_interactor(SPTR(layer)_layer = nullptr, bool _layer_order_dependant = true);
+    SIGHT_VIZ_SCENE3D_API trackball_interactor(
+        const Ogre::Vector3& _view_up,
+        SPTR(layer)_layer           = nullptr,
+        bool _layer_order_dependant = true
+    );
 
     /// Destroys the trackball.
     SIGHT_VIZ_SCENE3D_API ~trackball_interactor() final;
@@ -158,6 +162,9 @@ private:
 
     /// Enables/disables mouse move events.
     bool m_mouse_move {false};
+
+    /// Up vector of the camera, required to orientate the interactor
+    Ogre::Vector3 m_view_up;
 
     /// Timer used to animate the camera.
     core::thread::timer::sptr m_timer;

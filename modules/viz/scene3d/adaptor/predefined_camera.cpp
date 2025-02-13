@@ -103,6 +103,13 @@ void predefined_camera::starting()
 
     const auto layer = this->layer();
 
+    Ogre::Vector3 view_up_axis = sight::viz::scene3d::interactor::DEFAULT_VIEW_UP;
+    if(const auto& view_up = m_view_up.const_lock(); view_up)
+    {
+        const auto view_up_matrix = sight::viz::scene3d::utils::to_ogre_matrix(view_up.get_shared());
+        view_up_axis = Ogre::Vector3(view_up_matrix[0][1], view_up_matrix[1][1], view_up_matrix[2][1]);
+    }
+
     m_interactor =
         std::make_shared<sight::viz::scene3d::interactor::predefined_position_interactor>(
             layer,
@@ -111,7 +118,8 @@ void predefined_camera::starting()
             m_default_position,
             m_animate,
             *m_follow_orientation,
-            m_zoom
+            m_zoom,
+            view_up_axis
         );
 
     m_interactor->set_mouse_rotation(m_manual_rotation);
@@ -127,7 +135,7 @@ void predefined_camera::updating() noexcept
 {
     if(const auto& transform = m_transform.const_lock(); transform)
     {
-        const auto ogre_mat = ::sight::viz::scene3d::utils::to_ogre_matrix(transform.get_shared());
+        const auto ogre_mat = sight::viz::scene3d::utils::to_ogre_matrix(transform.get_shared());
 
         m_interactor->set_transform(ogre_mat);
     }

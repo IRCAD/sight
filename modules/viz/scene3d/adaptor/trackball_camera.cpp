@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,9 +43,20 @@ void trackball_camera::starting()
 {
     adaptor::init();
 
+    Ogre::Vector3 view_up_axis = sight::viz::scene3d::interactor::DEFAULT_VIEW_UP;
+    if(const auto& view_up = m_view_up.const_lock(); view_up)
+    {
+        const auto view_up_matrix = sight::viz::scene3d::utils::to_ogre_matrix(view_up.get_shared());
+        view_up_axis = Ogre::Vector3(view_up_matrix[0][1], view_up_matrix[1][1], view_up_matrix[2][1]);
+    }
+
     const auto layer = this->layer();
     m_trackball =
-        std::make_shared<sight::viz::scene3d::interactor::trackball_interactor>(layer, m_layer_order_dependant);
+        std::make_shared<sight::viz::scene3d::interactor::trackball_interactor>(
+            view_up_axis,
+            layer,
+            m_layer_order_dependant
+        );
 
     layer->add_interactor(m_trackball, m_priority);
 }

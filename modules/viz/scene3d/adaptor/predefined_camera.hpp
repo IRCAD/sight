@@ -48,6 +48,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::predefined_camera">
         <config priority="0" mouseRotation="true" defaultPosition="pos3" zoom="1.5"/>
         <in key="transform" uid="..." auto_connect="true"/>
+        <in key="view_up" uid="..." />
         <positions>
             <position name="pos1" rx="-30.0" />
             <position name="pos2" rx="-30.0" ry="90.0" />
@@ -59,7 +60,8 @@ namespace sight::module::viz::scene3d::adaptor
  *
  *
  * @subsection Input Input:
- * - \b transform: initial transform (registration, tracking, ...) to apply to the adaptor first (optional).
+ * - \b transform (optional): initial transform (registration, tracking, ...) to apply to the adaptor first.
+ * - \b view_up (optional): used to extract the up vector of the camera. We only use the Y axis of this transform.
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
@@ -148,6 +150,9 @@ private:
 
     /// Input transform.
     sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, "transform", true};
+
+    /// Matrix used to extract the up vector of the camera. We only use the Y axis of this transform.
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_view_up {this, "view_up", true};
 
     /// Defines if we use a fixed orientation or if we follow the orientation of the target.
     sight::data::property<sight::data::boolean> m_follow_orientation {this, "follow_orientation", false};

@@ -33,6 +33,13 @@ namespace sight::viz::scene3d::interactor::detail
 /// @param _dx Relative movement in pixels, in the x axis
 /// @param _dy Relative movement in pixels, in the y axis
 /// @param _look_at_z Distance to the center of trackball
-void camera_rotate(Ogre::Camera* _camera, int _dx, int _dy, float _look_at_z);
+/// @param _view_up Up vector of the camera
+void camera_rotate(
+    Ogre::Camera* _camera,
+    int _dx,
+    int _dy,
+    float _look_at_z,
+    const Ogre::Vector3& _view_up
+);
 
 } // namespace sight::viz::scene3d::interactor::detail

@@ -29,7 +29,7 @@ namespace sight::viz::scene3d::interactor::detail
 
 //------------------------------------------------------------------------------
 
-void camera_rotate(Ogre::Camera* _camera, int _dx, int _dy, float _look_at_z)
+void camera_rotate(Ogre::Camera* _camera, int _dx, int _dy, float _look_at_z, const Ogre::Vector3& _view_up)
 {
     auto w_delta = static_cast<Ogre::Real>(_dx);
     auto h_delta = static_cast<Ogre::Real>(_dy);
@@ -42,8 +42,6 @@ void camera_rotate(Ogre::Camera* _camera, int _dx, int _dy, float _look_at_z)
 
     // Rotate around the up vector of our world according to the dx of the mouse
     {
-        const Ogre::Vector3 view_up(0., -1.0, 0.);
-
         // 1 - Move to the center of the target
         cam_node->translate(Ogre::Vector3(0.F, 0.F, -_look_at_z), Ogre::Node::TS_LOCAL);
 
@@ -51,7 +49,7 @@ void camera_rotate(Ogre::Camera* _camera, int _dx, int _dy, float _look_at_z)
         const float angle = (w_delta * 2 * Ogre::Math::PI / width);
 
         // 3 - Apply the rotation on the scene node
-        Ogre::Quaternion rotate(Ogre::Radian(angle), view_up);
+        Ogre::Quaternion rotate(Ogre::Radian(angle), _view_up);
         cam_node->rotate(rotate, Ogre::Node::TS_WORLD);
 
         // 4 - Go backward in the inverse direction

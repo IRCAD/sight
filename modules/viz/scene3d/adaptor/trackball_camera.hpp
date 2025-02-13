@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,8 +43,13 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::trackball_camera">
         <config priority="0" layerOrderDependant="true" />
+        <in key="view_up" uid="..." />
    </service>
    @endcode
+ *
+ * @subsection Input Input:
+ * - \b transform (optional): initial transform (registration, tracking, ...) to apply to the adaptor first.
+ * - \b view_up (optional): used to extract the up vector of the camera. We only use the Y axis of this transform.
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
@@ -87,6 +92,9 @@ private:
 
     /// Defines if the interaction must take into account above layers.
     bool m_layer_order_dependant {true};
+
+    /// Matrix used to extract the up vector of the camera. We only use the Y axis of this transform.
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_view_up {this, "view_up", true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

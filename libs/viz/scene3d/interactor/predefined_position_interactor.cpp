@@ -47,13 +47,15 @@ predefined_position_interactor::predefined_position_interactor(
     const std::optional<std::string>& _default_position,
     bool _animate,
     bool _follow_orientation,
-    float _zoom
+    float _zoom,
+    const Ogre::Vector3& _view_up
 ) :
     base(_layer, _layer_order_dependant),
     m_timer(core::thread::get_default_worker()->create_timer()),
     m_predefined_positions(std::move(_positions)),
     m_animate(_animate),
     m_follow_orientation(_follow_orientation),
+    m_view_up(_view_up),
     m_zoom_config(_zoom)
 {
     this->init();
@@ -209,7 +211,7 @@ void predefined_position_interactor::init()
 void predefined_position_interactor::camera_rotate_by_mouse(int _dx, int _dy)
 {
     Ogre::Camera* const camera = m_layer.lock()->get_default_camera();
-    detail::camera_rotate(camera, _dx, _dy, m_look_at_z);
+    detail::camera_rotate(camera, _dx, _dy, m_look_at_z, m_view_up);
 }
 
 // ----------------------------------------------------------------------------

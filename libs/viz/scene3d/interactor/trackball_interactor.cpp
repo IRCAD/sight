@@ -38,8 +38,13 @@ namespace sight::viz::scene3d::interactor
 
 // ----------------------------------------------------------------------------
 
-trackball_interactor::trackball_interactor(layer::sptr _layer, bool _layer_order_dependant) :
-    base(_layer, _layer_order_dependant)
+trackball_interactor::trackball_interactor(
+    const Ogre::Vector3& _view_up,
+    layer::sptr _layer,
+    bool _layer_order_dependant
+) :
+    base(_layer, _layer_order_dependant),
+    m_view_up(_view_up)
 {
 }
 
@@ -229,7 +234,7 @@ void trackball_interactor::resize_event(int _width, int _height)
 void trackball_interactor::camera_rotate(int _dx, int _dy)
 {
     Ogre::Camera* const camera = m_layer.lock()->get_default_camera();
-    detail::camera_rotate(camera, _dx, _dy, m_look_at_z);
+    detail::camera_rotate(camera, _dx, _dy, m_look_at_z, m_view_up);
 }
 
 // ----------------------------------------------------------------------------

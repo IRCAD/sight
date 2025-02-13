@@ -62,7 +62,8 @@ public:
         const std::optional<std::string>& _default_position,
         bool _animate,
         bool _follow_orientation,
-        float _zoom
+        float _zoom,
+        const Ogre::Vector3& _view_up
     );
 
     /// Destroys the trackball.
@@ -208,6 +209,9 @@ private:
     std::optional<std::size_t> m_current_position_idx {std::nullopt};
 
     Ogre::Matrix4 m_transform {Ogre::Matrix4::IDENTITY};
+
+    /// Up vector of the camera, required to orientate the interactor
+    Ogre::Vector3 m_view_up;
 
     /// Curent percentage for animation
     float m_percentage {0.F};
