@@ -177,4 +177,40 @@ bool material::operator!=(const material& _other) const noexcept
     return !(*this == _other);
 }
 
+//------------------------------------------------------------------------------
+
+material::representation_t material::string_to_representation_mode(std::string _str)
+{
+    material::representation_t representation_mode = data::material::surface;
+
+    const auto lower_str = boost::to_lower_copy(_str);
+
+    if(lower_str == "point")
+    {
+        representation_mode = data::material::point;
+    }
+    else if(lower_str == "wireframe")
+    {
+        representation_mode = data::material::wireframe;
+    }
+    else if(lower_str == "edge")
+    {
+        representation_mode = data::material::edge;
+    }
+    else if(lower_str == "surface")
+    {
+        representation_mode = data::material::surface;
+    }
+    else
+    {
+        SIGHT_ERROR(
+            "Value: " + _str + " is not valid for 'representation_mode'."
+                               " Accepted values are: surface/point/wireframe/edge."
+                               "'representation_mode' is reset to default value (surface). "
+        );
+    }
+
+    return representation_mode;
+}
+
 } //namespace sight::data

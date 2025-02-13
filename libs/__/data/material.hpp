@@ -215,6 +215,9 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
+    // Unified ways to convert representations from string for service definitions
+    SIGHT_DATA_API static representation_t string_to_representation_mode(std::string _str);
+
 protected:
 
     /// shading mode (flat, Phong)

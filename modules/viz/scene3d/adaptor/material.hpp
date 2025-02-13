@@ -154,6 +154,12 @@ public:
     /// Sets the shading mode.
     void set_shading_mode(const std::string& _shading_mode);
 
+    /// Gets the representation mode.
+    data::material::representation_t representation_mode() const;
+
+    /// Sets the representation mode.
+    void set_representation_mode(data::material::representation_t _representation_mode);
+
     /// Gets the internal material code.
     sight::viz::scene3d::material::generic* get_material_impl() const;
 
@@ -228,10 +234,7 @@ private:
     std::string m_shading_mode;
 
     /// Defines the configured representation mode.
-    std::string m_representation_mode {"SURFACE"};
-
-    /// Stores a map to convert from string to data::material::representation_t (ex: "SURFACE" = SURFACE).
-    std::map<std::string, data::material::representation_t> m_representation_dict;
+    sight::data::material::representation_t m_representation_mode {sight::data::material::representation_t::surface};
 
     /// Implementation when we instantiate the standard material
     sight::viz::scene3d::material::standard::uptr m_standard_material_impl;
@@ -289,6 +292,20 @@ inline const std::string& material::get_shading_mode() const
 inline void material::set_shading_mode(const std::string& _shading_mode)
 {
     m_shading_mode = _shading_mode;
+}
+
+//------------------------------------------------------------------------------
+
+inline data::material::representation_t material::representation_mode() const
+{
+    return m_representation_mode;
+}
+
+//------------------------------------------------------------------------------
+
+inline void material::set_representation_mode(data::material::representation_t _representation_mode)
+{
+    m_representation_mode = _representation_mode;
 }
 
 //------------------------------------------------------------------------------

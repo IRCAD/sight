@@ -61,11 +61,6 @@ material::material() noexcept
     new_slot(SWAP_TEXTURE_SLOT, &material::swap_texture, this);
     new_slot(ADD_TEXTURE_SLOT, &material::create_texture_adaptor, this);
     new_slot(REMOVE_TEXTURE_SLOT, &material::remove_texture_adaptor, this);
-
-    m_representation_dict["SURFACE"]   = data::material::surface;
-    m_representation_dict["POINT"]     = data::material::point;
-    m_representation_dict["WIREFRAME"] = data::material::wireframe;
-    m_representation_dict["EDGE"]      = data::material::edge;
 }
 
 //------------------------------------------------------------------------------
@@ -86,18 +81,10 @@ void material::configuring()
     m_material_name          = config.get(s_MATERIAL_NAME_CONFIG, this->get_id());
     m_texture_name           = config.get(s_TEXTURE_NAME_CONFIG, m_texture_name);
     m_shading_mode           = config.get(s_SHADING_MODE_CONFIG, m_shading_mode);
-    m_representation_mode    = config.get(s_REPRESENTATION_MODE_CONFIG, m_representation_mode);
+    std::string representation_mode = config.get(s_REPRESENTATION_MODE_CONFIG, "SURFACE");
 
-    auto it = m_representation_dict.find(m_representation_mode);
-    if(it == m_representation_dict.end())
-    {
-        SIGHT_ERROR(
-            "Value: " + m_representation_mode + " is not valid for 'representationMode'."
-                                                " Accepted values are: SURFACE/POINT/WIREFRAME/EDGE."
-                                                "'representationMode' is reset to default value (SURFACE). "
-        );
-        m_representation_mode = "SURFACE";
-    }
+    // Make sure the representation is properly defined
+    m_representation_mode = sight::data::material::string_to_representation_mode(representation_mode);
 }
 
 //------------------------------------------------------------------------------
@@ -144,7 +131,7 @@ void material::starting()
             material->set_shading_mode(shading_mode);
         }
 
-        material->set_representation_mode(m_representation_dict[m_representation_mode]);
+        material->set_representation_mode(m_representation_mode);
 
         if(m_material_template_name == sight::viz::scene3d::material::standard::TEMPLATE)
         {

@@ -418,6 +418,7 @@ adaptor::material::sptr mesh::create_material_service(
         m_shading_mode,
         m_material_template_name
     );
+    material_adaptor->set_representation_mode(m_material->get_representation_mode());
 
     if(_material_suffix.empty())
     {

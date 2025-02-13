@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,6 +114,39 @@ void material_test::equality_test()
     TEST(set_diffuse_texture_wrapping(data::material::clamp));
 
     #undef TEST
+}
+
+//------------------------------------------------------------------------------
+
+void material_test::misc_test()
+{
+    // Valid values
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::material::string_to_representation_mode("Point"),
+        sight::data::material::representation_t::point
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::material::string_to_representation_mode("WireFrame"),
+        sight::data::material::representation_t::wireframe
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::material::string_to_representation_mode("edge"),
+        sight::data::material::representation_t::edge
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::material::string_to_representation_mode("SURFACE"),
+        sight::data::material::representation_t::surface
+    );
+
+    // Invalid values
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::material::string_to_representation_mode("SURFACES"),
+        sight::data::material::representation_t::surface
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::material::string_to_representation_mode("Points"),
+        sight::data::material::representation_t::surface
+    );
 }
 
 } // namespace sight::data::ut
