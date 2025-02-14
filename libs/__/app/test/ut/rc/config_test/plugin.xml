@@ -406,6 +406,40 @@
     </extension>
 
     <extension implements="sight::app::extension::config">
+        <id>optional_parameter_test</id>
+        <parameters>
+            <param name="data1" default="data1Id" />
+        </parameters>
+        <desc>Test configuration for optional parameter replace</desc>
+        <config>
+            <service uid="test1_srv" type="sight::app::config_controller">
+                <appConfig id="default_object_id_test_sub_config" />
+            </service>
+
+            <service uid="test2_srv" type="sight::app::config_controller">
+                <appConfig id="default_object_id_test_sub_config" />
+            </service>
+
+            <service uid="test3_srv" type="sight::app::config_controller">
+                <appConfig id="default_object_id_test_sub_config" />
+            </service>
+
+            <start uid="test1_srv" />
+            <start uid="test2_srv" />
+            <start uid="test3_srv" />
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>default_object_id_test_sub_config</id>
+        <parameters>
+            <object uid="data1" type="sight::data::string" optional="true" value="default_value" />
+        </parameters>
+        <desc>Sub-configuration for optional parameter replace</desc>
+        <config />
+    </extension>
+
+    <extension implements="sight::app::extension::config">
         <id>objectConfigTest</id>
         <desc>Test configuration for start and stop</desc>
         <config>

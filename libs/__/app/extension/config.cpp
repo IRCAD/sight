@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -135,6 +135,11 @@ void config::parse_plugin_infos()
                     .optional = object.second.get<bool>("<xmlattr>.optional", false),
                     .value    = object.second.get<std::string>("<xmlattr>.value", "")
                 };
+
+                SIGHT_ERROR_IF(
+                    "Value specified for non-optional object parameter : " << std::quoted(uid),
+                    !objects[uid].value.empty() && !objects[uid].optional
+                );
             }
         }
 
@@ -253,28 +258,20 @@ core::runtime::config_t config::get_adapted_template_config(
         }
 
         core::runtime::config_t object_ref_cfg;
-        object_ref_cfg.put("<xmlattr>.uid", variable);
         object_ref_cfg.put("<xmlattr>.type", object.second.type);
         if(object.second.deferred)
         {
+            object_ref_cfg.put("<xmlattr>.uid", variable);
             object_ref_cfg.put("<xmlattr>.deferred", "true");
-
-            SIGHT_ERROR_IF(
-                "Value specified for non-optional object parameter : " << std::quoted(variable),
-                !object.second.value.empty()
-            );
         }
         else if(object_passed_as_parameter)
         {
+            object_ref_cfg.put("<xmlattr>.uid", variable);
             object_ref_cfg.put("<xmlattr>.reference", "true");
-
-            SIGHT_ERROR_IF(
-                "Value specified for non-optional object parameter : " << std::quoted(variable),
-                !object.second.value.empty()
-            );
         }
         else if(object.second.optional)
         {
+            object_ref_cfg.put("<xmlattr>.uid", object.first);
             if(!object.second.value.empty())
             {
                 object_ref_cfg.put("<xmlattr>.value", object.second.value);

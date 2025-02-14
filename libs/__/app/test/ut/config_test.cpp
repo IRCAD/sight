@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -1454,6 +1454,40 @@ void config_test::parameter_replace_test()
 
     SIGHT_TEST_WAIT(srv_in_sub_config->is_updated());
     CPPUNIT_ASSERT(srv_in_sub_config->is_updated());
+}
+
+//------------------------------------------------------------------------------
+
+void config_test::optional_parameter_test()
+{
+    m_app_config_mgr = app::ut::launch_app_config_mgr("optional_parameter_test", true);
+
+    // Verify that we manage to instantiate the same configuration twice with default optional parameters
+    // Unique identifiers must be generated
+    core::object::sptr data1_in_config1;
+    int j = 0;
+    while(data1_in_config1 == nullptr && j++ < 200)
+    {
+        data1_in_config1 = core::id::get_object("default_object_id_test_sub_config", j, "data1");
+    }
+
+    CPPUNIT_ASSERT(data1_in_config1 != nullptr);
+    {
+        auto str = std::dynamic_pointer_cast<sight::data::string>(data1_in_config1);
+        CPPUNIT_ASSERT_EQUAL(std::string("default_value"), str->to_string());
+    }
+
+    core::object::sptr data1_in_config2;
+    while(data1_in_config2 == nullptr && j++ < 200)
+    {
+        data1_in_config2 = core::id::get_object("default_object_id_test_sub_config", j, "data1");
+    }
+
+    CPPUNIT_ASSERT(data1_in_config2 != nullptr);
+    {
+        auto str = std::dynamic_pointer_cast<sight::data::string>(data1_in_config2);
+        CPPUNIT_ASSERT_EQUAL(std::string("default_value"), str->to_string());
+    }
 }
 
 //------------------------------------------------------------------------------

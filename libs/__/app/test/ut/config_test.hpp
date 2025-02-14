@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,6 +47,7 @@ CPPUNIT_TEST(optional_key_test);
 CPPUNIT_TEST(key_group_test);
 CPPUNIT_TEST(concurrent_access_to_config_test);
 CPPUNIT_TEST(parameter_replace_test);
+CPPUNIT_TEST(optional_parameter_test);
 CPPUNIT_TEST(object_config_test);
 CPPUNIT_TEST(properties_test);
 CPPUNIT_TEST(properties_signals_test);
@@ -68,6 +69,7 @@ public:
     void key_group_test();
     static void concurrent_access_to_config_test();
     void parameter_replace_test();
+    void optional_parameter_test();
     void object_config_test();
     void properties_test();
     void properties_signals_test();
