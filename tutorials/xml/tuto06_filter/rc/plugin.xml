@@ -11,7 +11,7 @@
             <object uid="myImage1" type="sight::data::image" />
             <!-- This is the output image for the filtering. "deferred" defines that the image is not created at the
                  beginning, but will be created by a service. -->
-            <object uid="myImage2" type="sight::data::image" src="deferred" />
+            <object uid="myImage2" type="sight::data::image" deferred="true" />
 
             <!-- ******************************* UI declaration *********************************** -->
 

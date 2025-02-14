@@ -1,17 +1,12 @@
 <extension implements="sight::app::extension::config">
     <id>displayImageConfig</id>
     <parameters>
+        <object uid="imageId1" type="sight::data::image" />
+        <object uid="pointListId1" type="sight::data::point_list" />
+
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
-        <!-- defined by config_launcher -->
-        <param name="imageId1" />
-        <param name="pointListId1" />
     </parameters>
     <config>
-        <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${imageId1}" src="ref" type="sight::data::image" />
-        <object uid="${pointListId1}" src="ref" type="sight::data::point_list" />
-
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="mainFrame" type="sight::module::ui::frame">

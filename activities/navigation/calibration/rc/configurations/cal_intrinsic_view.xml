@@ -1,23 +1,22 @@
 <extension implements="sight::app::extension::config">
     <id>sight::navigation::calibration::cal_intrinsic_view</id>
     <parameters>
+        <object uid="calibrationInfo" type="sight::data::calibration_info" />
+        <object uid="camera" type="sight::data::camera" />
         <object uid="board_properties" type="sight::data::map" />
+
         <param name="WID_PARENT" />
-        <param name="camera" />
-        <param name="calibrationInfo" />
         <param name="preferencesModifiedProxy" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${calibrationInfo}" type="sight::data::calibration_info" src="ref" />
-        <object uid="${camera}" type="sight::data::camera" src="ref" />
         <object uid="frameTL" type="sight::data::frame_tl" />
         <object uid="videoFrame" type="sight::data::image" />
         <object uid="distortedFrame" type="sight::data::image" />
 
         <object uid="detectedChessboard" type="sight::data::point_list" />
-        <object uid="chessboardModel" type="sight::data::point_list" src="deferred" />
+        <object uid="chessboardModel" type="sight::data::point_list" deferred="true" />
         <object uid="cameraPoseMx" type="sight::data::matrix4" />
 
         <!-- ******************************* UI declaration *********************************** -->

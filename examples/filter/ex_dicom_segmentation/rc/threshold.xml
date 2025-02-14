@@ -1,17 +1,16 @@
 <extension implements="sight::app::extension::config">
     <id>ExDicomSegmentation_Threshold_AppCfg</id>
     <parameters>
+        <object uid="seriesSet" type="sight::data::series_set" />
+        <object uid="imageSeries" type="sight::data::image_series" />
+
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
-        <param name="seriesSet" />
-        <param name="imageSeries" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${seriesSet}" type="sight::data::series_set" src="ref" />
-        <object uid="${imageSeries}" type="sight::data::image_series" src="ref" />
-        <object uid="imageSeriesMask" type="sight::data::image_series" src="deferred" />
+        <object uid="imageSeriesMask" type="sight::data::image_series" deferred="true" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

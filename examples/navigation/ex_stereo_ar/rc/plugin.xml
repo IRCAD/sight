@@ -11,8 +11,8 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="cameraSet" type="sight::data::camera_set" />
-            <object uid="camera1" type="sight::data::camera" src="deferred" />
-            <object uid="camera2" type="sight::data::camera" src="deferred" />
+            <object uid="camera1" type="sight::data::camera" deferred="true" />
+            <object uid="camera2" type="sight::data::camera" deferred="true" />
             <object uid="frameTL1" type="sight::data::frame_tl" />
             <object uid="frameTL2" type="sight::data::frame_tl" />
             <object uid="markerMap1" type="sight::data::marker_map" />
@@ -21,7 +21,7 @@
             <object uid="videoImage2" type="sight::data::image" />
             <object uid="matrixTL" type="sight::data::matrix_tl" />
             <object uid="matrix" type="sight::data::matrix4" />
-            <object uid="extrinsic" type="sight::data::matrix4" src="deferred" />
+            <object uid="extrinsic" type="sight::data::matrix4" deferred="true" />
             <object uid="inverseMat" type="sight::data::matrix4" />
             <object uid="rightMat" type="sight::data::matrix4" />
 

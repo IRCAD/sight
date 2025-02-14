@@ -16,18 +16,16 @@ Example:
 <extension implements="sight::app::extension::config">
     <id>ImageManager</id>
     <parameters>
+        <!-- Image to manage -->
+        <object uid="image" type="sight::data::image" />
+        <!-- Selected TransferFunction -->
+        <object uid="transferFunction" type="sight::data::transfer_function" />
+
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
-        <!-- Image to manage -->
-        <param name="image" />
-        <!-- Selected TransferFunction -->
-        <param name="transferFunction" />
     </parameters>
     <desc>Displays sliders to manage the image (slice index, windowing)</desc>
     <config>
-        <object uid="${image}" type="sight::data::image" src="ref" />
-        <object uid="${transferFunction}" type="sight::data::transfer_function" src="ref" />
-
         <service uid="imageManagerView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">

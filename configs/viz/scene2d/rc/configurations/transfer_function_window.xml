@@ -14,7 +14,7 @@
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${presets}" type="sight::data::map" src="deferred" />
+        <object uid="${presets}" type="sight::data::map" deferred="true" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

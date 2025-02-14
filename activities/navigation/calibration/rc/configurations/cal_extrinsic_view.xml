@@ -1,13 +1,13 @@
 <extension implements="sight::app::extension::config">
     <id>sight::navigation::calibration::cal_extrinsic_view</id>
     <parameters>
+        <object uid="calibrationInfo1" type="sight::data::calibration_info" />
+        <object uid="calibrationInfo2" type="sight::data::calibration_info" />
+        <object uid="cameraSet" type="sight::data::camera_set" />
+        <object uid="camera1" type="sight::data::camera" />
+        <object uid="camera2" type="sight::data::camera" />
         <object uid="board_properties" type="sight::data::map" />
         <param name="WID_PARENT" />
-        <param name="cameraSet" />
-        <param name="camera1" />
-        <param name="camera2" />
-        <param name="calibrationInfo1" />
-        <param name="calibrationInfo2" />
         <param name="camIndex" />
         <param name="preferencesModifiedProxy" />
     </parameters>
@@ -21,12 +21,7 @@
         <!-- Second pair of images used for detection. Prevents the detector from slowing down the video. -->
         <object uid="frame1TL" type="sight::data::frame_tl" />
         <object uid="frame2TL" type="sight::data::frame_tl" />
-        <object uid="${calibrationInfo1}" type="sight::data::calibration_info" src="ref" />
-        <object uid="${calibrationInfo2}" type="sight::data::calibration_info" src="ref" />
-        <object uid="${cameraSet}" type="sight::data::camera_set" src="ref" />
-        <object uid="${camera1}" type="sight::data::camera" src="ref" />
-        <object uid="${camera2}" type="sight::data::camera" src="ref" />
-        <object uid="exportExtrinsicMat" type="sight::data::matrix4" src="deferred" />
+        <object uid="exportExtrinsicMat" type="sight::data::matrix4" deferred="true" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

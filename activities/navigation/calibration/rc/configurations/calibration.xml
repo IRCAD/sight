@@ -1,10 +1,11 @@
 <extension implements="sight::app::extension::config">
     <id>calibration</id>
     <parameters>
+        <object uid="AS_UID" type="sight::data::activity" />
+        <object uid="dataSet" type="sight::data::set" />
+        <object uid="cameraSet" type="sight::data::camera_set" />
+
         <param name="WID_PARENT" />
-        <param name="AS_UID" />
-        <param name="dataSet" />
-        <param name="cameraSet" />
         <param name="hasPreviousChannel" default="hasPreviousChannel" />
         <param name="hasNextChannel" default="hasNextChannel" />
         <param name="previousActivityChannel" default="previousActivityChannel" />
@@ -12,11 +13,6 @@
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${AS_UID}" type="sight::data::activity" src="ref" />
-        <object uid="${dataSet}" type="sight::data::set" src="ref" />
-        <object uid="${cameraSet}" type="sight::data::camera_set" src="ref" />
-
         <object uid="board_properties" type="sight::data::map" preference="true">
             <item key="board_width" type="sight::data::integer" value="8" />
             <item key="board_height" type="sight::data::integer" value="6" />

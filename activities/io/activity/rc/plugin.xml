@@ -45,11 +45,9 @@
     <extension implements="sight::app::extension::config">
         <id>ExportSelection</id>
         <parameters>
-            <param name="series" />
+            <object uid="series" type="sight::data::series" />
         </parameters>
         <config>
-            <object uid="${series}" src="ref" />
-
             <service uid="export_selection" type="sight::module::ui::io::selector">
                 <inout key="data" uid="${series}" />
                 <type mode="writer" />
@@ -65,11 +63,9 @@
     <extension implements="sight::app::extension::config">
         <id>ExportDicomSelection</id>
         <parameters>
-            <param name="modelSeries" />
+            <object uid="modelSeries" type="sight::data::model_series" />
         </parameters>
         <config>
-            <object uid="${modelSeries}" type="sight::data::model_series" src="ref" />
-
             <service uid="exportSelection" type="sight::module::ui::io::selector">
                 <inout key="data" uid="${modelSeries}" />
                 <type mode="writer" />

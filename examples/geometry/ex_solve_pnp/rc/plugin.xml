@@ -11,7 +11,7 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="cameraSet" type="sight::data::camera_set" />
-            <object uid="camera" type="sight::data::camera" src="deferred" />
+            <object uid="camera" type="sight::data::camera" deferred="true" />
             <object uid="frameTL" type="sight::data::frame_tl" />
             <object uid="videoImage" type="sight::data::image" />
 

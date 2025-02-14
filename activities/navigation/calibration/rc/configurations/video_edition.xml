@@ -1,8 +1,9 @@
 <extension implements="sight::app::extension::config">
     <id>videoEdition</id>
     <parameters>
+        <object uid="camera" type="sight::data::camera" />
+
         <param name="WID_PARENT" />
-        <param name="camera" />
         <param name="grabberProxyGuiTitle" default="ARCalibration" />
         <param name="cameraModifiedChannel" default="cameraModified" />
         <param name="videoStartedChannel" />
@@ -16,7 +17,6 @@
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${camera}" type="sight::data::camera" src="ref" />
         <object uid="timeLine" type="sight::data::frame_tl" />
         <object uid="frame" type="sight::data::image" />
 

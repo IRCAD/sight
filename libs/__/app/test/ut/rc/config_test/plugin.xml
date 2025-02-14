@@ -32,9 +32,9 @@
         <desc>Test configuration for start and stop</desc>
         <config>
             <object uid="data1Id" type="sight::data::image" />
-            <object uid="data2Id" type="sight::data::image" src="deferred" />
+            <object uid="data2Id" type="sight::data::image" deferred="true" />
             <object uid="data3Id" type="sight::data::image" />
-            <object uid="data4Id" type="sight::data::image" src="deferred" />
+            <object uid="data4Id" type="sight::data::image" deferred="true" />
 
             <!-- Service used to generate data -->
             <service uid="SGenerateData" type="sight::app::ut::test_out">
@@ -76,7 +76,7 @@
         <config>
             <object uid="data1Id" type="sight::data::image" />
             <object uid="data2Id" type="sight::data::image" />
-            <object uid="data3Id" type="sight::data::image" src="deferred" />
+            <object uid="data3Id" type="sight::data::image" deferred="true" />
 
             <!-- Service used to generate data -->
             <service uid="SGenerateData" type="sight::app::ut::test_out">
@@ -116,8 +116,8 @@
         <desc>Test configuration for connections</desc>
         <config>
             <object uid="data1Id" type="sight::data::image" />
-            <object uid="data2Id" type="sight::data::image" src="deferred" />
-            <object uid="data3Id" type="sight::data::image" src="deferred" />
+            <object uid="data2Id" type="sight::data::image" deferred="true" />
+            <object uid="data3Id" type="sight::data::image" deferred="true" />
             <object uid="data4Id" type="sight::data::image" />
 
             <!-- Service used to generate data -->
@@ -213,10 +213,10 @@
         <desc>Test configuration for optional keys</desc>
         <config>
             <object uid="data1Id" type="sight::data::image" />
-            <object uid="data2Id" type="sight::data::boolean" src="deferred" />
-            <object uid="data3Id" type="sight::data::boolean" src="deferred" />
-            <object uid="data4Id" type="sight::data::boolean" src="deferred" />
-            <object uid="data5Id" type="sight::data::boolean" src="deferred" />
+            <object uid="data2Id" type="sight::data::boolean" deferred="true" />
+            <object uid="data3Id" type="sight::data::boolean" deferred="true" />
+            <object uid="data4Id" type="sight::data::boolean" deferred="true" />
+            <object uid="data5Id" type="sight::data::boolean" deferred="true" />
 
             <!-- Service used to generate data -->
             <service uid="SGenerateData" type="sight::app::ut::test_out">
@@ -261,12 +261,12 @@
         <desc>Test configuration for key groups</desc>
         <config>
             <object uid="data1Id" type="sight::data::string" />
-            <object uid="data2Id" type="sight::data::boolean" src="deferred" />
-            <object uid="data3Id" type="sight::data::image" src="deferred" />
+            <object uid="data2Id" type="sight::data::boolean" deferred="true" />
+            <object uid="data3Id" type="sight::data::image" deferred="true" />
             <object uid="data4Id" type="sight::data::image" />
             <object uid="data5Id" type="sight::data::image" />
-            <object uid="data6Id" type="sight::data::image" src="deferred" />
-            <object uid="data7Id" type="sight::data::image" src="deferred" />
+            <object uid="data6Id" type="sight::data::image" deferred="true" />
+            <object uid="data7Id" type="sight::data::image" deferred="true" />
 
             <!-- Service used to generate data -->
             <service uid="SGenerateData" type="sight::app::ut::test_out">

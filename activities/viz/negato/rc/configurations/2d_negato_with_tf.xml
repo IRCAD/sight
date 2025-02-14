@@ -1,19 +1,18 @@
 <extension implements="sight::app::extension::config">
     <id>2DNegatoWithTF</id>
     <parameters>
+        <object uid="image" type="sight::data::image_series" />
+        <object uid="transferFunctionDeferred" type="sight::data::transfer_function" deferred="true" />
+
         <param name="WID_PARENT" />
-        <param name="image" />
         <param name="patient_name" default="" />
         <!-- axial, frontal, sagittal -->
         <param name="orientation" default="axial" />
         <param name="CrossTypeChannel" default="crossTypeChannel" />
-        <param name="transferFunctionDeferred" />
         <param name="PickingChannel" default="pickingChannel" />
     </parameters>
     <config>
-        <object uid="${image}" type="sight::data::image_series" src="ref" />
         <object uid="snapshot" type="sight::data::image" />
-        <object uid="${transferFunctionDeferred}" type="sight::data::transfer_function" src="deferred" />
 
         <service uid="mainView" type="sight::module::ui::view">
             <gui>

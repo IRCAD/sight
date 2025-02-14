@@ -1,14 +1,15 @@
 <extension implements="sight::app::extension::config">
     <id>2DSimpleConfig</id>
     <parameters>
+        <object uid="objectID" type="sight::data::image_series" />
+
         <param name="WID_PARENT" />
-        <param name="objectID" />
         <!-- axial, frontal, sagittal -->
         <param name="orientation" default="axial" />
     </parameters>
     <config>
-        <object uid="${objectID}" type="sight::data::image_series" src="ref" />
         <object uid="tf" type="sight::data::transfer_function" />
+
         <service uid="mainview" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">

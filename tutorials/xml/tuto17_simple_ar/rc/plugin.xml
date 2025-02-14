@@ -28,7 +28,7 @@
             <!-- Series of camera calibration -->
             <object uid="cameraSet" type="sight::data::camera_set" />
             <!-- Camera calibration, deferred because it is extracted from the series -->
-            <object uid="camera" type="sight::data::camera" src="deferred" />
+            <object uid="camera" type="sight::data::camera" deferred="true" />
             <!-- Frame timeline used to buffer the output of the video grabber -->
             <object uid="frameTL" type="sight::data::frame_tl" />
             <!-- Video frame that is used for the current iteration -->

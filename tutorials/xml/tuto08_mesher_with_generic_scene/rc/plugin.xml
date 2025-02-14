@@ -14,10 +14,10 @@
         <config>
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="modelSeries" type="sight::data::model_series" src="deferred" />
+            <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
             <object uid="imageSeries" type="sight::data::image_series" />
             <object uid="tf" type="sight::data::transfer_function" />
-            <object uid="reconstruction" type="sight::data::reconstruction" src="deferred" />
+            <object uid="reconstruction" type="sight::data::reconstruction" deferred="true" />
             <object uid="snapshot" type="sight::data::image" />
 
             <object uid="threshold_value" type="sight::data::integer" value="255" />

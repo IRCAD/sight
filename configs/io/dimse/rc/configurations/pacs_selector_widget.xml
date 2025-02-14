@@ -15,13 +15,13 @@
         <object uid="pacsConfiguration" type="sight::io::dimse::data::pacs_configuration" />
 
         <object uid="previewSelections" type="sight::data::vector" />
-        <object uid="previewDicom" type="sight::data::dicom_series" src="deferred" />
+        <object uid="previewDicom" type="sight::data::dicom_series" deferred="true" />
         <object uid="previewImage" type="sight::data::image" />
         <object uid="previewImageReset" type="sight::data::image" />
         <object uid="tf" type="sight::data::transfer_function" />
 
         <object uid="localSelections" type="sight::data::vector" />
-        <object uid="localImageSeries" type="sight::data::image_series" src="deferred" />
+        <object uid="localImageSeries" type="sight::data::image_series" deferred="true" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

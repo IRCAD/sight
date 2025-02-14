@@ -11,8 +11,8 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="cameraSet" type="sight::data::camera_set" />
-            <object uid="cameraRGB" type="sight::data::camera" src="deferred" />
-            <object uid="cameraDepth" type="sight::data::camera" src="deferred" />
+            <object uid="cameraRGB" type="sight::data::camera" deferred="true" />
+            <object uid="cameraDepth" type="sight::data::camera" deferred="true" />
             <object uid="seriesSet" type="sight::data::series_set" />
             <object uid="frameTL" type="sight::data::frame_tl" />
             <object uid="maskTL" type="sight::data::frame_tl" />
@@ -21,9 +21,9 @@
             <object uid="foregroundMask" type="sight::data::image" />
             <object uid="matrix" type="sight::data::matrix4" />
             <object uid="inverseMat" type="sight::data::matrix4" />
-            <object uid="extrinsic" type="sight::data::matrix4" src="deferred" />
-            <object uid="skinMesh" type="sight::data::mesh" src="deferred" />
-            <object uid="modelSeries" type="sight::data::model_series" src="deferred" />
+            <object uid="extrinsic" type="sight::data::matrix4" deferred="true" />
+            <object uid="skinMesh" type="sight::data::mesh" deferred="true" />
+            <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -172,7 +172,7 @@
             <service uid="organManagerAct" type="sight::module::ui::config_launcher">
                 <appConfig id="ModelSeriesManagerWindow" />
                 <inout group="data">
-                    <key name="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+                    <key name="organ_manager_modelseries" uid="modelSeries" />
                 </inout>
                 <parameter replace="ICON_PATH" by="ex_rgbd_manual_ar/app.ico" />
             </service>

@@ -5,7 +5,7 @@ Example
 <service uid="..." type="sight::app::config_controller">
     <appConfig id="ModelSeriesManagerView" />
     <inout group="data">
-        <key name="ORGAN_MANAGER_MODELSERIES" uid="..." />
+        <key name="organ_manager_modelseries" uid="..." />
     </inout>
     <parameter replace="WID_PARENT" by="modelManagerView" />
 </service>
@@ -13,14 +13,13 @@ Example
 <extension implements="sight::app::extension::config">
     <id>ModelSeriesManagerView</id>
     <parameters>
+        <object uid="organ_manager_modelseries" type="sight::data::model_series" />
+
         <param name="WID_PARENT" />
-        <!-- model series to manage -->
-        <param name="ORGAN_MANAGER_MODELSERIES" />
     </parameters>
     <desc>Display the editors to manage the ModelSeries: show/hide reconstructions, change the color, ...</desc>
     <config>
-        <object uid="${ORGAN_MANAGER_MODELSERIES}" type="sight::data::model_series" src="ref" />
-        <object uid="reconstruction" type="sight::data::reconstruction" src="deferred" />
+        <object uid="reconstruction" type="sight::data::reconstruction" deferred="true" />
 
         <service uid="multiViewOrgans" type="sight::module::ui::view">
             <gui>
@@ -51,7 +50,7 @@ Example
         </service>
 
         <service uid="listOrganEditor" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
-            <inout key="modelSeries" uid="${ORGAN_MANAGER_MODELSERIES}" />
+            <inout key="modelSeries" uid="${organ_manager_modelseries}" />
             <columns>
                 <organ_name />
                 <structure_type />

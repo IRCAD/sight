@@ -9,7 +9,7 @@
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="reconstruction" type="sight::data::reconstruction" src="deferred" />
+        <object uid="reconstruction" type="sight::data::reconstruction" deferred="true" />
 
         <!-- ******************************* UI declaration *********************************** -->
 

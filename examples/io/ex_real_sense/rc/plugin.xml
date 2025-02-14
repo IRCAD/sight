@@ -14,13 +14,13 @@
             <object uid="frameTLDepth" type="sight::data::frame_tl" />
             <object uid="imageDepth" type="sight::data::image" />
             <object uid="imageVideo" type="sight::data::image" />
-            <object uid="pointcloud" type="sight::data::mesh" src="deferred" />
+            <object uid="pointcloud" type="sight::data::mesh" deferred="true" />
             <object uid="RGBDCameraSet" type="sight::data::camera_set" />
-            <object uid="RGBCamera" type="sight::data::camera" src="deferred" />
-            <object uid="DCamera" type="sight::data::camera" src="deferred" />
+            <object uid="RGBCamera" type="sight::data::camera" deferred="true" />
+            <object uid="DCamera" type="sight::data::camera" deferred="true" />
             <object uid="identity" type="sight::data::matrix4" />
             <object uid="3dCameraTrf" type="sight::data::matrix4" />
-            <object uid="depth_to_color" type="sight::data::matrix4" src="deferred" />
+            <object uid="depth_to_color" type="sight::data::matrix4" deferred="true" />
 
             <!-- Transfer function to visualize depth images -->
             <object uid="tfDepth" type="sight::data::transfer_function">

@@ -1,12 +1,10 @@
 <extension implements="sight::app::extension::config">
     <id>3DSimpleConfig</id>
     <parameters>
+        <object uid="objectID" type="sight::data::model_series" />
         <param name="WID_PARENT" />
-        <param name="objectID" />
     </parameters>
     <config>
-        <object uid="${objectID}" type="sight::data::model_series" src="ref" />
-
         <service uid="mainview" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">

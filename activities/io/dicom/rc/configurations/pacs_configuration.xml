@@ -1,14 +1,12 @@
 <extension implements="sight::app::extension::config">
     <id>sight::io::dicom::pacs_configuration</id>
     <parameters>
-        <param name="PACS_CONFIGURATION" />
+        <object uid="PACS_CONFIGURATION" type="sight::io::dimse::data::pacs_configuration" />
         <param name="ICON_PATH" />
         <!-- defined by config_launcher -->
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
     </parameters>
     <config>
-        <object uid="${PACS_CONFIGURATION}" type="sight::io::dimse::data::pacs_configuration" src="ref" />
-
         <!-- MAIN FRAME -->
         <service uid="pacsConfigurationManagerFrame" type="sight::module::ui::frame">
             <window onclose="notify" />

@@ -1,13 +1,14 @@
 <extension implements="sight::app::extension::config">
     <id>sight::activity::io::dicomweb::2d_preview_config</id>
     <parameters>
+        <object uid="objectID" type="sight::data::dicom_series" />
+
         <param name="WID_PARENT" />
-        <param name="objectID" />
     </parameters>
     <config>
-        <object uid="${objectID}" type="sight::data::dicom_series" src="ref" />
-        <object uid="image" type="sight::data::image" src="deferred" />
+        <object uid="image" type="sight::data::image" deferred="true" />
         <object uid="tf" type="sight::data::transfer_function" />
+
         <service uid="mainview" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">

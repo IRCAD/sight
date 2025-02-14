@@ -55,9 +55,9 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="seriesSet" type="sight::data::series_set" />
-            <object uid="modelSeries" type="sight::data::model_series" src="deferred" />
+            <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
             <object uid="pacsSeriesSet" type="sight::data::series_set" />
-            <object uid="image" type="sight::data::image_series" src="deferred" />
+            <object uid="image" type="sight::data::image_series" deferred="true" />
             <object uid="extrudedModelSeries" type="sight::data::model_series" />
 
             <object uid="volumeTF" type="sight::data::transfer_function" />

@@ -14,9 +14,10 @@ Example:
 <extension implements="sight::app::extension::config">
     <id>TransferFunctionWithNegatoEditor</id>
     <parameters>
+        <object uid="image" type="sight::data::image_series" />
+        <object uid="histogram" type="sight::data::histogram" />
+
         <param name="WID_PARENT" />
-        <param name="image" />
-        <param name="histogram" />
         <param name="TFPath" default="sight::module::ui::qt/tf" />
         <param name="transferFunctionOutput" />
     </parameters>
@@ -24,11 +25,8 @@ Example:
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="sight::data::image_series" src="ref" />
-        <object uid="${histogram}" type="sight::data::histogram" src="ref" />
-
-        <object uid="TFSet" type="sight::data::map" src="deferred" />
-        <object uid="${transferFunctionOutput}" type="sight::data::transfer_function" src="deferred" />
+        <object uid="TFSet" type="sight::data::map" deferred="true" />
+        <object uid="${transferFunctionOutput}" type="sight::data::transfer_function" deferred="true" />
 
         <service uid="tfEditor" type="sight::module::ui::view">
             <gui>

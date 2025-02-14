@@ -1,8 +1,9 @@
 <extension implements="sight::app::extension::config">
     <id>2DVisualization</id>
     <parameters>
+        <object uid="imageSeries" type="sight::data::image_series" />
+
         <param name="WID_PARENT" />
-        <param name="imageSeries" />
         <param name="advancedLandmarksEditor" default="true" />
         <param name="hasPreviousChannel" default="hasPreviousChannel" />
         <param name="hasNextChannel" default="hasNextChannel" />
@@ -10,8 +11,6 @@
         <param name="nextActivityChannel" default="nextActivityChannel" />
     </parameters>
     <config>
-        <object uid="${imageSeries}" type="sight::data::image_series" src="ref" />
-
         <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">

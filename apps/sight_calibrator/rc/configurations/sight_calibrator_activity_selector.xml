@@ -1,7 +1,8 @@
 <extension implements="sight::app::extension::config">
     <id>SightCalibrator_ActivitySelector_AppCfg</id>
     <parameters>
-        <param name="activitySet" />
+        <object uid="activitySet" type="sight::data::activity_set" />
+
         <param name="WID_PARENT" />
         <param name="CREATE_ACTIVITY_RECEIVER_CHANNEL" />
         <param name="LAUNCH_ACTIVITY_SENDER_CHANNEL" />
@@ -9,10 +10,6 @@
         <param name="ICON_PATH" />
     </parameters>
     <config>
-        <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${activitySet}" type="sight::data::activity_set" src="ref" />
-
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="mainview" type="sight::module::ui::view">
