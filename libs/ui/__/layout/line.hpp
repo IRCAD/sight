@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -134,6 +134,13 @@ public:
         return m_orientation;
     }
 
+    //------------------------------------------------------------------------------
+
+    int get_spacing()
+    {
+        return m_spacing;
+    }
+
 protected:
 
     //------------------------------------------------------------------------------
@@ -149,6 +156,7 @@ private:
     std::list<view_info> m_views;
 
     orientation m_orientation {vertical};
+    int m_spacing {-1};
 };
 
 } // namespace sight::ui::layout

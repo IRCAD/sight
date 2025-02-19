@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,6 @@
 #include <core/macros.hpp>
 
 #include <QDockWidget>
-#include <QLayout>
-#include <QList>
-#include <QMetaObject>
-#include <QWidget>
 
 namespace sight::ui::qt::container
 {
@@ -38,8 +34,8 @@ namespace sight::ui::qt::container
 widget::~widget() noexcept
 {
     SIGHT_ASSERT(
-        "Error during destruction : The qt container included in this class is still allocated, please call destroyContainer() before.",
-        m_container == nullptr
+        "destroy_container() has not been called before destruction.",
+        m_container == nullptr && m_root == nullptr
     );
 }
 
@@ -47,18 +43,16 @@ widget::~widget() noexcept
 
 void widget::set_layout(QLayout* const _layout)
 {
-    SIGHT_ASSERT("The container must be initialized before invoking setLayout().", m_container);
+    SIGHT_ASSERT("The container must be initialized before invoking set_layout().", m_container);
 
-    // Recursively delete all children
-    QLayout* old_layout = m_container->layout();
-
-    if(nullptr != old_layout)
+    // Since we will set a new layout, delete the old one as stated in Qt documentation
+    if(auto* const old_layout = m_container->layout(); old_layout != nullptr)
     {
+        // Delete all child layout items
         this->clean();
 
-        // Since we will set a new layout, delete the old one as stated in Qt documentation
+        // Old layout can now be deleted
         delete old_layout;
-        old_layout = nullptr;
     }
 
     // Assign the new layout manager
@@ -71,15 +65,13 @@ void widget::clean()
 {
     SIGHT_ASSERT("The container must be initialized before invoking clean().", m_container);
 
-    // Recursively delete all children
-    QLayout* old_layout = m_container->layout();
-
-    if(nullptr != old_layout)
+    // Delete all children
+    if(auto* const layout = m_container->layout(); layout != nullptr)
     {
         // This block layouting when there is a lot of child
         m_container->setUpdatesEnabled(false);
 
-        for(QLayoutItem* child = old_layout->takeAt(0) ; nullptr != child ; child = old_layout->takeAt(0))
+        for(QLayoutItem* child = nullptr ; (child = layout->takeAt(0)) != nullptr ; )
         {
             delete child;
         }
@@ -93,52 +85,47 @@ void widget::clean()
 
 void widget::destroy_container()
 {
-    SIGHT_ASSERT("The container must be initialized before invoking destroyContainer().", m_container);
+    SIGHT_ASSERT("The container must be initialized before invoking destroy_container().", m_container);
 
-    if(m_container != nullptr)
+    if(auto* const root = get_qt_root(); root != nullptr)
     {
-        m_container->deleteLater();
+        // Should also delete the container, since it should be a child of the root
+        root->deleteLater();
+
+        m_root.clear();
         m_container.clear();
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void widget::set_qt_container(QWidget* _container)
-{
-    m_container = _container;
-}
-
-//-----------------------------------------------------------------------------
-
-QWidget* widget::get_qt_container() const
-{
-    return m_container;
-}
-
-//-----------------------------------------------------------------------------
-
 bool widget::is_shown_on_screen()
 {
-    SIGHT_ASSERT("The container must be initialized before invoking isShownOnScreen().", m_container);
-    return m_container->isVisible();
+    SIGHT_ASSERT("The container must be initialized before invoking is_shown_on_screen().", m_container);
+
+    if(const auto* const root = get_qt_root(); root != nullptr)
+    {
+        return root->isVisible();
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
 
 void widget::set_visible(bool _is_visible)
 {
-    SIGHT_ASSERT("The container must be initialized before invoking setVisible().", m_container);
+    SIGHT_ASSERT("The container must be initialized before invoking set_visible().", m_container);
 
-    QWidget* parent = m_container->parentWidget();
-    auto* dock      = qobject_cast<QDockWidget*>(parent);
-
-    if(dock != nullptr)
+    if(auto* const root = get_qt_root(); root != nullptr)
     {
-        dock->setVisible(_is_visible);
-    }
+        if(auto* const dock = qobject_cast<QDockWidget*>(root->parentWidget()); dock != nullptr)
+        {
+            dock->setVisible(_is_visible);
+        }
 
-    m_container->setVisible(_is_visible);
+        root->setVisible(_is_visible);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -147,17 +134,15 @@ void widget::set_enabled(bool _is_enabled)
 {
     SIGHT_ASSERT("The container must be initialized before invoking setEnabled().", m_container);
 
-    QWidget* parent = m_container->parentWidget();
-    auto* dock      = qobject_cast<QDockWidget*>(parent);
-
-    if(dock != nullptr)
+    if(auto* const root = get_qt_root(); root != nullptr)
     {
-        dock->setEnabled(_is_enabled);
+        if(auto* const dock = qobject_cast<QDockWidget*>(root->parentWidget()); dock != nullptr)
+        {
+            dock->setEnabled(_is_enabled);
+        }
+
+        root->setEnabled(_is_enabled);
     }
-
-    m_container->setEnabled(_is_enabled);
 }
-
-//-----------------------------------------------------------------------------
 
 } // namespace sight::ui::qt::container

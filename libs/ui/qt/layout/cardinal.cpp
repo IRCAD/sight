@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -365,7 +365,7 @@ void cardinal::modify_layout(const ui::parameter_t& _parameter, const std::strin
             SIGHT_ASSERT("Container '" << wid << "' is not a widget.", qt_container);
 
             // Finally, get the underlying QWidget
-            auto* const widget = qt_container->get_qt_container();
+            auto* const widget = qt_container->get_qt_root();
             SIGHT_ASSERT("Container '" << wid << "' have no QWidget.", widget);
 
             if(m_qt_window->centralWidget() == widget)
@@ -373,20 +373,17 @@ void cardinal::modify_layout(const ui::parameter_t& _parameter, const std::strin
                 // Already central. Just maximize/minimize it
                 for(auto* const child : m_qt_window->children())
                 {
-                    if(auto* const dock_widget = qobject_cast<QDockWidget*>(child); dock_widget)
+                    if(auto* const dock_child = qobject_cast<QDockWidget*>(child); dock_child)
                     {
-                        dock_widget->setVisible(!dock_widget->isVisible());
+                        dock_child->setVisible(!dock_child->isVisible());
                     }
                 }
             }
-            else
+            else if(auto* const dock_child = qobject_cast<QDockWidget*>(widget->parentWidget()); dock_child)
             {
                 // Not central. Move it to the central widget
                 // Save the state to restore the sizes later
                 const auto state = m_qt_window->saveState();
-
-                // Retrieve the dock child widget containing the widget
-                auto* const dock_child = widget->parentWidget();
 
                 // Swap the central widget with the docked widget
                 auto* dock_child_layout = dock_child->layout();
