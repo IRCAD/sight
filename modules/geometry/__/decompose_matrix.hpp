@@ -96,7 +96,7 @@ protected:
     static constexpr std::string_view ROTATION_INOUT    = "rotation";
     static constexpr std::string_view SCALE_INOUT       = "scale";
 
-    data::ptr<data::matrix4, sight::data::access::in> m_source {this, SOURCE_INPUT, true};
+    data::ptr<data::matrix4, sight::data::access::in> m_source {this, SOURCE_INPUT};
     data::ptr<data::matrix4, sight::data::access::inout> m_translation {this, TRANSLATION_INOUT};
     data::ptr<data::matrix4, sight::data::access::inout> m_rotation {this, ROTATION_INOUT};
     data::ptr<data::matrix4, sight::data::access::inout> m_scale {this, SCALE_INOUT};

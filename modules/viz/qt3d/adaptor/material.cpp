@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -95,7 +95,7 @@ void material::updating()
 
     m_material->update_polygon_mode(material->get_representation_mode());
     m_material->update_options_mode(material->get_options_mode());
-    m_material->update_shading_mode(static_cast<int>(material->get_shading_mode()));
+    m_material->set_shading(static_cast<int>(material->get_shading_mode()));
     m_material->update_rgba_mode(material.get_shared());
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,9 +57,10 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
 
 //------------------------------------------------------------------------------
 
-image_series_writer::image_series_writer() noexcept
+image_series_writer::image_series_writer() noexcept :
+    writer("Choose a file to save image"),
+    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
 {
-    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -76,7 +77,7 @@ void image_series_writer::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose an file to save an image" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("Vtk", "*.vtk");
     dialog_file.add_filter("Vti", "*.vti");

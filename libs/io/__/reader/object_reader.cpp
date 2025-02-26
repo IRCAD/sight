@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,14 +27,14 @@ namespace sight::io::reader
 
 //------------------------------------------------------------------------------
 
-void object_reader::set_object(core::tools::object::sptr _p_object)
+void object_reader::set_object(core::object::sptr _p_object)
 {
     m_object = _p_object;
 }
 
 //------------------------------------------------------------------------------
 
-core::tools::object::sptr object_reader::get_object() const
+core::object::sptr object_reader::get_object() const
 {
     auto object = m_object.lock();
     SIGHT_ASSERT("Object is null", object);

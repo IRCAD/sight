@@ -54,7 +54,7 @@ public:
      * @brief Return a specific registered service
      * @param[in] _id Identifier of the service
      */
-    [[nodiscard]] SIGHT_SERVICE_API CSPTR(service::base) get_registered_service(const core::tools::id::type& _id) const;
+    [[nodiscard]] SIGHT_SERVICE_API CSPTR(service::base) get_registered_service(const core::id::type& _id) const;
 
 protected:
 
@@ -86,7 +86,7 @@ protected:
      * @brief Unregister a specific service
      * @param _id Identifier of the service
      */
-    SIGHT_SERVICE_API void unregister_service(const core::tools::id::type& _id);
+    SIGHT_SERVICE_API void unregister_service(const core::id::type& _id);
 
     /**
      * @brief Unregister a specific service

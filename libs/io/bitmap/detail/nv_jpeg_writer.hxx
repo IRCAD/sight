@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -36,24 +36,24 @@ namespace sight::io::bitmap::detail
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define CHECK_CUDA(func, success) \
-    if(const auto& status = func; status != (success)) \
-    { \
-        SIGHT_THROW("The function " #func " failed: " << status); \
-    }
+        if(const auto& status = func; status != (success)) \
+        { \
+            SIGHT_THROW("The function " #func " failed: " << status); \
+        }
 
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define CHECK_CUDA_NOEXCEPT(func, success) \
-    try \
-    { \
-        if(const auto status = func; status != (success)) \
+        try \
         { \
-            SIGHT_THROW("The function " #func " failed: " << status); \
+            if(const auto status = func; status != (success)) \
+            { \
+                SIGHT_THROW("The function " #func " failed: " << status); \
+            } \
         } \
-    } \
-    catch(const std::exception& e) \
-    { \
-        SIGHT_ERROR(e.what()); \
-    }
+        catch(const std::exception& e) \
+        { \
+            SIGHT_ERROR(e.what()); \
+        }
 
 class nv_jpeg_writer final
 {
@@ -121,10 +121,10 @@ public:
         flag = flag::none
 )
     {
-        const auto& pixel_format = _image.pixel_format();
+        const auto pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel format: " << pixel_format,
-            pixel_format != data::image::pixel_format::rgb && pixel_format != data::image::pixel_format::bgr
+            pixel_format != data::image::pixel_format_t::rgb && pixel_format != data::image::pixel_format_t::bgr
         );
 
         const auto& pixel_type = _image.type();
@@ -145,7 +145,7 @@ public:
 
         // Realloc if GPU buffer is smaller
         // Beware, some images are volume...
-        const auto& sizes = _image.size();
+        const auto& sizes         = _image.size();
         const auto num_components = _image.num_components();
         const auto size_in_bytes = sizes[0] * sizes[1] * num_components* pixel_type.size();
         if(m_gpu_buffer_size < size_in_bytes)
@@ -182,7 +182,7 @@ public:
                 m_state,
                 m_params,
                 &nv_image,
-                pixel_format == data::image::pixel_format::rgb ? NVJPEG_INPUT_RGBI : NVJPEG_INPUT_BGRI,
+                pixel_format == data::image::pixel_format_t::rgb ? NVJPEG_INPUT_RGBI : NVJPEG_INPUT_BGRI,
                 int(sizes[0]),
                 int(sizes[1]),
                 m_stream

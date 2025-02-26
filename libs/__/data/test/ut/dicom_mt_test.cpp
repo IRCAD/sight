@@ -60,7 +60,7 @@ void dicom_mt_test::concurrent_read_test()
 
     {
         auto dump_lock = series->dump_lock();
-        series->resize({8, 8, 8}, core::type::UINT8, data::image::pixel_format::gray_scale);
+        series->resize({8, 8, 8}, core::type::UINT8, data::image::pixel_format_t::gray_scale);
         std::fill(series->begin<std::uint8_t>(), series->end<std::uint8_t>(), std::uint8_t(0));
     }
 

@@ -183,7 +183,7 @@ private:
     static constexpr std::string_view SERIES_SET = "seriesSet";
     static constexpr std::string_view SELECTION  = "selection";
 
-    data::ptr<data::series_set, data::access::inout> m_series_set {this, SERIES_SET, true};
+    data::ptr<data::series_set, data::access::inout> m_series_set {this, SERIES_SET};
     data::ptr<data::vector, data::access::inout> m_selection {this, SELECTION};
 };
 

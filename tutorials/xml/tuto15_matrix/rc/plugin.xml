@@ -166,15 +166,18 @@
             </service>
 
             <service uid="axis1Adp" type="sight::module::viz::scene3d::adaptor::axis">
-                <config length="10" transform="transRotMat" label="false" origin="true" originColor="#6997BB" name="Base" />
+                <config length="10" transform="transRotMat" label="false" origin="true" name="Base" />
+                <properties origin_color="#6997BB" />
             </service>
 
             <service uid="axis2Adp" type="sight::module::viz::scene3d::adaptor::axis">
-                <config length="10" transform="rotTransMat" label="false" origin="true" originColor="#D25252" />
+                <config length="10" transform="rotTransMat" label="false" origin="true" />
+                <properties origin_color="#D25252" />
             </service>
 
             <service uid="originAxisAdp" type="sight::module::viz::scene3d::adaptor::axis">
-                <config length="10" label="false" origin="true" originColor="#000000" />
+                <config length="10" label="false" origin="true" />
+                <properties origin_color="#000000" />
             </service>
 
             <service uid="text1Adp" type="sight::module::viz::scene3d::adaptor::text">

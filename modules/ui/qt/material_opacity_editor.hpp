@@ -85,7 +85,7 @@ private:
     /// Name that appears next to the slider.
     std::string m_label {"Material opacity : "};
 
-    data::ptr<data::material, data::access::inout> m_material {this, "material", true};
+    data::ptr<data::material, data::access::inout> m_material {this, "material"};
 
 private Q_SLOTS:
 

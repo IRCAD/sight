@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,10 +21,6 @@
  ***********************************************************************/
 
 #include "modules/viz/scene3d/adaptor/shader_parameter.hpp"
-
-#include "modules/viz/scene3d/adaptor/material.hpp"
-
-#include <service/macros.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 
@@ -51,7 +47,7 @@ void shader_parameter::configuring()
 
 void shader_parameter::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     // Retrieves the associated material
     Ogre::MaterialPtr material = Ogre::MaterialManager::getSingleton().getByName(
@@ -63,19 +59,11 @@ void shader_parameter::starting()
 
 //------------------------------------------------------------------------------
 
-void shader_parameter::updating()
-{
-    // This is typically called when the data has changed through autoconnect
-    // So set the parameter as dirty and perform the update
-    this->set_dirty();
-    this->parameter_adaptor::updating();
-}
-
-//------------------------------------------------------------------------------
-
 void shader_parameter::stopping()
 {
     this->parameter_adaptor::stopping();
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

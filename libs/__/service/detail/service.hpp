@@ -84,9 +84,11 @@ public:
     /// Disconnects the service from its data
     void auto_disconnect();
 
-    /// Returns the information about the required key
-    //// @return a pair of booleans to indicate if the object is auto_connected and optional
-    std::pair<bool, bool> get_object_key_attrs(const std::string& _key) const;
+    /// Returns a boolean to indicate if the service is autoconnected
+    bool is_auto_connected() const;
+
+    /// Returns a boolean to indicate if the object at the given key is optional
+    bool is_key_optional(const std::string& _key) const;
 
     /// Connections with data and other services, connected at start, and disconnected at stop
     service_connection m_connections;
@@ -105,7 +107,10 @@ public:
     /**
      * @brief Defines if the service is updating.
      */
-    enum base::updating_status m_updating_state {base::updating_status::notupdating};
+    enum base::updating_status m_updating_state
+    {
+        base::updating_status::notupdating
+    };
 
     /**
      * @brief Defines if the service is configured or not.
@@ -117,6 +122,13 @@ public:
 
     /// Reference to the service
     sight::service::base& m_service;
+
+    /// List of created properties during configuring in order to keep them alive
+    using properties_t = std::vector<sight::data::object::sptr>;
+    properties_t m_created_properties;
+
+    /// Tells if the service is auto-connected or not. Could be reevaluated but normally safe to store.
+    bool m_auto_connected {false};
 };
 
 } // namespace sight::service::detail

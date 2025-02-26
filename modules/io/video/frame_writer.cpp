@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@
 #include <core/com/slots.hxx>
 #include <core/location/single_folder.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 #include <service/macros.hpp>
 
@@ -60,7 +60,7 @@ static const core::com::slots::key_t SET_FORMAT_PARAMETER = "set_format_paramete
 //------------------------------------------------------------------------------
 
 frame_writer::frame_writer() noexcept :
-
+    writer("Choose a folder to save the frames"),
     m_format(".tiff")
 {
     new_slot(SAVE_FRAME, &frame_writer::save_frame, this);
@@ -106,8 +106,9 @@ void frame_writer::starting()
 void frame_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
+
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose a folder to save the frames" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.set_option(ui::dialog::location::write);
     dialog_file.set_type(ui::dialog::location::folder);

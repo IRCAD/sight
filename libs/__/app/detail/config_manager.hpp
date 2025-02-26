@@ -31,7 +31,6 @@
 
 #include "service/base.hpp"
 #include "service/extension/config.hpp"
-#include "service/object_parser.hpp"
 
 #include <core/com/has_slots.hpp>
 #include <core/com/helper/sig_slot_connection.hpp>
@@ -46,7 +45,7 @@
 namespace sight::data
 {
 
-class composite;
+class map;
 
 } // namespace sight::data
 
@@ -125,7 +124,6 @@ public:
 
 private:
 
-    using config_attribute_t  = std::pair<std::string, bool>;
     using proxy_connections_t = core::com::helper::proxy_connections;
 
     /**
@@ -137,21 +135,12 @@ private:
 
     data::object::sptr find_object(const std::string& _uid, std::string_view _err_msg_tail) const;
 
-    data::object::sptr get_new_object(config_attribute_t _type, const std::string& _uid) const;
-
-    static data::object::sptr get_new_object(
-        config_attribute_t _type,
-        config_attribute_t _uid = config_attribute_t("", false)
-    );
-
-    data::object::sptr get_object(config_attribute_t _type, const std::string& _uid) const;
-
     service::base::sptr get_new_service(const std::string& _uid, const std::string& _impl_type) const;
 
     /// Destroyes all created services
     void destroy_created_services();
 
-    void process_start_items();
+    void process_start_items(const core::runtime::config_t&);
 
     void process_update_items();
 
@@ -166,6 +155,12 @@ private:
 
     /// Parses connection sections and creates them.
     void create_connections();
+
+    /// Create a preference service if required.
+    void create_preferences_service();
+
+    /// Creates updater services.
+    void create_updater_services();
 
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
     std::string msg_head() const;
@@ -198,10 +193,8 @@ private:
     /// Gets a list of UIDs or WIDs, get a friendly printable message.
     static std::string get_uid_list_as_string(const std::vector<std::string>& _uid_list);
 
-    using created_object_t = std::pair<data::object::sptr, service::object_parser::sptr>;
-
     /// Map containing the object and its XML parser.
-    std::unordered_map<std::string, created_object_t> m_created_objects;
+    std::unordered_map<std::string, data::object::sptr> m_created_objects;
 
     struct deferred_object_t
     {
@@ -215,6 +208,9 @@ private:
     /// Map indexed by the object uid, containing all the service configurations that depend on this object.
     std::unordered_map<std::string, deferred_object_t> m_deferred_objects;
 
+    /// Map indexed by the object uid, containing all the service configurations that depend on this object.
+    std::unordered_set<std::string> m_pref_objects;
+
     /// All the identifiers of the deferred services.
     std::unordered_set<std::string> m_deferred_services;
 
@@ -227,8 +223,11 @@ private:
     };
     std::unordered_map<std::string, service_proxy_t> m_services_proxies;
 
-    /// Identifier of this configuration.
+    /// Identifier of this configuration, i.e. the name of the app_config in the XML.
     std::string m_config_id;
+
+    /// Unique identifier of this configuration.
+    std::string m_config_uid;
 
     using service_container = std::vector<service::base::wptr>;
 
@@ -258,6 +257,12 @@ private:
 
     /// Synchronize start/stop sequences with add/remove objects slots;
     core::mt::mutex m_mutex;
+
+    /// UID of the preference service, if it is required
+    std::string m_pref_service_uid;
+
+    /// Configuration element built to start updaters
+    service::config_t m_updater_srv_start;
 };
 
 // ------------------------------------------------------------------------

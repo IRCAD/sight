@@ -60,7 +60,7 @@ public:
      *
      * This method overloads set_object to ensure that given object corresponds to DATATYPE
      */
-    void set_object(core::tools::object::csptr _obj) override
+    void set_object(core::object::csptr _obj) override
     {
         SIGHT_ASSERT(
             "Object type: '" << std::string(typeid(_obj).name())

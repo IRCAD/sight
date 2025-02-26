@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,28 +50,28 @@ void camera_test::tearDown()
 
 data::camera::sptr init_camera()
 {
-    const double cx                                   = safe_rand() % 10000 / 100.;
-    const double cy                                   = safe_rand() % 10000 / 100.;
-    const double fx                                   = safe_rand() % 10000 / 100.;
-    const double fy                                   = safe_rand() % 10000 / 100.;
-    const double skew                                 = safe_rand() % 10000 / 100.;
-    const double k1                                   = safe_rand() % 10000 / 100.;
-    const double k2                                   = safe_rand() % 10000 / 100.;
-    const double p1                                   = safe_rand() % 10000 / 100.;
-    const double p2                                   = safe_rand() % 10000 / 100.;
-    const double k3                                   = safe_rand() % 10000 / 100.;
-    const bool is_calibrated                          = true;
-    const std::string desc                            = "My camera";
-    const std::string cam_id                          = "CAM_461384568";
-    const std::size_t width                           = 800;
-    const std::size_t height                          = 800;
-    const data::camera::source_t camerasource         = data::camera::device;
-    const std::string cameraid                        = "/dev/video0";
-    const float maximumframerate                      = 30.F;
-    const enum data::camera::pixel_format pixelformat = data::camera::rgba32;
-    const std::string videofile                       = "/tmp/video.mp4";
-    const std::string streamurl                       = "rtsp://192.168.0.1/h264.sdp";
-    const double scale                                = 0.9996;
+    const double cx                                     = safe_rand() % 10000 / 100.;
+    const double cy                                     = safe_rand() % 10000 / 100.;
+    const double fx                                     = safe_rand() % 10000 / 100.;
+    const double fy                                     = safe_rand() % 10000 / 100.;
+    const double skew                                   = safe_rand() % 10000 / 100.;
+    const double k1                                     = safe_rand() % 10000 / 100.;
+    const double k2                                     = safe_rand() % 10000 / 100.;
+    const double p1                                     = safe_rand() % 10000 / 100.;
+    const double p2                                     = safe_rand() % 10000 / 100.;
+    const double k3                                     = safe_rand() % 10000 / 100.;
+    const bool is_calibrated                            = true;
+    const std::string desc                              = "My camera";
+    const std::string cam_id                            = "CAM_461384568";
+    const std::size_t width                             = 800;
+    const std::size_t height                            = 800;
+    const data::camera::source_t camerasource           = data::camera::device;
+    const float maximumframerate                        = 30.F;
+    const enum data::camera::pixel_format_t pixelformat = data::camera::rgba32;
+    const std::string videofile                         = "/tmp/video.mp4";
+    const std::string streamurl                         = "rtsp://192.168.0.1/h264.sdp";
+    const double scale                                  = 0.9996;
+    const double error                                  = 0.023;
 
     data::camera::sptr camera = std::make_shared<data::camera>();
     camera->set_cx(cx);
@@ -91,6 +91,7 @@ data::camera::sptr init_camera()
     camera->set_video_file(videofile);
     camera->set_stream_url(streamurl);
     camera->set_scale(scale);
+    camera->set_calibration_error(error);
 
     return camera;
 }
@@ -99,28 +100,28 @@ data::camera::sptr init_camera()
 
 void camera_test::param_test()
 {
-    const double cx                                   = safe_rand() % 10000 / 100.;
-    const double cy                                   = safe_rand() % 10000 / 100.;
-    const double fx                                   = safe_rand() % 10000 / 100.;
-    const double fy                                   = safe_rand() % 10000 / 100.;
-    const double skew                                 = safe_rand() % 10000 / 100.;
-    const double k1                                   = safe_rand() % 10000 / 100.;
-    const double k2                                   = safe_rand() % 10000 / 100.;
-    const double p1                                   = safe_rand() % 10000 / 100.;
-    const double p2                                   = safe_rand() % 10000 / 100.;
-    const double k3                                   = safe_rand() % 10000 / 100.;
-    const bool is_calibrated                          = true;
-    const std::string desc                            = "My camera";
-    const std::string cam_id                          = "CAM_461384568";
-    const std::size_t width                           = 800;
-    const std::size_t height                          = 800;
-    const data::camera::source_t camerasource         = data::camera::device;
-    const std::string cameraid                        = "/dev/video0";
-    const float maximumframerate                      = 30.F;
-    const enum data::camera::pixel_format pixelformat = data::camera::rgba32;
-    const std::string videofile                       = "/tmp/video.mp4";
-    const std::string streamurl                       = "rtsp://192.168.0.1/h264.sdp";
-    const double scale                                = 0.9796;
+    const double cx                                     = safe_rand() % 10000 / 100.;
+    const double cy                                     = safe_rand() % 10000 / 100.;
+    const double fx                                     = safe_rand() % 10000 / 100.;
+    const double fy                                     = safe_rand() % 10000 / 100.;
+    const double skew                                   = safe_rand() % 10000 / 100.;
+    const double k1                                     = safe_rand() % 10000 / 100.;
+    const double k2                                     = safe_rand() % 10000 / 100.;
+    const double p1                                     = safe_rand() % 10000 / 100.;
+    const double p2                                     = safe_rand() % 10000 / 100.;
+    const double k3                                     = safe_rand() % 10000 / 100.;
+    const bool is_calibrated                            = true;
+    const std::string desc                              = "My camera";
+    const std::string cam_id                            = "CAM_461384568";
+    const std::size_t width                             = 800;
+    const std::size_t height                            = 800;
+    const data::camera::source_t camerasource           = data::camera::device;
+    const float maximumframerate                        = 30.F;
+    const enum data::camera::pixel_format_t pixelformat = data::camera::rgba32;
+    const std::string videofile                         = "/tmp/video.mp4";
+    const std::string streamurl                         = "rtsp://192.168.0.1/h264.sdp";
+    const double scale                                  = 0.9796;
+    const double error                                  = 0.123;
 
     data::camera::sptr camera = std::make_shared<data::camera>();
     camera->set_cx(cx);
@@ -141,6 +142,7 @@ void camera_test::param_test()
     camera->set_video_file(videofile);
     camera->set_stream_url(streamurl);
     camera->set_scale(scale);
+    camera->set_calibration_error(error);
 
     CPPUNIT_ASSERT_EQUAL(cx, camera->get_cx());
     CPPUNIT_ASSERT_EQUAL(cy, camera->get_cy());
@@ -166,6 +168,7 @@ void camera_test::param_test()
     CPPUNIT_ASSERT_EQUAL(videofile, camera->get_video_file().string());
     CPPUNIT_ASSERT_EQUAL(streamurl, camera->get_stream_url());
     CPPUNIT_ASSERT_EQUAL(scale, camera->get_scale());
+    CPPUNIT_ASSERT_EQUAL(error, camera->calibration_error());
 }
 
 //------------------------------------------------------------------------------
@@ -206,6 +209,7 @@ void camera_test::shallow_copy_test()
     CPPUNIT_ASSERT_EQUAL(camera->get_video_file(), camera2->get_video_file());
     CPPUNIT_ASSERT_EQUAL(camera->get_stream_url(), camera2->get_stream_url());
     CPPUNIT_ASSERT_EQUAL(camera->get_scale(), camera2->get_scale());
+    CPPUNIT_ASSERT_EQUAL(camera->calibration_error(), camera2->calibration_error());
 }
 
 //------------------------------------------------------------------------------
@@ -229,16 +233,16 @@ void camera_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    camera1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "The cameras must be different when applying " #op " to the first", \
-        *camera1 != *camera2 && !(*camera1 == *camera2) \
-    ); \
-    camera2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "The cameras must be equal when applying " #op " to both", \
-        *camera1 == *camera2 && !(*camera1 != *camera2) \
-    );
+            camera1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "The cameras must be different when applying " #op " to the first", \
+                *camera1 != *camera2 && !(*camera1 == *camera2) \
+            ); \
+            camera2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "The cameras must be equal when applying " #op " to both", \
+                *camera1 == *camera2 && !(*camera1 != *camera2) \
+            );
 
     TEST(set_cx(1));
     TEST(set_cy(2));
@@ -257,6 +261,7 @@ void camera_test::equality_test()
     TEST(set_scale(19));
     TEST(set_is_calibrated(true));
     TEST(set_camera_source(data::camera::device));
+    TEST(set_calibration_error(0.569));
 
     #undef TEST
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ namespace sight::core::com
 
 void slots::set_worker(const core::thread::worker::sptr& _worker)
 {
-    for(const auto& elem : m_slots)
+    for(const auto& elem : *this)
     {
         elem.second->set_worker(_worker);
     }
@@ -44,7 +44,7 @@ void slots::set_worker(const core::thread::worker::sptr& _worker)
 
 slots& slots::operator()(const key_t& _key, const slot_base::sptr& _slot)
 {
-    m_slots.insert({_key, _slot});
+    insert({_key, _slot});
     return *this;
 }
 
@@ -52,9 +52,9 @@ slots& slots::operator()(const key_t& _key, const slot_base::sptr& _slot)
 
 slot_base::sptr slots::operator[](const key_t& _key) const
 {
-    auto it = m_slots.find(_key);
+    auto it = find(_key);
 
-    if(it != m_slots.end())
+    if(it != end())
     {
         return it->second;
     }
@@ -67,18 +67,12 @@ slot_base::sptr slots::operator[](const key_t& _key) const
 slots::slot_key_container_t slots::get_slot_keys() const
 {
     slots::slot_key_container_t slot_keys;
-    for(const auto& elem : m_slots)
+    for(const auto& elem : *this)
     {
         slot_keys.push_back(elem.first);
     }
 
     return slot_keys;
-}
-
-//-----------------------------------------------------------------------------
-
-slots::slots(const slots& /*unused*/)
-{
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,8 +97,8 @@ void model_series::deep_copy(const object::csptr& _source, const std::unique_ptr
 
 bool model_series::operator==(const model_series& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_dicom_reference, _other.m_dicom_reference)
-       || !core::tools::is_equal(m_reconstruction_db, _other.m_reconstruction_db))
+    if(!core::is_equal(m_dicom_reference, _other.m_dicom_reference)
+       || !core::is_equal(m_reconstruction_db, _other.m_reconstruction_db))
     {
         return false;
     }
@@ -112,20 +112,6 @@ bool model_series::operator==(const model_series& _other) const noexcept
 bool model_series::operator!=(const model_series& _other) const noexcept
 {
     return !(*this == _other);
-}
-
-//------------------------------------------------------------------------------
-
-fiducials_series::csptr model_series::get_fiducials() const
-{
-    return m_fiducials_series;
-}
-
-//------------------------------------------------------------------------------
-
-fiducials_series::sptr model_series::get_fiducials()
-{
-    return m_fiducials_series;
 }
 
 } // namespace sight::data

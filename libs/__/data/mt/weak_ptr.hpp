@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,12 +93,12 @@ public:
     }
 
     /// Default constructors, destructor and assignment operators
-    weak_ptr()                = default;
-    weak_ptr(const weak_ptr&) = default;
-    weak_ptr(weak_ptr&&) noexcept = default;
-    weak_ptr& operator=(const weak_ptr&) = default;
+    weak_ptr()                               = default;
+    weak_ptr(const weak_ptr&)                = default;
+    weak_ptr(weak_ptr&&) noexcept            = default;
+    weak_ptr& operator=(const weak_ptr&)     = default;
     weak_ptr& operator=(weak_ptr&&) noexcept = default;
-    ~weak_ptr() = default;
+    ~weak_ptr()                              = default;
 
     [[nodiscard]] locked_ptr<DATATYPE> lock() const noexcept;
     [[nodiscard]] locked_ptr<std::add_const_t<DATATYPE> > const_lock() const noexcept;

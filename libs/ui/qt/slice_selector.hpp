@@ -55,17 +55,7 @@ class QStringList;
 namespace sight::ui::qt
 {
 
-struct SlicePosition
-{
-    size_t slice_index;
-};
-
-struct Fiducial
-{
-    int position;
-    QColor color;
-};
-
+class slice_text_editor;
 /**
  * @brief A Qt panel used to control a VTK 2D Negatoscope view.
  *
@@ -103,9 +93,10 @@ public:
     SIGHT_UI_QT_API_QT void set_type_selection_pos(int _type_pos);
 
     SIGHT_UI_QT_API_QT void set_enable(bool _enable);
-
     SIGHT_UI_QT_API_QT void set_position_digits(double value);
+
     SIGHT_UI_QT_API_QT void clear_slider_index();
+
     SIGHT_UI_QT_API_QT void clear_slider_position();
 
     SIGHT_UI_QT_API_QT void set_position_value(int index);
@@ -116,18 +107,28 @@ public:
 
     SIGHT_UI_QT_API_QT void set_image_info(double origin, double spacing);
 
+    SIGHT_UI_QT_API_QT void on_slice_index_position_change(int _value);
+
     SIGHT_UI_QT_API_QT void set_orientation(std::string& orientation);
+
     SIGHT_UI_QT_API_QT void add_slider_position(std::int64_t _position, const QColor& _color);
+
     SIGHT_UI_QT_API_QT void add_position_slider(std::double_t _position, const QColor& _color);
+
     SIGHT_UI_QT_API_QT void set_enabled(bool _enable);
 
     SIGHT_UI_QT_API_QT void set_prefix(const std::string& _orientation_prefix);
+
+    using ChangeLabelCallback = std::function<void()>;
+    SIGHT_UI_QT_API_QT void set_change_label_callback(ChangeLabelCallback _fct_label);
 
     using ChangeIndexCallback = std::function<void (int)>;
     SIGHT_UI_QT_API_QT void set_change_index_callback(ChangeIndexCallback _fct_index);
 
     using ChangeTypeCallback = std::function<void (int)>;
     SIGHT_UI_QT_API_QT void set_change_type_callback(ChangeTypeCallback _fct_type);
+
+    SIGHT_UI_QT_API_QT void update_label();
 
 protected Q_SLOTS:
 
@@ -158,19 +159,17 @@ private:
     QPointer<QLineEdit> m_slice_index_text;
     QPointer<QSlider> m_slice_index;
     QPointer<QSlider> m_slider;
-
     /// @brief The slice position slider widget.
     QPointer<QSlider> m_slice_position_slider;
     QPointer<QLineEdit> m_slice_position_text;
     QPointer<QStyle> m_slice_position_style;
-
     double m_origin {0.00};
     double m_spacing {0.00};
 
     std::string m_orientation_prefix;
-
     ChangeIndexCallback m_fct_change_index_callback;
     ChangeTypeCallback m_fct_change_type_callback;
+    ChangeLabelCallback m_fct_change_label_callback;
 };
 
 } // namespace sight::ui::qt

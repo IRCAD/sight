@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,10 @@
 
 #include "io/__/reader/array_reader.hpp"
 
-#include "io/__/reader/registry/macros.hpp"
-
 #include <core/exception.hpp>
 
 #include <fstream>
 #include <iostream>
-
-SIGHT_REGISTER_IO_READER(sight::io::reader::array_reader);
 
 namespace sight::io::reader
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -378,9 +378,9 @@ void reader_test::read_enhanced_us_volume_test()
 
     // Check origin
     const auto& origin = image_series->origin();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, origin[2], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-436.88594387944, origin[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-41.288431662308369, origin[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-68.743955174627899, origin[2], delta);
 
     // Check window center
     CPPUNIT_ASSERT(image_series->window_center().empty());

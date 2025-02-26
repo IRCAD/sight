@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -184,7 +184,7 @@ void material::update_polygon_mode(int _polygon_mode)
 
 //------------------------------------------------------------------------------
 
-void material::update_shading_mode(int _shading_mode)
+void material::set_shading(int _shading_mode)
 {
     viz::qt3d::techniques::lighting* const tech =
         dynamic_cast<viz::qt3d::techniques::lighting*>(this->effect()->techniques()[0]);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,10 +57,10 @@ public:
     static void default_tf_test();
     static void classic_get_set_test();
     void using_tf_test();
-    void set_tf_data_test();
+    static void set_tf_data_test();
     static void shallow_and_deep_copy_test();
-    void linear_color_test();
-    void nearest_color_test();
+    static void linear_color_test();
+    static void nearest_color_test();
     static void map_values_test();
     static void piecewise_function_test();
     static void equality_test();

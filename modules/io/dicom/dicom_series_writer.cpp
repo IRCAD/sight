@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,6 +51,7 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
 //------------------------------------------------------------------------------
 
 dicom_series_writer::dicom_series_writer() noexcept :
+    writer("Choose a directory for DICOM images"),
     m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
 {
 }
@@ -67,7 +68,7 @@ void dicom_series_writer::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose a directory for DICOM images" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.set_option(ui::dialog::location::write);
     dialog_file.set_type(ui::dialog::location::folder);
@@ -138,12 +139,12 @@ void dicom_series_writer::updating()
             m_write_failed = true;
         }
 
-        if(series->get_modality() == "OT")
+        if(series->get_modality() == sight::data::dicom::modality_t::ot)
         {
             sight::ui::dialog::message dialog;
             dialog.set_message(
-                "Series modality is '" + series->get_modality() + "' some information can be lost."
-                                                                  "\nDo you want to continue ?"
+                "Series modality is '" + series->get_modality_string() + "' some information can be lost."
+                                                                         "\nDo you want to continue ?"
             );
             dialog.set_title("Series modality.");
             dialog.set_icon(ui::dialog::message::question);

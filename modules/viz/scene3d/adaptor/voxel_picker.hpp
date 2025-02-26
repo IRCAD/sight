@@ -115,7 +115,7 @@ private:
     void pick(mouse_button _button, modifier _mod, int _x, int _y, bool _pressed);
 
     /// Defines the orientation of the image.
-    using orientation_mode = data::helper::medical_image::orientation_t;
+    using orientation_mode = data::helper::medical_image::axis_t;
 
     /**
      * @brief SLOT: updates the image slice type.

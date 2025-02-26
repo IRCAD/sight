@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,6 +22,7 @@
 #include "axial_negato.hpp"
 
 #include <ui/test/helper/button.hpp>
+#include <ui/test/helper/line_edit.hpp>
 #include <ui/test/helper/slider.hpp>
 
 #include <utest_data/data.hpp>
@@ -60,8 +61,12 @@ void axial_negato::test()
             // Then we want to display the negato views, we must click on the restore button from the 3d scene toolbar
             helper::button::push(_tester, "topToolbarView/Restore");
 
+            helper::line_edit::match(_tester, helper::selector::from_parent("topScenesView/1", "Label"), "67 / 133");
+
             // For the test to work, we must first reset all negatos to 0
             reset_negatos(_tester);
+
+            helper::line_edit::match(_tester, helper::selector::from_parent("topScenesView/1", "Label"), "0 / 133");
 
             // We want to move the negato, we must click in the negato slider to do that
             helper::slider::set(
@@ -73,6 +78,29 @@ void axial_negato::test()
             save_snapshot(_tester, snapshot_path);
 
             compare_images(snapshot_path, reference_path);
+
+            helper::line_edit::match(_tester, helper::selector::from_parent("topScenesView/1", "Label"), "133 / 133");
+
+            helper::button::push(_tester, helper::selector::from_parent("topScenesView/1", "LabelButton"));
+
+            // we should observe the position of index 133 at QLineEdit after click.
+            helper::line_edit::match(
+                _tester,
+                helper::selector::from_parent("topScenesView/1", "Label"),
+                "S : 212.80 mm"
+            );
+
+            helper::slider::set(
+                _tester,
+                helper::selector::from_parent("topScenesView/1", "negatoSlicerSrv"),
+                12
+            );
+
+            helper::line_edit::match(
+                _tester,
+                helper::selector::from_parent("topScenesView/1", "Label"),
+                "S : 19.20 mm"
+            );
         },
         true
     );

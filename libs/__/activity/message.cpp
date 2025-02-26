@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2024 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <core/tools/uuid.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/string.hpp>
 
 #include <boost/algorithm/string/replace.hpp>

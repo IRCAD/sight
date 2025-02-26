@@ -11,7 +11,7 @@
             <object uid="myImage1" type="sight::data::image" />
             <!-- This is the output image for the filtering. "deferred" defines that the image is not created at the
                  beginning, but will be created by a service. -->
-            <object uid="myImage2" type="sight::data::image" src="deferred" />
+            <object uid="myImage2" type="sight::data::image" deferred="true" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -139,7 +139,7 @@
                 This is the source image for the filtering.
             -->
             <service uid="image1Srv" type="sight::module::viz::sample::image">
-                <in key="image" uid="myImage1" auto_connect="true" />
+                <in key="image" uid="myImage1" />
             </service>
 
             <!--
@@ -147,7 +147,7 @@
                 This is the output image for the filtering.
             -->
             <service uid="image2Srv" type="sight::module::viz::sample::image">
-                <in key="image" uid="myImage2" auto_connect="true" />
+                <in key="image" uid="myImage2" />
             </service>
 
             <!-- ******************************* Start services ***************************************** -->

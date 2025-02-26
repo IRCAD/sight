@@ -5,7 +5,6 @@ Contains services for mesh filtering.
 ## Services
 
 - **vtk_mesher**: generates a mesh from a mask in an image using the VTK library.
-- **needle**: generates a cylinder shape of `data::mesh` type, using VTK.
 - **ultrasound_mesh**: generates a mesh used to display an ultrasound image.
 
 ## CMake

@@ -1,2 +1,0 @@
-add_subdirectory(tuto01_basic_qml)
-add_subdirectory(tuto06_gui_qml)

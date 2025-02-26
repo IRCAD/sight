@@ -23,8 +23,8 @@
 #pragma once
 
 #include "data/factory/new.hpp"
-#include "data/generic_field.hpp"
 #include "data/object.hpp"
+#include "data/scalar.hpp"
 
 namespace sight::data
 {
@@ -34,35 +34,18 @@ namespace sight::data
  *
  * string object is essentially used as a field in other objects.
  */
-class SIGHT_DATA_CLASS_API string final : public generic_field<std::string>
+class SIGHT_DATA_CLASS_API string final : public scalar<std::string>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(string, object);
+    SIGHT_DECLARE_CLASS(string, data::string_serializable);
 
-    SIGHT_DATA_API string(const std::string _val = "") noexcept
-    {
-        value() = _val;
-    }
-
+    using scalar<std::string>::scalar;
+    using scalar<std::string>::operator=;
     /**
      * @brief Destructor.
      */
     SIGHT_DATA_API ~string() noexcept override = default;
-
-    /// Defines shallow copy
-    /// @throws data::exception if an errors occurs during copy
-    /// @param[in] _source the source object to copy
-    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
-
-    /// Defines deep copy
-    /// @throws data::exception if an errors occurs during copy
-    /// @param _source source object to copy
-    /// @param _cache cache used to deduplicate pointers
-    SIGHT_DATA_API void deep_copy(
-        const object::csptr& _source,
-        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
-    ) override;
 };
 
 } // namespace sight::data

@@ -46,22 +46,29 @@ public:
     using sptr  = std::shared_ptr<has_slots>;
     using csptr = std::shared_ptr<const has_slots>;
 
-    has_slots()
-    = default;
+    has_slots() = default;
 
-    virtual ~has_slots()
-    = default;
+    virtual ~has_slots() = default;
 
     [[nodiscard]] SPTR(slot_base) slot(const slots::key_t& _key) const
     {
         return m_slots[_key];
     }
 
+    //------------------------------------------------------------------------------
+
     template<typename slot_type>
     [[nodiscard]] SPTR(slot_type) slot(const slots::key_t& _key) const
     {
         SPTR(slot_type) slot = std::dynamic_pointer_cast<slot_type>(this->slot(_key));
         return slot;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] const core::com::slots& slots() const
+    {
+        return m_slots;
     }
 
     template<typename F, typename A>
@@ -89,7 +96,7 @@ protected:
     /// Copy operator forbidden
     has_slots& operator=(const has_slots&);
 
-    slots m_slots;
+    core::com::slots m_slots;
 };
 
 } // namespace sight::core::com

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,7 +109,7 @@ void series_test::test_series()
     CPPUNIT_ASSERT_EQUAL(dicom_series->get_series_date(), SERIES_DATE.toStdString());
     CPPUNIT_ASSERT_EQUAL(dicom_series->get_series_time(), SERIES_TIME.toStdString());
     CPPUNIT_ASSERT_EQUAL(dicom_series->get_series_description(), SERIES_DESCRIPTION.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicom_series->get_modality(), MODALITY.toStdString());
+    CPPUNIT_ASSERT_EQUAL(dicom_series->get_modality_string(), MODALITY.toStdString());
     CPPUNIT_ASSERT_EQUAL(
         dicom_series->num_instances(),
         static_cast<std::size_t>(NUMBER_OF_SERIES_RELATED_INSTANCES.toULong())

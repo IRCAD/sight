@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,11 +70,20 @@ void mesh_picker_interactor::pick(mouse_button _button, modifier _mod, int _x, i
            result != std::nullopt)
         {
             Ogre::Vector3 click = result->second;
-
             data::tools::picking_info info;
+
+            const Ogre::Camera* const cam = layer->get_default_camera();
+            const auto* const vp          = cam->getViewport();
+
+            info.m_pixel_pos[0] = static_cast<double>(_x);
+            info.m_pixel_pos[1] = static_cast<double>(_y);
+
             info.m_world_pos[0] = static_cast<double>(click.x);
             info.m_world_pos[1] = static_cast<double>(click.y);
             info.m_world_pos[2] = static_cast<double>(click.z);
+
+            info.m_viewport_size[0] = static_cast<double>(vp->getActualWidth());
+            info.m_viewport_size[1] = static_cast<double>(vp->getActualHeight());
 
             using picking_event_t = data::tools::picking_info::event;
             switch(_button)

@@ -6,6 +6,8 @@ target_link_libraries(module_filter_mesh PRIVATE VTK::FiltersCore VTK::FiltersSo
 
 target_link_libraries(module_filter_mesh PUBLIC data ui service io_vtk geometry_data core)
 
+target_link_libraries(module_filter_mesh PRIVATE "$<$<VERSION_GREATER_EQUAL:glm_VERSION,0.9.9.8>:glm::glm>")
+
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/ut)
 endif(SIGHT_BUILD_TESTS)

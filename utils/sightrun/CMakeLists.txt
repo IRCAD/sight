@@ -7,5 +7,3 @@ find_package(Boost QUIET COMPONENTS program_options REQUIRED)
 target_link_libraries(sightrun PRIVATE Boost::program_options)
 
 target_link_libraries(sightrun PUBLIC core)
-
-add_dependencies(sightrun sightlog)

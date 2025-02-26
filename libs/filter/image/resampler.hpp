@@ -52,6 +52,7 @@ public:
         const data::matrix4::csptr& _trf,
         std::optional<std::tuple<data::image::size_t,
                                  data::image::origin_t,
+                                 data::image::orientation_t,
                                  data::image::spacing_t> > _parameters = std::nullopt
     );
 

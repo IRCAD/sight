@@ -28,7 +28,7 @@
 
 #include <data/array.hpp>
 #include <data/color.hpp>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/material.hpp>
 #include <data/plane.hpp>
 #include <data/point.hpp>

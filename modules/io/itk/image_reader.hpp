@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ public:
 
     image_reader() noexcept;
 
-    ~image_reader() noexcept override;
+    ~image_reader() noexcept override = default;
 
     static bool load_image(const std::filesystem::path& _img_file, const SPTR(data::image)& _img);
 

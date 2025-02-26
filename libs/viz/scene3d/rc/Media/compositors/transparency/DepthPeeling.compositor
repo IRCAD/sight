@@ -5,13 +5,13 @@ compositor DepthPeeling
         // Color buffer - used for blending
         texture gbuffer target_width target_height PF_R8G8B8A8
         // Ping buffer
-        texture pingBuffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
+        texture ping_buffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
         // Pong buffer
-        texture pongBuffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
+        texture pong_buffer target_width target_height PF_R8G8B8A8 PF_R8G8B8A8
         // Depth map
         texture depth_map target_width target_height PF_R8G8B8A8
         // Fake texture for the first peel
-        texture peelInit target_width target_height PF_R8G8B8A8 depth_pool 0
+        texture init_buffer target_width target_height PF_R8G8B8A8 depth_pool 0
 
         // Depth map buffer
         // Used as a stencil for the surrounding background
@@ -33,7 +33,7 @@ compositor DepthPeeling
         }
 
         // Init the fake depth texture used for the first peel
-        target peelInit
+        target init_buffer
         {
             input none
             pass render_quad
@@ -43,7 +43,7 @@ compositor DepthPeeling
         }
 
         // Peel 0
-        target pingBuffer
+        target ping_buffer
         {
             input none
             pass clear
@@ -51,7 +51,7 @@ compositor DepthPeeling
             }
 
             shadows off
-            material_scheme DepthPeeling/peelInit
+            material_scheme DepthPeeling/peel_init
 
             pass render_scene
             {
@@ -69,13 +69,13 @@ compositor DepthPeeling
              }
              pass render_quad
              {
-                 material DepthPeeling/Blend
-                 input 0 pingBuffer 0
+                 material DepthPeeling/blend
+                 input 0 ping_buffer 0
              }
          }
 
          // Peel 1
-         target pongBuffer
+         target pong_buffer
          {
              input none
              pass clear
@@ -83,7 +83,7 @@ compositor DepthPeeling
              }
 
              shadows off
-             material_scheme DepthPeeling/peelPong
+             material_scheme DepthPeeling/peel_pong
 
              pass render_scene
              {
@@ -97,13 +97,13 @@ compositor DepthPeeling
              input none
              pass render_quad
              {
-                 material DepthPeeling/Blend
-                 input 0 pongBuffer 0
+                 material DepthPeeling/blend
+                 input 0 pong_buffer 0
              }
          }
 
          // Peel 2
-         target pingBuffer
+         target ping_buffer
          {
              input none
              pass clear
@@ -111,7 +111,7 @@ compositor DepthPeeling
              }
 
              shadows off
-             material_scheme DepthPeeling/peelPing
+             material_scheme DepthPeeling/peel_ping
 
              pass render_scene
              {
@@ -125,8 +125,8 @@ compositor DepthPeeling
              input none
              pass render_quad
              {
-                 material DepthPeeling/Blend
-                 input 0 pingBuffer 0
+                 material DepthPeeling/blend
+                 input 0 ping_buffer 0
              }
          }
 

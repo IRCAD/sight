@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,7 +126,7 @@ void dicom_instance::computesop_class_uid(const data::series::csptr& _series)
 
         // Define SOP Class UID from the modality
         gdcm::MediaStorage media_storage;
-        media_storage.GuessFromModality(_series->get_modality().c_str(), dimension);
+        media_storage.GuessFromModality(_series->get_modality_string().c_str(), dimension);
 
         // Identify the sop_classUID from a guess
         if(media_storage != gdcm::MediaStorage::MS_END && media_storage.GetString() != nullptr)

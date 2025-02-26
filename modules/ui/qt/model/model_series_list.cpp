@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,8 @@
 #include <core/com/slot.hxx>
 #include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
+#include <core/id.hpp>
 #include <core/runtime/path.hpp>
-#include <core/tools/id.hpp>
 
 #include <data/boolean.hpp>
 #include <data/helper/field.hpp>
@@ -105,7 +105,7 @@ void model_series_list::starting()
 {
     this->create();
 
-    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(base_id());
 
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
     qt_container->get_qt_container()->setObjectName(service_id);
@@ -321,7 +321,7 @@ void model_series_list::on_current_item_changed(QTreeWidgetItem* _current, QTree
     SIGHT_ASSERT("Current selected item is null", _current);
     std::string id = _current->data(0, Qt::UserRole).toString().toStdString();
 
-    data::reconstruction::sptr rec = std::dynamic_pointer_cast<data::reconstruction>(core::tools::id::get_object(id));
+    data::reconstruction::sptr rec = std::dynamic_pointer_cast<data::reconstruction>(core::id::get_object(id));
 
     m_sig_reconstruction_selected->async_emit(rec);
 }
@@ -338,7 +338,7 @@ void model_series_list::on_current_item_changed(QTreeWidgetItem* _current, int _
 void model_series_list::on_organ_choice_visibility(QTreeWidgetItem* _item, int /*unused*/)
 {
     std::string id                 = _item->data(0, Qt::UserRole).toString().toStdString();
-    data::reconstruction::sptr rec = std::dynamic_pointer_cast<data::reconstruction>(core::tools::id::get_object(id));
+    data::reconstruction::sptr rec = std::dynamic_pointer_cast<data::reconstruction>(core::id::get_object(id));
     SIGHT_ASSERT("rec not instanced", rec);
 
     const bool item_is_checked = (_item->checkState(0) == Qt::Checked);
@@ -381,7 +381,7 @@ void model_series_list::refresh_visibility()
         QTreeWidgetItem* item          = m_tree->topLevelItem(i);
         std::string id                 = item->data(0, Qt::UserRole).toString().toStdString();
         data::reconstruction::sptr rec =
-            std::dynamic_pointer_cast<data::reconstruction>(core::tools::id::get_object(id));
+            std::dynamic_pointer_cast<data::reconstruction>(core::id::get_object(id));
         item->setCheckState(0, rec->get_is_visible() ? Qt::Checked : Qt::Unchecked);
     }
 }

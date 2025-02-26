@@ -29,8 +29,8 @@
 #include <core/runtime/runtime.hpp>
 
 #include <data/activity.hpp>
-#include <data/composite.hpp>
 #include <data/image_series.hpp>
+#include <data/map.hpp>
 #include <data/model_series.hpp>
 #include <data/string.hpp>
 #include <data/vector.hpp>
@@ -98,10 +98,10 @@ void activity_builder_test::build_data_test()
 
     //set of param [0;2]
     obj = (*activity)[model_key];
-    data::composite::sptr composite = std::dynamic_pointer_cast<data::composite>(obj);
-    CPPUNIT_ASSERT_MESSAGE(model_key + " param dynamicCast to data::composite failed", composite);
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), composite->size());
-    CPPUNIT_ASSERT(model_series_selected == (*composite)["key1"]);
+    data::map::sptr map = std::dynamic_pointer_cast<data::map>(obj);
+    CPPUNIT_ASSERT_MESSAGE(model_key + " param dynamicCast to data::map failed", map);
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), map->size());
+    CPPUNIT_ASSERT(model_series_selected == (*map)["key1"]);
 }
 
 //------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ void activity_builder_test::object_parser_test()
     // This implicitly test the function sight::activity::detail::data::create()
     const auto obj            = (*activity)[string_key];
     data::string::sptr string = std::dynamic_pointer_cast<data::string>(obj);
-    CPPUNIT_ASSERT_MESSAGE(string_key + " param dynamicCast to data::composite failed", string);
+    CPPUNIT_ASSERT_MESSAGE(string_key + " param dynamicCast to data::map failed", string);
     CPPUNIT_ASSERT_EQUAL(std::string("dummy string"), string->value());
 
     core::runtime::unload_module("sight::module::app");

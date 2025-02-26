@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #include "modules/ui/qt/viz/transform_editor.hpp"
 
 #include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 #include <geometry/data/matrix4.hpp>
 
@@ -54,12 +55,9 @@ transform_editor::transform_editor() noexcept :
     m_translation_range[1] = +300;
     m_rotation_range[0]    = -180;
     m_rotation_range[1]    = 180;
+
+    new_slot(slots::SET_TRANSLATION_RANGE, &transform_editor::set_translation_range, this);
 }
-
-//------------------------------------------------------------------------------
-
-transform_editor::~transform_editor() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -131,35 +129,48 @@ void transform_editor::starting()
 
     qt_container->set_layout(layout);
 
+    const auto minimal = *m_minimal;
+
     for(unsigned int i = 0 ; i < max_slider_index ; i++)
     {
         auto* slider_layout = new QHBoxLayout();
 
-        m_sliders[i].m_slider_value     = new QLineEdit();
-        m_sliders[i].m_label_min        = new QLabel();
-        m_sliders[i].m_label_max        = new QLabel();
-        m_sliders[i].m_label_definition = new QLabel();
-
         m_sliders[i].m_slider = new QSlider(Qt::Horizontal);
         m_sliders[i].m_slider->setTickInterval(1);
 
-        m_sliders[i].m_label_definition->setText(description[i]);
+        if(not minimal)
+        {
+            m_sliders[i].m_slider_value     = new QLineEdit();
+            m_sliders[i].m_label_min        = new QLabel();
+            m_sliders[i].m_label_max        = new QLabel();
+            m_sliders[i].m_label_definition = new QLabel();
 
-        slider_layout->addWidget(m_sliders[i].m_label_definition, 0);
-        slider_layout->addWidget(m_sliders[i].m_label_min, 0);
+            m_sliders[i].m_label_definition->setText(description[i]);
+            slider_layout->addWidget(m_sliders[i].m_label_definition, 0);
+            slider_layout->addWidget(m_sliders[i].m_label_min, 0);
+        }
+
         slider_layout->addWidget(m_sliders[i].m_slider, 3);
-        slider_layout->addWidget(m_sliders[i].m_label_max, 0);
-        slider_layout->addWidget(m_sliders[i].m_slider_value, 1);
+
+        if(not minimal)
+        {
+            slider_layout->addWidget(m_sliders[i].m_label_max, 0);
+            slider_layout->addWidget(m_sliders[i].m_slider_value, 1);
+            QObject::connect(m_sliders[i].m_slider_value, &QLineEdit::editingFinished, this, &self_t::on_text_changed);
+        }
 
         layout->addLayout(slider_layout, 0);
         QObject::connect(m_sliders[i].m_slider, &QSlider::valueChanged, this, &self_t::on_slider_changed);
-        QObject::connect(m_sliders[i].m_slider_value, &QLineEdit::editingFinished, this, &self_t::on_text_changed);
     }
 
     for(unsigned int i = position_x ; i <= position_z ; i++)
     {
-        m_sliders[i].m_label_min->setText(std::to_string(m_translation_range[0]).c_str());
-        m_sliders[i].m_label_max->setText(std::to_string(m_translation_range[1]).c_str());
+        if(not minimal)
+        {
+            m_sliders[i].m_label_min->setText(QString("%1").arg(m_translation_range[0]));
+            m_sliders[i].m_label_max->setText(QString("%1").arg(m_translation_range[1]));
+        }
+
         m_sliders[i].m_slider->setRange(m_translation_range[0], m_translation_range[1]);
     }
 
@@ -168,27 +179,40 @@ void transform_editor::starting()
     for(unsigned int i = position_x ; i <= position_z ; i++)
     {
         const bool visible = m_translation.find(axes[i]) != std::string::npos;
-        m_sliders[i].m_slider_value->setVisible(visible);
-        m_sliders[i].m_label_min->setVisible(visible);
-        m_sliders[i].m_label_max->setVisible(visible);
-        m_sliders[i].m_label_definition->setVisible(visible);
+
+        if(not minimal)
+        {
+            m_sliders[i].m_slider_value->setVisible(visible);
+            m_sliders[i].m_label_min->setVisible(visible);
+            m_sliders[i].m_label_max->setVisible(visible);
+            m_sliders[i].m_label_definition->setVisible(visible);
+        }
+
         m_sliders[i].m_slider->setVisible(visible);
     }
 
     for(unsigned int i = rotation_x ; i <= rotation_z ; i++)
     {
-        m_sliders[i].m_label_min->setText(std::to_string(m_rotation_range[0]).c_str());
-        m_sliders[i].m_label_max->setText(std::to_string(m_rotation_range[1]).c_str());
+        if(not minimal)
+        {
+            m_sliders[i].m_label_min->setText(QString("%1").arg(m_rotation_range[0]));
+            m_sliders[i].m_label_max->setText(QString("%1").arg(m_rotation_range[1]));
+        }
+
         m_sliders[i].m_slider->setRange(m_rotation_range[0], m_rotation_range[1]);
     }
 
     for(unsigned int i = rotation_x ; i <= rotation_z ; i++)
     {
         const bool visible = m_rotation.find(axes[i]) != std::string::npos;
-        m_sliders[i].m_slider_value->setVisible(visible);
-        m_sliders[i].m_label_min->setVisible(visible);
-        m_sliders[i].m_label_max->setVisible(visible);
-        m_sliders[i].m_label_definition->setVisible(visible);
+        if(not minimal)
+        {
+            m_sliders[i].m_slider_value->setVisible(visible);
+            m_sliders[i].m_label_min->setVisible(visible);
+            m_sliders[i].m_label_max->setVisible(visible);
+            m_sliders[i].m_label_definition->setVisible(visible);
+        }
+
         m_sliders[i].m_slider->setVisible(visible);
     }
 
@@ -199,10 +223,25 @@ void transform_editor::starting()
 
 void transform_editor::stopping()
 {
+    const auto minimal = *m_minimal;
     for(unsigned int i = 0 ; i < max_slider_index ; i++)
     {
-        QObject::disconnect(m_sliders[i].m_slider, &QSlider::valueChanged, this, &self_t::on_slider_changed);
-        QObject::disconnect(m_sliders[i].m_slider_value, &QLineEdit::editingFinished, this, &self_t::on_text_changed);
+        QObject::disconnect(
+            m_sliders[i].m_slider,
+            &QSlider::valueChanged,
+            this,
+            &self_t::on_slider_changed
+        );
+
+        if(not minimal)
+        {
+            QObject::disconnect(
+                m_sliders[i].m_slider_value,
+                &QLineEdit::editingFinished,
+                this,
+                &self_t::on_text_changed
+            );
+        }
     }
 
     this->destroy();
@@ -228,6 +267,56 @@ service::connections_t transform_editor::auto_connections() const
 
 //------------------------------------------------------------------------------
 
+void transform_editor::set_translation_range(double _min, double _max)
+{
+    if(_min != std::numeric_limits<double>::max())
+    {
+        m_translation_range[0] = static_cast<int>(_min);
+    }
+
+    if(_max != std::numeric_limits<double>::min())
+    {
+        m_translation_range[1] = static_cast<int>(_max);
+    }
+
+    const auto minimal = *m_minimal;
+
+    for(unsigned int i = position_x ; i <= position_z ; i++)
+    {
+        if(m_sliders[i].m_slider->isVisible())
+        {
+            const auto matrix = m_matrix.lock();
+            SIGHT_ASSERT("Unable to get matrix", matrix);
+            const auto value = std::clamp((*matrix)[3 + static_cast<size_t>(i) * 4], _min, _max);
+
+            m_sliders[i].m_slider->blockSignals(true);
+            if(not minimal)
+            {
+                m_sliders[i].m_label_min->setText(QString("%1").arg(m_translation_range[0]));
+                m_sliders[i].m_label_max->setText(QString("%1").arg(m_translation_range[1]));
+                m_sliders[i].m_slider_value->setText(QString("%1").arg(value));
+            }
+
+            (*matrix)[3 + static_cast<size_t>(i) * 4] = value;
+            m_sliders[i].m_slider->setValue(static_cast<int>(value));
+            m_sliders[i].m_slider->setRange(m_translation_range[0], m_translation_range[1]);
+            m_sliders[i].m_slider->blockSignals(false);
+            if(_min == _max)
+            {
+                m_sliders[i].m_slider->setEnabled(false);
+            }
+            else
+            {
+                m_sliders[i].m_slider->setEnabled(true);
+            }
+
+            // matrix->async_emit(this, sight::data::object::MODIFIED_SIG);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void transform_editor::on_slider_changed(int /*unused*/)
 {
     const auto rx = glm::radians<double>(m_sliders[rotation_x].m_slider->value());
@@ -238,24 +327,23 @@ void transform_editor::on_slider_changed(int /*unused*/)
     const double ty = m_sliders[position_y].m_slider->value();
     const double tz = m_sliders[position_z].m_slider->value();
 
-    glm::dquat quat  = glm::dquat(glm::dvec3(rx, ry, rz));
-    glm::dmat4x4 mat = glm::mat4_cast(quat);
-
-    mat[3] = glm::dvec4(tx, ty, tz, 1.);
+    const glm::dquat quat = glm::dquat(glm::dvec3(rx, ry, rz));
+    glm::dmat4x4 mat      = glm::mat4_cast(quat);
+    mat = glm::translate(mat, glm::dvec3(tx, ty, tz));
 
     const auto matrix = m_matrix.lock();
     geometry::data::from_glm_mat(*matrix, mat);
 
-    for(unsigned int i = 0 ; i < max_slider_index ; i++)
+    const auto minimal = *m_minimal;
+    if(not minimal)
     {
-        m_sliders[i].m_slider_value->setText(QString("%1").arg(m_sliders[i].m_slider->value()));
+        for(unsigned int i = 0 ; i < max_slider_index ; i++)
+        {
+            m_sliders[i].m_slider_value->setText(QString("%1").arg(m_sliders[i].m_slider->value()));
+        }
     }
 
-    auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    matrix->async_emit(this, data::object::MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -283,11 +371,15 @@ void transform_editor::update_from_matrix()
 
     const glm::dvec4 translation = mat[3];
 
+    const auto minimal = *m_minimal;
     // Block
     for(unsigned int i = 0 ; i < max_slider_index ; i++)
     {
         m_sliders[i].m_slider->blockSignals(true);
-        m_sliders[i].m_slider_value->blockSignals(true);
+        if(not minimal)
+        {
+            m_sliders[i].m_slider_value->blockSignals(true);
+        }
     }
 
     for(glm::length_t i = position_x, j = 0 ; i <= position_z ; i++, ++j)
@@ -300,15 +392,18 @@ void transform_editor::update_from_matrix()
         m_sliders[unsigned(i)].m_slider->setValue(static_cast<int>(glm::degrees<double>(angles[j])));
     }
 
-    for(unsigned int i = 0 ; i < max_slider_index ; i++)
+    if(not minimal)
     {
-        m_sliders[i].m_slider_value->setText(QString("%1").arg(m_sliders[i].m_slider->value()));
+        for(unsigned int i = 0 ; i < max_slider_index ; i++)
+        {
+            m_sliders[i].m_slider_value->setText(QString("%1").arg(m_sliders[i].m_slider->value()));
+            m_sliders[i].m_slider_value->blockSignals(false);
+        }
     }
 
     for(unsigned int i = 0 ; i < max_slider_index ; i++)
     {
         m_sliders[i].m_slider->blockSignals(false);
-        m_sliders[i].m_slider_value->blockSignals(false);
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,9 +63,6 @@ static std::stringstream spiritDebugStream;
 #include <core/runtime/path.hpp>
 
 #include "io/__/reader/dictionary_reader.hpp"
-#include "io/__/reader/registry/macros.hpp"
-
-SIGHT_REGISTER_IO_READER(sight::io::reader::dictionary_reader);
 
 namespace sight::io
 {
@@ -92,18 +89,18 @@ struct line
 BOOST_FUSION_ADAPT_STRUCT(
     sight::io::line,
     (std::string, type)
-        (double, red)
-        (double, green)
-        (double, blue)
-        (double, alpha)
-        (std::string, category)
-        (std::string, organ_class)
-        (std::string, attachment)
-        (std::string, native_exp)
-        (std::string, native_exp_geo)
-        (std::string, anatomic_region)
-        (std::string, property_category)
-        (std::string, property_type)
+    (double, red)
+    (double, green)
+    (double, blue)
+    (double, alpha)
+    (std::string, category)
+    (std::string, organ_class)
+    (std::string, attachment)
+    (std::string, native_exp)
+    (std::string, native_exp_geo)
+    (std::string, anatomic_region)
+    (std::string, property_category)
+    (std::string, property_type)
 )
 
 //------------------------------------------------------------------------------

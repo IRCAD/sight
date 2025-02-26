@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::signals::key_t texture::TEXTURE_SWAPPED_SIG = "textureSwapped";
+const core::com::signals::key_t texture::TEXTURE_SWAPPED_SIG = "texture_swapped";
 
 //------------------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ void texture::configuring()
 
 void texture::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
@@ -94,9 +94,9 @@ void texture::starting()
 
 service::connections_t texture::auto_connections() const
 {
-    service::connections_t connections;
-    connections.push(TEXTURE_INOUT, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(TEXTURE_INOUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
+    service::connections_t connections = adaptor::auto_connections();
+    connections.push(TEXTURE_INOUT, data::image::BUFFER_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(TEXTURE_INOUT, data::image::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 
@@ -115,6 +115,9 @@ void texture::updating()
 
         m_sig_texture_swapped->async_emit();
     }
+
+    this->update_done();
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
@@ -123,6 +126,8 @@ void texture::stopping()
 {
     this->render_service()->make_current();
     m_texture.reset();
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

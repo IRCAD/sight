@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -140,7 +140,7 @@ public:
                             m_cinfo.num_components != 1
                         );
 
-                        return data::image::pixel_format::gray_scale;
+                        return data::image::pixel_format_t::gray_scale;
                     }
 
                     case JCS_RGB:
@@ -151,7 +151,7 @@ public:
                             m_cinfo.num_components != 3
                         );
 
-                        return data::image::pixel_format::rgb;
+                        return data::image::pixel_format_t::rgb;
                     }
 
                     case JCS_EXT_BGR:
@@ -161,7 +161,7 @@ public:
                             m_cinfo.num_components != 3
                         );
 
-                        return data::image::pixel_format::bgr;
+                        return data::image::pixel_format_t::bgr;
                     }
 
                     case JCS_EXT_RGBA:
@@ -172,7 +172,7 @@ public:
                             m_cinfo.num_components != 4
                         );
 
-                        return data::image::pixel_format::rgba;
+                        return data::image::pixel_format_t::rgba;
                     }
 
                     case JCS_EXT_BGRA:
@@ -183,7 +183,7 @@ public:
                             m_cinfo.num_components != 4
                         );
 
-                        return data::image::pixel_format::bgra;
+                        return data::image::pixel_format_t::bgra;
                     }
 
                     default:

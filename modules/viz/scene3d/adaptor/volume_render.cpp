@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,33 +50,30 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-//-----------------------------------------------------------------------------
-
 volume_render::volume_render() noexcept
 {
-    // Handle connections between the layer and the volume renderer.
-    new_slot(NEW_IMAGE_SLOT, &volume_render::new_image, this);
-    new_slot(BUFFER_IMAGE_SLOT, &volume_render::buffer_image, this);
-    new_slot(UPDATE_IMAGE_SLOT, &volume_render::update_image, this);
+    // Auto-connected slots
+    new_slot(NEW_IMAGE_SLOT, [this](){lazy_update(update_flags::IMAGE);});
+    new_slot(BUFFER_IMAGE_SLOT, [this](){lazy_update(update_flags::IMAGE_BUFFER);});
+    new_slot(UPDATE_MASK_SLOT, [this](){lazy_update(update_flags::MASK_BUFFER);});
+    new_slot(UPDATE_TF_SLOT, [this](){lazy_update(update_flags::TF);});
+    new_slot(UPDATE_CLIPPING_BOX_SLOT, [this](){lazy_update(update_flags::CLIPPING_BOX);});
+
+    // Interaction slots
     new_slot(TOGGLE_WIDGETS_SLOT, &volume_render::toggle_widgets, this);
     new_slot(SET_BOOL_PARAMETER_SLOT, &volume_render::set_bool_parameter, this);
     new_slot(SET_INT_PARAMETER_SLOT, &volume_render::set_int_parameter, this);
     new_slot(SET_DOUBLE_PARAMETER_SLOT, &volume_render::set_double_parameter, this);
-    new_slot(UPDATE_CLIPPING_BOX_SLOT, &volume_render::update_clipping_box, this);
-    new_slot(UPDATE_MASK_SLOT, &volume_render::update_mask, this);
-    new_slot(UPDATE_TF_SLOT, &volume_render::update_volume_tf, this);
+
+    // Slot for async update
+    new_slot(UPDATE_IMAGE_SLOT, &volume_render::update_image, this);
 }
-
-//-----------------------------------------------------------------------------
-
-volume_render::~volume_render() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 
 service::connections_t volume_render::auto_connections() const
 {
-    return {
+    service::connections_t connections = {
         {objects::IMAGE_IN, data::image::MODIFIED_SIG, NEW_IMAGE_SLOT},
         {objects::IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, BUFFER_IMAGE_SLOT},
         {objects::MASK_IN, data::image::MODIFIED_SIG, NEW_IMAGE_SLOT},
@@ -86,6 +83,8 @@ service::connections_t volume_render::auto_connections() const
         {objects::VOLUME_TF_IN, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
         {objects::VOLUME_TF_IN, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT},
     };
+
+    return connections + adaptor::auto_connections();
 }
 
 //-----------------------------------------------------------------------------
@@ -141,7 +140,7 @@ void volume_render::configuring(const config_t& _config)
     this->set_transform_id(
         _config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
 }
@@ -150,7 +149,7 @@ void volume_render::configuring(const config_t& _config)
 
 void volume_render::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     auto render_service = this->render_service();
     render_service->make_current();
@@ -161,7 +160,7 @@ void volume_render::starting()
 
         Ogre::SceneNode* const root_scene_node = m_scene_manager->getRootSceneNode();
         Ogre::SceneNode* const transform_node  = this->get_or_create_transform_node(root_scene_node);
-        m_volume_scene_node = transform_node->createChildSceneNode(this->get_id() + "_transform_origin");
+        m_volume_scene_node = transform_node->createChildSceneNode(gen_id("transform_origin"));
     }
 
     //Renderer
@@ -187,7 +186,7 @@ void volume_render::starting()
         m_volume_renderer->update(tf.get_shared());
     }
 
-    m_volume_scene_node->setVisible(m_visible);
+    m_volume_scene_node->setVisible(visible());
 
     // Initially focus on the image center.
     this->set_focal_distance(50);
@@ -211,6 +210,29 @@ void volume_render::starting()
 
 void volume_render::updating()
 {
+    if(update_needed(update_flags::IMAGE))
+    {
+        new_image();
+    }
+    else if(update_needed(update_flags::IMAGE_BUFFER))
+    {
+        buffer_image();
+    }
+    else if(update_needed(update_flags::MASK_BUFFER))
+    {
+        update_mask();
+    }
+    else if(update_needed(update_flags::TF))
+    {
+        update_volume_tf();
+    }
+    else if(update_needed(update_flags::CLIPPING_BOX))
+    {
+        update_clipping_box();
+    }
+
+    update_done();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
@@ -234,6 +256,8 @@ void volume_render::stopping()
     }
 
     this->destroy_widget();
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -417,7 +441,7 @@ void volume_render::update_color_bleeding_factor(float _color_bleeding_factor)
 
 //-----------------------------------------------------------------------------
 
-void volume_render::update_sat_size_ratio(unsigned _size_ratio)
+void volume_render::update_sat_size_ratio(float _size_ratio)
 {
     if(m_volume_renderer->shadows().parameters.enabled())
     {
@@ -598,7 +622,6 @@ void volume_render::set_int_parameter(int _val, std::string _key)
         "Invalid slot key " + _key,
         _key == "sampling"
         || _key == "opacityCorrection"
-        || _key == "satSizeRatio"
         || _key == "satShellsNumber"
         || _key == "satShellRadius"
         || _key == "satConeSamples"
@@ -618,10 +641,6 @@ void volume_render::set_int_parameter(int _val, std::string _key)
     else if(_key == "opacityCorrection")
     {
         this->update_opacity_correction(param);
-    }
-    else if(_key == "satSizeRatio")
-    {
-        this->update_sat_size_ratio(param);
     }
     else if(_key == "satShellsNumber")
     {
@@ -648,6 +667,7 @@ void volume_render::set_double_parameter(double _val, std::string _key)
         _key == "colorBleedingFactor"
         || _key == "aoFactor"
         || _key == "satConeAngle"
+        || _key == "satSizeRatio"
     );
 
     this->render_service()->make_current();
@@ -666,6 +686,10 @@ void volume_render::set_double_parameter(double _val, std::string _key)
     else if(_key == "satConeAngle")
     {
         this->update_sat_cone_angle(param);
+    }
+    else if(_key == "satSizeRatio")
+    {
+        this->update_sat_size_ratio(param);
     }
 
     this->request_render();
@@ -809,13 +833,7 @@ void volume_render::update_clipping_matrix()
     if(clipping_matrix)
     {
         sight::viz::scene3d::utils::from_ogre_matrix(m_widget->get_clipping_transform(), clipping_matrix.get_shared());
-
-        const auto sig =
-            clipping_matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-
-        core::com::connection::blocker blocker(sig->get_connection(this->slot(UPDATE_CLIPPING_BOX_SLOT)));
-
-        sig->async_emit();
+        clipping_matrix->async_emit(this, data::object::MODIFIED_SIG);
     }
 
     std::lock_guard<std::mutex> swap_lock(m_mutex);
@@ -835,6 +853,11 @@ void volume_render::set_visible(bool _visible)
         if(m_widget)
         {
             m_widget->set_box_visibility(_visible && m_config.visible);
+        }
+
+        if(m_config.camera_autoreset)
+        {
+            this->render_service()->reset_camera_coordinates(m_layer_id);
         }
 
         this->request_render();

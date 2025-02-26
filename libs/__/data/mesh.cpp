@@ -741,8 +741,8 @@ bool mesh::operator==(const mesh& _other) const noexcept
        || m_num_cells != _other.m_num_cells
        || m_cell_type != _other.m_cell_type
        || m_attributes != _other.m_attributes
-       || !core::tools::is_equal(m_points, _other.m_points)
-       || !core::tools::is_equal(m_cells, _other.m_cells))
+       || !core::is_equal(m_points, _other.m_points)
+       || !core::is_equal(m_cells, _other.m_cells))
     {
         return false;
     }

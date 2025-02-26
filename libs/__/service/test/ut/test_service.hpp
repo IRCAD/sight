@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,11 +49,9 @@ public:
     static const std::string NOT_DEFINED;
 
     SIGHT_DECLARE_SERVICE(test_service, service::base);
-    test_service() noexcept =
-        default;
 
-    ~test_service() noexcept override =
-        default;
+    test_service() noexcept = default;
+    ~test_service() noexcept override = default;
 
     //------------------------------------------------------------------------------
 
@@ -77,19 +75,19 @@ public:
     }
 
     /// return true if the service is updated with update() method
-    bool get_is_updated() const
+    bool is_updated() const
     {
         return m_is_updated;
     }
 
     /// return true if the service is updated with update() method
-    bool get_is_updated2() const
+    bool is_updated2() const
     {
         return m_is_updated2;
     }
 
     /// return true if the service is updated with update(msg) method
-    bool get_is_updated_message() const
+    bool is_updated_message() const
     {
         return m_is_updated_message;
     }
@@ -160,7 +158,7 @@ public:
         static inline const core::com::signals::key_t MSG_SENT = "msgSent";
 
         using int_sent_t = core::com::signal<void (int)>;
-        using msg_sent_t = core::com::signal<void (const std::string&)>;
+        using msg_sent_t = core::com::signal<void (std::string)>;
     };
     struct slots
     {
@@ -193,7 +191,7 @@ public:
 
     //-------------------------------------------------------------------------
 
-    void updating() final
+    void updating() override
     {
         test_service::updating();
         m_is_updated = true;
@@ -251,15 +249,8 @@ public:
     connections_t auto_connections() const override
     {
         return {
-            {"data", data::object::MODIFIED_SIG, service::slots::UPDATE},
             {"data1", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data2", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data3", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data4", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"data5", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"dataGroup", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"dataGroup0", data::object::MODIFIED_SIG, service::slots::UPDATE},
-            {"dataGroup1", data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE}
+            {"data2", data::object::MODIFIED_SIG, slots::UPDATE2}
         };
     }
 
@@ -294,7 +285,7 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::in> m_input {this, "data1", false};
+    data::ptr<data::object, data::access::in> m_input {this, "data1"};
 };
 
 class test1_inout : public test_srv
@@ -305,7 +296,7 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::inout> m_inout {this, "data1", true};
+    data::ptr<data::object, data::access::inout> m_inout {this, "data1"};
 };
 
 class test2_inouts1_input : public test_srv
@@ -316,9 +307,9 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1", true};
-    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2", true};
-    data::ptr<data::object, data::access::in> m_input3 {this, "data3", true};
+    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1"};
+    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2"};
+    data::ptr<data::object, data::access::in> m_input3 {this, "data3"};
 };
 
 class test1_input1_opt_input1_opt_in_out : public test_srv
@@ -340,21 +331,30 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::in> m_input1 {this, "data1", true};
-    data::ptr<data::object, data::access::in> m_input2 {this, "data2", true, true};
-    data::ptr<data::object, data::access::inout> m_inout {this, "data3", false, true};
+    data::ptr<data::object, data::access::in> m_input1 {this, "data1"};
+    data::ptr<data::object, data::access::in> m_input2 {this, "data2", true};
+    data::ptr<data::object, data::access::inout> m_inout {this, "data3", true};
+};
+
+class test1_property : public test_srv
+{
+public:
+
+    SIGHT_DECLARE_SERVICE(test1_property, service::ut::test_srv);
+
+    data::property<data::integer> m_prop1 {this, "prop1", 12};
 };
 
 class test_service_with_data : public service::base
 {
 public:
 
-    static const key_t INPUT;
-    static const key_t INOUT_GROUP;
-    static const key_t OUTPUT;
+    static inline const key_t INPUT       = "input";
+    static inline const key_t INOUT_GROUP = "inoutGroup";
+    static inline const key_t OUTPUT      = "output";
 
     SIGHT_DECLARE_SERVICE(test_service_with_data, service::base);
-    test_service_with_data() noexcept           = default;
+    test_service_with_data() noexcept = default;
     ~test_service_with_data() noexcept override = default;
 
     //------------------------------------------------------------------------------
@@ -374,9 +374,9 @@ public:
     void stopping() override;
     void updating() override;
 
-    data::ptr<data::object, data::access::in> m_input {this, "input", true};
-    data::ptr_vector<data::integer, data::access::inout> m_inout_group {this, "inoutGroup", true};
-    data::ptr<data::object, data::access::out> m_output {this, "output", false, true};
+    data::ptr<data::object, data::access::in> m_input {this, INPUT};
+    data::ptr_vector<data::integer, data::access::inout> m_inout_group {this, INOUT_GROUP};
+    data::ptr<data::object, data::access::out> m_output {this, OUTPUT, true};
 };
 
 class test3_inouts_v2 : public test_srv
@@ -398,9 +398,9 @@ public:
 
 private:
 
-    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1", true};
-    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2", true};
-    data::ptr<data::object, data::access::inout> m_inout3 {this, "data3", false};
+    data::ptr<data::object, data::access::inout> m_inout1 {this, "data1"};
+    data::ptr<data::object, data::access::inout> m_inout2 {this, "data2"};
+    data::ptr<data::object, data::access::inout> m_inout3 {this, "data3"};
 };
 
 } // namespace sight::service::ut

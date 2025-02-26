@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,6 @@
 #include "viz/scene3d/compositor/chain_manager.hpp"
 
 #include "viz/scene3d/adaptor.hpp"
-#include "viz/scene3d/compositor/listener/auto_stereo.hpp"
 #include "viz/scene3d/compositor/sao_listener.hpp"
 #include "viz/scene3d/helper/shading.hpp"
 #include "viz/scene3d/layer.hpp"
@@ -249,16 +248,19 @@ void chain_manager::update_compositor_adaptors(compositor_id_t _compositor_name,
                     const auto shader_type = std::get<2>(constant);
 
                     const std::string shader_type_str = shader_type == Ogre::GPT_VERTEX_PROGRAM ? "vertex"
-                                                                                                : shader_type
-                                                        == Ogre::GPT_FRAGMENT_PROGRAM ? "fragment"
-                                                                                      :
-                                                        "geometry";
+                                                                                                :
+                                                        shader_type == Ogre::GPT_FRAGMENT_PROGRAM ? "fragment"
+                                                                                                  : "geometry";
 
                     // Naming convention for shader parameters
                     auto render_service = layer->render_service();
-                    const auto id       = render_service->get_id() + layer->layer_id() + "_"
-                                          + shader_type_str
-                                          + "-" + constant_name;
+
+                    const auto id = sight::core::id::join(
+                        render_service->get_id(),
+                        layer->layer_id(),
+                        shader_type_str,
+                        constant_name
+                    );
 
                     if(_is_enabled && this->get_registered_service(id) == nullptr)
                     {

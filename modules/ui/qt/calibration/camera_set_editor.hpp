@@ -127,7 +127,7 @@ protected:
     std::size_t m_cam_index;
 
     static constexpr std::string_view CAMERASET = "cameraSet";
-    data::ptr<data::camera_set, data::access::in> m_camera_set {this, CAMERASET, true};
+    data::ptr<data::camera_set, data::access::in> m_camera_set {this, CAMERASET};
 };
 
 } // namespace sight::module::ui::qt::calibration

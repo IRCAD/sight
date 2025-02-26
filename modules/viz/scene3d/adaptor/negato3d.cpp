@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,6 +32,8 @@
 #include <data/image.hpp>
 #include <data/tools/color.hpp>
 
+#include <geometry/data/image.hpp>
+
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
 
@@ -44,33 +46,22 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t NEWIMAGE_SLOT            = "new_image";
-static const core::com::slots::key_t SLICETYPE_SLOT           = "sliceType";
-static const core::com::slots::key_t SLICEINDEX_SLOT          = "sliceIndex";
-static const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
-static const core::com::slots::key_t SET_TRANSPARENCY_SLOT    = "set_transparency";
-static const core::com::slots::key_t UPDATE_TF_SLOT           = "update_tf";
-
-static const core::com::signals::key_t PICKED_VOXEL_SIG = "picked_voxel";
-
 //------------------------------------------------------------------------------
 
 negato3d::negato3d() noexcept
 {
-    new_slot(NEWIMAGE_SLOT, &negato3d::new_image, this);
-    new_slot(SLICETYPE_SLOT, &negato3d::change_slice_type, this);
-    new_slot(SLICEINDEX_SLOT, &negato3d::change_slice_index, this);
-    new_slot(SET_TRANSPARENCY_SLOT, &negato3d::set_transparency, this);
-    new_slot(UPDATE_SLICES_FROM_WORLD, &negato3d::update_slices_from_world, this);
-    new_slot(UPDATE_TF_SLOT, &negato3d::update_tf, this);
+    // Auto-connected slots
+    new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::IMAGE);});
+    new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::TF);});
 
-    m_picked_voxel_signal = new_signal<picked_voxel_sig_t>(PICKED_VOXEL_SIG);
+    // Interaction slots
+    new_slot(slots::SLICE_TYPE, &negato3d::change_slice_type, this);
+    new_slot(slots::SLICE_INDEX, &negato3d::change_slice_index, this);
+    new_slot(slots::UPDATE_SLICES_FROM_WORLD, &negato3d::update_slices_from_world, this);
+    new_slot(slots::SET_TRANSPARENCY, &negato3d::set_transparency, this);
+
+    new_signal<signals::picked_voxel_t>(signals::PICKED_VOXEL);
 }
-
-//------------------------------------------------------------------------------
-
-negato3d::~negato3d() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -125,7 +116,7 @@ void negato3d::configuring()
     m_border       = config.get<bool>(s_BORDER_CONFIG, m_border);
 
     const std::string transform_id =
-        config.get<std::string>(sight::viz::scene3d::transformable::TRANSFORM_CONFIG, this->get_id() + "_transform");
+        config.get<std::string>(sight::viz::scene3d::transformable::TRANSFORM_CONFIG, gen_id("transform"));
     this->set_transform_id(transform_id);
 }
 
@@ -133,7 +124,7 @@ void negato3d::configuring()
 
 void negato3d::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
     {
@@ -149,7 +140,8 @@ void negato3d::starting()
     // scene node's instantiation
     Ogre::SceneNode* const root_scene_node = this->get_scene_manager()->getRootSceneNode();
     Ogre::SceneNode* const transform_node  = this->get_or_create_transform_node(root_scene_node);
-    m_negato_scene_node = transform_node->createChildSceneNode();
+    m_origin_scene_node = transform_node->createChildSceneNode();
+    m_negato_scene_node = m_origin_scene_node->createChildSceneNode();
 
     // Instantiation of the planes
     for(auto& plane : m_planes)
@@ -161,7 +153,9 @@ void negato3d::starting()
             m_3d_ogre_texture,
             m_filtering,
             m_border,
-            false
+            false,
+            1.0F,
+            *m_classification == std::string("post")
         );
     }
 
@@ -185,28 +179,39 @@ void negato3d::starting()
     }
 
     // Set the visibility of the 3D Negato
-    this->set_visible(m_visible);
+    this->set_visible(visible());
 }
 
 //-----------------------------------------------------------------------------
 
 service::connections_t negato3d::auto_connections() const
 {
-    return {
-        {IMAGE_IN, data::image::MODIFIED_SIG, NEWIMAGE_SLOT},
-        {IMAGE_IN, data::image::BUFFER_MODIFIED_SIG, NEWIMAGE_SLOT},
-        {IMAGE_IN, data::image::SLICE_TYPE_MODIFIED_SIG, SLICETYPE_SLOT},
-        {IMAGE_IN, data::image::SLICE_INDEX_MODIFIED_SIG, SLICEINDEX_SLOT},
-        {TF_INOUT, data::transfer_function::MODIFIED_SIG, UPDATE_TF_SLOT},
-        {TF_INOUT, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
-        {TF_INOUT, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT}
+    service::connections_t connections = {
+        {m_image, data::image::MODIFIED_SIG, slots::UPDATE_IMAGE},
+        {m_image, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_IMAGE},
+        {m_tf, data::transfer_function::POINTS_MODIFIED_SIG, slots::UPDATE_TF},
+        {m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF},
+        {m_tf, data::transfer_function::MODIFIED_SIG, slots::UPDATE_TF},
+        {m_image, data::image::SLICE_TYPE_MODIFIED_SIG, slots::SLICE_TYPE},
+        {m_image, data::image::SLICE_INDEX_MODIFIED_SIG, slots::SLICE_INDEX}
     };
+    return connections + adaptor::auto_connections();
 }
 
 //------------------------------------------------------------------------------
 
 void negato3d::updating()
 {
+    if(update_needed(update_flags::IMAGE))
+    {
+        this->new_image();
+    }
+    else if(update_needed(update_flags::TF))
+    {
+        this->update_tf();
+    }
+
+    this->update_done();
     this->request_render();
 }
 
@@ -225,15 +230,21 @@ void negato3d::stopping()
     m_picked_plane.reset();
     std::ranges::for_each(m_planes, [](auto& _p){_p.reset();});
 
+    auto* const scene_manager = this->get_scene_manager();
     m_negato_scene_node->removeAndDestroyAllChildren();
-    this->get_scene_manager()->destroySceneNode(m_negato_scene_node);
+    scene_manager->destroySceneNode(m_negato_scene_node);
+    m_negato_scene_node = nullptr;
+
+    m_origin_scene_node->removeAndDestroyAllChildren();
+    scene_manager->destroySceneNode(m_origin_scene_node);
+    m_origin_scene_node = nullptr;
 
     m_picking_cross.reset();
 
     m_3d_ogre_texture.reset();
     m_gpu_tf.reset();
 
-    this->request_render();
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------
@@ -256,23 +267,28 @@ void negato3d::new_image()
         // Retrieves or creates the slice index fields
         m_3d_ogre_texture->update();
 
-        const auto [spacing, origin] = sight::viz::scene3d::utils::convert_spacing_and_origin(image.get_shared());
+        const auto spacing = sight::viz::scene3d::utils::get_ogre_spacing(*image);
+
+        m_origin_scene_node->setPosition(sight::viz::scene3d::utils::get_ogre_origin(*image));
+        m_origin_scene_node->setOrientation(sight::viz::scene3d::utils::get_ogre_orientation(*image));
 
         // Fits the planes to the new texture
         for(int orientation_num = 0 ; const auto& plane : m_planes)
         {
-            plane->update(static_cast<orientation_mode>(orientation_num++), spacing, origin, m_enable_alpha);
+            plane->update(
+                static_cast<axis_t>(orientation_num++),
+                spacing,
+                m_enable_alpha
+            );
             plane->set_query_flags(m_query_flags);
         }
 
         // Update Slice
-        namespace imHelper = data::helper::medical_image;
+        namespace medical_image = data::helper::medical_image;
 
-        axial_idx   = std::max(0, int(imHelper::get_slice_index(*image, imHelper::orientation_t::axial).value_or(0)));
-        frontal_idx =
-            std::max(0, int(imHelper::get_slice_index(*image, imHelper::orientation_t::frontal).value_or(0)));
-        sagittal_idx =
-            std::max(0, int(imHelper::get_slice_index(*image, imHelper::orientation_t::sagittal).value_or(0)));
+        axial_idx    = std::max(0, int(medical_image::get_slice_index(*image, axis_t::axial).value_or(0)));
+        frontal_idx  = std::max(0, int(medical_image::get_slice_index(*image, axis_t::frontal).value_or(0)));
+        sagittal_idx = std::max(0, int(medical_image::get_slice_index(*image, axis_t::sagittal).value_or(0)));
     }
 
     this->change_slice_index(axial_idx, frontal_idx, sagittal_idx);
@@ -280,12 +296,7 @@ void negato3d::new_image()
     // Update transfer function in Gpu programs
     this->update_tf();
 
-    if(m_auto_reset_camera)
-    {
-        this->render_service()->reset_camera_coordinates(m_layer_id);
-    }
-
-    this->set_visible(m_visible);
+    this->apply_visibility();
 
     this->request_render();
 }
@@ -360,6 +371,11 @@ void negato3d::set_transparency(double _transparency)
 void negato3d::set_visible(bool _visible)
 {
     std::ranges::for_each(m_planes, [_visible](auto& _p){_p->set_visible(_visible);});
+    if(m_auto_reset_camera)
+    {
+        this->render_service()->reset_camera_coordinates(m_layer_id);
+    }
+
     this->request_render();
 }
 
@@ -441,7 +457,7 @@ void negato3d::button_release_event(mouse_button /*_button*/, modifier /*_mods*/
     }
 
     m_picking_cross->set_visible(false);
-    m_picked_voxel_signal->async_emit("");
+    this->signal<signals::picked_voxel_t>(signals::PICKED_VOXEL)->async_emit("");
     this->set_planes_query_flags(m_query_flags); // Make all planes pickable again.
 }
 
@@ -449,7 +465,10 @@ void negato3d::button_release_event(mouse_button /*_button*/, modifier /*_mods*/
 
 void negato3d::move_slices(int _x, int _y)
 {
-    const auto pick_res = this->get_picked_slices(_x, _y);
+    const auto pick_res = this->get_picked_slices(
+        _x,
+        _y
+    );
 
     if(pick_res.has_value())
     {
@@ -467,13 +486,14 @@ void negato3d::move_slices(int _x, int _y)
                 }
             });
 
-        const auto [spacing, origin] = sight::viz::scene3d::utils::convert_spacing_and_origin(image.get_shared());
-        picked_pt                    = (picked_pt - origin) / spacing;
+        const auto picked_voxel = geometry::data::world_to_image(*image, picked_pt, true, true);
 
-        const Ogre::Vector3i picked_pt_i(picked_pt);
-        const auto sig = image->signal<data::image::slice_index_modified_signal_t>
-                             (data::image::SLICE_INDEX_MODIFIED_SIG);
-        sig->async_emit(picked_pt_i[2], picked_pt_i[1], picked_pt_i[0]);
+        image->async_emit(
+            data::image::SLICE_INDEX_MODIFIED_SIG,
+            int(picked_voxel[2]),
+            int(picked_voxel[1]),
+            int(picked_voxel[0])
+        );
     }
 }
 
@@ -495,17 +515,20 @@ void negato3d::update_slices_from_world(double _x, double _y, double _z)
         return;
     }
 
-    const auto sig = image->signal<data::image::slice_index_modified_signal_t>
-                         (data::image::SLICE_INDEX_MODIFIED_SIG);
-
-    sig->async_emit(slice_idx[2], slice_idx[1], slice_idx[0]);
+    image->async_emit(
+        data::image::SLICE_INDEX_MODIFIED_SIG,
+        int(slice_idx[2]),
+        int(slice_idx[1]),
+        int(slice_idx[0])
+    );
 }
 
 //------------------------------------------------------------------------------
 
 void negato3d::pick_intensity(int _x, int _y)
 {
-    if(m_picked_voxel_signal->num_connections() > 0)
+    auto sig = this->signal<signals::picked_voxel_t>(signals::PICKED_VOXEL);
+    if(sig->num_connections() > 0)
     {
         const auto picked_pos = this->get_picked_slices(_x, _y);
 
@@ -518,15 +541,12 @@ void negato3d::pick_intensity(int _x, int _y)
                 return;
             }
 
-            const auto image_buffer_lock = image->dump_lock();
+            const auto cross_lines = m_picked_plane->compute_cross(*picked_pos, *image);
 
-            const auto [spacing, origin] = sight::viz::scene3d::utils::convert_spacing_and_origin(image.get_shared());
-
-            auto cross_lines = m_picked_plane->compute_cross(*picked_pos, origin);
             m_picking_cross->update(cross_lines[0], cross_lines[1], cross_lines[2], cross_lines[3]);
-            const std::string picking_text =
-                sight::viz::scene3d::utils::pick_image(*image, *picked_pos, origin, spacing);
-            m_picked_voxel_signal->async_emit(picking_text);
+
+            const auto picking_text = sight::viz::scene3d::utils::pick_image(*image, *picked_pos);
+            sig->async_emit(picking_text);
 
             this->request_render();
 

@@ -24,7 +24,9 @@
 
 #include <data/calibration_info.hpp>
 #include <data/image.hpp>
+#include <data/integer.hpp>
 #include <data/point_list.hpp>
+#include <data/real.hpp>
 
 #include <service/controller.hpp>
 
@@ -43,7 +45,6 @@ namespace sight::module::geometry::vision
  *
  * @section Slots Slots
  * - \b record_points(): Request to store the current image in the calibration data, if the chessboard is detected.
- * - \b update_chessboard_size(): update the parameters of the chessboard from preferences.
  *
  * @section XML XML Configuration
  *
@@ -73,7 +74,7 @@ namespace sight::module::geometry::vision
  * - \b board : preference keys to retrieve the number of squares of the board in width and height as well
  *              as the scaling factor to be applied to the input image.
  */
-class chess_board_detector : public service::controller
+class chess_board_detector final : public service::controller
 {
 public:
 
@@ -89,32 +90,29 @@ public:
     chess_board_detector() noexcept;
 
     /// Destructor
-    ~chess_board_detector() noexcept override;
+    ~chess_board_detector() noexcept final;
 
 protected:
 
     /// Configures the service.
-    void configuring() override;
+    void configuring(const config_t& _config) final;
 
     /// Initializes the chessboard size from the preferences.
-    void starting() override;
+    void starting() final;
 
     /// Tries to detect chessboards in all input images.
-    void updating() override;
+    void updating() final;
 
     /// Clears the detected points.
-    void stopping() override;
+    void stopping() final;
 
     /// Returns proposals to update the service when the input image is modified.
-    connections_t auto_connections() const override;
+    connections_t auto_connections() const final;
 
 private:
 
     /// SLOT: stores the last detected chessboard in the CalibrationInfo structure.
     void record_points();
-
-    /// SLOT: updates the chessboard size from the preferences.
-    void update_chessboard_size();
 
     /// Runs the detection for the given input index.
     void do_detection(std::size_t _image_index);
@@ -124,23 +122,6 @@ private:
 
     /// Signal emitted if a chessboard can be seen in the image.
     chessboard_found_signal_t::sptr m_sig_chessboard_found;
-
-    /// Preference key to retrieve the chessboard width.
-    std::string m_width_key;
-
-    /// Preference key to retrieve the chessboard height.
-    std::string m_height_key;
-
-    /// Preference key to retrieve the scaling factor applied to the image before detection.
-    std::string m_scale_key;
-
-    /// Width of the chessboard we're looking for.
-    std::size_t m_width {11};
-
-    /// Height of the chessboard we're looking for.
-    std::size_t m_height {8};
-
-    float m_scale {1.F};
 
     /// Last detected chessboard points in each image. Null if detection failed.
     std::vector<data::point_list::sptr> m_point_lists;
@@ -152,9 +133,18 @@ private:
     static constexpr std::string_view CALINFO_INOUT   = "calInfo";
     static constexpr std::string_view DETECTION_INOUT = "detection";
 
-    data::ptr_vector<data::image, data::access::in> m_image {this, IMAGE_INPUT, true};
+    data::ptr_vector<data::image, data::access::in> m_image {this, IMAGE_INPUT};
     data::ptr_vector<data::calibration_info, data::access::inout> m_cal_info {this, CALINFO_INOUT};
     data::ptr_vector<data::point_list, data::access::inout> m_detection {this, DETECTION_INOUT};
+
+    /// Width of the chessboard we're looking for.
+    sight::data::property<sight::data::integer> m_width {this, "board_width", 11};
+
+    /// Height of the chessboard we're looking for.
+    sight::data::property<sight::data::integer> m_height {this, "board_height", 8};
+
+    /// Scale applied to the images before running the detection algorithm.
+    sight::data::property<sight::data::real> m_scale {this, "board_scale", 1.};
 };
 
 } //namespace sight::module::geometry::vision

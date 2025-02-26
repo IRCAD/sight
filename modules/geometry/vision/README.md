@@ -12,7 +12,7 @@ Contains services that implement some computer vision algorithms, notably to cal
 - **open_cv_intrinsic**: computes intrinsic calibration with openCV.
 - **pose_from2d**: computes the 3d pose of a, object using 2d points.
 - **reprojection_error**: computes the mean error of reprojection between 3d object points.
-- **solve_pn_p**: estimates the object pose given a set of object points, their corresponding image projections.
+- **solve_pnp**: estimates the object pose given a set of object points, their corresponding image projections.
 
 ## How to use it
 

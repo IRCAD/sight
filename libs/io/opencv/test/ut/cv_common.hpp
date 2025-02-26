@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,11 +40,11 @@ template<typename T>
 struct getCvFormat;
 
 #define DECLARE_CV_FORMAT(_TYPE, _CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4) \
-    template<> \
-    struct getCvFormat<_TYPE> \
-    { \
-        static const std::array<std::int32_t, 4> type; \
-    };
+        template<> \
+        struct getCvFormat<_TYPE> \
+        { \
+            static const std::array<std::int32_t, 4> type; \
+        };
 
 DECLARE_CV_FORMAT(std::uint8_t, CV_8UC1, CV_8UC2, CV_8UC3, CV_8UC4)
 DECLARE_CV_FORMAT(std::int8_t, CV_8SC1, CV_8SC2, CV_8SC3, CV_8SC4)

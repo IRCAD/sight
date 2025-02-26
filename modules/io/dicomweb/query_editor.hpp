@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,9 @@
 
 #pragma once
 
+#include <data/integer.hpp>
 #include <data/series_set.hpp>
+#include <data/string.hpp>
 
 #include <io/http/client_qt.hpp>
 
@@ -51,16 +53,23 @@ namespace sight::module::io::dicomweb
  * @code{.xml}
         <service type="sight::module::io::dicomweb::query_editor">
             <inout key="seriesSet" uid="..." />
-            <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
+            <properties host_name="${host_name}" port="${port_id}" />
+            <config icon="..." />
        </service>
    @endcode
+ *
  * @subsection In-Out In-Out:
  * - \b seriesSet [sight::data::series_set]: series_set on which the queried data will be pushed.
+ *
+ * @subsection Properties Properties
+ * - \b host_name : Need hostname string (default value is "127.0.0.1").
+ * - \b port : Need the value of port (default value is 8042).
+ *
  * @subsection Configuration Configuration:
- * - \b server: server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:8042).
- * @note : hostname and port of this service can be a value or a nameKey from preference settings
- *  (for example <server>%HOSTNAME%:%PORT%</server>)
-
+ * - \b advanced (optional, bool, default=true): define if advanced fields are displayed.
+ * - \b icon (optional, string, default=""): path of the icon used in the search button.
+ * - \b width (optional, unsigned int, default=20): width of the icon used in the search button.
+ * - \b height (optional, unsigned int, default=20): height of the icon used in the search button.
  */
 class query_editor : public QObject,
                      public sight::ui::editor
@@ -134,16 +143,25 @@ private:
     /// Server hostname preference key
     std::string m_server_hostname_key;
 
+    /// Defines the path of the button's icon.
+    std::filesystem::path m_icon_path {};
+
     /// Server port preference key
     std::string m_server_port_key;
 
-    /// Server hostname
-    std::string m_server_hostname {"localhost"};
+    /// Defines the with of the button's icon.
+    unsigned int m_icon_width {20};
 
-    /// Server port
-    int m_server_port {4242};
+    /// Defines the height of the button's icon.
+    unsigned int m_icon_height {20};
 
-    sight::data::ptr<sight::data::series_set, sight::data::access::inout> m_series_set {this, "seriesSet"};
+    /// Defines if advanced fields are displayed.
+    bool m_advanced {true};
+
+    sight::data::ptr<sight::data::series_set, sight::data::access::inout> m_series_set {this, "series_set"};
+
+    sight::data::property<sight::data::string> m_server_hostname {this, "host_name", std::string("localhost")};
+    sight::data::property<sight::data::integer> m_server_port {this, "port", 4242};
 };
 
 } // namespace sight::module::io::dicomweb

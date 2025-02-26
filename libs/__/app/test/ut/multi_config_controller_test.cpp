@@ -47,13 +47,16 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::ut::multi_config_controller_test);
 namespace sight::app::ut
 {
 
+static constexpr auto MULTI_CFG_CTL_1 = "multi_cfg_ctl_1";
+static constexpr auto MULTI_CFG_CTL_2 = "multi_cfg_ctl_2";
+
 //------------------------------------------------------------------------------
 
 int get_current_id()
 {
     auto current_id_str = sight::app::extension::config::get_unique_identifier("get_id");
     std::smatch match;
-    CPPUNIT_ASSERT(std::regex_match(current_id_str, match, std::regex("get_id_([0-9]*)")));
+    CPPUNIT_ASSERT(std::regex_match(current_id_str, match, std::regex("get_id[^0-9]+([0-9]*)")));
     current_id_str = match[1].str();
     return std::stoi(current_id_str);
 }
@@ -72,7 +75,7 @@ void multi_config_controller_test::setUp()
     core::runtime::load_module("sight::module::app");
     core::runtime::load_module("config_test");
 
-    app::extension::config::sptr app_config = app::extension::config::get_default();
+    app::extension::config::sptr app_config = app::extension::config::get();
     app_config->clear_registry();
     app_config->parse_plugin_infos();
 }
@@ -102,10 +105,11 @@ void multi_config_controller_test::multi_config_test()
 {
     // Initialise the testing service
     std::stringstream config_string;
-    config_string << " <appConfig key=\"myKey\" default=\"config1\">"
-                     "<config name=\"config1\" id=\"multi_cfg_ctl_1\" />"
-                     "<config name=\"config2\" id=\"multi_cfg_ctl_2\" />"
-                     "</appConfig>";
+    config_string << R"( <appConfig key="myKey" default="config1">)"
+    << R"(<config name="config1" id=")" << MULTI_CFG_CTL_1 << R"(" />)"
+    << R"(<config name="config2" id=")" << MULTI_CFG_CTL_2 << R"(" />)"
+    << "</appConfig>";
+
     service::base::sptr srv = service::add("sight::app::multi_config_controller");
 
     service::config_t config;
@@ -135,12 +139,12 @@ void multi_config_controller_test::multi_config_test()
     SIGHT_TEST_FAIL_WAIT(service_updated);
     service_updated = false;
 
-    auto srv1_uid = "multi_cfg_ctl_1_" + std::to_string(current_id++) + "_srv";
-    auto srv2_uid = "multi_cfg_ctl_2_" + std::to_string(current_id++) + "_srv";
+    auto srv1_uid = core::id::join(MULTI_CFG_CTL_1, current_id++, "srv");
+    auto srv2_uid = core::id::join(MULTI_CFG_CTL_2, current_id++, "srv");
 
-    auto srv1 = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv1_uid));
+    auto srv1 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
     CPPUNIT_ASSERT(srv1 == nullptr);
-    auto srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv2_uid));
+    auto srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv2_uid));
     CPPUNIT_ASSERT(srv2 != nullptr && srv2->started());
 
     // set config1 =>
@@ -151,15 +155,15 @@ void multi_config_controller_test::multi_config_test()
     SIGHT_TEST_FAIL_WAIT(service_updated);
     service_updated = false;
 
-    srv1_uid = "multi_cfg_ctl_1_" + std::to_string(current_id++) + "_srv";
-    srv1     = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv1_uid));
+    srv1_uid = core::id::join(MULTI_CFG_CTL_1, current_id++, "srv");
+    srv1     = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
     CPPUNIT_ASSERT(srv1 != nullptr && srv1->started());
-    srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv2_uid));
+    srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv2_uid));
     CPPUNIT_ASSERT(srv2 != nullptr && srv2->stopped());
     {
         // Ensuring the service is really destroyed by the app config manager by releasing our reference
         srv2.reset();
-        auto srv2_test = core::tools::id::get_object(srv2_uid);
+        auto srv2_test = core::id::get_object(srv2_uid);
         CPPUNIT_ASSERT(srv2_test == nullptr);
     }
 
@@ -171,10 +175,10 @@ void multi_config_controller_test::multi_config_test()
     SIGHT_TEST_FAIL_WAIT(service_updated);
     service_updated = false;
 
-    srv2_uid = "multi_cfg_ctl_2_" + std::to_string(current_id++) + "_srv";
-    srv1     = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv1_uid));
+    srv2_uid = core::id::join(MULTI_CFG_CTL_2, current_id++, "srv");
+    srv1     = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
     CPPUNIT_ASSERT(srv1 != nullptr && srv1->stopped());
-    srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv2_uid));
+    srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv2_uid));
     CPPUNIT_ASSERT(srv2 != nullptr && srv2->started());
 
     // set again config2 => nothing should have changed, the service is not updated
@@ -183,9 +187,9 @@ void multi_config_controller_test::multi_config_test()
     srv->slot("set_config")->run(ui::parameter_t("config2"), std::string("myKey"));
     SIGHT_TEST_FAIL_WAIT(!service_updated);
 
-    srv1 = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv1_uid));
+    srv1 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
     CPPUNIT_ASSERT(srv1 != nullptr && srv1->stopped());
-    srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv2_uid));
+    srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv2_uid));
     CPPUNIT_ASSERT(srv2 != nullptr && srv2->started());
 
     srv->stop().wait();
@@ -198,10 +202,11 @@ void multi_config_controller_test::set_config_key_test()
     // Initialise the testing service
 
     std::stringstream config_string;
-    config_string << " <appConfig key=\"myKey\" default=\"config1\">"
-                     "<config name=\"config1\" id=\"multi_cfg_ctl_1\" />"
-                     "<config name=\"config2\" id=\"multi_cfg_ctl_2\" />"
-                     "</appConfig>";
+    config_string << R"( <appConfig key="myKey" default="config1">)"
+    << R"(<config name="config1" id=")" << MULTI_CFG_CTL_1 << R"(" />)"
+    << R"(<config name="config2" id=")" << MULTI_CFG_CTL_2 << R"(" />)"
+    << "</appConfig>";
+
     service::base::sptr srv = service::add("sight::app::multi_config_controller");
 
     service::config_t config;
@@ -232,11 +237,11 @@ void multi_config_controller_test::set_config_key_test()
     SIGHT_TEST_FAIL_WAIT(service_updated);
     service_updated = false;
 
-    auto srv1_uid = "multi_cfg_ctl_1_" + std::to_string(current_id++) + "_srv";
-    auto srv2_uid = "multi_cfg_ctl_2_" + std::to_string(current_id++) + "_srv";
-    auto srv1     = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv1_uid));
+    auto srv1_uid = core::id::join(MULTI_CFG_CTL_1, current_id++, "srv");
+    auto srv2_uid = core::id::join(MULTI_CFG_CTL_2, current_id++, "srv");
+    auto srv1     = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
     CPPUNIT_ASSERT(srv1 == nullptr);
-    auto srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv2_uid));
+    auto srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv2_uid));
     CPPUNIT_ASSERT(srv2 != nullptr && srv2->started());
 
     // set config with bad key
@@ -245,9 +250,9 @@ void multi_config_controller_test::set_config_key_test()
     SIGHT_TEST_FAIL_WAIT(service_updated);
     service_updated = false;
 
-    srv1 = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv1_uid));
+    srv1 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
     CPPUNIT_ASSERT(srv1 == nullptr);
-    srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv2_uid));
+    srv2 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv2_uid));
     CPPUNIT_ASSERT(srv2 != nullptr && srv2->started());
 
     srv->stop().wait();
@@ -258,10 +263,11 @@ void multi_config_controller_test::set_config_key_test()
 void multi_config_controller_test::default_loading_test()
 {
     std::stringstream config_string;
-    config_string << "<appConfig key=\"myKey\" default=\"config1\">"
-                     "<config name=\"config1\" id=\"multi_cfg_ctl_1\" />"
-                     "<config name=\"config2\" id=\"multi_cfg_ctl_2\" />"
-                     "</appConfig>";
+    config_string << R"( <appConfig key="myKey" default="config1">)"
+    << R"(<config name="config1" id=")" << MULTI_CFG_CTL_1 << R"(" />)"
+    << R"(<config name="config2" id=")" << MULTI_CFG_CTL_2 << R"(" />)"
+    << "</appConfig>";
+
     service::base::sptr srv = service::add("sight::app::multi_config_controller");
 
     int current_id = get_current_id();
@@ -274,13 +280,13 @@ void multi_config_controller_test::default_loading_test()
     srv->start().get();
     srv->update().get();
 
-    auto srv1_uid = "multi_cfg_ctl_1_" + std::to_string(++current_id) + "_srv";
-    auto srv1     = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv1_uid));
+    auto srv1_uid = core::id::join(MULTI_CFG_CTL_1, ++current_id, "srv");
+    auto srv1     = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
     CPPUNIT_ASSERT(srv1 != nullptr && srv1->started());
 
     srv->update().get();
 
-    srv1 = std::dynamic_pointer_cast<app::ut::test_service>(core::tools::id::get_object(srv1_uid));
+    srv1 = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object(srv1_uid));
     CPPUNIT_ASSERT(srv1 != nullptr && srv1->started());
 
     srv->stop().wait();
@@ -292,10 +298,11 @@ void multi_config_controller_test::parameters_test()
 {
     // Initialise the testing service
     std::stringstream config_string;
-    config_string << " <appConfig key=\"myKey\" default=\"config1\">"
-                     "<config name=\"config1\" id=\"multi_cfg_ctl_1\" />"
-                     "<config name=\"config2\" id=\"multi_cfg_ctl_2\" />"
-                     "</appConfig>";
+    config_string << R"( <appConfig key="myKey" default="config1">)"
+    << R"(<config name="config1" id=")" << MULTI_CFG_CTL_1 << R"(" />)"
+    << R"(<config name="config2" id=")" << MULTI_CFG_CTL_2 << R"(" />)"
+    << "</appConfig>";
+
     service::base::sptr srv = service::add("sight::app::multi_config_controller");
 
     service::config_t config;
@@ -336,12 +343,12 @@ void multi_config_controller_test::parameters_test()
     SIGHT_TEST_FAIL_WAIT(started_config == "config2");
     started_config.clear();
 
-    auto srv1_uid = "multi_cfg_ctl_1_" + std::to_string(current_id++) + "_srv";
-    auto srv2_uid = "multi_cfg_ctl_2_" + std::to_string(current_id++) + "_srv";
+    auto srv1_uid = core::id::join(MULTI_CFG_CTL_1, current_id++, "srv");
+    auto srv2_uid = core::id::join(MULTI_CFG_CTL_2, current_id++, "srv");
 
-    auto srv1 = std::dynamic_pointer_cast<app::ut::test_config>(core::tools::id::get_object(srv1_uid));
+    auto srv1 = std::dynamic_pointer_cast<app::ut::test_config>(core::id::get_object(srv1_uid));
     CPPUNIT_ASSERT(srv1 == nullptr);
-    auto srv2 = std::dynamic_pointer_cast<app::ut::test_config>(core::tools::id::get_object(srv2_uid));
+    auto srv2 = std::dynamic_pointer_cast<app::ut::test_config>(core::id::get_object(srv2_uid));
     CPPUNIT_ASSERT(srv2 != nullptr && srv2->started());
 
     auto exported_config = srv2->export_config();
@@ -358,15 +365,15 @@ void multi_config_controller_test::parameters_test()
     SIGHT_TEST_FAIL_WAIT(started_config == "config1");
     started_config.clear();
 
-    srv1_uid = "multi_cfg_ctl_1_" + std::to_string(current_id++) + "_srv";
-    srv1     = std::dynamic_pointer_cast<app::ut::test_config>(core::tools::id::get_object(srv1_uid));
+    srv1_uid = core::id::join(MULTI_CFG_CTL_1, current_id++, "srv");
+    srv1     = std::dynamic_pointer_cast<app::ut::test_config>(core::id::get_object(srv1_uid));
     CPPUNIT_ASSERT(srv1 != nullptr && srv1->started());
-    srv2 = std::dynamic_pointer_cast<app::ut::test_config>(core::tools::id::get_object(srv2_uid));
+    srv2 = std::dynamic_pointer_cast<app::ut::test_config>(core::id::get_object(srv2_uid));
     CPPUNIT_ASSERT(srv2 != nullptr && srv2->stopped());
     {
         // Ensuring the service is really destroyed by the app config manager by releasing our reference
         srv2.reset();
-        auto srv2_test = core::tools::id::get_object(srv2_uid);
+        auto srv2_test = core::id::get_object(srv2_uid);
         CPPUNIT_ASSERT(srv2_test == nullptr);
     }
 

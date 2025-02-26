@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,103 +22,185 @@
 
 #pragma once
 
-#include "data/fiducials_series.hpp"
-
-#include <data/point_list.hpp>
-
-#include <geometry/data/point_list.hpp>
+#include <data/fiducials_series.hpp>
+#include <data/helper/medical_image.hpp>
+#include <data/image_series.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
-#include <viz/scene3d/material.hpp>
+#include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/text.hpp>
 
-#include <Ogre.h>
 #include <QPushButton>
-
-#include <memory>
-#include <optional>
 
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
 
 /**
- * @brief This adaptor displays distances retrieved from the image fields.
+ * @brief This adaptor displays rulers retrieved from the image series.
  *
  * @section XML XML Configuration
  * @code{.xml}
-    <service uid="..." type="sight::module::viz::scene3d::adaptor::fiducials::ruler" auto_connect="true" >
+    <service uid="..." type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true" >
         <inout key="image" uid="..." />
-        <config fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
+        <config font_size="16" radius="3" priority="2" />
     </service>
    @endcode
  *
  * @subsection Input Input:
- * - \b image [sight::data::image]: image containing the distance field.
+ * - \b image [sight::data::image]: image containing the ruler fiducials.
  *
  * @subsection Configuration Configuration:
- * - \b fontSize (optional, int, default=16): font size in points.
- * - \b radius (optional, float, default=4.5): size of the distances spheres.
- * - \b interactive (optional, bool, default=true): enables interactions with distances.
+ * - \b font_size (optional, int, default=16): font size in labels.
+ * - \b radius (optional, float, default=3): size of the rulers spheres.
  * - \b priority (optional, int, default=2): priority of the interactor.
- * - \b queryMask (optional, uint32, default=0xFFFFFFFF): mask used to filter out entities when the distance is auto
+ * - \b query_mask (optional, uint32, default=0xFFFFFFFF): mask used to filter out entities when the ruler is auto
  *      snapped.
- * - \b distanceQueryFlags (optional, uint32, default=0x40000000): mask apply to distances spheres.
+ * - \b query_flags (optional, uint32, default=0x40000000): mask apply to rulers spheres.
  * - \b color (optional, string, default=""): color applied to the rulers, generated if empty.
+ * - \b always_display_all (optional, bool, default=false): boolean that impacts how rulers will be displayed.
+ * If it's true, all rulers will always be displayed, regardless of the current slice.
  *
  * @section Slots Slots
- * - \b remove_all(): remove all distances.
- * - \b removeDistance(): removes distances contained in the image from the scene manager.
- * - \b updateVisibilityFromField(): updates the visibility of distances from the field status.
- * - \b update_visibility(bool): sets whether distances are shown or not.
- * - \b updateModifiedDistance(data::point_list::sptr): renders distances in other negato2d and negato3d adaptors.
- * - \b toggle_visibility(): toggles whether distances are shown or not.
- * - \b show(): shows distance.
- * - \b hide(): hides distance.
+ * - \b activate_tool(bool): enables or not the ruler tool.
+ * - \b remove_all(): removes all rulers.
+ * - \b remove_from_current_slice(): removes rulers contained in the current slice.
  *
  * @section Signals Signals
- * - \b toolDeactivate(): signal set when the tool is deactivated.
- *
- *
+ * - \b tool_deactivated(): signal sent when the ruler tool is deactivated.
  */
-class ruler final :
-    public sight::viz::scene3d::adaptor,
-    public sight::viz::scene3d::interactor::base
+
+class ruler final : public sight::viz::scene3d::adaptor,
+                    public sight::viz::scene3d::interactor::base
 {
 public:
 
     struct signals
     {
         using key_t = sight::core::com::signals::key_t;
-        static inline const key_t DEACTIVATE_DISTANCE_TOOL = "deactivate_distance_tool";
 
+        static inline const key_t TOOL_DEACTIVATED = "tool_deactivated";
         using void_signal_t = sight::core::com::signal<void ()>;
     };
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(ruler, sight::viz::scene3d::adaptor);
 
-    /// Initialize slots.
+    /// Creates the adaptor an initialize slots.
     ruler() noexcept;
 
     /// Destroys the adaptor.
-    ~ruler() noexcept override = default;
+    ~ruler() noexcept final = default;
 
     struct slots final
     {
         using key_t = sight::core::com::slots::key_t;
 
-        inline static const key_t REMOVE_ALL                          = "remove_all";
-        inline static const key_t REMOVE_DISTANCES                    = "removeDistances";
-        inline static const key_t REMOVE_DISTANCES_FROM_CURRENT_SLICE = "remove_distances_from_current_slice";
-        inline static const key_t UPDATE_VISIBILITY_FROM_FIELDS       = "updateVisibilityFromField";
-        inline static const key_t ACTIVATE_DISTANCE_TOOL              = "activate_distance_tool";
-        inline static const key_t UPDATE_MODIFIED_DISTANCE            = "updateModifiedDistance";
-        inline static const key_t RESTRICT_TO_CURRENT_SLICE           = "restrict_to_current_slice";
+        inline static const key_t ACTIVATE_TOOL             = "activate_tool";
+        inline static const key_t REMOVE_ALL                = "remove_all";
+        inline static const key_t REMOVE_FROM_CURRENT_SLICE = "remove_from_current_slice";
     };
 
+protected:
+
+    sight::service::connections_t auto_connections() const final;
+
+    /// Configures the adaptor.
+    void configuring() final;
+
+    /// Creates materials and the interactor.
+    void starting() final;
+
+    /// Creates or recreates m_ruler_ogre_sets from the fiducials.
+    void updating() final;
+
+    /// Removes the interactor, reset materials and m_ruler_ogre_sets.
+    void stopping() final;
+
+private:
+
+    struct private_slots final
+    {
+        using key_t = sight::core::com::slots::key_t;
+        inline static const key_t REMOVE_RULER_OGRE_SET    = "remove_ruler_ogre_set";
+        inline static const key_t UPDATE_MODIFIED_RULER    = "update_modified_ruler";
+        inline static const key_t DISPLAY_ON_CURRENT_SLICE = "display_on_current_slice";
+    };
+
+    class delete_bin_button_when_focus_out : public QObject
+    {
+    public:
+
+        explicit delete_bin_button_when_focus_out(ruler* _ruler);
+        bool eventFilter(QObject* _o, QEvent* _e) override;
+    };
+
+    /// Represents ogre elements and the associated fiducial id.
+    struct ruler_ogre_set final
+    {
+        std::optional<std::string> id;
+        Ogre::SceneNode* node1 {nullptr};
+        Ogre::ManualObject* sphere1 {nullptr};
+        Ogre::SceneNode* node2 {nullptr};
+        Ogre::ManualObject* sphere2 {nullptr};
+        Ogre::ManualObject* line {nullptr};
+        Ogre::ManualObject* dashed_line {nullptr};
+        Ogre::SceneNode* label_node {nullptr};
+        sight::viz::scene3d::text::sptr label;
+    };
+
+    /// Stores picking information associated to the ruler.
+    struct picked_ruler
+    {
+        ruler_ogre_set* m_data;
+        bool m_first;
+    };
+
+    /// Vector of ruler_ogre_sets.
+    std::vector<ruler_ogre_set> m_ruler_ogre_sets;
+
+    /// Creates a ruler fiducial and add it to fiducial_sets.
+    void create_ruler_fiducial(
+        const std::array<float, 4> _color,
+        const std::optional<std::string> _id,
+        const std::array<double, 3> _begin,
+        const std::array<double, 3> _end
+    );
+
+    /// Create a ruler_ogre_set and store it in m_ruler_ogre_sets.
+    void create_ruler_ogre_set(
+        const std::array<float, 4> _color,
+        const float _sphere_radius,
+        const std::optional<std::string> _id,
+        const std::array<double, 3> _begin,
+        const std::array<double, 3> _end,
+        const bool _visible
+    );
+
+    /// SLOT: Activates the ruler tool by changing the cursor and updating a boolean.
+    /// @param _activate set the state of ruler tool.
+    void activate_tool(const bool _activate);
+
+    /// Changes visibility of rulers.
+    void set_visible(bool _visible) override;
+
+    /// SLOT: Removes ogre elements from m_ruler_ogre_sets for the given id ruler.
+    void remove_ruler_ogre_set(std::optional<std::string> _id);
+
+    /// Removes fiducial ruler for the given id ruler.
+    void remove_ruler_fiducial(std::optional<std::string> _id);
+
+    /// SLOT: Removes all rulers and their associated fiducials data.
+    void remove_all();
+
+    /// SLOT: Removes all rulers and their associated fiducials data from the current slice.
+    void remove_from_current_slice();
+
+    /// SLOT: Displays ruler associated to the current slice.
+    void display_on_current_slice();
+
     /**
-     * @brief Retrieves the picked distance and stores the result in m_pickedData.
+     * @brief Retrieves the picked ruler and stores the result in m_picked_ruler.
      * @param _button mouse modifier.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
@@ -126,7 +208,7 @@ public:
     void button_press_event(mouse_button _button, modifier _mod, int _x, int _y) override;
 
     /**
-     * @brief Moves a distance stored in m_pickedData.
+     * @brief Moves a ruler stored in m_picked_ruler.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
@@ -139,7 +221,7 @@ public:
         int /*_dy*/
     ) override;
 
-    /// Resets m_pickedData.
+    /// Resets m_picked_ruler.
     void button_release_event(
         mouse_button _button,
         modifier _mod,
@@ -147,7 +229,18 @@ public:
         int _y
     ) override;
 
-    /// catch escape to go out of add distance mode
+    /// Updates picked ruler on mouse movement.
+    void update_picked_ruler(ruler_ogre_set* _ruler_to_update, Ogre::Vector3 _begin, Ogre::Vector3 _end);
+
+    /// SLOT: Allows visualizing the creation and/or modification of rulers in multiple
+    /// adaptors(Negato2d/Negato3d) by displaying the rulers synchronously.
+    void update_modified_ruler(
+        std::optional<std::string> _id,
+        std::array<double, 3> _begin,
+        std::array<double, 3> _end
+    );
+
+    /// Catches escape to go out of the ruler creation mode.
     void key_press_event(
         int _key,
         modifier /*_mods*/,
@@ -155,167 +248,50 @@ public:
         int /*_mouseY*/
     ) final;
 
-    /// Hides the contextual menu when the mouse wheel is used
-    void wheel_event(modifier _mods, double _angle_delta, int _x, int _y) final;
-
-protected:
-
-    /// Configures the service.
-    void configuring() override;
-
-    /// Adds the interactor to the layer and creates the material.
-    void starting() override;
-
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     *
-     * Connect data::image::DISTANCE_REMOVED_SIG to REMOVE_DISTANCE_SLOT
-     * Connect data::image::DISTANCE_DISPLAYED_SIG to UPDATE_VISIBILITY_SLOT
-     * Connect data::image::MODIFIED_SIG to service::slots::UPDATE
-     */
-    connections_t auto_connections() const override;
-
-    /// Updates materials and all distances.
-    void updating() override;
-
-    /// Removes the interactor from the layer and destroys Ogre resources.
-    void stopping() override;
-
-    /**
-     * @brief Sets distances visibility.
-     * @param _visible the visibility status of distances.
-     */
-    void set_visible(bool _visible) override;
-
-    void set_visible(std::string _id, bool _visible);
-
-private:
-
-    /// Stores Ogre resources used to display a distance.
-    /// Two spheres each attached to a node, a label to display millimeters,
-    /// one line rendered with the depth check and a dashed line rendered without depth check.
-    /// The point list is used to update each points when the interactor move a distance sphere,
-    /// it is retrieved from the image via a field.
-    struct distance_data
-    {
-        data::point_list::sptr m_point_list;
-        Ogre::SceneNode* m_node1 {};
-        Ogre::ManualObject* m_sphere1 {};
-        Ogre::SceneNode* m_node2 {};
-        Ogre::ManualObject* m_sphere2 {};
-        Ogre::ManualObject* m_line {};
-        Ogre::ManualObject* m_dashed_line {};
-        Ogre::SceneNode* m_label_node {};
-        sight::viz::scene3d::text::sptr m_label;
-    };
-
-    /// Stores picking information.
-    struct picked_data
-    {
-        distance_data* m_data;
-        bool m_first;
-    };
-
-    /// Map each distances to there related list ID.
-    using distance_map = std::map<core::tools::id::type, distance_data>;
-
-    class delete_bin_button_when_focus_out : public QObject
-    {
-    public:
-
-        explicit delete_bin_button_when_focus_out(ruler* _ruler);
-        bool eventFilter(QObject* _o, QEvent* _e) override;
-        ruler* m_ruler;
-    };
-
-    /// Saves the created distances to image's field
-    void update_image_distance_field(data::point_list::sptr _pl);
-
-    /// SLOT: Remove all distances
-    void remove_all();
-
-    /// Retrieves distances from the image and remove them from the scene.
-    void remove_distances();
-
-    /// SLOT: Remove only distances from the current slice
-    void remove_distances_from_current_slice();
-
-    /// Updates distances visibility from the image field.
-    void update_visibility_from_field();
-
-    /// Activates the distance tool by changing the cursor and updating a boolean
-    void activate_distance_tool(bool _activate);
-
-    /**
-     * @brief Creates a distance and add it into m_distances.
-     * @param _pl The point list used to create the distance.
-     */
-    void create_distance(data::point_list::sptr& _pl);
-
-    /**
-     * @brief Updates a distance.
-     * @param _data Distance to update.
-     * @param _begin New begin position.
-     * @param _end New end position
-     */
-    void update_distance(const distance_data* _data, Ogre::Vector3 _begin, Ogre::Vector3 _end);
-
-    /**
-     * @brief Destroys a distance from its ID and remove it from m_distances.
-     * @param _id ID of the distance.
-     */
-    void destroy_distance(core::tools::id::type _id);
-
-    /// Slot: Allows visualizing the creation and/or modification of distances field of an image in multiple
-    /// adaptors(Negato2d/Negato3d) by displaying the distances synchronously.
-    void update_modified_distance(data::point_list::sptr _pl);
-
+    /// Changes the cursor type.
     void set_cursor(QCursor _cursor);
 
-    void remove_distance(data::point_list::sptr _pl);
+    /// Returns the color config or a generated color.
+    Ogre::ColourValue get_default_color();
 
-    void update_from_fiducials();
+    /// Returns true if the given ruler is on current slice
+    bool is_visible_on_current_slice(std::array<double, 3> _begin, std::array<double, 3> _end);
 
-    void restrict_to_current_slice();
+    using axis_t = sight::data::helper::medical_image::axis_t;
 
-    /// Defines the radius of distances spheres.
-    float m_sphere_radius {3.5F};
+    axis_t m_axis {
+        axis_t::z_axis
+    };
+
+    /// Defines the radius of spheres.
+    float m_sphere_radius {10.0F};
 
     /// Defines the font size in points.
-    std::size_t m_font_size {12};
+    std::size_t m_font_size {16};
 
-    /// Defines whether or not interactions are enabled with distances.
-    bool m_interactive {true};
+    /// Defines whether or not interactions are enabled with rulers.
+    bool m_interactive {false};
 
-    /// Defines whether to start using the distance creation tool or not.
-    bool m_tool_activated {false};
-
-    /// Defines whether the distances are actually visible or not.
+    /// Defines whether the rulers are actually visible or not.
     bool m_visible {true};
-
-    /// Defines whether a distance is in creation or not.
-    bool m_creation_mode {false};
-
-    /// @brief  indicates if is over a distance
-    bool m_is_over_distance {false};
 
     /// Defines the priority of the interactor.
     int m_priority {2};
 
-    /// Counter to swap color at each new distance
+    /// Counter to swap color at each new ruler.
     int m_color_index {0};
 
-    /// Color extracted from the configuration
-    std::string m_config_color {""};
+    /// Color extracted from the configuration.
+    std::string m_color;
 
-    /// Defines the current picked data, reset by buttonReleaseEvent(MouseButton, int, int).
-    picked_data m_picked_data {nullptr, true};
+    // Defines if all rulers will always be displayed, regardless of the current slice.
+    bool m_always_display_all {false};
 
-    /// Defines the mask used to filter out entities when the distance is auto snapped.
+    /// Defines the mask used to filter out entities when the ruler is auto snapped.
     std::uint32_t m_query_mask {0xFFFFFFFF};
 
-    /// Defines the mask used to filter distances, it optimizes the ray launched to retrieve the picked distance.
-    std::uint32_t m_distance_query_flag {Ogre::SceneManager::ENTITY_TYPE_MASK};
+    /// Defines the mask used to filter rulers, it optimizes the ray launched to retrieve the picked ruler.
+    std::uint32_t m_query_flag {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Defines the material name with no depth check for spheres.
     std::string m_sphere_material_name;
@@ -327,20 +303,25 @@ private:
     std::string m_dashed_line_material_name;
 
     /// Contains the material with no depth check for spheres.
-    sight::viz::scene3d::material::uptr m_sphere_material {nullptr};
+    sight::viz::scene3d::material::standard::uptr m_sphere_material;
 
     /// Contains the material with depth check for lines.
-    sight::viz::scene3d::material::uptr m_line_material {nullptr};
+    sight::viz::scene3d::material::standard::uptr m_line_material;
 
     /// Contains the material with no depth check for dashed lines.
-    sight::viz::scene3d::material::uptr m_dashed_line_material {nullptr};
+    sight::viz::scene3d::material::standard::uptr m_dashed_line_material;
 
-    /// Stores all generated distances.
-    distance_map m_distances;
-    std::vector<data::point::sptr> m_points;
+    /// Defines whether to start using the ruler creation tool or not.
+    bool m_tool_activated {false};
 
-    // Cached fiducials from the input image
-    std::vector<sight::data::fiducials_series::fiducial> m_cached_fiducials;
+    /// Defines whether a ruler is in creation or not.
+    bool m_creation_mode {false};
+
+    /// Indicates if is over a ruler
+    bool m_is_over_ruler {false};
+
+    /// Defines the current picked data, reset by buttonReleaseEvent(MouseButton, int, int).
+    picked_ruler m_picked_ruler {nullptr, true};
 
     QPushButton* m_bin_button = nullptr;
 
@@ -348,8 +329,8 @@ private:
 
     std::unique_ptr<delete_bin_button_when_focus_out> m_event_filter = nullptr;
 
-    static constexpr std::string_view IMAGE_INOUT = "image";
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, IMAGE_INOUT, true};
+    static constexpr std::string_view s_IMAGE_INOUT = "image";
+    sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, s_IMAGE_INOUT};
 };
 
-} // namespace sight::module::viz::scene3d_qt::adaptor
+} // sight::module::viz::scene3d_qt::adaptor::fiducials

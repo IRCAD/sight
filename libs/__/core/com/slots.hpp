@@ -51,7 +51,8 @@ class slot;
 /**
  * @brief   This class proposes a storage for slots.
  */
-class SIGHT_CORE_CLASS_API slots
+class SIGHT_CORE_CLASS_API slots : public std::map<std::string,
+                                                   SPTR(slot_base)>
 {
 public:
 
@@ -63,7 +64,7 @@ public:
     SIGHT_CORE_API virtual ~slots() = default;
 
     /// Copy constructor forbidden
-    slots& operator=(const slots&) = delete;
+    slots(const slots& /*unused*/) = delete;
 
     /// Registers SlotBase in m_slots
     SIGHT_CORE_API slots& operator()(const key_t& _key, const SPTR(slot_base)& _slot);
@@ -84,15 +85,6 @@ public:
 
     /// Returns all key_t registered in m_slots
     [[nodiscard]] SIGHT_CORE_API slot_key_container_t get_slot_keys() const;
-
-protected:
-
-    /// Copy constructor forbidden
-    slots(const slots& /*unused*/);
-
-    /// Association < key , SPTR( SlotBase ) >
-    using slot_map_type = std::map<key_t, SPTR(slot_base)>;
-    slot_map_type m_slots;
 };
 
 } // namespace sight::core::com

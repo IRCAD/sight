@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,6 @@
 
 #include <data/color.hpp>
 
-#include <service/macros.hpp>
-
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/render.hpp>
@@ -55,10 +53,8 @@ void axis::update_origin_color(sight::data::color::sptr _new_color)
         return;
     }
 
-    m_origin_material->set_ambient(_new_color);
-
-    const auto sig = m_origin_material->signal<core::com::signal<void()> >(data::material::MODIFIED_SIG);
-    sig->async_emit();
+    Ogre::ColourValue color((*_new_color)[0], (*_new_color)[1], (*_new_color)[2], (*_new_color)[3]);
+    m_origin_material->material()->setAmbient(color);
 }
 
 //-----------------------------------------------------------------------------
@@ -71,18 +67,17 @@ void axis::configuring()
 
     const std::string transform_id = config.get<std::string>(
         module::viz::scene3d::adaptor::transform::TRANSFORM_CONFIG,
-        this->get_id() + "_transform"
+        gen_id("transform")
     );
 
     this->set_transform_id(transform_id);
 
-    static const std::string s_LENGTH_CONFIG       = CONFIG + "length";
-    static const std::string s_LABEL_CONFIG        = CONFIG + "label";
-    static const std::string s_FONT_SIZE_CONFIG    = CONFIG + "fontSize";
-    static const std::string s_ORIGIN_CONFIG       = CONFIG + "origin";
-    static const std::string s_AXIS_CONFIG         = CONFIG + "axis";
-    static const std::string s_ORIGIN_COLOR_CONFIG = CONFIG + "originColor";
-    static const std::string s_AXIS_NAME           = CONFIG + "name";
+    static const std::string s_LENGTH_CONFIG    = CONFIG + "length";
+    static const std::string s_LABEL_CONFIG     = CONFIG + "label";
+    static const std::string s_FONT_SIZE_CONFIG = CONFIG + "fontSize";
+    static const std::string s_ORIGIN_CONFIG    = CONFIG + "origin";
+    static const std::string s_AXIS_CONFIG      = CONFIG + "axis";
+    static const std::string s_AXIS_NAME        = CONFIG + "name";
 
     m_length            = config.get<float>(s_LENGTH_CONFIG, m_length);
     m_enable_label      = config.get<bool>(s_LABEL_CONFIG, m_enable_label);
@@ -90,14 +85,6 @@ void axis::configuring()
     m_origin_visibility = config.get<bool>(s_ORIGIN_CONFIG, m_origin_visibility);
     m_axis_visibility   = config.get<bool>(s_AXIS_CONFIG, m_axis_visibility);
     m_axis_name         = config.get<std::string>(s_AXIS_NAME, m_axis_name);
-
-    m_origin_color = config.get<std::string>(s_ORIGIN_COLOR_CONFIG, m_origin_color);
-    SIGHT_ASSERT(
-        "Color string should start with '#' and followed by 6 or 8 "
-        "hexadecimal digits. Given color: " << m_origin_color,
-        m_origin_color[0] == '#'
-        && (m_origin_color.length() == 7 || m_origin_color.length() == 9)
-    );
 
     // Force disable label if axisVisibility is false.
     m_enable_label = m_axis_visibility ? m_enable_label : false;
@@ -107,71 +94,41 @@ void axis::configuring()
 
 void axis::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
     Ogre::SceneNode* const root_scene_node = this->get_scene_manager()->getRootSceneNode();
     Ogre::SceneNode* const transform_node  = this->get_or_create_transform_node(root_scene_node);
-    m_scene_node = transform_node->createChildSceneNode(this->get_id() + "_mainNode");
+    m_scene_node = transform_node->createChildSceneNode(gen_id("main_node"));
 
     Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
 
     if(m_origin_visibility)
     {
-        m_origin = scene_mgr->createManualObject(this->get_id() + "_origin");
+        m_origin = scene_mgr->createManualObject(gen_id("origin"));
     }
 
     if(m_axis_visibility)
     {
-        m_x_line = scene_mgr->createManualObject(this->get_id() + "_xLine");
-        m_y_line = scene_mgr->createManualObject(this->get_id() + "_yLine");
-        m_z_line = scene_mgr->createManualObject(this->get_id() + "_zLine");
+        m_x_line = scene_mgr->createManualObject(gen_id("x_line"));
+        m_y_line = scene_mgr->createManualObject(gen_id("y_line"));
+        m_z_line = scene_mgr->createManualObject(gen_id("z_line"));
 
-        m_x_cone = scene_mgr->createManualObject(this->get_id() + "_xCone");
-        m_y_cone = scene_mgr->createManualObject(this->get_id() + "_yCone");
-        m_z_cone = scene_mgr->createManualObject(this->get_id() + "_zCone");
+        m_x_cone = scene_mgr->createManualObject(gen_id("x_cone"));
+        m_y_cone = scene_mgr->createManualObject(gen_id("y_cone"));
+        m_z_cone = scene_mgr->createManualObject(gen_id("z_cone"));
     }
 
-    // set the material
-    m_material        = std::make_shared<data::material>();
-    m_origin_material = std::make_shared<data::material>();
+    const auto material_name = gen_id("material");
+    m_material = std::make_unique<sight::viz::scene3d::material::standard>(material_name);
+    m_material->set_layout(data::mesh::attribute::point_normals | data::mesh::attribute::point_colors);
+    m_material->set_shading(data::material::shading_t::phong, this->layer()->num_lights());
 
-    const module::viz::scene3d::adaptor::material::sptr material_adaptor =
-        this->register_service<module::viz::scene3d::adaptor::material>(
-            "sight::module::viz::scene3d::adaptor::material"
-        );
-    material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
-    material_adaptor->configure(
-        this->get_id() + material_adaptor->get_id(),
-        this->get_id() + material_adaptor->get_id(),
-        this->render_service(),
-        m_layer_id
-    );
-    material_adaptor->start();
-
-    material_adaptor->get_material_fw()->set_has_vertex_color(true);
-    material_adaptor->update();
-
-    const module::viz::scene3d::adaptor::material::sptr origin_material_adaptor =
-        this->register_service<module::viz::scene3d::adaptor::material>(
-            "sight::module::viz::scene3d::adaptor::material",
-            this->get_id() + "_originMaterialAdp"
-        );
-    origin_material_adaptor->set_inout(
-        m_origin_material,
-        module::viz::scene3d::adaptor::material::MATERIAL_INOUT,
-        true
-    );
-    origin_material_adaptor->configure(
-        this->get_id() + origin_material_adaptor->get_id(),
-        this->get_id() + origin_material_adaptor->get_id(),
-        this->render_service(),
-        m_layer_id,
-        "ambient"
-    );
-    origin_material_adaptor->start();
-    origin_material_adaptor->update();
+    const auto origin_material_name = gen_id("origin_material");
+    m_origin_material = std::make_unique<sight::viz::scene3d::material::standard>(origin_material_name);
+    m_origin_material->set_layout(data::mesh::attribute::point_normals | data::mesh::attribute::point_colors);
+    m_origin_material->set_shading(data::material::shading_t::ambient, this->layer()->num_lights());
 
     // Sizes
     const float origin_radius   = m_length * 0.1F;
@@ -181,29 +138,14 @@ void axis::starting()
     const float cone_radius     = cylinder_radius * 2.F;
     const unsigned sample       = 64;
 
-    // Draw
-
     // origin
-
     if(m_origin_visibility)
     {
-        const data::color::sptr origin_color = std::make_shared<data::color>();
-        origin_color->set_rgba(m_origin_color);
-        m_origin_material->set_ambient(origin_color);
-        m_origin_material->set_diffuse(std::make_shared<data::color>(0.F, 0.F, 0.F, 1.F));
-
-        const auto sig = m_origin_material->signal<core::com::signal<void()> >(data::material::MODIFIED_SIG);
-        sig->async_emit();
-
+        const auto origin_color = *m_origin_color;
         sight::viz::scene3d::helper::manual_object::create_sphere(
             m_origin,
-            origin_material_adaptor->get_material_name(),
-            Ogre::ColourValue(
-                origin_color->red(),
-                origin_color->green(),
-                origin_color->blue(),
-                origin_color->alpha()
-            ),
+            m_origin_material->name(),
+            Ogre::ColourValue(origin_color[0], origin_color[1], origin_color[2], origin_color[3]),
             origin_radius,
             sample
         );
@@ -218,52 +160,52 @@ void axis::starting()
         // X axis
         sight::viz::scene3d::helper::manual_object::create_cylinder(
             m_x_line,
-            material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::ColourValue(Ogre::ColourValue::Red),
             cylinder_radius,
             cylinder_length,
             sample
         );
-        Ogre::SceneNode* const x_line_node = m_scene_node->createChildSceneNode(this->get_id() + "_xLine");
+        Ogre::SceneNode* const x_line_node = m_scene_node->createChildSceneNode();
         x_line_node->attachObject(m_x_line);
         x_line_node->pitch(Ogre::Degree(90));
 
         // Y axis
         sight::viz::scene3d::helper::manual_object::create_cylinder(
             m_y_line,
-            material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::ColourValue(Ogre::ColourValue::Green),
             cylinder_radius,
             cylinder_length,
             sample
         );
-        Ogre::SceneNode* const y_line_node = m_scene_node->createChildSceneNode(this->get_id() + "_yLine");
+        Ogre::SceneNode* const y_line_node = m_scene_node->createChildSceneNode();
         y_line_node->attachObject(m_y_line);
         y_line_node->roll(Ogre::Degree(90));
 
         // Z axis
         sight::viz::scene3d::helper::manual_object::create_cylinder(
             m_z_line,
-            material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::ColourValue(Ogre::ColourValue::Blue),
             cylinder_radius,
             cylinder_length,
             sample
         );
-        Ogre::SceneNode* const z_line_node = m_scene_node->createChildSceneNode(this->get_id() + "_zLine");
+        Ogre::SceneNode* const z_line_node = m_scene_node->createChildSceneNode();
         z_line_node->attachObject(m_z_line);
         z_line_node->yaw(Ogre::Degree(-90));
 
         // X cone
         sight::viz::scene3d::helper::manual_object::create_cone(
             m_x_cone,
-            material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::ColourValue(Ogre::ColourValue::Red),
             cone_radius,
             cone_length,
             sample
         );
-        Ogre::SceneNode* const x_cone_node = m_scene_node->createChildSceneNode(this->get_id() + "_xCone");
+        Ogre::SceneNode* const x_cone_node = m_scene_node->createChildSceneNode();
 
         if(m_enable_label)
         {
@@ -279,13 +221,13 @@ void axis::starting()
         // Y cone
         sight::viz::scene3d::helper::manual_object::create_cone(
             m_y_cone,
-            material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::ColourValue(Ogre::ColourValue::Green),
             cone_radius,
             cone_length,
             sample
         );
-        Ogre::SceneNode* const y_cone_node = m_scene_node->createChildSceneNode(this->get_id() + "_yCone");
+        Ogre::SceneNode* const y_cone_node = m_scene_node->createChildSceneNode();
         y_cone_node->attachObject(m_y_cone);
 
         if(m_enable_label)
@@ -302,13 +244,13 @@ void axis::starting()
         // Z cone
         sight::viz::scene3d::helper::manual_object::create_cone(
             m_z_cone,
-            material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::ColourValue(Ogre::ColourValue::Blue),
             cone_radius,
             cone_length,
             sample
         );
-        Ogre::SceneNode* const z_cone_node = m_scene_node->createChildSceneNode(this->get_id() + "_zCone");
+        Ogre::SceneNode* const z_cone_node = m_scene_node->createChildSceneNode();
         z_cone_node->attachObject(m_z_cone);
 
         if(m_enable_label)
@@ -330,18 +272,12 @@ void axis::starting()
         m_axis_name_txt->set_text(m_axis_name);
         m_axis_name_txt->set_font_size(m_font_size);
         m_axis_name_txt->attach_to_node(m_scene_node, cam);
-        const data::color::sptr txt_color = std::make_shared<data::color>();
-        txt_color->set_rgba(m_origin_color);
-        m_axis_name_txt->set_text_color(
-            Ogre::ColourValue(
-                txt_color->red(),
-                txt_color->green(),
-                txt_color->blue()
-            )
-        );
+
+        const auto origin_color = *m_origin_color;
+        m_axis_name_txt->set_text_color(Ogre::ColourValue(origin_color[0], origin_color[1], origin_color[2]));
     }
 
-    this->update_visibility(m_visible);
+    this->apply_visibility();
 
     this->request_render();
 }
@@ -350,7 +286,60 @@ void axis::starting()
 
 void axis::updating()
 {
-    this->request_render();
+    this->render_service()->make_current();
+
+    Ogre::SceneNode* const transform_node = this->get_transform_node();
+    if(transform_node != nullptr)
+    {
+        bool render_requested = false;
+
+        bool has_image = false;
+        data::image::origin_t position {0.0, 0.0, 0.0};
+        data::image::orientation_t orientation {
+            1.0, 0.0, 0.0,
+            0.0, 1.0, 0.0,
+            0.0, 0.0, 1.0
+        };
+
+        {
+            const auto image = m_image.lock();
+            if(image)
+            {
+                has_image   = true;
+                position    = image->origin();
+                orientation = image->orientation();
+            }
+        }
+        if(has_image)
+        {
+            // Decompose the matrix
+
+            transform_node->setOrientation(
+                Ogre::Matrix3 {
+                    static_cast<Ogre::Real>(orientation[0]),
+                    static_cast<Ogre::Real>(orientation[1]),
+                    static_cast<Ogre::Real>(orientation[2]),
+                    static_cast<Ogre::Real>(orientation[3]),
+                    static_cast<Ogre::Real>(orientation[4]),
+                    static_cast<Ogre::Real>(orientation[5]),
+                    static_cast<Ogre::Real>(orientation[6]),
+                    static_cast<Ogre::Real>(orientation[7]),
+                    static_cast<Ogre::Real>(orientation[8])
+                });
+            transform_node->setPosition(
+                Ogre::Vector3 {static_cast<Ogre::Real>(position[0]), static_cast<Ogre::Real>(position[1]),
+                               static_cast<Ogre::Real>(position[2])
+                });
+            transform_node->setScale(Ogre::Vector3 {1.0, 1.0, 1.0});
+
+            render_requested = true;
+        }
+
+        if(render_requested)
+        {
+            this->request_render();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -365,12 +354,7 @@ void axis::stopping()
     {
         if(m_axis_visibility)
         {
-            m_scene_node->removeAndDestroyChild(this->get_id() + "_xLine");
-            m_scene_node->removeAndDestroyChild(this->get_id() + "_yLine");
-            m_scene_node->removeAndDestroyChild(this->get_id() + "_zLine");
-            m_scene_node->removeAndDestroyChild(this->get_id() + "_xCone");
-            m_scene_node->removeAndDestroyChild(this->get_id() + "_yCone");
-            m_scene_node->removeAndDestroyChild(this->get_id() + "_zCone");
+            m_scene_node->removeAndDestroyAllChildren();
         }
     }
 
@@ -409,11 +393,13 @@ void axis::stopping()
     Ogre::SceneNode* const transform_node = this->get_transform_node();
     if(transform_node != nullptr)
     {
-        transform_node->removeAndDestroyChild(this->get_id() + "_mainNode");
+        transform_node->removeAndDestroyChild(gen_id("main_node"));
     }
 
-    this->unregister_services();
     m_material.reset();
+    m_origin_material.reset();
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -439,6 +425,15 @@ void axis::set_visible(bool _visible)
     }
 
     this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+service::connections_t axis::auto_connections() const
+{
+    service::connections_t connections = adaptor::auto_connections();
+    connections.push(m_image, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    return connections;
 }
 
 //-----------------------------------------------------------------------------

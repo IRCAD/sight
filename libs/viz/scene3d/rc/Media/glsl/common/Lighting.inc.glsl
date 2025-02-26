@@ -80,5 +80,6 @@ vec3 lightingBlinnPhong(vec3 _f3NormalDir_N, vec3 _f3Pos, vec3 _f3DiffuseCol)
         f3SpecularCol += fLitSpecular * u_f3LightSpecularCol[i];
     }
 
-    return vec3(f3DiffuseCol + f3SpecularCol);
+    // Use the same default ambient factor than surfaces (0.8) to get consistent renderings
+    return (0.8 * u_f4LightAmbientCol.rgb) + f3DiffuseCol + f3SpecularCol;
 }

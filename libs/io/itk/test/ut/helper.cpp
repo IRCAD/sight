@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,6 +41,15 @@ void round_spacing(data::image::sptr _image)
     data::image::spacing_t spacing = _image->spacing();
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
     _image->set_spacing(spacing);
+}
+
+//------------------------------------------------------------------------------
+
+void round_orientation(data::image::sptr _image)
+{
+    auto orientation = _image->orientation();
+    std::transform(orientation.begin(), orientation.end(), orientation.begin(), tolerance);
+    _image->set_orientation(orientation);
 }
 
 //------------------------------------------------------------------------------

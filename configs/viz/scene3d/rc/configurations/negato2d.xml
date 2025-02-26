@@ -1,32 +1,32 @@
 <extension implements="sight::app::extension::config">
     <id>sight::config::viz::scene3d::negato2d</id>
     <parameters>
+        <object uid="image" type="sight::data::image_series" deferred="true" />
+        <object uid="transferFunction" type="sight::data::transfer_function" />
+
         <param name="WID_PARENT" />
-        <param name="image" />
-        <param name="transferFunction" />
         <param name="sliceIndex" default="axial" />
+        <param name="classification" default="post" />
+        <param name="filtering" default="linear" />
         <param name="enableSliceType" default="true" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" default="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" default="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" />
-        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL" />
-        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL" />
+        <param name="RULER_ACTIVATION_CHANNEL" default="RULER_ACTIVATION_CHANNEL" />
+        <param name="RULER_DEACTIVATION_CHANNEL" default="RULER_DEACTIVATION_CHANNEL" />
+        <param name="VISIBILITY_RULERS_RECEIVER_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" default="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
         <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" default="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" default="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
     </parameters>
+
     <config>
-        <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${image}" type="sight::data::image_series" src="deferred" />
-        <object uid="${transferFunction}" type="sight::data::transfer_function" src="ref" />
-
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::overlay">
                     <view />
-                    <view x="0" y="0" width="80" height="80" minHeight="0" minWidth="0" />
+                    <view x="0" y="0" />
                 </layout>
             </gui>
             <registry>
@@ -90,7 +90,7 @@
 
                 <layer id="negatoLayer" order="1">
                     <adaptor uid="negatoAdp" />
-                    <adaptor uid="negatoMultiDistancesAdp" />
+                    <adaptor uid="ruler_fiducial_adp" />
                     <adaptor uid="negatoCameraAdp" />
                     <adaptor uid="pickerInteractorAdp" />
                     <adaptor uid="landmarksAdp" />
@@ -103,12 +103,13 @@
         <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato2d">
             <in key="image" uid="${image}" />
             <in key="tf" uid="${transferFunction}" />
-            <config sliceIndex="${sliceIndex}" filtering="anisotropic" />
+            <config sliceIndex="${sliceIndex}" filtering="${filtering}" />
+            <properties classification="${classification}" />
         </service>
 
-        <service uid="negatoMultiDistancesAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
+        <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
             <inout key="image" uid="${image}" />
-            <config fontSize="16" radius="3" queryFlags="0x40000000" />
+            <config font_size="16" radius="1.5" query_flags="0x40000000" orientation="${sliceIndex}" />
         </service>
 
         <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">
@@ -156,12 +157,16 @@
         </connect>
 
         <!-- distance channels -->
-        <connect channel="${DISTANCE_ACTIVATION_CHANNEL}">
-            <slot>negatoMultiDistancesAdp/activate_distance_tool</slot>
+        <connect channel="${RULER_ACTIVATION_CHANNEL}">
+            <slot>ruler_fiducial_adp/activate_tool</slot>
         </connect>
 
-        <connect channel="${DISTANCE_DEACTIVATION_CHANNEL}">
-            <signal>negatoMultiDistancesAdp/deactivate_distance_tool</signal>
+        <connect channel="${RULER_DEACTIVATION_CHANNEL}">
+            <signal>ruler_fiducial_adp/tool_deactivated</signal>
+        </connect>
+
+        <connect channel="${VISIBILITY_RULERS_RECEIVER_CHANNEL}">
+            <slot>ruler_fiducial_adp/toggle_visibility</slot>
         </connect>
 
         <connect channel="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}">
@@ -206,7 +211,7 @@
 
         <start uid="negatoCameraAdp" />
         <start uid="negatoAdp" />
-        <start uid="negatoMultiDistancesAdp" />
+        <start uid="ruler_fiducial_adp" />
         <start uid="pickerInteractorAdp" />
         <start uid="landmarksAdp" />
         <start uid="pickedVoxelTextAdp" />

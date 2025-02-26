@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,21 +19,4 @@
  *
  ***********************************************************************/
 
-#include "service/controller.hpp"
-
-namespace sight::service
-{
-
-//-----------------------------------------------------------------------------
-
-controller::controller()
-= default;
-
-//-----------------------------------------------------------------------------
-
-controller::~controller()
-= default;
-
-//-----------------------------------------------------------------------------
-
-} // namespace sight::service
+#include "controller.hpp"

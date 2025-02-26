@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,12 +26,12 @@
 #include "camera.hxx"
 #include "camera_set.hxx"
 #include "color.hxx"
-#include "composite.hxx"
 #include "dicom_series.hxx"
 #include "image.hxx"
 #include "image_series.hxx"
 #include "landmarks.hxx"
 #include "line.hxx"
+#include "map.hxx"
 #include "material.hxx"
 #include "matrix4.hxx"
 #include "mesh.hxx"

@@ -20,6 +20,10 @@
  *
  ***********************************************************************/
 
+// cspell:ignore asmt bdus ctprotocol ivoct ivus optbsv optenf rtdose rtimage rtintent rtrad rtrecord rtsegann rtstruct
+// cspell:ignore xaprotocol mkgmtime deidentification stoull stoll multiframe radiofluoroscopic tomosynthesis bscan
+// cspell:ignore dermoscopic
+
 #include "data/image_series.hpp"
 #include "data/model_series.hpp"
 
@@ -29,7 +33,9 @@
 #include "data/registry/macros.hpp"
 
 #include <core/clock.hpp>
-#include <core/tools/compare.hpp>
+#include <core/compare.hpp>
+
+#include <boost/algorithm/string.hpp>
 
 #include <gdcmDict.h>
 #include <gdcmDicts.h>
@@ -181,6 +187,18 @@ inline std::filesystem::path parse_path(
     return path;
 }
 
+//------------------------------------------------------------------------------
+
+[[maybe_unused]] inline bool is_orthogonal(const matrix4& _transform)
+{
+    const glm::dvec3 x(_transform[0], _transform[4], _transform[8]);
+    const glm::dvec3 y(_transform[1], _transform[5], _transform[9]);
+    const glm::dvec3 z(_transform[2], _transform[6], _transform[10]);
+    const glm::dvec3 computed_z = glm::cross(x, y);
+
+    return glm::all(glm::epsilonEqual(computed_z, z, 1e-3));
+}
+
 } // namespace
 
 series::series() :
@@ -225,6 +243,9 @@ void series::new_series_instance()
 {
     // Set series date, time and uid
     set_series_instance_uid(gdcm_loader.generate_uid());
+
+    // Generate the frame of reference UID
+    set_frame_of_reference_uid(gdcm_loader.generate_uid());
 
     // DICOM date time format is YYYYMMDDHHMMSS.FFFFFF, but may include null components
     /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
@@ -277,7 +298,6 @@ std::chrono::system_clock::time_point series::date_time_to_time_point(const std:
     }
 
 #ifdef _WIN32
-    // cspell:ignore mkgmtime
     std::time_t time = _mkgmtime(&time_info);
 #else
     std::time_t time = timegm(&time_info);
@@ -492,7 +512,6 @@ void series::copy_patient_module(const series::csptr& _source, std::size_t _inst
     m_pimpl->copy_element<gdcm::Keywords::ResponsiblePersonRole>(source_dataset, _instance);
     m_pimpl->copy_element<gdcm::Keywords::ResponsibleOrganization>(source_dataset, _instance);
     m_pimpl->copy_element<gdcm::Keywords::PatientIdentityRemoved>(source_dataset, _instance);
-    // cspell:ignore Deidentification
     m_pimpl->copy_element<gdcm::Keywords::DeidentificationMethod>(source_dataset, _instance);
     m_pimpl->copy_element<gdcm::Keywords::DeidentificationMethodCodeSequence>(source_dataset, _instance);
 }
@@ -837,7 +856,7 @@ bool series::operator!=(const series& _other) const noexcept
     return !(*this == _other);
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 std::string series::get_byte_value(std::uint16_t _group, std::uint16_t _element, std::size_t _instance) const
 {
@@ -926,7 +945,6 @@ void series::set_string_value(
     std::size_t _instance
 )
 {
-    // cspell:ignore stoull
     // Get the VR
     const gdcm::Tag tag(_group, _element);
     const gdcm::VR vr(gdcm::GetVRFromTag(tag));
@@ -966,7 +984,6 @@ void series::set_string_value(
     }
     else if(vr == gdcm::VR::SV)
     {
-        // cspell:ignore stoll
         m_pimpl->set_arithmetic_value(tag, vr, std::stoll(_value), _instance);
     }
     else
@@ -1133,12 +1150,12 @@ void series::set_private_value(const std::optional<std::string>& _value, std::ui
 
 std::optional<std::string> series::get_multi_frame_private_value(
     std::uint8_t _element,
-    std::size_t _frame_index
+    const std::optional<std::size_t>& _frame_index
 ) const
 {
     SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", _element >= 0x10 && _element <= 0xFF);
 
-    return m_pimpl->get_multi_frame_private_value<gdcm::Keywords::PerFrameFunctionalGroupsSequence>(
+    return m_pimpl->get_multi_frame_private_value(
         _element,
         _element + 0x01,
         _frame_index
@@ -1150,12 +1167,12 @@ std::optional<std::string> series::get_multi_frame_private_value(
 void series::set_multi_frame_private_value(
     const std::optional<std::string>& _value,
     std::uint8_t _element,
-    std::size_t _frame_index
+    const std::optional<std::size_t>& _frame_index
 )
 {
     SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", _element >= 0x10 && _element <= 0xFF);
 
-    m_pimpl->set_multi_frame_private_value<gdcm::Keywords::PerFrameFunctionalGroupsSequence>(
+    m_pimpl->set_multi_frame_private_value(
         _value,
         _element,
         _element + 0x01,
@@ -1312,7 +1329,7 @@ dicom::sop::Keyword series::get_sop_keyword() const noexcept
     {
         try
         {
-            const auto& sop_class = dicom::sop::get(sop_class_uid);
+            const auto sop_class = dicom::sop::get(sop_class_uid);
             return sop_class.m_keyword;
         }
         catch(...)
@@ -1596,17 +1613,36 @@ void series::set_series_time(const std::string& _series_time)
     m_pimpl->set_value<gdcm::Keywords::SeriesTime>(_series_time);
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-std::string series::get_modality() const noexcept
+std::string series::get_modality_string() const noexcept
 {
     return m_pimpl->get_string_value<gdcm::Keywords::Modality>();
 }
 
+//------------------------------------------------------------------------------
+
+dicom::modality_t series::get_modality() const noexcept
+{
+    return dicom::to_modality(get_modality_string());
+}
+
 //-----------------------------------------------------------------------------
+
+void series::set_modality(dicom::modality_t _modality)
+{
+    m_pimpl->set_value<gdcm::Keywords::Modality>(std::make_optional<std::string>(*dicom::to_string(_modality)));
+}
+
+//------------------------------------------------------------------------------
 
 void series::set_modality(const std::string& _modality)
 {
+    if(dicom::to_modality(_modality) == dicom::modality_t::unknown)
+    {
+        throw std::invalid_argument("Invalid modality: " + _modality);
+    }
+
     m_pimpl->set_value<gdcm::Keywords::Modality>(_modality);
 }
 
@@ -1649,7 +1685,7 @@ std::string series::get_performing_physician_name() const noexcept
 
 void series::set_performing_physician_name(const std::string& _performing_physician_name)
 {
-    return m_pimpl->set_joined_values<gdcm::Keywords::PerformingPhysicianName>(_performing_physician_name);
+    m_pimpl->set_joined_values<gdcm::Keywords::PerformingPhysicianName>(_performing_physician_name);
 }
 
 //------------------------------------------------------------------------------
@@ -1953,6 +1989,129 @@ void series::set_institution_name(const std::string& _institution_name)
 
 //------------------------------------------------------------------------------
 
+std::string series::get_equipment_manufacturer() const noexcept
+{
+    return m_pimpl->get_string_value<gdcm::Keywords::Manufacturer>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_equipment_manufacturer(const std::string& _manufacturer)
+{
+    m_pimpl->set_value<gdcm::Keywords::Manufacturer>(_manufacturer);
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::get_equipment_manufacturer_model_name() const noexcept
+{
+    return m_pimpl->get_string_value<gdcm::Keywords::ManufacturerModelName>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_equipment_manufacturer_model_name(const std::string& _model_name)
+{
+    m_pimpl->set_value<gdcm::Keywords::ManufacturerModelName>(_model_name);
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::get_equipment_device_serial_number() const noexcept
+{
+    return m_pimpl->get_string_value<gdcm::Keywords::DeviceSerialNumber>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_equipment_device_serial_number(const std::string& _serial_number)
+{
+    m_pimpl->set_value<gdcm::Keywords::DeviceSerialNumber>(_serial_number);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<std::string> series::get_software_versions() const noexcept
+{
+    return m_pimpl->get_string_values<gdcm::Keywords::SoftwareVersions>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_software_versions(const std::vector<std::string>& _software_versions)
+{
+    m_pimpl->set_string_values<gdcm::Keywords::SoftwareVersions>(_software_versions);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<int> series::get_depth_of_scan_field_mm() const noexcept
+{
+    return m_pimpl->get_value<gdcm::Keywords::DepthOfScanField>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_depth_of_scan_field_mm(const int _depth_of_scan_field)
+{
+    m_pimpl->set_value<gdcm::Keywords::DepthOfScanField>(_depth_of_scan_field);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<double> series::get_depths_of_focus_mm() const noexcept
+{
+    return m_pimpl->get_values<gdcm::Keywords::DepthsOfFocus>().value_or(std::vector<double> {});
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_depths_of_focus_mm(std::vector<double>& _depth_of_focus_mm)
+{
+    m_pimpl->set_values<gdcm::Keywords::DepthsOfFocus>(_depth_of_focus_mm);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> series::get_processing_function() const noexcept
+{
+    return m_pimpl->get_value<gdcm::Keywords::ProcessingFunction>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_processing_function(const std::string& _processing_function)
+{
+    m_pimpl->set_value<gdcm::Keywords::ProcessingFunction>(_processing_function);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<dicom::position_measuring_device_used_t> series::get_position_measuring_device_used() const noexcept
+{
+    if(const auto& value = m_pimpl->get_value<gdcm::Keywords::PositionMeasuringDeviceUsed>(); value && !value->empty())
+    {
+        return dicom::to_position_measuring_device_used(*value);
+    }
+
+    return std::nullopt;
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_position_measuring_device_used(
+    const dicom::position_measuring_device_used_t _position_measuring_device_used
+)
+{
+    if(auto position_measuring_device_used = dicom::to_string(_position_measuring_device_used);
+       position_measuring_device_used)
+    {
+        m_pimpl->set_value<gdcm::Keywords::PositionMeasuringDeviceUsed>(std::string(*position_measuring_device_used));
+    }
+}
+
+//------------------------------------------------------------------------------
+
 std::string series::get_patient_name() const noexcept
 {
     return m_pimpl->get_string_value<gdcm::Keywords::PatientName>();
@@ -2033,6 +2192,20 @@ std::string series::get_study_time() const noexcept
 void series::set_study_time(const std::string& _study_time)
 {
     m_pimpl->set_value<gdcm::Keywords::StudyTime>(_study_time);
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::get_accession_number() const noexcept
+{
+    return m_pimpl->get_string_value<gdcm::Keywords::AccessionNumber>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_accession_number(const std::string& _accession_number)
+{
+    m_pimpl->set_value<gdcm::Keywords::AccessionNumber>(_accession_number);
 }
 
 //------------------------------------------------------------------------------
@@ -2186,7 +2359,6 @@ series::dicom_t series::get_dicom_type() const noexcept
 //------------------------------------------------------------------------------
 inline static series::dicom_t sop_keyword_to_dicom_type(const dicom::sop::Keyword& _keyword)
 {
-    // cspell:ignore Multiframe Radiofluoroscopic Tomosynthesis Bscan Dermoscopic
     switch(_keyword)
     {
         // Found using dicom_parser.py --mandatory-tags "(0062,0002)" "(0066,0002)" "(0066,0011)"
@@ -2276,58 +2448,53 @@ series::dicom_t series::get_dicom_type(const std::string& _sop_class_uid) noexce
 
 //------------------------------------------------------------------------------
 
-std::string series::dicom_types_to_string(series::DicomTypes _types) noexcept
+std::string series::dicom_types_to_string(series::dicom_types _types) noexcept
 {
-    std::string dicom_types;
+    std::string dicom_types_string;
 
-    if((_types & static_cast<DicomTypes>(dicom_t::image)) == _types)
+    if((_types & static_cast<dicom_types>(dicom_t::image)) == _types)
     {
-        if(!dicom_types.empty())
-        {
-            dicom_types += ", ";
-        }
-
-        dicom_types += dicom_type_to_string(dicom_t::image);
+        dicom_types_string += *dicom_type_to_string(dicom_t::image);
     }
 
-    if((_types & static_cast<DicomTypes>(dicom_t::model)) == _types)
+    if((_types & static_cast<dicom_types>(dicom_t::model)) == _types)
     {
-        if(!dicom_types.empty())
+        if(!dicom_types_string.empty())
         {
-            dicom_types += ", ";
+            dicom_types_string += ", ";
         }
 
-        dicom_types += dicom_type_to_string(dicom_t::model);
+        dicom_types_string += *dicom_type_to_string(dicom_t::model);
     }
 
-    if((_types & static_cast<DicomTypes>(dicom_t::report)) == _types)
+    if((_types & static_cast<dicom_types>(dicom_t::report)) == _types)
     {
-        if(!dicom_types.empty())
+        if(!dicom_types_string.empty())
         {
-            dicom_types += ", ";
+            dicom_types_string += ", ";
         }
 
-        dicom_types += dicom_type_to_string(dicom_t::report);
+        dicom_types_string += *dicom_type_to_string(dicom_t::report);
     }
 
-    if((_types & static_cast<DicomTypes>(dicom_t::fiducials)) == _types)
+    if((_types & static_cast<dicom_types>(dicom_t::fiducials)) == _types)
     {
-        if(!dicom_types.empty())
+        if(!dicom_types_string.empty())
         {
-            dicom_types += ", ";
+            dicom_types_string += ", ";
         }
 
-        dicom_types += dicom_type_to_string(dicom_t::fiducials);
+        dicom_types_string += *dicom_type_to_string(dicom_t::fiducials);
     }
 
-    return dicom_types;
+    return dicom_types_string;
 }
 
 //------------------------------------------------------------------------------
 
-series::DicomTypes series::string_to_dicom_types(const std::string& _types) noexcept
+series::dicom_types series::string_to_dicom_types(const std::string& _types) noexcept
 {
-    DicomTypes dicom_types = 0;
+    dicom_types types = 0;
 
     std::vector<std::string> split;
     boost::split(split, _types, boost::is_any_of(","));
@@ -2340,17 +2507,17 @@ series::DicomTypes series::string_to_dicom_types(const std::string& _types) noex
         {
             if(const auto& dicom_type = string_to_dicom_type(trimmed); dicom_type != dicom_t::unknown)
             {
-                dicom_types |= static_cast<DicomTypes>(dicom_type);
+                types |= static_cast<dicom_types>(dicom_type);
             }
         }
     }
 
-    return dicom_types;
+    return types;
 }
 
 //------------------------------------------------------------------------------
 
-series::SopKeywords series::dicom_types_to_sops(DicomTypes _types) noexcept
+series::SopKeywords series::dicom_types_to_sops(dicom_types _types) noexcept
 {
     SopKeywords keywords;
 
@@ -2447,15 +2614,15 @@ series::SopKeywords series::dicom_types_to_sops(DicomTypes _types) noexcept
 
 //------------------------------------------------------------------------------
 
-series::DicomTypes series::sops_to_dicom_types(const SopKeywords& _keywords) noexcept
+series::dicom_types series::sops_to_dicom_types(const SopKeywords& _keywords) noexcept
 {
-    DicomTypes types {static_cast<DicomTypes>(dicom_t::unknown)};
+    dicom_types types {static_cast<dicom_types>(dicom_t::unknown)};
 
     for(const auto& keyword : _keywords)
     {
         if(const auto& type = sop_keyword_to_dicom_type(keyword); type != dicom_t::unknown)
         {
-            types |= static_cast<DicomTypes>(type);
+            types |= static_cast<dicom_types>(type);
         }
     }
 
@@ -2477,7 +2644,7 @@ series::SopKeywords series::string_to_sops(const std::string& _uids) noexcept
 
         if(!trimmed.empty())
         {
-            if(const auto& sop_keyword = dicom::sop::keyword(trimmed); sop_keyword != dicom::sop::Keyword::INVALID)
+            if(const auto sop_keyword = dicom::sop::keyword(trimmed); sop_keyword != dicom::sop::Keyword::INVALID)
             {
                 sop_keywords.insert(sop_keyword);
             }
@@ -2504,6 +2671,69 @@ std::string series::sops_to_string(const SopKeywords& _keywords) noexcept
     }
 
     return sop_keywords;
+}
+
+//------------------------------------------------------------------------------
+
+series::image_type_t series::get_image_type() const
+{
+    // GDCM stores the ImageType as a string with elements joined with a backslash separator
+    auto value = m_pimpl->get_joined_values<gdcm::Keywords::ImageType>(0);
+
+    // Retrieve the values (using value multiplicity 2-n and returning a vector would be too simple...)
+    std::vector<std::string> values;
+    boost::split(values, value, boost::is_any_of("\\"));
+
+    auto pixel_data_characteristics = dicom::pixel_data_characteristics_t::unknown;
+
+    if(!values.empty())
+    {
+        pixel_data_characteristics =
+            dicom::to_pixel_data_characteristics(values[0]).value_or(pixel_data_characteristics);
+    }
+
+    auto patient_examination_characteristics = dicom::patient_examination_characteristics_t::unknown;
+
+    if(values.size() > 1)
+    {
+        patient_examination_characteristics =
+            dicom::to_patient_examination_characteristics(values[1]).value_or(patient_examination_characteristics);
+    }
+
+    std::vector<std::string> other_values;
+
+    if(values.size() > 2)
+    {
+        other_values.insert(other_values.end(), values.cbegin() + 2, values.cend());
+    }
+
+    return {
+        pixel_data_characteristics,
+        patient_examination_characteristics,
+        other_values
+    };
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_image_type(const series::image_type_t& _image_type)
+{
+    auto pixel_data_characteristics = dicom::to_string(_image_type.pixel_data_characteristics);
+    SIGHT_ASSERT("pixel_data_characteristics should be present", pixel_data_characteristics);
+
+    auto patient_examination_characteristics = dicom::to_string(_image_type.patient_examination_characteristics);
+    SIGHT_ASSERT("patient_examination_characteristics should be present", patient_examination_characteristics);
+
+    std::vector<gdcm::String<92, 16, 32> > values;
+    values.emplace_back(std::string(*pixel_data_characteristics));
+    values.emplace_back(std::string(*patient_examination_characteristics));
+
+    for(const auto& other_value : _image_type.other_values)
+    {
+        values.emplace_back(other_value);
+    }
+
+    m_pimpl->set_values<gdcm::Keywords::ImageType>(values, 0);
 }
 
 //------------------------------------------------------------------------------
@@ -2574,6 +2804,20 @@ std::optional<std::int32_t> series::get_acquisition_number(std::size_t _instance
 void series::set_acquisition_number(std::optional<std::int32_t> _acquisition_number, std::size_t _instance)
 {
     m_pimpl->set_value<gdcm::Keywords::AcquisitionNumber>(_acquisition_number, _instance);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<double> series::get_acquisition_duration() const
+{
+    return m_pimpl->get_value<gdcm::Keywords::AcquisitionDuration>();
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_acquisition_duration(double _acquisition_duration)
+{
+    m_pimpl->set_value<gdcm::Keywords::AcquisitionDuration>(_acquisition_duration);
 }
 
 //------------------------------------------------------------------------------
@@ -2804,7 +3048,7 @@ void series::set_rescale_slope(const std::optional<double>& _rescale_slope, std:
 
 //------------------------------------------------------------------------------
 
-std::vector<double> series::get_image_position_patient(std::size_t _instance) const
+std::vector<double> series::get_image_position_patient(const std::optional<std::size_t>& _frame_index) const
 {
     // Assert if the SOP class is not set
     SIGHT_ASSERT(
@@ -2828,20 +3072,36 @@ std::vector<double> series::get_image_position_patient(std::size_t _instance) co
         // ...
         // <shared Functional Groups Sequence Attribute>
         // | ...
-        return m_pimpl->get_multi_frame_values<
-            gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+        const auto& result = m_pimpl->get_multi_frame_values<
             gdcm::Keywords::PlanePositionSequence,
             gdcm::Keywords::ImagePositionPatient
-        >(_instance);
+                             >(_frame_index);
+
+        if(result.size() == 3)
+        {
+            return result;
+        }
     }
 
     // Default case use simple ImagePositionPatient tag values.
-    return m_pimpl->get_values<gdcm::Keywords::ImagePositionPatient>(_instance).value_or(std::vector<double> {});
+    if(!_frame_index || !is_multi_frame())
+    {
+        if(const auto& result = m_pimpl->get_values<gdcm::Keywords::ImagePositionPatient>(_frame_index.value_or(0));
+           result)
+        {
+            return *result;
+        }
+    }
+
+    return {};
 }
 
 //------------------------------------------------------------------------------
 
-void series::set_image_position_patient(const std::vector<double>& _image_position_patient, std::size_t _instance)
+void series::set_image_position_patient(
+    const std::vector<double>& _image_position_patient,
+    const std::optional<std::size_t>& _frame_index
+)
 {
     // Assert if the SOP class is not set
     SIGHT_ASSERT(
@@ -2866,20 +3126,20 @@ void series::set_image_position_patient(const std::vector<double>& _image_positi
         // <shared Functional Groups Sequence Attribute>
         // | ...
         m_pimpl->set_multi_frame_values<
-            gdcm::Keywords::PerFrameFunctionalGroupsSequence,
             gdcm::Keywords::PlanePositionSequence,
             gdcm::Keywords::ImagePositionPatient
-        >(_image_position_patient, _instance);
+        >(_image_position_patient, _frame_index);
     }
-    else
+
+    if(!_frame_index || !is_multi_frame())
     {
-        m_pimpl->set_values<gdcm::Keywords::ImagePositionPatient>(_image_position_patient, _instance);
+        m_pimpl->set_values<gdcm::Keywords::ImagePositionPatient>(_image_position_patient, _frame_index.value_or(0));
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<double> series::get_image_orientation_patient(std::size_t _instance) const
+std::vector<double> series::get_image_orientation_patient(const std::optional<std::size_t>& _frame_index) const
 {
     SIGHT_ASSERT(
         "SOP class is not set, please call series::set_sop_class_uid before calling series::get_image_orientation_patient",
@@ -2903,19 +3163,33 @@ std::vector<double> series::get_image_orientation_patient(std::size_t _instance)
         // <shared Functional Groups Sequence Attribute>
         // | ...
         // Assert if the SOP class is not set
-        return m_pimpl->get_multi_frame_values<
-            gdcm::Keywords::PerFrameFunctionalGroupsSequence,
-            gdcm::Keywords::PlaneOrientationSequence,
-            gdcm::Keywords::ImageOrientationPatient
-        >(_instance);
+        const auto& result = m_pimpl->get_multi_frame_values<gdcm::Keywords::PlaneOrientationSequence,
+                                                             gdcm::Keywords::ImageOrientationPatient>(_frame_index);
+
+        if(result.size() == 6)
+        {
+            return result;
+        }
     }
 
-    return m_pimpl->get_values<gdcm::Keywords::ImageOrientationPatient>(_instance).value_or(std::vector<double> {});
+    if(!_frame_index || !is_multi_frame())
+    {
+        if(const auto& result = m_pimpl->get_values<gdcm::Keywords::ImageOrientationPatient>(_frame_index.value_or(0));
+           result)
+        {
+            return *result;
+        }
+    }
+
+    return {};
 }
 
 //------------------------------------------------------------------------------
 
-void series::set_image_orientation_patient(const std::vector<double>& _image_orientation_patient, std::size_t _instance)
+void series::set_image_orientation_patient(
+    const std::vector<double>& _image_orientation_patient,
+    const std::optional<std::size_t>& _frame_index
+)
 {
     SIGHT_ASSERT(
         "SOP class is not set, please call series::set_sop_class_uid before calling series::set_image_orientation_patient",
@@ -2939,20 +3213,23 @@ void series::set_image_orientation_patient(const std::vector<double>& _image_ori
         // <shared Functional Groups Sequence Attribute>
         // | ...
         m_pimpl->set_multi_frame_values<
-            gdcm::Keywords::PerFrameFunctionalGroupsSequence,
             gdcm::Keywords::PlaneOrientationSequence,
             gdcm::Keywords::ImageOrientationPatient
-        >(_image_orientation_patient, _instance);
+        >(_image_orientation_patient, _frame_index);
     }
-    else
+
+    if(!_frame_index || !is_multi_frame())
     {
-        m_pimpl->set_values<gdcm::Keywords::ImageOrientationPatient>(_image_orientation_patient, _instance);
+        m_pimpl->set_values<gdcm::Keywords::ImageOrientationPatient>(
+            _image_orientation_patient,
+            _frame_index.value_or(0)
+        );
     }
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<double> series::get_image_position_volume(std::size_t _frame_index) const
+std::vector<double> series::get_image_position_volume(const std::optional<std::size_t>& _frame_index) const
 {
     // If we deal with Enhanced US Volume, we need to look in:
     // {Multi-frame Functional Groups Module}
@@ -2971,7 +3248,6 @@ std::vector<double> series::get_image_position_volume(std::size_t _frame_index) 
 
     // Try with Per-Frame Functional Groups
     return m_pimpl->get_multi_frame_values<
-        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
         gdcm::Keywords::PlanePositionVolumeSequence,
         gdcm::Keywords::ImagePositionVolume
     >(_frame_index);
@@ -2979,7 +3255,10 @@ std::vector<double> series::get_image_position_volume(std::size_t _frame_index) 
 
 //------------------------------------------------------------------------------
 
-void series::set_image_position_volume(const std::vector<double>& _image_position_volume, std::size_t _frame_index)
+void series::set_image_position_volume(
+    const std::vector<double>& _image_position_volume,
+    const std::optional<std::size_t>& _frame_index
+)
 {
     // If we deal with Enhanced US Volume, we need to look in:
     // {Multi-frame Functional Groups Module}
@@ -2996,7 +3275,6 @@ void series::set_image_position_volume(const std::vector<double>& _image_positio
     // <shared Functional Groups Sequence Attribute>
     // | ...
     m_pimpl->set_multi_frame_values<
-        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
         gdcm::Keywords::PlanePositionSequence,
         gdcm::Keywords::ImagePositionVolume
     >(_image_position_volume, _frame_index);
@@ -3004,7 +3282,7 @@ void series::set_image_position_volume(const std::vector<double>& _image_positio
 
 //------------------------------------------------------------------------------
 
-std::vector<double> series::get_image_orientation_volume(std::size_t _frame_index) const
+std::vector<double> series::get_image_orientation_volume(const std::optional<std::size_t>& _frame_index) const
 {
     // If we deal with Enhanced US Volume, we need to look in:
     // {Multi-frame Functional Groups Module}
@@ -3021,7 +3299,6 @@ std::vector<double> series::get_image_orientation_volume(std::size_t _frame_inde
     // <shared Functional Groups Sequence Attribute>
     // | ...
     return m_pimpl->get_multi_frame_values<
-        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
         gdcm::Keywords::PlaneOrientationVolumeSequence,
         gdcm::Keywords::ImageOrientationVolume
     >(_frame_index);
@@ -3031,7 +3308,7 @@ std::vector<double> series::get_image_orientation_volume(std::size_t _frame_inde
 
 void series::set_image_orientation_volume(
     const std::vector<double>& _image_orientation_volume,
-    std::size_t _frame_index
+    const std::optional<std::size_t>& _frame_index
 )
 {
     // If we deal with Enhanced US Volume, we need to look in:
@@ -3049,7 +3326,6 @@ void series::set_image_orientation_volume(
     // <shared Functional Groups Sequence Attribute>
     // | ...
     m_pimpl->set_multi_frame_values<
-        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
         gdcm::Keywords::PlaneOrientationSequence,
         gdcm::Keywords::ImageOrientationVolume
     >(_image_orientation_volume, _frame_index);
@@ -3057,7 +3333,7 @@ void series::set_image_orientation_volume(
 
 //------------------------------------------------------------------------------
 
-std::optional<std::string> series::get_frame_acquisition_date_time(std::size_t _frame_index) const
+std::optional<std::string> series::get_frame_acquisition_date_time(const std::optional<std::size_t>& _frame_index) const
 {
     // If we deal with Enhanced US Volume, we need to look in:
     // {Multi-frame Functional Groups Module}
@@ -3074,7 +3350,6 @@ std::optional<std::string> series::get_frame_acquisition_date_time(std::size_t _
     // <shared Functional Groups Sequence Attribute>
     // | ...
     if(const auto& value = m_pimpl->get_multi_frame_value<
-           gdcm::Keywords::PerFrameFunctionalGroupsSequence,
            gdcm::Keywords::FrameContentSequence,
            gdcm::Keywords::FrameAcquisitionDateTime
                            >(_frame_index); value)
@@ -3089,7 +3364,7 @@ std::optional<std::string> series::get_frame_acquisition_date_time(std::size_t _
 
 void series::set_frame_acquisition_date_time(
     const std::optional<std::string>& _frame_acquisition_date_time,
-    std::size_t _frame_index
+    const std::optional<std::size_t>& _frame_index
 )
 {
     // If we deal with Enhanced US Volume, we need to look in:
@@ -3107,7 +3382,6 @@ void series::set_frame_acquisition_date_time(
     // <shared Functional Groups Sequence Attribute>
     // | ...
     m_pimpl->set_multi_frame_value<
-        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
         gdcm::Keywords::FrameContentSequence,
         gdcm::Keywords::FrameAcquisitionDateTime
     >(_frame_acquisition_date_time, _frame_index);
@@ -3116,7 +3390,7 @@ void series::set_frame_acquisition_date_time(
 //------------------------------------------------------------------------------
 
 std::optional<std::chrono::system_clock::time_point> series::get_frame_acquisition_time_point(
-    std::size_t _frame_index
+    const std::optional<std::size_t>& _frame_index
 ) const noexcept
 {
     try
@@ -3142,7 +3416,7 @@ std::optional<std::chrono::system_clock::time_point> series::get_frame_acquisiti
 
 void series::set_frame_acquisition_time_point(
     sight::core::clock::type _time_point,
-    std::size_t _frame_index
+    const std::optional<std::size_t>& _frame_index
 )
 {
     const auto tp = std::chrono::system_clock::time_point()
@@ -3161,7 +3435,7 @@ void series::set_frame_acquisition_time_point(
 
 void series::set_frame_acquisition_time_point(
     const std::optional<std::chrono::system_clock::time_point>& _time_point,
-    std::size_t _frame_index
+    const std::optional<std::size_t>& _frame_index
 )
 {
     if(_time_point)
@@ -3179,7 +3453,7 @@ void series::set_frame_acquisition_time_point(
 
 //------------------------------------------------------------------------------
 
-std::optional<std::string> series::get_frame_comments(std::size_t _frame_index) const
+std::optional<std::string> series::get_frame_comments(const std::optional<std::size_t>& _frame_index) const
 {
     // If we deal with Enhanced US Volume, we need to look in:
     // {Multi-frame Functional Groups Module}
@@ -3196,7 +3470,6 @@ std::optional<std::string> series::get_frame_comments(std::size_t _frame_index) 
     // <shared Functional Groups Sequence Attribute>
     // | ...
     if(const auto& value = m_pimpl->get_multi_frame_value<
-           gdcm::Keywords::PerFrameFunctionalGroupsSequence,
            gdcm::Keywords::FrameContentSequence,
            gdcm::Keywords::FrameComments
                            >(_frame_index); value)
@@ -3209,7 +3482,10 @@ std::optional<std::string> series::get_frame_comments(std::size_t _frame_index) 
 
 //------------------------------------------------------------------------------
 
-void series::set_frame_comments(const std::optional<std::string>& _frame_comments, std::size_t _frame_index)
+void series::set_frame_comments(
+    const std::optional<std::string>& _frame_comments,
+    const std::optional<std::size_t>& _frame_index
+)
 {
     // If we deal with Enhanced US Volume, we need to look in:
     // {Multi-frame Functional Groups Module}
@@ -3226,7 +3502,6 @@ void series::set_frame_comments(const std::optional<std::string>& _frame_comment
     // <shared Functional Groups Sequence Attribute>
     // | ...
     m_pimpl->set_multi_frame_value<
-        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
         gdcm::Keywords::FrameContentSequence,
         gdcm::Keywords::FrameComments
     >(_frame_comments, _frame_index);
@@ -3234,7 +3509,7 @@ void series::set_frame_comments(const std::optional<std::string>& _frame_comment
 
 //------------------------------------------------------------------------------
 
-std::optional<std::string> series::get_frame_label(std::size_t _frame_index) const
+std::optional<std::string> series::get_frame_label(const std::optional<std::size_t>& _frame_index) const
 {
     // If we deal with Enhanced US Volume, we need to look in:
     // {Multi-frame Functional Groups Module}
@@ -3251,7 +3526,6 @@ std::optional<std::string> series::get_frame_label(std::size_t _frame_index) con
     // <shared Functional Groups Sequence Attribute>
     // | ...
     if(const auto& value = m_pimpl->get_multi_frame_value<
-           gdcm::Keywords::PerFrameFunctionalGroupsSequence,
            gdcm::Keywords::FrameContentSequence,
            gdcm::Keywords::FrameLabel
                            >(_frame_index); value)
@@ -3264,7 +3538,10 @@ std::optional<std::string> series::get_frame_label(std::size_t _frame_index) con
 
 //------------------------------------------------------------------------------
 
-void series::set_frame_label(const std::optional<std::string>& _frame_label, std::size_t _frame_index)
+void series::set_frame_label(
+    const std::optional<std::string>& _frame_label,
+    const std::optional<std::size_t>& _frame_index
+)
 {
     // If we deal with Enhanced US Volume, we need to look in:
     // {Multi-frame Functional Groups Module}
@@ -3281,7 +3558,6 @@ void series::set_frame_label(const std::optional<std::string>& _frame_label, std
     // <shared Functional Groups Sequence Attribute>
     // | ...
     m_pimpl->set_multi_frame_value<
-        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
         gdcm::Keywords::FrameContentSequence,
         gdcm::Keywords::FrameLabel
     >(_frame_label, _frame_index);
@@ -3289,60 +3565,85 @@ void series::set_frame_label(const std::optional<std::string>& _frame_label, std
 
 //------------------------------------------------------------------------------
 
-std::optional<sight::data::matrix4> series::get_image_transform_patient(std::size_t _instance) const
+SIGHT_DATA_API std::optional<double> series::get_spacing_between_slices(
+    const std::optional<std::size_t>& _frame_index
+) const
 {
-    const auto position    = this->get_image_position_patient(_instance);
-    const auto orientation = this->get_image_orientation_patient(_instance);
+    if(const auto& value = m_pimpl->get_multi_frame_value<
+           gdcm::Keywords::PixelMeasuresSequence,
+           gdcm::Keywords::SpacingBetweenSlices
+                           >(_frame_index); value)
+    {
+        return value;
+    }
+
+    return std::nullopt;
+}
+
+//------------------------------------------------------------------------------
+
+SIGHT_DATA_API void series::set_spacing_between_slices(
+    std::optional<double> _spacing_between_slices,
+    const std::optional<std::size_t>& _frame_index
+)
+{
+    m_pimpl->set_multi_frame_value<
+        gdcm::Keywords::PixelMeasuresSequence,
+        gdcm::Keywords::SpacingBetweenSlices
+    >(_spacing_between_slices, _frame_index);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<matrix4> series::get_image_transform_patient(const std::optional<std::size_t>& _frame_index) const
+{
+    const auto position    = this->get_image_position_patient(_frame_index);
+    const auto orientation = this->get_image_orientation_patient(_frame_index);
 
     if(position.size() != 3 || orientation.size() != 6)
     {
         return std::nullopt;
     }
 
-    const glm::dvec3 x(orientation[0], orientation[1], orientation[2]);
-    const glm::dvec3 y(orientation[3], orientation[4], orientation[5]);
-    const glm::dvec3 z = glm::cross(x, y);
+    matrix4 matrix;
+    matrix.set_position(position);
+    matrix.set_orientation(image_series::from_dicom_orientation(orientation));
 
-    return std::make_optional<sight::data::matrix4>(
-        {
-            orientation[0], orientation[3], z[0], position[0],
-            orientation[1], orientation[4], z[1], position[1],
-            orientation[2], orientation[5], z[2], position[2],
-            0., 0., 0., 1.
-        });
+    return std::make_optional<matrix4>(matrix.values());
 }
 
 //------------------------------------------------------------------------------
 
-bool series::check_image_transform_patient_validity(const sight::data::matrix4& _transform)
+void series::set_image_transform_patient(
+    const std::optional<std::reference_wrapper<const matrix4> >& _transform,
+    const std::optional<std::size_t>& _frame_index
+)
 {
-    [[maybe_unused]] const glm::dvec3 x(_transform[0], _transform[4], _transform[8]);
-    [[maybe_unused]] const glm::dvec3 y(_transform[1], _transform[5], _transform[9]);
-    [[maybe_unused]] const glm::dvec3 z(_transform[2], _transform[6], _transform[10]);
-    [[maybe_unused]] const glm::dvec3 computed_z = glm::cross(x, y);
-
-    return glm::all(glm::epsilonEqual(computed_z, z, 1e-2));
-}
-
-//------------------------------------------------------------------------------
-
-void series::set_image_transform_patient(const sight::data::matrix4& _transform, std::size_t _instance)
-{
-    this->set_image_position_patient({_transform[3], _transform[7], _transform[11]}, _instance);
-
-    SIGHT_ASSERT("Unexpected orientation vector size", series::check_image_transform_patient_validity(_transform));
-
-    this->set_image_orientation_patient(
-        {_transform[0], _transform[4], _transform[8], _transform[1], _transform[5], _transform[9]},
-        _instance
+    this->set_image_position_patient(
+        _transform ? _transform->get().position<std::vector<double> >() : std::vector<double> {},
+        _frame_index
     );
+
+    if(_transform)
+    {
+        SIGHT_ASSERT("Unexpected orientation vector size", is_orthogonal(*_transform));
+
+        // We must convert to column major
+        this->set_image_orientation_patient(
+            image_series::to_dicom_orientation(_transform->get().orientation()),
+            _frame_index
+        );
+    }
+    else
+    {
+        this->set_image_orientation_patient({}, _frame_index);
+    }
 }
 
 //------------------------------------------------------------------------------
 
 std::optional<double> series::get_slice_thickness() const noexcept
 {
-    /// @todo
     return m_pimpl->get_value<gdcm::Keywords::SliceThickness>();
 }
 
@@ -3350,8 +3651,225 @@ std::optional<double> series::get_slice_thickness() const noexcept
 
 void series::set_slice_thickness(const std::optional<double>& _slice_thickness)
 {
-    /// @todo
     m_pimpl->set_value<gdcm::Keywords::SliceThickness>(_slice_thickness);
+}
+
+//------------------------------------------------------------------------------
+
+dicom::ultrasound_acquisition_geometry_t series::get_ultrasound_acquisition_geometry() const noexcept
+{
+    if(const auto& value = m_pimpl->get_value<gdcm::Keywords::UltrasoundAcquisitionGeometry>();
+       value && !value->empty())
+    {
+        return dicom::to_ultrasound_acquisition_geometry(*value);
+    }
+
+    return dicom::ultrasound_acquisition_geometry_t::unknown;
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_ultrasound_acquisition_geometry(
+    dicom::ultrasound_acquisition_geometry_t _ultrasound_acquisition_geometry
+)
+{
+    m_pimpl->set_value<gdcm::Keywords::UltrasoundAcquisitionGeometry>(
+        std::make_optional<std::string>(
+            *dicom::to_string(
+                _ultrasound_acquisition_geometry
+            )
+        )
+    );
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<double> series::get_apex_position() const noexcept
+{
+    return m_pimpl->get_values<gdcm::Keywords::ApexPosition>().value_or(std::vector<double> {});
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_apex_position(const std::vector<double>& _apex_position)
+{
+    m_pimpl->set_values<gdcm::Keywords::ApexPosition>(_apex_position);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<matrix4> series::get_volume_to_transducer_mapping_matrix() const noexcept
+{
+    // volume_to_transducer_mapping_matrix is row major, as us
+    const auto& matrix = m_pimpl->get_values<gdcm::Keywords::VolumeToTransducerMappingMatrix>();
+
+    if(!matrix || matrix->size() != 16)
+    {
+        return std::nullopt;
+    }
+
+    // volume_to_transducer_mapping_matrix is row major, as us
+    return std::make_optional<matrix4>(*matrix);
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_volume_to_transducer_mapping_matrix(
+    const std::optional<std::reference_wrapper<const matrix4> >& _matrix
+)
+{
+    m_pimpl->set_values<gdcm::Keywords::VolumeToTransducerMappingMatrix>(
+        _matrix
+        ? _matrix->get().values<std::vector<double> >()
+        : std::vector<double> {
+        });
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<matrix4> series::get_volume_to_table_mapping_matrix() const noexcept
+{
+    // volume_to_transducer_mapping_matrix is row major, as us
+    const auto& matrix = m_pimpl->get_values<gdcm::Keywords::VolumeToTableMappingMatrix>();
+
+    if(!matrix || matrix->size() != 16)
+    {
+        return std::nullopt;
+    }
+
+    // volume_to_transducer_mapping_matrix is row major, as us
+    return std::make_optional<matrix4>(*matrix);
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_volume_to_table_mapping_matrix(const std::optional<std::reference_wrapper<const matrix4> >& _matrix)
+{
+    m_pimpl->set_values<gdcm::Keywords::VolumeToTableMappingMatrix>(
+        _matrix
+        ? _matrix->get().values<std::vector<double> >()
+        : std::vector<double> {
+        });
+}
+
+//------------------------------------------------------------------------------
+
+dicom::patient_frame_of_reference_source_t series::get_patient_frame_of_reference_source() const noexcept
+{
+    if(const auto& value = m_pimpl->get_value<gdcm::Keywords::PatientFrameOfReferenceSource>();
+       value && !value->empty())
+    {
+        return dicom::to_patient_frame_of_reference_source(*value);
+    }
+
+    return dicom::patient_frame_of_reference_source_t::unknown;
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_patient_frame_of_reference_source(
+    dicom::patient_frame_of_reference_source_t _patient_frame_of_reference_source
+)
+{
+    m_pimpl->set_value<gdcm::Keywords::PatientFrameOfReferenceSource>(
+        std::make_optional<std::string>(
+            *dicom::to_string(
+                _patient_frame_of_reference_source
+            )
+        )
+    );
+}
+
+//------------------------------------------------------------------------------
+
+dicom::dimension_organization_t series::get_dimension_organization_type() const noexcept
+{
+    // 3D: Spatial Multi-frame image of equally spaced parallel planes (3D volume set)
+    // 3D_TEMPORAL: Temporal loop of equally spaced parallel-plane 3D volume sets.
+    // TILED_FULL: Tiled image in which each frame represents a single tile and the positions of the tiles are
+    //             implicitly defined as per Section C.7.6.17.3.
+    // TILED_SPARSE: Tiled image in which each frame represents a single tile and the positions of tiles are
+    //               explicitly defined by per-frame Functional Group Macro entries.
+
+    if(const auto& value = m_pimpl->get_value<gdcm::Keywords::DimensionOrganizationType>(); value && !value->empty())
+    {
+        return dicom::to_dimension_organization_type(*value);
+    }
+
+    return dicom::dimension_organization_t::unknown;
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_dimension_organization_type(dicom::dimension_organization_t _dimension_organization_type)
+{
+    m_pimpl->set_value<gdcm::Keywords::DimensionOrganizationType>(
+        std::make_optional<std::string>(
+            *dicom::to_string(
+                _dimension_organization_type
+            )
+        )
+    );
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> series::get_referenced_sop_class_uid() const
+{
+    return m_pimpl->get_value<gdcm::Keywords::ReferencedSOPClassUID>(
+        0,
+        {
+            {gdcm::Keywords::SourceImageSequence::GetTag(), 0}
+        });
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_referenced_sop_class_uid(const std::optional<std::string>& _sop_class_uid)
+{
+    m_pimpl->set_value<gdcm::Keywords::ReferencedSOPClassUID>(
+        _sop_class_uid,
+        0,
+        {
+            {gdcm::Keywords::SourceImageSequence::GetTag(), 0}
+        });
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> series::get_referenced_sop_instance_uid() const
+{
+    return m_pimpl->get_value<gdcm::Keywords::ReferencedSOPInstanceUID>(
+        0,
+        {
+            {gdcm::Keywords::SourceImageSequence::GetTag(), 0}
+        });
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_referenced_sop_instance_uid(const std::optional<std::string>& _sop_instance_uid)
+{
+    m_pimpl->set_value<gdcm::Keywords::ReferencedSOPInstanceUID>(
+        _sop_instance_uid,
+        0,
+        {
+            {gdcm::Keywords::SourceImageSequence::GetTag(), 0}
+        });
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> series::get_frame_of_reference_uid() const noexcept
+{
+    return m_pimpl->get_value<gdcm::Keywords::FrameOfReferenceUID>(0);
+}
+
+//------------------------------------------------------------------------------
+
+void series::set_frame_of_reference_uid(const std::optional<std::string>& _frame_of_reference_uid)
+{
+    m_pimpl->set_value<gdcm::Keywords::FrameOfReferenceUID>(_frame_of_reference_uid, 0);
 }
 
 //------------------------------------------------------------------------------
@@ -3430,6 +3948,13 @@ std::filesystem::path series::file_path(
 ) const
 {
     return std::filesystem::weakly_canonical(folder(_root) / file_name(_suffix));
+}
+
+//------------------------------------------------------------------------------
+
+std::string series::generate_uid()
+{
+    return gdcm_loader.generate_uid();
 }
 
 } // namespace sight::data

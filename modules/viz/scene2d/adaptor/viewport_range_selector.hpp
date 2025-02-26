@@ -66,7 +66,7 @@ namespace sight::module::viz::scene2d::adaptor
  * of the
  * initialPos and initialWidth parameters.
  * * @subsection In In
- * - \b tfPool [sight::data::composite]: if specified, computes \b viewport viewport from the transfer function range.
+ * - \b tfPool [sight::data::map]: if specified, computes \b viewport viewport from the transfer function range.
  *
  * @subsection Configuration Configuration:
  * - \b config (mandatory): contains the adaptor configuration.
@@ -130,13 +130,13 @@ private:
     void update_viewport_from_shutter(double _x, double _y, double _width, double _height);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's left border.
-    bool mouse_on_shutter_left(sight::viz::scene2d::vec2d_t _coord);
+    bool mouse_on_shutter_left(glm::dvec2 _coord);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's right border.
-    bool mouse_on_shutter_right(sight::viz::scene2d::vec2d_t _coord);
+    bool mouse_on_shutter_right(glm::dvec2 _coord);
 
     /// Tells if the mouse cursor is at the good position to start interacting on shutter's middle part.
-    bool mouse_on_shutter_middle(sight::viz::scene2d::vec2d_t _coord);
+    bool mouse_on_shutter_middle(glm::dvec2 _coord);
 
     /// Stores the graphic item that represents the shutter.
     QGraphicsRectItem* m_shutter {nullptr};
@@ -151,10 +151,10 @@ private:
     bool m_is_interacting {false};
 
     /// Sets if there is a dragging interaction.
-    sight::viz::scene2d::vec2d_t m_drag_start_point {0., 0.};
+    glm::dvec2 m_drag_start_point {0., 0.};
 
     ///  Defines the shutter position when dragging starts.
-    sight::viz::scene2d::vec2d_t m_drag_start_shutter_pos {0., 0.};
+    glm::dvec2 m_drag_start_shutter_pos {0., 0.};
 
     /// Sets the spacing value for an easier picking onto shutter borders.
     int m_click_catch_range {1};
@@ -189,11 +189,9 @@ private:
     static constexpr std::string_view TF_INPUT                = "tf";
 
     data::ptr<s2d::data::viewport, sight::data::access::inout> m_viewport {this, VIEWPORT_INOUT};
-    data::ptr<s2d::data::viewport, sight::data::access::inout> m_selected_viewport {this, SELECTED_VIEWPORT_INOUT,
-                                                                                    true
-    };
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT, true, true};
-    data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, TF_INPUT, true, true};
+    data::ptr<s2d::data::viewport, sight::data::access::inout> m_selected_viewport {this, SELECTED_VIEWPORT_INOUT};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT, true};
+    data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, TF_INPUT, true};
 };
 
 } // namespace sight::module::viz::scene2d::adaptor

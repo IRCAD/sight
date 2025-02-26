@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,6 +20,8 @@
  ***********************************************************************/
 
 #include "matrix4reader_test.hpp"
+
+#include <core/os/temp_path.hpp>
 
 #include <data/matrix4.hpp>
 
@@ -43,8 +45,8 @@ void matrix4_reader_test::basic_test()
 30 31 32 33
 )";
     auto matrix_reader                      = std::make_shared<reader::matrix4_reader>();
-    std::filesystem::path filepath          = std::filesystem::temp_directory_path()
-                                              / ("test" + matrix_reader->extension());
+    core::os::temp_dir temp_dir;
+    std::filesystem::path filepath = temp_dir / ("test" + matrix_reader->extension());
     {
         std::ofstream out(filepath);
         out << file_content;

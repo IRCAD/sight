@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/adaptor/material.hpp"
-
-#include <core/com/slot.hpp>
+#include <data/color.hpp>
+#include <data/image.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/text.hpp>
 #include <viz/scene3d/transformable.hpp>
 
@@ -55,20 +55,27 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::axis">
+        <in key="image" uid="..." />
         <config transform="transformUID" length="30" label="true" name="A1" />
     </service>
    @endcode
+ *
+ * @subsection Input Input:
+ * - \b image [sight::data::image, optional]: if specified, the axis adaptor will use the origin and direction
+ * of the image.
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified in the transform adaptor.
  * - \b visible (optional, bool, default=true): the visibility of the axis.
  * - \b origin (optional, bool, default=false): the origin visibility.
- * - \b originColor (optional, hexadecimal, default=#FFFFFF): the color of the axis origin.
  * - \b length (optional, float, default=50.f): axis length in scene units.
  * - \b label (optional, bool, default=true): display axis names.
  * - \b fontSize (optional, unsigned int, default=16): label font size in points.
  * - \b name (optional, string): displayed name of the axis (default empty).
+ *
+ * @subsection Properties Properties:
+ * - \b origin_color (optional, hexadecimal, default=#FFFFFF): the color of the axis origin.
  */
 class axis final :
     public sight::viz::scene3d::adaptor,
@@ -83,27 +90,29 @@ public:
     axis() noexcept;
 
     /// Destroys the adaptor.
-    ~axis() noexcept override = default;
+    ~axis() noexcept final = default;
 
 protected:
 
     /// Configures the adaptor.
-    void configuring() override;
+    void configuring() final;
 
     /// Creates manual objects in the default ogre resource group.
-    void starting() override;
+    void starting() final;
 
     /// Sends a render request.
-    void updating() override;
+    void updating() final;
 
     /// Deletes ogre's resources.
-    void stopping() override;
+    void stopping() final;
 
     /**
      * @brief Sets the axis visibility.
      * @param _visible the visibility status of the axis.
      */
-    void set_visible(bool _visible) override;
+    void set_visible(bool _visible) final;
+
+    sight::service::connections_t auto_connections() const final;
 
 private:
 
@@ -111,10 +120,10 @@ private:
     void update_origin_color(sight::data::color::sptr _new_color);
 
     /// Contains the material data.
-    data::material::sptr m_material {nullptr};
+    sight::viz::scene3d::material::standard::uptr m_material;
 
     /// Contains the material for the origin (to change its color dynamically).
-    data::material::sptr m_origin_material {nullptr};
+    sight::viz::scene3d::material::standard::uptr m_origin_material;
 
     /// Defines the axis length in scene units.
     float m_length {50.F};
@@ -130,9 +139,6 @@ private:
 
     /// Enables the axes visibility.
     bool m_axis_visibility {true};
-
-    /// Defines the origin color.
-    std::string m_origin_color {"#FFFFFF"};
 
     /// Contains the line along the x axis.
     Ogre::ManualObject* m_x_line {nullptr};
@@ -165,6 +171,12 @@ private:
 
     /// Axis name, default empty.
     std::string m_axis_name;
+
+    /// Optional input image
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image", true};
+
+    /// Defines the origin color.
+    sight::data::property<sight::data::color> m_origin_color {this, "origin_color", {1., 1., 1., 1.}};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

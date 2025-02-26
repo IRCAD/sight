@@ -53,13 +53,7 @@ class SIGHT_IO_VTK_CLASS_API meta_image_reader : public reader::generic_object_r
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        meta_image_reader,
-        io::reader::generic_object_reader<data::image>,
-        io::reader::factory::make<meta_image_reader>
-    );
-
-    SIGHT_ALLOW_SHARED_FROM_THIS();
+    SIGHT_DECLARE_CLASS(meta_image_reader, io::reader::generic_object_reader<data::image>);
 
     //! @brief Constructor.
     SIGHT_IO_VTK_API meta_image_reader();

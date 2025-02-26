@@ -63,7 +63,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(concatenate_matrices, sight::service::controller);
 
-    concatenate_matrices() noexcept           = default;
+    concatenate_matrices() noexcept = default;
     ~concatenate_matrices() noexcept override = default;
 
 protected:
@@ -96,7 +96,7 @@ private:
     invert_vector_t m_invert_vector;
 
     static constexpr std::string_view MATRIX_GROUP_INPUT = "matrix";
-    data::ptr_vector<data::matrix4, sight::data::access::in> m_matrices {this, MATRIX_GROUP_INPUT, true};
+    data::ptr_vector<data::matrix4, sight::data::access::in> m_matrices {this, MATRIX_GROUP_INPUT};
 
     static constexpr std::string_view OUTPUT = "output";
     data::ptr<data::matrix4, sight::data::access::inout> m_output {this, OUTPUT};

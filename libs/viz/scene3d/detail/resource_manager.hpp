@@ -83,17 +83,17 @@ public:
     /// @param _object CPU representation of the object
     /// @param _suffix_id optional suffix to the object identifier, this allows to create different copies of the object
     /// @return shared pointer on the resource
-    Ogre::SharedPtr<RESOURCE> instantiate(CSPTR(OBJECT) _object, const std::string& _suffix_id = "");
+    std::shared_ptr<RESOURCE> instantiate(CSPTR(OBJECT) _object, const std::string& _suffix_id = "");
 
     /// Removes a reference to a GPU resource. If this was the last reference, it destroys it.
-    void release(Ogre::SharedPtr<RESOURCE> /*_resource*/);
+    void release(std::shared_ptr<RESOURCE>/*_resource*/);
 
     /// Returns true if the GPU resource is out of date
-    [[nodiscard]] bool update_needed(Ogre::SharedPtr<RESOURCE> /*_resource*/) const;
+    [[nodiscard]] bool update_needed(std::shared_ptr<RESOURCE>/*_resource*/) const;
 
     /// Loads the texture into GPU memory if the GPU resource is out of date
     /// @returns True if the GPU resource has been updated, false if it was already up-to-date
-    std::pair<bool, typename LOADER::return_t> load(Ogre::SharedPtr<RESOURCE> /*_resource*/);
+    std::pair<bool, typename LOADER::return_t> load(std::shared_ptr<RESOURCE>/*_resource*/);
 
     /**
      * @brief Gets the unique instance of this class.
@@ -105,10 +105,10 @@ private:
 
     struct resource
     {
-        Ogre::SharedPtr<RESOURCE> resource;
+        std::shared_ptr<RESOURCE> resource;
         CWPTR(OBJECT) object;
-        std::size_t use_count;
-        std::uint64_t last_modified;
+        std::size_t use_count {0};
+        std::uint64_t last_modified {~0UL};
         typename LOADER::return_t loading_result {0}; // Extra attribute to store resource-specific loading data
     };
 
@@ -126,7 +126,7 @@ resource_manager<OBJECT, RESOURCE, LOADER>::~resource_manager()
 // ----------------------------------------------------------------------------
 
 template<class OBJECT, class RESOURCE, class LOADER>
-Ogre::SharedPtr<RESOURCE> resource_manager<OBJECT, RESOURCE, LOADER>::instantiate(
+std::shared_ptr<RESOURCE> resource_manager<OBJECT, RESOURCE, LOADER>::instantiate(
     CSPTR(OBJECT)_object,
     const std::string& _suffix_id
 )
@@ -149,7 +149,7 @@ Ogre::SharedPtr<RESOURCE> resource_manager<OBJECT, RESOURCE, LOADER>::instantiat
         true
     );
 
-    m_registry[full_id] = {resource, _object, 1, ~0UL, {}};
+    m_registry[full_id] = {.resource = resource, .object = _object, .use_count = 1};
 
     return resource;
 }
@@ -157,7 +157,7 @@ Ogre::SharedPtr<RESOURCE> resource_manager<OBJECT, RESOURCE, LOADER>::instantiat
 // ----------------------------------------------------------------------------
 
 template<class OBJECT, class RESOURCE, class LOADER>
-void resource_manager<OBJECT, RESOURCE, LOADER>::release(Ogre::SharedPtr<RESOURCE> _resource)
+void resource_manager<OBJECT, RESOURCE, LOADER>::release(std::shared_ptr<RESOURCE> _resource)
 {
     if(_resource == nullptr)
     {
@@ -181,7 +181,7 @@ void resource_manager<OBJECT, RESOURCE, LOADER>::release(Ogre::SharedPtr<RESOURC
 // ----------------------------------------------------------------------------
 
 template<class OBJECT, class RESOURCE, class LOADER>
-bool resource_manager<OBJECT, RESOURCE, LOADER>::update_needed(Ogre::SharedPtr<RESOURCE> _resource) const
+bool resource_manager<OBJECT, RESOURCE, LOADER>::update_needed(std::shared_ptr<RESOURCE> _resource) const
 {
     auto it = m_registry.find(_resource->getName());
     if(it == m_registry.end())
@@ -196,7 +196,7 @@ bool resource_manager<OBJECT, RESOURCE, LOADER>::update_needed(Ogre::SharedPtr<R
 
 template<class OBJECT, class RESOURCE, class LOADER>
 std::pair<bool, typename LOADER::return_t> resource_manager<OBJECT, RESOURCE, LOADER>::load(
-    Ogre::SharedPtr<RESOURCE> _resource
+    std::shared_ptr<RESOURCE> _resource
 )
 {
     auto it = m_registry.find(_resource->getName());

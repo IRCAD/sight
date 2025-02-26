@@ -40,9 +40,9 @@ namespace sight::data
 {
 
 auto pixel_format_to_num_components =
-    [](enum image::pixel_format _format)
+    [](image::pixel_format_t _format)
     {
-        static const std::array<std::size_t, image::pixel_format::count> s_PIXEL_FORMAT_TO_NUM_COMPONENTS =
+        static const std::array<std::size_t, image::pixel_format_t::count> s_PIXEL_FORMAT_TO_NUM_COMPONENTS =
         {
             ~0UL,
             3,
@@ -59,12 +59,10 @@ const core::com::signals::key_t image::BUFFER_MODIFIED_SIG      = "buffer_modifi
 const core::com::signals::key_t image::LANDMARK_ADDED_SIG       = "landmarkAdded";
 const core::com::signals::key_t image::LANDMARK_REMOVED_SIG     = "landmarkRemoved";
 const core::com::signals::key_t image::LANDMARK_DISPLAYED_SIG   = "landmarkDisplayed";
-const core::com::signals::key_t image::DISTANCE_ADDED_SIG       = "distanceAdded";
-const core::com::signals::key_t image::DISTANCE_MODIFIED_SIG    = "distanceModified";
-const core::com::signals::key_t image::DISTANCE_REMOVED_SIG     = "distanceRemoved";
-const core::com::signals::key_t image::DISTANCE_DISPLAYED_SIG   = "distanceDisplayed";
 const core::com::signals::key_t image::SLICE_INDEX_MODIFIED_SIG = "sliceIndexModified";
 const core::com::signals::key_t image::SLICE_TYPE_MODIFIED_SIG  = "sliceTypeModified";
+const core::com::signals::key_t image::RULER_MODIFIED_SIG       = "ruler_modified";
+const core::com::signals::key_t image::FIDUCIAL_REMOVED_SIG     = "fiducial_removed";
 
 //------------------------------------------------------------------------------
 
@@ -75,12 +73,10 @@ image::image() :
     new_signal<landmark_added_signal_t>(LANDMARK_ADDED_SIG);
     new_signal<landmark_removed_signal_t>(LANDMARK_REMOVED_SIG);
     new_signal<landmark_displayed_signal_t>(LANDMARK_DISPLAYED_SIG);
-    new_signal<distance_displayed_signal_t>(DISTANCE_DISPLAYED_SIG);
-    new_signal<distance_added_signal_t>(DISTANCE_ADDED_SIG);
-    new_signal<distance_modified_signal_t>(DISTANCE_MODIFIED_SIG);
-    new_signal<distance_removed_signal_t>(DISTANCE_REMOVED_SIG);
     new_signal<slice_index_modified_signal_t>(SLICE_INDEX_MODIFIED_SIG);
     new_signal<slice_type_modified_signal_t>(SLICE_TYPE_MODIFIED_SIG);
+    new_signal<ruler_modified_signal_t>(RULER_MODIFIED_SIG);
+    new_signal<fiducial_removed_signal_t>(FIDUCIAL_REMOVED_SIG);
 
     auto pl = std::make_shared<data::point_list>();
     data::helper::medical_image::set_landmarks(*this, pl);
@@ -135,14 +131,14 @@ void image::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_c
 
 //------------------------------------------------------------------------------
 
-std::size_t image::resize(const size_t& _size, const core::type& _type, enum pixel_format _format)
+std::size_t image::resize(const size_t& _size, const core::type& _type, pixel_format_t _format)
 {
     return this->resize(_size, _type, _format, true);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t image::resize(const size_t& _size, const core::type& _type, enum pixel_format _format, bool _realloc)
+std::size_t image::resize(const size_t& _size, const core::type& _type, pixel_format_t _format, bool _realloc)
 {
     m_size           = _size;
     m_type           = _type;
@@ -187,6 +183,7 @@ void image::copy_information(image::csptr _source)
     m_size           = _source->m_size;
     m_spacing        = _source->m_spacing;
     m_origin         = _source->m_origin;
+    m_orientation    = _source->m_orientation;
     m_stride         = _source->m_stride;
     m_type           = _source->m_type;
     m_window_centers = _source->m_window_centers;
@@ -373,7 +370,7 @@ void image::set_buffer(
     bool _take_ownership,
     const core::type& _type,
     const data::image::size_t& _size,
-    enum pixel_format _format,
+    pixel_format_t _format,
     core::memory::buffer_allocation_policy::sptr _policy
 )
 {
@@ -421,15 +418,16 @@ core::memory::buffer_object::csptr image::get_buffer_object() const
 
 bool image::operator==(const image& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_size, _other.m_size)
-       || !core::tools::is_equal(m_spacing, _other.m_spacing)
-       || !core::tools::is_equal(m_origin, _other.m_origin)
+    if(!core::is_equal(m_size, _other.m_size)
+       || !core::is_equal(m_spacing, _other.m_spacing)
+       || !core::is_equal(m_origin, _other.m_origin)
+       || !core::is_equal(m_orientation, _other.m_orientation)
        || m_type != _other.m_type
-       || !core::tools::is_equal(m_window_centers, _other.m_window_centers)
-       || !core::tools::is_equal(m_window_widths, _other.m_window_widths)
+       || !core::is_equal(m_window_centers, _other.m_window_centers)
+       || !core::is_equal(m_window_widths, _other.m_window_widths)
        || m_num_components != _other.m_num_components
        || m_pixel_format != _other.m_pixel_format
-       || !core::tools::is_equal(m_data_array, _other.m_data_array))
+       || !core::is_equal(m_data_array, _other.m_data_array))
     {
         return false;
     }

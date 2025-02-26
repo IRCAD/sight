@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -41,14 +41,36 @@ namespace sight::viz::scene3d::detail
 
 tf_loader::return_t tf_loader::load(const sight::data::transfer_function& _tf, Ogre::Texture* _texture)
 {
-    static std::uint32_t texture_size = ~0U;
-    // Unluckily Ogre does not seem to give us the maximum texture size through the caps... :'(
-    // So we have no other choice than asking OpenGL directly
-    if(texture_size == ~0U)
+    auto tf_window = Ogre::Vector3(0.0, 0.0, 0.0);
+
+    using value_t   = data::transfer_function::value_t;
+    using min_max_t = data::transfer_function::min_max_t;
+    std::uint32_t texture_size = ~0U;
+
+    int max_texture_size = 0;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max_texture_size);
+
+    // Retrieves the transfer function's intensity window
+    const min_max_t tf_wl_min_max = _tf.window_min_max();
+
+    // The window can be inverted
+    const value_t min = std::min(tf_wl_min_max.second, tf_wl_min_max.first);
+    const value_t max = std::max(tf_wl_min_max.second, tf_wl_min_max.first);
+
+    const value_t range = std::min(max - min + 1, value_t(_texture->getWidth()));
+
+    if(_tf.resample_to_max_texture_size())
     {
-        int max = 0;
-        glGetIntegerv(GL_MAX_TEXTURE_SIZE, &max);
-        texture_size = static_cast<std::uint32_t>(max);
+        texture_size = static_cast<std::uint32_t>(max_texture_size);
+    }
+    else
+    {
+        texture_size = static_cast<std::uint32_t>(max - min + 1);
+
+        if(texture_size > static_cast<std::uint32_t>(max_texture_size))
+        {
+            SIGHT_ERROR("Invalid texture size.");
+        }
     }
 
     if(_texture->getTextureType() != Ogre::TEX_TYPE_1D)
@@ -65,9 +87,6 @@ tf_loader::return_t tf_loader::load(const sight::data::transfer_function& _tf, O
         );
     }
 
-    using value_t   = data::transfer_function::value_t;
-    using min_max_t = data::transfer_function::min_max_t;
-
     // Retrieves the pixel buffer from the texture
     Ogre::HardwarePixelBufferSharedPtr pix_buffer = _texture->getBuffer();
 
@@ -76,45 +95,70 @@ tf_loader::return_t tf_loader::load(const sight::data::transfer_function& _tf, O
     Ogre::PixelBox pix_box = pix_buffer->getCurrentLock();
     auto* p_dest           = static_cast<std::uint8_t*>(pix_box.data);
 
-    // Retrieves the transfer function's intensity window
-    const min_max_t tf_wl_min_max = _tf.window_min_max();
-
-    // The window can be inverted
-    const value_t min = std::min(tf_wl_min_max.second, tf_wl_min_max.first);
-    const value_t max = std::max(tf_wl_min_max.second, tf_wl_min_max.first);
-
-    // Here we will sample the transfer function in its window
-    // We want the minimum and the maximum to be included (so we need +1 extra sample)
-    // But we also want one extra point outside each bound window to sample the default color if the tf is clamped,
-    // so we need at the end 1+2=3 extra samples
-    // We only use the required space of the texture to be more efficient (up to 50x faster)
-    const value_t range          = std::min(max - min + 1, value_t(_texture->getWidth()));
-    const value_t intensity_step = (max - min) / (range - 3);
-
-    value_t i = min - intensity_step;
-
-    // We fill the whole range plus one value for the right bound to avoid rounding errors on the GPU
-    // We clamp "manually" in the GLSL
-    for(std::uint32_t k = 0 ; k < range ; ++k)
+    if(_tf.resample_to_max_texture_size())
     {
-        const auto color = glm::u8vec4(_tf.sample(i) * 255.0);
+        // Here we will sample the transfer function in its window
+        // We want the minimum and the maximum to be included (so we need +1 extra sample)
+        // But we also want one extra point outside each bound window to sample the default color if the tf is clamped,
+        // so we need at the end 1+2=3 extra samples
+        // We only use the required space of the texture to be more efficient (up to 50x faster)
+        const value_t intensity_step = (max - min) / (range - 3);
 
-        *p_dest++ = color.a;
-        *p_dest++ = color.b;
-        *p_dest++ = color.g;
-        *p_dest++ = color.r;
+        value_t i = min - intensity_step;
 
-        i += intensity_step;
+        // We fill the whole range plus one value for the right bound to avoid rounding errors on the GPU
+        // We clamp "manually" in the GLSL
+        for(std::uint32_t k = 0 ; k < range ; ++k)
+        {
+            const auto color = glm::u8vec4(_tf.sample(i) * 255.0);
+
+            *p_dest++ = color.a;
+            *p_dest++ = color.b;
+            *p_dest++ = color.g;
+            *p_dest++ = color.r;
+
+            i += intensity_step;
+        }
+
+        tf_window =
+            Ogre::Vector3(
+                float(min - intensity_step),
+                float(max + intensity_step),
+                float((max - min) / _texture->getWidth())
+            );
+    }
+    else
+    {
+        // Here we will sample the transfer function in its window
+        // We want the minimum and the maximum to be included (so we need +1 extra sample)
+        // But we also want one extra point outside each bound window to sample the default color if the tf is clamped,
+        // so we need at the end 1+2=3 extra samples
+        // We only use the required space of the texture to be more efficient (up to 50x faster)
+        value_t i = min;
+
+        // We fill the whole range plus one value for the right bound to avoid rounding errors on the GPU
+        // We clamp "manually" in the GLSL
+        for(std::uint32_t k = 0 ; k < range ; ++k)
+        {
+            const auto color = glm::u8vec4(_tf.sample(i) * 255.0);
+
+            *p_dest++ = color.a;
+            *p_dest++ = color.b;
+            *p_dest++ = color.g;
+            *p_dest++ = color.r;
+
+            i++;
+        }
+
+        tf_window =
+            Ogre::Vector3(
+                float(min),
+                float(max),
+                float((max - min + 1) / _texture->getWidth())
+            );
     }
 
     pix_buffer->unlock();
-
-    auto tf_window =
-        Ogre::Vector3(
-            float(min - intensity_step),
-            float(max + intensity_step),
-            float((max - min) / _texture->getWidth())
-        );
 
     return tf_window;
 }

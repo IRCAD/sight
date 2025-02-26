@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,9 @@
 #pragma once
 
 #include <data/dicom_series.hpp>
+#include <data/image.hpp>
+#include <data/integer.hpp>
+#include <data/string.hpp>
 
 #include <io/http/client_qt.hpp>
 
@@ -169,13 +172,13 @@ private:
     /// Server port preference key
     std::string m_server_port_key;
 
-    /// Server hostname
-    std::string m_server_hostname {"localhost"};
+    static constexpr std::string_view DICOMSERIES_INOUT = "series";
+    data::ptr<sight::data::dicom_series, data::access::inout> m_series {this, DICOMSERIES_INOUT};
 
-    /// Server port
-    int m_server_port {4242};
+    sight::data::property<sight::data::string> m_server_hostname {this, "host_name", std::string("localhost")};
+    sight::data::property<sight::data::integer> m_server_port {this, "port", 4242};
 
-    sight::data::ptr<sight::data::dicom_series, sight::data::access::inout> m_series {this, "series"};
+    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, "image"};
 };
 
 } // namespace sight::module::io::dicomweb

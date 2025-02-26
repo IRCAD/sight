@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,8 +31,6 @@
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
-#include <geometry/data/vector_functions.hpp>
-
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
@@ -47,6 +45,7 @@
 #include <glm/common.hpp>
 #include <glm/ext/scalar_constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/vec3.hpp>
 
 namespace sight::io::dicom::reader::ie
 {
@@ -97,28 +96,28 @@ double get_instance_z_position(const core::memory::buffer_object::sptr& _buffer_
     }
 
     // Retrieve image position
-    const gdcm::Image& gdcm_image = reader.GetImage();
-    const double* gdcm_origin     = gdcm_image.GetOrigin();
-    const fw_vec3d image_position = {gdcm_origin[0], gdcm_origin[1], gdcm_origin[2]};
+    const gdcm::Image& gdcm_image   = reader.GetImage();
+    const double* gdcm_origin       = gdcm_image.GetOrigin();
+    const glm::dvec3 image_position = {gdcm_origin[0], gdcm_origin[1], gdcm_origin[2]};
 
     // Retrieve image orientation
-    const double* direction_cosines    = gdcm_image.GetDirectionCosines();
-    const fw_vec3d image_orientation_u = {
+    const double* direction_cosines      = gdcm_image.GetDirectionCosines();
+    const glm::dvec3 image_orientation_u = {
         std::round(direction_cosines[0]),
         std::round(direction_cosines[1]),
         std::round(direction_cosines[2])
     };
-    const fw_vec3d image_orientation_v = {
+    const glm::dvec3 image_orientation_v = {
         std::round(direction_cosines[3]),
         std::round(direction_cosines[4]),
         std::round(direction_cosines[5])
     };
 
     //Compute Z direction (cross product)
-    const fw_vec3d z_vector = geometry::data::cross(image_orientation_u, image_orientation_v);
+    const glm::dvec3 z_vector = glm::cross(image_orientation_u, image_orientation_v);
 
     //Compute dot product to get the index
-    const double index = geometry::data::dot(image_position, z_vector);
+    const double index = glm::dot(image_position, z_vector);
 
     return index;
 }
@@ -358,19 +357,22 @@ void image::read_image_pixel_module()
     }
 
     // TODO_FB: This should probably be finer-tuned, but we would need to add new pixel formats before
-    enum sight::data::image::pixel_format format {sight::data::image::pixel_format::undefined};
+    enum sight::data::image::pixel_format_t format
+    {
+        sight::data::image::pixel_format_t::undefined
+    };
     if(photometric_interpretation == "MONOCHROME2")
     {
-        format = data::image::pixel_format::gray_scale;
+        format = data::image::pixel_format_t::gray_scale;
     }
     else if(photometric_interpretation == "RGB" || photometric_interpretation == "YBR"
             || photometric_interpretation == "PALETTE COLOR" || pixel_presentation == "COLOR")
     {
-        format = data::image::pixel_format::rgb;
+        format = data::image::pixel_format_t::rgb;
     }
     else if(photometric_interpretation == "ARGB" || photometric_interpretation == "CMYK")
     {
-        format = data::image::pixel_format::rgba;
+        format = data::image::pixel_format_t::rgba;
     }
     else
     {

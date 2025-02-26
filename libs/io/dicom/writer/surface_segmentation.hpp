@@ -55,11 +55,7 @@ class SIGHT_IO_DICOM_CLASS_API surface_segmentation :
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        surface_segmentation,
-        io::writer::generic_object_writer<data::model_series>,
-        io::writer::factory::make<surface_segmentation>
-    );
+    SIGHT_DECLARE_CLASS(surface_segmentation, io::writer::generic_object_writer<data::model_series>);
 
     /// Constructor
     SIGHT_IO_DICOM_API surface_segmentation();

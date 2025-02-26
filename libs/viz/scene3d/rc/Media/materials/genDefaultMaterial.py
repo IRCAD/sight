@@ -77,7 +77,8 @@ lightingParams += [ 'param_named_auto u_f4LightPos light_position_array 10' ]
 ## Common parameters used for ambient lighting
 ambientParams = [ '// Ambient',
                   'param_named_auto u_ambient surface_ambient_colour',
-                  'param_named_auto u_diffuse surface_diffuse_colour']
+                  'param_named_auto u_diffuse surface_diffuse_colour',
+                  'param_named_auto u_f4LightAmbientCol ambient_light_colour']
 
 ## Diffuse or negato textures parameters, they should be bound at different unit depending on OIT technique
 texParams = ['// Diffuse texture', 'param_named u_texture int 0']

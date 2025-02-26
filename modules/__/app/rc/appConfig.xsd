@@ -3,6 +3,13 @@
 
     <xs:element name="extension" type="extension_t" />
 
+    <xs:simpleType name="boolean_t">
+        <xs:restriction base="xs:string">
+        <xs:enumeration value="true"/>
+        <xs:enumeration value="false"/>
+        </xs:restriction>
+    </xs:simpleType>
+
     <xs:complexType name="extension_t">
         <xs:sequence>
             <xs:element name="id" type="xs:string" />
@@ -16,6 +23,7 @@
 
     <xs:complexType name="parameters_t">
         <xs:sequence>
+            <xs:element name="object" type="object_param_t" maxOccurs="unbounded" minOccurs="0"/>
             <xs:element name="param" type="param_t" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
@@ -23,6 +31,16 @@
     <xs:complexType name="param_t">
         <xs:attribute name='name' type='xs:string' use="required" />
         <xs:attribute name='default' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="object_param_t">
+        <xs:attribute name='uid' type='xs:string' use="required" />
+        <xs:attribute name='type' type='xs:string' use="required" />
+        <xs:attribute name='optional' type='boolean_t' />
+        <xs:attribute name='value' type='xs:string' />
+        <xs:attribute name='deferred' type='boolean_t' />
+        <xs:attribute name='reference' type='boolean_t' />
+        <xs:attribute name='preference' type='boolean_t' />
     </xs:complexType>
 
     <xs:complexType name="config_t">
@@ -43,25 +61,31 @@
             <xs:element name="matrix"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="value"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="item"  type="item_t"  minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="node"  type="node_t"  minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="edge"  type="edge_t"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="colors"  type="color_t"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="color"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="file"  type="xs:string"  minOccurs="0" maxOccurs="1" />
+            <xs:element name="resource"  type="xs:string"  minOccurs="0" maxOccurs="1" />
             <xs:element name="gray"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="param" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="config" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
-        <xs:attribute name='uid' type='xs:string' use="required" />
+        <xs:attribute name='uid' type='xs:string' />
         <xs:attribute name='type' type='xs:string' />
         <xs:attribute name='src' type='xs:string' />
+        <xs:attribute name='value' type='xs:string' />
+        <xs:attribute name='deferred' type='boolean_t' />
+        <xs:attribute name='preference' type='boolean_t' />
     </xs:complexType>
 
     <!-- Item Type -->
     <xs:complexType name="item_t">
         <xs:sequence>
-             <xs:element name="object" type="object_t" minOccurs="1" maxOccurs="1" />
+             <xs:element name="object" type="object_t" minOccurs="0" maxOccurs="1" />
         </xs:sequence>
         <xs:attribute name='key' type='xs:string' />
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='type' type='xs:string' />
+        <xs:attribute name='value' type='xs:string' />
     </xs:complexType>
 
     <!-- Service Type -->
@@ -71,7 +95,7 @@
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' use="required"/>
         <xs:attribute name='type' type='xs:string' use="required" />
-        <xs:attribute name='auto_connect' type='auto_connect_t' />
+        <xs:attribute name='auto_connect' type='boolean_t' />
         <xs:attribute name='worker' type='xs:string' />
         <xs:attribute name='config' type='xs:string' />
     </xs:complexType>
@@ -91,15 +115,46 @@
     </xs:complexType>
 
     <xs:complexType name="update_t">
+        <xs:sequence>
+            <xs:element name="service" type="start_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="sequence" type="sequence_t" />
+                <xs:element name="parallel" type="parallel_t" />
+            </xs:choice>
+        </xs:sequence>
         <xs:attribute name='uid' type='xs:string' />
     </xs:complexType>
 
-    <xs:simpleType name="auto_connect_t">
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="true" />
-            <xs:enumeration value="false" />
-        </xs:restriction>
-    </xs:simpleType>
+    <xs:complexType name="sequence_t">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="service" type="service_update_t" />
+                <xs:element name="updater" type="start_t" />
+                <xs:element name="parallel" type="parallel_t" />
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='loop' type='xs:string' />
+        <xs:attribute name='parent' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="parallel_t">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="service" type="service_update_t" />
+                <xs:element name="updater" type="start_t" />
+                <xs:element name="sequence" type="sequence_t" />
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='loop' type='xs:string' />
+        <xs:attribute name='parent' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="service_update_t">
+        <xs:attribute name="uid" type="xs:string" use="required" />
+        <xs:attribute name="slot" type="xs:string" use="optional" />
+    </xs:complexType>
 
     <!-- ServiceList Type -->
     <xs:complexType name="service_list_t">
@@ -108,40 +163,12 @@
         </xs:sequence>
     </xs:complexType>
 
-    <!-- node_t Type -->
-    <xs:complexType name="node_t"> <!-- Almost the same as object_t -->
-        <xs:sequence>
-            <xs:element name="object" type="object_t" minOccurs="0" maxOccurs="1" />
-            <xs:element name="serviceList" type="service_list_t" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="service" type="service_t" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="start" type="start_t" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="update" type="update_t" minOccurs="0" maxOccurs="unbounded" />
-        </xs:sequence>
-        <xs:attribute name="uid" type="xs:string" use="required" />
-        <xs:attribute name="src" type="xs:string" />
-    </xs:complexType>
-
-    <!-- edge_t Type -->
-    <xs:complexType name="edge_t"> <!-- Same as node_t, but with optional "weight" attribute -->
-        <xs:sequence>
-            <xs:element name="object" type="object_t" minOccurs="0" maxOccurs="1" />
-            <xs:element name="serviceList" type="service_list_t" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="service" type="service_t" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="start" type="start_t" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="update" type="update_t" minOccurs="0" maxOccurs="unbounded" />
-        </xs:sequence>
-        <xs:attribute name="origin" type="xs:string" use="required" />
-        <xs:attribute name="target" type="xs:string" use="required" />
-        <xs:attribute name="weight" type="xs:string" />
-        <xs:attribute name="uid" type="xs:string" />
-        <xs:attribute name="src" type="xs:string" />
-    </xs:complexType>
-
     <xs:complexType name="color_t">
         <xs:sequence>
             <xs:element name="step" type="step_t" minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
         <xs:attribute name="isClamped" type="xs:string" />
+        <xs:attribute name="resample_to_max_texture_size" type="boolean_t" />
         <xs:attribute name="default" type="xs:string" use="optional"/>
     </xs:complexType>
 

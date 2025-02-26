@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,11 +53,12 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
 //------------------------------------------------------------------------------
 
 series_set_reader::series_set_reader() noexcept :
+    reader("Choose a directory with DICOM images"),
+    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL)),
     m_show_log_dialog(true),
     m_enable_buffer_rotation(true),
     m_dicom_dir_support(user_selection)
 {
-    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -74,7 +75,7 @@ void series_set_reader::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? this->get_selector_dialog_title() : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.set_option(ui::dialog::location::read);
     dialog_file.set_type(ui::dialog::location::folder);
@@ -201,13 +202,6 @@ void series_set_reader::stopping()
 void series_set_reader::info(std::ostream& _sstream)
 {
     _sstream << "series_set_reader::info";
-}
-
-//------------------------------------------------------------------------------
-
-std::string series_set_reader::get_selector_dialog_title()
-{
-    return "Choose a directory with DICOM images";
 }
 
 //------------------------------------------------------------------------------

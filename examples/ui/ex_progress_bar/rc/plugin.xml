@@ -20,27 +20,43 @@ This example shows the possibilities of progress bar in SIGHT.:
         <config>
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="frame" type="sight::module::ui::frame">
+            <service uid="display" type="sight::module::ui::frame">
                 <gui>
-                    <toolbar />
                     <frame>
                         <name>ex_progress_bar</name>
                         <icon>ex_progress_bar/app.ico</icon>
                         <minSize width="800" height="600" />
+                        <screen index="0" />
+                        <style mode="FULLSCREEN" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="main_view" start="true" />
+                </registry>
+            </service>
+
+            <service uid="command" type="sight::module::ui::frame">
+                <gui>
+                    <toolbar />
+                    <frame>
+                        <name>ex_progress_bar_command</name>
+                        <icon>ex_progress_bar/app.ico</icon>
+                        <minSize width="800" height="600" />
+                        <screen index="1" />
+                        <style mode="FULLSCREEN" />
                     </frame>
                 </gui>
                 <registry>
                     <toolbar sid="toolbar" start="true" />
-                    <view sid="main_view" start="true" />
                 </registry>
             </service>
 
             <service uid="toolbar" type="sight::module::ui::toolbar">
                 <gui>
                     <layout style="ToolButtonTextUnderIcon">
-                        <menuItem name="Start job 1" icon="sight::module::ui::icons/gear.svg" />
-                        <menuItem name="Start job 2" icon="sight::module::ui::icons/gear.svg" />
-                        <menuItem name="Start job 3" icon="sight::module::ui::icons/gear.svg" />
+                        <menuItem name="Start job 1" icon="sight::module::ui::icons/gear.svg" shortcut="1" />
+                        <menuItem name="Start job 2" icon="sight::module::ui::icons/gear.svg" shortcut="2" />
+                        <menuItem name="Start job 3" icon="sight::module::ui::icons/gear.svg" shortcut="3" />
                         <editor />
                     </layout>
                 </gui>
@@ -104,7 +120,7 @@ This example shows the possibilities of progress bar in SIGHT.:
             </service>
 
             <service uid="progress_bar_5" type="sight::module::ui::qt::progress_bar">
-                <config svg="ex_progress_bar/wait_3.svg" svg_size="48" show_title="false" show_cancel="false" />
+                <config svg="ex_progress_bar/wait_3.svg" svg_size="56" show_title="true" show_cancel="false" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
@@ -182,7 +198,8 @@ This example shows the possibilities of progress bar in SIGHT.:
 
             <!-- ******************************* Start services ***************************************** -->
 
-            <start uid="frame" />
+            <start uid="display" />
+            <start uid="command" />
 
             <start uid="job_1_srv" />
             <start uid="job_2_srv" />

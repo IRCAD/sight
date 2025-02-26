@@ -6,7 +6,6 @@ Example:
     <inout group="data">
         <key name="image" uid="..." />
         <key name="histogram" uid="..." />
-        <key name="landmarks" uid="..." />
         <key name="transferFunctionOutput" uid="..." />
     </inout>
     <parameter replace="WID_PARENT" by="..." />
@@ -15,10 +14,10 @@ Example:
 <extension implements="sight::app::extension::config">
     <id>TransferFunctionWithNegatoEditor</id>
     <parameters>
+        <object uid="image" type="sight::data::image_series" />
+        <object uid="histogram" type="sight::data::histogram" />
+
         <param name="WID_PARENT" />
-        <param name="image" />
-        <param name="histogram" />
-        <param name="landmarks" />
         <param name="TFPath" default="sight::module::ui::qt/tf" />
         <param name="transferFunctionOutput" />
     </parameters>
@@ -26,12 +25,8 @@ Example:
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="sight::data::image" src="ref" />
-        <object uid="${histogram}" type="sight::data::histogram" src="ref" />
-        <object uid="${landmarks}" type="sight::data::landmarks" src="ref" />
-
-        <object uid="TFSet" type="sight::data::composite" src="deferred" />
-        <object uid="${transferFunctionOutput}" type="sight::data::transfer_function" src="deferred" />
+        <object uid="TFSet" type="sight::data::map" deferred="true" />
+        <object uid="${transferFunctionOutput}" type="sight::data::transfer_function" deferred="true" />
 
         <service uid="tfEditor" type="sight::module::ui::view">
             <gui>
@@ -81,7 +76,6 @@ Example:
             <appConfig id="2DNegatoWithTF" />
             <inout group="data">
                 <key name="image" uid="${image}" />
-                <key name="landmarks" uid="${landmarks}" />
                 <key name="transferFunctionDeferred" uid="${transferFunctionOutput}" optional="true" />
             </inout>
             <parameter replace="WID_PARENT" by="negatoView" />

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
-#include <core/tools/id.hpp>
+#include <core/id.hpp>
 
 #include <data/helper/field.hpp>
 #include <data/material.hpp>
@@ -159,7 +159,7 @@ void organ_transformation::refresh()
 
     if(has_reconstructions)
     {
-        const auto p_composite = m_composite.lock();
+        const auto p_map = m_map.lock();
 
         for(const data::reconstruction::sptr& rec : series->get_reconstruction_db())
         {
@@ -170,7 +170,7 @@ void organ_transformation::refresh()
         {
             std::string organ_name = it.first;
             auto* item             = new QListWidgetItem(QString::fromStdString(organ_name), m_reconstruction_list_box);
-            if(p_composite && p_composite->find(organ_name) != p_composite->end())
+            if(p_map && p_map->find(organ_name) != p_map->end())
             {
                 item->setCheckState(Qt::Checked);
             }
@@ -196,21 +196,21 @@ void organ_transformation::notify_transformation_matrix(data::matrix4::sptr _a_t
 
 void organ_transformation::on_reconstruction_check(QListWidgetItem* _current_item)
 {
-    const auto p_composite = m_composite.lock();
-    if(p_composite)
+    const auto p_map = m_map.lock();
+    if(p_map)
     {
         std::string item_name                       = _current_item->text().toStdString();
         data::reconstruction::sptr p_reconstruction = m_reconstruction_map[item_name];
         data::mesh::sptr p_mesh                     = p_reconstruction->get_mesh();
 
-        const auto scoped_emitter = p_composite->scoped_emit();
+        const auto scoped_emitter = p_map->scoped_emit();
         if((_current_item->checkState()) == Qt::Checked)
         {
-            p_composite->insert_or_assign(item_name, p_mesh);
+            p_map->insert_or_assign(item_name, p_mesh);
         }
         else
         {
-            p_composite->erase(item_name);
+            p_map->erase(item_name);
         }
     }
 }
@@ -231,7 +231,7 @@ void organ_transformation::on_reset_click()
         if(p_tmp_mat)
         {
             geometry::data::identity(*p_tmp_mat);
-            this->notify_transformation_matrix(p_tmp_mat);
+            notify_transformation_matrix(p_tmp_mat);
         }
     }
 }
@@ -288,7 +288,7 @@ void organ_transformation::on_load_click()
                 if(p_tmp_mat)
                 {
                     p_tmp_mat->shallow_copy(mat_map[p_tmp_tr_mesh->get_id()]);
-                    this->notify_transformation_matrix(p_tmp_mat);
+                    notify_transformation_matrix(p_tmp_mat);
                 }
             }
         }
@@ -299,8 +299,8 @@ void organ_transformation::on_load_click()
 
 void organ_transformation::on_select_all_changed(int _state)
 {
-    const auto p_composite    = m_composite.lock();
-    const auto scoped_emitter = p_composite->scoped_emit();
+    const auto p_map          = m_map.lock();
+    const auto scoped_emitter = p_map->scoped_emit();
 
     if(_state == Qt::Checked)
     {
@@ -310,7 +310,7 @@ void organ_transformation::on_select_all_changed(int _state)
 
         for(const data::reconstruction::sptr& rec : series->get_reconstruction_db())
         {
-            p_composite->insert({rec->get_organ_name(), rec->get_mesh()});
+            p_map->insert({rec->get_organ_name(), rec->get_mesh()});
         }
     }
     else if(_state == Qt::Unchecked)
@@ -322,7 +322,7 @@ void organ_transformation::on_select_all_changed(int _state)
         {
             if(item->checkState() == Qt::Unchecked)
             {
-                p_composite->erase(item->text().toStdString());
+                p_map->erase(item->text().toStdString());
             }
         }
 
@@ -357,10 +357,10 @@ service::connections_t organ_transformation::auto_connections() const
     connections.push(MODEL_SERIES, data::model_series::MODIFIED_SIG, service::slots::UPDATE);
     connections.push(MODEL_SERIES, data::model_series::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE);
     connections.push(MODEL_SERIES, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
-    connections.push(COMPOSITE, data::composite::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(COMPOSITE, data::composite::ADDED_OBJECTS_SIG, service::slots::UPDATE);
-    connections.push(COMPOSITE, data::composite::CHANGED_OBJECTS_SIG, service::slots::UPDATE);
-    connections.push(COMPOSITE, data::composite::REMOVED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(MAP, data::map::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MAP, data::map::ADDED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(MAP, data::map::CHANGED_OBJECTS_SIG, service::slots::UPDATE);
+    connections.push(MAP, data::map::REMOVED_OBJECTS_SIG, service::slots::UPDATE);
 
     return connections;
 }

@@ -60,6 +60,7 @@ public:
     {
         CPPUNIT_ASSERT_NO_THROW(srv = sight::service::add("sight::module::geometry::weighted_mean_matrix"));
         CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT(srv->is_a("sight::module::geometry::weighted_mean_matrix"));
     }
 
     //------------------------------------------------------------------------------
@@ -78,7 +79,7 @@ public:
         config_string
         << "<in key=\"raw\" uid=\"raw\" />"
            "<inout key=\"damped\" uid=\"damped\" />"
-           "<config weight=\"" << _weight << R"(" enabled="true" />)";
+           "<properties weight=\"" << _weight << R"(" enabled="true" />)";
 
         sight::service::base::config_t config;
         boost::property_tree::read_xml(config_string, config);

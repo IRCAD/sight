@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "activity/validator/object.hpp"
 
 #include <data/activity.hpp>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/vector.hpp>
 
 namespace sight::activity::validator
@@ -129,18 +129,18 @@ validator::return_t activity::check_requirements(const data::activity::csptr& _a
                 }
             }
         }
-        else // container == composite
+        else // container == map
         {
-            auto current_composite = std::dynamic_pointer_cast<const data::composite>(_activity->get(req.name));
-            if(!current_composite)
+            auto current_map = std::dynamic_pointer_cast<const data::map>(_activity->get(req.name));
+            if(!current_map)
             {
                 validation.first   = false;
-                validation.second += "\n - The parameter '" + req.name + "' must be a Composite of '"
+                validation.second += "\n - The parameter '" + req.name + "' must be a Map of '"
                                      + req.type + "'.";
             }
             else
             {
-                auto nb_obj = static_cast<unsigned int>(current_composite->size());
+                auto nb_obj = static_cast<unsigned int>(current_map->size());
                 if(nb_obj < req.min_occurs)
                 {
                     validation.first   = false;
@@ -157,7 +157,7 @@ validator::return_t activity::check_requirements(const data::activity::csptr& _a
                 {
                     bool is_valid = true;
 
-                    for(const auto& elt : *current_composite)
+                    for(const auto& elt : *current_map)
                     {
                         std::string key        = elt.first;
                         data::object::sptr obj = elt.second;
@@ -198,7 +198,7 @@ validator::return_t activity::check_requirements(const data::activity::csptr& _a
                     if(is_valid)
                     {
                         validator::return_t val = sight::activity::validator::activity::check_object(
-                            current_composite,
+                            current_map,
                             req.validator
                         );
                         if(!val.first)

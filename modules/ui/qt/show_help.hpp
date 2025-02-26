@@ -38,7 +38,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(show_help, sight::ui::action);
 
-    show_help() noexcept           = default;
+    show_help() noexcept = default;
     ~show_help() noexcept override = default;
 
 protected:

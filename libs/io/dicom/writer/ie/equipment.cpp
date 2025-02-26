@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,7 +65,7 @@ void equipment::write_general_equipment_module()
 
     // Software Versions - Type 3 (Type 1 for EnhancedGeneralEquipmentModule)
     const auto profile                 = core::runtime::get_current_profile();
-    const std::string software_version = profile ? profile->name() + " " + profile->get_version() : "Unknown";
+    const std::string software_version = profile ? profile->name() + " " + profile->version() : "Unknown";
 
     // We do not use the DicomDataWriter helper as VM might be more than one
     gdcm::Attribute<0x0018, 0x1020> attribute;

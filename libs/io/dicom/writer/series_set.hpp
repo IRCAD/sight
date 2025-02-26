@@ -49,11 +49,7 @@ class SIGHT_IO_DICOM_CLASS_API series_set : public io::writer::generic_object_wr
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        series_set,
-        io::writer::generic_object_writer<data::series_set>,
-        io::writer::factory::make<series_set>
-    );
+    SIGHT_DECLARE_CLASS(series_set, io::writer::generic_object_writer<data::series_set>);
 
     /// Constructor
     SIGHT_IO_DICOM_API series_set();

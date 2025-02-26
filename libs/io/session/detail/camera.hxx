@@ -131,7 +131,7 @@ inline static data::camera::sptr read(
     camera->set_is_calibrated(_tree.get<bool>(IS_CALIBRATED));
     camera->set_camera_id(helper::read_string(_tree, CAMERA_ID));
     camera->set_maximum_frame_rate(_tree.get<float>(MAXIMUM_FRAME_RATE));
-    camera->set_pixel_format(static_cast<enum data::camera::pixel_format>(_tree.get<int>(PIXEL_FORMAT)));
+    camera->set_pixel_format(static_cast<enum data::camera::pixel_format_t>(_tree.get<int>(PIXEL_FORMAT)));
     camera->set_video_file(helper::read_string(_tree, VIDEO_FILE));
     camera->set_stream_url(helper::read_string(_tree, STREAM_URL));
     camera->set_camera_source(static_cast<data::camera::source_t>(_tree.get<int>(CAMERA_SOURCE)));

@@ -87,9 +87,6 @@ protected:
     /// Creates the compositor listener.
     void starting() override;
 
-    /// Sets the parameter as dirty.
-    void updating() override;
-
     /// Removes the compositor listener.
     void stopping() override;
 

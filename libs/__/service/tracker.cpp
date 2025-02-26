@@ -22,9 +22,6 @@
 
 #include "service/tracker.hpp"
 
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
 
 #include <data/buffer_tl.hpp>
@@ -118,7 +115,7 @@ void tracker::track(core::clock::type _timestamp)
 
 service::connections_t tracker::auto_connections() const
 {
-    return {{TIMELINE_INPUT, data::timeline::signals::PUSHED, TRACK_SLOT}};
+    return {{m_timeline, data::timeline::signals::PUSHED, TRACK_SLOT}};
 }
 
 //-----------------------------------------------------------------------------

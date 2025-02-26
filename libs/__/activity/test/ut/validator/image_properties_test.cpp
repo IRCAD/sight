@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,8 @@
 #include <core/runtime/module.hpp>
 
 #include <data/activity.hpp>
-#include <data/composite.hpp>
 #include <data/image_series.hpp>
+#include <data/map.hpp>
 #include <data/model_series.hpp>
 #include <data/vector.hpp>
 
@@ -97,11 +97,11 @@ void image_properties_test::properties_test()
         validation = obj_validator->validate(vector);
         CPPUNIT_ASSERT_EQUAL(false, validation.first);
 
-        data::composite::sptr composite = std::make_shared<data::composite>();
-        (*composite)["img1"] = img1;
-        (*composite)["img2"] = img2;
+        data::map::sptr map = std::make_shared<data::map>();
+        (*map)["img1"] = img1;
+        (*map)["img2"] = img2;
 
-        validation = obj_validator->validate(composite);
+        validation = obj_validator->validate(map);
         CPPUNIT_ASSERT_EQUAL(false, validation.first);
 
         auto series_vector = std::make_shared<data::vector>();
@@ -121,8 +121,9 @@ void image_properties_test::properties_test()
             img1->size(),
             img1->spacing(),
             img1->origin(),
+            img1->orientation(),
             img1->type(),
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
 
         data::vector::sptr vector = std::make_shared<data::vector>();
@@ -134,11 +135,11 @@ void image_properties_test::properties_test()
         validation = obj_validator->validate(vector);
         CPPUNIT_ASSERT_EQUAL(true, validation.first);
 
-        data::composite::sptr composite = std::make_shared<data::composite>();
-        (*composite)["img1"] = img1;
-        (*composite)["img2"] = img2;
+        data::map::sptr map = std::make_shared<data::map>();
+        (*map)["img1"] = img1;
+        (*map)["img2"] = img2;
 
-        validation = obj_validator->validate(composite);
+        validation = obj_validator->validate(map);
         CPPUNIT_ASSERT_EQUAL(true, validation.first);
 
         auto series_vector = std::make_shared<data::vector>();

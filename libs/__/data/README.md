@@ -17,10 +17,10 @@ All concrete data classes implement this interface.
 - **Array**: generic and dynamic multi-dimensional array.
 - **Boolean**: boolean value.
 - **Color**: RGBA color value.
-- **Composite**: contains a map of objects.
 - **Float**: float value.
 - **Image**: defines an image.
 - **Integer**: integer value.
+- **Map**: contains a map of objects.
 - **Object**: base class for each data object.
 - **Set**: generic and dynamic set of elements.
 - **series_set**: series container.

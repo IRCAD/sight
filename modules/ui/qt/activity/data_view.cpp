@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2024 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,9 @@
 #include <core/runtime/helper.hpp>
 
 #include <data/boolean.hpp>
-#include <data/composite.hpp>
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
+#include <data/map.hpp>
 #include <data/matrix4.hpp>
 #include <data/real.hpp>
 #include <data/series.hpp>
@@ -160,7 +160,7 @@ bool data_view::eventFilter(QObject* _obj, QEvent* _event)
                 if(!uid.empty())
                 {
                     // insert the object if it is in the required type
-                    data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
+                    data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
                     if(obj && obj->is_a(requirement.type))
                     {
                         // Insert the new object
@@ -348,7 +348,7 @@ void data_view::fill_information(const activity_info& _info)
         );
         layout->addLayout(tree_layout, 1);
 
-        //TODO better management of composite container
+        //TODO better management of map container
     }
 
     for(int i = 1 ; i < this->count() ; ++i)
@@ -398,19 +398,19 @@ void data_view::fill_information(const data::activity::sptr& _activity)
                         SIGHT_ERROR("Object param '" + req.name + "' must be a 'data::vector'");
                     }
                 }
-                else // container == composite
+                else // container == map
                 {
-                    data::composite::sptr composite = std::dynamic_pointer_cast<data::composite>(obj);
-                    if(composite)
+                    data::map::sptr map = std::dynamic_pointer_cast<data::map>(obj);
+                    if(map)
                     {
-                        for(const auto& sub_obj : *composite)
+                        for(const auto& sub_obj : *map)
                         {
                             this->add_object_item(i, sub_obj.second);
                         }
                     }
                     else
                     {
-                        SIGHT_ERROR("Object param '" + req.name + "' must be a 'data::composite'");
+                        SIGHT_ERROR("Object param '" + req.name + "' must be a 'data::map'");
                     }
                 }
             }
@@ -441,7 +441,7 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
             std::string uid =
                 item->data(int(column_commun_t::id), data_view::UID_ROLE).toString().toStdString();
 
-            data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
+            data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
             if(obj && obj->is_a(req.type))
             {
                 object = obj;
@@ -489,7 +489,7 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
                     std::string uid            =
                         item_data->data(int(column_commun_t::id), UID_ROLE).toString().toStdString();
 
-                    data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
+                    data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
                     if(obj && obj->is_a(req.type))
                     {
                         vector->push_back(obj);
@@ -506,9 +506,9 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
                     object = vector;
                 }
             }
-            else // container == composite
+            else // container == map
             {
-                data::composite::sptr composite = std::make_shared<data::composite>();
+                data::map::sptr map = std::make_shared<data::map>();
 
                 for(unsigned int i = 0 ; i < nb_obj ; ++i)
                 {
@@ -516,11 +516,11 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
                     std::string uid            =
                         item_data->data(int(column_commun_t::id), UID_ROLE).toString().toStdString();
 
-                    data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
+                    data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
                     if(obj && obj->is_a(req.type))
                     {
                         std::string key = req.keys[i].key;
-                        (*composite)[key] = obj;
+                        (*map)[key] = obj;
                     }
                     else
                     {
@@ -531,7 +531,7 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
 
                 if(ok)
                 {
-                    object = composite;
+                    object = map;
                 }
             }
         }
@@ -828,7 +828,7 @@ void data_view::add_object_item(std::size_t _index, const data::object::csptr& _
 
         new_item->setText(int(column_series_t::birthdate), QString::fromStdString(birthdate));
 
-        new_item->setText(int(column_series_t::modality), QString::fromStdString(series->get_modality()));
+        new_item->setText(int(column_series_t::modality), QString::fromStdString(series->get_modality_string()));
         new_item->setText(
             int(column_series_t::modality_desc),
             QString::fromStdString(series->get_series_description())
@@ -1042,7 +1042,7 @@ void data_view::on_tree_item_double_clicked(QTreeWidgetItem* _item, int /*unused
         std::string uid = _item->data(int(column_commun_t::id), UID_ROLE).toString().toStdString();
         if(!uid.empty())
         {
-            data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(uid));
+            data::object::sptr obj = std::dynamic_pointer_cast<data::object>(core::id::get_object(uid));
             if(obj)
             {
                 if(obj->is_a("sight::data::string"))

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,9 +117,9 @@ bool reconstruction::operator==(const reconstruction& _other) const noexcept
        || m_s_organ_name != _other.m_s_organ_name
        || m_s_structure_type != _other.m_s_structure_type
        || m_computed_mask_volume != _other.m_computed_mask_volume
-       || !core::tools::is_equal(m_material, _other.m_material)
-       || !core::tools::is_equal(m_image, _other.m_image)
-       || !core::tools::is_equal(m_mesh, _other.m_mesh))
+       || !core::is_equal(m_material, _other.m_material)
+       || !core::is_equal(m_image, _other.m_image)
+       || !core::is_equal(m_mesh, _other.m_mesh))
     {
         return false;
     }

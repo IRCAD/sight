@@ -21,6 +21,8 @@
 
 #include "ruler_fiducials_reader_writer_test.hpp"
 
+#include <core/os/temp_path.hpp>
+
 #include <data/image_series.hpp>
 
 #include <io/dicom/reader/file.hpp>
@@ -65,8 +67,8 @@ void ruler_fiducials_reader_writer_test::ruler_basic_test()
 
     fiducial.fiducial_uid = "9";
     fiducial.contour_data = {
-        {.x = 20, .y = 21, .z = 22},
-        {.x = 30, .y = 31, .z = 32}
+        {.x               = 20, .y = 21, .z = 22},
+        {.x               = 30, .y = 31, .z = 32}
     };
 
     fiducial.graphic_coordinates_data_sequence = std::nullopt;
@@ -93,15 +95,16 @@ void ruler_fiducials_reader_writer_test::ruler_basic_test()
 
     original_fiducials_series->append_fiducial_set(fiducial_set);
 
+    const core::os::temp_dir folder;
+
     auto writer = std::make_shared<io::dicom::writer::file>();
     writer->set_object(original);
-    std::filesystem::create_directories("/tmp/RulerFiducialsReaderWriterTest");
-    writer->set_folder("/tmp/RulerFiducialsReaderWriterTest");
+    writer->set_folder(folder);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     auto actual = std::make_shared<data::series_set>();
     reader->set_object(actual);
-    reader->set_folder("/tmp/RulerFiducialsReaderWriterTest");
+    reader->set_folder(folder);
     CPPUNIT_ASSERT_NO_THROW(reader->read());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), actual->size());
 

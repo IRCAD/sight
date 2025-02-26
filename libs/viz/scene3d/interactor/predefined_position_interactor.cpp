@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,7 @@
 
 #include "viz/scene3d/interactor/predefined_position_interactor.hpp"
 
+#include "viz/scene3d/interactor/detail/trackball.hpp"
 #include "viz/scene3d/registry/macros.hpp"
 
 #include <core/com/signal.hxx>
@@ -45,12 +46,16 @@ predefined_position_interactor::predefined_position_interactor(
     std::vector<predefined_position_t> _positions,
     const std::optional<std::string>& _default_position,
     bool _animate,
-    float _zoom
+    bool _follow_orientation,
+    float _zoom,
+    const Ogre::Vector3& _view_up
 ) :
     base(_layer, _layer_order_dependant),
     m_timer(core::thread::get_default_worker()->create_timer()),
     m_predefined_positions(std::move(_positions)),
     m_animate(_animate),
+    m_follow_orientation(_follow_orientation),
+    m_view_up(_view_up),
     m_zoom_config(_zoom)
 {
     this->init();
@@ -205,53 +210,8 @@ void predefined_position_interactor::init()
 
 void predefined_position_interactor::camera_rotate_by_mouse(int _dx, int _dy)
 {
-    auto w_delta = static_cast<Ogre::Real>(_dx);
-    auto h_delta = static_cast<Ogre::Real>(_dy);
-
-    Ogre::Camera* const camera      = m_layer.lock()->get_default_camera();
-    Ogre::SceneNode* const cam_node = camera->getParentSceneNode();
-    const Ogre::Viewport* const vp  = camera->getViewport();
-
-    const auto height = static_cast<float>(vp->getActualHeight());
-    const auto width  = static_cast<float>(vp->getActualWidth());
-
-    // Current orientation of the camera
-    const Ogre::Quaternion orientation = cam_node->getOrientation();
-    const Ogre::Vector3 view_right     = orientation.xAxis();
-    const Ogre::Vector3 view_up        = orientation.yAxis();
-
-    // Computes the final position according to mouse displacement.
-
-    // X
-    const Ogre::Vector3 vec_x(std::abs(h_delta), 0.F, 0.F);
-    Ogre::Vector3 rotate_x = vec_x * view_right;
-    rotate_x.normalise();
-
-    if(rotate_x.dotProduct(Ogre::Vector3(1.F, 0.F, 0.F)) < 0.F)
-    {
-        h_delta *= -1;
-    }
-
-    const float angle_x = (h_delta * Ogre::Math::PI / height);
-    const Ogre::Quaternion rx(Ogre::Radian(angle_x), rotate_x);
-
-    // Y
-    const Ogre::Vector3 vec_y(0.F, std::abs(w_delta), 0.F);
-    Ogre::Vector3 rotate_y = vec_y * view_up;
-    rotate_y.normalise();
-
-    if(rotate_y.dotProduct(Ogre::Vector3(0.F, 1.F, 0.F)) < 0.F)
-    {
-        w_delta *= -1;
-    }
-
-    const float angle_y = (w_delta * Ogre::Math::PI / width);
-    const Ogre::Quaternion ry(Ogre::Radian(angle_y), rotate_y);
-
-    const auto destination = orientation * ry * rx;
-
-    // Apply
-    this->rotate_camera(cam_node, destination);
+    Ogre::Camera* const camera = m_layer.lock()->get_default_camera();
+    detail::camera_rotate(camera, _dx, _dy, m_look_at_z, m_view_up);
 }
 
 // ----------------------------------------------------------------------------
@@ -367,7 +327,7 @@ void predefined_position_interactor::to_predefined_position(std::size_t _idx, bo
 
             // Convert to short angle if needed.
             const Ogre::Degree short_angle = angle > Ogre::Degree(180) ? Ogre::Degree(360) - angle : angle;
-            const float nb_step            = std::ceil(short_angle.valueDegrees() * 100.F / 180.F);
+            const float nb_step            = std::ceil(short_angle.valueDegrees() * 40.F / 180.F);
 
             // Avoid to have gigantic step.
             const float step = (nb_step > 0.001F) ? 1.F / nb_step : 1.F;
@@ -487,7 +447,10 @@ void predefined_position_interactor::follow_transform()
 
     // 2. Apply transform rotation
     // Remove previous transform orientation and go to newest orientation.
-    cam_node->setOrientation(m_last_orientation.Inverse() * referential_r * current_r);
+    if(m_follow_orientation)
+    {
+        cam_node->setOrientation(m_last_orientation.Inverse() * referential_r * current_r);
+    }
 
     // 3. Translate to new target.
     cam_node->setPosition(referential_t);

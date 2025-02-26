@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ void color_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void color_test::methode1()
+void color_test::basic()
 {
     //-----------test values
     const float r = 0.2F;
@@ -67,13 +67,16 @@ void color_test::methode1()
     CPPUNIT_ASSERT_EQUAL(color->blue(), b);
     CPPUNIT_ASSERT_EQUAL(color->alpha(), a);
 
+    CPPUNIT_ASSERT(color->is_type_of("sight::data::color"));
+    CPPUNIT_ASSERT(color->is_type_of("sight::data::string_serializable"));
+
     auto color2 = std::make_shared<data::color>(r, g, b, a);
     CPPUNIT_ASSERT(*color == *color2);
 }
 
 //------------------------------------------------------------------------------
 
-void color_test::methode2()
+void color_test::accessors()
 {
     //-----------test values
     const float r = 0.2F;
@@ -83,7 +86,7 @@ void color_test::methode2()
 
     auto color = std::make_shared<data::color>();
 
-    data::color::color_array_t array;
+    data::color::array_t array;
     array[0] = r;
     array[1] = g;
     array[2] = b;
@@ -105,7 +108,7 @@ void color_test::methode2()
 
 //------------------------------------------------------------------------------
 
-void color_test::methode3()
+void color_test::string()
 {
     // fuchsia string value
     const std::string fuchsia = "#FF006E";
@@ -117,7 +120,7 @@ void color_test::methode3()
 
     data::color::sptr color = std::make_shared<data::color>();
 
-    color->set_rgba(fuchsia);
+    color->from_string(fuchsia);
 
     CPPUNIT_ASSERT_EQUAL(color->rgba()[0], r);
     CPPUNIT_ASSERT_EQUAL(color->rgba()[1], g);
@@ -127,8 +130,18 @@ void color_test::methode3()
     auto color2 = std::make_shared<data::color>();
     CPPUNIT_ASSERT(*color != *color2);
 
-    color2->set_rgba(fuchsia);
+    color2->from_string(fuchsia);
     CPPUNIT_ASSERT(*color == *color2);
+
+    const std::string fuchsia_converted_to_str = color->to_string();
+    CPPUNIT_ASSERT_EQUAL(std::string("#FF006EFF"), fuchsia_converted_to_str);
+
+    data::color color3;
+    color3.from_string("1.0;0.;0.4314;1.0");
+    CPPUNIT_ASSERT_EQUAL(color->to_string(), color3.to_string());
+
+    data::color color4("#339966CC");
+    CPPUNIT_ASSERT_EQUAL(data::color(0.2F, 0.6F, 0.4F, 0.8F), color4);
 }
 
 //------------------------------------------------------------------------------
@@ -142,21 +155,21 @@ void color_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(...) \
-    color1->set_rgba(__VA_ARGS__); \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "The colors should be different when the first is set with " #__VA_ARGS__, \
-        *color1 != *color2 && !(*color1 == *color2) \
-    ); \
-    color2->set_rgba(color1->rgba()); \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "The colors should be equal when both are set with " #__VA_ARGS__, \
-        *color1 == *color2 && !(*color1 != *color2) \
-    );
+            color1->set_rgba(__VA_ARGS__); \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "The colors should be different when the first is set with " #__VA_ARGS__, \
+                *color1 != *color2 && !(*color1 == *color2) \
+            ); \
+            color2->set_rgba(color1->rgba()); \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "The colors should be equal when both are set with " #__VA_ARGS__, \
+                *color1 == *color2 && !(*color1 != *color2) \
+            );
 
-    TEST(1, 0, 0, 0);
-    TEST(0, 1, 0, 0);
-    TEST(0, 0, 1, 0);
-    TEST(0, 0, 0, 1);
+    TEST(1.F, 0.F, 0.F, 0.F);
+    TEST(0.F, 1.F, 0.F, 0.F);
+    TEST(0.F, 0.F, 1.F, 0.F);
+    TEST(0.F, 0.F, 0.F, 1.F);
 
     #undef TEST
 }

@@ -14,9 +14,7 @@ macro(linux_package PRJ_NAME)
 
         if(${FW_BUILD_EXTERNAL})
             # install the launcher
-            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" "${Sight_BINARY_DIR}/sightlog.bin"
-                             "${Sight_BINARY_DIR}/sightlog" DESTINATION "bin"
-            )
+            install(PROGRAMS "${Sight_BINARY_DIR}/${LAUNCHER}" DESTINATION "bin")
         endif()
     elseif("${TARGET_TYPE}" STREQUAL "EXECUTABLE")
 
@@ -68,7 +66,7 @@ macro(linux_package PRJ_NAME)
     set(CPACK_PACKAGE_NAME "${PRJ_NAME}")
     set(CPACK_PACKAGE_FILE_NAME "${PRJ_NAME}-${GIT_TAG}-${PLATFORM_SUFFIX}")
 
-    set(CPACK_PACKAGE_VENDOR "IRCAD")
+    set(CPACK_PACKAGE_VENDOR "${SIGHT_APP_VENDOR}")
     set(CPACK_OUTPUT_FILE_PREFIX packages)
     set(CPACK_INSTALL_CMAKE_PROJECTS "${CMAKE_CURRENT_BINARY_DIR};${PRJ_NAME};ALL;.")
     set(CPACK_INSTALLED_DIRECTORIES "${CMAKE_INSTALL_PREFIX};.")

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -171,7 +171,7 @@ void toolbar::manage(std::vector<ui::container::menu_item::sptr> _menu_items)
             SIGHT_ASSERT(
                 "The action '" + sid.first + "' does not exist, but is declared in '" + m_sid + "' toolbar, "
                                                                                                 "the service may be created later if it uses deferred objects, thus use start=\"no\" and start it at the end of the configuration",
-                core::tools::id::exist(sid.first)
+                core::id::exist(sid.first)
             );
             service::base::sptr service = service::get(sid.first);
             SIGHT_ASSERT(
@@ -183,7 +183,7 @@ void toolbar::manage(std::vector<ui::container::menu_item::sptr> _menu_items)
         }
         else
         {
-            bool service_exists = core::tools::id::exist(sid.first);
+            bool service_exists = core::id::exist(sid.first);
             if(!service_exists || service::get(sid.first)->stopped())
             {
                 ui::registry::action_service_stopping(sid.first);
@@ -214,7 +214,7 @@ void toolbar::manage(std::vector<ui::container::menu::sptr> _menus)
         {
             SIGHT_ASSERT(
                 "The menu '" + sid.first + "' does not exist, but is declared in '" + m_sid + "' toolbar.",
-                core::tools::id::exist(sid.first)
+                core::id::exist(sid.first)
             );
             service::base::sptr service = service::get(sid.first);
             SIGHT_ASSERT(
@@ -245,7 +245,7 @@ void toolbar::manage(std::vector<ui::container::widget::sptr> _containers)
         {
             SIGHT_ASSERT(
                 "The service '" + sid.first + "' does not exist, but is declared in '" + m_sid + "' toolbar.",
-                core::tools::id::exist(sid.first)
+                core::id::exist(sid.first)
             );
             service::base::sptr service = service::get(sid.first);
             SIGHT_ASSERT(
@@ -280,7 +280,7 @@ void toolbar::unmanage()
             SIGHT_ASSERT(
                 "The toolbar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
                                                                                       "It may have been destroyed by the configuration if it uses deferred objects.",
-                core::tools::id::exist(
+                core::id::exist(
                     sid.first
                 )
             );
@@ -298,7 +298,7 @@ void toolbar::unmanage()
             SIGHT_ASSERT(
                 "The toolbar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
                                                                                       "It may have been destroyed by the configuration if it uses deferred objects.",
-                core::tools::id::exist(
+                core::id::exist(
                     sid.first
                 )
             );
@@ -316,7 +316,7 @@ void toolbar::unmanage()
             SIGHT_ASSERT(
                 "The toolbar '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
                                                                                       "It may have been destroyed by the configuration if it uses deferred objects.",
-                core::tools::id::exist(
+                core::id::exist(
                     sid.first
                 )
             );

@@ -145,7 +145,7 @@ private:
     std::string get_key(const std::string& _sub_key) const noexcept;
 
     static constexpr std::string_view CONFIG_INOUT = "config";
-    data::ptr<sight::io::dimse::data::pacs_configuration, data::access::inout> m_config {this, CONFIG_INOUT, true};
+    data::ptr<sight::io::dimse::data::pacs_configuration, data::access::inout> m_config {this, CONFIG_INOUT};
 };
 
 } // namespace sight::module::io::dimse.

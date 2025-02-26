@@ -3,34 +3,29 @@ Example:
 
 <service uid="..." type="sight::app::config_controller">
     <appConfig id="sight::config::viz::image::imageSlider2D" />
-    <parameter replace="WID_PARENT" by="negatoSliderView" />
-    <parameter replace="sliceIndex" by="axial" />
-    <parameter replace="enableSliceType" by="true" />
     <inout group="data">
         <key name="image" uid="${image}" />
         <key name="transferFunction" uid="${transferFunction}" />
     </inout>
+    <parameter replace="WID_PARENT" by="negatoSliderView" />
+    <parameter replace="sliceIndex" by="axial" />
+    <parameter replace="enableSliceType" by="true" />
 </service>
 -->
 <extension implements="sight::app::extension::config">
     <id>sight::config::viz::image::imageSlider</id>
     <parameters>
+        <object uid="image" type="sight::data::image_series" />
+        <object uid="transferFunction" type="sight::data::transfer_function" />
+
         <param name="WID_PARENT" />
-        <param name="image" />
-        <param name="transferFunction" />
         <param name="enableSliceSlider" default="true" />
         <param name="enableSliceType" default="true" />
         <param name="enableOpacity" default="false" />
         <param name="sliceIndex" default="axial" />
     </parameters>
-    <desc>This configuration displays a tab layout containing a negato and a transfer function
-        editor</desc>
+    <desc>This configuration displays a tab layout containing a negato and a transfer function editor</desc>
     <config>
-        <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${image}" type="sight::data::image_series" src="ref" />
-        <object uid="${transferFunction}" type="sight::data::transfer_function" src="ref" />
-
         <service uid="view" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
@@ -113,7 +108,7 @@ Example:
 
         <service uid="windowLevelImage" type="sight::module::ui::qt::image::window_level">
             <config minimal="true" />
-            <inout key="image" uid="${image}" />
+            <in key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunction}" />
         </service>
 

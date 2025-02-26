@@ -33,7 +33,7 @@ namespace sight::module::ui::qt::video
 
 //-----------------------------------------------------------------------------
 
-using pixel_format_translator_t = boost::bimaps::bimap<QVideoFrame::PixelFormat, enum data::camera::pixel_format>;
+using pixel_format_translator_t = boost::bimaps::bimap<QVideoFrame::PixelFormat, enum data::camera::pixel_format_t>;
 extern pixel_format_translator_t pixel_format_translator;
 
 } // namespace sight::module::ui::qt::video

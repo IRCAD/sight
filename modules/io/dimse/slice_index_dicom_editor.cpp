@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,6 +122,7 @@ void slice_index_dicom_editor::starting()
     layout->addWidget(m_slider, 1);
 
     m_line_edit = new QLineEdit();
+    m_line_edit->setProperty("class", "lineEditDicomEditor");
     layout->addWidget(m_line_edit, 0);
     m_line_edit->setReadOnly(true);
     m_line_edit->setMaximumWidth(80);
@@ -333,10 +334,10 @@ void slice_index_dicom_editor::read_slice(
 ) const
 {
     // Retrieve informations.
-    const std::string modality = _dicom_series->get_modality();
-    if(modality != "CT" && modality != "MR" && modality != "XA")
+    const auto type = _dicom_series->get_dicom_type();
+    if(type == data::series::dicom_t::image)
     {
-        this->notifier::info("Unable to read the modality '" + modality + "'");
+        this->notifier::info("Unable to read the modality '" + _dicom_series->get_modality_string() + "'");
         return;
     }
 
@@ -385,17 +386,17 @@ void slice_index_dicom_editor::read_slice(
 
         data::helper::medical_image::set_slice_index(
             *image,
-            data::helper::medical_image::orientation_t::axial,
+            data::helper::medical_image::axis_t::axial,
             axial_index->value()
         );
         data::helper::medical_image::set_slice_index(
             *image,
-            data::helper::medical_image::orientation_t::frontal,
+            data::helper::medical_image::axis_t::frontal,
             frontal_index->value()
         );
         data::helper::medical_image::set_slice_index(
             *image,
-            data::helper::medical_image::orientation_t::sagittal,
+            data::helper::medical_image::axis_t::sagittal,
             sagittal_index->value()
         );
 

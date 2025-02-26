@@ -58,7 +58,7 @@
     </extension>
     <extension implements="sight::service::extension::factory">
         <type>sight::service::registerer</type>
-        <service>sight::module::geometry::vision::solve_pn_p</service>
+        <service>sight::module::geometry::vision::solve_pnp</service>
         <object key="pointList2d">sight::data::point_list</object>
         <object key="pointList3d">sight::data::point_list</object>
         <object key="calibration">sight::data::camera</object>

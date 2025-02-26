@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,7 @@
 
 #include "modules/viz/scene3d/adaptor/frustum.hpp"
 
-#include "modules/viz/scene3d/adaptor/camera.hpp"
-#include "modules/viz/scene3d/adaptor/material.hpp"
-
 #include <core/com/slots.hxx>
-
-#include <service/macros.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
@@ -41,16 +36,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-//-----------------------------------------------------------------------------
-
-frustum::frustum() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
-frustum::~frustum() noexcept =
-    default;
-
 //------------------------------------------------------------------------------
 
 void frustum::configuring()
@@ -62,7 +47,7 @@ void frustum::configuring()
     this->set_transform_id(
         config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
 
@@ -79,11 +64,11 @@ void frustum::configuring()
 
 void frustum::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     // Create camera
-    m_ogre_camera = this->get_scene_manager()->createCamera(Ogre::String(this->get_id() + std::string(CAMERA_INPUT)));
-    m_ogre_camera->setVisible(m_visible);
+    m_ogre_camera = this->get_scene_manager()->createCamera(gen_id(CAMERA_INPUT));
+    m_ogre_camera->setVisible(visible());
 
     // Clipping
     if(m_near != 0.F)
@@ -109,30 +94,14 @@ void frustum::starting()
     trans_node->setDirection(Ogre::Vector3(Ogre::Real(0), Ogre::Real(0), Ogre::Real(1)));
 
     // Create material for the frustum
-    m_material = std::make_shared<data::material>();
-    m_material->diffuse()->set_rgba(m_color);
+    m_material = std::make_unique<sight::viz::scene3d::material::standard>(gen_id("material"));
+    m_material->set_shading(sight::data::material::shading_t::ambient, this->layer()->num_lights());
 
-    module::viz::scene3d::adaptor::material::sptr material_adaptor =
-        this->register_service<module::viz::scene3d::adaptor::material>(
-            "sight::module::viz::scene3d::adaptor::material"
-        );
-    material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
-    material_adaptor->configure(
-        this->get_id() + material_adaptor->get_id(),
-        this->get_id() + material_adaptor->get_id(),
-        this->render_service(),
-        m_layer_id,
-        "ambient"
-    );
-    material_adaptor->start();
-    material_adaptor->update();
+    sight::data::color color(m_color);
+    m_material->material()->setDiffuse(Ogre::ColourValue(color[0], color[1], color[2], color[3]));
 
-    m_frustum = this->get_scene_manager()->createManualObject(this->get_id() + "_frustum");
-    sight::viz::scene3d::helper::manual_object::create_frustum(
-        m_frustum,
-        material_adaptor->get_material_name(),
-        *m_ogre_camera
-    );
+    m_frustum = this->get_scene_manager()->createManualObject(gen_id("frustum"));
+    sight::viz::scene3d::helper::manual_object::create_frustum(m_frustum, m_material->name(), *m_ogre_camera);
     trans_node->attachObject(m_frustum);
 
     this->request_render();
@@ -142,9 +111,9 @@ void frustum::starting()
 
 service::connections_t frustum::auto_connections() const
 {
-    service::connections_t connections;
-    connections.push(CAMERA_INPUT, data::camera::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE);
+    service::connections_t connections = adaptor::auto_connections();
+    connections.push(CAMERA_INPUT, data::camera::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, adaptor::slots::LAZY_UPDATE);
 
     return connections;
 }
@@ -154,7 +123,9 @@ service::connections_t frustum::auto_connections() const
 void frustum::updating()
 {
     this->set_ogre_cam_from_data();
-    m_frustum->setVisible(m_visible);
+    m_frustum->setVisible(visible());
+
+    this->update_done();
     this->request_render();
 }
 
@@ -162,15 +133,15 @@ void frustum::updating()
 
 void frustum::stopping()
 {
-    this->unregister_services();
-
     m_frustum->detachFromParent();
     m_ogre_camera->detachFromParent();
     this->get_scene_manager()->destroyManualObject(m_frustum);
     this->get_scene_manager()->destroyCamera(m_ogre_camera);
 
     m_ogre_camera = nullptr;
-    m_material    = nullptr;
+    m_material.reset();
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

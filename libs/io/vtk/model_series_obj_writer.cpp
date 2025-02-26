@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,8 +34,6 @@
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
 
-#include <io/__/writer/registry/macros.hpp>
-
 #include <vtkActor.h>
 #include <vtkOBJExporter.h>
 #include <vtkPolyData.h>
@@ -46,8 +44,6 @@
 #include <vtkSmartPointer.h>
 
 #include <filesystem>
-
-SIGHT_REGISTER_IO_WRITER(sight::io::vtk::model_series_obj_writer);
 
 namespace sight::io::vtk
 {

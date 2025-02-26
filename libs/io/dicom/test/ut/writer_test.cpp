@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,6 +25,8 @@
 
 #include <data/image_series.hpp>
 
+#include <geometry/__/vector.hpp>
+
 #include <io/bitmap/backend.hpp>
 #include <io/dicom/reader/file.hpp>
 #include <io/dicom/writer/file.hpp>
@@ -35,8 +37,12 @@
 #include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
 
+#include <glm/glm.hpp>
+
 #include <chrono>
 #include <ctime>
+
+// cspell: ignore orthogonalize
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::writer_test);
 
@@ -72,13 +78,13 @@ inline static std::string format_date_time(const std::chrono::time_point<std::ch
 //------------------------------------------------------------------------------
 
 inline static data::image_series::sptr get_us_volume_image(
-    std::uint32_t _seed                    = 0,
-    std::size_t _num_frames                = 1,
-    core::type _type                       = core::type::UINT8,
-    enum data::image::pixel_format _format = data::image::rgb
+    std::uint32_t _seed                      = 0,
+    std::size_t _num_frames                  = 1,
+    core::type _type                         = core::type::UINT8,
+    enum data::image::pixel_format_t _format = data::image::rgb
 )
 {
-    using key_t = std::tuple<std::size_t, core::type, enum data::image::pixel_format, std::uint32_t>;
+    using key_t = std::tuple<std::size_t, core::type, enum data::image::pixel_format_t, std::uint32_t>;
     static std::map<key_t, data::image_series::sptr> generated;
 
     const key_t key {_num_frames, _type, _format, _seed};
@@ -94,6 +100,7 @@ inline static data::image_series::sptr get_us_volume_image(
             {64, 64, _num_frames},
             {1.0, 1.0, 1.0},
             {0, 0, 0},
+            {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6},
             _type,
             _format,
             _seed
@@ -144,17 +151,12 @@ inline static data::image_series::sptr get_us_volume_image(
                 frame_index
             );
 
-            image->set_image_orientation_patient(
-                {
-                    double(_seed + 1) * 0.4,
-                    double(_seed + 1) * 0.5,
-                    double(_seed + 1) * 0.6,
-                    double(_seed + 1) * 0.7,
-                    double(_seed + 1) * 0.8,
-                    double(_seed + 1) * 0.9,
-                },
-                frame_index
-            );
+            glm::dvec3 u = {double(_seed + 1) * 0.4, double(_seed + 1) * 0.5, double(_seed + 1) * 0.6};
+            glm::dvec3 v = {double(_seed + 1) * 0.7, double(_seed + 1) * 0.8, double(_seed + 1) * 0.9};
+
+            // We really want orthogonal directions
+            geometry::orthogonalize(u, v);
+            image->set_image_orientation_patient({u[0], u[1], u[2], v[0], v[1], v[2]}, frame_index);
 
             // set the Frame Acquisition Date Time, which is our "timestamp"
             auto now = std::chrono::system_clock::now();
@@ -357,7 +359,7 @@ void writer_test::write_enhanced_us_volume_test()
 
     {
         core::os::temp_dir tmp_dir;
-        const auto& expected = get_us_volume_image(2, 4, core::type::UINT16, data::image::pixel_format::gray_scale);
+        const auto& expected = get_us_volume_image(2, 4, core::type::UINT16, data::image::pixel_format_t::gray_scale);
 
         // Write a 4 frames monochrome uint16 image
         {

@@ -247,7 +247,7 @@ add_link_options(
 )
 
 # Coverage (only supported for GCC and Clang)
-if(CXX_COMPILER_ID STREQUAL "GNU" OR CXX_COMPILER_ID STREQUAL "Clang")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     option(SIGHT_ENABLE_COVERAGE "Enable coverage information generation" OFF)
     mark_as_advanced(SIGHT_ENABLE_COVERAGE)
 endif()
@@ -259,14 +259,15 @@ if(NOT TARGET coverage)
         add_link_options("$<$<COMPILE_LANG_AND_ID:C,GNU,Clang>:--coverage>")
         add_link_options("$<$<COMPILE_LANG_AND_ID:CXX,GNU,Clang>:--coverage>")
 
-        if(CMAKE_COMPILER_IS_GNUCXX)
+        if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
             link_libraries(gcov)
         endif()
 
         string(
             CONCAT coverage_script
-                   "gcovr -j$RUNNER_THREADS -r .. --filter ../libs --filter ../modules --exclude '.*test.*' --html"
-                   " --html-details coverage/index.html --xml coverage/cobertura-coverage.xml --print-summary ."
+                   "gcovr -j$RUNNER_THREADS -r .. --filter ../libs --filter ../modules --exclude '.*test.*' "
+                   "--exclude-noncode-lines --html --html-details coverage/index.html --html-theme github.dark-blue "
+                   "--xml coverage/cobertura-coverage.xml --print-summary ."
                    "| grep lines"
                    [=[| sed -sE 's/.* \((.*) out of (.*)\)/\1\/\2/']=]
                    "| xargs -i echo 'scale=4;a={}*100;scale=2;a/1'"
@@ -281,7 +282,7 @@ if(NOT TARGET coverage)
             VERBATIM
         )
         unset(coverage_script)
-    elseif(CXX_COMPILER_ID STREQUAL "GNU" OR CXX_COMPILER_ID STREQUAL "Clang")
+    elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         add_custom_target(
             coverage
             COMMAND

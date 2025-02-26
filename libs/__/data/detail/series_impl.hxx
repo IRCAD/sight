@@ -23,6 +23,7 @@
 
 #include "data/series.hpp"
 
+#include "series_impl.hpp"
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -59,16 +60,6 @@ namespace sight::data::detail
 using series_dataset = std::pair<gdcm::DataSet, std::filesystem::path>;
 using frame_datasets = std::vector<series_dataset>;
 
-static constexpr char SPACE_PADDING_CHAR  = ' ';
-static constexpr char NULL_PADDING_CHAR   = '\0';
-static constexpr auto BACKSLASH_SEPARATOR = "\\";
-
-/// @see https://dicom.nema.org/medical/dicom/current/output/html/part05.html#sect_7.8
-static constexpr std::uint16_t PRIVATE_GROUP {0x0099};
-static constexpr std::uint16_t PRIVATE_CREATOR_ELEMENT {0x0099};
-static constexpr std::uint16_t PRIVATE_DATA_ELEMENT {0x9910};
-static const std::string PRIVATE_CREATOR {"Sight"};
-
 /// Allows to check if a VM is fixed (NOT 1..n). Since GDCM Attribute API differs if VM is fixed or not, we need to
 /// check to choose the right gdcm::Attributes::SetValues() version.
 /// @{
@@ -93,16 +84,6 @@ struct has_fixed_multiplicity<
     >
 >: std::false_type {};
 /// @}
-
-/// Remove the trailing padding \0 characters from a string.
-/// @param[in] _source The string to be trimmed.
-/// @return The trimmed string.
-static inline std::string shrink(const std::string& _source)
-{
-    std::string result(_source);
-    result.erase(result.find_last_not_of(NULL_PADDING_CHAR) + 1);
-    return result;
-}
 
 /// Returns the maximum or fixed size of a Value Representation and its padding character.
 /// @note the data come from https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
@@ -230,32 +211,6 @@ static inline std::string arithmetic_to_string(const V& _value, gdcm::VR::VRType
     }
 
     return oss.str();
-}
-
-//------------------------------------------------------------------------------
-
-inline static std::optional<std::string> get_private_string_value(const gdcm::DataSet& _dataset, const gdcm::Tag& _tag)
-{
-    if(!_dataset.FindDataElement(_tag))
-    {
-        return std::nullopt;
-    }
-
-    const auto& data_element = _dataset.GetDataElement(_tag);
-
-    if(data_element.IsEmpty())
-    {
-        return std::nullopt;
-    }
-
-    const auto* byte_value = data_element.GetByteValue();
-
-    if(byte_value == nullptr || byte_value->GetPointer() == nullptr)
-    {
-        return std::nullopt;
-    }
-
-    return shrink(gdcm::String<>(byte_value->GetPointer(), byte_value->GetLength()).Trim());
 }
 
 //------------------------------------------------------------------------------
@@ -510,10 +465,11 @@ public:
                 }
                 else
                 {
-                    return std::optional<return_t> {std::vector<typename A::ArrayType> {attribute.GetValues(),
-                                                                                        attribute.GetValues()
-                                                                                        + attribute.GetNumberOfValues()
-                                                    }
+                    return std::optional<return_t> {
+                        std::vector<typename A::ArrayType> {
+                            attribute.GetValues(),
+                            attribute.GetValues() + attribute.GetNumberOfValues()
+                        }
                     };
                 }
             }
@@ -595,16 +551,47 @@ public:
     {
         std::unique_lock lock(m_mutex);
 
-        gdcm::DataSet data_set = get_data_set(_instance);
-        if(!data_set.FindDataElement(A::GetTag()))
+        const auto& data_set = get_data_set(_instance);
+        const auto& tag      = A::GetTag();
+
+        if(data_set.FindDataElement(tag))
         {
-            return nullptr;
+            return data_set.GetDataElement(tag).GetValueAsSQ();
         }
 
-        return data_set.GetDataElement(A::GetTag()).GetValueAsSQ();
+        return nullptr;
     }
 
-    /// Set a DICOM tag value. If the value is null, the tag is replaced by and empty element.
+    //------------------------------------------------------------------------------
+
+    template<typename A>
+    [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_or_create_sequence(std::size_t _instance = 0)
+    noexcept
+    {
+        std::unique_lock lock(m_mutex);
+
+        auto& data_set  = get_or_create_data_set(_instance);
+        const auto& tag = A::GetTag();
+
+        if(data_set.FindDataElement(tag))
+        {
+            return data_set.GetDataElement(tag).GetValueAsSQ();
+        }
+
+        // No Sequence found, create it
+        auto sequence = gdcm::SequenceOfItems::New();
+        sequence->SetLengthToUndefined();
+
+        gdcm::DataElement element(tag);
+        element.SetVR(gdcm::VR::SQ);
+        element.SetVLToUndefined();
+        element.SetValue(*sequence);
+        data_set.Insert(element);
+
+        return element.GetValueAsSQ();
+    }
+
+    /// Set a DICOM tag value. If the value is null, the tag is replaced by an empty element.
     template<typename A>
     inline void set_value(const std::optional<typename A::ArrayType>& _value, std::size_t _instance = 0)
     {
@@ -625,7 +612,7 @@ public:
         }
     }
 
-    /// Set a string DICOM tag value. If the value is null, the tag is replaced by and empty element.
+    /// Set a string DICOM tag value. If the value is null, the tag is replaced by an empty element.
     /// @{
     template<typename A>
     inline void set_string_value(const std::string& _value, gdcm::DataSet& _data_set)
@@ -690,7 +677,7 @@ public:
 
     /// @}
 
-    /// Set a multi-value DICOM tag. If the vector is empty, the tag is replaced by and empty element.
+    /// Set a multi-value DICOM tag. If the vector is empty, the tag is replaced by an empty element.
     template<typename A>
     inline void set_values(const std::vector<typename A::ArrayType>& _values, std::size_t _instance = 0)
     {
@@ -729,7 +716,7 @@ public:
         set_string_values<A>(split, _instance);
     }
 
-    /// Set a string multi-value DICOM tag. If the vector is empty, the tag is replaced by and empty element.
+    /// Set a string multi-value DICOM tag. If the vector is empty, the tag is replaced by an empty element.
     template<typename A>
     inline void set_string_values(const std::vector<std::string>& _values, std::size_t _instance = 0)
     {
@@ -832,12 +819,10 @@ public:
 
     /// Return the GDCM SequenceOfItems associated to a sequence attribute of a sequence group like
     /// `FrameAcquisitionDateTime`
-    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
-    /// @param _frame_index index of the frame
+    /// @param _frame_index index of the frame or nullopt for the shared group
     /// @return GDCM dataset of the attribute
-    template<typename G>
     [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_group_sequence(
-        std::size_t _frame_index = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     ) const
     {
         std::unique_lock lock(m_mutex);
@@ -854,7 +839,9 @@ public:
         }
 
         const auto& dataset   = get_data_set(0);
-        const auto& group_tag = G::GetTag();
+        const auto& group_tag = _frame_index
+                                ? gdcm::Keywords::PerFrameFunctionalGroupsSequence::GetTag()
+                                : gdcm::Keywords::SharedFunctionalGroupsSequence::GetTag();
 
         if(!dataset.FindDataElement(group_tag))
         {
@@ -864,7 +851,8 @@ public:
         // Retrieve the Functional Groups Sequence
         const auto& frame_sequence = dataset.GetDataElement(group_tag).GetValueAsSQ();
 
-        if(frame_sequence->GetNumberOfItems() <= _frame_index)
+        if(const auto number_of_items = frame_sequence->GetNumberOfItems();
+           number_of_items == 0 || (_frame_index && number_of_items <= _frame_index))
         {
             return {};
         }
@@ -874,18 +862,17 @@ public:
 
     /// Return the GDCM SequenceOfItems associated to a sequence attribute of a sequence group like
     /// `FrameAcquisitionDateTime`
-    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @tparam S Sequence Attribute (like Frame Content Sequence)
-    /// @param _frame_index index of the frame
+    /// @param _frame_index index of the frame or nullopt for the shared group
     /// @return GDCM dataset of the attribute
-    template<typename G, typename S>
+    template<typename S>
     [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_sequence(
-        std::size_t _frame_index = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     ) const
     {
         std::unique_lock lock(m_mutex);
 
-        const auto& group_sequence = get_multi_frame_group_sequence<G>(_frame_index);
+        const auto& group_sequence = get_multi_frame_group_sequence(_frame_index);
 
         if(!group_sequence || group_sequence->IsEmpty())
         {
@@ -893,7 +880,7 @@ public:
         }
 
         // Retrieve the frame item and dataset
-        const auto& frame_item    = group_sequence->GetItem(_frame_index + 1);
+        const auto& frame_item    = group_sequence->GetItem(_frame_index.value_or(0) + 1);
         const auto& frame_dataset = frame_item.GetNestedDataSet();
 
         const auto& attribute_sequence_tag = S::GetTag();
@@ -916,17 +903,18 @@ public:
 
     /// Retrieve DICOM tag value from a multi-frame sequence attribute of a sequence group like
     /// `FrameAcquisitionDateTime`
-    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @tparam S Sequence Attribute (like Frame Content Sequence)
     /// @tparam A Attribute (like Frame Acquisition DateTime)
-    /// @param _frame_index index of the frame
+    /// @param _frame_index index of the frame or nullopt for the shared group
     /// @return attribute value. If the tag is not found, an empty vector is returned.
-    template<typename G, typename S, typename A>
-    [[nodiscard]] inline std::optional<typename A::ArrayType> get_multi_frame_value(std::size_t _frame_index = 0) const
+    template<typename S, typename A>
+    [[nodiscard]] inline std::optional<typename A::ArrayType> get_multi_frame_value(
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) const
     {
         std::unique_lock lock(m_mutex);
 
-        const auto& attribute_sequence = get_multi_frame_sequence<G, S>(_frame_index);
+        const auto& attribute_sequence = get_multi_frame_sequence<S>(_frame_index);
 
         if(!attribute_sequence || attribute_sequence->IsEmpty())
         {
@@ -941,29 +929,31 @@ public:
 
     /// Return the GDCM group sequence of a sequence group like `PerFrameFunctionalGroupsSequence`
     /// Construct intermediate DataElements if they don't exist.
-    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
-    /// @param _frame_index index of the frame
+    /// @param _frame_index index of the frame or nullopt for the shared group
     /// @return GDCM dataset of the attribute
-    template<typename G>
-    inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_group_sequence(std::size_t _frame_index = 0)
+    inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_group_sequence(
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+)
     {
         std::unique_lock lock(m_mutex);
 
         /// @note We assume that multi-frame dicom have only one instance, IE no instance "Concatenation" here
         /// @note See "Concatenation" related attributes ((0020,9228) and (0020,9162))
         auto& dataset         = get_data_set(0);
-        const auto& group_tag = G::GetTag();
+        const auto& group_tag = _frame_index
+                                ? gdcm::Keywords::PerFrameFunctionalGroupsSequence::GetTag()
+                                : gdcm::Keywords::SharedFunctionalGroupsSequence::GetTag();
 
         if(!dataset.FindDataElement(group_tag))
         {
             // No Frame Sequence found, create it
-            auto group_sequence = gdcm::SequenceOfItems::New();
-            group_sequence->SetLengthToUndefined();
+            auto sequence = gdcm::SequenceOfItems::New();
+            sequence->SetLengthToUndefined();
 
             gdcm::DataElement group_element(group_tag);
             group_element.SetVR(gdcm::VR::SQ);
             group_element.SetVLToUndefined();
-            group_element.SetValue(*group_sequence);
+            group_element.SetValue(*sequence);
 
             dataset.Insert(group_element);
         }
@@ -971,7 +961,7 @@ public:
         // Retrieve the Frame Sequence
         const auto& group_sequence = dataset.GetDataElement(group_tag).GetValueAsSQ();
 
-        while(group_sequence->GetNumberOfItems() <= _frame_index)
+        for(std::size_t last_index = _frame_index.value_or(0) ; group_sequence->GetNumberOfItems() <= last_index ; )
         {
             // Create all intermediate items, as needed
             gdcm::Item frame_item;
@@ -988,19 +978,20 @@ public:
     /// Return the GDCM SequenceOfItems associated to a sequence attribute of a sequence group like
     /// `FrameAcquisitionDateTime`
     /// Construct intermediate DataElements if they don't exist.
-    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @tparam S Sequence Attribute (like Frame Content Sequence)
-    /// @param _frame_index index of the frame
+    /// @param _frame_index index of the frame or nullopt for the shared group
     /// @return GDCM dataset of the attribute
-    template<typename G, typename S>
-    inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_sequence(std::size_t _frame_index = 0)
+    template<typename S>
+    inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_sequence(
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+)
     {
         std::unique_lock lock(m_mutex);
 
-        auto group_sequence = get_multi_frame_group_sequence<G>(_frame_index);
+        auto group_sequence = get_multi_frame_group_sequence(_frame_index);
 
         // Retrieve the frame item and dataset
-        auto& frame_item    = group_sequence->GetItem(_frame_index + 1);
+        auto& frame_item    = group_sequence->GetItem(_frame_index.value_or(0) + 1);
         auto& frame_dataset = frame_item.GetNestedDataSet();
 
         const auto& attribute_sequence_tag = S::GetTag();
@@ -1008,13 +999,13 @@ public:
         if(!frame_dataset.FindDataElement(attribute_sequence_tag))
         {
             // No Attribute Sequence found, create it
-            auto attribute_sequence = gdcm::SequenceOfItems::New();
-            attribute_sequence->SetLengthToUndefined();
+            auto sequence = gdcm::SequenceOfItems::New();
+            sequence->SetLengthToUndefined();
 
             gdcm::DataElement attribute_sequence_element(attribute_sequence_tag);
             attribute_sequence_element.SetVR(gdcm::VR::SQ);
             attribute_sequence_element.SetVLToUndefined();
-            attribute_sequence_element.SetValue(*attribute_sequence);
+            attribute_sequence_element.SetValue(*sequence);
 
             frame_dataset.Insert(attribute_sequence_element);
         }
@@ -1035,16 +1026,18 @@ public:
 
     /// Set a DICOM tag value to a multi-frame sequence attribute of a sequence group like `FrameAcquisitionDateTime`
     /// Construct intermediate DataElements if they don't exist.
-    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @tparam S Sequence Attribute (like Frame Content Sequence)
     /// @tparam A Attribute (like Frame Acquisition DateTime)
-    /// @param _frame_index index of the frame
-    template<typename G, typename S, typename A>
-    inline void set_multi_frame_value(const std::optional<typename A::ArrayType>& _value, std::size_t _frame_index = 0)
+    /// @param _frame_index index of the frame or nullopt for the shared group
+    template<typename S, typename A>
+    inline void set_multi_frame_value(
+        const std::optional<typename A::ArrayType>& _value,
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+)
     {
         std::unique_lock lock(m_mutex);
 
-        const auto& attribute_sequence = get_multi_frame_sequence<G, S>(_frame_index);
+        const auto& attribute_sequence = get_multi_frame_sequence<S>(_frame_index);
         auto& attribute_dataset        = attribute_sequence->GetItem(1).GetNestedDataSet();
 
         if(_value)
@@ -1064,17 +1057,18 @@ public:
     }
 
     /// Retrieve multi-value DICOM tag from a multi-frame sequence attribute of a sequence group.
-    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @tparam S Sequence Attribute (like Frame Content Sequence)
     /// @tparam A Attribute (like Frame Acquisition DateTime)
-    /// @param _frame_index index of the frame
+    /// @param _frame_index index of the frame or nullopt for the shared group
     /// @return attribute value. If the tag is not found, an empty vector is returned.
-    template<typename G, typename S, typename A>
-    [[nodiscard]] inline std::vector<typename A::ArrayType> get_multi_frame_values(std::size_t _frame_index = 0) const
+    template<typename S, typename A>
+    [[nodiscard]] inline std::vector<typename A::ArrayType> get_multi_frame_values(
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+    ) const
     {
         std::unique_lock lock(m_mutex);
 
-        const auto& attribute_sequence = get_multi_frame_sequence<G, S>(_frame_index);
+        const auto& attribute_sequence = get_multi_frame_sequence<S>(_frame_index);
 
         if(!attribute_sequence || attribute_sequence->IsEmpty())
         {
@@ -1095,21 +1089,26 @@ public:
 
         // Pointer can be treated as iterator ;)
         const auto values_pointer = attribute.GetValues();
-        return std::vector<typename A::ArrayType>(values_pointer, values_pointer + count);
+        return std::vector<typename A::ArrayType>(
+            values_pointer,
+            values_pointer + count
+        );
     }
 
     /// Set a multi-value DICOM tag to a multi-frame sequence attribute of a sequence group.
     /// Construct intermediate DataElements if they don't exist.
-    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @tparam S Sequence Attribute (like Frame Content Sequence)
     /// @tparam A Attribute (like Frame Acquisition DateTime)
-    /// @param _frame_index index of the frame
-    template<typename G, typename S, typename A>
-    inline void set_multi_frame_values(const std::vector<typename A::ArrayType>& _values, std::size_t _frame_index = 0)
+    /// @param _frame_index index of the frame or nullopt for the shared group
+    template<typename S, typename A>
+    inline void set_multi_frame_values(
+        const std::vector<typename A::ArrayType>& _values,
+        const std::optional<std::size_t>& _frame_index = std::nullopt
+)
     {
         std::unique_lock lock(m_mutex);
 
-        const auto& attribute_sequence = get_multi_frame_sequence<G, S>(_frame_index);
+        const auto& attribute_sequence = get_multi_frame_sequence<S>(_frame_index);
         auto& attribute_dataset        = attribute_sequence->GetItem(1).GetNestedDataSet();
 
         if(_values.empty())
@@ -1138,24 +1137,22 @@ public:
 
     /// Return a private GDCM sequence group associated to a private sequence attribute of a sequence group
     /// Construct intermediate DataElements if they don't exist.
-    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @param[in] _element private element number in the range of 0x10 to 0xFF
-    /// @param[in] _frame_index index of the frame
+    /// @param[in] _frame_index index of the frame or nullopt for the shared group
     /// @return GDCM dataset of the attribute
-    template<typename G>
     inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_private_sequence(
         std::uint8_t _element,
-        std::size_t _frame_index = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
 )
     {
         std::unique_lock lock(m_mutex);
 
         SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", _element >= 0x10 && _element <= 0xFF);
 
-        const auto& group_sequence = get_multi_frame_group_sequence<G>(_frame_index);
+        const auto& group_sequence = get_multi_frame_group_sequence(_frame_index);
 
         // Retrieve the frame item and dataset
-        auto& frame_item    = group_sequence->GetItem(_frame_index + 1);
+        auto& frame_item    = group_sequence->GetItem(_frame_index.value_or(0) + 1);
         auto& frame_dataset = frame_item.GetNestedDataSet();
 
         // Verify that the creator tag is already there.
@@ -1174,13 +1171,13 @@ public:
         if(!frame_dataset.FindDataElement(attribute_sequence_tag))
         {
             // No Attribute Sequence found, create it
-            auto attribute_sequence = gdcm::SequenceOfItems::New();
-            attribute_sequence->SetLengthToUndefined();
+            auto sequence = gdcm::SequenceOfItems::New();
+            sequence->SetLengthToUndefined();
 
             gdcm::DataElement attribute_sequence_element(attribute_sequence_tag);
             attribute_sequence_element.SetVR(gdcm::VR::SQ);
             attribute_sequence_element.SetVLToUndefined();
-            attribute_sequence_element.SetValue(*attribute_sequence);
+            attribute_sequence_element.SetValue(*sequence);
 
             frame_dataset.Insert(attribute_sequence_element);
         }
@@ -1200,28 +1197,26 @@ public:
     }
 
     /// Return a private GDCM sequence group associated to a private sequence attribute of a sequence group
-    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @param[in] _element private element number in the range of 0x10 to 0xFF
-    /// @param[in] _frame_index index of the frame
+    /// @param[in] _frame_index index of the frame or nullopt for the shared group
     /// @return GDCM dataset of the attribute
-    template<typename G>
     inline gdcm::SmartPointer<gdcm::SequenceOfItems> get_multi_frame_private_sequence(
         std::uint8_t _element,
-        std::size_t _frame_index = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     ) const
     {
         std::unique_lock lock(m_mutex);
 
         SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", _element >= 0x10 && _element <= 0xFF);
 
-        const auto& group_sequence = get_multi_frame_group_sequence<G>(_frame_index);
-        if(!group_sequence || group_sequence->GetNumberOfItems() <= _frame_index)
+        const auto& group_sequence = get_multi_frame_group_sequence(_frame_index);
+        if(!group_sequence || group_sequence->GetNumberOfItems() <= _frame_index.value_or(0))
         {
             return {};
         }
 
         // Retrieve the frame item and dataset
-        const auto& frame_item    = group_sequence->GetItem(_frame_index + 1);
+        const auto& frame_item    = group_sequence->GetItem(_frame_index.value_or(0) + 1);
         const auto& frame_dataset = frame_item.GetNestedDataSet();
 
         // Get the tag
@@ -1245,17 +1240,15 @@ public:
 
     /// Retrieve private DICOM tag value from a multi-frame sequence attribute of a sequence group like
     /// `FrameAcquisitionDateTime`
-    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
-    /// @param _frame_index index of the frame
+    /// @param _frame_index index of the frame or nullopt for the shared group
     /// @param[in] _sequence_element private sequence element number in the range of 0x10 to 0xFF
     /// @param[in] _value_element    private value element number in the range of 0x10 to 0xFF
     ///                              (must be different from sequence_element)
     /// @return attribute value. If the tag is not found, an empty vector is returned.
-    template<typename G>
     [[nodiscard]] inline std::optional<std::string> get_multi_frame_private_value(
         std::uint8_t _sequence_element,
         std::uint8_t _value_element,
-        std::size_t _frame_index = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
     ) const
     {
         std::unique_lock lock(m_mutex);
@@ -1267,7 +1260,7 @@ public:
             && _sequence_element != _value_element
         );
 
-        const auto& attribute_sequence = get_multi_frame_private_sequence<G>(_sequence_element, _frame_index);
+        const auto& attribute_sequence = get_multi_frame_private_sequence(_sequence_element, _frame_index);
 
         if(!attribute_sequence || attribute_sequence->IsEmpty())
         {
@@ -1287,18 +1280,16 @@ public:
     /// Set a DICOM private tag value to a multi-frame sequence attribute of a sequence group like
     /// `FrameAcquisitionDateTime`
     /// Construct intermediate DataElements if they don't exist.
-    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
     /// @param[in] _value private string value to set
     /// @param[in] _sequence_element private sequence element number in the range of 0x10 to 0xFF
     /// @param[in] _value_element private value element number in the range of 0x10 to 0xFF
     ///                          (must be different from sequence_element)
-    /// @param[in] _frame_index index of the frame
-    template<typename G>
+    /// @param[in] _frame_index index of the frame or nullopt for the shared group
     inline void set_multi_frame_private_value(
         const std::optional<std::string>& _value,
         std::uint8_t _sequence_element,
         std::uint8_t _value_element,
-        std::size_t _frame_index = 0
+        const std::optional<std::size_t>& _frame_index = std::nullopt
 )
     {
         std::unique_lock lock(m_mutex);
@@ -1310,7 +1301,7 @@ public:
             && _sequence_element != _value_element
         );
 
-        const auto& attribute_sequence = get_multi_frame_private_sequence<G>(_sequence_element, _frame_index);
+        const auto& attribute_sequence = get_multi_frame_private_sequence(_sequence_element, _frame_index);
         auto& attribute_dataset        = attribute_sequence->GetItem(1).GetNestedDataSet();
 
         // Get the tag
@@ -1428,7 +1419,7 @@ public:
         {
             if(!current_data_set->FindDataElement(tag))
             {
-                auto* sequence = new gdcm::SequenceOfItems();
+                auto sequence = gdcm::SequenceOfItems::New();
                 sequence->SetLengthToUndefined();
 
                 gdcm::DataElement element(tag);
@@ -1447,8 +1438,8 @@ public:
                 sequence->AddItem(gdcm::Item {});
             }
 
-            current_data_set = &sequence->GetItem(index + 1).GetNestedDataSet(); // GDCM SequenceOfItems are
-                                                                                 // 1-indexed...
+            // GDCM SequenceOfItems are 1-indexed...
+            current_data_set = &sequence->GetItem(index + 1).GetNestedDataSet();
         }
 
         return *current_data_set;

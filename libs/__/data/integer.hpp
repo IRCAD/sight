@@ -25,8 +25,8 @@
 #include <sight/data/config.hpp>
 
 #include "data/factory/new.hpp"
-#include "data/generic_field.hpp"
 #include "data/object.hpp"
+#include "data/scalar.hpp"
 
 namespace sight::data
 {
@@ -35,39 +35,19 @@ namespace sight::data
  * @brief   This class contains an integer value.
  * integer object is essentially used as a field in other objects.
  */
-class SIGHT_DATA_CLASS_API integer final : public generic_field<std::int64_t>
+class SIGHT_DATA_CLASS_API integer final : public scalar<std::int64_t>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(integer, object);
+    SIGHT_DECLARE_CLASS(integer, data::string_serializable);
 
-    /**
-     * @brief Constructor
-     * @param _val     initial value of this field
-     */
-    SIGHT_DATA_API integer(const std::int64_t _val = 0) noexcept
-    {
-        value() = _val;
-    }
+    using scalar<std::int64_t>::scalar;
+    using scalar<std::int64_t>::operator=;
 
     /**
      * @brief Destructor.
      */
     SIGHT_DATA_API ~integer() noexcept override = default;
-
-    /// Defines shallow copy
-    /// @throws data::exception if an errors occurs during copy
-    /// @param[in] _source the source object to copy
-    SIGHT_DATA_API void shallow_copy(const object::csptr& _source) override;
-
-    /// Defines deep copy
-    /// @throws data::exception if an errors occurs during copy
-    /// @param _source source object to copy
-    /// @param _cache cache used to deduplicate pointers
-    SIGHT_DATA_API void deep_copy(
-        const object::csptr& _source,
-        const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
-    ) override;
 };
 
 } // namespace sight::data

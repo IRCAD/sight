@@ -23,6 +23,7 @@
 
 #include <sight/core/config.hpp>
 
+#include <cstdint>
 #include <limits>
 #include <map>
 #include <string>

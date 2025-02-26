@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,51 +22,6 @@
 
 #include "data/integer.hpp"
 
-#include "data/exception.hpp"
-#include "data/generic_field.hpp"
 #include "data/registry/macros.hpp"
 
 SIGHT_REGISTER_DATA(sight::data::integer);
-
-namespace sight::data
-{
-
-//------------------------------------------------------------------------------
-
-void integer::shallow_copy(const object::csptr& _source)
-{
-    const auto& other = std::dynamic_pointer_cast<const integer>(_source);
-
-    SIGHT_THROW_EXCEPTION_IF(
-        exception(
-            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
-            + " to " + get_classname()
-        ),
-        !bool(other)
-    );
-
-    m_value = other->m_value;
-
-    base_class_t::shallow_copy(other);
-}
-
-//------------------------------------------------------------------------------
-
-void integer::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
-{
-    const auto& other = std::dynamic_pointer_cast<const integer>(_source);
-
-    SIGHT_THROW_EXCEPTION_IF(
-        exception(
-            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
-            + " to " + get_classname()
-        ),
-        !bool(other)
-    );
-
-    m_value = other->m_value;
-
-    base_class_t::deep_copy(other, _cache);
-}
-
-} // namespace sight::data

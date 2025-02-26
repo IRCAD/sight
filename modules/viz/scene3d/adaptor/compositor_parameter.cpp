@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #include "modules/viz/scene3d/adaptor/compositor_parameter.hpp"
-
-#include "modules/viz/scene3d/adaptor/material.hpp"
 
 #include <core/com/slots.hxx>
 
@@ -69,7 +67,7 @@ public:
     {
         auto adaptor = m_adaptor.lock();
         SIGHT_ASSERT("Adaptor has expired.", adaptor);
-        adaptor->set_dirty();
+        adaptor->lazy_update();
     }
 
     //------------------------------------------------------------------------------
@@ -110,13 +108,13 @@ void compositor_parameter::configuring()
 
 void compositor_parameter::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     sight::viz::scene3d::layer::sptr layer = this->layer();
 
-    if(!m_visible)
+    if(!visible())
     {
-        this->slot(UPDATE_VISIBILITY_SLOT)->async_run(m_visible);
+        this->slot(slots::UPDATE_VISIBILITY)->async_run(visible());
     }
 
     this->add_listener();
@@ -127,16 +125,6 @@ void compositor_parameter::starting()
         this->get_sptr(),
         ADD_LISTENER_SLOT
     );
-}
-
-//------------------------------------------------------------------------------
-
-void compositor_parameter::updating()
-{
-    // This is typically called when the data has changed through autoconnect
-    // So set the parameter as dirty and perform the update
-    this->set_dirty();
-    this->parameter_adaptor::updating();
 }
 
 //------------------------------------------------------------------------------
@@ -160,6 +148,8 @@ void compositor_parameter::stopping()
     compositor->removeListener(m_listener);
     delete m_listener;
     m_listener = nullptr;
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------

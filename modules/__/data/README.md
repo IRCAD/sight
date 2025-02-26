@@ -5,7 +5,7 @@ This module contains contains several interfaces for data management in XML conf
 ## Services
 
 - **copy**: copies an object and updates its own objects or the defined target.
-- **manage**: manages an object (add/swap/remove) into a container object (composite, vector, series_set).
+- **manage**: manages an object (add/swap/remove) into a container object (map, vector, series_set).
 - **SeriesSignals**: emits a signal for each added series (the signal contains the added series)
 - **select_object**: registers/unregisters the object given by the slots.
 - **SGetImage**: extracts an image from a image series.

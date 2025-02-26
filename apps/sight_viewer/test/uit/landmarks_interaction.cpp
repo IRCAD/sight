@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -122,7 +122,7 @@ void landmarks_interaction::test()
                 {
                     _obj->setCurrentItem(_obj->topLevelItem(0));
                 });
-                helper::slider::set(_tester, "landmarksParameterSrv/Size", 100);
+                helper::slider::set(_tester, "landmarksParameterSrv/Size", 10);
                 _tester.take("3D scene", "sceneSrv");
                 _tester.interact(
                     std::make_unique<sight::ui::test::mouse_click>(
@@ -162,7 +162,7 @@ void landmarks_interaction::test()
                 {
                     _obj->setCurrentItem(_obj->topLevelItem(1));
                 });
-                helper::slider::set(_tester, "landmarksParameterSrv/Size", 100);
+                helper::slider::set(_tester, "landmarksParameterSrv/Size", 10);
                 _tester.take("3D scene", "sceneSrv");
                 _tester.interact(
                     std::make_unique<sight::ui::test::mouse_click>(
@@ -202,7 +202,7 @@ void landmarks_interaction::test()
                 {
                     _obj->setCurrentItem(_obj->topLevelItem(2));
                 });
-                helper::slider::set(_tester, "landmarksParameterSrv/Size", 100);
+                helper::slider::set(_tester, "landmarksParameterSrv/Size", 10);
                 _tester.take("3D scene", "sceneSrv");
                 _tester.interact(
                     std::make_unique<sight::ui::test::mouse_click>(

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,6 +71,8 @@ void line::configuring()
 
 void line::draw()
 {
+    using sight::viz::scene2d::vec2d_t;
+
     const vec2d_t pt1 = this->map_adaptor_to_scene((vec2d_t(m_x1, m_y1)));
     const vec2d_t pt2 = this->map_adaptor_to_scene((vec2d_t(m_x2, m_y2)));
 

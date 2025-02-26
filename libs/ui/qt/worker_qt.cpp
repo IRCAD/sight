@@ -92,7 +92,7 @@ public:
 
     core::thread::worker::future_t get_future() override;
 
-    core::thread::thread_id_t get_thread_id() const override;
+    [[nodiscard]] core::thread::thread_id_t get_thread_id() const override;
 
     void set_thread_name(const std::string& _thread_name) const override;
 
@@ -244,8 +244,8 @@ void worker_qt::init(int& _argc, char** _argv)
 void worker_qt::set_app(QSharedPointer<QCoreApplication> _app, const std::string& _name, const std::string& _version)
 {
     m_app = std::move(_app);
-    QCoreApplication::setOrganizationName("IRCAD");
-    QCoreApplication::setOrganizationDomain("https://www.ircad.fr/");
+    QCoreApplication::setOrganizationName(SIGHT_APP_VENDOR);
+    QCoreApplication::setOrganizationDomain(SIGHT_APP_VENDOR_URL);
     QCoreApplication::setApplicationName(QString::fromStdString(_name));
     QCoreApplication::setApplicationVersion(QString::fromStdString(_version));
 }

@@ -115,7 +115,7 @@ private:
     QPointer<QLabel> m_label_static_text;
 
     static constexpr std::string_view STRING_INPUT = "string";
-    data::ptr<data::string, sight::data::access::in> m_string {this, STRING_INPUT, true, true};
+    data::ptr<data::string, sight::data::access::in> m_string {this, STRING_INPUT, true};
 };
 
 } // namespace sight::module::ui::qt

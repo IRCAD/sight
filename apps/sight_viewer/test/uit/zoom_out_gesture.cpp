@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -59,13 +59,15 @@ void zoom_out_gesture::test()
             _tester.take("ogre scene", "sceneSrv");
             // We need to a reference to it for later
             auto* ogre_scene = _tester.get<QWidget*>();
+            ogre_scene->raise();
+            ogre_scene->activateWindow();
             _tester.interact(
                 // Pinch fingers...
                 std::make_unique<sight::ui::test::pinch_gesture>(
-                    // ...with the first finger going to the center from 300 pixels higher...
-                    std::pair(ogre_scene->rect().center() + QPoint(0, 300), ogre_scene->rect().center() + QPoint(0, 1)),
-                    // ...and the second finger going to the center from 300 pixels lower
-                    std::pair(ogre_scene->rect().center() - QPoint(0, 300), ogre_scene->rect().center() - QPoint(0, 1))
+                    // ...with the first finger going to the center from 70 pixels higher...
+                    std::pair(ogre_scene->rect().center() + QPoint(0, 70), ogre_scene->rect().center() + QPoint(0, 1)),
+                    // ...and the second finger going to the center from 70 pixels lower
+                    std::pair(ogre_scene->rect().center() - QPoint(0, 70), ogre_scene->rect().center() - QPoint(0, 1))
                 )
             );
 

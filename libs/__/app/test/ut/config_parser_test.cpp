@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ static const double EPSILON = 1e-5;
 
 // There might be some uncertainty when sampling, so we need to include an epsilon when testing equality
 #define ASSERT_COLOR_EQUALS(c1, c2) \
-    CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(c1, c2, EPSILON)));
+        CPPUNIT_ASSERT(glm::all(glm::epsilonEqual(c1, c2, EPSILON)));
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::ut::data_parser_test);
@@ -109,8 +109,8 @@ void data_parser_test::test_object_creation_with_config()
 
     // Test update services
     config_manager->update();
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::test_config_service>(srv1)->get_is_updated());
-    CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::test_config_service>(srv2)->get_is_updated() == false);
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::test_config_service>(srv1)->is_updated());
+    CPPUNIT_ASSERT(std::dynamic_pointer_cast<app::ut::test_config_service>(srv2)->is_updated() == false);
 
     // Test stop services
     config_manager->stop();
@@ -127,7 +127,7 @@ void data_parser_test::test_image_parser()
     const std::string object_uuid = "objectUUID";
     service::config_t config;
 
-    // Configuration on core::tools::object which uid is objectUUID
+    // Configuration on core::object which uid is objectUUID
     service::config_t obj_cfg;
     obj_cfg.add("<xmlattr>.uid", object_uuid);
     obj_cfg.add("<xmlattr>.type", "sight::data::image");
@@ -138,7 +138,7 @@ void data_parser_test::test_image_parser()
     auto config_manager = app::config_manager::make();
     config_manager->app::config_manager::set_config(config);
     config_manager->create();
-    auto image = std::dynamic_pointer_cast<data::image>(core::tools::id::get_object(object_uuid));
+    auto image = std::dynamic_pointer_cast<data::image>(core::id::get_object(object_uuid));
 
     // Test object uid
     CPPUNIT_ASSERT_EQUAL(object_uuid, image->get_id());
@@ -165,52 +165,97 @@ void data_parser_test::test_image_parser()
 
 void data_parser_test::test_transfer_function_parser()
 {
-    service::config_t config;
+    {
+        service::config_t config;
 
-    std::stringstream config_string;
-    config_string << "<colors>"
-                     "<step color=\"#ffff00ff\" value=\"-200\" />"
-                     "<step color=\"#000000ff\" value=\"0\" />"
-                     "<step color=\"#0000ffff\" value=\"1\" />"
-                     "<step color=\"#0000ffff\" value=\"500\" />"
-                     "<step color=\"#00ff00ff\" value=\"1000\" />"
-                     "<step color=\"#ff0000ff\" value=\"1500\" />"
-                     "<step color=\"#000000ff\" value=\"5000\" />"
-                     "</colors>";
-    boost::property_tree::read_xml(config_string, config);
+        std::stringstream config_string;
+        config_string << "<colors default=\"true\" />";
+        boost::property_tree::read_xml(config_string, config);
 
-    auto parser = sight::service::add<sight::app::parser::transfer_function>("sight::app::parser::transfer_function");
-    parser->set_object_config(config);
+        auto parser =
+            sight::service::add<sight::app::parser::transfer_function>("sight::app::parser::transfer_function");
+        CPPUNIT_ASSERT(parser->is_a("sight::app::parser::transfer_function"));
 
-    auto tf = std::make_shared<sight::data::transfer_function>();
-    parser->create_config(tf);
+        auto tf = std::make_shared<sight::data::transfer_function>();
+        service::object_parser::objects_t sub_objects;
+        parser->parse(config, tf, sub_objects);
 
-    const auto piece = tf->pieces().front();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(7), piece->size());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", 50.0, tf->level(), EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", 500.0, tf->window(), EPSILON);
 
-    CPPUNIT_ASSERT_EQUAL(-200., piece->min_max().first);
-    CPPUNIT_ASSERT_EQUAL(5000., piece->min_max().second);
-    CPPUNIT_ASSERT_EQUAL(5200., piece->window());
-    CPPUNIT_ASSERT_EQUAL(2400., piece->level());
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 1., 0., 1.), piece->sample_linear(-200));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), piece->sample_linear(0));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), piece->sample_linear(250));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), piece->sample_linear(500));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 1., 0., 1.), piece->sample_linear(1000));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 0., 0., 1.), piece->sample_linear(1500));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), piece->sample_linear(5000));
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong level ", 50.0, tf->pieces()[0]->level(), EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE("Wrong window", 500.0, tf->pieces()[0]->window(), EPSILON);
 
-    CPPUNIT_ASSERT_EQUAL(-200., tf->min_max().first);
-    CPPUNIT_ASSERT_EQUAL(5000., tf->min_max().second);
-    CPPUNIT_ASSERT_EQUAL(5200., tf->window());
-    CPPUNIT_ASSERT_EQUAL(2400., tf->level());
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 1., 0., 1.), tf->sample_linear(-200));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), tf->sample_linear(0));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), tf->sample_linear(250));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), tf->sample_linear(500));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 1., 0., 1.), tf->sample_linear(1000));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 0., 0., 1.), tf->sample_linear(1500));
-    ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), tf->sample_linear(5000));
+        CPPUNIT_ASSERT_EQUAL(sight::data::transfer_function::DEFAULT_TF_NAME, tf->name());
+        CPPUNIT_ASSERT(sight::data::transfer_function::color_t() == tf->background_color());
+
+        const auto first_piece = tf->pieces().front();
+
+        CPPUNIT_ASSERT_EQUAL(
+            sight::data::transfer_function::interpolation_mode::linear,
+            first_piece->get_interpolation_mode()
+        );
+        CPPUNIT_ASSERT_EQUAL(false, first_piece->clamped());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), first_piece->size());
+    }
+
+    {
+        service::config_t config;
+
+        std::string name = "test_tf";
+
+        std::stringstream config_string;
+        config_string
+        << "<name>" + name + "</name>"
+                             "<colors>"
+                             "<step color=\"#ffff00ff\" value=\"-200\" />"
+                             "<step color=\"#000000ff\" value=\"0\" />"
+                             "<step color=\"#0000ffff\" value=\"1\" />"
+                             "<step color=\"#0000ffff\" value=\"500\" />"
+                             "<step color=\"#00ff00ff\" value=\"1000\" />"
+                             "<step color=\"#ff0000ff\" value=\"1500\" />"
+                             "<step color=\"#000000ff\" value=\"5000\" />"
+                             "</colors>";
+        boost::property_tree::read_xml(config_string, config);
+
+        auto parser =
+            sight::service::add<sight::app::parser::transfer_function>("sight::app::parser::transfer_function");
+        CPPUNIT_ASSERT(parser->is_a("sight::app::parser::transfer_function"));
+
+        auto tf = std::make_shared<sight::data::transfer_function>();
+
+        service::object_parser::objects_t sub_objects;
+        parser->parse(config, tf, sub_objects);
+
+        CPPUNIT_ASSERT_EQUAL(tf->name(), name);
+
+        const auto piece = tf->pieces().front();
+        CPPUNIT_ASSERT_EQUAL(std::size_t(7), piece->size());
+
+        CPPUNIT_ASSERT_EQUAL(-200., piece->min_max().first);
+        CPPUNIT_ASSERT_EQUAL(5000., piece->min_max().second);
+        CPPUNIT_ASSERT_EQUAL(5200., piece->window());
+        CPPUNIT_ASSERT_EQUAL(2400., piece->level());
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 1., 0., 1.), piece->sample_linear(-200));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), piece->sample_linear(0));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), piece->sample_linear(250));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), piece->sample_linear(500));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 1., 0., 1.), piece->sample_linear(1000));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 0., 0., 1.), piece->sample_linear(1500));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), piece->sample_linear(5000));
+
+        CPPUNIT_ASSERT_EQUAL(-200., tf->min_max().first);
+        CPPUNIT_ASSERT_EQUAL(5000., tf->min_max().second);
+        CPPUNIT_ASSERT_EQUAL(5200., tf->window());
+        CPPUNIT_ASSERT_EQUAL(2400., tf->level());
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 1., 0., 1.), tf->sample_linear(-200));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), tf->sample_linear(0));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), tf->sample_linear(250));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 1., 1.), tf->sample_linear(500));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 1., 0., 1.), tf->sample_linear(1000));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(1., 0., 0., 1.), tf->sample_linear(1500));
+        ASSERT_COLOR_EQUALS(data::transfer_function::color_t(0., 0., 0., 1.), tf->sample_linear(5000));
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -219,7 +264,7 @@ service::config_t data_parser_test::build_object_config()
 {
     service::config_t config;
 
-    // Configuration on core::tools::object which uid is objectUUID
+    // Configuration on core::object which uid is objectUUID
     service::config_t obj_cfg;
     obj_cfg.add("<xmlattr>.uid", "objectUUID");
     obj_cfg.add("<xmlattr>.type", "sight::data::image");

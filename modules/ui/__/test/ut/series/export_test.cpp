@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,14 +26,11 @@
 
 #include <service/op.hpp>
 
-#include <ui/__/dialog/input_dummy.hpp>
-#include <ui/__/macros.hpp>
+#include <ui/test/dialog/input.hpp>
 
 #include <utest/wait.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::series::ut::export_test);
-
-SIGHT_REGISTER_GUI(sight::ui::dialog::input_dummy, sight::ui::dialog::input_base::REGISTRY_KEY);
 
 namespace sight::module::ui::series::ut
 {
@@ -69,7 +66,7 @@ void export_test::basic_test()
     CPPUNIT_ASSERT(container->empty());
     CPPUNIT_ASSERT_NO_THROW(m_export->configure());
     CPPUNIT_ASSERT_NO_THROW(m_export->start().get());
-    sight::ui::dialog::input_dummy::push_input("I don't care");
+    sight::ui::test::dialog::input::push_input("I don't care");
     CPPUNIT_ASSERT_NO_THROW(m_export->update().get());
     CPPUNIT_ASSERT_NO_THROW(m_export->stop().get());
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), container->size());

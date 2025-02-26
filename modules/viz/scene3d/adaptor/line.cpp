@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,7 @@
 #include <service/macros.hpp>
 
 #include <viz/scene3d/helper/scene.hpp>
+#include <viz/scene3d/mesh.hpp>
 #include <viz/scene3d/ogre.hpp>
 
 #include <Ogre.h>
@@ -39,19 +40,17 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::slots::key_t UPDATE_LENGTH_SLOT = "update_length";
-
 //-----------------------------------------------------------------------------
 
-line::line() noexcept
+service::connections_t line::auto_connections() const
 {
-    new_slot(UPDATE_LENGTH_SLOT, &line::update_length, this);
+    return {
+        {m_length, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {m_color, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {m_dash_length, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {m_dashed, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}
+    };
 }
-
-//-----------------------------------------------------------------------------
-
-line::~line() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 
@@ -65,80 +64,48 @@ void line::configuring()
     this->set_transform_id(
         config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
-
-    static const std::string s_LENGTH_CONFIG     = CONFIG + "length";
-    static const std::string s_DASHED_CONFIG     = CONFIG + "dashed";
-    static const std::string s_DASHLENGTH_CONFIG = CONFIG + "dashLength";
-    static const std::string s_COLOR_CONFIG      = CONFIG + "color";
-
-    m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
-
-    const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
-    std::array<std::uint8_t, 4> rgba {};
-    data::tools::color::hexa_string_to_rgba(color, rgba);
-    m_color.r = static_cast<float>(rgba[0]) / 255.F;
-    m_color.g = static_cast<float>(rgba[1]) / 255.F;
-    m_color.b = static_cast<float>(rgba[2]) / 255.F;
-    m_color.a = static_cast<float>(rgba[3]) / 255.F;
-
-    m_dashed      = config.get(s_DASHED_CONFIG, m_dashed);
-    m_dash_length = config.get(s_DASHLENGTH_CONFIG, m_dash_length);
 }
 
 //-----------------------------------------------------------------------------
 
 void line::starting()
 {
-    this->initialize();
+    adaptor::init();
     this->render_service()->make_current();
 
     Ogre::SceneManager* scene_mgr = this->get_scene_manager();
 
-    m_line = scene_mgr->createManualObject(this->get_id() + "_line");
+    m_line = scene_mgr->createManualObject(gen_id("line"));
     // Set the line as dynamic, so we can update it later on, when the length changes
     m_line->setDynamic(true);
 
     // Set the material
-    m_material = std::make_shared<data::material>();
-
-    m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
-        "sight::module::viz::scene3d::adaptor::material"
-    );
-    m_material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
-    m_material_adaptor->configure(
-        this->get_id() + m_material_adaptor->get_id(),
-        this->get_id() + m_material_adaptor->get_id(),
-        this->render_service(),
-        m_layer_id,
-        "ambient"
-    );
-    m_material_adaptor->start();
-
-    m_material_adaptor->get_material_fw()->set_has_vertex_color(true);
-    m_material_adaptor->update();
+    m_material = std::make_unique<sight::viz::scene3d::material::standard>(gen_id("material"));
+    m_material->set_layout(sight::data::mesh::attribute::point_colors);
+    m_material->set_shading(sight::data::material::shading_t::ambient, this->layer()->num_lights());
 
     // Draw the line
     this->draw_line(false);
 
     // Set the bounding box of your Manual Object
     Ogre::Vector3 bb_min(-0.1F, -0.1F, 0.F);
-    Ogre::Vector3 bb_max(0.1F, 0.1F, m_length);
+    Ogre::Vector3 bb_max(0.1F, 0.1F, static_cast<float>(*m_length));
     Ogre::AxisAlignedBox box(bb_min, bb_max);
     m_line->setBoundingBox(box);
 
     this->attach_node(m_line);
 
-    this->set_visible(m_visible);
+    this->set_visible(visible());
 }
 
 //-----------------------------------------------------------------------------
 
 void line::updating()
 {
-    if(m_visible)
+    if(visible())
     {
         this->render_service()->make_current();
         // Draw
@@ -146,11 +113,12 @@ void line::updating()
 
         // Set the bounding box of your Manual Object
         Ogre::Vector3 bb_min(-0.1F, -0.1F, 0.F);
-        Ogre::Vector3 bb_max(0.1F, 0.1F, m_length);
+        Ogre::Vector3 bb_max(0.1F, 0.1F, static_cast<float>(*m_length));
         Ogre::AxisAlignedBox box(bb_min, bb_max);
         m_line->setBoundingBox(box);
     }
 
+    this->update_done();
     this->request_render();
 }
 
@@ -159,14 +127,16 @@ void line::updating()
 void line::stopping()
 {
     this->render_service()->make_current();
-    this->unregister_services();
-    m_material = nullptr;
+
+    m_material.reset();
     if(m_line != nullptr)
     {
         m_line->detachFromParent();
         this->get_scene_manager()->destroyManualObject(m_line);
         m_line = nullptr;
     }
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -177,7 +147,7 @@ void line::attach_node(Ogre::MovableObject* _object)
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
     SIGHT_ASSERT("Transform node shouldn't be null", trans_node);
 
-    trans_node->setVisible(m_visible);
+    trans_node->setVisible(visible());
     trans_node->attachObject(_object);
 }
 
@@ -188,7 +158,7 @@ void line::draw_line(bool _existing_line)
     if(!_existing_line)
     {
         m_line->begin(
-            m_material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::RenderOperation::OT_LINE_LIST,
             sight::viz::scene3d::RESOURCE_GROUP
         );
@@ -198,23 +168,27 @@ void line::draw_line(bool _existing_line)
         m_line->beginUpdate(0);
     }
 
-    m_line->colour(m_color);
+    const auto color = *m_color;
+    Ogre::ColourValue ogre_color(color[0], color[1], color[2], color[3]);
+    m_line->colour(ogre_color);
 
-    if(m_dashed)
+    const auto length      = static_cast<float>(*m_length);
+    const auto dash_length = static_cast<float>(*m_dash_length);
+    if(*m_dashed)
     {
         float f = 0.F;
-        for(std::size_t i = 0 ; i <= static_cast<std::size_t>(m_length / (m_dash_length * 2)) ; i++)
+        for(std::size_t i = 0 ; i <= static_cast<std::size_t>(length / (dash_length * 2)) ; i++)
         {
             m_line->position(0, 0, f);
-            m_line->position(0, 0, f + m_dash_length);
+            m_line->position(0, 0, f + static_cast<float>(dash_length));
 
-            f += m_dash_length * 2;
+            f += dash_length * 2;
         }
     }
     else
     {
         m_line->position(0, 0, 0);
-        m_line->position(0, 0, m_length);
+        m_line->position(0, 0, length);
     }
 
     m_line->end();
@@ -226,15 +200,7 @@ void line::set_visible(bool /*_visible*/)
 {
     Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
-    trans_node->setVisible(m_visible);
-    this->updating();
-}
-
-//-----------------------------------------------------------------------------
-
-void line::update_length(float _length)
-{
-    m_length = _length;
+    trans_node->setVisible(visible());
     this->updating();
 }
 

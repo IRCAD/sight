@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include <core/com/slot.hxx>
 #include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
-#include <core/tools/id.hpp>
+#include <core/id.hpp>
 
 #include <data/image.hpp>
 
@@ -181,7 +181,10 @@ void images_selector::add(core::clock::type _timestamp)
     size[1] = frame_tl->get_height();
     size[2] = 1;
 
-    enum data::image::pixel_format format {data::image::pixel_format::undefined};
+    enum data::image::pixel_format_t format
+    {
+        data::image::pixel_format_t::undefined
+    };
     // FIXME since frameTL does not have format information, we assume that image are Grayscale, RGB or RGBA according
     // to the number of components.
     switch(frame_tl->num_components())

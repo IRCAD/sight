@@ -6,12 +6,7 @@ set_target_properties(viz_scene2d PROPERTIES AUTOMOC TRUE)
 
 target_link_libraries(viz_scene2d PUBLIC core data ui ui_qt viz service)
 
-if(WIN32)
-    target_link_libraries(viz_scene2d PUBLIC glm::glm)
-else()
-    # Hacky, no longer needed when glm-0.9.9.8+ds-3 is available
-    target_include_directories(viz_scene2d SYSTEM PRIVATE ${GLM_INCLUDE_DIRS})
-endif()
+target_link_libraries(viz_scene2d PRIVATE "$<$<VERSION_GREATER_EQUAL:glm_VERSION,0.9.9.8>:glm::glm>")
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/ut)

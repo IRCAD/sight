@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -110,9 +110,6 @@ protected:
 
     /// Override
     void info(std::ostream& _sstream) override;
-
-    /// Override
-    std::string get_selector_dialog_title() override;
 
     /// Configuring method. This method is used to configure the service.
     void configuring() override;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ void model_series::configuring()
     this->set_transform_id(
         config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
 
@@ -99,7 +99,7 @@ void model_series::configuring()
 
 void model_series::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->updating();
 }
@@ -108,10 +108,10 @@ void model_series::starting()
 
 service::connections_t model_series::auto_connections() const
 {
-    service::connections_t connections;
-    connections.push(MODEL_INPUT, data::model_series::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, service::slots::UPDATE);
-    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, service::slots::UPDATE);
+    service::connections_t connections = adaptor::auto_connections();
+    connections.push(MODEL_INPUT, data::model_series::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_ADDED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(MODEL_INPUT, data::model_series::RECONSTRUCTIONS_REMOVED_SIG, adaptor::slots::LAZY_UPDATE);
     connections.push(MODEL_INPUT, data::model_series::ADDED_FIELDS_SIG, CHANGE_FIELD_SLOT);
     connections.push(MODEL_INPUT, data::model_series::REMOVED_FIELDS_SIG, CHANGE_FIELD_SLOT);
     connections.push(MODEL_INPUT, data::model_series::CHANGED_FIELDS_SIG, CHANGE_FIELD_SLOT);
@@ -125,7 +125,7 @@ void model_series::updating()
     // Retrieves the associated Sight ModelSeries object
     const auto model_series = m_model.lock();
 
-    this->stopping();
+    this->unregister_services();
 
     // showRec indicates if we have to show the associated reconstructions or not
     const bool show_rec =
@@ -137,9 +137,10 @@ void model_series::updating()
             "sight::module::viz::scene3d::adaptor::reconstruction"
         );
         adaptor->set_input(reconstruction, "reconstruction", true);
+        adaptor->configure();
 
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
-        adaptor->set_id(this->get_id() + "_" + adaptor->get_id());
+        adaptor->set_id(this->get_id(), adaptor->get_id());
 
         adaptor->set_render_service(this->render_service());
         adaptor->set_layer_id(m_layer_id);
@@ -152,7 +153,7 @@ void model_series::updating()
 
         if(m_is_visible_tag)
         {
-            adaptor->update_visibility(!m_visible);
+            adaptor->update_visibility(!visible());
             SIGHT_WARN("The value of the modelSeries field will not be taken into account");
         }
         else
@@ -164,6 +165,9 @@ void model_series::updating()
         mesh_adaptor->set_dynamic(m_is_dynamic);
         mesh_adaptor->set_dynamic_vertices(m_is_dynamic_vertices);
     }
+
+    this->update_done();
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
@@ -171,6 +175,8 @@ void model_series::updating()
 void model_series::stopping()
 {
     this->unregister_services();
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

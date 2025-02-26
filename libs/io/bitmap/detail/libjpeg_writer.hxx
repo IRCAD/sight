@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -94,9 +94,9 @@ public:
         const auto& pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel format: " << pixel_format,
-            pixel_format == data::image::pixel_format::rg
-            || pixel_format == data::image::pixel_format::rgba
-            || pixel_format == data::image::pixel_format::bgra
+            pixel_format == data::image::pixel_format_t::rg
+            || pixel_format == data::image::pixel_format_t::rgba
+            || pixel_format == data::image::pixel_format_t::bgra
         );
 
         const auto& pixel_type = _image.type();
@@ -129,27 +129,27 @@ public:
         m_cinfo.in_color_space   =
             [pixel_format]
             {
-                if(pixel_format == data::image::pixel_format::rgb)
+                if(pixel_format == data::image::pixel_format_t::rgb)
                 {
                     return JCS_RGB;
                 }
 
-                if(pixel_format == data::image::pixel_format::rgba)
+                if(pixel_format == data::image::pixel_format_t::rgba)
                 {
                     return JCS_EXT_RGBA;
                 }
 
-                if(pixel_format == data::image::pixel_format::bgr)
+                if(pixel_format == data::image::pixel_format_t::bgr)
                 {
                     return JCS_EXT_BGR;
                 }
 
-                if(pixel_format == data::image::pixel_format::bgra)
+                if(pixel_format == data::image::pixel_format_t::bgra)
                 {
                     return JCS_EXT_BGRA;
                 }
 
-                if(pixel_format == data::image::pixel_format::gray_scale)
+                if(pixel_format == data::image::pixel_format_t::gray_scale)
                 {
                     return JCS_GRAYSCALE;
                 }

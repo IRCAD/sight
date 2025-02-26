@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,17 +34,12 @@
 #include <service/base.hpp>
 #include <service/op.hpp>
 
-#include <ui/__/dialog/input_dummy.hpp>
-#include <ui/__/dialog/location_dummy.hpp>
-#include <ui/__/dialog/message_dummy.hpp>
-#include <ui/__/macros.hpp>
+#include <ui/test/dialog/input.hpp>
+#include <ui/test/dialog/location.hpp>
+#include <ui/test/dialog/message.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::session::ut::session_test);
-
-SIGHT_REGISTER_GUI(sight::ui::dialog::location_dummy, sight::ui::dialog::location_base::REGISTRY_KEY);
-SIGHT_REGISTER_GUI(sight::ui::dialog::input_dummy, sight::ui::dialog::input_base::REGISTRY_KEY);
-SIGHT_REGISTER_GUI(sight::ui::dialog::message_dummy, sight::ui::dialog::message_base::REGISTRY_KEY);
 
 namespace sight::module::io::session::ut
 {
@@ -364,7 +359,7 @@ void session_test::file_dialog_test()
         // Execute the writer service
         writer->start().wait();
 
-        sight::ui::dialog::location_dummy::set_paths({tmp_file});
+        sight::ui::test::dialog::location::set_paths({tmp_file});
 
         writer->update().wait();
         writer->stop().wait();
@@ -372,7 +367,7 @@ void session_test::file_dialog_test()
         // Cleanup
         service::unregister_service(writer);
 
-        CPPUNIT_ASSERT(sight::ui::dialog::location_dummy::clear());
+        CPPUNIT_ASSERT(sight::ui::test::dialog::location::clear());
     }
 
     // The file should have been created
@@ -402,7 +397,7 @@ void session_test::file_dialog_test()
         // Execute the writer service
         reader->start().wait();
 
-        sight::ui::dialog::location_dummy::set_paths({tmp_file});
+        sight::ui::test::dialog::location::set_paths({tmp_file});
 
         reader->update().wait();
         reader->stop().wait();
@@ -413,7 +408,7 @@ void session_test::file_dialog_test()
         // Final test
         CPPUNIT_ASSERT_EQUAL(expected, out_string->get_value());
 
-        CPPUNIT_ASSERT(sight::ui::dialog::location_dummy::clear());
+        CPPUNIT_ASSERT(sight::ui::test::dialog::location::clear());
     }
 }
 
@@ -449,7 +444,7 @@ void session_test::password_test()
         // Execute the writer service
         writer->start().wait();
 
-        sight::ui::dialog::input_dummy::push_input("case-sensitive");
+        sight::ui::test::dialog::input::push_input("case-sensitive");
 
         writer->update().wait();
         writer->stop().wait();
@@ -457,7 +452,7 @@ void session_test::password_test()
         // Cleanup
         service::unregister_service(writer);
 
-        CPPUNIT_ASSERT(sight::ui::dialog::input_dummy::clear());
+        CPPUNIT_ASSERT(sight::ui::test::dialog::input::clear());
     }
 
     // The file should have been created
@@ -490,13 +485,13 @@ void session_test::password_test()
         // Execute the writer service
         reader->start().wait();
 
-        sight::ui::dialog::input_dummy::push_input("Oops");
-        ui::dialog::message_dummy::push_action(sight::ui::dialog::message_dummy::retry);
-        sight::ui::dialog::input_dummy::push_input("I forgot");
-        ui::dialog::message_dummy::push_action(sight::ui::dialog::message_dummy::retry);
-        sight::ui::dialog::input_dummy::push_input("Wait I remember");
-        ui::dialog::message_dummy::push_action(sight::ui::dialog::message_dummy::retry);
-        sight::ui::dialog::input_dummy::push_input("case-sensitive");
+        sight::ui::test::dialog::input::push_input("Oops");
+        ui::test::dialog::message::push_action(sight::ui::test::dialog::message::retry);
+        sight::ui::test::dialog::input::push_input("I forgot");
+        ui::test::dialog::message::push_action(sight::ui::test::dialog::message::retry);
+        sight::ui::test::dialog::input::push_input("Wait I remember");
+        ui::test::dialog::message::push_action(sight::ui::test::dialog::message::retry);
+        sight::ui::test::dialog::input::push_input("case-sensitive");
 
         reader->update().wait();
         reader->stop().wait();
@@ -507,8 +502,8 @@ void session_test::password_test()
         // Final test
         CPPUNIT_ASSERT_EQUAL(expected, out_string->get_value());
 
-        CPPUNIT_ASSERT(sight::ui::dialog::input_dummy::clear());
-        CPPUNIT_ASSERT(ui::dialog::message_dummy::clear());
+        CPPUNIT_ASSERT(sight::ui::test::dialog::input::clear());
+        CPPUNIT_ASSERT(ui::test::dialog::message::clear());
     }
 }
 

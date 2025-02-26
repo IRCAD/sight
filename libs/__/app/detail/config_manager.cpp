@@ -45,6 +45,7 @@
 #include <boost/thread/futures/wait_for_all.hpp>
 #include <ranges>
 
+#include <boost/property_tree/xml_parser.hpp>
 namespace sight::app::detail
 {
 
@@ -54,6 +55,8 @@ static const core::com::slots::key_t ADD_OBJECTS_SLOT        = "addObject";
 static const core::com::slots::key_t REMOVE_OBJECTS_SLOT     = "removeObjects";
 static const core::com::slots::key_t ADD_STARTED_SRV_SLOT    = "addStartedService";
 static const core::com::slots::key_t REMOVE_STARTED_SRV_SLOT = "removeStartedService";
+
+static const std::string PREFERENCES_SRV = "__generated_preference_srv";
 
 // ------------------------------------------------------------------------
 
@@ -103,9 +106,11 @@ void config_manager::set_config(
     bool _auto_prefix_id
 )
 {
-    m_config_id = _config_id;
-    m_cfg_elem  =
-        extension::config::get_default()->get_adapted_template_config(_config_id, _replace_fields, _auto_prefix_id);
+    m_config_id  = _config_id;
+    m_config_uid = sight::app::extension::config::get_unique_identifier(_config_id);
+
+    const std::string auto_prefix_name = _auto_prefix_id ? m_config_uid : "";
+    m_cfg_elem = extension::config::get()->get_adapted_template_config(_config_id, _replace_fields, auto_prefix_name);
 }
 
 // ------------------------------------------------------------------------
@@ -149,7 +154,7 @@ void config_manager::start_module()
     SIGHT_ERROR_IF("Module is not specified, it can not be started.", m_config_id.empty());
     if(!m_config_id.empty())
     {
-        std::shared_ptr<core::runtime::module> module = extension::config::get_default()->get_module(m_config_id);
+        std::shared_ptr<core::runtime::module> module = extension::config::get()->get_module(m_config_id);
         module->start();
     }
 }
@@ -165,7 +170,11 @@ void config_manager::create()
 
     this->create_objects(m_cfg_elem);
     this->create_connections();
+
+    this->create_preferences_service();
+
     this->create_services(m_cfg_elem);
+    this->create_updater_services();
 
     m_state = state_created;
 }
@@ -178,14 +187,23 @@ void config_manager::start()
 
     core::com::has_slots::m_slots.set_worker(core::thread::get_default_worker());
 
-    this->process_start_items();
-    for(auto& created_object : m_created_objects)
-    {
-        if(created_object.second.second)
+    service::config_t start_config;
+    const auto add_start_elements =
+        [&start_config](const service::config_t& _cfg)
         {
-            created_object.second.second->start_config();
-        }
-    }
+            for(const auto& elem : _cfg)
+            {
+                if(elem.first == "start")
+                {
+                    config_t srv_cfg;
+                    start_config.add_child(elem.first, elem.second);
+                }
+            }
+        };
+    add_start_elements(m_cfg_elem);
+    add_start_elements(m_updater_srv_start);
+
+    this->process_start_items(start_config);
 
     m_state = state_started;
 }
@@ -195,13 +213,6 @@ void config_manager::start()
 void config_manager::update()
 {
     this->process_update_items();
-    for(auto& created_object : m_created_objects)
-    {
-        if(created_object.second.second)
-        {
-            created_object.second.second->update_config();
-        }
-    }
 }
 
 // ------------------------------------------------------------------------
@@ -219,14 +230,6 @@ void config_manager::stop()
 
         // Disconnect configuration connections
         this->destroy_proxies();
-
-        for(auto& created_object : m_created_objects)
-        {
-            if(created_object.second.second)
-            {
-                created_object.second.second->stop_config();
-            }
-        }
 
         for(auto& w_srv : std::views::reverse(m_started_srv))
         {
@@ -259,15 +262,6 @@ void config_manager::stop()
 void config_manager::destroy()
 {
     SIGHT_ASSERT("Manager is not stopped, cannot destroy.", m_state == state_stopped || m_state == state_created);
-
-    for(auto& created_object : m_created_objects)
-    {
-        if(created_object.second.second)
-        {
-            created_object.second.second->destroy_config();
-        }
-    }
-
     this->destroy_created_services();
 
     SIGHT_DEBUG(
@@ -308,7 +302,7 @@ data::object::sptr config_manager::get_config_root() const
         return nullptr;
     }
 
-    return m_created_objects.begin()->second.first;
+    return m_created_objects.begin()->second;
 }
 
 // ------------------------------------------------------------------------
@@ -324,7 +318,7 @@ data::object::sptr config_manager::find_object(const std::string& _uid, std::str
     auto it = m_created_objects.find(_uid);
     if(it != m_created_objects.end())
     {
-        obj = it->second.first;
+        obj = it->second;
     }
     else
     {
@@ -343,65 +337,6 @@ data::object::sptr config_manager::find_object(const std::string& _uid, std::str
 
 // ------------------------------------------------------------------------
 
-data::object::sptr config_manager::get_new_object(config_attribute_t _type, config_attribute_t _uid)
-{
-    // Building object structure
-    SPTR(core::runtime::extension) ext = core::runtime::find_extension(_type.first);
-    if(ext)
-    {
-        const std::string class_name = core::get_classname<data::object>();
-        SIGHT_ASSERT(
-            "Extension and classname are different.",
-            ext->point() == class_name
-        );
-
-        // Start dll to retrieve proxy and register object
-        ext->get_module()->start();
-    }
-
-    data::object::sptr obj = data::factory::make(_type.first);
-    SIGHT_ASSERT("factory failed to build object : " + _type.first, obj);
-
-    if(_uid.second)
-    {
-        SIGHT_ASSERT("Object already has an UID.", !obj->has_id());
-        SIGHT_ASSERT("UID " << _uid.first << " already exists.", !core::tools::id::exist(_uid.first));
-        obj->set_id(_uid.first);
-    }
-
-    return obj;
-}
-
-// ------------------------------------------------------------------------
-
-data::object::sptr config_manager::get_new_object(config_attribute_t _type, const std::string& _uid) const
-{
-    return this->get_new_object(_type, config_attribute_t(_uid, true));
-}
-
-// ------------------------------------------------------------------------
-
-data::object::sptr config_manager::get_object(config_attribute_t _type, const std::string& _uid) const
-{
-    SIGHT_ASSERT(this->msg_head() + "Object with UID \"" + _uid + "\" doesn't exist.", core::tools::id::exist(_uid));
-    auto obj = std::dynamic_pointer_cast<data::object>(core::tools::id::get_object(_uid));
-
-    SIGHT_ASSERT(this->msg_head() + "The UID '" + _uid + "' does not reference any object.", obj);
-
-    if(_type.second)
-    {
-        SIGHT_ASSERT(
-            this->msg_head() + "Object with UID \"" + _uid
-            + "\" has a different type (\"" + obj->get_classname() + "\" != \"" + _type.first + "\").",
-            obj->is_a(_type.first)
-        );
-    }
-
-    return obj;
-}
-
-// ------------------------------------------------------------------------
-
 service::base::sptr config_manager::get_new_service(const std::string& _uid, const std::string& _impl_type) const
 {
     auto srv_factory = service::extension::factory::get();
@@ -411,7 +346,7 @@ service::base::sptr config_manager::get_new_service(const std::string& _uid, con
     SIGHT_ASSERT("factory could not create service of type <" + _impl_type + ">.", srv);
     SIGHT_ASSERT("Service already has an UID.", !srv->has_id());
 
-    SIGHT_ASSERT(this->msg_head() + "UID " + _uid + " already exists.", !core::tools::id::exist(_uid));
+    SIGHT_ASSERT(this->msg_head() + "UID " + _uid + " already exists.", !core::id::exist(_uid));
     if(!_uid.empty())
     {
         srv->set_id(_uid);
@@ -448,18 +383,28 @@ void config_manager::destroy_created_services()
 
 // ------------------------------------------------------------------------
 
-void config_manager::process_start_items()
+void config_manager::process_start_items(const core::runtime::config_t& _element)
 {
     std::vector<service::base::shared_future_t> futures;
 
-    for(const auto& elem : m_cfg_elem)
+    // Start the preference service first.
+    // This way the preferences objects already have the correct value before the services use them.
+    // This avoids to send signals for each object.
+    if(core::id::exist(m_pref_service_uid))
+    {
+        const service::base::sptr srv = service::get(m_pref_service_uid);
+        futures.emplace_back(srv->start());
+        m_started_srv.push_back(srv);
+    }
+
+    for(const auto& elem : _element)
     {
         if(elem.first == "start")
         {
             const auto uid = elem.second.get<std::string>("<xmlattr>.uid");
             SIGHT_ASSERT("\"uid\" attribute is empty.", !uid.empty());
 
-            if(!core::tools::id::exist(uid))
+            if(!core::id::exist(uid))
             {
                 if(m_deferred_services.find(uid) != m_deferred_services.end())
                 {
@@ -503,22 +448,21 @@ void config_manager::process_update_items()
 {
     std::vector<service::base::shared_future_t> futures;
 
-    for(const auto& elem : m_cfg_elem)
-    {
-        if(elem.first == "update")
+    const auto process_update_once =
+        [&futures, this](const service::config_t& _elem)
         {
-            const auto uid = elem.second.get<std::string>("<xmlattr>.uid");
+            const auto uid = _elem.get<std::string>("<xmlattr>.uid", "");
             SIGHT_ASSERT("\"uid\" attribute is empty.", !uid.empty());
 
-            if(!core::tools::id::exist(uid))
+            if(!core::id::exist(uid))
             {
                 if(m_deferred_services.find(uid) != m_deferred_services.end())
                 {
                     m_deferred_update_srv.push_back(uid);
                     SIGHT_DEBUG(
-                        this->msg_head() + "Update for service '" + uid + "'will be deferred since at least one "
-                                                                          "of its data is missing. With DEBUG log level, you can know which are the "
-                                                                          "missing objects."
+                        this->msg_head() + "Update for service '" + uid
+                        + "'will be deferred since at least one of its data is missing. "
+                          "With DEBUG log level, you can know which are the missing objects."
                     );
                 }
                 else
@@ -540,6 +484,35 @@ void config_manager::process_update_items()
 
                 futures.emplace_back(srv->update());
             }
+        };
+
+    [[maybe_unused]] bool old_style_config = false;
+    [[maybe_unused]] bool new_style_config = false;
+    for(const auto& elem : m_cfg_elem)
+    {
+        if(elem.first == "update")
+        {
+            if(auto attr = elem.second.get_child_optional("<xmlattr>"); attr.has_value())
+            {
+                SIGHT_ASSERT("Can not mix old-style <update uid=" "> tags with new syntax", !new_style_config);
+                // Sight < 25.0 configuration style
+                process_update_once(elem.second);
+                old_style_config = true;
+            }
+            else
+            {
+                SIGHT_ASSERT("Can not mix new-style <update> with old <update uid=" "> syntax", !old_style_config);
+                SIGHT_ASSERT("Can not have more than one <update> tag with new-style syntax", !new_style_config);
+                new_style_config = true;
+                // Sight >= 25.0 configuration style
+                for(const auto& elem_update : elem.second)
+                {
+                    if(elem_update.first == "service")
+                    {
+                        process_update_once(elem_update.second);
+                    }
+                }
+            }
         }
     }
 
@@ -554,85 +527,17 @@ void config_manager::create_objects(const core::runtime::config_t& _cfg_elem)
     {
         if(elem.first == "object")
         {
-            // Get attributes
+            service::object_parser::objects_t objects;
+            helper::config::parse_object(elem.second, objects);
 
-            // Id
-            config_attribute_t id("", false);
-            if(const auto uid = elem.second.get_optional<std::string>("<xmlattr>.uid"); uid.has_value())
-            {
-                id.first = uid.value();
-                SIGHT_ASSERT(this->msg_head() + "\"uid\" attribute is empty.", !id.first.empty());
-                id.second = true;
-            }
-
-            // Type
-            config_attribute_t type("", false);
-            if(const auto type_cfg = elem.second.get_optional<std::string>("<xmlattr>.type"); type_cfg.has_value())
-            {
-                type.first = type_cfg.value();
-                SIGHT_ASSERT(this->msg_head() + "\"type\" attribute is empty.", !type.first.empty());
-                type.second = true;
-            }
-
-            // Build mode
-            config_attribute_t build_mode("", false);
-            if(const auto build_mode_cfg =
-                   elem.second.get_optional<std::string>("<xmlattr>.src"); build_mode_cfg.has_value())
-            {
-                build_mode.first = build_mode_cfg.value();
-                SIGHT_ASSERT("this->msgHead() + \"src\" attribute is empty.", !build_mode.first.empty());
-
-                SIGHT_ASSERT(
-                    "Unhandled build mode (bad \"src\" attribute). Must be \"new\", \"deferred\" or \"ref\".",
-                    build_mode.first == "ref" || build_mode.first == "src" || build_mode.first == "deferred"
-                );
-                build_mode.second = true;
-            }
-
-            if(build_mode.first == "deferred")
-            {
-                SIGHT_ASSERT(this->msg_head() + "Missing attribute \"id\".", id.second);
-                const auto ret = m_deferred_objects.insert(std::make_pair(id.first, deferred_object_t()));
-                SIGHT_NOT_USED(ret);
-                SIGHT_DEBUG_IF(
-                    this->msg_head() + "Object '" + id.first + "' already exists in this config.",
-                    !ret.second
-                );
-            }
-            else
-            {
-                // Creation of a new object
-                data::object::sptr obj;
-                service::object_parser::sptr obj_parser;
-
-                // Create new or get the referenced object
-                if(build_mode.second && build_mode.first == "ref")
+            std::ranges::copy(objects.created, std::inserter(m_created_objects, m_created_objects.begin()));
+            std::ranges::copy(objects.prefs, std::inserter(m_pref_objects, m_pref_objects.begin()));
+            std::ranges::for_each(
+                objects.deferred,
+                [this](const auto& _x)
                 {
-                    SIGHT_ASSERT(this->msg_head() + "Missing attribute \"id\".", id.second);
-                    obj = this->get_object(type, id.first);
-                }
-                else
-                {
-                    obj = this->get_new_object(type, id);
-
-                    // Get the object parser associated with the object type
-                    const auto srv_factory = service::extension::factory::get();
-
-                    std::string srv_impl = srv_factory->get_default_implementation_id_from_object_and_type(
-                        obj->get_classname(),
-                        "sight::service::object_parser"
-                    );
-
-                    service::base::sptr srv = srv_factory->create(srv_impl);
-                    obj_parser = std::dynamic_pointer_cast<service::object_parser>(srv);
-                    obj_parser->set_object_config(elem.second);
-                    obj_parser->create_config(obj);
-                }
-
-                // If there is no uid defined in the config, we use the one generated from get_id()
-                const auto real_id = id.second ? id.first : obj->get_id();
-                m_created_objects[real_id] = std::make_pair(obj, obj_parser);
-            }
+                    m_deferred_objects.insert(std::make_pair(_x, deferred_object_t()));
+                });
         }
     }
 }
@@ -641,10 +546,13 @@ void config_manager::create_objects(const core::runtime::config_t& _cfg_elem)
 
 void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
 {
+    std::set<std::string> objects;
+    std::ranges::transform(m_created_objects, std::inserter(objects, objects.begin()), [](auto& _x){return _x.first;});
+
     for(const auto& service_cfg : boost::make_iterator_range(_cfg_elem.equal_range("service")))
     {
         // Parse the service configuration
-        auto srv_config = app::helper::config::parse_service(service_cfg.second, this->msg_head());
+        auto srv_config = app::helper::config::parse_service(service_cfg.second, this->msg_head(), objects);
 
         // Check if we can start the service now or if we must deferred its creation
         bool create_service = true;
@@ -662,7 +570,7 @@ void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
                 m_deferred_services.insert(srv_config.m_uid);
 
                 // Do not start the service if any non-optional object is not yet present
-                if(!objectCfg.m_optional && !core::tools::id::exist(objectCfg.m_uid))
+                if(!objectCfg.m_optional && !core::id::exist(objectCfg.m_uid))
                 {
                     create_service = false;
                 }
@@ -688,7 +596,7 @@ void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
             // Check if a service hasn't been already created with this uid
             SIGHT_ASSERT(
                 this->msg_head() + "UID " + srv_config.m_uid + " already exists.",
-                !core::tools::id::exist(srv_config.m_uid)
+                !core::id::exist(srv_config.m_uid)
             );
 
             const std::string msg = config_manager::get_uid_list_as_string(uids);
@@ -744,13 +652,18 @@ service::base::sptr config_manager::create_service(const detail::service_config&
         );
         if((obj || !objectCfg.m_optional) && objectCfg.m_access != data::access::out)
         {
+            const std::optional<bool> auto_connect =
+                objectCfg.m_auto_connect.has_value()
+                ? std::make_optional(objectCfg.m_auto_connect.value() && _srv_config.m_global_auto_connect)
+                : not _srv_config.m_global_auto_connect ? std::make_optional(false) : std::nullopt;
+
             set_object(
                 srv,
                 obj,
                 key.first,
                 key.second,
                 objectCfg.m_access,
-                objectCfg.m_auto_connect || _srv_config.m_global_auto_connect,
+                auto_connect,
                 objectCfg.m_optional
             );
         }
@@ -807,14 +720,41 @@ service::base::sptr config_manager::create_service(const detail::service_config&
 
 void config_manager::create_connections()
 {
+#ifdef DEBUG
+    std::set<std::string> services;
+    for(const auto& elem : m_cfg_elem)
+    {
+        if(elem.first == "service")
+        {
+            auto uid = elem.second.get<std::string>("<xmlattr>.uid");
+            SIGHT_ASSERT("'uid' attribute is empty.", !uid.empty());
+            services.insert(uid);
+        }
+        else if(elem.first == "update")
+        {
+            for(const auto& update_elem : elem.second)
+            {
+                if(update_elem.first == "sequence" || update_elem.first == "parallel")
+                {
+                    auto uid = update_elem.second.get<std::string>("<xmlattr>.uid", "");
+                    if(!uid.empty())
+                    {
+                        services.insert(uid);
+                    }
+                }
+            }
+        }
+    }
+#endif
+
     for(const auto& elem : m_cfg_elem)
     {
         if(elem.first == "connect")
         {
             // Parse all connections
-            auto gen_id_fn = [this](){return "Proxy_" + this->get_id() + "_" + std::to_string(m_proxy_id++);};
+            auto gen_id_fn = [this](){return m_config_uid + "_channel_" + std::to_string(m_proxy_id++);};
 
-            proxy_connections_t connection_infos = app::helper::config::parse_connections2(
+            proxy_connections_t connection_infos = app::helper::config::parse_connections(
                 elem.second,
                 this->msg_head(),
                 gen_id_fn
@@ -844,6 +784,10 @@ void config_manager::create_connections()
                     else
                     {
                         // Service
+                        SIGHT_ASSERT(
+                            "Can not connect signal of unknown data/service " << std::quoted(signal_info.first) << ".",
+                            services.contains(signal_info.first)
+                        );
                         auto& it_srv               = m_services_proxies[signal_info.first];
                         proxy_connections_t& proxy = it_srv.m_proxy_cnt[connection_infos.m_channel];
                         proxy.add_signal_connection(signal_info);
@@ -873,6 +817,10 @@ void config_manager::create_connections()
                     else
                     {
                         // Service
+                        SIGHT_ASSERT(
+                            "Can not connect slot of unknown service " << std::quoted(slot_info.first) << ".",
+                            services.contains(slot_info.first)
+                        );
                         auto& it_srv               = m_services_proxies[slot_info.first];
                         proxy_connections_t& proxy = it_srv.m_proxy_cnt[connection_infos.m_channel];
                         proxy.add_slot_connection(slot_info);
@@ -883,6 +831,134 @@ void config_manager::create_connections()
 
             m_created_objects_proxies[connection_infos.m_channel] = created_objects_proxy;
             this->connect_proxy(connection_infos.m_channel, created_objects_proxy);
+        }
+    }
+}
+
+// ------------------------------------------------------------------------
+
+void config_manager::create_preferences_service()
+{
+    // Inject a service to load/save preferences automatically
+    // It implies a dependency on the UI library, so using a service allows to delegate it at a higher level
+    if(!m_pref_objects.empty())
+    {
+        static std::uint64_t srv_cpt = 1;
+        // We need a unique identifier here, do it manually
+        m_pref_service_uid = core::id::join(PREFERENCES_SRV, srv_cpt++);
+
+        config_t service_cfg;
+        service_cfg.put("<xmlattr>.uid", m_pref_service_uid);
+        service_cfg.put("<xmlattr>.type", "sight::module::ui::preferences");
+
+        config_t inout_cfg;
+        inout_cfg.put("<xmlattr>.group", "keys");
+        std::ranges::for_each(
+            m_pref_objects,
+            [&inout_cfg](const auto& _uid)
+            {
+                config_t objects_cfg;
+                // Note: These objects uids are already "adapted", in other words there are truly unique
+                objects_cfg.put("<xmlattr>.uid", _uid);
+                inout_cfg.add_child("key", objects_cfg);
+            });
+        service_cfg.add_child("inout", inout_cfg);
+
+        config_t preference_service_cfg;
+        preference_service_cfg.add_child("service", service_cfg);
+        this->create_services(preference_service_cfg);
+    }
+}
+
+// ------------------------------------------------------------------------
+
+void config_manager::create_updater_services()
+{
+    const std::function<std::string(const service::config_t&, bool, bool)> process_update =
+        [this, &process_update](const service::config_t& _elem, bool _sequence, bool _root)
+        {
+            auto uid = _elem.get<std::string>("<xmlattr>.uid", "");
+            if(uid.empty())
+            {
+                static std::uint64_t srv_cpt = 1;
+                // We need a unique identifier here, do it manually
+                uid = core::id::join("updater", srv_cpt++);
+            }
+
+            config_t service_cfg;
+            service_cfg.put("<xmlattr>.uid", uid);
+            if(_sequence)
+            {
+                service_cfg.put("<xmlattr>.type", "sight::app::update_sequence");
+            }
+            else
+            {
+                service_cfg.put("<xmlattr>.type", "sight::app::update_parallel");
+            }
+
+            config_t config;
+            for(const auto& elem : _elem)
+            {
+                if(elem.first == "service" || elem.first == "updater")
+                {
+                    config.add_child(elem.first, elem.second);
+                }
+                else if(elem.first == "sequence" || elem.first == "parallel")
+                {
+                    config_t srv_cfg;
+                    const auto updater_uid = process_update(elem.second, elem.first == "sequence", false);
+                    srv_cfg.add("<xmlattr>.uid", updater_uid);
+                    config.add_child("service", srv_cfg);
+                }
+            }
+
+            const auto parent = _elem.get<std::string>("<xmlattr>.parent", "");
+            SIGHT_ASSERT(
+                "Parent attribute can only be specified at the root level of the <update> tag.",
+                _root || parent.empty()
+            );
+            config.put("<xmlattr>.parent", parent);
+
+            const auto loop = _elem.get("<xmlattr>.loop", false);
+            SIGHT_ASSERT(
+                "Loop attribute can only be specified at the root level of the <update> tag.",
+                _root || !loop
+            );
+            SIGHT_ASSERT(
+                "Loop attribute can not be specified if a parent is set in the <update> tag.",
+                parent.empty() || !loop
+            );
+            config.put("<xmlattr>.loop", loop);
+
+            service_cfg.add_child("config", config);
+
+            if(!parent.empty() || not _root)
+            {
+                config_t updater_start_cfg;
+                updater_start_cfg.add("<xmlattr>.uid", uid);
+                m_updater_srv_start.add_child("start", updater_start_cfg);
+            }
+
+            config_t updater_service_cfg;
+            updater_service_cfg.add_child("service", service_cfg);
+            this->create_services(updater_service_cfg);
+
+            return uid;
+        };
+
+    if(m_cfg_elem.count("update") == 1)
+    {
+        // Sight >= 25.0 configuration style
+        for(const auto& elem : m_cfg_elem.get_child("update"))
+        {
+            if(elem.first == "sequence")
+            {
+                process_update(elem.second, true, true);
+            }
+            else if(elem.first == "parallel")
+            {
+                process_update(elem.second, false, true);
+            }
         }
     }
 }
@@ -902,10 +978,10 @@ void config_manager::destroy_proxy(
     {
         if(_key.empty() || signal_elt.first == _key)
         {
-            core::tools::object::csptr obj = _hint_obj;
+            core::object::csptr obj = _hint_obj;
             if(obj == nullptr)
             {
-                obj = core::tools::id::get_object(signal_elt.first);
+                obj = core::id::get_object(signal_elt.first);
             }
 
             core::com::has_signals::csptr has_signals = std::dynamic_pointer_cast<const core::com::has_signals>(obj);
@@ -920,10 +996,8 @@ void config_manager::destroy_proxy(
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Signal '" + signal_elt.second + "' from '" + signal_elt.first + "' can not be disconnected "
-                                                                                     "from the channel '" + _channel + "': " + std::string(
-                        e.what()
-                                                                                     )
+                    "Signal '" + signal_elt.second + "' from '" + signal_elt.first
+                    + "' can not be disconnected " "from the channel '" + _channel + "': " + std::string(e.what())
                 );
             }
         }
@@ -933,7 +1007,7 @@ void config_manager::destroy_proxy(
     {
         if(_key.empty() || slot_elt.first == _key)
         {
-            core::tools::object::sptr obj        = core::tools::id::get_object(slot_elt.first);
+            core::object::sptr obj               = core::id::get_object(slot_elt.first);
             core::com::has_slots::sptr has_slots = std::dynamic_pointer_cast<core::com::has_slots>(obj);
             SIGHT_ASSERT(this->msg_head() + "Slot destination not found '" + slot_elt.first + "'", has_slots);
 
@@ -946,10 +1020,8 @@ void config_manager::destroy_proxy(
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Slot '" + slot_elt.second + "' from '" + slot_elt.first + "' can not be disconnected from the "
-                                                                               "channel '" + _channel + "': " + std::string(
-                        e.what()
-                                                                               )
+                    "Slot '" + slot_elt.second + "' from '" + slot_elt.first
+                    + "' can not be disconnected from the " "channel '" + _channel + "': " + std::string(e.what())
                 );
             }
         }
@@ -1070,7 +1142,7 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
                         );
                     }
                 }
-                else if(core::tools::id::exist(uid))
+                else if(core::id::exist(uid))
                 {
                     service::base::sptr srv = service::get(uid);
                     SIGHT_ASSERT(this->msg_head() + "No service registered with UID \"" + uid + "\".", srv);
@@ -1095,6 +1167,11 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
                             // a remove_object/add_object sequence
                             set_deferred_id(srv, key.first, objCfg.m_uid, key.second);
 
+                            const std::optional<bool> auto_connect =
+                                objCfg.m_auto_connect.has_value()
+                                ? std::make_optional(objCfg.m_auto_connect.value() && srv_cfg->m_global_auto_connect)
+                                : not srv_cfg->m_global_auto_connect ? std::make_optional(false) : std::nullopt;
+
                             // Register the key on the service
                             set_object(
                                 srv,
@@ -1102,7 +1179,7 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
                                 key.first,
                                 key.second,
                                 objCfg.m_access,
-                                objCfg.m_auto_connect || srv_cfg->m_global_auto_connect,
+                                auto_connect,
                                 objCfg.m_optional
                             );
 
@@ -1130,8 +1207,8 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
 
             // Debug message
             SIGHT_INFO(
-                this->msg_head() + "Service '" + uid + "' has been automatically created because its "
-                                                       "objects are all available."
+                this->msg_head() + "Service '" + uid
+                + "' has been automatically created because its objects are all available."
             );
         }
     }
@@ -1149,8 +1226,8 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
 
             // Debug message
             SIGHT_INFO(
-                this->msg_head() + "Service '" + uid + "' has been automatically started because its "
-                                                       "objects are all available."
+                this->msg_head() + "Service '" + uid
+                + "' has been automatically started because its objects are all available."
             );
         }
     }
@@ -1168,8 +1245,8 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
 
             // Debug message
             SIGHT_INFO(
-                this->msg_head() + "Service '" + uid + "' has been automatically update because its "
-                                                       "objects are all available."
+                this->msg_head() + "Service '" + uid
+                + "' has been automatically update because its objects are all available."
             );
         }
     }
@@ -1206,7 +1283,7 @@ void config_manager::remove_objects(data::object::sptr _obj, const std::string& 
         // Are there services that were using this object ?
         for(const auto& srv_cfg : it_deferred_obj->second.m_services_cfg)
         {
-            if(core::tools::id::exist(srv_cfg.m_uid))
+            if(core::id::exist(srv_cfg.m_uid))
             {
                 // Check all objects, to know if this object is optional
                 bool optional = true;
@@ -1292,7 +1369,7 @@ void config_manager::connect_proxy(const std::string& _channel, const proxy_conn
 
     for(const auto& signal_cfg : _connect_cfg.m_signals)
     {
-        core::tools::object::sptr sig_source = core::tools::id::get_object(signal_cfg.first);
+        core::object::sptr sig_source = core::id::get_object(signal_cfg.first);
         if(sig_source == nullptr)
         {
             // We didn't found the object or service globally, let's try with local deferred objects
@@ -1319,16 +1396,17 @@ void config_manager::connect_proxy(const std::string& _channel, const proxy_conn
         {
             SIGHT_ERROR(
                 "Signal '" + signal_cfg.second + "' from '" + signal_cfg.first + "' can not be connected to the "
-                                                                                 "channel '" + _channel + "': " + std::string(
+                                                                                 "channel '" + _channel + "': "
+                + std::string(
                     e.what()
-                                                                                 )
+                )
             );
         }
     }
 
     for(const auto& slot_cfg : _connect_cfg.m_slots)
     {
-        core::tools::object::sptr slot_dest  = core::tools::id::get_object(slot_cfg.first);
+        core::object::sptr slot_dest         = core::id::get_object(slot_cfg.first);
         core::com::has_slots::sptr has_slots = std::dynamic_pointer_cast<core::com::has_slots>(slot_dest);
         SIGHT_ASSERT(this->msg_head() + "Slot destination not found '" + slot_cfg.first + "'", has_slots);
 
@@ -1342,9 +1420,8 @@ void config_manager::connect_proxy(const std::string& _channel, const proxy_conn
         catch(const std::exception& e)
         {
             SIGHT_ERROR(
-                "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first + "' can not be connected to the "
-                                                                           "channel '" + _channel + "': "
-                + std::string(e.what())
+                "Slot '" + slot_cfg.second + "' from '" + slot_cfg.first
+                + "' can not be connected to the " "channel '" + _channel + "': " + std::string(e.what())
             );
         }
     }

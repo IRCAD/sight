@@ -55,7 +55,8 @@ struct landmarks_or_image_series_const_lock
     data::mt::locked_ptr<const data::landmarks> landmarks;
     data::mt::locked_ptr<const data::image_series> image_series;
 
-    operator landmarks_or_image_series_const_ptr() const {
+    operator landmarks_or_image_series_const_ptr() const
+    {
         return {.landmarks = landmarks.get_shared(), .image_series = image_series.get_shared()};
     }
 };
@@ -65,7 +66,8 @@ struct landmarks_or_image_series_ptr
     data::landmarks::sptr landmarks;
     data::image_series::sptr image_series;
 
-    operator landmarks_or_image_series_const_ptr() const {
+    operator landmarks_or_image_series_const_ptr() const
+    {
         return {.landmarks = landmarks, .image_series = image_series};
     }
 };
@@ -75,11 +77,13 @@ struct landmarks_or_image_series_lock
     data::mt::locked_ptr<data::landmarks> landmarks;
     data::mt::locked_ptr<data::image_series> image_series;
 
-    operator landmarks_or_image_series_ptr() const {
+    operator landmarks_or_image_series_ptr() const
+    {
         return {.landmarks = landmarks.get_shared(), .image_series = image_series.get_shared()};
     }
 
-    operator landmarks_or_image_series_const_ptr() const {
+    operator landmarks_or_image_series_const_ptr() const
+    {
         return {.landmarks = landmarks.get_shared(), .image_series = image_series.get_shared()};
     }
 };
@@ -95,7 +99,8 @@ struct image_or_image_series_const_lock
     data::mt::locked_ptr<const data::image> image;
     data::mt::locked_ptr<const data::image_series> image_series;
 
-    operator image_or_image_series_const_ptr() const {
+    operator image_or_image_series_const_ptr() const
+    {
         return {.image = image.get_shared(), .image_series = image_series.get_shared()};
     }
 };
@@ -105,7 +110,8 @@ struct image_or_image_series_ptr
     data::image::csptr image;
     data::image_series::sptr image_series;
 
-    operator image_or_image_series_const_ptr() const {
+    operator image_or_image_series_const_ptr() const
+    {
         return {.image = image, .image_series = image_series};
     }
 };
@@ -115,11 +121,13 @@ struct image_or_image_series_lock
     data::mt::locked_ptr<const data::image> image;
     data::mt::locked_ptr<data::image_series> image_series;
 
-    operator image_or_image_series_ptr() const {
+    operator image_or_image_series_ptr() const
+    {
         return {.image = image.get_shared(), .image_series = image_series.get_shared()};
     }
 
-    operator image_or_image_series_const_ptr() const {
+    operator image_or_image_series_const_ptr() const
+    {
         return {.image = image.get_shared(), .image_series = image_series.get_shared()};
     }
 };
@@ -444,10 +452,10 @@ public:
     static constexpr std::string_view IMAGE_SERIES_INOUT     = "imageSeries";
     static constexpr std::string_view MATRIX_IN              = "matrix";
     static constexpr std::string_view CURRENT_LANDMARK_INOUT = "currentLandmark";
-    data::ptr<data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_IN, false, true};
-    data::ptr<data::landmarks, sight::data::access::inout> m_landmarks {this, LANDMARKS_INOUT, true};
-    data::ptr<data::image_series, sight::data::access::inout> m_image_series {this, IMAGE_SERIES_INOUT, true};
-    data::ptr<data::point, sight::data::access::inout> m_current_landmark {this, CURRENT_LANDMARK_INOUT, false, true};
+    data::ptr<data::matrix4, sight::data::access::in> m_matrix {this, MATRIX_IN, true};
+    data::ptr<data::landmarks, sight::data::access::inout> m_landmarks {this, LANDMARKS_INOUT};
+    data::ptr<data::image_series, sight::data::access::inout> m_image_series {this, IMAGE_SERIES_INOUT};
+    data::ptr<data::point, sight::data::access::inout> m_current_landmark {this, CURRENT_LANDMARK_INOUT, true};
 
     /// Used to generate random color
     std::uniform_real_distribution<float> m_distributor {0.0F, 1.0F};

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,23 +63,23 @@ static data::image::sptr gen_image(
         image_size[2] = _d;
     }
 
-    enum data::image::pixel_format format = data::image::pixel_format::gray_scale;
+    enum data::image::pixel_format_t format = data::image::pixel_format_t::gray_scale;
     switch(_num_channels)
     {
         case 1:
-            format = data::image::pixel_format::gray_scale;
+            format = data::image::pixel_format_t::gray_scale;
             break;
 
         case 2:
-            format = data::image::pixel_format::rg;
+            format = data::image::pixel_format_t::rg;
             break;
 
         case 3:
-            format = data::image::pixel_format::rgb;
+            format = data::image::pixel_format_t::rgb;
             break;
 
         case 4:
-            format = data::image::pixel_format::rgba;
+            format = data::image::pixel_format_t::rgba;
             break;
 
         default:
@@ -127,12 +127,10 @@ static void compare_images(
                 {
                     for(std::uint8_t c = 0 ; c < _num_channels ; ++c)
                     {
-                        const auto index = static_cast<std::size_t>(c
-                                                                    + static_cast<std::size_t>(i) * _num_channels
-                                                                    + static_cast<std::size_t>(j)
-                                                                    * _num_channels * _w
-                                                                    + static_cast<std::size_t>(k)
-                                                                    * _num_channels * _w * _h);
+                        const auto index = c
+                                           + static_cast<std::size_t>(i) * _num_channels
+                                           + static_cast<std::size_t>(j) * _num_channels * _w
+                                           + static_cast<std::size_t>(k) * _num_channels * _w * _h;
                         CPPUNIT_ASSERT_EQUAL(image_buffer[index], channels[c].at<T>(k, j, i));
                     }
                 }

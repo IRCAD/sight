@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,16 +89,16 @@ void material_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    material1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Materials should be different when using " #op " on the first one", \
-        *material1 != *material2 && !(*material1 == *material2) \
-    ); \
-    material2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Materials should be equal when using " #op " on both", \
-        *material1 == *material2 && !(*material1 != *material2) \
-    );
+            material1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Materials should be different when using " #op " on the first one", \
+                *material1 != *material2 && !(*material1 == *material2) \
+            ); \
+            material2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Materials should be equal when using " #op " on both", \
+                *material1 == *material2 && !(*material1 != *material2) \
+            );
 
     TEST(set_ambient(std::make_shared<data::color>(1.F, 0.F, 0.F)));
     TEST(set_ambient(std::make_shared<data::color>(0.F, 1.F, 0.F)));
@@ -114,6 +114,39 @@ void material_test::equality_test()
     TEST(set_diffuse_texture_wrapping(data::material::clamp));
 
     #undef TEST
+}
+
+//------------------------------------------------------------------------------
+
+void material_test::misc_test()
+{
+    // Valid values
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::material::string_to_representation_mode("Point"),
+        sight::data::material::representation_t::point
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::material::string_to_representation_mode("WireFrame"),
+        sight::data::material::representation_t::wireframe
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::material::string_to_representation_mode("edge"),
+        sight::data::material::representation_t::edge
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::material::string_to_representation_mode("SURFACE"),
+        sight::data::material::representation_t::surface
+    );
+
+    // Invalid values
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::material::string_to_representation_mode("SURFACES"),
+        sight::data::material::representation_t::surface
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::material::string_to_representation_mode("Points"),
+        sight::data::material::representation_t::surface
+    );
 }
 
 } // namespace sight::data::ut

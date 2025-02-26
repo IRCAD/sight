@@ -1,44 +1,42 @@
 <extension implements="sight::app::extension::config">
     <id>sight::config::viz::scene3d::volumeRendering</id>
     <parameters>
+        <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
+        <object uid="image" type="sight::data::image_series" deferred="true" />
+        <object uid="volumeTF" type="sight::data::transfer_function" />
+        <object uid="extrudedModelSeries" type="sight::data::model_series" />
+
+        <object uid="vr_visibility" type="sight::data::boolean" />
+        <object uid="negato_visibility" type="sight::data::boolean" />
+        <object uid="model_visibility" type="sight::data::boolean" />
+        <object uid="axis_visibility" type="sight::data::boolean" />
+
         <param name="WID_PARENT" />
         <param name="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" />
         <param name="VR_BOOL_PARAM_RECEIVER_CHANNEL" />
         <param name="VR_INT_PARAM_RECEIVER_CHANNEL" />
         <param name="VR_DOUBLE_PARAM_RECEIVER_CHANNEL" />
-        <param name="VR_VISIBILITY_RECEIVER_CHANNEL" />
-        <param name="3DNEGATO_VISIBILITY_RECEIVER_CHANNEL" />
-        <param name="MESHES_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="BOX_WIDGET_RESET_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" />
-        <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
-        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL" />
-        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL" />
+        <param name="RULER_ACTIVATION_CHANNEL" default="RULER_ACTIVATION_CHANNEL" />
+        <param name="RULER_DEACTIVATION_CHANNEL" default="RULER_DEACTIVATION_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
         <param name="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" />
-        <param name="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" />
+        <param name="REMOVE_ALL_RULERS_RECEIVER_CHANNEL" />
+        <param name="VISIBILITY_RULERS_RECEIVER_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
-        <param name="modelSeries" />
-        <param name="image" />
-        <param name="volumeTF" />
-        <param name="extrudedModelSeries" />
         <param name="maximized" default="false" />
         <param name="restored" default="true" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${modelSeries}" type="sight::data::model_series" src="deferred" />
-        <object uid="${image}" type="sight::data::image_series" src="deferred" />
-        <object uid="${volumeTF}" type="sight::data::transfer_function" src="ref" />
-        <object uid="${extrudedModelSeries}" type="sight::data::model_series" src="ref" />
 
         <object uid="mask" type="sight::data::image" />
         <object uid="clippingMatrix" type="sight::data::matrix4" />
@@ -52,7 +50,7 @@
             <gui>
                 <layout type="sight::ui::layout::overlay">
                     <view />
-                    <view x="0" y="0" minWidth="200" minHeight="100" />
+                    <view x="0" y="0" />
                 </layout>
             </gui>
             <registry>
@@ -110,20 +108,16 @@
             <scene>
                 <background material="bkg_gradient" />
 
-                <layer id="gridLayer" order="1">
-                    <adaptor uid="gridCameraAdp" />
+                <layer id="defaultLayer" order="1" transparency="Default">
                     <adaptor uid="gridAdp" />
-                </layer>
-
-                <layer id="defaultLayer" order="2" transparency="Default">
                     <adaptor uid="globalCameraAdp" />
                     <adaptor uid="trackballInteractorAdp" />
                     <adaptor uid="pickerInteractorAdp" />
-                    <adaptor uid="modeSeriesAdp" />
+                    <adaptor uid="modelSeriesAdp" />
                     <adaptor uid="3DNegatoAdp" />
                     <adaptor uid="volumeAdp" />
                     <adaptor uid="landmarksAdp" />
-                    <adaptor uid="multiDistancesAdp" />
+                    <adaptor uid="ruler_fiducial_adp" />
                     <adaptor uid="axisAdp" />
                     <adaptor uid="pickedVoxelTextAdp" />
                     <adaptor uid="shapeExtruderAdp" />
@@ -131,7 +125,7 @@
                     <adaptor uid="eventAdp" />
                 </layer>
 
-                <layer id="orientationMarkerLayer" order="3">
+                <layer id="orientationMarkerLayer" order="2">
                     <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom" />
                     <adaptor uid="orientationMarkerAdp" />
                 </layer>
@@ -139,10 +133,6 @@
         </service>
 
         <service uid="globalCameraAdp" type="sight::module::viz::scene3d::adaptor::camera">
-            <inout key="transform" uid="globalCamera" />
-        </service>
-
-        <service uid="gridCameraAdp" type="sight::module::viz::scene3d::adaptor::camera">
             <inout key="transform" uid="globalCamera" />
         </service>
 
@@ -154,9 +144,10 @@
             <config queryMask="0x40000000" priority="1" />
         </service>
 
-        <service uid="modeSeriesAdp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
+        <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
             <in key="model" uid="${modelSeries}" />
             <config queryFlags="0x40000000" autoresetcamera="true" />
+            <properties visible="${model_visibility}" />
         </service>
 
         <service uid="volumeAdp" type="sight::module::viz::scene3d::adaptor::volume_render">
@@ -165,12 +156,14 @@
             <in key="tf" uid="${volumeTF}" />
             <inout key="clippingMatrix" uid="clippingMatrix" />
             <config widgets="false" preintegration="false" autoresetcamera="true" samples="1200" />
+            <properties visible="${vr_visibility}" />
         </service>
 
         <service uid="3DNegatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d">
             <in key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config queryFlags="0x40000000" interactive="true" priority="2" />
+            <properties visible="${negato_visibility}" />
         </service>
 
         <service uid="landmarksAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
@@ -178,13 +171,14 @@
             <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" />
         </service>
 
-        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
+        <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
             <inout key="image" uid="${image}" />
-            <config fontSize="16" radius="4.5" queryFlags="0x40000000" priority="3" />
+            <config font_size="16" radius="1.5" query_flags="0x40000000" always_display_all="true" priority="3" />
         </service>
 
         <service uid="axisAdp" type="sight::module::viz::scene3d::adaptor::axis">
             <config visible="false" origin="true" label="false" />
+            <properties visible="${axis_visibility}" />
         </service>
 
         <service uid="pickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::text">
@@ -283,18 +277,6 @@
         </connect>
 
         <!-- Adaptors visibility -->
-        <connect channel="${VR_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>volumeAdp/update_visibility</slot>
-        </connect>
-
-        <connect channel="${3DNEGATO_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>3DNegatoAdp/update_visibility</slot>
-        </connect>
-
-        <connect channel="${MESHES_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>modeSeriesAdp/update_visibility</slot>
-        </connect>
-
         <connect channel="${BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL}">
             <slot>volumeAdp/toggle_widgets</slot>
         </connect>
@@ -320,10 +302,6 @@
             <slot>shapeExtruderAdp/reset</slot>
         </connect>
 
-        <connect channel="${AXIS_VISIBILITY_RECEIVER_CHANNEL}">
-            <slot>axisAdp/update_visibility</slot>
-        </connect>
-
         <connect channel="${WORLD_COORDS_LANDMARKS_CHANNEL}">
             <slot>3DNegatoAdp/update_slices_from_world</slot>
         </connect>
@@ -344,8 +322,12 @@
             <slot>landmarksAdp/remove_all</slot>
         </connect>
 
-        <connect channel="${REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL}">
-            <slot>multiDistancesAdp/remove_all</slot>
+        <connect channel="${REMOVE_ALL_RULERS_RECEIVER_CHANNEL}">
+            <slot>ruler_fiducial_adp/remove_all</slot>
+        </connect>
+
+        <connect channel="${VISIBILITY_RULERS_RECEIVER_CHANNEL}">
+            <slot>ruler_fiducial_adp/toggle_visibility</slot>
         </connect>
 
         <connect channel="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}">
@@ -410,12 +392,12 @@
 
         <!-- distance channels -->
 
-        <connect channel="${DISTANCE_ACTIVATION_CHANNEL}">
-            <slot>multiDistancesAdp/activate_distance_tool</slot>
+        <connect channel="${RULER_ACTIVATION_CHANNEL}">
+            <slot>ruler_fiducial_adp/activate_tool</slot>
         </connect>
 
-        <connect channel="${DISTANCE_DEACTIVATION_CHANNEL}">
-            <signal>multiDistancesAdp/deactivate_distance_tool</signal>
+        <connect channel="${RULER_DEACTIVATION_CHANNEL}">
+            <signal>ruler_fiducial_adp/tool_deactivated</signal>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->
@@ -429,10 +411,10 @@
         <start uid="globalCameraAdp" />
         <start uid="trackballInteractorAdp" />
         <start uid="pickerInteractorAdp" />
-        <start uid="modeSeriesAdp" />
+        <start uid="modelSeriesAdp" />
         <start uid="volumeAdp" />
         <start uid="landmarksAdp" />
-        <start uid="multiDistancesAdp" />
+        <start uid="ruler_fiducial_adp" />
         <start uid="axisAdp" />
         <start uid="pickedVoxelTextAdp" />
         <start uid="shapeExtruderAdp" />
@@ -440,7 +422,6 @@
         <start uid="eventAdp" />
         <start uid="orientationMarkerAdp" />
         <start uid="3DNegatoAdp" />
-        <start uid="gridCameraAdp" />
         <start uid="gridAdp" />
         <start uid="sliderCfg" />
 

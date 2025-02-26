@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,8 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-
 #include <data/helper/medical_image.hpp>
+#include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
@@ -58,7 +57,8 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::negato2d">
         <in key="image" uid="..." />
         <in key="tf" uid="..." />
-        <config sliceIndex="axial" filtering="none" tfAlpha="true" visible="true" />
+        <config sliceIndex="axial" filtering="none" tf_alpha="true" />
+        <properties classification="pre" visible="true" />
    </service>
    @endcode
  *
@@ -70,13 +70,18 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection Configuration Configuration:
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
- * - \b tfAlpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
+ * - \b tf_alpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
  * - \b border (optional, bool, default=true): displays a border around the plane.
  * - \b slicesCross (optional, bool, default=true): display the two other slices location as two lines.
- * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the negato, as it
  *      was specified in the transform adaptor.
- * * - \b interactive (optional, bool, default=false): enables interactions on the negato.
+ * - \b interactive (optional, bool, default=false): enables interactions on the negato.
+ *
+ * @subsection Properties Properties:
+ * - \b classification (optional, pre/post, default=pre): classification of voxels. "pre" means the filtering is applied
+ * after the sampling of the transfer function, and "post" after. When using labelled images, it is highly recommended
+ * to use "pre", otherwise it is likely that class of objects can be confounded.
+ * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class negato2d final :
     public sight::viz::scene3d::adaptor,
@@ -85,10 +90,27 @@ class negato2d final :
 {
 public:
 
-    using orientation_mode = data::helper::medical_image::orientation_t;
+    using axis_t = data::helper::medical_image::axis_t;
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(negato2d, sight::viz::scene3d::adaptor);
+
+    struct signals
+    {
+        using slice_index_changed_t = core::com::signal<void ()>;
+        using picked_voxel_t        = core::com::signal<void (std::string)>;
+        static inline const core::com::signals::key_t SLICE_INDEX_CHANGED = "slice_index_changed";
+        static inline const core::com::signals::key_t PICKED_VOXEL        = "picked_voxel";
+    };
+
+    struct slots
+    {
+        static inline const core::com::slots::key_t UPDATE_IMAGE             = "update_image";
+        static inline const core::com::slots::key_t UPDATE_TF                = "update_tf";
+        static inline const core::com::slots::key_t SLICE_TYPE               = "slice_type";
+        static inline const core::com::slots::key_t SLICE_INDEX              = "slice_index";
+        static inline const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
+    };
 
     /// Creates the service and initializes slots.
     negato2d() noexcept;
@@ -109,10 +131,10 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::image::MODIFIED_SIG of s_IMAGE_INOUT to service::slots::UPDATE
-     * Connect data::image::BUFFER_MODIFIED_SIG of s_IMAGE_INOUT to service::slots::UPDATE
-     * Connect data::image::SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to SLICETYPE_SLOT
-     * Connect data::image::SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to SLICEINDEX_SLOT
+     * Connect data::image::MODIFIED of s_IMAGE_INOUT to service::slots::UPDATE
+     * Connect data::image::BUFFER_MODIFIED of s_IMAGE_INOUT to service::slots::UPDATE
+     * Connect data::image::SLICE_TYPE_MODIFIED of s_IMAGE_INOUT to SLICE_TYPE
+     * Connect data::image::SLICE_INDEX_MODIFIED of s_IMAGE_INOUT to SLICE_INDEX
      */
     service::connections_t auto_connections() const final;
 
@@ -217,6 +239,9 @@ private:
     /// Contains the scene node allowing to move the entire negato.
     Ogre::SceneNode* m_negato_scene_node {nullptr};
 
+    /// Contains the scene node used for image origin and orientation.
+    Ogre::SceneNode* m_origin_scene_node {nullptr};
+
     /// Defines the filtering type for this negato.
     sight::viz::scene3d::plane::filter_t m_filtering {sight::viz::scene3d::plane::filter_t::none};
 
@@ -224,7 +249,7 @@ private:
     std::array<float, 3> m_current_slice_index {0.F, 0.F, 0.F};
 
     /// Defines the image orientation.
-    orientation_mode m_orientation {orientation_mode::z_axis};
+    axis_t m_axis {axis_t::z_axis};
 
     /// Defines if the plane border is used or not.
     bool m_border {true};
@@ -235,18 +260,16 @@ private:
     /// True if the plane is being picked
     bool m_picked {false};
 
-    using slice_index_changed_signal_type = core::com::signal<void ()>;
-    slice_index_changed_signal_type::sptr m_slice_index_changed_sig;
+    enum class update_flags : std::uint8_t
+    {
+        IMAGE,
+        TF
+    };
 
-    /// Defines the signal sent when a voxel is picked using the left mouse button.
-    using picked_voxel_sig_t = core::com::signal<void (std::string)>;
-    picked_voxel_sig_t::sptr m_picked_voxel_signal {nullptr};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, "tf"};
 
-    static constexpr std::string_view IMAGE_IN = "image";
-    static constexpr std::string_view TF_IN    = "tf";
-
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_IN, true};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, TF_IN, true};
+    sight::data::property<sight::data::string> m_classification {this, "classification", std::string("post")};
 };
 
 //------------------------------------------------------------------------------

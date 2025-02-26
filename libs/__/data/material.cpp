@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,10 +40,7 @@ const core::com::signals::key_t material::REMOVED_TEXTURE_SIG = "removedTexture"
 
 //------------------------------------------------------------------------------
 
-material::material() :
-
-    m_ambient(std::make_shared<color>(0.05F, 0.05F, 0.05F, 1.F)),
-    m_diffuse(std::make_shared<color>())
+material::material()
 {
     new_signal<added_texture_signal_t>(ADDED_TEXTURE_SIG);
     new_signal<removed_texture_signal_t>(REMOVED_TEXTURE_SIG);
@@ -160,9 +157,9 @@ bool material::operator==(const material& _other) const noexcept
     if(m_shading_mode != _other.m_shading_mode
        || m_representation_mode != _other.m_representation_mode
        || m_options_mode != _other.m_options_mode
-       || !core::tools::is_equal(m_ambient, _other.m_ambient)
-       || !core::tools::is_equal(m_diffuse, _other.m_diffuse)
-       || !core::tools::is_equal(m_diffuse_texture, _other.m_diffuse_texture)
+       || !core::is_equal(m_ambient, _other.m_ambient)
+       || !core::is_equal(m_diffuse, _other.m_diffuse)
+       || !core::is_equal(m_diffuse_texture, _other.m_diffuse_texture)
        || m_diffuse_texture_filtering != _other.m_diffuse_texture_filtering
        || m_diffuse_texture_wrapping != _other.m_diffuse_texture_wrapping)
     {
@@ -178,6 +175,42 @@ bool material::operator==(const material& _other) const noexcept
 bool material::operator!=(const material& _other) const noexcept
 {
     return !(*this == _other);
+}
+
+//------------------------------------------------------------------------------
+
+material::representation_t material::string_to_representation_mode(std::string _str)
+{
+    material::representation_t representation_mode = data::material::surface;
+
+    const auto lower_str = boost::to_lower_copy(_str);
+
+    if(lower_str == "point")
+    {
+        representation_mode = data::material::point;
+    }
+    else if(lower_str == "wireframe")
+    {
+        representation_mode = data::material::wireframe;
+    }
+    else if(lower_str == "edge")
+    {
+        representation_mode = data::material::edge;
+    }
+    else if(lower_str == "surface")
+    {
+        representation_mode = data::material::surface;
+    }
+    else
+    {
+        SIGHT_ERROR(
+            "Value: " + _str + " is not valid for 'representation_mode'."
+                               " Accepted values are: surface/point/wireframe/edge."
+                               "'representation_mode' is reset to default value (surface). "
+        );
+    }
+
+    return representation_mode;
 }
 
 } //namespace sight::data

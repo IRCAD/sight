@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #include "viz/scene3d/vr/ray_tracing_volume_renderer.hpp"
 
 #include "viz/scene3d/compositor/core.hpp"
-#include "viz/scene3d/compositor/listener/ray_exit_depth.hpp"
+#include "viz/scene3d/compositor/manager/ray_exit_depth.hpp"
 #include "viz/scene3d/helper/camera.hpp"
 #include "viz/scene3d/helper/image.hpp"
 #include "viz/scene3d/helper/shading.hpp"
@@ -165,7 +165,7 @@ ray_tracing_volume_renderer::ray_tracing_volume_renderer(
 {
     //Listeners
     {
-        auto* exit_depth_listener = new compositor::listener::ray_exit_depth_listener();
+        auto* exit_depth_listener = new compositor::manager::ray_exit_depth();
         Ogre::MaterialManager::getSingleton().addListener(exit_depth_listener);
     }
 
@@ -288,7 +288,7 @@ void ray_tracing_volume_renderer::update_image(
         return;
     }
 
-    this->scale_translate_cube(_image->spacing(), _image->origin());
+    scale_translate_cube(*_image);
 
     const data::image::size_t& new_size = _image->size();
 
@@ -351,11 +351,11 @@ void ray_tracing_volume_renderer::update_clipping_box(const data::image::csptr _
 
 //-----------------------------------------------------------------------------
 
-void ray_tracing_volume_renderer::update_sat_size_ratio(unsigned _ratio)
+void ray_tracing_volume_renderer::update_sat_size_ratio(float _ratio)
 {
     if(m_shadows.parameters.enabled())
     {
-        m_sat.update_sat_from_ratio(static_cast<float>(_ratio));
+        m_sat.update_sat_from_ratio(_ratio);
         update_sat();
     }
 }
@@ -818,7 +818,8 @@ void ray_tracing_volume_renderer::update_ray_tracing_material()
     // Create the technique
     {
         // Ensure that we have the color parameters set for the current material
-        this->set_material_light_params(mat);
+        set_material_light_params(mat);
+
         // Get the already created pass through the already created technique
         const Ogre::Technique* const tech = mat->getTechnique(0);
 
@@ -848,6 +849,7 @@ void ray_tracing_volume_renderer::update_ray_tracing_material()
         fp_params->setNamedAutoConstant("u_f3CameraPos", Ogre::GpuProgramParameters::ACT_CAMERA_POSITION_OBJECT_SPACE);
         fp_params->setNamedAutoConstant("u_fShininess", Ogre::GpuProgramParameters::ACT_SURFACE_SHININESS);
         fp_params->setNamedAutoConstant("u_fNumLights", Ogre::GpuProgramParameters::ACT_LIGHT_COUNT);
+        fp_params->setNamedAutoConstant("u_f4LightAmbientCol", Ogre::GpuProgramParameters::ACT_AMBIENT_LIGHT_COLOUR);
         fp_params->setNamedAutoConstant(
             "u_f4LightPos",
             Ogre::GpuProgramParameters::ACT_LIGHT_POSITION_OBJECT_SPACE_ARRAY,

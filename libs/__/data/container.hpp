@@ -25,7 +25,7 @@
 #include "data/object.hpp"
 
 #include <core/com/signal.hpp>
-#include <core/tools/compare.hpp>
+#include <core/compare.hpp>
 
 #include <boost/multi_index/hashed_index.hpp>
 #include <boost/multi_index/random_access_index.hpp>
@@ -50,90 +50,90 @@ using sequenced_set = boost::multi_index::multi_index_container<
 >;
 
 #define USING_CONTAINER(C) \
-    using typename C::value_type; \
-    using typename C::reference; \
-    using typename C::const_reference; \
-    using typename C::iterator; \
-    using typename C::const_iterator; \
-    using typename C::size_type; \
-    using typename C::difference_type; \
-    using C::operator=; \
-    using C::begin; \
-    using C::end; \
-    using C::cbegin; \
-    using C::cend; \
-    using C::size; \
-    using C::max_size; \
-    using C::empty; \
-    using C::swap; \
-    using typename C::pointer; \
-    using typename C::const_pointer
+        using typename C::value_type; \
+        using typename C::reference; \
+        using typename C::const_reference; \
+        using typename C::iterator; \
+        using typename C::const_iterator; \
+        using typename C::size_type; \
+        using typename C::difference_type; \
+        using C::operator=; \
+        using C::begin; \
+        using C::end; \
+        using C::cbegin; \
+        using C::cend; \
+        using C::size; \
+        using C::max_size; \
+        using C::empty; \
+        using C::swap; \
+        using typename C::pointer; \
+        using typename C::const_pointer
 
 #define USING_ORDERED_CONTAINER(C) \
-    using typename C::reverse_iterator; \
-    using typename C::const_reverse_iterator; \
-    using C::rbegin; \
-    using C::rend; \
-    using C::crbegin; \
-    using C::crend
+        using typename C::reverse_iterator; \
+        using typename C::const_reverse_iterator; \
+        using C::rbegin; \
+        using C::rend; \
+        using C::crbegin; \
+        using C::crend
 
 #define USING_DYNAMIC_CONTAINER(C) \
-    using typename C::allocator_type; \
-    using C::get_allocator; \
-    using C::clear; \
-    using C::insert; \
-    using C::emplace; \
-    using C::erase
+        using typename C::allocator_type; \
+        using C::get_allocator; \
+        using C::clear; \
+        using C::insert; \
+        using C::emplace; \
+        using C::erase
 
 #define USING_SEQUENCE_CONTAINER(C) \
-    using C::assign; \
-    using C::resize; \
-    using C::front; \
-    using C::back; \
-    using C::push_back; \
-    using C::pop_back
+        using C::assign; \
+        using C::resize; \
+        using C::front; \
+        using C::back; \
+        using C::push_back; \
+        using C::pop_back
 
 #define USING_ASSOCIATIVE_CONTAINER(C) \
-    using typename C::key_type; \
-    using typename C::node_type; \
-    using C::emplace_hint; \
-    using C::merge; \
-    using C::extract; \
-    using C::count; \
-    using C::find; \
-    using C::equal_range
+        using typename C::key_type; \
+        using typename C::node_type; \
+        using C::emplace_hint; \
+        using C::merge; \
+        using C::extract; \
+        using C::count; \
+        using C::find; \
+        using C::equal_range
 
 #define USING_ASSOCIATIVE_ORDERED_CONTAINER(C) \
-    using typename C::key_compare; \
-    using typename C::value_compare; \
-    using C::key_comp; \
-    using C::value_comp; \
-    using C::lower_bound; \
-    using C::upper_bound
+        using typename C::key_compare; \
+        using typename C::value_compare; \
+        using C::key_comp; \
+        using C::value_comp; \
+        using C::lower_bound; \
+        using C::upper_bound
 
 #define USING_UNORDERED_ASSOCIATIVE_CONTAINER(C) \
-    using typename C::hasher; \
-    using typename C::key_equal; \
-    using typename C::local_iterator; \
-    using typename C::const_local_iterator; \
-    using C::hash_function; \
-    using C::key_eq; \
-    using C::bucket_count; \
-    using C::max_bucket_count; \
-    using C::bucket_size; \
-    using C::bucket; \
-    using C::load_factor; \
-    using C::max_load_factor; \
-    using C::rehash; \
-    using C::reserve
+        using typename C::hasher; \
+        using typename C::key_equal; \
+        using typename C::local_iterator; \
+        using typename C::const_local_iterator; \
+        using C::hash_function; \
+        using C::key_eq; \
+        using C::bucket_count; \
+        using C::max_bucket_count; \
+        using C::bucket_size; \
+        using C::bucket; \
+        using C::load_factor; \
+        using C::max_load_factor; \
+        using C::rehash; \
+        using C::reserve
 
 #define USING_MAP_CONTAINER(C) \
-    using typename C::mapped_type; \
-    using C::operator[]; \
-    using C::at; \
-    using C::try_emplace; \
-    using C::insert_or_assign; \
-    using typename C::insert_return_type
+        using typename C::mapped_type; \
+        using C::operator[]; \
+        using C::at; \
+        using C::try_emplace; \
+        using C::insert_or_assign; \
+        using typename C::insert_return_type
 
 /// Dummy class.
 template<class C, typename = void>
@@ -143,10 +143,7 @@ class container_wrapper
 
 /// Array container class.
 template<class C>
-class SIGHT_DATA_CLASS_API container_wrapper<
-        C,
-        typename std::enable_if_t<core::tools::is_array<C>::value>
-    >: private C
+class SIGHT_DATA_CLASS_API container_wrapper<C, typename std::enable_if_t<core::is_array<C>::value> >: private C
 {
 public:
 
@@ -170,16 +167,15 @@ public:
     using C::C;
 
     /// Default virtual destructor
-    /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Vector container class.
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
-        C,
-        typename std::enable_if_t<core::tools::is_vector<C>::value>
-    >: private C
+    C,
+    typename std::enable_if_t<core::is_vector<C>::value>
+>: private C
 {
 public:
 
@@ -211,7 +207,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 
     /// Utility function to remove all matching elements from the container.
     constexpr auto remove(const typename C::value_type& _value)
@@ -233,10 +229,7 @@ public:
 
 /// Deque container class.
 template<class C>
-class SIGHT_DATA_CLASS_API container_wrapper<
-        C,
-        typename std::enable_if_t<core::tools::is_deque<C>::value>
-    >: private C
+class SIGHT_DATA_CLASS_API container_wrapper<C, typename std::enable_if_t<core::is_deque<C>::value> >: private C
 {
 public:
 
@@ -268,15 +261,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// List container class.
 template<class C>
-class SIGHT_DATA_CLASS_API container_wrapper<
-        C,
-        typename std::enable_if_t<core::tools::is_list<C>::value>
-    >: private C
+class SIGHT_DATA_CLASS_API container_wrapper<C, typename std::enable_if_t<core::is_list<C>::value> >: private C
 {
 public:
 
@@ -309,15 +299,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Sequenced set container class.
 template<class C>
-class SIGHT_DATA_CLASS_API container_wrapper<
-        C,
-        typename std::enable_if_t<core::tools::is_sequenced_set<C>::value>
-    >: private C
+class SIGHT_DATA_CLASS_API container_wrapper<C, typename std::enable_if_t<core::is_sequenced_set<C>::value> >: private C
 {
 public:
 
@@ -368,7 +355,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 
     /// Utility function to remove first matching elements from the container.
     constexpr auto remove(const typename C::value_type& _value)
@@ -386,10 +373,7 @@ public:
 
 /// Map container class.
 template<class C>
-class SIGHT_DATA_CLASS_API container_wrapper<
-        C,
-        typename std::enable_if_t<core::tools::is_map<C>::value>
-    >: private C
+class SIGHT_DATA_CLASS_API container_wrapper<C, typename std::enable_if_t<core::is_map<C>::value> >: private C
 {
 public:
 
@@ -416,15 +400,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Multimap container class.
 template<class C>
-class SIGHT_DATA_CLASS_API container_wrapper<
-        C,
-        typename std::enable_if_t<core::tools::is_multimap<C>::value>
-    >: private C
+class SIGHT_DATA_CLASS_API container_wrapper<C, typename std::enable_if_t<core::is_multimap<C>::value> >: private C
 {
 public:
 
@@ -451,15 +432,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Set container class.
 template<class C>
-class SIGHT_DATA_CLASS_API container_wrapper<
-        C,
-        typename std::enable_if_t<core::tools::is_set<C>::value>
-    >: private C
+class SIGHT_DATA_CLASS_API container_wrapper<C, typename std::enable_if_t<core::is_set<C>::value> >: private C
 {
 public:
 
@@ -486,15 +464,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Set container class.
 template<class C>
-class SIGHT_DATA_CLASS_API container_wrapper<
-        C,
-        typename std::enable_if_t<core::tools::is_multiset<C>::value>
-    >: private C
+class SIGHT_DATA_CLASS_API container_wrapper<C, typename std::enable_if_t<core::is_multiset<C>::value> >: private C
 {
 public:
 
@@ -518,14 +493,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Unordered map container class.
 template<class C>
-class SIGHT_DATA_CLASS_API container_wrapper<
-        C, typename std::enable_if_t<core::tools::is_unordered_map<C>::value>
-    >: private C
+class SIGHT_DATA_CLASS_API container_wrapper<C, typename std::enable_if_t<core::is_unordered_map<C>::value> >: private C
 {
 public:
 
@@ -549,15 +522,15 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Unordered multimap container class.
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
-        C,
-        typename std::enable_if_t<core::tools::is_unordered_multimap<C>::value>
-    >: private C
+    C,
+    typename std::enable_if_t<core::is_unordered_multimap<C>::value>
+>: private C
 {
 public:
 
@@ -581,14 +554,12 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Unordered set container class.
 template<class C>
-class SIGHT_DATA_CLASS_API container_wrapper<
-        C, typename std::enable_if_t<core::tools::is_unordered_set<C>::value>
-    >: private C
+class SIGHT_DATA_CLASS_API container_wrapper<C, typename std::enable_if_t<core::is_unordered_set<C>::value> >: private C
 {
 public:
 
@@ -612,15 +583,15 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 /// Unordered set container class.
 template<class C>
 class SIGHT_DATA_CLASS_API container_wrapper<
-        C,
-        typename std::enable_if_t<core::tools::is_unordered_multiset<C>::value>
-    >: private C
+    C,
+    typename std::enable_if_t<core::is_unordered_multiset<C>::value>
+>: private C
 {
 public:
 
@@ -641,7 +612,7 @@ public:
 
     /// Default virtual destructor
     /// @note: constexpr destructors are only available with ‘-std=c++20’ or ‘-std=gnu++20’
-    inline virtual ~container_wrapper() noexcept = default;
+    constexpr virtual ~container_wrapper() noexcept = default;
 };
 
 #undef USING_CONTAINER

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ struct flipping
         typename itk::FlipImageFilter<image_t>::FlipAxesArrayType axes;
         for(std::size_t i = 0 ; i < axes.Size() && i < _params.i_flip_axes.size() ; i++)
         {
-            axes[i] = _params.i_flip_axes[i];
+            axes[static_cast<unsigned int>(i)] = _params.i_flip_axes[i];
         }
 
         flip_filter->SetFlipAxes(axes);

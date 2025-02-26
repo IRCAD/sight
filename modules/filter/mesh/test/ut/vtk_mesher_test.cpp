@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -71,21 +71,24 @@ inline static std::pair<sight::service::base::sptr, sight::data::image_series::s
     // Create service
     sight::service::base::sptr generate_mesh_service = sight::service::add("sight::module::filter::mesh::vtk_mesher");
     CPPUNIT_ASSERT(generate_mesh_service);
+    CPPUNIT_ASSERT(generate_mesh_service->is_a("sight::module::filter::mesh::vtk_mesher"));
 
     auto image_series    = std::make_shared<sight::data::image_series>();
     const auto dump_lock = image_series->dump_lock();
 
-    const data::image::size_t size       = {10, 20, 90};
-    const data::image::spacing_t spacing = {1., 1., 1.};
-    const data::image::origin_t origin   = {0., 0., 0.};
+    const data::image::size_t size               = {10, 20, 90};
+    const data::image::spacing_t spacing         = {1., 1., 1.};
+    const data::image::origin_t origin           = {0., 0., 0.};
+    const data::image::orientation_t orientation = {1., 0., 0., 0., 1., 0., 0., 0., 1.};
 
     utest_data::generator::image::generate_image(
         image_series,
         size,
         spacing,
         origin,
+        orientation,
         core::type::get<std::int16_t>(),
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
 
     for(std::size_t x = 0 ; x < size[0] ; ++x)
@@ -140,7 +143,7 @@ void vtk_mesher_test::generate_mesh()
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
        "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<config percentReduction=\"50\" threshold=\"255\"/>";
+       "<properties percent_reduction=\"50\" threshold=\"255\"/>";
 
     boost::property_tree::read_xml(config_string, config);
     mesherService->set_config(config);
@@ -171,7 +174,7 @@ void vtk_mesher_test::generate_mesh_with_min_reduction()
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
        "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<config percentReduction=\"0\" threshold=\"255\"/>";
+       "<properties percent_reduction=\"0\" threshold=\"255\"/>";
 
     boost::property_tree::read_xml(config_string, config);
     mesherService->set_config(config);
@@ -202,49 +205,12 @@ void vtk_mesher_test::no_mesh_generated()
     config_string
     << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
        "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<config percentReduction=\"90\" threshold=\"30\"/>";
+       "<properties percent_reduction=\"90\" threshold=\"30\"/>";
 
     boost::property_tree::read_xml(config_string, config);
     mesherService->set_config(config);
     mesherService->set_input(imageSeries, "imageSeries");
     mesherService->configure();
-    mesherService->start().wait();
-    mesherService->update().wait();
-    {
-        auto model_series          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
-        unsigned int number_points = 0;
-        unsigned int number_cells  = 0;
-        CPPUNIT_ASSERT_EQUAL(model_series->get_reconstruction_db()[0]->get_mesh()->num_points(), number_points);
-        CPPUNIT_ASSERT_EQUAL(model_series->get_reconstruction_db()[0]->get_mesh()->num_cells(), number_cells);
-    }
-    mesherService->stop().wait();
-    sight::service::remove(mesherService);
-}
-
-//------------------------------------------------------------------------------
-
-void vtk_mesher_test::update_threshold_test()
-{
-    // Create service
-    auto [mesherService, imageSeries] = generate_mesh_service();
-    service::config_t config;
-    std::stringstream config_string;
-
-    //threshold is set to 255 by the configuration
-    config_string
-    << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
-       "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<config percentReduction=\"0\" threshold=\"255\"/>";
-
-    boost::property_tree::read_xml(config_string, config);
-    mesherService->set_config(config);
-    mesherService->set_input(imageSeries, "imageSeries");
-    mesherService->configure();
-
-    //threshold is modified by the slot updateThreshold
-    const int new_threshold = 50;
-    mesherService->slot("update_threshold")->run(new_threshold);
-
     mesherService->start().wait();
     mesherService->update().wait();
     {

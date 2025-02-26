@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -18,6 +18,8 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
+// cspell:ignore imread
 
 #pragma once
 
@@ -45,12 +47,12 @@ namespace sight::io::bitmap::ut
 //------------------------------------------------------------------------------
 
 inline static data::image::sptr get_synthetic_image(
-    std::optional<std::uint32_t> _seed     = std::nullopt,
-    core::type _type                       = core::type::UINT8,
-    enum data::image::pixel_format _format = data::image::rgb
+    std::optional<std::uint32_t> _seed       = std::nullopt,
+    core::type _type                         = core::type::UINT8,
+    enum data::image::pixel_format_t _format = data::image::rgb
 )
 {
-    using key_t = std::tuple<std::optional<std::uint32_t>, core::type, enum data::image::pixel_format>;
+    using key_t = std::tuple<std::optional<std::uint32_t>, core::type, enum data::image::pixel_format_t>;
     static std::map<key_t, data::image::sptr> s_generated;
 
     const key_t key = std::make_tuple(_seed, _type, _format);
@@ -65,6 +67,7 @@ inline static data::image::sptr get_synthetic_image(
             {256, 256, 0},
             {0, 0, 0},
             {0, 0, 0},
+            {1, 0, 0, 0, 1, 0, 0, 0, 1},
             _type,
             _format,
             _seed
@@ -117,11 +120,11 @@ inline static cv::Mat image_to_mat(const data::image::sptr& _image, bool _clone 
 
     switch(_image->pixel_format())
     {
-        case data::image::pixel_format::rgb:
+        case data::image::pixel_format_t::rgb:
             cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
             break;
 
-        case data::image::pixel_format::rgba:
+        case data::image::pixel_format_t::rgba:
             cv::cvtColor(mat, mat, cv::COLOR_RGBA2BGRA);
             break;
 
@@ -219,26 +222,26 @@ inline static std::string mode_to_string(const writer::mode& _mode)
 
 //------------------------------------------------------------------------------
 
-inline static std::string pixel_format_to_string(const enum data::image::pixel_format& _format)
+inline static std::string pixel_format_to_string(const enum data::image::pixel_format_t& _format)
 {
     switch(_format)
     {
-        case data::image::pixel_format::rgb:
+        case data::image::pixel_format_t::rgb:
             return "RGB";
 
-        case data::image::pixel_format::rgba:
+        case data::image::pixel_format_t::rgba:
             return "RGBA";
 
-        case data::image::pixel_format::bgr:
+        case data::image::pixel_format_t::bgr:
             return "BGR";
 
-        case data::image::pixel_format::bgra:
+        case data::image::pixel_format_t::bgra:
             return "BGRA";
 
-        case data::image::pixel_format::gray_scale:
+        case data::image::pixel_format_t::gray_scale:
             return "GRAY_SCALE";
 
-        case data::image::pixel_format::rg:
+        case data::image::pixel_format_t::rg:
             return "RG";
 
         default:

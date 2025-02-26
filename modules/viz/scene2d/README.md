@@ -14,7 +14,7 @@ The services are implementations of the adaptor present in libs/viz/scene2D
 - **line**
   Draws a line on the scene2D
 - **transfer_function**
-  Displays a composite of TF and interact with them.
+  Displays a map of TF and interact with them.
 - **negato**
   Displays one slice of an 3D image.
 - **square**

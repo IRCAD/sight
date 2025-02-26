@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,13 +54,23 @@ void resampler_test::identity_test()
     const data::image::size_t size = {{32, 32, 32}};
 
     // TODO: make it work with an anisotropic spacing.
-    const data::image::spacing_t spacing = {{0.5, 0.5, 0.5}};
-    const data::image::origin_t origin   = {{0., 0., 0.}};
-    const core::type type                = core::type::INT16;
+    const data::image::spacing_t spacing         = {0.5, 0.5, 0.5};
+    const data::image::origin_t origin           = {0., 0., 0.};
+    const data::image::orientation_t orientation = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+    const core::type type                        = core::type::INT16;
 
     data::image::sptr image_in = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
+    utest_data::generator::image::generate_image(
+        image_in,
+        size,
+        spacing,
+        origin,
+        orientation,
+        type,
+        data::image::gray_scale
+    );
+
     utest_data::generator::image::randomize_image(image_in);
 
     data::image::sptr image_out = std::make_shared<data::image>();
@@ -72,7 +82,7 @@ void resampler_test::identity_test()
         data::image::csptr(image_in),
         image_out,
         data::matrix4::csptr(id_mat),
-        std::make_tuple(image_in->size(), image_in->origin(), image_in->spacing())
+        std::make_tuple(image_in->size(), image_in->origin(), image_in->orientation(), image_in->spacing())
     );
 
     CPPUNIT_ASSERT(image_out->size() == size);
@@ -104,15 +114,24 @@ void resampler_test::identity_test()
 void resampler_test::translate_test()
 {
     // Generate a simple image with a white cube at its center.
-    const data::image::size_t size       = {{16, 16, 16}};
-    const data::image::spacing_t spacing = {{1., 1., 1.}};
-    const data::image::origin_t origin   = {{0., 0., 0.}};
-    const core::type type                = core::type::UINT8;
+    const data::image::size_t size               = {16, 16, 16};
+    const data::image::spacing_t spacing         = {1., 1., 1.};
+    const data::image::origin_t origin           = {0., 0., 0.};
+    const data::image::orientation_t orientation = {0, 1, 0, -1, 0, 0, 0, 0, 1};
+    const core::type type                        = core::type::UINT8;
 
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
+    utest_data::generator::image::generate_image(
+        image_in,
+        size,
+        spacing,
+        origin,
+        orientation,
+        type,
+        data::image::gray_scale
+    );
 
     std::uint8_t value = 255;
 
@@ -151,7 +170,7 @@ void resampler_test::translate_test()
             {
                 const uint8_t value_out = image_out->at<std::uint8_t>(i, j, k);
 
-                if((i >= 2 && i <= 3) && (j >= 7 && j <= 8) && (k >= 7 && k <= 8))
+                if((j >= 2 && j <= 3) && (i >= 7 && i <= 8) && (k >= 7 && k <= 8))
                 {
                     CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(255), value_out);
                 }
@@ -172,15 +191,24 @@ void resampler_test::translate_test()
 
 void resampler_test::rotate_test()
 {
-    const data::image::size_t size       = {{64, 64, 64}};
-    const data::image::spacing_t spacing = {{1., 1., 1.}};
-    const data::image::origin_t origin   = {{0., 0., 0.}};
-    const core::type type                = core::type::FLOAT;
+    const data::image::size_t size               = {64, 64, 64};
+    const data::image::spacing_t spacing         = {1., 1., 1.};
+    const data::image::origin_t origin           = {0., 0., 0.};
+    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+    const core::type type                        = core::type::FLOAT;
 
     data::image::sptr image_in  = std::make_shared<data::image>();
     data::image::sptr image_out = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image_in, size, spacing, origin, type, data::image::gray_scale);
+    utest_data::generator::image::generate_image(
+        image_in,
+        size,
+        spacing,
+        origin,
+        orientation,
+        type,
+        data::image::gray_scale
+    );
 
     const float value = 1.F;
 

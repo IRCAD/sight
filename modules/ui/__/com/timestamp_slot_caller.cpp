@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,9 +79,9 @@ void timestamp_slot_caller::updating()
         has_slot_id_type has_slot_id     = info.first;
         core::com::slots::key_t slot_key = info.second;
 
-        if(core::tools::id::exist(has_slot_id))
+        if(core::id::exist(has_slot_id))
         {
-            core::tools::object::sptr obj        = core::tools::id::get_object(has_slot_id);
+            core::object::sptr obj               = core::id::get_object(has_slot_id);
             core::com::has_slots::sptr has_slots = std::dynamic_pointer_cast<core::com::has_slots>(obj);
             SIGHT_ASSERT("Object with id " << has_slot_id << " is not a has_slots", has_slots);
 

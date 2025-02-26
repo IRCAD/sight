@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,12 +56,14 @@ public:
 
     /// Initializes the interractor.
     SIGHT_VIZ_SCENE3D_API predefined_position_interactor(
-        SPTR(layer)_layer                                   = nullptr,
-        bool _layer_order_dependant                         = true,
-        std::vector<predefined_position_t> _positions       = {},
-        const std::optional<std::string>& _default_position = std::nullopt,
-        bool _animate                                       = true,
-        float _zoom                                         = 1.F
+        SPTR(layer)_layer,
+        bool _layer_order_dependant,
+        std::vector<predefined_position_t> _positions,
+        const std::optional<std::string>& _default_position,
+        bool _animate,
+        bool _follow_orientation,
+        float _zoom,
+        const Ogre::Vector3& _view_up
     );
 
     /// Destroys the trackball.
@@ -200,10 +202,16 @@ private:
     /// Defines if an animation is performed when switching positions
     bool m_animate {true};
 
+    /// Defines if we use a fixed orientation or if we follow the orientation of the targe
+    bool m_follow_orientation {false};
+
     /// Stores the current index in m_predefined_positions.
     std::optional<std::size_t> m_current_position_idx {std::nullopt};
 
     Ogre::Matrix4 m_transform {Ogre::Matrix4::IDENTITY};
+
+    /// Up vector of the camera, required to orientate the interactor
+    Ogre::Vector3 m_view_up;
 
     /// Curent percentage for animation
     float m_percentage {0.F};

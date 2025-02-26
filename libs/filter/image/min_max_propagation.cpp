@@ -38,7 +38,7 @@
 
 #include <itkFloodFilledImageFunctionConditionalIterator.h>
 #include <itkImage.h>
-#include <itkImageFunction.hxx>
+#include <itkImageFunction.h>
 
 #include <algorithm>
 #include <numeric>
@@ -134,7 +134,7 @@ public:
         double distance2 = 0;
         for(typename TImage::IndexValueType i = 0 ; i < index_t::Dimension ; ++i)
         {
-            const double real_dim = double(img_size[std::uint32_t(i)]) * img_spacing[i];
+            const double real_dim = double(img_size[std::uint32_t(i)]) * img_spacing[std::uint32_t(i)];
             distance2 += real_dim * real_dim;
         }
 

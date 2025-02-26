@@ -142,7 +142,7 @@ private:
     std::string m_font_source {"DejaVuSans.ttf"};
 
     static constexpr std::string_view OBJECT_INPUT = "object";
-    sight::data::ptr<sight::data::object, sight::data::access::in> m_object {this, OBJECT_INPUT, true};
+    sight::data::ptr<sight::data::object, sight::data::access::in> m_object {this, OBJECT_INPUT};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

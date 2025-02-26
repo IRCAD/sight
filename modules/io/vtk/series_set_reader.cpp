@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,9 +49,10 @@ static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
 
 //------------------------------------------------------------------------------
 
-series_set_reader::series_set_reader() noexcept
+series_set_reader::series_set_reader() noexcept :
+    reader("Choose vtk files to load Series"),
+    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
 {
-    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -70,7 +71,7 @@ void series_set_reader::open_location_dialog()
     sight::ui::dialog::location dialog_file;
     dialog_file.set_default_location(default_directory);
     dialog_file.set_type(ui::dialog::location::multi_files);
-    dialog_file.set_title(m_window_title.empty() ? "Choose vtk files to load Series" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.add_filter("All supported files", "*.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl");
     dialog_file.add_filter("MetaImage files", "*.mhd");
     dialog_file.add_filter("OBJ Files(.obj)", "*.obj");

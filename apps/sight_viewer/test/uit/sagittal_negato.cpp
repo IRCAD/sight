@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@ void sagittal_negato::test()
             );
 
             // Firstly, we must drag the mouse in the 3D scene so that the camera is "next to" the image
-            helper::scene3d::rotate(_tester, "sceneSrv", {1 / 2., 0});
+            helper::scene3d::rotate(_tester, "sceneSrv", {1 / 4., 0});
 
             // We want to hide the volume, we must click on the Show/hide volume button to achieve this
             helper::button::push(_tester, "toolBarView/Show/hide volume");

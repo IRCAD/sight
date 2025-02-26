@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "query_editor.hpp"
 
+#include <core/runtime/path.hpp>
+
 #include <data/dicom_series.hpp>
 
 #include <io/http/helper/series.hpp>
@@ -29,7 +31,6 @@
 #include <service/macros.hpp>
 
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/preferences.hpp>
 #include <ui/qt/container/widget.hpp>
 
 #include <QGridLayout>
@@ -40,6 +41,11 @@
 
 namespace sight::module::io::dicomweb
 {
+
+static const std::string ADVANCED_CONFIG    = "advanced";
+static const std::string ICON_PATH_CONFIG   = "icon";
+static const std::string ICON_WIDTH_CONFIG  = "width";
+static const std::string ICON_HEIGHT_CONFIG = "height";
 
 //------------------------------------------------------------------------------
 
@@ -55,23 +61,21 @@ query_editor::~query_editor() noexcept =
 
 void query_editor::configuring()
 {
-    service::config_t configuration = this->get_config();
-    //Parse server port and hostname
-    if(configuration.count("server") != 0U)
-    {
-        const std::string server_info               = configuration.get("server", "");
-        const std::string::size_type split_position = server_info.find(':');
-        SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
-
-        m_server_hostname_key = server_info.substr(0, split_position);
-        m_server_port_key     = server_info.substr(split_position + 1, server_info.size());
-    }
-    else
-    {
-        throw core::tools::failed("'server' element not found");
-    }
-
     sight::ui::service::initialize();
+    const auto config_tree = this->get_config();
+    const auto config      = config_tree.get_child_optional("config.<xmlattr>");
+    if(config)
+    {
+        const auto icon_path = config->get_optional<std::string>(ICON_PATH_CONFIG);
+        if(icon_path)
+        {
+            m_icon_path = core::runtime::get_module_resource_file_path(icon_path.value());
+        }
+
+        m_advanced    = config->get<bool>(ADVANCED_CONFIG, m_advanced);
+        m_icon_width  = config->get<unsigned int>(ICON_WIDTH_CONFIG, m_icon_width);
+        m_icon_height = config->get<unsigned int>(ICON_HEIGHT_CONFIG, m_icon_height);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -85,10 +89,26 @@ void query_editor::starting()
     auto* layout = new QGridLayout();
 
     m_patient_name_line_edit    = new QLineEdit();
-    m_patient_name_query_button = new QPushButton("Send");
+    m_patient_name_query_button = new QPushButton("Search");
     layout->addWidget(new QLabel("Patient name:"), 0, 0);
     layout->addWidget(m_patient_name_line_edit, 0, 1);
     layout->addWidget(m_patient_name_query_button, 0, 2);
+    m_study_date_query_button = new QPushButton("Search");
+
+    if(!m_icon_path.empty())
+    {
+        QIcon icon(QString::fromStdString(m_icon_path.string()));
+
+        m_patient_name_query_button->setText("");
+        m_study_date_query_button->setText("");
+        m_patient_name_query_button->setIcon(icon);
+        m_study_date_query_button->setIcon(icon);
+        if(m_icon_width > 0 && m_icon_height > 0)
+        {
+            m_patient_name_query_button->setIconSize(QSize(int(m_icon_width), int(m_icon_height)));
+            m_study_date_query_button->setIconSize(QSize(int(m_icon_width), int(m_icon_height)));
+        }
+    }
 
     m_begin_study_date_edit = new QDateEdit();
     m_begin_study_date_edit->setDate(QDate::currentDate());
@@ -96,7 +116,7 @@ void query_editor::starting()
     m_end_study_date_edit = new QDateEdit();
     m_end_study_date_edit->setDate(QDate::currentDate());
     m_end_study_date_edit->setDisplayFormat("dd.MM.yyyy");
-    m_study_date_query_button = new QPushButton("Send");
+
     auto* date_layout = new QHBoxLayout();
     layout->addWidget(new QLabel("Study date:"), 1, 0);
     layout->addLayout(date_layout, 1, 1);
@@ -119,6 +139,14 @@ void query_editor::starting()
 
 void query_editor::stopping()
 {
+    {
+        const auto series_set     = m_series_set.lock();
+        const auto scoped_emitter = series_set->scoped_emit();
+
+        // Delete old series from the series_set.
+        series_set->clear();
+    }
+
     // Disconnect the signals
     QObject::disconnect(m_patient_name_line_edit, SIGNAL(returnPressed()), this, SLOT(query_patient_name()));
     QObject::disconnect(m_patient_name_query_button, SIGNAL(clicked()), this, SLOT(query_patient_name()));
@@ -141,17 +169,6 @@ void query_editor::query_patient_name()
 {
     try
     {
-        ui::preferences preferences;
-        m_server_port     = preferences.delimited_get(m_server_port_key, m_server_port);
-        m_server_hostname = preferences.delimited_get(m_server_hostname_key, m_server_hostname);
-    }
-    catch(...)
-    {
-        // Do nothing
-    }
-
-    try
-    {
         // Vector of all Series that will be retrieved.
         data::series_set::container_t all_series;
 
@@ -165,7 +182,7 @@ void query_editor::query_patient_name()
         body.insert("Limit", 0);
 
         /// Url PACS
-        const std::string pacs_server("http://" + m_server_hostname + ":" + std::to_string(m_server_port));
+        const std::string pacs_server("http://" + *m_server_hostname + ":" + std::to_string(*m_server_port));
 
         /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
         auto request                    = sight::io::http::request::New(pacs_server + "/tools/find");
@@ -210,17 +227,6 @@ void query_editor::query_study_date()
 {
     try
     {
-        ui::preferences preferences;
-        m_server_port     = preferences.delimited_get(m_server_port_key, m_server_port);
-        m_server_hostname = preferences.delimited_get(m_server_hostname_key, m_server_hostname);
-    }
-    catch(...)
-    {
-        // Do nothing
-    }
-
-    try
-    {
         // Vector of all Series that will be retrieved.
         data::series_set::container_t all_series;
 
@@ -237,7 +243,7 @@ void query_editor::query_study_date()
         body.insert("Limit", 0);
 
         /// Url PACS
-        const std::string pacs_server("http://" + m_server_hostname + ":" + std::to_string(m_server_port));
+        const std::string pacs_server("http://" + *m_server_hostname + ":" + std::to_string(*m_server_port));
 
         /// Orthanc "/tools/find" route. POST a JSON to get all Studies corresponding to StudyDate range.
         sight::io::http::request::sptr request = sight::io::http::request::New(pacs_server + "/tools/find");
@@ -251,8 +257,8 @@ void query_editor::query_study_date()
             std::stringstream ss;
             ss << "Host not found:\n"
             << " Please check your configuration: \n"
-            << "Pacs host name: " << m_server_hostname << "\n"
-            << "Pacs port: " << m_server_port << "\n";
+            << "Pacs host name: " << *m_server_hostname << "\n"
+            << "Pacs port: " << *m_server_port << "\n";
 
             sight::module::io::dicomweb::query_editor::display_error_message(ss.str());
             SIGHT_WARN(exception.what());

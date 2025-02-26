@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -40,16 +40,16 @@ void resection_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    resection1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Resections should be different when using " #op " on the first one", \
-        *resection1 != *resection2 && !(*resection1 == *resection2) \
-    ); \
-    resection2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Resections should be equal when using " #op " on both", \
-        *resection1 == *resection2 && !(*resection1 != *resection2) \
-    );
+            resection1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Resections should be different when using " #op " on the first one", \
+                *resection1 != *resection2 && !(*resection1 == *resection2) \
+            ); \
+            resection2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Resections should be equal when using " #op " on both", \
+                *resection1 == *resection2 && !(*resection1 != *resection2) \
+            );
 
     auto plane_list = std::make_shared<data::plane_list>();
     plane_list->set_planes({std::make_shared<data::plane>()});

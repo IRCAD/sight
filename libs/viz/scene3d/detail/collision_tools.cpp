@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -193,10 +193,10 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> collision_tools::ra
         Ogre::MovableObject* const entity = qr_idx.movable;
 
         const bool is_entity = qr_idx.movable->getMovableType() == "Entity";
-        const bool is_r2_vb  = qr_idx.movable->getMovableType() == factory::r2vb_renderable::s_factory_type_name;
+        const bool is_r2vb   = qr_idx.movable->getMovableType() == factory::r2vb_renderable::s_factory_type_name;
 
         // Only check this result if its a hit against an entity.
-        if((entity != nullptr) && (is_entity || is_r2_vb))
+        if((entity != nullptr) && (is_entity || is_r2vb))
         {
             if(!entity->isVisible())
             {

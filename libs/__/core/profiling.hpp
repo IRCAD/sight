@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2023 IRCAD France
+ * Copyright (C) 2004-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -198,22 +198,22 @@ public:
 #ifndef FW_PROFILING_DISABLED
 /// Display the elapsed time inside a code block
 #define FW_PROFILE(_label) \
-    sight::core::fw_profile_scope BOOST_PP_CAT(profiler, __LINE__)(_label);
+        sight::core::fw_profile_scope BOOST_PP_CAT(profiler, __LINE__)(_label);
 
 /// Display the elapsed time inside a code block, every N seconds
 #define FW_PROFILE_AVG(_label, interval) \
-    static sight::core::fw_profile_frame_timer BOOST_PP_CAT(frame_timer, __LINE__)(interval); \
-    sight::core::fw_profile_scope_avg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frame_timer, __LINE__));
+        static sight::core::fw_profile_frame_timer BOOST_PP_CAT(frame_timer, __LINE__)(interval); \
+        sight::core::fw_profile_scope_avg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frame_timer, __LINE__));
 
 /// Display the elapsed time between two calls of a code block
 #define FW_PROFILE_FRAME(_label) \
-    static sight::core::fw_profile_frame_timer BOOST_PP_CAT(frame_timer, __LINE__)(0); \
-    sight::core::fw_profile_frame BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frame_timer, __LINE__));
+        static sight::core::fw_profile_frame_timer BOOST_PP_CAT(frame_timer, __LINE__)(0); \
+        sight::core::fw_profile_frame BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frame_timer, __LINE__));
 
 /// Display the elapsed time between two calls of a code block, every N seconds
 #define FW_PROFILE_FRAME_AVG(_label, interval) \
-    static sight::core::fw_profile_frame_timer BOOST_PP_CAT(frame_timer, __LINE__)(interval); \
-    sight::core::fw_profile_frame_avg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frame_timer, __LINE__));
+        static sight::core::fw_profile_frame_timer BOOST_PP_CAT(frame_timer, __LINE__)(interval); \
+        sight::core::fw_profile_frame_avg BOOST_PP_CAT(profiler, __LINE__)(_label, BOOST_PP_CAT(frame_timer, __LINE__));
 #else // FW_PROFILING_DISABLED
 #define FW_PROFILE(_label)
 #define FW_PROFILE_AVG(_label, interval)

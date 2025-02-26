@@ -54,7 +54,7 @@ public:
 
     /**
      * @brief Validates if the given images have the same properties (origin, spacing, ...)
-     * @note Given object must be a Vector or Composite of ImageSeries (or images)
+     * @note Given object must be a Vector or Map of ImageSeries (or images)
      * @see activity::validator::base::validate
      */
     SIGHT_ACTIVITY_API validator::return_t validate(const CSPTR(data::object)& _current_object) const

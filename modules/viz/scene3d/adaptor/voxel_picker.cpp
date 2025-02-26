@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::slots::key_t SLICETYPE_SLOT = "sliceType";
+const core::com::slots::key_t SLICE_TYPE_SLOT = "sliceType";
 
 static const core::com::signals::key_t PICKED_SIG = "picked";
 
@@ -42,7 +42,7 @@ static const core::com::signals::key_t PICKED_SIG = "picked";
 
 voxel_picker::voxel_picker() noexcept
 {
-    new_slot(SLICETYPE_SLOT, &voxel_picker::change_slice_type, this);
+    new_slot(SLICE_TYPE_SLOT, &voxel_picker::change_slice_type, this);
 
     m_picked_sig = new_signal<core::com::signal<void(data::tools::picking_info)> >(PICKED_SIG);
 }
@@ -93,7 +93,7 @@ void voxel_picker::configuring()
 
 void voxel_picker::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     const auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     this->layer()->add_interactor(interactor, m_priority);
@@ -103,8 +103,8 @@ void voxel_picker::starting()
 
 service::connections_t voxel_picker::auto_connections() const
 {
-    service::connections_t connections;
-    connections.push(IMAGE_INPUT, data::image::SLICE_TYPE_MODIFIED_SIG, SLICETYPE_SLOT);
+    service::connections_t connections = adaptor::auto_connections();
+    connections.push(IMAGE_INPUT, data::image::SLICE_TYPE_MODIFIED_SIG, SLICE_TYPE_SLOT);
 
     return connections;
 }
@@ -121,6 +121,8 @@ void voxel_picker::stopping()
 {
     const auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     this->layer()->remove_interactor(interactor);
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -161,8 +163,9 @@ void voxel_picker::pick(mouse_button _button, modifier _mod, int _x, int _y, boo
         const Ogre::Ray vp_ray = camera->getCameraToViewportRay(vp_pos.x, vp_pos.y);
 
         // Get image information.
-        const auto image = m_image.lock();
-        const auto [spacing, origin] = sight::viz::scene3d::utils::convert_spacing_and_origin(image.get_shared());
+        const auto image   = m_image.lock();
+        const auto spacing = sight::viz::scene3d::utils::get_ogre_spacing(*image);
+        const auto origin  = sight::viz::scene3d::utils::get_ogre_origin(*image);
 
         const std::pair<bool, Ogre::Vector3> result =
             this->compute_ray_image_intersection(vp_ray, image.get_shared(), origin, spacing);
@@ -251,9 +254,9 @@ std::pair<bool, Ogre::Vector3> voxel_picker::compute_ray_image_intersection(
 )
 {
     namespace imHelper = data::helper::medical_image;
-    const auto axial_idx    = imHelper::get_slice_index(*_image, imHelper::orientation_t::axial).value_or(0);
-    const auto frontal_idx  = imHelper::get_slice_index(*_image, imHelper::orientation_t::frontal).value_or(0);
-    const auto sagittal_idx = imHelper::get_slice_index(*_image, imHelper::orientation_t::sagittal).value_or(0);
+    const auto axial_idx    = imHelper::get_slice_index(*_image, imHelper::axis_t::axial).value_or(0);
+    const auto frontal_idx  = imHelper::get_slice_index(*_image, imHelper::axis_t::frontal).value_or(0);
+    const auto sagittal_idx = imHelper::get_slice_index(*_image, imHelper::axis_t::sagittal).value_or(0);
 
     const auto axial_index    = static_cast<Ogre::Real>(axial_idx);
     const auto frontal_index  = static_cast<Ogre::Real>(frontal_idx);

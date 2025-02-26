@@ -184,10 +184,7 @@ public:
 protected:
 
     /// Scale the volume based on the image's spacing and move it to the image origin.
-    SIGHT_VIZ_SCENE3D_API void scale_translate_cube(
-        const data::image::spacing_t& _spacing,
-        const data::image::origin_t& _origin
-    );
+    SIGHT_VIZ_SCENE3D_API void scale_translate_cube(const data::image& _image);
 
     /// Updates the sampling distance according to the current camera plane and slice number. Also updates
     /// m_cameraPlane.

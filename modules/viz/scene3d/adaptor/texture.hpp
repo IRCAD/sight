@@ -41,7 +41,7 @@ namespace sight::module::viz::scene3d::adaptor
  * The mesh adaptor isn't specified either because the texture can be applied on several meshes.
  *
  * @section Signals Signals
- * - \b textureSwapped() : Emitted when the texture is modified.
+ * - \b texture_swapped() : Emitted when the texture is modified.
 
  * @section XML XML Configuration
  * @code{.xml}
@@ -68,7 +68,7 @@ public:
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(texture, sight::viz::scene3d::adaptor);
 
-    /// Defines the keys of the slot @ref textureSwapped().
+    /// Defines the keys of the slot @ref texture_swapped().
     static const core::com::signals::key_t TEXTURE_SWAPPED_SIG;
 
     /// Creates the adaptor and the signal.
@@ -140,7 +140,7 @@ private:
     texture_swapped_signal_t::sptr m_sig_texture_swapped;
 
     static constexpr std::string_view TEXTURE_INOUT = "image";
-    data::ptr<data::image, data::access::in> m_image {this, TEXTURE_INOUT, true};
+    data::ptr<data::image, data::access::in> m_image {this, TEXTURE_INOUT};
 };
 
 //------------------------------------------------------------------------------

@@ -77,8 +77,8 @@ Usage:
 <extension implements="sight::app::extension::config">
     <id>sight::config::io::video::controls</id>
     <parameters>
-        <param name="camera" />
-        <param name="frameTL" />
+        <object uid="camera" type="sight::data::camera" />
+        <object uid="frameTL" type="sight::data::frame_tl" />
 
         <param name="TOOLBAR" />
         <param name="videoSupport" default="true" />
@@ -111,9 +111,6 @@ Usage:
         <param name="optimizeGrabberIn" default="optimizeGrabberIn" />
     </parameters>
     <config>
-        <object uid="${camera}" type="sight::data::camera" src="ref" />
-        <object uid="${frameTL}" type="sight::data::frame_tl" src="ref" />
-
         <service uid="containerViewSrv" type="sight::module::ui::view">
             <gui>
                 <toolbar />
@@ -252,7 +249,7 @@ Usage:
         </connect>
 
         <connect>
-            <signal>camera/id_modified</signal>
+            <signal>${camera}/id_modified</signal>
             <slot>grabberProxySrv/stop_camera</slot>
         </connect>
 
@@ -261,7 +258,7 @@ Usage:
         </connect>
 
         <connect>
-            <signal>camera/modified</signal>
+            <signal>${camera}/modified</signal>
             <slot>startVideoAct/enable</slot>
             <slot>stopVideoAct/update</slot>
         </connect>

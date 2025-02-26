@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,13 +35,13 @@
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
 #include <data/color.hpp>
-#include <data/composite.hpp>
 #include <data/dicom_series.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
 #include <data/landmarks.hpp>
 #include <data/line.hpp>
+#include <data/map.hpp>
 #include <data/material.hpp>
 #include <data/matrix4.hpp>
 #include <data/model_series.hpp>
@@ -347,9 +347,9 @@ void session_test::string_test()
 //------------------------------------------------------------------------------
 
 template<>
-inline data::composite::sptr generate<data::composite>(const std::size_t _variant)
+inline data::map::sptr generate<data::map>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::composite>();
+    auto object = std::make_shared<data::map>();
     (*object)[data::boolean::classname()] = create<data::boolean>(_variant);
     (*object)[data::integer::classname()] = create<data::integer>(_variant);
     (*object)[data::real::classname()]    = create<data::real>(_variant);
@@ -360,9 +360,9 @@ inline data::composite::sptr generate<data::composite>(const std::size_t _varian
 
 //------------------------------------------------------------------------------
 
-void session_test::composite_test()
+void session_test::map_test()
 {
-    test_combine<data::composite>();
+    test_combine<data::map>();
 }
 
 //------------------------------------------------------------------------------
@@ -409,8 +409,8 @@ inline data::series::sptr generate<data::series>(const std::size_t _variant)
     auto object = std::make_shared<data::series>();
 
     // Fill trivial attributes
-    object->set_sop_keyword(sight::data::dicom::sop::Keyword::CTImageStorage);
-    object->set_modality(uuid::generate());
+    object->set_sop_keyword(sight::data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+    object->set_modality(sight::data::dicom::modality_t::us);
     object->set_series_description(uuid::generate());
     object->set_series_instance_uid(uuid::generate());
     object->set_series_number(std::int32_t(_variant));
@@ -451,6 +451,15 @@ inline data::series::sptr generate<data::series>(const std::size_t _variant)
     object->set_patient_age(uuid::generate());
     object->set_patient_size(double(_variant));
     object->set_patient_weight(double(_variant));
+
+    // Other Modules
+    object->set_slice_thickness(double(_variant));
+    object->set_frame_acquisition_date_time("57", 0);
+    object->set_frame_comments("58", 0);
+    object->set_frame_label("59", 0);
+    object->set_ultrasound_acquisition_geometry(data::dicom::ultrasound_acquisition_geometry_t::patient);
+    object->set_patient_frame_of_reference_source(data::dicom::patient_frame_of_reference_source_t::table);
+    object->set_dimension_organization_type(data::dicom::dimension_organization_t::volume);
 
     // Generate specific instance data
     for(std::size_t i = 0 ; i < _variant + 3 ; ++i)
@@ -618,7 +627,11 @@ inline data::image::sptr generate<data::image>(const std::size_t _variant)
             // thus the 0.1 + static_cast<double>(variant)
             utest_data::generator::image::generate_image(
                 object,
-                {_variant + 5, _variant + 5, _variant + 5},
+            {
+                _variant + 5,
+                _variant + 5,
+                _variant + 5
+            },
             {
                 0.1 + static_cast<double>(_variant),
                 0.2 + static_cast<double>(_variant),
@@ -628,6 +641,9 @@ inline data::image::sptr generate<data::image>(const std::size_t _variant)
                 0.4 + static_cast<double>(_variant),
                 0.5 + static_cast<double>(_variant),
                 0.6 + static_cast<double>(_variant)
+            },
+            {
+                0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6
             },
                 std::is_same_v<type, double>
                 ? core::type::DOUBLE
@@ -652,26 +668,26 @@ inline data::image::sptr generate<data::image>(const std::size_t _variant)
                 : core::type::NONE,
 
                 std::is_same_v<type, double>
-                ? data::image::pixel_format::gray_scale
+                ? data::image::pixel_format_t::gray_scale
                 : std::is_same_v<type, float>
-                ? data::image::pixel_format::gray_scale
+                ? data::image::pixel_format_t::gray_scale
                 : std::is_same_v<type, std::uint8_t>
-                ? data::image::pixel_format::bgr
+                ? data::image::pixel_format_t::bgr
                 : std::is_same_v<type, std::uint16_t>
-                ? data::image::pixel_format::bgra
+                ? data::image::pixel_format_t::bgra
                 : std::is_same_v<type, std::uint32_t>
-                ? data::image::pixel_format::rgb
+                ? data::image::pixel_format_t::rgb
                 : std::is_same_v<type, std::uint64_t>
-                ? data::image::pixel_format::rgba
+                ? data::image::pixel_format_t::rgba
                 : std::is_same_v<type, std::int8_t>
-                ? data::image::pixel_format::gray_scale
+                ? data::image::pixel_format_t::gray_scale
                 : std::is_same_v<type, std::int16_t>
-                ? data::image::pixel_format::bgr
+                ? data::image::pixel_format_t::bgr
                 : std::is_same_v<type, std::int32_t>
-                ? data::image::pixel_format::bgra
+                ? data::image::pixel_format_t::bgra
                 : std::is_same_v<type, std::int64_t>
-                ? data::image::pixel_format::rgb
-                : data::image::pixel_format::undefined,
+                ? data::image::pixel_format_t::rgb
+                : data::image::pixel_format_t::undefined,
                 std::uint32_t(_variant)
             );
         };
@@ -831,42 +847,42 @@ inline data::camera::sptr generate<data::camera>(const std::size_t _variant)
     object->set_camera_id(uuid::generate());
     object->set_maximum_frame_rate(random<float>());
     constexpr std::array pixel_formats {
-        data::camera::pixel_format::adobedng,
-        data::camera::pixel_format::argb32,
-        data::camera::pixel_format::argb32_premultiplied,
-        data::camera::pixel_format::rgb32,
-        data::camera::pixel_format::rgb24,
-        data::camera::pixel_format::rgb565,
-        data::camera::pixel_format::rgb555,
-        data::camera::pixel_format::argb8565_premultiplied,
-        data::camera::pixel_format::bgra32,
-        data::camera::pixel_format::bgra32_premultiplied,
-        data::camera::pixel_format::bgr32,
-        data::camera::pixel_format::bgr24,
-        data::camera::pixel_format::bgr565,
-        data::camera::pixel_format::bgr555,
-        data::camera::pixel_format::bgra5658_premultiplied,
-        data::camera::pixel_format::ayuv444,
-        data::camera::pixel_format::ayuv444_premultiplied,
-        data::camera::pixel_format::yuv444,
-        data::camera::pixel_format::yuv420_p,
-        data::camera::pixel_format::yv12,
-        data::camera::pixel_format::uyvy,
-        data::camera::pixel_format::yuyv,
-        data::camera::pixel_format::nv12,
-        data::camera::pixel_format::nv21,
-        data::camera::pixel_format::imc1,
-        data::camera::pixel_format::imc2,
-        data::camera::pixel_format::imc3,
-        data::camera::pixel_format::imc4,
-        data::camera::pixel_format::y8,
-        data::camera::pixel_format::y16,
-        data::camera::pixel_format::jpeg,
-        data::camera::pixel_format::cameraraw,
-        data::camera::pixel_format::adobedng,
-        data::camera::pixel_format::rgba32,
-        data::camera::pixel_format::user,
-        data::camera::pixel_format::invalid
+        data::camera::pixel_format_t::adobedng,
+        data::camera::pixel_format_t::argb32,
+        data::camera::pixel_format_t::argb32_premultiplied,
+        data::camera::pixel_format_t::rgb32,
+        data::camera::pixel_format_t::rgb24,
+        data::camera::pixel_format_t::rgb565,
+        data::camera::pixel_format_t::rgb555,
+        data::camera::pixel_format_t::argb8565_premultiplied,
+        data::camera::pixel_format_t::bgra32,
+        data::camera::pixel_format_t::bgra32_premultiplied,
+        data::camera::pixel_format_t::bgr32,
+        data::camera::pixel_format_t::bgr24,
+        data::camera::pixel_format_t::bgr565,
+        data::camera::pixel_format_t::bgr555,
+        data::camera::pixel_format_t::bgra5658_premultiplied,
+        data::camera::pixel_format_t::ayuv444,
+        data::camera::pixel_format_t::ayuv444_premultiplied,
+        data::camera::pixel_format_t::yuv444,
+        data::camera::pixel_format_t::yuv420_p,
+        data::camera::pixel_format_t::yv12,
+        data::camera::pixel_format_t::uyvy,
+        data::camera::pixel_format_t::yuyv,
+        data::camera::pixel_format_t::nv12,
+        data::camera::pixel_format_t::nv21,
+        data::camera::pixel_format_t::imc1,
+        data::camera::pixel_format_t::imc2,
+        data::camera::pixel_format_t::imc3,
+        data::camera::pixel_format_t::imc4,
+        data::camera::pixel_format_t::y8,
+        data::camera::pixel_format_t::y16,
+        data::camera::pixel_format_t::jpeg,
+        data::camera::pixel_format_t::cameraraw,
+        data::camera::pixel_format_t::adobedng,
+        data::camera::pixel_format_t::rgba32,
+        data::camera::pixel_format_t::user,
+        data::camera::pixel_format_t::invalid
     };
     object->set_pixel_format(pixel_formats[_variant % 35]);
     object->set_video_file("/" + uuid::generate());

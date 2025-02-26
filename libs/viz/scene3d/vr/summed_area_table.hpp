@@ -77,17 +77,17 @@ public:
 
 private:
 
-    class summed_area_tableInitCompositorListener;
-    class summed_area_tableCompositorListener;
+    class summed_area_table_init_compositor_listener;
+    class summed_area_table_compositor_listener;
 
     /// Internal wrapper keeping trace of the current listeners in use.
     struct listeners_t
     {
         /// SAT init listener.
-        summed_area_tableInitCompositorListener* init = nullptr;
+        summed_area_table_init_compositor_listener* init = nullptr;
 
         /// SAT table update listener.
-        summed_area_tableCompositorListener* table = nullptr;
+        summed_area_table_compositor_listener* table = nullptr;
     };
 
     /// Creates the buffers and initializes the SAT.

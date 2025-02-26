@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -149,16 +149,16 @@ public:
                 switch(channels)
                 {
                     case 1:
-                        return data::image::pixel_format::gray_scale;
+                        return data::image::pixel_format_t::gray_scale;
 
                     case 2:
-                        return data::image::pixel_format::rg;
+                        return data::image::pixel_format_t::rg;
 
                     case 3:
-                        return data::image::pixel_format::rgb;
+                        return data::image::pixel_format_t::rgb;
 
                     case 4:
-                        return data::image::pixel_format::rgba;
+                        return data::image::pixel_format_t::rgba;
 
                     default:
                         SIGHT_THROW("Unsupported number of channels: " << channels);

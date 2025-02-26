@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,6 +49,8 @@ void line::initialize(const ui::config_t& _configuration)
         orientation_cfg == "vertical" || orientation_cfg == "horizontal"
     );
     m_orientation = (orientation_cfg == "vertical") ? vertical : horizontal;
+
+    m_spacing = _configuration.get<int>("<xmlattr>.spacing", -1);
 
     m_views.clear();
     for(auto view : _configuration)

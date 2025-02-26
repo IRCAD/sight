@@ -26,7 +26,7 @@
 
 #include "core/log/log.hpp"
 
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <string>
 
@@ -36,11 +36,11 @@ namespace sight::core::log
 /**
  * @brief Logger class used to store logs
  */
-class SIGHT_CORE_CLASS_API logger : public core::tools::object
+class SIGHT_CORE_CLASS_API logger : public core::object
 {
 public:
 
-    SIGHT_DECLARE_CLASS(logger, core::tools::object);
+    SIGHT_DECLARE_CLASS(logger, core::object);
 
     using log_container_t             = std::vector<core::log::log>;
     using iterator_type               = log_container_t::iterator;

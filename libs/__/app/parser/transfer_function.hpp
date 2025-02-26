@@ -40,13 +40,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(transfer_function, service::object_parser);
 
-    /// Constructor : does nothing.
-    transfer_function()
-    = default;
-
     /// Destructor : does nothing.
-    ~transfer_function() override
-    = default;
+    ~transfer_function() override = default;
 
     /**
      * @code{.xml}
@@ -77,17 +72,11 @@ public:
        @endcode
      *
      */
-    SIGHT_APP_API void create_config(core::tools::object::sptr _obj) override;
-
-protected:
-
-    /**
-     * @brief Updating method : create the process object.
-     *
-     * Parse the configuration element to configure inputs and outputs and add
-     * them in the process object.
-     */
-    SIGHT_APP_API void updating() override;
+    SIGHT_APP_API virtual void parse(
+        const service::config_t& _cfg,
+        core::object::sptr _obj,
+        objects_t& _sub_objects
+    ) override;
 };
 
 } // namespace sight::app::parser

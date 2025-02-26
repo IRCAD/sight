@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,10 @@
 
 #include "io/__/writer/matrix4_writer.hpp"
 
-#include "io/__/writer/registry/macros.hpp"
-
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <vector>
-
-SIGHT_REGISTER_IO_WRITER(sight::io::writer::matrix4_writer);
 
 namespace sight::io::writer
 {

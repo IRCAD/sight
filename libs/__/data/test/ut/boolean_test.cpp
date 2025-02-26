@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,8 +46,20 @@ void boolean_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void boolean_test::methode1()
+void boolean_test::basic()
 {
+    sight::data::boolean b1(true);
+    CPPUNIT_ASSERT_EQUAL(true, b1.value());
+    CPPUNIT_ASSERT(b1.is_type_of("sight::data::boolean"));
+    CPPUNIT_ASSERT(b1.is_type_of("sight::data::string_serializable"));
+
+    sight::data::boolean b2;
+    CPPUNIT_ASSERT_EQUAL(false, b2.value());
+    b2 = true;
+    CPPUNIT_ASSERT_EQUAL(true, b2.value());
+
+    CPPUNIT_ASSERT(b1 == b2);
+
     const bool true_value  = true;
     const bool false_value = !true_value;
 
@@ -66,6 +78,32 @@ void boolean_test::methode1()
     p2->set_value(true_value);
 
     CPPUNIT_ASSERT(*p1 == *p2);
+}
+
+//------------------------------------------------------------------------------
+
+void boolean_test::string_conversion()
+{
+    sight::data::boolean b1;
+    CPPUNIT_ASSERT_EQUAL(false, b1.value());
+    CPPUNIT_ASSERT_EQUAL(std::string("false"), b1.to_string());
+
+    b1 = true;
+    CPPUNIT_ASSERT_EQUAL(std::string("true"), b1.to_string());
+
+    sight::data::boolean b2;
+    CPPUNIT_ASSERT_EQUAL(false, b2.value());
+    b2.from_string("true");
+    CPPUNIT_ASSERT_EQUAL(true, b2.value());
+
+    b2.from_string("false");
+    CPPUNIT_ASSERT_EQUAL(false, b2.value());
+
+    CPPUNIT_ASSERT_THROW(b2.from_string("test"), data::exception);
+
+    std::stringstream stream;
+    stream << b2;
+    CPPUNIT_ASSERT_EQUAL(std::string("false"), stream.str());
 }
 
 } // namespace sight::data::ut

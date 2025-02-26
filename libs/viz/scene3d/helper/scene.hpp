@@ -49,9 +49,13 @@ public:
     /**
      * Computes the bounding box of the descendants of the provided node.
      * @param _root_scene_node The node whose bounding box is to be computed
+     * @param _exclude_static Exclude static objects from the bounding box computation
      * @return The bounding box of the node
      */
-    SIGHT_VIZ_SCENE3D_API static Ogre::AxisAlignedBox compute_bounding_box(const Ogre::SceneNode* _root_scene_node);
+    SIGHT_VIZ_SCENE3D_API static Ogre::AxisAlignedBox compute_bounding_box(
+        const Ogre::SceneNode* _root_scene_node,
+        bool _exclude_static = false
+    );
 
     /**
      * Computes the projection of the bounding box of the descendants of the provided node in screen space using the

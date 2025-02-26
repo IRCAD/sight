@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,13 +23,15 @@
 
 #include "core/jobs/job.hpp"
 
-#include <core/macros.hpp>
-#include <core/tools/compare.hpp>
+#include <core/compare.hpp>
 
 #include <data/dicom/sop.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
+#include <data/matrix4.hpp>
 #include <data/model_series.hpp>
+
+#include <geometry/__/vector.hpp>
 
 #include <gdcmDirectory.h>
 #include <gdcmImageApplyLookupTable.h>
@@ -47,6 +49,7 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 
+// cspell: ignore orthogonalize
 namespace sight::io::dicom::reader
 {
 
@@ -169,7 +172,7 @@ inline static data::series_set::sptr scan_gdcm_files(
                 }
 
                 // Convert the string to SOP Class UID keyword
-                const auto& sop_keyword = data::dicom::sop::keyword(found->second);
+                const auto sop_keyword = data::dicom::sop::keyword(found->second);
 
                 if(sop_keyword == data::dicom::sop::Keyword::INVALID)
                 {
@@ -396,7 +399,7 @@ inline static core::type compute_type(
 
 //------------------------------------------------------------------------------
 
-inline static enum data::image::pixel_format compute_format(
+inline static enum data::image::pixel_format_t compute_format(
     const gdcm::Image& _gdcm_image,
     const std::string& _filename
 )
@@ -406,7 +409,7 @@ inline static enum data::image::pixel_format compute_format(
     if(gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::PALETTE_COLOR)
     {
         // PALETTE_COLOR is always expended as RGB
-        return data::image::pixel_format::rgb;
+        return data::image::pixel_format_t::rgb;
     }
 
     const auto gdcm_sample_per_pixel = _gdcm_image.GetPixelFormat().GetSamplesPerPixel();
@@ -414,7 +417,7 @@ inline static enum data::image::pixel_format compute_format(
     if(gdcm_sample_per_pixel == 1)
     {
         // No need to check, no color space conversion...
-        return data::image::pixel_format::gray_scale;
+        return data::image::pixel_format_t::gray_scale;
     }
 
     if(gdcm_sample_per_pixel == 3
@@ -424,7 +427,7 @@ inline static enum data::image::pixel_format compute_format(
            || gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::YBR_RCT
            || gdcm_photometric_interpretation == gdcm::PhotometricInterpretation::RGB))
     {
-        return data::image::pixel_format::rgb;
+        return data::image::pixel_format_t::rgb;
     }
 
     SIGHT_THROW_IF(
@@ -437,7 +440,7 @@ inline static enum data::image::pixel_format compute_format(
     );
 
     // Unsupported...
-    return data::image::pixel_format::undefined;
+    return data::image::pixel_format_t::undefined;
 }
 
 //------------------------------------------------------------------------------
@@ -575,7 +578,7 @@ inline static data::image::spacing_t compute_spacing(
 
     // Z Spacing correction
     // Overwrite only if GDCM returned the default value (1.0), since GDCM usually knows to compute it right
-    if(core::tools::is_equal(spacing[2], 1.0))
+    if(core::is_equal(spacing[2], 1.0))
     {
         const auto& computed_spacing = compute_z_spacing(_source);
 
@@ -610,11 +613,11 @@ inline static data::image_series::sptr new_image_series(
     const core::type& type = compute_type(_gdcm_image, _gdcm_rescaler);
 
     // Target PixelFormat, even more complicated
-    const enum data::image::pixel_format& format = compute_format(_gdcm_image, _filename);
+    const enum data::image::pixel_format_t& format = compute_format(_gdcm_image, _filename);
 
     SIGHT_THROW_IF(
         "Cannot guess the target pixel format to use while reading DICOM file '" << _filename << "'.",
-        type == core::type::NONE || format == data::image::pixel_format::undefined
+        type == core::type::NONE || format == data::image::pixel_format_t::undefined
     );
 
     if(_job && _job->cancel_requested())
@@ -627,10 +630,6 @@ inline static data::image_series::sptr new_image_series(
 
     // Spacing.
     image_series->set_spacing(compute_spacing(_source, _gdcm_image));
-
-    // Origin
-    const double* const origin = _gdcm_image.GetOrigin();
-    image_series->set_origin({origin[0], origin[1], origin[2]});
 
     return image_series;
 }
@@ -828,20 +827,153 @@ inline static bool read_buffer(
     return true;
 }
 
-//------------------------------------------------------------------------------
-
-inline static std::vector<double> tune_directions(const double* const _gdcm_direction_cosines)
+/// Make direction cosines orthogonal. Also found in ITK
+/// This is for some strange DICOM files that have non orthogonal direction cosines.
+/// @warning column major order
+inline static std::vector<double> orthogonalize(const double* const _direction_cosines)
 {
-    glm::dvec3 glm_u {_gdcm_direction_cosines[0], _gdcm_direction_cosines[1], _gdcm_direction_cosines[2]};
-    glm::dvec3 glm_v {_gdcm_direction_cosines[3], _gdcm_direction_cosines[4], _gdcm_direction_cosines[5]};
+    glm::dvec3 u = {_direction_cosines[0], _direction_cosines[1], _direction_cosines[2]};
+    glm::dvec3 v = {_direction_cosines[3], _direction_cosines[4], _direction_cosines[5]};
+    glm::dvec3 w;
 
-    // Make them Orthogonal
-    // This code is also found in ITK and is mostly a bugfix when direction vectors are not orthogonal.
-    glm::dvec3 glm_w = glm::normalize(glm::cross(glm_u, glm_v));
-    glm_u = glm::normalize(glm::cross(glm_v, glm_w));
-    glm_v = glm::cross(glm_w, glm_u);
+    if(geometry::orthogonalize(u, v, w))
+    {
+        SIGHT_WARN("Direction cosines are not orthogonal, they will be corrected, but the result must be checked.");
+    }
 
-    return {glm_u.x, glm_u.y, glm_u.z, glm_v.x, glm_v.y, glm_v.z};
+    return {u[0], u[1], u[2], v[0], v[1], v[2], w[0], w[1], w[2]};
+}
+
+/// Decode image orientation / position
+/// GDCM doesn't handle Enhanced US Volume (which is rather a complicated case)
+/// see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.8.24.2.html
+inline static data::matrix4 compute_image_transform(
+    const gdcm::Image& _gdcm_image,
+    data::image_series::sptr _image_series
+)
+{
+    data::matrix4 transform;
+
+    switch(_image_series->get_ultrasound_acquisition_geometry())
+    {
+        case data::dicom::ultrasound_acquisition_geometry_t::apex:
+        {
+            // Search for Volume to Transducer Mapping Matrix
+            if(const auto& transducer_mapping = _image_series->get_volume_to_transducer_mapping_matrix();
+               transducer_mapping)
+            {
+                return transducer_mapping->values();
+            }
+
+            break;
+        }
+
+        case data::dicom::ultrasound_acquisition_geometry_t::patient:
+        {
+            // Make direction cosines orthogonal. Also found in ITK
+            // This is for some strange DICOM files that have non orthogonal direction cosines.
+
+            // Tune the shared orientation
+            if(const auto& orientation = _image_series->get_image_orientation_patient(std::nullopt);
+               orientation.size() == 6)
+            {
+                auto orthogonal_directions = orthogonalize(orientation.data());
+
+                // Store the orientation to use it later if there is no Volume to Table Mapping Matrix
+                // Convert to row major order
+                transform.set_orientation(
+                    {
+                        orthogonal_directions[0], orthogonal_directions[3], orthogonal_directions[6],
+                        orthogonal_directions[1], orthogonal_directions[4], orthogonal_directions[7],
+                        orthogonal_directions[2], orthogonal_directions[5], orthogonal_directions[8]
+                    });
+
+                // Having more than 6 elements makes GDCM assert
+                orthogonal_directions.resize(6);
+
+                _image_series->set_image_orientation_patient(
+                    orthogonal_directions,
+                    std::nullopt
+                );
+            }
+
+            // Tune the per-frame orientation
+            for(std::size_t frame = 0, end_index = _image_series->num_frames() ;
+                frame < end_index ; ++frame)
+            {
+                // For each frame, make the direction cosines orthogonal, if needed
+                if(const auto& orientation = _image_series->get_image_orientation_patient(frame);
+                   orientation.size() == 6)
+                {
+                    auto orthogonal_directions = orthogonalize(orientation.data());
+
+                    if(frame == 0)
+                    {
+                        // Store the orientation to use it later if there is no Volume to Table Mapping Matrix
+                        transform.set_orientation(
+                            {
+                                orthogonal_directions[0], orthogonal_directions[3], orthogonal_directions[6],
+                                orthogonal_directions[1], orthogonal_directions[4], orthogonal_directions[7],
+                                orthogonal_directions[2], orthogonal_directions[5], orthogonal_directions[8]
+                            });
+                    }
+
+                    // Having more than 6 elements makes GDCM assert
+                    orthogonal_directions.resize(6);
+
+                    _image_series->set_image_orientation_patient(
+                        orthogonal_directions,
+                        frame
+                    );
+                }
+            }
+
+            if(_image_series->get_patient_frame_of_reference_source()
+               == data::dicom::patient_frame_of_reference_source_t::table)
+            {
+                // Search for Volume to Table Mapping Matrix
+                if(const auto& table_mapping = _image_series->get_volume_to_table_mapping_matrix(); table_mapping)
+                {
+                    return table_mapping->values();
+                }
+            }
+
+            // If there is no Volume to Table Mapping Matrix, use the first frame
+            if(const auto& frame_position = _image_series->get_image_position_patient(0);
+               frame_position.size() == 3)
+            {
+                transform.set_position(frame_position);
+            }
+            else if(const auto& shared_position = _image_series->get_image_position_patient(std::nullopt);
+                    shared_position.size() == 3)
+            {
+                transform.set_position(shared_position);
+            }
+
+            // If the transform has been modified, return it
+            if(!transform.is_identity())
+            {
+                return transform.values();
+            }
+
+            break;
+        }
+
+        default:
+            break;
+    }
+
+    // Last resort: GDCM Direction cosines + origin
+    const auto& orthogonal_directions = orthogonalize(_gdcm_image.GetDirectionCosines());
+    const auto* const origin          = _gdcm_image.GetOrigin();
+
+    return data::matrix4(
+        {
+            orthogonal_directions[0], orthogonal_directions[3], orthogonal_directions[6], origin[0],
+            orthogonal_directions[1], orthogonal_directions[4], orthogonal_directions[7], origin[1],
+            orthogonal_directions[2], orthogonal_directions[5], orthogonal_directions[8], origin[2],
+            0., 0., 0., 1.
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -878,7 +1010,7 @@ inline static data::series_set::sptr read_image_instance(
         [&]
         {
             if(const double gdcm_intercept = gdcm_image.GetIntercept();
-               !core::tools::is_equal(gdcm_intercept, 0.0))
+               !core::is_equal(gdcm_intercept, 0.0))
             {
                 return std::make_pair(true, gdcm_intercept);
             }
@@ -897,7 +1029,7 @@ inline static data::series_set::sptr read_image_instance(
         [&]
         {
             if(const double gdcm_slope = gdcm_image.GetSlope();
-               !core::tools::is_equal(gdcm_slope, 1.0))
+               !core::is_equal(gdcm_slope, 1.0))
             {
                 return std::make_pair(true, gdcm_slope);
             }
@@ -934,10 +1066,9 @@ inline static data::series_set::sptr read_image_instance(
             return nullptr;
         }
 
-        const auto& image_series = new_image_series(_source, _job, gdcm_image, gdcm_rescaler, filename);
-
         // User may have canceled the job
-        if(image_series)
+        if(const auto& image_series = new_image_series(_source, _job, gdcm_image, gdcm_rescaler, filename);
+           image_series)
         {
             // Add the dataset to allow access to all DICOM attributes (not only the ones we have converted)
             image_series->set_data_set(gdcm_dataset);
@@ -945,14 +1076,15 @@ inline static data::series_set::sptr read_image_instance(
             // Also save the file path. It could be useful to keep a link to the original file.
             image_series->set_file(filename);
 
-            if(!image_series->is_multi_frame())
-            {
-                // Make direction vectors orthogonal. Also found in ITK
-                // This is for some strange DICOM files that have non orthogonal direction vectors.
-                /// @note This is not done for multi-frame images, because frame may be independently oriented.
-                const auto& tuned_directions = tune_directions(gdcm_image.GetDirectionCosines());
-                image_series->set_image_orientation_patient(tuned_directions);
-            }
+            const auto& transform = compute_image_transform(gdcm_image, image_series);
+            image_series->data::image::set_origin(transform.position());
+            image_series->data::image::set_orientation(transform.orientation());
+
+            ///@todo remove that once we remove field 'direction' from image_series
+            data::helper::medical_image::set_direction(
+                *image_series,
+                std::make_shared<data::matrix4>(transform.values())
+            );
 
             // Add the series to a new dataset
             if(!_splitted_series)
@@ -1017,7 +1149,8 @@ inline static data::series_set::sptr read_image(const data::series& _source, con
     }
 
     // Read first instance to get image information
-    // readImageInstance() returns a series set, because the series can be splitted in rare cases, like US 4D Volume.
+    // readImageInstance() returns a series set, because the series can be splitted in rare cases,
+    // like US 4D Volume.
     std::unique_ptr<std::vector<char> > gdcm_instance_buffer;
     auto splitted_series = read_image_instance(_source, _job, gdcm_instance_buffer, 0);
 
@@ -1055,7 +1188,10 @@ inline static data::series_set::sptr read_image(const data::series& _source, con
 
 //------------------------------------------------------------------------------
 
-inline static data::series_set::sptr read_model(const data::series& /*unused*/, const core::jobs::job::sptr& /*unused*/)
+inline static data::series_set::sptr read_model(
+    const data::series& /*unused*/,
+    const core::jobs::job::sptr& /*unused*/
+)
 {
     data::series_set::sptr splitted_series;
 
@@ -1104,13 +1240,13 @@ public:
     reader_impl& operator=(reader_impl&&)      = delete;
 
     /// Constructor
-    inline explicit reader_impl(reader::file* const _reader) noexcept :
+    explicit reader_impl(reader::file* const _reader) noexcept :
         m_reader(_reader)
     {
     }
 
     /// Default destructor
-    inline ~reader_impl() noexcept = default;
+    ~reader_impl() noexcept = default;
 
     /// Pointer to the public interface
     reader::file* const m_reader;
@@ -1120,7 +1256,7 @@ public:
     /// @return data::series_set::sptr: A set of series, with their associated files
     /// @throw std::runtime_error if the root directory is not an existing folder
     /// @throw std::runtime_error if there is no dicom files are found
-    [[nodiscard]] inline data::series_set::sptr scan_files(const std::vector<std::filesystem::path>& _files) const
+    [[nodiscard]] data::series_set::sptr scan_files(const std::vector<std::filesystem::path>& _files) const
     {
         // Convert std::vector<std::filesystem::path> to std::vector<std::string>
         gdcm::Directory::FilenamesType gdcm_files;
@@ -1144,7 +1280,7 @@ public:
     /// Returns a list of DICOM series with associated files sorted
     /// @return data::series_set::sptr: A set of series, with their associated files sorted
     /// @throw std::runtime_error if there is no scanned series
-    [[nodiscard]] inline data::series_set::sptr sort() const
+    [[nodiscard]] data::series_set::sptr sort() const
     {
         SIGHT_THROW_IF(
             "There is no DICOM file to sort.",
@@ -1181,7 +1317,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sort_instances_by_image_position(const data::series::sptr& _series)
+    static bool sort_instances_by_image_position(const data::series::sptr& _series)
     {
         // Use a map to sort for us....
         std::map<std::int64_t, std::size_t> sorter;
@@ -1218,7 +1354,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sort_instances_by_content_time(const data::series::sptr& _series)
+    static bool sort_instances_by_content_time(const data::series::sptr& _series)
     {
         // Use a map to sort for us....
         std::map<std::int64_t, std::size_t> sorter;
@@ -1323,7 +1459,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sort_instances_by_instance_number(const data::series::sptr& _series)
+    static bool sort_instances_by_instance_number(const data::series::sptr& _series)
     {
         // Use a map to sort for us....
         std::map<std::int64_t, std::size_t> sorter;
@@ -1357,7 +1493,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline static bool sort_instances_by_filename(const data::series::sptr& _series)
+    static bool sort_instances_by_filename(const data::series::sptr& _series)
     {
         // Use a map to sort for us....
         std::map<std::filesystem::path, std::size_t> sorter;
@@ -1391,7 +1527,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void read()
+    void read()
     {
         SIGHT_THROW_IF(
             "There is no DICOM file to read.",
@@ -1508,7 +1644,8 @@ public:
 
                     if(!series_have_fiducials)
                     {
-                        // It is the first fiducial set to be appended to this fiducials series; set fiducials metadata
+                        // It is the first fiducial set to be appended to this fiducials series;
+                        // set fiducials metadata
                         fiducials_series->set_content_date(fiducial_set.content_date);
                         fiducials_series->set_content_time(fiducial_set.content_time);
                         fiducials_series->set_instance_number(fiducial_set.instance_number);
@@ -1528,14 +1665,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline bool cancel_requested() const noexcept
+    [[nodiscard]] bool cancel_requested() const noexcept
     {
         return m_job && m_job->cancel_requested();
     }
 
     //------------------------------------------------------------------------------
 
-    inline void progress(std::uint64_t _units) const
+    void progress(std::uint64_t _units) const
     {
         if(m_job)
         {
@@ -1545,17 +1682,18 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void clear()
+    void clear()
     {
         m_scanned.reset();
         m_sorted.reset();
     }
 
     /// The default filter to select only some type (Image, Model, ...) of DICOM files.
-    data::series::SopKeywords m_filters {};
+    data::series::SopKeywords m_filters;
 
     /// Contains the list of files to sort and read.
-    /// Usually, it is filed by user after showing a selection dialog, but calling read() will fill it automatically.
+    /// Usually, it is filed by user after showing a selection dialog,
+    /// but calling read() will fill it automatically.
     data::series_set::sptr m_scanned;
 
     /// Contains the list of sorted files to read.
@@ -1611,7 +1749,14 @@ data::series_set::sptr file::scan()
 
         // We need to transform std::vector<std::string> to std::vector<std::filesystem::path>
         const auto& filenames = gdcm_directory.GetFilenames();
-        std::transform(filenames.cbegin(), filenames.cend(), std::back_inserter(files), [](const auto& _v){return _v;});
+        std::transform(
+            filenames.cbegin(),
+            filenames.cend(),
+            std::back_inserter(files),
+            [](const auto& _v)
+            {
+                return _v;
+            });
     }
 
     if(m_pimpl->cancel_requested())
@@ -1712,7 +1857,6 @@ void file::set_job(core::jobs::job::sptr _job)
     SIGHT_ASSERT("Some work have already be reported.", _job->get_done_work_units() == 0);
     m_pimpl->m_job = _job;
     m_pimpl->m_job->set_total_work_units(100);
-    m_pimpl->m_job->done_work(10);
 }
 
 } // namespace sight::io::dicom::reader

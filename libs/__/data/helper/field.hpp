@@ -134,7 +134,7 @@ protected:
     data::object::fields_container_t m_old_changedfields;
     /// Map of removed objects, send on notify
     data::object::fields_container_t m_removedfields;
-    /// Composite to add/remove/change objects
+    /// Map to add/remove/change objects
 
     data::object::wptr m_object;
 };

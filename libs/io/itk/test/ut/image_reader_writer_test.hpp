@@ -67,7 +67,7 @@ private:
         const data::image::spacing_t& _expected_spacing,
         const data::image::origin_t& _expected_origin,
         const data::image::size_t& _expected_size,
-        const data::matrix4::sptr& _expected_direction
+        const data::image::orientation_t& _expected_orientation
     );
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,12 +23,8 @@
 #pragma once
 
 #include "data/array.hpp"
-#include "data/factory/new.hpp"
 #include "data/iterator.hpp"
-#include "data/object.hpp"
 
-#include <core/com/signal.hpp>
-#include <core/com/signals.hpp>
 #include <core/memory/buffered.hpp>
 #include <core/type.hpp>
 
@@ -37,7 +33,6 @@
 #include <boost/range/iterator_range_core.hpp>
 
 #include <array>
-#include <filesystem>
 #include <vector>
 
 namespace sight::data
@@ -178,15 +173,16 @@ public:
     SIGHT_DECLARE_CLASS(image, object);
     SIGHT_ALLOW_SHARED_FROM_THIS()
 
-    using size_t    = std::array<std::size_t, 3>;
-    using origin_t  = std::array<double, 3>;
-    using spacing_t = std::array<double, 3>;
+    using size_t        = std::array<std::size_t, 3>;
+    using origin_t      = std::array<double, 3>;
+    using orientation_t = std::array<double, 9>;
+    using spacing_t     = std::array<double, 3>;
 
     using index_t  = size_t::value_type;
     using buffer_t = std::uint8_t;
 
     /// image format
-    enum pixel_format
+    enum pixel_format_t
     {
         undefined = 0, ///< Undefined pixel format
         rgb,           ///< image with 3 component RGB.
@@ -211,15 +207,28 @@ public:
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
     SIGHT_DATA_API void copy_information(image::csptr _source);
 
-    /// Get image spacing
+    /** @{
+     *  @brief Get/set image spacing
+     */
     const spacing_t& spacing() const;
-    /// Set image spacing
     void set_spacing(const spacing_t& _spacing);
+    /// @}
 
-    /// Get image origin
+    /** @{
+     *  @brief Get/set image origin
+     */
     const origin_t& origin() const;
-    /// Set image origin
-    void set_origin(const origin_t& _origin);
+    virtual void set_origin(const origin_t& _origin);
+    /// @}
+
+    /** @{
+     *  @brief Get/set image orientation.
+     *
+     *  @note The orientation is a 3x3 direction cosines matrix in row-major order.
+     */
+    const orientation_t& orientation() const;
+    virtual void set_orientation(const orientation_t& _orientation);
+    /// @}
 
     /// Get image size
     const image::size_t& size() const;
@@ -251,7 +260,7 @@ public:
     SIGHT_DATA_API core::type type() const;
 
     /// Get pixel format
-    pixel_format pixel_format() const;
+    pixel_format_t pixel_format() const;
 
     /**
        @{
@@ -271,7 +280,7 @@ public:
     SIGHT_DATA_API virtual std::size_t resize(
         const image::size_t& _size,
         const core::type& _type,
-        enum pixel_format _format
+        pixel_format_t _format
     );
     /// @}
 
@@ -296,25 +305,9 @@ public:
     using landmark_removed_signal_t = core::com::signal<void (std::shared_ptr<point>)>;
     SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_REMOVED_SIG;
 
-    /// Type of signal when a distance is added
+    /// Type of signal when a landmark is added
     using landmark_displayed_signal_t = core::com::signal<void (bool)>;
     SIGHT_DATA_API static const core::com::signals::key_t LANDMARK_DISPLAYED_SIG;
-
-    /// Type of signal when a distance is added
-    using distance_displayed_signal_t = core::com::signal<void (bool)>;
-    SIGHT_DATA_API static const core::com::signals::key_t DISTANCE_DISPLAYED_SIG;
-
-    /// Type of signal when a distance is added
-    using distance_added_signal_t = core::com::signal<void (std::shared_ptr<point_list>)>;
-    SIGHT_DATA_API static const core::com::signals::key_t DISTANCE_ADDED_SIG;
-
-    /// Type of signal when a distance is modified
-    using distance_modified_signal_t = core::com::signal<void (SPTR(point_list))>;
-    SIGHT_DATA_API static const core::com::signals::key_t DISTANCE_MODIFIED_SIG;
-
-    /// Type of signal when a distance is removed
-    using distance_removed_signal_t = core::com::signal<void (std::shared_ptr<const point_list>)>;
-    SIGHT_DATA_API static const core::com::signals::key_t DISTANCE_REMOVED_SIG;
 
     /// Type of signal when slice index is modified (axial index, frontal index, sagittal index)
     using slice_index_modified_signal_t = core::com::signal<void (int, int, int)>;
@@ -323,6 +316,16 @@ public:
     /// Type of signal when slice type is modified (from slice type, to slice type)
     using slice_type_modified_signal_t = core::com::signal<void (int, int)>;
     SIGHT_DATA_API static const core::com::signals::key_t SLICE_TYPE_MODIFIED_SIG;
+
+    /// Type of signal when ruler fiducial is modified (the associated id of ruler fiducial and the new coordinates)
+    using ruler_modified_signal_t =
+        core::com::signal<void (std::optional<std::string>, std::array<double, 3>, std::array<double, 3>)>;
+    SIGHT_DATA_API static const core::com::signals::key_t RULER_MODIFIED_SIG;
+
+    /// Type of signal when fiducial is removed (the associated id of fiducial)
+    using fiducial_removed_signal_t =
+        core::com::signal<void (std::optional<std::string>)>;
+    SIGHT_DATA_API static const core::com::signals::key_t FIDUCIAL_REMOVED_SIG;
     /**
      * @}
      */
@@ -435,7 +438,7 @@ public:
         bool _take_ownership,
         const core::type& _type,
         const image::size_t& _size,
-        enum pixel_format _format,
+        pixel_format_t _format,
         core::memory::buffer_allocation_policy::sptr _policy = std::make_shared<core::memory::buffer_malloc_policy>()
     );
 
@@ -443,7 +446,7 @@ public:
      * @{
      * @brief Get the value of an element
      *
-     * @tparam T Type in which the pointer will be returned
+     * @param T Type in which the pointer will be returned
      * @param _id Item image index
      *
      * @return Buffer value cast to T
@@ -460,7 +463,7 @@ public:
      * @{
      * @brief Get the value of an element
      *
-     * @tparam T Type in which the pointer will be returned
+     * @param T Type in which the pointer will be returned
      * @param _x x index
      * @param _y y index
      * @param _z z index
@@ -560,7 +563,7 @@ private:
     SIGHT_DATA_API std::size_t resize(
         const image::size_t& _size,
         const core::type& _type,
-        enum pixel_format _format,
+        pixel_format_t _format,
         bool _realloc
     );
     /// @}
@@ -585,8 +588,11 @@ private:
     //! An array on the voxel size of the image
     spacing_t m_spacing {0., 0., 0.};
 
-    //! origin_t of the image in 3D repair
+    //! origin_t of the image in 3D coordinate system
     origin_t m_origin {0., 0., 0.};
+
+    //! orientation_t of the image in 3D coordinate system (row-major order)
+    orientation_t m_orientation {1., 0., 0., 0., 1., 0., 0., 0., 1.};
 
     //! Preferred window center/width
     ///@{
@@ -604,7 +610,7 @@ private:
     std::size_t m_stride {1};
 
     //! image format
-    enum pixel_format m_pixel_format {pixel_format::undefined};
+    pixel_format_t m_pixel_format {pixel_format_t::undefined};
 
     //! image buffer
     array::sptr m_data_array;
@@ -647,7 +653,7 @@ inline std::size_t image::num_components() const
 
 //-----------------------------------------------------------------------------
 
-inline enum image::pixel_format image::pixel_format() const
+inline enum image::pixel_format_t image::pixel_format() const
 {
     return m_pixel_format;
 }
@@ -678,6 +684,20 @@ inline const image::origin_t& image::origin() const
 inline void image::set_origin(const origin_t& _origin)
 {
     m_origin = _origin;
+}
+
+//------------------------------------------------------------------------------
+
+inline const image::orientation_t& image::orientation() const
+{
+    return m_orientation;
+}
+
+//------------------------------------------------------------------------------
+
+inline void image::set_orientation(const orientation_t& _orientation)
+{
+    m_orientation = _orientation;
 }
 
 //------------------------------------------------------------------------------

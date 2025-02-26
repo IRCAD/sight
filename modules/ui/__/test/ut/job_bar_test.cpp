@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -115,6 +115,7 @@ public:
         base(_name)
     {
         m_total_work_units = _total_work_unit;
+        m_state            = running;
     }
 
     //------------------------------------------------------------------------------

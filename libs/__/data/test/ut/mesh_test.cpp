@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -1413,16 +1413,16 @@ void mesh_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    mesh1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Meshes should be different when applying " #op " to the first", \
-        *mesh1 != *mesh2 && !(*mesh1 == *mesh2) \
-    ); \
-    mesh2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Meshes should be equal when " #op " to both", \
-        *mesh1 == *mesh2 && !(*mesh1 != *mesh2) \
-    );
+            mesh1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Meshes should be different when applying " #op " to the first", \
+                *mesh1 != *mesh2 && !(*mesh1 == *mesh2) \
+            ); \
+            mesh2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Meshes should be equal when " #op " to both", \
+                *mesh1 == *mesh2 && !(*mesh1 != *mesh2) \
+            );
 
     mesh1->resize(1, 1, data::mesh::cell_type_t::quad, data::mesh::attribute::none);
     CPPUNIT_ASSERT(*mesh1 != *mesh2 && !(*mesh1 == *mesh2));

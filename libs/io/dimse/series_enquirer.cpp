@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -137,8 +137,6 @@ void series_enquirer::initialize(
     transfer_syntaxes.DCMTK_EMPLACE_BACK(UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax);
     transfer_syntaxes.DCMTK_EMPLACE_BACK(UID_JPIPReferencedTransferSyntax);
     transfer_syntaxes.DCMTK_EMPLACE_BACK(UID_JPIPReferencedDeflateTransferSyntax);
-    transfer_syntaxes.DCMTK_EMPLACE_BACK(UID_RFC2557MIMEEncapsulationTransferSyntax);
-    transfer_syntaxes.DCMTK_EMPLACE_BACK(UID_XMLEncodingTransferSyntax);
 
     // Add Verification SOP Class presentation context.
     this->addPresentationContext(UID_VerificationSOPClass, transfer_syntaxes);

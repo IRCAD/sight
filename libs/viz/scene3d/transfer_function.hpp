@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2024 IRCAD France
+ * Copyright (C) 2015-2025 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,14 +62,16 @@ public:
     void bind(
         const Ogre::Pass* _pass,
         const std::string& _tex_unit_name,
-        Ogre::SharedPtr<GPU_PARAMETERS> _params,
+        std::shared_ptr<GPU_PARAMETERS> _params,
         const std::string& _uniform = "u_f3TFWindow"
     ) const;
 
-private:
-
     /// Stores the tf window to upload it when necessary as a fragment shader uniform
-    Ogre::Vector3 m_tf_window;
+    Ogre::Vector3 m_window;
+
+    Ogre::TextureFilterOptions m_filtering {Ogre::TFO_BILINEAR};
+    Ogre::TextureAddressingMode m_addressing_mode {Ogre::TextureUnitState::TAM_CLAMP};
+    Ogre::ColourValue m_border_color {Ogre::ColourValue(0.0, 0.0, 1.0, 1.0)};
 };
 
 //------------------------------------------------------------------------------
@@ -78,7 +80,7 @@ template<class GPU_PARAMETERS>
 inline void transfer_function::bind(
     const Ogre::Pass* const _pass,
     const std::string& _tex_unit_name,
-    Ogre::SharedPtr<GPU_PARAMETERS> _params,
+    std::shared_ptr<GPU_PARAMETERS> _params,
     const std::string& _uniform
 ) const
 {
@@ -93,10 +95,19 @@ inline void transfer_function::bind(
         tex_unit_state->setTexture(m_resource);
     }
 
-    tex_unit_state->setTextureFiltering(Ogre::TFO_BILINEAR);
-    tex_unit_state->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
+    tex_unit_state->setTextureFiltering(m_filtering);
+    tex_unit_state->setTextureAddressingMode(m_addressing_mode);
 
-    _params->setNamedConstant(_uniform, m_tf_window);
+    Ogre::Sampler::UVWAddressingMode addressing_mode =
+        tex_unit_state->getTextureAddressingMode();
+    if(addressing_mode.u == Ogre::TextureAddressingMode::TAM_BORDER
+       && addressing_mode.v == Ogre::TextureAddressingMode::TAM_BORDER
+       && addressing_mode.w == Ogre::TextureAddressingMode::TAM_BORDER)
+    {
+        tex_unit_state->setTextureBorderColour(m_border_color);
+    }
+
+    _params->setNamedConstant(_uniform, m_window);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,21 +1,20 @@
 <extension implements="sight::app::extension::config">
     <id>sight::config::viz::scene2d::TransferFunctionWindowCfg</id>
     <parameters>
+        <object uid="image" type="sight::data::image" />
+        <object uid="currentTF" type="sight::data::transfer_function" />
+
+        <param name="presets" default="emptyPresets" />
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
         <param name="WINDOW_TITLE" />
         <param name="WINDOW_ICON" />
-        <param name="image" />
-        <param name="currentTF" />
-        <param name="presets" default="emptyPresets" />
         <param name="USE_DEFAULT_TF" default="true" />
         <param name="ADDITIONAL_TF_PATH" default="" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="sight::data::image" src="ref" />
-        <object uid="${currentTF}" type="sight::data::transfer_function" src="ref" />
-        <object uid="${presets}" type="sight::data::composite" src="deferred" />
+        <object uid="${presets}" type="sight::data::map" deferred="true" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -26,7 +25,6 @@
                     <name>${WINDOW_TITLE}</name>
                     <icon>${WINDOW_ICON}</icon>
                     <minSize width="720" height="390" />
-                    <style mode="STAY_ON_TOP" />
                 </frame>
             </gui>
             <registry>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -34,6 +34,8 @@ class id_test : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(id_test);
 CPPUNIT_TEST(object_id_test);
 CPPUNIT_TEST(concurrent_access_on_id_map_test);
+CPPUNIT_TEST(join_id_test);
+CPPUNIT_TEST(short_id_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,8 +45,9 @@ public:
     void tearDown() override;
 
     static void object_id_test();
-
     static void concurrent_access_on_id_map_test();
+    static void join_id_test();
+    static void short_id_test();
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,50 +54,50 @@ camera::camera()
 
 //------------------------------------------------------------------------------
 
-using pixel_format_translator_t = boost::bimaps::bimap<enum camera::pixel_format, std::string>;
+using pixel_format_translator_t = boost::bimaps::bimap<enum camera::pixel_format_t, std::string>;
 pixel_format_translator_t pixel_format_translator =
     boost::assign::list_of<pixel_format_translator_t::relation>
-        (camera::pixel_format::invalid, std::string("invalid"))
-        (camera::pixel_format::argb32, std::string("argb32"))
-        (camera::pixel_format::argb32_premultiplied, std::string("argb32_premultiplied"))
-        (camera::pixel_format::rgb32, std::string("rgb32"))
-        (camera::pixel_format::rgb24, std::string("rgb24"))
-        (camera::pixel_format::rgb565, std::string("rgb565"))
-        (camera::pixel_format::rgb555, std::string("rgb555"))
-        (camera::pixel_format::argb8565_premultiplied, std::string("argb8565_premultiplied"))
-        (camera::pixel_format::bgra32, std::string("bgra32"))
-        (camera::pixel_format::bgra32_premultiplied, std::string("bgra32_premultiplied"))
-        (camera::pixel_format::bgr32, std::string("bgr32"))
-        (camera::pixel_format::bgr24, std::string("bgr24"))
-        (camera::pixel_format::bgr565, std::string("bgr565"))
-        (camera::pixel_format::bgr555, std::string("bgr555"))
-        (camera::pixel_format::bgra5658_premultiplied, std::string("bgra5658_premultiplied"))
-        (camera::pixel_format::ayuv444, std::string("ayuv444"))
-        (camera::pixel_format::ayuv444_premultiplied, std::string("ayuv444_premultiplied"))
-        (camera::pixel_format::yuv444, std::string("yuv444"))
-        (camera::pixel_format::yuv420_p, std::string("yuv420_p"))
-        (camera::pixel_format::yv12, std::string("yv12"))
-        (camera::pixel_format::uyvy, std::string("uyvy"))
-        (camera::pixel_format::yuyv, std::string("yuyv"))
-        (camera::pixel_format::nv12, std::string("nv12"))
-        (camera::pixel_format::nv21, std::string("nv21"))
-        (camera::pixel_format::imc1, std::string("imc1"))
-        (camera::pixel_format::imc2, std::string("imc2"))
-        (camera::pixel_format::imc3, std::string("imc3"))
-        (camera::pixel_format::imc4, std::string("imc4"))
-        (camera::pixel_format::y8, std::string("y8"))
-        (camera::pixel_format::y16, std::string("y16"))
-        (camera::pixel_format::jpeg, std::string("jpeg"))
-        (camera::pixel_format::cameraraw, std::string("cameraraw"))
-        (camera::pixel_format::adobedng, std::string("adobedng"))
-        (camera::pixel_format::rgba32, std::string("rgba32"))
-        (camera::pixel_format::user, std::string("user"));
+        (camera::pixel_format_t::invalid, std::string("invalid"))
+        (camera::pixel_format_t::argb32, std::string("argb32"))
+        (camera::pixel_format_t::argb32_premultiplied, std::string("argb32_premultiplied"))
+        (camera::pixel_format_t::rgb32, std::string("rgb32"))
+        (camera::pixel_format_t::rgb24, std::string("rgb24"))
+        (camera::pixel_format_t::rgb565, std::string("rgb565"))
+        (camera::pixel_format_t::rgb555, std::string("rgb555"))
+        (camera::pixel_format_t::argb8565_premultiplied, std::string("argb8565_premultiplied"))
+        (camera::pixel_format_t::bgra32, std::string("bgra32"))
+        (camera::pixel_format_t::bgra32_premultiplied, std::string("bgra32_premultiplied"))
+        (camera::pixel_format_t::bgr32, std::string("bgr32"))
+        (camera::pixel_format_t::bgr24, std::string("bgr24"))
+        (camera::pixel_format_t::bgr565, std::string("bgr565"))
+        (camera::pixel_format_t::bgr555, std::string("bgr555"))
+        (camera::pixel_format_t::bgra5658_premultiplied, std::string("bgra5658_premultiplied"))
+        (camera::pixel_format_t::ayuv444, std::string("ayuv444"))
+        (camera::pixel_format_t::ayuv444_premultiplied, std::string("ayuv444_premultiplied"))
+        (camera::pixel_format_t::yuv444, std::string("yuv444"))
+        (camera::pixel_format_t::yuv420_p, std::string("yuv420_p"))
+        (camera::pixel_format_t::yv12, std::string("yv12"))
+        (camera::pixel_format_t::uyvy, std::string("uyvy"))
+        (camera::pixel_format_t::yuyv, std::string("yuyv"))
+        (camera::pixel_format_t::nv12, std::string("nv12"))
+        (camera::pixel_format_t::nv21, std::string("nv21"))
+        (camera::pixel_format_t::imc1, std::string("imc1"))
+        (camera::pixel_format_t::imc2, std::string("imc2"))
+        (camera::pixel_format_t::imc3, std::string("imc3"))
+        (camera::pixel_format_t::imc4, std::string("imc4"))
+        (camera::pixel_format_t::y8, std::string("y8"))
+        (camera::pixel_format_t::y16, std::string("y16"))
+        (camera::pixel_format_t::jpeg, std::string("jpeg"))
+        (camera::pixel_format_t::cameraraw, std::string("cameraraw"))
+        (camera::pixel_format_t::adobedng, std::string("adobedng"))
+        (camera::pixel_format_t::rgba32, std::string("rgba32"))
+        (camera::pixel_format_t::user, std::string("user"));
 
 //------------------------------------------------------------------------------
 
-enum camera::pixel_format camera::pixel_format(const std::string& _name)
+camera::pixel_format_t camera::pixel_format(const std::string& _name)
 {
-    enum pixel_format format = pixel_format::invalid;
+    auto format = pixel_format_t::invalid;
 
     pixel_format_translator_t::right_const_iterator right_iter = pixel_format_translator.right.find(_name);
     if(right_iter != pixel_format_translator.right.end())
@@ -110,7 +110,7 @@ enum camera::pixel_format camera::pixel_format(const std::string& _name)
 
 //------------------------------------------------------------------------------
 
-std::string camera::get_pixel_format_name(enum pixel_format _format)
+std::string camera::get_pixel_format_name(pixel_format_t _format)
 {
     std::string name                                         = "invalid";
     pixel_format_translator_t::left_const_iterator left_iter = pixel_format_translator.left.find(_format);
@@ -149,6 +149,7 @@ void camera::shallow_copy(const object::csptr& _source)
     m_stream_url             = other->m_stream_url;
     m_camera_source          = other->m_camera_source;
     m_scale                  = other->m_scale;
+    m_calibration_error      = other->m_calibration_error;
 
     base_class_t::shallow_copy(other);
 }
@@ -180,6 +181,7 @@ void camera::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_
     m_stream_url             = other->m_stream_url;
     m_camera_source          = other->m_camera_source;
     m_scale                  = other->m_scale;
+    m_calibration_error      = other->m_calibration_error;
 
     base_class_t::deep_copy(other, _cache);
 }
@@ -201,17 +203,18 @@ bool camera::operator==(const camera& _other) const noexcept
 {
     if(m_width != _other.m_width
        || m_height != _other.m_height
-       || !core::tools::is_equal(m_intrinsic, _other.m_intrinsic)
-       || !core::tools::is_equal(m_distortion_coefficient, _other.m_distortion_coefficient)
-       || !core::tools::is_equal(m_skew, _other.m_skew)
+       || !core::is_equal(m_intrinsic, _other.m_intrinsic)
+       || !core::is_equal(m_distortion_coefficient, _other.m_distortion_coefficient)
+       || !core::is_equal(m_skew, _other.m_skew)
        || m_is_calibrated != _other.m_is_calibrated
        || m_camera_id != _other.m_camera_id
-       || !core::tools::is_equal(m_max_frame_rate, _other.m_max_frame_rate)
+       || !core::is_equal(m_max_frame_rate, _other.m_max_frame_rate)
        || m_pixel_format != _other.m_pixel_format
        || m_video_file != _other.m_video_file
        || m_stream_url != _other.m_stream_url
        || m_camera_source != _other.m_camera_source
-       || !core::tools::is_equal(m_scale, _other.m_scale))
+       || !core::is_equal(m_scale, _other.m_scale)
+       || !core::is_equal(m_calibration_error, _other.m_calibration_error))
     {
         return false;
     }

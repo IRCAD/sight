@@ -42,7 +42,7 @@
 namespace sight::data
 {
 
-class composite;
+class map;
 class integer;
 
 } // namespace sight::data
@@ -198,8 +198,8 @@ private:
 
     static constexpr std::string_view IMAGE = "image";
 
-    data::ptr<data::dicom_series, data::access::in> m_dicom_series {this, "series", true};
-    data::ptr<data::image, data::access::out> m_image {this, IMAGE, false};
+    data::ptr<data::dicom_series, data::access::in> m_dicom_series {this, "series"};
+    data::ptr<data::image, data::access::out> m_image {this, IMAGE};
 };
 
 } // namespace sight::module::ui::dicom

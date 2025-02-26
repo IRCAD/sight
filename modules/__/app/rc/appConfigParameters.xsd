@@ -14,12 +14,18 @@
     <xs:complexType name="parameters_t">
         <xs:sequence>
             <xs:element name="param" type="param_t" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="object" type="object_t" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
-    
+
     <xs:complexType name="param_t">
         <xs:attribute name='name' type='xs:string' use="required" />
         <xs:attribute name='value' type='xs:string' />
     </xs:complexType>
 
-</xs:schema>        
+    <xs:complexType name="object_t">
+        <xs:attribute name='uid' type='xs:string' use="required" />
+        <xs:attribute name='type' type='xs:string' use="required" />
+    </xs:complexType>
+
+</xs:schema>

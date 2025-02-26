@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,7 @@
 #include <core/com/slots.hxx>
 
 #include <data/fiducials_series.hpp>
+#include <data/helper/fiducials_series.hpp>
 
 #include <geometry/data/matrix4.hpp>
 
@@ -106,6 +107,56 @@ namespace
     return {};
 }
 
+/**
+ * Get a fiducial set as a structure compatible with data::landmarks
+ * @param _group_name The name of the group to fetch
+ * @return The fiducial set as a structure compatible with data::landmarks
+ */
+[[nodiscard]] std::optional<data::landmarks::landmarks_group> get_group(
+    const data::fiducials_series& _fiducials,
+    const std::string& _group_name
+)
+{
+    const auto fiducial_set = _fiducials.get_fiducial_set_and_index(_group_name);
+    if(!fiducial_set.has_value())
+    {
+        return std::nullopt;
+    }
+
+    data::landmarks::color_t color = fiducial_set->first.color.value_or(std::array {1.F, 1.F, 1.F, 1.F});
+    data::landmarks::size_t size   = fiducial_set->first.size.value_or(10);
+
+    data::landmarks::shape shape = data::landmarks::shape::sphere;
+
+    switch(fiducial_set->first.shape.value_or(data::fiducials_series::private_shape::sphere))
+    {
+        case data::fiducials_series::private_shape::sphere:
+            shape = data::landmarks::shape::sphere;
+            break;
+
+        case data::fiducials_series::private_shape::cube:
+            shape = data::landmarks::shape::cube;
+
+        default:
+            break;
+    }
+
+    bool visibility = fiducial_set->first.visibility.value_or(true);
+
+    data::landmarks::landmarks_group group(color, size, shape, visibility);
+
+    std::ranges::for_each(
+        data::helper::fiducials_series::filter_fiducials(fiducial_set->first, data::fiducials_series::shape::point),
+        [&group](const data::fiducials_series::fiducial& _fiducial)
+            {
+                if(auto point = sight::data::fiducials_series::get_point(_fiducial))
+                {
+                    group.m_points.push_back(*point);
+                }
+            });
+    return group;
+}
+
 //------------------------------------------------------------------------------
 
 [[nodiscard]] std::optional<data::landmarks::landmarks_group> get_group(
@@ -125,7 +176,7 @@ namespace
 
     if(_li.image_series != nullptr)
     {
-        return _li.image_series->get_fiducials()->get_group(_group_name);
+        return get_group(*_li.image_series->get_fiducials(), _group_name);
     }
 
     SIGHT_ASSERT("Either 'landmarks' or 'fiducialsSeries' must be configured as inout", false);
@@ -238,7 +289,7 @@ void landmarks::starting()
 {
     this->sight::ui::service::create();
 
-    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(base_id());
 
     const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->get_container()
@@ -510,6 +561,8 @@ void landmarks::on_group_name_edited(QTreeWidgetItem* _item, int _column)
                         li_lock.landmarks != nullptr || li_lock.image_series != nullptr
                     );
 
+                    const data::landmarks::GroupNameContainer group_names = get_group_names(li_lock);
+
                     if(li_lock.landmarks != nullptr)
                     {
                         li_lock.landmarks->rename_group(old_group_name.toStdString(), new_group_name.toStdString());
@@ -532,6 +585,11 @@ void landmarks::on_group_name_edited(QTreeWidgetItem* _item, int _column)
                         if(!fiducial_set.has_value())
                         {
                             throw data::exception("'" + old_group_name.toStdString() + "' group doesn't exist");
+                        }
+
+                        if(std::ranges::find(group_names, new_group_name.toStdString()) != group_names.end())
+                        {
+                            throw data::exception("'" + new_group_name.toStdString() + "' group already exists");
                         }
 
                         li_lock.image_series->get_fiducials()->set_group_name(
@@ -677,7 +735,11 @@ void landmarks::on_selection_changed(QTreeWidgetItem* _current, QTreeWidgetItem*
                         index < num_points(li_lock, group_name)
                     );
 
-                    const core::com::connection::blocker block(select_sig->get_connection(this->slot(SELECT_POINT_SLOT)));
+                    const core::com::connection::blocker block(select_sig->get_connection(
+                                                                   this->slot(
+                                                                       SELECT_POINT_SLOT
+                                                                   )
+                    ));
                     select_sig->async_emit(group_name, index);
                 }
                 else
@@ -1236,10 +1298,6 @@ void landmarks::remove_group(std::string _name) const
             QTreeWidgetItem* const child = item->child(0);
             item->removeChild(child);
         }
-
-        const int index                 = m_tree_widget->indexOfTopLevelItem(item);
-        QTreeWidgetItem* const top_item = m_tree_widget->takeTopLevelItem(index);
-        delete top_item;
     }
     catch(const std::exception& e)
     {
@@ -1440,7 +1498,7 @@ void landmarks::deselect_point(std::string /*unused*/, std::size_t /*unused*/) c
 
 std::string landmarks::generate_new_group_name() const
 {
-    static std::size_t group_count = 0;
+    std::size_t group_count = 0;
 
     // const auto landmarks = m_landmarks.lock();
     landmarks_or_image_series_const_lock li_lock = const_lock();

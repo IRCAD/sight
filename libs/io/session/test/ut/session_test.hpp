@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ public:
     CPPUNIT_TEST(integer_test);
     CPPUNIT_TEST(float_test);
     CPPUNIT_TEST(string_test);
-    CPPUNIT_TEST(composite_test);
+    CPPUNIT_TEST(map_test);
     CPPUNIT_TEST(mesh_test);
     CPPUNIT_TEST(series_test);
     CPPUNIT_TEST(activity_test);
@@ -84,7 +84,7 @@ public:
     static void integer_test();
     static void float_test();
     static void string_test();
-    static void composite_test();
+    static void map_test();
     static void mesh_test();
     static void series_test();
     static void activity_test();

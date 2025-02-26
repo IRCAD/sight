@@ -63,8 +63,7 @@ class SIGHT_IO_SESSION_CLASS_API session_writer final : public io::writer::objec
 {
 public:
 
-    SIGHT_DECLARE_CLASS(session_writer, io::writer::object_writer, io::writer::factory::make<session_writer>);
-    SIGHT_ALLOW_SHARED_FROM_THIS()
+    SIGHT_DECLARE_CLASS(session_writer, io::writer::object_writer);
     /// Delete default constructors and assignment operators
     session_writer(const session_writer&)            = delete;
     session_writer(session_writer&&)                 = delete;

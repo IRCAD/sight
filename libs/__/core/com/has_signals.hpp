@@ -24,6 +24,8 @@
 
 #include <sight/core/config.hpp>
 
+#include "core/com/has_slots.hpp"
+#include "core/com/signal.hpp"
 #include "core/com/signals.hpp"
 
 namespace sight::core::com
@@ -52,16 +54,84 @@ public:
     template<typename signal_type>
     [[nodiscard]] SPTR(signal_type) signal(const signals::signal_key_type& _key) const
     {
-        SPTR(signal_type) signal = std::dynamic_pointer_cast<signal_type>(this->signal(_key));
+        auto signal = std::dynamic_pointer_cast<signal_type>(this->signal(_key));
         return signal;
     }
 
     template<typename signal_type>
     SPTR(signal_type) new_signal(const signals::signal_key_type& _key)
     {
-        SPTR(signal_type) sig = std::make_shared<signal_type>();
+        auto sig = std::make_shared<signal_type>();
         m_signals(_key, sig);
         return sig;
+    }
+
+    /**
+     * @brief Emit the signal identified by its key
+     *
+     * @tparam A Type and number of signal arguments
+     * @param _key Identifier of the signal
+     * @param _a Arguments of the signal
+     */
+    template<typename ... A>
+    void emit(const signals::signal_key_type& _key, A ... _a) const
+    {
+        auto signal = this->typed_signal<A ...>(_key);
+        signal->emit(_a ...);
+    }
+
+    /**
+     * @brief Emit the signal identified by its key.
+     * This alternative signature takes an instance of sight::core::com::has_slots
+     * and blocks every slot connected with the signal, preventing infinite loops.
+     *
+     * @tparam A Type and number of signal arguments
+     * @param _caller Caller of the signal
+     * @param _key Identifier of the signal
+     * @param _a Arguments of the signal
+     */
+    template<typename ... A>
+    void emit(com::has_slots* _caller, const signals::signal_key_type& _key, A ... _a) const
+    {
+        SIGHT_ASSERT("Caller is null", _caller);
+
+        auto signal   = this->typed_signal<A ...>(_key);
+        auto blockers = block_connections(_caller, signal);
+        signal->emit(_a ...);
+    }
+
+    /**
+     * @brief Emit asynchronously the signal identified by its key
+     *
+     * @tparam A Type and number of signal arguments
+     * @param _key Identifier of the signal
+     * @param _a Arguments of the signal
+     */
+    template<typename ... A>
+    void async_emit(const signals::signal_key_type& _key, A ... _a) const
+    {
+        auto signal = this->typed_signal<A ...>(_key);
+        signal->async_emit(_a ...);
+    }
+
+    /**
+     * @brief Emit asynchronously the signal identified by its key.
+     * This alternative signature takes an instance of sight::core::com::has_slots
+     * and blocks every slot connected with the signal, preventing infinite loops.
+     *
+     * @tparam A Type and number of signal arguments
+     * @param _caller Caller of the signal
+     * @param _key Identifier of the signal
+     * @param _a Arguments of the signal
+     */
+    template<typename ... A>
+    void async_emit(com::has_slots* _caller, const signals::signal_key_type& _key, A ... _a) const
+    {
+        SIGHT_ASSERT("Caller is null", _caller);
+
+        auto signal   = this->typed_signal<A ...>(_key);
+        auto blockers = block_connections(_caller, signal);
+        signal->async_emit(_a ...);
     }
 
 protected:
@@ -73,6 +143,50 @@ protected:
     has_signals& operator=(const has_signals&);
 
     signals m_signals;
+
+private:
+
+    using blockers_t = std::vector<core::com::connection::blocker>;
+
+    //------------------------------------------------------------------------------
+
+    /**
+     * @brief Return the signal with the appropriate function signature matching the arguments.
+     *
+     * @tparam A Type and number of signal arguments
+     * @param _key Identifier of the signal
+     * @return signal with the function signature, ready to be emitted.
+     */
+    template<typename ... A>
+    core::com::signal<void(A ...)>::sptr typed_signal(const signals::signal_key_type& _key) const
+    {
+        auto signal = this->signal(_key);
+        SIGHT_ASSERT("Can't find signal " << std::quoted(_key), signal);
+        auto typed_signal = std::dynamic_pointer_cast<core::com::signal<void(A ...)> >(signal);
+        SIGHT_ASSERT("Signal " << std::quoted(_key) << " does not match the required signature", typed_signal);
+        return typed_signal;
+    }
+
+    /**
+     * @brief Block every slot connected with the caller
+     *
+     * @param _caller Caller of the signal
+     * @param _signal Signal about to be emitted
+     */
+    blockers_t block_connections(com::has_slots* _caller, const core::com::signal_base::sptr& _signal) const
+    {
+        blockers_t blockers;
+        for(auto& slot : _caller->slots())
+        {
+            auto connection = _signal->get_connection(slot.second);
+            if(!connection.expired())
+            {
+                blockers.emplace_back(core::com::connection::blocker(connection));
+            }
+        }
+
+        return blockers;
+    }
 };
 
 } // namespace sight::core::com

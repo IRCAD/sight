@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2024 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,9 @@
 #include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
 
-#include <data/composite.hpp>
 #include <data/exception.hpp>
 #include <data/helper/field.hpp>
+#include <data/map.hpp>
 #include <data/series.hpp>
 #include <data/series_set.hpp>
 #include <data/vector.hpp>
@@ -71,8 +71,8 @@ void manage::configuring()
 {
     service::config_t config = this->get_config();
 
-    m_composite_key = config.get("compositeKey", "");
-    m_field_name    = config.get("field", "");
+    m_map_key    = config.get("mapKey", "");
+    m_field_name = config.get("field", "");
 }
 
 //-----------------------------------------------------------------------------
@@ -126,14 +126,14 @@ void manage::add_or_swap()
     }
     else
     {
-        if(const auto composite = std::dynamic_pointer_cast<sight::data::composite>(container.get_shared()); composite)
+        if(const auto map = std::dynamic_pointer_cast<sight::data::map>(container.get_shared()); map)
         {
-            const auto scoped_emitter = composite->scoped_emit();
-            composite->insert_or_assign(m_composite_key, obj.get_shared());
+            const auto scoped_emitter = map->scoped_emit();
+            map->insert_or_assign(m_map_key, obj.get_shared());
         }
         else if(const auto vector = std::dynamic_pointer_cast<sight::data::vector>(container.get_shared()); vector)
         {
-            if(const auto& it = std::find(vector->cbegin(), vector->cend(), obj.get_shared()); it == vector->end())
+            if(const auto it = std::find(vector->cbegin(), vector->cend(), obj.get_shared()); it == vector->end())
             {
                 const auto scoped_emitter = vector->scoped_emit();
                 vector->push_back(obj.get_shared());
@@ -160,7 +160,7 @@ void manage::add_or_swap()
         }
         else
         {
-            SIGHT_FATAL("Source object is not a Composite or a Vector or a series_set");
+            SIGHT_FATAL("Source object is not a Map or a Vector or a series_set");
         }
     }
 }
@@ -183,14 +183,14 @@ void manage::swap()
         helper.swap(m_field_name, obj.get_shared());
         helper.notify();
     }
-    else if(const auto composite = std::dynamic_pointer_cast<sight::data::composite>(container.get_shared()); composite)
+    else if(const auto map = std::dynamic_pointer_cast<sight::data::map>(container.get_shared()); map)
     {
-        const auto scoped_emitter = composite->scoped_emit();
-        composite->insert_or_assign(m_composite_key, obj.get_shared());
+        const auto scoped_emitter = map->scoped_emit();
+        map->insert_or_assign(m_map_key, obj.get_shared());
     }
     else
     {
-        SIGHT_WARN("'swap' slot is only managed for 'composite' or 'fieldHolder'");
+        SIGHT_WARN("'swap' slot is only managed for 'map' or 'fieldHolder'");
     }
 }
 
@@ -212,10 +212,10 @@ void manage::remove()
     }
     else
     {
-        if(const auto composite = std::dynamic_pointer_cast<sight::data::composite>(container.get_shared()); composite)
+        if(const auto map = std::dynamic_pointer_cast<sight::data::map>(container.get_shared()); map)
         {
-            const auto scoped_emitter = composite->scoped_emit();
-            composite->erase(m_composite_key);
+            const auto scoped_emitter = map->scoped_emit();
+            map->erase(m_map_key);
         }
         else
         {
@@ -236,7 +236,7 @@ void manage::remove()
             }
             else
             {
-                SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a series_set");
+                SIGHT_FATAL("Source object is assumed to be a Map or a Vector or a series_set");
             }
         }
     }
@@ -267,10 +267,10 @@ void manage::remove_if_present()
     }
     else
     {
-        if(const auto composite = std::dynamic_pointer_cast<sight::data::composite>(container.get_shared()); composite)
+        if(const auto map = std::dynamic_pointer_cast<sight::data::map>(container.get_shared()); map)
         {
-            const auto scoped_emitter = composite->scoped_emit();
-            composite->erase(m_composite_key);
+            const auto scoped_emitter = map->scoped_emit();
+            map->erase(m_map_key);
         }
         else
         {
@@ -278,7 +278,7 @@ void manage::remove_if_present()
 
             if(const auto vector = std::dynamic_pointer_cast<sight::data::vector>(container.get_shared()); vector)
             {
-                const auto scoped_emitter = composite->scoped_emit();
+                const auto scoped_emitter = map->scoped_emit();
                 vector->remove(obj.get_shared());
             }
             else if(const auto series_set = std::dynamic_pointer_cast<sight::data::series_set>(container.get_shared());
@@ -301,7 +301,7 @@ void manage::remove_if_present()
             }
             else
             {
-                SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesSetB");
+                SIGHT_FATAL("Source object is assumed to be a Map or a Vector or a SeriesSetB");
             }
         }
     }
@@ -323,10 +323,10 @@ void manage::clear()
     }
     else
     {
-        if(const auto composite = std::dynamic_pointer_cast<sight::data::composite>(container.get_shared()); composite)
+        if(const auto map = std::dynamic_pointer_cast<sight::data::map>(container.get_shared()); map)
         {
-            const auto scoped_emitter = composite->scoped_emit();
-            composite->clear();
+            const auto scoped_emitter = map->scoped_emit();
+            map->clear();
         }
         else if(const auto vector = std::dynamic_pointer_cast<sight::data::vector>(container.get_shared()); vector)
         {
@@ -341,7 +341,7 @@ void manage::clear()
         }
         else
         {
-            SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesSetB");
+            SIGHT_FATAL("Source object is assumed to be a Map or a Vector or a SeriesSetB");
         }
     }
 }
@@ -371,10 +371,10 @@ void manage::internal_add(bool _copy)
     }
     else
     {
-        if(const auto composite = std::dynamic_pointer_cast<sight::data::composite>(container.get_shared()); composite)
+        if(const auto map = std::dynamic_pointer_cast<sight::data::map>(container.get_shared()); map)
         {
-            const auto scoped_emitter = composite->scoped_emit();
-            composite->insert_or_assign(m_composite_key, obj);
+            const auto scoped_emitter = map->scoped_emit();
+            map->insert_or_assign(m_map_key, obj);
         }
         else if(const auto vector = std::dynamic_pointer_cast<sight::data::vector>(container.get_shared()); vector)
         {
@@ -390,7 +390,7 @@ void manage::internal_add(bool _copy)
         }
         else
         {
-            SIGHT_FATAL("Source object is assumed to be a Composite or a Vector or a SeriesSetB");
+            SIGHT_FATAL("Source object is assumed to be a Map or a Vector or a SeriesSetB");
         }
     }
 }

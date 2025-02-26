@@ -27,19 +27,20 @@
 #include "core/com/helper/proxy_connections.hpp"
 
 #include "service/manager.hpp"
+#include "service/object_parser.hpp"
 
 #include <core/base.hpp>
 #include <core/com/signals.hpp>
 #include <core/com/slots.hpp>
+#include <core/object.hpp>
 #include <core/runtime/types.hpp>
-#include <core/tools/object.hpp>
 
-namespace sight::core::tools
+namespace sight::core
 {
 
 class object;
 
-} // namespace sight::core::tools
+} // namespace sight::core
 
 namespace sight::data
 {
@@ -71,7 +72,7 @@ struct object_serviceconfig
     data::access m_access {data::access::inout};
 
     /// True if the service is autoConnected this object according to the auto-connection map
-    bool m_auto_connect {false};
+    boost::optional<bool> m_auto_connect {};
 
     /// True if the object is optional (i.e. the service can start even if the object is not present)
     bool m_optional {false};
@@ -86,7 +87,7 @@ struct service_config
     std::string m_type;
 
     /// True if the service is autoConnected to all of its inputs/inouts according to the auto-connection map
-    bool m_global_auto_connect {false};
+    bool m_global_auto_connect {true};
 
     /// Service worker
     std::string m_worker;
@@ -96,6 +97,9 @@ struct service_config
 
     /// list of required object groups information (inputs, inouts and outputs), indexed by key name
     std::map<std::string, object_serviceconfig> m_groups;
+
+    /// list of required properties, indexed by key name and index
+    std::map<std::string, object_serviceconfig> m_properties;
 
     /// Service configuration (only used with XML config)
     service::config_t m_config;
@@ -117,27 +121,11 @@ public:
     using slot_info_t           = std::pair<std::string, core::com::slots::key_t>;
     using slot_info_container_t = std::vector<slot_info_t>;
 
+    using config_attribute_t       = std::pair<std::string, bool>;
     using object_id_t              = std::string;
     using proxy_connections_vect_t = std::vector<core::com::helper::proxy_connections>;
     using proxy_connections_map_t  = std::map<object_id_t, proxy_connections_vect_t>;
-    struct connection_info
-    {
-        signal_info_t m_signal;
-        slot_info_container_t m_slots;
-    };
-
-    /**
-     * @brief Parses "<connect>" tags from given configuration and return a structure containing the signal and
-     *        slots informations.
-     *
-     * @param _cfg configuration element containing "<connect>" tags
-     * @param _obj optional object used to retrieve signal if uid is not defined [deprecated]
-     */
-    SIGHT_APP_API static connection_info parse_connections(
-        const core::runtime::config_t& _cfg,
-        const CSPTR(core::tools::object)& _obj =
-        CSPTR(core::tools::object)()
-    );
+    using objects_set_t            = std::set<std::string>;
 
     /**
      * @brief Parses "<connect>" tags from given configuration and return a structure containing the signal and
@@ -145,41 +133,33 @@ public:
      *
      * @param _connection_cfg configuration element containing "<connect>" tags
      */
-    SIGHT_APP_API static core::com::helper::proxy_connections parse_connections2(
+    SIGHT_APP_API static core::com::helper::proxy_connections parse_connections(
         const core::runtime::config_t& _connection_cfg,
         const std::string& _err_msg_head,
         std::function<std::string()> _generate_channel_name_fn
     );
 
-    /**
-     * @brief Parses "<connect>" tags from given configuration to connect signals and slots using given helper.
-     *
-     * @param _cfg configuration element containing "<connect>" tags
-     * @param _helper sig_slot_connection helper to connect signals and slots
-     * @param _obj optional object used to retrieve signal if uid is not defined [deprecated]
+    /** Parse an object configuration, creates it and its subobjects recursively.
+     * @param _cfg input configuration of the object
+     * @param _objects found objects
      */
-    SIGHT_APP_API static void create_connections(
-        const core::runtime::config_t& _cfg,
-        core::com::helper::sig_slot_connection& _helper,
-        const CSPTR(core::tools::object)& _obj = CSPTR(core::tools::object)()
+    SIGHT_APP_API static void parse_object(
+        const boost::property_tree::ptree& _cfg,
+        service::object_parser::objects_t& _objects
     );
 
-    /// Disconnects all proxies associated to objectKey
-    SIGHT_APP_API static void disconnect_proxies(
-        const std::string& _object_key,
-        config::proxy_connections_map_t& _proxy_map
-    );
+    static data::object::sptr get_new_object(config_attribute_t _type, config_attribute_t _uid);
+
+    static data::object::sptr get_object(config_attribute_t _type, const std::string& _uid);
 
     /// Parse a service and return a service configuration
     SIGHT_APP_API static app::detail::service_config parse_service(
         const boost::property_tree::ptree& _srv_elem,
-        const std::string& _err_msg_head
+        const std::string& _err_msg_head,
+        const service::object_parser::objects_set_t& _objects
     );
 
-    SIGHT_APP_API static std::pair<bool, bool> get_object_key_attrs(
-        const std::string& _service_type,
-        const std::string& _key
-    );
+    SIGHT_APP_API static bool is_key_optional(const std::string& _service_type, const std::string& _key);
 
     SIGHT_APP_API static void clear_props();
 };

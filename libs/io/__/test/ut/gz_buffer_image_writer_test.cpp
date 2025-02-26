@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
 
 #include "gz_buffer_image_writer_test.hpp"
 
+#include <core/os/temp_path.hpp>
+
 #include <data/image.hpp>
 
 #include <io/__/writer/gz_buffer_image_writer.hpp>
@@ -38,11 +40,11 @@ namespace sight::io::ut
 
 void gz_buffer_image_writer_test::basic_test()
 {
-    auto gz_buffer_image_writer    = std::make_shared<writer::gz_buffer_image_writer>();
-    std::filesystem::path filepath = std::filesystem::temp_directory_path()
-                                     / ("test" + gz_buffer_image_writer->extension());
-    auto image_in = std::make_shared<data::image>();
-    image_in->resize({16}, core::type::UINT8, data::image::pixel_format::gray_scale);
+    auto gz_buffer_image_writer = std::make_shared<writer::gz_buffer_image_writer>();
+    core::os::temp_dir temp_dir;
+    std::filesystem::path filepath = temp_dir / ("test" + gz_buffer_image_writer->extension());
+    auto image_in                  = std::make_shared<data::image>();
+    image_in->resize({16}, core::type::UINT8, data::image::pixel_format_t::gray_scale);
     {
         auto image_lock = image_in->dump_lock();
         std::iota(image_in->begin<std::uint8_t>(), image_in->end<std::uint8_t>(), std::uint8_t(0));

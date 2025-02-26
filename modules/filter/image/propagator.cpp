@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -29,14 +29,15 @@
 
 #include <filter/image/image_diff.hpp>
 
+#include <geometry/data/image.hpp>
+
 namespace sight::module::filter::image
 {
 
 //-----------------------------------------------------------------------------
 
 propagator::propagator() :
-    filter(m_signals),
-    has_parameters(m_slots)
+    filter(m_signals)
 {
     new_signal<signals::job_created_t>(signals::JOB_CREATED);
 
@@ -46,36 +47,8 @@ propagator::propagator() :
 
 //-----------------------------------------------------------------------------
 
-void propagator::configuring(const config_t& _config)
+void propagator::configuring(const config_t& /* _config */)
 {
-    service::config_t config = _config.get_child("config.<xmlattr>");
-
-    m_value     = config.get<int>("value", 1);
-    m_overwrite = config.get<bool>("overwrite", true);
-    m_radius    = config.get<double>("radius", m_radius);
-
-    const std::string mode = config.get<std::string>("mode", "min");
-
-    if(mode == "min")
-    {
-        m_mode = sight::filter::image::min_max_propagation::min;
-    }
-    else if(mode == "max")
-    {
-        m_mode = sight::filter::image::min_max_propagation::max;
-    }
-    else if(mode == "minmax")
-    {
-        m_mode = sight::filter::image::min_max_propagation::minmax;
-    }
-    else if(mode == "stddev")
-    {
-        m_mode = sight::filter::image::min_max_propagation::stddev;
-    }
-    else
-    {
-        SIGHT_FATAL("Unknown mode '" + mode + "'. Accepted values are 'min', 'max', 'minmax', or 'stddev'.");
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -102,6 +75,7 @@ void propagator::updating()
             image_out->resize(image_in->size(), sight::core::type::UINT8, sight::data::image::gray_scale);
             image_out->set_spacing(image_in->spacing());
             image_out->set_origin(image_in->origin());
+            image_out->set_orientation(image_in->orientation());
             const auto lock = image_out->dump_lock();
             std::fill(image_out->begin(), image_out->end(), std::uint8_t(0));
         }
@@ -135,29 +109,61 @@ void propagator::propagate()
                 const auto image_in = m_image_in.lock();
                 SIGHT_ASSERT("No " << std::quoted(IMAGE_IN) << " found.", image_in);
                 SIGHT_ASSERT("Invalid image", data::helper::medical_image::check_image_validity(image_in.get_shared()));
-                const auto& bbox = sight::data::helper::medical_image::compute_bounding_box(*image_in);
+
+                const auto& sizes = image_in->size();
 
                 std::ranges::for_each(
                     point_list->get_points(),
                     [&](const auto& _x)
                 {
-                    const auto& pt = _x->get_coord();
-                    if(pt[0] >= bbox.first[0] && pt[1] >= bbox.first[1] && pt[2] >= bbox.first[2]
-                       && pt[0] <= bbox.second[0] && pt[1] <= bbox.second[1] && pt[2] <= bbox.second[2])
+                    const auto& pt     = _x->get_coord();
+                    const auto indices = geometry::data::world_to_image(*image_in, pt, true);
+
+                    if(indices[0] >= 0 && indices[0] < std::int64_t(sizes[0])
+                       && indices[1] >= 0 && indices[1] < std::int64_t(sizes[1])
+                       && indices[2] >= 0 && indices[2] < std::int64_t(sizes[2]))
                     {
-                        const auto indices = sight::data::helper::medical_image::compute_voxel_indices(*image_in, pt);
-                        sight::filter::image::bresenham_line::coordinates_t indices_rounded;
-                        std::ranges::transform(
-                            indices,
-                            indices_rounded.begin(),
-                            [](const auto& _x){return static_cast<std::size_t>(_x);});
-                        seeds.insert(indices_rounded);
+                        seeds.insert(
+                        {
+                            std::size_t(indices[0]),
+                            std::size_t(indices[1]),
+                            std::size_t(indices[2])
+                        });
                     }
                 });
             }
             _running_job.done_work(1);
 
             {
+                const auto mode = [this]()
+                                  {
+                                      if(*m_mode == "min")
+                                      {
+                                          return sight::filter::image::min_max_propagation::min;
+                                      }
+
+                                      if(*m_mode == "max")
+                                      {
+                                          return sight::filter::image::min_max_propagation::max;
+                                      }
+
+                                      if(*m_mode == "minmax")
+                                      {
+                                          return sight::filter::image::min_max_propagation::minmax;
+                                      }
+
+                                      if(*m_mode == "stddev")
+                                      {
+                                          return sight::filter::image::min_max_propagation::stddev;
+                                      }
+
+                                      SIGHT_FATAL(
+                                          "Unknown mode '" + *m_mode
+                                          + "'. Accepted values are 'min', 'max', 'minmax', or 'stddev'."
+                                      );
+                                      return sight::filter::image::min_max_propagation::min;
+                                  }();
+
                 const auto image_in    = m_image_in.lock();
                 const auto image_out   = m_image_out.lock();
                 const auto propag_diff = sight::filter::image::min_max_propagation::process(
@@ -165,19 +171,18 @@ void propagator::propagate()
                     image_out.get_shared(),
                     nullptr,
                     seeds,
-                    static_cast<std::uint8_t>(m_value),
-                    m_radius,
-                    m_overwrite,
-                    m_mode
+                    static_cast<std::uint8_t>(*m_value),
+                    *m_radius,
+                    *m_overwrite,
+                    mode
                 );
                 _running_job.done_work(6);
 
+                bool filled = false;
                 if(propag_diff.num_elements() > 0)
                 {
-                    image_out->signal<data::image::buffer_modified_signal_t>(
-                        data::image::BUFFER_MODIFIED_SIG
-                    )->async_emit();
-                    this->signal<filter::signals::computed_t>(filter::signals::COMPUTED)->async_emit();
+                    image_out->async_emit(data::image::BUFFER_MODIFIED_SIG);
+                    this->async_emit(filter::signals::COMPUTED);
 
                     const auto samples_out = m_samples_out.lock();
                     if(samples_out)
@@ -192,8 +197,17 @@ void propagator::propagate()
                             samples_out->set_pixel(i, propag_diff.get_element(i).m_old_value);
                         }
 
-                        samples_out->signal<data::image::modified_signal_t>(data::image::MODIFIED_SIG)->async_emit();
+                        samples_out->async_emit(data::image::MODIFIED_SIG);
                     }
+
+                    filled = true;
+                }
+
+                const auto mask_filled = m_mask_filled_out.lock();
+                if(mask_filled)
+                {
+                    *mask_filled = filled;
+                    mask_filled->async_emit(this, data::object::MODIFIED_SIG);
                 }
             }
 
@@ -217,8 +231,7 @@ void propagator::clear()
         const auto lock      = image_out->dump_lock();
 
         std::fill(image_out->begin(), image_out->end(), std::uint8_t(0));
-
-        image_out->signal<data::image::buffer_modified_signal_t>(data::image::BUFFER_MODIFIED_SIG)->async_emit();
+        image_out->async_emit(data::image::BUFFER_MODIFIED_SIG);
     }
     {
         const auto image_in = m_image_in.lock();
@@ -229,8 +242,14 @@ void propagator::clear()
 
         sight::data::image::size_t voxels_size {0, 1, 1};
         samples_out->resize(voxels_size, image_in->type(), image_in->pixel_format());
+        samples_out->async_emit(data::image::MODIFIED_SIG);
 
-        samples_out->signal<data::image::buffer_modified_signal_t>(data::image::MODIFIED_SIG)->async_emit();
+        const auto mask_filled = m_mask_filled_out.lock();
+        if(mask_filled)
+        {
+            *mask_filled = false;
+            mask_filled->async_emit(this, data::object::MODIFIED_SIG);
+        }
     }
 }
 
@@ -242,74 +261,11 @@ void propagator::stopping()
 
 //-----------------------------------------------------------------------------
 
-void propagator::set_bool_parameter(bool _val, std::string _key)
-{
-    SIGHT_WARN_IF("Key must be 'overwrite' for this slot to have an effect.", _key != "overwrite");
-    if(_key == "overwrite")
-    {
-        m_overwrite = _val;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void propagator::set_int_parameter(int _val, std::string _key)
-{
-    SIGHT_WARN_IF("Key must be 'value' for this slot to have an effect.", _key != "value");
-    if(_key == "value")
-    {
-        m_value = _val;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void propagator::set_double_parameter(double _val, std::string _key)
-{
-    SIGHT_WARN_IF("Key must be 'radius' for this slot to have an effect.", _key != "radius");
-    if(_key == "radius")
-    {
-        m_radius = _val;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void propagator::set_enum_parameter(std::string _val, std::string _key)
-{
-    SIGHT_WARN_IF("Key must be 'mode' for this slot to have an effect.", _key != "mode");
-    if(_key == "mode")
-    {
-        if(_val == "min")
-        {
-            m_mode = sight::filter::image::min_max_propagation::min;
-        }
-        else if(_val == "max")
-        {
-            m_mode = sight::filter::image::min_max_propagation::max;
-        }
-        else if(_val == "minmax")
-        {
-            m_mode = sight::filter::image::min_max_propagation::minmax;
-        }
-        else if(_val == "stddev")
-        {
-            m_mode = sight::filter::image::min_max_propagation::stddev;
-        }
-        else
-        {
-            SIGHT_WARN("Unknown mode '" + _val + "'. Accepted values are 'min', 'max', 'minmax' or 'stddev'.");
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 service::connections_t propagator::auto_connections() const
 {
     return {
-        {IMAGE_IN, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {SEEDS_IN, data::point_list::MODIFIED_SIG, slots::PROPAGATE}
+        {m_image_in, data::image::MODIFIED_SIG, service::slots::UPDATE},
+        {m_seeds_in, data::point_list::MODIFIED_SIG, slots::PROPAGATE}
     };
 }
 

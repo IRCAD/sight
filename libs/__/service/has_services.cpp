@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ has_services::~has_services() noexcept
 
 //------------------------------------------------------------------------------
 
-service::base::csptr has_services::get_registered_service(const core::tools::id::type& _id) const
+service::base::csptr has_services::get_registered_service(const core::id::type& _id) const
 {
     service::base::sptr srv;
     for(const auto& w_service : m_sub_services)
@@ -67,7 +67,7 @@ service::base::csptr has_services::get_registered_service(const core::tools::id:
 
 //------------------------------------------------------------------------------
 
-void has_services::unregister_service(const core::tools::id::type& _id)
+void has_services::unregister_service(const core::id::type& _id)
 {
     for(auto it_srv = m_sub_services.begin() ; it_srv != m_sub_services.end() ; )
     {

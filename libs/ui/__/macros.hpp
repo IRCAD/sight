@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@ namespace sight::ui
 {
 
 #define SIGHT_REGISTER_GUI(GuiClassname, GuiFunctorKey) \
-    static sight::ui::object::registry<GuiClassname> \
-    BOOST_PP_CAT(s__factory__record__, __LINE__)(GuiFunctorKey);
+        static sight::ui::object::registry<GuiClassname> \
+        BOOST_PP_CAT(s__factory__record__, __LINE__)(GuiFunctorKey);
 
 } // namespace sight::ui

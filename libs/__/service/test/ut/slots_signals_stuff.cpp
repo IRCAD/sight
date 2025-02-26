@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,15 +89,7 @@ void s_basic_test::updating()
 void reader_test::updating()
 {
     auto buff = m_buffer.lock();
-
-    // Emit object Modified
-    data::object::modified_signal_t::sptr sig;
-    sig = buff->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-
-    {
-        core::com::connection::blocker block(sig->get_connection(this->slot(service::signals::UPDATED)));
-        sig->async_emit();
-    }
+    buff->async_emit(this, data::object::MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -178,14 +170,7 @@ s_show2_test::s_show2_test()
 void s_show2_test::updating()
 {
     const auto buffer = m_buffer.lock();
-
-    // Emit object Modified
-    data::object::modified_signal_t::sptr sig;
-    sig = buffer->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_BUFFER_SLOT)));
-        sig->async_emit();
-    }
+    buffer->async_emit(this, data::object::MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------

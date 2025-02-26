@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,11 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/adaptor/frustum.hpp"
-
 #include <data/camera.hpp>
 #include <data/matrix4.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/transformable.hpp>
 
 #include <boost/circular_buffer.hpp>
@@ -44,7 +43,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b toggle_visibility(): toggles whether frustums are shown or not.
  * - \b show(): shows frustums.
  * - \b hide(): hides frustums.
- * - \b addFrustum(bool): adds a frustum in the list and displays it.
+ * - \b update(bool): adds a frustum in the list and displays it.
  * - \b clear(): clears frustum list.
  *
  * @section XML XML Configuration
@@ -81,7 +80,7 @@ public:
     frustum_list() noexcept;
 
     /// Destroys the adaptor.
-    ~frustum_list() noexcept override;
+    ~frustum_list() noexcept override = default;
 
 protected:
 
@@ -95,11 +94,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INPUT to ADD_FRUSTUM_SLOT
+     * Connect data::matrix4::MODIFIED_SIG of s_TRANSFORM_INPUT to adaptor::slots::LAZY_UPDATE
      */
     service::connections_t auto_connections() const override;
 
-    /// Updates the adaptor by attaching new cameras to scene nodes (called after addFrustum slot).
+    /// Updates the adaptor by attaching new cameras to scene nodes.
     void updating() override;
 
     /// Clears data.
@@ -142,11 +141,8 @@ private:
     /// Uses to generate unique ID for each Ogre::Camera.
     std::size_t m_current_cam_index {0};
 
-    /// Contains the Ogre material adaptor.
-    module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
-
-    /// Contains the material data.
-    data::material::sptr m_material {nullptr};
+    /// Contains the material.
+    sight::viz::scene3d::material::standard::uptr m_material;
 
     static constexpr std::string_view TRANSFORM_INPUT = "transform";
 

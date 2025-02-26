@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -123,16 +123,16 @@ void point_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    point1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Points should be different when using " #op " on the first one", \
-        *point1 != *point2 && !(*point1 == *point2) \
-    ); \
-    point2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Points should be equal when using " #op " on both", \
-        *point1 == *point2 && !(*point1 != *point2) \
-    );
+            point1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Points should be different when using " #op " on the first one", \
+                *point1 != *point2 && !(*point1 == *point2) \
+            ); \
+            point2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Points should be equal when using " #op " on both", \
+                *point1 == *point2 && !(*point1 != *point2) \
+            );
 
     TEST(set_coord({1, 0, 0}));
     TEST(set_coord({0, 1, 0}));

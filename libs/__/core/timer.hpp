@@ -35,18 +35,16 @@ namespace sight::core
  * Timer is able to measure the elapsed time with a few micro-seconds.
  * accuracy, on Linux, Mac OS and Windows
  */
-class SIGHT_CORE_CLASS_API timer : public base_object
+class SIGHT_CORE_CLASS_API timer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(timer, base_object);
+    using sptr = std::shared_ptr<timer>;
 
     /**
      * @name Constructor/Destructor
      * @{ */
-
     SIGHT_CORE_API timer();
-    SIGHT_CORE_API ~timer() override;
 
     /**  @} */
 
@@ -92,8 +90,6 @@ public:
     SIGHT_CORE_API core::clock::type get_elapsed_time_in_micro_sec();
 
 /**  @} */
-
-protected:
 
 private:
 

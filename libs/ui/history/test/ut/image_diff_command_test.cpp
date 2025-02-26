@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,15 +48,16 @@ void image_diff_command_test::tearDown()
 
 void image_diff_command_test::undoredo_test()
 {
-    const data::image::size_t size              = {{32, 32, 32}};
-    const data::image::spacing_t spacing        = {{1., 1., 1.}};
-    const data::image::origin_t origin          = {{0., 0., 0.}};
-    const core::type type                       = core::type::UINT8;
-    const enum data::image::pixel_format format = data::image::gray_scale;
+    const data::image::size_t size                = {32, 32, 32};
+    const data::image::spacing_t spacing          = {1., 1., 1.};
+    const data::image::origin_t origin            = {0., 0., 0.};
+    const data::image::orientation_t orientation  = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+    const core::type type                         = core::type::UINT8;
+    const enum data::image::pixel_format_t format = data::image::gray_scale;
 
     data::image::sptr image = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image, size, spacing, origin, type, format);
+    utest_data::generator::image::generate_image(image, size, spacing, origin, orientation, type, format);
 
     const auto dump_lock = image->dump_lock();
 
@@ -117,15 +118,16 @@ void image_diff_command_test::undoredo_test()
 
 void image_diff_command_test::get_size_test()
 {
-    const data::image::size_t size              = {{32, 32, 32}};
-    const data::image::spacing_t spacing        = {{1., 1., 1.}};
-    const data::image::origin_t origin          = {{0., 0., 0.}};
-    const core::type type                       = core::type::UINT8;
-    const enum data::image::pixel_format format = data::image::gray_scale;
+    const data::image::size_t size                = {32, 32, 32};
+    const data::image::spacing_t spacing          = {1., 1., 1.};
+    const data::image::origin_t origin            = {0., 0., 0.};
+    const data::image::orientation_t orientation  = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+    const core::type type                         = core::type::UINT8;
+    const enum data::image::pixel_format_t format = data::image::gray_scale;
 
     data::image::sptr image = std::make_shared<data::image>();
 
-    utest_data::generator::image::generate_image(image, size, spacing, origin, type, format);
+    utest_data::generator::image::generate_image(image, size, spacing, origin, orientation, type, format);
 
     const auto dump_lock = image->dump_lock();
 

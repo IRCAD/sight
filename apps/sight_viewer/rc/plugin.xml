@@ -39,14 +39,6 @@
         </config>
     </extension>
 
-    <extension implements="sight::service::extension::config">
-        <id>SightViewerDicomReaderConfig</id>
-        <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
-        <config>
-            <filterType>sight::filter::dicom::custom::default_dicom_filter</filterType>
-        </config>
-    </extension>
-
     <!-- Service config used for writing Snapshot -->
     <extension implements="sight::service::extension::config">
         <id>SightViewer_snapshot_SrvCfg</id>
@@ -63,12 +55,17 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="seriesSet" type="sight::data::series_set" />
-            <object uid="modelSeries" type="sight::data::model_series" src="deferred" />
+            <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
             <object uid="pacsSeriesSet" type="sight::data::series_set" />
-            <object uid="image" type="sight::data::image_series" src="deferred" />
+            <object uid="image" type="sight::data::image_series" deferred="true" />
             <object uid="extrudedModelSeries" type="sight::data::model_series" />
 
             <object uid="volumeTF" type="sight::data::transfer_function" />
+
+            <object uid="vr_visibility" type="sight::data::boolean" value="false" />
+            <object uid="negato_visibility" type="sight::data::boolean" value="false" />
+            <object uid="model_visibility" type="sight::data::boolean" value="false" />
+            <object uid="axis_visibility" type="sight::data::boolean" value="false" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -104,7 +101,7 @@
                     <toolbar align="left" />
                     <layout type="sight::ui::layout::overlay">
                         <view />
-                        <view x="-1" y="0" width="80" height="80" visible="false" />
+                        <view x="-1" y="0" visible="false" />
                     </layout>
                 </gui>
                 <registry>
@@ -251,6 +248,7 @@
                 <registry>
                     <view sid="lightSelectorSrv" />
                     <view sid="lightEditorSrv" />
+                    <view sid="compositor_selector_srv" />
                 </registry>
             </service>
 
@@ -296,9 +294,9 @@
                     <menuItem sid="shapeExtruderUndoAct" start="true" />
                     <menuItem sid="landmarksEditModeAct" start="true" />
                     <menuItem sid="removeAllLandmarksAct" start="true" />
-                    <menuItem sid="addDistanceAct" start="true" />
-                    <menuItem sid="removeAllDistancesAct" start="true" />
-                    <menuItem sid="showDistanceAct" start="false" />
+                    <menuItem sid="add_ruler_act" start="true" />
+                    <menuItem sid="remove_all_rulers_act" start="true" />
+                    <menuItem sid="show_ruler_act" start="true" />
                     <menuItem sid="axisVisibilityAct" start="true" />
                 </registry>
             </service>
@@ -378,7 +376,7 @@
 
             <!-- PACS manager -->
             <service uid="pacsAct" type="sight::module::ui::config_launcher">
-                <appConfig id="PACSselectorWindow_AppCfg" />
+                <appConfig id="sight::config::io::dicom::pacs_selector_window" />
                 <inout group="data">
                     <key name="outputSeriesSet" uid="pacsSeriesSet" />
                 </inout>
@@ -388,15 +386,15 @@
 
             <!-- Adaptors visibility -->
             <service uid="volumeVisibilityAct" type="sight::module::ui::action">
-                <state enabled="false" />
+                <properties checked="${vr_visibility}" enabled="false" />
             </service>
 
             <service uid="negato3DVisibilityAct" type="sight::module::ui::action">
-                <state enabled="false" />
+                <properties checked="${negato_visibility}" enabled="false" />
             </service>
 
             <service uid="meshVisibilityAct" type="sight::module::ui::action">
-                <state enabled="false" />
+                <properties checked="${model_visibility}" enabled="false" />
             </service>
 
             <service uid="boxWidgetVisibilityAct" type="sight::module::ui::action">
@@ -415,7 +413,9 @@
                 <state enabled="true" />
             </service>
 
-            <service uid="axisVisibilityAct" type="sight::module::ui::action" />
+            <service uid="axisVisibilityAct" type="sight::module::ui::action">
+                <properties checked="${axis_visibility}" />
+            </service>
 
             <service uid="landmarksEditModeAct" type="sight::module::ui::action">
                 <state enabled="false" />
@@ -424,49 +424,49 @@
             <service uid="removeAllLandmarksAct" type="sight::module::ui::action" />
 
             <!-- Manage distance -->
-            <service uid="addDistanceAct" type="sight::module::ui::action">
+            <service uid="add_ruler_act" type="sight::module::ui::action">
                 <state enabled="false" checked="false" />
             </service>
 
-            <service uid="removeAllDistancesAct" type="sight::module::ui::action" />
+            <service uid="remove_all_rulers_act" type="sight::module::ui::action" />
 
-            <service uid="showDistanceAct" type="sight::module::ui::metrics::show_distance" auto_connect="true">
-                <state enabled="true" checked="true" />
-                <inout key="image" uid="image" />
+            <service uid="show_ruler_act" type="sight::module::ui::action">
+                <state enabled="false" checked="false" />
             </service>
 
             <!-- ************************ Configuration launchers ********************************* -->
 
             <service uid="ogreGenericSceneCfg" type="sight::app::config_controller">
-                <appConfig id="sight::config::viz::scene3d::imageSplitViews" />
+                <appConfig id="sight::config::viz::scene3d::image_split_views" />
                 <parameter replace="WID_PARENT" by="sceneView" />
                 <parameter replace="VR_BOOL_PARAM_RECEIVER_CHANNEL" by="VOLUME_BOOL_SENDER_CHANNEL" />
                 <parameter replace="VR_INT_PARAM_RECEIVER_CHANNEL" by="VOLUME_INT_SENDER_CHANNEL" />
                 <parameter replace="VR_DOUBLE_PARAM_RECEIVER_CHANNEL" by="VOLUME_DOUBLE_SENDER_CHANNEL" />
-                <parameter replace="VR_VISIBILITY_RECEIVER_CHANNEL" by="VR_VISIBILITY_SENDER_CHANNEL" />
-                <parameter replace="3DNEGATO_VISIBILITY_RECEIVER_CHANNEL" by="3DNEGATO_VISIBILITY_SENDER_CHANNEL" />
-                <parameter replace="MESHES_VISIBILITY_RECEIVER_CHANNEL" by="MESHES_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL" by="BOX_WIDGET_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="BOX_WIDGET_RESET_RECEIVER_CHANNEL" by="BOX_WIDGET_RESET_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_ENABLE_TOOL_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" by="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_UNDO_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_RESET_SENDER_CHANNEL" />
-                <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
                 <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="NEGATO3D_TRANSPARENCY_CHANNEL" />
-                <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="DISTANCE_ACTIVATION_CHANNEL" />
-                <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="DISTANCE_DEACTIVATION_CHANNEL" />
+                <parameter replace="RULER_ACTIVATION_CHANNEL" by="RULER_ACTIVATION_CHANNEL" />
+                <parameter replace="RULER_DEACTIVATION_CHANNEL" by="RULER_DEACTIVATION_CHANNEL" />
                 <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="LANDMARKS_EDIT_MODE_SENDER_CHANNEL" />
                 <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="LANDMARKS_GROUP_SELECTED_SENDER_CHANNEL" />
                 <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="REMOVE_ALL_LANDMARKS_SENDER_CHANNEL" />
-                <parameter replace="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" by="REMOVE_ALL_DISTANCES_SENDER_CHANNEL" />
+                <parameter replace="REMOVE_ALL_RULERS_RECEIVER_CHANNEL" by="REMOVE_ALL_RULERS_SENDER_CHANNEL" />
+                <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="VISIBILITY_RULERS_SENDER_CHANNEL" />
                 <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="LANDMARKS_EDIT_MODE_CHANGED_RECEIVER_CHANNEL" />
                 <inout group="data">
                     <key name="modelSeries" uid="modelSeries" optional="true" />
                     <key name="image" uid="image" optional="true" />
                     <key name="volumeTF" uid="volumeTF" />
                     <key name="extrudedModelSeries" uid="extrudedModelSeries" />
+                    <key name="vr_visibility" uid="${vr_visibility}" />
+                    <key name="negato_visibility" uid="${negato_visibility}" />
+                    <key name="model_visibility" uid="${model_visibility}" />
+                    <key name="axis_visibility" uid="${axis_visibility}" />
                 </inout>
             </service>
 
@@ -509,13 +509,10 @@
                     <param type="int" name="Samples" key="sampling" defaultValue="1200" min="128" max="8192" reset="false" />
                     <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="0" max="200" reset="false" />
                     <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" reset="false" />
-                    <param type="bool" name="Soft shadows" key="shadows" defaultValue="false" reset="false" />
                     <param type="bool" name="Ambient occlusion" key="ambientOcclusion" defaultValue="false" reset="false" />
                     <param type="bool" name="Color bleeding" key="colorBleeding" defaultValue="false" reset="false" />
                     <param type="double" name="Color bleeding factor" key="colorBleedingFactor" defaultValue="1.0" min="0.1" max="10.0" reset="false" depends="colorBleeding" />
                     <param type="int" name="SAT size ratio" key="satSizeRatio" defaultValue="1" min="1" max="4" reset="false" emitOnRelease="true" />
-                    <param type="double" name="SAT cone angle" key="satConeAngle" defaultValue="0.1" min="0.01" max="360.0" reset="false" depends="ambientOcclusion" />
-                    <param type="int" name="SAT cone samples" key="satConeSamples" defaultValue="50" min="1" max="1024" reset="false" depends="ambientOcclusion" emitOnRelease="true" />
                     <param type="double" name="AO factor" key="aoFactor" defaultValue="1.0" min="0.1" max="10.0" reset="false" depends="ambientOcclusion" />
                     <param type="int" name="AO shells number" key="satShellsNumber" defaultValue="4" min="1" max="10" reset="false" depends="ambientOcclusion" emitOnRelease="true" />
                     <param type="int" name="AO shell radius" key="satShellRadius" defaultValue="4" min="1" max="10" reset="false" depends="ambientOcclusion" emitOnRelease="true" />
@@ -532,6 +529,7 @@
             <service uid="lightSelectorSrv" type="sight::module::ui::viz::light_selector" />
 
             <service uid="lightEditorSrv" type="sight::module::ui::viz::light_editor" />
+            <service uid="compositor_selector_srv" type="sight::module::ui::viz::compositor_selector" />
 
             <!-- Transparency for the 3D negato -->
             <service uid="transparencyParameterSrv" type="sight::module::ui::qt::parameters">
@@ -541,18 +539,6 @@
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
-
-            <connect channel="VR_VISIBILITY_SENDER_CHANNEL">
-                <signal>volumeVisibilityAct/is_checked</signal>
-            </connect>
-
-            <connect channel="3DNEGATO_VISIBILITY_SENDER_CHANNEL">
-                <signal>negato3DVisibilityAct/is_checked</signal>
-            </connect>
-
-            <connect channel="MESHES_VISIBILITY_SENDER_CHANNEL">
-                <signal>meshVisibilityAct/is_checked</signal>
-            </connect>
 
             <connect channel="BOX_WIDGET_VISIBILITY_SENDER_CHANNEL">
                 <signal>boxWidgetVisibilityAct/is_checked</signal>
@@ -579,10 +565,6 @@
                 <signal>shapeExtruderUndoAct/clicked</signal>
             </connect>
 
-            <connect channel="AXIS_VISIBILITY_SENDER_CHANNEL">
-                <signal>axisVisibilityAct/is_checked</signal>
-            </connect>
-
             <connect channel="NEGATO3D_TRANSPARENCY_CHANNEL">
                 <signal>transparencyParameterSrv/double_changed</signal>
             </connect>
@@ -599,21 +581,21 @@
                 <slot>rightToolbarSliderView/hide</slot>
             </connect>
 
-            <connect channel="DISTANCE_ACTIVATION_CHANNEL">
-                <signal>addDistanceAct/is_checked</signal>
+            <connect channel="RULER_ACTIVATION_CHANNEL">
+                <signal>add_ruler_act/is_checked</signal>
             </connect>
 
-            <connect channel="DISTANCE_DEACTIVATION_CHANNEL">
-                <slot>addDistanceAct/uncheck</slot>
+            <connect channel="RULER_DEACTIVATION_CHANNEL">
+                <slot>add_ruler_act/uncheck</slot>
             </connect>
 
             <connect>
                 <signal>landmarksEditModeAct/checked</signal>
-                <slot>addDistanceAct/uncheck</slot>
+                <slot>add_ruler_act/uncheck</slot>
             </connect>
 
             <connect>
-                <signal>addDistanceAct/checked</signal>
+                <signal>add_ruler_act/checked</signal>
                 <slot>landmarksEditModeAct/uncheck</slot>
             </connect>
 
@@ -649,9 +631,9 @@
                 <slot>shapeExtruderAct/enable</slot>
                 <slot>boxWidgetResetAct/enable</slot>
                 <slot>landmarksEditModeAct/enable</slot>
-                <slot>addDistanceAct/enable</slot>
-                <slot>removeDistanceAct/enable</slot>
-                <slot>showDistanceAct/enable</slot>
+                <slot>add_ruler_act/enable</slot>
+                <slot>remove_all_rulers_act/enable</slot>
+                <slot>show_ruler_act/enable</slot>
             </connect>
 
             <connect channel="VOLUME_BOOL_SENDER_CHANNEL">
@@ -743,8 +725,12 @@
                 <signal>removeAllLandmarksAct/clicked</signal>
             </connect>
 
-            <connect channel="REMOVE_ALL_DISTANCES_SENDER_CHANNEL">
-                <signal>removeAllDistancesAct/clicked</signal>
+            <connect channel="VISIBILITY_RULERS_SENDER_CHANNEL">
+                <signal>show_ruler_act/clicked</signal>
+            </connect>
+
+            <connect channel="REMOVE_ALL_RULERS_SENDER_CHANNEL">
+                <signal>remove_all_rulers_act/clicked</signal>
             </connect>
 
             <connect channel="LANDMARKS_EDIT_MODE_CHANGED_RECEIVER_CHANNEL">
@@ -761,9 +747,8 @@
             <start uid="extractPacsImageSrv" />
             <start uid="lightSelectorSrv" />
             <start uid="lightEditorSrv" />
+            <start uid="compositor_selector_srv" />
             <start uid="landmarksParameterSrv" />
-            <start uid="showDistanceAct" />
-
             <update uid="TFManagerAct" />
             <update uid="volumeParameterSrv" />
         </config>

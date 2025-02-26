@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,15 +71,15 @@ void negato2d_camera::configuring()
 
     if(orientation == "axial")
     {
-        m_current_negato_orientation = orientation_t::z_axis;
+        m_axis = axis_t::z_axis;
     }
     else if(orientation == "frontal")
     {
-        m_current_negato_orientation = orientation_t::y_axis;
+        m_axis = axis_t::y_axis;
     }
     else if(orientation == "sagittal")
     {
-        m_current_negato_orientation = orientation_t::x_axis;
+        m_axis = axis_t::x_axis;
     }
 
     m_margin = config.get<float>(CONFIG + "margin", m_margin);
@@ -93,7 +93,7 @@ void negato2d_camera::configuring()
 
 void negato2d_camera::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     const auto layer = this->layer();
     auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
@@ -127,16 +127,19 @@ void negato2d_camera::stopping()
     const auto layer = this->layer();
     auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     layer->remove_interactor(interactor);
+
+    adaptor::deinit();
 }
 
 // ----------------------------------------------------------------------------
 
 service::connections_t negato2d_camera::auto_connections() const
 {
-    return {
+    service::connections_t connections = {
         {IMAGE_INOUT, data::image::MODIFIED_SIG, RESET_CAMERA_SLOT},
         {IMAGE_INOUT, data::image::SLICE_TYPE_MODIFIED_SIG, CHANGE_ORIENTATION_SLOT}
     };
+    return connections + adaptor::auto_connections();
 }
 
 //-----------------------------------------------------------------------------
@@ -166,7 +169,7 @@ void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int
             const Ogre::Vector3 screen_pos(static_cast<Ogre::Real>(_x),
                                            static_cast<Ogre::Real>(_y),
                                            Ogre::Real(0));
-            const auto mouse_pos_view =
+            auto mouse_pos_view =
                 sight::viz::scene3d::helper::camera::convert_screen_space_to_view_space(*camera, screen_pos);
 
             // Zoom in.
@@ -184,10 +187,18 @@ void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int
             camera->setOrthoWindowHeight(clamped_height);
 
             // Compute the mouse's position in the zoomed view.
-            const auto new_mouse_pos_view =
+            auto new_mouse_pos_view =
                 sight::viz::scene3d::helper::camera::convert_screen_space_to_view_space(*camera, screen_pos);
 
             // Translate the camera back to the cursor's previous position.
+
+            if(auto* origin_node = layer->camera_origin_node(); origin_node != nullptr)
+            {
+                const auto camera_to_origin = get_camera_to_origin_transform();
+                mouse_pos_view     = camera_to_origin * mouse_pos_view;
+                new_mouse_pos_view = camera_to_origin * new_mouse_pos_view;
+            }
+
             cam_node->translate(mouse_pos_view - new_mouse_pos_view);
             m_has_moved = true;
 
@@ -196,14 +207,13 @@ void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int
         // Wheel alone or other modifier -> moving along slices (SHIFT to speed-up)
         else
         {
-            namespace imHelper = data::helper::medical_image;
+            namespace medical_image = data::helper::medical_image;
 
             const auto image = m_image.lock();
 
             // Get Index
-            const int current_index =
-                static_cast<int>(imHelper::get_slice_index(*image, m_current_negato_orientation).value_or(0));
-            const int max_slice = static_cast<int>(image->size()[m_current_negato_orientation] - 1);
+            const int current_index = static_cast<int>(medical_image::get_slice_index(*image, m_axis).value_or(0));
+            const int max_slice     = static_cast<int>(image->size()[m_axis] - 1);
 
             if(max_slice <= 0)
             {
@@ -242,13 +252,13 @@ void negato2d_camera::wheel_event(modifier _modifier, double _delta, int _x, int
                 new_slice_index = 0;
             }
 
-            imHelper::set_slice_index(*image, m_current_negato_orientation, new_slice_index);
+            medical_image::set_slice_index(*image, m_axis, new_slice_index);
 
             // Get up-to-date index values.
             const std::array<int, 3> idx {
-                static_cast<int>(imHelper::get_slice_index(*image, imHelper::orientation_t::sagittal).value_or(0)),
-                static_cast<int>(imHelper::get_slice_index(*image, imHelper::orientation_t::frontal).value_or(0)),
-                static_cast<int>(imHelper::get_slice_index(*image, imHelper::orientation_t::axial).value_or(0))
+                static_cast<int>(medical_image::get_slice_index(*image, axis_t::sagittal).value_or(0)),
+                static_cast<int>(medical_image::get_slice_index(*image, axis_t::frontal).value_or(0)),
+                static_cast<int>(medical_image::get_slice_index(*image, axis_t::axial).value_or(0))
             };
             m_has_moved = true;
 
@@ -325,10 +335,17 @@ void negato2d_camera::mouse_move_event(
                                        static_cast<Ogre::Real>(_y),
                                        Ogre::Real(0));
 
-        const auto previous_mouse_pos_view =
+        auto previous_mouse_pos_view =
             sight::viz::scene3d::helper::camera::convert_screen_space_to_view_space(*camera, delta_screen_pos);
-        const auto mouse_pos_view =
+        auto mouse_pos_view =
             sight::viz::scene3d::helper::camera::convert_screen_space_to_view_space(*camera, screen_pos);
+
+        if(auto* origin_node = layer->camera_origin_node(); origin_node != nullptr)
+        {
+            const auto camera_to_origin = get_camera_to_origin_transform();
+            mouse_pos_view          = camera_to_origin * mouse_pos_view;
+            previous_mouse_pos_view = camera_to_origin * previous_mouse_pos_view;
+        }
 
         cam_node->translate(mouse_pos_view - previous_mouse_pos_view);
         m_has_moved = true;
@@ -421,17 +438,17 @@ void negato2d_camera::reset_camera()
     cam_node->setPosition(Ogre::Vector3::ZERO);
     cam_node->resetOrientation();
 
-    const auto image   = m_image.const_lock();
-    const auto origin  = image->origin();
-    const auto size    = image->size();
-    const auto spacing = image->spacing();
+    const auto image = m_image.const_lock();
+
+    const auto& size    = image->size();
+    const auto& spacing = image->spacing();
 
     float ratio   = 0;
     double width  = 0.;
     double height = 0.;
-    switch(m_current_negato_orientation)
+    switch(m_axis)
     {
-        case orientation_t::x_axis:
+        case axis_t::x_axis:
             if(size[1] <= 0 || size[2] <= 0)
             {
                 return;
@@ -444,7 +461,7 @@ void negato2d_camera::reset_camera()
             ratio  = static_cast<float>(width / height);
             break;
 
-        case orientation_t::y_axis:
+        case axis_t::y_axis:
 
             if(size[0] <= 0 || size[2] <= 0)
             {
@@ -457,7 +474,7 @@ void negato2d_camera::reset_camera()
             ratio  = static_cast<float>(width / height);
             break;
 
-        case orientation_t::z_axis:
+        case axis_t::z_axis:
 
             if(size[0] <= 0 || size[1] <= 0)
             {
@@ -485,19 +502,33 @@ void negato2d_camera::reset_camera()
         camera->setOrthoWindowWidth(w + w * m_margin);
     }
 
-    const auto orientation = static_cast<std::size_t>(m_current_negato_orientation);
+    auto origin = sight::viz::scene3d::utils::get_ogre_origin(*image);
+
+    const auto axis = static_cast<std::size_t>(m_axis);
     Ogre::Vector3 cam_pos(
-        static_cast<Ogre::Real>(origin[0] + static_cast<double>(size[0]) * spacing[0] * 0.5),
-        static_cast<Ogre::Real>(origin[1] + static_cast<double>(size[1]) * spacing[1] * 0.5),
-        static_cast<Ogre::Real>(origin[2] + static_cast<double>(size[2]) * spacing[2] * 0.5)
+        static_cast<Ogre::Real>(static_cast<double>(size[0]) * spacing[0] * 0.5),
+        static_cast<Ogre::Real>(static_cast<double>(size[1]) * spacing[1] * 0.5),
+        static_cast<Ogre::Real>(static_cast<double>(size[2]) * spacing[2] * 0.5)
     );
 
-    const auto distance_pos =
-        static_cast<Ogre::Real>(origin[orientation] - static_cast<double>(size[orientation]) * spacing[orientation]);
-    // Special case, distance is equal to 0, so move camera to -1.
-    cam_pos[orientation] = (distance_pos != 0) ? distance_pos : -1;
+    const auto distance_pos = static_cast<Ogre::Real>(origin[axis] - static_cast<double>(size[axis]) * spacing[axis]);
 
-    camera->getParentSceneNode()->setPosition(cam_pos);
+    // Special case, distance is equal to 0, so move camera to -1.
+    cam_pos[axis] = core::is_equal(0.F, distance_pos) ? -1.F : distance_pos;
+
+    // Special case: single slice image, move the camera to -1.0
+    if(size[axis] == 1)
+    {
+        cam_pos[axis] = -1.F;
+    }
+
+    cam_node->setPosition(cam_pos);
+
+    if(auto* origin_node = layer->camera_origin_node(); origin_node != nullptr)
+    {
+        origin_node->setPosition(sight::viz::scene3d::utils::get_ogre_origin(*image));
+        origin_node->setOrientation(sight::viz::scene3d::utils::get_ogre_orientation(*image));
+    }
 
     m_has_moved = false;
     this->request_render();
@@ -517,17 +548,17 @@ void negato2d_camera::resize_viewport()
 
 void negato2d_camera::change_orientation(int _from, int _to)
 {
-    const auto to_orientation   = static_cast<orientation_t>(_to);
-    const auto from_orientation = static_cast<orientation_t>(_from);
+    const auto to_axis   = static_cast<axis_t>(_to);
+    const auto from_axis = static_cast<axis_t>(_from);
 
-    if(m_current_negato_orientation == to_orientation)
+    if(m_axis == to_axis)
     {
-        m_current_negato_orientation = from_orientation;
+        m_axis = from_axis;
         this->reset_camera();
     }
-    else if(m_current_negato_orientation == from_orientation)
+    else if(m_axis == from_axis)
     {
-        m_current_negato_orientation = to_orientation;
+        m_axis = to_axis;
         this->reset_camera();
     }
 }
@@ -552,6 +583,27 @@ void negato2d_camera::update_windowing(double _dw, double _dl)
             sig->async_emit(new_window, new_level);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+Ogre::Matrix4 negato2d_camera::get_camera_to_origin_transform() const
+{
+    const auto image = m_image.const_lock();
+
+    const auto origin                   = sight::viz::scene3d::utils::get_ogre_origin(*image);
+    const auto& orientation             = image->orientation();
+    const Ogre::Matrix4 world_transform = {
+        static_cast<Ogre::Real>(orientation[0]), static_cast<Ogre::Real>(orientation[1]),
+        static_cast<Ogre::Real>(orientation[2]), origin[0],
+        static_cast<Ogre::Real>(orientation[3]), static_cast<Ogre::Real>(orientation[4]),
+        static_cast<Ogre::Real>(orientation[5]), origin[1],
+        static_cast<Ogre::Real>(orientation[6]), static_cast<Ogre::Real>(orientation[7]),
+        static_cast<Ogre::Real>(orientation[8]), origin[2],
+        0, 0, 0, 1
+    };
+
+    return world_transform.inverse();
 }
 
 //-----------------------------------------------------------------------------

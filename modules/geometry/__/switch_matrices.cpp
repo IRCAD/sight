@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,15 +30,11 @@
 namespace sight::module::geometry
 {
 
-const core::com::slots::key_t switch_matrices::SWITCH_SLOT    = "switch_matrix";
-const core::com::slots::key_t switch_matrices::SWITCH_TO_SLOT = "switch_to_matrix";
-
 // ----------------------------------------------------------------------------
 
 switch_matrices::switch_matrices() noexcept
 {
-    new_slot(SWITCH_SLOT, &switch_matrices::switch_matrix, this);
-    new_slot(SWITCH_TO_SLOT, &switch_matrices::switch_to_matrix, this);
+    new_slot(slots::SWITCH, &switch_matrices::switch_matrix, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -64,7 +60,10 @@ void switch_matrices::stopping()
 
 service::connections_t switch_matrices::auto_connections() const
 {
-    return {{MATRIX_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE}};
+    return {
+        {m_current_index, data::object::MODIFIED_SIG, service::slots::UPDATE},
+        {m_matrix, data::object::MODIFIED_SIG, service::slots::UPDATE}
+    };
 }
 
 // ----------------------------------------------------------------------------
@@ -73,41 +72,25 @@ void switch_matrices::updating()
 {
     auto matrix = m_output.lock();
 
-    auto desired_matrix = m_matrix[m_index_of_desired_matrix].lock();
-    matrix->shallow_copy(desired_matrix.get_shared());
+    auto current_index = static_cast<std::size_t>(*m_current_index);
+    SIGHT_ASSERT("Requested matrix index doesn't exists.", current_index < m_matrix.size());
 
-    auto sig = matrix->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    auto desired_matrix = m_matrix[current_index].lock();
+    matrix->shallow_copy(desired_matrix.get_shared());
+    matrix->async_emit(this, data::object::MODIFIED_SIG);
 }
 
 // ----------------------------------------------------------------------------
 
 void switch_matrices::switch_matrix()
 {
-    ++m_index_of_desired_matrix;
-    if(m_index_of_desired_matrix >= m_matrix.size())
     {
-        m_index_of_desired_matrix = 0;
-    }
-
-    this->updating();
-}
-
-// ----------------------------------------------------------------------------
-
-void switch_matrices::switch_to_matrix(int _index)
-{
-    if(_index >= 0 && static_cast<std::size_t>(_index) < m_matrix.size())
-    {
-        m_index_of_desired_matrix = static_cast<std::size_t>(_index);
-    }
-    else
-    {
-        SIGHT_WARN("Desired index don't exists, switch to first matrix");
-        m_index_of_desired_matrix = 0;
+        auto current_index = m_current_index.lock();
+        *current_index = *current_index + 1;
+        if(static_cast<std::size_t>(*current_index) >= m_matrix.size())
+        {
+            *current_index = 0;
+        }
     }
 
     this->updating();

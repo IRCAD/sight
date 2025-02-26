@@ -24,6 +24,8 @@
 
 #include <data/calibration_info.hpp>
 #include <data/camera.hpp>
+#include <data/integer.hpp>
+#include <data/real.hpp>
 #include <data/vector.hpp>
 
 #include <geometry/vision/calibrator.hpp>
@@ -44,7 +46,7 @@ namespace sight::module::geometry::vision
             <in key="calibrationInfo" uid="..." />
             <inout key="camera" uid="..." />
             <inout key="poseVector" uid="..." />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <properties board_width="10" board_height="8" board_scale="12.0" />
        </service>
    @endcode
  * @subsection Input Input:
@@ -52,8 +54,10 @@ namespace sight::module::geometry::vision
  * @subsection In-Out In-Out:
  * - \b camera [sight::data::camera]: Output calibration.
  * - \b poseVector [sight::data::vector] (optional): Camera calibration pose vector
- * @subsection Configuration Configuration:
- * - \b board : preference key to defines the number of square in 2 dimensions of the chessboard.
+ * @subsection Properties Properties:
+ * - \b board_width : width of the chessboard.
+ * - \b board_height : height of the chessboard.
+ * - \b board_square_size : Square size of the chessboard.
  */
 class open_cv_intrinsic : public sight::geometry::vision::calibrator
 {
@@ -64,11 +68,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(open_cv_intrinsic, sight::geometry::vision::calibrator);
 
-    /// Constructor.
-    open_cv_intrinsic() noexcept;
-
     /// Destructor.
-    ~open_cv_intrinsic() noexcept override;
+    ~open_cv_intrinsic() noexcept override = default;
 
 protected:
 
@@ -84,34 +85,20 @@ protected:
     /// Removes connections
     void stopping() override;
 
-    /**
-     * @brief SLOT: update the chessboard size.
-     */
-    void update_chessboard_size();
-
 private:
-
-    /// Preference key to retrieve width of the chessboard used for calibration
-    std::string m_width_key;
-
-    /// Preference key to retrieve height of the chessboard used for calibration
-    std::string m_height_key;
-
-    /// Preference key to retrieve size of the chessboard'square used for calibration
-    std::string m_square_size_key;
-
-    /// Width of the chessboard used for calibration
-    unsigned int m_width {11};
-
-    /// Height of the chessboard used for calibration
-    unsigned int m_height {8};
-
-    /// Size of the chessboard'square used for calibration
-    float m_square_size {20.0};
 
     data::ptr<data::calibration_info, data::access::in> m_calibration_info {this, "calibrationInfo"};
     data::ptr<data::camera, data::access::inout> m_camera {this, "camera"};
     data::ptr<data::vector, data::access::inout> m_pose_vector {this, "poseVector"};
+
+    /// Width of the chessboard.
+    sight::data::property<sight::data::integer> m_width {this, "board_width", 11};
+
+    /// Height of the chessboard.
+    sight::data::property<sight::data::integer> m_height {this, "board_height", 8};
+
+    /// Square size of the chessboard.
+    sight::data::property<sight::data::real> m_square_size {this, "board_square_size", 20.};
 };
 
 } // namespace sight::module::geometry::vision

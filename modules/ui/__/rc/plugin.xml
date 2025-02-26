@@ -62,6 +62,13 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::ui::preferences</service>
+        <object>sight::data::object</object>
+        <desc>This action allows change the cross type</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
         <type>sight::ui::action</type>
         <service>sight::module::ui::com::timestamp_slot_caller</service>
         <object>sight::data::object</object>
@@ -80,20 +87,6 @@
         <service>sight::module::ui::io::selector</service>
         <object>sight::data::object</object>
         <desc>This service displays a list of available readers or writers and lets you select one to load or save a data.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::ui::action</type>
-        <service>sight::module::ui::metrics::remove_distance</service>
-        <object key="image">sight::data::image</object>
-        <desc>This action removes distances from the image field.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::ui::action</type>
-        <service>sight::module::ui::metrics::show_distance</service>
-        <object key="image">sight::data::image</object>
-        <desc>This action allows to show/hide image distances.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">

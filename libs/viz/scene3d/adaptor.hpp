@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,10 @@
 #include <sight/viz/scene3d/config.hpp>
 
 #include "viz/scene3d/render.hpp"
+
+#include <core/updater.hpp>
+
+#include <data/boolean.hpp>
 
 #include <service/base.hpp>
 #include <service/has_services.hpp>
@@ -57,11 +61,18 @@ namespace sight::viz::scene3d
  */
 class SIGHT_VIZ_SCENE3D_CLASS_API adaptor :
     public service::base,
-    public service::has_services
+    public service::has_services,
+    public sight::core::updater<16>
 {
 friend class render;
 
 public:
+
+    /// Helper function to generate unique identifiers for children objects
+    std::string gen_id(const std::string_view& _name) const
+    {
+        return sight::core::id::join(this->get_id(), _name);
+    }
 
     /// Configuration helper string that stores "config.<xmlattr>."
     SIGHT_VIZ_SCENE3D_API static const std::string CONFIG;
@@ -86,17 +97,30 @@ public:
 
     /**
      * @brief SLOT: sets the visibility of the adaptor.
-     * @param _is_visible the visibility status.
+     * @param _visible the visibility status.
      * @see setVisible(bool)
      */
-    SIGHT_VIZ_SCENE3D_API void update_visibility(bool _is_visible);
+    SIGHT_VIZ_SCENE3D_API void update_visibility(bool _visible);
+
+    /**
+     * @brief SLOT: Applies the current visibility state to the graphical objects.
+     */
+    SIGHT_VIZ_SCENE3D_API void apply_visibility();
+
+    /// Returns the visibility of the adaptor.
+    SIGHT_VIZ_SCENE3D_API bool visible() const;
 
 protected:
 
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t UPDATE_VISIBILITY_SLOT;
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t TOGGLE_VISIBILITY_SLOT;
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SHOW_SLOT;
-    SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t HIDE_SLOT;
+    struct slots
+    {
+        static inline const core::com::slots::key_t APPLY_VISIBILITY  = "apply_visibility";
+        static inline const core::com::slots::key_t UPDATE_VISIBILITY = "update_visibility";
+        static inline const core::com::slots::key_t TOGGLE_VISIBILITY = "toggle_visibility";
+        static inline const core::com::slots::key_t SHOW              = "show";
+        static inline const core::com::slots::key_t HIDE              = "hide";
+        static inline const core::com::slots::key_t LAZY_UPDATE       = "lazy_update";
+    };
 
     /// Initializes slots.
     SIGHT_VIZ_SCENE3D_API adaptor() noexcept;
@@ -116,7 +140,10 @@ protected:
     SIGHT_VIZ_SCENE3D_API void configure_params();
 
     /// Registers the adaptor into its render service.
-    SIGHT_VIZ_SCENE3D_API void initialize();
+    SIGHT_VIZ_SCENE3D_API void init();
+
+    /// Unregisters the adaptor from its render service.
+    SIGHT_VIZ_SCENE3D_API void deinit();
 
     /**
      * @brief Gets the Ogre SceneManager
@@ -139,6 +166,12 @@ protected:
     /// Sets the visibility of the adaptor.
     SIGHT_VIZ_SCENE3D_API virtual void set_visible(bool _visible);
 
+    /// Connects the properties signals, this must be explicitly called by children classes.
+    SIGHT_VIZ_SCENE3D_API service::connections_t auto_connections() const override;
+
+    /// Calls updating when the update is required
+    SIGHT_VIZ_SCENE3D_API void do_update() final;
+
     /// Defines the layer ID:
     std::string m_layer_id;
 
@@ -148,11 +181,13 @@ protected:
     /// Contains the t=render service which this adaptor is attached.
     viz::scene3d::render::wptr m_render_service;
 
-    /// Enables the adaptor visibility.
-    bool m_visible {true};
+private:
 
     /// Ensure visibility changes are applied when rendering is requested.
     bool m_visibility_applied {true};
+
+    /// Enables the adaptor visibility.
+    sight::data::property<sight::data::boolean> m_visible {this, "visible", true};
 };
 
 //------------------------------------------------------------------------------

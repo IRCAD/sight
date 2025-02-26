@@ -42,7 +42,7 @@ class QTabWidget;
 namespace sight::data
 {
 
-class composite;
+class map;
 
 } // namespace sight::data
 namespace sight::module::ui::qt::activity

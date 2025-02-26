@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,11 +85,11 @@ struct signals_test_has_signals : public has_signals
 
 struct signals_test_has_signals2 : public has_signals
 {
-    using signal_type = core::com::signal<void ()>;
+    using signal_type = core::com::signal<void (int, double)>;
 
     signals_test_has_signals2()
     {
-        signal_type::sptr sig = this->new_signal<signal_type>("sig");
+        auto sig = this->new_signal<signal_type>("sig");
         CPPUNIT_ASSERT(sig);
     }
 };
@@ -105,7 +105,17 @@ struct signal_test_a
         m_val = !m_val;
     }
 
+    //------------------------------------------------------------------------------
+
+    void change_values(int _int, double _double)
+    {
+        m_int    = _int;
+        m_double = _double;
+    }
+
     bool m_val {false};
+    int m_int {0};
+    double m_double {0.};
 };
 //-----------------------------------------------------------------------------
 
@@ -114,7 +124,7 @@ void signals_test::has_signals_test()
     {
         signals_test_has_signals obj;
         signal_test_a srv;
-        slot<void()>::sptr slot = core::com::new_slot(&signal_test_a::change_status, &srv);
+        auto slot = core::com::new_slot(&signal_test_a::change_status, &srv);
         obj.signal("sig")->connect(slot);
         obj.signal<signals_test_has_signals::signal_type>("sig")->emit();
         CPPUNIT_ASSERT(srv.m_val);
@@ -123,12 +133,19 @@ void signals_test::has_signals_test()
     {
         signals_test_has_signals2 obj;
         signal_test_a srv;
-        slot<void()>::sptr slot = core::com::new_slot(&signal_test_a::change_status, &srv);
+        auto slot = core::com::new_slot(&signal_test_a::change_values, &srv);
 
         obj.signal("sig")->connect(slot);
-        obj.signal<signals_test_has_signals2::signal_type>("sig")->emit();
+        obj.signal<signals_test_has_signals2::signal_type>("sig")->emit(4, 5.);
 
-        CPPUNIT_ASSERT(srv.m_val);
+        CPPUNIT_ASSERT_EQUAL(4, srv.m_int);
+        CPPUNIT_ASSERT_EQUAL(5., srv.m_double);
+
+        obj.emit("sig", -3, 22.3);
+
+        CPPUNIT_ASSERT_EQUAL(-3, srv.m_int);
+        CPPUNIT_ASSERT_EQUAL(22.3, srv.m_double);
+
         obj.signal("sig")->disconnect(slot);
     }
 }

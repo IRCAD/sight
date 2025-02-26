@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,7 @@ void image_test::compute_bounding_box_from_mask()
     const core::type type          = core::type::UINT8;
     const data::image::size_t size = {10, 20, 30};
 
-    mask->resize(size, type, data::image::pixel_format::gray_scale);
+    mask->resize(size, type, data::image::pixel_format_t::gray_scale);
 
     const auto lock = mask->dump_lock();
     std::fill(mask->begin(), mask->end(), std::uint8_t(0));

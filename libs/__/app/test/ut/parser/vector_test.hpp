@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -39,11 +39,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basic_test();
-
-private:
-
-    parser::vector m_vector_parser;
+    static void basic_test();
 };
 
 } // namespace sight::app::parser::ut

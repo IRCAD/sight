@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,19 +36,18 @@ namespace sight::viz::scene2d::data::parser
 
 //------------------------------------------------------------------------------
 
-void viewport::create_config(core::tools::object::sptr _obj)
+void viewport::parse(const config_t& _cfg, core::object::sptr _obj, objects_t& /*_sub_objects*/)
 {
     const data::viewport::sptr viewport = std::dynamic_pointer_cast<data::viewport>(_obj);
     SIGHT_ASSERT("viewport does not exist.", viewport);
 
-    const auto config = m_cfg.get_child_optional("config.<xmlattr>");
+    const auto config = _cfg.get_child_optional("config.<xmlattr>");
     if(config.has_value())
     {
-        const std::string id = config->get("id", "");
-        const float x        = config->get<float>("x", 0.F);
-        const float y        = config->get<float>("y", 0.F);
-        const float width    = config->get<float>("width", 1.F);
-        const float height   = config->get<float>("height", 1.F);
+        const float x      = config->get<float>("x", 0.F);
+        const float y      = config->get<float>("y", 0.F);
+        const float width  = config->get<float>("width", 1.F);
+        const float height = config->get<float>("height", 1.F);
 
         viewport->set_x(x);
         viewport->set_y(y);

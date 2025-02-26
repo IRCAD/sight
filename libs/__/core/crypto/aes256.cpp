@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,8 +21,9 @@
 
 #include "aes256.hpp"
 
-#include "core/crypto/sha256.hpp"
+#include "sha256.hpp"
 
+#include <openssl/err.h>
 #include <openssl/evp.h>
 
 #include <array>
@@ -30,6 +31,35 @@
 
 namespace sight::core::crypto
 {
+
+//------------------------------------------------------------------------------
+
+static constexpr auto check_aes(const auto& _expr)
+{
+    const auto result = _expr();
+    if(result == 0)
+    {
+        throw std::runtime_error(std::string(ERR_error_string(ERR_get_error(), nullptr)));
+    }
+
+    return result;
+}
+
+// Load the necessary cipher
+static struct openssl_initializer final
+{
+    openssl_initializer()
+    {
+        ERR_load_crypto_strings();
+        check_aes([&]{return EVP_add_cipher(EVP_aes_256_cbc());});
+    }
+
+    ~openssl_initializer()
+    {
+        ERR_free_strings();
+        EVP_cleanup();
+    }
+} s_openssl_initializer;
 
 // en/decrypt a message using the given password.
 // Uses function pointers to minimize code duplication
@@ -46,9 +76,6 @@ inline static T xx_crypt(
         std::is_same_v<secure_string, T>|| std::is_same_v<std::string, T>,
         "T must be a string"
     );
-
-    // Load the necessary cipher
-    EVP_add_cipher(EVP_aes_256_cbc());
 
     // Initialize key (265 bits) and iv(128 bits)
     std::array<unsigned char, HASH_SIZE> key {};
@@ -67,29 +94,38 @@ inline static T xx_crypt(
     EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
 
     // Initialize en/decryption
-    _xx_crypt_init(ctx, EVP_aes_256_cbc(), nullptr, key.data(), iv.data());
+    check_aes([&]{return _xx_crypt_init(ctx, EVP_aes_256_cbc(), nullptr, key.data(), iv.data());});
 
     // Update en/decryption
-    _xx_crypt_update(
-        ctx,
-        reinterpret_cast<unsigned char*>(output.data()),
-        &processed_size,
-        reinterpret_cast<const unsigned char*>(_message.data()),
-        static_cast<int>(_message.size())
-    );
+    check_aes(
+        [&]
+        {
+            return _xx_crypt_update(
+                ctx,
+                reinterpret_cast<unsigned char*>(output.data()),
+                &processed_size,
+                reinterpret_cast<const unsigned char*>(_message.data()),
+                static_cast<int>(_message.size())
+            );
+        });
 
     // Compute remaining size
     int remaining_size = static_cast<int>(output.size()) - processed_size;
 
     // Finalize en/decryption
-    _xx_crypt_final(
-        ctx,
-        reinterpret_cast<unsigned char*>(output.data()) + processed_size,
-        &remaining_size
-    );
+    check_aes(
+        [&]
+        {
+            return _xx_crypt_final(
+                ctx,
+                reinterpret_cast<unsigned char*>(output.data()) + processed_size,
+                &remaining_size
+            );
+        });
 
     // Adjust output to the real size
     output.resize(static_cast<std::size_t>(processed_size) + static_cast<std::size_t>(remaining_size));
+    output.shrink_to_fit();
 
     // Cleaning
     EVP_CIPHER_CTX_free(ctx);

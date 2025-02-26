@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,18 +30,13 @@
 #include <service/base.hpp>
 #include <service/op.hpp>
 
-#include <ui/__/dialog/input_dummy.hpp>
-#include <ui/__/dialog/location_dummy.hpp>
-#include <ui/__/dialog/message_dummy.hpp>
-#include <ui/__/macros.hpp>
+#include <ui/test/dialog/input.hpp>
+#include <ui/test/dialog/location.hpp>
+#include <ui/test/dialog/message.hpp>
 
 #include <utest_data/data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::zip::ut::extract_test);
-
-SIGHT_REGISTER_GUI(sight::ui::dialog::location_dummy, sight::ui::dialog::location_base::REGISTRY_KEY);
-SIGHT_REGISTER_GUI(sight::ui::dialog::input_dummy, sight::ui::dialog::input_base::REGISTRY_KEY);
-SIGHT_REGISTER_GUI(sight::ui::dialog::message_dummy, sight::ui::dialog::message_base::REGISTRY_KEY);
 
 namespace sight::module::io::zip::ut
 {
@@ -55,15 +50,16 @@ void extract_test::basic_archive_test()
     service::base::sptr extract = service::add("sight::module::io::zip::extract");
     CPPUNIT_ASSERT(extract);
 
+    CPPUNIT_ASSERT_NO_THROW(extract->configure());
     CPPUNIT_ASSERT_NO_THROW(extract->start().get());
 
     // We select the archive we want to open.
-    ui::dialog::location_dummy::push_paths(
+    ui::test::dialog::location::push_paths(
         {utest_data::dir() / "sight/ui/archive_extractor/non-encrypted-archive.sample"
         });
 
     // We choose the output path.
-    ui::dialog::location_dummy::push_paths({tmp_folder});
+    ui::test::dialog::location::push_paths({tmp_folder});
 
     CPPUNIT_ASSERT_NO_THROW(extract->update().get());
 
@@ -90,32 +86,32 @@ void extract_test::basic_archive_test()
     vti_reader->set_object(img);
     CPPUNIT_ASSERT_NO_THROW(vti_reader->read());
 
-    ui::dialog::location_dummy::push_paths(
+    ui::test::dialog::location::push_paths(
         {utest_data::dir() / "sight/ui/archive_extractor/non-encrypted-archive.sample"
         });
-    ui::dialog::location_dummy::push_paths({tmp_folder});
+    ui::test::dialog::location::push_paths({tmp_folder});
 
     // Oops, we choose the same folder again! We get a warning. Let's try again.
-    ui::dialog::message_dummy::push_action(ui::dialog::message_dummy::retry);
-    ui::dialog::location_dummy::push_paths({tmp_folder});
+    ui::test::dialog::message::push_action(ui::test::dialog::message::retry);
+    ui::test::dialog::location::push_paths({tmp_folder});
 
     // Ah, clumsy us, we chose the exact same folder! Let's try again later.
-    ui::dialog::message_dummy::push_action(ui::dialog::message_dummy::cancel);
+    ui::test::dialog::message::push_action(ui::test::dialog::message::cancel);
 
     CPPUNIT_ASSERT_NO_THROW(extract->update().get());
 
-    ui::dialog::location_dummy::push_paths(
+    ui::test::dialog::location::push_paths(
         {utest_data::dir() / "sight/ui/archive_extractor/non-encrypted-archive.sample"
         });
-    ui::dialog::location_dummy::push_paths({tmp_folder});
+    ui::test::dialog::location::push_paths({tmp_folder});
 
     // Well, well, the folder still isn't empty. Tough luck. Let's simply overwrite it.
-    ui::dialog::message_dummy::push_action(ui::dialog::message_dummy::yes);
+    ui::test::dialog::message::push_action(ui::test::dialog::message::yes);
 
     CPPUNIT_ASSERT_NO_THROW(extract->update().get());
 
-    CPPUNIT_ASSERT(ui::dialog::location_dummy::clear());
-    CPPUNIT_ASSERT(ui::dialog::message_dummy::clear());
+    CPPUNIT_ASSERT(ui::test::dialog::location::clear());
+    CPPUNIT_ASSERT(ui::test::dialog::message::clear());
 }
 
 //------------------------------------------------------------------------------
@@ -127,22 +123,23 @@ void extract_test::encrypted_archive_test()
     service::base::sptr extract = service::add("sight::module::io::zip::extract");
     CPPUNIT_ASSERT(extract);
 
+    CPPUNIT_ASSERT_NO_THROW(extract->configure());
     CPPUNIT_ASSERT_NO_THROW(extract->start().get());
 
     // We select the archive we want to open.
-    ui::dialog::location_dummy::push_paths(
+    ui::test::dialog::location::push_paths(
         {utest_data::dir() / "sight/ui/archive_extractor/encrypted-archive.sample"
         });
 
     // We choose the output path.
-    ui::dialog::location_dummy::push_paths({tmp_folder});
+    ui::test::dialog::location::push_paths({tmp_folder});
 
     // The archive is encrypted, let's input a password.
-    ui::dialog::input_dummy::push_input("tartare");
+    ui::test::dialog::input::push_input("tartare");
 
     // Ah, wrong one. Let's try again.
-    ui::dialog::message_dummy::push_action(ui::dialog::message_dummy::retry);
-    ui::dialog::input_dummy::push_input("bouboule");
+    ui::test::dialog::message::push_action(ui::test::dialog::message::retry);
+    ui::test::dialog::input::push_input("bouboule");
 
     CPPUNIT_ASSERT_NO_THROW(extract->update().get());
 
@@ -169,9 +166,9 @@ void extract_test::encrypted_archive_test()
     vti_reader->set_object(img);
     CPPUNIT_ASSERT_NO_THROW(vti_reader->read());
 
-    CPPUNIT_ASSERT(ui::dialog::location_dummy::clear());
-    CPPUNIT_ASSERT(ui::dialog::input_dummy::clear());
-    CPPUNIT_ASSERT(ui::dialog::message_dummy::clear());
+    CPPUNIT_ASSERT(ui::test::dialog::location::clear());
+    CPPUNIT_ASSERT(ui::test::dialog::input::clear());
+    CPPUNIT_ASSERT(ui::test::dialog::message::clear());
 }
 
 //------------------------------------------------------------------------------

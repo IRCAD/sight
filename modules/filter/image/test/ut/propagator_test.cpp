@@ -23,9 +23,11 @@
 
 #include <core/runtime/runtime.hpp>
 
+#include <data/boolean.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/point_list.hpp>
+#include <data/string.hpp>
 
 #include <service/op.hpp>
 
@@ -34,9 +36,9 @@
 #include <boost/property_tree/xml_parser.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::filter::mesh::ut::propagator_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::filter::image::ut::propagator_test);
 
-namespace sight::module::filter::mesh::ut
+namespace sight::module::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -62,17 +64,19 @@ void propagator_test::propagate()
     auto image           = std::make_shared<sight::data::image>();
     const auto dump_lock = image->dump_lock();
 
-    const data::image::size_t size       = {10, 20, 90};
-    const data::image::spacing_t spacing = {1.4, 3.5, 0.5};
-    const data::image::origin_t origin   = {100., -208.2, 14.};
+    const data::image::size_t size               = {10, 20, 90};
+    const data::image::spacing_t spacing         = {1.4, 3.5, 0.5};
+    const data::image::origin_t origin           = {100., -208.2, 14.};
+    const data::image::orientation_t orientation = {1, 0, 0, 0, 1, 0, 0, 0, 1};
 
     utest_data::generator::image::generate_image(
         image,
         size,
         spacing,
         origin,
+        orientation,
         core::type::get<std::int16_t>(),
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
 
     for(std::size_t x = 3 ; x < 6 ; ++x)
@@ -99,14 +103,17 @@ void propagator_test::propagate()
 
     // Create service
     sight::service::base::sptr srv = sight::service::add("sight::module::filter::image::propagator");
+    CPPUNIT_ASSERT(srv->is_a("sight::module::filter::image::propagator"));
     CPPUNIT_ASSERT(srv);
 
     service::config_t config;
     std::stringstream config_string;
-    config_string << R"(<config value="50" mode="minmax"/>)";
+    config_string << R"(<properties value="50"/>)";
 
     auto point_list = std::make_shared<sight::data::point_list>();
     auto mask       = std::make_shared<sight::data::image>();
+    auto mode       = std::make_shared<sight::data::string>();
+    mode->set_value("minmax");
     boost::property_tree::read_xml(config_string, config);
 
     srv->set_worker(sight::core::thread::get_default_worker());
@@ -114,6 +121,7 @@ void propagator_test::propagate()
     srv->set_input(image, "image_in");
     srv->set_input(point_list, "seeds");
     srv->set_inout(mask, "image_out");
+    srv->set_inout(mode, "mode");
     srv->configure();
     srv->start().wait();
     srv->update().wait();
@@ -175,6 +183,8 @@ void propagator_test::propagate()
     point_list->push_back(std::make_shared<sight::data::point>(105., -190., 55.));
     auto samples_out = std::make_shared<sight::data::image>();
     srv->set_inout(samples_out, "samples_out");
+    auto mask_filled_out = std::make_shared<sight::data::boolean>(false);
+    srv->set_inout(mask_filled_out, "mask_filled_out");
 
     srv->update().wait();
     {
@@ -215,6 +225,8 @@ void propagator_test::propagate()
 
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(900), count_1);
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(300), count_2);
+
+        CPPUNIT_ASSERT_EQUAL(true, mask_filled_out->value());
     }
 
     // Clear the output image
@@ -236,12 +248,14 @@ void propagator_test::propagate()
                 }
             }
         }
+
+        CPPUNIT_ASSERT_EQUAL(false, mask_filled_out->value());
     }
 
     // Switch to standard deviation mode
-    // auto sl = srv->slot<core::com::slot<void (std::string, std::string)> >("set_enum_parameter");
-
-    srv->slot("set_enum_parameter")->run(std::string("stddev"), std::string("mode"));
+    mode->set_value("stddev");
+    auto sig = mode->signal<sight::data::object::modified_signal_t>(sight::data::object::MODIFIED_SIG);
+    sig->emit();
 
     point_list->push_back(std::make_shared<sight::data::point>(105., -190., 52.));
 
@@ -301,10 +315,11 @@ void propagator_test::propagate()
         }
 
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(300), count);
+        CPPUNIT_ASSERT_EQUAL(true, mask_filled_out->value());
     }
 
     srv->stop().wait();
     sight::service::remove(srv);
 }
 
-} // namespace sight::module::filter::mesh::ut
+} // namespace sight::module::filter::image::ut

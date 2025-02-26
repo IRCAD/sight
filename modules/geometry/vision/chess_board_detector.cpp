@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,8 +41,7 @@
 namespace sight::module::geometry::vision
 {
 
-static const core::com::slots::key_t RECORD_POINTS_SLOT          = "record_points";
-static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "update_chessboard_size";
+static const core::com::slots::key_t RECORD_POINTS_SLOT = "record_points";
 
 static const core::com::signals::key_t CHESSBOARD_DETECTED_SIG = "chessboard_detected";
 static const core::com::signals::key_t CHESSBOARD_FOUND_SIG    = "chessboardFound";
@@ -54,7 +53,6 @@ chess_board_detector::chess_board_detector() noexcept :
     m_sig_chessboard_found(new_signal<chessboard_found_signal_t>(CHESSBOARD_FOUND_SIG))
 {
     new_slot(RECORD_POINTS_SLOT, &chess_board_detector::record_points, this);
-    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &chess_board_detector::update_chessboard_size, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -64,29 +62,14 @@ chess_board_detector::~chess_board_detector() noexcept =
 
 // ----------------------------------------------------------------------------
 
-void chess_board_detector::configuring()
+void chess_board_detector::configuring(const config_t& /*_config*/)
 {
-    SIGHT_ASSERT(
-        "This service must have the same number of 'image' keys and 'calInfo' keys",
-        m_image.size() == m_cal_info.size()
-    );
-
-    const config_t config       = this->get_config();
-    const config_t board_config = config.get_child("board");
-
-    m_width_key = board_config.get<std::string>("<xmlattr>.width");
-    SIGHT_ASSERT("Missing board width preference key.", !m_width_key.empty());
-    m_height_key = board_config.get<std::string>("<xmlattr>.height");
-    SIGHT_ASSERT("Missing board height preference key.", !m_height_key.empty());
-    m_scale_key = board_config.get<std::string>("<xmlattr>.scale");
 }
 
 // ----------------------------------------------------------------------------
 
 void chess_board_detector::starting()
 {
-    this->update_chessboard_size();
-
     const std::size_t image_group_size = m_image.size();
 
     m_images.resize(image_group_size);
@@ -166,7 +149,6 @@ void chess_board_detector::record_points()
                 auto sig = cal_info->signal<data::calibration_info::added_record_signal_t>(
                     data::calibration_info::ADDED_RECORD_SIG
                 );
-
                 sig->async_emit();
             }
             else
@@ -174,29 +156,6 @@ void chess_board_detector::record_points()
                 cal_info->add_record(m_images[i], std::make_shared<data::point_list>());
             }
         }
-    }
-}
-
-// ----------------------------------------------------------------------------
-
-void chess_board_detector::update_chessboard_size()
-{
-    try
-    {
-        ui::preferences preferences;
-        m_width  = preferences.get(m_width_key, m_width);
-        m_height = preferences.get(m_height_key, m_height);
-        m_scale  = preferences.get(m_scale_key, m_scale);
-
-        if(m_scale > 1.F)
-        {
-            m_scale = 1.F;
-            SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
-        }
-    }
-    catch(const ui::preferences_disabled&)
-    {
-        // Nothing to do..
     }
 }
 
@@ -214,7 +173,12 @@ void chess_board_detector::do_detection(std::size_t _image_index)
         const cv::Mat cv_img = io::opencv::image::move_to_cv(img.get_shared());
 
         m_point_lists[_image_index] =
-            sight::geometry::vision::helper::detect_chessboard(cv_img, m_width, m_height, m_scale);
+            sight::geometry::vision::helper::detect_chessboard(
+                cv_img,
+                std::size_t(*m_width),
+                std::size_t(*m_height),
+                float(*m_scale)
+            );
 
         if(m_point_lists[_image_index] != nullptr)
         {

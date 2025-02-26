@@ -49,10 +49,20 @@ constexpr static auto TYPE {"Type"};
 constexpr static auto PIXEL_FORMAT {"PixelFormat"};
 constexpr static auto SPACING {"Spacing"};
 constexpr static auto ORIGIN {"Origin"};
+constexpr static auto ORIENTATION {"Orientation"};
 constexpr static auto SIZE {"Size"};
 constexpr static auto X {"X"};
 constexpr static auto Y {"Y"};
 constexpr static auto Z {"Z"};
+constexpr static auto X_X {"X_X"};
+constexpr static auto X_Y {"X_Y"};
+constexpr static auto X_Z {"X_Z"};
+constexpr static auto Y_X {"Y_X"};
+constexpr static auto Y_Y {"Y_Y"};
+constexpr static auto Y_Z {"Y_Z"};
+constexpr static auto Z_X {"Z_X"};
+constexpr static auto Z_Y {"Z_Y"};
+constexpr static auto Z_Z {"Z_Z"};
 constexpr static auto WIDTH {"Width"};
 constexpr static auto HEIGHT {"Height"};
 constexpr static auto DEPTH {"Depth"};
@@ -113,6 +123,19 @@ inline static void write(
     origin_tree.add(Y, origin[1]);
     origin_tree.add(Z, origin[2]);
     _tree.add_child(ORIGIN, origin_tree);
+
+    const auto& orientation = image->orientation();
+    boost::property_tree::ptree orientation_tree;
+    orientation_tree.add(X_X, orientation[0]);
+    orientation_tree.add(Y_X, orientation[1]);
+    orientation_tree.add(Z_X, orientation[2]);
+    orientation_tree.add(X_Y, orientation[3]);
+    orientation_tree.add(Y_Y, orientation[4]);
+    orientation_tree.add(Z_Y, orientation[5]);
+    orientation_tree.add(X_Z, orientation[6]);
+    orientation_tree.add(Y_Z, orientation[7]);
+    orientation_tree.add(Z_Z, orientation[8]);
+    _tree.add_child(ORIENTATION, orientation_tree);
 
     boost::property_tree::ptree window_centers_tree;
     for(std::size_t index = 0 ; const auto& window_center : image->window_center())
@@ -190,7 +213,7 @@ inline static data::image::sptr read(
 
     core::type type(_tree.get<std::string>(TYPE));
 
-    const auto format = static_cast<enum data::image::pixel_format>(_tree.get<int>(PIXEL_FORMAT));
+    const auto format = static_cast<enum data::image::pixel_format_t>(_tree.get<int>(PIXEL_FORMAT));
 
     ///@note This is not saved in VTK files.
     std::vector<double> window_centers;
@@ -225,8 +248,22 @@ inline static data::image::sptr read(
             origin_tree.get<double>(Z)
         });
 
+    const auto& orientation_tree = _tree.get_child(ORIENTATION);
+    image->set_orientation(
+        {
+            orientation_tree.get<double>(X_X),
+            orientation_tree.get<double>(Y_X),
+            orientation_tree.get<double>(Z_X),
+            orientation_tree.get<double>(X_Y),
+            orientation_tree.get<double>(Y_Y),
+            orientation_tree.get<double>(Z_Y),
+            orientation_tree.get<double>(X_Z),
+            orientation_tree.get<double>(Y_Z),
+            orientation_tree.get<double>(Z_Z)
+        });
+
     // If pixelFormart == UNDEFINED it is ALWAYS an empty image, so early return here.
-    if(format == data::image::pixel_format::undefined)
+    if(format == data::image::pixel_format_t::undefined)
     {
         return image;
     }

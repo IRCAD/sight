@@ -1,42 +1,38 @@
 <extension implements="sight::app::extension::config">
-    <id>sight::config::viz::scene3d::imageSplitViews</id>
+    <id>sight::config::viz::scene3d::image_split_views</id>
     <parameters>
+        <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
+        <object uid="image" type="sight::data::image_series" deferred="true" />
+        <object uid="volumeTF" type="sight::data::transfer_function" />
+        <object uid="extrudedModelSeries" type="sight::data::model_series" />
+
+        <object uid="vr_visibility" type="sight::data::boolean" />
+        <object uid="negato_visibility" type="sight::data::boolean" />
+        <object uid="model_visibility" type="sight::data::boolean" />
+        <object uid="axis_visibility" type="sight::data::boolean" />
+
         <param name="WID_PARENT" />
         <param name="VR_BOOL_PARAM_RECEIVER_CHANNEL" />
         <param name="VR_INT_PARAM_RECEIVER_CHANNEL" />
         <param name="VR_DOUBLE_PARAM_RECEIVER_CHANNEL" />
-        <param name="VR_VISIBILITY_RECEIVER_CHANNEL" />
-        <param name="3DNEGATO_VISIBILITY_RECEIVER_CHANNEL" />
-        <param name="MESHES_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="BOX_WIDGET_RESET_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" />
-        <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
-        <param name="DISTANCE_ACTIVATION_CHANNEL" />
-        <param name="DISTANCE_DEACTIVATION_CHANNEL" />
+        <param name="RULER_ACTIVATION_CHANNEL" />
+        <param name="RULER_DEACTIVATION_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
         <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
         <param name="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" />
-        <param name="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" />
+        <param name="REMOVE_ALL_RULERS_RECEIVER_CHANNEL" />
+        <param name="VISIBILITY_RULERS_RECEIVER_CHANNEL" />
         <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
-        <param name="modelSeries" />
-        <param name="image" />
-        <param name="volumeTF" />
-        <param name="extrudedModelSeries" />
     </parameters>
     <config>
-        <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${modelSeries}" type="sight::data::model_series" src="deferred" />
-        <object uid="${image}" type="sight::data::image_series" src="deferred" />
-        <object uid="${volumeTF}" type="sight::data::transfer_function" src="ref" />
-        <object uid="${extrudedModelSeries}" type="sight::data::model_series" src="ref" />
-
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="mainView" type="sight::module::ui::view">
@@ -91,24 +87,21 @@
             <parameter replace="VR_BOOL_PARAM_RECEIVER_CHANNEL" by="${VR_BOOL_PARAM_RECEIVER_CHANNEL}" />
             <parameter replace="VR_INT_PARAM_RECEIVER_CHANNEL" by="${VR_INT_PARAM_RECEIVER_CHANNEL}" />
             <parameter replace="VR_DOUBLE_PARAM_RECEIVER_CHANNEL" by="${VR_DOUBLE_PARAM_RECEIVER_CHANNEL}" />
-            <parameter replace="VR_VISIBILITY_RECEIVER_CHANNEL" by="${VR_VISIBILITY_RECEIVER_CHANNEL}" />
-            <parameter replace="3DNEGATO_VISIBILITY_RECEIVER_CHANNEL" by="${3DNEGATO_VISIBILITY_RECEIVER_CHANNEL}" />
-            <parameter replace="MESHES_VISIBILITY_RECEIVER_CHANNEL" by="${MESHES_VISIBILITY_RECEIVER_CHANNEL}" />
             <parameter replace="BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL" by="${BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL}" />
             <parameter replace="BOX_WIDGET_RESET_RECEIVER_CHANNEL" by="${BOX_WIDGET_RESET_RECEIVER_CHANNEL}" />
             <parameter replace="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" by="${SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL}" />
             <parameter replace="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" by="${SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL}" />
             <parameter replace="SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL" by="${SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL}" />
             <parameter replace="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" by="${SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL}" />
-            <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="${AXIS_VISIBILITY_RECEIVER_CHANNEL}" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="${WORLD_COORDS_LANDMARKS_CHANNEL}" />
             <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="${NEGATO3D_TRANSPARENCY_CHANNEL}" />
-            <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
-            <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_ACTIVATION_CHANNEL" by="${RULER_ACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_DEACTIVATION_CHANNEL" by="${RULER_DEACTIVATION_CHANNEL}" />
             <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
             <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
-            <parameter replace="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" by="${REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL}" />
+            <parameter replace="REMOVE_ALL_RULERS_RECEIVER_CHANNEL" by="${REMOVE_ALL_RULERS_RECEIVER_CHANNEL}" />
+            <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="${VISIBILITY_RULERS_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}" />
             <parameter replace="maximized" by="true" />
             <parameter replace="restored" by="false" />
@@ -117,6 +110,10 @@
                 <key name="image" uid="${image}" optional="true" />
                 <key name="volumeTF" uid="${volumeTF}" />
                 <key name="extrudedModelSeries" uid="${extrudedModelSeries}" />
+                <key name="vr_visibility" uid="${vr_visibility}" />
+                <key name="negato_visibility" uid="${negato_visibility}" />
+                <key name="model_visibility" uid="${model_visibility}" />
+                <key name="axis_visibility" uid="${axis_visibility}" />
             </inout>
         </service>
 
@@ -127,8 +124,9 @@
             <parameter replace="WID_PARENT" by="axialSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_AXIAL_VISIBILITY_RECEIVER_CHANNEL" />
-            <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
-            <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_ACTIVATION_CHANNEL" by="${RULER_ACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_DEACTIVATION_CHANNEL" by="${RULER_DEACTIVATION_CHANNEL}" />
+            <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="${VISIBILITY_RULERS_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
             <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
@@ -145,8 +143,9 @@
             <parameter replace="WID_PARENT" by="sagittalSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_SAGITTAL_VISIBILITY_RECEIVER_CHANNEL" />
-            <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
-            <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_ACTIVATION_CHANNEL" by="${RULER_ACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_DEACTIVATION_CHANNEL" by="${RULER_DEACTIVATION_CHANNEL}" />
+            <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="${VISIBILITY_RULERS_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
             <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
@@ -163,8 +162,9 @@
             <parameter replace="WID_PARENT" by="frontalSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_FRONTAL_VISIBILITY_RECEIVER_CHANNEL" />
-            <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
-            <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_ACTIVATION_CHANNEL" by="${RULER_ACTIVATION_CHANNEL}" />
+            <parameter replace="RULER_DEACTIVATION_CHANNEL" by="${RULER_DEACTIVATION_CHANNEL}" />
+            <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="${VISIBILITY_RULERS_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
             <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
             <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />

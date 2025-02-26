@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,16 +101,16 @@ void reconstruction_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    reconstruction1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Reconstructions should be different when using " #op " on the first one", \
-        *reconstruction1 != *reconstruction2 && !(*reconstruction1 == *reconstruction2) \
-    ); \
-    reconstruction2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Reconstructions should be equal when using " #op " on both", \
-        *reconstruction1 == *reconstruction2 && !(*reconstruction1 != *reconstruction2) \
-    );
+            reconstruction1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Reconstructions should be different when using " #op " on the first one", \
+                *reconstruction1 != *reconstruction2 && !(*reconstruction1 == *reconstruction2) \
+            ); \
+            reconstruction2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Reconstructions should be equal when using " #op " on both", \
+                *reconstruction1 == *reconstruction2 && !(*reconstruction1 != *reconstruction2) \
+            );
 
     TEST(set_is_visible(true));
     TEST(set_organ_name("1"));

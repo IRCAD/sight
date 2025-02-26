@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -240,6 +240,14 @@ void query_editor::updating()
 
 void query_editor::stopping()
 {
+    {
+        const auto series_set     = m_series_set.lock();
+        const auto scoped_emitter = series_set->scoped_emit();
+
+        // Delete old series from the series_set.
+        series_set->clear();
+    }
+
     QObject::disconnect(m_search_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);
     QObject::disconnect(m_search_button, &QPushButton::clicked, this, &query_editor::execute_query_async);
     QObject::disconnect(m_patient_name_edit, &QLineEdit::returnPressed, this, &query_editor::execute_query_async);

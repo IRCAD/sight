@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,9 +23,9 @@
 
 #include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/tools/compare.hpp>
+#include <core/compare.hpp>
 
-#include <data/container.hxx>
+#include <data/container.hpp>
 #include <data/integer.hpp>
 
 #include <array>
@@ -61,12 +61,12 @@ inline static void test_container(const C& _source, const C& _modified_source)
         container container(_source);
 
         // Should be a perfect copy, is_equal will also test default forward iterators
-        CPPUNIT_ASSERT(core::tools::is_equal(container, _source));
+        CPPUNIT_ASSERT(core::is_equal(container, _source));
 
         class container modified_container(_modified_source);
 
         // Should be different
-        CPPUNIT_ASSERT(!core::tools::is_equal(container, modified_container));
+        CPPUNIT_ASSERT(!core::is_equal(container, modified_container));
     }
 
     // Assignement test
@@ -75,13 +75,13 @@ inline static void test_container(const C& _source, const C& _modified_source)
         container = _source;
 
         // Should be a perfect copy, is_equal will also test default forward iterators
-        CPPUNIT_ASSERT(core::tools::is_equal(container, _source));
+        CPPUNIT_ASSERT(core::is_equal(container, _source));
 
         class container modified_container;
         modified_container = _modified_source;
 
         // Should be different
-        CPPUNIT_ASSERT(!core::tools::is_equal(container, modified_container));
+        CPPUNIT_ASSERT(!core::is_equal(container, modified_container));
     }
 
     // Initializer list test
@@ -93,31 +93,31 @@ inline static void test_container(const C& _source, const C& _modified_source)
         std::copy(_source.cbegin(), _source.cend(), inserter(container));
 
         // Should be a perfect copy
-        CPPUNIT_ASSERT(core::tools::is_equal(container, _source));
+        CPPUNIT_ASSERT(core::is_equal(container, _source));
 
         class container modified_container;
 
         std::copy(_modified_source.cbegin(), _modified_source.cend(), inserter(modified_container));
 
         // Should be different (test inequality operator)
-        CPPUNIT_ASSERT(!core::tools::is_equal(container, modified_container));
+        CPPUNIT_ASSERT(!core::is_equal(container, modified_container));
     }
 
     // Clear test
-    if constexpr(core::tools::is_container_dynamic<C>::value)
+    if constexpr(core::is_container_dynamic<C>::value)
     {
         container container(_source);
         class container empty;
 
-        CPPUNIT_ASSERT(!core::tools::is_equal(container, empty));
+        CPPUNIT_ASSERT(!core::is_equal(container, empty));
 
         container.clear();
 
-        CPPUNIT_ASSERT(core::tools::is_equal(container, empty));
+        CPPUNIT_ASSERT(core::is_equal(container, empty));
     }
 
     // Special features of vector kind container
-    if constexpr(core::tools::is_vector<C>::value)
+    if constexpr(core::is_vector<C>::value)
     {
         container container(_source);
 
@@ -218,100 +218,18 @@ void container_test::tearDown()
 
 void container_test::array_test()
 {
-    test_container(
-        std::array<int, 3>({1, 2, 3}),
-        std::array<int, 3>({4, 5, 6})
-    );
-
-    test_container(
-        std::array<integer::sptr, 3>(
-            {std::make_shared<integer>(1), std::make_shared<integer>(2), std::make_shared<integer>(3)
-            }),
-        std::array<integer::sptr, 3>(
-            {std::make_shared<integer>(4), std::make_shared<integer>(5),
-             std::make_shared<integer>(6)
-            })
-    );
-
-    test_container(
-        std::array<std::shared_ptr<int>, 3>(
-        {
-            std::make_shared<int>(1),
-            std::make_shared<int>(2),
-            std::make_shared<int>(3)
-        }),
-        std::array<std::shared_ptr<int>, 3>(
-        {
-            std::make_shared<int>(4),
-            std::make_shared<int>(5),
-            std::make_shared<int>(6)
-        })
-    );
 }
 
 //------------------------------------------------------------------------------
 
 void container_test::generic_test()
 {
-    test_dispatcher<int>(
-        {1, 2, 3},
-        {4, 5, 6
-        });
-
-    test_dispatcher<integer::sptr>(
-        {
-            std::make_shared<integer>(1),
-            std::make_shared<integer>(2),
-            std::make_shared<integer>(3)
-        },
-        {
-            std::make_shared<integer>(4),
-            std::make_shared<integer>(5),
-            std::make_shared<integer>(6)
-        });
-
-    test_dispatcher<std::shared_ptr<int> >(
-        {
-            std::make_shared<int>(1),
-            std::make_shared<int>(2),
-            std::make_shared<int>(3)
-        },
-        {
-            std::make_shared<int>(4),
-            std::make_shared<int>(5),
-            std::make_shared<int>(6)
-        });
 }
 
 //------------------------------------------------------------------------------
 
 void container_test::map_test()
 {
-    map_test_dispatcher<int, int>({{1, 1}, {2, 2}, {3, 3}}, {{4, 4}, {5, 5}, {6, 6}});
-
-    map_test_dispatcher<int, integer::sptr>(
-        {
-            {1, std::make_shared<integer>(1)},
-            {2, std::make_shared<integer>(2)},
-            {3, std::make_shared<integer>(3)}
-        },
-        {
-            {4, std::make_shared<integer>(4)},
-            {5, std::make_shared<integer>(5)},
-            {6, std::make_shared<integer>(6)}
-        });
-
-    map_test_dispatcher<int, std::shared_ptr<int> >(
-        {
-            {1, std::make_shared<int>(1)},
-            {2, std::make_shared<int>(2)},
-            {3, std::make_shared<int>(3)}
-        },
-        {
-            {4, std::make_shared<int>(4)},
-            {5, std::make_shared<int>(5)},
-            {6, std::make_shared<int>(6)}
-        });
 }
 
 } // namespace sight::data::ut

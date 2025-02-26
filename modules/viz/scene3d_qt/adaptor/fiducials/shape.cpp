@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,68 +19,188 @@
  *
  ***********************************************************************/
 
-// cspell:ignore NOLINTNEXTLINE
-
 #include "shape.hpp"
 
-#include "core/runtime/path.hpp"
-
-#include "data/fiducials_series.hpp"
-#include "data/helper/fiducials_series.hpp"
-
 #include <core/com/slots.hxx>
-#include <core/tools/uuid.hpp>
+#include <core/compare.hpp>
 
-#include <data/boolean.hpp>
-#include <data/helper/medical_image.hpp>
-#include <data/image.hpp>
-#include <data/image_series.hpp>
 #include <data/material.hpp>
-#include <data/point_list.hpp>
 #include <data/tools/color.hpp>
 
-#include <io/opencv/image.hpp>
-
-#include <service/macros.hpp>
-
-#include <ui/__/cursor.hpp>
+#include <geometry/data/image.hpp>
 
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/utils.hpp>
-
-#include <modules/viz/scene3d_qt/window_interactor.hpp>
-
-#include <OgreEntity.h>
-#include <OgreNode.h>
-#include <OgreSceneNode.h>
 
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
 
 static constexpr std::uint8_t SHAPE_RQ_GROUP_ID = sight::viz::scene3d::rq::SURFACE_ID;
 
+struct shape::ogre_shape final
+{
+    struct element
+    {
+        sight::data::fiducials_series::point3 position {};
+        Ogre::SceneNode* const node {nullptr};
+        Ogre::ManualObject* const sphere {nullptr};
+        Ogre::ManualObject* const line {nullptr};
+        Ogre::ManualObject* const dashed_line {nullptr};
+    };
+
+    std::vector<element> elements;
+
+    Ogre::SceneManager* const scene_manager {nullptr};
+
+    ogre_shape(
+        Ogre::SceneManager* const _scene_manager,
+        const Ogre::ColourValue& _color,
+        float _sphere_radius,
+        const sight::data::fiducials_series::fiducial& _fiducial,
+        const std::string& _sphere_material_name,
+        const std::string& _line_material_name,
+        const std::string& _dashed_line_material_name,
+        bool _visible,
+        const std::string _adaptor_id,
+        std::uint32_t _query_flag,
+        bool _show_on_all_slices
+    ) :
+        scene_manager(_scene_manager)
+    {
+        auto* const root_node = scene_manager->getRootSceneNode();
+
+        // Iterate over point pairs
+        // Only construct the sphere for the first point and the line to the following one
+        // This will construct the whole contour
+        // No post iteration is required as: p[0] === p[p.size() - 1]
+
+        // We at least need 2 points
+        if(const auto size = _fiducial.contour_data.size() - 1;
+           size > 0 && _fiducial.shape_type == sight::data::fiducials_series::shape::shape)
+        {
+            elements.reserve(size);
+
+            for(std::size_t i = 0 ; i < size ; ++i)
+            {
+                const auto& p1 = _fiducial.contour_data[i];
+                const auto& p2 = _fiducial.contour_data[i + 1];
+
+                const Ogre::Vector3 v1(
+                    static_cast<float>(p1.x),
+                    static_cast<float>(p1.y),
+                    static_cast<float>(p1.z)
+                );
+
+                const Ogre::Vector3 v2(
+                    static_cast<float>(p2.x),
+                    static_cast<float>(p2.y),
+                    static_cast<float>(p2.z)
+                );
+
+                const auto id =
+                    [&](const std::string& _type)
+                    {
+                        return _adaptor_id + "_" + _type + std::to_string(i) + "_"
+                               + _fiducial.fiducial_identifier;
+                    };
+
+                // Create sphere.
+                auto* const sphere = scene_manager->createManualObject(id("sphere"));
+                SIGHT_ASSERT("Can't create the first entity", sphere);
+
+                sight::viz::scene3d::helper::manual_object::create_sphere(
+                    sphere,
+                    _sphere_material_name,
+                    _color,
+                    _sphere_radius
+                );
+
+                sphere->setQueryFlags(_query_flag);
+                // Render this sphere over all others objects.
+                sphere->setRenderQueueGroup(SHAPE_RQ_GROUP_ID);
+
+                Ogre::SceneNode* const node = root_node->createChildSceneNode(id("node"), v1);
+                SIGHT_ASSERT("Can't create the first node", node);
+                node->attachObject(sphere);
+
+                // Line.
+                auto* const line = scene_manager->createManualObject(id("line"));
+                SIGHT_ASSERT("Can't create the line", line);
+                line->begin(
+                    _line_material_name,
+                    Ogre::RenderOperation::OT_LINE_LIST,
+                    sight::viz::scene3d::RESOURCE_GROUP
+                );
+                line->colour(_color);
+                line->position(v1);
+                line->position(v2);
+                line->end();
+                line->setQueryFlags(0x0);
+                root_node->attachObject(line);
+
+                // Dashed line.
+                auto* const dashed_line = scene_manager->createManualObject(id("dashedLine"));
+                SIGHT_ASSERT("Can't create the dashed line", dashed_line);
+                dashed_line->begin(
+                    _dashed_line_material_name,
+                    Ogre::RenderOperation::OT_LINE_LIST,
+                    sight::viz::scene3d::RESOURCE_GROUP
+                );
+                dashed_line->colour(_color);
+                sight::viz::scene3d::helper::manual_object::draw_dashed_line(
+                    dashed_line,
+                    v1,
+                    v2,
+                    _sphere_radius,
+                    _sphere_radius,
+                    _color
+                );
+                dashed_line->end();
+                dashed_line->setQueryFlags(0x0);
+                // Render this line over all others objects.
+                dashed_line->setRenderQueueGroup(SHAPE_RQ_GROUP_ID);
+                root_node->attachObject(dashed_line);
+
+                // Set the visibility.
+                sphere->setVisible(_visible || _show_on_all_slices);
+                line->setVisible(_visible);
+                dashed_line->setVisible(!_visible && _show_on_all_slices);
+
+                elements.emplace_back(element {p1, node, sphere, line, dashed_line});
+            }
+        }
+    }
+
+    ~ogre_shape()
+    {
+        for(auto& element : elements)
+        {
+            scene_manager->destroySceneNode(element.node);
+            scene_manager->destroyManualObject(element.sphere);
+            scene_manager->destroyManualObject(element.line);
+            scene_manager->destroyManualObject(element.dashed_line);
+        }
+    }
+};
+
 //------------------------------------------------------------------------------
 
 shape::shape() noexcept
 {
-    new_slot(slots::REMOVE_ALL, &shape::remove_all, this);
-    new_slot(slots::REMOVE_SHAPES, &shape::remove_shapes, this);
     new_slot(slots::ACTIVATE_SHAPE_TOOL, &shape::activate_shape_tool, this);
-    new_slot(slots::UPDATE_MODIFIED_SHAPE, &shape::update_modified_shape, this);
-    new_slot(slots::RESTRICT_TO_CURRENT_SLICE, &shape::restrict_to_current_slice, this);
-
-    new_signal<signals::void_signal_t>(signals::DEACTIVATE_SHAPE_TOOL);
+    new_slot(private_slots::SHOW_ON_CURRENT_SLICE, &shape::show_on_current_slice, this);
 }
 
 //------------------------------------------------------------------------------
 
-service::connections_t shape::auto_connections() const
+sight::service::connections_t shape::auto_connections() const
 {
-    service::connections_t connections;
-    connections.push(s_IMAGE_INOUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    return connections;
+    return {
+        {s_IMAGE_INOUT, sight::data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE},
+        {s_IMAGE_INOUT, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG, private_slots::SHOW_ON_CURRENT_SLICE},
+        {s_IMAGE_INOUT, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG, private_slots::SHOW_ON_CURRENT_SLICE},
+    };
 }
 
 //------------------------------------------------------------------------------
@@ -91,6 +211,8 @@ void shape::configuring()
 
     const config_t config = this->get_config();
 
+    static const std::string s_ORIENTATION_CONFIG = CONFIG + "orientation";
+    static const std::string s_ALL_SLICES_CONFIG  = CONFIG + "show_on_all_slices";
     static const std::string s_FONT_SIZE_CONFIG   = CONFIG + "fontSize";
     static const std::string s_RADIUS_CONFIG      = CONFIG + "radius";
     static const std::string s_INTERACTIVE_CONFIG = CONFIG + "interactive";
@@ -99,34 +221,55 @@ void shape::configuring()
     static const std::string s_QUERY_FLAGS_CONFIG = CONFIG + "queryFlags";
     static const std::string s_COLOR_CONFIG       = CONFIG + "color";
 
-    m_font_size     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_font_size);
-    m_sphere_radius = config.get<float>(s_RADIUS_CONFIG, m_sphere_radius);
-    m_interactive   = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
-    m_priority      = config.get<int>(s_PRIORITY_CONFIG, m_priority);
-    m_config_color  = config.get<std::string>(s_COLOR_CONFIG, m_config_color);
+    m_show_on_all_slices = config.get<bool>(s_ALL_SLICES_CONFIG, m_show_on_all_slices);
+    m_font_size          = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_font_size);
+    m_sphere_radius      = config.get<float>(s_RADIUS_CONFIG, m_sphere_radius);
+    m_interactive        = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
+    m_priority           = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_color              = config.get<std::string>(s_COLOR_CONFIG, m_color);
 
-    std::string hexa_mask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
-    if(!hexa_mask.empty())
+    if(const auto& orientation = config.get_optional<std::string>(s_ORIENTATION_CONFIG); orientation)
     {
-        SIGHT_ASSERT(
-            "Hexadecimal values should start with '0x'"
-            "Given value : " + hexa_mask,
-            hexa_mask.length() > 2
-            && hexa_mask.substr(0, 2) == "0x"
-        );
-        m_query_mask = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
+        if(*orientation == "axial")
+        {
+            m_axis = axis_t::z_axis;
+        }
+        else if(*orientation == "frontal")
+        {
+            m_axis = axis_t::y_axis;
+        }
+        else if(*orientation == "sagittal")
+        {
+            m_axis = axis_t::x_axis;
+        }
+        else
+        {
+            SIGHT_ASSERT("Unknown orientation, allow values are `axial`, `frontal` and `sagittal`", false);
+        }
     }
 
-    hexa_mask = config.get<std::string>(s_QUERY_FLAGS_CONFIG, "");
-    if(!hexa_mask.empty())
+    if(const auto& hexa_mask = config.get_optional<std::string>(s_QUERY_MASK_CONFIG); hexa_mask)
     {
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
-            "Given value : " + hexa_mask,
-            hexa_mask.length() > 2
-            && hexa_mask.substr(0, 2) == "0x"
+            "Given value : " + *hexa_mask,
+            hexa_mask->length() > 2
+            && hexa_mask->substr(0, 2) == "0x"
         );
-        m_query_flag = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
+
+        m_query_mask = static_cast<std::uint32_t>(std::stoul(*hexa_mask, nullptr, 16));
+    }
+
+    if(const auto& hexa_flags = config.get_optional<std::string>(s_QUERY_FLAGS_CONFIG); hexa_flags)
+    {
+        SIGHT_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + *hexa_flags,
+            hexa_flags->length() > 2
+            && hexa_flags->substr(0, 2) == "0x"
+        );
+
+        m_query_flag = static_cast<std::uint32_t>(std::stoul(*hexa_flags, nullptr, 16));
     }
 }
 
@@ -134,37 +277,21 @@ void shape::configuring()
 
 void shape::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
     const sight::viz::scene3d::layer::sptr layer = this->layer();
 
-    m_sphere_material_name      = this->get_id() + "_sphereMaterialName";
-    m_line_material_name        = this->get_id() + "_lineMaterialName";
-    m_dashed_line_material_name = this->get_id() + "_dashedLineMaterialName";
+    m_sphere_material_name      = gen_id("_sphereMaterialName");
+    m_line_material_name        = gen_id("_lineMaterialName");
+    m_dashed_line_material_name = gen_id("_dashedLineMaterialName");
 
     // Create materials from our wrapper.
-    m_sphere_material = std::make_unique<sight::viz::scene3d::material>(
-        m_sphere_material_name,
-        sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    );
-    m_sphere_material->set_has_vertex_color(true);
-    m_sphere_material->update_shading_mode(data::material::shading_t::phong, layer->num_lights(), false, false);
-
-    m_line_material = std::make_unique<sight::viz::scene3d::material>(
-        m_line_material_name,
-        sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    );
-    m_line_material->set_has_vertex_color(true);
-    m_line_material->update_shading_mode(data::material::shading_t::ambient, layer->num_lights(), false, false);
-
-    m_dashed_line_material = std::make_unique<sight::viz::scene3d::material>(
-        m_dashed_line_material_name,
-        sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    );
-    m_dashed_line_material->set_has_vertex_color(true);
-    m_dashed_line_material->update_shading_mode(data::material::shading_t::ambient, layer->num_lights(), false, false);
+    // Sphere
+    m_sphere_material = std::make_unique<sight::viz::scene3d::material::standard>(m_sphere_material_name);
+    m_sphere_material->set_layout(data::mesh::attribute::point_normals | data::mesh::attribute::point_colors);
+    m_sphere_material->set_shading(sight::data::material::shading_t::phong, layer->num_lights(), false, false);
 
     // Retrieve the ogre material to change the depth check.
     const Ogre::MaterialPtr ogre_sphere_material = Ogre::MaterialManager::getSingleton().getByName(
@@ -178,6 +305,34 @@ void shape::starting()
     SIGHT_ASSERT("No pass found", sphere_pass);
     sphere_pass->setDepthCheckEnabled(false);
 
+    // Line
+    m_line_material = std::make_unique<sight::viz::scene3d::material::standard>(m_line_material_name);
+    m_line_material->set_layout(data::mesh::attribute::point_colors);
+    m_line_material->set_shading(sight::data::material::shading_t::ambient, layer->num_lights(), false, false);
+
+    // Retrieve the ogre material to change the depth check.
+    const Ogre::MaterialPtr ogre_line_material = Ogre::MaterialManager::getSingleton().getByName(
+        m_line_material_name,
+        sight::viz::scene3d::RESOURCE_GROUP
+    );
+    SIGHT_ASSERT("'" + m_line_material_name + "' does not exist.", ogre_line_material);
+    const Ogre::Technique* const line_tech = ogre_line_material->getTechnique(0);
+    SIGHT_ASSERT("No technique found", line_tech);
+    Ogre::Pass* const line_pass = line_tech->getPass(0);
+    SIGHT_ASSERT("No pass found", line_pass);
+    line_pass->setDepthCheckEnabled(false);
+
+    // Dashed line
+    m_dashed_line_material = std::make_unique<sight::viz::scene3d::material::standard>(m_dashed_line_material_name);
+    m_dashed_line_material->set_layout(data::mesh::attribute::point_colors);
+    m_dashed_line_material->set_shading(
+        sight::data::material::shading_t::ambient,
+        layer->num_lights(),
+        false,
+        false
+    );
+
+    // Retrieve the ogre material to change the depth check.
     const Ogre::MaterialPtr ogre_dashed_line_material = Ogre::MaterialManager::getSingleton().getByName(
         m_dashed_line_material_name,
         sight::viz::scene3d::RESOURCE_GROUP
@@ -195,7 +350,7 @@ void shape::starting()
         layer->add_interactor(interactor, m_priority);
     }
 
-    this->update_from_fiducials();
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -204,112 +359,80 @@ void shape::updating()
 {
     this->render_service()->make_current();
 
-    const sight::viz::scene3d::layer::csptr layer = this->layer();
+    // Destroy previous shapes
+    m_shapes.clear();
 
-    m_sphere_material->update_shading_mode(data::material::shading_t::phong, layer->num_lights(), false, false);
-    m_line_material->update_shading_mode(data::material::shading_t::ambient, layer->num_lights(), false, false);
-    m_dashed_line_material->update_shading_mode(data::material::shading_t::ambient, layer->num_lights(), false, false);
-}
+    // Save the fiducial sets
+    const auto& fiducial_sets = m_image.const_lock()->get_fiducials()->get_fiducial_sets();
 
-//------------------------------------------------------------------------------
-
-void shape::update_from_fiducials()
-{
-    while(!m_shapes.empty())
-    {
-        this->destroy_shape(m_shapes.begin()->first);
-    }
-
-    m_cached_fiducials.clear();
-
-    // First collect the point lists to be added (to prevent deadlocks on function calls)
-    {
-        const auto image = m_image.lock();
-
-        if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
+    // Get the color
+    const Ogre::ColourValue& default_color =
+        [this]
         {
-            auto fiducials = image_series->get_fiducials()->filter_fiducials(
-                data::fiducials_series::shape::shape
-            );
+            if(m_color.empty())
+            {
+                return sight::viz::scene3d::helper::scene::generate_color(m_color_index++);
+            }
 
-            std::copy(fiducials.begin(), fiducials.end(), std::back_inserter(m_cached_fiducials));
-        }
-    }
+            sight::ui::color_t color;
+            sight::data::tools::color::hexa_string_to_rgba(m_color, color);
 
-    for(const auto& fiducial : m_cached_fiducials)
-    {
-        std::string id = fiducial.fiducial_identifier;
-        if( /* Check that the distance hasn't been already inserted */
-            m_shapes.find(id) == m_shapes.end())
+            return Ogre::ColourValue(color.data());
+        }();
+
+    auto* const scene_manager = this->get_scene_manager();
+
+    m_shapes.reserve(fiducial_sets.size());
+
+    std::for_each(
+        fiducial_sets.cbegin(),
+        fiducial_sets.cend(),
+        [&](const auto& _fiducial_set)
         {
-            shape_data data;
-            m_shapes[id] = data;
+            const Ogre::ColourValue& color =
+                _fiducial_set.color
+                ? Ogre::ColourValue(
+                    (*_fiducial_set.color)[0],
+                    (*_fiducial_set.color)[1],
+                    (*_fiducial_set.color)[2],
+                    (*_fiducial_set.color)[3]
+                )
+                : default_color;
 
-            auto pl = sight::data::helper::fiducials_series::to_point_list(fiducial);
-            pl->set_id(id);
+            const float sphere_radius = _fiducial_set.size.value_or(m_sphere_radius) * (m_interactive ? 2.0F : 1.0F);
 
-            m_shapes[id].m_point_list = pl;
-        }
-    }
-}
+            const bool visible = _fiducial_set.visibility.value_or(this->visible());
 
-//------------------------------------------------------------------------------
+            std::vector<std::shared_ptr<ogre_shape> > shapes;
+            shapes.reserve(_fiducial_set.fiducial_sequence.size());
 
-void shape::restrict_to_current_slice()
-{
-    int slice_index = -1;
+            std::for_each(
+                _fiducial_set.fiducial_sequence.cbegin(),
+                _fiducial_set.fiducial_sequence.cend(),
+                [&](const auto& _fiducial)
+            {
+                auto ogre_shape = std::make_shared<shape::ogre_shape>(
+                    scene_manager,
+                    color,
+                    sphere_radius,
+                    _fiducial,
+                    m_sphere_material_name,
+                    m_line_material_name,
+                    m_dashed_line_material_name,
+                    visible,
+                    this->get_id(),
+                    m_query_flag,
+                    m_show_on_all_slices
+                );
 
-    std::vector<data::fiducials_series::fiducial> fiducials;
-    {
-        const auto image = m_image.lock();
-        if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
-        {
-            slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
-                                               *image_series,
-                                               sight::data::helper::medical_image::orientation_t::axial
-            ).value_or(-1));
-        }
+                shapes.emplace_back(ogre_shape);
+            });
 
-        if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
-        {
-            fiducials = image_series->get_fiducials()->filter_fiducials(
-                data::fiducials_series::shape::shape,
-                slice_index
-            );
-        }
-    }
+            m_shapes.emplace_back(shapes);
+        });
 
-    if(slice_index < 0)
-    {
-        SIGHT_ERROR("Invalid slice index. Cannot extract inferred data.");
-        return;
-    }
-
-    // Hide everything
-    for(const auto& cached_fiducial : m_cached_fiducials)
-    {
-        std::string id = cached_fiducial.fiducial_identifier;
-        this->create_mask(nullptr);
-        this->set_visible(id, false);
-    }
-
-    // Only show the current fiducials
-    for(const auto& fiducial : fiducials)
-    {
-        std::string id = fiducial.fiducial_identifier;
-
-        if(m_tool_activated)
-        {
-            this->create_shape(m_shapes[id].m_point_list);
-            this->set_visible(id, true);
-            this->create_mask(nullptr);
-        }
-        else
-        {
-            this->set_visible(id, false);
-            this->create_mask(m_shapes[id].m_point_list);
-        }
-    }
+    update_done();
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
@@ -318,9 +441,8 @@ void shape::stopping()
 {
     this->render_service()->make_current();
 
-    m_sphere_material.reset();
-    m_line_material.reset();
-    m_dashed_line_material.reset();
+    // Destroy all shapes
+    m_shapes.clear();
 
     if(m_interactive)
     {
@@ -328,667 +450,90 @@ void shape::stopping()
         this->layer()->remove_interactor(interactor);
     }
 
-    while(!m_shapes.empty())
-    {
-        this->destroy_shape(m_shapes.begin()->first);
-    }
-
-    m_eventFilter = nullptr;
+    adaptor::deinit();
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void shape::remove_all()
+void shape::set_visible(bool _visible)
 {
-    if(m_bin_button != nullptr)
+    if(!_visible)
     {
-        m_bin_button->hide();
-        delete m_bin_button;
-        m_bin_button = nullptr;
-    }
+        this->render_service()->make_current();
 
-    const auto image = m_image.lock();
-    if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
-    {
-        std::vector<data::fiducials_series::fiducial_set> fiducial_sets =
-            image_series->get_fiducials()->get_fiducial_sets();
-        for(auto it_fiducial_set = fiducial_sets.begin() ; it_fiducial_set != fiducial_sets.end() ; )
+        for(auto& shapes : m_shapes)
         {
-            for(auto it_fiducial = it_fiducial_set->fiducial_sequence.begin() ;
-                it_fiducial != it_fiducial_set->fiducial_sequence.end() ; )
+            for(auto& shape : shapes)
             {
-                if(it_fiducial->shape_type == data::fiducials_series::shape::shape)
+                for(auto& element : shape->elements)
                 {
-                    it_fiducial = it_fiducial_set->fiducial_sequence.erase(it_fiducial);
-                }
-                else
-                {
-                    ++it_fiducial;
+                    element.sphere->setVisible(false);
+                    element.line->setVisible(false);
+                    element.dashed_line->setVisible(false);
                 }
             }
-
-            if(it_fiducial_set->fiducial_sequence.empty())
-            {
-                it_fiducial_set = fiducial_sets.erase(it_fiducial_set);
-            }
-            else
-            {
-                ++it_fiducial_set;
-            }
-        }
-
-        image_series->get_fiducials()->set_fiducial_sets(fiducial_sets);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void shape::remove_shapes()
-{
-    this->render_service()->make_current();
-
-    const auto image = m_image.lock();
-
-    data::vector::sptr shape_vector;
-    if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
-    {
-        shape_vector = std::make_shared<data::vector>();
-        for(const data::fiducials_series::fiducial_set& fiducial_set :
-            image_series->get_fiducials()->get_fiducial_sets())
-        {
-            for(const data::fiducials_series::fiducial& fiducial : fiducial_set.fiducial_sequence)
-            {
-                if(fiducial.shape_type == data::fiducials_series::shape::shape)
-                {
-                    if(data::point_list::sptr pl = sight::data::helper::fiducials_series::to_point_list(fiducial))
-                    {
-                        shape_vector->push_back(pl);
-                    }
-                }
-            }
-        }
-    }
-
-    std::vector<core::tools::id::type> found_id;
-    if(shape_vector)
-    {
-        for(const auto& object : *shape_vector)
-        {
-            found_id.push_back(object->get_id());
         }
     }
     else
     {
-        while(!m_shapes.empty())
-        {
-            this->destroy_shape(m_shapes.begin()->first);
-        }
+        this->show_on_current_slice();
     }
-
-    std::vector<core::tools::id::type> current_id;
-    for(const auto& [id, _] : m_shapes)
-    {
-        current_id.push_back(id);
-    }
-
-    for(const core::tools::id::type& id : current_id)
-    {
-        if(std::find(found_id.begin(), found_id.end(), id) == found_id.end())
-        {
-            destroy_shape(id);
-        }
-    }
-
-    this->request_render();
-}
-
-//------------------------------------------------------------------------------
-
-void shape::set_visible(std::string _id, bool _visible)
-{
-    this->render_service()->make_current();
-
-    auto it_shape = m_shapes.find(_id);
-
-    if(it_shape != m_shapes.end())
-    {
-        const shape_data& data = it_shape->second;
-
-        for(std::size_t i = 0 ; i < data.m_spheres.size() ; i++)
-        {
-            data.m_spheres.at(i)->setVisible(_visible);
-            data.m_lines.at(i)->setVisible(_visible);
-            data.m_dashed_lines.at(i)->setVisible(_visible);
-        }
-    }
-
-    this->request_render();
-}
-
-//------------------------------------------------------------------------------
-
-void shape::set_visible(bool _visible)
-{
-    this->render_service()->make_current();
-
-    for(const auto& shape : m_shapes)
-    {
-        const shape_data& data = shape.second;
-
-        for(std::size_t i = 0 ; i < data.m_spheres.size() ; i++)
-        {
-            data.m_spheres.at(i)->setVisible(_visible);
-            data.m_lines.at(i)->setVisible(_visible);
-            data.m_dashed_lines.at(i)->setVisible(_visible);
-        }
-    }
-
-    m_visible = _visible;
-
-    this->request_render();
-}
-
-//------------------------------------------------------------------------------
-
-void shape::button_press_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/)
-{
-    /// No implemented interaction for editing shapes as of now
-}
-
-//------------------------------------------------------------------------------
-
-void shape::mouse_move_event(
-    mouse_button /*_button*/,
-    modifier /*_mods*/,
-    int /*_x*/,
-    int /*_y*/,
-    int /*_dx*/,
-    int /*_dy*/
-)
-{
-    /// No implemented interaction for editing shapes as of now
-}
-
-//------------------------------------------------------------------------------
-
-void shape::button_release_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/)
-{
-    /// No implemented interaction for editing shapes as of now
-}
-
-//------------------------------------------------------------------------------
-
-void shape::key_press_event(int /*_key*/, modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/)
-{
-    /// No implemented interaction for editing shapes as of now
-}
-
-//------------------------------------------------------------------------------
-
-void shape::wheel_event(modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/)
-{
-    /// No implemented interaction for editing shapes as of now
-}
-
-//------------------------------------------------------------------------------
-
-void shape::create_mask(data::point_list::sptr _pl)
-{
-    const auto image = m_image.const_lock();
-    auto mask        = m_mask.lock();
-
-    if(!image)
-    {
-        SIGHT_ERROR("Invalid image given when creating ellipse.");
-        return;
-    }
-
-    if(!mask)
-    {
-        SIGHT_ERROR("Invalid mask given when creating ellipse.");
-        return;
-    }
-
-    // Check if image dimensions has changed
-    if(mask->size()[0] != image->size()[0] || mask->size()[1] != image->size()[1])
-    {
-        auto size = image->size();
-        // Has to be set to 0 for the moveToCv to work
-        size[2] = 0;
-        mask->resize(size, image->type(), sight::data::image::pixel_format::rgba);
-
-        mask->set_origin(image->origin());
-        mask->set_spacing(image->spacing());
-        mask->set_window_width({1.});
-        mask->set_window_center({0.});
-    }
-
-    // Set the mask to 0
-    std::memset(mask->buffer(), 0, mask->size_in_bytes());
-
-    // If the input point list is empty we forward the currently empty mask
-    if(_pl == nullptr)
-    {
-        // Emit the image output signal
-        auto sig = mask->signal<sight::data::image::buffer_modified_signal_t>(
-            sight::data::image::BUFFER_MODIFIED_SIG
-        );
-        sig->async_emit();
-
-        return;
-    }
-
-    try
-    {
-        std::vector<cv::Point> contour;
-        const auto& points     = _pl->get_points();
-        const std::size_t size = points.size();
-
-        if(size > 5)
-        {
-            contour.reserve(size);
-            const auto& spacing = image->spacing();
-
-            for(const auto& point : points)
-            {
-                auto coord = point->get_coord();
-                coord[0] /= spacing[0];
-                coord[1] /= spacing[1];
-
-                contour.emplace_back(
-                    static_cast<int>(std::nearbyint(coord[0])),
-                    static_cast<int>(std::nearbyint(coord[1]))
-                );
-            }
-        }
-
-        std::optional<Ogre::ColourValue> colour = std::nullopt;
-        if(!m_config_color.empty())
-        {
-            std::array<unsigned char, 4> color_array {};
-            data::tools::color::hexa_string_to_rgba(m_config_color, color_array);
-            colour = Ogre::ColourValue(
-                static_cast<float>(color_array[0]) / 255.F,
-                static_cast<float>(color_array[1]) / 255.F,
-                static_cast<float>(color_array[2]) / 255.F
-            );
-        }
-
-        // If no color has been assigned, we generate one
-        if(!colour.has_value())
-        {
-            colour = sight::viz::scene3d::helper::scene::generate_color(m_color_index++);
-        }
-
-        if(!contour.empty())
-        {
-            cv::Mat output = sight::io::opencv::image::move_to_cv(mask.get_shared());
-
-            // Bounding ellipse
-            cv::RotatedRect min_ellipse = cv::fitEllipse(contour);
-            cv::ellipse(
-                output,
-                min_ellipse,
-                {
-                    static_cast<double>(colour->r * 255.),
-                    static_cast<double>(colour->g * 255.),
-                    static_cast<double>(colour->b * 255.),
-                    255.0
-                },
-                2
-            );
-
-            // Emit the image output signal
-            auto sig = mask->signal<sight::data::image::buffer_modified_signal_t>(
-                sight::data::image::BUFFER_MODIFIED_SIG
-            );
-            sig->async_emit();
-        }
-    }
-    catch(cv::Exception& e)
-    {
-        SIGHT_ERROR("OpenCV Exception caught: " << e.what());
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void shape::create_shape(data::point_list::sptr _pl)
-{
-    const core::tools::id::type id = _pl->get_id();
-
-    if(auto it = m_shapes.find(id); it != m_shapes.end() && !(it->second.m_nodes.empty()))
-    {
-        return;
-    }
-
-    this->render_service()->make_current();
-
-    Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
-    Ogre::SceneNode* const root_node    = scene_mgr->getRootSceneNode();
-
-    std::optional<Ogre::ColourValue> colour = std::nullopt;
-    if(!m_config_color.empty())
-    {
-        std::array<unsigned char, 4> color_array {};
-        data::tools::color::hexa_string_to_rgba(m_config_color, color_array);
-        colour = Ogre::ColourValue(
-            static_cast<float>(color_array[0]) / 255.F,
-            static_cast<float>(color_array[1]) / 255.F,
-            static_cast<float>(color_array[2]) / 255.F
-        );
-    }
-
-    // If no color has been assigned, we generate one
-    if(!colour.has_value())
-    {
-        colour = sight::viz::scene3d::helper::scene::generate_color(m_color_index++);
-    }
-
-    if(m_shapes.find(id) == m_shapes.end())
-    {
-        shape_data data;
-        m_shapes[id] = data;
-    }
-
-    m_shapes[id].m_point_list = _pl;
-
-    // Iterate over point pairs
-    // Only construct the sphere for the first point and the line to the following one
-    // This will construct the whole contour
-    // No post iteration is required as: p[0] === p[p.size() - 1]
-
-    // We at least need 2 points
-    if(_pl->get_points().size() > 1)
-    {
-        auto& points = _pl->get_points();
-        for(std::size_t i = 0 ; i < points.size() - 1 ; i++)
-        {
-            const std::array<double, 3> p1 = points.at(i)->get_coord();
-            const std::array<double, 3> p2 = points.at(i + 1)->get_coord();
-
-            const Ogre::Vector3 v1 = Ogre::Vector3(
-                static_cast<float>(p1[0]),
-                static_cast<float>(p1[1]),
-                static_cast<float>(p1[2])
-            );
-            const Ogre::Vector3 v2 = Ogre::Vector3(
-                static_cast<float>(p2[0]),
-                static_cast<float>(p2[1]),
-                static_cast<float>(p2[2])
-            );
-
-            // First sphere.
-            Ogre::ManualObject* const sphere1 = scene_mgr->createManualObject(
-                this->get_id() + "_sphere" + std::to_string(
-                    i
-                ) + "_" + id
-            );
-            sight::viz::scene3d::helper::manual_object::create_sphere(
-                sphere1,
-                m_sphere_material_name,
-                *colour,
-                m_sphere_radius
-            );
-
-            sphere1->setQueryFlags(m_query_flag);
-            // Render this sphere over all others objects.
-            sphere1->setRenderQueueGroup(SHAPE_RQ_GROUP_ID);
-            SIGHT_ASSERT("Can't create the first entity", sphere1);
-            Ogre::SceneNode* const node1 = root_node->createChildSceneNode(
-                this->get_id() + "_node" + std::to_string(
-                    i
-                ) + "_" + id,
-                v1
-            );
-            SIGHT_ASSERT("Can't create the first node", node1);
-            node1->attachObject(sphere1);
-
-            // Line.
-            Ogre::ManualObject* const line = scene_mgr->createManualObject(
-                this->get_id() + "_line" + std::to_string(
-                    i
-                ) + "_" + id
-            );
-            SIGHT_ASSERT("Can't create the line", line);
-            line->begin(m_line_material_name, Ogre::RenderOperation::OT_LINE_LIST, sight::viz::scene3d::RESOURCE_GROUP);
-            line->colour(*colour);
-            line->position(v1);
-            line->position(v2);
-            line->end();
-            line->setQueryFlags(0x0);
-            root_node->attachObject(line);
-
-            // Dashed line.
-            Ogre::ManualObject* const dashed_line = scene_mgr->createManualObject(
-                this->get_id() + "_dashedLine" + std::to_string(i) + "_" + id
-            );
-            SIGHT_ASSERT("Can't create the dashed line", dashed_line);
-            dashed_line->begin(
-                m_dashed_line_material_name,
-                Ogre::RenderOperation::OT_LINE_LIST,
-                sight::viz::scene3d::RESOURCE_GROUP
-            );
-            dashed_line->colour(*colour);
-            sight::viz::scene3d::helper::manual_object::draw_dashed_line(
-                dashed_line,
-                v1,
-                v2,
-                m_sphere_radius,
-                m_sphere_radius,
-                colour
-            );
-            dashed_line->end();
-            dashed_line->setQueryFlags(0x0);
-            // Render this line over all others objects.
-            dashed_line->setRenderQueueGroup(SHAPE_RQ_GROUP_ID);
-            root_node->attachObject(dashed_line);
-
-            // Set the visibility.
-            sphere1->setVisible(m_visible);
-            line->setVisible(m_visible);
-            dashed_line->setVisible(m_visible);
-
-            m_shapes[id].m_nodes.push_back(node1);
-            m_shapes[id].m_spheres.push_back(sphere1);
-            m_shapes[id].m_lines.push_back(line);
-            m_shapes[id].m_dashed_lines.push_back(dashed_line);
-        }
-    }
-
-    this->request_render();
-}
-
-//------------------------------------------------------------------------------
-
-void shape::update_image_fiducials(data::point_list::sptr _pl)
-{
-    const auto image = m_image.lock();
-    if(data::helper::medical_image::check_image_validity(image.get_shared()))
-    {
-        if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()); image_series)
-        {
-            data::fiducials_series::fiducial_set fiducial_set;
-            std::string frame_of_reference_uid = image_series->get_string_value(
-                data::dicom::attribute::Keyword::FrameOfReferenceUID
-            );
-            if(frame_of_reference_uid.empty())
-            {
-                // Generate a frame of reference UID if the image doesn't have one. It is supposed to be mandatory
-                // according
-                // to the DICOM standard anyway.
-                frame_of_reference_uid = core::tools::uuid::generate();
-                image_series->set_string_value(
-                    data::dicom::attribute::Keyword::FrameOfReferenceUID,
-                    frame_of_reference_uid
-                );
-            }
-
-            fiducial_set.frame_of_reference_uid = frame_of_reference_uid;
-            data::fiducials_series::fiducial fiducial;
-            fiducial.shape_type           = data::fiducials_series::shape::shape;
-            fiducial.fiducial_identifier  = _pl->get_id();
-            fiducial.fiducial_description = "Shape";
-            fiducial.fiducial_uid         = _pl->get_id();
-            std::array<double, 3> first_point  = _pl->get_points().front()->get_coord();
-            std::array<double, 3> second_point = _pl->get_points().back()->get_coord();
-            fiducial.contour_data = {
-                {.x = first_point[0], .y = first_point[1], .z = first_point[2]},
-                {.x = second_point[0], .y = second_point[1], .z = second_point[2]}
-            };
-            // If both ContourData and GraphicCoordinatesDataSequence are set, they must be synchronized, but I'm too
-            // lazy to do that, so I simply get rid of GraphicCoordinatesDataSequence.
-            fiducial.graphic_coordinates_data_sequence = std::nullopt;
-            fiducial_set.fiducial_sequence.push_back(fiducial);
-            image_series->get_fiducials()->append_fiducial_set(fiducial_set);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void shape::update_shape(
-    const shape_data* const /*_data*/,
-    Ogre::Vector3 /*_begin*/,
-    Ogre::Vector3 /*_end*/
-)
-{
-    /// No implemented interaction for editing shapes as of now
-}
-
-//------------------------------------------------------------------------------
-
-void shape::destroy_shape(core::tools::id::type _id)
-{
-    const auto it = m_shapes.find(_id);
-    SIGHT_ASSERT("The shape is not found", it != m_shapes.end());
-
-    // Destroy Ogre resource.
-    shape_data shape                    = it->second;
-    Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
-
-    for(auto& node : shape.m_nodes)
-    {
-        scene_mgr->destroySceneNode(node);
-    }
-
-    for(auto& sphere : shape.m_spheres)
-    {
-        scene_mgr->destroyManualObject(sphere);
-    }
-
-    for(auto& line : shape.m_lines)
-    {
-        scene_mgr->destroyManualObject(line);
-    }
-
-    for(auto& dashed_line : shape.m_dashed_lines)
-    {
-        scene_mgr->destroyManualObject(dashed_line);
-    }
-
-    // Remove it from the map.
-    m_shapes.erase(it);
 }
 
 //------------------------------------------------------------------------------
 
 void shape::activate_shape_tool(bool _activate)
 {
-    m_tool_activated = _activate;
-
-    this->restrict_to_current_slice();
+    m_interactive = _activate;
 }
 
 //------------------------------------------------------------------------------
 
-void shape::update_modified_shape(data::point_list::sptr _pl)
+void shape::show_on_current_slice()
 {
+    const auto image = m_image.const_lock();
+
+    // Get the current slice position
+    const auto slice_index = sight::data::helper::medical_image::get_slice_index(
+        *image,
+        m_axis
+    ).value_or(0);
+
     this->render_service()->make_current();
 
-    if(m_shapes.find(_pl->get_id()) == m_shapes.end())
+    for(auto& shapes : m_shapes)
     {
-        // create shape if it doesn't exist
-        this->create_shape(_pl);
-    }
-
-    /// No implemented interaction for editing shapes as of now
-
-    this->request_render();
-}
-
-//------------------------------------------------------------------------------
-
-void shape::set_cursor(QCursor _cursor)
-{
-    auto interactor     = layer()->render_service()->get_interactor_manager();
-    auto qt_interactor  = std::dynamic_pointer_cast<window_interactor>(interactor);
-    auto* parent_widget = qt_interactor->get_qt_widget();
-    parent_widget->setCursor(_cursor);
-}
-
-//------------------------------------------------------------------------------
-
-void shape::remove_shape(data::point_list::sptr _pl)
-{
-    const auto image = m_image.lock();
-    if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
-    {
-        std::vector<data::fiducials_series::fiducial_set> fiducial_sets =
-            image_series->get_fiducials()->get_fiducial_sets();
-        for(auto it_fiducial_set = fiducial_sets.begin() ; it_fiducial_set != fiducial_sets.end() ; )
+        for(auto& shape : shapes)
         {
-            for(auto it_fiducial = it_fiducial_set->fiducial_sequence.begin() ;
-                it_fiducial != it_fiducial_set->fiducial_sequence.end() ; )
+            for(auto& element : shape->elements)
             {
-                if(it_fiducial->shape_type == data::fiducials_series::shape::shape
-                   && it_fiducial->fiducial_uid == _pl->get_id())
-                {
-                    it_fiducial = it_fiducial_set->fiducial_sequence.erase(it_fiducial);
-                }
-                else
-                {
-                    ++it_fiducial;
-                }
-            }
+                const auto image_position = geometry::data::world_to_image(
+                    *image,
+                    {
+                        element.position.x,
+                        element.position.y,
+                        element.position.z
+                    },
+                    true
+                );
 
-            if(it_fiducial_set->fiducial_sequence.empty())
-            {
-                it_fiducial_set = fiducial_sets.erase(it_fiducial_set);
-            }
-            else
-            {
-                ++it_fiducial_set;
+                // Check if the element is on the current slice
+                const bool visible =
+                    m_axis == axis_t::z_axis
+                    ? image_position[axis_t::z_axis] == slice_index
+                    : m_axis == axis_t::y_axis
+                    ? image_position[axis_t::y_axis] == slice_index
+                    : image_position[axis_t::x_axis] == slice_index;
+
+                // Set the visibility
+                element.sphere->setVisible(visible || m_show_on_all_slices);
+                element.line->setVisible(visible);
+
+                // Show only the dashed line if we are not on the current slice
+                element.dashed_line->setVisible(!visible && m_show_on_all_slices);
             }
         }
-
-        image_series->get_fiducials()->set_fiducial_sets(fiducial_sets);
     }
 }
-
-shape::delete_bin_button_when_focus_out::delete_bin_button_when_focus_out(
-    shape* _shape
-) :
-    m_shape(_shape)
-{
-}
-
-//------------------------------------------------------------------------------
-
-bool shape::delete_bin_button_when_focus_out::eventFilter(QObject* /*o*/, QEvent* _e)
-{
-    if(m_shape->m_bin_button != nullptr && !m_shape->m_bin_button->hasFocus()
-       && (_e->type() == QEvent::FocusOut || _e->type() == QEvent::Resize))
-    {
-        m_shape->m_bin_button->hide();
-        delete m_shape->m_bin_button;
-        m_shape->m_bin_button = nullptr;
-        return true;
-    }
-
-    return false;
-}
-
-//------------------------------------------------------------------------------
 
 } // namespace sight::module::viz::scene3d_qt::adaptor::fiducials

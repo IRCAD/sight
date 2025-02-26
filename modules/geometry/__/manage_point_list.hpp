@@ -123,8 +123,8 @@ private:
 
     float m_tolerance {10.F};
 
-    data::ptr<data::matrix4, sight::data::access::in> m_transform {this, "matrix", false, true};
-    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "pointList", false};
+    data::ptr<data::matrix4, sight::data::access::in> m_transform {this, "matrix", true};
+    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "pointList"};
 };
 
 } // namespace sight::module::geometry

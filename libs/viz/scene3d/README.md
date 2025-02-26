@@ -49,8 +49,8 @@ Contains classes to deal with Ogre3d compositors.
 
 #### listener
 
-- **auto_stereo_compositor_listener**: implements `Ogre::MaterialManager::Listener`.
-- **ray_exit_depth_listener**: Listener used in mixed surface/volume rendering. Creates volume entry point computation techniques for meshes.
+- **auto_stereo**: implements `Ogre::MaterialManager::Listener`.
+- **ray_exit_depth**: Listener used in mixed surface/volume rendering. Creates volume entry point computation techniques for meshes.
 
 
 ### factory

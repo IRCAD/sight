@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,13 @@
  *
  ***********************************************************************/
 
+// cspell:ignore FFTWFFT
+
 #include "modules/filter/image/plugin.hpp"
+
+#if ITK_VERSION_MAJOR >= 5 && ITK_VERSION_MINOR >= 3 && defined(__unix__)
+#include <itkFFTWFFTImageFilterInitFactory.h>
+#endif
 
 namespace sight::module::filter::image
 {
@@ -38,6 +44,10 @@ plugin::~plugin() noexcept =
 
 void plugin::start()
 {
+#if ITK_VERSION_MAJOR >= 5 && ITK_VERSION_MINOR >= 3 && defined(__unix__)
+    auto factory = itk::FFTWFFTImageFilterInitFactory::New();
+    factory->RegisterFactories();
+#endif
 }
 
 //-----------------------------------------------------------------------------

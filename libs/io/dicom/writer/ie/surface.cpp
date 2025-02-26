@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -207,7 +207,10 @@ void write_segment_identification(
     if(!_registry.has_entry(_structure_type))
     {
         const std::string msg = "No match in segmented property registry for structure '" + _structure_type + "'";
-        SIGHT_WARN_IF(msg, !_logger);
+        SIGHT_WARN_IF(
+            msg,
+            !_logger
+        );
         if(_logger)
         {
             _logger->warning(msg);
@@ -241,7 +244,9 @@ void write_segment_identification(
         if(!anatomic_region_modifier.empty())
         {
             const auto coded_attributes =
-                io::dicom::helper::dicom_coded_attribute::convert_entry_to_gdcm_coded_attribute(anatomic_region_modifier);
+                io::dicom::helper::dicom_coded_attribute::convert_entry_to_gdcm_coded_attribute(
+                    anatomic_region_modifier
+                );
             if(!coded_attributes.empty())
             {
                 // One or more Items are permitted in this Sequence.

@@ -112,9 +112,9 @@ private:
     static constexpr std::string_view TRANSFORM_INPUT = "transform";
     static constexpr std::string_view IMAGE_INOUT     = "mask";
 
-    sight::data::ptr<sight::data::model_series, sight::data::access::in> m_meshes {this, MESHES_INPUT, true};
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT, true};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, TRANSFORM_INPUT, true, true};
+    sight::data::ptr<sight::data::model_series, sight::data::access::in> m_meshes {this, MESHES_INPUT};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, IMAGE_INPUT};
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, TRANSFORM_INPUT, true};
     sight::data::ptr<sight::data::image, sight::data::access::inout> m_extruded_image {this, IMAGE_INOUT};
 };
 

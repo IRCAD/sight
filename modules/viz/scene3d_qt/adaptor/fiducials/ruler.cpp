@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,72 +20,58 @@
  *
  ***********************************************************************/
 
-// cspell:ignore NOLINTNEXTLINE
-
 #include "ruler.hpp"
 
 #include "core/runtime/path.hpp"
 
-#include "data/fiducials_series.hpp"
-
 #include <core/com/slots.hxx>
 #include <core/tools/uuid.hpp>
 
-#include <data/boolean.hpp>
-#include <data/helper/fiducials_series.hpp>
-#include <data/helper/medical_image.hpp>
-#include <data/image.hpp>
-#include <data/image_series.hpp>
-#include <data/material.hpp>
-#include <data/point_list.hpp>
 #include <data/tools/color.hpp>
 
-#include <service/macros.hpp>
-
-#include <ui/__/cursor.hpp>
+#include <geometry/data/image.hpp>
 
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
-#include <viz/scene3d/utils.hpp>
 
 #include <modules/viz/scene3d_qt/window_interactor.hpp>
-
-#include <OgreEntity.h>
-#include <OgreNode.h>
-#include <OgreSceneNode.h>
 
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
 
-static constexpr std::uint8_t DISTANCE_RQ_GROUP_ID = sight::viz::scene3d::rq::SURFACE_ID;
+static constexpr std::uint8_t RULER_RQ_GROUP_ID = sight::viz::scene3d::rq::SURFACE_ID;
 
 //------------------------------------------------------------------------------
 
 ruler::ruler() noexcept
 {
     new_slot(slots::REMOVE_ALL, &ruler::remove_all, this);
-    new_slot(slots::REMOVE_DISTANCES, &ruler::remove_distances, this);
-    new_slot(slots::REMOVE_DISTANCES_FROM_CURRENT_SLICE, &ruler::remove_distances_from_current_slice, this);
-    new_slot(slots::UPDATE_VISIBILITY_FROM_FIELDS, &ruler::update_visibility_from_field, this);
-    new_slot(slots::ACTIVATE_DISTANCE_TOOL, &ruler::activate_distance_tool, this);
-    new_slot(slots::UPDATE_MODIFIED_DISTANCE, &ruler::update_modified_distance, this);
-    new_slot(slots::RESTRICT_TO_CURRENT_SLICE, &ruler::restrict_to_current_slice, this);
+    new_slot(slots::ACTIVATE_TOOL, &ruler::activate_tool, this);
+    new_slot(slots::REMOVE_FROM_CURRENT_SLICE, &ruler::remove_from_current_slice, this);
+    new_slot(private_slots::UPDATE_MODIFIED_RULER, &ruler::update_modified_ruler, this);
+    new_slot(private_slots::REMOVE_RULER_OGRE_SET, &ruler::remove_ruler_ogre_set, this);
+    new_slot(private_slots::DISPLAY_ON_CURRENT_SLICE, &ruler::display_on_current_slice, this);
 
-    new_signal<signals::void_signal_t>(signals::DEACTIVATE_DISTANCE_TOOL);
+    new_signal<signals::void_signal_t>(signals::TOOL_DEACTIVATED);
 }
 
 //------------------------------------------------------------------------------
 
-service::connections_t ruler::auto_connections() const
+sight::service::connections_t ruler::auto_connections() const
 {
-    service::connections_t connections;
-    connections.push(IMAGE_INOUT, data::image::DISTANCE_MODIFIED_SIG, slots::UPDATE_MODIFIED_DISTANCE);
-    connections.push(IMAGE_INOUT, data::image::DISTANCE_REMOVED_SIG, slots::REMOVE_DISTANCES);
-    connections.push(IMAGE_INOUT, data::image::DISTANCE_DISPLAYED_SIG, UPDATE_VISIBILITY_SLOT);
-    connections.push(IMAGE_INOUT, data::image::MODIFIED_SIG, service::slots::UPDATE);
-    return connections;
+    return {
+        {s_IMAGE_INOUT, sight::data::object::MODIFIED_SIG, sight::service::slots::UPDATE},
+        {s_IMAGE_INOUT, sight::data::image_series::RULER_MODIFIED_SIG, private_slots::UPDATE_MODIFIED_RULER},
+        {s_IMAGE_INOUT, sight::data::image_series::FIDUCIAL_REMOVED_SIG, private_slots::REMOVE_RULER_OGRE_SET},
+        {s_IMAGE_INOUT, sight::data::image_series::SLICE_INDEX_MODIFIED_SIG,
+         private_slots::DISPLAY_ON_CURRENT_SLICE
+        },
+        {s_IMAGE_INOUT, sight::data::image_series::SLICE_TYPE_MODIFIED_SIG,
+         private_slots::DISPLAY_ON_CURRENT_SLICE
+        },
+    };
 }
 
 //------------------------------------------------------------------------------
@@ -96,42 +82,64 @@ void ruler::configuring()
 
     const config_t config = this->get_config();
 
-    static const std::string s_FONT_SIZE_CONFIG   = CONFIG + "fontSize";
-    static const std::string s_RADIUS_CONFIG      = CONFIG + "radius";
-    static const std::string s_INTERACTIVE_CONFIG = CONFIG + "interactive";
-    static const std::string s_PRIORITY_CONFIG    = CONFIG + "priority";
-    static const std::string s_QUERY_MASK_CONFIG  = CONFIG + "queryMask";
-    static const std::string s_QUERY_FLAGS_CONFIG = CONFIG + "distanceQueryFlags";
-    static const std::string s_COLOR_CONFIG       = CONFIG + "color";
+    static const std::string s_ORIENTATION_CONFIG        = CONFIG + "orientation";
+    static const std::string s_FONT_SIZE_CONFIG          = CONFIG + "font_size";
+    static const std::string s_RADIUS_CONFIG             = CONFIG + "radius";
+    static const std::string s_INTERACTIVE_CONFIG        = CONFIG + "interactive";
+    static const std::string s_PRIORITY_CONFIG           = CONFIG + "priority";
+    static const std::string s_QUERY_MASK_CONFIG         = CONFIG + "query_mask";
+    static const std::string s_QUERY_FLAGS_CONFIG        = CONFIG + "query_flags";
+    static const std::string s_COLOR_CONFIG              = CONFIG + "color";
+    static const std::string s_ALWAYS_DISPLAY_ALL_CONFIG = CONFIG + "always_display_all";
 
-    m_font_size     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_font_size);
-    m_sphere_radius = config.get<float>(s_RADIUS_CONFIG, m_sphere_radius);
-    m_interactive   = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
-    m_priority      = config.get<int>(s_PRIORITY_CONFIG, m_priority);
-    m_config_color  = config.get<std::string>(s_COLOR_CONFIG, m_config_color);
+    m_font_size          = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_font_size);
+    m_sphere_radius      = config.get<float>(s_RADIUS_CONFIG, m_sphere_radius);
+    m_priority           = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_color              = config.get<std::string>(s_COLOR_CONFIG, m_color);
+    m_always_display_all = config.get<bool>(s_ALWAYS_DISPLAY_ALL_CONFIG, m_always_display_all);
 
-    std::string hexa_mask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
-    if(!hexa_mask.empty())
+    if(const auto& axis = config.get_optional<std::string>(s_ORIENTATION_CONFIG); axis)
     {
-        SIGHT_ASSERT(
-            "Hexadecimal values should start with '0x'"
-            "Given value : " + hexa_mask,
-            hexa_mask.length() > 2
-            && hexa_mask.substr(0, 2) == "0x"
-        );
-        m_query_mask = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
+        if(*axis == "axial")
+        {
+            m_axis = axis_t::z_axis;
+        }
+        else if(*axis == "frontal")
+        {
+            m_axis = axis_t::y_axis;
+        }
+        else if(*axis == "sagittal")
+        {
+            m_axis = axis_t::x_axis;
+        }
+        else
+        {
+            SIGHT_ASSERT("Unknown orientation, allow values are `axial`, `frontal` and `sagittal`", false);
+        }
     }
 
-    hexa_mask = config.get<std::string>(s_QUERY_FLAGS_CONFIG, "");
-    if(!hexa_mask.empty())
+    if(const auto& hexa_mask = config.get_optional<std::string>(s_QUERY_MASK_CONFIG); hexa_mask)
     {
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
-            "Given value : " + hexa_mask,
-            hexa_mask.length() > 2
-            && hexa_mask.substr(0, 2) == "0x"
+            "Given value : " + *hexa_mask,
+            hexa_mask->length() > 2
+            && hexa_mask->substr(0, 2) == "0x"
         );
-        m_distance_query_flag = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
+
+        m_query_mask = static_cast<std::uint32_t>(std::stoul(*hexa_mask, nullptr, 16));
+    }
+
+    if(const auto& hexa_flags = config.get_optional<std::string>(s_QUERY_FLAGS_CONFIG); hexa_flags)
+    {
+        SIGHT_ASSERT(
+            "Hexadecimal values should start with '0x'"
+            "Given value : " + *hexa_flags,
+            hexa_flags->length() > 2
+            && hexa_flags->substr(0, 2) == "0x"
+        );
+
+        m_query_flag = static_cast<std::uint32_t>(std::stoul(*hexa_flags, nullptr, 16));
     }
 }
 
@@ -139,37 +147,21 @@ void ruler::configuring()
 
 void ruler::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
     const sight::viz::scene3d::layer::sptr layer = this->layer();
 
-    m_sphere_material_name      = this->get_id() + "_sphereMaterialName";
-    m_line_material_name        = this->get_id() + "_lineMaterialName";
-    m_dashed_line_material_name = this->get_id() + "_dashedLineMaterialName";
+    m_sphere_material_name      = gen_id("_sphereMaterialName");
+    m_line_material_name        = gen_id("_lineMaterialName");
+    m_dashed_line_material_name = gen_id("_dashedLineMaterialName");
 
     // Create materials from our wrapper.
-    m_sphere_material = std::make_unique<sight::viz::scene3d::material>(
-        m_sphere_material_name,
-        sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    );
-    m_sphere_material->set_has_vertex_color(true);
-    m_sphere_material->update_shading_mode(data::material::shading_t::phong, layer->num_lights(), false, false);
-
-    m_line_material = std::make_unique<sight::viz::scene3d::material>(
-        m_line_material_name,
-        sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    );
-    m_line_material->set_has_vertex_color(true);
-    m_line_material->update_shading_mode(data::material::shading_t::ambient, layer->num_lights(), false, false);
-
-    m_dashed_line_material = std::make_unique<sight::viz::scene3d::material>(
-        m_dashed_line_material_name,
-        sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    );
-    m_dashed_line_material->set_has_vertex_color(true);
-    m_dashed_line_material->update_shading_mode(data::material::shading_t::ambient, layer->num_lights(), false, false);
+    // Sphere
+    m_sphere_material = std::make_unique<sight::viz::scene3d::material::standard>(m_sphere_material_name);
+    m_sphere_material->set_layout(data::mesh::attribute::point_normals | data::mesh::attribute::point_colors);
+    m_sphere_material->set_shading(sight::data::material::shading_t::phong, layer->num_lights(), false, false);
 
     // Retrieve the ogre material to change the depth check.
     const Ogre::MaterialPtr ogre_sphere_material = Ogre::MaterialManager::getSingleton().getByName(
@@ -183,6 +175,34 @@ void ruler::starting()
     SIGHT_ASSERT("No pass found", sphere_pass);
     sphere_pass->setDepthCheckEnabled(false);
 
+    // Line
+    m_line_material = std::make_unique<sight::viz::scene3d::material::standard>(m_line_material_name);
+    m_line_material->set_layout(data::mesh::attribute::point_colors);
+    m_line_material->set_shading(sight::data::material::shading_t::ambient, layer->num_lights(), false, false);
+
+    // Retrieve the ogre material to change the depth check.
+    const Ogre::MaterialPtr ogre_line_material = Ogre::MaterialManager::getSingleton().getByName(
+        m_line_material_name,
+        sight::viz::scene3d::RESOURCE_GROUP
+    );
+    SIGHT_ASSERT("'" + m_line_material_name + "' does not exist.", ogre_line_material);
+    const Ogre::Technique* const line_tech = ogre_line_material->getTechnique(0);
+    SIGHT_ASSERT("No technique found", line_tech);
+    Ogre::Pass* const line_pass = line_tech->getPass(0);
+    SIGHT_ASSERT("No pass found", line_pass);
+    line_pass->setDepthCheckEnabled(true);
+
+    // Dashed line
+    m_dashed_line_material = std::make_unique<sight::viz::scene3d::material::standard>(m_dashed_line_material_name);
+    m_dashed_line_material->set_layout(data::mesh::attribute::point_colors);
+    m_dashed_line_material->set_shading(
+        sight::data::material::shading_t::ambient,
+        layer->num_lights(),
+        false,
+        false
+    );
+
+    // Retrieve the ogre material to change the depth check.
     const Ogre::MaterialPtr ogre_dashed_line_material = Ogre::MaterialManager::getSingleton().getByName(
         m_dashed_line_material_name,
         sight::viz::scene3d::RESOURCE_GROUP
@@ -194,13 +214,8 @@ void ruler::starting()
     SIGHT_ASSERT("No pass found", dashed_pass);
     dashed_pass->setDepthCheckEnabled(false);
 
-    if(m_interactive)
-    {
-        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
-        layer->add_interactor(interactor, m_priority);
-    }
-
-    this->update_from_fiducials();
+    auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
+    layer->add_interactor(interactor, m_priority);
 }
 
 //------------------------------------------------------------------------------
@@ -211,112 +226,75 @@ void ruler::updating()
 
     const sight::viz::scene3d::layer::csptr layer = this->layer();
 
-    m_sphere_material->update_shading_mode(data::material::shading_t::phong, layer->num_lights(), false, false);
-    m_line_material->update_shading_mode(data::material::shading_t::ambient, layer->num_lights(), false, false);
-    m_dashed_line_material->update_shading_mode(data::material::shading_t::ambient, layer->num_lights(), false, false);
+    m_sphere_material->set_shading(data::material::shading_t::phong, layer->num_lights(), false, false);
+    m_line_material->set_shading(data::material::shading_t::ambient, layer->num_lights(), false, false);
+    m_dashed_line_material->set_shading(data::material::shading_t::ambient, layer->num_lights(), false, false);
 
-    // Make sure that if image has changed we remove old distances before adding new ones.
-    this->remove_distances();
-    this->update_from_fiducials();
-}
-
-//------------------------------------------------------------------------------
-
-void ruler::update_from_fiducials()
-{
-    std::vector<sight::data::point_list::sptr> plv;
-
-    m_cached_fiducials.clear();
-
-    // First collect the point lists to be added (to prevent deadlocks on function calls)
+    while(!m_ruler_ogre_sets.empty())
     {
-        const auto image = m_image.lock();
-
-        if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
-        {
-            auto fiducials = image_series->get_fiducials()->filter_fiducials(
-                data::fiducials_series::shape::ruler
-            );
-
-            std::copy(fiducials.begin(), fiducials.end(), std::back_inserter(m_cached_fiducials));
-        }
+        this->remove_ruler_ogre_set(m_ruler_ogre_sets[0].id);
     }
 
-    for(const auto& fiducial : m_cached_fiducials)
-    {
-        std::string id = fiducial.fiducial_uid.value_or("");
-        if( /* Check that the distance hasn't been already inserted */
-            m_distances.find(id) == m_distances.end())
+    const auto& fiducial_sets      = m_image.const_lock()->get_fiducials()->get_fiducial_sets();
+    std::size_t fiducial_set_index = 0;
+
+    std::for_each(
+        fiducial_sets.cbegin(),
+        fiducial_sets.cend(),
+        [&](const auto& _fiducial_set)
         {
-            plv.push_back(sight::data::helper::fiducials_series::to_point_list(fiducial));
-        }
-    }
-
-    // Then create the shapes from the point lists
-    for(auto& pl : plv)
-    {
-        this->create_distance(pl);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ruler::restrict_to_current_slice()
-{
-    const auto image = m_image.lock();
-    if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
-    {
-        const int slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
-                                                     *image_series,
-                                                     sight::data::helper::medical_image::orientation_t::axial
-        ).value_or(-1));
-
-        if(slice_index < 0)
-        {
-            SIGHT_ERROR("Invalid slice index. Cannot extract inferred data.");
-            return;
-        }
-
-        const auto& fiducial_sets = image_series->get_fiducials()->get_fiducial_sets();
-        for(const auto& fiducial_set : fiducial_sets)
-        {
-            for(std::size_t i = 0 ; i < fiducial_set.fiducial_sequence.size() ; i++)
+            std::for_each(
+                _fiducial_set.fiducial_sequence.cbegin(),
+                _fiducial_set.fiducial_sequence.cend(),
+                [&](const auto& _fiducial)
             {
-                // Filter by shape
-                bool shape_ok = false;
-                if(fiducial_set.fiducial_sequence[i].shape_type == data::fiducials_series::shape::ruler)
+                if(_fiducial.shape_type == data::fiducials_series::shape::ruler)
                 {
-                    shape_ok = true;
-                }
+                    // Get the generated or configured color
+                    const Ogre::ColourValue& default_color = this->get_default_color();
 
-                // Filter by referenced frame number (slice index)
-                bool referenced_frame_number_ok = false;
-                const auto& sequence            = fiducial_set.referenced_image_sequence;
-                if(sequence.has_value()
-                   && !sequence->empty()
-                   && !(sequence->at(i).referenced_frame_number.empty()))
-                {
-                    for(const auto& frame_number : sequence->at(i).referenced_frame_number)
+                    std::array<float, 4> color = {default_color[0], default_color[1], default_color[2], default_color[3]
+                    };
+
+                    if(_fiducial_set.color.has_value())
                     {
-                        if(frame_number == slice_index)
+                        color = _fiducial_set.color.value();
+                    }
+                    else
+                    {
+                        // When the fiducial_set has no registered colors.
+                        // This case occurs when fiducials are created outside of the adaptor and not manually.
+                        // Then we need to save the default color given by the adaptor in the associated fiducial_set.
+                        const auto image = m_image.lock();
+                        if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
                         {
-                            referenced_frame_number_ok = true;
+                            image_series->get_fiducials()->set_color(fiducial_set_index, color);
                         }
                     }
-                }
 
-                // Hide or show the fiducial according to current slice
-                if(shape_ok && referenced_frame_number_ok)
-                {
-                    this->set_visible(fiducial_set.fiducial_sequence[i].fiducial_uid.value_or(""), true);
+                    const float sphere_radius = _fiducial_set.size.value_or(m_sphere_radius)
+                                                * (m_interactive ? 2.0F : 1.0F);
+
+                    bool visible = m_always_display_all ? m_always_display_all : this->is_visible_on_current_slice(
+                        {_fiducial.contour_data[0].x, _fiducial.contour_data[0].y, _fiducial.contour_data[0].z
+                        },
+                        {_fiducial.contour_data[1].x, _fiducial.contour_data[1].y, _fiducial.contour_data[1].z
+                        });
+
+                    this->create_ruler_ogre_set(
+                        color,
+                        sphere_radius,
+                        _fiducial.fiducial_uid,
+                        {_fiducial.contour_data[0].x, _fiducial.contour_data[0].y, _fiducial.contour_data[0].z},
+                        {_fiducial.contour_data[1].x, _fiducial.contour_data[1].y, _fiducial.contour_data[1].z},
+                        m_visible && visible
+                    );
                 }
-                else
-                {
-                    this->set_visible(fiducial_set.fiducial_sequence[i].fiducial_uid.value_or(""), false);
-                }
-            }
-        }
-    }
+            });
+            fiducial_set_index++;
+        });
+
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
@@ -325,37 +303,330 @@ void ruler::stopping()
 {
     this->render_service()->make_current();
 
+    while(!m_ruler_ogre_sets.empty())
+    {
+        this->remove_ruler_ogre_set(m_ruler_ogre_sets[0].id);
+    }
+
     m_sphere_material.reset();
     m_line_material.reset();
     m_dashed_line_material.reset();
 
-    if(m_interactive)
-    {
-        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
-        this->layer()->remove_interactor(interactor);
-    }
-
-    while(!m_distances.empty())
-    {
-        this->destroy_distance(m_distances.begin()->first);
-    }
+    auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
+    this->layer()->remove_interactor(interactor);
 
     m_event_filter = nullptr;
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------
 
-void ruler::remove_all()
+void ruler::create_ruler_fiducial(
+    const std::array<float, 4> _color,
+    const std::optional<std::string> _id,
+    const std::array<double, 3> _begin,
+    const std::array<double, 3> _end
+)
 {
-    if(m_bin_button != nullptr)
+    const auto image = m_image.lock();
+    if(data::helper::medical_image::check_image_validity(image.get_shared()))
     {
-        m_bin_button->hide();
-        delete m_bin_button;
-        m_bin_button = nullptr;
+        if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
+        {
+            data::fiducials_series::fiducial_set fiducial_set;
+            std::string frame_of_reference_uid = image_series->get_string_value(
+                data::dicom::attribute::Keyword::FrameOfReferenceUID
+            );
+            if(frame_of_reference_uid.empty())
+            {
+                // Generate a frame of reference UID if the image doesn't have one. It is supposed to be mandatory
+                // according to the DICOM standard anyway.
+                frame_of_reference_uid = core::tools::uuid::generate();
+                image_series->set_string_value(
+                    data::dicom::attribute::Keyword::FrameOfReferenceUID,
+                    frame_of_reference_uid
+                );
+            }
+
+            fiducial_set.frame_of_reference_uid = frame_of_reference_uid;
+            data::fiducials_series::fiducial fiducial;
+            fiducial.shape_type           = data::fiducials_series::shape::ruler;
+            fiducial.fiducial_identifier  = sight::core::tools::uuid::generate();
+            fiducial.fiducial_description = "Ruler";
+            fiducial.fiducial_uid         = _id.value_or("");
+            fiducial.contour_data         = {
+                {.x                       = _begin[0], .y = _begin[1], .z = _begin[2]},
+                {.x                       = _end[0], .y = _end[1], .z = _end[2]}
+            };
+            // If both ContourData and GraphicCoordinatesDataSequence are set, they must be synchronized, but I'm too
+            // lazy to do that, so I simply get rid of GraphicCoordinatesDataSequence.
+            fiducial.graphic_coordinates_data_sequence = std::nullopt;
+            fiducial_set.fiducial_sequence.push_back(fiducial);
+
+            // Fill in the referenced_image with the slice index to easily retrieve fiducials associated to a specific
+            // slice.
+            sight::data::fiducials_series::referenced_image ri;
+            /// ReferencedSOPClassUID (0008,1150)
+            ri.referenced_sop_class_uid = image_series->get_sop_class_uid();
+            /// ReferencedSOPInstanceUID (0008,1155)
+            ri.referenced_sop_instance_uid = image_series->get_sop_instance_uid();
+
+            const int slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
+                                                         *image_series,
+                                                         sight::data::helper::medical_image::axis_t::axial
+            ).value_or(-1));
+
+            /// ReferencedFrameNumber (0008,1160)
+            ri.referenced_frame_number.push_back(static_cast<std::int32_t>(slice_index));
+            /// ReferencedSegmentNumber (0062,000B)
+            ri.referenced_segment_number.push_back(0);
+
+            fiducial_set.referenced_image_sequence = std::vector<sight::data::fiducials_series::referenced_image>();
+            fiducial_set.referenced_image_sequence->push_back(ri);
+            fiducial_set.color = _color;
+
+            image_series->get_fiducials()->append_fiducial_set(fiducial_set);
+        }
     }
 
-    const auto image                      = m_image.lock();
-    data::vector::sptr distance_list_copy = std::make_shared<data::vector>();
+    this->request_render();
+}
+
+//-----------------------------------------------------------------------------
+
+void ruler::create_ruler_ogre_set(
+    const std::array<float, 4> _color,
+    const float _sphere_radius,
+    const std::optional<std::string> _id,
+    const std::array<double, 3> _begin,
+    const std::array<double, 3> _end,
+    const bool _visible
+)
+{
+    auto* const root_node = this->get_scene_manager()->getRootSceneNode();
+    const auto color      = Ogre::ColourValue(_color[0], _color[1], _color[2], _color[3]);
+
+    const Ogre::Vector3 sphere1_pos(
+        static_cast<Ogre::Real>(_begin[0]),
+        static_cast<Ogre::Real>(_begin[1]),
+        static_cast<Ogre::Real>(_begin[2])
+    );
+
+    const Ogre::Vector3 sphere2_pos(
+        static_cast<Ogre::Real>(_end[0]),
+        static_cast<Ogre::Real>(_end[1]),
+        static_cast<Ogre::Real>(_end[2])
+    );
+
+    // In case the z coord is an integer, we should to set it a tiny bit behind.
+    // Otherwise the ogre line will flicker.
+    const auto begin_z_coord = std::trunc(_begin[2]) == _begin[2] ? _begin[2] - 0.001 : _begin[2];
+    const auto end_z_coord   = std::trunc(_end[2]) == _end[2] ? _end[2] - 0.001 : _end[2];
+
+    const Ogre::Vector3 line1_pos(
+        static_cast<Ogre::Real>(_begin[0]),
+        static_cast<Ogre::Real>(_begin[1]),
+        static_cast<Ogre::Real>(begin_z_coord)
+    );
+
+    const Ogre::Vector3 line2_pos(
+        static_cast<Ogre::Real>(_end[0]),
+        static_cast<Ogre::Real>(_end[1]),
+        static_cast<Ogre::Real>(end_z_coord)
+    );
+
+    const auto id =
+        [&](const std::string& _type)
+        {
+            return this->get_id() + "_" + _type + "_"
+                   + _id.value_or("");
+        };
+
+    // Create first sphere.
+    auto* const sphere1 = this->get_scene_manager()->createManualObject(id("sphere1"));
+    SIGHT_ASSERT("Can't create the first entity", sphere1);
+
+    sight::viz::scene3d::helper::manual_object::create_sphere(
+        sphere1,
+        m_sphere_material_name,
+        color,
+        _sphere_radius
+    );
+
+    sphere1->setQueryFlags(m_query_flag);
+    // Render this sphere over all others objects.
+    sphere1->setRenderQueueGroup(RULER_RQ_GROUP_ID);
+
+    Ogre::SceneNode* const node1 = root_node->createChildSceneNode(id("node1"), sphere1_pos);
+    SIGHT_ASSERT("Can't create the first node", node1);
+    node1->attachObject(sphere1);
+
+    // Create second sphere.
+    auto* const sphere2 = this->get_scene_manager()->createManualObject(id("sphere2"));
+    SIGHT_ASSERT("Can't create the second entity", sphere2);
+
+    sight::viz::scene3d::helper::manual_object::create_sphere(
+        sphere2,
+        m_sphere_material_name,
+        color,
+        _sphere_radius
+    );
+
+    sphere2->setQueryFlags(m_query_flag);
+    // Render this sphere over all others objects.
+    sphere2->setRenderQueueGroup(RULER_RQ_GROUP_ID);
+
+    Ogre::SceneNode* const node2 = root_node->createChildSceneNode(id("node2"), sphere2_pos);
+    SIGHT_ASSERT("Can't create the second node", node2);
+    node2->attachObject(sphere2);
+
+    // Line.
+    auto* const line = this->get_scene_manager()->createManualObject(id("line"));
+    SIGHT_ASSERT("Can't create the line", line);
+    line->begin(
+        m_line_material_name,
+        Ogre::RenderOperation::OT_LINE_LIST,
+        sight::viz::scene3d::RESOURCE_GROUP
+    );
+    line->colour(color);
+    line->position(line1_pos);
+    line->position(line2_pos);
+    line->end();
+    line->setQueryFlags(0x0);
+    root_node->attachObject(line);
+
+    // Dashed line.
+    auto* const dashed_line = this->get_scene_manager()->createManualObject(id("dashed_line"));
+    SIGHT_ASSERT("Can't create the dashed line", dashed_line);
+    dashed_line->begin(
+        m_dashed_line_material_name,
+        Ogre::RenderOperation::OT_LINE_LIST,
+        sight::viz::scene3d::RESOURCE_GROUP
+    );
+    dashed_line->colour(color);
+    dashed_line->position(line1_pos);
+    sight::viz::scene3d::helper::manual_object::draw_dashed_line(
+        dashed_line,
+        line1_pos,
+        line2_pos,
+        _sphere_radius,
+        _sphere_radius
+    );
+    dashed_line->end();
+    dashed_line->setQueryFlags(0x0);
+    // Render this line over all others objects.
+    dashed_line->setRenderQueueGroup(RULER_RQ_GROUP_ID);
+    root_node->attachObject(dashed_line);
+
+    // Label.
+    sight::viz::scene3d::text::sptr label = sight::viz::scene3d::text::make(this->layer());
+
+    // NOLINTNEXTLINE(readability-suspicious-call-argument)
+    const std::string length = sight::viz::scene3d::helper::scene::get_length(sphere1_pos, sphere2_pos);
+    label->set_text(length);
+    label->set_text_color(color);
+    label->set_font_size(m_font_size);
+    Ogre::SceneNode* const label_node = root_node->createChildSceneNode(id("label_node"), sphere2_pos);
+    SIGHT_ASSERT("Can't create the label node", label_node);
+    label->attach_to_node(label_node, this->layer()->get_default_camera());
+
+    // Set the visibility.
+    sphere1->setVisible(_visible);
+    sphere2->setVisible(_visible);
+    line->setVisible(_visible);
+    dashed_line->setVisible(_visible);
+    label->set_visible(_visible);
+    ruler::ruler_ogre_set created_ruler {_id, node1, sphere1, node2, sphere2, line, dashed_line, label_node, label};
+
+    m_ruler_ogre_sets.emplace_back(created_ruler);
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::activate_tool(const bool _activate)
+{
+    if(_activate)
+    {
+        m_tool_activated = true;
+        m_picked_ruler   = {nullptr, true};
+        m_interactive    = true;
+
+        set_cursor(Qt::CrossCursor);
+        auto interactor     = layer()->render_service()->get_interactor_manager();
+        auto qt_interactor  = std::dynamic_pointer_cast<window_interactor>(interactor);
+        auto* parent_widget = qt_interactor->get_qt_widget();
+        parent_widget->installEventFilter(m_event_filter.get());
+    }
+    else
+    {
+        m_tool_activated = false;
+        m_creation_mode  = false;
+        m_picked_ruler   = {nullptr, true};
+        m_interactive    = false;
+
+        auto interactor     = layer()->render_service()->get_interactor_manager();
+        auto qt_interactor  = std::dynamic_pointer_cast<window_interactor>(interactor);
+        auto* parent_widget = qt_interactor->get_qt_widget();
+        parent_widget->unsetCursor();
+
+        if(m_bin_button != nullptr)
+        {
+            m_bin_button->hide();
+            delete m_bin_button;
+            m_bin_button = nullptr;
+        }
+    }
+
+    // We need to redraw the rulers because the update of m_interactive affects the size of the rulers.
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::set_visible(bool _visible)
+{
+    m_visible = _visible;
+    if(!m_tool_activated)
+    {
+        this->activate_tool(false);
+    }
+    else if(m_visible)
+    {
+        this->activate_tool(true);
+    }
+    else
+    {
+        this->updating();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::remove_ruler_ogre_set(std::optional<std::string> _id)
+{
+    if(auto iter = std::ranges::find(m_ruler_ogre_sets, _id, &ruler_ogre_set::id); iter != m_ruler_ogre_sets.end())
+    {
+        iter->label->detach_from_node();
+        iter->label->set_visible(false);
+        iter->label.reset();
+        this->get_scene_manager()->destroySceneNode(iter->node1);
+        this->get_scene_manager()->destroyManualObject(iter->sphere1);
+        this->get_scene_manager()->destroySceneNode(iter->node2);
+        this->get_scene_manager()->destroyManualObject(iter->sphere2);
+        this->get_scene_manager()->destroyManualObject(iter->line);
+        this->get_scene_manager()->destroyManualObject(iter->dashed_line);
+        this->get_scene_manager()->destroySceneNode(iter->label_node);
+
+        m_ruler_ogre_sets.erase(iter);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::remove_ruler_fiducial(std::optional<std::string> _id)
+{
+    const auto image = m_image.lock();
     if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
     {
         std::vector<data::fiducials_series::fiducial_set> fiducial_sets =
@@ -365,9 +636,9 @@ void ruler::remove_all()
             for(auto it_fiducial = it_fiducial_set->fiducial_sequence.begin() ;
                 it_fiducial != it_fiducial_set->fiducial_sequence.end() ; )
             {
-                if(it_fiducial->shape_type == data::fiducials_series::shape::ruler)
+                if(it_fiducial->shape_type == data::fiducials_series::shape::ruler
+                   && it_fiducial->fiducial_uid == _id)
                 {
-                    distance_list_copy->push_back(sight::data::helper::fiducials_series::to_point_list(*it_fiducial));
                     it_fiducial = it_fiducial_set->fiducial_sequence.erase(it_fiducial);
                 }
                 else
@@ -388,89 +659,26 @@ void ruler::remove_all()
 
         image_series->get_fiducials()->set_fiducial_sets(fiducial_sets);
     }
-    else
-    {
-        data::vector::sptr distance_list = data::helper::medical_image::get_distances(*image);
-        distance_list_copy->shallow_copy(distance_list);
-        distance_list->clear();
-    }
 
-    for(const data::object::sptr& element : *distance_list_copy)
-    {
-        auto pl = std::dynamic_pointer_cast<data::point_list>(element);
-        SIGHT_ASSERT("All elements in distance image field must be point lists.", pl);
-        image->signal<data::image::distance_removed_signal_t>(data::image::DISTANCE_REMOVED_SIG)->async_emit(pl);
-    }
+    const auto sig = image->signal<data::image::fiducial_removed_signal_t>(
+        data::image::FIDUCIAL_REMOVED_SIG
+    );
+    sig->async_emit(_id);
 }
 
 //------------------------------------------------------------------------------
 
-void ruler::remove_distances()
+void ruler::remove_all()
 {
-    this->render_service()->make_current();
-
-    const auto image = m_image.lock();
-
-    data::vector::sptr distance_field;
-    if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
+    for(const auto& ruler : m_ruler_ogre_sets)
     {
-        distance_field = std::make_shared<data::vector>();
-        for(const data::fiducials_series::fiducial_set& fiducial_set :
-            image_series->get_fiducials()->get_fiducial_sets())
-        {
-            for(const data::fiducials_series::fiducial& fiducial : fiducial_set.fiducial_sequence)
-            {
-                if(fiducial.shape_type == data::fiducials_series::shape::ruler)
-                {
-                    if(data::point_list::sptr pl = sight::data::helper::fiducials_series::to_point_list(fiducial))
-                    {
-                        distance_field->push_back(pl);
-                    }
-                }
-            }
-        }
+        remove_ruler_fiducial(ruler.id);
     }
-    else
-    {
-        distance_field = data::helper::medical_image::get_distances(*image);
-    }
-
-    std::vector<core::tools::id::type> found_id;
-    if(distance_field)
-    {
-        for(const auto& object : *distance_field)
-        {
-            found_id.push_back(object->get_id());
-        }
-    }
-    else
-    {
-        while(!m_distances.empty())
-        {
-            this->destroy_distance(m_distances.begin()->first);
-        }
-    }
-
-    std::vector<core::tools::id::type> current_id;
-    for(const auto& [id, _] : m_distances)
-    {
-        current_id.push_back(id);
-    }
-
-    for(const core::tools::id::type& id : current_id)
-    {
-        if(std::find(found_id.begin(), found_id.end(), id) == found_id.end())
-        {
-            destroy_distance(id);
-        }
-    }
-
-    this->request_render();
 }
 
 //------------------------------------------------------------------------------
 
-void ruler::remove_distances_from_current_slice()
+void ruler::remove_from_current_slice()
 {
     if(m_bin_button != nullptr)
     {
@@ -479,111 +687,56 @@ void ruler::remove_distances_from_current_slice()
         m_bin_button = nullptr;
     }
 
-    data::vector::sptr distance_list_copy = std::make_shared<data::vector>();
-    {
-        const auto image = m_image.lock();
-        if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
-        {
-            const int slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
-                                                         *image_series,
-                                                         sight::data::helper::medical_image::orientation_t::axial
-            ).value_or(-1));
-
-            if(slice_index < 0)
-            {
-                SIGHT_ERROR("Invalid slice index. Cannot extract inferred data.");
-                return;
-            }
-
-            // Get ruler fiducials ruler on the current slice
-            const auto& s_fiducials = image_series->get_fiducials()->filter_fiducials(
-                data::fiducials_series::shape::ruler,
-                slice_index
-            );
-
-            if(!s_fiducials.empty())
-            {
-                for(const auto& sf : s_fiducials)
-                {
-                    distance_list_copy->push_back(sight::data::helper::fiducials_series::to_point_list(sf));
-                }
-            }
-        }
-        else
-        {
-            data::vector::sptr distance_list = data::helper::medical_image::get_distances(*image);
-            distance_list_copy->shallow_copy(distance_list);
-            distance_list->clear();
-        }
-    }
-
-    for(const data::object::sptr& element : *distance_list_copy)
-    {
-        auto pl = std::dynamic_pointer_cast<data::point_list>(element);
-        SIGHT_ASSERT("All elements in distance image field must be point lists.", pl);
-        remove_distance(pl);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ruler::update_visibility_from_field()
-{
-    const auto image = m_image.lock();
-
-    m_visible = data::helper::medical_image::get_distance_visibility(*image);
-
-    for(const auto& distance : m_distances)
-    {
-        const distance_data& data = distance.second;
-        data.m_sphere1->setVisible(m_visible);
-        data.m_sphere2->setVisible(m_visible);
-        data.m_line->setVisible(m_visible);
-        data.m_dashed_line->setVisible(m_visible);
-        data.m_label->set_visible(m_visible);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ruler::set_visible(std::string _id, bool _visible)
-{
     this->render_service()->make_current();
 
-    auto it_distance = m_distances.find(_id);
-
-    if(it_distance != m_distances.end())
+    for(auto& ruler : m_ruler_ogre_sets)
     {
-        const distance_data& data = it_distance->second;
-        data.m_sphere1->setVisible(_visible);
-        data.m_sphere2->setVisible(_visible);
-        data.m_line->setVisible(_visible);
-        data.m_dashed_line->setVisible(_visible);
-        data.m_label->set_visible(_visible);
-    }
+        const std::array<double, 3> begin = {ruler.node1->getPosition().x, ruler.node1->getPosition().y,
+                                             ruler.node1->getPosition().z
+        };
+        const std::array<double, 3> end = {ruler.node2->getPosition().x, ruler.node2->getPosition().y,
+                                           ruler.node2->getPosition().z
+        };
 
-    this->request_render();
+        if(this->is_visible_on_current_slice(begin, end))
+        {
+            this->remove_ruler_fiducial(ruler.id);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void ruler::set_visible(bool _visible)
+void ruler::display_on_current_slice()
 {
-    this->render_service()->make_current();
-
-    for(const auto& distance : m_distances)
+    if(m_bin_button != nullptr)
     {
-        const distance_data& data = distance.second;
-        data.m_sphere1->setVisible(_visible);
-        data.m_sphere2->setVisible(_visible);
-        data.m_line->setVisible(_visible);
-        data.m_dashed_line->setVisible(_visible);
-        data.m_label->set_visible(_visible);
+        m_bin_button->hide();
+        delete m_bin_button;
+        m_bin_button = nullptr;
     }
 
-    m_visible = _visible;
+    if(!m_always_display_all)
+    {
+        this->render_service()->make_current();
 
-    this->request_render();
+        for(auto& ruler : m_ruler_ogre_sets)
+        {
+            const std::array<double, 3> begin = {ruler.node1->getPosition().x, ruler.node1->getPosition().y,
+                                                 ruler.node1->getPosition().z
+            };
+            const std::array<double, 3> end = {ruler.node2->getPosition().x, ruler.node2->getPosition().y,
+                                               ruler.node2->getPosition().z
+            };
+            bool visible_on_current_slice = this->is_visible_on_current_slice(begin, end);
+
+            ruler.sphere1->setVisible(m_visible && visible_on_current_slice);
+            ruler.sphere2->setVisible(m_visible && visible_on_current_slice);
+            ruler.line->setVisible(m_visible && visible_on_current_slice);
+            ruler.label->set_visible(m_visible && visible_on_current_slice);
+            ruler.dashed_line->setVisible(m_visible && visible_on_current_slice);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -613,13 +766,13 @@ void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
         const Ogre::Ray ray = cam->getCameraToViewportRay(vp_x, vp_y);
 
         bool found                                 = false;
-        Ogre::RaySceneQuery* const ray_scene_query = scene_mgr->createRayQuery(ray, m_distance_query_flag);
+        Ogre::RaySceneQuery* const ray_scene_query = scene_mgr->createRayQuery(ray, m_query_flag);
         ray_scene_query->setSortByDistance(true);
         if(!ray_scene_query->execute().empty())
         {
             const Ogre::RaySceneQueryResult& query_result_vect = ray_scene_query->getLastResults();
 
-            // First iterate over the ManualObjects to try to find an already existing matching point
+            // First iterate over the ManualObjects to try to find an already existing matching point.
             for(std::size_t qr_idx = 0 ; qr_idx < query_result_vect.size() && !found ; qr_idx++)
             {
                 const Ogre::MovableObject* const object = query_result_vect[qr_idx].movable;
@@ -628,31 +781,31 @@ void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
                 if(object_type == "ManualObject" && object->isVisible())
                 {
                     const Ogre::Real scale = 1.15F;
-                    for(auto& distance : m_distances)
-                    {
-                        distance_data& distance_data = distance.second;
-                        if(distance_data.m_sphere1 == object)
-                        {
-                            distance_data.m_node1->setScale(scale, scale, scale);
-                            m_picked_data = {&distance_data, true};
-                            found         = true;
 
-                            set_cursor(Qt::ClosedHandCursor);
+                    for(auto& ruler : m_ruler_ogre_sets)
+                    {
+                        if(ruler.sphere1 == object)
+                        {
+                            ruler.node1->setScale(scale, scale, scale);
+                            m_picked_ruler = {&ruler, true};
+                            found          = true;
+
+                            this->set_cursor(Qt::ClosedHandCursor);
                         }
 
-                        if(distance_data.m_sphere2 == object)
+                        if(ruler.sphere2 == object)
                         {
-                            distance_data.m_node2->setScale(scale, scale, scale);
-                            m_picked_data = {&distance_data, false};
-                            found         = true;
+                            ruler.node2->setScale(scale, scale, scale);
+                            m_picked_ruler = {&ruler, false};
+                            found          = true;
 
-                            set_cursor(Qt::ClosedHandCursor);
+                            this->set_cursor(Qt::ClosedHandCursor);
                         }
                     }
                 }
             }
 
-            // Otherwise, we might have to create a new distance
+            // Otherwise, we might have to create a new ruler.
             if(!found)
             {
                 for(std::size_t qr_idx = 0 ; qr_idx < query_result_vect.size() && !found ; qr_idx++)
@@ -662,38 +815,44 @@ void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
 
                     if(object_type == "Entity" && object->isVisible())
                     {
-                        //First point
-                        auto first_point       = std::make_shared<data::point>();
+                        // First point
                         const auto pick_result = sight::viz::scene3d::utils::pick_object(
                             _x,
                             _y,
                             m_query_mask,
-                            *scene_mgr,
-                            true
+                            *scene_mgr
                         );
 
                         if(pick_result.has_value())
                         {
                             const auto clicked_position = pick_result->second;
-                            first_point->set_coord({clicked_position.x, clicked_position.y, clicked_position.z});
-                            //Second Point
-                            auto second_point = std::make_shared<data::point>();
-                            second_point->set_coord({clicked_position.x, clicked_position.y, clicked_position.z});
-                            m_points.push_back(first_point);
-                            m_points.push_back(second_point);
+                            const std::array<double,
+                                             3> position = {clicked_position.x, clicked_position.y, clicked_position.z
+                            };
+                            const auto ruler_fiducial_uid          = sight::core::tools::uuid::generate();
+                            const Ogre::ColourValue& default_color = this->get_default_color();
 
-                            //create_distance equal to 0, firstPoint = secondPoint
-                            auto point_list = std::make_shared<data::point_list>();
-                            point_list->set_points(m_points);
-                            this->create_distance(point_list);
-                            this->update_image_distance_field(point_list);
-                            auto& distance_data = m_distances[point_list->get_id()];
-                            m_picked_data = {&distance_data, false};
+                            this->create_ruler_fiducial(
+                                {default_color[0], default_color[1], default_color[2], default_color[3]},
+                                ruler_fiducial_uid,
+                                position,
+                                position
+                            );
 
-                            //remember that this is a creation.
+                            this->create_ruler_ogre_set(
+                                {default_color[0], default_color[1], default_color[2], default_color[3]},
+                                m_sphere_radius * (m_interactive ? 2.0F : 1.0F),
+                                ruler_fiducial_uid,
+                                position,
+                                position,
+                                m_visible
+                            );
+                            m_picked_ruler = {&m_ruler_ogre_sets[m_ruler_ogre_sets.size() - 1], true};
+
+                            // Remembers that we enter in a mode where we need to place the second point.
                             m_creation_mode = true;
 
-                            set_cursor(Qt::ClosedHandCursor);
+                            this->set_cursor(Qt::ClosedHandCursor);
 
                             break;
                         }
@@ -723,11 +882,11 @@ void ruler::mouse_move_event(
     {
         this->render_service()->make_current();
 
-        if(m_picked_data.m_data != nullptr)
+        if(m_picked_ruler.m_data != nullptr)
         {
-            // Discard the current distance to launch the ray over the scene without picking this one.
-            m_picked_data.m_data->m_sphere1->setQueryFlags(0x0);
-            m_picked_data.m_data->m_sphere2->setQueryFlags(0x0);
+            // Discard the current ruler to launch the ray over the scene without picking this one.
+            m_picked_ruler.m_data->sphere1->setQueryFlags(0x0);
+            m_picked_ruler.m_data->sphere2->setQueryFlags(0x0);
 
             const auto layer              = this->layer();
             const Ogre::Camera* const cam = layer->get_default_camera();
@@ -739,8 +898,8 @@ void ruler::mouse_move_event(
             if(cam->getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
             {
                 Ogre::SceneManager* const scene_mgr = layer->get_scene_manager();
-                // If something is picked, we will snap the landmark to it
-                auto picked_pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *scene_mgr, true);
+                // If something is picked, we will snap data to it.
+                auto picked_pos = sight::viz::scene3d::utils::pick_object(_x, _y, m_query_mask, *scene_mgr);
                 if(picked_pos.has_value())
                 {
                     new_pos              = picked_pos->second;
@@ -748,7 +907,7 @@ void ruler::mouse_move_event(
                 }
             }
 
-            // Else we move the distance along a plane.
+            // Else we move the ruler along a plane.
             if(move_in_camera_plane)
             {
                 const auto* const vp = cam->getViewport();
@@ -762,13 +921,14 @@ void ruler::mouse_move_event(
                 const Ogre::Vector3 direction = sight::viz::scene3d::helper::camera::get_cam_direction(cam);
 
                 Ogre::Vector3 position;
-                if(m_picked_data.m_first)
+                // Check if we already place the first point.
+                if(m_picked_ruler.m_first)
                 {
-                    position = m_picked_data.m_data->m_node1->getPosition();
+                    position = m_picked_ruler.m_data->node1->getPosition();
                 }
                 else
                 {
-                    position = m_picked_data.m_data->m_node2->getPosition();
+                    position = m_picked_ruler.m_data->node2->getPosition();
                 }
 
                 const Ogre::Plane plane(direction, position);
@@ -777,7 +937,7 @@ void ruler::mouse_move_event(
 
                 if(!hit.first)
                 {
-                    SIGHT_ERROR("The ray must intersect the plane")
+                    SIGHT_ERROR("The ray must intersect the plane");
                     return;
                 }
 
@@ -785,27 +945,43 @@ void ruler::mouse_move_event(
             }
 
             // Reset the query flag.
-            m_picked_data.m_data->m_sphere1->setQueryFlags(m_distance_query_flag);
-            m_picked_data.m_data->m_sphere2->setQueryFlags(m_distance_query_flag);
+            m_picked_ruler.m_data->sphere1->setQueryFlags(m_query_flag);
+            m_picked_ruler.m_data->sphere2->setQueryFlags(m_query_flag);
 
-            if(m_picked_data.m_first)
+            if(m_picked_ruler.m_first)
             {
-                const Ogre::Vector3 second_pos = m_picked_data.m_data->m_node2->getPosition();
-                this->update_distance(m_picked_data.m_data, new_pos, second_pos);
+                this->update_picked_ruler(
+                    m_picked_ruler.m_data,
+                    new_pos,
+                    m_picked_ruler.m_data->node2->getPosition()
+                );
             }
             else
             {
-                const Ogre::Vector3 first_pos = m_picked_data.m_data->m_node1->getPosition();
-                this->update_distance(m_picked_data.m_data, first_pos, new_pos);
+                this->update_picked_ruler(
+                    m_picked_ruler.m_data,
+                    m_picked_ruler.m_data->node1->getPosition(),
+                    new_pos
+                );
             }
 
             this->request_render();
 
             const auto image = m_image.lock();
-            const auto sig   = image->signal<data::image::distance_modified_signal_t>(
-                data::image::DISTANCE_MODIFIED_SIG
+            const auto& sig  = image->signal<sight::data::image_series::ruler_modified_signal_t>(
+                sight::data::image_series::RULER_MODIFIED_SIG
             );
-            sig->async_emit(m_picked_data.m_data->m_point_list);
+
+            sig->async_emit(
+                m_picked_ruler.m_data->id.value_or(
+                    ""
+                ),
+                {m_picked_ruler.m_data->node1->getPosition().x,
+                 m_picked_ruler.m_data->node1->getPosition().y, m_picked_ruler.m_data->node1->getPosition().z
+                },
+                {m_picked_ruler.m_data->node2->getPosition().x,
+                 m_picked_ruler.m_data->node2->getPosition().y, m_picked_ruler.m_data->node2->getPosition().z
+                });
         }
         else
         {
@@ -821,7 +997,7 @@ void ruler::mouse_move_event(
             const Ogre::Ray ray = cam->getCameraToViewportRay(vp_x, vp_y);
 
             bool found                                 = false;
-            Ogre::RaySceneQuery* const ray_scene_query = scene_mgr->createRayQuery(ray, m_distance_query_flag);
+            Ogre::RaySceneQuery* const ray_scene_query = scene_mgr->createRayQuery(ray, m_query_flag);
             ray_scene_query->setSortByDistance(true);
             if(!ray_scene_query->execute().empty())
             {
@@ -834,24 +1010,23 @@ void ruler::mouse_move_event(
 
                     if(object_type == "ManualObject" && object->isVisible())
                     {
-                        for(auto& distance : m_distances)
+                        for(auto& ruler : m_ruler_ogre_sets)
                         {
-                            distance_data& distance_data = distance.second;
-                            if(distance_data.m_sphere1 == object || distance_data.m_sphere2 == object)
+                            if(ruler.sphere1 == object || ruler.sphere2 == object)
                             {
-                                set_cursor(Qt::OpenHandCursor);
-                                m_is_over_distance = true;
-                                found              = true;
+                                this->set_cursor(Qt::OpenHandCursor);
+                                m_is_over_ruler = true;
+                                found           = true;
                                 break;
                             }
                         }
                     }
                 }
 
-                if(m_is_over_distance && !found)
+                if(m_is_over_ruler && !found)
                 {
-                    m_is_over_distance = false;
-                    set_cursor(Qt::CrossCursor);
+                    m_is_over_ruler = false;
+                    this->set_cursor(Qt::CrossCursor);
                 }
             }
         }
@@ -862,44 +1037,35 @@ void ruler::mouse_move_event(
 
 void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
-    if(_button == left && m_picked_data.m_data != nullptr)
+    if(_button == left && m_picked_ruler.m_data != nullptr)
     {
         const Ogre::Real scale = 1.F;
-        m_picked_data.m_data->m_node1->setScale(scale, scale, scale);
-        m_picked_data.m_data->m_node2->setScale(scale, scale, scale);
+        m_picked_ruler.m_data->node1->setScale(scale, scale, scale);
+        m_picked_ruler.m_data->node2->setScale(scale, scale, scale);
 
-        const auto pl                     = m_picked_data.m_data->m_point_list;
-        const std::array<double, 3> front = pl->get_points().front()->get_coord();
-        const std::array<double, 3> back  = pl->get_points().back()->get_coord();
+        const int length =
+            static_cast<int>(std::round(
+                                 (m_picked_ruler.m_data->node2->getPosition()
+                                  - m_picked_ruler.m_data->node1->getPosition()).length()
+            ));
 
-        const Ogre::Vector3 begin(static_cast<float>(front[0]),
-                                  static_cast<float>(front[1]),
-                                  static_cast<float>(front[2]));
-        const Ogre::Vector3 end(static_cast<float>(back[0]),
-                                static_cast<float>(back[1]),
-                                static_cast<float>(back[2]));
-
-        const int length = static_cast<int>(std::round((end - begin).length()));
-
-        // if it is in creation mode, and a distance is calculated, it is the second point of the distance.
-        // Finish the distance creation
+        // If it is in creation mode, and a distance is calculated, it is the second point of the ruler.
+        // Finish the ruler creation.
         if(m_creation_mode && length != 0)
         {
             m_creation_mode = false;
-            set_cursor(Qt::OpenHandCursor);
-            m_picked_data = {nullptr, true};
-            m_points.clear();
+            this->set_cursor(Qt::OpenHandCursor);
+
+            m_picked_ruler = {nullptr, true};
         }
-        //If it is not a creationMode, a distance null means that the distance should be removed
+        // If it is not a creation mode, a distance null means that the ruler should be removed.
         else if(!m_creation_mode)
         {
             if(length == 0)
             {
-                destroy_distance(pl->get_id());
-                remove_distance(pl);
-                set_cursor(Qt::CrossCursor);
-                m_picked_data = {nullptr, true};
-                m_points.clear();
+                this->set_cursor(Qt::CrossCursor);
+                this->remove_ruler_fiducial(m_picked_ruler.m_data->id);
+                m_picked_ruler = {nullptr, true};
             }
             else
             {
@@ -914,7 +1080,7 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                                                              ) / "trash.svg").string()
                     ));
                     m_bin_button = new QPushButton(s_TRASH_BIN_ICON, "", parent_widget);
-                    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
+                    const std::string service_id = base_id();
                     m_bin_button->setObjectName(QString::fromStdString(service_id) + "/binButton");
                     m_bin_button->setCursor(Qt::ArrowCursor);
                     m_bin_button->adjustSize();
@@ -932,7 +1098,7 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                     m_bin_button->setIconSize(m_bin_button->size());
                     m_bin_button->raise();
                     Ogre::SceneNode* node =
-                        m_picked_data.m_first ? m_picked_data.m_data->m_node1 : m_picked_data.m_data->m_node2;
+                        m_picked_ruler.m_first ? m_picked_ruler.m_data->node1 : m_picked_ruler.m_data->node2;
                     std::pair<Ogre::Vector2,
                               Ogre::Vector2> screen_pos = sight::viz::scene3d::helper::scene::compute_bounding_rect(
                         *layer()->get_default_camera(),
@@ -956,23 +1122,20 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                     QObject::connect(
                         m_bin_button,
                         &QPushButton::clicked,
-                        [this, pl = m_picked_data.m_data->m_point_list]
+                        [this, id = m_picked_ruler.m_data->id]
                         {
                             m_bin_button->hide();
-                            destroy_distance(pl->get_id());
-                            remove_distance(pl);
-                            set_cursor(Qt::CrossCursor);
-                            m_picked_data = {nullptr, true};
-                            m_points.clear();
+                            this->remove_ruler_fiducial(id);
+                            this->set_cursor(Qt::CrossCursor);
+                            m_picked_ruler = {nullptr, true};
 
                             delete m_bin_button;
                             m_bin_button = nullptr;
                         });
                 }
 
-                set_cursor(Qt::OpenHandCursor);
-                m_picked_data = {nullptr, true};
-                m_points.clear();
+                this->set_cursor(Qt::OpenHandCursor);
+                m_picked_ruler = {nullptr, true};
             }
         }
 
@@ -980,318 +1143,60 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
     }
     else if(_button == right)
     {
-        // right button in creation mode destroys the created distance
+        // Right button in creation mode destroys the created ruler.
         if(m_creation_mode)
         {
             m_creation_mode = false;
-            const auto pl = m_picked_data.m_data->m_point_list;
-            destroy_distance(pl->get_id());
-            remove_distance(pl);
-            set_cursor(Qt::CrossCursor);
-            m_picked_data = {nullptr, true};
-            m_points.clear();
+            this->set_cursor(Qt::CrossCursor);
+            const auto id = m_picked_ruler.m_data->id;
+            this->remove_ruler_fiducial(id);
+            m_picked_ruler = {nullptr, true};
         }
-        //right button other than in creation mode goes out of the add distance mode
+        // Right button other than in creation mode goes out of the add ruler mode.
         else
         {
-            activate_distance_tool(false);
-            this->signal<signals::void_signal_t>(signals::DEACTIVATE_DISTANCE_TOOL)->async_emit();
+            this->activate_tool(false);
+            this->signal<signals::void_signal_t>(signals::TOOL_DEACTIVATED)->async_emit();
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ruler::key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/)
+void ruler::update_picked_ruler(ruler_ogre_set* _ruler_to_update, Ogre::Vector3 _begin, Ogre::Vector3 _end)
 {
-    if(m_tool_activated && _key == Qt::Key_Escape)
-    {
-        activate_distance_tool(false);
-        this->signal<signals::void_signal_t>(signals::DEACTIVATE_DISTANCE_TOOL)->async_emit();
-    }
-}
+    SIGHT_ASSERT("Ogre ruler elements can't be null", _ruler_to_update);
 
-//------------------------------------------------------------------------------
+    _ruler_to_update->node1->setPosition(_begin);
+    _ruler_to_update->node2->setPosition(_end);
 
-void ruler::wheel_event(modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/)
-{
-    if(m_bin_button != nullptr)
-    {
-        m_bin_button->hide();
-        delete m_bin_button;
-        m_bin_button = nullptr;
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ruler::create_distance(data::point_list::sptr& _pl)
-{
-    const core::tools::id::type id = _pl->get_id();
-    SIGHT_ASSERT("The distance already exist", m_distances.find(id) == m_distances.end());
-
-    Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
-    Ogre::SceneNode* const root_node    = scene_mgr->getRootSceneNode();
-
-    std::optional<Ogre::ColourValue> colour = std::nullopt;
-    if(!m_config_color.empty())
-    {
-        std::array<unsigned char, 4> color_array {};
-        data::tools::color::hexa_string_to_rgba(m_config_color, color_array);
-        colour = Ogre::ColourValue(
-            static_cast<float>(color_array[0]) / 255.F,
-            static_cast<float>(color_array[1]) / 255.F,
-            static_cast<float>(color_array[2]) / 255.F
-        );
-    }
-
-    // If no color has been assigned, we generate one
-    if(!colour.has_value())
-    {
-        colour = sight::viz::scene3d::helper::scene::generate_color(m_color_index++);
-    }
-
-    const std::array<double, 3> front = _pl->get_points().front()->get_coord();
-    const std::array<double, 3> back  = _pl->get_points().back()->get_coord();
-
-    const Ogre::Vector3 begin = Ogre::Vector3(
-        static_cast<float>(front[0]),
-        static_cast<float>(front[1]),
-        static_cast<float>(front[2])
-    );
-    const Ogre::Vector3 end = Ogre::Vector3(
-        static_cast<float>(back[0]),
-        static_cast<float>(back[1]),
-        static_cast<float>(back[2])
-    );
-
-    // First sphere.
-    Ogre::ManualObject* const sphere1 = scene_mgr->createManualObject(this->get_id() + "_sphere1_" + id);
-    sight::viz::scene3d::helper::manual_object::create_sphere(
-        sphere1,
-        m_sphere_material_name,
-        *colour,
-        m_sphere_radius
-    );
-    sphere1->setQueryFlags(m_distance_query_flag);
-    // Render this sphere over all others objects.
-    sphere1->setRenderQueueGroup(DISTANCE_RQ_GROUP_ID);
-    SIGHT_ASSERT("Can't create the first entity", sphere1);
-    Ogre::SceneNode* const node1 = root_node->createChildSceneNode(this->get_id() + "_node1_" + id, begin);
-    SIGHT_ASSERT("Can't create the first node", node1);
-    node1->attachObject(sphere1);
-
-    // Second sphere.
-    Ogre::ManualObject* const sphere2 = scene_mgr->createManualObject(this->get_id() + "_sphere2_" + id);
-    sight::viz::scene3d::helper::manual_object::create_sphere(
-        sphere2,
-        m_sphere_material_name,
-        *colour,
-        m_sphere_radius
-    );
-    sphere2->setQueryFlags(m_distance_query_flag);
-    // Render this sphere over all others objects.
-    sphere2->setRenderQueueGroup(DISTANCE_RQ_GROUP_ID);
-    SIGHT_ASSERT("Can't create the second entity", sphere2);
-    Ogre::SceneNode* const node2 = root_node->createChildSceneNode(this->get_id() + "_node2_" + id, end);
-    SIGHT_ASSERT("Can't create the second node", node2);
-    node2->attachObject(sphere2);
-
-    // Line.
-    Ogre::ManualObject* const line = scene_mgr->createManualObject(this->get_id() + "_line_" + id);
-    SIGHT_ASSERT("Can't create the line", line);
-    line->begin(m_line_material_name, Ogre::RenderOperation::OT_LINE_LIST, sight::viz::scene3d::RESOURCE_GROUP);
-    line->colour(*colour);
-    line->position(begin);
-    line->position(end);
-    line->end();
-    line->setQueryFlags(0x0);
-    root_node->attachObject(line);
-
-    // Dashed line.
-    Ogre::ManualObject* const dashed_line = scene_mgr->createManualObject(this->get_id() + "_dashedLine_" + id);
-    // FIXME Currently breaking the usage of rulers
-    // SIGHT_ASSERT("Can't create the dashed line", dashed_line);
-    // dashed_line->begin(
-    //     m_dashed_line_material_name,
-    //     Ogre::RenderOperation::OT_LINE_LIST,
-    //     sight::viz::scene3d::RESOURCE_GROUP
-    // );
-    // sight::viz::scene3d::helper::manual_object::draw_dashed_line(
-    //     dashed_line,
-    //     begin,
-    //     end,
-    //     m_sphere_radius * m_spacing.x * 2.0F,
-    //     m_sphere_radius * m_spacing.x * 1.5F,
-    //     colour
-    // );
-    // dashed_line->end();
-    dashed_line->setQueryFlags(0x0);
-    // Render this line over all others objects.
-    dashed_line->setRenderQueueGroup(DISTANCE_RQ_GROUP_ID);
-    root_node->attachObject(dashed_line);
-
-    // Label.
-    const sight::viz::scene3d::layer::sptr layer = this->layer();
-
-    sight::viz::scene3d::text::sptr label = sight::viz::scene3d::text::make(layer);
-
-    // NOLINTNEXTLINE(readability-suspicious-call-argument)
-    const std::string length = sight::viz::scene3d::helper::scene::get_length(begin, end);
-    label->set_text(length);
-    label->set_text_color(*colour);
-    label->set_font_size(m_font_size);
-    Ogre::SceneNode* const label_node = root_node->createChildSceneNode(this->get_id() + "_labelNode_" + id, end);
-    SIGHT_ASSERT("Can't create the label node", label_node);
-    label->attach_to_node(label_node, this->layer()->get_default_camera());
-
-    // Set the visibility.
-    sphere1->setVisible(m_visible);
-    sphere2->setVisible(m_visible);
-    line->setVisible(m_visible);
-    dashed_line->setVisible(m_visible);
-    label->set_visible(m_visible);
-
-    // Store data in the map.
-    const distance_data data {_pl, node1, sphere1, node2, sphere2, line, dashed_line, label_node, label};
-    m_distances[id] = data;
-}
-
-//------------------------------------------------------------------------------
-
-void ruler::update_image_distance_field(data::point_list::sptr _pl)
-{
-    const auto image = m_image.lock();
-    if(data::helper::medical_image::check_image_validity(image.get_shared()))
-    {
-        if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
-        {
-            data::fiducials_series::fiducial_set fiducial_set;
-            std::string frame_of_reference_uid = image_series->get_string_value(
-                data::dicom::attribute::Keyword::FrameOfReferenceUID
-            );
-            if(frame_of_reference_uid.empty())
-            {
-                // Generate a frame of reference UID if the image doesn't have one. It is supposed to be mandatory
-                // according
-                // to the DICOM standard anyway.
-                frame_of_reference_uid = core::tools::uuid::generate();
-                image_series->set_string_value(
-                    data::dicom::attribute::Keyword::FrameOfReferenceUID,
-                    frame_of_reference_uid
-                );
-            }
-
-            fiducial_set.frame_of_reference_uid = frame_of_reference_uid;
-            data::fiducials_series::fiducial fiducial;
-            fiducial.shape_type           = data::fiducials_series::shape::ruler;
-            fiducial.fiducial_identifier  = _pl->get_id();
-            fiducial.fiducial_description = "Distance";
-            fiducial.fiducial_uid         = _pl->get_id();
-            std::array<double, 3> first_point  = _pl->get_points().front()->get_coord();
-            std::array<double, 3> second_point = _pl->get_points().back()->get_coord();
-            fiducial.contour_data = {
-                {.x = first_point[0], .y = first_point[1], .z = first_point[2]},
-                {.x = second_point[0], .y = first_point[1], .z = first_point[2]}
-            };
-            // If both ContourData and GraphicCoordinatesDataSequence are set, they must be synchronized, but I'm too
-            // lazy to do that, so I simply get rid of GraphicCoordinatesDataSequence.
-            fiducial.graphic_coordinates_data_sequence = std::nullopt;
-            fiducial_set.fiducial_sequence.push_back(fiducial);
-
-            // Fill in the referenced_image with the slice index to easily retrieve fiducials related to a specific
-            // slice.
-            sight::data::fiducials_series::referenced_image ri;
-            /// ReferencedSOPClassUID (0008,1150)
-            ri.referenced_sop_class_uid = image_series->get_sop_class_uid();
-            /// ReferencedSOPInstanceUID (0008,1155)
-            ri.referenced_sop_instance_uid = image_series->get_sop_instance_uid();
-
-            const int slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
-                                                         *image_series,
-                                                         sight::data::helper::medical_image::orientation_t::axial
-            ).value_or(-1));
-
-            /// ReferencedFrameNumber (0008,1160)
-            ri.referenced_frame_number.push_back(static_cast<std::int32_t>(slice_index));
-            /// ReferencedSegmentNumber (0062,000B)
-            ri.referenced_segment_number.push_back(0);
-
-            fiducial_set.referenced_image_sequence = std::vector<sight::data::fiducials_series::referenced_image>();
-            fiducial_set.referenced_image_sequence->push_back(ri);
-
-            image_series->get_fiducials()->append_fiducial_set(fiducial_set);
-        }
-        else
-        {
-            data::vector::sptr distances_field = data::helper::medical_image::get_distances(*image);
-
-            if(!distances_field)
-            {
-                distances_field = std::make_shared<data::vector>();
-                distances_field->push_back(_pl);
-                data::helper::medical_image::set_distances(*image, distances_field);
-            }
-            else
-            {
-                distances_field->push_back(_pl);
-                data::helper::medical_image::set_distances(*image, distances_field);
-            }
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ruler::update_distance(
-    const distance_data* const _data,
-    Ogre::Vector3 _begin,
-    Ogre::Vector3 _end
-)
-{
-    SIGHT_ASSERT("Distance can't be null", _data);
-
-    // Update spheres position.
-    _data->m_node1->setPosition(_begin);
-    _data->m_node2->setPosition(_end);
-
-    // Update the line.
-    Ogre::ManualObject* const line = _data->m_line;
+    Ogre::ManualObject* const line = _ruler_to_update->line;
     line->beginUpdate(0);
     line->position(_begin);
     line->position(_end);
     line->end();
 
-    // Update the label.
+    Ogre::ManualObject* const dashed_line = _ruler_to_update->dashed_line;
+    dashed_line->beginUpdate(0);
+    sight::viz::scene3d::helper::manual_object::draw_dashed_line(
+        dashed_line,
+        _begin,
+        _end,
+        m_sphere_radius * (m_interactive ? 2.0F : 1.0F),
+        m_sphere_radius * (m_interactive ? 2.0F : 1.0F)
+    );
+    dashed_line->end();
 
-    // NOLINTNEXTLINE(readability-suspicious-call-argument)
     const std::string length = sight::viz::scene3d::helper::scene::get_length(_begin, _end);
-    _data->m_label->set_text(length);
-    _data->m_label_node->setPosition(_end);
-
-    // FIXME Currently breaking the usage of rulers
-    // Update the dashed line
-    // Ogre::ManualObject* const dashed_line = _data->m_dashed_line;
-    // dashed_line->beginUpdate(0);
-    // sight::viz::scene3d::helper::manual_object::draw_dashed_line(
-    //     dashed_line,
-    //     _begin,
-    //     _end,
-    //     m_sphere_radius * m_spacing.x * 2.0F,
-    //     m_sphere_radius * m_spacing.x * 1.5F
-    // );
-    // dashed_line->end();
-
-    // Update the field data.
-    const data::mt::locked_ptr lock(_data->m_point_list);
-    _data->m_point_list->get_points().front()->set_coord({_begin[0], _begin[1], _begin[2]});
-    _data->m_point_list->get_points().back()->set_coord({_end[0], _end[1], _end[2]});
+    _ruler_to_update->label->set_text(length);
+    _ruler_to_update->label_node->setPosition(_end);
 
     {
         const auto image = m_image.lock();
         if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
         {
-            // With fields, the modified point list is a shared pointer to the distance field, so there is nothing more
+            // With fields, the modified point list is a shared pointer to the ruler field, so there is
+            // nothing more
             // to do; however this isn't enough for fiducials, which must be updated manually.
             std::vector<data::fiducials_series::fiducial_set> fiducial_sets =
                 image_series->get_fiducials()->get_fiducial_sets();
@@ -1300,7 +1205,7 @@ void ruler::update_distance(
                 for(data::fiducials_series::fiducial& fiducial : fiducial_set.fiducial_sequence)
                 {
                     if(fiducial.shape_type == data::fiducials_series::shape::ruler
-                       && fiducial.fiducial_uid == _data->m_point_list->get_id())
+                       && fiducial.fiducial_uid == _ruler_to_update->id)
                     {
                         fiducial.contour_data.clear();
                         fiducial.contour_data.push_back({.x = _begin.x, .y = _begin.y, .z = _begin.z});
@@ -1313,107 +1218,59 @@ void ruler::update_distance(
         }
     }
 
-    const auto& sig_modified = _data->m_point_list->signal<data::point_list::modified_signal_t>(
-        data::point_list::MODIFIED_SIG
-    );
-
-    core::com::connection::blocker blocker(sig_modified->get_connection(slot(service::slots::UPDATE)));
-    sig_modified->async_emit();
-
     this->request_render();
 }
 
 //------------------------------------------------------------------------------
 
-void ruler::destroy_distance(core::tools::id::type _id)
+void ruler::update_modified_ruler(
+    std::optional<std::string> _id,
+    std::array<double, 3> _begin,
+    std::array<double, 3> _end
+)
 {
-    const auto it = m_distances.find(_id);
-    SIGHT_ASSERT("The distance is not found", it != m_distances.end());
-
-    // Destroy Ogre resource.
-    distance_data distance_data         = it->second;
-    Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
-
-    distance_data.m_label->detach_from_node();
-    distance_data.m_label->set_visible(false);
-    distance_data.m_label.reset();
-    scene_mgr->destroySceneNode(distance_data.m_node1);
-    scene_mgr->destroyManualObject(distance_data.m_sphere1);
-    scene_mgr->destroySceneNode(distance_data.m_node2);
-    scene_mgr->destroyManualObject(distance_data.m_sphere2);
-    scene_mgr->destroyManualObject(distance_data.m_line);
-    scene_mgr->destroyManualObject(distance_data.m_dashed_line);
-    scene_mgr->destroySceneNode(distance_data.m_label_node);
-
-    // Remove it from the map.
-    m_distances.erase(it);
-}
-
-//------------------------------------------------------------------------------
-
-void ruler::activate_distance_tool(bool _activate)
-{
-    if(_activate)
+    if(auto iter = std::ranges::find(m_ruler_ogre_sets, _id, &ruler_ogre_set::id); iter == m_ruler_ogre_sets.end())
     {
-        m_tool_activated = true;
-        m_picked_data    = {nullptr, true};
-        set_cursor(Qt::CrossCursor);
-        auto interactor     = layer()->render_service()->get_interactor_manager();
-        auto qt_interactor  = std::dynamic_pointer_cast<window_interactor>(interactor);
-        auto* parent_widget = qt_interactor->get_qt_widget();
-        m_event_filter = std::make_unique<delete_bin_button_when_focus_out>(this);
-        parent_widget->installEventFilter(m_event_filter.get());
+        // Create ruler if it doesn't exist.
+        const Ogre::ColourValue& default_color = this->get_default_color();
+
+        this->create_ruler_ogre_set(
+            {default_color[0], default_color[1], default_color[2], default_color[3]},
+            m_sphere_radius * (m_interactive ? 2.0F : 1.0F),
+            _id,
+            _begin,
+            _end,
+            m_visible
+        );
+        this->display_on_current_slice();
     }
     else
     {
-        m_tool_activated   = false;
-        m_is_over_distance = false;
-        m_creation_mode    = false;
-        m_picked_data      = {nullptr, true};
-        m_points.clear();
-
-        auto interactor     = layer()->render_service()->get_interactor_manager();
-        auto qt_interactor  = std::dynamic_pointer_cast<window_interactor>(interactor);
-        auto* parent_widget = qt_interactor->get_qt_widget();
-        parent_widget->unsetCursor();
-
-        if(m_bin_button != nullptr)
-        {
-            m_bin_button->hide();
-            delete m_bin_button;
-            m_bin_button = nullptr;
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void ruler::update_modified_distance(data::point_list::sptr _pl)
-{
-    if(m_distances.find(_pl->get_id()) == m_distances.end())
-    {
-        // create Distance if it doesn't exist
-        this->create_distance(_pl);
-    }
-    else
-    {
-        // if it already exists, update distance with the new position
-        auto distance_to_update = m_distances[_pl->get_id()];
-
-        const std::array<double, 3> front = _pl->get_points().front()->get_coord();
-        const std::array<double, 3> back  = _pl->get_points().back()->get_coord();
-
+        // If it already exists, update ruler with the new position.
         const Ogre::Vector3 begin = Ogre::Vector3(
-            static_cast<float>(front[0]),
-            static_cast<float>(front[1]),
-            static_cast<float>(front[2])
+            static_cast<float>(_begin[0]),
+            static_cast<float>(_begin[1]),
+            static_cast<float>(_begin[2])
         );
         const Ogre::Vector3 end = Ogre::Vector3(
-            static_cast<float>(back[0]),
-            static_cast<float>(back[1]),
-            static_cast<float>(back[2])
+            static_cast<float>(_end[0]),
+            static_cast<float>(_end[1]),
+            static_cast<float>(_end[2])
         );
-        this->update_distance(&distance_to_update, begin, end);
+
+        this->update_picked_ruler(&(*iter), begin, end);
+        this->display_on_current_slice();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ruler::key_press_event(int _key, modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/)
+{
+    if(m_tool_activated && _key == Qt::Key_Escape)
+    {
+        this->activate_tool(false);
+        this->signal<signals::void_signal_t>(signals::TOOL_DEACTIVATED)->async_emit();
     }
 }
 
@@ -1429,77 +1286,36 @@ void ruler::set_cursor(QCursor _cursor)
 
 //------------------------------------------------------------------------------
 
-void ruler::remove_distance(data::point_list::sptr _pl)
+Ogre::ColourValue ruler::get_default_color()
 {
-    const auto image = m_image.lock();
-    if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
+    if(m_color.empty())
     {
-        std::vector<data::fiducials_series::fiducial_set> fiducial_sets =
-            image_series->get_fiducials()->get_fiducial_sets();
-        for(auto it_fiducial_set = fiducial_sets.begin() ; it_fiducial_set != fiducial_sets.end() ; )
-        {
-            for(auto it_fiducial = it_fiducial_set->fiducial_sequence.begin() ;
-                it_fiducial != it_fiducial_set->fiducial_sequence.end() ; )
-            {
-                if(it_fiducial->shape_type == data::fiducials_series::shape::ruler
-                   && it_fiducial->fiducial_uid == _pl->get_id())
-                {
-                    it_fiducial = it_fiducial_set->fiducial_sequence.erase(it_fiducial);
-                }
-                else
-                {
-                    ++it_fiducial;
-                }
-            }
-
-            if(it_fiducial_set->fiducial_sequence.empty())
-            {
-                it_fiducial_set = fiducial_sets.erase(it_fiducial_set);
-            }
-            else
-            {
-                ++it_fiducial_set;
-            }
-        }
-
-        image_series->get_fiducials()->set_fiducial_sets(fiducial_sets);
-    }
-    else
-    {
-        const auto vect_distance = data::helper::medical_image::get_distances(*image);
-        const auto new_vec       = std::remove(vect_distance->begin(), vect_distance->end(), _pl);
-        vect_distance->erase(new_vec, vect_distance->end());
+        return sight::viz::scene3d::helper::scene::generate_color(m_color_index++);
     }
 
-    const auto sig = image->signal<data::image::distance_removed_signal_t>(
-        data::image::DISTANCE_REMOVED_SIG
-    );
-    sig->async_emit(_pl);
-}
+    sight::ui::color_t color;
+    sight::data::tools::color::hexa_string_to_rgba(m_color, color);
 
-ruler::delete_bin_button_when_focus_out::delete_bin_button_when_focus_out(
-    ruler* _ruler
-) :
-    m_ruler(_ruler)
-{
+    return Ogre::ColourValue(color.data());
 }
 
 //------------------------------------------------------------------------------
 
-bool ruler::delete_bin_button_when_focus_out::eventFilter(QObject* /*o*/, QEvent* _e)
+bool ruler::is_visible_on_current_slice(std::array<double, 3> _begin, std::array<double, 3> _end)
 {
-    if(m_ruler->m_bin_button != nullptr && !m_ruler->m_bin_button->hasFocus()
-       && (_e->type() == QEvent::FocusOut || _e->type() == QEvent::Resize))
-    {
-        m_ruler->m_bin_button->hide();
-        delete m_ruler->m_bin_button;
-        m_ruler->m_bin_button = nullptr;
-        return true;
-    }
+    const auto image = m_image.const_lock();
 
-    return false;
+    // Get the current slice position
+    const auto slice_index = sight::data::helper::medical_image::get_slice_index(
+        *image,
+        m_axis
+    ).value_or(0);
+
+    const auto begin_position = geometry::data::world_to_image(*image, _begin, true);
+    const auto end_position   = geometry::data::world_to_image(*image, _end, true);
+
+    // Check if the ruler positions are on the current slice or in between.
+    return (slice_index - begin_position[m_axis]) * (slice_index - end_position[m_axis]) <= 0;
 }
 
-//------------------------------------------------------------------------------
-
-} // namespace sight::module::viz::scene3d_qt::adaptor::fiducials
+} // namespace sight::module::viz::scene3d_qt::adaptor::fiducials.

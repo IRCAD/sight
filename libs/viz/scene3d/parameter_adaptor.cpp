@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,11 +71,6 @@ parameter_adaptor::parameter_adaptor() noexcept
 
 //------------------------------------------------------------------------------
 
-parameter_adaptor::~parameter_adaptor() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void parameter_adaptor::set_shader_type(Ogre::GpuProgramType _shader_type)
 {
     m_shader_type = _shader_type;
@@ -99,7 +94,7 @@ const std::string& parameter_adaptor::get_param_name() const
 
 service::connections_t parameter_adaptor::auto_connections() const
 {
-    return {{PARAMETER_INOUT, data::object::MODIFIED_SIG, service::slots::UPDATE}};
+    return {{PARAMETER_INOUT, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}};
 }
 
 //------------------------------------------------------------------------------
@@ -141,7 +136,7 @@ void parameter_adaptor::configuring()
 
 void parameter_adaptor::updating()
 {
-    if(!m_material || !m_dirty)
+    if(!m_material)
     {
         return;
     }
@@ -189,7 +184,7 @@ void parameter_adaptor::updating()
         }
     }
 
-    m_dirty = false;
+    this->update_done();
 }
 
 //------------------------------------------------------------------------------
@@ -374,8 +369,8 @@ bool parameter_adaptor::set_parameter(Ogre::Technique& _technique)
                 update_texture = true;
             }
         }
-        // We allow to work on the render composite and interact with slots instead
-        else if(obj_class != "sight::data::composite")
+        // We allow to work on the render map and interact with slots instead
+        else if(obj_class != "sight::data::map")
         {
             SIGHT_ERROR("This Type " << obj_class << " isn't supported.");
         }
@@ -400,7 +395,6 @@ void parameter_adaptor::set_material(const Ogre::MaterialPtr& _material)
 {
     if(m_material != _material)
     {
-        this->set_dirty();
         m_material = _material;
     }
 }
@@ -411,14 +405,13 @@ void parameter_adaptor::set_bool_parameter(bool _value, std::string _name)
 {
     if(_name == m_param_name)
     {
-        m_dirty = true;
         {
             auto param_object = m_parameter.lock();
             auto bool_object  = std::dynamic_pointer_cast<data::boolean>(param_object.get_shared());
             SIGHT_ASSERT("Shader parameter '" + _name + "' is not of type sight::data::boolean", bool_object);
             bool_object->set_value(_value);
         }
-        this->updating();
+        this->lazy_update();
     }
 }
 
@@ -428,8 +421,6 @@ void parameter_adaptor::set_color_parameter(std::array<uint8_t, 4> _color, std::
 {
     if(_name == m_param_name)
     {
-        m_dirty = true;
-
         {
             auto param_object = m_parameter.lock();
             auto color_object = std::dynamic_pointer_cast<data::color>(param_object.get_shared());
@@ -441,7 +432,7 @@ void parameter_adaptor::set_color_parameter(std::array<uint8_t, 4> _color, std::
                 float(_color[3]) / 255.F
             );
         }
-        this->updating();
+        this->lazy_update();
     }
 }
 
@@ -451,15 +442,13 @@ void parameter_adaptor::set_int_parameter(int _value, std::string _name)
 {
     if(_name == m_param_name)
     {
-        m_dirty = true;
-
         {
             auto param_object = m_parameter.lock();
             auto int_object   = std::dynamic_pointer_cast<data::integer>(param_object.get_shared());
             SIGHT_ASSERT("Shader parameter '" + _name + "' is not of type sight::data::integer", int_object);
             int_object->set_value(_value);
         }
-        this->updating();
+        this->lazy_update();
     }
 }
 
@@ -469,8 +458,6 @@ void parameter_adaptor::set_int2_parameter(int _value1, int _value2, std::string
 {
     if(_name == m_param_name)
     {
-        m_dirty = true;
-
         {
             auto param_object = m_parameter.lock();
             auto array_object = std::dynamic_pointer_cast<data::array>(param_object.get_shared());
@@ -485,7 +472,7 @@ void parameter_adaptor::set_int2_parameter(int _value1, int _value2, std::string
             array_object->at<std::uint32_t>(0) = static_cast<std::uint32_t>(_value1);
             array_object->at<std::uint32_t>(1) = static_cast<std::uint32_t>(_value2);
         }
-        this->updating();
+        this->lazy_update();
     }
 }
 
@@ -495,8 +482,6 @@ void parameter_adaptor::set_int3_parameter(int _value1, int _value2, int _value3
 {
     if(_name == m_param_name)
     {
-        m_dirty = true;
-
         {
             auto param_object = m_parameter.lock();
             auto array_object = std::dynamic_pointer_cast<data::array>(param_object.get_shared());
@@ -513,7 +498,7 @@ void parameter_adaptor::set_int3_parameter(int _value1, int _value2, int _value3
             array_object->at<std::uint32_t>(2) = static_cast<std::uint32_t>(_value3);
         }
 
-        this->updating();
+        this->lazy_update();
     }
 }
 
@@ -523,8 +508,6 @@ void parameter_adaptor::set_double_parameter(double _value, std::string _name)
 {
     if(_name == m_param_name)
     {
-        m_dirty = true;
-
         {
             auto param_object = m_parameter.lock();
             auto float_object = std::dynamic_pointer_cast<data::real>(param_object.get_shared());
@@ -532,7 +515,7 @@ void parameter_adaptor::set_double_parameter(double _value, std::string _name)
             float_object->set_value(static_cast<float>(_value));
         }
 
-        this->updating();
+        this->lazy_update();
     }
 }
 
@@ -542,8 +525,6 @@ void parameter_adaptor::set_double2_parameter(double _value1, double _value2, st
 {
     if(_name == m_param_name)
     {
-        m_dirty = true;
-
         {
             auto param_object = m_parameter.lock();
             auto array_object = std::dynamic_pointer_cast<data::array>(param_object.get_shared());
@@ -567,7 +548,7 @@ void parameter_adaptor::set_double2_parameter(double _value1, double _value2, st
             }
         }
 
-        this->updating();
+        this->lazy_update();
     }
 }
 
@@ -577,8 +558,6 @@ void parameter_adaptor::set_double3_parameter(double _value1, double _value2, do
 {
     if(_name == m_param_name)
     {
-        m_dirty = true;
-
         {
             auto param_object = m_parameter.lock();
             auto array_object = std::dynamic_pointer_cast<data::array>(param_object.get_shared());
@@ -605,7 +584,7 @@ void parameter_adaptor::set_double3_parameter(double _value1, double _value2, do
             }
         }
 
-        this->updating();
+        this->lazy_update();
     }
 }
 

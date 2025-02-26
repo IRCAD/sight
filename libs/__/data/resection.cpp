@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,9 +116,9 @@ bool resection::operator==(const resection& _other) const noexcept
        || m_is_safe_part != _other.m_is_safe_part
        || m_is_valid != _other.m_is_valid
        || m_visible != _other.m_visible
-       || !core::tools::is_equal(m_plane_list, _other.m_plane_list)
-       || !core::tools::is_equal(m_v_inputs, _other.m_v_inputs)
-       || !core::tools::is_equal(m_v_outputs, _other.m_v_outputs))
+       || !core::is_equal(m_plane_list, _other.m_plane_list)
+       || !core::is_equal(m_v_inputs, _other.m_v_inputs)
+       || !core::is_equal(m_v_outputs, _other.m_v_outputs))
     {
         return false;
     }

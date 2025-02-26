@@ -67,9 +67,9 @@ private:
 };
 
 #define SIGHT_REGISTER_PLUGIN(class) \
-    static sight::core::runtime::utils::generic_executable_factory_registry<plugin> BOOST_PP_CAT( \
-        __registry, \
-        __LINE__ \
-    )(class)
+        static sight::core::runtime::utils::generic_executable_factory_registry<plugin> BOOST_PP_CAT( \
+            __registry, \
+            __LINE__ \
+        )(class)
 
 } // namespace sight::core::runtime

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,7 @@ void grid::configuring()
     this->set_transform_id(
         config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
 
@@ -80,53 +80,43 @@ void grid::configuring()
 
 void grid::starting()
 {
-    this->initialize();
+    adaptor::init();
+
     this->render_service()->make_current();
 
     Ogre::SceneManager* scene_mgr = this->get_scene_manager();
 
-    m_line = scene_mgr->createManualObject(this->get_id() + "_grid");
+    m_line = scene_mgr->createManualObject(gen_id("grid"));
     // Set the line as dynamic, so we can update it later on, when the length changes
     m_line->setDynamic(true);
+    m_line->setQueryFlags(Ogre::SceneManager::STATICGEOMETRY_TYPE_MASK);
 
     // Set the material
-    m_material = std::make_shared<data::material>();
-
-    m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
-        "sight::module::viz::scene3d::adaptor::material"
-    );
-    m_material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
-    m_material_adaptor->configure(
-        this->get_id() + m_material_adaptor->get_id(),
-        this->get_id() + m_material_adaptor->get_id(),
-        this->render_service(),
-        m_layer_id,
-        "ambient"
-    );
-    m_material_adaptor->start();
-
-    m_material_adaptor->get_material_fw()->set_has_vertex_color(true);
-    m_material_adaptor->update();
+    const auto mtl_name = gen_id("material");
+    m_material = std::make_unique<sight::viz::scene3d::material::standard>(mtl_name);
+    m_material->set_layout(data::mesh::attribute::point_colors);
+    m_material->set_shading(data::material::shading_t::ambient, this->layer()->num_lights());
 
     // Draw the line
     this->draw_grid(false);
 
     this->attach_node(m_line);
 
-    this->set_visible(m_visible);
+    this->set_visible(visible());
 }
 
 //-----------------------------------------------------------------------------
 
 void grid::updating()
 {
-    if(m_visible)
+    if(visible())
     {
         this->render_service()->make_current();
         // Draw
         this->draw_grid(true);
     }
 
+    this->update_done();
     this->request_render();
 }
 
@@ -135,14 +125,16 @@ void grid::updating()
 void grid::stopping()
 {
     this->render_service()->make_current();
-    this->unregister_services();
-    m_material = nullptr;
+
+    m_material.reset();
     if(m_line != nullptr)
     {
         m_line->detachFromParent();
         this->get_scene_manager()->destroyManualObject(m_line);
         m_line = nullptr;
     }
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -153,7 +145,7 @@ void grid::attach_node(Ogre::MovableObject* _object)
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
     SIGHT_ASSERT("Transform node shouldn't be null", trans_node);
 
-    trans_node->setVisible(m_visible);
+    trans_node->setVisible(visible());
     trans_node->attachObject(_object);
 }
 
@@ -164,7 +156,7 @@ void grid::draw_grid(bool _existing_line)
     if(!_existing_line)
     {
         m_line->begin(
-            m_material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::RenderOperation::OT_LINE_LIST,
             sight::viz::scene3d::RESOURCE_GROUP
         );
@@ -214,7 +206,7 @@ void grid::set_visible(bool /*_visible*/)
 {
     Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
-    trans_node->setVisible(m_visible);
+    trans_node->setVisible(visible());
     this->updating();
 }
 

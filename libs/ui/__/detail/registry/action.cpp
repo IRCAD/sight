@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ui/__/registry.hpp"
 
-#include <core/tools/id.hpp>
+#include <core/id.hpp>
 
 #include <service/macros.hpp>
 

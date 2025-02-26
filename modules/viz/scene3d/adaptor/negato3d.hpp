@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #pragma once
+
+#include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
@@ -61,6 +63,7 @@ namespace sight::module::viz::scene3d::adaptor
         <in key="image" uid="..." />
         <inout key="tf" uid="..." />
         <config sliceIndex="axial" filtering="none" tfAlpha="true" />
+        <properties classification="pre" />
     </service>
    @endcode
  *
@@ -81,6 +84,11 @@ namespace sight::module::viz::scene3d::adaptor
  *      was specified in the transform adaptor.
  * - \b queryFlags (optional, uint32, default=0x40000000): Mask set to planes for picking request.
  * - \b border (optional, bool, default=true): allows to display plane borders.
+ *
+ * @subsection Properties Properties:
+ * - \b classification (optional, pre/post, default=pre): classification of voxels. "pre" means the filtering is applied
+ * after the sampling of the transfer function, and "post" after. When using labelled images, it is highly recommended
+ * to use "pre", otherwise it is likely that class of objects can be confounded.
  * - \b visible (optional, bool, default=true): set the initial visibility of the 3D negato.
  */
 class negato3d final :
@@ -90,16 +98,32 @@ class negato3d final :
 {
 public:
 
-    using orientation_mode = data::helper::medical_image::orientation_t;
+    using axis_t = data::helper::medical_image::axis_t;
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(negato3d, sight::viz::scene3d::adaptor);
+
+    struct signals
+    {
+        using picked_voxel_t = core::com::signal<void (std::string)>;
+        static inline const core::com::signals::key_t PICKED_VOXEL = "picked_voxel";
+    };
+
+    struct slots
+    {
+        static inline const core::com::slots::key_t UPDATE_IMAGE             = "update_image";
+        static inline const core::com::slots::key_t UPDATE_TF                = "update_tf";
+        static inline const core::com::slots::key_t SLICE_TYPE               = "slice_type";
+        static inline const core::com::slots::key_t SLICE_INDEX              = "slice_index";
+        static inline const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
+        static inline const core::com::slots::key_t SET_TRANSPARENCY         = "set_transparency";
+    };
 
     /// Creates slots.
     negato3d() noexcept;
 
     /// Destroys the adaptor.
-    ~negato3d() noexcept override;
+    ~negato3d() noexcept override = default;
 
 protected:
 
@@ -247,6 +271,9 @@ private:
     /// Contains the scene node allowing to move the entire negato.
     Ogre::SceneNode* m_negato_scene_node {nullptr};
 
+    /// Contains the scene node used for image origin and orientation.
+    Ogre::SceneNode* m_origin_scene_node {nullptr};
+
     /// Defines the filtering type for this negato.
     sight::viz::scene3d::plane::filter_t m_filtering {sight::viz::scene3d::plane::filter_t::none};
 
@@ -265,15 +292,16 @@ private:
     /// Defines if the plane border is used or not.
     bool m_border {true};
 
-    /// Defines the signal sent when a voxel is picked using the left mouse button.
-    using picked_voxel_sig_t = core::com::signal<void (std::string)>;
-    picked_voxel_sig_t::sptr m_picked_voxel_signal {nullptr};
+    enum class update_flags : std::uint8_t
+    {
+        IMAGE,
+        TF
+    };
 
-    static constexpr std::string_view IMAGE_IN = "image";
-    data::ptr<data::image, data::access::in> m_image {this, IMAGE_IN, true};
+    data::ptr<data::image, data::access::in> m_image {this, "image"};
+    data::ptr<data::transfer_function, data::access::inout> m_tf {this, "tf"};
 
-    static constexpr std::string_view TF_INOUT = "tf";
-    data::ptr<data::transfer_function, data::access::inout> m_tf {this, TF_INOUT, true};
+    sight::data::property<sight::data::string> m_classification {this, "classification", std::string("post")};
 };
 
 //------------------------------------------------------------------------------

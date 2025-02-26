@@ -135,7 +135,7 @@ private:
 
     static constexpr std::string_view SERIES = "series";
 
-    data::ptr<data::vector, data::access::in> m_series {this, SERIES, true};
+    data::ptr<data::vector, data::access::in> m_series {this, SERIES};
 };
 
 } // namespace sight::module::ui::qt::series

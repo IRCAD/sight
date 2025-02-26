@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,21 +28,8 @@
 
 #include <service/op.hpp>
 
-#include <viz/scene3d/material.hpp>
-
 namespace sight::module::viz::scene3d::adaptor
 {
-
-static const core::com::slots::key_t CHANGE_MESH_SLOT = "changeMesh";
-static const core::com::slots::key_t VISIBILITY_SLOT  = "modifyVisibility";
-
-//------------------------------------------------------------------------------
-
-reconstruction::reconstruction() noexcept
-{
-    new_slot(CHANGE_MESH_SLOT, &reconstruction::change_mesh, this);
-    new_slot(VISIBILITY_SLOT, &reconstruction::modify_visibility, this);
-}
 
 //------------------------------------------------------------------------------
 
@@ -55,7 +42,7 @@ void reconstruction::configuring()
     this->set_transform_id(
         config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
     m_auto_reset_camera = config.get<bool>(CONFIG + "autoresetcamera", true);
@@ -77,7 +64,7 @@ void reconstruction::configuring()
 
 void reconstruction::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     create_mesh_service();
 }
@@ -86,9 +73,8 @@ void reconstruction::starting()
 
 service::connections_t module::viz::scene3d::adaptor::reconstruction::auto_connections() const
 {
-    service::connections_t connections;
-    connections.push(RECONSTRUCTION_INPUT, data::reconstruction::MESH_CHANGED_SIG, CHANGE_MESH_SLOT);
-    connections.push(RECONSTRUCTION_INPUT, data::reconstruction::VISIBILITY_MODIFIED_SIG, VISIBILITY_SLOT);
+    service::connections_t connections = adaptor::auto_connections();
+    connections.push(RECONSTRUCTION_INPUT, data::reconstruction::MESH_CHANGED_SIG, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 
@@ -116,6 +102,9 @@ void reconstruction::updating()
         // If m_meshService does not exists, we have to create it
         this->create_mesh_service();
     }
+
+    update_done();
+    this->request_render();
 }
 
 //------------------------------------------------------------------------------
@@ -123,6 +112,8 @@ void reconstruction::updating()
 void reconstruction::stopping()
 {
     this->unregister_services();
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------
@@ -140,7 +131,8 @@ void reconstruction::create_mesh_service()
         );
         mesh_adaptor->set_input(mesh, "mesh", true);
 
-        mesh_adaptor->set_id(this->get_id() + mesh_adaptor->get_id());
+        mesh_adaptor->configure();
+        mesh_adaptor->set_id(gen_id(mesh_adaptor->get_id()));
         mesh_adaptor->set_layer_id(m_layer_id);
         mesh_adaptor->set_render_service(this->render_service());
 
@@ -163,7 +155,7 @@ void reconstruction::create_mesh_service()
 
 //------------------------------------------------------------------------------
 
-void reconstruction::set_visible(bool _hide)
+void reconstruction::set_visible(bool _visible)
 {
     if(!m_mesh_adaptor.expired())
     {
@@ -172,26 +164,8 @@ void reconstruction::set_visible(bool _hide)
         if(mesh_adaptor)
         {
             const auto reconstruction = m_reconstruction.lock();
-            mesh_adaptor->set_visible(_hide ? false : reconstruction->get_is_visible());
+            mesh_adaptor->set_visible(_visible ? false : reconstruction->get_is_visible());
         }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void reconstruction::change_mesh(data::mesh::sptr /*unused*/)
-{
-    this->updating();
-}
-
-//------------------------------------------------------------------------------
-
-void reconstruction::modify_visibility()
-{
-    if(!m_mesh_adaptor.expired())
-    {
-        const auto reconstruction = m_reconstruction.lock();
-        this->update_visibility(!reconstruction->get_is_visible());
     }
 }
 

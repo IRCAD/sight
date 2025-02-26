@@ -108,9 +108,6 @@ public:
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
 
-    SIGHT_DATA_API fiducials_series::csptr get_fiducials() const;
-    SIGHT_DATA_API fiducials_series::sptr get_fiducials();
-
 protected:
 
     /// Stores models.
@@ -120,9 +117,6 @@ protected:
     dicom_series::sptr m_dicom_reference;
 
 private:
-
-    /// Contains the associated Spatial Fiducials file
-    fiducials_series::sptr m_fiducials_series {std::make_shared<data::fiducials_series>()};
 
     /// Stores the signal emitted when reconstructions are added.
     reconstructions_added_signal_t::sptr m_sig_reconstructions_added;

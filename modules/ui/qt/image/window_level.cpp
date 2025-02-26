@@ -53,19 +53,12 @@
 namespace sight::module::ui::qt::image
 {
 
-static const core::com::slots::key_t UPDATE_TF_SLOT = "update_tf";
-
 //------------------------------------------------------------------------------
 
 window_level::window_level() noexcept
 {
-    new_slot(UPDATE_TF_SLOT, &window_level::update_tf, this);
+    new_slot(slots::UPDATE_IMAGE, &window_level::update_image, this);
 }
-
-//------------------------------------------------------------------------------
-
-window_level::~window_level() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -211,16 +204,12 @@ void window_level::updating()
 
     if(image_is_valid)
     {
-        if(m_auto_windowing)
-        {
-            double min = NAN;
-            double max = NAN;
-            data::helper::medical_image::get_min_max(image.get_shared(), min, max);
-            this->update_image_window_level(min, max);
-        }
+        const auto tf = m_tf.const_lock();
 
-        const auto tf                              = m_tf.const_lock();
-        data::transfer_function::min_max_t min_max = tf->window_min_max();
+        const auto piece                           = static_cast<std::size_t>(*m_piece);
+        data::transfer_function::min_max_t min_max = *m_piece != -1 && piece < tf->pieces().size()
+                                                     ? tf->pieces()[piece]->window_min_max()
+                                                     : tf->window_min_max();
         this->on_image_window_level_changed(min_max.first, min_max.second);
     }
 }
@@ -264,8 +253,27 @@ void window_level::stopping()
 
 //------------------------------------------------------------------------------
 
-void window_level::update_tf()
+void window_level::update_image()
 {
+    {
+        const auto image = m_image.lock();
+        SIGHT_ASSERT("inout '" << IMAGE << "' does not exist.", image);
+
+        const bool image_is_valid = data::helper::medical_image::check_image_validity(image.get_shared());
+        this->set_enabled(image_is_valid);
+
+        if(image_is_valid)
+        {
+            const auto& [min, max] = data::helper::medical_image::get_min_max<double>(image.get_shared());
+            if(m_auto_windowing)
+            {
+                this->update_image_window_level(min, max);
+            }
+
+            const auto range = max - min;
+            this->set_widget_dynamic_range(min - range, max + range);
+        }
+    }
     this->updating();
 }
 
@@ -274,15 +282,6 @@ void window_level::update_tf()
 void window_level::info(std::ostream& _sstream)
 {
     _sstream << "Window level editor";
-}
-
-//------------------------------------------------------------------------------
-
-window_level::window_level_min_max_t window_level::get_image_window_min_max()
-{
-    const auto tf = m_tf.const_lock();
-    SIGHT_ASSERT("TransferFunction null pointer", tf);
-    return tf->window_min_max();
 }
 
 //------------------------------------------------------------------------------
@@ -322,19 +321,18 @@ double window_level::to_window_level(double _val) const
 void window_level::update_image_window_level(double _image_min, double _image_max)
 {
     const auto tf = m_tf.lock();
-    tf->set_window_min_max(
-        data::transfer_function::min_max_t(
-            _image_min,
-            _image_max
-        )
-    );
-    auto sig = tf->signal<data::transfer_function::windowing_modified_signal_t>(
-        data::transfer_function::WINDOWING_MODIFIED_SIG
-    );
+
+    const auto piece = static_cast<std::size_t>(*m_piece);
+    if(*m_piece != -1 && piece < tf->pieces().size())
     {
-        const core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_TF_SLOT)));
-        sig->async_emit(tf->window(), tf->level());
+        tf->pieces()[piece]->set_window_min_max({_image_min, _image_max});
     }
+    else
+    {
+        tf->set_window_min_max({_image_min, _image_max});
+    }
+
+    tf->async_emit(this, data::transfer_function::WINDOWING_MODIFIED_SIG, tf->window(), tf->level());
 }
 
 //------------------------------------------------------------------------------
@@ -351,14 +349,21 @@ void window_level::on_window_level_widget_changed(double _min, double _max)
 
 void window_level::on_dynamic_range_selection_changed(QAction* _action)
 {
-    window_level_min_max_t wl = this->get_image_window_min_max();
-    double min                = m_widget_dynamic_range_min;
-    double max                = m_widget_dynamic_range_width + min;
-    int index                 = _action->data().toInt();
+    const auto tf = m_tf.const_lock();
+    SIGHT_ASSERT("TransferFunction null pointer", tf);
+
+    const auto piece = static_cast<std::size_t>(*m_piece);
+    const auto wl    = *m_piece != -1 && piece < tf->pieces().size()
+                       ? tf->pieces()[piece]->window_min_max()
+                       : tf->window_min_max();
+
+    double min = m_widget_dynamic_range_min;
+    double max = m_widget_dynamic_range_width + min;
 
     const auto image = m_image.lock();
     SIGHT_ASSERT("inout '" << IMAGE << "' does not exist.", image);
 
+    const int index = _action->data().toInt();
     switch(index)
     {
         case 0:
@@ -380,7 +385,7 @@ void window_level::on_dynamic_range_selection_changed(QAction* _action)
             break;
 
         case 4: // Fit image Range
-            data::helper::medical_image::get_min_max(image.get_shared(), min, max);
+            std::tie(min, max) = data::helper::medical_image::get_min_max<double>(image.get_shared());
             break;
 
         case 5: // Custom : TODO
@@ -449,13 +454,7 @@ void window_level::on_toggle_tf(bool _square_tf)
     current_tf->deep_copy(new_tf);
 
     // Send signal
-    auto sig = current_tf->signal<data::transfer_function::points_modified_signal_t>(
-        data::transfer_function::POINTS_MODIFIED_SIG
-    );
-    {
-        const core::com::connection::blocker block(sig->get_connection(this->slot(UPDATE_TF_SLOT)));
-        sig->async_emit();
-    }
+    current_tf->async_emit(this, data::transfer_function::POINTS_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -468,9 +467,7 @@ void window_level::on_toggle_auto_wl(bool _auto_wl)
     {
         const auto image = m_image.lock();
         SIGHT_ASSERT("inout '" << IMAGE << "' does not exist.", image);
-        double min = NAN;
-        double max = NAN;
-        data::helper::medical_image::get_min_max(image.get_shared(), min, max);
+        const auto& [min, max] = data::helper::medical_image::get_min_max<double>(image.get_shared());
         this->update_image_window_level(min, max);
         this->on_image_window_level_changed(min, max);
     }
@@ -530,11 +527,11 @@ void window_level::set_widget_dynamic_range(double _min, double _max)
 service::connections_t window_level::auto_connections() const
 {
     return {
-        {IMAGE, data::image::MODIFIED_SIG, service::slots::UPDATE},
-        {IMAGE, data::image::BUFFER_MODIFIED_SIG, service::slots::UPDATE},
-        {TF, data::transfer_function::MODIFIED_SIG, UPDATE_TF_SLOT},
-        {TF, data::transfer_function::POINTS_MODIFIED_SIG, UPDATE_TF_SLOT},
-        {TF, data::transfer_function::WINDOWING_MODIFIED_SIG, UPDATE_TF_SLOT}
+        {IMAGE, data::image::MODIFIED_SIG, slots::UPDATE_IMAGE},
+        {IMAGE, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_IMAGE},
+        {TF, data::transfer_function::MODIFIED_SIG, service::slots::UPDATE},
+        {TF, data::transfer_function::POINTS_MODIFIED_SIG, service::slots::UPDATE},
+        {TF, data::transfer_function::WINDOWING_MODIFIED_SIG, service::slots::UPDATE}
     };
 }
 

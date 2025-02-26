@@ -23,6 +23,7 @@
 
 #include <sight/data/config.hpp>
 
+#include <data/generic.hpp>
 #include <data/has_data.hpp>
 #include <data/mt/shared_ptr.hpp>
 
@@ -52,7 +53,6 @@ public:
     SIGHT_DATA_API base_ptr(
         has_data* _holder,
         std::string_view _key,
-        bool _auto_connect,
         bool _optional,
         access _access,
         std::optional<std::size_t> _index = std::nullopt
@@ -60,9 +60,12 @@ public:
     SIGHT_DATA_API virtual ~base_ptr();
 
     [[nodiscard]] std::string_view key() const;
-    [[nodiscard]] bool auto_connect() const;
+    [[nodiscard]] std::optional<bool> auto_connect() const;
     [[nodiscard]] bool optional() const;
-    [[nodiscard]] enum access access() const;
+    [[nodiscard]] enum access access () const;
+
+    // Returns key()
+    [[nodiscard]] operator std::string_view() const;
 
     // Generic getter
     SIGHT_DATA_API virtual sight::data::object::csptr get() = 0;
@@ -88,9 +91,12 @@ protected:
 
     has_data* m_holder {nullptr};
     std::string_view m_key;
-    bool m_auto_connect {false};
+    std::optional<bool> m_auto_connect;
     bool m_optional {false};
-    enum access m_access {access::in};
+    enum access m_access
+    {
+        access::in
+    };
 };
 
 //------------------------------------------------------------------------------
@@ -102,7 +108,7 @@ inline std::string_view base_ptr::key() const
 
 //------------------------------------------------------------------------------
 
-inline bool base_ptr::auto_connect() const
+inline std::optional<bool> base_ptr::auto_connect() const
 {
     return m_auto_connect;
 }
@@ -121,16 +127,23 @@ inline enum access base_ptr::access() const
     return m_access;
 }
 
+//------------------------------------------------------------------------------
+
+inline base_ptr::operator std::string_view() const
+{
+    return m_key;
+}
+
 /**
  * @brief This class holds a non-owning ("weak") reference on a data object.
  *
  * This class purpose is to be used as a service class member to declare and access data.
  * It must be converted to a locked_ptr via the lock() function in order to access the referenced object.
  */
-template<class DATATYPE, data::access ACCESS>
-class ptr final : public ptr_type_traits<DATATYPE,
-                                         ACCESS>,
-                  public base_ptr
+template<class DATATYPE, data::access ACCESS = data::access::inout>
+class ptr : public ptr_type_traits<DATATYPE,
+                                   ACCESS>,
+            public base_ptr
 {
 public:
 
@@ -140,14 +153,13 @@ public:
     ptr(
         has_data* _holder,
         std::string_view _key,
-        bool _auto_connect                = false,
         bool _optional                    = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT,
         std::optional<std::size_t> _index = {}) noexcept :
-        base_ptr(_holder, _key, _auto_connect, _optional, ACCESS, _index)
+        base_ptr(_holder, _key, _optional, ACCESS, _index)
     {
     }
 
-    ~ptr() final = default;
+    ~ptr() override = default;
 
     /// Forbids default constructors, destructor and assignment operators
     ptr()                      = delete;
@@ -171,27 +183,15 @@ public:
         this->set(nullptr, {}, {}, {}, true);
     }
 
-private:
-
-    /// Only the owner of the pointer can update the content of the pointer
-    friend class has_data;
-    template<class, data::access>
-    friend class ptr_vector;
-
-    //------------------------------------------------------------------------------
-
-    sight::data::object::csptr get() final
-    {
-        return std::dynamic_pointer_cast<const data::object>(base_ptr_t::get_shared());
-    }
+protected:
 
     /// Assign the content of the pointer
     void set(
         const sight::data::object::sptr& _obj,
         std::optional<bool> _auto_connect,
         std::optional<bool> _optional,
-        std::optional<std::size_t> /*index*/ = std::nullopt,
-        bool _signal                         = false
+        std::optional<std::size_t>/*index*/ = std::nullopt,
+        bool _signal                        = false
     ) final
     {
         if constexpr(ACCESS == data::access::out)
@@ -255,6 +255,33 @@ private:
         }
     }
 
+private:
+
+    /// Constructor used by ptr_vector, allowing to duplicate the auto_connect status between elements.
+    ptr(
+        has_data* _holder,
+        std::string_view _key,
+        bool _optional,
+        std::optional<std::size_t> _index,
+        std::optional<bool> _auto_connect
+    ) noexcept :
+        base_ptr(_holder, _key, _optional, ACCESS, _index)
+    {
+        m_auto_connect = _auto_connect;
+    }
+
+    /// Only the owner of the pointer can update the content of the pointer
+    friend class has_data;
+    template<class, data::access>
+    friend class ptr_vector;
+
+    //------------------------------------------------------------------------------
+
+    sight::data::object::csptr get() final
+    {
+        return std::dynamic_pointer_cast<const data::object>(base_ptr_t::get_shared());
+    }
+
     //------------------------------------------------------------------------------
 
     void set_deferred_id(const std::string& _id, std::optional<std::size_t> = std::nullopt) final
@@ -262,6 +289,11 @@ private:
         SIGHT_ASSERT("Object id can not be empty", !_id.empty());
         m_deferred_id = _id;
     }
+
+    /// Only the owner of the pointer can update the content of the pointer
+    friend class has_data;
+    template<class, data::access>
+    friend class ptr_vector;
 
     // Pointer on deferred objects (created at runtime) may reference different objects over time
     // To reference the same object amongst different services, we use a specific label
@@ -285,10 +317,9 @@ public:
     ptr_vector(
         has_data* _holder,
         std::string_view _key,
-        bool _auto_connect = false,
-        bool _optional     = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT
+        bool _optional = access_type_traits<DATATYPE, ACCESS>::OPTIONAL_DEFAULT
     ) noexcept :
-        base_ptr(_holder, _key, _auto_connect, _optional, ACCESS, {})
+        base_ptr(_holder, _key, _optional, ACCESS, {})
     {
     }
 
@@ -307,11 +338,12 @@ public:
     /// Accessor for individual weak pointers
     /// This method is only available if it is an output
     ptr_t& operator[](const std::size_t _index)
+    requires(ACCESS == data::access::out)
     {
         if(m_ptrs.find(_index) == m_ptrs.end())
         {
             // Initializes members
-            m_ptrs.emplace(std::make_pair(_index, new ptr_t(m_holder, m_key, m_auto_connect, m_optional, _index)));
+            m_ptrs.emplace(std::make_pair(_index, new ptr_t(m_holder, m_key, m_optional, _index, m_auto_connect)));
         }
 
         return *m_ptrs[_index];
@@ -320,7 +352,7 @@ public:
     /// Accessor for individual weak pointers
     const ptr_t& operator[](const std::size_t _index) const
     {
-        return m_ptrs[_index];
+        return *m_ptrs.at(_index);
     }
 
     /// Return the number of registered pointers
@@ -397,7 +429,7 @@ private:
 
             if(m_ptrs.find(index) == m_ptrs.end())
             {
-                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, *_auto_connect, *_optional, index)));
+                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, *_optional, index)));
             }
 
             m_ptrs[index]->set(_obj, _auto_connect, _optional, _signal);
@@ -415,7 +447,7 @@ private:
             m_ptrs.emplace(
                 std::make_pair(
                     _index.value(),
-                    new ptr_t(m_holder, m_key, m_auto_connect, m_optional, _index)
+                    new ptr_t(m_holder, m_key, m_optional, _index)
                 )
             );
         }
@@ -428,5 +460,67 @@ private:
 };
 
 //------------------------------------------------------------------------------
+
+class property_base
+{
+public:
+
+    virtual sight::data::string_serializable::sptr make_default() = 0;
+};
+/**
+ * @brief This class holds a non-owning ("weak") reference on a data object.
+ *
+ * This class purpose is to be used as a service class member to declare and access data.
+ * It must be converted to a locked_ptr via the lock() function in order to access the referenced object.
+ */
+template<class DATATYPE, class SUBTYPE = DATATYPE::value_t>
+requires std::derived_from<DATATYPE, sight::data::generic<SUBTYPE> >
+class property final : public ptr<DATATYPE,
+                                  data::access::inout>,
+                       public property_base
+{
+public:
+
+    /// Constructor that registers the pointer with a default value.
+    property(
+        has_data* _holder,
+        std::string_view _key,
+        const DATATYPE& _default_value
+    ) noexcept :
+        ptr<DATATYPE, data::access::inout>(_holder, _key, true),
+        m_default_value(_default_value)
+    {
+    }
+
+    ~property() override = default;
+
+    //------------------------------------------------------------------------------
+
+    const DATATYPE::value_t& value() const
+    {
+        const auto prop = this->const_lock();
+        return prop->value();
+    }
+
+    //------------------------------------------------------------------------------
+
+    const DATATYPE::value_t& operator*() const
+    {
+        return this->value();
+    }
+
+private:
+
+    //------------------------------------------------------------------------------
+
+    sight::data::string_serializable::sptr make_default() override
+    {
+        auto default_object = std::make_shared<DATATYPE>(m_default_value);
+        this->set(default_object, {}, {}, {}, false);
+        return default_object;
+    }
+
+    const DATATYPE m_default_value;
+};
 
 } // namespace sight::data

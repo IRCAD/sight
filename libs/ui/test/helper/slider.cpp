@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -78,7 +78,7 @@ static QSlider* take(tester& _tester, const selector& _slider)
     _slider.select(_tester);
     if(!_tester.is_a<QSlider*>())
     {
-        _tester.yields<QSlider*>('"' + _slider.get_description(_tester) + "\" actual slider");
+        _tester.yields<QSlider*>("'" + _slider.get_description(_tester) + "' actual slider");
     }
 
     return _tester.get<QSlider*>();
@@ -124,7 +124,7 @@ void slider::set(tester& _tester, const selector& _slider, int _value)
     auto bt =
         _tester.add_in_backtrace("setting \"" + _slider.get_description(_tester) + "\" to " + std::to_string(_value));
     take(_tester, _slider);
-    _tester.do_something<QSlider*>([&_value](QSlider* _s){return _s->setValue(_value);});
+    _tester.do_something<QSlider*>([&_value](QSlider* _s){_s->setValue(_value);});
 }
 
 } // namespace sight::ui::test::helper

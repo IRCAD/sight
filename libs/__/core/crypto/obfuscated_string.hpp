@@ -28,6 +28,7 @@
 #include "core/crypto/secure_string.hpp"
 
 #include <array>
+#include <cstdint>
 #include <iostream>
 
 namespace sight::core::crypto
@@ -51,7 +52,7 @@ struct linear_generator
 template<std::uint32_t S, std::size_t index>
 struct generate
 {
-    static const std::uint8_t VALUE = generate<linear_generator<S>::state, index - 1>::VALUE;
+    static const std::uint8_t VALUE = generate<linear_generator<S>::STATE, index - 1>::VALUE;
 };
 
 template<std::uint32_t S>
@@ -170,7 +171,7 @@ private:
 
 public:
 
-    explicit constexpr obfuscated_string( /*const char (& a)[N]*/ const std::array<char, N>& _a) :
+    explicit constexpr obfuscated_string(/*const char (& a)[N]*/ const std::array<char, N>& _a) :
         m_cipher_text(get_cipher_text<seed, N>(_a)),
         m_key(get_key<seed, N>())
     {
@@ -201,10 +202,11 @@ std::ostream& operator<<(std::ostream& _s, const sight::core::crypto::obfuscated
 #define RNG_SEED ((__TIME__[7] - '0') * 1 + (__TIME__[6] - '0') * 10 \
                   + (__TIME__[4] - '0') * 60 + (__TIME__[3] - '0') * 600 \
                   + (__TIME__[1] - '0') * 3600 + (__TIME__[0] - '0') * 36000) \
-    + (__LINE__ * 100000)
+        + (__LINE__ * 100000)
 
 #define OBFUSCATED_STR(STR) \
-    sight::core::crypto::obfuscated_string<RNG_SEED, sizeof(STR)> {sight::core::crypto::to_array<char, sizeof(STR)>(STR) \
-    }
+        sight::core::crypto::obfuscated_string<RNG_SEED, \
+                                               sizeof(STR)> {sight::core::crypto::to_array<char, sizeof(STR)>(STR) \
+        }
 
 } // namespace sight::core::crypto

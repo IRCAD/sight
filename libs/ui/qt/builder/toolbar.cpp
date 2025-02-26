@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,9 +45,12 @@ void toolbar::create_tool_bar(ui::container::widget::sptr _parent)
 {
     m_parent = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
     SIGHT_ASSERT("The parent container is not a widget", m_parent);
-    auto* window = qobject_cast<QMainWindow*>(m_parent->get_qt_container());
 
-    auto* tool_bar = new QToolBar(QObject::tr("tool_bar"));
+    auto* const parent_widget = m_parent->get_qt_container();
+    SIGHT_ASSERT("The parent have no QWidget", parent_widget != nullptr);
+
+    auto* tool_bar = new QToolBar(parent_widget);
+
     if(m_tool_bitmap_size.first != -1)
     {
         tool_bar->setIconSize(QSize(m_tool_bitmap_size.first, m_tool_bitmap_size.second));
@@ -92,7 +95,7 @@ void toolbar::create_tool_bar(ui::container::widget::sptr _parent)
     tool_bar->setStyleSheet(qApp->styleSheet() + style);
 
     ui::qt::container::toolbar::sptr tool_bar_container = ui::qt::container::toolbar::make();
-    if(window != nullptr)
+    if(auto* const window = qobject_cast<QMainWindow*>(m_parent->get_qt_container()); window != nullptr)
     {
         bool visible = window->isVisible();
 
@@ -123,9 +126,10 @@ void toolbar::create_tool_bar(ui::container::widget::sptr _parent)
     }
     else // parent is not a QMainWindow
     {
-        QWidget* widget = m_parent->get_qt_container();
-        SIGHT_ASSERT("Parent container must have a layout", widget->layout());
-        auto* layout = qobject_cast<QBoxLayout*>(widget->layout());
+        QWidget* const widget = m_parent->get_qt_container();
+
+        auto* const layout = qobject_cast<QBoxLayout*>(widget->layout());
+        SIGHT_ASSERT("Parent container layout must be a QBoxLayout", layout);
 
         switch(m_alignment)
         {
@@ -150,7 +154,6 @@ void toolbar::create_tool_bar(ui::container::widget::sptr _parent)
                 break;
         }
 
-        SIGHT_ASSERT("Parent container layout must have be a QVBoxLayout", layout);
         layout->setSpacing(0);
         layout->insertWidget(0, tool_bar, 0);
     }

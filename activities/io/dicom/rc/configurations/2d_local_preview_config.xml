@@ -7,7 +7,7 @@
     </parameters>
     <config>
         <object uid="${objectID}" type="sight::data::dicom_series" src="ref" />
-        <object uid="image" type="sight::data::image" src="deferred" />
+        <object uid="image" type="sight::data::image" deferred="true" />
         <object uid="tf" type="sight::data::transfer_function" />
 
         <service uid="mainview" type="sight::module::ui::view">

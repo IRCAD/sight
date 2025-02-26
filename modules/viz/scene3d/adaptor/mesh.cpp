@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,9 +43,11 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
+static const core::com::slots::key_t MODIFY_MESH_SLOT             = "modifyMesh";
 static const core::com::slots::key_t MODIFY_COLORS_SLOT           = "modifyColors";
 static const core::com::slots::key_t MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
 static const core::com::slots::key_t MODIFY_VERTICES_SLOT         = "modifyVertices";
+static const core::com::slots::key_t CHANGE_MATERIAL_SLOT         = "change_material";
 
 //-----------------------------------------------------------------------------
 
@@ -53,9 +55,22 @@ mesh::mesh() noexcept
 {
     m_material = std::make_shared<data::material>();
 
-    new_slot(MODIFY_COLORS_SLOT, &mesh::modify_point_colors, this);
-    new_slot(MODIFY_POINT_TEX_COORDS_SLOT, &mesh::modify_tex_coords, this);
-    new_slot(MODIFY_VERTICES_SLOT, &mesh::modify_vertices, this);
+    new_slot(MODIFY_MESH_SLOT, [this](){lazy_update(update_flags::MESH);});
+    new_slot(MODIFY_COLORS_SLOT, [this](){lazy_update(update_flags::COLORS);});
+    new_slot(MODIFY_POINT_TEX_COORDS_SLOT, [this](){lazy_update(update_flags::TEX_COORDS);});
+    new_slot(MODIFY_VERTICES_SLOT, [this](){lazy_update(update_flags::VERTICES);});
+    new_slot(
+        CHANGE_MATERIAL_SLOT,
+        [this](Ogre::MaterialPtr _material)
+        {
+            SIGHT_ASSERT("Entity null", m_entity);
+            m_entity->setMaterial(_material);
+
+            m_material_name = _material->getName();
+
+            SIGHT_ASSERT("Adaptor is null", m_material_adaptor);
+            m_material_adaptor->get_material_impl()->set_layout(*m_mesh_geometry);
+        });
 }
 
 //-----------------------------------------------------------------------------
@@ -80,7 +95,7 @@ void mesh::configuring()
     const std::string color = config.get<std::string>(CONFIG + "color", "");
 
     SIGHT_ASSERT("Material not found", m_material);
-    m_material->diffuse()->set_rgba(color.empty() ? "#FFFFFFFF" : color);
+    m_material->diffuse()->from_string(color.empty() ? "#FFFFFFFF" : color);
 
     m_auto_reset_camera = config.get<bool>(CONFIG + "autoresetcamera", true);
 
@@ -106,7 +121,7 @@ void mesh::configuring()
     this->set_transform_id(
         config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
 
@@ -129,13 +144,13 @@ void mesh::configuring()
 
 void mesh::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
     if(this->get_transform_id().empty())
     {
-        this->set_transform_id(this->get_id() + "_TF");
+        this->set_transform_id(this->gen_id("TF"));
     }
 
     m_mesh_geometry = std::make_shared<sight::viz::scene3d::mesh>(this->get_id());
@@ -162,6 +177,13 @@ void mesh::starting()
 
         m_material_adaptor = *result;
 
+        m_material_connection.connect(
+            m_material_adaptor,
+            module::viz::scene3d::adaptor::material::signals::CHANGED,
+            this->get_sptr(),
+            CHANGE_MATERIAL_SLOT
+        );
+
         SIGHT_ASSERT(
             "material adaptor managing material'" + m_material_name + "' is not found",
             result != mtl_adaptors.end()
@@ -177,12 +199,12 @@ void mesh::starting()
 
 service::connections_t mesh::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(MESH_IN, data::mesh::VERTEX_MODIFIED_SIG, MODIFY_VERTICES_SLOT);
     connections.push(MESH_IN, data::mesh::POINT_COLORS_MODIFIED_SIG, MODIFY_COLORS_SLOT);
     connections.push(MESH_IN, data::mesh::CELL_COLORS_MODIFIED_SIG, MODIFY_COLORS_SLOT);
     connections.push(MESH_IN, data::mesh::POINT_TEX_COORDS_MODIFIED_SIG, MODIFY_POINT_TEX_COORDS_SLOT);
-    connections.push(MESH_IN, data::mesh::MODIFIED_SIG, service::slots::UPDATE);
+    connections.push(MESH_IN, data::mesh::MODIFIED_SIG, MODIFY_MESH_SLOT);
     return connections;
 }
 
@@ -195,16 +217,33 @@ void mesh::updating()
         return;
     }
 
-    const auto mesh = m_mesh.lock();
-
-    if(m_mesh_geometry->has_color_layer_changed(mesh.get_shared()))
+    if(update_needed(update_flags::MESH))
     {
-        Ogre::SceneManager* scene_mgr = this->get_scene_manager();
-        SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
-        m_mesh_geometry->clear_mesh(*scene_mgr);
+        const auto mesh = m_mesh.lock();
+
+        if(m_mesh_geometry->has_color_layer_changed(mesh.get_shared()))
+        {
+            Ogre::SceneManager* scene_mgr = this->get_scene_manager();
+            SIGHT_ASSERT("Ogre::SceneManager is null", scene_mgr);
+            m_mesh_geometry->clear_mesh(*scene_mgr);
+        }
+
+        this->update_mesh(mesh.get_shared());
+    }
+    else if(update_needed(update_flags::VERTICES))
+    {
+        this->modify_vertices();
+    }
+    else if(update_needed(update_flags::COLORS))
+    {
+        this->modify_point_colors();
+    }
+    else if(update_needed(update_flags::TEX_COORDS))
+    {
+        this->modify_tex_coords();
     }
 
-    this->update_mesh(mesh.get_shared());
+    this->update_done();
 }
 
 //-----------------------------------------------------------------------------
@@ -228,6 +267,8 @@ void mesh::stopping()
     }
 
     m_mesh_geometry.reset();
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -285,7 +326,7 @@ void mesh::update_mesh(data::mesh::csptr _mesh)
     if(m_entity == nullptr)
     {
         m_entity = m_mesh_geometry->create_entity(*scene_mgr);
-        m_entity->setVisible(m_visible);
+        m_entity->setVisible(visible());
         m_entity->setQueryFlags(m_query_flags);
     }
     else
@@ -310,38 +351,29 @@ void mesh::update_mesh(data::mesh::csptr _mesh)
 
     this->attach_node(m_entity);
 
-    auto r2vb_renderables = m_mesh_geometry->update_r2_vb(
+    auto r2vb_renderables = m_mesh_geometry->update_r2vb(
         _mesh,
         *scene_mgr,
         m_material_adaptor->get_material_name()
     );
     for(auto* renderable : r2vb_renderables.second)
     {
-        auto adaptor = renderable->m_material_adaptor.lock();
-
         if(r2vb_renderables.first)
         {
-            if(adaptor)
+            if(renderable->material == nullptr)
             {
-                auto r2vb_mtl_adaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::material>(adaptor);
-                m_mesh_geometry->update_material(r2vb_mtl_adaptor->get_material_fw(), true);
-                // Update the material *synchronously* otherwise the r2vb will be rendered before the shader switch
-                r2vb_mtl_adaptor->slot(service::slots::UPDATE)->run();
+                const std::string mtl_name = gen_id(renderable->getName());
+                renderable->material = std::make_unique<sight::viz::scene3d::material::r2vb>(
+                    mtl_name,
+                    m_material_template_name
+                );
+                renderable->set_render_to_buffer_material(mtl_name);
+                renderable->material->set_primitive_type(renderable->get_input_primitive_type());
             }
-            else
-            {
-                // Instantiate a material adaptor for the r2vb process for this primitive type
-                adaptor = this->create_material_service(_mesh, renderable->getName());
 
-                auto r2vb_mtl_adaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::material>(adaptor);
-                r2vb_mtl_adaptor->set_r2_vb_object(renderable);
-                r2vb_mtl_adaptor->start();
-                m_mesh_geometry->update_material(r2vb_mtl_adaptor->get_material_fw(), true);
-                r2vb_mtl_adaptor->update();
-
-                renderable->set_render_to_buffer_material(r2vb_mtl_adaptor->get_material_name());
-                renderable->m_material_adaptor = r2vb_mtl_adaptor;
-            }
+            renderable->material->set_layout(*m_mesh_geometry);
+            renderable->material->set_shading(m_material->get_shading_mode());
+            renderable->material->set_ambient_diffuse(m_material);
 
             // Attach r2vb object in the scene graph
             renderable->setQueryFlags(m_query_flags);
@@ -349,14 +381,11 @@ void mesh::update_mesh(data::mesh::csptr _mesh)
         }
         else
         {
-            // Unregister the service if it has been removed
-            this->unregister_service(adaptor);
-
             this->get_scene_manager()->destroyMovableObject(renderable);
         }
     }
 
-    m_mesh_geometry->set_visible(m_visible);
+    m_mesh_geometry->set_visible(visible());
 
     if(m_auto_reset_camera)
     {
@@ -378,20 +407,18 @@ adaptor::material::sptr mesh::create_material_service(
     );
     material_adaptor->set_inout(m_material, "material", true);
 
-    const std::string mesh_name = _mesh->get_id();
-    const std::string mtl_name  = mesh_name + "_" + (material_adaptor->get_id()) + _material_suffix;
-    const auto template_name    =
-        !m_material_template_name.empty() ? m_material_template_name : sight::viz::scene3d::material::
-        DEFAULT_MATERIAL_TEMPLATE_NAME;
+    const std::string mtl_name = core::id::join(_mesh->get_id(), material_adaptor->get_id(), _material_suffix);
+    SIGHT_ASSERT("Template name empty", !m_material_template_name.empty());
 
     material_adaptor->configure(
-        this->get_id() + "_" + material_adaptor->get_id(),
+        gen_id(material_adaptor->get_id()),
         mtl_name,
         this->render_service(),
         m_layer_id,
         m_shading_mode,
-        template_name
+        m_material_template_name
     );
+    material_adaptor->set_representation_mode(m_material->get_representation_mode());
 
     if(_material_suffix.empty())
     {
@@ -413,20 +440,27 @@ void mesh::update_new_material_adaptor(data::mesh::csptr _mesh)
             m_material_adaptor = this->create_material_service(_mesh);
             m_material_adaptor->start();
 
-            m_mesh_geometry->update_material(m_material_adaptor->get_material_fw(), false);
+            m_material_adaptor->get_material_impl()->set_layout(*m_mesh_geometry);
             m_material_adaptor->update();
 
             m_entity->setMaterialName(m_material_adaptor->get_material_name(), sight::viz::scene3d::RESOURCE_GROUP);
+
+            m_material_connection.connect(
+                m_material_adaptor,
+                module::viz::scene3d::adaptor::material::signals::CHANGED,
+                this->get_sptr(),
+                CHANGE_MATERIAL_SLOT
+            );
         }
     }
     else if(m_material_adaptor->inout<data::material>(material::MATERIAL_INOUT).lock() != m_material)
     {
-        m_mesh_geometry->update_material(m_material_adaptor->get_material_fw(), false);
+        m_material_adaptor->get_material_impl()->set_layout(*m_mesh_geometry);
     }
     else
     {
         m_entity->setMaterialName(m_material_adaptor->get_material_name(), sight::viz::scene3d::RESOURCE_GROUP);
-        m_mesh_geometry->update_material(m_material_adaptor->get_material_fw(), false);
+        m_material_adaptor->get_material_impl()->set_layout(*m_mesh_geometry);
         m_material_adaptor->slot(service::slots::UPDATE)->run();
     }
 }
@@ -447,14 +481,14 @@ void mesh::update_xml_material_adaptor()
         if(m_entity != nullptr)
         {
             m_entity->setMaterialName(m_material_adaptor->get_material_name());
-            m_mesh_geometry->update_material(m_material_adaptor->get_material_fw(), false);
+            m_material_adaptor->get_material_impl()->set_layout(*m_mesh_geometry);
 
             m_material_adaptor->slot(service::slots::UPDATE)->run();
         }
     }
     else if(m_material_adaptor->inout<data::material>(material::MATERIAL_INOUT).lock() != m_material)
     {
-        m_mesh_geometry->update_material(m_material_adaptor->get_material_fw(), false);
+        m_material_adaptor->get_material_impl()->set_layout(*m_mesh_geometry);
     }
 }
 
@@ -475,7 +509,7 @@ void mesh::modify_vertices()
     m_mesh_geometry->update_vertices(mesh.get_shared());
 
     Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
-    m_mesh_geometry->update_r2_vb(
+    m_mesh_geometry->update_r2vb(
         mesh.get_shared(),
         *scene_mgr,
         m_material_adaptor->get_material_name()
@@ -560,7 +594,7 @@ void mesh::attach_node(Ogre::MovableObject* _node)
 
 void mesh::request_render()
 {
-    m_mesh_geometry->invalidate_r2_vb();
+    m_mesh_geometry->invalidate_r2vb();
 
     sight::viz::scene3d::adaptor::request_render();
 }

@@ -29,7 +29,7 @@ namespace sight::module::activity::validator::model_series
 
 /**
  * @brief Defines a validator which checks that the ModelSeries contains one and only one Skin.
- * @note If the given Object is a container (Vector or Composite), it validates that each sub-object is a ModelSeries
+ * @note If the given Object is a container (Vector or Map), it validates that each sub-object is a ModelSeries
  *       with one and only one Skin.
  */
 class contain_one_skin : public sight::activity::validator::object
@@ -46,10 +46,10 @@ public:
 
     /**
      * @brief Checks that the ModelSeries contains one only one Skin.
-     * @note Given object should be a single ModelSeries or a Vector or a Composite of ModelSeries.
+     * @note Given object should be a single ModelSeries or a Vector or a Map of ModelSeries.
      * @see module::activity::validator::base::validate
      */
-    sight::activity::validator::return_t validate(const CSPTR(data::object)& _current_object) const
+    sight::activity::validator::return_t validate(const CSPTR(data::object)& _object) const
     override;
 };
 

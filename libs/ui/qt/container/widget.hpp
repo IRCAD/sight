@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,16 +25,13 @@
 #include <sight/ui/qt/config.hpp>
 
 #include <core/base.hpp>
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <ui/__/container/widget.hpp>
 
+#include <QLayout>
 #include <QPointer>
-
-QT_BEGIN_NAMESPACE
-class QLayout;
-class QWidget;
-QT_END_NAMESPACE
+#include <QWidget>
 
 namespace sight::ui::qt::container
 {
@@ -52,8 +49,9 @@ public:
 
     SIGHT_UI_QT_API ~widget() noexcept override;
 
-    SIGHT_UI_QT_API virtual void set_qt_container(QWidget* _container);
-    SIGHT_UI_QT_API virtual QWidget* get_qt_container() const;
+    inline void set_qt_container(QWidget* _container, QWidget* _root = nullptr);
+    inline QWidget* get_qt_container() const;
+    inline QWidget* get_qt_root() const;
 
     /**
      * @brief Assign a layout to the container widget. Previous layout and its children are deleted and the container
@@ -73,6 +71,29 @@ public:
 private:
 
     QPointer<QWidget> m_container;
+    QPointer<QWidget> m_root;
 };
+
+//-----------------------------------------------------------------------------
+
+inline void widget::set_qt_container(QWidget* _container, QWidget* _root)
+{
+    m_container = _container;
+    m_root      = _root;
+}
+
+//-----------------------------------------------------------------------------
+
+inline QWidget* widget::get_qt_container() const
+{
+    return m_container;
+}
+
+//------------------------------------------------------------------------------
+
+inline QWidget* widget::get_qt_root() const
+{
+    return m_root ? m_root : m_container;
+}
 
 } // namespace sight::ui::qt::container

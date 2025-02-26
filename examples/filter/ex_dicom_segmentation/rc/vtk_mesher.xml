@@ -1,19 +1,18 @@
 <extension implements="sight::app::extension::config">
     <id>ExDicomSegmentation_VTKMesher_AppCfg</id>
     <parameters>
+        <object uid="seriesSet" type="sight::data::series_set" />
+        <object uid="imageSeries" type="sight::data::image_series" />
+
         <param name="WID_PARENT" />
         <param name="GENERIC_UID" />
-        <param name="seriesSet" />
-        <param name="imageSeries" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${seriesSet}" type="sight::data::series_set" src="ref" />
-        <object uid="${imageSeries}" type="sight::data::image_series" src="ref" />
         <object uid="tf" type="sight::data::transfer_function" />
-        <object uid="modelSeries" type="sight::data::model_series" src="deferred" />
-        <object uid="reconstructionUID" type="sight::data::reconstruction" src="deferred" />
+        <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
+        <object uid="reconstructionUID" type="sight::data::reconstruction" deferred="true" />
         <object uid="snapshot" type="sight::data::image" />
 
         <!-- ******************************* UI declaration *********************************** -->
@@ -99,7 +98,7 @@
         <service uid="mesherAct" type="sight::module::filter::mesh::vtk_mesher">
             <in key="imageSeries" uid="${imageSeries}" />
             <out key="modelSeries" uid="modelSeries" />
-            <config percentReduction="0" threshold="255" />
+            <config percent_reduction="0" threshold="255" />
         </service>
 
         <service uid="exportAct" type="sight::module::ui::series::exporter" auto_connect="true">

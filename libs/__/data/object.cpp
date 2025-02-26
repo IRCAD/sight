@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -180,7 +180,7 @@ bool object::operator==(const object& _other) const noexcept
         return false;
     }
 
-    return core::tools::is_equal(m_fields, _other.m_fields);
+    return core::is_equal(m_fields, _other.m_fields);
 }
 
 //------------------------------------------------------------------------------

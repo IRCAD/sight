@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,9 +28,9 @@ namespace sight::io::session
 {
 
 template<typename T>
-struct SerializerRegister
+struct serializer_register
 {
-    SerializerRegister(serializer_t _serializer, deserializer_t _deserializer)
+    serializer_register(serializer_t _serializer, deserializer_t _deserializer)
     {
         sight::io::session::session_writer::set_serializer(T::classname(), _serializer);
         sight::io::session::session_reader::set_deserializer(T::classname(), _deserializer);
@@ -38,7 +38,25 @@ struct SerializerRegister
 };
 
 #define SIGHT_REGISTER_SERIALIZER(dataName, serializer, deserializer) \
-    static const sight::io::session::SerializerRegister<dataName> BOOST_PP_CAT(serializerRegister, __LINE__)(serializer, \
-                                                                                                             deserializer);
+        static const sight::io::session::serializer_register<dataName> BOOST_PP_CAT( \
+            serializer_register, \
+            __LINE__ \
+        )(serializer, \
+          deserializer);
+
+struct serializer_register_deprecated
+{
+    serializer_register_deprecated(const std::string& _deprecated_class_name, deserializer_t _deserializer)
+    {
+        sight::io::session::session_reader::set_deserializer(_deprecated_class_name, _deserializer);
+    }
+};
+
+#define SIGHT_REGISTER_SERIALIZER_DEPRECATED(_deprecated_class_name, deserializer) \
+        static const sight::io::session::serializer_register_deprecated BOOST_PP_CAT( \
+            serializer_register_deprecated, \
+            __LINE__ \
+        )(_deprecated_class_name, \
+          deserializer);
 
 } // namespace sight::io::session

@@ -126,11 +126,11 @@ void io_itk_test::test_save_load_inr()
 {
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generate_random_image(image, core::type::INT16);
-    sight::data::helper::medical_image::set_direction(*image, std::make_shared<data::matrix4>());
 
     // inr only support image origin (0,0,0)
     const data::image::origin_t origin = {0., 0., 0.};
     image->set_origin(origin);
+    image->set_orientation({1, 0, 0, 0, 1, 0, 0, 0, 1});
 
     // save image in inr
     core::os::temp_dir tmp_dir;
@@ -174,7 +174,10 @@ void io_itk_test::test_save_load_nifti()
 {
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generate_random_image(image, core::type::INT16);
-    sight::data::helper::medical_image::set_direction(*image, std::make_shared<data::matrix4>());
+
+    data::image::orientation_t orientation = {0.36F, 0.48F, -0.8F, -0.8F, 0.6F, 0.0F, 0.48F, 0.64F, 0.6F};
+    std::transform(orientation.begin(), orientation.end(), orientation.begin(), tolerance);
+    image->set_orientation(orientation);
 
     const data::image::origin_t origin = {0.5F, 0.2F, 1.2F};
     image->set_origin(origin);
@@ -208,6 +211,10 @@ void io_itk_test::test_save_load_nifti()
     std::transform(spacing.begin(), spacing.end(), spacing.begin(), tolerance);
     image2->set_spacing(spacing);
 
+    auto orientation2 = image2->orientation();
+    std::transform(orientation2.begin(), orientation2.end(), orientation2.begin(), tolerance);
+    image2->set_orientation(orientation2);
+
     // check image
     image2->set_window_center(image->window_center());
     image2->set_window_width(image->window_width());
@@ -221,11 +228,10 @@ void io_itk_test::image_series_inr_test()
 {
     auto image_series = std::make_shared<data::image_series>();
     utest_data::generator::image::generate_random_image(image_series, core::type::INT16);
-    sight::data::helper::medical_image::set_direction(*image_series, std::make_shared<data::matrix4>());
 
     // inr only support image origin (0,0,0)
-    const data::image::origin_t origin = {0., 0., 0.};
-    image_series->set_origin(origin);
+    image_series->set_origin({0., 0., 0.});
+    image_series->set_orientation({1, 0, 0, 0, 1, 0, 0, 0, 1});
 
     // save image in inr
     core::os::temp_dir tmp_dir;
@@ -275,11 +281,10 @@ void io_itk_test::image_series_nifti_test()
 {
     auto image_series = std::make_shared<data::image_series>();
     utest_data::generator::image::generate_random_image(image_series, core::type::INT16);
-    sight::data::helper::medical_image::set_direction(*image_series, std::make_shared<data::matrix4>());
 
-    // inr only support image origin (0,0,0)
-    const data::image::origin_t origin = {0., 0., 0.};
-    image_series->set_origin(origin);
+    // Use float value since ITK will convert double to float which may change the value
+    image_series->set_origin({1.F, 1.F, 1.F});
+    image_series->set_orientation({1.F, 0.F, 0.F, 0.F, 0.F, -1.F, 0.F, 1.F, 0.F});
 
     // save image in inr
     core::os::temp_dir tmp_dir;
@@ -364,7 +369,7 @@ void io_itk_test::series_set_inr_test()
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
     data::image_series::sptr img_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(0));
     CPPUNIT_ASSERT(img_series);
-    CPPUNIT_ASSERT_EQUAL(std::string("OT"), img_series->get_modality());
+    CPPUNIT_ASSERT_EQUAL(data::dicom::modality_t::ot, img_series->get_modality());
 
     CPPUNIT_ASSERT_EQUAL(std::string("int16"), img_series->type().name());
     CPPUNIT_ASSERT(size == img_series->size());
@@ -374,7 +379,7 @@ void io_itk_test::series_set_inr_test()
 
     img_series = std::dynamic_pointer_cast<data::image_series>(series_set->at(1));
     CPPUNIT_ASSERT(img_series);
-    CPPUNIT_ASSERT_EQUAL(std::string("OT"), img_series->get_modality());
+    CPPUNIT_ASSERT_EQUAL(data::dicom::modality_t::ot, img_series->get_modality());
 
     CPPUNIT_ASSERT_EQUAL(std::string("uint8"), img_series->type().name());
     CPPUNIT_ASSERT(size == img_series->size());

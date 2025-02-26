@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ class contain_one_tool_test : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(contain_one_tool_test);
 CPPUNIT_TEST(test_validator);
 CPPUNIT_TEST(test_validator_with_vector);
-CPPUNIT_TEST(test_validator_with_composite);
+CPPUNIT_TEST(test_validator_with_map);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,7 +44,7 @@ public:
 
     static void test_validator();
     static void test_validator_with_vector();
-    static void test_validator_with_composite();
+    static void test_validator_with_map();
 };
 
 } // namespace sight::module::activity::validator::ut

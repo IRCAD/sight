@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,11 +26,7 @@
 
 #include <data/model_series.hpp>
 
-#include <io/__/writer/registry/macros.hpp>
-
 #include <filesystem>
-
-SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::series_set);
 
 namespace sight::io::dicom::writer
 {

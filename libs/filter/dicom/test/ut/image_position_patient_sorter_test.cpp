@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,6 @@
 #include <filter/dicom/filter.hpp>
 #include <filter/dicom/helper/filter.hpp>
 
-#include <geometry/data/vector_functions.hpp>
-
 #include <io/dicom/reader/series_set.hpp>
 
 #include <utest_data/data.hpp>
@@ -36,6 +34,8 @@
 #include <boost/algorithm/string/split.hpp>
 
 #include <gdcmImageReader.h>
+
+#include <glm/glm.hpp>
 
 #include <filesystem>
 
@@ -83,30 +83,28 @@ double get_instance_z_position(const core::memory::buffer_object::sptr& _buffer_
     }
 
     // Retrieve image position
-    const gdcm::Image& gdcm_image = reader.GetImage();
-    const double* gdcm_origin     = gdcm_image.GetOrigin();
-    const fw_vec3d image_position = {{gdcm_origin[0], gdcm_origin[1], gdcm_origin[2]}};
+    const gdcm::Image& gdcm_image   = reader.GetImage();
+    const double* gdcm_origin       = gdcm_image.GetOrigin();
+    const glm::dvec3 image_position = {gdcm_origin[0], gdcm_origin[1], gdcm_origin[2]};
 
     // Retrieve image orientation
-    const double* direction_cosines    = gdcm_image.GetDirectionCosines();
-    const fw_vec3d image_orientation_u = {{
+    const double* direction_cosines      = gdcm_image.GetDirectionCosines();
+    const glm::dvec3 image_orientation_u = {
         std::round(direction_cosines[0]),
         std::round(direction_cosines[1]),
         std::round(direction_cosines[2])
-    }
     };
-    const fw_vec3d image_orientation_v = {{
+    const glm::dvec3 image_orientation_v = {
         std::round(direction_cosines[3]),
         std::round(direction_cosines[4]),
         std::round(direction_cosines[5])
-    }
     };
 
     //Compute Z direction (cross product)
-    const fw_vec3d z_vector = geometry::data::cross(image_orientation_u, image_orientation_v);
+    const glm::dvec3 z_vector = glm::cross(image_orientation_u, image_orientation_v);
 
     //Compute dot product to get the index
-    const double index = geometry::data::dot(image_position, z_vector);
+    const double index = glm::dot(image_position, z_vector);
 
     return index;
 }

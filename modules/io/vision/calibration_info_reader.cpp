@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,26 +37,20 @@
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
-#include <ui/__/preferences.hpp>
 
 #include <opencv2/opencv.hpp>
+
+// cspell:ignore imread
 
 namespace sight::module::io::vision
 {
 
 static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "update_chessboard_size";
 
-//------------------------------------------------------------------------------
-
-calibration_info_reader::calibration_info_reader() noexcept
+calibration_info_reader::calibration_info_reader() noexcept :
+    reader("Choose a folder holding calibration inputs")
 {
-    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &calibration_info_reader::update_chessboard_size, this);
 }
-
-//------------------------------------------------------------------------------
-
-calibration_info_reader::~calibration_info_reader() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -72,7 +66,7 @@ void calibration_info_reader::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Select a folder holding calibration inputs" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.set_option(ui::dialog::location::read);
     dialog_file.set_type(ui::dialog::location::folder);
@@ -96,22 +90,12 @@ void calibration_info_reader::open_location_dialog()
 void calibration_info_reader::configuring()
 {
     sight::io::service::reader::configuring();
-
-    const config_t config       = this->get_config();
-    const config_t board_config = config.get_child("board");
-
-    m_width_key = board_config.get<std::string>("<xmlattr>.width");
-    SIGHT_ASSERT("Missing board width preference key.", !m_width_key.empty());
-    m_height_key = board_config.get<std::string>("<xmlattr>.height");
-    SIGHT_ASSERT("Missing board height preference key.", !m_height_key.empty());
-    m_scale_key = board_config.get<std::string>("<xmlattr>.scale", "");
 }
 
 //------------------------------------------------------------------------------
 
 void calibration_info_reader::starting()
 {
-    this->update_chessboard_size();
 }
 
 //------------------------------------------------------------------------------
@@ -147,9 +131,9 @@ void calibration_info_reader::updating()
 
                 data::point_list::sptr chessboard_pts = geometry::vision::helper::detect_chessboard(
                     img,
-                    m_width,
-                    m_height,
-                    m_scale
+                    std::size_t(*m_width),
+                    std::size_t(*m_height),
+                    float(*m_scale)
                 );
 
                 if(chessboard_pts)
@@ -221,41 +205,6 @@ void calibration_info_reader::updating()
 
 void calibration_info_reader::stopping()
 {
-}
-
-// ----------------------------------------------------------------------------
-
-void calibration_info_reader::update_chessboard_size()
-{
-    try
-    {
-        ui::preferences preferences;
-
-        if(const auto& saved = preferences.get_optional<decltype(m_width)>(m_width_key); saved)
-        {
-            m_width = *saved;
-        }
-
-        if(const auto& saved = preferences.get_optional<decltype(m_height)>(m_height_key); saved)
-        {
-            m_height = *saved;
-        }
-
-        if(const auto& saved = preferences.get_optional<decltype(m_scale)>(m_scale_key); saved)
-        {
-            m_scale = *saved;
-
-            if(m_scale > 1.F)
-            {
-                m_scale = 1.F;
-                SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
-            }
-        }
-    }
-    catch(const ui::preferences_disabled&)
-    {
-        // Nothing to do..
-    }
 }
 
 //------------------------------------------------------------------------------

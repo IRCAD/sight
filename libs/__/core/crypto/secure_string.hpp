@@ -68,7 +68,7 @@ struct allocator
 //------------------------------------------------------------------------------
 
 template<typename T, typename U>
-constexpr bool operator==(allocator<T> /*unused*/, allocator<U> /*unused*/) noexcept
+constexpr bool operator==(allocator<T>/*unused*/, allocator<U>/*unused*/) noexcept
 {
     return true;
 }
@@ -76,7 +76,7 @@ constexpr bool operator==(allocator<T> /*unused*/, allocator<U> /*unused*/) noex
 //------------------------------------------------------------------------------
 
 template<typename T, typename U>
-constexpr bool operator!=(allocator<T> /*unused*/, allocator<U> /*unused*/) noexcept
+constexpr bool operator!=(allocator<T>/*unused*/, allocator<U>/*unused*/) noexcept
 {
     return false;
 }
@@ -97,10 +97,4 @@ inline sight::core::crypto::secure_string::~basic_string()
 {
     clear();
     shrink_to_fit();
-
-    // The "metadata" of the container is cleansed here, not its content
-    volatile char* const p = (volatile char*) (this);
-
-    // NOLINTNEXTLINE(bugprone-sizeof-container)
-    std::fill_n(p, sizeof(*this), static_cast<char>(0));
 }

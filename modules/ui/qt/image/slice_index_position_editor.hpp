@@ -38,7 +38,7 @@ namespace sight::module::ui::qt::image
 
 enum label_option_t
 {
-    index,
+    index = 0,
     position
 };
 enum orientation_t
@@ -53,11 +53,6 @@ enum orientation_t
     axial    = z_axis
 };
 
-struct fiducial_info
-{
-    std::int64_t position;
-    std::vector<QColor> colors;
-};
 /**
  * @brief   slice_index_position_editor service allows to change the slice index/position of an image.
  *
@@ -102,7 +97,7 @@ protected:
     static const service::base::key_t IMAGE_INOUT;
 
     /// @brief The slice type: axial, frontal, sagittal.
-    using orientation_t = data::helper::medical_image::orientation_t;
+    using axis_t = data::helper::medical_image::axis_t;
 
     void configuring() override;
     /**
@@ -136,7 +131,7 @@ protected:
     void update_slice_index_from_img(const sight::data::image& _image);
 
     /// Update the editor slice type choice from the image slice type.
-    void update_slice_type_from_img(const orientation_t& _type);
+    void update_slice_type_from_img(const axis_t& _type);
 
     /// This method is called when the slider is move. Notify the slice index is modified.
     void slice_index_notification(int _index);
@@ -146,6 +141,13 @@ protected:
 
     ///update the slider verticals lines.
     void update_slider_fiducial();
+
+    /// This method is called when the label type changes, to destroy the previous type of `qt_container`.
+    void destroyEditorContainer();
+
+    /// This method is called when the slice label option changes. It notifies that the slice label option has been
+    /// toggled.
+    void slice_label_notification();
 
 private:
 
@@ -167,8 +169,7 @@ private:
      */
 
     sight::ui::qt::slice_selector* m_slice_selector_with_index {};
-    sight::ui::qt::slice_selector* m_slice_selector_with_position {};
-    data::ptr<data::image, data::access::inout> m_image {this, "image", true};
+    data::ptr<data::image, data::access::inout> m_image {this, "image"};
 
     std::int64_t m_axial_index {-1};
     std::int64_t m_frontal_index {-1};
@@ -179,9 +180,9 @@ private:
     double m_frontal_position {-1};
 
     label_option_t m_label_option {label_option_t::index};
-    orientation_t m_orientation {orientation_t::z_axis};
+    axis_t m_axis {axis_t::z_axis};
 
-    static std::map<orientation_t, std::string> orientation_prefix_map;
+    static std::map<axis_t, std::string> orientation_prefix_map;
     bool m_display_axis_selector {true};
 
     bool m_display_step_buttons {false};

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,7 @@
 #include "dump_editor.hpp"
 
 #include <core/base.hpp>
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
 #include <core/memory/buffer_manager.hpp>
 #include <core/memory/byte_size.hpp>
 #include <core/memory/policy/base.hpp>
@@ -510,15 +509,15 @@ void dump_editor::starting()
     sizer->addWidget(m_list, 2);
 
     m_policy_editor = new QTableView();
-    auto* policy_combo_box_delegate = new class policy_combo_box_delegate (m_policy_editor) ;
-                                          auto* policy_table_model = new class policy_table_model (m_policy_editor) ;
-                                                                         m_policy_editor->setModel(policy_table_model);
+    auto* policy_combo_box_delegate = new class policy_combo_box_delegate (m_policy_editor);
+    auto* policy_table_model        = new class policy_table_model (m_policy_editor);
+    m_policy_editor->setModel(policy_table_model);
     m_policy_editor->setItemDelegateForRow(0, policy_combo_box_delegate);
     m_policy_editor->setSortingEnabled(false);
     m_policy_editor->horizontalHeader()->hide();
 
-    auto* info_table_model = new class info_table_model () ;
-        m_info_editor      = new QTableView();
+    auto* info_table_model = new class info_table_model ();
+    m_info_editor = new QTableView();
     m_info_editor->setModel(info_table_model);
     m_info_editor->horizontalHeader()->hide();
 
@@ -763,7 +762,7 @@ void dump_editor::change_status(int _index)
         else
         {
             std::stringstream stream;
-            stream << "Object " << selected_buffer << " not found, please refresh the grid.";
+            stream << "Buffer not found, please refresh the grid.";
             sight::ui::dialog::message::show(
                 "Dump process information",
                 stream.str(),

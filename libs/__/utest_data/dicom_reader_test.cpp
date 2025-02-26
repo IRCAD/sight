@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,7 +99,7 @@ bool dicom_reader_test::check_series_jms_genou(const data::image_series::sptr& _
     //(0008,0033) TM [174502.095]                                       # 10,1 Content Time
     //(0008,0050) SH [12514 ]                                           # 6,1 Accession Number
     //(0008,0060) CS [CT]                                               # 2,1 Modality
-    check_value(ok, "Series Modality doesn't match : ", "CT"s, _series->get_modality());
+    check_value(ok, "Series Modality doesn't match : ", "CT"s, _series->get_modality_string());
     //(0008,0070) LO [TOSHIBA ]                                         # 8,1 Manufacturer
     //(0008,0080) LO [SCANNER DU MORDOR ]                               # 20,1 Institution Name
     check_value(
@@ -313,7 +313,7 @@ bool dicom_reader_test::check_series_jms_genou_trimmed(const data::image_series:
     //(0008,0033) TM [174502.095]                                       # 10,1 Content Time
     //(0008,0050) SH [12514 ]                                           # 6,1 Accession Number
     //(0008,0060) CS [CT]                                               # 2,1 Modality
-    check_value(ok, "Series Modality doesn't match : ", "CT"s, _series->get_modality());
+    check_value(ok, "Series Modality doesn't match : ", "CT"s, _series->get_modality_string());
     //(0008,0070) LO [TOSHIBA ]                                         # 8,1 Manufacturer
     //(0008,0080) LO [SCANNER DU MORDOR ]                               # 20,1 Institution Name
     check_value(

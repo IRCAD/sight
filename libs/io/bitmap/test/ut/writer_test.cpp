@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -163,7 +163,7 @@ inline static void profile_writer(
     // Now profile writing
     SIGHT_PROFILE_FUNC(
         [&]
-            (std::size_t i)
+        (std::size_t i)
         {
             for(std::size_t j = 0 ; const auto& image : _images)
             {
@@ -250,7 +250,7 @@ inline static void profile_open_cv_writer(
     // Now profile writing
     SIGHT_PROFILE_FUNC(
         [&]
-            (std::size_t i)
+        (std::size_t i)
         {
             for(std::size_t j = 0 ; const auto& image : _images)
             {
@@ -413,7 +413,7 @@ inline static void conformance(
     const std::vector<backend>& _supported,
     const std::vector<backend>& _unsupported,
     core::type _type,
-    enum data::image::pixel_format _format
+    enum data::image::pixel_format_t _format
 )
 {
     // Create a temporary directory
@@ -543,7 +543,7 @@ void writer_test::conformance_test()
                 },
                 {},
                 core::type::UINT8,
-                data::image::pixel_format::rgb
+                data::image::pixel_format_t::rgb
             );
         }
         else if(io::bitmap::nv_jpeg())
@@ -552,7 +552,7 @@ void writer_test::conformance_test()
                 {backend::libjpeg, backend::libpng, backend::libtiff, backend::openjpeg, backend::nvjpeg},
                 {backend::nvjpeg2k},
                 core::type::UINT8,
-                data::image::pixel_format::rgb
+                data::image::pixel_format_t::rgb
             );
         }
         else
@@ -561,7 +561,7 @@ void writer_test::conformance_test()
                 {backend::libjpeg, backend::libpng, backend::libtiff, backend::openjpeg},
                 {backend::nvjpeg2k, backend::nvjpeg},
                 core::type::UINT8,
-                data::image::pixel_format::rgb
+                data::image::pixel_format_t::rgb
             );
         }
     }
@@ -574,7 +574,7 @@ void writer_test::conformance_test()
                 {backend::libjpeg, backend::libpng, backend::libtiff, backend::openjpeg, backend::nvjpeg2k},
                 {backend::nvjpeg},
                 core::type::UINT8,
-                data::image::pixel_format::gray_scale
+                data::image::pixel_format_t::gray_scale
             );
         }
         else
@@ -583,7 +583,7 @@ void writer_test::conformance_test()
                 {backend::libjpeg, backend::libpng, backend::libtiff, backend::openjpeg},
                 {backend::nvjpeg2k, backend::nvjpeg},
                 core::type::UINT8,
-                data::image::pixel_format::gray_scale
+                data::image::pixel_format_t::gray_scale
             );
         }
     }
@@ -596,7 +596,7 @@ void writer_test::conformance_test()
                 {backend::libtiff, backend::openjpeg, backend::nvjpeg2k},
                 {backend::libjpeg, backend::nvjpeg},
                 core::type::UINT16,
-                data::image::pixel_format::rgb
+                data::image::pixel_format_t::rgb
             );
         }
         else
@@ -605,7 +605,7 @@ void writer_test::conformance_test()
                 {backend::libpng, backend::libtiff, backend::openjpeg},
                 {backend::libjpeg, backend::nvjpeg2k, backend::nvjpeg},
                 core::type::UINT16,
-                data::image::pixel_format::rgb
+                data::image::pixel_format_t::rgb
             );
         }
     }
@@ -618,7 +618,7 @@ void writer_test::conformance_test()
                 {backend::libpng, backend::libtiff, backend::openjpeg, backend::nvjpeg2k},
                 {backend::libjpeg, backend::nvjpeg},
                 core::type::UINT16,
-                data::image::pixel_format::gray_scale
+                data::image::pixel_format_t::gray_scale
             );
         }
         else
@@ -627,7 +627,7 @@ void writer_test::conformance_test()
                 {backend::libpng, backend::libtiff, backend::openjpeg},
                 {backend::libjpeg, backend::nvjpeg2k, backend::nvjpeg},
                 core::type::UINT16,
-                data::image::pixel_format::gray_scale
+                data::image::pixel_format_t::gray_scale
             );
         }
     }

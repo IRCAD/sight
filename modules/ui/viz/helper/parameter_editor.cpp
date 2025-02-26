@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -164,9 +164,9 @@ service::config_t parameter_editor::create_config(
             {
                 _connections.connect(
                     _param_srv,
-                    "double" + str_size + "Changed",
+                    "double" + str_size + "_changed",
                     _adaptor,
-                    "setDouble" + str_size + "Parameter"
+                    "set_double" + str_size + "_parameter"
                 );
 
                 // We can't give a default value for each component to parameters :/
@@ -198,9 +198,9 @@ service::config_t parameter_editor::create_config(
             {
                 _connections.connect(
                     _param_srv,
-                    "int" + str_size + "Changed",
+                    "int" + str_size + "_changed",
                     _adaptor,
-                    "setInt" + str_size + "Parameter"
+                    "set_int" + str_size + "_parameter"
                 );
                 const auto dump_lock = array_object->dump_lock();
 

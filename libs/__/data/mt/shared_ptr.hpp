@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,15 +86,16 @@ public:
     }
 
     /// Default constructors, destructor and assignment operators
-    shared_ptr()                  = default;
-    shared_ptr(const shared_ptr&) = default;
-    shared_ptr(shared_ptr&&) noexcept = default;
-    shared_ptr& operator=(const shared_ptr&) = default;
+    shared_ptr()                                 = default;
+    shared_ptr(const shared_ptr&)                = default;
+    shared_ptr(shared_ptr&&) noexcept            = default;
+    shared_ptr& operator=(const shared_ptr&)     = default;
     shared_ptr& operator=(shared_ptr&&) noexcept = default;
-    ~shared_ptr() = default;
+    ~shared_ptr()                                = default;
 
     /// Returns the locked_ptr from the shared pointer
     [[nodiscard]] locked_ptr<DATATYPE> lock() const noexcept;
+    [[nodiscard]] locked_ptr<std::add_const_t<DATATYPE> > const_lock() const noexcept;
 
     /// Resets the pointer to null
     inline void reset() noexcept
@@ -133,6 +134,14 @@ template<class DATATYPE>
 inline locked_ptr<DATATYPE> shared_ptr<DATATYPE>::lock() const noexcept
 {
     return locked_ptr<DATATYPE>(m_data);
+}
+
+//-----------------------------------------------------------------------------
+
+template<class DATATYPE>
+inline locked_ptr<std::add_const_t<DATATYPE> > shared_ptr<DATATYPE>::const_lock() const noexcept
+{
+    return locked_ptr<std::add_const_t<DATATYPE> >(std::dynamic_pointer_cast<std::add_const_t<DATATYPE> >(m_data));
 }
 
 } // namespace sight::data::mt

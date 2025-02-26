@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ void resize_viewport::configuring()
 
 void resize_viewport::starting()
 {
-    this->initialize();
+    adaptor::init();
     const auto* const camera = this->layer()->get_default_camera();
     const auto* const vp     = camera->getViewport();
 
@@ -107,6 +107,7 @@ void resize_viewport::updating() noexcept
 
 void resize_viewport::stopping() noexcept
 {
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "io/igtl/detail/data_converter.hpp"
 
 #include <data/boolean.hpp>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 #include <igtlTrackingDataMessage.h>
 
@@ -33,7 +33,7 @@ namespace sight::io::igtl::detail::converter
 {
 
 const std::string tracking_stop_converter::IGTL_TYPE          = "STP_TDATA";
-const std::string tracking_stop_converter::FWDATA_OBJECT_TYPE = data::composite::classname();
+const std::string tracking_stop_converter::FWDATA_OBJECT_TYPE = data::map::classname();
 const std::string STATUS_KEY                                  = "Status";
 
 CONVERTER_REGISTER_MACRO(io::igtl::detail::converter::tracking_stop_converter);
@@ -58,13 +58,13 @@ tracking_stop_converter::~tracking_stop_converter()
 
 data::object::sptr tracking_stop_converter::from_igtl_message(const ::igtl::MessageBase::Pointer /*src*/) const
 {
-    data::composite::sptr composite = std::make_shared<data::composite>();
-    data::boolean::sptr status      = std::make_shared<data::boolean>();
-    (*composite)[STATUS_KEY] = status;
+    data::map::sptr map        = std::make_shared<data::map>();
+    data::boolean::sptr status = std::make_shared<data::boolean>();
+    (*map)[STATUS_KEY] = status;
 
     status->set_value(false);
 
-    return composite;
+    return map;
 }
 
 //-----------------------------------------------------------------------------

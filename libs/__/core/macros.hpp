@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,24 +59,24 @@
  * @brief Define several typdefs for classes (sptr, wptr, ...)
  */
 #define FWCORE_CLASS_TYPEDEFS_1(_class) \
-    /** Self type  */ \
-    using self_t = _class; \
-    /** Type of base class  */ \
-    using base_class_t = self_t; \
-    /** Type of root class  */ \
-    using root_class_t = self_t; \
-    /** Shared pointer type  */ \
-    using sptr = SPTR(self_t); \
-    /** Weak pointer type  */ \
-    using wptr = WPTR(self_t); \
-    /** Unique pointer type  */ \
-    using uptr = UPTR(self_t); \
-    /** Const shared pointer type  */ \
-    using csptr = CSPTR(self_t); \
-    /** Const weak pointer type  */ \
-    using cwptr = CWPTR(self_t); \
-    /** Const unique pointer type  */ \
-    using cuptr = CUPTR(self_t); \
+        /** Self type  */ \
+        using self_t = _class; \
+        /** Type of base class  */ \
+        using base_class_t = self_t; \
+        /** Type of root class  */ \
+        using root_class_t = self_t; \
+        /** Shared pointer type  */ \
+        using sptr = SPTR(self_t); \
+        /** Weak pointer type  */ \
+        using wptr = WPTR(self_t); \
+        /** Unique pointer type  */ \
+        using uptr = UPTR(self_t); \
+        /** Const shared pointer type  */ \
+        using csptr = CSPTR(self_t); \
+        /** Const weak pointer type  */ \
+        using cwptr = CWPTR(self_t); \
+        /** Const unique pointer type  */ \
+        using cuptr = CUPTR(self_t); \
 
 /**
  * @brief Define several typdefs for classes (sptr, wptr, ...)
@@ -84,28 +84,28 @@
  * base_class_t is a typedef to the superclass
  */
 #define FWCORE_CLASS_TYPEDEFS_2(_class, _parent_class) \
-    /** Self type  */ \
-    using self_t = _class; \
-    /** Type of base class  */ \
-    using base_class_t = _parent_class; \
-    /** Type of root class  */ \
-    using root_class_t = base_class_t::root_class_t; \
-    /** Shared pointer type  */ \
-    using sptr = SPTR(self_t); \
-    /** Weak pointer type  */ \
-    using wptr = WPTR(self_t); \
-    /** Unique pointer type  */ \
-    using uptr = UPTR(self_t); \
-    /** Const shared pointer type  */ \
-    using csptr = CSPTR(self_t); \
-    /** Const weak pointer type  */ \
-    using cwptr = CWPTR(self_t); \
-    /** Const unique pointer type  */ \
-    using cuptr = CUPTR(self_t);
+        /** Self type  */ \
+        using self_t = _class; \
+        /** Type of base class  */ \
+        using base_class_t = _parent_class; \
+        /** Type of root class  */ \
+        using root_class_t = base_class_t::root_class_t; \
+        /** Shared pointer type  */ \
+        using sptr = SPTR(self_t); \
+        /** Weak pointer type  */ \
+        using wptr = WPTR(self_t); \
+        /** Unique pointer type  */ \
+        using uptr = UPTR(self_t); \
+        /** Const shared pointer type  */ \
+        using csptr = CSPTR(self_t); \
+        /** Const weak pointer type  */ \
+        using cwptr = CWPTR(self_t); \
+        /** Const unique pointer type  */ \
+        using cuptr = CUPTR(self_t);
 
 #define FWCORE_STATIC_CACHE(value) \
-    static const std::string __cache__(value); \
-    return __cache__;
+        static const std::string __cache__(value); \
+        return __cache__;
 
 /**
  * @brief Generate virtual methods that return classname/namespace strings
@@ -115,27 +115,27 @@
  * - LeafClassname is Object
  */
 #define FWCORE_INTERFACE_MACRO() \
-    /** @name Demangling methods */ \
-    /** @{ */ \
-    /** @brief return object's classname without its namespace, i.e. base_object */ \
-    virtual const std::string& get_leaf_classname() const \
-    { \
-        FWCORE_STATIC_CACHE(sight::core::demangler(*this).get_leaf_classname()); \
-    } \
-    static const std::string& leaf_classname() \
-    { \
-        FWCORE_STATIC_CACHE(sight::core::get_leaf_classname<self_t>()); \
-    } \
-    /** @brief return full object's classname with its namespace, i.e. core::base_object */ \
-    virtual const std::string& get_classname() const \
-    { \
-        FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
-    } \
-    static const std::string& classname() \
-    { \
-        FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
-    } \
-    /** @} */
+        /** @name Demangling methods */ \
+        /** @{ */ \
+        /** @brief return object's classname without its namespace, i.e. base_object */ \
+        virtual const std::string & get_leaf_classname() const \
+        { \
+            FWCORE_STATIC_CACHE(sight::core::demangler(*this).get_leaf_classname()); \
+        } \
+        static const std::string& leaf_classname() \
+        { \
+            FWCORE_STATIC_CACHE(sight::core::get_leaf_classname<self_t>()); \
+        } \
+        /** @brief return full object's classname with its namespace, i.e. core::base_object */ \
+        virtual const std::string& get_classname() const \
+        { \
+            FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
+        } \
+        static const std::string& classname() \
+        { \
+            FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
+        } \
+        /** @} */
 
 /**
  * @brief Generate virtual methods that return classname/namespace strings
@@ -145,27 +145,27 @@
  * - LeafClassname is Object
  */
 #define FWCORE_CLASSNAME_MACRO() \
-    /** @name Demangling methods */ \
-    /** @{ */ \
-    /** @brief return object's classname without its namespace, i.e. base_object */ \
-    const std::string& get_leaf_classname() const override \
-    { \
-        FWCORE_STATIC_CACHE(sight::core::demangler(*this).get_leaf_classname()); \
-    } \
-    static const std::string& leaf_classname() \
-    { \
-        FWCORE_STATIC_CACHE(sight::core::get_leaf_classname<self_t>()); \
-    } \
-    /** @brief return full object's classname with its namespace, i.e. core::base_object */ \
-    const std::string& get_classname() const override \
-    { \
-        FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
-    } \
-    static const std::string& classname() \
-    { \
-        FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
-    } \
-    /** @} */
+        /** @name Demangling methods */ \
+        /** @{ */ \
+        /** @brief return object's classname without its namespace, i.e. base_object */ \
+        const std::string & get_leaf_classname() const override \
+        { \
+            FWCORE_STATIC_CACHE(sight::core::demangler(*this).get_leaf_classname()); \
+        } \
+        static const std::string& leaf_classname() \
+        { \
+            FWCORE_STATIC_CACHE(sight::core::get_leaf_classname<self_t>()); \
+        } \
+        /** @brief return full object's classname with its namespace, i.e. core::base_object */ \
+        const std::string& get_classname() const override \
+        { \
+            FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
+        } \
+        static const std::string& classname() \
+        { \
+            FWCORE_STATIC_CACHE(sight::core::get_classname<self_t>()); \
+        } \
+        /** @} */
 
 /**
  * @brief Generate virtual methods that check if passed type is same type of
@@ -177,28 +177,28 @@
  *
  */
 #define FWCORE_TYPE_1(_class) \
-    static bool is_type_of(const std::string& type) \
-    { \
-        return self_t::classname() == type; \
-    } \
-    virtual bool is_a(const std::string& type) const \
-    { \
-        return self_t::is_type_of(type); \
-    }
+        static bool is_type_of(const std::string& type) \
+        { \
+            return self_t::classname() == type; \
+        } \
+        virtual bool is_a(const std::string& type) const \
+        { \
+            return self_t::is_type_of(type); \
+        }
 
 #define FWCORE_TYPE_2(_class, _parent_class) \
-    static bool is_type_of(const std::string& type) \
-    { \
-        if(self_t::classname() == type) \
+        static bool is_type_of(const std::string& type) \
         { \
-            return true; \
+            if(self_t::classname() == type) \
+            { \
+                return true; \
+            } \
+            return base_class_t::is_type_of(type); \
         } \
-        return base_class_t::is_type_of(type); \
-    } \
-    bool is_a(const std::string& type) const override \
-    { \
-        return self_t::is_type_of(type); \
-    }
+        bool is_a(const std::string& type) const override \
+        { \
+            return self_t::is_type_of(type); \
+        }
 
 /**
  * @brief Generate get_sptr and get_const_sptr methods
@@ -206,47 +206,47 @@
  * These methods use 'shared_from_this' to get a shared pointer and cast it to required type
  */
 #define SIGHT_ALLOW_SHARED_FROM_THIS() \
-    /** @brief return a casted const shared ptr from this object */ \
-    csptr get_const_sptr() const \
-    { \
-        return dynamic_pointer_cast<const self_t>(this->core::base_object::shared_from_this()); \
-    } \
-    /** @brief return a casted shared ptr from this object */ \
-    sptr get_sptr() \
-    { \
-        return dynamic_pointer_cast<self_t>(this->core::base_object::shared_from_this()); \
-    }
+        /** @brief return a casted const shared ptr from this object */ \
+        csptr get_const_sptr() const \
+        { \
+            return dynamic_pointer_cast<const self_t>(this->core::base_object::shared_from_this()); \
+        } \
+        /** @brief return a casted shared ptr from this object */ \
+        sptr get_sptr() \
+        { \
+            return dynamic_pointer_cast<self_t>(this->core::base_object::shared_from_this()); \
+        }
 
 #if !BOOST_PP_VARIADICS_MSVC
     #define SIGHT_DECLARE_CLASS(...) \
-    BOOST_PP_OVERLOAD(FWCORE_CLASS_MACRO_, __VA_ARGS__)(__VA_ARGS__)
+            BOOST_PP_OVERLOAD(FWCORE_CLASS_MACRO_, __VA_ARGS__)(__VA_ARGS__)
 #else
     #define SIGHT_DECLARE_CLASS(...) \
-    BOOST_PP_CAT(BOOST_PP_OVERLOAD(FWCORE_CLASS_MACRO_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
+            BOOST_PP_CAT(BOOST_PP_OVERLOAD(FWCORE_CLASS_MACRO_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
 #endif
 
 #define FWCORE_CLASS_MACRO_1(_class) \
-    FWCORE_CLASS_TYPEDEFS_1(_class) \
-    FWCORE_INTERFACE_MACRO() \
-    FWCORE_TYPE_1(_class)
+        FWCORE_CLASS_TYPEDEFS_1(_class) \
+        FWCORE_INTERFACE_MACRO() \
+        FWCORE_TYPE_1(_class)
 
 #define FWCORE_CLASS_MACRO_2(_class, _parent_class) \
-    FWCORE_CLASS_TYPEDEFS_2(_class, _parent_class) \
-    FWCORE_CLASSNAME_MACRO() \
-    FWCORE_TYPE_2(_class, _parent_class)
+        FWCORE_CLASS_TYPEDEFS_2(_class, _parent_class) \
+        FWCORE_CLASSNAME_MACRO() \
+        FWCORE_TYPE_2(_class, _parent_class)
 
 #define FWCORE_CLASS_MACRO_3(_class, _parentClass, _factory) \
-    FWCORE_CLASS_MACRO_2(_class, _parentClass) \
-    static sptr make() \
-    { \
-        return _factory(); \
-    }
+        FWCORE_CLASS_MACRO_2(_class, _parentClass) \
+        static sptr make() \
+        { \
+            return _factory(); \
+        }
 
 /**
  * @brief Generate common code for services classes
  */
 #define SIGHT_DECLARE_SERVICE(_class, _parent_class) \
-    FWCORE_CLASS_MACRO_2(_class, _parent_class)
+        FWCORE_CLASS_MACRO_2(_class, _parent_class)
 
 /// Force inline
 #ifdef _MSC_VER

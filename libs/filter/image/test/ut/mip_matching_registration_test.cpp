@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -19,6 +19,8 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
+// cspell:ignore FFTWFFT
 
 #include "mip_matching_registration_test.hpp"
 
@@ -46,6 +48,10 @@
 #include <itkRegionOfInterestImageFilter.h>
 #include <itkResampleImageFilter.h>
 
+#if ITK_VERSION_MAJOR >= 5 && ITK_VERSION_MINOR >= 3 && defined(__unix__)
+#include <itkFFTWFFTImageFilterInitFactory.h>
+#endif
+
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::mip_matching_registration_test);
 
 namespace sight::filter::image::ut
@@ -55,6 +61,10 @@ namespace sight::filter::image::ut
 
 void mip_matching_registration_test::setUp()
 {
+#if ITK_VERSION_MAJOR >= 5 && ITK_VERSION_MINOR >= 3 && defined(__unix__)
+    auto factory = ::itk::FFTWFFTImageFilterInitFactory::New();
+    factory->RegisterFactories();
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -181,7 +191,7 @@ void mip_matching_registration_test::translate_transform_with_scales_test()
             "Actual transform does not match expected results",
             double(expected[i]),
             (*params.transform)(i, 3),
-            double(moving_spacing[i])
+            double(moving_spacing[std::uint32_t(i)])
         );
     }
 }

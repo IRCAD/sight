@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,6 +44,7 @@ series::DicomSeriesContainer series::to_fw_med_data(const QJsonObject& _series_j
     // Series
     // ==================================
 
+    series->set_sop_class_uid(_series_json["SOPClassUID"].toString().toStdString());
     series->set_series_instance_uid(_series_json["SeriesInstanceUID"].toString().toStdString());
     series->set_modality(_series_json["Modality"].toString().toStdString());
     series->set_series_date(_series_json["SeriesDate"].toString().toStdString());

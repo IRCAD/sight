@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -266,8 +266,8 @@ data::image::csptr calibration_info::get_image(std::size_t _idx) const
 
 bool calibration_info::operator==(const calibration_info& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_image_container, _other.m_image_container)
-       || !core::tools::is_equal(m_point_list_container_t, _other.m_point_list_container_t))
+    if(!core::is_equal(m_image_container, _other.m_image_container)
+       || !core::is_equal(m_point_list_container_t, _other.m_point_list_container_t))
     {
         return false;
     }

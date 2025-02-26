@@ -1,14 +1,14 @@
 <extension implements="sight::app::extension::config">
     <id>ExDicomSegmentation_Base_AppCfg</id>
     <parameters>
+        <object uid="seriesSet" type="sight::data::series_set" />
+
         <param name="WID_PARENT" />
         <param name="DYNAMICVIEW_SENDER_CHANNEL" default="channel" />
-        <param name="seriesSet" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${seriesSet}" type="sight::data::series_set" src="ref" />
         <object uid="selection" type="sight::data::vector" />
 
         <!-- ******************************* UI declaration *********************************** -->

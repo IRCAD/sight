@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,13 +28,9 @@
 #include <core/base.hpp>
 #include <core/jobs/observer.hpp>
 
-#include <io/__/writer/registry/macros.hpp>
-
 #include <vtkGenericDataObjectWriter.h>
 #include <vtkImageData.h>
 #include <vtkSmartPointer.h>
-
-SIGHT_REGISTER_IO_WRITER(sight::io::vtk::image_writer);
 
 namespace sight::io::vtk
 {

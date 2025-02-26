@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,7 +84,7 @@ public:
     open_cv_writer();
 
     //Destructor
-    ~open_cv_writer() override;
+    ~open_cv_writer() override = default;
 
 protected:
 

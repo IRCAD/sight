@@ -78,7 +78,7 @@
                     (ie. ${image} is replaced by "image")
                 -->
                 <inout group="data">
-                    <key name="imageUid" uid="image" />
+                    <key name="image" uid="image" />
                 </inout>
             </service>
 

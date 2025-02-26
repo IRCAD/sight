@@ -103,7 +103,7 @@ private:
 
     static constexpr std::string_view MATRIX = "matrix";
 
-    data::ptr<data::matrix4, data::access::in> m_matrix {this, MATRIX, true};
+    data::ptr<data::matrix4, data::access::in> m_matrix {this, MATRIX};
 };
 
 } // namespace sight::module::ui::qt::viz

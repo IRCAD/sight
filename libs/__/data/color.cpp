@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,11 @@
 
 #include "data/color.hpp"
 
-#include "data/exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/base.hpp>
+#include <data/tools/color.hpp>
+
+#include <regex>
 
 SIGHT_REGISTER_DATA(sight::data::color);
 
@@ -36,7 +37,7 @@ namespace sight::data
 
 color::color()
 {
-    m_v_rgba.fill(1.0);
+    this->value().fill(1.0);
 }
 
 //------------------------------------------------------------------------------
@@ -46,176 +47,75 @@ color::color(
     color::color_t _green,
     color::color_t _blue,
     color::color_t _alpha
-)
+) :
+    sight::data::vec<float, 4>({_red, _green, _blue, _alpha})
 {
-    m_v_rgba = {_red, _green, _blue, _alpha};
 }
 
 //------------------------------------------------------------------------------
 
-void color::shallow_copy(const object::csptr& _source)
+color::color(const std::string& _string_color)
 {
-    const auto& other = std::dynamic_pointer_cast<const color>(_source);
-
-    SIGHT_THROW_EXCEPTION_IF(
-        exception(
-            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
-            + " to " + get_classname()
-        ),
-        !bool(other)
-    );
-
-    m_v_rgba = other->m_v_rgba;
-
-    base_class_t::shallow_copy(other);
-}
-
-//------------------------------------------------------------------------------
-
-void color::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_copy_cache_t>& _cache)
-{
-    const auto& other = std::dynamic_pointer_cast<const color>(_source);
-
-    SIGHT_THROW_EXCEPTION_IF(
-        exception(
-            "Unable to copy " + (_source ? _source->get_classname() : std::string("<NULL>"))
-            + " to " + get_classname()
-        ),
-        !bool(other)
-    );
-
-    m_v_rgba = other->m_v_rgba;
-
-    base_class_t::deep_copy(other, _cache);
+    from_string(_string_color);
 }
 
 //------------------------------------------------------------------------------
 
 void color::set_rgba(const color_t _red, const color_t _green, const color_t _blue, const color_t _alpha)
 {
-    m_v_rgba = {_red, _green, _blue, _alpha};
+    this->value() = {_red, _green, _blue, _alpha};
 }
 
 //------------------------------------------------------------------------------
 
-void color::set_rgba(const std::string& _hexa_color)
+void color::set_rgba(
+    const std::uint8_t _red,
+    const std::uint8_t _green,
+    const std::uint8_t _blue,
+    const std::uint8_t _alpha
+)
 {
-    SIGHT_ASSERT(
-        "color string should start with '#' and followed by 6 or 8 "
-        "hexadecimal digits. Given color: " << _hexa_color,
-        _hexa_color[0] == '#'
-        && (_hexa_color.length() == 7 || _hexa_color.length() == 9)
-    );
+    this->value() = {
+        static_cast<float>(_red) / 255.0F, static_cast<float>(_green) / 255.0F,
+        static_cast<float>(_blue) / 255.0F, static_cast<float>(_alpha) / 255.0F
+    };
+}
 
-    const std::string red_string   = _hexa_color.substr(1, 2);
-    const std::string green_string = _hexa_color.substr(3, 2);
-    const std::string blue_string  = _hexa_color.substr(5, 2);
-    std::int32_t r                 = 0;
-    std::int32_t g                 = 0;
-    std::int32_t b                 = 0;
-    std::int32_t a                 = 255;
+//------------------------------------------------------------------------------
 
-    std::istringstream iss;
-    iss.str(red_string);
-    iss >> std::hex >> r;
-    iss.clear();
-    iss.str(green_string);
-    iss >> std::hex >> g;
-    iss.clear();
-    iss.str(blue_string);
-    iss >> std::hex >> b;
+std::string color::to_string() const
+{
+    std::ostringstream oss;
+    oss << "#" << std::hex << std::setfill('0')
+    << std::setw(2) << static_cast<int>(this->red() * 255)
+    << std::setw(2) << static_cast<int>(this->green() * 255)
+    << std::setw(2) << static_cast<int>(this->blue() * 255)
+    << std::setw(2) << static_cast<int>(this->alpha() * 255);
+    return boost::to_upper_copy(oss.str());
+}
 
-    if(_hexa_color.length() == 9)
+//------------------------------------------------------------------------------
+
+void color::from_string(const std::string& _value)
+{
+    std::regex re("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$");
+    std::smatch match;
+    if(std::regex_match(_value, match, re))
     {
-        const std::string alpha_string = _hexa_color.substr(7, 2);
-        iss.clear();
-        iss.str(alpha_string);
-        iss >> std::hex >> a;
+        sight::color_t color;
+        data::tools::color::hexa_string_to_rgba(_value, color);
+        this->set_rgba(color[0], color[1], color[2], color[3]);
+        return;
     }
 
-    this->set_rgba(
-        static_cast<float>(r) / 255.0F,
-        static_cast<float>(g) / 255.0F,
-        static_cast<float>(b) / 255.0F,
-        static_cast<float>(a) / 255.0F
-    );
+    sight::data::vec<color_t, 4>::from_string(_value);
 }
 
 //------------------------------------------------------------------------------
 
-color::color_t& color::red()
+void color::set_rgba(const std::string& _value)
 {
-    return m_v_rgba[0];
-}
-
-//------------------------------------------------------------------------------
-
-color::color_t& color::green()
-{
-    return m_v_rgba[1];
-}
-
-//------------------------------------------------------------------------------
-
-color::color_t& color::blue()
-{
-    return m_v_rgba[2];
-}
-
-//------------------------------------------------------------------------------
-
-color::color_t& color::alpha()
-{
-    return m_v_rgba[3];
-}
-
-//------------------------------------------------------------------------------
-
-const color::color_t& color::red() const
-{
-    return m_v_rgba[0];
-}
-
-//------------------------------------------------------------------------------
-
-const color::color_t& color::green() const
-{
-    return m_v_rgba[1];
-}
-
-//------------------------------------------------------------------------------
-
-const color::color_t& color::blue() const
-{
-    return m_v_rgba[2];
-}
-
-//------------------------------------------------------------------------------
-
-const color::color_t& color::alpha() const
-{
-    return m_v_rgba[3];
-}
-
-//------------------------------------------------------------------------------
-
-bool color::operator==(const color& _other) const noexcept
-{
-    // If the attributes are different, then it is not equal
-    if(!core::tools::is_equal(m_v_rgba, _other.m_v_rgba))
-    {
-        return false;
-    }
-
-    // Super class last
-    return base_class_t::operator==(_other);
-}
-
-//------------------------------------------------------------------------------
-
-bool color::operator!=(const color& _other) const noexcept
-{
-    return !(*this == _other);
+    from_string(_value);
 }
 
 } // namespace sight::data

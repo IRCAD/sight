@@ -30,9 +30,9 @@
 #include <core/base.hpp>
 #include <core/com/has_signals.hpp>
 #include <core/com/signal.hpp>
+#include <core/compare.hpp>
 #include <core/mt/types.hpp>
-#include <core/tools/compare.hpp>
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <string>
 #include <unordered_map>
@@ -55,12 +55,12 @@ class locked_ptr;
  * An object containing a field name "dummy" corresponds to having a labeledObject with label "dummy" and
  * containing a specific object. When accessing to this object with get_field("dummy") we get the specific object
  */
-class SIGHT_DATA_CLASS_API object : public core::tools::object,
+class SIGHT_DATA_CLASS_API object : public core::object,
                                     public core::com::has_signals
 {
 public:
 
-    SIGHT_DECLARE_CLASS(object, core::tools::object);
+    SIGHT_DECLARE_CLASS(object, core::object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**

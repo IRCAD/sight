@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -67,42 +67,52 @@ public:
     password_keeper_impl& operator=(password_keeper_impl&&)      = delete;
 
     /// Default constructor
-    inline password_keeper_impl() noexcept = default;
+    password_keeper_impl() noexcept = default;
 
     /// Default destructor
-    inline ~password_keeper_impl() noexcept = default;
+    ~password_keeper_impl() noexcept = default;
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline core::crypto::secure_string get_password_hash() const
+    [[nodiscard]] core::crypto::secure_string get_password_hash() const
     {
         return core::crypto::hash(this->get_password());
     }
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline core::crypto::secure_string get_password() const
+    [[nodiscard]] core::crypto::secure_string get_password() const
     {
+        if(m_password.empty())
+        {
+            return {};
+        }
+
         return core::crypto::decrypt(m_password, compute_password_key());
     }
 
     //------------------------------------------------------------------------------
 
-    inline void set_password(const core::crypto::secure_string& _password)
+    void set_password(const core::crypto::secure_string& _password)
     {
         m_password = core::crypto::encrypt(_password, compute_password_key());
     }
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline bool check_password(const core::crypto::secure_string& _password) const
+    [[nodiscard]] bool check_password(const core::crypto::secure_string& _password) const
     {
+        if(m_password.empty())
+        {
+            return _password.empty();
+        }
+
         return core::crypto::decrypt(m_password, compute_password_key()) == _password;
     }
 
     //------------------------------------------------------------------------------
 
-    inline void reset_password()
+    void reset_password()
     {
         m_password.clear();
     }
@@ -110,7 +120,7 @@ public:
 private:
 
     /// Generate a pseudo random password key to store the password obfuscated
-    [[nodiscard]] inline core::crypto::secure_string compute_password_key() const
+    [[nodiscard]] core::crypto::secure_string compute_password_key() const
     {
         return SIGHT_PSEUDO_RANDOM_HASH(std::to_string(reinterpret_cast<std::intptr_t>(this)));
     }
@@ -159,7 +169,7 @@ bool password_keeper::check_password(const core::crypto::secure_string& _passwor
 
 void password_keeper::reset_password()
 {
-    return m_pimpl->reset_password();
+    m_pimpl->reset_password();
 }
 
 //------------------------------------------------------------------------------
@@ -174,6 +184,11 @@ core::crypto::secure_string password_keeper::get_global_password_hash()
 core::crypto::secure_string password_keeper::get_global_password()
 {
     std::lock_guard guard(s_password_mutex);
+
+    if(s_password.empty())
+    {
+        return {};
+    }
 
     return core::crypto::decrypt(s_password, get_global_password_key());
 }
@@ -191,13 +206,13 @@ void password_keeper::set_global_password(
     if(_restart_logger)
     {
         // If we use encrypted log
-        if(auto& logger = core::log::spy_logger::get(); logger.is_log_encrypted())
+        if(core::log::g_logger.is_log_encrypted())
         {
             // Check if the password has changed and is not the default one.
             if(const auto& old_password = core::crypto::decrypt(s_password, get_global_password_key());
-               old_password != _password || (has_default_password() && _password != get_default_password()))
+               old_password != _password)
             {
-                logger.change_log_password(_password, old_password);
+                core::log::g_logger.change_password(_password, old_password);
             }
         }
     }

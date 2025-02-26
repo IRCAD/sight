@@ -22,12 +22,7 @@ else()
     target_compile_definitions(filter_image PUBLIC "HAS_ITK_REVIEW_MODULE")
 endif()
 
-if(WIN32)
-    target_link_libraries(filter_image PRIVATE glm::glm)
-else()
-    # Hacky, no longer needed when glm-0.9.9.8+ds-3 is available
-    target_include_directories(filter_image SYSTEM PRIVATE ${GLM_INCLUDE_DIRS})
-endif()
+target_link_libraries(filter_image PRIVATE "$<$<VERSION_GREATER_EQUAL:glm_VERSION,0.9.9.8>:glm::glm>")
 
 target_link_libraries(filter_image PUBLIC data geometry_data io_itk)
 

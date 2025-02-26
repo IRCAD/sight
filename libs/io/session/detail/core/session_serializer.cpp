@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,22 +56,22 @@ static serializer_struct& get_serializer()
 
 //------------------------------------------------------------------------------
 
-serializer_t session_serializer::find_serializer(const std::string& _classname) const
+serializer_t session_serializer::find_serializer(const std::string& _class_name) const
 {
     // First try to find in the customized serializer map
-    if(const auto& custom_it = m_custom_serializers.find(_classname); custom_it != m_custom_serializers.cend())
+    if(const auto& custom_it = m_custom_serializers.find(_class_name); custom_it != m_custom_serializers.cend())
     {
         // Return the found serializer
         return custom_it->second;
     }
 
     // Then try to find in the default deserializer map
-    if(auto function = serializer(_classname); function)
+    if(auto function = serializer(_class_name); function)
     {
         return function;
     }
 
-    SIGHT_THROW("There is no serializer registered for class '" << _classname << "'.");
+    SIGHT_THROW("There is no serializer registered for class '" << _class_name << "'.");
 }
 
 //------------------------------------------------------------------------------

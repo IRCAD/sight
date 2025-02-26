@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <core/com/slots.hxx>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 #include <service/macros.hpp>
 
@@ -75,7 +75,7 @@ void light_editor::starting()
 {
     this->create();
 
-    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(base_id());
 
     const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
         this->get_container()

@@ -26,9 +26,9 @@
 
 #include "app/extension/config.hpp"
 
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 #include <service/manager.hpp>
 
@@ -39,14 +39,14 @@ namespace sight::app
  * @brief This class provides an interface to manage configurations template.
  * @deprecated This class is no longer supported, use app::config_manager.
  */
-class SIGHT_APP_CLASS_API config_manager : public core::tools::object,
+class SIGHT_APP_CLASS_API config_manager : public core::object,
                                            public service::manager
 {
 public:
 
     using config_t = boost::property_tree::ptree;
 
-    SIGHT_DECLARE_CLASS(config_manager, core::tools::object);
+    SIGHT_DECLARE_CLASS(config_manager, core::object);
 
     /// Destructor. Do nothing.
     SIGHT_APP_API ~config_manager() override = default;

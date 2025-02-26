@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,14 +43,14 @@ struct log_initialization
             if(err.value() != 0)
             {
                 // replace log file appender by stream appender: default dir and temp dir unreachable
-                core::log::spy_logger::add_console_log();
+                core::log::spy_logger::add_global_console_log();
             }
             else
             {
                 // creates SLM.log in temp directory: default dir unreachable
                 sys_tmp  = sys_tmp / log_file;
                 log_file = sys_tmp.string();
-                core::log::spy_logger::add_file_log(log_file);
+                core::log::spy_logger::add_global_file_log(log_file);
             }
         }
         else
@@ -61,7 +61,7 @@ struct log_initialization
                 perror("fclose");
             }
 
-            core::log::spy_logger::add_file_log(log_file);
+            core::log::spy_logger::add_global_file_log(log_file);
         }
     }
 };

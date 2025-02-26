@@ -35,11 +35,15 @@
 #include <core/exceptionmacros.hpp>
 
 #ifdef _MSC_VER
-// warning for unreachable code in Release/RelWithDebInfo in boost::iostreams whereas it should be ignored,
-// see https://developercommunity.visualstudio.com/t/error:-C4702-with-external:w0/1696694
-#pragma warning(disable : 4702)
-#endif // _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4702)
+#endif
+
 #include <boost/iostreams/stream.hpp>
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #include <filesystem>
 #include <fstream>
@@ -119,7 +123,7 @@ public:
     zip_handle& operator=(const zip_handle&) = delete;
     zip_handle& operator=(zip_handle&&)      = delete;
 
-    inline explicit zip_handle(const std::filesystem::path& _archive_path) :
+    explicit zip_handle(const std::filesystem::path& _archive_path) :
         m_archive_path(_archive_path.string()),
         m_zip_reader(mz_zip_reader_create())
     {
@@ -142,7 +146,7 @@ public:
         );
     }
 
-    inline ~zip_handle()
+    ~zip_handle()
     {
         // Close zip handle
         const auto result = mz_zip_reader_close(m_zip_reader);
@@ -180,7 +184,7 @@ public:
     zip_file_handle& operator=(const zip_file_handle&) = delete;
     zip_file_handle& operator=(zip_file_handle&&)      = delete;
 
-    inline zip_file_handle(
+    zip_file_handle(
         std::shared_ptr<zip_handle> _zip_handle,
         const std::filesystem::path& _file_path,
         core::crypto::secure_string _password = ""
@@ -244,7 +248,7 @@ public:
         // NOLINTEND(readability-else-after-return)
     }
 
-    inline ~zip_file_handle()
+    ~zip_file_handle()
     {
         const auto result = mz_zip_reader_entry_close(m_zip_handle->m_zip_reader);
 
@@ -267,7 +271,7 @@ public:
 
 private:
 
-    friend class ZipSource;
+    friend class zip_source;
 
     // Path to the file converted to string because on Windows std::filesystem::path.c_str() returns a wchar*
     const std::string m_file_path;
@@ -279,7 +283,7 @@ private:
     const std::shared_ptr<zip_handle> m_zip_handle;
 };
 
-class ZipSource final
+class zip_source final
 {
 public:
 
@@ -288,7 +292,7 @@ public:
     using category  = boost::iostreams::source_tag;
 
     // BEWARE: Boost make shallow copies of the ZipSource...
-    explicit ZipSource(std::shared_ptr<zip_file_handle> _zip_file_handle) :
+    explicit zip_source(std::shared_ptr<zip_file_handle> _zip_file_handle) :
         m_zip_file_handle(std::move(_zip_file_handle))
     {
     }
@@ -336,7 +340,7 @@ public:
     zip_archive_reader& operator=(const zip_archive_reader&) = delete;
     zip_archive_reader& operator=(zip_archive_reader&&)      = delete;
 
-    inline explicit zip_archive_reader(const std::filesystem::path& _archive_path) :
+    explicit zip_archive_reader(const std::filesystem::path& _archive_path) :
         archive_reader(_archive_path),
         m_zip_handle(std::make_shared<zip_handle>(_archive_path))
     {
@@ -346,7 +350,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline std::unique_ptr<std::istream> open_file(
+    std::unique_ptr<std::istream> open_file(
         const std::filesystem::path& _file_path,
         const core::crypto::secure_string& _password = ""
     ) override
@@ -357,12 +361,12 @@ public:
             _password
         );
 
-        return std::make_unique<boost::iostreams::stream<ZipSource> >(file_handle);
+        return std::make_unique<boost::iostreams::stream<zip_source> >(file_handle);
     }
 
     //------------------------------------------------------------------------------
 
-    inline void extract_all_to(
+    void extract_all_to(
         const std::filesystem::path& _output_path,
         const core::crypto::secure_string& _password
     ) override
@@ -396,7 +400,8 @@ public:
         else if(result == MZ_DATA_ERROR && _password.empty())
         {
             throw exception::bad_password(
-                      "Cannot extract archive '" + m_zip_handle->m_archive_path + "', it is probably password protected. Error code: " + std::to_string(
+                      "Cannot extract archive '" + m_zip_handle->m_archive_path
+                      + "', it is probably password protected. Error code: " + std::to_string(
                           result
                       ),
                       result
@@ -436,7 +441,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline bool is_raw() const override
+    [[nodiscard]] bool is_raw() const override
     {
         return false;
     }

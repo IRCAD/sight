@@ -40,7 +40,7 @@
 
        <DirectoryRef Id="TARGETDIR">
             <Directory Id="ProgramMenuFolder">
-                <Directory Id="ApplicationProgramsFolder" Name="IRCAD"/>
+                <Directory Id="ApplicationProgramsFolder" Name="$(var.CPACK_PACKAGE_VENDOR)"/>
             </Directory>
         </DirectoryRef>
 

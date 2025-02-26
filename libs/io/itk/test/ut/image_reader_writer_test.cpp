@@ -66,7 +66,10 @@ void image_reader_writer_test::inr_read_write_test()
     // create image
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generate_random_image(image, core::type::INT16);
-    sight::data::helper::medical_image::set_direction(*image, std::make_shared<data::matrix4>());
+
+    // INR does not support image orientation
+    image->set_orientation({1.F, 0.F, 0.F, 0.F, 1.F, 0.F, 0.F, 0.F, 1.F});
+
     sight::io::itk::ut::image_reader_writer_test::inr_read_write_check(image);
 }
 
@@ -112,7 +115,6 @@ void image_reader_writer_test::nifti_read_test()
     sight_image_reader->set_file(sight_image_path);
     sight_image_reader->read();
 
-    data::matrix4::sptr sight_image_direction = std::make_shared<data::matrix4>();
     nifti_read_check(
         sight_image,
         core::type::UINT8,
@@ -120,8 +122,11 @@ void image_reader_writer_test::nifti_read_test()
         {0.744924, 0.744924, 0.744924},
         {0, 0, 0},
         {481, 362, 478},
-        sight_image_direction
-    );
+        {
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1
+        });
 
     const std::filesystem::path external_image_path(utest_data::dir() / "sight/image/nii/brain.nii");
 
@@ -137,10 +142,6 @@ void image_reader_writer_test::nifti_read_test()
     external_image_reader->set_file(external_image_path);
     external_image_reader->read();
 
-    data::matrix4::sptr external_image_direction = std::make_shared<data::matrix4>();
-    (*external_image_direction)(0, 0) = -1.;
-    (*external_image_direction)(1, 1) = -1.;
-
     nifti_read_check(
         external_image,
         core::type::UINT8,
@@ -149,8 +150,11 @@ void image_reader_writer_test::nifti_read_test()
         {75, 107, -69.5},
         {301, 370, 316
         },
-        external_image_direction
-    );
+        {
+            -1, 0, 0,
+            0, -1, 0,
+            0, 0, 1
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -162,7 +166,7 @@ void image_reader_writer_test::nifti_read_check(
     const data::image::spacing_t& _expected_spacing,
     const data::image::origin_t& _expected_origin,
     const data::image::size_t& _expected_size,
-    const data::matrix4::sptr& _expected_direction
+    const data::image::orientation_t& _expected_orientation
 )
 {
     CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -195,9 +199,12 @@ void image_reader_writer_test::nifti_read_check(
     }
 
     // When reading nifti files with itk, the direction is mandatorily set
-    auto direction = _image_to_test->get_field<data::matrix4>(std::string(data::helper::id::DIRECTION));
-    CPPUNIT_ASSERT(direction);
-    CPPUNIT_ASSERT_EQUAL(*direction, *_expected_direction);
+    const auto& actual_orientation = _image_to_test->orientation();
+
+    for(std::size_t i = 0 ; i < _expected_orientation.size() ; ++i)
+    {
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(_expected_orientation[i], actual_orientation[i], EPSILON);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -208,8 +215,6 @@ void image_reader_writer_test::nifti_write_test()
     data::image::sptr image = std::make_shared<data::image>();
     utest_data::generator::image::generate_random_image(image, core::type::INT16);
 
-    sight::data::helper::medical_image::set_direction(*image, std::make_shared<data::matrix4>());
-
     // WARNING!
     // There is a conversion subtlety. Nifti stores the data as float, and convert them.
     // The writing/reading generates a conversion double => float => double.
@@ -218,13 +223,14 @@ void image_reader_writer_test::nifti_write_test()
     // test the direct equality.
     const data::image::spacing_t spacing_d = {0.5F, 0.001F, 1.25F};
     const data::image::origin_t origin_d   = {0.5F, 0.25F, 0.25F};
-    data::matrix4::sptr direction          = std::make_shared<data::matrix4>();
-    (*direction)(0, 0) = -1.;
-    (*direction)(1, 1) = -1.;
-
     image->set_spacing(spacing_d);
     image->set_origin(origin_d);
-    image->set_field(std::string(data::helper::id::DIRECTION), direction);
+
+    const data::image::orientation_t orientation = {0.36F, 0.48F, -0.8F, -0.8F, 0.6F, 0.0F, 0.48F, 0.64F, 0.6F};
+    image->set_orientation(orientation);
+
+    // The float trick is not enough. We need to "round" the orientation to avoid floating point errors
+    io::itk::ut::helper::round_orientation(image);
 
     // save image in nifti
     core::os::temp_dir tmp_dir;
@@ -249,6 +255,9 @@ void image_reader_writer_test::nifti_write_test()
     my_reader->set_object(image2);
     my_reader->set_file(filename);
     my_reader->read();
+
+    // We need to "round" the orientation to avoid floating point errors
+    io::itk::ut::helper::round_orientation(image2);
 
     CPPUNIT_ASSERT(*image == *image2);
 }
@@ -303,7 +312,10 @@ void image_reader_writer_test::inr_stress_test_with_type(core::type _type, int _
     {
         data::image::sptr image = std::make_shared<data::image>();
         utest_data::generator::image::generate_random_image(image, _type);
-        sight::data::helper::medical_image::set_direction(*image, std::make_shared<data::matrix4>());
+
+        // INR does not support image orientation
+        image->set_orientation({1.F, 0.F, 0.F, 0.F, 1.F, 0.F, 0.F, 0.F, 1.F});
+
         sight::io::itk::ut::image_reader_writer_test::inr_read_write_check(image);
     }
 }

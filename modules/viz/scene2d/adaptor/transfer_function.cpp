@@ -26,7 +26,7 @@
 #include <core/com/slots.hxx>
 #include <core/profiling.hpp>
 
-#include <data/container.hxx>
+#include <data/container.hpp>
 
 #include <viz/scene2d/data/init_qt_pen.hpp>
 #include <viz/scene2d/graphics_view.hpp>
@@ -232,8 +232,8 @@ transfer_function::piece_view* transfer_function::create_piece_view(
     const double point_height = (viewport_height * point_size) / scene_height;
 
     // Creates the piece view and fill basic informations.
-    auto* piece_view = new struct piece_view () ;
-        piece_view->m_tf = _tf;
+    auto* piece_view = new struct piece_view ();
+    piece_view->m_tf      = _tf;
     piece_view->m_z_index = _z_index;
 
     // Fills piece view point with color points.
@@ -1078,8 +1078,7 @@ void transfer_function::mouse_move_on_point_event(
     }
 
     tf->fit_window();
-
-    points_modified(*tf);
+    tf->async_emit(this, data::transfer_function::POINTS_MODIFIED_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -1155,8 +1154,7 @@ void transfer_function::right_button_click_on_point_event(
     }
 
     tf->fit_window();
-
-    points_modified(*tf);
+    tf->async_emit(this, data::transfer_function::POINTS_MODIFIED_SIG);
 
     this->get_scene_2d_render()->get_scene()->removeItem(point_it->second);
     delete point_it->second;
@@ -1177,11 +1175,15 @@ void transfer_function::left_button_double_click_on_point_event(
 {
     SIGHT_ASSERT("Interactions disabled, this code should not reached", m_interactive);
 
-    const auto tf = m_tf.lock();
+    QColor old_color;
+    {
+        // Lock in a scope to avoid potential dead_locks because of the exec() implied by QColorDialog static function
+        const auto tf = m_tf.lock();
 
-    // Opens a QColorDialog with the selected circle color and the tf point alpha as default rgba color.
-    QColor old_color = _tf_point.second->brush().color();
-    old_color.setAlphaF(-_tf_point.first.y);
+        // Opens a QColorDialog with the selected circle color and the tf point alpha as default rgba color.
+        old_color = _tf_point.second->brush().color();
+        old_color.setAlphaF(-_tf_point.first.y);
+    }
 
     QColor new_color = QColorDialog::getColor(
         old_color,
@@ -1225,9 +1227,9 @@ void transfer_function::left_button_double_click_on_point_event(
             tf_piece->insert({tf_value, color_t});
         }
 
+        const auto tf = m_tf.lock();
         tf->fit_window();
-
-        points_modified(*tf);
+        tf->async_emit(this, data::transfer_function::POINTS_MODIFIED_SIG);
 
         // Updates the displayed TF point.
         new_color.setAlpha(255);
@@ -1314,8 +1316,7 @@ void transfer_function::left_button_double_click_event(const sight::viz::scene2d
         }
 
         tf->fit_window();
-
-        points_modified(*tf);
+        tf->async_emit(this, data::transfer_function::POINTS_MODIFIED_SIG);
     }
 
     // Re-draw all the scene.
@@ -1395,15 +1396,7 @@ void transfer_function::mouse_move_on_piece_view_event(const sight::viz::scene2d
         tf_piece->set_level(tf_piece->level() + level_delta);
 
         tf->fit_window();
-
-        // Sends the signal.
-        const auto sig = tf->signal<data::transfer_function::windowing_modified_signal_t>(
-            data::transfer_function::WINDOWING_MODIFIED_SIG
-        );
-        {
-            const core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-            sig->async_emit(tf->window(), tf->level());
-        }
+        tf->async_emit(this, data::transfer_function::WINDOWING_MODIFIED_SIG, tf->window(), tf->level());
     }
 
     // Stores the level in window/level space and the window in screen space.
@@ -1564,8 +1557,7 @@ void transfer_function::mid_button_wheel_move_event(sight::viz::scene2d::data::e
             }
 
             tf->fit_window();
-
-            points_modified(*tf);
+            tf->async_emit(this, data::transfer_function::POINTS_MODIFIED_SIG);
         }
 
         // Re-draw all the scene.
@@ -1593,12 +1585,7 @@ void transfer_function::remove_current_tf()
         // Sets the new current TF.
         m_current_tf = pieces.front();
         tf->fit_window();
-        // Block notifier
-        auto sig = tf->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        const core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        {
-            sig->async_emit();
-        }
+        tf->async_emit(this, data::object::MODIFIED_SIG);
     }
 
     // Re-draw all the scene here since swapping method as not been called.
@@ -1619,8 +1606,7 @@ void transfer_function::clamp_current_tf(bool _clamp)
 
     tf_piece->set_clamped(_clamp);
     tf->fit_window();
-
-    points_modified(*tf);
+    tf->async_emit(this, data::transfer_function::POINTS_MODIFIED_SIG);
 
     piece_view* current_piece_view = *(std::find_if(
                                            m_piece_view.begin(),
@@ -1649,10 +1635,11 @@ void transfer_function::toggle_linear_current_tf(bool _linear)
     auto tf_piece      = *std::find_if(pieces.begin(), pieces.end(), [&](const auto& _p){return _p == m_current_tf;});
 
     tf_piece->set_interpolation_mode(
-        _linear ? data::transfer_function::interpolation_mode::linear : data::transfer_function::interpolation_mode::nearest
+        _linear ? data::transfer_function::interpolation_mode::linear
+                : data::transfer_function::interpolation_mode::nearest
     );
     tf->fit_window();
-    points_modified(*tf);
+    tf->async_emit(this, data::transfer_function::POINTS_MODIFIED_SIG);
 
     piece_view* current_piece_view = *(std::find_if(
                                            m_piece_view.begin(),
@@ -1681,12 +1668,7 @@ void transfer_function::add_new_tf(const data::transfer_function_piece::sptr _tf
         // Adds the new TF.
         tf->pieces().push_back(_tf);
         tf->fit_window();
-        // Block notifier
-        auto sig = tf->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-        const core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        {
-            sig->async_emit();
-        }
+        tf->async_emit(this, data::object::MODIFIED_SIG);
     }
 
     // Creates the new piece view.
@@ -1794,19 +1776,6 @@ void transfer_function::update_tf()
     }
 
     updating();
-}
-
-//------------------------------------------------------------------------------
-
-void transfer_function::points_modified(const sight::data::transfer_function& _tf) const
-{
-    // Sends the modification signal.
-    const auto sig_tf = _tf.signal<data::transfer_function::points_modified_signal_t>(
-        data::transfer_function::POINTS_MODIFIED_SIG
-    );
-
-    const core::com::connection::blocker block1(sig_tf->get_connection(slot(service::slots::UPDATE)));
-    sig_tf->async_emit();
 }
 
 //-----------------------------------------------------------------------------

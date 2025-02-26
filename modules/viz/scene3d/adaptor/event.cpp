@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -479,7 +479,7 @@ void event::configuring()
 
 void event::starting()
 {
-    this->initialize();
+    adaptor::init();
     this->render_service()->make_current();
 
     auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
@@ -498,6 +498,8 @@ void event::stopping()
 {
     auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::base>(this->get_sptr());
     this->layer()->remove_interactor(interactor);
+
+    adaptor::deinit();
 }
 
 } // namespace sight::module::viz::scene3d::adaptor.

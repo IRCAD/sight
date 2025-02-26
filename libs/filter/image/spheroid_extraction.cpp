@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,104 +36,103 @@
 namespace sight::filter::image
 {
 
-struct SpheroidExtractor
+struct spheroid_extractor
 {
-    struct Parameters
+    struct parameters
     {
-        data::image::csptr inputImage;
-        data::point_list::sptr outputPointList;
+        data::image::csptr input_image;
+        data::point_list::sptr output_point_list;
         double threshold {};
-        double radiusMin {};
-        double radiusMax {};
-        double elongationMin {};
-        double elongationMax {};
+        double radius_min {};
+        double radius_max {};
+        double elongation_min {};
+        double elongation_max {};
     };
 
     //------------------------------------------------------------------------------
 
     template<class PIXELTYPE>
-    void operator()(Parameters& params)
+    void operator()(parameters& _params)
     {
         using image_t        = typename itk::Image<PIXELTYPE, 3>;
         using binary_image_t = typename itk::Image<std::uint16_t, 3>;
 
-        typename image_t::Pointer inputImage = io::itk::move_to_itk<image_t>(params.inputImage);
+        typename image_t::Pointer input_image = io::itk::move_to_itk<image_t>(_params.input_image);
 
-        typename itk::BinaryThresholdImageFilter<image_t, binary_image_t>::Pointer thresholdFilter =
+        typename itk::BinaryThresholdImageFilter<image_t, binary_image_t>::Pointer threshold_filter =
             itk::BinaryThresholdImageFilter<image_t, binary_image_t>::New();
 
-        auto threshold = PIXELTYPE(params.threshold);
-        thresholdFilter->SetLowerThreshold(threshold);
-        thresholdFilter->SetUpperThreshold(threshold * PIXELTYPE(10));
-        thresholdFilter->SetInsideValue(255);
-        thresholdFilter->SetOutsideValue(0);
-        thresholdFilter->SetInput(inputImage);
+        auto threshold = PIXELTYPE(_params.threshold);
+        threshold_filter->SetLowerThreshold(threshold);
+        threshold_filter->SetUpperThreshold(threshold * PIXELTYPE(10));
+        threshold_filter->SetInsideValue(255);
+        threshold_filter->SetOutsideValue(0);
+        threshold_filter->SetInput(input_image);
 
-        thresholdFilter->Update();
+        threshold_filter->Update();
 
-        binary_image_t::Pointer binaryImage =
-            thresholdFilter->GetOutput();
+        binary_image_t::Pointer binary_image =
+            threshold_filter->GetOutput();
         itk::ConnectedComponentImageFilter<binary_image_t, binary_image_t>::Pointer cc =
             itk::ConnectedComponentImageFilter<binary_image_t, binary_image_t>::New();
 
-        cc->set_input(thresholdFilter->GetOutput());
+        cc->SetInput(threshold_filter->GetOutput());
         cc->FullyConnectedOn();
         cc->Update();
 
         using label_stats_filter_t = itk::LabelGeometryImageFilter<binary_image_t, image_t>;
-        typename label_stats_filter_t::Pointer labelGeometryFilter = label_stats_filter_t::New();
+        typename label_stats_filter_t::Pointer label_geometry_filter = label_stats_filter_t::New();
 
-        labelGeometryFilter->SetInput(cc->GetOutput());
-        labelGeometryFilter->SetIntensityInput(inputImage);
-        labelGeometryFilter->Update();
+        label_geometry_filter->SetInput(cc->GetOutput());
+        label_geometry_filter->SetIntensityInput(input_image);
+        label_geometry_filter->Update();
 
-        typename label_stats_filter_t::labels_t labels = labelGeometryFilter->GetLabels();
+        auto labels = label_geometry_filter->GetLabels();
 
-        SIGHT_DEBUG("Number of labels : " << labelGeometryFilter->GetNumberOfLabels());
+        SIGHT_DEBUG("Number of labels : " << label_geometry_filter->GetNumberOfLabels());
 
-        typename label_stats_filter_t::labels_t::iterator labelsIt;
-        for(labelsIt = labels.begin() ; labelsIt != labels.end() ; ++labelsIt)
+        for(auto labels_it = labels.begin() ; labels_it != labels.end() ; ++labels_it)
         {
-            typename label_stats_filter_t::label_pixel_t labelValue = *labelsIt;
+            auto label_value = *labels_it;
 
-            const double radiusMean     = (params.radiusMax + params.radiusMin) / 2.;
-            const double meanElongation = (params.elongationMax + params.elongationMin) / 2.;
-            const double radiusSTD      = (params.radiusMax - params.radiusMin) / 6.;
-            const double elongationSTD  = (params.elongationMax - params.elongationMin) / 6.;
+            const double radius_mean     = (_params.radius_max + _params.radius_min) / 2.;
+            const double mean_elongation = (_params.elongation_max + _params.elongation_min) / 2.;
+            const double radius_std      = (_params.radius_max - _params.radius_min) / 6.;
+            const double elongation_std  = (_params.elongation_max - _params.elongation_min) / 6.;
 
-            const double e        = labelGeometryFilter->GetElongation(labelValue);
-            const auto axesLength = labelGeometryFilter->GetAxesLength(labelValue);
+            const double e         = label_geometry_filter->GetElongation(label_value);
+            const auto axes_length = label_geometry_filter->GetAxesLength(label_value);
 
             SIGHT_DEBUG("Elongation" << e);
-            SIGHT_DEBUG("Axes length" << axesLength);
+            SIGHT_DEBUG("Axes length" << axes_length);
 
-            const double ge  = std::pow(e - meanElongation, 2.) / std::pow(elongationSTD, 2.);
-            const double gr0 = std::pow(axesLength[0] - radiusMean, 2.) / std::pow(radiusSTD, 2.);
-            const double gr1 = std::pow(axesLength[1] - radiusMean, 2.) / std::pow(radiusSTD, 2.);
-            const double gr2 = std::pow(axesLength[2] - radiusMean, 2.) / std::pow(radiusSTD, 2.);
+            const double ge  = std::pow(e - mean_elongation, 2.) / std::pow(elongation_std, 2.);
+            const double gr0 = std::pow(axes_length[0] - radius_mean, 2.) / std::pow(radius_std, 2.);
+            const double gr1 = std::pow(axes_length[1] - radius_mean, 2.) / std::pow(radius_std, 2.);
+            const double gr2 = std::pow(axes_length[2] - radius_mean, 2.) / std::pow(radius_std, 2.);
 
-            const double mahalanobisDistance = std::sqrt(ge + gr0 + gr1 + gr2);
+            const double mahalanobis_distance = std::sqrt(ge + gr0 + gr1 + gr2);
 
-            SIGHT_DEBUG("Mahalanobis distance : " << mahalanobisDistance);
+            SIGHT_DEBUG("Mahalanobis distance : " << mahalanobis_distance);
 
             // Empirical value. You shouldn't have to change it.
             // If you believe the detection wrongly failed/succeeded, please consider changing your radius
             // and elongation ranges before modifying this threshold.
-            const double criteriaThreshold = 15.;
+            const double criteria_threshold = 15.;
 
-            if(mahalanobisDistance < criteriaThreshold)
+            if(mahalanobis_distance < criteria_threshold)
             {
-                const auto centroidPoint = labelGeometryFilter->GetCentroid(labelValue);
+                const auto centroid_point = label_geometry_filter->GetCentroid(label_value);
 
-                std::array<double, 3> realPointCoords {};
+                std::array<double, 3> real_point_coords {};
                 for(std::uint8_t i = 0 ; i < 3 ; ++i)
                 {
-                    realPointCoords[i] = double(centroidPoint[i]) * inputImage->GetSpacing()[i]
-                                         + inputImage->GetOrigin()[i];
+                    real_point_coords[i] = double(centroid_point[i]) * input_image->GetSpacing()[i]
+                                           + input_image->GetOrigin()[i];
                 }
 
-                data::point::sptr point = std::make_shared<data::point>(realPointCoords);
-                params.outputPointList->getPoints().push_back(point);
+                data::point::sptr point = std::make_shared<data::point>(real_point_coords);
+                _params.output_point_list->get_points().push_back(point);
             }
         }
     }
@@ -144,29 +143,29 @@ struct SpheroidExtractor
 data::point_list::sptr spheroid_extraction::extract(
     const data::image::csptr& _image,
     const double _threshold,
-    const double _radiusMin,
-    const double _radiusMax,
-    const double _elongationMin,
-    const double _elongationMax
+    const double _radius_min,
+    const double _radius_max,
+    const double _elongation_min,
+    const double _elongation_max
 )
 {
-    data::point_list::sptr outputPointList = std::make_shared<data::point_list>();
+    data::point_list::sptr output_point_list = std::make_shared<data::point_list>();
 
-    SpheroidExtractor::Parameters params;
-    params.inputImage      = _image;
-    params.outputPointList = outputPointList;
-    params.threshold       = _threshold;
-    params.radiusMin       = _radiusMin;
-    params.radiusMax       = _radiusMax;
-    params.elongationMin   = _elongationMin;
-    params.elongationMax   = _elongationMax;
+    spheroid_extractor::parameters params;
+    params.input_image       = _image;
+    params.output_point_list = output_point_list;
+    params.threshold         = _threshold;
+    params.radius_min        = _radius_min;
+    params.radius_max        = _radius_max;
+    params.elongation_min    = _elongation_min;
+    params.elongation_max    = _elongation_max;
 
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, SpheroidExtractor>::invoke(
-        _image->getType(),
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, spheroid_extractor>::invoke(
+        _image->type(),
         params
     );
 
-    return outputPointList;
+    return output_point_list;
 }
 
 } // namespace sight::filter::image.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ public:
     calibration_images_writer() noexcept;
 
     /// Destructor.
-    ~calibration_images_writer() noexcept override;
+    ~calibration_images_writer() noexcept override = default;
 
     /// Configures the folder path.
     void open_location_dialog() override;

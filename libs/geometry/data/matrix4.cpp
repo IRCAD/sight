@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -174,7 +174,7 @@ bool is_orthogonal(const sight::data::matrix4& _trf, double _epsilon)
 
 // ----------------------------------------------------------------------------
 
-SIGHT_GEOMETRY_DATA_API bool is_homogeneous(const sight::data::matrix4& _trf, double _epsilon)
+bool is_homogeneous(const sight::data::matrix4& _trf, double _epsilon)
 {
     static const sight::data::matrix4 s_IDENTITY;
 

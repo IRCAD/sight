@@ -317,7 +317,8 @@ public:
         size_t _size,
         const std::filesystem::path& _source_file                   = "",
         core::memory::file_format_type _format                      = core::memory::other,
-        const core::memory::buffer_allocation_policy::sptr& _policy = std::make_shared<core::memory::buffer_malloc_policy>()
+        const core::memory::buffer_allocation_policy::sptr& _policy = std::make_shared<core::memory::
+                                                                                       buffer_malloc_policy>()
     );
 
     /// Equality comparison operators

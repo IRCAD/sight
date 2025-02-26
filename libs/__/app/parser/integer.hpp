@@ -23,7 +23,7 @@
 
 #include <sight/app/config.hpp>
 
-#include <app/parser/generic_field.hpp>
+#include <app/parser/generic.hpp>
 
 namespace sight::app
 {
@@ -32,13 +32,13 @@ namespace parser
 {
 
 /**
- * @brief Specialisation of generic_field parser for integer
+ * @brief Specialisation of property parser for integer
  */
-class integer : public generic_field
+class integer : public generic
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(integer, service::object_parser);
+    SIGHT_DECLARE_SERVICE(integer, app::parser::generic);
 };
 
 } //namespace parser

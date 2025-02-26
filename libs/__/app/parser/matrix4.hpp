@@ -24,7 +24,7 @@
 
 #include <sight/app/config.hpp>
 
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <service/object_parser.hpp>
 
@@ -50,17 +50,11 @@ public:
     ~matrix4() override
     = default;
 
-    SIGHT_APP_API void create_config(core::tools::object::sptr _obj) override;
-
-protected:
-
-    /**
-     * @brief Updating method : create the process object.
-     *
-     * Parse the configuration element to configure inputs and outputs and add
-     * them in the process object.
-     */
-    SIGHT_APP_API void updating() override;
+    SIGHT_APP_API void parse(
+        const service::config_t& _cfg,
+        core::object::sptr _obj,
+        objects_t& _sub_objects
+    ) override;
 };
 
 } // namespace sight::app::parser

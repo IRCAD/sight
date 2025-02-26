@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "ui/__/action.hpp"
 
-#include <core/tools/id.hpp>
+#include <core/id.hpp>
 
 #include <service/base.hpp>
 #include <service/macros.hpp>
@@ -48,7 +48,7 @@ void action_callback_base::set_sid(std::string _sid)
 
 void action_callback_base::execute()
 {
-    SIGHT_ASSERT("Service " << m_sid << " doesn't exist.", core::tools::id::exist(m_sid));
+    SIGHT_ASSERT("Service " << m_sid << " doesn't exist.", core::id::exist(m_sid));
     service::base::sptr service = service::get(m_sid);
     SIGHT_ASSERT("Service " << m_sid << " not instanced.", service);
     service->update();
@@ -58,7 +58,7 @@ void action_callback_base::execute()
 
 void action_callback_base::check(bool _checked)
 {
-    SIGHT_ASSERT("Service " << m_sid << " doesn't exist.", core::tools::id::exist(m_sid));
+    SIGHT_ASSERT("Service " << m_sid << " doesn't exist.", core::id::exist(m_sid));
     service::base::sptr service = service::get(m_sid);
     SIGHT_ASSERT("Service " << m_sid << " not instanced.", service);
     ui::action::sptr action = std::dynamic_pointer_cast<ui::action>(service);

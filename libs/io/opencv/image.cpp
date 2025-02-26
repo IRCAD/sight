@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,35 +42,36 @@ static cv::Mat to_cv(const data::image::csptr& _image, bool _copy)
 
     const auto dump_lock = _image->dump_lock();
 
-    SIGHT_ASSERT("Empty image buffer", _image->buffer());
-
-    const auto image_size = _image->size();
-    std::vector<int> cv_size;
-    for(std::size_t i = 0 ; i < _image->num_dimensions() ; ++i)
-    {
-        cv_size.push_back(static_cast<int>(image_size[i]));
-    }
-
-    if(cv_size.size() == 1)
-    {
-        // If we have a single row, we want to initialize the cv::Math with (1, N) since it takes (rows,cols)
-        cv_size.push_back(1);
-    }
-
-    // Reverse from (w,h,d) to (d,h,w) because OpenCV uses a row major format
-    std::reverse(cv_size.begin(), cv_size.end());
-
     cv::Mat cv_image;
-    if(_copy)
+    if(_image->buffer() != nullptr)
     {
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        cv::Mat mat = cv::Mat(cv_size, cv_type, const_cast<void*>(_image->buffer()));
-        cv_image = mat.clone();
-    }
-    else
-    {
-        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        cv_image = cv::Mat(cv_size, cv_type, const_cast<void*>(_image->buffer()));
+        const auto image_size = _image->size();
+        std::vector<int> cv_size;
+        for(std::size_t i = 0 ; i < _image->num_dimensions() ; ++i)
+        {
+            cv_size.push_back(static_cast<int>(image_size[i]));
+        }
+
+        if(cv_size.size() == 1)
+        {
+            // If we have a single row, we want to initialize the cv::Math with (1, N) since it takes (rows,cols)
+            cv_size.push_back(1);
+        }
+
+        // Reverse from (w,h,d) to (d,h,w) because OpenCV uses a row major format
+        std::reverse(cv_size.begin(), cv_size.end());
+
+        if(_copy)
+        {
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+            cv::Mat mat = cv::Mat(cv_size, cv_type, const_cast<void*>(_image->buffer()));
+            cv_image = mat.clone();
+        }
+        else
+        {
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+            cv_image = cv::Mat(cv_size, cv_type, const_cast<void*>(_image->buffer()));
+        }
     }
 
     return cv_image;
@@ -130,23 +131,23 @@ void image::copy_from_cv(data::image& _image, const cv::Mat& _cv_image)
     const auto prev_image_size = _image.size();
     if(prev_image_comp != image_comp || prev_image_type != image_type || image_size != prev_image_size)
     {
-        enum data::image::pixel_format format = data::image::pixel_format::gray_scale;
+        enum data::image::pixel_format_t format = data::image::pixel_format_t::gray_scale;
         switch(image_comp)
         {
             case 1:
-                format = data::image::pixel_format::gray_scale;
+                format = data::image::pixel_format_t::gray_scale;
                 break;
 
             case 2:
-                format = data::image::pixel_format::rg;
+                format = data::image::pixel_format_t::rg;
                 break;
 
             case 3:
-                format = data::image::pixel_format::rgb;
+                format = data::image::pixel_format_t::rgb;
                 break;
 
             case 4:
-                format = data::image::pixel_format::rgba;
+                format = data::image::pixel_format_t::rgba;
                 break;
 
             default:

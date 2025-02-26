@@ -1,9 +1,9 @@
 <extension implements="sight::app::extension::config">
     <id>2DNegato</id>
     <parameters>
+        <object uid="image" type="sight::data::image_series" />
+
         <param name="WID_PARENT" />
-        <param name="image" />
-        <param name="landmarks" />
         <param name="patient_name" default="" />
         <!-- axial, frontal, sagittal -->
         <param name="orientation" default="axial" />
@@ -11,16 +11,14 @@
         <param name="PickingChannel" default="pickingChannel" />
     </parameters>
     <config>
-        <object uid="${image}" type="sight::data::image" src="ref" />
         <object uid="tf" type="sight::data::transfer_function" />
-        <object uid="${landmarks}" type="sight::data::landmarks" src="ref" />
         <object uid="snapshot" type="sight::data::image" />
 
         <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::overlay">
                     <view />
-                    <view x="0" y="0" height="55" width="100" />
+                    <view x="0" y="0" />
                     <view x="0" y="-1" height="35" width="100%" />
                 </layout>
             </gui>
@@ -96,7 +94,7 @@
                     <adaptor uid="negatoCameraAdp" />
                     <adaptor uid="pickerInteractorAdp" />
                     <adaptor uid="negatoAdp" />
-                    <adaptor uid="multiDistancesAdp" />
+                    <adaptor uid="ruler_fiducial_adp" />
                     <adaptor uid="landmarksAdp" />
                 </layer>
             </scene>
@@ -122,13 +120,13 @@
             <config sliceIndex="${orientation}" filtering="none" />
         </service>
 
-        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
+        <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
             <inout key="image" uid="${image}" />
-            <config fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
+            <config font_size="32" radius="1.5" query_flags="0x40000000" priority="3" />
         </service>
 
         <service uid="landmarksAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
-            <inout key="landmarks" uid="${landmarks}" />
+            <inout key="imageSeries" uid="${image}" />
             <config priority="4" />
         </service>
 
@@ -178,7 +176,7 @@
         <start uid="negatoCameraAdp" />
         <start uid="pickerInteractorAdp" />
         <start uid="negatoAdp" />
-        <start uid="multiDistancesAdp" />
+        <start uid="ruler_fiducial_adp" />
         <start uid="landmarksAdp" />
         <start uid="imageWriterSrv" />
     </config>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,9 @@
 
 #include <core/base.hpp>
 #include <core/com/signal.hxx>
+#include <core/com/slot.hxx>
+#include <core/com/slots.hxx>
+#include <core/runtime/helper.hpp>
 
 #include <service/macros.hpp>
 #include <service/op.hpp>
@@ -41,13 +44,20 @@
 namespace sight::module::ui::qt::com
 {
 
-static const core::com::signals::key_t ACTIVATED_SIG = "activated";
-
 //-----------------------------------------------------------------------------
 
 signal_shortcut::signal_shortcut() noexcept
 {
-    new_signal<activated_shortcut_signal_t>(ACTIVATED_SIG);
+    new_signal<signals::bool_t>(signals::IS_ENABLED);
+    new_signal<signals::void_t>(signals::ENABLED);
+    new_signal<signals::void_t>(signals::DISABLED);
+    new_signal<signals::void_t>(signals::ACTIVATED);
+
+    new_slot(slots::SET_ENABLED, &signal_shortcut::set_enabled, this);
+    new_slot(slots::SET_DISABLED, [this](bool _disabled){this->set_enabled(!_disabled);});
+    new_slot(slots::ENABLE, [this](){this->set_enabled(true);});
+    new_slot(slots::DISABLE, [this](){this->set_enabled(false);});
+    new_slot(slots::APPLY_ENABLED, [this](){this->set_enabled(*m_enabled);});
 }
 
 //-----------------------------------------------------------------------------
@@ -59,7 +69,14 @@ signal_shortcut::~signal_shortcut() noexcept =
 
 void signal_shortcut::configuring()
 {
-    const auto config_tree     = this->get_config();
+    const auto config_tree = this->get_config();
+
+    if(auto properties = config_tree.get_child_optional("properties"); not properties.has_value())
+    {
+        const auto enabled = m_enabled.lock();
+        *enabled = core::runtime::get_ptree_value(config_tree, "state.<xmlattr>.enabled", true);
+    }
+
     const auto config_shortcut = config_tree.get_child("config.<xmlattr>");
     m_shortcut = config_shortcut.get<std::string>("shortcut", m_shortcut);
     SIGHT_ASSERT("Shortcut must not be empty", !m_shortcut.empty());
@@ -74,6 +91,34 @@ void signal_shortcut::configuring()
 
 //-----------------------------------------------------------------------------
 
+void signal_shortcut::set_enabled(bool _enabled)
+{
+    {
+        const auto enabled = m_enabled.lock();
+        *enabled = _enabled;
+
+        auto sig = enabled->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+        core::com::connection::blocker block(sig->get_connection(slot(slots::APPLY_ENABLED)));
+        sig->async_emit();
+    }
+
+    if(_enabled)
+    {
+        auto sig = this->signal<signals::void_t>(signals::ENABLED);
+        sig->async_emit();
+    }
+    else
+    {
+        auto sig = this->signal<signals::void_t>(signals::DISABLED);
+        sig->async_emit();
+    }
+
+    auto sig = this->signal<signals::bool_t>(signals::IS_ENABLED);
+    sig->async_emit(_enabled);
+}
+
+//-----------------------------------------------------------------------------
+
 void signal_shortcut::starting()
 {
     sight::ui::container::widget::sptr fwc = nullptr;
@@ -81,7 +126,7 @@ void signal_shortcut::starting()
     // Either get the container via a service id
     if(!m_sid.empty())
     {
-        bool sid_exists = core::tools::id::exist(m_sid);
+        bool sid_exists = core::id::exist(m_sid);
 
         if(sid_exists)
         {
@@ -116,6 +161,7 @@ void signal_shortcut::starting()
                 // Create a key sequence from the string and its associated QShortcut
                 QKeySequence shortcut_sequence = QKeySequence(QString::fromStdString(m_shortcut));
                 m_shortcut_object = new QShortcut(shortcut_sequence, widget);
+                m_shortcut_object->setContext(Qt::ApplicationShortcut);
             }
 
             // Connect the activated signal to the onActivation method of this class
@@ -149,9 +195,19 @@ void signal_shortcut::updating()
 
 //------------------------------------------------------------------------------
 
+service::connections_t signal_shortcut::auto_connections() const
+{
+    return {{m_enabled, sight::data::object::MODIFIED_SIG, slots::APPLY_ENABLED}};
+}
+
+//------------------------------------------------------------------------------
+
 void signal_shortcut::on_activation()
 {
-    this->signal<activated_shortcut_signal_t>(ACTIVATED_SIG)->async_emit();
+    if(*m_enabled)
+    {
+        this->signal<signals::void_t>(signals::ACTIVATED)->async_emit();
+    }
 }
 
 } // namespace sight::module::ui::qt::com

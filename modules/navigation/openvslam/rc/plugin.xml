@@ -1,7 +1,0 @@
-<plugin id="sight::module::navigation::openvslam" library="true">
-    <extension implements="sight::service::extension::factory">
-        <type>sight::service::tracker</type>
-        <service>sight::module::navigation::openvslam::openvslam</service>
-        <desc>Service that manages an instance of Openvslam (Simultaneous tracking and Mapping).</desc>
-    </extension>
-</plugin>

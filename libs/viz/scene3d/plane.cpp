@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "viz/scene3d/plane.hpp"
 
+#include <geometry/data/image.hpp>
+
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/shading.hpp>
 #include <viz/scene3d/ogre.hpp>
@@ -40,16 +42,17 @@ namespace sight::viz::scene3d
 //-----------------------------------------------------------------------------
 
 plane::plane(
-    const core::tools::id::type& _negato_id,
+    const core::id::type& _negato_id,
     Ogre::SceneNode* _parent_scene_node,
     Ogre::SceneManager* _scene_manager,
     viz::scene3d::texture::sptr _tex,
     filter_t _filtering,
     bool _display_border,
     bool _display_other_planes,
-    float _entity_opacity
+    float _entity_opacity,
+    bool _post_classification
 ) :
-    m_border({.shape = nullptr, .material = nullptr, .enabled = _display_border}),
+    m_border({.shape       = nullptr, .material = nullptr, .enabled = _display_border}),
     m_slices_cross({.shape = nullptr, .material = nullptr, .enabled = _display_other_planes}),
     m_filtering(_filtering),
     m_texture(std::move(_tex)),
@@ -59,29 +62,23 @@ plane::plane(
 {
     // We need an internal counter to avoid naming conflicts
     static std::uint32_t count = 0;
-    m_slice_plane_name = _negato_id + "_Mesh" + std::to_string(count);
-    m_entity_name      = _negato_id + "_Entity" + std::to_string(count);
-    m_scene_node_name  = _negato_id + "_SceneNode" + std::to_string(count++);
+    m_slice_plane_name = core::id::join(_negato_id, "mesh", std::to_string(count));
+    m_entity_name      = core::id::join(_negato_id, "entity", std::to_string(count));
+    m_scene_node_name  = core::id::join(_negato_id, "scene_node", std::to_string(count++));
 
     // Creates the parent's child scene node positionned at (0; 0; 0)
     m_plane_scene_node = m_parent_scene_node->createChildSceneNode(m_scene_node_name);
 
-    auto& material_mgr            = Ogre::MaterialManager::getSingleton();
-    Ogre::MaterialPtr default_mat = material_mgr.getByName("Negato", RESOURCE_GROUP);
-    SIGHT_ASSERT("Default material not found, the 'material' module may not be loaded.", default_mat);
-
-    // If the texture material exists, delete it.
-    if(m_tex_material)
-    {
-        material_mgr.remove(m_tex_material);
-        m_tex_material.reset();
-    }
-
-    m_tex_material = default_mat->clone(m_slice_plane_name + "_TextMaterial");
+    const auto plane_material_name = core::id::join(m_slice_plane_name + "plane_material");
+    m_plane_material = std::make_unique<viz::scene3d::material::generic>(
+        plane_material_name,
+        _post_classification ? "Negato" : "Negato_pre"
+    );
 
     const Ogre::ColourValue diffuse(1.F, 1.F, 1.F, m_entity_opacity);
-    m_tex_material->setDiffuse(diffuse);
+    m_plane_material->material()->setDiffuse(diffuse);
 
+    auto& material_mgr = Ogre::MaterialManager::getSingleton();
     if(m_border.enabled)
     {
         const auto material = material_mgr.getByName("BasicAmbient", RESOURCE_GROUP);
@@ -100,7 +97,7 @@ plane::plane(
 plane::~plane()
 {
     m_plane_scene_node->removeAndDestroyAllChildren();
-    m_parent_scene_node->removeAndDestroyChild(m_plane_scene_node);
+    m_scene_manager->destroySceneNode(m_plane_scene_node);
 
     if(m_scene_manager->hasEntity(m_entity_name))
     {
@@ -117,10 +114,7 @@ plane::~plane()
         m_scene_manager->destroyManualObject(m_border.shape);
     }
 
-    if(m_tex_material)
-    {
-        Ogre::MaterialManager::getSingleton().remove(m_tex_material);
-    }
+    m_plane_material.reset();
 
     if(m_slices_cross.shape != nullptr)
     {
@@ -136,14 +130,12 @@ plane::~plane()
 //-----------------------------------------------------------------------------
 
 void plane::update(
-    orientation_mode _orientation,
+    axis_t _axis,
     const Ogre::Vector3& _spacing,
-    const Ogre::Vector3& _origin,
     bool _enable_transparency
 )
 {
-    m_orientation = _orientation;
-    m_origin      = _origin;
+    m_axis = _axis;
 
     Ogre::MeshManager& mesh_manager = Ogre::MeshManager::getSingleton();
 
@@ -170,7 +162,7 @@ void plane::update(
     // Mesh plane instantiation:
     // Y is the default upVector,
     // so if we want a plane which normal is the Y unit vector we have to create it differently.
-    if(m_orientation == orientation_mode::y_axis)
+    if(m_axis == axis_t::y_axis)
     {
         m_slice_plane = mesh_manager.createPlane(
             m_slice_plane_name,
@@ -200,46 +192,33 @@ void plane::update(
 
     // Entity creation.
     Ogre::Entity* plane_entity = m_scene_manager->createEntity(m_entity_name, m_slice_plane);
-    plane_entity->setMaterial(m_tex_material);
+    plane_entity->setMaterial(m_plane_material->material());
     m_plane_scene_node->attachObject(plane_entity);
 
-    const int orientation_index = static_cast<int>(m_orientation);
+    const int orientation_index = static_cast<int>(m_axis);
 
-    const Ogre::Material::Techniques& techniques = m_tex_material->getTechniques();
-
-    for(const auto* const tech : techniques)
+    // Sets the texture filtering in the current texture unit state according to the negato's interpolation flag
+    Ogre::TextureFilterOptions filter_type = Ogre::TFO_NONE;
+    switch(m_filtering)
     {
-        SIGHT_ASSERT("technique is not set", tech);
+        case filter_t::none:
+            filter_type = Ogre::TFO_NONE;
+            break;
 
-        if(viz::scene3d::helper::shading::is_color_technique(*tech))
-        {
-            // Sets the texture filtering in the current texture unit state according to the negato's interpolation flag
-            Ogre::TextureFilterOptions filter_type = Ogre::TFO_NONE;
-            switch(m_filtering)
-            {
-                case filter_t::none:
-                    filter_type = Ogre::TFO_NONE;
-                    break;
+        case filter_t::linear:
+            filter_type = Ogre::TFO_BILINEAR;
+            break;
 
-                case filter_t::linear:
-                    filter_type = Ogre::TFO_BILINEAR;
-                    break;
-
-                case filter_t::anisotropic:
-                    filter_type = Ogre::TFO_ANISOTROPIC;
-                    break;
-            }
-
-            Ogre::Pass* const pass = tech->getPass(0);
-            m_texture->bind(pass, "image", filter_type);
-
-            pass->getVertexProgramParameters()->setNamedConstant("u_orientation", orientation_index);
-
-            auto fp_params = pass->getFragmentProgramParameters();
-            fp_params->setNamedConstant("u_orientation", orientation_index);
-            fp_params->setNamedConstant("u_enableAlpha", static_cast<int>(_enable_transparency));
-        }
+        case filter_t::anisotropic:
+            filter_type = Ogre::TFO_ANISOTROPIC;
+            break;
     }
+
+    m_plane_material->set_texture("image", m_texture->get(), filter_type);
+    m_plane_material->set_vertex_uniform("u_orientation", orientation_index);
+    m_plane_material->set_fragment_uniform("u_window", m_texture->window());
+    m_plane_material->set_fragment_uniform("u_orientation", orientation_index);
+    m_plane_material->set_fragment_uniform("u_enableAlpha", static_cast<int>(_enable_transparency));
 
     if(m_border.enabled)
     {
@@ -254,7 +233,7 @@ void plane::update(
         m_border.shape->estimateVertexCount(5);
         m_border.shape->begin(m_border.material, Ogre::RenderOperation::OT_LINE_STRIP);
 
-        if(m_orientation == orientation_mode::x_axis)
+        if(m_axis == axis_t::x_axis)
         {
             m_border.shape->position(Ogre::Vector3(0.F, -m_size[1] / 2.F, -m_size[0] / 2.F));
             m_border.shape->position(Ogre::Vector3(0.F, m_size[1] / 2.F, -m_size[0] / 2.F));
@@ -268,7 +247,7 @@ void plane::update(
                 )
             );
         }
-        else if(m_orientation == orientation_mode::y_axis)
+        else if(m_axis == axis_t::y_axis)
         {
             m_border.shape->position(Ogre::Vector3(-m_size[0] / 2.F, 0.F, -m_size[1] / 2.F));
             m_border.shape->position(Ogre::Vector3(m_size[0] / 2.F, 0.F, -m_size[1] / 2.F));
@@ -299,12 +278,12 @@ void plane::update(
 
         m_border.shape->end();
 
-        if(m_orientation == orientation_mode::x_axis)
+        if(m_axis == axis_t::x_axis)
         {
             m_border.material->setAmbient(Ogre::ColourValue::Red);
             m_border.material->setDiffuse(Ogre::ColourValue::Red);
         }
-        else if(m_orientation == orientation_mode::y_axis)
+        else if(m_axis == axis_t::y_axis)
         {
             m_border.material->setAmbient(Ogre::ColourValue::Green);
             m_border.material->setDiffuse(Ogre::ColourValue::Green);
@@ -328,19 +307,19 @@ void plane::update(
 
 void plane::update_position()
 {
-    m_plane_scene_node->setPosition(m_origin);
+    m_plane_scene_node->resetToInitialState();
 
-    switch(m_orientation)
+    switch(m_axis)
     {
-        case orientation_mode::x_axis:
+        case axis_t::x_axis:
             m_plane_scene_node->translate(0, m_size[1] / 2, m_size[0] / 2);
             break;
 
-        case orientation_mode::y_axis:
+        case axis_t::y_axis:
             m_plane_scene_node->translate(m_size[0] / 2, 0, m_size[1] / 2);
             break;
 
-        case orientation_mode::z_axis:
+        case axis_t::z_axis:
             m_plane_scene_node->translate(m_size[0] / 2, m_size[1] / 2, 0);
             break;
     }
@@ -350,18 +329,8 @@ void plane::update_position()
 
 void plane::set_tf_data(const viz::scene3d::transfer_function& _tf_texture)
 {
-    const Ogre::Material::Techniques& techniques = m_tex_material->getTechniques();
-
-    for(auto* const tech : techniques)
-    {
-        SIGHT_ASSERT("technique is not set", tech);
-
-        if(viz::scene3d::helper::shading::is_color_technique(*tech))
-        {
-            Ogre::Pass* pass = tech->getPass(0);
-            _tf_texture.bind(pass, "tfTexture", pass->getFragmentProgramParameters());
-        }
-    }
+    m_plane_material->set_texture("tfTexture", _tf_texture.get());
+    m_plane_material->set_fragment_uniform("u_f3TFWindow", _tf_texture.m_window);
 }
 
 //------------------------------------------------------------------------------
@@ -371,20 +340,7 @@ void plane::set_entity_opacity(float _f)
     m_entity_opacity = _f;
 
     Ogre::ColourValue diffuse(1.F, 1.F, 1.F, m_entity_opacity);
-    m_tex_material->setDiffuse(diffuse);
-
-    Ogre::Technique* tech = m_tex_material->getTechnique(0);
-    SIGHT_ASSERT("technique is not set", tech);
-
-    if(viz::scene3d::helper::shading::is_color_technique(*tech)
-       && !viz::scene3d::helper::shading::is_peel_technique(*tech))
-    {
-        Ogre::Pass* pass = tech->getPass(0);
-
-        // We don't want a depth check if we have non-OIT transparency
-        const bool need_depth_check = (m_entity_opacity - 1.F) < std::numeric_limits<float>::epsilon();
-        pass->setDepthCheckEnabled(need_depth_check);
-    }
+    m_plane_material->material()->setDiffuse(diffuse);
 }
 
 //------------------------------------------------------------------------------
@@ -398,22 +354,9 @@ void plane::set_visible(bool _visible)
 
 void plane::change_slice(const std::array<float, 3>& _slices_index)
 {
-    const auto current_slice                     = _slices_index[static_cast<std::size_t>(m_orientation)];
-    const Ogre::Material::Techniques& techniques = m_tex_material->getTechniques();
+    const auto current_slice = _slices_index[static_cast<std::size_t>(m_axis)];
 
-    for(auto* const tech : techniques)
-    {
-        SIGHT_ASSERT("technique is not set", tech);
-
-        if(viz::scene3d::helper::shading::is_color_technique(*tech))
-        {
-            Ogre::Pass* pass = tech->getPass(0);
-
-            SIGHT_ASSERT("Can't find Ogre pass", pass);
-
-            pass->getFragmentProgramParameters()->setNamedConstant("u_slice", current_slice);
-        }
-    }
+    m_plane_material->set_fragment_uniform("u_slice", current_slice);
 
     // as close as possible from 1, but smaller.
     const float relative_position = std::clamp(current_slice, 0.F, 0.999999999999999F);
@@ -421,17 +364,17 @@ void plane::change_slice(const std::array<float, 3>& _slices_index)
     this->update_position();
     Ogre::Real distance = relative_position * m_size[2];
 
-    switch(m_orientation)
+    switch(m_axis)
     {
-        case orientation_mode::x_axis:
+        case axis_t::x_axis:
             m_plane_scene_node->translate(distance, 0, 0);
             break;
 
-        case orientation_mode::y_axis:
+        case axis_t::y_axis:
             m_plane_scene_node->translate(0, distance, 0);
             break;
 
-        case orientation_mode::z_axis:
+        case axis_t::z_axis:
             m_plane_scene_node->translate(0, 0, distance);
             break;
     }
@@ -455,7 +398,7 @@ void plane::change_slice(const std::array<float, 3>& _slices_index)
 
         const auto dash_length = std::max(std::max(m_size[0], m_size[1]), m_size[2]) / 100.F;
         using sight::viz::scene3d::helper::manual_object;
-        if(m_orientation == orientation_mode::x_axis)
+        if(m_axis == axis_t::x_axis)
         {
             manual_object::draw_dashed_line(
                 m_slices_cross.shape,
@@ -481,7 +424,7 @@ void plane::change_slice(const std::array<float, 3>& _slices_index)
                 )
             );
         }
-        else if(m_orientation == orientation_mode::y_axis)
+        else if(m_axis == axis_t::y_axis)
         {
             manual_object::draw_dashed_line(
                 m_slices_cross.shape,
@@ -551,39 +494,27 @@ Ogre::MovablePlane plane::set_dimensions(const Ogre::Vector3& _spacing)
     auto tex_depth  = std::max(static_cast<Ogre::Real>(m_texture->depth()) - 1.F, 0.F);
 
     Ogre::MovablePlane plane(Ogre::Vector3::ZERO, 0);
-    switch(m_orientation)
+    switch(m_axis)
     {
-        case orientation_mode::x_axis:
+        case axis_t::x_axis:
             m_size[0] = tex_depth * _spacing[2];
             m_size[1] = tex_height * _spacing[1];
             m_size[2] = tex_width * _spacing[0];
+            plane     = Ogre::MovablePlane(Ogre::Vector3::UNIT_X, 0);
             break;
 
-        case orientation_mode::y_axis:
+        case axis_t::y_axis:
             m_size[0] = tex_width * _spacing[0];
             m_size[1] = tex_depth * _spacing[2];
             m_size[2] = tex_height * _spacing[1];
+            plane     = Ogre::MovablePlane(Ogre::Vector3::UNIT_Y, 0);
             break;
 
-        case orientation_mode::z_axis:
+        case axis_t::z_axis:
             m_size[0] = tex_width * _spacing[0];
             m_size[1] = tex_height * _spacing[1];
             m_size[2] = tex_depth * _spacing[2];
-            break;
-    }
-
-    switch(m_orientation)
-    {
-        case orientation_mode::x_axis:
-            plane = Ogre::MovablePlane(Ogre::Vector3::UNIT_X, 0);
-            break;
-
-        case orientation_mode::y_axis:
-            plane = Ogre::MovablePlane(Ogre::Vector3::UNIT_Y, 0);
-            break;
-
-        case orientation_mode::z_axis:
-            plane = Ogre::MovablePlane(Ogre::Vector3::UNIT_Z, 0);
+            plane     = Ogre::MovablePlane(Ogre::Vector3::UNIT_Z, 0);
             break;
     }
 
@@ -618,34 +549,91 @@ void plane::set_render_queuer_group_and_priority(std::uint8_t _group_id, std::ui
 
 //-----------------------------------------------------------------------------
 
-std::array<Ogre::Vector3, 4> plane::compute_cross(
-    const Ogre::Vector3& _center,
-    const Ogre::Vector3& _image_origin
-) const
+std::array<Ogre::Vector3, 4> plane::compute_cross(const Ogre::Vector3& _center, const data::image& _image) const
 {
+    const auto center   = geometry::data::world_to_image(_image, _center);
+    const auto& spacing = _image.spacing();
+
     std::array<Ogre::Vector3, 4> cross_lines;
 
-    switch(this->get_orientation_mode())
+    switch(this->axis())
     {
-        case sight::viz::scene3d::plane::orientation_mode::x_axis:
-            cross_lines[0] = {_center.x, 0 + _image_origin.y, _center.z};
-            cross_lines[1] = {_center.x, m_size[1] + _image_origin.y, _center.z};
-            cross_lines[2] = {_center.x, _center.y, 0 + _image_origin.z};
-            cross_lines[3] = {_center.x, _center.y, m_size[0] + _image_origin.z};
+        case axis_t::x_axis:
+            cross_lines[0] = {
+                Ogre::Real(double(center[0]) * spacing[0]),
+                0,
+                Ogre::Real(double(center[2]) * spacing[2])
+            };
+
+            cross_lines[1] = {
+                Ogre::Real(double(center[0]) * spacing[0]),
+                m_size[1],
+                Ogre::Real(double(center[2]) * spacing[2])
+            };
+
+            cross_lines[2] = {
+                Ogre::Real(double(center[0]) * spacing[0]),
+                Ogre::Real(double(center[1]) * spacing[1]),
+                0
+            };
+
+            cross_lines[3] = {
+                Ogre::Real(double(center[0]) * spacing[0]),
+                Ogre::Real(double(center[1]) * spacing[1]),
+                m_size[0]
+            };
             break;
 
-        case sight::viz::scene3d::plane::orientation_mode::y_axis:
-            cross_lines[0] = {0 + _image_origin.x, _center.y, _center.z};
-            cross_lines[1] = {m_size[0] + _image_origin.x, _center.y, _center.z};
-            cross_lines[2] = {_center.x, _center.y, 0 + _image_origin.z};
-            cross_lines[3] = {_center.x, _center.y, m_size[1] + _image_origin.z};
+        case axis_t::y_axis:
+            cross_lines[0] = {
+                0,
+                Ogre::Real(double(center[1]) * spacing[1]),
+                Ogre::Real(double(center[2]) * spacing[2])
+            };
+
+            cross_lines[1] = {
+                m_size[0],
+                Ogre::Real(double(center[1]) * spacing[1]),
+                Ogre::Real(double(center[2]) * spacing[2])
+            };
+
+            cross_lines[2] = {
+                Ogre::Real(double(center[0]) * spacing[0]),
+                Ogre::Real(double(center[1]) * spacing[1]),
+                0
+            };
+
+            cross_lines[3] = {
+                Ogre::Real(double(center[0]) * spacing[0]),
+                Ogre::Real(double(center[1]) * spacing[1]),
+                m_size[1]
+            };
             break;
 
-        case sight::viz::scene3d::plane::orientation_mode::z_axis:
-            cross_lines[0] = {0 + _image_origin.x, _center.y, _center.z};
-            cross_lines[1] = {m_size[0] + _image_origin.x, _center.y, _center.z};
-            cross_lines[2] = {_center.x, 0 + _image_origin.y, _center.z};
-            cross_lines[3] = {_center.x, m_size[1] + _image_origin.y, _center.z};
+        case axis_t::z_axis:
+            cross_lines[0] = {
+                0,
+                Ogre::Real(double(center[1]) * spacing[1]),
+                Ogre::Real(double(center[2]) * spacing[2])
+            };
+
+            cross_lines[1] = {
+                m_size[0],
+                Ogre::Real(double(center[1]) * spacing[1]),
+                Ogre::Real(double(center[2]) * spacing[2])
+            };
+
+            cross_lines[2] = {
+                Ogre::Real(double(center[0]) * spacing[0]),
+                0,
+                Ogre::Real(double(center[2]) * spacing[2])
+            };
+
+            cross_lines[3] = {
+                Ogre::Real(double(center[0]) * spacing[0]),
+                m_size[1],
+                Ogre::Real(double(center[2]) * spacing[2])
+            };
             break;
 
         default:

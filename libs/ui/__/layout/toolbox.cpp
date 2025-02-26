@@ -51,6 +51,7 @@ toolbox::~toolbox()
 
 void toolbox::initialize(const ui::config_t& _configuration)
 {
+    m_icon_color = _configuration.get<std::string>("icon_color.<xmlattr>.value", "#000000");
     m_views.clear();
     for(const auto& view : boost::make_iterator_range(_configuration.equal_range("view")))
     {

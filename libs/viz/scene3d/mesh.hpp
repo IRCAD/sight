@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,9 @@
 
 #include <sight/viz/scene3d/config.hpp>
 
-#include "viz/scene3d/material.hpp"
+#include "viz/scene3d/material/generic.hpp"
+#include "viz/scene3d/material/r2vb.hpp"
+#include "viz/scene3d/material/standard.hpp"
 
 #include <data/mesh.hpp>
 #include <data/point_list.hpp>
@@ -85,7 +87,7 @@ public:
     SIGHT_VIZ_SCENE3D_API void set_visible(bool _visible);
     SIGHT_VIZ_SCENE3D_API void update_mesh(const data::mesh::csptr& _mesh, bool _points_only = false);
     SIGHT_VIZ_SCENE3D_API void update_mesh(const data::point_list::csptr& _point_list);
-    SIGHT_VIZ_SCENE3D_API std::pair<bool, std::vector<r2vb_renderable*> > update_r2_vb(
+    SIGHT_VIZ_SCENE3D_API std::pair<bool, std::vector<r2vb_renderable*> > update_r2vb(
         const data::mesh::csptr& _mesh,
         Ogre::SceneManager& _scene_mgr,
         const std::string& _material_name
@@ -102,13 +104,16 @@ public:
     /// Erase the mesh data, called when the configuration change (new layer, etc...), to simplify modifications.
     SIGHT_VIZ_SCENE3D_API void clear_mesh(Ogre::SceneManager& _scene_mgr);
 
-    SIGHT_VIZ_SCENE3D_API void update_material(viz::scene3d::material* _material, bool _is_r2_vb) const;
-
     [[nodiscard]] SIGHT_VIZ_SCENE3D_API bool has_color_layer_changed(const data::mesh::csptr& _mesh) const;
 
     SIGHT_VIZ_SCENE3D_API Ogre::Entity* create_entity(Ogre::SceneManager& _scene_mgr);
 
-    SIGHT_VIZ_SCENE3D_API void invalidate_r2_vb();
+    SIGHT_VIZ_SCENE3D_API void invalidate_r2vb();
+
+    data::mesh::attribute layout() const;
+
+    const std::string& per_primitive_color_texture_name() const;
+    const Ogre::AxisAlignedBox& bounds() const;
 
 private:
 
@@ -141,19 +146,35 @@ private:
     /// List of r2vb objects - these objects triggers the r2vb process and render the output data
     std::map<data::mesh::cell_type_t, viz::scene3d::r2vb_renderable*> m_r2vb_object;
 
-    /// Defines if there is a normal layer
-    bool m_has_normal {false};
-    /// Defines if there is a vertex color layer
-    bool m_has_vertex_color {false};
-    /// Defines if there is a primitive color layer
-    bool m_has_primitive_color {false};
-    /// defines if the mesh has UV coordinates, defined in m_configuration
-    bool m_has_uv {false};
+    /// Input vertex layout
+    sight::data::mesh::attribute m_layout {data::mesh::attribute::none};
+
     /// defines if the mesh changes dynamically, defined in m_configuration
     bool m_is_dynamic {false};
     /// defines if the vertices change dynamically, defined in m_configuration
     bool m_is_dynamic_vertices {false};
 };
+
+//------------------------------------------------------------------------------
+
+inline data::mesh::attribute mesh::layout() const
+{
+    return m_layout;
+}
+
+//------------------------------------------------------------------------------
+
+inline const std::string& mesh::per_primitive_color_texture_name() const
+{
+    return m_per_primitive_color_texture_name;
+}
+
+//------------------------------------------------------------------------------
+
+inline const Ogre::AxisAlignedBox& mesh::bounds() const
+{
+    return m_ogre_mesh->getBounds();
+}
 
 //------------------------------------------------------------------------------
 

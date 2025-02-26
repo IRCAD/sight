@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,9 @@
  ***********************************************************************/
 
 #pragma once
+
+#include <boost/log/sinks/sink.hpp>
+#include <boost/shared_ptr.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -54,6 +57,7 @@ private:
     );
 
     std::stringstream m_ostream;
+    boost::shared_ptr<boost::log::sinks::sink> m_sink;
 };
 
 } // namespace sight::core::log::ut

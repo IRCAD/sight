@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <data/integer.hpp>
 #include <data/matrix4.hpp>
 
 #include <service/controller.hpp>
@@ -36,7 +37,6 @@ namespace sight::module::geometry
  * - \b switch_matrix() : Each time the slot switchMatrix() is called the next matrix given in the configuration is
  * copied on the matrix bound
  * to the service
- * - \b switch_to_matrix(int index) : switch to the matrix at the given index
  *
  * @section XML XML Configuration
  *
@@ -47,6 +47,7 @@ namespace sight::module::geometry
                 <key uid="..." />
             </in>
             <inout key="output" uid="..." />
+            <properties index="0" />
        </service>
    @endcode
  * @subsection Input Input:
@@ -54,6 +55,8 @@ namespace sight::module::geometry
  * @subsection In-Out In-Out:
  * - \b output [sight::data::matrix4]: Output matrix.
  *
+ * @subsection Properties Properties:
+ * - \b index [sight::data::integer]: Index of the matrix to use.
  */
 class switch_matrices : public service::controller
 {
@@ -61,22 +64,13 @@ public:
 
     SIGHT_DECLARE_SERVICE(switch_matrices, service::controller);
 
-    /**
-     * @brief Constructor.
-     */
+    struct slots
+    {
+        static inline const core::com::slots::key_t SWITCH = "switch_matrix";
+    };
+
     switch_matrices() noexcept;
-
-    /**
-     * @brief Destructor.
-     */
-    ~switch_matrices() noexcept override =
-        default;
-
-    static const core::com::slots::key_t SWITCH_SLOT;
-    using switch_slot_t = core::com::slot<void ()>;
-
-    static const core::com::slots::key_t SWITCH_TO_SLOT;
-    using switch_to_slot_t = core::com::slot<void (int)>;
+    ~switch_matrices() noexcept override = default;
 
 protected:
 
@@ -95,20 +89,13 @@ protected:
     /// Switch to next Matrix
     void switch_matrix();
 
-    /// Switch to Matrix "index"
-    void switch_to_matrix(int _index);
-
     connections_t auto_connections() const override;
 
 private:
 
-    std::size_t m_index_of_desired_matrix {0};
-
-    static constexpr std::string_view MATRIX_INPUT  = "matrix";
-    static constexpr std::string_view MATRIX_OUTPUT = "output";
-
-    data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, MATRIX_INPUT, true};
-    data::ptr<data::matrix4, data::access::inout> m_output {this, MATRIX_OUTPUT};
+    data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, "matrix"};
+    data::ptr<data::matrix4, data::access::inout> m_output {this, "output"};
+    data::property<data::integer> m_current_index {this, "index", 0};
 };
 
 } //namespace sight::module::geometry

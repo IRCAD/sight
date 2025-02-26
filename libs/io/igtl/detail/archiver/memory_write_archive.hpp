@@ -34,18 +34,22 @@ typedef SSIZE_T ssize_t;
 #include <io/zip/exception/write.hpp>
 #include <core/macros.hpp>
 
-#ifdef _MSC_VER
-// warning for unreachable code in Release/RelWithDebInfo in boost::iostreams whereas it should be ignored,
-// see https://developercommunity.visualstudio.com/t/error:-C4702-with-external:w0/1696694
-#pragma warning(disable : 4702)
-#endif // _MSC_VER
-#include <boost/iostreams/stream.hpp>
-#include <filesystem>
-#include <boost/iostreams/categories.hpp>
-
 #include <archive.h>
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4702)
+#endif
+
+#include <boost/iostreams/categories.hpp>
+#include <boost/iostreams/stream.hpp>
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
 #include <cctype>
+#include <filesystem>
 #include <vector>
 
 namespace sight::io::igtl::detail::archiver

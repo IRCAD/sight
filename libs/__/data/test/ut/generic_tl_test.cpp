@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -677,16 +677,16 @@ void generic_tl_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(value) \
-    timeline1->init_pool_size(value); \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Timelines should be different when the first is initialized with " #value, \
-        *timeline1 != *timeline2 && !(*timeline1 == *timeline2) \
-    ); \
-    timeline2->init_pool_size(value); \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Timelines should be equal when they are both initialized with " #value, \
-        *timeline1 == *timeline2 && !(*timeline1 != *timeline2) \
-    );
+            timeline1->init_pool_size(value); \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Timelines should be different when the first is initialized with " #value, \
+                *timeline1 != *timeline2 && !(*timeline1 == *timeline2) \
+            ); \
+            timeline2->init_pool_size(value); \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Timelines should be equal when they are both initialized with " #value, \
+                *timeline1 == *timeline2 && !(*timeline1 != *timeline2) \
+            );
 
     TEST(1);
     TEST(2);

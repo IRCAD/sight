@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -67,7 +67,7 @@ void transfer_function_opacity::starting()
 
 void transfer_function_opacity::updating()
 {
-    const auto tf      = m_tf.lock();
+    const auto tf      = m_tf.const_lock();
     const auto& pieces = tf->pieces();
 
     double min                = 1.0;

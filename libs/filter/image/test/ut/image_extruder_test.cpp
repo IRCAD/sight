@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,7 +117,7 @@ void image_extruder_test::extrude_triangle_mesh()
 
     const data::image::sptr image = std::make_shared<data::image>();
 
-    image->resize(m_image->size(), core::type::UINT8, data::image::pixel_format::gray_scale);
+    image->resize(m_image->size(), core::type::UINT8, data::image::pixel_format_t::gray_scale);
     image->set_spacing(m_image->spacing());
 
     const auto dump_lock = image->dump_lock();
@@ -211,7 +211,7 @@ void image_extruder_test::extrude_quad_mesh()
     }
 
     const data::image::sptr image = std::make_shared<data::image>();
-    image->resize(m_image->size(), core::type::UINT8, data::image::pixel_format::gray_scale);
+    image->resize(m_image->size(), core::type::UINT8, data::image::pixel_format_t::gray_scale);
     image->set_spacing(m_image->spacing());
 
     const auto dump_lock = image->dump_lock();

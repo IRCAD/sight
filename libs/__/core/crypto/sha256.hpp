@@ -29,13 +29,13 @@
 
 // Convenience macro to generate a pseudo random hash in a pseudo predictable way.
 #define SIGHT_PSEUDO_RANDOM_HASH(salt) \
-    sight::core::crypto::hash( \
-        sight::core::crypto::secure_string( \
-            __FILE__ \
-            + std::to_string(__LINE__) \
-            + std::string(salt) \
-        ) \
-    )
+        sight::core::crypto::hash( \
+            sight::core::crypto::secure_string( \
+                __FILE__ \
+                + std::to_string(__LINE__) \
+                + std::string(salt) \
+            ) \
+        )
 
 namespace sight::core::crypto
 {
@@ -45,7 +45,7 @@ static const int HASH_SIZE = 32;
 /// Compute a sha256 hash using openSSL
 /// @param _message the message to hash
 /// @param _output the output hash
-void hash(const secure_string& _message, std::array<unsigned char, HASH_SIZE>& _output);
+SIGHT_CORE_API void hash(const secure_string& _message, std::array<std::uint8_t, HASH_SIZE>& _output);
 
 /// Compute a sha256 hash using openSSL and return the result as a secure_string
 /// @param _message the message to hash

@@ -54,19 +54,19 @@ Q_OBJECT
 
 /// Q_PROPERTY macros associate scene objects with QML properties.
 Q_PROPERTY(
-    Qt3DRender::QCamera* camera
+    Qt3DRender::QCamera * camera
     READ get_camera WRITE set_camera NOTIFY camera_changed
 )
 Q_PROPERTY(
-    Qt3DExtras::QAbstractCameraController* camera_controller
+    Qt3DExtras::QAbstractCameraController * camera_controller
     READ get_camera_controller WRITE set_camera_controller NOTIFY camera_controller_changed
 )
 Q_PROPERTY(
-    Qt3DInput::QInputSettings* input_settings
+    Qt3DInput::QInputSettings * input_settings
     READ get_input_settings WRITE set_input_settings NOTIFY input_settings_changed
 )
 Q_PROPERTY(
-    Qt3DRender::QRenderSettings* render_settings
+    Qt3DRender::QRenderSettings * render_settings
     READ get_render_settings WRITE set_render_settings NOTIFY render_settings_changed
 )
 

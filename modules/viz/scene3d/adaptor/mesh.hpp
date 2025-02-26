@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -278,7 +278,7 @@ private:
     data::material::sptr m_material {nullptr};
 
     /// Defines the attached material's name.
-    std::string m_material_template_name {sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME};
+    std::string m_material_template_name {sight::viz::scene3d::material::standard::TEMPLATE};
 
     /// Defines the attached texture adaptor name.
     std::string m_texture_name;
@@ -304,11 +304,22 @@ private:
     /// Stores material adaptors attached to the r2vb objects.
     std::map<data::mesh::cell_t, module::viz::scene3d::adaptor::material::sptr> m_r2vb_material_adaptor;
 
+    /// Handles connections with texture adaptor.
+    core::com::helper::sig_slot_connection m_material_connection;
+
     /// Defines the mask used for picking request.
     std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
+    enum class update_flags : std::uint8_t
+    {
+        MESH,
+        VERTICES,
+        COLORS,
+        TEX_COORDS
+    };
+
     static constexpr std::string_view MESH_IN = "mesh";
-    data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_IN, true};
+    data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_IN};
 };
 
 //------------------------------------------------------------------------------
@@ -350,7 +361,7 @@ inline Ogre::Entity* mesh::get_entity() const
 
 inline bool mesh::get_visibility() const
 {
-    return m_entity != nullptr ? m_entity->getVisible() : m_visible;
+    return m_entity != nullptr ? m_entity->getVisible() : visible();
 }
 
 //------------------------------------------------------------------------------

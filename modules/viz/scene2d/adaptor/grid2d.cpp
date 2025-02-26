@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,6 +93,8 @@ void grid2d::configuring()
 
 void grid2d::draw()
 {
+    using sight::viz::scene2d::vec2d_t;
+
     SIGHT_ASSERT("m_xSpacing can not be equal to 0", m_x_spacing != 0.F);
     SIGHT_ASSERT("m_ySpacing can not be equal to 0", m_y_spacing != 0.F);
 

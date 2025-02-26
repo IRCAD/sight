@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -348,6 +348,12 @@ void text::set_edit_mode(bool _edit_mode)
 {
     m_text->setReadOnly(!_edit_mode);
     m_text->setAttribute(Qt::WA_TransparentForMouseEvents, !_edit_mode);
+
+    if(_edit_mode)
+    {
+        m_text->setFocus();
+        m_text->selectAll();
+    }
 }
 
 //------------------------------------------------------------------------------

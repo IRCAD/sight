@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
 
 #include "matrix4writer_test.hpp"
 
+#include <core/os/temp_path.hpp>
+
 #include <data/matrix4.hpp>
 
 #include <io/__/writer/matrix4_writer.hpp>
@@ -38,8 +40,9 @@ namespace sight::io::ut
 
 void matrix4_writer_test::basic_test()
 {
-    auto matrix_writer             = std::make_shared<writer::matrix4_writer>();
-    std::filesystem::path filepath = std::filesystem::temp_directory_path() / ("test" + matrix_writer->extension());
+    auto matrix_writer = std::make_shared<writer::matrix4_writer>();
+    core::os::temp_dir temp_dir;
+    std::filesystem::path filepath = temp_dir / ("test" + matrix_writer->extension());
     auto matrix_in                 = std::make_shared<data::matrix4>();
     std::iota(matrix_in->begin(), matrix_in->end(), 0);
     matrix_writer->set_object(matrix_in);

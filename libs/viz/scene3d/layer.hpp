@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@
 
 #include <viz/scene3d/compositor/chain_manager.hpp>
 #include <viz/scene3d/compositor/core.hpp>
-#include <viz/scene3d/compositor/listener/auto_stereo.hpp>
+#include <viz/scene3d/compositor/manager/auto_stereo.hpp>
 #include <viz/scene3d/compositor/types.hpp>
 #include <viz/scene3d/interactor/base.hpp>
 #include <viz/scene3d/window_interactor.hpp>
@@ -212,8 +212,7 @@ public:
     SIGHT_VIZ_SCENE3D_API void set_background_material(const std::string& _background);
 
     /// Sets if this layer need a layer's 3D scene.
-    SIGHT_VIZ_SCENE3D_API void set_core_compositor_enabled(
-        bool _enabled,
+    SIGHT_VIZ_SCENE3D_API void set_core_compositor(
         std::string _transparency_technique          = "",
         std::string _num_peels                       = "",
         compositor::core::stereo_mode_t _stereo_mode =
@@ -225,9 +224,6 @@ public:
 
     /// Sets the viewport parameters for this layer: left, top, width, height.
     SIGHT_VIZ_SCENE3D_API void set_viewport_config(const viewport_config_t& _vp_cfg);
-
-    /// @returns true if this layer needs a layer's 3D scene.
-    SIGHT_VIZ_SCENE3D_API bool is_core_compositor_enabled() const;
 
     /// @returns true if there is an XML configured compositor chain.
     SIGHT_VIZ_SCENE3D_API bool is_compositor_chain_enabled() const;
@@ -268,8 +264,12 @@ public:
     /// @returns the light adaptors used in this layer.
     SIGHT_VIZ_SCENE3D_API std::vector<SPTR(viz::scene3d::light_adaptor)> get_light_adaptors() const;
 
-    /// @returns the computed bounding box of the scene.
-    SIGHT_VIZ_SCENE3D_API Ogre::AxisAlignedBox compute_world_bounding_box() const;
+    /**
+     * Computes the bounding box of the scene.
+     * @param _exclude_static Exclude static objects from the bounding box computation.
+     * @return the computed bounding box of the scene.
+     */
+    SIGHT_VIZ_SCENE3D_API Ogre::AxisAlignedBox compute_world_bounding_box(bool _exclude_static = false) const;
 
     /// @returns the OIT selected.
     SIGHT_VIZ_SCENE3D_API compositor::transparency_technique get_transparency_technique();
@@ -278,7 +278,7 @@ public:
     SIGHT_VIZ_SCENE3D_API int get_transparency_depth();
 
     /// Sets the OIT desired. Deactivate OIT compositor.
-    SIGHT_VIZ_SCENE3D_API bool set_transparency_technique(compositor::transparency_technique _technique);
+    SIGHT_VIZ_SCENE3D_API void set_transparency_technique(compositor::transparency_technique _technique);
 
     /// Sets the number of peels computed by Depth Peeling or x2 Dual Depth Peeling. Deactivate OIT compositor.
     SIGHT_VIZ_SCENE3D_API void set_transparency_depth(int _depth);
@@ -299,6 +299,13 @@ public:
     SIGHT_VIZ_SCENE3D_API void set_orthographic_camera(bool _ortho);
     /// Returns value of setOrthographicCamera.
     SIGHT_VIZ_SCENE3D_API bool is_orthographic_camera_force() const;
+
+    /**
+     * @brief Get the origin scene node used for image origin and image orientation
+     *
+     * @return Ogre::SceneNode*
+     */
+    inline Ogre::SceneNode* camera_origin_node();
 
 private:
 
@@ -378,9 +385,6 @@ private:
     /// Defines the layer identifier as referenced in render.
     std::string m_id;
 
-    /// Enables default compositor's widgets (gui displays before scene creation).
-    bool m_has_core_compositor {false};
-
     /// Indicates if a compositor chain is attached to the layer.
     bool m_has_compositor_chain {false};
 
@@ -404,7 +408,7 @@ private:
     LayerCameraListener* m_camera_listener {nullptr};
 
     /// Contains the autostereo listener.
-    compositor::listener::auto_stereo_compositor_listener* m_autostereo_listener {nullptr};
+    compositor::manager::auto_stereo* m_autostereo_listener {nullptr};
 
     /// Holds pairs of intrinsic/extrinsic calibrations for stereo cameras.
     camera_calibrations_t m_stereo_camera_calibration;
@@ -414,6 +418,16 @@ private:
 
     /// True when we are using dedicated camera adaptor with orthographic projection.
     bool m_camera_orthographic {false};
+
+    /// Contains the scene node used for image origin and orientation.
+    Ogre::SceneNode* m_camera_origin_node {nullptr};
 };
+
+//------------------------------------------------------------------------------
+
+inline Ogre::SceneNode* layer::camera_origin_node()
+{
+    return m_camera_origin_node;
+}
 
 } // namespace sight::viz::scene3d.

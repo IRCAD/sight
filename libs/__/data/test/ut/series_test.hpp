@@ -44,6 +44,9 @@ CPPUNIT_TEST(attr_date_test);
 CPPUNIT_TEST(attr_time_test);
 CPPUNIT_TEST(attr_performing_physician_name_test);
 CPPUNIT_TEST(attr_description_test);
+CPPUNIT_TEST(attr_enhanced_us_image_test);
+CPPUNIT_TEST(attr_general_acquisition_test);
+CPPUNIT_TEST(attr_ultrasound_frame_of_reference_test);
 
 CPPUNIT_TEST(equality_test);
 
@@ -146,6 +149,9 @@ public:
     void attr_time_test();
     void attr_performing_physician_name_test();
     void attr_description_test();
+    void attr_enhanced_us_image_test();
+    void attr_general_acquisition_test();
+    void attr_ultrasound_frame_of_reference_test();
 
     static void equality_test();
 

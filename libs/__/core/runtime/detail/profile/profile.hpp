@@ -46,8 +46,6 @@ public:
     using params_container  = std::vector<std::string>;
     using run_callback_type = std::function<int ()>;
 
-    SIGHT_DECLARE_CLASS(profile, base_object);
-
     /**
      * @brief   Constructor : does nothing.
      */

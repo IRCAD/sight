@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,30 +51,6 @@ public:
     using gpu_program_parameters_t = std::vector<std::pair<std::string, std::string> >;
 
     /**
-     * @brief Returns true if the given technique computes a pixel color.
-     * @param[in] _tech Ogre technique
-     */
-    SIGHT_VIZ_SCENE3D_API static bool is_color_technique(const Ogre::Technique& _tech);
-
-    /**
-     * @brief Returns true if the given technique is used for a peel pass in a depth peeling.
-     * @param[in] _tech Ogre technique
-     */
-    SIGHT_VIZ_SCENE3D_API static bool is_peel_technique(const Ogre::Technique& _tech);
-
-    /**
-     * @brief Returns true if the given technique is used in a geometric pass (as opposed to a fullscreen pass).
-     * @param[in] _tech Ogre technique
-     */
-    SIGHT_VIZ_SCENE3D_API static bool is_geometric_technique(const Ogre::Technique& _tech);
-
-    /**
-     * @brief Returns true if the given technique is used in a depth-only pass.
-     * @param[in] _tech Ogre technique
-     */
-    SIGHT_VIZ_SCENE3D_API static bool is_depth_only_technique(const Ogre::Technique& _tech);
-
-    /**
      * @brief Constructs a suffix to use in vertex and fragment programs names.
      * @param[in] _diffuse_texture is diffuse texture bound ?
      * @param[in] _vertex_color is vertex color enabled ?
@@ -92,7 +68,7 @@ public:
      * @param[in] _vertex_color is vertex color enabled ?
      * @param[in] _has_primitive_color is primitive color enabled bound ?
      */
-    SIGHT_VIZ_SCENE3D_API static std::string get_r2_vb_geometry_program_name(
+    SIGHT_VIZ_SCENE3D_API static std::string get_r2vb_geometry_program_name(
         data::mesh::cell_type_t _primitive_type,
         bool _diffuse_texture,
         bool _vertex_color,

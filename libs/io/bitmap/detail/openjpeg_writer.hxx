@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -128,14 +128,14 @@ public:
             && image_type != core::type::UINT32
         );
 
-        const auto& pixel_format = _image.pixel_format();
+        const auto pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image format: " << pixel_format,
-            pixel_format != data::image::pixel_format::gray_scale
-            && pixel_format != data::image::pixel_format::rgb
-            && pixel_format != data::image::pixel_format::rgba
-            && pixel_format != data::image::pixel_format::bgr
-            && pixel_format != data::image::pixel_format::bgra
+            pixel_format != data::image::pixel_format_t::gray_scale
+            && pixel_format != data::image::pixel_format_t::rgb
+            && pixel_format != data::image::pixel_format_t::rgba
+            && pixel_format != data::image::pixel_format_t::bgr
+            && pixel_format != data::image::pixel_format_t::bgra
         );
 
         // Create an RAII to be sure everything is cleaned at exit

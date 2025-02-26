@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -105,7 +105,7 @@ private:
     void setup_grid();
 
     /// Allocates the source geometry structure for R2VB.
-    void initialize_r2_vb_source();
+    void initialize_r2vb_source();
 
     /// Sets shader parameters and sets up the grid.
     void initialize_grid_materials();

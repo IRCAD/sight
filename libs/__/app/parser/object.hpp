@@ -32,11 +32,11 @@ namespace sight::app::parser
 {
 
 /**
- * @brief Specific core::tools::object parser. Does nothing as no base method is specialized: object_parser base class
+ * @brief Specific core::object parser. Does nothing as no base method is specialized: object_parser base class
  *  methods are therefore considered.
  *
  * @note This implementation is only written to avoid the mix between the service type object_parser and the
- * core::tools::object implementation (for homogeneity).
+ * core::object implementation (for homogeneity).
  *
  */
 class SIGHT_APP_CLASS_API object : public service::object_parser
@@ -45,20 +45,13 @@ public:
 
     SIGHT_DECLARE_SERVICE(object, service::object_parser);
 
-    SIGHT_APP_API object()           = default;
     SIGHT_APP_API ~object() override = default;
 
-    SIGHT_APP_API void create_config(core::tools::object::sptr _obj) override;
-    SIGHT_APP_API void start_config() override;
-    SIGHT_APP_API void update_config() override;
-    SIGHT_APP_API void stop_config() override;
-    SIGHT_APP_API void destroy_config() override;
-
-protected:
-
-    void updating() override;
-
-    std::vector<app::config_manager::sptr> m_ctm_container;
+    SIGHT_APP_API void parse(
+        const service::config_t& _cfg,
+        core::object::sptr _obj,
+        objects_t& _sub_objects
+    ) override;
 };
 
 } // namespace sight::app::parser

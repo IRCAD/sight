@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,7 @@ private:
     CPPUNIT_TEST_SUITE(material_test);
     CPPUNIT_TEST(methode1);
     CPPUNIT_TEST(equality_test);
+    CPPUNIT_TEST(misc_test);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,6 +45,7 @@ public:
 
     static void methode1();
     static void equality_test();
+    static void misc_test();
 };
 
 } // namespace sight::data::ut

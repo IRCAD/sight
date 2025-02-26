@@ -57,7 +57,14 @@ inline static const struct loader final
 
 std::tuple<service::base::sptr, std::string> make_container(const std::string& _child_uuid)
 {
-    const std::string& uuid = _child_uuid.empty() ? core::tools::uuid::generate() : _child_uuid;
+    auto uuid = _child_uuid;
+
+    if(uuid.empty())
+    {
+        uuid = core::tools::uuid::generate();
+        uuid.erase(std::remove(uuid.begin(), uuid.end(), '-'), uuid.end());
+    }
+
     const service::base::sptr container(service::add("sight::module::ui::frame"));
 
     service::config_t container_config;

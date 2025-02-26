@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,6 +44,8 @@ class layer;
 
 namespace interactor
 {
+
+static const inline Ogre::Vector3 DEFAULT_VIEW_UP(0., -1., 0.);
 
 /**
  * @brief Interface implementation for all the interaction with the mouse

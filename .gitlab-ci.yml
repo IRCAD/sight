@@ -7,13 +7,16 @@ stages:
 
 include:
     - project: "sight/sight-gitlab"
-      ref: b45de5bbdf838589e11466fd6d5b4a271e95a055
+      ref: 8d212bf32b05fbf1dcf714d70fc870995723392c
       file: "/.templates/deploy.yml"
     - project: "sight/sight-gitlab"
-      ref: b45de5bbdf838589e11466fd6d5b4a271e95a055
+      ref: 8d212bf32b05fbf1dcf714d70fc870995723392c
       file: "/.templates/build.yml"
 
-lint:sheldon:
+variables:
+    TEST_DATA_REF: "dev"
+
+lint:ubuntu-24.04:
     extends: .lint
     variables:
         ENABLE_CLANG_TIDY: "ON"
@@ -24,7 +27,7 @@ lint:sheldon:
     extends: .linux_before
     stage: build
     needs:
-        - job: lint:sheldon
+        - job: lint:ubuntu-24.04
           optional: true
     variables:
         SIGHT_BUILD_DOC: "OFF"
@@ -51,7 +54,6 @@ lint:sheldon:
             -DSIGHT_BUILD_TESTS=ON
             -DSIGHT_BUILD_DOC=${SIGHT_BUILD_DOC}
             -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
-            -DSIGHT_ENABLE_OPENVSLAM=ON
             -DSIGHT_ENABLE_REALSENSE=${SIGHT_ENABLE_REALSENSE}
             -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
             -DSIGHT_ENABLE_GDB=${SIGHT_ENABLE_GDB}
@@ -68,7 +70,7 @@ lint:sheldon:
         # Print CCache statistics (Cache hit rate should have raised)
         - ccache -svv
         # Clone sight-data.
-        - SIGHT_DATA_DIR=$(cmake -DOUTPUT_FOLDER=/cache/sight-data -DBRANCH=dev -P "${CI_PROJECT_DIR}/cmake/build/download_test_data.cmake" 2>&1 | grep sight-data)
+        - SIGHT_DATA_DIR=$(cmake -DOUTPUT_FOLDER=/cache/sight-data -DBRANCH=${TEST_DATA_REF} -P "${CI_PROJECT_DIR}/cmake/build/download_test_data.cmake" 2>&1 | grep sight-data)
         - export FWTEST_DATA_DIR=${SIGHT_DATA_DIR}
         - export IMAGE_OUTPUT_PATH=$CI_PROJECT_DIR/.build/testImages
         - mkdir -p $IMAGE_OUTPUT_PATH
@@ -119,6 +121,7 @@ lint:sheldon:
             metrics: .build/metrics.txt
 
 .linux_deploy_test:
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     stage: deploy-test
     variables:
         BUILD_TYPE: "Debug"
@@ -139,10 +142,9 @@ lint:sheldon:
         - >
             if [ "${SIGHT_TEST_SDK}" == "ON" ]; then
               tar -xf packages/sight-*.tar.zst
-              PACKAGE_NAME=$(cmake -DGET_ARCHIVE_FOLDER=ON -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -P "${CI_PROJECT_DIR}/cmake/build/download_deps.cmake" 2>&1)
-              for program in sight-*/bin/{ex*,tuto*,sight_viewer,sight_calibrator,dicomxplorer}; do
+              for program in sight-*/bin/{ex*,tuto*,sight_viewer,sight_calibrator}; do
                   echo Testing $(basename $program):
-                  LD_LIBRARY_PATH=/cache/.sight-deps/$PACKAGE_NAME/lib timeout 5s xvfb-run -a $program || [ $? -eq 124 ]
+                  timeout 5s xvfb-run -a $program || [ $? -eq 124 ]
               done
               for program in sight-*/bin/{aruco_marker,dicom_anonymizer,network_proxy}; do
                   echo Testing $(basename $program):
@@ -150,9 +152,8 @@ lint:sheldon:
               done
             fi
 
-build:linux-22.04-debug-gcc:
+build:ubuntu-24.04-debug-gcc:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     variables:
         BUILD_TYPE: "Debug"
         SIGHT_BUILD_SDK: "ON"
@@ -163,9 +164,8 @@ build:linux-22.04-debug-gcc:
         - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
-build:linux-22.04-release-gcc:
+build:ubuntu-24.04-release-gcc:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     variables:
         BUILD_TYPE: "Release"
         SIGHT_BUILD_SDK: "ON"
@@ -177,25 +177,35 @@ build:linux-22.04-release-gcc:
         - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
-build:linux-22.04-RelWithDebInfo-clang:
+build:ubuntu-24.04-RelWithDebInfo-clang:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_IGNORE_UNSTABLE_TESTS: 1
         SIGHT_ENABLE_GDB: "ON"
+        SIGHT_BUILD_DOC: "ON"
         CC: "clang"
         CXX: "clang++"
     rules:
         - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
-build:linux-22.04-coverage-gcc:
+build:ubuntu-22.04-RelWithDebInfo-clang:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_UBUNTU_22_IMAGE}"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
-        SIGHT_BUILD_DOC: "ON"
+        SIGHT_IGNORE_UNSTABLE_TESTS: 1
+        CC: "clang"
+        CXX: "clang++"
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+
+build:ubuntu-24.04-coverage-gcc:
+    extends: .linux_build
+    variables:
+        BUILD_TYPE: "RelWithDebInfo"
         SIGHT_ENABLE_COVERAGE: "ON"
         SIGHT_IGNORE_UNSTABLE_TESTS: 1
         CC: "gcc"
@@ -204,9 +214,8 @@ build:linux-22.04-coverage-gcc:
         - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
-build:linux-22.04-coverage-gcc-draft:
+build:ubuntu-24.04-coverage-gcc-draft:
     extends: .linux_build
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     variables:
         BUILD_TYPE: "RelWithDebInfo"
         SIGHT_ENABLE_COVERAGE: "ON"
@@ -218,9 +227,8 @@ build:linux-22.04-coverage-gcc-draft:
 
 deploy-test:linux-debug:
     extends: .linux_deploy_test
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     needs:
-        - job: build:linux-22.04-debug-gcc
+        - job: build:ubuntu-24.04-debug-gcc
           artifacts: true
     variables:
         BUILD_TYPE: "Debug"
@@ -231,9 +239,8 @@ deploy-test:linux-debug:
 
 deploy:linux-debug:
     extends: .linux_deploy
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     needs:
-        - job: build:linux-22.04-debug-gcc
+        - job: build:ubuntu-24.04-debug-gcc
           artifacts: true
         - job: deploy-test:linux-debug
     variables:
@@ -244,9 +251,8 @@ deploy:linux-debug:
 
 deploy-test:linux-release:
     extends: .linux_deploy_test
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     needs:
-        - job: build:linux-22.04-release-gcc
+        - job: build:ubuntu-24.04-release-gcc
           artifacts: true
     variables:
         BUILD_TYPE: "Release"
@@ -258,9 +264,8 @@ deploy-test:linux-release:
 
 deploy:linux-release:
     extends: .linux_deploy
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     needs:
-        - job: build:linux-22.04-release-gcc
+        - job: build:ubuntu-24.04-release-gcc
           artifacts: true
         - job: deploy-test:linux-release
     variables:
@@ -271,9 +276,8 @@ deploy:linux-release:
 
 deploy:apps-linux-release:
     extends: .linux_deploy
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
     needs:
-        - job: build:linux-22.04-release-gcc
+        - job: build:ubuntu-24.04-release-gcc
           artifacts: true
         - job: deploy-test:linux-release
     variables:
@@ -285,7 +289,7 @@ deploy:apps-linux-release:
 .windows_build:
     extends: .windows_before
     needs:
-        - job: lint:sheldon
+        - job: lint:ubuntu-24.04
           optional: true
         - job: prebuild:windows
     variables:
@@ -308,8 +312,8 @@ deploy:apps-linux-release:
         # Print CCache statistics (Cache hit rate should have raised)
         - ccache -svv
         # Clone sight-data.
-        - cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH=dev -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake"
-        - $env:FWTEST_DATA_DIR=cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH=dev -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake" '2>&1' | Select-String sight-data
+        - cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH="$TEST_DATA_REF" -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake"
+        - $env:FWTEST_DATA_DIR=cmd /c cmake -DOUTPUT_FOLDER="$CACHE\sight-data" -DBRANCH="$TEST_DATA_REF" -P "${env:CI_PROJECT_DIR}\cmake\build\download_test_data.cmake" '2>&1' | Select-String sight-data
         - $env:IMAGE_OUTPUT_PATH="${env:CI_PROJECT_DIR}/build/testImages"
         - md "${env:IMAGE_OUTPUT_PATH}"
         - $env:DISABLE_ABORT_DIALOG="1"
@@ -322,7 +326,7 @@ deploy:apps-linux-release:
         # Launch tests
         - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j6 --output-junit junit1.xml --repeat until-pass:2
         - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j6 --output-junit junit2.xml --repeat until-pass:2
-        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j6 --output-junit junit3.xml --repeat until-pass:2
+        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j1 --output-junit junit3.xml --repeat until-pass:2
         - |
             if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
               ninja sight_viewer_package
@@ -387,7 +391,7 @@ deploy:apps-linux-release:
                 $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\bin\;$env:PATH"
               }
               cd sight-*/*/bin
-              ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sight_viewer.bat,sight_calibrator.bat,dicomxplorer.bat){
+              ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sight_viewer.bat,sight_calibrator.bat){
                 $programName = Split-Path -Leaf $program
                 Write-Host Testing $programName
                 Start-SightProcess -path $program
@@ -488,11 +492,13 @@ deploy:apps-windows-release:
     rules:
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
+# Pages must be deployed in a single job, named "pages"
 pages:
-    image: "${SIGHT_CI_UBUNTU22_04}:24.1.0.beta-2-g672ad21"
+    image: "${SIGHT_UBUNTU_24_IMAGE}"
     stage: deploy
     needs:
-        - job: build:linux-22.04-coverage-gcc
+        - job: build:ubuntu-24.04-RelWithDebInfo-clang
+        - job: build:ubuntu-24.04-coverage-gcc
           artifacts: true
     script:
         - mv .build/Documentation/Doxygen/html/ public/

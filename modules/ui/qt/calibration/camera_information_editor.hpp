@@ -181,9 +181,13 @@ protected:
      * @brief Camera skew.
      */
     QLabel* m_skew {};
+    /**
+     * @brief Calibration error.
+     */
+    QLabel* m_error {};
 
     static constexpr std::string_view CAMERA = "camera";
-    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA, true};
+    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA};
 };
 
 } // namespace sight::module::ui::qt::calibration

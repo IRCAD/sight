@@ -23,14 +23,15 @@
 
 #include <core/jobs/base.hpp>
 
+#include <data/boolean.hpp>
 #include <data/image.hpp>
+#include <data/integer.hpp>
+#include <data/real.hpp>
+#include <data/string.hpp>
 
 #include <filter/image/min_max_propagation.hpp>
 
 #include <service/filter.hpp>
-
-#include <ui/__/has_parameters.hpp>
-#include <ui/history/command.hpp>
 
 namespace sight::module::filter::image
 {
@@ -46,11 +47,6 @@ namespace sight::module::filter::image
  * @section Slots Slots
  * - \b propagate() : launch the propagation.
  * - \b clear() : reset the mask and the output samples images.
- * - \b set_int_parameter(int, std::string) : set the value to write in the image, the key passed must be "value".
- * - \b set_int_parameter(int, std::string) : set the value to write in the image, the key passed must be "value".
- * - \b set_bool_parameter(bool, std::string) : set the overwrite mode, the key passed must be "overwrite".
- * - \b set_double_parameter(double, std::string) : set the radius, the passed key must be "radius".
- * - \b set_enum_parameter(std::string, std::string) : set the propagation mode, the passed key must be "mode".
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -72,15 +68,14 @@ namespace sight::module::filter::image
  * - \b samples_out [sight::data::image]: A 1D output image, in which the raw voxels values traversed during the
  * propagation are stored. It may be used to perform statistics on the collected samples, for instance.
  *
- * @subsection Configuration Configuration
+ * @subsection Properties Properties
  * - \b value (optional) : The initial value used in the output image. Default 1.
  * - \b radius(optional) : The maximum propagation distance. Infinity by default.
  * - \b overwrite (optional) : The overwrite mode. true by default.
  * - \b mode (optional) : Propagation mode. Possible values are 'min', 'max', 'minmax' and 'stddev'. 'min' by default.
  *  'stddev' stands for standar deviation, in this case the min is set to mean - stddev and mex to mean + stddev.
  */
-class propagator : public service::filter,
-                   public ui::has_parameters
+class propagator : public service::filter
 {
 public:
 
@@ -133,43 +128,25 @@ protected:
      */
     connections_t auto_connections() const override;
 
-    /// Sets overwrite mode. Key must be 'overwrite'.
-    void set_bool_parameter(bool _val, std::string _key) override;
-
-    /// Sets value. Key must be 'value'.
-    void set_int_parameter(int _val, std::string _key) override;
-
-    /// Sets radius. Key must be 'radius'.
-    void set_double_parameter(double _val, std::string _key) override;
-
-    /// Sets propagation mode. Key must be 'mode'.
-    void set_enum_parameter(std::string _val, std::string _key) override;
-
 private:
 
     using coordinates_t = sight::filter::image::min_max_propagation::coordinates_t;
-
-    /// Value to be written inside the image.
-    int m_value {1};
-
-    /// Maximum propagation distance.
-    double m_radius {std::numeric_limits<double>::infinity()};
-
-    /// Propagation mode (min, max or minmax).
-    sight::filter::image::min_max_propagation::mode m_mode {sight::filter::image::min_max_propagation::mode::minmax};
-
-    /// Overwrite mode.
-    bool m_overwrite {true};
 
     static constexpr std::string_view IMAGE_IN      = "image_in";
     static constexpr std::string_view SEEDS_IN      = "seeds";
     static constexpr std::string_view IMAGE_INOUT   = "image_out";
     static constexpr std::string_view SAMPLES_INOUT = "samples_out";
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image_in {this, IMAGE_IN, true};
-    sight::data::ptr<sight::data::point_list, sight::data::access::in> m_seeds_in {this, SEEDS_IN, true};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_image_out {this, IMAGE_INOUT, false};
-    sight::data::ptr<sight::data::image, sight::data::access::inout> m_samples_out {this, SAMPLES_INOUT, false, true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_image_in {this, IMAGE_IN};
+    sight::data::ptr<sight::data::point_list, sight::data::access::in> m_seeds_in {this, SEEDS_IN};
+    sight::data::ptr<sight::data::image> m_image_out {this, IMAGE_INOUT, false};
+    sight::data::ptr<sight::data::image> m_samples_out {this, SAMPLES_INOUT, true};
+    sight::data::ptr<sight::data::boolean> m_mask_filled_out {this, "mask_filled_out", true};
+
+    sight::data::property<sight::data::real> m_radius {this, "radius", 25.0};
+    sight::data::property<sight::data::integer> m_value {this, "value", 1};
+    sight::data::property<sight::data::boolean> m_overwrite {this, "overwrite", true};
+    sight::data::property<sight::data::string> m_mode {this, "mode", std::string("minmax")};
 };
 
 } // namespace sight::module::filter::image.

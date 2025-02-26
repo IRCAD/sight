@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,13 +29,9 @@
 #include <core/jobs/base.hpp>
 #include <core/jobs/observer.hpp>
 
-#include <io/__/reader/registry/macros.hpp>
-
 #include <vtkImageData.h>
 #include <vtkMetaImageReader.h>
 #include <vtkSmartPointer.h>
-
-SIGHT_REGISTER_IO_READER(sight::io::vtk::meta_image_reader);
 
 namespace sight::io::vtk
 {

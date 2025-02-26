@@ -38,11 +38,6 @@ and are, therefore, contained in sub-folders according to their specificity.
 ### metrics
 * **SAddDistance**: adds distances on an image field.
 
-* **remove_distance**: removes distances from the image field.
-  Possibility to choose between removing a selected point or the last added point.
-
-* **show_distance**: allows to show/hide image distances.
-
 ### series
 * **db_merger**: allows to load a new series_set and merge it with the current series_set.
 

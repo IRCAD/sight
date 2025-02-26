@@ -27,9 +27,9 @@
 
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
+#include <core/id.hpp>
 #include <core/thread/worker.hpp>
 #include <core/thread/worker.hxx>
-#include <core/tools/id.hpp>
 
 #include <service/macros.hpp>
 #include <service/op.hpp>
@@ -80,7 +80,7 @@ void toolbar::create()
     SIGHT_ASSERT("Parent toolbar is unknown.", tool_bar);
     m_layout_manager->set_callbacks(callbacks);
 
-    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
+    const std::string service_id = base_id();
 
     core::thread::get_default_worker()->post_task<void>(
         std::function<void()>(

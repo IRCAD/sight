@@ -53,4 +53,4 @@ public:
  * @note to be declared outside any namespace
  */
 #define REGISTER_IMAGEIOFACTORY(ConcreteImageIOFactory) static sight::io::itk::image_io_factory_registry< \
-        ConcreteImageIOFactory> registry;
+            ConcreteImageIOFactory> registry;

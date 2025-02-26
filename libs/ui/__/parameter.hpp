@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include <core/compound_types.hpp>
+
 #include <array>
 #include <cstdint>
 #include <string>
@@ -32,12 +34,14 @@ namespace sight::ui
 
 using int2_t      = std::array<int, 2>;
 using int3_t      = std::array<int, 3>;
-using double2_t   = std::array<double, 2>;
-using double3_t   = std::array<double, 3>;
+using double2_t   = sight::vec2d_t;
+using double3_t   = sight::vec3d_t;
 using color_t     = std::array<std::uint8_t, 4>;
-using enum_list_t = std::vector<std::string>;
+using enum_list_t = sight::enum_list_t;
 
-using parameter_t = std::variant<bool, double, double2_t, double3_t, int, int2_t, int3_t, color_t, std::string,
-                                 enum_list_t>;
+using parameter_t = std::variant<bool,
+                                 double, vec2d_t, vec3d_t,
+                                 std::int64_t, int, int2_t, int3_t, ivec3_t, ivec4_t,
+                                 sight::ui::color_t, std::string, enum_list_t>;
 
 } // sight::ui

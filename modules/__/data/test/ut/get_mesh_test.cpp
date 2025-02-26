@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -62,6 +62,7 @@ void get_mesh_test::extracts_mesh_by_index()
     // Create service
     sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
     CPPUNIT_ASSERT(get_mesh_serv);
+    CPPUNIT_ASSERT(get_mesh_serv->is_a("sight::module::data::get_mesh"));
 
     // Create reconstruction object
     sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
@@ -127,6 +128,7 @@ void get_mesh_test::extracts_mesh_with_index_out_of_bound()
     // Create service
     sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
     CPPUNIT_ASSERT(get_mesh_serv);
+    CPPUNIT_ASSERT(get_mesh_serv->is_a("sight::module::data::get_mesh"));
 
     // Create reconstruction object
     sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
@@ -187,6 +189,7 @@ void get_mesh_test::extracts_mesh_by_type()
     // Create service
     sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
     CPPUNIT_ASSERT(get_mesh_serv);
+    CPPUNIT_ASSERT(get_mesh_serv->is_a("sight::module::data::get_mesh"));
 
     // Create reconstruction object
     sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
@@ -278,6 +281,7 @@ void get_mesh_test::extracts_mesh_by_type_not_found()
     // Create service
     sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
     CPPUNIT_ASSERT(get_mesh_serv);
+    CPPUNIT_ASSERT(get_mesh_serv->is_a("sight::module::data::get_mesh"));
 
     // Create reconstruction object
     sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
@@ -360,6 +364,7 @@ void get_mesh_test::extracts_mesh_by_name_not_found()
     // Create service
     sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
     CPPUNIT_ASSERT(get_mesh_serv);
+    CPPUNIT_ASSERT(get_mesh_serv->is_a("sight::module::data::get_mesh"));
 
     // Create reconstruction object
     sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
@@ -441,6 +446,7 @@ void get_mesh_test::extracts_with_mesh_type_and_index()
     // Create service
     sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
     CPPUNIT_ASSERT(get_mesh_serv);
+    CPPUNIT_ASSERT(get_mesh_serv->is_a("sight::module::data::get_mesh"));
 
     // Create reconstruction object
     sight::data::reconstruction::sptr rec1 = std::make_shared<sight::data::reconstruction>();
@@ -525,6 +531,8 @@ void get_mesh_test::extracts_with_invalid_models_series()
     // Create service
     sight::service::base::sptr get_mesh_serv = sight::service::add("sight::module::data::get_mesh");
     CPPUNIT_ASSERT(get_mesh_serv);
+    CPPUNIT_ASSERT(get_mesh_serv->is_a("sight::module::data::get_mesh"));
+
     service::config_t config;
     std::stringstream config_string;
     config_string

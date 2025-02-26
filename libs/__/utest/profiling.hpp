@@ -32,7 +32,7 @@
 /// @note std::source_location is not yet supported by clang...
 /// Profile a function with multiple calls
 #define SIGHT_PROFILE_FUNC(Func, ...) \
-    sight::utest::profile_func(SIGHT_SOURCE_FILE, __LINE__, Func __VA_OPT__(, ) __VA_ARGS__)
+        sight::utest::profile_func(SIGHT_SOURCE_FILE, __LINE__, Func __VA_OPT__( , ) __VA_ARGS__)
 
 namespace sight::utest
 {
@@ -175,7 +175,7 @@ static inline std::tuple<Unit, Unit> profile_func(
         << (accurate || !_target_ratio ? "" : " - Not accurate !");
 
         // We do not use macro because of __FILE__ and __LINE__
-        sight::core::log::spy_logger::get().info(
+        sight::core::log::g_logger.info(
             stream.str(),
             _source,
             _line

@@ -64,7 +64,8 @@ public:
     static inline core::crypto::secure_string pickle(
         const core::crypto::secure_string& _password,
         const core::crypto::secure_string& _salt,
-        core::crypto::password_keeper::encryption_policy _policy = core::crypto::password_keeper::encryption_policy::password
+        core::crypto::password_keeper::encryption_policy _policy = core::crypto::password_keeper::encryption_policy::
+        password
     );
 
 protected:
@@ -100,17 +101,13 @@ inline core::crypto::secure_string session::pickle(
 {
     if(_password.empty() && _policy == core::crypto::password_keeper::encryption_policy::forced)
     {
-        if constexpr(core::crypto::password_keeper::has_default_password())
-        {
-            return core::crypto::password_keeper::get_default_password();
-        }
-        else if(!_salt.empty())
+        if(!_salt.empty())
         {
             return core::crypto::hash(_salt);
         }
         else
         {
-            SIGHT_THROW("No password provided and no default password available");
+            SIGHT_THROW("No password provided.");
         }
     }
     else if(_policy == core::crypto::password_keeper::encryption_policy::salted)

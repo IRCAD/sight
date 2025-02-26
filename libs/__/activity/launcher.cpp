@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2024 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 
 #include <core/runtime/runtime.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/mt/locked_ptr.hpp>
 
 #include <boost/range/iterator_range_core.hpp>

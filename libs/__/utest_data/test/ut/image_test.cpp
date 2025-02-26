@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,19 +50,21 @@ void image_test::tearDown()
 
 void image_test::generator_3d_test()
 {
-    data::image::sptr image              = std::make_shared<data::image>();
-    const data::image::size_t size       = {10, 15, 23};
-    const data::image::spacing_t spacing = {0.85, 2.6, 1.87};
-    const data::image::origin_t origin   = {-45.6, 25.97, -53.9};
-    core::type type                      = core::type::INT32;
+    data::image::sptr image                      = std::make_shared<data::image>();
+    const data::image::size_t size               = {10, 15, 23};
+    const data::image::spacing_t spacing         = {0.85, 2.6, 1.87};
+    const data::image::origin_t origin           = {-45.6, 25.97, -53.9};
+    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+    core::type type                              = core::type::INT32;
 
     utest_data::generator::image::generate_image(
         image,
         size,
         spacing,
         origin,
+        orientation,
         type,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
 
     CPPUNIT_ASSERT(image->size() == size);
@@ -75,19 +77,21 @@ void image_test::generator_3d_test()
 
 void image_test::generator_2d_test()
 {
-    data::image::sptr image              = std::make_shared<data::image>();
-    const data::image::size_t size       = {10, 15, 0};
-    const data::image::spacing_t spacing = {0.85, 2.6, 0.};
-    const data::image::origin_t origin   = {-45.6, 25.97, 0.};
-    core::type type                      = core::type::INT16;
+    data::image::sptr image                      = std::make_shared<data::image>();
+    const data::image::size_t size               = {10, 15, 0};
+    const data::image::spacing_t spacing         = {0.85, 2.6, 0.};
+    const data::image::origin_t origin           = {-45.6, 25.97, 0.};
+    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+    core::type type                              = core::type::INT16;
 
     utest_data::generator::image::generate_image(
         image,
         size,
         spacing,
         origin,
+        orientation,
         type,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     CPPUNIT_ASSERT(image->size() == size);
     CPPUNIT_ASSERT(image->spacing() == spacing);

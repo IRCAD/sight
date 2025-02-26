@@ -392,16 +392,16 @@ private:
     bool m_locked {false};
 
     /// Contains the input video timelines.
-    data::ptr_vector<data::frame_tl, data::access::in> m_frame_tls {this, config_key::FRAMETL_INPUT, true};
+    data::ptr_vector<data::frame_tl, data::access::in> m_frame_tls {this, config_key::FRAMETL_INPUT};
 
     /// Contains the output images.
-    data::ptr_vector<data::image, data::access::inout> m_frames {this, config_key::FRAME_INOUT, false};
+    data::ptr_vector<data::image, data::access::inout> m_frames {this, config_key::FRAME_INOUT};
 
     /// Contains the input matrix timelines.
-    data::ptr_vector<data::matrix_tl, data::access::in> m_matrix_tl_s {this, config_key::MATRIXTL_INPUT, true};
+    data::ptr_vector<data::matrix_tl, data::access::in> m_matrix_tl_s {this, config_key::MATRIXTL_INPUT};
 
     /// Contains the output matrices.
-    data::ptr_vector<data::matrix4, data::access::inout> m_matrix {this, config_key::MATRIX_INOUT, false};
+    data::ptr_vector<data::matrix4, data::access::inout> m_matrix {this, config_key::MATRIX_INOUT};
 };
 
 } // namespace sight::module

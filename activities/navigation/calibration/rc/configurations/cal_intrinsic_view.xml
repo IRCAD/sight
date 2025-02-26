@@ -1,22 +1,22 @@
 <extension implements="sight::app::extension::config">
-    <id>calIntrinsicView</id>
+    <id>sight::navigation::calibration::cal_intrinsic_view</id>
     <parameters>
+        <object uid="calibrationInfo" type="sight::data::calibration_info" />
+        <object uid="camera" type="sight::data::camera" />
+        <object uid="board_properties" type="sight::data::map" />
+
         <param name="WID_PARENT" />
-        <param name="camera" />
-        <param name="calibrationInfo" />
         <param name="preferencesModifiedProxy" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${calibrationInfo}" type="sight::data::calibration_info" src="ref" />
-        <object uid="${camera}" type="sight::data::camera" src="ref" />
         <object uid="frameTL" type="sight::data::frame_tl" />
         <object uid="videoFrame" type="sight::data::image" />
         <object uid="distortedFrame" type="sight::data::image" />
 
         <object uid="detectedChessboard" type="sight::data::point_list" />
-        <object uid="chessboardModel" type="sight::data::point_list" src="deferred" />
+        <object uid="chessboardModel" type="sight::data::point_list" deferred="true" />
         <object uid="cameraPoseMx" type="sight::data::matrix4" />
 
         <!-- ******************************* UI declaration *********************************** -->
@@ -31,22 +31,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="leftPanelView" start="true" />
-                <view sid="cameraView" start="true" />
-            </registry>
-        </service>
-
-        <service uid="leftPanelView" type="sight::module::ui::view">
-            <gui>
-                <layout type="sight::ui::layout::line">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
-                    <view proportion="0" />
-                </layout>
-            </gui>
-            <registry>
                 <view sid="toolboxView" start="true" />
-                <view sid="errorLabelSrv" start="true" />
+                <view sid="cameraView" start="true" />
             </registry>
         </service>
 
@@ -219,26 +205,21 @@
             </labels>
         </service>
 
-        <service uid="errorLabelSrv" type="sight::module::ui::qt::text_status">
-            <label>Reprojection error (RMSE)</label>
-            <color>#D25252</color>
-        </service>
-
         <service uid="displayCalibrationInfoSrv" type="sight::module::ui::qt::calibration::display_calibration_info">
             <in key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
-        <service uid="calibrationInfoEditorSrv" type="sight::module::ui::qt::calibration::calibration_info_editor" auto_connect="true">
+        <service uid="calibrationInfoEditorSrv" type="sight::module::ui::qt::calibration::calibration_info_editor">
             <inout key="calInfo1" uid="${calibrationInfo}" />
         </service>
 
         <service uid="intrinsicCalibrationSrv" type="sight::module::geometry::vision::open_cv_intrinsic">
             <in key="calibrationInfo" uid="${calibrationInfo}" />
             <inout key="camera" uid="${camera}" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <properties from="${board_properties}" />
         </service>
 
-        <service uid="computeCameraPoseSrv" type="sight::module::geometry::vision::solve_pn_p" worker="intr_chess_checker">
+        <service uid="computeCameraPoseSrv" type="sight::module::geometry::vision::solve_pnp" worker="chess_checker">
             <in key="pointList2d" uid="detectedChessboard" />
             <in key="pointList3d" uid="chessboardModel" />
             <in key="calibration" uid="${camera}" />
@@ -246,7 +227,7 @@
             <config inverse="false" />
         </service>
 
-        <service uid="cameraInfoSrv" type="sight::module::ui::qt::calibration::camera_information_editor" auto_connect="true">
+        <service uid="cameraInfoSrv" type="sight::module::ui::qt::calibration::camera_information_editor">
             <in key="camera" uid="${camera}" />
         </service>
 
@@ -261,7 +242,7 @@
 
         <service uid="calibrationDataReaderSrv" type="sight::module::io::vision::calibration_info_reader">
             <inout key="data" uid="${calibrationInfo}" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
+            <properties from="${board_properties}" />
         </service>
 
         <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
@@ -292,7 +273,7 @@
             <mode>undistort</mode>
         </service>
 
-        <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" worker="intr_chess_checker">
+        <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" worker="chess_checker">
             <in group="image" auto_connect="true">
                 <key uid="videoFrame" />
             </in>
@@ -302,7 +283,7 @@
             <inout group="detection">
                 <key uid="detectedChessboard" />
             </inout>
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" scale="CHESSBOARD_SCALE" />
+            <properties from="${board_properties}" />
         </service>
 
         <service uid="chessboardReprojectionSrv" type="sight::module::geometry::vision::chessboard_reprojection">
@@ -311,7 +292,7 @@
             <in key="detectedChessboard" uid="detectedChessboard" />
             <inout key="videoImage" uid="distortedFrame" />
             <out key="chessboardModel" uid="chessboardModel" />
-            <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
+            <properties from="${board_properties}" />
             <config drawDetected="true" drawReprojection="true" distortReprojection="true" />
         </service>
 
@@ -498,11 +479,6 @@
         </connect>
 
         <connect>
-            <signal>intrinsicCalibrationSrv/error_computed</signal>
-            <slot>errorLabelSrv/set_double_parameter</slot>
-        </connect>
-
-        <connect>
             <signal>chessboardDetectorSrv/updated</signal>
             <slot>computeCameraPoseSrv/update</slot>
         </connect>
@@ -525,18 +501,6 @@
         <connect>
             <signal>videoAdp/updated</signal>
             <slot>genericSceneSrv/render</slot>
-            <slot>frameSynchronizerSrv/request_sync</slot>
-        </connect>
-
-        <connect>
-            <signal>visibilityParameters/bool_changed</signal>
-        </connect>
-
-        <connect channel="${preferencesModifiedProxy}">
-            <slot>intrinsicCalibrationSrv/update_chessboard_size</slot>
-            <slot>chessboardDetectorSrv/update_chessboard_size</slot>
-            <slot>chessboardReprojectionSrv/update_chessboard_size</slot>
-            <slot>calibrationDataReaderSrv/update_chessboard_size</slot>
             <slot>frameSynchronizerSrv/request_sync</slot>
         </connect>
 

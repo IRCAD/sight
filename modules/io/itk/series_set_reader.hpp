@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(series_set_reader, sight::io::service::reader);
 
-    series_set_reader() noexcept = default;
+    series_set_reader() noexcept;
 
     ~series_set_reader() noexcept override = default;
 

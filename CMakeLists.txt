@@ -117,30 +117,10 @@ if(CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE} CACHE STRING "List of supported configurations." FORCE)
 endif()
 
-# Allow to use an encrypted log
-option(SIGHT_ENABLE_ENCRYPTED_LOG "Allow log encryption" OFF)
-
-# Defines the default hardcoded password. The password itself will be obfuscated during build process, it will not
-# appear in "clear" text in the final binary.
-set(SIGHT_DEFAULT_PASSWORD "" CACHE STRING "Default password to use for encryption (log, preferences, session, ...).")
-mark_as_advanced(SIGHT_DEFAULT_PASSWORD)
-
-# Add global compile definitions because of precompiled headers
-if(SIGHT_ENABLE_ENCRYPTED_LOG)
-    add_compile_definitions(SIGHT_ENABLE_ENCRYPTED_LOG)
-endif()
-if(SIGHT_DEFAULT_PASSWORD)
-    add_compile_definitions(SIGHT_DEFAULT_PASSWORD="${SIGHT_DEFAULT_PASSWORD}")
-endif()
-
 # Use solution folders.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER automoc)
 
-# Make openvslam optional on Linux
-if(NOT MSVC)
-    option(SIGHT_ENABLE_OPENVSLAM "Enable OpenVSLAM" OFF)
-endif()
 # Make Realsense optional
 option(SIGHT_ENABLE_REALSENSE "Enable RealSense" OFF)
 
@@ -182,10 +162,10 @@ if(UNIX)
     mark_as_advanced(SIGHT_EXTERNAL_LIBRARIES)
 
     # Use directly SIGHT_EXTERNAL_LIBRARIES if set, otherwise, download and install sight-deps package
-    # OpenVSLAM is the only package provided by sight-deps
-    if(NOT SIGHT_EXTERNAL_LIBRARIES AND SIGHT_ENABLE_OPENVSLAM)
-        include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/download_deps.cmake)
-    endif()
+    # Comment out this if one need to include a dependency from sight-deps one day
+    #if(NOT SIGHT_EXTERNAL_LIBRARIES AND SIGHT_ENABLE_LIBRARY)
+    #    include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/download_deps.cmake)
+    #endif()
 
     if(SIGHT_EXTERNAL_LIBRARIES)
         get_filename_component(ABSOLUTE_SIGHT_EXTERNAL_LIBRARIES ${SIGHT_EXTERNAL_LIBRARIES} REALPATH)
@@ -287,7 +267,7 @@ install(FILES "${CMAKE_SOURCE_DIR}/cmake/modules/CppUnitConfig.cmake" DESTINATIO
 install(
     FILES "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
           "${CMAKE_SOURCE_DIR}/cmake/build/flags.cmake"
-          "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp"
+          "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp.in"
           "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp"
           "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
           "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"

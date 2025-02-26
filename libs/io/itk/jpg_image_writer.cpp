@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,13 +28,11 @@
 #include <core/base.hpp>
 #include <core/tools/dispatcher.hpp>
 
-#include <data/composite.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
+#include <data/map.hpp>
 #include <data/transfer_function.hpp>
-
-#include <io/__/writer/registry/macros.hpp>
 
 #include <itkImageSeriesWriter.h>
 #include <itkIntensityWindowingImageFilter.h>
@@ -43,8 +41,6 @@
 
 #include <cmath>
 #include <filesystem>
-
-SIGHT_REGISTER_IO_WRITER(sight::io::itk::jpg_image_writer);
 
 namespace sight::io::itk
 {
@@ -96,9 +92,7 @@ struct jpg_itk_saver_functor
         using rescale_filter_t = ::itk::IntensityWindowingImageFilter<itk_image_type, itk_image_type>;
         typename rescale_filter_t::Pointer rescale_filter = rescale_filter_t::New();
 
-        double min = NAN;
-        double max = NAN;
-        data::helper::medical_image::get_min_max(image, min, max);
+        const auto& [min, max] = data::helper::medical_image::get_min_max<double>(image);
 
         rescale_filter->SetWindowMinimum(PIXELTYPE(min));
         rescale_filter->SetWindowMaximum(PIXELTYPE(max));

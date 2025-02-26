@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -52,10 +52,10 @@
 namespace sight::module::io::itk
 {
 
-//------------------------------------------------------------------------------
-
-image_series_reader::image_series_reader() noexcept =
-    default;
+image_series_reader::image_series_reader() noexcept :
+    reader("Choose a file")
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -71,7 +71,7 @@ void image_series_reader::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose a file" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("NIfTI (.nii)", "*.nii *.nii.gz");
     dialog_file.add_filter("Inr (.inr.gz)", "*.inr.gz");
@@ -126,7 +126,7 @@ void init_series(data::series::sptr _series)
     const std::string date             = core::tools::get_date(now);
     const std::string time             = core::tools::get_time(now);
 
-    _series->set_modality("OT");
+    _series->set_modality(data::dicom::modality_t::ot);
     _series->set_series_date(date);
     _series->set_series_time(time);
     _series->set_series_description("image imported with ITK");

@@ -60,14 +60,17 @@ namespace sight::module::ui::qt::image
  *
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::image::window_level" auto_connect="true">
-        <inout key="image" uid="..."/>
+        <in key="image" uid="..."/>
         <inout key="tf" uid="..." />
         <config autoWindowing="true" enableSquareTF="false" />
+        <properties piece="..." />
     </service>
    @endcode
  *
- * @subsection In-Out In-Out
+ * @subsection Input Input
  * - \b image [sight::data::image]: image on which the windowing will be changed.
+ *
+ * @subsection In-Out In-Out
  * - \b tf [sight::data::transfer_function] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
@@ -78,6 +81,9 @@ namespace sight::module::ui::qt::image
  * min/max intensity when this service receive BUFFER event.
  * - \b enableSquareTF(optional, default="true"): if 'true', enables the button to switch between current TF and square
  * TF.
+ *
+ * @subsection Properties Properties
+ * - \b piece(optional, default="-1"): if >=0, restrict all settings made to the configured piece in the TF
  */
 class window_level final : public QObject,
                            public sight::ui::editor
@@ -88,11 +94,16 @@ public:
 
     SIGHT_DECLARE_SERVICE(window_level, sight::ui::editor);
 
+    struct slots
+    {
+        static inline const core::com::slots::key_t UPDATE_IMAGE = "update_image";
+    };
+
     /// Initialize signals and slots.
     window_level() noexcept;
 
     /// Destroys the service.
-    ~window_level() noexcept override;
+    ~window_level() noexcept final = default;
 
 protected:
 
@@ -102,7 +113,7 @@ protected:
     /// Installs the layout.
     void starting() final;
 
-    /// Updates editor information from the image.
+    /// Updates slider position
     void updating() final;
 
     /// Destroys the layout.
@@ -123,8 +134,8 @@ protected:
      */
     void info(std::ostream& _sstream) final;
 
-    /// Slot: Updates the slider position
-    void update_tf();
+    /// Slot: Updates the slider range
+    void update_image();
 
 protected Q_SLOTS:
 
@@ -140,8 +151,6 @@ protected Q_SLOTS:
 
 protected:
 
-    using window_level_min_max_t = data::transfer_function::min_max_t;
-
     double to_window_level(double _val) const;
 
     double from_window_level(double _val);
@@ -153,8 +162,6 @@ protected:
     void update_image_window_level(double _image_min, double _image_max);
 
     void update_text_window_level(double _image_min, double _image_max);
-
-    window_level_min_max_t get_image_window_min_max();
 
     static bool get_widget_double_value(QLineEdit* _widget, double& _val);
 
@@ -183,8 +190,10 @@ private:
     static constexpr std::string_view IMAGE = "image";
     static constexpr std::string_view TF    = "tf";
 
-    data::ptr<data::image, data::access::inout> m_image {this, IMAGE, true};
-    data::ptr<data::transfer_function, data::access::inout> m_tf {this, TF, true};
+    data::ptr<data::image, data::access::in> m_image {this, IMAGE};
+    data::ptr<data::transfer_function, data::access::inout> m_tf {this, TF};
+
+    sight::data::property<sight::data::integer> m_piece {this, "piece", -1};
 };
 
 } // namespace sight::module::ui::qt::image

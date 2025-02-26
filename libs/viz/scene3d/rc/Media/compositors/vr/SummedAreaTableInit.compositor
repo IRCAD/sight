@@ -1,4 +1,4 @@
-compositor SummedAreaTableInit
+compositor summed_area_table_init
 {
     technique
     {
@@ -8,7 +8,7 @@ compositor SummedAreaTableInit
             input none
             pass render_quad
             {
-                material SummedAreaTableInit
+                material summed_area_table_init
             }
         }
     }

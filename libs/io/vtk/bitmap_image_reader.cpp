@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,6 @@
 #include <core/jobs/base.hpp>
 #include <core/jobs/observer.hpp>
 
-#include <io/__/reader/registry/macros.hpp>
-
 #include <boost/tokenizer.hpp>
 
 #include <vtkGenericDataObjectReader.h>
@@ -38,8 +36,6 @@
 #include <vtkImageReader2Collection.h>
 #include <vtkImageReader2Factory.h>
 #include <vtkSmartPointer.h>
-
-SIGHT_REGISTER_IO_READER(sight::io::vtk::bitmap_image_reader);
 
 namespace sight::io::vtk
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,8 @@ const std::string video_writer::AV_C1_CODEC  = "avc1";
 
 //------------------------------------------------------------------------------
 
-video_writer::video_writer() noexcept
+video_writer::video_writer() noexcept :
+    writer("Choose a folder to save the video")
 {
     new_slot(SAVE_FRAME, &video_writer::save_frame, this);
     new_slot(START_RECORD, &video_writer::start_record, this);
@@ -93,8 +94,9 @@ void video_writer::starting()
 void video_writer::open_location_dialog()
 {
     static auto default_directory = std::make_shared<core::location::single_folder>();
+
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose an file to save the video" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("mp4", "*.mp4");
     dialog_file.set_option(ui::dialog::location::write);

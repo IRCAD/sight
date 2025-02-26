@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,6 +39,11 @@
 namespace sight::module::io::document
 {
 
+pdf_writer::pdf_writer() noexcept :
+    writer("Choose an external data file")
+{
+}
+
 //-----------------------------------------------------------------------------
 
 void pdf_writer::info(std::ostream& _sstream)
@@ -69,7 +74,7 @@ void pdf_writer::open_location_dialog()
     static auto default_directory = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose an external data file" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("pdf", "*.pdf");
 
@@ -104,7 +109,7 @@ void pdf_writer::updating()
         pdf_writer.setPageSize(QPageSize(QPageSize::A4));
 
         // Scale value to fit the images to a PDF page
-        const int scale = static_cast<int>(pdf_writer.logicalDpiX() * 8);
+        const int scale = pdf_writer.logicalDpiX() * 8;
 
         // Adding fwImage from generic scene to the list of images to scale
         images_scaled_list_t images_to_scale;

@@ -51,24 +51,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b show(): shows the volume.
  * - \b hide(): hides the volume.
  * - \b update_clipping_box(): updates the cropping widget from the clipping matrix.
- * - \b set_bool_parameter(bool, string): calls a bool parameter slot according to the given key.
- *  - preIntegration: toggles the pre-integration.
- *  - ambientOcclusion: toggles the ambient occlusion.
- *  - colorBleeding: toggles the color bleeding.
- *  - shadows: toggles soft shadows.
- *  - widgets: toggles the clipping box widget's visibility.
- * - \b set_int_parameter(int, string): calls an int parameter slot according to the given key.
- *  - sampling: sets the number of volume samples used by the renderer. More samples yield more details but slow down
- *    rendering.
- *  - opacityCorrection: sets the volume opacity correction factor.
- *  - satSizeRatio: sets the SAT ratio and computes it again with the new corresponding size.
- *  - satShellsNumber: sets the number of SAT shells and compute the SAT.
- *  - satShellRadius: sets the SAT shell radius and computes the SAT.
- *  - satConeAngle: sets the SAT cone angle and computes the SAT.
- *  - satConeSamples: sets the SAT cone samples number and computes the SAT.
- * - \b set_double_parameter(double, string): calls a double parameter slot according to the given key.
- *  - aoFactor: sets the ambient occlusion factor and computes the SAT.
- *  - colorBleedingFactor: sets the color bleeding factor and computes the SAT.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -128,7 +110,7 @@ public:
     volume_render() noexcept;
 
     /// Destroys the adaptor.
-    ~volume_render() noexcept override;
+    ~volume_render() noexcept override = default;
 
 protected:
 
@@ -295,7 +277,7 @@ private:
      * @brief Sets the SAT size ratio.
      * @param _size_ratio value of the SAT size ratio.
      */
-    void update_sat_size_ratio(unsigned _size_ratio);
+    void update_sat_size_ratio(float _size_ratio);
 
     /**
      * @brief Sets the SAT shells number.
@@ -429,6 +411,16 @@ private:
     /// Updates the inout clipping matrix from the clipping box positions.
     void update_clipping_matrix();
 
+    enum class update_flags : std::uint8_t
+    {
+        IMAGE,
+        IMAGE_BUFFER,
+        MASK_BUFFER,
+        CLIPPING_BOX,
+        TF,
+        _NUM
+    };
+
     ///Prevents concurrent access on certain operations (texture update, etc.)
     std::mutex m_mutex;
 
@@ -447,15 +439,11 @@ private:
     /// Stores the widgets used for clipping.
     std::shared_ptr<sight::viz::scene3d::interactor::clipping_box_interactor> m_widget;
 
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, objects::IMAGE_IN, true};
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, objects::MASK_IN, true};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, objects::VOLUME_TF_IN, true};
-    sight::data::ptr<sight::data::matrix4, sight::data::access::inout> m_clipping_matrix
-    {
-        this,
-        objects::CLIPPING_MATRIX_INOUT,
-        true,
-        true
+    data::ptr<sight::data::image, sight::data::access::in> m_image {this, objects::IMAGE_IN};
+    data::ptr<sight::data::image, sight::data::access::in> m_mask {this, objects::MASK_IN};
+    data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, objects::VOLUME_TF_IN};
+    data::ptr<sight::data::matrix4, sight::data::access::inout> m_clipping_matrix {this, objects::CLIPPING_MATRIX_INOUT,
+                                                                                   true
     };
 };
 

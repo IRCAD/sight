@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,6 @@
 #include <OGRE/OgreTexture.h>
 
 #include <optional>
-#include <string>
 
 namespace sight::viz::scene3d
 {
@@ -53,10 +52,10 @@ namespace vr
 class grid_proxy_geometry_factory;
 
 } // namespace vr
-namespace compositor
+namespace compositor::manager
 {
 
-class material_mgr_listener;
+class oit;
 
 } // namespace compositor
 
@@ -117,7 +116,7 @@ public:
      * @brief get the image pixel format from an Ogre pixel format
      * @param _format Pixel format of Ogre
      */
-    SIGHT_VIZ_SCENE3D_API static std::pair<core::type, enum data::image::pixel_format> get_pixel_format_from_ogre(
+    SIGHT_VIZ_SCENE3D_API static std::pair<core::type, enum data::image::pixel_format_t> get_pixel_format_from_ogre(
         Ogre::PixelFormat _format
     );
     /**
@@ -162,16 +161,18 @@ public:
     /// Copies an ogre matrix to a Sight matrix.
     SIGHT_VIZ_SCENE3D_API static void from_ogre_matrix(const Ogre::Matrix4& _mx, const data::matrix4::sptr& _tm3d);
 
-    /// Copies the image's spacing and origin into Ogre vectors.
-    SIGHT_VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convert_spacing_and_origin(
-        const data::image::csptr& _img
-    );
-
-    /// Copies the image's spacing and origin into Ogre vectors.
-    /// Version with const reference of image
-    SIGHT_VIZ_SCENE3D_API static std::pair<Ogre::Vector3, Ogre::Vector3> convert_spacing_and_origin(
-        const data::image& _img
-    );
+    /**
+     * @brief Returns image spacing, origin and orientation to Ogre types.
+     *
+     * @param _image
+     * @return image spacing, origin and orientation
+     *
+     * @{
+     */
+    SIGHT_VIZ_SCENE3D_API static Ogre::Vector3 get_ogre_spacing(const data::image& _image);
+    SIGHT_VIZ_SCENE3D_API static Ogre::Vector3 get_ogre_origin(const data::image& _image);
+    SIGHT_VIZ_SCENE3D_API static Ogre::Quaternion get_ogre_orientation(const data::image& _image);
+    /// @}
 
     /// Converts world coordinates to slices indexes of _image if possible, thrown an exception if not.
     SIGHT_VIZ_SCENE3D_API static Ogre::Vector3i world_to_slices(const data::image& _image, const Ogre::Vector3& _world);
@@ -196,16 +197,9 @@ public:
      * @brief Pick a voxel in a 3D image at a world-space position.
      * @param _image source image.
      * @param _position 3D world-space position.
-     * @param _origin image origin.
-     * @param _spacing image spacing.
      * @return True if an object has been selected.
      */
-    SIGHT_VIZ_SCENE3D_API static std::string pick_image(
-        const data::image& _image,
-        const Ogre::Vector3& _position,
-        const Ogre::Vector3& _origin,
-        const Ogre::Vector3& _spacing
-    );
+    SIGHT_VIZ_SCENE3D_API static std::string pick_image(const data::image& _image, const Ogre::Vector3& _position);
 
 private:
 
@@ -227,10 +221,10 @@ private:
         const std::filesystem::path& _module_path
     );
 
-    static viz::scene3d::factory::r2vb_renderable* s_r2_vb_renderable_factory;
+    static viz::scene3d::factory::r2vb_renderable* s_r2vb_renderable_factory;
     static viz::scene3d::factory::Text* s_text_factory;
     static viz::scene3d::vr::grid_proxy_geometry_factory* s_grid_proxy_geometry_factory;
-    static viz::scene3d::compositor::material_mgr_listener* s_oit_material_listener;
+    static viz::scene3d::compositor::manager::oit* s_oit_manager;
 };
 
 } // namespace sight::viz::scene3d

@@ -40,6 +40,7 @@ public:
 
     SIGHT_UI_QT_API_QT void set_values(const std::vector<int>& _values);
     SIGHT_UI_QT_API_QT void set_value(int _value);
+    SIGHT_UI_QT_API_QT void set_index(std::size_t _index);
 
     SIGHT_UI_QT_API_QT void set_tracking(bool _tracking);
 

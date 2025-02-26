@@ -85,7 +85,7 @@ public:
 
 protected:
 
-    /// Gets parameters from composite.
+    /// Gets parameters from map.
     void starting() override;
 
     /// Does nothing.
@@ -127,7 +127,7 @@ private:
     std::string m_same_slice_label {"Same axial slice"};
 
     static constexpr std::string_view LANDMARK_INPUT = "landmark";
-    data::ptr<data::landmarks, sight::data::access::in> m_landmark {this, LANDMARK_INPUT, true};
+    data::ptr<data::landmarks, sight::data::access::in> m_landmark {this, LANDMARK_INPUT};
     data::ptr<data::matrix4, sight::data::access::inout> m_transform {this, "transform"};
     data::ptr<data::landmarks, sight::data::access::inout> m_computed_landmark {this, "computedLandmark"};
     data::ptr<data::matrix4, sight::data::access::inout> m_translation_matrix {this, "translationMatrix"};

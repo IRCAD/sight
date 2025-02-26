@@ -200,7 +200,7 @@
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
-                        <view proportion="1" backgroundColor="#2E2F30" />
+                        <view proportion="1" backgroundColor="#2E2F30" caption="This is a background caption" />
                     </layout>
                 </gui>
                 <registry>
@@ -282,7 +282,7 @@
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <spacer />
-                        <view proportion="0" />
+                        <view proportion="0" caption="This is a logo caption" backgroundColor="#000040" />
                         <spacer />
                     </layout>
                 </gui>

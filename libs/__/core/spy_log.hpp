@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -141,9 +141,9 @@ constexpr static const char* strip_source_path(const char* const _path)
 # define FWCORE_IF(cond, code) if(cond){code}
 
 # define SL_LOG(log, loglevel, message) FWCORE_EXPR_BLOCK( \
-        std::stringstream osl_str; \
-        osl_str << message; \
-        log.loglevel(osl_str.str(), SIGHT_SOURCE_FILE, __LINE__); \
+            std::stringstream osl_str; \
+            osl_str << message; \
+            log.loglevel(osl_str.str(), SIGHT_SOURCE_FILE, __LINE__); \
 )
 
 // -----------------------------------------------------------------------------
@@ -171,36 +171,36 @@ constexpr static const char* strip_source_path(const char* const _path)
 # ifdef _DEBUG
 #  ifdef WIN32
 #  define SL_ASSERT_IMPL(log, message, cond) FWCORE_EXPR_BLOCK( \
-        FWCORE_IF( \
-            !(cond), \
-            std::stringstream osl_str1; \
-            osl_str1 << "Assertion '" \
-            <<#cond << "' failed.\n" << message; \
-            log.fatal(osl_str1.str(), SIGHT_SOURCE_FILE, __LINE__); \
-            _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, NULL, "%s", osl_str1.str().c_str()); \
-            __debugbreak(); \
-        ) \
+            FWCORE_IF( \
+                !(cond), \
+                std::stringstream osl_str1; \
+                osl_str1 << "Assertion '" \
+                <<#cond << "' failed.\n" << message; \
+                log.fatal(osl_str1.str(), SIGHT_SOURCE_FILE, __LINE__); \
+                _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, NULL, "%s", osl_str1.str().c_str()); \
+                __debugbreak(); \
+            ) \
 )
 #  else
 #  define SL_ASSERT_IMPL(log, message, cond) FWCORE_EXPR_BLOCK( \
-        FWCORE_IF( \
-            !(cond), \
-            std::stringstream osl_str1; \
-            osl_str1 << "Assertion '" \
-            <<#cond << "' failed: " << message; \
-            log.fatal(osl_str1.str(), SIGHT_SOURCE_FILE, __LINE__); \
-            SPYLOG_ABORT(); \
-        ) \
+            FWCORE_IF( \
+                !(cond), \
+                std::stringstream osl_str1; \
+                osl_str1 << "Assertion '" \
+                <<#cond << "' failed: " << message; \
+                log.fatal(osl_str1.str(), SIGHT_SOURCE_FILE, __LINE__); \
+                SPYLOG_ABORT(); \
+            ) \
 )
 #  endif
 
 #  define SL_ASSERT(log, message, cond) FWCORE_EXPR_BLOCK( \
-        FWCORE_IF( \
-            !(cond), \
-            std::stringstream osl_str; \
-            osl_str << message; \
-            SL_ASSERT_IMPL(log, osl_str.str(), cond); \
-        ) \
+            FWCORE_IF( \
+                !(cond), \
+                std::stringstream osl_str; \
+                osl_str << message; \
+                SL_ASSERT_IMPL(log, osl_str.str(), cond); \
+            ) \
 )
 # else
 #  define SL_ASSERT(log, message, cond) // empty
@@ -209,7 +209,7 @@ constexpr static const char* strip_source_path(const char* const _path)
 // -----------------------------------------------------------------------------
 
 #  define SPYLOG_SPYLOGGER \
-    sight::core::log::spy_logger::get()
+        sight::core::log::g_logger
 
 // -----------------------------------------------------------------------------
 
@@ -279,9 +279,9 @@ constexpr static const char* strip_source_path(const char* const _path)
 /** @brief work like 'assert' from 'cassert', with in addition a message logged by
  * spylog (with FATAL loglevel)  */
 # define SIGHT_ASSERT(message, cond) \
-    SL_ASSERT(SPYLOG_SPYLOGGER, message, cond)
+        SL_ASSERT(SPYLOG_SPYLOGGER, message, cond)
 # define OSIGHT_ASSERT(message, cond) \
-    SL_ASSERT(SPYLOG_SPYLOGGER, message, cond)
+        SL_ASSERT(SPYLOG_SPYLOGGER, message, cond)
 
 // -----------------------------------------------------------------------------
 
@@ -298,37 +298,37 @@ constexpr static const char* strip_source_path(const char* const _path)
  * @brief Use this macro when deprecating a function to warn the developer.
  */
 #define FW_DEPRECATED(old_fn_name, new_fn_name, version) \
-    SIGHT_ERROR( \
-        "[DEPRECATED] '" << old_fn_name << "' is deprecated and will be removed in '" << version << "', use '" \
-        << new_fn_name << "' instead. It is still used by '" + this->get_classname() + "'." \
-    );
+        SIGHT_ERROR( \
+            "[DEPRECATED] '" << old_fn_name << "' is deprecated and will be removed in '" << version << "', use '" \
+            << new_fn_name << "' instead. It is still used by '" + this->get_classname() + "'." \
+        );
 
 /**
  * @brief Use this macro when deprecating a function to warn the developer.
  */
 #define FW_DEPRECATED_IF(old_fn_name, new_fn_name, version, condition) \
-    SIGHT_ERROR_IF( \
-        "[DEPRECATED] '" << old_fn_name << "' is deprecated and will be removed in '" << version << "', use '" \
-        << new_fn_name << "' instead. It is still used by '" + this->get_classname() + "'.", \
-        condition \
-    );
+        SIGHT_ERROR_IF( \
+            "[DEPRECATED] '" << old_fn_name << "' is deprecated and will be removed in '" << version << "', use '" \
+            << new_fn_name << "' instead. It is still used by '" + this->get_classname() + "'.", \
+            condition \
+        );
 
 /**
  * @brief Use this macro when deprecating a function to warn the developer.
  */
 #define FW_DEPRECATED_MSG(message, version) \
-    SIGHT_ERROR("[DEPRECATED] " << message << " It will be removed in '" << version << "'");
+        SIGHT_ERROR("[DEPRECATED] " << message << " It will be removed in '" << version << "'");
 
 /**
  * @brief Use this macro when deprecating a service key to warn the developer.
  */
 #define FW_DEPRECATED_KEY(new_key, access, version) \
-    SIGHT_ERROR( \
-        "[DEPRECATED] The key '" \
-        << new_key << "' is not correctly set. Please correct the configuration to set an '" \
-        << access << "' key named '" << new_key << "'. The support of the old key will be removed in '" \
-        << version << "'." \
-    );
+        SIGHT_ERROR( \
+            "[DEPRECATED] The key '" \
+            << new_key << "' is not correctly set. Please correct the configuration to set an '" \
+            << access << "' key named '" << new_key << "'. The support of the old key will be removed in '" \
+            << version << "'." \
+        );
 
 //------------------------------------------------------------------------------
 

@@ -55,7 +55,7 @@ public:
         std::string_view _key,
         std::optional<std::size_t> _index,
         data::access _access,
-        const bool _auto_connect,
+        std::optional<bool> _auto_connect,
         const bool _optional
     );
 
@@ -111,12 +111,8 @@ public:
     /// Notify about a destroyed deferred object
     SIGHT_SERVICE_API static void notify_unregister_out(data::object::sptr, const std::string&);
 
-    /// Returns the information about the required object key
-    //// @return a pair of booleans to indicate if the object is auto_connected and optional
-    SIGHT_SERVICE_API static std::pair<bool, bool> get_object_key_attrs(
-        const service::base::sptr& _srv,
-        const std::string& _key
-    );
+    /// Returns a boolean to indicate if the object is optional
+    SIGHT_SERVICE_API static bool is_key_optional(const service::base::sptr& _srv, const std::string& _key);
 };
 
 } // namespace sight::service

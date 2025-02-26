@@ -22,10 +22,13 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
 #include <data/camera.hpp>
+#include <data/color.hpp>
 #include <data/image.hpp>
 #include <data/marker_map.hpp>
 #include <data/matrix4.hpp>
+#include <data/real.hpp>
 
 #include <service/controller.hpp>
 
@@ -96,7 +99,7 @@ protected:
     /**
      * @brief Configuring method : This method is used to configure the service.
      */
-    void configuring() override;
+    void configuring(const config_t& _config) override;
 
     /**
      * @brief Starting method : This method is used to initialize the service.
@@ -117,14 +120,8 @@ private:
 
     void compute(core::clock::type _timestamp);
 
-    ///Slot called when a parameter is changed
-    void set_parameter(sight::ui::parameter_t _val, std::string _key);
-
     /// Last timestamp
     core::clock::type m_last_timestamp {0};
-
-    /// Marker pattern width.
-    double m_pattern_width {80};
 
     /// 3D object points
     std::vector<cv::Point3f> m_object_points;
@@ -132,10 +129,6 @@ private:
     cv::Mat m_camera_matrix;
     ///Distorsion coefficient
     cv::Mat m_distorsion_coef;
-    /// Color of the reprojection circle
-    cv::Scalar m_cv_color;
-    /// if true: display circle centered at reprojection point.
-    bool m_display {true};
     /// extrinsic matrix (can be identity)
     cv::Mat m_cv_extrinsic;
 
@@ -148,11 +141,15 @@ private:
     static constexpr std::string_view EXTRINSIC_INPUT = "extrinsic";
     static constexpr std::string_view FRAME_INOUT     = "frame";
 
-    data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, MATRIX_INPUT, true, false};
+    data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, MATRIX_INPUT};
     data::ptr<data::marker_map, data::access::in> m_marker_map {this, MARKERMAP_INPUT};
     data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
     data::ptr<data::matrix4, data::access::in> m_extrinsic {this, EXTRINSIC_INPUT};
     data::ptr<data::image, data::access::inout> m_frame {this, FRAME_INOUT};
+
+    data::property<data::boolean> m_display {this, "display", true};
+    data::property<data::color> m_color {this, "color", {1.0, 1.0, 1.0, 1.0}};
+    data::property<data::real> m_pattern_width {this, "pattern_width", 80.};
 };
 
 } //namespace sight::module::geometry::vision

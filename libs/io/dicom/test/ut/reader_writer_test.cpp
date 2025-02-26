@@ -65,7 +65,21 @@ inline static sight::data::series_set::sptr read(const std::filesystem::path _pa
 
     for(const auto& series : *series_set)
     {
-        series->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+        // Since we may modify the SOP to Enhanced US Volume, we need ensure each frame has a position
+        if(series->get_ultrasound_acquisition_geometry() != data::dicom::ultrasound_acquisition_geometry_t::apex)
+        {
+            std::size_t end_index = series->num_frames();
+            series->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+
+            // We need to compute the frame position from image origin and z spacing
+            for(std::size_t frame = 0 ; frame < end_index ; ++frame)
+            {
+                if(series->get_image_position_patient(frame).empty())
+                {
+                    series->set_image_position_patient({0, 0, 0}, frame);
+                }
+            }
+        }
     }
 
     return series_set;
@@ -126,11 +140,28 @@ inline static void compare_enhanced_us_volume(
         // Image Position Patient
         const auto& expected_position = _expected->get_image_position_patient(frame_index);
         const auto& actual_position   = _actual->get_image_position_patient(frame_index);
-        CPPUNIT_ASSERT_EQUAL(expected_position.size(), actual_position.size());
 
-        for(std::size_t i = 0 ; i < expected_position.size() ; ++i)
+        if(expected_position.empty() && !actual_position.empty())
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_position[i], actual_position[i], 0.0001);
+            for(const auto& position : actual_position)
+            {
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(position, 0.0, 0.0001);
+            }
+        }
+        else if(!expected_position.empty() && actual_position.empty())
+        {
+            for(const auto& position : expected_position)
+            {
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(position, 0.0, 0.0001);
+            }
+        }
+        else
+        {
+            CPPUNIT_ASSERT_EQUAL(expected_position.size(), actual_position.size());
+            for(std::size_t i = 0 ; i < expected_position.size() ; ++i)
+            {
+                CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_position[i], actual_position[i], 0.0001);
+            }
         }
 
         // Image Orientation Patient

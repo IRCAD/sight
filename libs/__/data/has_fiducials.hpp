@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,6 +20,8 @@
  ***********************************************************************/
 
 #pragma once
+
+#include "fiducials_series.hpp"
 
 #include <core/com/signal.hpp>
 #include <core/com/signals.hpp>
@@ -66,6 +68,14 @@ public:
         static inline const core::com::signals::key_t POINT_DESELECTED = "pointDeselected";
     };
 
+    inline fiducials_series::csptr get_fiducials() const;
+    inline fiducials_series::sptr get_fiducials();
+
+protected:
+
+    /// Contains the associated Spatial Fiducials file
+    fiducials_series::sptr m_fiducials_series {std::make_shared<fiducials_series>()};
+
 private:
 
     const signals::group_added::sptr m_group_added {std::make_shared<signals::group_added>()};
@@ -79,5 +89,19 @@ private:
     const signals::point_selected::sptr m_point_selected {std::make_shared<signals::point_selected>()};
     const signals::point_deselected::sptr m_point_deselected {std::make_shared<signals::point_deselected>()};
 };
+
+//------------------------------------------------------------------------------
+
+fiducials_series::csptr has_fiducials::get_fiducials() const
+{
+    return m_fiducials_series;
+}
+
+//------------------------------------------------------------------------------
+
+fiducials_series::sptr has_fiducials::get_fiducials()
+{
+    return m_fiducials_series;
+}
 
 } // namespace sight::data

@@ -24,6 +24,7 @@ vertex_program Default/Ambient_VP glsl
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_f4LightAmbientCol ambient_light_colour
     }
 }
 
@@ -41,6 +42,7 @@ vertex_program Default/Ambient+VT_VP glsl
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_f4LightAmbientCol ambient_light_colour
     }
 }
 
@@ -58,6 +60,7 @@ vertex_program Default/Ambient+DfsTex_VP glsl
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_f4LightAmbientCol ambient_light_colour
     }
 }
 
@@ -75,6 +78,7 @@ vertex_program Default/Ambient+VT+DfsTex_VP glsl
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_f4LightAmbientCol ambient_light_colour
     }
 }
 
@@ -481,6 +485,7 @@ vertex_program CelShadingDepthPeeling/Ambient_VP glsl
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_f4LightAmbientCol ambient_light_colour
     }
 }
 
@@ -498,6 +503,7 @@ vertex_program CelShadingDepthPeeling/Ambient+VT_VP glsl
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_f4LightAmbientCol ambient_light_colour
     }
 }
 
@@ -515,6 +521,7 @@ vertex_program CelShadingDepthPeeling/Ambient+DfsTex_VP glsl
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_f4LightAmbientCol ambient_light_colour
     }
 }
 
@@ -532,6 +539,7 @@ vertex_program CelShadingDepthPeeling/Ambient+VT+DfsTex_VP glsl
         // Ambient
         param_named_auto u_ambient surface_ambient_colour
         param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_f4LightAmbientCol ambient_light_colour
     }
 }
 

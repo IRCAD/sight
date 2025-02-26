@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ CPPUNIT_TEST(point_list_converter_test);
 CPPUNIT_TEST(string_converter_test);
 CPPUNIT_TEST(line_converter_test);
 CPPUNIT_TEST(scalar_converter_test);
-CPPUNIT_TEST(composite_converter_test);
+CPPUNIT_TEST(map_converter_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -52,7 +52,7 @@ public:
     static void line_converter_test();
     static void scalar_converter_test();
     static void mesh_converter_test();
-    static void composite_converter_test();
+    static void map_converter_test();
 };
 
 } // namespace sight::io::igtl::detail::ut

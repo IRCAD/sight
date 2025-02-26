@@ -59,4 +59,4 @@ where:
 - WID_PARENT is the identifier of the parent window view,
 - image is a `sight::data::image`,
 - currentTF is a `sight::data::transfer_function`.
-- presets is a `sight::data::composite`.
+- presets is a `sight::data::map`.

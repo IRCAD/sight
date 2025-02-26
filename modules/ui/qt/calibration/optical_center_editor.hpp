@@ -109,8 +109,8 @@ private:
     static constexpr std::string_view CAMERA = "camera";
     static constexpr std::string_view MATRIX = "matrix";
 
-    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA, true};
-    data::ptr<data::matrix4, data::access::inout> m_matrix {this, MATRIX, true};
+    data::ptr<data::camera, data::access::in> m_camera {this, CAMERA};
+    data::ptr<data::matrix4, data::access::inout> m_matrix {this, MATRIX};
 };
 
 } // namespace sight::module::ui::qt::calibration

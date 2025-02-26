@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -145,7 +145,7 @@ void icon_speed_dial::starting()
 {
     create();
 
-    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
+    const std::string service_id = base_id();
 
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
     auto* layout      = new QBoxLayout(QBoxLayout::TopToBottom);

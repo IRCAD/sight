@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -153,7 +153,7 @@ bool camera_device_dlg::get_selected_camera(data::camera::sptr& _camera, std::st
         QCameraImageCapture image_capture(&cam);
         const QList<QSize> supported_resolutions = image_capture.supportedResolutions();
 
-        [[maybe_unused]] enum data::camera::pixel_format format = data::camera::pixel_format::invalid;
+        [[maybe_unused]] enum data::camera::pixel_format_t format = data::camera::pixel_format_t::invalid;
 
         QListWidgetItem* item = m_cam_settings->currentItem();
 
@@ -288,7 +288,7 @@ void camera_device_dlg::on_select_device(int _index)
         {
             for(const QVideoFrame::PixelFormat& pix_format : pix_formats)
             {
-                enum data::camera::pixel_format format = data::camera::pixel_format::invalid;
+                auto format = data::camera::pixel_format_t::invalid;
 
                 pixel_format_translator_t::left_const_iterator iter;
                 iter = pixel_format_translator.left.find(pix_format);
@@ -325,7 +325,7 @@ void camera_device_dlg::on_select_device(int _index)
         QList<QCameraViewfinderSettings> settingsList = cam->supportedViewfinderSettings();
         for(const QCameraViewfinderSettings& settings : settingsList)
         {
-            auto format = data::camera::pixel_format::invalid;
+            auto format = data::camera::pixel_format_t::invalid;
 
             pixel_format_translator_t::left_const_iterator iter;
             iter = pixel_format_translator.left.find(settings.pixelFormat());

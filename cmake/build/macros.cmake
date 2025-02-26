@@ -17,10 +17,12 @@ add_definitions(
     -DBOOST_ALL_DYN_LINK -DBOOST_THREAD_DONT_PROVIDE_DEPRECATED_FEATURES_SINCE_V3_0_0 -DBOOST_THREAD_PROVIDES_FUTURE
     -DBOOST_THREAD_VERSION=2 -DBOOST_SPIRIT_USE_PHOENIX_V3
 )
-# Qt
 
 #Fix error with BOOST_JOIN and qt moc
 set(CMAKE_AUTOMOC_MOC_OPTIONS "-DBOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION")
+
+set(SIGHT_APP_VENDOR "IRCAD" CACHE STRING "Name of your organization")
+set(SIGHT_APP_VENDOR_URL "https://www.ircad.fr" CACHE STRING "URL of your organization")
 
 # Define some paths whether we are building Sight or using it
 if(FW_BUILD_EXTERNAL)
@@ -164,16 +166,11 @@ macro(init_project PRJ_NAME PRJ_TYPE)
     if(NOT "${PRJ_TYPE}" STREQUAL "TEST" AND NOT "${PRJ_TYPE}" STREQUAL "GUI_TEST")
         list(FILTER SOURCES EXCLUDE REGEX "/test/api")
         list(FILTER SOURCES EXCLUDE REGEX "/test/detail")
-        list(FILTER SOURCES EXCLUDE REGEX "/test/tu")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/mut")
         list(FILTER SOURCES EXCLUDE REGEX "/test/ui")
         list(FILTER SOURCES EXCLUDE REGEX "/test/uit")
         list(FILTER SOURCES EXCLUDE REGEX "/test/ut")
-        list(FILTER HEADERS EXCLUDE REGEX "/test/api")
-        list(FILTER HEADERS EXCLUDE REGEX "/test/detail")
-        list(FILTER HEADERS EXCLUDE REGEX "/test/tu")
-        list(FILTER HEADERS EXCLUDE REGEX "/test/ui")
-        list(FILTER HEADERS EXCLUDE REGEX "/test/uit")
-        list(FILTER HEADERS EXCLUDE REGEX "/test/ut")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/tu") # Normally obsolete
     endif()
 
     list(APPEND ${SIGHT_TARGET}_HEADERS ${HEADERS})
@@ -383,9 +380,7 @@ macro(sight_generic_test SIGHT_TARGET)
         set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}>)
     endif()
 
-    string(REGEX REPLACE "_ui?t$" "" DIRNAME "${SIGHT_TARGET}")
-
-    set(BASE_TARGET "${DIRNAME}")
+    string(REGEX REPLACE "_m?ui?t$" "" BASE_TARGET "${SIGHT_TARGET}")
 
     if(TARGET ${BASE_TARGET})
         get_target_property(TARGET_TYPE ${BASE_TARGET} SIGHT_TARGET_TYPE)
@@ -394,12 +389,25 @@ macro(sight_generic_test SIGHT_TARGET)
 
             # This variable is used in cppunit_main.cpp to automatically load the module of the test
             set(TESTED_MODULE "${PROJECT_NAME}::${BASE_MODULE}")
+            set(TESTED_MODULE_PATH "${SIGHT_MODULE_RC_PREFIX}")
+        endif()
+    else()
+        cmake_path(
+            RELATIVE_PATH CMAKE_CURRENT_SOURCE_DIR BASE_DIRECTORY ${CMAKE_SOURCE_DIR} OUTPUT_VARIABLE
+            CURRENT_SOURCE_DIR_REL
+        )
+
+        if(${CURRENT_SOURCE_DIR_REL} MATCHES "modules/")
+            message(
+                FATAL_ERROR "${CURRENT_SOURCE_DIR_REL} No matching module target '${BASE_TARGET}' for unit-test target "
+                            "'${SIGHT_TARGET}'."
+            )
         endif()
     endif()
 
     configure_file(
-        "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp" "${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp" IMMEDIATE
-        @ONLY
+        "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp.in" "${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp"
+        IMMEDIATE @ONLY
     )
 
     add_executable(
@@ -647,7 +655,12 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
             PATTERN "*.hpp"
             PATTERN "*.hxx"
             PATTERN "*.cuh" # CUDA
-            PATTERN "test/*" EXCLUDE
+            PATTERN "test/api*" EXCLUDE
+            PATTERN "test/detail*" EXCLUDE
+            PATTERN "test/mut*" EXCLUDE
+            PATTERN "test/ui*" EXCLUDE
+            PATTERN "test/uit*" EXCLUDE
+            PATTERN "test/ut*" EXCLUDE
         )
 
         set(TARGETS_TO_EXPORT ${SIGHT_TARGET})
@@ -1039,6 +1052,7 @@ macro(sight_add_target)
         else()
             set(SIGHT_TARGET_UNIQUE "true")
         endif()
+        set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_PROJECT_VERSION "${${SIGHT_TARGET}_VERSION}")
         set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_UNIQUE "${SIGHT_TARGET_UNIQUE}")
     endif()
 
@@ -1111,16 +1125,24 @@ macro(fw_manage_warnings PROJECT)
         ${PROJECT} PRIVATE "$<$<CXX_COMPILER_ID:GNU,Clang>:-Werror;-Wno-error=deprecated-declarations>"
     )
 
-    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 12
-       AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13
-    )
-        # disable specific buggy warnings with GCC12, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
-        target_compile_options(
-            ${PROJECT}
-            PRIVATE
-                "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-Wno-restrict;-Wno-stringop-overflow;-Wno-array-bounds>"
-        )
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 12)
+            # disable specific buggy warnings with GCC12, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
+            target_compile_options(
+                ${PROJECT} PRIVATE "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-Wno-restrict;-Wno-stringop-overflow;"
+                                   "-Wno-array-bounds>"
+            )
+        endif()
+
+        if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 13)
+            # disable specific buggy warnings with GCC12, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
+            target_compile_options(
+                ${PROJECT} PRIVATE "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:"
+                                   "-Wno-stringop-overread;-Wno-error=nonnull>"
+            )
+        endif()
     endif()
+
 endmacro()
 
 # Find link and manual dependencies for a target
@@ -1154,9 +1176,7 @@ function(find_target_dependencies TARGET TARGETS_FILTER RESULT_VAR)
             list(REMOVE_DUPLICATES DEPENDS)
             set(DEPENDS_COPY ${DEPENDS})
             foreach(dep ${DEPENDS})
-                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" STREQUAL "sightrun" AND NOT "${dep}" STREQUAL
-                                                                                              "sightlog"
-                )
+                if(NOT ${dep} IN_LIST TARGETS_FILTER AND NOT "${dep}" STREQUAL "sightrun")
                     list(REMOVE_ITEM DEPENDS_COPY ${dep})
                 endif()
             endforeach()
@@ -1346,7 +1366,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
     set(CPACK_PACKAGE_FILE_NAME "sight-${GIT_TAG}-${PLATFORM_SUFFIX}")
 
-    set(CPACK_PACKAGE_VENDOR "IRCAD")
+    set(CPACK_PACKAGE_VENDOR "${SIGHT_APP_VENDOR}")
     set(CPACK_PACKAGE_NAME "Sight")
     set(CPACK_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackConfig.cmake")
     set(CPACK_SOURCE_OUTPUT_CONFIG_FILE "${CMAKE_CURRENT_BINARY_DIR}/CPackSourceConfig.cmake")
@@ -1539,12 +1559,7 @@ macro(sight_create_pch_target _og)
     target_compile_definitions(${SIGHT_PCH_NAME} PUBLIC BOOST_BIND_GLOBAL_PLACEHOLDERS)
 
     # Glm
-    if(WIN32)
-        target_link_libraries(${SIGHT_PCH_NAME} PRIVATE glm::glm)
-    else()
-        # Hacky, no longer needed when glm-0.9.9.8+ds-3 is available
-        target_include_directories(${SIGHT_PCH_NAME} SYSTEM PRIVATE ${GLM_INCLUDE_DIRS})
-    endif()
+    target_link_libraries(${SIGHT_PCH_NAME} PRIVATE "$<$<VERSION_GREATER_EQUAL:glm_VERSION,0.9.9.8>:glm::glm>")
 endmacro()
 
 # Enable precompiled headers for the project

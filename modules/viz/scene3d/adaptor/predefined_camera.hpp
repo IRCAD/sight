@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -48,17 +48,20 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::predefined_camera">
         <config priority="0" mouseRotation="true" defaultPosition="pos3" zoom="1.5"/>
         <in key="transform" uid="..." auto_connect="true"/>
+        <in key="view_up" uid="..." />
         <positions>
             <position name="pos1" rx="-30.0" />
             <position name="pos2" rx="-30.0" ry="90.0" />
             <position name="pos3" rx="-30.0" ry="-90.0"/>
         </positions>
+        <properties follow_orientation="false" />
    </service>
    @endcode
  *
  *
  * @subsection Input Input:
- * - \b transform: initial transform (registration, tracking, ...) to apply to the adaptor first (optional).
+ * - \b transform (optional): initial transform (registration, tracking, ...) to apply to the adaptor first.
+ * - \b view_up (optional): used to extract the up vector of the camera. We only use the Y axis of this transform.
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
@@ -66,6 +69,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b mouseRotation (optional, bool, default=true): defines if mouse rotation through mouse is activated or not.
  * - \b defaultPosition (optional, string, default=""): defines the default position to use.
  * - \b animate (optional, bool, default=true): defines if an animation is used when switching position or not.
+ * - \b follow_orientation (optional, bool, default=false) defines if we use a fixed orientation or if we follow the
+ * orientation of the target.
  * - \b zoom (optional, default="1.0"): defines the zoom ratio against the size of the scene.
  *
  * @section Slots Slots
@@ -73,7 +78,7 @@ namespace sight::module::viz::scene3d::adaptor
  * then goes to that position if found.
  * - \b nextPosition: Go to the next position (cyclic iteration).
  * - \b previousPosition: Go to the previous position (cyclic iteration).
- * - \b updateTransform: Update adaptor using the input transformation,
+ * - \b update: Update adaptor using the input transformation,
  * this slot is called automatically if auto_connect="true".
  */
 class predefined_camera final : public sight::viz::scene3d::adaptor
@@ -87,7 +92,6 @@ public:
         inline static const slots_t SET_PARAMETER     = "set_parameter";
         inline static const slots_t NEXT_POSITION     = "nextPosition";
         inline static const slots_t PREVIOUS_POSITION = "previousPosition";
-        inline static const slots_t UPDATE_TRANSFORM  = "updateTransform";
     };
 
     /// Generates default methods as New, dynamicCast, ...
@@ -117,7 +121,6 @@ private:
 
     connections_t auto_connections() const final;
 
-    void update_transform();
     void set_parameter(ui::parameter_t _value, std::string _key);
 
     using predefined_position_t =
@@ -146,10 +149,13 @@ private:
     float m_zoom {1.0};
 
     /// Input transform.
-    static constexpr std::string_view REGISTRATION_TRANSFORM_IN = "transform";
-    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {
-        this, REGISTRATION_TRANSFORM_IN, true, true
-    };
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform {this, "transform", true};
+
+    /// Matrix used to extract the up vector of the camera. We only use the Y axis of this transform.
+    sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_view_up {this, "view_up", true};
+
+    /// Defines if we use a fixed orientation or if we follow the orientation of the target.
+    sight::data::property<sight::data::boolean> m_follow_orientation {this, "follow_orientation", false};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

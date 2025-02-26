@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -78,11 +78,8 @@ struct computehistogram_functor
         data::image::csptr image = _param.image;
 
         const auto dump_lock = image->dump_lock();
-
-        IMAGETYPE min = std::numeric_limits<IMAGETYPE>::max();
-        IMAGETYPE max = std::numeric_limits<IMAGETYPE>::min();
         {
-            data::helper::medical_image::get_min_max(image, min, max);
+            const auto& [min, max] = data::helper::medical_image::get_min_max<IMAGETYPE>(image);
 
             const double inv_bins_width = 1 / _param.bins_width;
 
@@ -99,12 +96,11 @@ struct computehistogram_functor
                 }
 
                 rt(
-                    [capture0 = image->cbegin<IMAGETYPE>(), &values, min, inv_bins_width](std::ptrdiff_t _p_h1,
-                                                                                          std::ptrdiff_t _p_h2,
-                                                                                          std::size_t _p_h3, auto&& ...)
+                    [begin = image->cbegin<IMAGETYPE>(), &values, min = min, inv_bins_width]
+                    (std::ptrdiff_t _p_h1, std::ptrdiff_t _p_h2, std::size_t _p_h3, auto&& ...)
                     {
                         return computehistogram_functor::count_pixels<IMAGETYPE>(
-                            capture0,
+                            begin,
                             values,
                             min,
                             inv_bins_width,

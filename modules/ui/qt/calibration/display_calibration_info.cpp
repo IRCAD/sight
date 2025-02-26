@@ -55,8 +55,11 @@ display_calibration_info::display_calibration_info() noexcept
 
 //------------------------------------------------------------------------------
 
-display_calibration_info::~display_calibration_info() noexcept =
-    default;
+void display_calibration_info::configuring(const config_t& _config)
+{
+    m_single_image_config = _config.get<std::string>("config.<xmlattr>." + SINGLE_IMAGE_CONFIG, m_single_image_config);
+    m_two_images_config   = _config.get<std::string>("config.<xmlattr>." + TWO_IMAGES_CONFIG, m_two_images_config);
+}
 
 //------------------------------------------------------------------------------
 
@@ -76,16 +79,6 @@ void display_calibration_info::stopping()
         m_config_mgr->stop_and_destroy();
         m_config_mgr.reset();
     }
-}
-
-//------------------------------------------------------------------------------
-
-void display_calibration_info::configuring()
-{
-    const auto config = this->get_config().get_child("config.<xmlattr>");
-
-    m_single_image_config = config.get<std::string>(SINGLE_IMAGE_CONFIG, m_single_image_config);
-    m_two_images_config   = config.get<std::string>(TWO_IMAGES_CONFIG, m_two_images_config);
 }
 
 //------------------------------------------------------------------------------
@@ -110,7 +103,7 @@ void display_calibration_info::display_image(std::size_t _idx)
 {
     if(!m_config_mgr)
     {
-        // Grab images from our composite data
+        // Grab images from our map data
         const auto cal_info1 = m_calibration_info1.lock();
         SIGHT_ASSERT("Object " << CALIBRATION_INFO_1 << " is not a CalibrationInfo !", cal_info1);
 
@@ -139,10 +132,10 @@ void display_calibration_info::display_image(std::size_t _idx)
 
         replace_map[CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
 
-        const auto config = app::extension::config::get_default()->get_adapted_template_config(
+        const auto config = app::extension::config::get()->get_adapted_template_config(
             str_config,
             replace_map,
-            true
+            sight::app::extension::config::get_unique_identifier(str_config)
         );
 
         // Launch configuration

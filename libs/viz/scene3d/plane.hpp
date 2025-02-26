@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 
 #include <data/helper/medical_image.hpp>
 
+#include <viz/scene3d/material/generic.hpp>
 #include <viz/scene3d/texture.hpp>
 #include <viz/scene3d/transfer_function.hpp>
 
@@ -54,7 +55,7 @@ class SIGHT_VIZ_SCENE3D_CLASS_API plane
 {
 public:
 
-    using orientation_mode = data::helper::medical_image::orientation_t;
+    using axis_t = data::helper::medical_image::axis_t;
 
     /// Defines the texture filtering mode.
     enum class filter_t : std::uint8_t
@@ -76,16 +77,18 @@ public:
      * @param _display_border display a border around the negato plane.
      * @param _display_other_planes display a line indicating the location of the two other planes.
      * @param _entity_opacity opacity of the entity.
+     * @param _post_classification pre or post classification.
      */
     SIGHT_VIZ_SCENE3D_API plane(
-        const core::tools::id::type& _negato_id,
+        const core::id::type& _negato_id,
         Ogre::SceneNode* _parent_scene_node,
         Ogre::SceneManager* _scene_manager,
         viz::scene3d::texture::sptr _tex,
         filter_t _filtering,
         bool _display_border       = true,
         bool _display_other_planes = true,
-        float _entity_opacity      = 1.0F
+        float _entity_opacity      = 1.0F,
+        bool _post_classification  = true
     );
 
     /// Cleans ogre resources.
@@ -96,9 +99,8 @@ public:
      * @param _enable_transparency used true to enable the opacity.
      */
     SIGHT_VIZ_SCENE3D_API void update(
-        orientation_mode _orientation,
+        axis_t _axis,
         const Ogre::Vector3& _spacing,
-        const Ogre::Vector3& _origin,
         bool _enable_transparency
     );
 
@@ -131,7 +133,7 @@ public:
     SIGHT_VIZ_SCENE3D_API void set_tf_data(const viz::scene3d::transfer_function& _tf_texture);
 
     /// Gets the image axis orthogonal to the plane.
-    [[nodiscard]] SIGHT_VIZ_SCENE3D_API orientation_mode get_orientation_mode() const;
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API axis_t axis() const;
 
     /// Gets the movable object created by this class.
     [[nodiscard]] SIGHT_VIZ_SCENE3D_API const Ogre::MovableObject* get_movable_object() const;
@@ -148,7 +150,7 @@ public:
     /// Compute two cross lines that intersect at the given position, according to the plane orientation.
     SIGHT_VIZ_SCENE3D_API std::array<Ogre::Vector3, 4> compute_cross(
         const Ogre::Vector3& _center,
-        const Ogre::Vector3& _image_origin
+        const data::image& _image
     ) const;
 
 private:
@@ -181,16 +183,13 @@ private:
     filter_t m_filtering {filter_t::anisotropic};
 
     /// Defines the orientation mode of the plane.
-    orientation_mode m_orientation {orientation_mode::x_axis};
+    axis_t m_axis {axis_t::x_axis};
 
     /// Contains the plane on which we will apply a texture.
     Ogre::MeshPtr m_slice_plane;
 
-    /// Defines the origin position of the slice plane according to the source image's origin.
-    Ogre::Vector3 m_origin {Ogre::Vector3::ZERO};
-
     /// Contains the plane material.
-    Ogre::MaterialPtr m_tex_material {nullptr};
+    viz::scene3d::material::generic::uptr m_plane_material;
 
     /// Contains the texture.
     viz::scene3d::texture::sptr m_texture;
@@ -222,9 +221,9 @@ private:
 
 //------------------------------------------------------------------------------
 
-inline plane::orientation_mode plane::get_orientation_mode() const
+inline plane::axis_t plane::axis() const
 {
-    return m_orientation;
+    return m_axis;
 }
 
 //------------------------------------------------------------------------------

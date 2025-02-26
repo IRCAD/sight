@@ -55,7 +55,7 @@ struct and_image_filter
         data::image::csptr mask        = _params.mask;
         data::image::sptr output_image = _params.output_image;
 
-        const unsigned int dimension = 3;
+        [[maybe_unused]] const unsigned int dimension = 3;
         SIGHT_ASSERT("Only image dimension 3 managed.", input_image->num_dimensions() == dimension);
 
         using input_image_t  = typename itk::Image<PIXELTYPE, dimension>;
@@ -147,7 +147,7 @@ void bitwise_and::updating()
     const auto type = image->type();
     core::tools::dispatcher<core::tools::integer_types, and_image_filter_caller>::invoke(type, params);
 
-    this->set_output(OUTPUTIMAGE_OUT, output_image);
+    this->set_output(output_image, OUTPUTIMAGE_OUT);
 
     this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
 }

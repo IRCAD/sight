@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <data/matrix4.hpp>
 
 #include <viz/scene3d/layer.hpp>
-#include <viz/scene3d/material.hpp>
+#include <viz/scene3d/ogre.hpp>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -55,26 +55,19 @@ void orientation_marker::configuring()
 
 void orientation_marker::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
     Ogre::SceneNode* const root_scene_node = this->get_scene_manager()->getRootSceneNode();
-    m_scene_node = root_scene_node->createChildSceneNode(this->get_id() + "_mainNode");
+    m_scene_node = root_scene_node->createChildSceneNode(gen_id("mainNode"));
 
     Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
 
     // Set the material
-    m_material = std::make_unique<sight::viz::scene3d::material>(
-        this->get_id() + "_patient_mesh_material",
-        sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    );
-    m_material->update_shading_mode(
-        data::material::shading_t::phong,
-        this->layer()->num_lights(),
-        false,
-        false
-    );
+    const auto mtl_name = gen_id("material");
+    m_material = std::make_unique<sight::viz::scene3d::material::standard>(mtl_name);
+    m_material->set_shading(data::material::shading_t::phong, this->layer()->num_lights());
 
     // Loads and attaches the marker
     m_patient_entity = scene_mgr->createEntity(m_patient_mesh_rc);
@@ -85,7 +78,7 @@ void orientation_marker::starting()
     auto mesh      = mesh_mgr.createOrRetrieve(m_patient_mesh_rc, sight::viz::scene3d::RESOURCE_GROUP);
     mesh.first->load();
 
-    this->update_visibility(m_visible);
+    this->apply_visibility();
 
     this->request_render();
 }
@@ -95,6 +88,7 @@ void orientation_marker::starting()
 void orientation_marker::updating()
 {
     this->update_camera_matrix();
+    this->update_done();
     this->request_render();
 }
 
@@ -145,6 +139,8 @@ void orientation_marker::stopping()
     m_patient_entity = nullptr;
 
     m_material.reset();
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -163,8 +159,8 @@ void orientation_marker::set_visible(bool _visible)
 
 service::connections_t orientation_marker::auto_connections() const
 {
-    service::connections_t connections;
-    connections.push(MATRIX_IN, data::matrix4::MODIFIED_SIG, service::slots::UPDATE);
+    service::connections_t connections = adaptor::auto_connections();
+    connections.push(MATRIX_IN, data::matrix4::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 

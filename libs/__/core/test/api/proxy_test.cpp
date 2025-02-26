@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,27 +92,38 @@ struct proxy_test_class
 
 void proxy_test::basic_test()
 {
-    const std::string channel = "channel";
+    const std::string channel1 = "channel1";
+    const std::string channel2 = "channel2";
 
     core::com::proxy::sptr proxy = core::com::proxy::get();
 
-    core::com::signal<void(int, int)>::sptr sig        = std::make_shared<core::com::signal<void(int, int)> >();
-    core::com::signal<void(int, int, char)>::sptr sig2 = std::make_shared<core::com::signal<void(int, int, char)> >();
+    const auto sig  = std::make_shared<core::com::signal<void(int, int)> >();
+    const auto sig2 = std::make_shared<core::com::signal<void(int, int, char)> >();
+    const auto sig3 = std::make_shared<core::com::signal<void()> >();
 
     proxy_test_class test_object;
-    core::com::slot<int(int, int)>::sptr slot = core::com::new_slot(&proxy_test_class::sum, &test_object);
-    core::com::slot<int(int)>::sptr slot2     = core::com::new_slot(&proxy_test_class::square, &test_object);
-    core::com::slot<void()>::sptr slot3       = core::com::new_slot(&proxy_test_class::do_nothing, &test_object);
-    core::thread::worker::sptr worker         = core::thread::worker::make();
+    const auto slot                   = core::com::new_slot(&proxy_test_class::sum, &test_object);
+    const auto slot2                  = core::com::new_slot(&proxy_test_class::square, &test_object);
+    const auto slot3                  = core::com::new_slot(&proxy_test_class::do_nothing, &test_object);
+    const auto slot4                  = core::com::new_slot([](const std::string ){return;});
+    core::thread::worker::sptr worker = core::thread::worker::make();
     slot->set_worker(worker);
     slot2->set_worker(worker);
     slot3->set_worker(worker);
+    slot4->set_worker(worker);
 
-    proxy->connect(channel, sig);
-    proxy->connect(channel, sig2);
-    proxy->connect(channel, slot);
-    proxy->connect(channel, slot2);
-    proxy->connect(channel, slot3);
+    proxy->connect(channel1, sig);
+    proxy->connect(channel1, sig2);
+    proxy->connect(channel1, slot);
+    proxy->connect(channel1, slot2);
+    proxy->connect(channel1, slot3);
+
+    // This fails to connect, more parameters in the signal (int, int) AND not the same type (std::string)
+    CPPUNIT_ASSERT_NO_THROW(proxy->connect(channel1, slot4));
+
+    CPPUNIT_ASSERT_NO_THROW(proxy->connect(channel2, sig3));
+    // This fails to connect, no parameter in the signal () while there is one ine the slot (std::string)
+    CPPUNIT_ASSERT_NO_THROW(proxy->connect(channel2, slot4));
 
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), sig->num_connections());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), sig2->num_connections());
@@ -139,11 +150,13 @@ void proxy_test::basic_test()
     CPPUNIT_ASSERT_EQUAL(2, test_object.m_method_square);
     CPPUNIT_ASSERT_EQUAL(2, test_object.m_method_do_nothing);
 
-    proxy->disconnect(channel, sig);
-    proxy->disconnect(channel, sig2);
-    proxy->disconnect(channel, slot);
-    proxy->disconnect(channel, slot2);
-    proxy->disconnect(channel, slot3);
+    proxy->disconnect(channel1, sig);
+    proxy->disconnect(channel1, sig2);
+    proxy->disconnect(channel1, slot);
+    proxy->disconnect(channel1, slot2);
+    proxy->disconnect(channel1, slot3);
+
+    proxy->disconnect(channel2, sig3);
 
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), sig->num_connections());
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), sig2->num_connections());

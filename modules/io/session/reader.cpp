@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -58,14 +58,14 @@ public:
     reader_impl& operator=(reader_impl&&)      = delete;
 
     /// Constructor
-    inline explicit reader_impl(reader* const _reader) noexcept :
+    explicit reader_impl(reader* const _reader) noexcept :
         m_reader(_reader),
         m_job_created_signal(_reader->new_signal<signals::job_created_signal_t>("job_created"))
     {
     }
 
     /// Default destructor
-    inline ~reader_impl() noexcept = default;
+    ~reader_impl() noexcept = default;
 
     /// Pointer to the public interface
     reader* const m_reader;
@@ -96,6 +96,7 @@ public:
 };
 
 reader::reader() noexcept :
+    sight::io::service::reader("Choose a session file"),
     notifier(m_signals),
     m_pimpl(std::make_unique<reader_impl>(this))
 {
@@ -363,17 +364,7 @@ void reader::open_location_dialog()
     static auto default_location = std::make_shared<core::location::single_folder>();
 
     sight::ui::dialog::location location_dialog;
-
-    // Set window title
-    if(!m_window_title.empty())
-    {
-        location_dialog.set_title(m_window_title);
-    }
-    else
-    {
-        location_dialog.set_title("Enter file name");
-    }
-
+    location_dialog.set_title(*m_window_title);
     location_dialog.set_default_location(default_location);
     location_dialog.set_option(ui::dialog::location::read);
     location_dialog.set_option(ui::dialog::location::file_must_exist);

@@ -53,12 +53,7 @@ class SIGHT_IO_VTK_CLASS_API vtp_mesh_writer :
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        vtp_mesh_writer,
-        io::writer::generic_object_writer<data::mesh>,
-        io::writer::factory::make<vtp_mesh_writer>
-    )
-    SIGHT_ALLOW_SHARED_FROM_THIS()
+    SIGHT_DECLARE_CLASS(vtp_mesh_writer, io::writer::generic_object_writer<data::mesh>)
 
     /// @brief Constructor.
     SIGHT_IO_VTK_API vtp_mesh_writer();

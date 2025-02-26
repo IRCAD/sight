@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,16 +61,19 @@ void test_roi_apply(const core::type _image_type, const core::type _roi_type)
 
     // generate a random image
     utest_data::generator::image::generate_random_image(img_roi_applied, _image_type);
-    const data::image::size_t size       = img_roi_applied->size();
-    const data::image::spacing_t spacing = img_roi_applied->spacing();
-    const data::image::origin_t origin   = img_roi_applied->origin();
+    const data::image::size_t size               = img_roi_applied->size();
+    const data::image::spacing_t spacing         = img_roi_applied->spacing();
+    const data::image::origin_t origin           = img_roi_applied->origin();
+    const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+
     utest_data::generator::image::generate_image(
         roi,
         size,
         spacing,
         origin,
+        orientation,
         _roi_type,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
 
     image_ref = data::object::copy(img_roi_applied);

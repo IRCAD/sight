@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,13 +74,7 @@ public:
     {
     public:
 
-        frame_info() :
-
-            m_min_size(std::make_pair(-1, -1)),
-            m_size(std::make_pair(-1, -1)),
-            m_position(std::make_pair(-1, -1))
-        {
-        }
+        frame_info() = default;
 
         /// Frame name.
         std::string m_name;
@@ -92,22 +86,19 @@ public:
         std::filesystem::path m_icon_path;
 
         /// Frame minimum size (min width and min height)
-        std::pair<int, int> m_min_size;
+        std::pair<int, int> m_min_size {-1, -1};
 
         /// Frame maximum size (max width and max height)
         std::pair<int, int> m_max_size {-1, -1};
-
-        /// Frame default size (width and height)
-        std::pair<int, int> m_default_size {-1, -1};
 
         /// Frame style
         style m_style {DEFAULT};
 
         /// Frame size
-        std::pair<int, int> m_size;
+        std::pair<int, int> m_size {-1, -1};
 
         /// Frame position
-        std::pair<int, int> m_position;
+        std::pair<int, int> m_position {-1, -1};
 
         /// Frame state (maximize, minized, full screen)
         frame_state m_state {frame_state::unknown};
@@ -116,6 +107,9 @@ public:
         bool m_visibility {true};
 
         std::string m_qss_class;
+
+        /// Wanted Screen index (-1 means unset)
+        int m_screen {-1};
     };
 
     /// Constructor. Do nothing.

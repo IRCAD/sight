@@ -36,7 +36,7 @@
 namespace sight::core::jobs
 {
 
-class observer;
+class aggregator;
 
 }
 
@@ -54,12 +54,7 @@ class SIGHT_IO_VTK_CLASS_API series_set_reader :
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        series_set_reader,
-        io::reader::generic_object_reader<data::series_set>,
-        io::reader::factory::make<series_set_reader>
-    )
-    SIGHT_ALLOW_SHARED_FROM_THIS()
+    SIGHT_DECLARE_CLASS(series_set_reader, io::reader::generic_object_reader<data::series_set>)
 
     /// @brief Constructor.
     SIGHT_IO_VTK_API series_set_reader();
@@ -86,7 +81,7 @@ public:
 private:
 
     ///Internal job
-    SPTR(core::jobs::observer) m_job;
+    SPTR(core::jobs::aggregator) m_job;
 
     bool m_lazy_mode;
 };

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
 #include <data/matrix4.hpp>
 
 #include <ui/__/editor.hpp>
@@ -37,15 +38,20 @@ namespace sight::module::ui::qt::viz
 {
 
 /**
- * @brief   This editor regulates the position and rotation defined in a transformation matrix.
+ * @brief   This editor regulates the position and rotation defined in a transformation matrix. To respect the T*R*S
+ * matrices multiplication order, the translation is applied after the rotation.
+ *
+ * @section Signals Signals
+ * - \b set_translation_range(double, double): Allows to dynamically set the min and max of the translation.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="sight::module::ui::qt::viz::transform_editor" auto_connect="false">
+    <service uid="..." type="sight::module::ui::qt::viz::transform_editor" >
         <inout key="matrix" uid="..."/>
         <translation enabled="false" min="-300"/>
         <rotation enabled="true" min="-180" max="180" />
+        <properties minimal="false" />
     </service>
    @endcode
  *
@@ -57,13 +63,21 @@ namespace sight::module::ui::qt::viz
  *      Can be 'true', 'false' or a combination of [xyz] (default: true).
  * - \b min (optional): set the minimum value for translation/rotation (default: translation=-300, rotation=-180 ).
  * - \b max (optional): set the maximum value for translation/rotation (default: translation=+300, rotation=180).
+ *
+ * @subsection Configuration Configuration
+ * - \b minimal (optional, default=false): only shows the slider, no label displayed
  */
-class transform_editor : public QObject,
-                         public sight::ui::editor
+class transform_editor final : public QObject,
+                               public sight::ui::editor
 {
 Q_OBJECT;
 
 public:
+
+    struct slots
+    {
+        static inline const std::string SET_TRANSLATION_RANGE = "set_translation_range";
+    };
 
     SIGHT_DECLARE_SERVICE(transform_editor, sight::ui::editor);
 
@@ -71,24 +85,26 @@ public:
     transform_editor() noexcept;
 
     /// Destructor. Do nothing.
-    ~transform_editor() noexcept override;
+    ~transform_editor() noexcept final = default;
 
 protected:
 
     /// This method is used to configure the service parameters:
-    void configuring() override;
+    void configuring() final;
 
     ///This method launches the sight::ui::service::create method.
-    void starting() override;
+    void starting() final;
 
     ///This method launches the sight::ui::service::destroy method.
-    void stopping() override;
+    void stopping() final;
 
     /// Updates Slider value
-    void updating() override;
+    void updating() final;
 
     // Connect data::matrix4::MODIFIED_SIG to update slot
-    connections_t auto_connections() const override;
+    connections_t auto_connections() const final;
+
+    void set_translation_range(double _min, double _max);
 
 private Q_SLOTS:
 
@@ -145,7 +161,10 @@ private:
     std::array<int, 2> m_rotation_range {};
 
     static constexpr std::string_view MATRIX_INOUT = "matrix";
-    data::ptr<data::matrix4, sight::data::access::inout> m_matrix {this, MATRIX_INOUT, true};
+    data::ptr<data::matrix4, sight::data::access::inout> m_matrix {this, MATRIX_INOUT};
+
+    /// If true, only shows the slider, no label displayed
+    data::property<data::boolean> m_minimal {this, "minimal", false};
 };
 
 } // namespace sight::module::ui::qt::viz

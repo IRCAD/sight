@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -53,7 +53,7 @@ private:
     static void run_uuidcreation();
     void run_access_to_object_uuid();
 
-    core::tools::object::sptr m_object;
+    core::object::sptr m_object;
     std::string m_uuid;
 };
 

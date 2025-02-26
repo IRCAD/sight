@@ -2,6 +2,13 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::io::dimse" />
 
-    <xi:include href="configurations/pacs_selector_widget.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/pacs_selector_window.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/pacs_selector_dimse_widget.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="sight::service::extension::config">
+        <id>sight::config::io::dimse::reader_config</id>
+        <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
+        <config>
+            <filterType>sight::filter::dicom::custom::default_dicom_filter</filterType>
+        </config>
+    </extension>
 </plugin>

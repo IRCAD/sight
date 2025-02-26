@@ -24,7 +24,7 @@
 
 #include <sight/service/config.hpp>
 
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -35,19 +35,9 @@ namespace sight::service::extension
 
 /**
  */
-class SIGHT_SERVICE_CLASS_API service_config_info : public core::base_object
+class SIGHT_SERVICE_CLASS_API service_config_info final
 {
 public:
-
-    SIGHT_DECLARE_CLASS(service_config_info, core::base_object);
-
-    /// Constructor, do nothing.
-    service_config_info()
-    = default;
-
-    /// Destructor, do nothing.
-    ~service_config_info() override
-    = default;
 
     std::string service;
     std::string desc;
@@ -73,17 +63,14 @@ public:
     </extension>
    @endcode
  */
-class SIGHT_SERVICE_CLASS_API config : public core::base_object
+class SIGHT_SERVICE_CLASS_API config final
 {
 public:
 
-    SIGHT_DECLARE_CLASS(config, core::base_object);
+    using sptr = std::shared_ptr<config>;
 
     /// Return the default global instance of config
     SIGHT_SERVICE_API static config::sptr get_default();
-
-    SIGHT_SERVICE_API config()           = default;
-    SIGHT_SERVICE_API ~config() override = default;
 
     /**
      * @brief Parses module information to retrieve service declaration.
@@ -142,7 +129,7 @@ public:
 
 protected:
 
-    using registry = std::map<std::string, service_config_info::sptr>;
+    using registry = std::map<std::string, service_config_info>;
 
     /// Container of service information <configId, service config information>
     registry m_reg;

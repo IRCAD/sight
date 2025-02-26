@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,6 @@
 
 #include <core/base.hpp>
 
-#include <io/__/writer/registry/macros.hpp>
-
 #include <core/jobs/base.hpp>
 #include <core/jobs/observer.hpp>
 
@@ -50,8 +48,6 @@
 #include <vtkRenderWindow.h>
 #include <vtkRenderer.h>
 #endif
-
-SIGHT_REGISTER_IO_WRITER(sight::io::vtk::obj_mesh_writer);
 
 namespace sight::io::vtk
 {

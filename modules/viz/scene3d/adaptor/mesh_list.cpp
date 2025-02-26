@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,7 +66,7 @@ void mesh_list::configuring()
 
 void mesh_list::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     // Get the inputs.
     const auto transform_in_out = m_transform.lock();
@@ -81,7 +81,7 @@ void mesh_list::starting()
         const auto image     = data::image::copy(image_input.get_shared());
 
         // Create adaptors configurations
-        const std::string transform_id = this->get_id() + transform->get_id();
+        const std::string transform_id = gen_id(transform->get_id());
         service::config_t config;
         config.add("config.<xmlattr>.layer", m_layer_id);
         config.add("config.<xmlattr>." + std::string(TRANSFORM_INPUT), transform_id);
@@ -150,7 +150,7 @@ void mesh_list::starting()
 
 service::connections_t mesh_list::auto_connections() const
 {
-    service::connections_t connections;
+    service::connections_t connections = adaptor::auto_connections();
     connections.push(TRANSFORM_INPUT, data::matrix4::MODIFIED_SIG, ADD_SLOT);
     return connections;
 }
@@ -174,6 +174,8 @@ void mesh_list::stopping()
 
     m_meshes.clear();
     m_mesh_count = 0;
+
+    adaptor::deinit();
 }
 
 //-----------------------------------------------------------------------------
@@ -215,7 +217,7 @@ void mesh_list::add()
             const auto texture_input = m_texture.lock();
 
             if(m_generate_alpha && texture_input->type() == core::type::UINT8
-               && (texture_input->pixel_format() == data::image::pixel_format::gray_scale
+               && (texture_input->pixel_format() == data::image::pixel_format_t::gray_scale
                    || texture_input->num_components() == 1))
             {
                 // transform the image into RGBA with a transparent texture
@@ -225,7 +227,7 @@ void mesh_list::add()
                     instance.m_image->resize(
                         instance.m_image->size(),
                         instance.m_image->type(),
-                        data::image::pixel_format::rgba
+                        data::image::pixel_format_t::rgba
                     );
                 }
 
@@ -242,7 +244,7 @@ void mesh_list::add()
                 }
             }
             else if(m_generate_alpha && texture_input->type() == core::type::UINT8
-                    && (texture_input->pixel_format() == data::image::pixel_format::rgb
+                    && (texture_input->pixel_format() == data::image::pixel_format_t::rgb
                         || texture_input->num_components() == 3))
             {
                 // transform the image into RGBA with a transparent texture
@@ -253,7 +255,7 @@ void mesh_list::add()
                     instance.m_image->resize(
                         instance.m_image->size(),
                         instance.m_image->type(),
-                        data::image::pixel_format::rgba
+                        data::image::pixel_format_t::rgba
                     );
                 }
 
@@ -290,7 +292,7 @@ void mesh_list::add()
 
         // update mesh adaptor visibility
         const sight::viz::scene3d::adaptor::sptr mesh_adp = instance.m_mesh;
-        mesh_adp->update_visibility(m_visible);
+        mesh_adp->update_visibility(visible());
     }
 
     ++m_drop_count;

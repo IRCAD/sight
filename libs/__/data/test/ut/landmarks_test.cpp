@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2024 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -375,16 +375,16 @@ void landmarks_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    landmarks1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "The landmarks must be different when using " #op " on the first landmarks", \
-        *landmarks1 != *landmarks2 && !(*landmarks1 == *landmarks2) \
-    ); \
-    landmarks2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "The landmarks must be equal when using " #op " on the both landmarks", \
-        *landmarks1 == *landmarks2 && !(*landmarks1 != *landmarks2) \
-    );
+            landmarks1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "The landmarks must be different when using " #op " on the first landmarks", \
+                *landmarks1 != *landmarks2 && !(*landmarks1 == *landmarks2) \
+            ); \
+            landmarks2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "The landmarks must be equal when using " #op " on the both landmarks", \
+                *landmarks1 == *landmarks2 && !(*landmarks1 != *landmarks2) \
+            );
 
     TEST(add_group("1"));
     TEST(rename_group("1", "2"));

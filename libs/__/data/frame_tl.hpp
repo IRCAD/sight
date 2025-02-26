@@ -140,7 +140,10 @@ private:
     core::type m_type;
 
     /// Frame format
-    enum pixel_format m_pixel_format {pixel_format::undefined};
+    enum pixel_format m_pixel_format
+    {
+        pixel_format::undefined
+    };
 }; // class frame_tl
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,8 @@ void password_keeper_test::global_test()
         core::crypto::password_keeper::set_global_password("abc");
 
         // Verify the hash as "abc" have a well known sha256 hash (so never use abc as a password..)
-        const core::crypto::secure_string sha256_abc("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+        const core::crypto::secure_string sha256_abc(
+            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
         CPPUNIT_ASSERT_EQUAL(sha256_abc, global_keeper.get_global_password_hash());
         CPPUNIT_ASSERT_EQUAL(core::crypto::secure_string("abc"), global_keeper.get_global_password());
         CPPUNIT_ASSERT(global_keeper.check_global_password("abc"));
@@ -80,7 +81,8 @@ void password_keeper_test::local_test()
         local_keeper.set_password("abc");
 
         // Verify the hash as "abc" have a well known sha256 hash (so never use abc as a password..)
-        const core::crypto::secure_string sha256_abc("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
+        const core::crypto::secure_string sha256_abc(
+            "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
         CPPUNIT_ASSERT_EQUAL(sha256_abc, local_keeper.get_password_hash());
         CPPUNIT_ASSERT_EQUAL(core::crypto::secure_string("abc"), local_keeper.get_password());
         CPPUNIT_ASSERT(local_keeper.check_password("abc"));

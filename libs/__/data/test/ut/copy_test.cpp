@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 #include <data/array.hpp>
 #include <data/boolean.hpp>
 #include <data/color.hpp>
-#include <data/composite.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
 #include <data/line.hpp>
+#include <data/map.hpp>
 #include <data/material.hpp>
 #include <data/matrix4.hpp>
 #include <data/mesh.hpp>
@@ -139,7 +139,7 @@ void copy_test::field_copy_test()
     field_deep_copy<data::array>();
     field_copy<data::boolean>();
     field_copy<data::color>();
-    field_copy<data::composite>();
+    field_copy<data::map>();
     field_copy<data::real>();
     field_copy<data::image>();
     field_copy<data::integer>();
@@ -165,32 +165,32 @@ void copy_test::field_copy_test()
 
 void copy_test::several_references_copy_test()
 {
-    const std::int64_t value        = 42;
-    data::integer::sptr integer     = std::make_shared<data::integer>(value);
-    data::composite::sptr composite = std::make_shared<data::composite>();
+    const std::int64_t value    = 42;
+    data::integer::sptr integer = std::make_shared<data::integer>(value);
+    data::map::sptr map         = std::make_shared<data::map>();
 
-    (*composite)["A"] = integer;
-    (*composite)["B"] = integer;
-    composite->set_field("F1", integer);
-    composite->set_field("F2", integer);
+    (*map)["A"] = integer;
+    (*map)["B"] = integer;
+    map->set_field("F1", integer);
+    map->set_field("F2", integer);
 
-    data::composite::sptr composite_copy = data::object::copy(composite);
+    data::map::sptr map_copy = data::object::copy(map);
 
-    CPPUNIT_ASSERT(integer != std::dynamic_pointer_cast<data::integer>((*composite_copy)["A"]));
-    CPPUNIT_ASSERT_EQUAL(value, std::dynamic_pointer_cast<data::integer>((*composite_copy)["A"])->get_value());
-    CPPUNIT_ASSERT_EQUAL((*composite_copy)["A"], composite_copy->get_field("F1"));
-    CPPUNIT_ASSERT_EQUAL((*composite_copy)["A"], composite_copy->get_field("F2"));
-    CPPUNIT_ASSERT_EQUAL((*composite_copy)["A"], (*composite_copy)["B"]);
+    CPPUNIT_ASSERT(integer != std::dynamic_pointer_cast<data::integer>((*map_copy)["A"]));
+    CPPUNIT_ASSERT_EQUAL(value, std::dynamic_pointer_cast<data::integer>((*map_copy)["A"])->get_value());
+    CPPUNIT_ASSERT_EQUAL((*map_copy)["A"], map_copy->get_field("F1"));
+    CPPUNIT_ASSERT_EQUAL((*map_copy)["A"], map_copy->get_field("F2"));
+    CPPUNIT_ASSERT_EQUAL((*map_copy)["A"], (*map_copy)["B"]);
 
     data::vector::sptr vector = std::make_shared<data::vector>();
 
-    vector->push_back(composite);
-    vector->push_back(composite);
-    vector->set_field("F1", composite);
-    vector->set_field("F2", composite);
+    vector->push_back(map);
+    vector->push_back(map);
+    vector->set_field("F1", map);
+    vector->set_field("F2", map);
 
     data::vector::sptr vector_copy = data::object::copy(vector);
-    CPPUNIT_ASSERT(composite != (*vector_copy)[0]);
+    CPPUNIT_ASSERT(map != (*vector_copy)[0]);
     CPPUNIT_ASSERT_EQUAL((*vector_copy)[0], vector_copy->get_field("F1"));
     CPPUNIT_ASSERT_EQUAL((*vector_copy)[0], vector_copy->get_field("F2"));
     CPPUNIT_ASSERT_EQUAL((*vector_copy)[0], (*vector_copy)[1]);

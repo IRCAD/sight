@@ -24,9 +24,9 @@
 
 #include <sight/app/config.hpp>
 
-#include <core/tools/object.hpp>
+#include <app/parser/generic.hpp>
 
-#include <service/object_parser.hpp>
+#include <core/object.hpp>
 
 namespace sight::app::parser
 {
@@ -44,26 +44,11 @@ namespace sight::app::parser
  * @subsection Configuration Configuration
  * - \b value (optional, hexadecimal, default=#FFFFFF): color sets to the data.
  */
-class SIGHT_APP_CLASS_API color final : public service::object_parser
+class SIGHT_APP_CLASS_API color final : public generic
 {
 public:
 
-    /// Creates default attributes and methods (New(), ::sptr, ...).
-    SIGHT_DECLARE_SERVICE(color, service::object_parser);
-
-    /// Does nothing.
-    SIGHT_APP_API color() = default;
-
-    /// Does nothing.
-    SIGHT_APP_API ~color() override = default;
-
-private:
-
-    /**
-     * @brief Parse a color XML configuration.
-     * @param _obj color in which apply the configuration.
-     */
-    void create_config(core::tools::object::sptr _obj) override;
+    SIGHT_DECLARE_SERVICE(color, app::parser::generic);
 };
 
 } // namespace sight::app::parser

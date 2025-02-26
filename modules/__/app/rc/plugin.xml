@@ -17,8 +17,8 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::service::object_parser</type>
-        <service>sight::app::parser::composite</service>
-        <object>sight::data::composite</object>
+        <service>sight::app::parser::map</service>
+        <object>sight::data::map</object>
     </extension>
 
     <extension implements="sight::service::extension::factory">
@@ -85,5 +85,59 @@
         <type>sight::service::controller</type>
         <service>sight::app::multi_config_controller</service>
         <object>sight::data::object</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::ivec2</service>
+        <object>sight::data::ivec2</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::ivec3</service>
+        <object>sight::data::ivec3</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::ivec4</service>
+        <object>sight::data::ivec4</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::dvec2</service>
+        <object>sight::data::dvec2</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::dvec3</service>
+        <object>sight::data::dvec3</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::dvec4</service>
+        <object>sight::data::dvec4</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::object_parser</type>
+        <service>sight::app::parser::camera</service>
+        <object>sight::data::camera</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::app::updater</type>
+        <service>sight::app::update_sequence</service>
+        <desc>This service triggers a signal each time all configured signals are received. Once it triggers the signal</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::app::updater</type>
+        <service>sight::app::update_parallel</service>
+        <desc>This service triggers a signal each time all configured signals are received. Once it triggers the signal</desc>
     </extension>
 </plugin>

@@ -22,11 +22,8 @@
 
 #include "modules/filter/mesh/vtk_mesher.hpp"
 
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
 #include <core/com/slots.hxx>
-#include <core/tools/id.hpp>
 
 #include <data/image_series.hpp>
 #include <data/mesh.hpp>
@@ -35,8 +32,6 @@
 
 #include <io/vtk/helper/mesh.hpp>
 #include <io/vtk/vtk.hpp>
-
-#include <service/macros.hpp>
 
 #include <vtkDecimatePro.h>
 #include <vtkDiscreteMarchingCubes.h>
@@ -49,6 +44,7 @@ namespace sight::module::filter::mesh
 {
 
 //-----------------------------------------------------------------------------
+
 static const sight::core::com::slots::key_t UPDATE_THRESHOLD_SLOT = "update_threshold";
 
 //-----------------------------------------------------------------------------
@@ -56,7 +52,6 @@ static const sight::core::com::slots::key_t UPDATE_THRESHOLD_SLOT = "update_thre
 vtk_mesher::vtk_mesher() noexcept :
     filter(m_signals)
 {
-    new_slot(UPDATE_THRESHOLD_SLOT, &vtk_mesher::update_threshold, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -75,11 +70,6 @@ void vtk_mesher::stopping()
 
 void vtk_mesher::configuring()
 {
-    const service::config_t& srv_config = this->get_config();
-    SIGHT_ASSERT("You must have one <config/> element.", srv_config.count("config") == 1);
-    const service::config_t& config = srv_config.get_child("config");
-    m_threshold = config.get<unsigned int>("<xmlattr>.threshold");
-    m_reduction = config.get<unsigned int>("<xmlattr>.percentReduction");
 }
 
 //-----------------------------------------------------------------------------
@@ -99,7 +89,7 @@ void vtk_mesher::updating()
     // contour filter
     auto contour_filter = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
     contour_filter->SetInputData(vtk_image);
-    contour_filter->SetValue(0, m_threshold);
+    contour_filter->SetValue(0, std::max(static_cast<unsigned int>(*m_threshold), 0U));
     contour_filter->ComputeScalarsOn();
     contour_filter->ComputeNormalsOn();
     contour_filter->Update();
@@ -120,11 +110,11 @@ void vtk_mesher::updating()
     auto mesh = std::make_shared<data::mesh>();
 
     // decimate filter
-    if(m_reduction > 0)
+    if(*m_reduction > 0)
     {
         auto decimate = vtkSmartPointer<vtkDecimatePro>::New();
         decimate->SetInputConnection(smooth_filter->GetOutputPort());
-        decimate->SetTargetReduction(m_reduction / 100.0);
+        decimate->SetTargetReduction(*m_reduction / 100.0);
         decimate->PreserveTopologyOff();
         decimate->SplittingOn();
         decimate->BoundaryVertexDeletionOn();
@@ -157,12 +147,14 @@ void vtk_mesher::updating()
     m_model = model_series;
 }
 
-//------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 
-void vtk_mesher::update_threshold(int _threshold)
+vtk_mesher::connections_t vtk_mesher::auto_connections() const
 {
-    m_threshold = (_threshold >= 0) ? static_cast<unsigned int>(_threshold) : 0;
-    this->update();
+    return {
+        {m_threshold, data::object::MODIFIED_SIG, service::slots::UPDATE},
+        {m_reduction, data::object::MODIFIED_SIG, service::slots::UPDATE}
+    };
 }
 
 //-----------------------------------------------------------------------------

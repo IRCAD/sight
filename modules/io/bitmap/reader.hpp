@@ -91,7 +91,7 @@ public:
 
     /// Trivial constructor / destructor
     /// @{
-    reader() noexcept           = default;
+    reader() noexcept = default;
     ~reader() noexcept override = default;
     /// @}
 

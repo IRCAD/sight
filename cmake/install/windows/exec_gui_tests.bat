@@ -1,6 +1,14 @@
+@echo off
+setlocal enabledelayedexpansion
+
 cd %~dp0
-set ok=1
+set ok=0
+
 for /f %%t in ('%1 --list') do (
-    %1 %%t || set ok=0
+    call %1 %%t
+    if !errorlevel! neq 0 set ok=!errorlevel!
 )
-if %ok%==0 exit 1
+
+exit !ok!
+
+endlocal

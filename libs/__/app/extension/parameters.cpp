@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/runtime/helper.hpp>
 #include <core/runtime/runtime.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/string.hpp>
 
 #include <regex>
@@ -78,11 +78,6 @@ void parameters::parse_plugin_infos()
         m_reg[extension_id] = parameters;
     }
 }
-
-//-----------------------------------------------------------------------------
-
-parameters::parameters()
-= default;
 
 //-----------------------------------------------------------------------------
 

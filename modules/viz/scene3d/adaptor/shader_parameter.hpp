@@ -32,22 +32,11 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * Send parameters to vertex and fragment shaders
  *
- * @section Slots Slots
- *  - \b set_bool_parameter(bool, std::string): Set the uniform from an integer value.
- *  - \b set_color_parameter(std::array<std::uint8_t, 4>, std::string): Set the uniform from a color value.
- *  - \b set_int_parameter(int, std::string): Set the uniform from an integer value.
- *  - \b set_int2_parameter(int, int, std::string): Set the uniform from two integer values.
- *  - \b set_int3_parameter(int, int, int, std::string): Set the uniform from three integer values.
- *  - \b setFloatParameter(float, std::string): Set the uniform from an float value.
- *  - \b set_double_parameter(double, std::string): Set the uniform from an double value.
- *  - \b set_double2_parameter(double, double, std::string): Set the uniform from two double values.
- *  - \b set_double3_parameter(double, double, double, std::string): Set the uniform from three double values.
- *
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="paramAdaptor" type="sight::module::viz::scene3d::adaptor::shader_parameter">
-        <inout key="parameter" uid="collimation" />
         <config materialName="mat" parameter="u_value" shaderType="fragment" />
+        <properties parameter="..." />
     </service>
    @endcode
  *
@@ -80,9 +69,6 @@ protected:
 
     /// Finds the material on which this service works.
     void starting() final;
-
-    /// Updates the shader parameter with the input.
-    void updating() final;
 
     /// Clears resources.
     void stopping() final;

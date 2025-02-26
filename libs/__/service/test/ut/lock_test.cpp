@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,9 +108,9 @@ public:
     {
     }
 
-    data::ptr<data::object, data::access::in> m_input {this, INPUT, false, false};
-    data::ptr<data::integer, data::access::inout> m_inout {this, INOUT, false, false};
-    data::ptr<data::integer, data::access::out> m_output {this, OUTPUT, false, true};
+    data::ptr<data::object, data::access::in> m_input {this, INPUT};
+    data::ptr<data::integer, data::access::inout> m_inout {this, INOUT};
+    data::ptr<data::integer, data::access::out> m_output {this, OUTPUT, true};
 };
 
 const service::base::key_t locked_service::INPUT  = "input";
@@ -164,7 +164,7 @@ void lock_test::test_scoped_lock()
     // Register the data
     locked_service->set_input(input, service::ut::locked_service::INPUT);
     locked_service->set_inout(inout, service::ut::locked_service::INOUT);
-    locked_service->set_output(service::ut::locked_service::OUTPUT, output);
+    locked_service->set_output(output, service::ut::locked_service::OUTPUT);
 
     // Test basic scoped lock
     data::mt::weak_ptr<const data::integer> weak_input(input);
@@ -345,7 +345,7 @@ void lock_test::test_threaded_lock()
     // Register the data
     locked_service->set_input(input, service::ut::locked_service::INPUT);
     locked_service->set_inout(inout, service::ut::locked_service::INOUT);
-    locked_service->set_output(service::ut::locked_service::OUTPUT, output);
+    locked_service->set_output(output, service::ut::locked_service::OUTPUT);
 
     // Test that inputLock doesn't block other reader
     {

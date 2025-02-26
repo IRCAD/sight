@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -39,6 +39,8 @@
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
 
+#include <fstream>
+
 namespace sight::module::io::zip
 {
 
@@ -47,25 +49,25 @@ using core::crypto::secure_string;
 using sight::io::zip::archive;
 
 /// Private implementation
-class extract::ExtractImpl
+class extract::extract_impl
 {
 public:
 
     /// Delete default constructors and assignment operators
-    ExtractImpl(const ExtractImpl&)            = delete;
-    ExtractImpl(ExtractImpl&&)                 = delete;
-    ExtractImpl& operator=(const ExtractImpl&) = delete;
-    ExtractImpl& operator=(ExtractImpl&&)      = delete;
+    extract_impl(const extract_impl&)            = delete;
+    extract_impl(extract_impl&&)                 = delete;
+    extract_impl& operator=(const extract_impl&) = delete;
+    extract_impl& operator=(extract_impl&&)      = delete;
 
     /// Constructor
-    inline explicit ExtractImpl(extract* const _reader) noexcept :
+    explicit extract_impl(extract* const _reader) noexcept :
         m_reader(_reader),
         m_job_created_signal(_reader->new_signal<job_created_signal_t>("job_created"))
     {
     }
 
     /// Default destructor
-    inline ~ExtractImpl() noexcept = default;
+    ~extract_impl() noexcept = default;
 
     /// Pointer to the public interface
     extract* const m_reader;
@@ -81,7 +83,8 @@ public:
 };
 
 extract::extract() noexcept :
-    m_pimpl(std::make_unique<ExtractImpl>(this))
+    reader("Select the archive file"),
+    m_pimpl(std::make_unique<extract_impl>(this))
 {
 }
 
@@ -135,16 +138,6 @@ void extract::updating()
 
         sight::ui::dialog::location location_dialog;
         location_dialog.set_title("Enter the folder where the files must be extracted");
-
-        if(!m_window_title.empty())
-        {
-            location_dialog.set_title(m_window_title);
-        }
-        else
-        {
-            location_dialog.set_title("Enter the output path");
-        }
-
         location_dialog.set_default_location(default_location);
         location_dialog.set_option(ui::dialog::location::write);
         location_dialog.set_type(ui::dialog::location::folder);
@@ -215,14 +208,6 @@ void extract::updating()
                 return secure_string(newPassword);
             }
 
-            if(global_password.empty())
-            {
-                if constexpr(core::crypto::password_keeper::has_default_password())
-                {
-                    return core::crypto::password_keeper::get_default_password();
-                }
-            }
-
             return global_password;
         }();
 
@@ -232,10 +217,39 @@ void extract::updating()
         {
             const sight::ui::busy_cursor busy_cursor;
             _running_job.done_work(10);
-            sight::io::zip::archive_reader::get(
-                filepath,
-                archive::archive_format::DEFAULT
-            )->extract_all_to(m_pimpl->m_output_path, password);
+
+            try
+            {
+                auto archive_reader = sight::io::zip::archive_reader::get(
+                    filepath,
+                    archive::archive_format::DEFAULT
+                );
+
+                archive_reader->extract_all_to(m_pimpl->m_output_path, password);
+            }
+            catch(const sight::io::zip::exception::read&)
+            {
+                // Try with log extractor
+                std::ifstream input(filepath, std::ios::in | std::ios::binary);
+
+                auto output_filepath = m_pimpl->m_output_path / filepath.filename();
+                output_filepath.replace_extension("");
+                std::ofstream output(output_filepath, std::ios::out | std::ios::binary);
+
+                try
+                {
+                    core::log::spy_logger::extract(input, output, password);
+                }
+                catch(const core::log::spy_logger::bad_password&)
+                {
+                    throw;
+                }
+                catch(...)
+                {
+                    throw core::log::spy_logger::bad_password();
+                }
+            }
+
             _running_job.done();
         },
         this->worker()
@@ -246,6 +260,39 @@ void extract::updating()
     jobs->set_cancelable(false);
 
     m_pimpl->m_job_created_signal->emit(jobs);
+
+    const auto bad_password =
+        [&]
+        {
+            if(m_pimpl->m_password_retry == 0)
+            {
+                // First attempt to extract the archive: The user just discovers that it is encrypted
+                m_pimpl->m_password_retry++;
+                updating();
+            }
+            else
+            {
+                // Ask if the user want to retry.
+                sight::ui::dialog::message message_box;
+                message_box.set_title("Wrong password");
+                message_box.set_message(
+                    "The file is password protected and the provided password is wrong.\n\nRetry with a different password ?"
+                );
+                message_box.set_icon(ui::dialog::message::question);
+                message_box.add_button(ui::dialog::message::retry);
+                message_box.add_button(ui::dialog::message::cancel);
+
+                if(message_box.show() == sight::ui::dialog::message::retry)
+                {
+                    m_pimpl->m_password_retry++;
+                    updating();
+                }
+                else
+                {
+                    m_pimpl->m_password_retry = 0;
+                }
+            }
+        };
 
     try
     {
@@ -258,34 +305,11 @@ void extract::updating()
     }
     catch(sight::io::zip::exception::bad_password&)
     {
-        if(m_pimpl->m_password_retry == 0)
-        {
-            // First attempt to extract the archive: The user just discovers that it is encrypted
-            m_pimpl->m_password_retry++;
-            updating();
-        }
-        else
-        {
-            // Ask if the user want to retry.
-            sight::ui::dialog::message message_box;
-            message_box.set_title("Wrong password");
-            message_box.set_message(
-                "The file is password protected and the provided password is wrong.\n\nRetry with a different password ?"
-            );
-            message_box.set_icon(ui::dialog::message::question);
-            message_box.add_button(ui::dialog::message::retry);
-            message_box.add_button(ui::dialog::message::cancel);
-
-            if(message_box.show() == sight::ui::dialog::message::retry)
-            {
-                m_pimpl->m_password_retry++;
-                updating();
-            }
-            else
-            {
-                m_pimpl->m_password_retry = 0;
-            }
-        }
+        bad_password();
+    }
+    catch(sight::core::log::spy_logger::bad_password&)
+    {
+        bad_password();
     }
     catch(const std::exception& e)
     {
@@ -318,16 +342,7 @@ void extract::open_location_dialog()
     default_location->set_folder("/");
 
     sight::ui::dialog::location location_dialog;
-
-    if(!m_window_title.empty())
-    {
-        location_dialog.set_title(m_window_title);
-    }
-    else
-    {
-        location_dialog.set_title("Enter archive file");
-    }
-
+    location_dialog.set_title(*m_window_title);
     location_dialog.set_default_location(default_location);
     location_dialog.set_option(ui::dialog::location::read);
     location_dialog.set_option(ui::dialog::location::file_must_exist);

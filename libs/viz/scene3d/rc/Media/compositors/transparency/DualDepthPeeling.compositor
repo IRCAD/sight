@@ -7,12 +7,12 @@ compositor DualDepthPeeling
         // Color buffer - used for blending
         texture gbuffer target_width target_height PF_R8G8B8A8
         // Ping buffer
-        texture pingBuffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R
+        texture ping_buffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R
         // Pong buffer
-        texture pongBuffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R
+        texture pong_buffer target_width target_height PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R PF_FLOAT32_R
 
          // Init peel buffer
-         target pingBuffer
+         target ping_buffer
          {
              input none
              pass clear
@@ -22,7 +22,7 @@ compositor DualDepthPeeling
              }
 
              shadows off
-             material_scheme DualDepthPeeling/peelInit
+             material_scheme DualDepthPeeling/peel_init
 
              pass render_scene
              {
@@ -41,7 +41,7 @@ compositor DualDepthPeeling
          }
 
          // Peel 1
-         target pongBuffer
+         target pong_buffer
          {
              input none
              pass clear
@@ -51,7 +51,7 @@ compositor DualDepthPeeling
              }
 
              shadows off
-             material_scheme DualDepthPeeling/peelPong
+             material_scheme DualDepthPeeling/peel_pong
 
              pass render_scene
              {
@@ -65,14 +65,14 @@ compositor DualDepthPeeling
             input none
             pass render_quad
             {
-                material DualDepthPeeling/Blend
-                input 0 pongBuffer 3
-                input 1 pongBuffer 5
+                material DualDepthPeeling/blend
+                input 0 pong_buffer 3
+                input 1 pong_buffer 5
             }
          }
 
          // Peel 2
-         target pingBuffer
+         target ping_buffer
          {
              input none
              pass clear
@@ -82,7 +82,7 @@ compositor DualDepthPeeling
              }
 
              shadows off
-             material_scheme DualDepthPeeling/peelPing
+             material_scheme DualDepthPeeling/peel_ping
 
              pass render_scene
              {
@@ -96,14 +96,14 @@ compositor DualDepthPeeling
          input none
          pass render_quad
          {
-         material DualDepthPeeling/Blend
-         input 0 pingBuffer 3
-         input 1 pingBuffer 5
+         material DualDepthPeeling/blend
+         input 0 ping_buffer 3
+         input 1 ping_buffer 5
          }
          }
 
          // Peel 3
-         target pongBuffer
+         target pong_buffer
          {
              input none
              pass clear
@@ -113,7 +113,7 @@ compositor DualDepthPeeling
              }
 
              shadows off
-             material_scheme DualDepthPeeling/peelPong
+             material_scheme DualDepthPeeling/peel_pong
 
              pass render_scene
              {
@@ -127,14 +127,14 @@ compositor DualDepthPeeling
          input none
          pass render_quad
          {
-         material DualDepthPeeling/Blend
-         input 0 pongBuffer 3
-         input 1 pongBuffer 5
+         material DualDepthPeeling/blend
+         input 0 pong_buffer 3
+         input 1 pong_buffer 5
          }
          }
 
          // Peel 4
-         target pingBuffer
+         target ping_buffer
          {
              input none
              pass clear
@@ -144,7 +144,7 @@ compositor DualDepthPeeling
              }
 
              shadows off
-             material_scheme DualDepthPeeling/peelPing
+             material_scheme DualDepthPeeling/peel_ping
 
              pass render_scene
              {
@@ -158,14 +158,14 @@ compositor DualDepthPeeling
          input none
          pass render_quad
          {
-         material DualDepthPeeling/Blend
-         input 0 pingBuffer 3
-         input 1 pingBuffer 5
+         material DualDepthPeeling/blend
+         input 0 ping_buffer 3
+         input 1 ping_buffer 5
          }
          }
 
          // Peel 5
-         target pongBuffer
+         target pong_buffer
          {
              input none
              pass clear
@@ -175,7 +175,7 @@ compositor DualDepthPeeling
              }
 
              shadows off
-             material_scheme DualDepthPeeling/peelPong
+             material_scheme DualDepthPeeling/peel_pong
 
              pass render_scene
              {
@@ -189,14 +189,14 @@ compositor DualDepthPeeling
          input none
          pass render_quad
          {
-         material DualDepthPeeling/Blend
-         input 0 pongBuffer 3
-         input 1 pongBuffer 5
+         material DualDepthPeeling/blend
+         input 0 pong_buffer 3
+         input 1 pong_buffer 5
          }
          }
 
          // Peel 6
-         target pingBuffer
+         target ping_buffer
          {
              input none
              pass clear
@@ -206,7 +206,7 @@ compositor DualDepthPeeling
              }
 
              shadows off
-             material_scheme DualDepthPeeling/peelPing
+             material_scheme DualDepthPeeling/peel_ping
 
              pass render_scene
              {
@@ -220,9 +220,9 @@ compositor DualDepthPeeling
              input none
              pass render_quad
              {
-                 material DualDepthPeeling/Blend
-                 input 0 pingBuffer 3
-                 input 1 pingBuffer 5
+                 material DualDepthPeeling/blend
+                 input 0 ping_buffer 3
+                 input 1 ping_buffer 5
              }
          }
 
@@ -239,8 +239,8 @@ compositor DualDepthPeeling
             {
                 material DualDepthPeeling/Final
                 input 0 gbuffer
-                input 1 pingBuffer 2
-                input 2 pingBuffer 4
+                input 1 ping_buffer 2
+                input 2 ping_buffer 4
             }
 
             // Render volumes on top.

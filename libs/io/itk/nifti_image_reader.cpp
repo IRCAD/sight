@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,14 +31,10 @@
 
 #include <data/image.hpp>
 
-#include <io/__/reader/registry/macros.hpp>
-
 #include <itkImageFileReader.h>
 #include <itkNiftiImageIO.h>
 
 #include <filesystem>
-
-SIGHT_REGISTER_IO_READER(sight::io::itk::nifti_image_reader);
 
 namespace sight::io::itk
 {
@@ -107,7 +103,7 @@ void nifti_image_reader::read()
     assert(!m_object.expired());
     assert(m_object.lock());
 
-    const core::type& type = nifti_loader_functor::get_image_type(file.string());
+    const core::type type = nifti_loader_functor::get_image_type(file.string());
 
     nifti_loader_functor::parameter param;
     param.filename   = file.string();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -83,6 +83,7 @@ camera_set::sptr init_camera_set()
     }
 
     camera_set->set_extrinsic_matrix(1, mat);
+    camera_set->set_calibration_error(0.123);
 
     return camera_set;
 }
@@ -120,6 +121,9 @@ void camera_set_test::camera_test()
     CPPUNIT_ASSERT_THROW(camera_set->set_extrinsic_matrix(2, mat), std::out_of_range);
     CPPUNIT_ASSERT_THROW(camera_set->get_extrinsic_matrix(2), std::out_of_range);
     CPPUNIT_ASSERT(camera_set->get_extrinsic_matrix(1) == mat);
+
+    CPPUNIT_ASSERT_NO_THROW(camera_set->set_calibration_error(0.4587));
+    CPPUNIT_ASSERT_EQUAL(0.4587, camera_set->calibration_error());
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), camera_set->size());
 

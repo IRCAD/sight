@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,6 +36,7 @@ SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test2_i
 SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test1_input1_opt_input1_opt_in_out);
 SIGHT_REGISTER_SERVICE(sight::service::ut::test_srv, sight::service::ut::test3_inouts_v2);
 SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test_service_with_data);
+SIGHT_REGISTER_SERVICE(sight::service::base, sight::service::ut::test1_property);
 
 namespace sight::service::ut
 {
@@ -46,10 +47,6 @@ unsigned int test_service::s_update_counter = 0;
 const std::string test_service::OPTION_KEY   = "option";
 const std::string test_service::UNCONFIGURED = "UNCONFIGURED";
 const std::string test_service::NOT_DEFINED  = "NOT_DEFINED";
-
-const service::base::key_t test_service_with_data::INPUT       = "input";
-const service::base::key_t test_service_with_data::INOUT_GROUP = "inoutGroup";
-const service::base::key_t test_service_with_data::OUTPUT      = "output";
 
 //------------------------------------------------------------------------------
 

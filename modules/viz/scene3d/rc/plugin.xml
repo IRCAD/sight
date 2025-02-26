@@ -2,6 +2,8 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::viz::scene3d::adaptor</type>
         <service>sight::module::viz::scene3d::adaptor::axis</service>
+        <object key="image">sight::data::image</object>
+        <object key="matrix">sight::data::matrix4</object>
         <desc>This adaptor shows a simple coordinate system.</desc>
     </extension>
 
@@ -44,21 +46,6 @@
         <object key="camera">sight::data::camera</object>
         <object key="transform">sight::data::matrix4</object>
         <desc>This adaptor displays a new Frustum each times the transform is updated.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::viz::scene3d::adaptor</type>
-        <service>sight::module::viz::scene3d::adaptor::image_multi_distances</service>
-        <object key="image">sight::data::image</object>
-        <desc>This adaptor displays distances retrieved from an image fields.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::viz::scene3d::adaptor</type>
-        <service>sight::module::viz::scene3d::adaptor::landmarks</service>
-        <object key="landmarks">sight::data::landmarks</object>
-        <object key="image">sight::data::image</object>
-        <desc>This adaptor displays landmarks.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">

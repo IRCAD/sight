@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,17 +22,13 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/adaptor/material.hpp"
-
-#include <core/com/signals.hpp>
-
-#include <data/material.hpp>
 #include <data/model_series.hpp>
 
 #include <service/notifier.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
+#include <viz/scene3d/material/standard.hpp>
 
 #include <OgreManualObject.h>
 #include <OgreSceneNode.h>
@@ -343,11 +339,8 @@ private:
 
     bool m_extrude {true};
 
-    /// Contains the material data used for the lasso tool.
-    data::material::sptr m_material {nullptr};
-
-    /// Contains the adaptor used to create the Ogre material from the material data.
-    module::viz::scene3d::adaptor::material::sptr m_material_adaptor {nullptr};
+    /// Contains the material.
+    sight::viz::scene3d::material::standard::uptr m_material;
 
     /// Defines the color of the lasso's line.
     Ogre::ColourValue m_line_color {Ogre::ColourValue::White};

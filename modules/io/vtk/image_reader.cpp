@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,9 +58,13 @@ namespace sight::module::io::vtk
 
 //------------------------------------------------------------------------------
 
-// Register a new reader of data::image
-
 static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
+
+image_reader::image_reader() noexcept :
+    reader("Choose a file to load an image"),
+    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -90,7 +94,7 @@ void image_reader::open_location_dialog()
     }
 
     sight::ui::dialog::location dialog_file;
-    dialog_file.set_title(m_window_title.empty() ? "Choose a file to load an image" : m_window_title);
+    dialog_file.set_title(*m_window_title);
     dialog_file.set_default_location(default_directory);
     dialog_file.add_filter("Vtk", "*.vtk");
     dialog_file.add_filter("Vti", "*.vti");
@@ -110,13 +114,6 @@ void image_reader::open_location_dialog()
     {
         this->clear_locations();
     }
-}
-
-//------------------------------------------------------------------------------
-
-image_reader::image_reader() noexcept
-{
-    m_sig_job_created = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
@@ -207,28 +204,28 @@ typename READER::sptr configure_reader(const std::filesystem::path& _img_file)
 //------------------------------------------------------------------------------
 
 bool image_reader::load_image(
-    const std::filesystem::path& _img_file,
-    std::shared_ptr<data::image> _img,
+    const std::filesystem::path& _vtk_file,
+    std::shared_ptr<data::image> _image,
     const SPTR(job_created_signal_t)& _sig_job_created
 )
 {
     bool ok = true;
 
-    std::string ext = _img_file.extension().string();
+    std::string ext = _vtk_file.extension().string();
     boost::algorithm::to_lower(ext);
 
     sight::io::reader::object_reader::sptr image_reader;
     if(ext == ".vtk")
     {
-        image_reader = configure_reader<sight::io::vtk::image_reader>(_img_file);
+        image_reader = configure_reader<sight::io::vtk::image_reader>(_vtk_file);
     }
     else if(ext == ".vti")
     {
-        image_reader = configure_reader<sight::io::vtk::vti_image_reader>(_img_file);
+        image_reader = configure_reader<sight::io::vtk::vti_image_reader>(_vtk_file);
     }
     else if(ext == ".mhd")
     {
-        image_reader = configure_reader<sight::io::vtk::meta_image_reader>(_img_file);
+        image_reader = configure_reader<sight::io::vtk::meta_image_reader>(_vtk_file);
     }
     else
     {
@@ -242,7 +239,7 @@ bool image_reader::load_image(
         {
             if(available_extensions.at(i) == ext)
             {
-                image_reader = configure_reader<sight::io::vtk::bitmap_image_reader>(_img_file);
+                image_reader = configure_reader<sight::io::vtk::bitmap_image_reader>(_vtk_file);
                 break;
             }
         }
@@ -267,7 +264,7 @@ bool image_reader::load_image(
     }
 
     // Set the image (already created, but empty) that will be modified
-    image_reader->set_object(_img);
+    image_reader->set_object(_image);
 
     _sig_job_created->emit(image_reader->get_job());
 

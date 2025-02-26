@@ -24,8 +24,10 @@
 
 #include <data/camera.hpp>
 #include <data/image.hpp>
+#include <data/integer.hpp>
 #include <data/matrix4.hpp>
 #include <data/point_list.hpp>
+#include <data/real.hpp>
 
 #include <service/controller.hpp>
 
@@ -92,7 +94,7 @@ public:
     chessboard_reprojection();
 
     ///Destructor
-    ~chessboard_reprojection() final;
+    ~chessboard_reprojection() final = default;
 
 protected:
 
@@ -121,15 +123,6 @@ private:
 
     /// Enables/disabled distorting the reprojected points.
     void toggle_distortion();
-
-    /// Preference key to retrieve the chessboard width.
-    std::string m_width_key;
-
-    /// Preference key to retrieve the chessboard height.
-    std::string m_height_key;
-
-    /// Preference key to retrieve the size of the chessboard's squares.
-    std::string m_square_size_key;
 
     /// Apply distortion to the reprojected points if true. Undistort the detected points otherwise.
     bool m_distort_reprojection {true};
@@ -162,6 +155,15 @@ private:
     data::ptr<data::point_list, data::access::in> m_detected_chessboard {this, DETECTED_CHESSBOARD_INPUT};
     data::ptr<data::image, data::access::inout> m_video_image {this, "videoImage"};
     data::ptr<data::point_list, data::access::out> m_chessboard_model_out {this, CHESSBOARD_MODEL_OUTPUT};
+
+    /// Width of the chessboard.
+    sight::data::property<sight::data::integer> m_width {this, "board_width", 11};
+
+    /// Height of the chessboard.
+    sight::data::property<sight::data::integer> m_height {this, "board_height", 8};
+
+    /// Square size of the chessboard.
+    sight::data::property<sight::data::real> m_square_size {this, "board_square_size", 1.};
 };
 
 } //namespace sight::module::geometry::vision

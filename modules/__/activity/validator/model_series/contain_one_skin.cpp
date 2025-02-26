@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2024 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <activity/validator/registry/macros.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
 #include <data/vector.hpp>
@@ -41,16 +41,16 @@ contain_one_skin::~contain_one_skin()
 
 //-----------------------------------------------------------------------------
 
-sight::activity::validator::return_t contain_one_skin::validate(const data::object::csptr& _current_data) const
+sight::activity::validator::return_t contain_one_skin::validate(const data::object::csptr& _object) const
 {
     sight::activity::validator::return_t validation;
 
     validation.first  = true;
     validation.second = "";
 
-    data::model_series::csptr model_series = std::dynamic_pointer_cast<const data::model_series>(_current_data);
-    data::vector::csptr vector             = std::dynamic_pointer_cast<const data::vector>(_current_data);
-    data::composite::csptr composite       = std::dynamic_pointer_cast<const data::composite>(_current_data);
+    data::model_series::csptr model_series = std::dynamic_pointer_cast<const data::model_series>(_object);
+    data::vector::csptr vector             = std::dynamic_pointer_cast<const data::vector>(_object);
+    data::map::csptr map                   = std::dynamic_pointer_cast<const data::map>(_object);
 
     if(model_series)
     {
@@ -109,9 +109,9 @@ sight::activity::validator::return_t contain_one_skin::validate(const data::obje
             }
         }
     }
-    else if(composite)
+    else if(map)
     {
-        for(const auto& elt : *composite)
+        for(const auto& elt : *map)
         {
             data::model_series::sptr model = std::dynamic_pointer_cast<data::model_series>(elt.second);
             if(!model)
@@ -147,7 +147,7 @@ sight::activity::validator::return_t contain_one_skin::validate(const data::obje
     else
     {
         validation.first  = false;
-        validation.second = "Current object should be a ModelSeries, a Vector or a Composite.";
+        validation.second = "Current object should be a ModelSeries, a Vector or a Map.";
     }
 
     return validation;

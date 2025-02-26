@@ -54,7 +54,7 @@ void image_center::starting()
 
 void image_center::updating()
 {
-    const auto image = m_image.lock();
+    const auto image = m_image.const_lock();
 
     SIGHT_ASSERT("Missing image '" << IMAGE_IN << "'", image);
 
@@ -72,33 +72,37 @@ void image_center::updating()
 
     geometry::data::identity(*matrix);
 
-    //compute the center
-    const data::image::size_t size       = image->size();
-    const data::image::spacing_t spacing = image->spacing();
-    const data::image::origin_t origin   = image->origin();
+    const auto& origin      = image->origin();
+    const auto& orientation = image->orientation();
 
-    SIGHT_ASSERT("image should be in 3 Dimensions", size.size() == 3);
+    // Get World transform
+    const glm::dmat4 world_transform {
+        orientation[0], orientation[3], orientation[6], 0,
+        orientation[1], orientation[4], orientation[7], 0,
+        orientation[2], orientation[5], orientation[8], 0,
+        origin[0], origin[1], origin[2], 1
+    };
 
-    std::vector<double> center(3, 0.);
+    // Get image center in mm
+    const auto& size    = image->size();
+    const auto& spacing = image->spacing();
 
-    center[0] = (static_cast<double>(size[0]) * spacing[0]) / 2.;
-    center[1] = (static_cast<double>(size[1]) * spacing[1]) / 2.;
-    center[2] = (static_cast<double>(size[2]) * spacing[2]) / 2.;
+    const glm::dvec4 image_center {
+        double(size[0]) * spacing[0] / 2.0,
+        double(size[1]) * spacing[1] / 2.0,
+        double(size[2]) * spacing[2] / 2.0,
+        1
+    };
 
-    //compute origin -center
+    // Compute world center
+    const auto world_center = world_transform * image_center;
 
-    center[0] += origin[0];
-    center[1] += origin[1];
-    center[2] += origin[2];
-
-    (*matrix)(0, 3) = center[0];
-    (*matrix)(1, 3) = center[1];
-    (*matrix)(2, 3) = center[2];
-
-    // output the translation matrix
+    // Update the output matrix
+    matrix->set_orientation(orientation);
+    matrix->set_position(world_center);
 
     matrix->signal<data::matrix4::modified_signal_t>(data::matrix4::MODIFIED_SIG)->async_emit();
-    this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
+    this->async_emit(signals::COMPUTED);
 }
 
 //------------------------------------------------------------------------------

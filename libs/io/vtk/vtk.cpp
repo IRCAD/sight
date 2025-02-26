@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,6 @@
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
 
-#include <geometry/data/mesh_functions.hpp>
-
 #include <vtkCell.h>
 #include <vtkCellType.h>
 #include <vtkDataArray.h>
@@ -41,6 +39,7 @@
 #include <vtkImageExport.h>
 #include <vtkImageImport.h>
 #include <vtkLookupTable.h>
+#include <vtkMatrix3x3.h>
 #include <vtkMatrix4x4.h>
 #include <vtkPointData.h>
 #include <vtkPoints.h>
@@ -250,42 +249,50 @@ void from_vtk_image(vtkImageData* _source, data::image::sptr _destination)
 {
     SIGHT_ASSERT("vtkImageData source and/or data::image destination are not correct", _destination && _source);
 
-    // ensure image size correct
-//    source->UpdateInformation();
-//    source->PropagateUpdateExtent();
-
     int dim = _source->GetDataDimension();
-    data::image::size_t image_size;
 
-    if(dim == 2)
+    const auto* const dimensions   = _source->GetDimensions();
+    data::image::size_t image_size = {
+        static_cast<std::size_t>(dimensions[0]),
+        static_cast<std::size_t>(dimensions[1]),
+        dim > 2 ? static_cast<std::size_t>(dimensions[2]) : 0
+    };
+
+    const auto* const spacing = _source->GetSpacing();
+    _destination->set_spacing(
+        {
+            spacing[0],
+            spacing[1],
+            dim > 2 ? spacing[2] : 0.
+        });
+
+    const auto* const origin = _source->GetOrigin();
+    _destination->set_origin(
+        {
+            origin[0],
+            origin[1],
+            dim > 2 ? origin[2] : 0.
+        });
+
+    const auto* const orientation = _source->GetDirectionMatrix();
+
+    if(dim > 2)
     {
-        image_size = {static_cast<std::size_t>(_source->GetDimensions()[0]),
-                      static_cast<std::size_t>(_source->GetDimensions()[1]), 0
-        };
-
-        const data::image::spacing_t spacing = {_source->GetSpacing()[0], _source->GetSpacing()[1], 0.
-        };
-        _destination->set_spacing(spacing);
-
-        const data::image::origin_t origin = {_source->GetOrigin()[0], _source->GetOrigin()[1], 0.
-        };
-        _destination->set_origin(origin);
+        _destination->set_orientation(
+            {
+                orientation->GetElement(0, 0), orientation->GetElement(0, 1), orientation->GetElement(0, 2),
+                orientation->GetElement(1, 0), orientation->GetElement(1, 1), orientation->GetElement(1, 2),
+                orientation->GetElement(2, 0), orientation->GetElement(2, 1), orientation->GetElement(2, 2)
+            });
     }
     else
     {
-        image_size = {static_cast<std::size_t>(_source->GetDimensions()[0]),
-                      static_cast<std::size_t>(_source->GetDimensions()[1]),
-                      static_cast<std::size_t>(_source->GetDimensions()[2])
-        };
-
-        const data::image::spacing_t spacing =
-        {_source->GetSpacing()[0], _source->GetSpacing()[1], _source->GetSpacing()[2]
-        };
-        _destination->set_spacing(spacing);
-
-        const data::image::origin_t origin = {_source->GetOrigin()[0], _source->GetOrigin()[1], _source->GetOrigin()[2]
-        };
-        _destination->set_origin(origin);
+        _destination->set_orientation(
+            {
+                orientation->GetElement(0, 0), orientation->GetElement(0, 1), 0,
+                orientation->GetElement(1, 0), orientation->GetElement(1, 1), 0,
+                0, 0, 1,
+            });
     }
 
     const int nb_components = _source->GetNumberOfScalarComponents();
@@ -303,22 +310,22 @@ void from_vtk_image(vtkImageData* _source, data::image::sptr _destination)
     {
         void* dest_buffer = nullptr;
 
-        enum sight::data::image::pixel_format format = data::image::pixel_format::gray_scale;
+        enum sight::data::image::pixel_format_t format = data::image::pixel_format_t::gray_scale;
         if(nb_components == 1)
         {
-            format = data::image::pixel_format::gray_scale;
+            format = data::image::pixel_format_t::gray_scale;
         }
         else if(nb_components == 2)
         {
-            format = data::image::pixel_format::rg;
+            format = data::image::pixel_format_t::rg;
         }
         else if(nb_components == 3)
         {
-            format = data::image::pixel_format::rgb;
+            format = data::image::pixel_format_t::rgb;
         }
         else if(nb_components == 4)
         {
-            format = data::image::pixel_format::rgba;
+            format = data::image::pixel_format_t::rgba;
         }
         else
         {
@@ -389,6 +396,8 @@ void configure_vtk_image_import(vtkImageImport* _p_image_import, data::image::cs
             static_cast<int>(_p_data_image->size()[2]) - 1
         );
     }
+
+    _p_image_import->SetDataDirection(_p_data_image->orientation().data());
 
     _p_image_import->SetNumberOfScalarComponents(static_cast<int>(_p_data_image->num_components()));
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,14 +100,14 @@ void menubar::manage(std::vector<ui::container::menu::sptr> _menus)
         {
             SIGHT_ASSERT(
                 "menu '" + sid.first + "' does not exist, but is declared in '" + m_sid + "' menubar.",
-                core::tools::id::exist(sid.first)
+                core::id::exist(sid.first)
             );
             service::base::sptr service = service::get(sid.first);
             service->start();
         }
         else
         {
-            bool service_exists = core::tools::id::exist(sid.first);
+            bool service_exists = core::id::exist(sid.first);
             if(!service_exists || service::get(sid.first)->stopped())
             {
                 ui::registry::action_service_stopping(sid.first);
@@ -126,7 +126,7 @@ void menubar::unmanage()
         {
             SIGHT_ASSERT(
                 "menu '" + sid.first + "' does not exist, but is declared in '" + m_sid + "' menubar.",
-                core::tools::id::exist(sid.first)
+                core::id::exist(sid.first)
             );
             service::base::sptr service = service::get(sid.first);
             service->stop().wait();

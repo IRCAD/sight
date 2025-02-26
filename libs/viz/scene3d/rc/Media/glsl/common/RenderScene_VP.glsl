@@ -1,4 +1,4 @@
-#version 410
+#version 450
 
 #ifdef GLSL_LANG_VALIDATOR
 #extension GL_GOOGLE_include_directive : enable
@@ -55,11 +55,7 @@ layout(location = 1) out vec3 v_f3Position_Ws;
 layout(location = 1) out vec3 v_f3Position_Vs;
 #   endif
 
-#   if defined(FLAT)
-layout(location = 2) flat out vec4 v_f4Color;
-#   else
 layout(location = 2) out vec4 v_f4Color;
-#   endif // FLAT
 
 #   ifdef DIFFUSE_TEX
 layout(location = 3) out vec2 v_f2TexCoord;
@@ -70,6 +66,7 @@ layout(location = 3) out vec2 v_f2TexCoord;
 #if defined(FLAT) || defined(PHONG)
 vec4 lighting(vec3 _normal, vec3 _position);
 #else
+uniform vec4 u_f4LightAmbientCol;
 uniform vec4 u_ambient;
 uniform vec4 u_diffuse;
 #endif // FLAT || PHONG
@@ -114,7 +111,7 @@ void main(void)
     v_f3Position_Vs = (u_worldView * position).xyz;
     v_f4Color = vec4(1.,1.,1.,1.);
 #       else
-    v_f4Color = vec4(u_ambient.rgb + u_diffuse.rgb, u_diffuse.a);
+    v_f4Color = vec4(u_f4LightAmbientCol.rgb * u_ambient.rgb + u_diffuse.rgb, u_diffuse.a);
 #       endif
 
 #       ifdef VERTEX_COLOR

@@ -67,7 +67,7 @@ public:
      *
      * This method overloads set_object to ensure that given object corresponds to DATATYPE
      */
-    void set_object(core::tools::object::sptr _obj) override
+    void set_object(core::object::sptr _obj) override
     {
         assert(std::dynamic_pointer_cast<data_t>(_obj));
         m_object = _obj;

@@ -24,7 +24,9 @@
 
 #include <data/calibration_info.hpp>
 #include <data/camera_set.hpp>
+#include <data/integer.hpp>
 #include <data/matrix4.hpp>
+#include <data/real.hpp>
 
 #include <geometry/vision/calibrator.hpp>
 
@@ -61,7 +63,7 @@ namespace sight::module::geometry::vision
  *      (from camera[0] to camera[index]).
  * - \b board : preference key to retrieve the number of square in 2 dimensions of the chessboard.
  */
-class open_cv_extrinsic : public sight::geometry::vision::calibrator
+class open_cv_extrinsic final : public sight::geometry::vision::calibrator
 {
 public:
 
@@ -70,56 +72,30 @@ public:
     /// Double changed signal type
     using error_computed_t = core::com::signal<void (double)>;
 
-    /// Constructor.
-    open_cv_extrinsic() noexcept;
-
     /// Destructor.
-    ~open_cv_extrinsic() noexcept override;
+    ~open_cv_extrinsic() noexcept final = default;
 
 protected:
 
     /// Configures the service.
-    void configuring() override;
+    void configuring() final;
 
     /// Does nothing.
-    void starting() override;
+    void starting() final;
 
     /// Computes intrinsic calibration
-    void updating() override;
+    void updating() final;
 
     /// Removes connections
-    void stopping() override;
+    void stopping() final;
 
 private:
-
-    /**
-     * @brief SLOT: update the chessboard size.
-     */
-    void update_chessboard_size();
 
     /// FwId of the first calibrationInfo
     std::string m_calibration_info1_id;
 
     /// FwId of the second calibrationInfo
     std::string m_calibration_info2_id;
-
-    /// Preference key to retrieve width of the chessboard used for calibration
-    std::string m_width_key;
-
-    /// Preference key to retrieve height of the chessboard used for calibration
-    std::string m_height_key;
-
-    /// Preference key to retrieve size of the chessboard'square used for calibration
-    std::string m_square_size_key;
-
-    /// Width of the chessboard used for calibration
-    unsigned int m_width {11};
-
-    /// Height of the chessboard used for calibration
-    unsigned int m_height {8};
-
-    /// Size of the chessboard'square used for calibration
-    float m_square_size {20.0};
 
     /// Index of the camera in cameraSet used to compute extrinsic matrix (from camera[0] to camera[index]).
     std::size_t m_cam_index {1};
@@ -128,6 +104,15 @@ private:
     data::ptr<data::calibration_info, data::access::in> m_calibration_info2 {this, "calibrationInfo2"};
     data::ptr<data::camera_set, data::access::inout> m_camera_set {this, "cameraSet"};
     data::ptr<data::matrix4, data::access::out> m_matrix {this, "matrix"};
+
+    /// Width of the chessboard.
+    sight::data::property<sight::data::integer> m_width {this, "board_width", 11};
+
+    /// Height of the chessboard.
+    sight::data::property<sight::data::integer> m_height {this, "board_height", 8};
+
+    /// Square size of the chessboard.
+    sight::data::property<sight::data::real> m_square_size {this, "board_square_size", 20.};
 };
 
 } // namespace sight::module::geometry::vision

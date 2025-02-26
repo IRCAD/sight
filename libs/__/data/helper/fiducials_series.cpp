@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@ data::point_list::sptr fiducials_series::to_point_list(const data::fiducials_ser
     data::point_list::sptr res;
     if(_fiducial.fiducial_uid.has_value())
     {
-        core::tools::object::sptr o = core::tools::id::get_object(*_fiducial.fiducial_uid);
+        core::object::sptr o = core::id::get_object(*_fiducial.fiducial_uid);
         if(o == nullptr)
         {
             res = std::make_shared<data::point_list>();

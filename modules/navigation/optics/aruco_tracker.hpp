@@ -22,9 +22,12 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
 #include <data/camera.hpp>
 #include <data/image.hpp>
+#include <data/integer.hpp>
 #include <data/marker_map.hpp>
+#include <data/real.hpp>
 
 #include <service/tracker.hpp>
 
@@ -57,9 +60,9 @@ namespace sight::module::navigation::optics
             <in key="camera" uid="..." />
             <inout key="frame" uid="..." auto_connect="true" />
             <inout group="markerMap">
-                <key uid="..." /> <!-- timeline of detected tag(s) -->
-                <key uid="..." /> <!-- timeline of detected tag(s) -->
-                <key uid="..." /> <!-- timeline of detected tag(s) -->
+                <key uid="..." /> // timeline of detected tag(s) -->
+                <key uid="..." /> // timeline of detected tag(s) -->
+                <key uid="..." /> // timeline of detected tag(s) -->
             </inout>
             <track>
                 <marker id="42,1,100,54" />
@@ -169,7 +172,7 @@ private:
     };
 
     /// Slot called when a boolean value is changed
-    void set_parameter(sight::ui::parameter_t _val, std::string _key);
+    void on_property_set(std::string_view _key) override;
 
     /// Camera parameters
     camera m_camera_params;
@@ -179,9 +182,6 @@ private:
 
     /// True if tracker is initialized
     bool m_is_initialized {false};
-
-    /// Display markers in the image or not
-    bool m_debug_markers {false};
 
     /// aruco detector parameters structure
     cv::Ptr<cv::aruco::DetectorParameters> m_detector_params;
@@ -198,6 +198,55 @@ private:
     data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
     data::ptr<data::image, data::access::inout> m_frame {this, FRAME_INOUT};
     data::ptr_vector<data::marker_map, data::access::inout> m_marker_map {this, MARKER_MAP_INOUT_GROUP};
+
+    /// show marker or not -->
+    data::property<data::boolean> m_debug_mode {this, "debug_mode", false};
+    ///  do corner refinement or not. -->
+    data::property<data::boolean> m_corner_refinement {this, "corner_refinement", false};
+    /// minimum window size for adaptive thresholding before finding contours -->
+    data::property<data::integer> m_adaptive_th_win_size_min {this, "adaptive_th_win_size_min", 3};
+    /// maximum window size for adaptive thresholding before finding contours -->
+    data::property<data::integer> m_adaptive_th_win_size_max {this, "adaptive_th_win_size_max", 23};
+    /// increments from adaptiveThreshWinSizeMin to adaptiveThreshWinSizeMax during the thresholding -->
+    data::property<data::integer> m_adaptive_th_win_size_step {this, "adaptive_th_win_size_step", 10};
+    /// constant for adaptive thresholding before finding contours -->
+    data::property<data::real> m_adaptive_th_constant {this, "adaptive_th_constant", 7.};
+    /// determine minimum perimeter for marker contour to be detected.
+    data::property<data::real> m_min_marker_perimeter_rate {this, "min_marker_perimeter_rate", 0.03};
+    /// determine maximum perimeter for marker contour to be detected.
+    data::property<data::real> m_max_marker_perimeter_rate {this, "max_marker_perimeter_rate", 4.0};
+    /// minimum accuracy during the polygonal approximation process to determine which contours are squares -->
+    data::property<data::real> m_polygonal_approx_accuracy_rate {this, "polygonal_approx_accuracy_rate", 0.03};
+    /// minimum distance between corners for detected markers relative to its perimeter -->
+    data::property<data::real> m_min_corner_distance_rate {this, "min_corner_distance_rate", 0.01};
+    /// minimum distance of any corner to the image border for detected markers (in pixels) -->
+    data::property<data::integer> m_min_distance_to_border {this, "min_distance_to_border", 1};
+    /// minimum mean distance beetween two marker corners to be considered similar,
+    data::property<data::real> m_min_marker_distance_rate {this, "min_marker_distance_rate", 0.};
+    /// window size for the corner refinement process (in pixels) -->
+    data::property<data::integer> m_corner_refinement_win_size {this, "corner_refinement_win_size", 5};
+    /// maximum number of iterations for stop criteria of the corner refinement process -->
+    data::property<data::integer> m_corner_refinement_max_iterations {this, "corner_refinement_max_iterations", 30};
+    /// minimum error for the stop criteria of the corner refinement process -->
+    data::property<data::real> m_corner_refinement_min_accuracy {this, "corner_refinement_min_accuracy", 0.1};
+    /// number of bits of the marker border, i.e. marker border width -->
+    data::property<data::integer> m_marker_border_bits {this, "marker_border_bits", 1};
+    /// number of bits (per dimension) for each cell of the marker when removing the perspective -->
+    data::property<data::integer> m_perspective_remove_pixel_per_cell {this, "perspective_remove_pixel_per_cell", 8};
+    /// width of the margin of pixels on each cell not considered for the determination of the cell bit.
+    /// Represents the rate respect to the total size of the cell,i.e. perspective_remove_pixel_per_cell
+    data::property<data::real> m_perspective_remove_ignored_margin_per_cell {this,
+                                                                             "perspective_remove_ignored_margin_per_cell",
+                                                                             0.1
+    };
+    /// maximum number of accepted erroneous bits in the border (i.e. number of allowed white bits in the border).
+    /// Represented as a rate respect to the total number of bits per marker
+    data::property<data::real> m_max_erroneous_bits_in_border_rate {this, "max_erroneous_bits_in_border_rate", 0.3};
+    /// minimun standard deviation in pixels values during the decode step to apply Otsu thresholding
+    /// (otherwise, all the bits are set to 0 or 1 depending on mean higher than 128 or not)
+    data::property<data::real> m_min_otsu_std_dev {this, "min_otsu_std_dev", 5.0};
+    /// error correction rate respect to the maximun error correction capability for each dictionary -->
+    data::property<data::real> m_error_correction_rate {this, "error_correction_rate", 0.6};
 };
 
 } // namespace sight::module::navigation::optics

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,8 +21,6 @@
  ***********************************************************************/
 
 #include "modules/viz/scene3d/adaptor/light.hpp"
-
-#include "modules/viz/scene3d/adaptor/material.hpp"
 
 #include <core/com/slots.hxx>
 
@@ -69,7 +67,7 @@ void light::configuring()
     this->set_transform_id(
         config.get<std::string>(
             sight::viz::scene3d::transformable::TRANSFORM_CONFIG,
-            this->get_id() + "_transform"
+            gen_id("transform")
         )
     );
 
@@ -88,12 +86,12 @@ void light::configuring()
 
 void light::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     this->render_service()->make_current();
 
     Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
-    m_light = scene_mgr->createLight(this->get_id() + "_" + m_light_name);
+    m_light = scene_mgr->createLight(gen_id("" + m_light_name));
 
     // Sets the default light direction to the camera's view direction,
     m_light->setType(m_light_type);
@@ -101,7 +99,7 @@ void light::starting()
 
     Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
-    m_light_node = trans_node->createChildSceneNode(this->get_id() + "_light");
+    m_light_node = trans_node->createChildSceneNode(gen_id("light"));
     m_light_node->attachObject(m_light);
 
     if(m_theta_offset != 0.F || m_phi_offset != 0.F)
@@ -113,24 +111,9 @@ void light::starting()
     if(m_light_name != sight::viz::scene3d::layer::DEFAULT_LIGHT_NAME)
     {
         // Creates the visual feedback
-        // Creates the material
-        m_material = std::make_shared<data::material>();
-
-        const module::viz::scene3d::adaptor::material::sptr material_adaptor =
-            this->register_service<module::viz::scene3d::adaptor::material>(
-                "sight::module::viz::scene3d::adaptor::material"
-            );
-        material_adaptor->set_inout(m_material, module::viz::scene3d::adaptor::material::MATERIAL_INOUT, true);
-        material_adaptor->configure(
-            this->get_id() + material_adaptor->get_id(),
-            this->get_id() + material_adaptor->get_id(),
-            this->render_service(),
-            m_layer_id
-        );
-        material_adaptor->start();
-
-        material_adaptor->get_material_fw()->set_has_vertex_color(true);
-        material_adaptor->update();
+        m_material = std::make_unique<sight::viz::scene3d::material::standard>(gen_id("material"));
+        m_material->set_layout(data::mesh::attribute::point_normals | data::mesh::attribute::point_colors);
+        m_material->set_shading(sight::data::material::shading_t::phong, this->layer()->num_lights());
 
         // Size, these value allow to display light with good enough ratio.
         const float origin_radius   = m_length * 0.1F;
@@ -141,10 +124,10 @@ void light::starting()
         const unsigned sample       = 64;
 
         // Creates the commun sphere position
-        m_light_position = scene_mgr->createManualObject(this->get_id() + "_origin");
+        m_light_position = scene_mgr->createManualObject(gen_id("origin"));
         sight::viz::scene3d::helper::manual_object::create_sphere(
             m_light_position,
-            material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::ColourValue(0.98F, 0.96F, 0.62F, 1.0F),
             origin_radius,
             sample
@@ -153,30 +136,30 @@ void light::starting()
         m_light_node->attachObject(m_light_position);
 
         // Create the directional light feedback
-        m_directional_feedback.first  = scene_mgr->createManualObject(this->get_id() + "_line");
-        m_directional_feedback.second = scene_mgr->createManualObject(this->get_id() + "_cone");
+        m_directional_feedback.first  = scene_mgr->createManualObject(gen_id("line"));
+        m_directional_feedback.second = scene_mgr->createManualObject(gen_id("cone"));
 
         sight::viz::scene3d::helper::manual_object::create_cylinder(
             m_directional_feedback.first,
-            material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::ColourValue(0.F, 0.F, 1.F, 1.0F),
             cylinder_radius,
             cylinder_length,
             sample
         );
-        Ogre::SceneNode* line_node = m_light_node->createChildSceneNode(this->get_id() + "_lineNode");
+        Ogre::SceneNode* line_node = m_light_node->createChildSceneNode(gen_id("lineNode"));
         line_node->attachObject(m_directional_feedback.first);
         line_node->yaw(Ogre::Degree(-90));
 
         sight::viz::scene3d::helper::manual_object::create_cone(
             m_directional_feedback.second,
-            material_adaptor->get_material_name(),
+            m_material->name(),
             Ogre::ColourValue(0.F, 0.F, 1.F, 1.0F),
             cone_radius,
             cone_length,
             sample
         );
-        Ogre::SceneNode* cone_node = m_light_node->createChildSceneNode(this->get_id() + "_coneNode");
+        Ogre::SceneNode* cone_node = m_light_node->createChildSceneNode(gen_id("coneNode"));
 
         cone_node->attachObject(m_directional_feedback.second);
         cone_node->translate(0.F, 0.F, cylinder_length);
@@ -193,9 +176,9 @@ void light::starting()
 
 service::connections_t light::auto_connections() const
 {
-    service::connections_t connections;
-    connections.push(DIFFUSE_COLOR_INOUT, data::color::MODIFIED_SIG, service::slots::UPDATE);
-    connections.push(SPECULAR_COLOR_INOUT, data::color::MODIFIED_SIG, service::slots::UPDATE);
+    service::connections_t connections = adaptor::auto_connections();
+    connections.push(DIFFUSE_COLOR_INOUT, data::color::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(SPECULAR_COLOR_INOUT, data::color::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
 
     return connections;
 }
@@ -223,6 +206,7 @@ void light::updating()
     m_light->setSpecularColour(specular_color);
     m_light->setType(m_light_type);
 
+    this->update_done();
     this->request_render();
 }
 
@@ -237,8 +221,7 @@ void light::stopping()
     Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
     if(m_light_name != sight::viz::scene3d::layer::DEFAULT_LIGHT_NAME)
     {
-        m_light_node->removeAndDestroyChild(this->get_id() + "_lineNode");
-        m_light_node->removeAndDestroyChild(this->get_id() + "_coneNode");
+        m_light_node->removeAndDestroyAllChildren();
 
         scene_mgr->destroyManualObject(m_light_position);
         scene_mgr->destroyManualObject(m_directional_feedback.first);
@@ -255,6 +238,8 @@ void light::stopping()
 
     m_light      = nullptr;
     m_light_node = nullptr;
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

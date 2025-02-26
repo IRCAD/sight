@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,8 +48,14 @@ void integer_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void integer_test::methode1()
+void integer_test::basic()
 {
+    {
+        sight::data::integer i;
+        CPPUNIT_ASSERT(i.is_type_of("sight::data::integer"));
+        CPPUNIT_ASSERT(i.is_type_of("sight::data::string_serializable"));
+    }
+
     const std::array values {
         std::numeric_limits<std::int64_t>::min(),
         std::int64_t(-1654), std::int64_t(0), std::int64_t(123456),
@@ -68,6 +74,62 @@ void integer_test::methode1()
 
         CPPUNIT_ASSERT(*i0 == *i1);
     }
+
+    for(std::int64_t value : values)
+    {
+        data::integer i0;
+        i0.set_value(value);
+        data::integer i1 = value;
+
+        CPPUNIT_ASSERT_EQUAL(value, i0.value());
+        CPPUNIT_ASSERT_EQUAL(value, i1.value());
+        CPPUNIT_ASSERT(i0 == i1);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void integer_test::string_conversion()
+{
+    sight::data::integer i1 = 42;
+    CPPUNIT_ASSERT_EQUAL(std::string("42"), i1.to_string());
+
+    i1 = -26972;
+    CPPUNIT_ASSERT_EQUAL(std::string("-26972"), i1.to_string());
+
+    i1.from_string("45693");
+    CPPUNIT_ASSERT(45693 == i1.value());
+
+    CPPUNIT_ASSERT_THROW(i1.from_string("-7894;-1557.2;48"), boost::bad_lexical_cast);
+    CPPUNIT_ASSERT_THROW(i1.from_string("-7894.489"), boost::bad_lexical_cast);
+    CPPUNIT_ASSERT_THROW(i1.from_string("74vcx7aaa"), boost::bad_lexical_cast);
+}
+
+//------------------------------------------------------------------------------
+
+void integer_test::reset()
+{
+    sight::data::integer i1 = 42;
+    i1.set_default_value();
+
+    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.value());
+    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.default_value());
+
+    i1 = 788;
+    CPPUNIT_ASSERT_EQUAL(std::int64_t(788), i1.value());
+    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.default_value());
+
+    i1.reset();
+    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.value());
+    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.default_value());
+
+    i1 = -4788;
+    CPPUNIT_ASSERT_EQUAL(std::int64_t(-4788), i1.value());
+    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.default_value());
+
+    i1.set_value(i1.default_value());
+    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.value());
+    CPPUNIT_ASSERT_EQUAL(std::int64_t(42), i1.default_value());
 }
 
 } // namespace sight::data::ut

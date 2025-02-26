@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <sight/viz/scene3d/config.hpp>
 
-#include "viz/scene3d/adaptor.hpp"
+#include "viz/scene3d/material/r2vb.hpp"
 
 #include <data/mesh.hpp>
 
@@ -97,7 +97,7 @@ public:
     /// Set the material used to process the geometry pass.
     SIGHT_VIZ_SCENE3D_API void set_render_to_buffer_material(const std::string& _mtl_name);
 
-    viz::scene3d::adaptor::wptr m_material_adaptor;
+    viz::scene3d::material::r2vb::uptr material;
 
     data::mesh::cell_type_t get_input_primitive_type() const;
 

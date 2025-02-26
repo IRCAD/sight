@@ -64,11 +64,11 @@ void merge_mask(const data::image::sptr& _img_dest, const data::image::csptr& _m
     SIGHT_ASSERT("images have not the same size", _img_dest->size() == _mask->size());
     SIGHT_ASSERT(
         "images have not the same spacing",
-        core::tools::is_equal(_img_dest->spacing(), _mask->spacing())
+        core::is_equal(_img_dest->spacing(), _mask->spacing())
     );
     SIGHT_ASSERT(
         "images have not the same origin",
-        core::tools::is_equal(_img_dest->origin(), _mask->origin())
+        core::is_equal(_img_dest->origin(), _mask->origin())
     );
 
     const auto img_dump_lock  = _img_dest->dump_lock();

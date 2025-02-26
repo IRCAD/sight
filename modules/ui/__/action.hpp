@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include <data/boolean.hpp>
+
 #include <ui/__/action.hpp>
 #include <ui/__/parameter.hpp>
 
@@ -38,7 +40,7 @@ namespace sight::module::ui
  * Example of configuration
  * @code{.xml}
     <service uid="..." type="sight::module::ui::action" >
-        <state checked="false" enabled="false" inverse="true" visible="true" />
+        <properties checked="false" enabled="false" inverse="true" visible="true" />
         <sync>true</sync>
         <confirmation message="..." />
         <!-- will send parameterChanged("left", "position") when checked and parameterChanged("center", "position") when
@@ -46,6 +48,9 @@ namespace sight::module::ui
         <parameter key="position" checked="left" unchecked="center" />
     </service>
    @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b state [sight::data::boolean] (optional): data object storing the state of the action.
  *
  * All configurations options are optional. Common action options can be found in @see action.
  * - \b sync: set to true to emit the 'clicked' signals synchronously instead of the default, asynchronously.
@@ -70,7 +75,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(action, sight::ui::action);
 
-    action() noexcept        = default;
+    action() noexcept = default;
     ~action() noexcept final = default;
 
 protected:
@@ -87,7 +92,10 @@ protected:
 private:
 
     /// Signals
-    const action::void_signal_t::sptr m_clicked_sig {new_signal<action::void_signal_t>(signals::CLICKED)};
+    const sight::ui::action::signals::void_t::sptr m_clicked_sig {new_signal<sight::ui::action::signals::void_t>(
+                                                                      signals::CLICKED
+    )
+    };
     const signals::changed_t::sptr m_parameter_changed_sig {
         new_signal<signals::changed_t>(signals::PARAMETER_CHANGED)
     };

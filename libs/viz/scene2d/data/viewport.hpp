@@ -80,7 +80,8 @@ public:
     /// @param _cache cache used to deduplicate pointers
     SIGHT_VIZ_SCENE2D_API void deep_copy(
         const sight::data::object::csptr& _source,
-        const std::unique_ptr<sight::data::object::deep_copy_cache_t>& _cache = std::make_unique<sight::data::object::deep_copy_cache_t>()
+        const std::unique_ptr<sight::data::object::deep_copy_cache_t>& _cache = std::make_unique<sight::data::object::
+                                                                                                 deep_copy_cache_t>()
     )
     override;
 

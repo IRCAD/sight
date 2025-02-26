@@ -5,7 +5,7 @@ material FinalBlend
     {
         pass
         {
-            scene_blend alpha_blend
+            scene_blend add
             depth_check off
             depth_write off
             depth_func always_pass

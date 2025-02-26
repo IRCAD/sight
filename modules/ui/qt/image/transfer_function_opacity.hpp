@@ -106,7 +106,7 @@ private:
 
     static constexpr std::string_view TF = "tf";
 
-    data::ptr<data::transfer_function, data::access::inout> m_tf {this, TF, true};
+    data::ptr<data::transfer_function, data::access::inout> m_tf {this, TF};
 };
 
 } // namespace sight::module::ui::qt::image

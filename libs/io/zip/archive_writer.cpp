@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,11 +33,15 @@
 #include <core/exceptionmacros.hpp>
 
 #ifdef _MSC_VER
-// warning for unreachable code in Release/RelWithDebInfo in boost::iostreams whereas it should be ignored,
-// see https://developercommunity.visualstudio.com/t/error:-C4702-with-external:w0/1696694
-#pragma warning(disable : 4702)
-#endif // _MSC_VER
+#pragma warning(push)
+#pragma warning(disable:4702)
+#endif
+
 #include <boost/iostreams/stream.hpp>
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
 #include <cstdlib>
 #include <cstring>
@@ -201,7 +205,7 @@ public:
     zip_handle& operator=(const zip_handle&) = delete;
     zip_handle& operator=(zip_handle&&)      = delete;
 
-    inline zip_handle(const std::filesystem::path& _archive_path, const archive::archive_format _format) :
+    zip_handle(const std::filesystem::path& _archive_path, const archive::archive_format _format) :
         m_archive_path(_archive_path.string()),
         m_format(_format),
         m_zip_writer(mz_zip_writer_create())
@@ -248,7 +252,7 @@ public:
         );
     }
 
-    inline ~zip_handle()
+    ~zip_handle()
     {
         // Close zip handle
         const auto result = mz_zip_writer_close(m_zip_writer);
@@ -289,7 +293,7 @@ public:
     zip_file_handle& operator=(const zip_file_handle&) = delete;
     zip_file_handle& operator=(zip_file_handle&&)      = delete;
 
-    inline zip_file_handle(
+    zip_file_handle(
         std::shared_ptr<zip_handle> _zip_handle,
         const std::filesystem::path& _file_path,
         core::crypto::secure_string _password = "",
@@ -356,7 +360,7 @@ public:
         );
     }
 
-    inline ~zip_file_handle()
+    ~zip_file_handle()
     {
         const auto result = mz_zip_writer_entry_close(m_zip_handle->m_zip_writer);
 
@@ -382,7 +386,7 @@ public:
 
 private:
 
-    friend class ZipSink;
+    friend class zip_sink;
 
     // Path to the file converted to string because on Windows std::filesystem::path.c_str() returns a wchar*
     const std::string m_file_name;
@@ -394,7 +398,7 @@ private:
     const std::shared_ptr<zip_handle> m_zip_handle;
 };
 
-class ZipSink final
+class zip_sink final
 {
 public:
 
@@ -402,8 +406,8 @@ public:
     using char_type = char;
     using category  = boost::iostreams::sink_tag;
 
-    // BEWARE: Boost make shallow copies of the ZipSink...
-    explicit ZipSink(std::shared_ptr<zip_file_handle> _zip_file_handle) :
+    // BEWARE: Boost make shallow copies of the zip_sink...
+    explicit zip_sink(std::shared_ptr<zip_file_handle> _zip_file_handle) :
         m_zip_file_handle(std::move(_zip_file_handle))
     {
     }
@@ -451,7 +455,7 @@ public:
     zip_archive_writer& operator=(const zip_archive_writer&) = delete;
     zip_archive_writer& operator=(zip_archive_writer&&)      = delete;
 
-    inline zip_archive_writer(const std::filesystem::path& _archive_path, const archive_format _format) :
+    zip_archive_writer(const std::filesystem::path& _archive_path, const archive_format _format) :
         archive_writer(_archive_path),
         m_zip_handle(std::make_shared<zip_handle>(_archive_path, _format))
     {
@@ -461,7 +465,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline std::unique_ptr<std::ostream> open_file(
+    std::unique_ptr<std::ostream> open_file(
         const std::filesystem::path& _file_path,
         const core::crypto::secure_string& _password = "",
         const method _method                         = method::DEFAULT,
@@ -476,12 +480,12 @@ public:
             _level
         );
 
-        return std::make_unique<boost::iostreams::stream<ZipSink> >(zip_file_handle);
+        return std::make_unique<boost::iostreams::stream<zip_sink> >(zip_file_handle);
     }
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline bool is_raw() const override
+    [[nodiscard]] bool is_raw() const override
     {
         return false;
     }

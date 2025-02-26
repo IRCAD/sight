@@ -10,19 +10,22 @@
     <requirement id="sight::module::service" />
 
     <extension implements="sight::app::extension::config">
-        <id>Tuto08MesherWithGenericScene_AppCfg</id>
+        <id>tuto08_mesher_with_generic_scene_app_cfg</id>
         <config>
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="modelSeries" type="sight::data::model_series" src="deferred" />
+            <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
             <object uid="imageSeries" type="sight::data::image_series" />
             <object uid="tf" type="sight::data::transfer_function" />
-            <object uid="reconstruction" type="sight::data::reconstruction" src="deferred" />
+            <object uid="reconstruction" type="sight::data::reconstruction" deferred="true" />
             <object uid="snapshot" type="sight::data::image" />
+
+            <object uid="threshold_value" type="sight::data::integer" value="255" />
+            <object uid="reduction_value" type="sight::data::real" value="50" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::frame">
+            <service uid="main_frame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
                         <name>tuto08_mesher_with_generic_scene</name>
@@ -31,14 +34,14 @@
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <view sid="mainView" start="true" />
+                    <menubar sid="menu_bar_view" start="true" />
+                    <view sid="main_view" start="true" />
                 </registry>
             </service>
 
-            <service uid="progressBarView" type="sight::module::ui::job_bar" />
+            <service uid="progress_bar_view" type="sight::module::ui::job_bar" />
 
-            <service uid="menuBarView" type="sight::module::ui::menubar">
+            <service uid="menu_bar_view" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -46,12 +49,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="true" />
-                    <menu sid="menuMesherView" start="true" />
+                    <menu sid="menu_file_view" start="true" />
+                    <menu sid="menu_mesher_view" start="true" />
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::menu">
+            <service uid="menu_file_view" type="sight::module::ui::menu">
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+O" />
@@ -61,26 +64,24 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="true" />
-                    <menuItem sid="saveModelSeriesAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="open_image_act" start="true" />
+                    <menuItem sid="save_model_series_act" start="true" />
+                    <menuItem sid="quit_act" start="true" />
                 </registry>
             </service>
 
-            <service uid="menuMesherView" type="sight::module::ui::menu">
+            <service uid="menu_mesher_view" type="sight::module::ui::menu">
                 <gui>
                     <layout>
-                        <menuItem name="Create Mesh 50" />
-                        <menuItem name="Create Mesh 80" />
+                        <menuItem name="Create Mesh" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="createMesh50Act" start="true" />
-                    <menuItem sid="createMesh80Act" start="true" />
+                    <menuItem sid="create_mesh_act" start="true" />
                 </registry>
             </service>
 
-            <service uid="mainView" type="sight::module::ui::view">
+            <service uid="main_view" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
@@ -89,12 +90,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="containerView" start="true" />
-                    <view sid="sceneEditorsView" start="true" />
+                    <view sid="container_view" start="true" />
+                    <view sid="scene_editors_view" start="true" />
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::view">
+            <service uid="container_view" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
@@ -103,29 +104,43 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneSrv" start="true" />
-                    <view sid="organsView" start="true" />
+                    <view sid="generic_scene_srv" start="true" />
+                    <view sid="right_view" start="true" />
                 </registry>
             </service>
 
-            <service uid="organsView" type="sight::module::ui::view">
+            <service uid="right_view" type="sight::module::ui::view">
                 <gui>
-                    <layout type="sight::ui::layout::toolbox">
-                        <view caption="Organs" expanded="true" />
-                        <view caption="Material" expanded="true" />
-                        <view caption="Representation" />
-                        <view caption="Threshold" proportion="0" />
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <spacer />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="listOrganEditorSrv" start="false" />
-                    <view sid="organMaterialEditorSrv" start="false" />
-                    <view sid="representationEditorSrv" start="false" />
-                    <view sid="thresholdSliderSrv" start="false" />
+                    <view sid="organs_view" start="true" />
                 </registry>
             </service>
 
-            <service uid="sceneEditorsView" type="sight::module::ui::view">
+            <service uid="organs_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::toolbox">
+                        <icon_color value="#FFFFFF" />
+                        <view caption="Organs" expanded="true" />
+                        <view caption="Material" expanded="true" />
+                        <view caption="Representation" />
+                        <view caption="Threshold" expanded="true" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="list_organ_editor_srv" start="false" />
+                    <view sid="organ_material_editor_srv" start="false" />
+                    <view sid="representation_editor_srv" start="false" />
+                    <view sid="threshold_slider_srv" start="false" />
+                </registry>
+            </service>
+
+            <service uid="scene_editors_view" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
@@ -135,71 +150,75 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="showNegatoSrv" start="true" />
-                    <view sid="sliderIndexEditorSrv" start="false" />
-                    <view sid="snapshotSrv" start="true" />
+                    <view sid="show_negato_srv" start="true" />
+                    <view sid="slider_index_editor_srv" start="false" />
+                    <view sid="snapshot_srv" start="true" />
                 </registry>
             </service>
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
+            <service uid="generic_scene_srv" type="sight::viz::scene3d::render">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default" order="1">
-                        <adaptor uid="trackballInteractorAdp" />
-                        <adaptor uid="modelSeriesAdp" />
-                        <adaptor uid="negatoAdp" />
-                        <adaptor uid="snapshotAdp" />
+                        <adaptor uid="trackball_interactor_adp" />
+                        <adaptor uid="model_series_adp" />
+                        <adaptor uid="negato_adp" />
+                        <adaptor uid="snapshot_adp" />
                     </layer>
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
+            <service uid="trackball_interactor_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
                 <config priority="0" />
             </service>
 
-            <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
-                <in key="model" uid="modelSeries" />
+            <service uid="model_series_adp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
+                <in key="model" uid="${modelSeries}" />
             </service>
 
-            <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
+            <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
                 <in key="image" uid="imageSeries" />
                 <inout key="tf" uid="tf" />
                 <config sliceIndex="axial" interactive="true" />
             </service>
 
-            <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::fragments_info">
+            <service uid="snapshot_adp" type="sight::module::viz::scene3d::adaptor::fragments_info">
                 <inout key="image" uid="snapshot" />
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="sight::module::ui::action" />
-            <service uid="saveModelSeriesAct" type="sight::module::ui::action" />
+            <service uid="open_image_act" type="sight::module::ui::action" />
+            <service uid="save_model_series_act" type="sight::module::ui::action" />
 
-            <service uid="quitAct" type="sight::module::ui::quit" />
+            <service uid="quit_act" type="sight::module::ui::quit" />
 
-            <service uid="createMesh50Act" type="sight::module::ui::action" />
-            <service uid="createMesh80Act" type="sight::module::ui::action" />
+            <service uid="create_mesh_act" type="sight::module::ui::action" />
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="snapshotSrv" type="sight::module::ui::qt::com::signal_button">
+            <service uid="snapshot_srv" type="sight::module::ui::qt::com::signal_button">
                 <config>
                     <checkable>false</checkable>
                     <icon>sight::module::ui::icons/frame.svg</icon>
                 </config>
             </service>
 
-            <service uid="thresholdSliderSrv" type="sight::module::ui::qt::parameters">
-                <parameters>
-                    <param type="int" name="threshold" key="threshold" widget="slider" defaultValue="255" min="0" max="255" depends="enable" />
-                </parameters>
+            <service uid="threshold_slider_srv" type="sight::module::ui::qt::settings">
+                <inout group="keys">
+                    <key uid="${threshold_value}" />
+                    <key uid="${reduction_value}" />
+                </inout>
+                <ui>
+                    <item name="Threshold" widget="slider" min="0" max="255" emit_on_release="true" />
+                    <item name="Reduction" widget="slider" min="0." max="99." emit_on_release="true" />
+                </ui>
             </service>
 
-            <service uid="showNegatoSrv" type="sight::module::ui::qt::com::signal_button">
+            <service uid="show_negato_srv" type="sight::module::ui::qt::com::signal_button">
                 <config>
                     <checkable>true</checkable>
                     <icon>sight::module::ui::icons/cross.svg</icon>
@@ -210,54 +229,48 @@
                 </config>
             </service>
 
-            <service uid="listOrganEditorSrv" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
+            <service uid="list_organ_editor_srv" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
                 <inout key="modelSeries" uid="modelSeries" />
                 <columns>
                     <organ_name>@organ_name</organ_name>
                 </columns>
             </service>
 
-            <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
+            <service uid="slider_index_editor_srv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
                 <inout key="image" uid="imageSeries" />
                 <config orientation="axial" label="index" display_axis_selector="false" display_step_buttons="false" />
             </service>
 
-            <service uid="mesher50Srv" type="sight::module::filter::mesh::vtk_mesher">
+            <service uid="mesher_srv" type="sight::module::filter::mesh::vtk_mesher">
                 <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="modelSeries" />
-                <config percentReduction="50" threshold="255" />
+                <properties percent_reduction="${reduction_value}" threshold="${threshold_value}" />
             </service>
 
-            <service uid="mesher80Srv" type="sight::module::filter::mesh::vtk_mesher">
-                <in key="imageSeries" uid="imageSeries" />
-                <out key="modelSeries" uid="modelSeries" />
-                <config percentReduction="80" threshold="255" />
-            </service>
-
-            <service uid="modelSeriesWriterSrv" type="sight::module::ui::io::selector">
+            <service uid="model_series_writer_srv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="modelSeries" />
                 <type mode="writer" />
             </service>
 
-            <service uid="imageReaderSrv" type="sight::module::ui::io::selector">
+            <service uid="image_reader_srv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="imageSeries" />
                 <type mode="reader" />
             </service>
 
-            <service uid="updaterReconstSrv" type="sight::module::data::select_object">
+            <service uid="updater_reconst_srv" type="sight::module::data::select_object">
                 <out key="object" uid="reconstruction" />
             </service>
 
-            <service uid="organMaterialEditorSrv" type="sight::module::ui::qt::reconstruction::organ_material_editor" auto_connect="true">
+            <service uid="organ_material_editor_srv" type="sight::module::ui::qt::reconstruction::organ_material_editor" auto_connect="true">
                 <inout key="reconstruction" uid="reconstruction" />
             </service>
 
-            <service uid="representationEditorSrv" type="sight::module::ui::qt::reconstruction::representation_editor" auto_connect="true">
+            <service uid="representation_editor_srv" type="sight::module::ui::qt::reconstruction::representation_editor" auto_connect="true">
                 <inout key="reconstruction" uid="reconstruction" />
             </service>
 
             <!-- Write the snapshot image -->
-            <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
+            <service uid="image_writer_srv" type="sight::module::io::bitmap::writer">
                 <in key="data" uid="snapshot" />
                 <dialog policy="always" />
                 <backends enable="all" mode="best" />
@@ -266,80 +279,68 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>modelSeriesWriterSrv/job_created</signal>
-                <slot>progressBarView/show_job</slot>
+                <signal>model_series_writer_srv/job_created</signal>
+                <slot>progress_bar_view/show_job</slot>
             </connect>
 
             <connect>
-                <signal>listOrganEditorSrv/reconstruction_selected</signal>
-                <slot>updaterReconstSrv/add</slot>
+                <signal>list_organ_editor_srv/reconstruction_selected</signal>
+                <slot>updater_reconst_srv/add</slot>
             </connect>
 
             <connect>
-                <signal>thresholdSliderSrv/int_changed</signal>
-                <slot>mesher50Srv/update_threshold</slot>
-                <slot>mesher80Srv/update_threshold</slot>
-            </connect>
-
-            <connect>
-                <signal>snapshotSrv/clicked</signal>
-                <slot>imageWriterSrv/update</slot>
+                <signal>snapshot_srv/clicked</signal>
+                <slot>image_writer_srv/update</slot>
             </connect>
 
             <!--
                 Connection for 3D image slice:
-                Connect the button (showNegatoSrv) signal "toggled" to the image adaptor (negatoAdp)
+                Connect the button (show_negato_srv) signal "toggled" to the image adaptor (negato_adp)
                 slot "showSlice", this signals/slots contains a boolean.
                 The image slices will be show or hide when the button is checked/unchecked.
 
                 The "waitForKey" attribut means that the signal and slot are connected only if the key
-                "image" is present in the scene composite. It is recommanded to used because the adaptors
+                "image" is present in the scene map. It is recommanded to used because the adaptors
                 exists only if the object is present.
             -->
             <connect>
-                <signal>showNegatoSrv/toggled</signal>
-                <slot>negatoAdp/update_visibility</slot>
+                <signal>show_negato_srv/toggled</signal>
+                <slot>negato_adp/update_visibility</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->
 
             <connect>
-                <signal>openImageAct/clicked</signal>
-                <slot>imageReaderSrv/update</slot>
+                <signal>open_image_act/clicked</signal>
+                <slot>image_reader_srv/update</slot>
             </connect>
 
             <connect>
-                <signal>saveModelSeriesAct/clicked</signal>
-                <slot>modelSeriesWriterSrv/update</slot>
+                <signal>save_model_series_act/clicked</signal>
+                <slot>model_series_writer_srv/update</slot>
             </connect>
 
             <connect>
-                <signal>createMesh50Act/clicked</signal>
-                <slot>mesher50Srv/update</slot>
+                <signal>create_mesh_act/clicked</signal>
+                <slot>mesher_srv/update</slot>
             </connect>
 
-            <connect>
-                <signal>createMesh80Act/clicked</signal>
-                <slot>mesher80Srv/update</slot>
-            </connect>
-
-            <start uid="mainFrame" />
-            <start uid="progressBarView" />
-            <start uid="imageWriterSrv" />
-            <start uid="updaterReconstSrv" />
-            <start uid="representationEditorSrv" />
-            <start uid="organMaterialEditorSrv" />
-            <start uid="sliderIndexEditorSrv" />
-            <start uid="thresholdSliderSrv" />
-            <start uid="listOrganEditorSrv" />
-            <start uid="mesher50Srv" />
-            <start uid="mesher80Srv" />
-            <start uid="trackballInteractorAdp" />
-            <start uid="modelSeriesAdp" />
-            <start uid="negatoAdp" />
-            <start uid="snapshotAdp" />
-            <start uid="imageReaderSrv" />
-            <start uid="modelSeriesWriterSrv" />
+            <start uid="main_frame" />
+            <start uid="progress_bar_view" />
+            <start uid="image_writer_srv" />
+            <start uid="updater_reconst_srv" />
+            <start uid="representation_editor_srv" />
+            <start uid="organ_material_editor_srv" />
+            <start uid="slider_index_editor_srv" />
+            <start uid="threshold_slider_srv" />
+            <start uid="list_organ_editor_srv" />
+            <start uid="mesher_srv" />
+            <start uid="trackball_interactor_adp" />
+            <start uid="model_series_adp" />
+            <start uid="negato_adp" />
+            <start uid="snapshot_adp" />
+            <start uid="image_reader_srv" />
+            <start uid="model_series_writer_srv" />
         </config>
     </extension>
 </plugin>

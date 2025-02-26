@@ -116,7 +116,7 @@ void verify_tag_values(const std::string& _filename, const data::series_set::spt
 
         // Series
         CPPUNIT_ASSERT_EQUAL(get_value(root, "SeriesInstanceUID", mf), series->get_series_instance_uid());
-        CPPUNIT_ASSERT_EQUAL(get_value(root, "Modality", mf), series->get_modality());
+        CPPUNIT_ASSERT_EQUAL(get_value(root, "Modality", mf), series->get_modality_string());
         CPPUNIT_ASSERT_EQUAL(get_value(root, "SeriesDate", mf), series->get_series_date());
         CPPUNIT_ASSERT_EQUAL(get_value(root, "SeriesTime", mf), series->get_series_time());
         CPPUNIT_ASSERT_EQUAL(get_value(root, "SeriesDescription", mf), series->get_series_description());

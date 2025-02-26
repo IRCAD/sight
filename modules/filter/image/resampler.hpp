@@ -97,7 +97,7 @@ private:
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image_in {this, IMAGE_IN};
     sight::data::ptr<sight::data::image, sight::data::access::inout> m_image_out {this, IMAGE_INOUT};
-    sight::data::ptr<sight::data::image, sight::data::access::in> m_target_in {this, TARGET_IN, false, true};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_target_in {this, TARGET_IN, true};
     sight::data::ptr<sight::data::matrix4, sight::data::access::in> m_transform_in {this, TRANSFORM_IN};
 };
 

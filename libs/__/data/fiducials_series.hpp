@@ -90,8 +90,7 @@ public:
     /// Enum which represents the value contained in shape_t (0070,0306).
     enum class shape
     {
-        /// Not defined by DICOM; used if the file doesn't contain a valid enumeration value
-        invalid,
+        invalid /*Not defined by DICOM*/,
         point,
         line,
         plane,
@@ -111,10 +110,17 @@ public:
     /// Struct which represents an element in the ReferencedImageSequence (0008,1140) data element.
     struct referenced_image
     {
-        std::string referenced_sop_class_uid;                 /// ReferencedSOPClassUID (0008,1150)
-        std::string referenced_sop_instance_uid;              /// ReferencedSOPInstanceUID (0008,1155)
-        std::vector<std::int32_t> referenced_frame_number;    /// ReferencedFrameNumber (0008,1160)
-        std::vector<std::uint16_t> referenced_segment_number; /// ReferencedSegmentNumber (0062,000B)
+        /// ReferencedSOPClassUID (0008,1150)
+        std::string referenced_sop_class_uid {};
+
+        /// ReferencedSOPInstanceUID (0008,1155)
+        std::string referenced_sop_instance_uid {};
+
+        /// ReferencedFrameNumber (0008,1160)
+        std::vector<std::int32_t> referenced_frame_number {};
+
+        /// ReferencedSegmentNumber (0062,000B)
+        std::vector<std::uint16_t> referenced_segment_number {};
 
         SIGHT_DATA_API bool operator==(const referenced_image& _other) const;
         SIGHT_DATA_API bool operator!=(const referenced_image& _other) const;
@@ -123,8 +129,11 @@ public:
     /// Struct which represents an element in the GraphicCoordinatesDataSequence (0070,0318) data element.
     struct graphic_coordinates_data
     {
-        referenced_image referenced_image_sequence; /// ReferencedImageSequence (0008,1140)
-        std::vector<point2> graphic_data;           /// GraphicData (0070,0022)
+        /// ReferencedImageSequence (0008,1140)
+        referenced_image referenced_image_sequence {};
+
+        /// GraphicData (0070,0022)
+        std::vector<point2> graphic_data {};
 
         SIGHT_DATA_API bool operator==(const graphic_coordinates_data& _other) const;
         SIGHT_DATA_API bool operator!=(const graphic_coordinates_data& _other) const;
@@ -133,18 +142,23 @@ public:
     /// Struct which represents an element in the FiducialSequence (0070,031E) data element.
     struct fiducial
     {
-        shape shape_type;                                                                        /// shape_t (0070,0306)
-        std::string fiducial_description;                                                        /// FiducialDescription
-                                                                                                 /// (0070,030F)
-        std::string fiducial_identifier;                                                         /// FiducialIdentifier
-                                                                                                 /// (0070,0310)
-        std::optional<std::vector<graphic_coordinates_data> > graphic_coordinates_data_sequence; // GraphicCoordinatesDataSequence
-        // (0070,0318)
-        std::optional<std::string> fiducial_uid; /// FiducialUID (0070,031A)
-        std::vector<point3> contour_data;        /// ContourData (3006,0050)
-                                                 /// (NumberOfContourPoints
-                                                 /// (3006,0046) included
-                                                 /// inside)
+        /// ShapeType (0070,0306)
+        shape shape_type {shape::invalid};
+
+        /// FiducialDescription (0070,030F)
+        std::string fiducial_description {};
+
+        /// FiducialIdentifier (0070,0310)
+        std::string fiducial_identifier {};
+
+        /// GraphicCoordinatesDataSequence (0070,0318)
+        std::optional<std::vector<graphic_coordinates_data> > graphic_coordinates_data_sequence {std::nullopt};
+
+        /// FiducialUID (0070,031A)
+        std::optional<std::string> fiducial_uid {std::nullopt};
+
+        /// ContourData (3006,0050) and NumberOfContourPoints (3006,0046)
+        std::vector<point3> contour_data {};
 
         SIGHT_DATA_API bool operator==(const fiducial& _other) const;
         SIGHT_DATA_API bool operator!=(const fiducial& _other) const;
@@ -153,14 +167,21 @@ public:
     /// Struct which represents an element in the FiducialSetSequence (0070,031C) data element.
     struct fiducial_set
     {
-        std::optional<std::vector<referenced_image> > referenced_image_sequence; /// ReferencedImageSequence (0008,1140)
-        std::optional<std::string> frame_of_reference_uid;                       /// FrameOfReference (0020,0052)
-        std::vector<fiducial> fiducial_sequence;                                 /// FiducialSequence (0070,031E)
-        std::optional<std::string> group_name;                                   /// Private tag
-        std::optional<std::array<float, 4> > color;                              /// Private tag
-        std::optional<float> size;                                               /// Private tag
-        std::optional<private_shape> shape;                                      /// Private tag
-        std::optional<bool> visibility;                                          /// Private tag
+        /// ReferencedImageSequence (0008,1140)
+        std::optional<std::vector<referenced_image> > referenced_image_sequence {std::nullopt};
+
+        /// FrameOfReference (0020,0052)
+        std::optional<std::string> frame_of_reference_uid {std::nullopt};
+
+        /// FiducialSequence (0070,031E)
+        std::vector<fiducial> fiducial_sequence {};
+
+        /// Private tags
+        std::optional<std::string> group_name {std::nullopt};
+        std::optional<std::array<float, 4> > color {std::nullopt};
+        std::optional<float> size {std::nullopt};
+        std::optional<private_shape> shape {std::nullopt};
+        std::optional<bool> visibility {std::nullopt};
 
         SIGHT_DATA_API bool operator==(const fiducial_set& _other) const;
         SIGHT_DATA_API bool operator!=(const fiducial_set& _other) const;
@@ -748,6 +769,92 @@ public:
         const std::string& _group_name
     ) const;
 
+    struct SIGHT_DATA_CLASS_API fiducial_query final
+    {
+        std::size_t m_fiducial_set_index {0};
+        std::size_t m_fiducial_index {0};
+        std::size_t m_shape_index {0};
+
+        std::optional<std::string> m_frame_of_reference_uid {};
+        std::optional<std::string> m_group_name {};
+        std::optional<bool> m_visible {};
+        std::optional<float> m_size {};
+        std::optional<private_shape> m_private_shape {};
+        std::optional<std::array<float, 4> > m_color {};
+
+        std::optional<shape> m_shape {};
+        std::optional<std::vector<double> > m_contour_data {};
+        std::optional<std::string> m_fiducial_description {};
+        std::optional<std::string> m_fiducial_identifier {};
+        std::optional<std::string> m_fiducial_uid {};
+    };
+
+    /**
+     * @brief Query fiducials based on the given parameters.
+     *
+     * @param _predicate function to filter fiducials (return true to keep the fiducial)
+     * @param _shape filter by shape (point, ruler, ...)
+     * @param _group_name filter by group name
+     * @param _fiducial_index filter by index of the same shape type in the fiducial set
+     * @return std::vector<fiducial_query> the query result
+     */
+    [[nodiscard]] SIGHT_DATA_API std::vector<fiducial_query> query_fiducials(
+        const std::optional<std::function<bool(const fiducial_query&)> >& _predicate = std::nullopt,
+        const std::optional<shape>& _shape                                           = std::nullopt,
+        const std::optional<std::string_view>& _group_name                           = std::nullopt,
+        const std::optional<std::size_t>& _fiducial_index                            = std::nullopt
+    ) const;
+
+    /**
+     * @brief Remove fiducials based on the given parameters. Empty fiducial set are also removed.
+     *
+     * @param _predicate function to filter fiducials (return true to remove the fiducial)
+     * @param _shape filter by shape (point, ruler, ...)
+     * @param _group_name filter by group name
+     * @param _fiducial_index filter by index of the same shape type in the fiducial set
+     * @return std::pair<std::vector<fiducial_query>, std::set<std::string> > the removed fiducials and a set of removed
+     *         group names
+     */
+    SIGHT_DATA_API std::pair<std::vector<fiducial_query>, std::set<std::string> > remove_fiducials(
+        const std::optional<std::function<bool(const fiducial_query&)> >& _predicate = std::nullopt,
+        const std::optional<shape>& _shape                                           = std::nullopt,
+        const std::optional<std::string_view>& _group_name                           = std::nullopt,
+        const std::optional<std::size_t>& _fiducial_index                            = std::nullopt
+    );
+
+    /**
+     * @brief Modify fiducials based on the given parameters.
+     *
+     * @param _predicate function to filter fiducials and/or change fiducial values (return true to modify the
+     *                   fiducial). Without predicate, the behavior is equivalent to query_fiducials().
+     * @param _shape filter by shape (point, ruler, ...)
+     * @param _group_name filter by group name
+     * @param _fiducial_index filter by index of the same shape type in the fiducial set
+     * @return std::vector<fiducial_query> the modified fiducials
+     */
+    SIGHT_DATA_API std::vector<fiducial_query> modify_fiducials(
+        const std::optional<std::function<bool(fiducial_query&)> >& _predicate = std::nullopt,
+        const std::optional<shape>& _shape                                     = std::nullopt,
+        const std::optional<std::string_view>& _group_name                     = std::nullopt,
+        const std::optional<std::size_t>& _fiducial_index                      = std::nullopt
+    );
+
+    /**
+     * @brief Append one fiducial based on the given parameters.
+     *
+     * @param _predicate function to set fiducial values (return true to add the fiducial)
+     * @param _shape filter by shape (point, ruler, ...)
+     * @param _group_name filter by group name
+     * @param _fiducial_index filter by index of the same shape type in the fiducial set
+     * @return std::pair<std::optional<fiducial_query>, bool> the added fiducial, and a boolean indicating if a
+     *         fiducial set was created
+     */
+    SIGHT_DATA_API std::pair<std::optional<fiducial_query>, bool> add_fiducial(
+        const std::function<bool(fiducial_query&)>& _predicate,
+        shape _shape,
+        const std::string& _group_name
+    );
+
     /**
      * Get the number of point fiducials in a group
      * @param _group_name The name of the group to fetch
@@ -779,14 +886,6 @@ public:
     ) const;
 
     /**
-     * Get a fiducial set as a structure compatible with data::landmarks
-     * @param _group_name The name of the group to fetch
-     * @return The fiducial set as a structure compatible with data::landmarks
-     */
-    [[nodiscard]] SIGHT_DATA_API std::optional<landmarks::landmarks_group> get_group(const std::string& _group_name)
-    const;
-
-    /**
      * Remove the point INDEX in group GROUP_NAME
      * @param _group_name The name of the group of the point
      * @param _index The index of the point in its group
@@ -815,10 +914,6 @@ public:
     SIGHT_DATA_API void add_point(const std::string& _group_name, const std::array<double, 3>& _position);
 
 private:
-
-    static shape string_to_shape(const std::optional<std::string>& _string);
-    static std::optional<std::array<float, 4> > string_to_color(const std::optional<std::string>& _string);
-    static std::optional<private_shape> string_to_private_shape(const std::optional<std::string>& _string);
 
     template<typename T>
     T to(const gdcm::DataSet& _data_set) const;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,11 +126,6 @@ void frame_manager::initialize(const ui::config_t& _configuration)
         m_frame_info.m_max_size.second
     );
 
-    m_frame_info.m_default_size = std::make_pair(
-        _configuration.get<int>("size.<xmlattr>.width", m_frame_info.m_default_size.first),
-        _configuration.get<int>("size.<xmlattr>.height", m_frame_info.m_default_size.second)
-    );
-
     if(const auto mode = _configuration.get_optional<std::string>("style.<xmlattr>.mode"); mode.has_value())
     {
         if(mode.value() == "DEFAULT")
@@ -163,6 +158,8 @@ void frame_manager::initialize(const ui::config_t& _configuration)
     {
         m_frame_info.m_qss_class = qss_class.get();
     }
+
+    m_frame_info.m_screen = _configuration.get<int>("screen.<xmlattr>.index", m_frame_info.m_screen);
 
     this->read_config();
 }

@@ -154,7 +154,7 @@ public:
         frame1->resize(
             frame_size,
             core::type::UINT8,
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
         {
             auto dump_lock_frame1 = frame1->dump_lock();
@@ -165,7 +165,7 @@ public:
         frame2->resize(
             frame_size,
             core::type::UINT8,
-            data::image::pixel_format::gray_scale
+            data::image::pixel_format_t::gray_scale
         );
         {
             auto dump_lock_frame2 = frame2->dump_lock();
@@ -185,7 +185,7 @@ public:
     void add_frame_to_frame_tl(data::frame_tl::sptr& _frame_tl, const std::uint8_t _timestamp)
     {
         const SPTR(data::frame_tl::buffer_t) data = _frame_tl->create_buffer(_timestamp);
-        std::uint8_t* elt_buffer = data->add_element(0);
+        std::uint8_t* elt_buffer                  = data->add_element(0);
         memset(elt_buffer, _timestamp, frame_size[0] * frame_size[1]);
 
         _frame_tl->push_object(data);
@@ -1060,7 +1060,7 @@ void synchronizer_test::single_frame_tl_config_test()
     frame->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame = frame->dump_lock();
@@ -1154,7 +1154,7 @@ void synchronizer_test::mixt_frame_tl_config_test()
     frame1->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame1 = frame1->dump_lock();
@@ -1164,7 +1164,7 @@ void synchronizer_test::mixt_frame_tl_config_test()
     frame4->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame4 = frame4->dump_lock();
@@ -1174,7 +1174,7 @@ void synchronizer_test::mixt_frame_tl_config_test()
     frame6->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame6 = frame6->dump_lock();
@@ -1184,7 +1184,7 @@ void synchronizer_test::mixt_frame_tl_config_test()
     frame11->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame11 = frame11->dump_lock();
@@ -1300,7 +1300,7 @@ void synchronizer_test::full_config_test()
     frame1->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame1 = frame1->dump_lock();
@@ -1310,7 +1310,7 @@ void synchronizer_test::full_config_test()
     frame4->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame4 = frame4->dump_lock();
@@ -1320,7 +1320,7 @@ void synchronizer_test::full_config_test()
     frame6->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame6 = frame6->dump_lock();
@@ -1330,7 +1330,7 @@ void synchronizer_test::full_config_test()
     frame11->resize(
         tester.frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame11 = frame11->dump_lock();
@@ -1928,7 +1928,7 @@ void synchronizer_test::image_series_time_tagging_test()
     frame1->resize(
         frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame1 = frame1->dump_lock();
@@ -1961,10 +1961,10 @@ void synchronizer_test::image_series_time_tagging_test()
 
     SIGHT_TEST_FAIL_WAIT(last_timestamp_synch == timestamp);
 
-    const auto dt = frame1->get_frame_acquisition_date_time();
+    const auto dt = frame1->get_frame_acquisition_date_time(0);
     CPPUNIT_ASSERT(dt.has_value());
 
-    const auto time_point = frame1->get_frame_acquisition_time_point();
+    const auto time_point = frame1->get_frame_acquisition_time_point(0);
     CPPUNIT_ASSERT(time_point.has_value());
 
     std::int64_t ts = std::chrono::duration_cast<std::chrono::milliseconds>(time_point->time_since_epoch()).count();
@@ -2034,7 +2034,7 @@ void synchronizer_test::single_image_series_tl_population()
     frame1->resize(
         frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame1 = frame1->dump_lock();
@@ -2045,7 +2045,7 @@ void synchronizer_test::single_image_series_tl_population()
     frame2->resize(
         frame_size,
         core::type::UINT8,
-        data::image::pixel_format::gray_scale
+        data::image::pixel_format_t::gray_scale
     );
     {
         auto dump_lock_frame2 = frame2->dump_lock();
@@ -2086,9 +2086,9 @@ void synchronizer_test::single_image_series_tl_population()
     std::int64_t ts = 0;
 
     // Check that the ImageSeries timestamp was written
-    dt = frame1->get_frame_acquisition_date_time();
+    dt = frame1->get_frame_acquisition_date_time(0);
     CPPUNIT_ASSERT(dt.has_value());
-    time_point = frame1->get_frame_acquisition_time_point();
+    time_point = frame1->get_frame_acquisition_time_point(0);
     CPPUNIT_ASSERT(time_point.has_value());
     ts = std::chrono::duration_cast<std::chrono::milliseconds>(time_point->time_since_epoch()).count();
     CPPUNIT_ASSERT(ts == 2);
@@ -2104,9 +2104,9 @@ void synchronizer_test::single_image_series_tl_population()
     synchronizer_tester::check_matrix(matrix1, 0);
 
     // Check that the ImageSeries timestamp was written
-    dt = frame1->get_frame_acquisition_date_time();
+    dt = frame1->get_frame_acquisition_date_time(0);
     CPPUNIT_ASSERT(dt.has_value());
-    time_point = frame1->get_frame_acquisition_time_point();
+    time_point = frame1->get_frame_acquisition_time_point(0);
     CPPUNIT_ASSERT(time_point.has_value());
     ts = std::chrono::duration_cast<std::chrono::milliseconds>(time_point->time_since_epoch()).count();
     CPPUNIT_ASSERT(ts == 3);

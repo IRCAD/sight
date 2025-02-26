@@ -104,7 +104,7 @@ private:
 
     static constexpr std::string_view IMAGE = "image";
 
-    data::ptr<data::image, data::access::in> m_image {this, IMAGE, true};
+    data::ptr<data::image, data::access::in> m_image {this, IMAGE};
 };
 
 } // namespace sight::module::ui::qt::image

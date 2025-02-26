@@ -24,8 +24,8 @@
 
 #include <sight/data/config.hpp>
 
-#include "data/composite.hpp"
 #include "data/factory/new.hpp"
+#include "data/map.hpp"
 
 namespace sight::data
 {
@@ -33,11 +33,11 @@ namespace sight::data
 /**
  * @brief Holds activity information.
  */
-class SIGHT_DATA_CLASS_API activity final : public data::composite
+class SIGHT_DATA_CLASS_API activity final : public data::map
 {
 public:
 
-    SIGHT_DECLARE_CLASS(activity, data::composite);
+    SIGHT_DECLARE_CLASS(activity, data::map);
 
     using config_id_t = std::string;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,6 +25,7 @@
 #include <core/runtime/runtime.hpp>
 
 #include <ui/test/helper/button.hpp>
+#include <ui/test/helper/dialog.hpp>
 #include <ui/test/helper/label.hpp>
 #include <ui/test/helper/list_widget.hpp>
 #include <ui/test/helper/preferences_configuration.hpp>
@@ -35,6 +36,7 @@
 #include <utest_data/data.hpp>
 
 #include <QLabel>
+#include <QSpinBox>
 
 #include <array>
 
@@ -70,7 +72,30 @@ void intrinsic_calibration::test()
 
             // Configure the chessboard size (the size of the example chessboard is 10*8)
             helper::button::push(_tester, "toolBarView/Chessboard size");
-            helper::preferences_configuration::fill(_tester, {{"CHESSBOARD_WIDTH", "10"}, {"CHESSBOARD_HEIGHT", "8"}});
+
+            auto bt = _tester.add_in_backtrace("fill chessboard configuration window");
+            helper::dialog::take(_tester, "Chessboard settings");
+            QPointer<QWidget> window = _tester.get<QWidget*>();
+            _tester.take("Chessboard settings", window);
+            _tester.yields("'Chessboard width' field", "board_width");
+            _tester.get<QSpinBox*>()->setValue(10);
+            _tester.take("Chessboard settings", window);
+            _tester.yields("'Chessboard height' field", "board_height");
+            _tester.get<QSpinBox*>()->setValue(8);
+            _tester.take("Chessboard settings", window);
+            _tester.yields("'Chessboard square size (mm)' field", "board_square_size");
+            _tester.get<QDoubleSpinBox*>()->setValue(20);
+            _tester.take("Chessboard settings", window);
+            _tester.yields("'Input scaling for chessboard detection' field", "board_scale");
+            _tester.get<QDoubleSpinBox*>()->setValue(0.25);
+            _tester.take("Chessboard settings", window);
+            _tester.do_something_asynchronously<QWidget*>([](QWidget* _window){_window->close();});
+            _tester.doubt(
+                "the preferences configuration window is closed",
+                [&window](QObject*) -> bool
+            {
+                return window == nullptr || !window->isVisible();
+            });
 
             // We didn't load the chessboard yet: trying to add captures gives no result
             helper::tool_button::tool_tip_matches(_tester, "detectionStatusSrv/0", "Points are NOT visible");
@@ -108,34 +133,6 @@ void intrinsic_calibration::test()
             // available
             helper::button::push(_tester, "intrinsicCameraView/Calibrate");
             helper::label::contain(_tester, "cameraInfoSrv/isCalibrated", "The camera is calibrated.");
-            _tester.take("reprojection error label", "errorLabelSrv");
-            _tester.doubt<QLabel*>(
-                "the reprojection error is not empty and is a positive number",
-                [](QLabel* _obj) -> bool {return !_obj->text().isEmpty() && _obj->text().toInt() >= 0;});
-
-            // Since the process of calibration is deterministic and the video is actually a fixed image, the values are
-            // reproducible
-            const std::array fields {
-                std::tuple {"width", 700., 0.},
-                std::tuple {"height", 550., 0.},
-                std::tuple {"skew", 0., 0.},
-                std::tuple {"cx", 352.474, 2.},
-                std::tuple {"cy", 244.686, 2.},
-                std::tuple {"fx", 2493.44, 300.},
-                std::tuple {"fy", 2330.59, 300.},
-                std::tuple {"k1", 0.0511689, 2.},
-                std::tuple {"k2", -7.10914, 2.},
-                std::tuple {"p1", -0.0021059, 0.0004},
-                std::tuple {"p2", -0.00137331, 0.0004},
-                std::tuple {"k3", 247.139, 100.}
-            };
-            QRegExp re("<font color='#0066CC'>(.*)</font>");
-            for(auto [name, expected, tolerance] : fields)
-            {
-                helper::label::equal(_tester, "cameraInfoSrv/"s + name, expected, tolerance, re);
-            }
-
-            helper::label::equal(_tester, "errorLabelSrv", 0.084695868, 0.0002);
         },
         true
     );

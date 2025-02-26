@@ -25,7 +25,7 @@
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/matrix4.hpp>
 #include <data/mesh.hpp>
 #include <data/point_list.hpp>

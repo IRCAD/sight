@@ -27,10 +27,10 @@
 #include "service/extension/config.hpp"
 
 #include <core/mt/types.hpp>
+#include <core/object.hpp>
 #include <core/runtime/extension.hpp>
-#include <core/tools/object.hpp>
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 #include <map>
 #include <unordered_set>
@@ -46,22 +46,25 @@ namespace extension
 
 /**
  */
-class SIGHT_APP_CLASS_API app_info : public core::base_object
+class SIGHT_APP_CLASS_API app_info
 {
 public:
 
-    SIGHT_DECLARE_CLASS(app_info, core::base_object);
-
-    /// Constructor, do nothing.
-    app_info() = default;
-
-    /// Destructor, do nothing.
-    ~app_info() override = default;
+    using sptr = SPTR(app_info);
 
     std::string group;
     std::string desc;
     using parameters_t = std::map<std::string, std::string>;
     parameters_t parameters;
+    struct objects_info_t
+    {
+        std::string type;
+        bool deferred;
+        bool optional;
+        std::string value;
+    };
+    using objects_t = std::map<std::string, objects_info_t>;
+    objects_t objects;
     core::runtime::config_t config;
     std::string module_id;      ///< Module identifier (used to start the module when the appConfig is launched)
     std::string module_version; ///< Module version (used to start the module when the appConfig is launched)
@@ -71,14 +74,11 @@ public:
  * @brief This class allows to register all the configuration which has the point extension
  *        "sight::app::extension::config".
  */
-class SIGHT_APP_CLASS_API config : public core::base_object
+class SIGHT_APP_CLASS_API config final
 {
 public:
 
-    SIGHT_DECLARE_CLASS(config, core::base_object);
-
-    SIGHT_APP_API config();
-    SIGHT_APP_API ~config() override = default;
+    using sptr = SPTR(config);
 
     /**
      * @brief Parses module information to retrieve configuration declaration.
@@ -102,14 +102,16 @@ public:
      * @param _group the name of the group that owns the config.
      * @param _desc the config description.
      * @param _parameters the list of template parameters in the config.
+     * @param _objects the list of objects in the config.
      * @param _config the registered config.
      * @note This method is thread safe
      */
-    SIGHT_APP_API void addapp_info(
+    SIGHT_APP_API void add_app_info(
         const std::string& _config_id,
         const std::string& _group,
         const std::string& _desc,
         const app_info::parameters_t& _parameters,
+        const app_info::objects_t& _objects,
         const core::runtime::config_t& _config,
         const std::string& _module_id
     );
@@ -123,21 +125,8 @@ public:
     SIGHT_APP_API core::runtime::config_t get_adapted_template_config(
         const std::string& _config_id,
         const field_adaptor_t _replace_fields,
-        bool _auto_prefix_id
-    ) const;
-
-    /**
-     * @brief  Return the adapted config with the identifier configId.
-     * @param _config_id the identifier of the requested config.
-     * @param _replace_fields composite of association between the value and the pattern to replace in the config.
-     * @note This method is thread safe.
-     */
-    SIGHT_APP_API core::runtime::config_t get_adapted_template_config(
-        const std::string& _config_id,
-        data::composite::csptr _replace_fields,
-        bool _auto_prefix_id
-    )
-    const;
+        const std::string& _auto_prefix_id
+    );
 
     /**
      * @brief Retrieves the module from the config id
@@ -170,7 +159,7 @@ public:
     SIGHT_APP_API static std::string get_unique_identifier(const std::string& _service_uid = "");
 
     /// Return an instance of config.
-    SIGHT_APP_API static config::sptr get_default();
+    SIGHT_APP_API static config::sptr get();
 
 protected:
 
@@ -183,8 +172,8 @@ private:
 
     using uid_parameter_replace_t = std::unordered_set<std::string>;
 
-    /// Convert the composite into map <pattern, value>.
-    static field_adaptor_t composite_to_field_adaptor(data::composite::csptr _field_adaptors);
+    /// Convert the map into map <pattern, value>.
+    static field_adaptor_t map_to_field_adaptor(data::map::csptr _field_adaptors);
 
     static void collect_uid_for_parameter_replace(
         const std::string& _name,
@@ -201,7 +190,7 @@ private:
     );
 
     /// Adapts field thanks to field adaptors
-    static std::string adapt_field(const std::string& _str, const field_adaptor_t& _variables_map);
+    static std::string subst_var(std::string _str, const field_adaptor_t& _variables_map);
 
     /// Used to protect the registry access.
     mutable core::mt::read_write_mutex m_registry_mutex;

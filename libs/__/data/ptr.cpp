@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -29,14 +29,12 @@ namespace sight::data
 base_ptr::base_ptr(
     data::has_data* _holder,
     std::string_view _key,
-    bool _auto_connect,
     bool _optional,
     enum access _access,
     std::optional<std::size_t> _index
 ) :
     m_holder(_holder),
     m_key(_key),
-    m_auto_connect(_auto_connect),
     m_optional(_optional),
     m_access(_access)
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,8 +33,6 @@
 #include <viz/scene2d/graphics_view.hpp>
 
 #include <QGraphicsRectItem>
-
-using sight::viz::scene2d::vec2d_t;
 
 namespace sight::module::viz::scene2d::adaptor
 {
@@ -142,7 +140,7 @@ void viewport_range_selector::update_viewport(bool _signal_selected_viewport)
     m_min = (tf || image) ? std::numeric_limits<double>::max() : m_initial_x;
     m_max = (tf || image) ? std::numeric_limits<double>::lowest() : m_initial_x + m_initial_width;
 
-    const vec2d_t pair = this->map_scene_to_adaptor(vec2d_t(m_initial_x, 1.0));
+    const glm::dvec2 pair = this->map_scene_to_adaptor(glm::dvec2(m_initial_x, 1.0));
     QRectF rect(pair.x, 0, m_initial_width * m_x_axis->get_scale(), pair.y);
     if(tf)
     {
@@ -151,7 +149,7 @@ void viewport_range_selector::update_viewport(bool _signal_selected_viewport)
 
     if(image)
     {
-        sight::data::helper::medical_image::get_min_max(image.get_shared(), m_image_min, m_image_max);
+        std::tie(m_image_min, m_image_max) = data::helper::medical_image::get_min_max<double>(image.get_shared());
 
         m_min = std::min(m_min, m_image_min);
         m_max = std::max(m_max, m_image_max);
@@ -187,22 +185,12 @@ void viewport_range_selector::update_viewport(bool _signal_selected_viewport)
     viewport->set_width(m_max - m_min);
     this->get_scene_2d_render()->get_view()->update_from_viewport(*viewport);
 
-    auto sig = viewport->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-    {
-        core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-        sig->async_emit();
-    }
+    viewport->async_emit(this, data::object::MODIFIED_SIG);
 
     if(_signal_selected_viewport)
     {
         auto selected_viewport = m_selected_viewport.lock();
-        auto sig_selected      = selected_viewport->signal<data::object::modified_signal_t>(
-            data::object::MODIFIED_SIG
-        );
-        {
-            core::com::connection::blocker block(sig_selected->get_connection(slot(service::slots::UPDATE)));
-            sig_selected->async_emit();
-        }
+        selected_viewport->async_emit(this, data::object::MODIFIED_SIG);
     }
 
     m_click_catch_range = static_cast<int>(m_max - m_min) / 100;
@@ -213,12 +201,12 @@ void viewport_range_selector::update_viewport(bool _signal_selected_viewport)
 void viewport_range_selector::process_interaction(sight::viz::scene2d::data::event& _event)
 {
     // Event coordinates in scene
-    sight::viz::scene2d::vec2d_t coord;
+    glm::dvec2 coord;
     coord = this->get_scene_2d_render()->map_to_scene(_event.get_coord());
 
     // Shutter coordinates in scene
-    const vec2d_t shutter_coord_pair =
-        this->map_adaptor_to_scene(vec2d_t(m_shutter->rect().x(), m_shutter->rect().y()));
+    const glm::dvec2 shutter_coord_pair =
+        this->map_adaptor_to_scene(glm::dvec2(m_shutter->rect().x(), m_shutter->rect().y()));
     const double shutter_width = m_shutter->rect().width() * m_x_axis->get_scale();
 
     const QRectF scene_rect = this->get_scene_2d_render()->get_scene()->sceneRect();
@@ -366,13 +354,7 @@ void viewport_range_selector::process_interaction(sight::viz::scene2d::data::eve
             this->update_viewport_from_shutter(rect.x(), rect.y(), rect.width(), rect.height());
             {
                 auto selected_viewport = m_selected_viewport.lock();
-                auto sig               = selected_viewport->signal<data::object::modified_signal_t>(
-                    data::object::MODIFIED_SIG
-                );
-                {
-                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                    sig->async_emit();
-                }
+                selected_viewport->async_emit(this, data::object::MODIFIED_SIG);
             }
         }
     }
@@ -384,8 +366,8 @@ void viewport_range_selector::update_viewport_from_shutter(double _x, double _y,
 {
     auto selected_viewport = m_selected_viewport.lock();
 
-    const vec2d_t from_scene_coord = this->map_scene_to_adaptor(vec2d_t(_x, _y));
-    const vec2d_t pair             = this->map_scene_to_adaptor(vec2d_t(_width, _height));
+    const glm::dvec2 from_scene_coord = this->map_scene_to_adaptor(glm::dvec2(_x, _y));
+    const glm::dvec2 pair             = this->map_scene_to_adaptor(glm::dvec2(_width, _height));
 
     selected_viewport->set_x(from_scene_coord.x);
     selected_viewport->set_width(pair.x);
@@ -393,9 +375,9 @@ void viewport_range_selector::update_viewport_from_shutter(double _x, double _y,
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool viewport_range_selector::mouse_on_shutter_middle(sight::viz::scene2d::vec2d_t _coord)
+bool viewport_range_selector::mouse_on_shutter_middle(glm::dvec2 _coord)
 {
-    vec2d_t shutter_coord_pair;
+    glm::dvec2 shutter_coord_pair;
     shutter_coord_pair = this->map_adaptor_to_scene({m_shutter->rect().x(), m_shutter->rect().y()});
 
     return (_coord.x > m_shutter->rect().x() + m_click_catch_range)
@@ -404,9 +386,9 @@ bool viewport_range_selector::mouse_on_shutter_middle(sight::viz::scene2d::vec2d
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool viewport_range_selector::mouse_on_shutter_left(sight::viz::scene2d::vec2d_t _coord)
+bool viewport_range_selector::mouse_on_shutter_left(glm::dvec2 _coord)
 {
-    vec2d_t shutter_coord_pair = this->map_adaptor_to_scene({m_shutter->rect().x(), m_shutter->rect().y()});
+    glm::dvec2 shutter_coord_pair = this->map_adaptor_to_scene({m_shutter->rect().x(), m_shutter->rect().y()});
 
     return (_coord.x >= shutter_coord_pair.x - m_click_catch_range)
            && (_coord.x <= shutter_coord_pair.x + m_click_catch_range);
@@ -414,9 +396,9 @@ bool viewport_range_selector::mouse_on_shutter_left(sight::viz::scene2d::vec2d_t
 
 //---------------------------------------------------------------------------------------------------------------
 
-bool viewport_range_selector::mouse_on_shutter_right(sight::viz::scene2d::vec2d_t _coord)
+bool viewport_range_selector::mouse_on_shutter_right(glm::dvec2 _coord)
 {
-    const vec2d_t shutter_coord_pair = this->map_adaptor_to_scene({m_shutter->rect().x(), m_shutter->rect().y()});
+    const glm::dvec2 shutter_coord_pair = this->map_adaptor_to_scene({m_shutter->rect().x(), m_shutter->rect().y()});
 
     const double shutter_right_pos = shutter_coord_pair.x + m_shutter->rect().width() * m_x_axis->get_scale();
 

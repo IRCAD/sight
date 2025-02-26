@@ -59,16 +59,38 @@ void move_from_itk(
     _data_image->set_origin(v_origin);
     _data_image->set_spacing(v_spacing);
 
-    std::shared_ptr<data::matrix4> f_direction = std::make_shared<data::matrix4>();
-    for(std::uint8_t y = 0 ; y < dim ; ++y)
-    {
-        for(std::uint8_t x = 0 ; x < dim ; ++x)
-        {
-            (*f_direction)(y, x) = _itk_image->GetDirection()(y, x);
-        }
-    }
+    const auto& direction = _itk_image->GetDirection();
 
-    _data_image->set_field(std::string(data::helper::id::DIRECTION), f_direction);
+    if(ITKIMAGE::ImageDimension > 2)
+    {
+        _data_image->set_orientation(
+            {
+                direction(0, 0),
+                direction(0, 1),
+                direction(0, 2),
+                direction(1, 0),
+                direction(1, 1),
+                direction(1, 2),
+                direction(2, 0),
+                direction(2, 1),
+                direction(2, 2)
+            });
+    }
+    else
+    {
+        _data_image->set_orientation(
+            {
+                direction(0, 0),
+                direction(0, 1),
+                0,
+                direction(1, 0),
+                direction(1, 1),
+                0,
+                0,
+                0,
+                1
+            });
+    }
 
     const auto pixel_type = core::type::get<typename ITKIMAGE::PixelType>();
     const auto dump_lock  = _data_image->dump_lock();
@@ -84,7 +106,7 @@ void move_from_itk(
             pixel_type,
             v_size,
             data::image::gray_scale,
-            std::make_shared<core::memory::buffer_new_policy>()
+            std::make_shared<core::memory::buffer_malloc_policy>()
         );
         /// itk image release its management buffer. dataImage must now deal memory
         _itk_image->GetPixelContainer()->SetContainerManageMemory(false);
@@ -155,22 +177,24 @@ typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _image_data)
     itk_image->SetOrigin(_image_data->origin().data());
 
     // Update direction information
-    std::shared_ptr<data::matrix4> direction_mat =
-        _image_data->get_field<data::matrix4>(std::string(data::helper::id::DIRECTION));
+    const auto& orientation = _image_data->orientation();
+    auto direction          = itk_image->GetDirection();
 
-    if(direction_mat)
+    direction(0, 0) = orientation[0];
+    direction(0, 1) = orientation[1];
+    direction(1, 0) = orientation[3];
+    direction(1, 1) = orientation[4];
+
+    if(ITKIMAGE::ImageDimension > 2)
     {
-        typename ITKIMAGE::DirectionType direction = itk_image->GetDirection();
-        for(std::uint8_t y = 0 ; y < ITKIMAGE::ImageDimension ; ++y)
-        {
-            for(std::uint8_t x = 0 ; x < ITKIMAGE::ImageDimension ; ++x)
-            {
-                direction(y, x) = (*direction_mat)(y, x);
-            }
-        }
-
-        itk_image->SetDirection(direction);
+        direction(0, 2) = orientation[2];
+        direction(1, 2) = orientation[5];
+        direction(2, 0) = orientation[6];
+        direction(2, 1) = orientation[7];
+        direction(2, 2) = orientation[8];
     }
+
+    itk_image->SetDirection(direction);
 
     ::itk::ImageRegion<ITKIMAGE::ImageDimension> itk_region;
 

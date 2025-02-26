@@ -64,13 +64,7 @@ class model_series_obj_writer : public io::writer::generic_object_writer<data::m
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        model_series_obj_writer,
-        io::writer::generic_object_writer<data::model_series>,
-        io::writer::factory::make<model_series_obj_writer>
-    )
-
-    SIGHT_ALLOW_SHARED_FROM_THIS()
+    SIGHT_DECLARE_CLASS(model_series_obj_writer, io::writer::generic_object_writer<data::model_series>)
 
     /// Constructor.
     SIGHT_IO_VTK_API model_series_obj_writer();

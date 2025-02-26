@@ -11,28 +11,28 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::editor</type>
         <service>sight::module::ui::viz::compositor_selector</service>
-        <object>sight::data::composite</object>
+        <object>sight::data::map</object>
         <desc>Allows to select an Ogre Compositor and apply it to a layer</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::editor</type>
         <service>sight::module::ui::viz::core_compositor_editor</service>
-        <object>sight::data::composite</object>
+        <object>sight::data::map</object>
         <desc>Allows to select an Ogre Compositor and apply it to a layer</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::editor</type>
         <service>sight::module::ui::viz::light_editor</service>
-        <object>sight::data::composite</object>
+        <object>sight::data::map</object>
         <desc>This service creates a user interface to manage a light adaptor.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::editor</type>
         <service>sight::module::ui::viz::light_selector</service>
-        <object>sight::data::composite</object>
+        <object>sight::data::map</object>
         <desc>User interface to select light adaptor from a selected layer or create a new one.</desc>
     </extension>
 
@@ -58,7 +58,7 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::editor</type>
         <service>sight::module::ui::viz::stereo_selector</service>
-        <object>sight::data::composite</object>
+        <object>sight::data::map</object>
         <desc>Allows to select the stereo mode of an Ogre Compositor</desc>
     </extension>
     <extension implements="sight::service::extension::factory">

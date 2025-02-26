@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2024 IRCAD France
+ * Copyright (C) 2015-2025 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,8 +75,8 @@ public:
         bool _upload_window_uniform                              = true
     ) const;
 
-    /// Binds the texture in the given pass and the given uniform
-    SIGHT_VIZ_SCENE3D_API void bind(
+    /// Create and binds the texture in the given pass and the given uniform
+    SIGHT_VIZ_SCENE3D_API void create_binding(
         Ogre::Pass* _pass,
         const std::string& _sampler_name,
         const std::string& _uniform_name,

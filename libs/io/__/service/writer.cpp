@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,36 +30,25 @@
 
 #include <ui/__/preferences.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 namespace sight::io::service
 {
 
-// Public signal
-const core::com::signals::key_t writer::PREFIX_SET_SIG      = "prefix_set";
-const core::com::signals::key_t writer::BASE_FOLDER_SET_SIG = "base_folder_set";
-
-// Public slot
-const core::com::slots::key_t writer::SET_PREFIX      = "set_prefix";
-const core::com::slots::key_t writer::SET_BASE_FOLDER = "set_base_folder";
-
-// Private slot
-static const core::com::slots::key_t OPEN_LOCATION_DIALOG = "open_location_dialog";
-
 //-----------------------------------------------------------------------------
 
-writer::writer() noexcept
+writer::writer(const std::string& _default_window_title) noexcept :
+    m_window_title(this, WINDOW_TITLE_KEY, _default_window_title)
 {
-    new_signal<void_signal_t>(PREFIX_SET_SIG);
-    new_signal<void_signal_t>(BASE_FOLDER_SET_SIG);
+    new_signal<signals::void_signal_t>(signals::PREFIX_SET);
+    new_signal<signals::void_signal_t>(signals::BASE_FOLDER_SET);
 
-    new_slot(OPEN_LOCATION_DIALOG, &writer::open_location_dialog, this);
-    new_slot(SET_PREFIX, &writer::set_prefix, this);
-    new_slot(SET_BASE_FOLDER, &writer::set_base_folder, this);
+    new_slot(slots::OPEN_LOCATION_DIALOG, &writer::open_location_dialog, this);
+    new_slot(slots::SET_PREFIX, &writer::set_prefix, this);
+    new_slot(slots::SET_BASE_FOLDER, &writer::set_base_folder, this);
+
+    new_slot(slots::UPDATE_DEFAULT_LOCATIONS, &writer::update_default_locations, this);
 }
-
-//-----------------------------------------------------------------------------
-
-writer::~writer() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 
@@ -68,7 +57,7 @@ std::filesystem::path writer::get_file() const
     // WARNING: Pay attention here that no canonical paths are processed when concatenating paths
     // In this case, the behavior is to replace the previous path.
 
-    SIGHT_THROW_IF("This reader doesn't manage files", !(this->get_path_type() & io::service::file));
+    SIGHT_THROW_IF("This writer doesn't manage files", !(this->get_path_type() & io::service::file));
 
     // Make sure the base folder is in sync (also re-reads file/folder entries to respect the developer choices)
     std::string base_folder;
@@ -96,7 +85,7 @@ std::filesystem::path writer::get_file() const
 
 void writer::set_file(const std::filesystem::path& _file)
 {
-    SIGHT_THROW_IF("This reader doesn't manage files", !(this->get_path_type() & io::service::file));
+    SIGHT_THROW_IF("This writer doesn't manage files", !(this->get_path_type() & io::service::file));
     m_locations.clear();
     m_locations.push_back(_file);
 }
@@ -105,7 +94,7 @@ void writer::set_file(const std::filesystem::path& _file)
 
 const io::service::locations_t& writer::get_files() const
 {
-    SIGHT_THROW_IF("This reader doesn't manage files", !(this->get_path_type() & io::service::files));
+    SIGHT_THROW_IF("This writer doesn't manage files", !(this->get_path_type() & io::service::files));
     SIGHT_THROW_IF("At least one file must be defined in location", m_locations.empty());
     return m_locations;
 }
@@ -114,7 +103,7 @@ const io::service::locations_t& writer::get_files() const
 
 void writer::set_files(const io::service::locations_t& _files)
 {
-    SIGHT_THROW_IF("This reader doesn't manage files", !(this->get_path_type() & io::service::files));
+    SIGHT_THROW_IF("This writer doesn't manage files", !(this->get_path_type() & io::service::files));
     m_locations = _files;
 }
 
@@ -125,7 +114,7 @@ std::filesystem::path writer::get_folder() const
     // WARNING: Pay attention here that no canonical paths are processed when concatenating paths
     // In this case, the behavior is to replace the previous path.
 
-    SIGHT_THROW_IF("This reader doesn't manage folders", !(this->get_path_type() & io::service::folder));
+    SIGHT_THROW_IF("This writer doesn't manage folders", !(this->get_path_type() & io::service::folder));
 
     // Make sure the base folder is in sync (also re-reads file/folder entries to respect the developer choices)
     std::string base_folder;
@@ -149,7 +138,7 @@ std::filesystem::path writer::get_folder() const
 
 void writer::set_folder(const std::filesystem::path& _folder)
 {
-    SIGHT_THROW_IF("This reader doesn't manage folders", !(this->get_path_type() & io::service::folder));
+    SIGHT_THROW_IF("This writer doesn't manage folders", !(this->get_path_type() & io::service::folder));
     m_locations.clear();
     m_locations.push_back(_folder);
 }
@@ -161,8 +150,7 @@ void writer::set_prefix(std::string _prefix)
     // Record the current prefix
     m_current_prefix = _prefix;
 
-    auto sig = this->signal<void_signal_t>(PREFIX_SET_SIG);
-    sig->async_emit();
+    this->async_emit(signals::PREFIX_SET);
 }
 
 //------------------------------------------------------------------------------
@@ -172,8 +160,7 @@ void writer::set_base_folder(std::string _path)
     // Record the current prefix
     m_base_folder = _path;
 
-    auto sig = this->signal<void_signal_t>(BASE_FOLDER_SET_SIG);
-    sig->async_emit();
+    this->async_emit(signals::BASE_FOLDER_SET);
 }
 
 //-----------------------------------------------------------------------------
@@ -188,71 +175,149 @@ const io::service::locations_t& writer::get_locations() const
 
 void writer::clear_locations()
 {
-    // clear_locations is called to force the user reconfiguring a location
-    // after a file has been written
-    // When we use base folder, the location contains the "template" folder to be used to output data
-    // So in this specific case, we don't clear it
-    // if(m_baseFolder.size() == 0)
-    {
-        m_locations.clear();
-    }
+    m_locations.clear();
 }
 
 //-----------------------------------------------------------------------------
 
 void writer::configuring()
 {
-    const auto& config = this->get_config();
-
+    /// @todo check if this is still needed or usefull or not a static assert at build time...
     SIGHT_ASSERT(
-        "Generic configuring method is only available for io service that uses paths.",
+        "Generic configuring method is only available for io service that use paths.",
         !(this->get_path_type() & io::service::type_not_defined)
     );
 
     SIGHT_ASSERT(
-        "This writer does not manage folders and a folder path is given in the configuration",
-        (this->get_path_type() & io::service::folder)
-        || (config.find("folder") == config.not_found())
+        "This writer cannot manages both io::service::files and io::service::file.",
+        (this->get_path_type() & io::service::files) == 0 || (this->get_path_type() & io::service::file) == 0
     );
 
+    // Check if we use properties or XML configuration
+    const config_t config              = this->get_config();
+    const bool use_file_config         = config.count(OLD_FILE_KEY) > 0;
+    const bool use_folder_config       = config.count(FOLDER_KEY) > 0;
+    const bool use_window_title_config = config.count(OLD_WINDOW_TITLE_KEY) > 0;
+
+    if(use_file_config || use_folder_config || use_window_title_config)
+    {
+        // Use XML configuration
+        /// @todo remove me once deprecated configuration is removed
+
+        // Deprecation messages
+        if(use_file_config)
+        {
+            FW_DEPRECATED_MSG(
+                "<" + OLD_FILE_KEY + "> XML configuration is deprecated, use `" + FILES_KEY + "` property instead.",
+                "26.0"
+            );
+        }
+
+        if(use_folder_config)
+        {
+            FW_DEPRECATED_MSG(
+                "<" + FOLDER_KEY + "> XML configuration is deprecated, use `" + FOLDER_KEY + "` property instead.",
+                "26.0"
+            );
+        }
+
+        // windowTitle
+        if(use_window_title_config)
+        {
+            FW_DEPRECATED_MSG(
+                "<" + OLD_WINDOW_TITLE_KEY + "> XML configuration is deprecated, use `" + WINDOW_TITLE_KEY
+                + "` property instead.",
+                "26.0"
+            );
+
+            auto window_title = m_window_title.lock();
+            window_title->set_value(config.get<std::string>(OLD_WINDOW_TITLE_KEY));
+        }
+
+        // Files
+        io::service::locations_t files;
+        files.reserve(config.count(OLD_FILE_KEY));
+
+        const auto files_cfg = config.equal_range(OLD_FILE_KEY);
+        for(auto file_cfg = files_cfg.first ; file_cfg != files_cfg.second ; ++file_cfg)
+        {
+            files.emplace_back(file_cfg->second.get_value<std::filesystem::path>());
+        }
+
+        // Folder
+        auto folder = config.get<std::filesystem::path>(FOLDER_KEY, "");
+
+        // Perform validity checks and fill m_locations
+        this->update_locations(files, folder);
+    }
+    else
+    {
+        // Use properties
+        this->update_default_locations();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+sight::service::base::connections_t writer::auto_connections() const
+{
+    return {
+        {m_files, data::object::MODIFIED_SIG, slots::UPDATE_DEFAULT_LOCATIONS},
+        {m_folder, data::object::MODIFIED_SIG, slots::UPDATE_DEFAULT_LOCATIONS}
+    };
+}
+
+//------------------------------------------------------------------------------
+
+void writer::update_default_locations()
+{
+    io::service::locations_t files;
+
+    if(const auto files_property = *m_files; !files_property.empty())
+    {
+        boost::split(files, files_property, boost::is_any_of(";"), boost::token_compress_on);
+    }
+
+    this->update_locations(files, *m_folder);
+}
+
+//------------------------------------------------------------------------------
+
+void writer::update_locations(
+    const io::service::locations_t& _files,
+    const std::filesystem::path& _folder
+)
+{
+    // Assertion checks
     SIGHT_ASSERT(
-        "This writer does not manages files and a file path is given in the configuration",
-        (this->get_path_type() & io::service::file || this->get_path_type() & io::service::files)
-        || (config.find("file") == config.not_found())
+        "This writer does not manage files and a file path is given in the configuration",
+        (this->get_path_type() & io::service::file || this->get_path_type() & io::service::files) || (_files.empty())
     );
 
-    m_window_title = config.get<std::string>("windowTitle", "");
-
-    if((this->get_path_type() & io::service::file) != 0)
+    // Populate m_locations with files
+    if(!_files.empty())
     {
-        SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->get_path_type() & io::service::files);
-        SIGHT_THROW_IF("No more than one file must be defined in the configuration", config.count("file") > 1);
-        if(const auto file = config.get_optional<std::string>("file"); file.has_value())
+        if((this->get_path_type() & io::service::file) != 0)
         {
-            this->set_file(std::filesystem::path(*file));
+            // Single file
+            SIGHT_ASSERT(
+                "This writer manage single file, but there is more than one file.",
+                _files.size() == 1
+            );
+
+            this->set_file(_files.front());
+        }
+        else if((this->get_path_type() & io::service::files) != 0)
+        {
+            // Multiple files
+            this->set_files(_files);
         }
     }
 
-    if((this->get_path_type() & io::service::files) != 0)
+    // Populate m_locations with folder
+    if((this->get_path_type() & io::service::folder) != 0 && !_folder.empty())
     {
-        SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->get_path_type() & io::service::file);
-        io::service::locations_t locations;
-        for(const auto& elt : boost::make_iterator_range(config.equal_range("file")))
-        {
-            const auto location = elt.second.get_value<std::string>();
-            locations.emplace_back(location);
-        }
-
-        this->set_files(locations);
-    }
-
-    if((this->get_path_type() & io::service::folder) != 0)
-    {
-        SIGHT_THROW_IF("No more than one folder must be defined in configuration", config.count("folder") > 1);
-        if(const auto folder = config.get_optional<std::string>("folder"); folder.has_value())
-        {
-            this->set_folder(std::filesystem::path(folder.value()));
-        }
+        this->set_folder(_folder);
     }
 }
 

@@ -23,24 +23,19 @@
 
 #include <sight/app/config.hpp>
 
-#include <app/parser/generic_field.hpp>
+#include <app/parser/generic.hpp>
 
-namespace sight::app
-{
-
-namespace parser
+namespace sight::app::parser
 {
 
 /**
- * @brief Specialisation of generic_field parser for float
+ * @brief Specialisation of property parser for float
  */
-class real : public generic_field
+class real : public generic
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(real, service::object_parser);
+    SIGHT_DECLARE_SERVICE(real, app::parser::generic);
 };
-
-} //namespace parser
 
 } //namespace sight::app

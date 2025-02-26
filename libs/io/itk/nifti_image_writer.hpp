@@ -39,11 +39,7 @@ class SIGHT_IO_ITK_CLASS_API nifti_image_writer : public writer::generic_object_
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        nifti_image_writer,
-        io::writer::generic_object_writer<data::image>,
-        io::writer::factory::make<nifti_image_writer>
-    );
+    SIGHT_DECLARE_CLASS(nifti_image_writer, io::writer::generic_object_writer<data::image>);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     SIGHT_IO_ITK_API ~nifti_image_writer() override = default;

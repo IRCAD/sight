@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -182,9 +182,8 @@ connection signal<R(A ...)>::connect(slot_base::sptr _slot)
         {
             core::mt::write_lock lock(m_connections_mutex);
             using slot_t = core::com::slot<core::com::slot<void (A ...)> >;
-            auto slot_to_connect                = std::make_shared<slot_t>(wrapped_slot);
-            typename signal<R(A ...)>::sptr sig =
-                std::dynamic_pointer_cast<signal<R(A ...)> >(this->shared_from_this());
+            auto slot_to_connect = std::make_shared<slot_t>(wrapped_slot);
+            auto sig             = std::dynamic_pointer_cast<signal<R(A ...)> >(this->shared_from_this());
             auto slot_connection = std::make_shared<connection_type>(sig, _slot, slot_to_connect);
             _slot->m_connections.insert(slot_connection);
             m_connections.insert(typename connection_map_type::value_type(_slot, slot_connection));
@@ -193,7 +192,17 @@ connection signal<R(A ...)>::connect(slot_base::sptr _slot)
         }
         else
         {
-            connection = this->connect<typename core::com::util::remove_last_arg<FROM_F>::type>(_slot);
+            const auto from_f_arity = boost::function_types::function_arity<FROM_F>::value;
+            if constexpr(from_f_arity == 0)
+            {
+                // We can no longer remove arguments, which means we failed to cast because the type of arguments
+                // are different
+                SIGHT_THROW_EXCEPTION(core::com::exception::bad_slot("Incompatible slot"));
+            }
+            else
+            {
+                connection = this->connect<typename core::com::util::remove_last_arg<FROM_F>::type>(_slot);
+            }
         }
     }
     else

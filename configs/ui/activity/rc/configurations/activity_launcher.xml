@@ -64,9 +64,10 @@
 <extension implements="sight::app::extension::config">
     <id>ActivityLauncher</id>
     <parameters>
+        <object uid="activitySet" type="sight::data::activity_set" />
+
         <param name="WID_PARENT" />
         <param name="ICON_PATH" />
-        <param name="activitySet" />
         <param name="SEQUENCER_CONFIG" />
         <param name="WIZARD_CONFIG" default="defaultWizardConfig" />
         <param name="SESSION_READER_CONFIG" default="DefaultSessionReaderConfig" />
@@ -75,10 +76,6 @@
     </parameters>
     <desc>Configuration to launch activities sequentially</desc>
     <config>
-        <!-- ************************************ Begin Objects declaration **************************************** -->
-
-        <object uid="${activitySet}" type="sight::data::activity_set" src="ref" />
-
         <!-- ************************************* Begin layouts declaration *************************************** -->
 
         <service uid="mainView" type="sight::module::ui::view">

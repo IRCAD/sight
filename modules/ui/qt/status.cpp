@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -36,7 +36,7 @@
 namespace sight::module::ui::qt
 {
 
-enum class status_color : std::size_t
+enum class status_color : std::uint8_t
 {
     green,
     orange,
@@ -105,13 +105,13 @@ void status::configuring(const config_t& _config)
         const auto label_status_config = config_labels.get().equal_range("name");
 
         // Fill the label_status vector
-        for(int i = 0 ; const service::config_t::value_type& v : boost::make_iterator_range(label_status_config))
+        for(int i = 0 ; const service::config_t::value_type & v : boost::make_iterator_range(label_status_config))
         {
             const auto label = v.second.get<std::string>("");
             auto* status     = new QToolButton();
             status->setText(QString::fromStdString(label));
 
-            const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+            const QString service_id = QString::fromStdString(base_id());
             status->setObjectName(service_id + "/" + QString::number(i++));
 
             m_label_status.push_back(status);
@@ -232,7 +232,7 @@ void status::change_nth_to_green(const int _index)
         _index < 0 || _index >= int(m_label_status.size())
     );
 
-    if(_index >= 0 && _index < int(m_label_status.size()))
+    if(_index >= 0 && _index < m_label_status.size())
     {
         const auto status = m_label_status.at(_index);
         status->setIcon(icon(status_color::green));
@@ -249,7 +249,7 @@ void status::change_nth_to_red(const int _index)
         _index < 0 || _index >= int(m_label_status.size())
     );
 
-    if(_index >= 0 && _index < int(m_label_status.size()))
+    if(_index >= 0 && _index < m_label_status.size())
     {
         const auto status = m_label_status.at(_index);
         status->setIcon(icon(status_color::red));
@@ -266,7 +266,7 @@ void status::change_nth_to_orange(const int _index)
         _index < 0 || _index >= int(m_label_status.size())
     );
 
-    if(_index >= 0 && _index < int(m_label_status.size()))
+    if(_index >= 0 && _index < m_label_status.size())
     {
         const auto status = m_label_status.at(_index);
         status->setIcon(icon(status_color::orange));
@@ -283,7 +283,7 @@ void status::toggle_nth_green_red(const int _index, const bool _green)
         _index < 0 || _index >= int(m_label_status.size())
     );
 
-    if(_index >= 0 && _index < int(m_label_status.size()))
+    if(_index >= 0 && _index < m_label_status.size())
     {
         const auto status = m_label_status.at(_index);
         status->setIcon(_green ? icon(status_color::green) : icon(status_color::red));

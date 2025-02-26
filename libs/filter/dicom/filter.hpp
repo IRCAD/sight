@@ -29,7 +29,7 @@
 #include "filter/dicom/registry/detail.hpp"
 
 #include <core/log/logger.hpp>
-#include <core/tools/object.hpp>
+#include <core/object.hpp>
 
 #include <data/dicom_series.hpp>
 
@@ -39,7 +39,7 @@ namespace sight::filter::dicom
 /**
  * @brief Base class for Dicom instance filter.
  */
-class SIGHT_FILTER_DICOM_CLASS_API filter : public core::tools::object
+class SIGHT_FILTER_DICOM_CLASS_API filter : public core::object
 {
 public:
 
@@ -60,7 +60,7 @@ public:
         }
     };
 
-    SIGHT_DECLARE_CLASS(filter, core::tools::object);
+    SIGHT_DECLARE_CLASS(filter, core::object);
 
     using dicom_series_container_t = std::vector<data::dicom_series::sptr>;
 

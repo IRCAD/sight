@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,21 +37,21 @@ namespace sight::service
  */
 
 #define FWSERVICE_REGISTER_MACRO(service_t, ServiceImpl) \
-    static sight::service::service_factory_registry<ServiceImpl> \
-    BOOST_PP_CAT(serviceRegistry, __LINE__)( #ServiceImpl, #service_t);
+        static sight::service::service_factory_registry<ServiceImpl> \
+        BOOST_PP_CAT(serviceRegistry, __LINE__)( #ServiceImpl, #service_t);
 
 #define FWSERVICE_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject) \
-    static sight::service::service_object_factory_registry \
-    BOOST_PP_CAT(serviceObjectRegistry, __LINE__)( #ServiceImpl, #ServiceObject);
+        static sight::service::service_object_factory_registry \
+        BOOST_PP_CAT(serviceObjectRegistry, __LINE__)( #ServiceImpl, #ServiceObject);
 
 //@{
 
 #define FWSERVICE_REGISTER_MACRO_2(ServiceImpl, ServiceObject) \
-    FWSERVICE_REGISTER_MACRO(ServiceImpl, ServiceObject)
+        FWSERVICE_REGISTER_MACRO(ServiceImpl, ServiceObject)
 
 #define FWSERVICE_REGISTER_MACRO_3(service_t, ServiceImpl, ServiceObject) \
-    FWSERVICE_REGISTER_MACRO(service_t, ServiceImpl) \
-    FWSERVICE_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject)
+        FWSERVICE_REGISTER_MACRO(service_t, ServiceImpl) \
+        FWSERVICE_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject)
 
 /**
  * @brief Service object type association including all string-based registration
@@ -61,11 +61,11 @@ namespace sight::service
 #define SIGHT_REGISTER_SERVICE(...) BOOST_PP_OVERLOAD(FWSERVICE_REGISTER_MACRO_, __VA_ARGS__)(__VA_ARGS__)
 #else
 #define SIGHT_REGISTER_SERVICE(...) \
-    BOOST_PP_CAT(BOOST_PP_OVERLOAD(FWSERVICE_REGISTER_MACRO_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
+        BOOST_PP_CAT(BOOST_PP_OVERLOAD(FWSERVICE_REGISTER_MACRO_, __VA_ARGS__)(__VA_ARGS__), BOOST_PP_EMPTY())
 #endif
 
 #define SIGHT_REGISTER_SERVICE_OBJECT(ServiceImpl, ServiceObject) \
-    FWSERVICE_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject)
+        FWSERVICE_REGISTER_OBJECT_MACRO(ServiceImpl, ServiceObject)
 
 //@}
 

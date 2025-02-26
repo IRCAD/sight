@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2024 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,7 +86,7 @@ void render_stats::configuring()
 
     const std::string color       = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
     data::color::sptr sight_color = std::make_shared<data::color>();
-    sight_color->set_rgba(color);
+    sight_color->from_string(color);
 
     m_text_color = Ogre::ColourValue(sight_color->red(), sight_color->green(), sight_color->blue());
 
@@ -97,7 +97,7 @@ void render_stats::configuring()
 
 void render_stats::starting()
 {
-    this->initialize();
+    adaptor::init();
 
     sight::viz::scene3d::render::sptr render_srv = this->render_service();
     render_srv->make_current();
@@ -133,6 +133,8 @@ void render_stats::stopping()
 
     m_listener.reset();
     m_stats_text = nullptr;
+
+    adaptor::deinit();
 }
 
 //------------------------------------------------------------------------------

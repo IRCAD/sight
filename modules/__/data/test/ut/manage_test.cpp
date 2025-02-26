@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #include "manage_test.hpp"
 
-#include <data/composite.hpp>
+#include <data/map.hpp>
 #include <data/series.hpp>
 #include <data/series_set.hpp>
 #include <data/string.hpp>
@@ -51,10 +51,10 @@ void manage_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void manage_test::generic_add_in_composite_test(const std::string& _slot_name, bool _already_present)
+void manage_test::generic_add_in_map_test(const std::string& _slot_name, bool _already_present)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
-    auto container = std::make_shared<sight::data::composite>();
+    auto container = std::make_shared<sight::data::map>();
     if(_already_present)
     {
         (*container)["myKey"] = object;
@@ -63,7 +63,7 @@ void manage_test::generic_add_in_composite_test(const std::string& _slot_name, b
     m_manage->set_inout(object, "object");
     m_manage->set_inout(container, "container");
     boost::property_tree::ptree ptree;
-    ptree.put("compositeKey", "myKey");
+    ptree.put("mapKey", "myKey");
     m_manage->set_config(ptree);
     CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
     CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
@@ -204,9 +204,9 @@ void manage_test::generic_add_in_field_test(const std::string& _slot_name, bool 
 
 //------------------------------------------------------------------------------
 
-void manage_test::add_in_composite_test()
+void manage_test::add_in_map_test()
 {
-    generic_add_in_composite_test("add");
+    generic_add_in_map_test("add");
 }
 
 //------------------------------------------------------------------------------
@@ -232,9 +232,9 @@ void manage_test::add_in_field_test()
 
 //------------------------------------------------------------------------------
 
-void manage_test::add_copy_in_composite_test()
+void manage_test::add_copy_in_map_test()
 {
-    generic_add_in_composite_test("add_copy");
+    generic_add_in_map_test("add_copy");
 }
 
 //------------------------------------------------------------------------------
@@ -260,9 +260,9 @@ void manage_test::add_copy_in_field_test()
 
 //------------------------------------------------------------------------------
 
-void manage_test::add_or_swap_and_not_present_in_composite_test()
+void manage_test::add_or_swap_and_not_present_in_map_test()
 {
-    generic_add_in_composite_test("add_or_swap");
+    generic_add_in_map_test("add_or_swap");
 }
 
 //------------------------------------------------------------------------------
@@ -288,9 +288,9 @@ void manage_test::add_or_swap_and_not_present_in_field_test()
 
 //------------------------------------------------------------------------------
 
-void manage_test::add_or_swap_and_present_in_composite_test()
+void manage_test::add_or_swap_and_present_in_map_test()
 {
-    generic_add_in_composite_test("add_or_swap", true);
+    generic_add_in_map_test("add_or_swap", true);
 }
 
 //------------------------------------------------------------------------------
@@ -316,9 +316,9 @@ void manage_test::add_or_swap_and_present_in_field_test()
 
 //------------------------------------------------------------------------------
 
-void manage_test::swap_obj_in_composite_test()
+void manage_test::swap_obj_in_map_test()
 {
-    generic_add_in_composite_test("swapObj");
+    generic_add_in_map_test("swapObj");
 }
 
 //------------------------------------------------------------------------------
@@ -337,16 +337,16 @@ void manage_test::swap_obj_and_present_in_field_test()
 
 //------------------------------------------------------------------------------
 
-void manage_test::generic_remove_in_composite_test(const std::string& _slot_name)
+void manage_test::generic_remove_in_map_test(const std::string& _slot_name)
 {
     auto object    = std::make_shared<sight::data::string>("Hello world");
-    auto container = std::make_shared<sight::data::composite>();
+    auto container = std::make_shared<sight::data::map>();
     (*container)["myKey"] = object;
 
     m_manage->set_inout(object, "object");
     m_manage->set_inout(container, "container");
     boost::property_tree::ptree ptree;
-    ptree.put("compositeKey", "myKey");
+    ptree.put("mapKey", "myKey");
     m_manage->set_config(ptree);
     CPPUNIT_ASSERT_NO_THROW(m_manage->configure());
     CPPUNIT_ASSERT_NO_THROW(m_manage->start().get());
@@ -416,9 +416,9 @@ void manage_test::generic_remove_in_field_test(const std::string& _slot_name)
 
 //------------------------------------------------------------------------------
 
-void manage_test::remove_in_composite_test()
+void manage_test::remove_in_map_test()
 {
-    generic_remove_in_composite_test("remove");
+    generic_remove_in_map_test("remove");
 }
 
 //------------------------------------------------------------------------------
@@ -444,9 +444,9 @@ void manage_test::remove_in_field_test()
 
 //------------------------------------------------------------------------------
 
-void manage_test::remove_if_present_in_composite_test()
+void manage_test::remove_if_present_in_map_test()
 {
-    generic_remove_in_composite_test("removeIfPresent");
+    generic_remove_in_map_test("removeIfPresent");
 }
 
 //------------------------------------------------------------------------------
@@ -473,9 +473,9 @@ void manage_test::remove_if_present_in_field_test()
 
 //------------------------------------------------------------------------------
 
-void manage_test::clear_composite_test()
+void manage_test::clear_map_test()
 {
-    generic_remove_in_composite_test("clear");
+    generic_remove_in_map_test("clear");
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2024 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ text_status::~text_status()
 
 void text_status::configuring()
 {
-    const QString service_id = QString::fromStdString(get_id().substr(get_id().find_last_of('_') + 1));
+    const QString service_id = QString::fromStdString(base_id());
 
     m_label_value = new QLabel();
     m_label_value->setAlignment(Qt::AlignBottom | Qt::AlignLeft);

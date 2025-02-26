@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -143,7 +143,7 @@ void point::set_label(const std::string& _label)
 
 bool point::operator==(const point& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_v_coord, _other.m_v_coord))
+    if(!core::is_equal(m_v_coord, _other.m_v_coord))
     {
         return false;
     }

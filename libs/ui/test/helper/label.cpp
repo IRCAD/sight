@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,11 +31,11 @@ namespace sight::ui::test::helper
 void label::tool_tip_matches(tester& _tester, const selector& _label, const std::string& _expected)
 {
     auto bt = _tester.add_in_backtrace(
-        "checking if \"" + _label.get_description(_tester) + "\" label tooltip is equal to \"" + _expected + '"'
+        "checking if '" + _label.get_description(_tester) + "' label tooltip is equal to '" + _expected + "'"
     );
     _label.select(_tester);
     _tester.doubt<QLabel*>(
-        '"' + _label.get_description(_tester) + "\" label tooltip should be equal to \"" + _expected + '"',
+        "'" + _label.get_description(_tester) + "' label tooltip should be equal to '" + _expected + "'",
         [&_expected](QLabel* _obj){return _obj->toolTip() == QString::fromStdString(_expected);});
 }
 
@@ -44,11 +44,11 @@ void label::tool_tip_matches(tester& _tester, const selector& _label, const std:
 void label::contain(tester& _tester, const selector& _label, const std::string& _expected)
 {
     auto bt = _tester.add_in_backtrace(
-        "checking if \"" + _label.get_description(_tester) + "\" label contains \"" + _expected + '"'
+        "checking if '" + _label.get_description(_tester) + "' label contains '" + _expected + "'"
     );
     _label.select(_tester);
     _tester.doubt<QLabel*>(
-        '"' + _label.get_description(_tester) + "\" label should contain \"" + _expected + '"',
+        "'" + _label.get_description(_tester) + "' label should contain '" + _expected + "'",
         [&_expected](QLabel* _obj)
         {
             return _obj->text().contains(QString::fromStdString(_expected));
@@ -60,11 +60,12 @@ void label::contain(tester& _tester, const selector& _label, const std::string& 
 void label::exactly_match(tester& _tester, const selector& _label, const std::string& _expected)
 {
     auto bt = _tester.add_in_backtrace(
-        "checking if \"" + _label.get_description(_tester) + "\" label is equal to \"" + _expected + '"'
+        "checking if '" + _label.get_description(_tester) + "' label is equal to '" + _expected + "'"
     );
     _label.select(_tester);
     _tester.doubt<QLabel*>(
-        '"' + _label.get_description(_tester) + "\" label should be equal to \"" + _expected + '"',
+        "'" + _label.get_description(_tester) + "' label should be equal to '" + _expected
+        + "' (current: " + _tester.get<QLabel*>()->text().toStdString() + ")",
         [&_expected](QLabel* _obj)
         {
             return _obj->text() == QString::fromStdString(_expected);
@@ -76,12 +77,14 @@ void label::exactly_match(tester& _tester, const selector& _label, const std::st
 void label::equal(tester& _tester, const selector& _label, double _expected, double _tolerance, QRegExp _re)
 {
     auto bt = _tester.add_in_backtrace(
-        "checking if \"" + _label.get_description(_tester) + "\" label is equal to "
+        "checking if '" + _label.get_description(_tester) + "' label is equal to "
         + std::to_string(_expected) + " (with " + std::to_string(_tolerance) + " tolerance)"
     );
     _label.select(_tester);
+    _tester.get<QLabel*>()->text().indexOf(_re);
     _tester.doubt<QLabel*>(
-        '"' + _label.get_description(_tester) + "\" label should be equal to " + std::to_string(_expected),
+        "'" + _label.get_description(_tester) + "' label should be equal to '" + std::to_string(_expected)
+        + "' (current: " + _re.cap(1).toStdString() + ")",
         [&_expected, &_tolerance, &_re](QLabel* _obj)
         {
             _obj->text().indexOf(_re);

@@ -109,7 +109,7 @@ struct SIGHT_ACTIVITY_CLASS_API activity_requirement
     /// parameter type (ie. data::image_series)
     std::string type;
 
-    /// data container if maxOccurs > 1 ("vector" or "composite", default: "composite")
+    /// data container if maxOccurs > 1 ("vector" or "map", default: "map")
     std::string container;
 
     /// parameter description
@@ -127,7 +127,7 @@ struct SIGHT_ACTIVITY_CLASS_API activity_requirement
     /// True if the data must be created if it is not present (only if minOccurs = 0 and maxOccurs = 1)
     bool create {};
 
-    /// Parameter key if the container == "composite"
+    /// Parameter key if the container == "map"
     key_t keys;
 
     /// Child configuration, used for instance when invoking object parsers
@@ -145,12 +145,12 @@ struct SIGHT_ACTIVITY_CLASS_API activity_requirement
  * - \b icon : path to the icon activity
  * - \b requirements : required elements to launch specified activity (must be present in vector selection)
  *   - \b requirement : a required element
- *     - \b name : element key in Activity composite
+ *     - \b name : element key in Activity map
  *     - \b type : object type
  *     - \b minOccurs (optional, default value = 1) : minimal number of object (with specified type) in vector
  *     - \b maxOccurs (optional, default value = 1) : maximal number of object (with specified type) in vector
  *       - \b key : if maxOccurs > 1, then you must defined keys for each objects
- *     - \b container (optional, default value = composite) : container type (vector or composite) to store required
+ *     - \b container (optional, default value = map) : container type (vector or map) to store required
  *       parameters
  *     - \b create (optional) : true if the data must be created if it is not present (only available if minOccurs = 0
  *       and maxOccurs = 1)

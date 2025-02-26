@@ -95,11 +95,13 @@ constexpr int get_max_length_of_thread_name()
 
 class timer; // NOLINT(bugprone-forward-declaration-namespace)
 
+// cspell:ignore tparam
+
 /**
  * @brief   This class creates and manages a task loop.
  * The default implementation create a loop in a new thread.
  */
-class SIGHT_CORE_CLASS_API worker : public core::base_object
+class SIGHT_CORE_CLASS_API worker
 {
 public:
 
@@ -108,11 +110,10 @@ public:
     using exit_return_type = std::any;
 
     using future_t = std::shared_future<exit_return_type>;
+    using sptr     = std::shared_ptr<worker>;
 
-    SIGHT_DECLARE_CLASS(worker, core::base_object);
-
-    worker()
-    = default;
+    worker()          = default;
+    virtual ~worker() = default;
 
     /// Waits for the last task to be processed and stops the loop
     SIGHT_CORE_API virtual void stop() = 0;

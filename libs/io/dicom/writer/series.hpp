@@ -48,11 +48,7 @@ class SIGHT_IO_DICOM_CLASS_API series : public io::writer::generic_object_writer
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        series,
-        io::writer::generic_object_writer<data::series>,
-        io::writer::factory::make<series>
-    );
+    SIGHT_DECLARE_CLASS(series, io::writer::generic_object_writer<data::series>);
 
     //cspell: ignore ComprehensiveSRIOD Comprehensive3DSRIOD
     enum fiducials_export_mode

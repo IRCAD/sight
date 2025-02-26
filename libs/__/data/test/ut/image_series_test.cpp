@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,12 @@
 #include <core/type.hpp>
 
 #include <utest_data/generator/image.hpp>
+
+#include <gdcmDataSet.h>
+#include <gdcmExplicitDataElement.h>
+#include <gdcmTagKeywords.h>
+#include <gdcmTagToVR.h>
+#include <gdcmUIDs.h>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::image_series_test);
@@ -72,7 +78,30 @@ void image_series_test::equality_test()
 
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->set_modality("1");
+    series1->set_origin({1.0, 2.0, 3.0});
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_origin(series1->origin());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_orientation({0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6});
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_orientation(series1->orientation());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    // Also test origin and orientation with a different SOP.
+    // A different SOP means that the data may be stored in a different location in DICOM data
+    series1->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+    series2->set_sop_keyword(series1->get_sop_keyword());
+    series1->set_origin({4.0, 5.0, 6.0});
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_origin(series1->origin());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+    series1->set_orientation({0, 1, 0, -1, 0, 0, 0, 0, 1});
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->set_orientation(series1->orientation());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->set_modality(data::dicom::modality_t::us);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->set_modality(series1->get_modality());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
@@ -331,6 +360,156 @@ void image_series_test::resize_test()
 
     series2->deep_copy(series1);
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+}
+
+//------------------------------------------------------------------------------
+
+void image_series_test::origin_orientation_test()
+{
+    // In row major order
+    static constexpr data::image::origin_t s_ORIGIN {1.0, 2.0, 3.0};
+    static constexpr data::image::orientation_t s_ORIENTATION {
+        0.36, -0.8, 0.48,
+        0.48, 0.6, 0.64,
+        -0.8, 0.0, 0.6
+    };
+
+    // Test no defined SOP
+    {
+        auto image_series = std::make_shared<data::image_series>();
+
+        // Set values using standard setters and check standard getters
+        image_series->set_origin(s_ORIGIN);
+        CPPUNIT_ASSERT(core::is_equal(image_series->origin(), s_ORIGIN));
+
+        image_series->set_orientation(s_ORIENTATION);
+        CPPUNIT_ASSERT(core::is_equal(image_series->orientation(), s_ORIENTATION));
+
+        // Check also DICOM values
+        const auto& dataset = image_series->get_data_set();
+
+        gdcm::Keywords::ImagePositionPatient position_attribute;
+        position_attribute.SetFromDataSet(dataset);
+        const auto position = std::vector(
+            position_attribute.GetValues(),
+            position_attribute.GetValues() + position_attribute.GetNumberOfValues()
+        );
+
+        CPPUNIT_ASSERT(core::is_equal(s_ORIGIN, position));
+
+        gdcm::Keywords::ImageOrientationPatient orientation_attribute;
+        orientation_attribute.SetFromDataSet(dataset);
+        const auto orientation = std::vector(
+            orientation_attribute.GetValues(),
+            orientation_attribute.GetValues() + orientation_attribute.GetNumberOfValues()
+        );
+
+        // DICOM only uses 6 cosines in column-major order
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(s_ORIENTATION[0], orientation[0], 1e-6);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(s_ORIENTATION[1], orientation[3], 1e-6);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(s_ORIENTATION[3], orientation[1], 1e-6);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(s_ORIENTATION[4], orientation[4], 1e-6);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(s_ORIENTATION[6], orientation[2], 1e-6);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(s_ORIENTATION[7], orientation[5], 1e-6);
+    }
+
+    // Test EnhancedUSVolumeStorage with no acquisition geometry
+    {
+        auto image_series = std::make_shared<data::image_series>();
+        image_series->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+
+        // Set values using standard setters and check standard getters
+        image_series->set_origin(s_ORIGIN);
+        CPPUNIT_ASSERT(core::is_equal(image_series->origin(), s_ORIGIN));
+
+        image_series->set_orientation(s_ORIENTATION);
+        CPPUNIT_ASSERT(core::is_equal(image_series->orientation(), s_ORIENTATION));
+
+        // Check also DICOM values
+        const auto& dataset = image_series->get_data_set();
+
+        gdcm::Keywords::ImagePositionPatient position_attribute;
+        position_attribute.SetFromDataSet(dataset);
+        const auto position = std::vector(
+            position_attribute.GetValues(),
+            position_attribute.GetValues() + position_attribute.GetNumberOfValues()
+        );
+
+        CPPUNIT_ASSERT(core::is_equal(s_ORIGIN, position));
+
+        gdcm::Keywords::ImageOrientationPatient orientation_attribute;
+        orientation_attribute.SetFromDataSet(dataset);
+        const auto orientation = std::vector(
+            orientation_attribute.GetValues(),
+            orientation_attribute.GetValues() + orientation_attribute.GetNumberOfValues()
+        );
+
+        // DICOM only uses 6 cosines in column-major order
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(s_ORIENTATION[0], orientation[0], 1e-6);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(s_ORIENTATION[1], orientation[3], 1e-6);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(s_ORIENTATION[3], orientation[1], 1e-6);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(s_ORIENTATION[4], orientation[4], 1e-6);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(s_ORIENTATION[6], orientation[2], 1e-6);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(s_ORIENTATION[7], orientation[5], 1e-6);
+    }
+
+    // Test EnhancedUSVolumeStorage in APEX acquisition geometry
+    {
+        auto image_series = std::make_shared<data::image_series>();
+        image_series->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+        image_series->set_ultrasound_acquisition_geometry(data::dicom::ultrasound_acquisition_geometry_t::apex);
+
+        // Set values using standard setters and check standard getters
+        image_series->set_origin(s_ORIGIN);
+        CPPUNIT_ASSERT(core::is_equal(image_series->origin(), s_ORIGIN));
+
+        image_series->set_orientation(s_ORIENTATION);
+        CPPUNIT_ASSERT(core::is_equal(image_series->orientation(), s_ORIENTATION));
+
+        // Check also DICOM values
+        const auto& dataset = image_series->get_data_set();
+
+        gdcm::Keywords::VolumeToTransducerMappingMatrix attribute;
+        attribute.SetFromDataSet(dataset);
+
+        const auto values = std::vector(
+            attribute.GetValues(),
+            attribute.GetValues() + attribute.GetNumberOfValues()
+        );
+
+        matrix4 mapping(values);
+        CPPUNIT_ASSERT(core::is_equal(s_ORIGIN, mapping.position()));
+        CPPUNIT_ASSERT(core::is_equal(s_ORIENTATION, mapping.orientation()));
+    }
+
+    // Test EnhancedUSVolumeStorage in patient acquisition geometry
+    {
+        auto image_series = std::make_shared<data::image_series>();
+        image_series->set_sop_keyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+        image_series->set_ultrasound_acquisition_geometry(data::dicom::ultrasound_acquisition_geometry_t::patient);
+
+        // Set values using standard setters and check standard getters
+        image_series->set_origin(s_ORIGIN);
+        CPPUNIT_ASSERT(core::is_equal(image_series->origin(), s_ORIGIN));
+
+        image_series->set_orientation(s_ORIENTATION);
+        CPPUNIT_ASSERT(core::is_equal(image_series->orientation(), s_ORIENTATION));
+
+        // Check also DICOM values
+        const auto& dataset = image_series->get_data_set();
+
+        gdcm::Keywords::VolumeToTableMappingMatrix attribute;
+        attribute.SetFromDataSet(dataset);
+
+        const auto values = std::vector(
+            attribute.GetValues(),
+            attribute.GetValues() + attribute.GetNumberOfValues()
+        );
+
+        matrix4 mapping(values);
+        CPPUNIT_ASSERT(core::is_equal(s_ORIGIN, mapping.position()));
+        CPPUNIT_ASSERT(core::is_equal(s_ORIENTATION, mapping.orientation()));
+    }
 }
 
 //------------------------------------------------------------------------------

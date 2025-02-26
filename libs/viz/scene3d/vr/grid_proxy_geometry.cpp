@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,19 +63,12 @@ grid_proxy_geometry* grid_proxy_geometry::make(
     instance->m_mask_texture         = _mask_texture;
     instance->m_gpu_tf               = _tf;
 
-    Ogre::MaterialPtr mat =
-        Ogre::MaterialManager::getSingleton().getByName(
-            std::string(_name) + "_" + _mtl_name,
-            RESOURCE_GROUP
-        );
+    auto& mgr = Ogre::MaterialManager::getSingleton();
+    auto mat  = mgr.getByName(core::id::join(_name, _mtl_name), RESOURCE_GROUP);
 
     if(!mat)
     {
-        mat =
-            Ogre::MaterialManager::getSingleton().getByName(
-                _mtl_name,
-                RESOURCE_GROUP
-            )->clone(std::string(_name) + "_" + _mtl_name);
+        mat = mgr.getByName(_mtl_name, RESOURCE_GROUP)->clone(core::id::join(_name, _mtl_name));
     }
 
     instance->setMaterial(mat);
@@ -132,7 +125,7 @@ void grid_proxy_geometry::initialize()
         m_grid_viewport_camera = mManager->createCamera(mName + "_GridVolumeCamera");
     }
 
-    this->initialize_r2_vb_source();
+    this->initialize_r2vb_source();
     this->initialize_grid_materials();
 }
 
@@ -166,7 +159,7 @@ void grid_proxy_geometry::update_grid_size()
 
 //------------------------------------------------------------------------------
 
-void grid_proxy_geometry::initialize_r2_vb_source()
+void grid_proxy_geometry::initialize_r2vb_source()
 {
     if(m_r2vb_source == nullptr)
     {

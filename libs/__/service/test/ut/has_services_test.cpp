@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,11 +78,11 @@ struct testhas_services : public service::has_services
             test_service->set_inout(data3, "data3", true);
             test_service->start().wait();
 
-            CPPUNIT_ASSERT(!test_service->get_is_updated());
+            CPPUNIT_ASSERT(!test_service->is_updated());
             CPPUNIT_ASSERT(!test_service->get_received());
 
             sig1->emit();
-            CPPUNIT_ASSERT(test_service->get_is_updated());
+            CPPUNIT_ASSERT(test_service->is_updated());
             sig2->emit();
             CPPUNIT_ASSERT(!test_service->get_received());
             sig3->emit();
@@ -93,14 +93,14 @@ struct testhas_services : public service::has_services
             auto test_service = this->register_service<service::ut::test_srv>("sight::service::ut::test3_inouts_v2");
             test_service->set_inout(data1, "data1", true);
             test_service->set_inout(data2, "data2", true);
-            test_service->set_inout(data3, "data3");
+            test_service->set_inout(data3, "data3", false);
             test_service->start().wait();
 
-            CPPUNIT_ASSERT(!test_service->get_is_updated());
+            CPPUNIT_ASSERT(!test_service->is_updated());
             CPPUNIT_ASSERT(!test_service->get_received());
 
             sig1->emit();
-            CPPUNIT_ASSERT(test_service->get_is_updated());
+            CPPUNIT_ASSERT(test_service->is_updated());
             sig3->emit();
             CPPUNIT_ASSERT(!test_service->get_received());
             sig2->emit();
@@ -112,14 +112,14 @@ struct testhas_services : public service::has_services
             auto test_service = this->register_service<service::ut::test_srv>("sight::service::ut::test3_inouts_v2");
             test_service->set_inout(data1, "data1", true);
             test_service->set_inout(data2, "data2", true);
-            test_service->set_inout(data3, "data3");
+            test_service->set_inout(data3, "data3", false);
             test_service->start().wait();
 
-            CPPUNIT_ASSERT(!test_service->get_is_updated());
+            CPPUNIT_ASSERT(!test_service->is_updated());
             CPPUNIT_ASSERT(!test_service->get_received());
 
             sig1->emit();
-            CPPUNIT_ASSERT(test_service->get_is_updated());
+            CPPUNIT_ASSERT(test_service->is_updated());
             sig3->emit();
             CPPUNIT_ASSERT(!test_service->get_received());
             sig2->emit();
@@ -291,11 +291,11 @@ struct testhas_services : public service::has_services
             test_service->set_input(data1, "data1", true, false);
             test_service->start().wait();
 
-            CPPUNIT_ASSERT(!test_service->get_is_updated());
+            CPPUNIT_ASSERT(!test_service->is_updated());
             CPPUNIT_ASSERT(!test_service->get_received());
 
             sig1->emit();
-            CPPUNIT_ASSERT(test_service->get_is_updated());
+            CPPUNIT_ASSERT(test_service->is_updated());
 
             test_service->set_input(data2, "data2", false, true);
             test_service->swap_key("data2", nullptr).wait();

@@ -28,7 +28,7 @@
 #include "io/session/macros.hpp"
 
 #include <data/activity.hpp>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 #include <ranges>
 namespace sight::io::session
@@ -82,8 +82,8 @@ inline static data::activity::sptr read(
     // Deserialize children properties
     if(version < 2)
     {
-        auto composite = std::dynamic_pointer_cast<data::composite>(_children.at(DATA));
-        std::ranges::copy(*composite, std::inserter(*activity, activity->begin()));
+        auto map = std::dynamic_pointer_cast<data::map>(_children.at(DATA));
+        std::ranges::copy(*map, std::inserter(*activity, activity->begin()));
     }
     else
     {

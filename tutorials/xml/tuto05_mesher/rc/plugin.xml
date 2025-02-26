@@ -7,10 +7,10 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Deferred Mesh object associated to the uid 'myMesh' -->
-            <object uid="myMesh" type="sight::data::mesh" src="deferred" />
+            <object uid="myMesh" type="sight::data::mesh" deferred="true" />
 
             <!-- Deferred ModelSeries object associated to the key 'myModelSeries' -->
-            <object uid="myModelSeries" type="sight::data::model_series" src="deferred" />
+            <object uid="myModelSeries" type="sight::data::model_series" deferred="true" />
 
             <!-- ImageSeries object associated to the key 'imageSeries' -->
             <object uid="imageSeries" type="sight::data::image_series" />
@@ -109,7 +109,7 @@
             <service uid="mesherSrv" type="sight::module::filter::mesh::vtk_mesher">
                 <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="myModelSeries" />
-                <config percentReduction="0" threshold="255" />
+                <config percent_reduction="0" threshold="255" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
@@ -124,7 +124,7 @@
                 Visualization, reading and writing service creation.
             -->
             <service uid="imageSrv" type="sight::module::viz::sample::image">
-                <in key="image" uid="imageSeries" auto_connect="true" />
+                <in key="image" uid="imageSeries" />
             </service>
 
             <service uid="imageReaderSrv" type="sight::module::ui::io::selector">

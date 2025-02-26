@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2024 IRCAD France
+ * Copyright (C) 2015-2025 IRCAD France
  * Copyright (C) 2015-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include <sight/data/config.hpp>
 
 #include <core/clock.hpp>
+#include <core/compound_types.hpp>
 
 #include <array>
 #include <cstdint>
@@ -53,11 +54,18 @@ struct  picking_info
         mouse_middle_down,
         mouse_wheelbackward,
         mouse_move,
-        key_press,
+        key_press
     };
 
     /// Position clicked in world coordinates
-    std::array<double, 3> m_world_pos {};
+    sight::vec3d_t m_world_pos {};
+
+    /// Position clicked in pixel coordinates
+    sight::vec2d_t m_pixel_pos {};
+
+    /// Viewport size in pixels
+    sight::vec2d_t m_viewport_size {};
+
     /// Id of the cell
     int m_cell_id = -1;
     /// Id of the closest point

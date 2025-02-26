@@ -89,7 +89,7 @@ protected:
     /// Registers the given object in the OSR
     void add(sight::data::object::sptr _obj);
 
-    /// Adds the object from the composite with the key given by config.
+    /// Adds the object from the map with the key given by config.
     void remove();
     /// @}
 

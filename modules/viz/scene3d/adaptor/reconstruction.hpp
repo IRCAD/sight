@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,7 @@
 #include <data/reconstruction.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
+#include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/transformable.hpp>
 
 namespace sight::data
@@ -45,12 +46,10 @@ namespace sight::module::viz::scene3d::adaptor
  * @brief This adaptor displays a reconstruction.
  *
  * @section Slots Slots
- * - \b changeMesh(data::mesh::sptr): called when the associated mesh changes.
+ * - \b update(): called when the associated mesh changes.
  * - \b update_visibility(bool): sets whether the reconstruction is to be seen or not.
- * - \b toggle_visibility(): toggle whether the reconstruction is shown or not.
  * - \b show(): shows the reconstruction.
  * - \b hide(): hides the reconstruction.
- * - \b modifyVisibility(): called to show or hide the reconstruction.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -70,17 +69,13 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b queryFlags (optional, unit32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *      match the flag.
  */
-class reconstruction final :
-    public sight::viz::scene3d::adaptor,
-    public sight::viz::scene3d::transformable
+class reconstruction final : public sight::viz::scene3d::adaptor,
+                             public sight::viz::scene3d::transformable
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(reconstruction, sight::viz::scene3d::adaptor);
-
-    /// Initialise slots.
-    reconstruction() noexcept;
 
     /// Destroys the adaptor.
     ~reconstruction() noexcept final = default;
@@ -121,8 +116,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::reconstruction::MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to CHANGE_MESH_SLOT
-     * Connect data::reconstruction::VISIBILITY_MODIFIED_SIG of s_RECONSTRUCTION_INPUT to VISIBILITY_SLOT
+     * Connect data::reconstruction::MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to adaptor::slots::LAZY_UPDATE
      */
     service::connections_t auto_connections() const final;
 
@@ -140,12 +134,6 @@ protected:
 
 private:
 
-    /// Changes the attached mesh.
-    void change_mesh(data::mesh::sptr /*unused*/);
-
-    /// Modifies the visibility.
-    void modify_visibility();
-
     /// Creates the mesh service.
     void create_mesh_service();
 
@@ -156,7 +144,7 @@ private:
     bool m_auto_reset_camera {true};
 
     /// Defines the material name.
-    std::string m_material_template_name {sight::viz::scene3d::material::DEFAULT_MATERIAL_TEMPLATE_NAME};
+    std::string m_material_template_name {sight::viz::scene3d::material::standard::TEMPLATE};
 
     /// Defines if the mesh changes dynamically.
     bool m_is_dynamic {false};
@@ -168,7 +156,7 @@ private:
     std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     static constexpr std::string_view RECONSTRUCTION_INPUT = "reconstruction";
-    data::ptr<data::reconstruction, data::access::in> m_reconstruction {this, RECONSTRUCTION_INPUT, true};
+    data::ptr<data::reconstruction, data::access::in> m_reconstruction {this, RECONSTRUCTION_INPUT};
 };
 
 //------------------------------------------------------------------------------

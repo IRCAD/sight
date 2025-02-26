@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2024 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -153,16 +153,16 @@ void model_series_test::equality_test()
 
     // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
     #define TEST(op) \
-    series1->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Series must be different when using " #op " on the first one", \
-        *series1 != *series2 && !(*series1 == *series2) \
-    ); \
-    series2->op; \
-    CPPUNIT_ASSERT_MESSAGE( \
-        "Series must be equal when using " #op " on both", \
-        *series1 == *series2 && !(*series1 != *series2) \
-    );
+            series1->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Series must be different when using " #op " on the first one", \
+                *series1 != *series2 && !(*series1 == *series2) \
+            ); \
+            series2->op; \
+            CPPUNIT_ASSERT_MESSAGE( \
+                "Series must be equal when using " #op " on both", \
+                *series1 == *series2 && !(*series1 != *series2) \
+            );
 
     TEST(set_reconstruction_db({std::make_shared<data::reconstruction>()}));
     TEST(set_dicom_reference(std::make_shared<data::dicom_series>()));

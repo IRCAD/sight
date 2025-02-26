@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -890,7 +890,11 @@ void macro_saver::save()
                && (iha = static_cast<interaction_helper_api*>(post_interactions.back().get()))->method_name
                == "PreferencesConfiguration::fill")
             {
-                if(!iha->args[0].contains(QString("\"%1\"").arg(pre_post_interactions[i]->how_to_find_receiver[0].string)))
+                if(!iha->args[0].contains(
+                       QString("\"%1\"").arg(
+                           pre_post_interactions[i]->how_to_find_receiver[0].string
+                       )
+                ))
                 {
                     iha->args[0] += QString(", " + arg);
                 }
@@ -1405,7 +1409,7 @@ void macro_saver::save()
     s_WRITE(cpp, 4, "const std::filesystem::path cwd = std::filesystem::path(");
     s_WRITE(cpp, 8, "boost::dll::this_line_location().parent_path().parent_path().string()");
     s_WRITE(cpp, 4, ");");
-    std::filesystem::path absolute_profile_path(sight::core::runtime::get_current_profile()->get_file_path());
+    std::filesystem::path absolute_profile_path(sight::core::runtime::get_current_profile()->file_path());
     QString profile_path(QString::fromStdString(std::filesystem::relative(absolute_profile_path).string()));
     s_WRITE(cpp, 4, QString("return cwd / \"%1\";").arg(profile_path).toLatin1());
     s_WRITE(cpp, 0, "}");

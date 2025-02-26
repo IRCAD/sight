@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2024 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,7 @@
 #include <data/real.hpp>
 
 #include <limits>
+#include <numbers>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::real_test);
@@ -49,8 +50,13 @@ void real_test::tearDown()
 
 void real_test::basic()
 {
-    constexpr std::array values =
-    {-3.14159265358979323851, 0.0, 2.04, 10., std::numeric_limits<double>::infinity()};
+    {
+        sight::data::real r;
+        CPPUNIT_ASSERT(r.is_type_of("sight::data::real"));
+        CPPUNIT_ASSERT(r.is_type_of("sight::data::string_serializable"));
+    }
+
+    constexpr std::array values     = {std::numbers::pi, 0.0, 2.04, 10., std::numeric_limits<double>::infinity()};
     constexpr std::array nan_values = {
         std::numeric_limits<double>::quiet_NaN(),
         std::numeric_limits<double>::signaling_NaN()

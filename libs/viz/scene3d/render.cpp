@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
-#include <data/composite.hpp>
+#include <data/map.hpp>
 
 #define FW_PROFILING_DISABLED
 #include <core/profiling.hpp>
@@ -44,7 +44,7 @@
 
 #include <stack>
 
-SIGHT_REGISTER_SERVICE(sight::viz::render, sight::viz::scene3d::render, sight::data::composite);
+SIGHT_REGISTER_SERVICE(sight::viz::render, sight::viz::scene3d::render, sight::data::map);
 
 namespace sight::viz::scene3d
 {
@@ -86,8 +86,8 @@ render::render() noexcept :
     new_slot(RENDER_SLOT, &render::render_now, this);
     new_slot(DISABLE_FULLSCREEN, &render::disable_fullscreen, this);
     new_slot(ENABLE_FULLSCREEN, &render::enable_fullscreen, this);
-    new_slot(SET_MANUAL_MODE, [this](){this->m_render_mode = render_mode::manual;});
-    new_slot(SET_AUTO_MODE, [this](){this->m_render_mode = render_mode::AUTO;});
+    new_slot(SET_MANUAL_MODE, [this](){this->set_render_mode(true);});
+    new_slot(SET_AUTO_MODE, [this](){this->set_render_mode(false);});
 }
 
 //-----------------------------------------------------------------------------
@@ -144,7 +144,8 @@ void render::configuring()
     auto& adaptor_registry = viz::scene3d::registry::get_adaptor_registry();
 
     /// New config
-    auto layer_configs = scene_cfg.equal_range("layer");
+    auto layer_configs       = scene_cfg.equal_range("layer");
+    std::size_t num_adaptors = 0;
     for(const auto& it_layer : boost::make_iterator_range(layer_configs))
     {
         const auto layer_id  = it_layer.second.get<std::string>("<xmlattr>.id");
@@ -153,12 +154,13 @@ void render::configuring()
         {
             const auto uid = it.second.get<std::string>("<xmlattr>.uid");
             adaptor_registry[uid] = {this->get_id(), layer_id};
+            m_adaptors_index[uid] = num_adaptors++;
         }
 
-        //create resetcamera_layerID slot
-        const core::com::slots::key_t resetcamera_slotkey = "reset_camera_" + layer_id;
-        auto reset_camera_layer_slot                      = new_slot(
-            resetcamera_slotkey,
+        //create reset_camera_layer_<id> slot
+        const core::com::slots::key_t reset_camera_slot_key = "reset_camera_" + layer_id;
+        auto reset_camera_layer_slot                        = new_slot(
+            reset_camera_slot_key,
             [this, layer_id]()
             {
                 this->reset_camera_coordinates(layer_id);
@@ -168,12 +170,21 @@ void render::configuring()
     }
 
     /// Old config
-    auto adaptor_configs = scene_cfg.equal_range("adaptor");
-    for(const auto& it : boost::make_iterator_range(adaptor_configs))
+    auto adaptor_configs = boost::make_iterator_range(scene_cfg.equal_range("adaptor"));
+    if(not adaptor_configs.empty())
+    {
+        FW_DEPRECATED_MSG("Declaring adaptors at scene level is deprecated, declare them at layer level.", "25.0");
+    }
+
+    for(const auto& it : adaptor_configs)
     {
         const auto uid = it.second.get<std::string>("<xmlattr>.uid");
         adaptor_registry[uid] = {this->get_id(), ""};
+        m_adaptors_index[uid] = num_adaptors++;
     }
+
+    /// Prepare adaptors list for registration
+    m_adaptors.resize(num_adaptors);
 }
 
 //-----------------------------------------------------------------------------
@@ -233,7 +244,7 @@ void render::starting()
         m_layers[OGREBACKGROUNDID] = ogre_layer;
     }
 
-    const std::string service_id = get_id().substr(get_id().find_last_of('_') + 1);
+    const std::string service_id = base_id();
     if(m_off_screen)
     {
         // Instantiate the manager that help to communicate between this service and the widget
@@ -280,6 +291,19 @@ void render::stopping()
 
 void render::updating()
 {
+    // Run the update on a copy of the adaptors list, because the adaptors update calls may add or remove sub-adaptors
+    std::vector<SPTR(viz::scene3d::adaptor)> adaptors;
+    std::ranges::copy(m_adaptors, std::back_inserter(adaptors));
+
+    for(const auto& adaptor : adaptors)
+    {
+        if(adaptor)
+        {
+            adaptor->request_update();
+        }
+    }
+
+    this->render_now();
 }
 
 //-----------------------------------------------------------------------------
@@ -316,18 +340,7 @@ void render::configure_layer(const config_t& _cfg)
         || stereo_mode == "Stereo"
     );
 
-    int layer_order        = 0;
-    const auto layer_depth = attributes.get_optional<int>("depth");
-    if(layer_depth)
-    {
-        FW_DEPRECATED_MSG("Attribute 'depth' is deprecated, please used 'order' instead", "22.0")
-        layer_order = layer_depth.get();
-    }
-    else
-    {
-        layer_order = attributes.get<int>("order");
-    }
-
+    const auto layer_order = attributes.get<int>("order");
     SIGHT_ASSERT("Attribute 'order' must be greater than 0", layer_order > 0);
 
     viz::scene3d::layer::sptr ogre_layer              = std::make_shared<viz::scene3d::layer>();
@@ -343,7 +356,7 @@ void render::configure_layer(const config_t& _cfg)
     ogre_layer->set_id(id);
     ogre_layer->set_order(layer_order);
     ogre_layer->set_worker(this->worker());
-    ogre_layer->set_core_compositor_enabled(true, transparency_technique, num_peels, layer_stereo_mode);
+    ogre_layer->set_core_compositor(transparency_technique, num_peels, layer_stereo_mode);
     ogre_layer->set_compositor_chain_enabled(compositors);
     ogre_layer->set_viewport_config(viewport_config);
 
@@ -508,6 +521,43 @@ void render::reset_cameras()
     }
 
     this->request_render();
+}
+
+//------------------------------------------------------------------------------
+
+void render::register_adaptor(const viz::scene3d::adaptor::sptr& _adaptor)
+{
+    if(const auto index = m_adaptors_index.find(_adaptor->get_id()); index != m_adaptors_index.end())
+    {
+        m_adaptors[index->second] = _adaptor;
+    }
+    else
+    {
+        m_adaptors_index[_adaptor->get_id()] = m_adaptors.size();
+        m_adaptors.push_back(_adaptor);
+    }
+
+    _adaptor->set_lazy(m_render_mode == render::render_mode::manual);
+}
+
+//-----------------------------------------------------------------------------
+
+void render::unregister_adaptor(const viz::scene3d::adaptor::sptr& _adaptor)
+{
+    m_adaptors[m_adaptors_index[_adaptor->get_id()]] = nullptr;
+}
+
+//------------------------------------------------------------------------------
+
+inline void render::set_render_mode(bool _manual) const
+{
+    for(const auto& adaptor : m_adaptors)
+    {
+        if(adaptor)
+        {
+            adaptor->set_lazy(_manual);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

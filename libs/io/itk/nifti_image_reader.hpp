@@ -39,11 +39,7 @@ class SIGHT_IO_ITK_CLASS_API nifti_image_reader : public reader::generic_object_
 {
 public:
 
-    SIGHT_DECLARE_CLASS(
-        nifti_image_reader,
-        io::reader::generic_object_reader<data::image>,
-        io::reader::factory::make<nifti_image_reader>
-    );
+    SIGHT_DECLARE_CLASS(nifti_image_reader, io::reader::generic_object_reader<data::image>);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     SIGHT_IO_ITK_API ~nifti_image_reader() override = default;

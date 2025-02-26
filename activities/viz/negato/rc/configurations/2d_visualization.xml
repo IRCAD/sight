@@ -1,9 +1,9 @@
 <extension implements="sight::app::extension::config">
     <id>2DVisualization</id>
     <parameters>
+        <object uid="imageSeries" type="sight::data::image_series" />
+
         <param name="WID_PARENT" />
-        <param name="imageSeries" />
-        <param name="landmarks" />
         <param name="advancedLandmarksEditor" default="true" />
         <param name="hasPreviousChannel" default="hasPreviousChannel" />
         <param name="hasNextChannel" default="hasNextChannel" />
@@ -11,9 +11,6 @@
         <param name="nextActivityChannel" default="nextActivityChannel" />
     </parameters>
     <config>
-        <object uid="${imageSeries}" type="sight::data::image_series" src="ref" />
-        <object uid="${landmarks}" type="sight::data::landmarks" src="ref" />
-
         <service uid="mainView" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::cardinal">
@@ -50,7 +47,6 @@
             <appConfig id="2DNegato" />
             <inout group="data">
                 <key name="image" uid="${imageSeries}" />
-                <key name="landmarks" uid="${landmarks}" />
             </inout>
             <parameter replace="WID_PARENT" by="view_negato1" />
             <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
@@ -62,7 +58,6 @@
             <appConfig id="2DNegato" />
             <inout group="data">
                 <key name="image" uid="${imageSeries}" />
-                <key name="landmarks" uid="${landmarks}" />
             </inout>
             <parameter replace="WID_PARENT" by="view_negato2" />
             <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
@@ -74,7 +69,6 @@
             <appConfig id="2DNegato" />
             <inout group="data">
                 <key name="image" uid="${imageSeries}" />
-                <key name="landmarks" uid="${landmarks}" />
             </inout>
             <parameter replace="WID_PARENT" by="view_negato3" />
             <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
