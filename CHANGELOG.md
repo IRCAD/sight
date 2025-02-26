@@ -1,3 +1,745 @@
+# sight 25.0.0
+
+## New features:
+
+### build
+
+*Update vcpkg package.*
+
+Allow optimized debug
+
+### ci
+
+*Use build image from sight-gitlab templates.*
+
+### core
+
+*Image orientation support.*
+
+This change ensures image orientation is used in filtering and visualisation.
+
+To help with the process and to factorize some code, the `sight`::data::image``class now has two functions `data::image::image_to_world()` and `data::image::world_to_image()` that convert image coordinates from/to world coordinates. They use internally `data::image::m_orientation`, `data`::image::m_origin``and `data`::image::m_spacing``and they are templated, so you can use any container that holds 3d coordinates, without having to use `{x, y, z}` construct to convert from/to Ogre, ITK, ...
+
+Notable modified classes/helpers:
+
+- volume_renderer
+- ray_tracing_volume_renderer
+- scene
+- negato3d
+- negato2d
+- negato2d_camera
+- medical_image
+- plane
+- image_extruder
+- resampler
+- ITK (reader, writer, converter)
+- VTK (reader, writer, converter)
+- image_center
+- propagator
+- slice_index_position_editor
+- ruler
+- shape
+- point
+
+*Add orientation attribute in image / image_series.*
+
+- Add unit tests
+- Fix wrong return type in matrix4::position() and  matrix4::orientation()
+
+*Improve timer precision on Windows.*
+
+This uses the native `timeBeginPeriod` function to force timer precision on Windows to be around the millisecond, otherwise, we can't go down below 1/64s.
+
+*Add camera parser for default video path.*
+
+- new camera parser that uses either sight resources path or an absolute file system path to default the camera to video file playing
+- update ex_video_recorder to use that parser
+feat(test): unitary test of camera parser
+
+*Logging rewrite.*
+
+#### No separate `sight_log` process anymore
+
+Everything is self-contained in the current `sightrun` process. The logging is, by default in debug builds, in full synchronous mode, from end-to-end. In case of a crash, it is guaranteed to have everything sent to log to be readable back (with a possible, but improbable, loss of 16 bytes when encryption is used). However, since the full synchronous mode is blocking, there may be a significant performance hit, since the compression and the encryption are done in the same thread as the caller, which in turn, also block all other threads, if logging occurs during the writing. To overcome this, in release builds, I propose to use an asynchronous mode, which do the "real" writing in a separated thread (managed by boost::log). This is a bit less safe, but since RAII model is used, there is still a very good chance that everything is well written, even in case of fatal exception. And, to be honest, it was a bit the same level of safety with the previous separated process, as the stream communication between process was also buffered.
+
+> :warning: zstd < 1.5 (for example, on ubuntu 22.04..) have a "flaw" that makes the block size to be "big", meaning we may loose a big chunk of data if interrupted (a block must be complete to be uncompressed). zstd >= 1.5 (like the one used in our VCPKG) ensure the "flush" command to complete a block, which is done on each log lines, ensuring we only "loose" the last lines. This explain why the associated unit test `crash_test` is somewhat "tolerant".
+
+> Of course we can discuss if we should be in asynchronous mode in release or always use the "safe" synchronous.
+
+#### No CMake `SIGHT_ENABLE_ENCRYPTED_LOG` anymore
+
+Log encryption is now enabled by `sightrun --encrypted-log` switch. However, the log will not be "really" encrypted, but only compressed, until a global password has been set, using, for example, the preferences dialog. See the `ex_acitivies` sample, especially the `CMakeLists.txt`, to learn how to ask a password from the user. As soon as the password is set or change and if the application has been started with `--encrypted-log` switch, a new log file "xxx.1.log.aes" will be created and the previous log "xxx.0.log.aes" will be relocated, recompressed and re-encrypted with the new password.
+
+#### No CMake `SIGHT_DEFAULT_PASSWORD` variable anymore
+
+SIGHT_DEFAULT_PASSWORD was used to pass a compile time "default" password, used to encrypt things without having to force the user to enter one. Even if the password was not stored in clear text in the binary, this was rather weak and confusing, so it has been removed. Consequently, there is no `password_keeper::has_default_password()` and `password_keeper::get_default_password()` have also been removed.
+
+#### spy_logger is no more only "global"
+
+You can now instantiate your own private logger using `spy_logger::make();`. The unit test `multiple_logger_test()` demonstrates the usage. You will not be able to use the sight macros (SIGHT_ERROR, ...) as they indeed use the global logger, but direct call to `spy_logger::error()`, `spy_logger::fatal()`, etc.
+
+The global spy_logger is now a global reference stored in `sight::core::log::g_logger`, available as soon as the `core` module is loaded.
+
+#### Archive_extractor now handles encrypted log
+
+A special extraction function `spy_logger::extract();` has been added, which is used in `sight`::module::io::zip::extract``to manage our new log format. Since the logs are no more a plain zip file, and because we want to recover truncate files, third party tools like 7zip are no more able to decompress them. If there is only compression (empty password) used, then it should be readable by any tool that reads zstd compressed file.
+
+#### Unit tests improvement
+
+The logging tests have been rewritten and improved ...and fixed, as there were some race condition, left test materials, hang process, etc.. Almost 100% test coverage on the related files.
+
+#### General fixes and improvements
+
+- Now, we test the return values and error codes from OpenSSL encryption functions → yes, some "features" that were based on "bugs" were fixed.
+- Proper OpenSSL initialization, and error management
+- Split the spy_logger implementation in `libs\__\core\log\detail\spy_logger_impl.hxx` and `libs\__\core\log\detail\stream_sink.hxx`. The stream_sink.hxx implements a `boost/iostreams/stream` which can be used elsewhere to have an ostream with transparent zstd compression, with aes256 encryption.
+- Clang-tidy fixes on old files
+- proper guard for `#include <boost/iostreams/stream.hpp>` which generate a fatal warning on Windows
+- Some cleanup
+
+*Raise an error when an unknown service is used in connections.*
+
+*Add missing properties in image series fiducials.*
+
+* Enable admin requests in unit tests: useful for unit tests requiring specific devices
+* Add additional dicom fields to be used
+* Forward missing fields from image_series to the associated fiducials
+
+*Introduce properties in services.*
+
+Services rely a lot on simple data such as algorithm parameters, using simple types such as
+numbers and strings. Manipulating these parameters always ends up requiring the same features:
+
+- initialization of the parameter in the XML configuration of the service,
+- dynamic update of the parameter through a slot,
+- persistence of the parameter during the runtime.
+
+To simplify the coding of these three features, we introduced the concept of service *properties*.
+
+For a complete description of this new exciting development feature, pleaser refer to
+https://sight.pages.ircad.fr/sight-doc/SAD/src/Properties.html
+
+*Add DICOM fields to manage source image.*
+
+Add functions to DICOM API in `series` to manage DICOM `SourceImageSequence` which allows making `DERIVED` image (ex: a reconstructed volume derived from US frames sequence):
+- `[s|g]et_image_type()`: Sets/gets the `ImageType` of the series. The `ImageType`  is a `\` separated string with the following format: `[Pixel Data Characteristics:ORIGINAL|DERIVED], [Patient Examination Characteristics:PRIMARY|SECONDARY], [modality specific:xxx|yyy|...], [zzz], ...`: See ImageType (0008,0008) DICOM tag. The exact definition is modality dependent, but the two first elements ([ORIGINAL|DERIVED] and [PRIMARY|SECONDARY]) are fixed. This allows to set a reconstructed volume as `DERIVED` and the original frame sequence as `ORIGINAL` and, optionally, other attributes.
+- `[s|g]et_referenced_sop_class_uid()` and `[s|g]et_referenced_sop_instance_uid()`: Sets/gets the referenced series. Both are required for a valid DICOM.
+- Preliminary work to simplify the fiducials DICOM API: code factorization (more can be done like introducing high level fiducials functions in `has_fiducials`)
+
+*Add new equipment and ultrasound properties to dicom series.*
+
+### io
+
+*Add support for DicomWeb in sight_viewer.*
+
+While sight_viewer is now the new main application delivered with Sight, it still lacks some features. For instance, it can connect to a PACS using DIMSE-C, but not through DicomWeb.
+
+*Use properties instead of xml configuration for readers/writers.*
+
+Base reader and writer has been improved to support <file>, <folder>, <resource> and windowTitle XML configuration as files, folder, resources and window_title properties. The XML configuration has been deprecated (but kept) and a unit test was added. Readers and writers that used the windowTitle configuration (mainly by defining a different "default"), were updated to use window_title property. This implies passing the class "default" to the super constructor.
+
+Breaking change(s)
+window_title property required a slight change in the API: using the super constructor for the class default and use *m_window_title to access the property when calling open_location_dialog().
+
+*Add some log about nvJPEG2000 usage.*
+
+### ui
+
+*Specify screen index for multiple frames.*
+
+- Add a `<screen index=xx />` attribute to force the displaying on a particular screen. The index is the screen index as returned by `QGuiApplication::screens()` which is the same as the Windows `display number - 1`.
+
+- Most shortcuts (menus, toolbars) are now "global", they work regardless of the current focused frame. The "contextual" ones (speed dial) are not, since there are ...contextual.
+
+- The `ex_progress_bar` example has been modified to demonstrate the use: The toolbar is on a frame on a screen and the display on another. Shortcuts "1", "2", "3" launch the according jobs.
+
+*Update noctura tab and toolbox compability.*
+
+- Tab widgets are now transparent and hand the noctura theme correctly
+- Toolboxes have now a configurable expand icon color
+- unify hove/pressed effects on buttons
+
+*Swap display of the slices indexes and positions upon clicking on the label.*
+
+## Bug fixes:
+
+### build
+
+*Add CMake variables to specify vendor name and url for Qt and packaging.*
+
+Added variables SIGHT_APP_VENDOR and SIGHT_APP_VENDOR_URL, use them both for the QCoreApplication (runtime) and also for CPACK_PACKAGE_VENDOR (installer).
+
+*Visual studio 2022 v17.12.0 compatibility fix.*
+
+Rename `enum sight`::data::image::pixel_format``to `sight`::data::image::pixel_format_t``to avoid ambiguities with `  sight::data::image::pixel_format()`
+
+It also makes VS Code happier.
+
+*Auto load the tested module, ensure correct naming of the target.*
+
+The naming of the unit test target is used to deduce the name of the module to be tested, which is then auto loaded. This mechanism was broken for sub-repositories. It is now fixed, and if the naming of the target is not correct, an error is reported to the user.
+
+*Gcc 14.*
+
+*Remove obsolete DICOM transfer syntax.*
+
+This allows Sight to build with DCMTK version >= 3.6.8. by removing the support of two deprecated DICOM transfer syntaxes:
+
+* `UID_RFC2557MIMEEncapsulationTransferSyntax`
+* `UID_XMLEncodingTransferSyntax`
+
+*Support for ubuntu 24.04.*
+
+### ci
+
+*Do not exclude large files in code coverage.*
+
+*Deploy doxygen and coverage in a single job.*
+
+The pages deployment must be done in a single job, otherwise they can delete each other content.
+
+*Exclude large files from gcov to avoid a crash.*
+
+It appears we suffer from a known bug with files larger than 9999 lines. Until we upgrade gcov, we exclude those big files.
+
+### core
+
+*Make default optional parameters id unique.*
+
+This fixes a crash when launching twice a XML configuration with an optional parameter, without passing the optional parameter.
+
+*Gui test launcher script always returns success.*
+
+This was indeed a problem with the windows gui test launcher, because of delayed expansion feature not enabled. In short, in a batch script, testing a "variable" must be done using enclosing ! not % and
+delayed expansion must be enabled with setlocal enabledelayedexpansion, otherwise, the variable value is evaluated BEFORE script execution, resulting returning 0 in all cases, even when the test fails.
+
+*Improve handling of connection exceptions in proxies.*
+
+Now, when an incompatibility is found between the signal and the slot, the exception is caught in the proxy and an error is returned. The config can still run, but it will not crash when closing.
+
+Also, an important bug was found when trying to match signal and slot signature. We can indeed omit part of the arguments of a signal when connecting a slot, but of course from the right. We can connect for instance:
+- (int, int) -> (int)
+- (int, int) -> ()
+
+But of course we refuse the inverse (we throw `sight::core::com::exception::bad_slot`):
+- (int) -> (int, int)
+- () -> (int, int)
+
+This mechanism works recursively but was broken when argument types were different like:
+- (int, int) -> (string)
+
+This led to a stack overflow. :confused: This is now fixed and throw `sight`::core::com::exception::bad_slot``as well.
+
+*Setup the correct profile version for each app.*
+
+The version of the application is now well generated in the `profile.xml` of each app. Thus, it is now safe to use:
+
+```cpp
+const auto profile     = sight::core::runtime::get_current_profile();
+const software_version = profile->version();
+```
+
+It is even recommended to use this instead of passing the APP_VERSION through the XML or by a C++ compiler macro.
+
+*Dicom image position and orientation & missing accessors.*
+
+- Improve quality of life when using matrix4
+
+*Factorize and sanitize object id name.*
+
+* Implements a `core::id::join(...)` that returns a concatenation of elements (strings, integer, anything with a `<<` operator), separated by a separator defined in `core`::id``class. We choose `-` as separator
+* implements a `core::id::base_id()` that returns the last element of the `id` string
+* removes all `get_id().substr(get_id().find_last_of('\_') + 1)` and replace them by a simple `core::id::base_id()` call
+* move `core::tools::id`, `core::tools::object`, `core`::tools::compare``to `core` namespace.
+
+### geometry
+
+*Dead lock in sight::module::geometry::switch_matrices.*
+
+### io
+
+*Crash in sight::module::ui::io::selector.*
+
+Always call configure() for sub-services otherwise properties are not initialised properly.
+
+*Dicom compatibility patch for US volume.*
+
+* Recreate image position patient in all cases, even if unneeded
+
+### test
+
+*Sight_calibrator_uit frequent failures.*
+
+Several fixes were brought:
+1. A Qt error was fixed when closing the chessboard window. This did not improve the situation but was needed anyway,
+2. The board square size was unintentionally set to 0.5 instead of 20 in https://git.ircad.fr/sight/sight/-/merge_requests/1138. This was, I think, the cause of the increase in the occurrence of the test failure, yielding values of around 180 or > 400.
+3. Sometimes, we still get cx=341 instead of 352. This might come from the input detection that slightly differs. We don't understand the reason, but since this is rather an issue of the test than an implementation error, we chose to increase the tolerance of the test to accept this value of 341.
+
+### ui
+
+*Configurable toolbox icon color on windows.*
+
+*Border and caption for line layout.*
+
+The fix consists in an additional widget layer, that will hold the layout attributes (mostly, the content margins), that should not be wiped out by children. To allow that, the `widget` class has been extended to manage "compound" widgets, when the container widget exposed to children, also have an intermediate parent widget.
+
+*Delay removal of jobs in the progress bar to avoid dead locks.*
+
+*Recompute toolbar size / layout when actions are modified.*
+
+There was a bug with Toolbars in overlay layout, which prevented to "reserve" the right size. This has been "fixed" / "mitigated" by calling `QWidget::adjustSize()` at strategic places. Still, normally we should not have to do this, even for overlay. Anyway, the workaround should not have any side effect.
+
+*Forward events from overlay to scene.*
+
+When using an overlay, events that hit the non-visible/transparent parts (like the "toolbar") will be caught by the overlay, making the behaviour strange for the user who thought he was interacting with the scene. This fixes that by forwarding the events, back to the scene.
+This was non-trivial because of the nature of the overlay, as the scene and the overlays are "sibling" widgets, not parent/children. Qt will always send events to the top-level widget at a given position, but in our case, the top-level widget, the overlay, may be "transparent" at that position, and we needed to trick Qt into believing the overlay is indeed not there so it could hit the underlying scene.
+
+Also, make the container transparent to mouse events if no children are visible in the layout. This is the only known way to make multi-touch events (pan, pinch) work
+
+*String property was reset when calling update_enum_range.*
+
+*Slice mode display reset when moving slide.*
+
+*Use decimals in min and max labels of double sliders instead of the scientific notation.*
+
+*Various fixes in the transfer function and image code.*
+
+- move the PACS configuration in a module so that it can be used in other apps
+- the image is now an input and not an inout in the `module`::ui::qt::image::window_level``service
+- adjust the range of `module`::ui::qt::image::window_level``depending on the image range
+- remove the static label in the color widget of `module::ui::qt::settings`
+- `sight::data::helper::medical_image::get_min_max()` now returns its values as a pair to avoid a wrong initialisation in the caller code.
+- fix mixed rendering with binary transparent objects
+
+*Always send checked signals at start.*
+
+*Slider frame indication.*
+
+A problem was encountered where the vertical lines displayed on the slider groove became shorter than usual after numerous fiducials were applied to the image. This fixes this behaviour.
+
+### viz
+
+*Ensure representation mode is properly set when creating a material via the mesh adaptor.*
+
+*Blending between layers.*
+
+The blending between layers was incorrect, and alpha blending was applied twice. This made transparent objects look darker proportionally to the number of layers.
+
+*Drift in trackball and predefined interactors.*
+
+Two drift issues were fixed in camera management:
+
+* the trackball interactor used to drift when combining a mouse/touch movement in width and height. This was fixed by changing the up vector to stick with the up vector of the world and by applying the first rotation on the second rotation axis, based on the right camera vector. This was also fixed in the predefined interactor by sharing the code.
+* the predefined interactor, on top of that, drifts when following a target. A quick workaround is proposed, that disables, by default, the following of the target orientation. Thus the interaction only follows the translation part. This behaviour looks anyway closer to the expected result.
+
+*Make material selector working again.*
+
+*Wrong initialisation value in resource manager.*
+
+This fixes a regression introduced in c7a5a36919878bc46ecaac00c383b3783e3125af and prevented some graphic resources to be updated properly.
+
+*Shape adaptor refactor / fixes.*
+
+- Only use fiducial data from source image_series, not intermediate point_list
+- Remove opencv "drawing" and only rely on ogre
+- Simplify / remove unneeded code
+
+*Don't reset the current group when removing a group.*
+
+Removing a group from `fiducial`::point``no longer resets the current group to the default value, unless we're removing the current group.
+
+This also fixes an annoying XML warning.
+
+*Restore point resizing functionality and improve point group management.*
+
+## Refactor:
+
+### core
+
+*Remove landmarks support of point adaptor and fix numerous bugs.*
+
+Fixed:
+- illegal access to deleted objects
+- memory leaks
+- visibility badly applied
+- desynchronization of ogre object and fiducials
+- race conditions on signal / slot handling
+- too many wrappers and clumsy code
+
+*Update and enhance ruler adaptor structure.*
+
+- The usage of point_list has been removed. We now only use a vector of ogre elements and the associated ruler id. With this id, we can find the desired ruler in fiducials and modify or remove it.
+- The dashed line is now working correctly.
+- Rulers should always be displayed according to the current slice. This includes rulers that have spheres on 2 different slices. If the current slice is in between, we will also display these rulers. The part of the line that is behind the current slice is displayed as a dashed line. This allows us to manage the ruler display the same for both 2D and 3D contexts.
+ - Now we are registering the color of the ruler. By doing this, the indications on the slider will match the color of the ruler. We are also handling cases where rulers are created without color and outside of the adaptor. We register the assigned color by the adaptor during updating().
+- When we enter in interaction mode (activate_tool), we draw rulers with larger spheres. This makes it easier to grab the sphere when using a touch screen.
+- All deprecated services associated to old distance signals have been deleted.
+
+*Reduce the usage of base_object where it is really needed.*
+
+### geometry
+
+*Modernize geometry libraries.*
+
+Geometry libraries were refactored.
+- `sight`::geometry::glm``becomes `sight::geometry`
+- `sight`::geometry::data``now only contains functions relative to `sight`::data``objects
+
+Several types were renamed or moved:
+
+* `fw_matrix4x4`: removed, replaced by `glm::dmat4`
+* `fw_plane`: replaced by `sight::geometry::plane_t`, moved all related code to `sight::geometry`
+* `fw_line`: redefined either by `sight`::geometry::ray_t``or `sight`::geometry::line_t``which both refers to `std::pair<glm::dvec3, glm::dvec3>`. Moved all related code to `sight::geometry`
+* `fw_vector_index` and `fw_vector_position`: all related code was removed
+
+Also `sight::data::image::world_to_image()` and `sight::data::image::image_to_world()` were moved from `sight`::data``to `sight::geometry::data`.
+
+They were internally rewritten to be more "SIMD" friendly and new functions were added to get the raw transforms:
+- `sight::data::image::world_to_image_transform()`
+- `sight::data::image::image_to_world_transform()`
+
+This is especially useful in tight loops to avoid recomputing these matrices for each point/voxel.
+
+### ui
+
+*Move test dialog implementation to a test library.*
+
+### viz
+
+*Modernize material management.*
+
+`sight::viz::scene3d`::material``is refactored and replaced by three new classes:
+- `sight::viz::scene3d`::material::generic`:`generic class to handle any material. It provides functions that allow to set uniforms and a function to set textures, in all techniques where they exist. This solves the initial problem of the intrusive tests for OIT and thus avoids a priori knowledge (declaration, etc...) about the generated pass. If the uniform or the texture exists, set it, otherwise, it silently does nothing. However, if nothing is set amongst all techniques, an error is logged, since it should not happen, normally you would expect to reach at least one technique.
+- `sight::viz::scene3d`::material::standard`:`allows using our "Default" material, and manages the permutations to handle different shading modes, normals display, etc...
+- derive this into `sight::viz::scene3d::material::r2vb`: specific version to handle per-primitive colours and triangles generation for quads
+
+Also, most adaptors no longer use `sight::module::viz::scene3d::material_adaptor`. It should only be required when wrapping a real `sight::data::material`. Otherwise, `sight::viz::scene3d`::material::generic``or one of its inherited classes must be used.
+
+We also used the opportunity to sort out parts of the OIT logic. We grouped the generation of OIT material techniques from `material_mgr_listener` and the dynamic compositor passes generation into a new class `sight::viz::scene3d::compositor::manager::oit`. This allowed notably to share many hard-coded strings.
+
+Last we harmonized the identifiers for Ogre objects, using the `core::id::join()` function or a new function `viz::scene3d::adaptor::gen_id()` instead of concatenating strings manually.
+
+*Replace deprecated Ogre::SharedPtr by std::shared_ptr.*
+
+## Enhancement:
+
+### build
+
+*Migrate most linux build jobs to Ubuntu 24.04.*
+
+### ci
+
+*Split doxygen and coverage deploy in two jobs.*
+
+### core
+
+*Allow optional objects with defaults in configuration parameters.*
+
+It is now possible to pass optional objects with default values in XML configurations:
+
+```xml
+<extension implements="sight::app::extension::config">
+    <id>...</id>
+    <parameters>
+        <!-- valid, if not passed, returns the object returned by the default constructor -->
+        <object uid="model_series" type="sight::data::model_series" optional="true" />
+
+        <!-- valid, if not passed, returns false -->
+        <object uid="vr_visibility" type="sight::data::boolean" optional="true" value="false" />
+
+        <!-- invalid because model_series is not a string_serializable -->
+        <object uid="model_series" type="sight::data::model_series" optional="true" value="..." />
+
+        <!-- invalid, "optional" must always be specified. -->
+        <object uid="vr_visibility" type="sight::data::boolean" value="false" />
+    </parameters>
+...
+</extension>
+```
+
+However, the keyword `optional` was already used before to pass deferred objects. To get something harmonized with local objects declaration, the `src` attribute is now deprecated and you must now use `deferred=true` at both places. Similarly, use `preference="true"` instead of `src="preference`.
+
+```xml
+<extension implements="sight::app::extension::config">
+    <id>...</id>
+    <parameters>
+        <!-- valid, if not passed, returns the object returned by the default constructor -->
+        <object uid="model_series" type="sight::data::model_series" deferred="true" />
+    </parameters>
+    <config>
+        <object uid="image" type="sight::data::image_series" deferred="true" />
+        <object uid="bool" type="sight::data::boolean" value="true" preference="true" />
+    </config>
+...
+</extension>
+```
+
+*Allow to construct a color directly from a string.*
+
+*Simplify signal calls and blockers usage.*
+
+## Description
+
+The API to send a signal has been simplified for all data objects, including properties.
+
+Indeed the `sight`::core::com::has_signals``interface brings four new functions:
+
+```cpp
+
+template<typename ... A>
+void emit(const signals::signal_key_type& _key, A ... _a) const;
+
+template<typename ... A>
+void emit(com::has_slots* _caller, const signals::signal_key_type& _key, A ... _a) const;
+
+template<typename ... A>
+void async_emit(const signals::signal_key_type& _key, A ... _a) const;
+
+template<typename ... A>
+void async_emit(com::has_slots* _caller, const signals::signal_key_type& _key, A ... _a) const;
+```
+
+They allow any signal holder to send a signal, synchronously or asynchronously, with a one-liner. The signature with a `com`::has_slots``parameter allows to block all slots of the caller connected with the signal, preventing an infinite loop.
+
+Thus, instead of writing something like:
+
+```cpp
+auto sig = object->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+core`::com::connection::blocker`block(sig->get_connection(slot(service::slots::UPDATE)));
+sig->async_emit();
+```
+
+You can call:
+```
+object->async_emit(this, data::object::MODIFIED_SIG);
+```
+
+Besides this major change, the XML configuration parser has been improved to ensure variables substitutions inside data containers.
+
+Example:
+
+```xml
+<object uid="properties_map" type="sight::data::map">
+    <item key="integer">
+        <object uid="sub_object" type="sight::data::integer" value="45" />
+    </item>
+</object>
+
+<service uid="..." type="example::service">
+    <properties integer="${sub_object}" />
+</service>
+```
+
+Before this merge-requests, the example service could not find the `sub_object` because the variable substitution was simply not performed.
+
+*Honor auto-connections outside XML applications.*
+
+Auto-connections were correctly configured and honored only by the config manager, thus required, a XML configuration. This was annoying for unit-tests and overall, that was not the proper place to do it. This is now done directly in the service code itself.
+
+*Allow to call start/stop slots in updater.*
+
+Allow to call slot="start" or slot="stop" within an update_sequence.
+This ensure to call start/stop in a specific order.
+
+Example:
+
+```xml
+<sequence uid="toggle_dev_mode">
+    <service uid="video_grabber" slot="stop"/>
+    <service uid="dummy_grabber" slot="start"/>
+</sequence>
+
+<sequence uid="toggle_prod_mode">
+    <service uid="dummy_grabber" slot="stop"/>
+    <service uid="video_grabber" slot="start"/>
+</sequence>
+```
+
+*Introduce explicit update loops.*
+
+Chaining service updates in Sight live applications has always been tough. To circumvent all related issues with event-based chaining, we introduce an explicit approach allowing to specify update sequence and execute them all at once.
+
+It used to be possible to specify which services to update **once** once after start:
+
+```xml
+<update uid="service1">
+<update uid="service2">
+<update uid="service3">
+```
+
+This section is now modified and allows specifying these single-shot updates, but also the ability to define an update loop:
+
+```xml
+<start uid="update_loop">
+
+<update>
+     <service uid="service1"/>
+     <service uid="service2"/>
+     <sequence uid="update_loop" loop="true">
+         <service uid="service3" />
+         <service uid="service4" />
+     </sequence>
+</update>
+```
+
+In this example, `service1` and `service2` are updated once after start, while `service3` and `service4` are continuously updated. The sequence `update_loop`is identified with an uid, so it can be started and stopped like any other service. Doing this, the update sequence is not dependent on the updated() signal. This is much more robust because this means any other, maybe unwanted updates triggered from somewhere else do not affect the sequence.
+
+This new syntax also allows chaining update sequences between XML configurations. As the manner of UI registries and `wid`, it is possible to reserve a slot for another update sequence defined in another configuration:
+
+```xml
+<!-- Main loop -->
+<update>
+     <sequence uid="update_loop" loop="true">
+         <service uid="service1" />
+         <updater uid="sub_updater" />
+         <service uid="service2" slot="modify" />
+     </sequence>
+</update>
+
+<!-- In a sub-configuration, passing the parameter "sub_updater" -->
+<update>
+     <sequence parent="${sub_updater}">
+         <service uid="..." />
+         <service uid="..." />
+     </sequence>
+</update>
+```
+
+Note that here the `uid` of the sequence is omitted because no interaction is required inside this XML. The sequence is played automatically by the root updater after `service1::update()` and `service2`::modify``slots.
+
+It is also possible to execute services in parallel. Mixing sequences and parallel are allowed with the syntax:
+
+```xml
+<!-- Main loop -->
+<update>
+     <sequence uid="update_loop" loop="true">
+         <service uid="service1" />
+         <parallel>
+            <service uid="service2" />
+            <updater uid="sub_updater" />
+            <sequence>
+               <service uid="service3" />
+               <service uid="service4" />
+            </sequence>
+         <parallel/>
+         <service uid="service5" />
+     </sequence>
+</update>
+
+<!-- In a sub-configuration, passing the parameter "sub_updater" -->
+<update>
+     <sequence parent="${sub_updater}">
+         <service uid="..." />
+         <service uid="..." />
+     </sequence>
+</update>
+```
+
+In this example, `service1`updates first, then `service2`, the whole update sequence in the sub-configuration, and the sequence of `service3` and `service4` are executed in parallel. When they are executed, whether or not they are on different workers, `service5` is executed.
+
+The solution proposed above could be sufficient. However, managing `sight::viz::scene3d`::render``could become tedious. Correctly using auto-connections, and maintaining the list of all adaptors in the update can be tedious and error-prone. Developers usually expect that a single call to the \`update()\` of the renderer manages the update of the adaptors properly, which is the case in auto mode when we do interactive rendering, but not in manual mode, in "live" applications.
+
+To solve this, we introduced a generic update interface `sight`::core::updater``that will be inherited by the adaptors. This interface allows to defer the update of the adaptor required by their data. In manual mode, the adaptors just flag which part of their update process they should process. When the update is actually called, they will really perform it and unflag it. The render only requires to interrogate the adaptors before rendering to know if they need to update or not.
+
+To sum up, updating a generic scene in manual mode is now much easier and not error-prone regarding synchronisation. For example, if we imagine an application reading a video, extracting a feature and then display it in overlay over the video, the update loop could look like:
+
+```xml
+<!-- Main loop -->
+<update>
+     <sequence uid="main_loop" loop="true">
+         <service uid="video_grabber_srv" />
+         <service uid="extract_position_srv" />
+         <service uid="compute_position_srv" />
+         <service uid="render_srv" /> <!-- Update all adaptors, only those required if their data have changed -->
+     </sequence>
+</update>
+```
+
+*Optimize configuration variable substitution.*
+
+Roughly 10X speedup, measured with a big xml "configuration":
+- Debug build:
+  - Before: 419.446 ms
+  - After: 42.868 ms.
+- Release build:
+  - Before: 35.768 ms
+  - After: 4.716 ms
+
+*Simplify passing objects as parameter in XML.*
+
+We can now pass objects as parameters without declaring them locally with `src=ref`:
+
+```xml
+<extension implements="sight::app::extension::config">
+    <id>sight::module::config</id>
+    <parameters>
+        <object uid="image" type="sight::data::image" optional="true"
+/>
+        <object uid="model" type="sight::data::model_series" />
+    </parameters>
+    <config>
+    ...
+    </config>
+</extension>
+```
+
+### filter
+
+*Properly re-init normal state in mesh and remove unused needle service.*
+
+*Add a slider to navigate along the reslice plane.*
+
+This adds a slider in each view of ex_image_reslice allowing it to slide in the direction of the reslice. In this example, the reslice transform is directly manipulated, so it is not really useful. However, in real applications, the reslice transform will likely come from non-editable data, such as a sensor location. In such cases, the slider allows us to explore around the reslice direction as if we had a real axis.
+
+A property was also added to centre the reslice instead of doing it from the bottom left corner.
+
+*Add support for image orientation in reslice.*
+
+The service `sight`::module::filter::image::plane_slicer``that allows to reslice an image with an arbitrary plane now supports images having an arbitrary orientation (not aligned with orthogonal axes).
+
+To demonstrate this, a new example `ex_image_reslice` was implemented.
+
+*Add a property in propagator to know if the mask is filled.*
+
+### io
+
+*Store PositionMeasuringDeviceUsed dicom tag as enum.*
+
+### test
+
+*Install UI unit test headers to allow testing of apps in client apps.*
+
+### ui
+
+*Add pixel coordinates and viewport size  to picking information.*
+
+*Remove specific fiducials colour generation for unit-tests.*
+
+*Add enable/disable feature on signal_shortcut.*
+
+when the service is "disabled" the configured key-sequence is ignored.
+
+The classic behavior is kept with the "enabled" mode.
+
+### viz
+
+*Make view up of the interactors configurable.*
+
+The behaviour of the trackball interactor has recently changed, and the camera's up vector was hardcoded to -Y. It is now configurable both for the trackball interactor and the predefined interaction with an optional matrix, from which we extract the Y axis.
+
+*Add resliced mask to ex_image_reslice.*
+
+- Add option to prevent transfer function scaling to max texture size
+
+*Add preclassification support for negatoscope.*
+
+*Add ambient color in the lighting of volume rendering.*
+
+misc: p
+
+*Flag grids as static geometry to keep them in the background.*
+
+
 # sight 24.1.0
 
 ## Refactor:
