@@ -1,5 +1,5 @@
 <extension implements="sight::app::extension::config">
-    <id>PACSselectorWindow_AppCfg</id>
+    <id>sight::config::io::dicom::pacs_selector_window</id>
     <parameters>
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
         <param name="WINDOW_TITLE" />
@@ -41,7 +41,7 @@
 
         <!-- TF manager -->
         <service uid="PACSselectorCfg" type="sight::app::config_controller">
-            <appConfig id="PACSselectorWidget_AppCfg" />
+            <appConfig id="sight::config::io::dicom::pacs_selector_widget" />
             <parameter replace="WID_PARENT" by="view" />
             <inout group="data">
                 <key name="outputSeriesSet" uid="${outputSeriesSet}" />

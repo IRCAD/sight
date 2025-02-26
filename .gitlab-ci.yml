@@ -142,7 +142,7 @@ lint:ubuntu-24.04:
         - >
             if [ "${SIGHT_TEST_SDK}" == "ON" ]; then
               tar -xf packages/sight-*.tar.zst
-              for program in sight-*/bin/{ex*,tuto*,sight_viewer,sight_calibrator,dicomxplorer}; do
+              for program in sight-*/bin/{ex*,tuto*,sight_viewer,sight_calibrator}; do
                   echo Testing $(basename $program):
                   timeout 5s xvfb-run -a $program || [ $? -eq 124 ]
               done
@@ -391,7 +391,7 @@ deploy:apps-linux-release:
                 $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\bin\;$env:PATH"
               }
               cd sight-*/*/bin
-              ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sight_viewer.bat,sight_calibrator.bat,dicomxplorer.bat){
+              ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sight_viewer.bat,sight_calibrator.bat){
                 $programName = Split-Path -Leaf $program
                 Write-Host Testing $programName
                 Start-SightProcess -path $program

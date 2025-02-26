@@ -1,0 +1,8 @@
+<plugin id="sight::config::io::dicom">
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::io::dimse" />
+    <requirement id="sight::module::io::dicomweb" />
+
+    <xi:include href="configurations/pacs_selector_widget.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/pacs_selector_window.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+</plugin>

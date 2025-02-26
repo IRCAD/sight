@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,11 +75,12 @@ void slice_index_dicom_puller_editor::configuring()
     sight::ui::service::initialize();
 
     const auto& config = this->get_config();
+    auto attributes    = config.get_child("config.<xmlattr>");
 
-    m_dicom_reader_type = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicom_reader_type);
-    m_delay             = config.get<unsigned int>("config.<xmlattr>.delay", m_delay);
+    m_dicom_reader_type = attributes.get<std::string>("dicom_reader", m_dicom_reader_type);
+    m_delay             = attributes.get<unsigned int>("delay", m_delay);
 
-    if(const auto reader_config = config.get_child_optional("readerConfig"); reader_config.has_value())
+    if(const auto reader_config = config.get_child_optional("reader_config"); reader_config.has_value())
     {
         m_reader_config = reader_config.value();
     }
@@ -124,8 +125,9 @@ void slice_index_dicom_puller_editor::starting()
     layout->addWidget(m_slice_index_line_edit, 0);
     m_slice_index_line_edit->setReadOnly(true);
     m_slice_index_line_edit->setMaximumWidth(80);
-
+    m_slice_index_line_edit->setProperty("class", "lineEditDicomEditor");
     std::stringstream ss;
+
     ss << m_slice_index_slider->value() << " / " << (m_number_of_slices - 1);
     m_slice_index_line_edit->setText(std::string(ss.str()).c_str());
 
@@ -302,15 +304,15 @@ void slice_index_dicom_puller_editor::read_image(
     }
 
     //Copy image
-    data::image_series::sptr image_series;
 
     if(!m_tmp_series_set->empty())
     {
-        image_series = std::dynamic_pointer_cast<data::image_series>(m_tmp_series_set->front());
-    }
+        const  data::image_series::sptr image_series =
+            std::dynamic_pointer_cast<data::image_series>(m_tmp_series_set->front());
 
-    if(image_series)
-    {
+        const auto image = m_image.lock();
+        image->deep_copy(image_series);
+
         const data::image::size_t new_size = image_series->size();
 
         m_frontal_index->set_value(static_cast<int>(new_size[0] / 2));
@@ -332,7 +334,7 @@ void slice_index_dicom_puller_editor::read_image(
             m_sagittal_index->value()
         );
 
-        this->set_output(image_series, "image");
+        image->async_emit(data::image::MODIFIED_SIG);
     }
 }
 
@@ -340,52 +342,12 @@ void slice_index_dicom_puller_editor::read_image(
 
 void slice_index_dicom_puller_editor::pull_instance(sight::data::dicom_series& _dicom_series)
 {
-    service::config_t configuration = this->get_config();
-    //Parse server port and hostname
-    if(configuration.count("server") != 0U)
-    {
-        const std::string server_info               = configuration.get("server", "");
-        const std::string::size_type split_position = server_info.find(':');
-        SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
-
-        m_server_hostname_key = server_info.substr(0, split_position);
-        m_server_port_key     = server_info.substr(split_position + 1, server_info.size());
-    }
-    else
-    {
-        throw core::tools::failed("'server' element not found");
-    }
-
-    ui::preferences preferences;
-
     try
     {
-        m_server_port = preferences.delimited_get(m_server_port_key, m_server_port);
-    }
-    catch(...)
-    {
-        // Do nothing
-    }
-
-    try
-    {
-        m_server_hostname = preferences.delimited_get(m_server_hostname_key, m_server_hostname);
-    }
-    catch(...)
-    {
-        // Do nothing
-    }
-
-    // Catch any errors
-    try
-    {
-        // Get selected slice
         std::size_t selected_slice_index = static_cast<std::size_t>(m_slice_index_slider->value())
                                            + _dicom_series.get_first_instance_number();
-
         std::string series_instance_uid = _dicom_series.get_series_instance_uid();
 
-        // Find Series according to SeriesInstanceUID
         QJsonObject query;
         query.insert("SeriesInstanceUID", series_instance_uid.c_str());
 
@@ -394,13 +356,8 @@ void slice_index_dicom_puller_editor::pull_instance(sight::data::dicom_series& _
         body.insert("Query", query);
         body.insert("Limit", 0);
 
-        /// Url PACS
-        const std::string pacs_server("http://" + m_server_hostname + ":" + std::to_string(m_server_port));
-
-        /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
-        sight::io::http::request::sptr request = sight::io::http::request::New(
-            pacs_server + "/tools/find"
-        );
+        const std::string pacs_server("http://" + *m_server_hostname + ":" + std::to_string(*m_server_port));
+        sight::io::http::request::sptr request = sight::io::http::request::New(pacs_server + "/tools/find");
         QByteArray series_answer;
         try
         {
@@ -411,20 +368,15 @@ void slice_index_dicom_puller_editor::pull_instance(sight::data::dicom_series& _
             std::stringstream ss;
             ss << "Host not found:\n"
             << " Please check your configuration: \n"
-            << "Pacs host name: " << m_server_hostname << "\n"
-            << "Pacs port: " << m_server_port << "\n";
-
-            sight::module::io::dicomweb::slice_index_dicom_puller_editor::display_error_message(ss.str());
+            << "Pacs host name: " << *m_server_hostname << "\n"
+            << "Pacs port: " << *m_server_port << "\n";
+            slice_index_dicom_puller_editor::display_error_message(ss.str());
             SIGHT_WARN(exception.what());
         }
         QJsonDocument json_response    = QJsonDocument::fromJson(series_answer);
         const QJsonArray& series_array = json_response.array();
-
-        // Should be one Series, so take the first of the array.
         const std::string series_uid(series_array.at(0).toString().toStdString());
-        // GET all Instances by Series.
         const std::string instances_url(pacs_server + "/series/" + series_uid);
-
         const QByteArray& instances_answer = m_client_qt.get(sight::io::http::request::New(instances_url));
         json_response = QJsonDocument::fromJson(instances_answer);
         const QJsonObject& json_obj       = json_response.object();
@@ -432,7 +384,6 @@ void slice_index_dicom_puller_editor::pull_instance(sight::data::dicom_series& _
         const std::string& instance_uid   =
             instances_array.at(static_cast<int>(selected_slice_index)).toString().toStdString();
 
-        // GET frame by Slice.
         std::string instance_path;
         const std::string instance_url(pacs_server + "/instances/" + instance_uid + "/file");
         try
@@ -442,14 +393,12 @@ void slice_index_dicom_puller_editor::pull_instance(sight::data::dicom_series& _
         catch(sight::io::http::exceptions::content_not_found& exception)
         {
             std::stringstream ss;
-            ss << "Content not found:  \n"
-            << "Unable download the DICOM instance. \n";
-
-            sight::module::io::dicomweb::slice_index_dicom_puller_editor::display_error_message(ss.str());
+            ss << "Content not found:\n"
+            << "Unable to download the DICOM instance.\n";
+            slice_index_dicom_puller_editor::display_error_message(ss.str());
             SIGHT_WARN(exception.what());
         }
 
-        // Add path and trigger reading
         _dicom_series.add_dicom_path(selected_slice_index, instance_path);
         this->read_image(_dicom_series, selected_slice_index);
     }
@@ -457,7 +406,7 @@ void slice_index_dicom_puller_editor::pull_instance(sight::data::dicom_series& _
     {
         std::stringstream ss;
         ss << "Unknown error.";
-        sight::module::io::dicomweb::slice_index_dicom_puller_editor::display_error_message(ss.str());
+        slice_index_dicom_puller_editor::display_error_message(ss.str());
         SIGHT_WARN(exception.what());
     }
 }

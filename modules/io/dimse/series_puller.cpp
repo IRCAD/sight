@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -131,6 +131,13 @@ void series_puller::updating()
 
 void series_puller::stopping()
 {
+    {
+        const auto series_set     = m_dest_series_set.lock();
+        const auto scoped_emitter = series_set->scoped_emit();
+
+        // Delete old series from the series_set.
+        series_set->clear();
+    }
     // Unregister the DICOM reader.
     this->unregister_services();
 

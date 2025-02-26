@@ -19,7 +19,7 @@ add_dependencies(
     module_io_session
     config_viz_scene2d
     config_viz_scene3d
-    config_io_dimse
+    config_io_dicom
 )
 
 module_param(

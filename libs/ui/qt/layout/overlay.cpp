@@ -324,11 +324,6 @@ void overlay::create_layout(ui::container::widget::sptr _parent, const std::stri
             widget->setMinimumHeight(view.min_height);
         }
 
-        if(view.opacity == 0.F)
-        {
-            widget->setStyleSheet("background-color: none");
-        }
-
         int x = calculate_offset(view.x, qt_container->width(), widget->width());
         int y = calculate_offset(view.y, qt_container->height(), widget->height());
         widget->move(x, y);

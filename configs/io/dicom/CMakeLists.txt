@@ -1,6 +1,7 @@
-sight_add_target(config_io_dimse TYPE MODULE)
+sight_add_target(config_io_dicom TYPE MODULE)
 
 add_dependencies(
+    config_io_dicom
     config_io_dimse
     config_io_dicomweb
     data

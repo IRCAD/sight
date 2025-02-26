@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,9 @@
 
 #pragma once
 
+#include <data/integer.hpp>
 #include <data/series_set.hpp>
+#include <data/string.hpp>
 #include <data/vector.hpp>
 
 #include <io/__/service/reader.hpp>
@@ -55,8 +57,8 @@ namespace sight::module::io::dicomweb
         <service type="sight::module::io::dicomweb::series_puller">
             <in key="selectedSeries" uid="..." />
             <inout key="seriesSet" uid="..." />
-            <config dicomReader="sight::module::io::dicom::series_set_reader" readerConfig="config" />
-            <server>%SERVER_HOSTNAME%:%SERVER_PORT%</server>
+            <config dicom_reader="sight::module::io::dicom::series_set_reader" reader_config="config" />
+            <properties host_name="${host_name}" port="${port_id}" />
        </service>
    @endcode
  * @subsection Input Input:
@@ -64,9 +66,10 @@ namespace sight::module::io::dicomweb
  * @subsection In-Out In-Out:
  * - \b seriesSet [sight::data::series_set]: series_set where to put the retrieved dicom series.
  * @subsection Configuration Configuration:
- * - \b readerConfig Optional configuration for the DICOM Reader.
- * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
- * @note : hostname and port of this service are from the preference settings.
+ * - \b reader_config Optional configuration for the DICOM Reader.
+ * @subsection Properties Properties
+ * - \b host_name : Need hostname string (default value is "127.0.0.1").
+ * - \b port : Need the value of port (default value is 8042).
  */
 
 class series_puller : public service::controller
@@ -157,17 +160,14 @@ private:
     /// Server port preference key
     std::string m_server_port_key;
 
-    /// Server hostname
-    std::string m_server_hostname {"localhost"};
-
-    /// Server port
-    int m_server_port {4242};
-
     /// DICOM Folder path
     std::filesystem::path m_path;
 
-    sight::data::ptr<sight::data::vector, sight::data::access::in> m_selected_series {this, "selectedSeries"};
-    sight::data::ptr<sight::data::series_set, sight::data::access::inout> m_series_set {this, "seriesSet"};
+    sight::data::property<sight::data::string> m_server_hostname {this, "host_name", std::string("localhost")};
+    sight::data::property<sight::data::integer> m_server_port {this, "port", 4242};
+
+    sight::data::ptr<sight::data::vector, sight::data::access::in> m_selected_series {this, "selected_series"};
+    sight::data::ptr<sight::data::series_set, sight::data::access::inout> m_series_set {this, "series_set"};
 };
 
 } // namespace sight::module::io::dicomweb

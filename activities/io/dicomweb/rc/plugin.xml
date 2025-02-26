@@ -8,17 +8,17 @@
     <xi:include href="configurations/2d_preview_config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::activity::extension">
-        <id>sight::activity::io::dicomweb::reader</id>
+        <id>sight::config::io::dicomweb::reader</id>
         <title>DicomWeb Reader</title>
         <desc>DicomWeb Reader activity</desc>
         <icon>sight::module::ui::icons/pull.svg</icon>
         <requirements />
         <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="sight::activity::io::dicomweb::reader" />
+        <appConfig id="sight::config::io::dicomweb::reader" />
     </extension>
 
     <extension implements="sight::service::extension::config">
-        <id>sight::activity::io::dicomweb::reader_config</id>
+        <id>sight::config::io::dicomweb::reader_config</id>
         <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
         <config>
             <filterType>sight::filter::dicom::custom::default_dicom_filter</filterType>

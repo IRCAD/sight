@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,6 +122,7 @@ void slice_index_dicom_editor::starting()
     layout->addWidget(m_slider, 1);
 
     m_line_edit = new QLineEdit();
+    m_line_edit->setProperty("class", "lineEditDicomEditor");
     layout->addWidget(m_line_edit, 0);
     m_line_edit->setReadOnly(true);
     m_line_edit->setMaximumWidth(80);

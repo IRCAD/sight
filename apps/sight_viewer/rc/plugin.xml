@@ -376,7 +376,7 @@
 
             <!-- PACS manager -->
             <service uid="pacsAct" type="sight::module::ui::config_launcher">
-                <appConfig id="PACSselectorWindow_AppCfg" />
+                <appConfig id="sight::config::io::dicom::pacs_selector_window" />
                 <inout group="data">
                     <key name="outputSeriesSet" uid="pacsSeriesSet" />
                 </inout>

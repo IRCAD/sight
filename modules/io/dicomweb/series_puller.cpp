@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,25 +58,11 @@ series_puller::~series_puller() noexcept =
 
 void series_puller::configuring()
 {
-    const auto& config = this->get_config();
+    const config_t config_tree = this->get_config();
+    const auto config          = config_tree.get_child("config.<xmlattr>");
 
-    m_dicom_reader_type       = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicom_reader_type);
-    m_dicom_reader_srv_config = config.get<std::string>("config.<xmlattr>.readerConfig", m_dicom_reader_srv_config);
-
-    //Parse server port and hostname
-    if(config.count("server") != 0U)
-    {
-        const std::string server_info               = config.get("server", "");
-        const std::string::size_type split_position = server_info.find(':');
-        SIGHT_ASSERT("Server info not formatted correctly", split_position != std::string::npos);
-
-        m_server_hostname_key = server_info.substr(0, split_position);
-        m_server_port_key     = server_info.substr(split_position + 1, server_info.size());
-    }
-    else
-    {
-        throw core::tools::failed("'server' element not found");
-    }
+    m_dicom_reader_type       = config.get<std::string>("dicom_reader", m_dicom_reader_type);
+    m_dicom_reader_srv_config = config.get<std::string>("reader_config", m_dicom_reader_srv_config);
 }
 
 //------------------------------------------------------------------------------
@@ -120,6 +106,13 @@ void series_puller::starting()
 
 void series_puller::stopping()
 {
+    {
+        const auto series_set     = m_series_set.lock();
+        const auto scoped_emitter = series_set->scoped_emit();
+
+        // Delete old series from the series_set.
+        series_set->clear();
+    }
     // Stop reader service
     m_dicom_reader->stop();
     service::remove(m_dicom_reader);
@@ -129,17 +122,6 @@ void series_puller::stopping()
 
 void series_puller::updating()
 {
-    try
-    {
-        ui::preferences preferences;
-        m_server_port     = preferences.delimited_get(m_server_port_key, m_server_port);
-        m_server_hostname = preferences.delimited_get(m_server_hostname_key, m_server_hostname);
-    }
-    catch(...)
-    {
-        // Do nothing
-    }
-
     if(m_is_pulling)
     {
         // Display a message to inform the user that the service is already pulling data.
@@ -237,7 +219,7 @@ void series_puller::pull_series()
                 body.insert("Limit", 0);
 
                 /// Url PACS
-                const std::string pacs_server("http://" + m_server_hostname + ":" + std::to_string(m_server_port));
+                const std::string pacs_server("http://" + *m_server_hostname + ":" + std::to_string(*m_server_port));
 
                 /// Orthanc "/tools/find" route. POST a JSON to get all Series corresponding to the SeriesInstanceUID.
                 sight::io::http::request::sptr request = sight::io::http::request::New(
@@ -253,8 +235,8 @@ void series_puller::pull_series()
                     std::stringstream ss;
                     ss << "Host not found:\n"
                     << " Please check your configuration: \n"
-                    << "Pacs host name: " << m_server_hostname << "\n"
-                    << "Pacs port: " << m_server_port << "\n";
+                    << "Pacs host name: " << *m_server_hostname << "\n"
+                    << "Pacs port: " << *m_server_port << "\n";
 
                     sight::module::io::dicomweb::series_puller::display_error_message(ss.str());
                     SIGHT_WARN(exception.what());

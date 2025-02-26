@@ -5,31 +5,6 @@
 
     <xi:include href="configurations/2d_local_preview_config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/2d_pacs_preview_config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/filtering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/pacs_configuration.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/pacs_reader.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/pacs_writer.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/preview.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-
-    <extension implements="sight::activity::extension">
-        <id>sight::activity::io::dicom::pacs_reader</id>
-        <title>Dicom PACS Reader</title>
-        <desc>Dicom PACS Reader activity</desc>
-        <icon>sight::module::ui::icons/pull.svg</icon>
-        <requirements />
-        <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="sight::activity::io::dicom::pacs_reader" />
-    </extension>
-
-    <extension implements="sight::activity::extension">
-        <id>sight::activity::io::dicom::pacs_writer</id>
-        <title>Dicom PACS Writer</title>
-        <desc>Dicom Pacs Writer activity</desc>
-        <icon>sight::module::ui::icons/push.svg</icon>
-        <requirements />
-        <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="sight::activity::io::dicom::pacs_writer" />
-    </extension>
 
     <extension implements="sight::service::extension::config">
         <id>sight::io::dicom::pacs_reader_config</id>
@@ -37,16 +12,6 @@
         <config>
             <filterType>sight::filter::dicom::custom::default_dicom_filter</filterType>
         </config>
-    </extension>
-
-    <extension implements="sight::activity::extension">
-        <id>sight::activity::io::dicom::filtering</id>
-        <title>DICOM Filtering</title>
-        <desc>DICOM Filtering activity</desc>
-        <icon>sight::module::ui::icons/plus.svg</icon>
-        <requirements />
-        <builder>sight::activity::builder::Activity</builder>
-        <appConfig id="sight::activity::io::dicom::filtering" />
     </extension>
 
     <extension implements="sight::service::extension::config">

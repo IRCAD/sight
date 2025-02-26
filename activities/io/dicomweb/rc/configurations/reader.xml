@@ -1,5 +1,5 @@
 <extension implements="sight::app::extension::config">
-    <id>sight::activity::io::dicomweb::reader</id>
+    <id>sight::config::io::dicomweb::reader</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="SERIES_SET" />
@@ -112,7 +112,7 @@
         <service uid="pullSeriesController" type="sight::module::io::dicomweb::series_puller">
             <in key="selectedSeries" uid="previewSelections" />
             <inout key="seriesSet" uid="localSeriesSet" />
-            <config dicomReader="sight::module::io::dicom::series_set_reader" readerConfig="sight::activity::io::dicomweb::reader_config" />
+            <config dicomReader="sight::module::io::dicom::series_set_reader" readerConfig="sight::config::io::dicomweb::reader_config" />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
         </service>
 
