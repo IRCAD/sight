@@ -234,7 +234,7 @@
         </service>
 
         <service uid="sliderCfg" type="sight::app::config_controller">
-            <appConfig id="sight::config::viz::image::imageSlider" />
+            <properties config="sight::config::viz::image::imageSlider" />
             <parameter replace="WID_PARENT" by="sliderView" />
             <parameter replace="sliceIndex" by="axial" />
             <parameter replace="enableSliceSlider" by="false" />

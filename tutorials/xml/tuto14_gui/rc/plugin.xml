@@ -402,7 +402,7 @@
             <service uid="quitAct" type="sight::module::ui::quit" />
 
             <service uid="subToolBarConfig" type="sight::app::config_controller">
-                <appConfig id="SubToolBarCfg" />
+                <properties config="SubToolBarCfg" />
                 <parameter replace="TOOLBAR" by="subToolBarView" />
                 <parameter replace="LOGO_VISIBILITY_CHANNEL" by="LOGO_VISIBILITY_CHANNEL" />
             </service>

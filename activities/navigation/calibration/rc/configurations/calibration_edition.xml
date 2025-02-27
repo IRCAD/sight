@@ -107,7 +107,7 @@
         <!-- ************************ Configuration launchers ********************************* -->
 
         <service uid="camera0LauncherCfg" type="sight::app::config_controller">
-            <appConfig id="videoEdition" />
+            <properties config="videoEdition" />
             <inout group="data">
                 <key name="camera" uid="camera0" />
             </inout>
@@ -124,7 +124,7 @@
         </service>
 
         <service uid="camera1LauncherCfg" type="sight::app::config_controller">
-            <appConfig id="videoEdition" />
+            <properties config="videoEdition" />
             <inout group="data">
                 <key name="camera" uid="camera1" />
             </inout>

@@ -31,7 +31,7 @@ example of activity factory:
     <desc>Series selector</desc>
     <icon>sight::module::ui::icons/selector.svg</icon>
     <requirements />
-    <appConfig id="myActivity">
+    <properties config="myActivity">
         <parameters />
     </appConfig>
 </extension>

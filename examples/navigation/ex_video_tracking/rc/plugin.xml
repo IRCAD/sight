@@ -45,7 +45,7 @@
             <!-- ******************************* UI declaration *********************************** -->
 
             <service uid="videoToolbarConfig" type="sight::app::config_controller">
-                <appConfig id="sight::config::io::video::controls" />
+                <properties config="sight::config::io::video::controls" />
                 <inout group="data">
                     <key name="camera" uid="camera" />
                     <key name="frameTL" uid="frameTL" />

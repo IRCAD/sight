@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,13 +31,11 @@ namespace sight::app::ut
 /**
  * @brief Test .
  */
-class multi_config_controller_test : public CPPUNIT_NS::TestFixture
+class config_controller_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(multi_config_controller_test);
+CPPUNIT_TEST_SUITE(config_controller_test);
 CPPUNIT_TEST(multi_config_test);
 CPPUNIT_TEST(set_config_key_test);
-CPPUNIT_TEST(default_loading_test);
-CPPUNIT_TEST(parameters_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -56,12 +54,6 @@ public:
     // Starts the service and setConfig with the right key.
     // Calls setConfig with a bad key. Update and test that the service are still the same.
     static void set_config_key_test();
-
-    //Test the default config loaded when update is call without any setConfig before.
-    static void default_loading_test();
-
-    // test parameters from set_config
-    static void parameters_test();
 };
 
 } // namespace sight::app::ut

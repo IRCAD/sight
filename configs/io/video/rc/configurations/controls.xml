@@ -49,7 +49,7 @@ channels - in (optional):
 Usage:
 
         <service uid="..." type="sight::app::config_controller">
-            <appConfig id="sight::config::io::video::controls" />
+            <properties config="sight::config::io::video::controls" />
             <inout group="data">
                 <key name="camera" uid="..." />
                 <key name="frameTL" uid="..." />

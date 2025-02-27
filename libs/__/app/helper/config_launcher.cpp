@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,30 +27,9 @@
 #include <core/runtime/helper.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
+
 namespace sight::app::helper
 {
-
-//-----------------------------------------------------------------------------
-
-config_launcher::parameters::parameters(const service::config_t& _config) :
-    m_id(_config.get<std::string>("<xmlattr>.id"))
-{
-    if(_config.count("parameters") == 1)
-    {
-        const service::config_t& config_parameters = _config.get_child("parameters");
-
-        for(const auto& v : boost::make_iterator_range(config_parameters.equal_range("parameter")))
-        {
-            m_parameters.emplace_back(
-                v.second.get<std::string>("<xmlattr>.replace"),
-                v.second.get<std::string>("<xmlattr>.by")
-
-            );
-        }
-    }
-
-    SIGHT_ASSERT("At most 1 <parameters> tag is allowed", _config.count("parameters") < 2);
-}
 
 //------------------------------------------------------------------------------
 
@@ -64,47 +43,29 @@ void config_launcher::parse_config(
 )
 {
     const service::config_t& old_config = _config;
-    SIGHT_ASSERT("There must be only one <appConfig/> element.", old_config.count("appConfig") == 1);
-
-    const service::config_t& app_config = old_config.get_child("appConfig");
-    const auto app_cfg_id_element       = app_config.get_optional<std::string>("<xmlattr>.id");
-
-    //if there is an id attribute in the config, there is a unique config to load
-    //else there are several possible configs, and need to load all of them
-    if(app_cfg_id_element.has_value())
+    if(old_config.count("appConfig") == 1)
     {
-        const auto& app_cfg_id                  = *app_cfg_id_element;
-        const service::config_t& app_config_cfg = init_config(app_cfg_id, old_config, _service);
-        m_app_config_parameters[m_config_key] = parameters(app_config_cfg);
+        FW_DEPRECATED_MSG(
+            "appConfig attribute deprecated, use `config` property instead.",
+            "26.0"
+        );
+
+        const service::config_t& app_config = old_config.get_child("appConfig");
+        m_config_key = app_config.get<std::string>("<xmlattr>.id", "");
     }
-    else
-    {
-        //there are several config used. Parse them all
-        const auto subconfig_list = app_config.equal_range("config");
-        for(auto subconfig = subconfig_list.first ;
-            subconfig != subconfig_list.second ;
-            ++subconfig)
-        {
-            const auto config_name = subconfig->second.get<std::string>("<xmlattr>.name");
-            const auto config_id   = subconfig->second.get<std::string>("<xmlattr>.id");
-            if(!m_app_config_parameters.contains(config_id))
-            {
-                const service::config_t& app_config_cfg = init_config(config_id, old_config, _service);
-                m_app_config_parameters[config_name] = parameters(app_config_cfg);
-                m_config_key                         = config_name;
-            }
-            else
-            {
-                SIGHT_ERROR("The key " << config_id << " is used twice to identify configs in configLauncher");
-                break;
-            }
-        }
 
-        if(const auto default_config = app_config.get_optional<std::string>(
-               "<xmlattr>.default"
-        ); default_config.has_value())
+    const service::config_t& app_config_cfg = init_config(old_config, _service);
+
+    if(app_config_cfg.count("parameters") == 1)
+    {
+        const service::config_t& config_parameters = app_config_cfg.get_child("parameters");
+
+        for(const auto& v : boost::make_iterator_range(config_parameters.equal_range("parameter")))
         {
-            set_config(*default_config);
+            m_parameters.emplace_back(
+                v.second.get<std::string>("<xmlattr>.replace"),
+                v.second.get<std::string>("<xmlattr>.by")
+            );
         }
     }
 }
@@ -112,15 +73,11 @@ void config_launcher::parse_config(
 //------------------------------------------------------------------------------
 
 service::config_t config_launcher::init_config(
-    const std::string& _app_cfg_id,
     const service::config_t& _old_config,
     service::base::sptr _service
 )
 {
     service::config_t srv_cfg;
-    srv_cfg.add("config.appConfig.<xmlattr>.id", _app_cfg_id);
-    service::config_t& new_cfg          = srv_cfg.get_child("config.appConfig");
-    const service::config_t* cur_config = &srv_cfg;
 
     size_t i = 0;
 
@@ -131,10 +88,10 @@ service::config_t config_launcher::init_config(
             service::config_t parameter_cfg;
 
             const auto key = it_cfg.second.get<std::string>("<xmlattr>.name");
-            SIGHT_ASSERT("[" + _app_cfg_id + "] Missing 'key' tag.", !key.empty());
+            SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'key' tag.", !key.empty());
 
             const auto uid = it_cfg.second.get<std::string>("<xmlattr>.uid");
-            SIGHT_ASSERT("[" + _app_cfg_id + "] Missing 'uid' tag.", !uid.empty());
+            SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'uid' tag.", !uid.empty());
 
             parameter_cfg.add("<xmlattr>.replace", key);
 
@@ -152,7 +109,7 @@ service::config_t config_launcher::init_config(
                 parameter_cfg.add("<xmlattr>.by", obj->get_id());
             }
 
-            new_cfg.add_child("parameters.parameter", parameter_cfg);
+            srv_cfg.add_child("parameters.parameter", parameter_cfg);
             ++i;
         }
     }
@@ -162,22 +119,16 @@ service::config_t config_launcher::init_config(
         service::config_t parameter_cfg;
 
         const auto replace = it_cfg.second.get<std::string>("<xmlattr>.replace");
-        SIGHT_ASSERT("[" + _app_cfg_id + "] Missing 'replace' tag.", !replace.empty());
+        SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'replace' tag.", !replace.empty());
         parameter_cfg.add("<xmlattr>.replace", replace);
 
         const auto by = it_cfg.second.get<std::string>("<xmlattr>.by");
         parameter_cfg.add("<xmlattr>.by", by);
 
-        new_cfg.add_child("parameters.parameter", parameter_cfg);
+        srv_cfg.add_child("parameters.parameter", parameter_cfg);
     }
 
-    SIGHT_ASSERT("There must be only one <config/> element.", cur_config->count("config") == 1);
-
-    const service::config_t& srvconfig = cur_config->get_child("config");
-
-    SIGHT_ASSERT("There must be only one <appConfig/> element.", srvconfig.count("appConfig") == 1);
-
-    return srvconfig.get_child("appConfig");
+    return srv_cfg;
 }
 
 //------------------------------------------------------------------------------
@@ -189,17 +140,14 @@ void config_launcher::start_config(
 {
     field_adaptor_t replace_map(_opt_replace_map);
 
-    //get the right appConfig
-    const auto app_config = m_app_config_parameters[m_config_key];
-
-    for(const auto& param : app_config.m_parameters)
+    for(const auto& param : m_parameters)
     {
         replace_map[param.first] = param.second;
     }
 
     // Init manager
     auto config_manager = std::make_shared<app::detail::config_manager>();
-    config_manager->set_config(app_config.m_id, replace_map);
+    config_manager->set_config(m_config_key, replace_map);
 
     // When a configuration is launched, deferred objects may already exist.
     // This loop allow to notify the app config manager that this data exist and can be used by services.
@@ -238,14 +186,7 @@ void config_launcher::stop_config()
 
 void config_launcher::set_config(const std::string& _key)
 {
-    if(m_app_config_parameters.contains(_key))
-    {
-        m_config_key = _key;
-    }
-    else
-    {
-        SIGHT_ERROR("The is no config registered with key " << _key);
-    }
+    m_config_key = _key;
 }
 
 //------------------------------------------------------------------------------

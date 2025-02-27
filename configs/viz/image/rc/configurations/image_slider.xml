@@ -2,7 +2,7 @@
 Example:
 
 <service uid="..." type="sight::app::config_controller">
-    <appConfig id="sight::config::viz::image::imageSlider2D" />
+    <properties config="sight::config::viz::image::imageSlider2D" />
     <inout group="data">
         <key name="image" uid="${image}" />
         <key name="transferFunction" uid="${transferFunction}" />

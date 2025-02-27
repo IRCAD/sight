@@ -238,7 +238,7 @@
             <!-- ******************************* In-plane negato view ******************************* -->
 
             <service uid="axial_negato_cfg" type="sight::app::config_controller">
-                <appConfig id="ex_image_reslice::reslice_view" />
+                <properties config="ex_image_reslice::reslice_view" />
                 <parameter replace="WID_PARENT" by="axial_negato_view" />
                 <inout group="data">
                     <key name="image" uid="${input_image}" />
@@ -255,7 +255,7 @@
             <!-- ******************************* Frontal negato view ******************************* -->
 
             <service uid="frontal_negato_cfg" type="sight::app::config_controller">
-                <appConfig id="ex_image_reslice::reslice_view" />
+                <properties config="ex_image_reslice::reslice_view" />
                 <parameter replace="WID_PARENT" by="frontal_negato_view" />
                 <inout group="data">
                     <key name="image" uid="${input_image}" />

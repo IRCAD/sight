@@ -204,9 +204,9 @@ core::runtime::config_t config::get_adapted_template_config(
     core::mt::read_lock lock(m_registry_mutex);
     // Get config template
     auto iter = m_reg.find(_config_id);
-    SIGHT_ASSERT(
+    SIGHT_THROW_IF(
         "The id " << _config_id << " is not found in the application configuration registry",
-        iter != m_reg.end()
+        iter == m_reg.end()
     );
 
     // Adapt config

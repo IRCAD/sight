@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,14 +28,16 @@
 
 #include "service/controller.hpp"
 
+#include <data/string.hpp>
+
 namespace sight::app
 {
 
 /**
  * @brief   This service starts/stops a template configuration.
  *
- *  The parameters of the template configuration <param name="..." /> are filled according to the
- *  <inout> and <parameter> tags. Using <inout> is especially useful to wait for deferred objects, but it is strongly
+ * The parameters of the template configuration <param name="..." /> are filled according to the
+ * <inout> and <parameter> tags. Using <inout> is especially useful to wait for deferred objects, but it is strongly
  * recommended to use it to pass any object.
  * Note that <in> is not supported. This would have no meaning, because we can't ensure the object won't be modified
  * in the configuration. <out> is also not supported because if we assume that the target configuration produces the
@@ -45,16 +47,18 @@ namespace sight::app
  *
  * @code{.xml}
         <service type="sight::app::config_controller" >
-            <appConfig id="configId" />
+            <properties config="..." />
             <inout group="data">
                 <key name="object1" uid="..." />
                 <key name="object2" uid="..." />
                 ...
             </inout>
-            <parameter replace="channel" by="changeValueChannel"  />
+            <parameter replace="channel" by="changeValueChannel" />
             <parameter replace="service" by="serviceUid" />
         </service>
    @endcode
+ * @subsection Properties Properties:
+ * - \b config [sight::data::string]: identifier of the configuration to launch.
  * @subsection In-Out In-Out:
  * - \b data [sight::data::object]: \b key specifies the name of the parameter in the target configuration and \b uid
  * identifies the objects whose uid are passed as value of the parameter.
@@ -76,6 +80,9 @@ public:
 
 protected:
 
+    //// Calls update when the configuration id changes
+    service::connections_t auto_connections() const override;
+
     /// Configures the service
     void configuring(const config_t& _config) override;
 
@@ -88,9 +95,6 @@ protected:
     /// Does nothing
     void updating() override;
 
-    /// Overrides
-    void info(std::ostream& _sstream) override;
-
 private:
 
     /// config manager
@@ -98,6 +102,9 @@ private:
 
     /// Input data to pass to the configuration
     data::ptr_vector<data::object, data::access::inout> m_data {this, app::helper::config_launcher::DATA_GROUP};
+
+    /// Input data to pass to the configuration
+    data::property<data::string> m_config_id {this, "config", {}};
 };
 
 } // namespace sight::app

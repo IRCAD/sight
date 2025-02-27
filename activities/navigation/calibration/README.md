@@ -53,12 +53,12 @@ Example with `sight::navigation::calibration::cal_intrinsic_view` & `sight::navi
         <inout key="activity" uid="${AS_UID}" />
         <config>
             <intrinsic>
-                <appConfig id="sight::navigation::calibration::cal_intrinsic_view" />
+                <properties config="sight::navigation::calibration::cal_intrinsic_view" />
                 <parameter replace="WID_PARENT" by="calibrationView" />
                 <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
             </intrinsic>
             <extrinsic>
-                <appConfig id="sight::navigation::calibration::cal_extrinsic_view" />
+                <properties config="sight::navigation::calibration::cal_extrinsic_view" />
                 <inout key="cameraSet" uid="${cameraSet}" />
                 <parameter replace="WID_PARENT" by="calibrationView" />
                 <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />

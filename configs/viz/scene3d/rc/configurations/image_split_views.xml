@@ -81,7 +81,7 @@
         <!-- ******************************* Begin 3D scene ******************************* -->
 
         <service uid="mainSceneCfg" type="sight::app::config_controller">
-            <appConfig id="sight::config::viz::scene3d::volumeRendering" />
+            <properties config="sight::config::viz::scene3d::volumeRendering" />
             <parameter replace="WID_PARENT" by="mainSceneView" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_SCENE3D_VISIBILITY_RECEIVER_CHANNEL" />
             <parameter replace="VR_BOOL_PARAM_RECEIVER_CHANNEL" by="${VR_BOOL_PARAM_RECEIVER_CHANNEL}" />
@@ -120,7 +120,7 @@
         <!-- ************************************* 2D Negato views ************************************ -->
 
         <service uid="axialNegatoCfg" type="sight::app::config_controller">
-            <appConfig id="sight::config::viz::scene3d::negato2d" />
+            <properties config="sight::config::viz::scene3d::negato2d" />
             <parameter replace="WID_PARENT" by="axialSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_AXIAL_VISIBILITY_RECEIVER_CHANNEL" />
@@ -139,7 +139,7 @@
         </service>
 
         <service uid="sagittalNegatoCfg" type="sight::app::config_controller">
-            <appConfig id="sight::config::viz::scene3d::negato2d" />
+            <properties config="sight::config::viz::scene3d::negato2d" />
             <parameter replace="WID_PARENT" by="sagittalSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_SAGITTAL_VISIBILITY_RECEIVER_CHANNEL" />
@@ -158,7 +158,7 @@
         </service>
 
         <service uid="frontalNegatoCfg" type="sight::app::config_controller">
-            <appConfig id="sight::config::viz::scene3d::negato2d" />
+            <properties config="sight::config::viz::scene3d::negato2d" />
             <parameter replace="WID_PARENT" by="frontalSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_FRONTAL_VISIBILITY_RECEIVER_CHANNEL" />

@@ -138,7 +138,7 @@
         <!-- ************************************* Services ************************************ -->
 
         <service uid="negatoSliderCfg" type="sight::app::config_controller">
-            <appConfig id="sight::config::viz::image::imageSlider" />
+            <properties config="sight::config::viz::image::imageSlider" />
             <parameter replace="WID_PARENT" by="negatoSliderView" />
             <parameter replace="sliceIndex" by="${sliceIndex}" />
             <parameter replace="enableSliceType" by="${enableSliceType}" />

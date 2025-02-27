@@ -4,7 +4,7 @@ color, ...
 
 Example:
 <service uid="..." type="sight::app::config_controller">
-    <appConfig id="ModelSeriesManagerWindow" />
+    <properties config="ModelSeriesManagerWindow" />
     <inout group="data">
         <key name="organ_manager_modelseries" uid="..." />
     </inout>
@@ -43,7 +43,7 @@ With:
         </service>
 
         <service uid="modelManager" type="sight::app::config_controller">
-            <appConfig id="ModelSeriesManagerView" />
+            <properties config="ModelSeriesManagerView" />
             <inout group="data">
                 <key name="organ_manager_modelseries" uid="${organ_manager_modelseries}" />
             </inout>

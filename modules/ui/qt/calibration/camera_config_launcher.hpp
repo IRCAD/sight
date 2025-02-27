@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,12 +52,12 @@ namespace sight::module::ui::qt::calibration
        <inout key="activity" uid="..." />
        <config>
            <intrinsic>
-               <appConfig id="sight::navigation::calibration::cal_intrinsic_view" />
+               <properties config="sight::navigation::calibration::cal_intrinsic_view" />
                <parameter replace="WID_PARENT" by="calibrationView" />
                <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
            </intrinsic>
            <extrinsic>
-               <appConfig id="sight::navigation::calibration::cal_extrinsic_view" />
+               <properties config="sight::navigation::calibration::cal_extrinsic_view" />
                <inout key="cameraSet" uid="..." />
                <parameter replace="WID_PARENT" by="calibrationView" />
                <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />

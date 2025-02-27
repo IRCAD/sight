@@ -5,7 +5,7 @@ for slices and transfer function.
 Example:
 
 <service uid="..." type="sight::app::config_controller">
-    <appConfig id="ImageManager" />
+    <properties config="ImageManager" />
     <parameter replace="WID_PARENT" by="referenceSceneEditor" />
     <inout group="data">
         <key name="image" uid="..." />

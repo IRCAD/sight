@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,6 +36,15 @@ config_controller::config_controller() noexcept :
 
 //------------------------------------------------------------------------------
 
+service::connections_t config_controller::auto_connections() const
+{
+    return {
+        {m_config_id, sight::data::object::MODIFIED_SIG, slots::UPDATE}
+    };
+}
+
+//------------------------------------------------------------------------------
+
 void config_controller::configuring(const config_t& _config)
 {
     m_config_launcher->parse_config(_config, this->get_sptr());
@@ -45,7 +54,16 @@ void config_controller::configuring(const config_t& _config)
 
 void config_controller::starting()
 {
-    m_config_launcher->start_config(this->get_sptr());
+    const auto config = *m_config_id;
+    if(not config.empty())
+    {
+        m_config_launcher->set_config(config);
+    }
+
+    if(not m_config_launcher->config().empty())
+    {
+        m_config_launcher->start_config(this->get_sptr());
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -59,12 +77,28 @@ void config_controller::stopping()
 
 void config_controller::updating()
 {
-}
+    bool start = !m_config_launcher->config_is_running();
 
-//------------------------------------------------------------------------------
+    const auto new_config = *m_config_id;
 
-void config_controller::info(std::ostream& /*_sstream*/)
-{
+    // If the configuration is different from the current one
+    if(m_config_launcher->config() != new_config)
+    {
+        // Set the new configuration to start
+        m_config_launcher->set_config(new_config);
+
+        // Stop the current configuration and force restart
+        if(!start)
+        {
+            start = true;
+            m_config_launcher->stop_config();
+        }
+    }
+
+    if(start)
+    {
+        m_config_launcher->start_config(this->get_sptr());
+    }
 }
 
 //------------------------------------------------------------------------------

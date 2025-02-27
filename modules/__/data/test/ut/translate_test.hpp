@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,26 +21,25 @@
 
 #pragma once
 
-#include <service/base.hpp>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::data
+namespace sight::module::data::ut
 {
 
-/**
- * @brief The purpose of this service is to wrap messages incoming to the object to new messages.
- */
-
-class i_wrapper_srv : public service::base
+class translate_test : public CPPUNIT_NS::TestFixture
 {
+CPPUNIT_TEST_SUITE(translate_test);
+CPPUNIT_TEST(string_to_string);
+CPPUNIT_TEST(integer_to_boolean);
+CPPUNIT_TEST_SUITE_END();
+
 public:
 
-    SIGHT_DECLARE_SERVICE(i_wrapper_srv, service::base);
+    void setUp() override;
+    void tearDown() override;
 
-    ///@brief IWrapperSrv constructor. Do nothing.
-    i_wrapper_srv();
-
-    ///@brief IWrapperSrv destructor. Do nothing.
-    ~i_wrapper_srv() override;
+    static void string_to_string();
+    static void integer_to_boolean();
 };
 
-} // namespace sight::module::data
+} // namespace sight::module::data::ut

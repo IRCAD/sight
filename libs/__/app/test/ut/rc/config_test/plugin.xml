@@ -336,7 +336,7 @@
             </service>
 
             <service uid="TestService2Uid" type="sight::app::config_controller">
-                <appConfig id="parameter_replace_test_sub_config" />
+                <properties config="parameter_replace_test_sub_config" />
                 <inout group="data">
                     <key name="data1" uid="${data1}" />
                     <key name="data2" uid="data2Id" />
@@ -354,7 +354,6 @@
 
             <connect channel="Channel No5">
                 <signal>data2Id/modified</signal>
-                <slot>TestService2Uid/update</slot>
             </connect>
 
             <start uid="TestService1Uid" />
@@ -413,15 +412,15 @@
         <desc>Test configuration for optional parameter replace</desc>
         <config>
             <service uid="test1_srv" type="sight::app::config_controller">
-                <appConfig id="default_object_id_test_sub_config" />
+                <properties config="default_object_id_test_sub_config" />
             </service>
 
             <service uid="test2_srv" type="sight::app::config_controller">
-                <appConfig id="default_object_id_test_sub_config" />
+                <properties config="default_object_id_test_sub_config" />
             </service>
 
             <service uid="test3_srv" type="sight::app::config_controller">
-                <appConfig id="default_object_id_test_sub_config" />
+                <properties config="default_object_id_test_sub_config" />
             </service>
 
             <start uid="test1_srv" />

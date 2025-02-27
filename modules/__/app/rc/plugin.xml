@@ -82,12 +82,6 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
-        <type>sight::service::controller</type>
-        <service>sight::app::multi_config_controller</service>
-        <object>sight::data::object</object>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
         <type>sight::service::object_parser</type>
         <service>sight::app::parser::ivec2</service>
         <object>sight::data::ivec2</object>

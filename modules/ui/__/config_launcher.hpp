@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ namespace sight::module::ui
  *
  * @code{.xml}
         <service type="sight::app::config_controller" >
-            <appConfig id="IdOfConfig" />
+            <properties config="IdOfConfig" />
             <inout group="data">
                 <key name="object1" uid="..." />
                 <key name="object2" uid="..." />
@@ -116,7 +116,7 @@ protected:
      * @code{.xml}
        <service impl="sight::module::ui::config_launcher" type="ui::action">
            <config>
-                <appConfig id="Visu2DID" />
+                <properties config="Visu2DID" />
                 <inout group="data">
                     <key name="param1" uid="..." />
                     <key name="param2" uid="..." />

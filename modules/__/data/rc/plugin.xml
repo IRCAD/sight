@@ -58,4 +58,12 @@
         <object key="objects">sight::data::object</object>
         <desc>This service extracts objects from a vector</desc>
     </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::filter</type>
+        <service>sight::module::data::translate</service>
+        <object key="key">sight::data::string_serializable</object>
+        <object key="value">sight::data::string_serializable</object>
+        <desc>Registers/unregisters the object given by the slots.</desc>
+    </extension>
 </plugin>

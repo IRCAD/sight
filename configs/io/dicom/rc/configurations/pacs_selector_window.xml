@@ -41,7 +41,7 @@
 
         <!-- TF manager -->
         <service uid="PACSselectorCfg" type="sight::app::config_controller">
-            <appConfig id="sight::config::io::dicom::pacs_selector_widget" />
+            <properties config="sight::config::io::dicom::pacs_selector_widget" />
             <parameter replace="WID_PARENT" by="view" />
             <inout group="data">
                 <key name="outputSeriesSet" uid="${outputSeriesSet}" />

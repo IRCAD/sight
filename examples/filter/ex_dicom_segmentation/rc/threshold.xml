@@ -62,7 +62,7 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="negato1Srv" type="sight::app::config_controller">
-            <appConfig id="2DNegato" />
+            <properties config="2DNegato" />
             <inout group="data">
                 <key name="image" uid="${imageSeries}" />
             </inout>
@@ -71,7 +71,7 @@
         </service>
 
         <service uid="negato2Srv" type="sight::app::config_controller">
-            <appConfig id="2DNegato" />
+            <properties config="2DNegato" />
             <inout group="data">
                 <key name="image" uid="imageSeriesMask" />
             </inout>

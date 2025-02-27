@@ -31,7 +31,7 @@
         <!-- ************************************* Services ************************************ -->
 
         <service uid="activityLauncherSrv" type="sight::app::config_controller">
-            <appConfig id="ActivityLauncher" />
+            <properties config="ActivityLauncher" />
             <inout group="data">
                 <key name="activitySet" uid="activitySet" />
             </inout>

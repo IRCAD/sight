@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,35 +81,22 @@ public:
 
 private:
 
-    /// Stores the app config.
-    class parameters
-    {
-    public:
-
-        parameters() = default;
-        parameters(const service::config_t& _config);
-        std::string m_id;
-        std::vector<std::pair<std::string, std::string> > m_parameters;
-    };
-
     /**
      * @brief initialise a config provided in param
      *
-     * @param _app_cfg_id   the id of the config to init
      * @param _old_config   the current service config
      * @param _service      Service to connect with config root object.
      * @return the initialised config
      */
     service::config_t init_config(
-        const std::string& _app_cfg_id,
         const service::config_t& _old_config,
         service::base::sptr _service
     );
 
     // map of supported configs. Each map is associated to a key, (attribute name i the xml)
     // a default config is stored.
-    std::map<std::string, parameters> m_app_config_parameters;
-    std::string m_config_key = {"default"};
+    std::vector<std::pair<std::string, std::string> > m_parameters;
+    std::string m_config_key = {};
 
     /// Sets the configuration running state.
     bool m_config_is_running {false};

@@ -104,12 +104,12 @@
             <service uid="test8_srv" type="sight::app::ut::test_reset_order_srv" />
 
             <service uid="sub_cfg1_srv" type="sight::app::config_controller">
-                <appConfig id="sub_sequence_cfg_test" />
+                <properties config="sub_sequence_cfg_test" />
                 <parameter replace="updater" by="sub_updater1" />
             </service>
 
             <service uid="sub_cfg2_srv" type="sight::app::config_controller">
-                <appConfig id="sub_sequence_cfg_test" />
+                <properties config="sub_sequence_cfg_test" />
                 <parameter replace="updater" by="sub_updater2" />
             </service>
 
