@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,10 +57,9 @@ struct spheroid_extractor
         using image_t        = typename itk::Image<PIXELTYPE, 3>;
         using binary_image_t = typename itk::Image<std::uint16_t, 3>;
 
-        typename image_t::Pointer input_image = io::itk::move_to_itk<image_t>(_params.input_image);
+        auto input_image = io::itk::move_to_itk<image_t>(_params.input_image);
 
-        typename itk::BinaryThresholdImageFilter<image_t, binary_image_t>::Pointer threshold_filter =
-            itk::BinaryThresholdImageFilter<image_t, binary_image_t>::New();
+        auto threshold_filter = itk::BinaryThresholdImageFilter<image_t, binary_image_t>::New();
 
         auto threshold = PIXELTYPE(_params.threshold);
         threshold_filter->SetLowerThreshold(threshold);
@@ -81,7 +80,7 @@ struct spheroid_extractor
         cc->Update();
 
         using label_stats_filter_t = itk::LabelGeometryImageFilter<binary_image_t, image_t>;
-        typename label_stats_filter_t::Pointer label_geometry_filter = label_stats_filter_t::New();
+        auto label_geometry_filter = label_stats_filter_t::New();
 
         label_geometry_filter->SetInput(cc->GetOutput());
         label_geometry_filter->SetIntensityInput(input_image);

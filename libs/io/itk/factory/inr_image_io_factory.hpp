@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ public:
     itkFactorylessNewMacro(self_t)
 
     /** Run-time type information (and related methods). */
-    itkTypeMacro(InrImageIOFactory, ObjectFactoryBase)
+    itkTypeMacro(inr_image_io_factory, ObjectFactoryBase)
 
     /** Register one factory of this type  */
     static void register_one_factory()

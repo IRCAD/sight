@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,15 +78,14 @@ void line_drawer_test::circle_test()
         );
 
         const auto dump_lock = image->dump_lock();
-        SPTR(data::image::buffer_t) val =
-            data::helper::medical_image::get_pixel_in_image_space(image, value);
+        const auto* val      = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
 
         filter::image::line_drawer drawer(image, nullptr);
         image_diff diff = drawer.draw(
             filter::image::bresenham_line::Orientation::z_axis,
             point,
             point,
-            val.get(),
+            val,
             thickness
         );
 
@@ -123,13 +122,12 @@ void line_drawer_test::circle_test()
             type,
             data::image::pixel_format_t::gray_scale
         );
-        const auto dump_lock = image->dump_lock();
 
-        SPTR(data::image::buffer_t) val =
-            data::helper::medical_image::get_pixel_in_image_space(image, value);
+        const auto dump_lock = image->dump_lock();
+        const auto* val      = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
 
         filter::image::line_drawer drawer(image, nullptr);
-        drawer.draw(filter::image::bresenham_line::Orientation::z_axis, point, point, val.get(), thickness);
+        drawer.draw(filter::image::bresenham_line::Orientation::z_axis, point, point, val, thickness);
 
         {
             const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);
@@ -268,15 +266,14 @@ void line_drawer_test::ellipse_test()
         );
 
         const auto dump_lock = image->dump_lock();
-        SPTR(data::image::buffer_t) val =
-            data::helper::medical_image::get_pixel_in_image_space(image, value);
+        const auto* val      = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
 
         filter::image::line_drawer drawer(image, nullptr);
         image_diff diff = drawer.draw(
             filter::image::bresenham_line::Orientation::z_axis,
             point,
             point,
-            val.get(),
+            val,
             thickness
         );
 
@@ -378,11 +375,10 @@ void line_drawer_test::border_test()
         );
 
         const auto dump_lock = image->dump_lock();
-        SPTR(data::image::buffer_t) val =
-            data::helper::medical_image::get_pixel_in_image_space(image, value);
+        const auto* val      = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
 
         filter::image::line_drawer drawer(image, nullptr);
-        drawer.draw(filter::image::bresenham_line::Orientation::z_axis, point, point, val.get(), thickness);
+        drawer.draw(filter::image::bresenham_line::Orientation::z_axis, point, point, val, thickness);
 
         {
             const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);
@@ -475,8 +471,7 @@ void line_drawer_test::roi_test()
         const data::image::size_t roi_end   = {{50, 50, 50}};
         const std::int16_t roi_value        = 1;
 
-        SPTR(data::image::buffer_t) roi_val =
-            data::helper::medical_image::get_pixel_in_image_space(roi_image, roi_value);
+        const auto* roi_val = reinterpret_cast<const sight::data::image::buffer_t*>(&roi_value);
 
         for(std::size_t i = roi_begin[0] ; i < roi_end[0] ; ++i)
         {
@@ -485,17 +480,16 @@ void line_drawer_test::roi_test()
                 for(std::size_t k = roi_begin[2] ; k < roi_end[2] ; ++k)
                 {
                     data::image::index_t index = i + j * size[0] + k * size[0] * size[1];
-                    roi_image->set_pixel(index, roi_val.get());
+                    roi_image->set_pixel(index, roi_val);
                 }
             }
         }
 
         const auto dump_lock = image->dump_lock();
-        SPTR(data::image::buffer_t) val =
-            data::helper::medical_image::get_pixel_in_image_space(image, value);
+        const auto* val      = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
 
         filter::image::line_drawer drawer(image, roi_image);
-        drawer.draw(orientation, point, point, val.get(), thickness);
+        drawer.draw(orientation, point, point, val, thickness);
 
         {
             const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);

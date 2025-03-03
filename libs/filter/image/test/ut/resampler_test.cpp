@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -134,9 +134,6 @@ void resampler_test::translate_test()
     );
 
     std::uint8_t value = 255;
-
-    SPTR(data::image::buffer_t) buffer_value =
-        data::helper::medical_image::get_pixel_in_image_space(image_in, value);
 
     const auto in_dump_lock = image_in->dump_lock();
 

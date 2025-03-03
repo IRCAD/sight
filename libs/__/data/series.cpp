@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -1352,7 +1352,7 @@ dicom::sop::Keyword series::get_sop_keyword() const noexcept
 
 void series::set_sop_keyword(dicom::sop::Keyword _keyword)
 {
-    const auto& sop = dicom::sop::get(_keyword);
+    const auto sop = dicom::sop::get(_keyword);
 
     m_pimpl->set_value<gdcm::Keywords::SOPClassUID>(std::string(sop.m_uid));
 }

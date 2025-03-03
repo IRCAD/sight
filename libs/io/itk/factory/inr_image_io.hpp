@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,8 +49,8 @@ public:
     itkNewMacro(self_t)
 
     /** Run-time type information (and related methods). */
-    itkTypeMacro(InrImageIO, superclass_t) inr_image_io(const Self&) = delete; //purposely not implemented
-    void operator=(const Self&)                                      = delete; //purposely not implemented
+    itkTypeMacro(inr_image_io, superclass_t) inr_image_io(const Self&) = delete; //purposely not implemented
+    void operator=(const Self&)                                        = delete; //purposely not implemented
 
     /*-------- This part of the interfaces deals with reading data. ----- */
 

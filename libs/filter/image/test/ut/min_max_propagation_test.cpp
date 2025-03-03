@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,8 +53,7 @@ static void draw_cube(data::image::sptr _image, const std::uint8_t _value)
 {
     const auto dump_lock = _image->dump_lock();
 
-    SPTR(data::image::buffer_t) buffer_value =
-        data::helper::medical_image::get_pixel_in_image_space(_image, _value);
+    const auto* buffer_value = reinterpret_cast<const uint8_t*>(&_value);
 
     for(std::size_t x = 10 ; x < 20 ; ++x)
     {
@@ -62,7 +61,7 @@ static void draw_cube(data::image::sptr _image, const std::uint8_t _value)
         {
             for(std::size_t z = 10 ; z < 20 ; ++z)
             {
-                _image->set_pixel(compute_offset(x, y, z, _image), buffer_value.get());
+                _image->set_pixel(compute_offset(x, y, z, _image), buffer_value);
             }
         }
     }
@@ -120,8 +119,6 @@ void min_max_propagation_test::min_propag_test()
 
     // Propagate at 15,15,15 with a 255 value (same as cube)
     std::uint8_t value = 255;
-
-    SPTR(data::image::buffer_t) buffer_value = data::helper::medical_image::get_pixel_in_image_space(image_in, value);
 
     const auto dump_lock_in  = image_in->dump_lock();
     const auto dump_lock_out = image_out->dump_lock();

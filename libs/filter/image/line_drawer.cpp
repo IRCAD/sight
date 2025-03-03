@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,7 +50,7 @@ line_drawer::line_drawer(data::image::sptr _img, data::image::csptr _roi) :
 
 bool line_drawer::draw_ellipse(
     const line_drawer::coordinates_t& _c,
-    data::image::buffer_t* _value,
+    const data::image::buffer_t* _value,
     const double _radius,
     const std::size_t _first_dim,
     const std::size_t _second_dim,
@@ -102,7 +102,7 @@ bool line_drawer::draw_ellipse(
 
 bool line_drawer::draw_pixel(
     const data::image::index_t _index,
-    data::image::buffer_t* _value,
+    const data::image::buffer_t* _value,
     const bool _overwrite,
     image_diff& _diff
 )
@@ -142,7 +142,7 @@ image_diff line_drawer::draw(
     const bresenham_line::Orientation _orientation,
     const coordinates_t& _start_coord,
     const coordinates_t& _end_coord,
-    data::image::buffer_t* _value,
+    const data::image::buffer_t* _value,
     const double _thickness,
     const bool _overwrite
 )

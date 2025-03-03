@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ public:
         bresenham_line::Orientation _orientation,
         const coordinates_t& _start_coord,
         const coordinates_t& _end_coord,
-        data::image::buffer_t* _value,
+        const data::image::buffer_t* _value,
         double _thickness,
         bool _overwrite = true
     );
@@ -83,7 +83,7 @@ private:
      */
     bool draw_ellipse(
         const line_drawer::coordinates_t& _c,
-        data::image::buffer_t* _value,
+        const data::image::buffer_t* _value,
         double _radius,
         std::size_t _first_dim,
         std::size_t _second_dim,
@@ -107,7 +107,7 @@ private:
      */
     bool draw_pixel(
         data::image::index_t _index,
-        data::image::buffer_t* _value,
+        const data::image::buffer_t* _value,
         bool _overwrite,
         image_diff& _diff
     );

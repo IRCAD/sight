@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ public:
     using self_t    = itk_logger;
     using pointer_t = ::itk::SmartPointer<self_t>;
 
-    itkTypeMacro(ItkLogger, ::itk::Object);
+    itkTypeMacro(itk_logger, ::itk::Object);
 
     static pointer_t New();
 

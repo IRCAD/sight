@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,6 +32,8 @@
 #include <core/base_object.hpp>
 #include <core/mt/types.hpp>
 #include <core/spy_log.hpp>
+
+#include <format>
 
 #include <future>
 #include <queue>
@@ -225,7 +227,7 @@ struct SIGHT_CORE_CLASS_API slot_base : virtual core::base_object
         template<typename F>
         std::string get_type_name() const
         {
-            return std::string("function_type(") + std::string(typeid(F).name()) + std::string(")");
+            return std::format("function_type({})", typeid(F).name());
         }
 
         slot_base(unsigned int _arity) :

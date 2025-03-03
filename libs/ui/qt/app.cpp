@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,11 +69,16 @@ app::app(int& _argc, char** _argv, bool _gui_enabled) :
     // Parse all font in rc/fonts folder.
     const auto fonts_folder = core::runtime::get_library_resource_file_path("sight::ui::qt/fonts");
 
-    for(const auto& font : std::filesystem::recursive_directory_iterator {fonts_folder})
+    // Only add them if the path exists, this is required for a install on the system (Debian package),
+    // where we don't want to duplicate the fonts
+    if(std::filesystem::exists(fonts_folder))
     {
-        if(font.path().extension() == ".ttf")
+        for(const auto& font : std::filesystem::recursive_directory_iterator {fonts_folder})
         {
-            QFontDatabase::addApplicationFont(QString::fromStdString(font.path().string()));
+            if(font.path().extension() == ".ttf")
+            {
+                QFontDatabase::addApplicationFont(QString::fromStdString(font.path().string()));
+            }
         }
     }
 }

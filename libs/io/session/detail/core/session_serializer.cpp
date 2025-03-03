@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,8 @@
 #include <io/session/helper.hpp>
 
 #include <boost/property_tree/json_parser.hpp>
+
+#include <format>
 
 #include <atomic>
 #include <shared_mutex>
@@ -249,13 +251,12 @@ void session_serializer::serialize(
         // Throw an exception in debug, but just report an error in release when encryption is not supported, but asked
         if(!_password.empty())
         {
-            const std::string& message =
-                "Archive format '"
-                + std::string(archive::archive_format_to_string(_archive_format))
-                + "' doesn't support encryption.";
-
-            SIGHT_ASSERT(message, false);
-            SIGHT_ERROR(message);
+            SIGHT_ERROR(
+                std::format(
+                    "Archive format '{}' doesn't support encryption.",
+                    archive::archive_format_to_string(_archive_format)
+                )
+            );
         }
 
         // Create the archive that will hold all binary files

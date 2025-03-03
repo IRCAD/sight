@@ -114,14 +114,6 @@ SIGHT_DATA_API bool check_image_slice_index(data::image::sptr _p_img);
 SIGHT_DATA_API bool is_buf_null(const data::image::buffer_t* _buffer, unsigned int _len);
 
 /**
- * @brief Return a buffer of image type's size, containing 'value' casted to image data type
- * @param[in] _image : reference image
- * @param[in] _value : value to map
- */
-template<typename T>
-SPTR(data::image::buffer_t) get_pixel_in_image_space(data::image::sptr _image, T & _value);
-
-/**
  * @brief Return minimum and maximum values contained in image. If image
  * min or max value is out of T range, they are clamped to T capacity
  * @param[in] _img : image
@@ -304,46 +296,6 @@ SIGHT_DATA_API void set_label(data::image& _image, const std::string& _label);
 
 // ------------------------------------------------------------------------------
 
-template<typename VALUE>
-class pixel_cast_and_set_functor
-{
-public:
-
-    class param
-    {
-    public:
-
-        using value_t          = VALUE;
-        using buffer_type_sptr = std::shared_ptr<data::image::buffer_t>;
-
-        param(value_t& _v) :
-            value(_v)
-        {
-        }
-
-        const value_t& value;
-        buffer_type_sptr res;
-    };
-
-    // ------------------------------------------------------------------------------
-
-    template<typename IMAGE>
-    void operator()(param& _param)
-    {
-        unsigned char image_type_size = sizeof(IMAGE);
-
-        auto val = core::tools::numeric_round_cast<IMAGE>(_param.value);
-
-        auto* buf = reinterpret_cast<data::image::buffer_t*>(&val);
-
-        SPTR(data::image::buffer_t) res(new data::image::buffer_t[image_type_size]);
-        std::copy(buf, buf + image_type_size, res.get());
-        _param.res = res;
-    }
-};
-
-// ------------------------------------------------------------------------------
-
 template<typename VALUE, typename INT_INDEX>
 class cast_and_set_functor
 {
@@ -381,24 +333,6 @@ public:
         *(buffer + offset) = core::tools::numeric_round_cast<IMAGE>(_param.value);
     }
 };
-
-// ------------------------------------------------------------------------------
-
-template<typename T>
-SPTR(data::image::buffer_t) get_pixel_in_image_space(
-    data::image::sptr _image,
-    T & _value
-)
-{
-    typename pixel_cast_and_set_functor<T>::param param(_value);
-
-    core::type type = _image->type();
-    core::tools::dispatcher<core::tools::supported_dispatcher_types, pixel_cast_and_set_functor<T> >::invoke(
-        type,
-        param
-    );
-    return param.res;
-}
 
 // ------------------------------------------------------------------------------
 

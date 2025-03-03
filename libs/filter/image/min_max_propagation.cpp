@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ public:
     using Pointer      = itk::SmartPointer<self_t>;
 
     itkNewMacro(self_t);
-    itkTypeMacro(MinMaxPropagCriterion, ImageFunction);
+    itkTypeMacro(min_max_propag_criterion, ImageFunction);
 
     using pixel_t   = typename superclass_t::InputPixelType;
     using index_t   = typename TImage::IndexType;
