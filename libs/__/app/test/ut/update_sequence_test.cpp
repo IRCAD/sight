@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -262,6 +262,213 @@ void update_sequence_test::call_slot_while_stopped()
     // srv_to_stop1 is skipped since srv_to_update_but_stopped cannot be updated
     CPPUNIT_ASSERT_EQUAL(false, srv_to_stop_1->stopped());
     CPPUNIT_ASSERT_EQUAL(true, srv_to_update_but_stopped->stopped());
+
+    CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+
+    service::remove(update_srv);
+}
+
+//------------------------------------------------------------------------------
+
+void update_sequence_test::call_slot_after_a_start()
+{
+    auto srv_to_update_but_stopped = create_order_srv(false);
+    auto srv_to_stop_1             = create_order_srv();
+
+    std::stringstream srv_config;
+    srv_config
+    << "<config>"
+    << "<service uid=" << std::quoted(srv_to_update_but_stopped->get_id()) << " slot=\"start\" />"
+    << "<service uid=" << std::quoted(srv_to_update_but_stopped->get_id()) << " />"
+    << "<service uid=" << std::quoted(srv_to_stop_1->get_id()) << " slot=\"stop\" />"
+    << "</config>"
+    ;
+    service::config_t config;
+    boost::property_tree::read_xml(srv_config, config);
+
+    auto update_srv = service::add("sight::app::update_sequence");
+    CPPUNIT_ASSERT(update_srv->is_a("sight::app::update_sequence"));
+    CPPUNIT_ASSERT(update_srv->is_a("sight::app::updater"));
+    test_order_srv::s_ORDER = 1001;
+    update_srv->set_config(config);
+    CPPUNIT_ASSERT_EQUAL((unsigned int) (0), srv_to_update_but_stopped->update_order());
+    CPPUNIT_ASSERT_NO_THROW(update_srv->configure());
+    CPPUNIT_ASSERT_NO_THROW(update_srv->start().get());
+
+    CPPUNIT_ASSERT_EQUAL(true, srv_to_stop_1->started());
+    CPPUNIT_ASSERT_EQUAL(true, srv_to_update_but_stopped->stopped());
+
+    update_srv->update().get();
+
+    CPPUNIT_ASSERT_EQUAL(true, srv_to_stop_1->stopped());
+    CPPUNIT_ASSERT_EQUAL(true, srv_to_update_but_stopped->started());
+
+    CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+
+    service::remove(update_srv);
+}
+
+//------------------------------------------------------------------------------
+
+void update_sequence_test::call_stop_while_stopped()
+{
+    auto srv_to_stop = create_order_srv(false);
+
+    std::stringstream srv_config;
+    srv_config
+    << "<config>"
+    << "<service uid=" << std::quoted(srv_to_stop->get_id()) << " slot=\"stop\" />"
+    << "</config>"
+    ;
+    service::config_t config;
+    boost::property_tree::read_xml(srv_config, config);
+
+    auto update_srv = service::add("sight::app::update_sequence");
+    CPPUNIT_ASSERT(update_srv->is_a("sight::app::update_sequence"));
+    CPPUNIT_ASSERT(update_srv->is_a("sight::app::updater"));
+    update_srv->set_config(config);
+    CPPUNIT_ASSERT_NO_THROW(update_srv->configure());
+    CPPUNIT_ASSERT_NO_THROW(update_srv->start().get());
+
+    CPPUNIT_ASSERT_EQUAL(false, srv_to_stop->started());
+
+    CPPUNIT_ASSERT_NO_THROW(update_srv->update().get());
+
+    CPPUNIT_ASSERT_EQUAL(true, srv_to_stop->stopped());
+    CPPUNIT_ASSERT_EQUAL(false, srv_to_stop->started());
+
+    CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+
+    service::remove(update_srv);
+}
+
+//------------------------------------------------------------------------------
+
+void update_sequence_test::call_start_slot_stop()
+{
+    auto srv = create_order_srv(false);
+
+    std::stringstream srv_config;
+    srv_config
+    << "<config>"
+    << "<service uid=" << std::quoted(srv->get_id()) << " slot=\"start\" />"
+    << "<service uid=" << std::quoted(srv->get_id()) << " />"
+    << "<service uid=" << std::quoted(srv->get_id()) << " slot=\"stop\"  />"
+    << "</config>"
+    ;
+    service::config_t config;
+    boost::property_tree::read_xml(srv_config, config);
+
+    auto update_srv = service::add("sight::app::update_sequence");
+    CPPUNIT_ASSERT(update_srv->is_a("sight::app::update_sequence"));
+    CPPUNIT_ASSERT(update_srv->is_a("sight::app::updater"));
+    update_srv->set_config(config);
+    CPPUNIT_ASSERT_NO_THROW(update_srv->configure());
+    CPPUNIT_ASSERT_NO_THROW(update_srv->start().get());
+
+    CPPUNIT_ASSERT_EQUAL(false, srv->started());
+    test_order_srv::s_ORDER = 100;
+    update_srv->update().get();
+    CPPUNIT_ASSERT_EQUAL((unsigned int) (100), srv->update_order());
+
+    CPPUNIT_ASSERT_EQUAL(true, srv->stopped());
+    CPPUNIT_ASSERT_EQUAL(false, srv->started());
+
+    CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+
+    service::remove(update_srv);
+}
+
+//------------------------------------------------------------------------------
+
+void update_sequence_test::call_stop_slot_start()
+{
+    auto srv = create_order_srv(false);
+
+    std::stringstream srv_config;
+    srv_config
+    << "<config>"
+    << "<service uid=" << std::quoted(srv->get_id()) << " slot=\"stop\" />"
+    << "<service uid=" << std::quoted(srv->get_id()) << " />"
+    << "<service uid=" << std::quoted(srv->get_id()) << " slot=\"start\"  />"
+    << "</config>"
+    ;
+    service::config_t config;
+    boost::property_tree::read_xml(srv_config, config);
+
+    auto update_srv = service::add("sight::app::update_sequence");
+    CPPUNIT_ASSERT(update_srv->is_a("sight::app::update_sequence"));
+    CPPUNIT_ASSERT(update_srv->is_a("sight::app::updater"));
+    update_srv->set_config(config);
+    CPPUNIT_ASSERT_NO_THROW(update_srv->configure());
+    CPPUNIT_ASSERT_NO_THROW(update_srv->start().get());
+
+    CPPUNIT_ASSERT_EQUAL(false, srv->started());
+    test_order_srv::s_ORDER = 99;
+    update_srv->update().get();
+    CPPUNIT_ASSERT_EQUAL((unsigned int) (0), srv->update_order());
+
+    CPPUNIT_ASSERT_EQUAL(true, srv->stopped());
+    CPPUNIT_ASSERT_EQUAL(false, srv->started());
+
+    CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+
+    service::remove(update_srv);
+}
+
+//------------------------------------------------------------------------------
+
+void update_sequence_test::call_stop_start()
+{
+    auto srv = create_order_srv();
+
+    std::stringstream srv_config;
+    srv_config
+    << "<config>"
+    << "<service uid=" << std::quoted(srv->get_id()) << " slot=\"stop\" />"
+    << "<service uid=" << std::quoted(srv->get_id()) << " slot=\"start\"  />"
+    << "</config>"
+    ;
+    service::config_t config;
+    boost::property_tree::read_xml(srv_config, config);
+
+    auto update_srv = service::add("sight::app::update_sequence");
+    CPPUNIT_ASSERT(update_srv->is_a("sight::app::update_sequence"));
+    CPPUNIT_ASSERT(update_srv->is_a("sight::app::updater"));
+    update_srv->set_config(config);
+    CPPUNIT_ASSERT_NO_THROW(update_srv->configure());
+    CPPUNIT_ASSERT_NO_THROW(update_srv->start().get());
+    bool call_start = false;
+    bool call_stop  = false;
+
+    auto start_called = sight::core::com::new_slot(
+        [&call_start]()
+        {
+            call_start = true;
+        });
+
+    start_called->set_worker(sight::core::thread::get_default_worker());
+    srv->signal("started")->connect(start_called);
+
+    auto stop_called = sight::core::com::new_slot(
+        [&call_stop]()
+        {
+            call_stop = true;
+        });
+
+    stop_called->set_worker(sight::core::thread::get_default_worker());
+    srv->signal("stopped")->connect(stop_called);
+
+    CPPUNIT_ASSERT_EQUAL(true, srv->started());
+    CPPUNIT_ASSERT_EQUAL(false, srv->stopped());
+
+    update_srv->update().get();
+
+    CPPUNIT_ASSERT_EQUAL(true, srv->started());
+    CPPUNIT_ASSERT_EQUAL(false, srv->stopped());
+
+    SIGHT_TEST_WAIT(call_start == true);
+    SIGHT_TEST_WAIT(call_stop == true);
 
     CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
 

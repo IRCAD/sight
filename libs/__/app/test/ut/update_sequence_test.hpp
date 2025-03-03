@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,6 +35,11 @@ CPPUNIT_TEST(basic);
 CPPUNIT_TEST(parent);
 CPPUNIT_TEST(call_start_stop);
 CPPUNIT_TEST(call_slot_while_stopped);
+CPPUNIT_TEST(call_slot_after_a_start);
+CPPUNIT_TEST(call_stop_while_stopped);
+CPPUNIT_TEST(call_start_slot_stop);
+CPPUNIT_TEST(call_stop_slot_start);
+CPPUNIT_TEST(call_stop_start);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,6 +51,11 @@ public:
     static void parent();
     static void call_start_stop();
     static void call_slot_while_stopped();
+    static void call_slot_after_a_start();
+    static void call_stop_while_stopped();
+    static void call_start_slot_stop();
+    static void call_stop_slot_start();
+    static void call_stop_start();
 };
 
 } // namespace sight::app::ut

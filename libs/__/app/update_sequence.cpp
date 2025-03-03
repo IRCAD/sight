@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -58,6 +58,10 @@ void update_sequence::stopping()
 void update_sequence::updating()
 {
     std::vector<std::pair<sight::service::base::sptr, std::string> > services;
+
+    std::set<std::string> is_going_to_be_started;
+    std::set<std::string> is_going_to_be_stopped;
+
     for(const auto& element : m_elements)
     {
         sight::service::base::sptr srv;
@@ -72,7 +76,27 @@ void update_sequence::updating()
 
         if(srv != nullptr)
         {
-            if(srv->started() || element.slot == service::base::slots::START)
+            const auto is_slot_start = (element.slot == service::base::slots::START);
+            const auto is_slot_stop  = (element.slot == service::base::slots::STOP);
+
+            if(is_slot_start)
+            {
+                // memorize that a start of this service is called.
+                is_going_to_be_started.insert(element.uid);
+            }
+            else if(is_slot_stop)
+            {
+                //memorize that a stop of this service is called.
+                is_going_to_be_stopped.insert(element.uid);
+            }
+
+            const auto is_started      = srv->started();
+            const auto will_be_started = is_going_to_be_started.contains(element.uid);
+            const auto is_stopped      = srv->stopped();
+            const auto will_be_stopped = is_going_to_be_stopped.contains(element.uid);
+
+            // Service is started, or will be started and current slot is not start = OK we add the slot.
+            if((is_started or will_be_started) and not is_slot_start)
             {
                 services.emplace_back(srv, element.slot);
                 if(srv->is_auto_connected())
@@ -83,24 +107,28 @@ void update_sequence::updating()
                     );
                 }
             }
-            else if(element.slot != service::base::slots::STOP)
+            // Service is stopped or will be stopped and current slot isn't start or stop = NOK we discard the sequence
+            else if((is_stopped or will_be_stopped) and not is_slot_start and not is_slot_stop)
             {
                 SIGHT_WARN(
                     "[sight::app::update_sequence] Service " << std::quoted(element.uid)
-                    << " is not started, skipping update."
+                    << " is stopped or will be stopped."
                 );
                 services.clear();
                 break;
             }
-        }
-        else
-        {
-            SIGHT_WARN(
-                "[sight::app::update_sequence] Service " << std::quoted(element.uid)
-                << " does not exists, skipping update."
-            );
-            services.clear();
-            break;
+            // Service isn't stopped and slot ins't stop = OK we add slot
+            else if(!(is_stopped or will_be_stopped) or !is_slot_stop)
+            {
+                services.emplace_back(srv, element.slot);
+                if(srv->is_auto_connected())
+                {
+                    SIGHT_ERROR(
+                        "[sight::app::update_sequence] Service " << std::quoted(element.uid)
+                        << " is auto-connected, this is likely to introduce timing issues."
+                    );
+                }
+            }
         }
     }
 
