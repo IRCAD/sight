@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -125,7 +125,7 @@ namespace sight::module::ui::qt
  * For 'sight::data::real', you can choose between a 'spin' or a 'slider' widget. Defaults to 'spin'.
  * For 'sight::data::integer', you can choose between a 'spin', a 'slider', a 'combobox', a 'comboslider', or
  * a 'buttonBar'.
- * For 'string', you can choose between 'text', 'file', 'dir', .
+ * For 'string', you can choose between 'text', 'file_[read/write]', 'dir_[read/write]',
  * buttonBar widget requires additional configuration.
  *     - \b value: the enum value sent when clicking on the button.
  *     - \b label (optional, default=""): test displayed under the button.

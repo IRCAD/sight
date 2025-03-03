@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,13 @@ core::location::base::sptr location::show()
     dialog.setDirectory(path);
     dialog.setNameFilter(filter);
     dialog.setWindowTitle(caption);
+    // @todo: On Linux with GTK location dialog are stuck on .exec(), it seems that paint event is never posted.
+    // Temporary we use qt dialog as a work-around.
+#ifdef _WIN32_
     dialog.setOption(QFileDialog::Option::DontUseNativeDialog, !qgetenv("GUI_TESTS_ARE_RUNNING").isEmpty());
+#else
+    dialog.setOption(QFileDialog::Option::DontUseNativeDialog, true);
+#endif
 
     if(((m_style& ui::dialog::location::read) != 0) || m_type == ui::dialog::location::folder)
     {

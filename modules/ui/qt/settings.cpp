@@ -106,6 +106,9 @@ void settings::configuring()
 
 void settings::starting()
 {
+    const std::set<std::string> is_text_widget {"text", "file", "dir", "file_read", "file_write", "dir_write",
+                                                "dir_read"
+    };
     this->create();
 
     const std::string service_id = base_id();
@@ -435,7 +438,7 @@ void settings::starting()
                     orientation
                 );
             }
-            else if(widget_type == "text" || widget_type == "file" || widget_type == "dir")
+            else if(is_text_widget.contains(widget_type))
             {
                 if(auto* reset = this->create_text_widget(*param_box_layout, widget, widget_type))
                 {
@@ -2002,7 +2005,7 @@ QPushButton* settings::create_text_widget(QBoxLayout& _layout, const param_widge
             update_data<sight::data::string>(edit, _value.toStdString());
         });
 
-    if(_type == "file")
+    if(_type == "file" or _type == "file_read" or _type == "file_write")
     {
         QPointer<QPushButton> dir_selector = new QPushButton("...");
         dir_selector->setStyleSheet(qApp->styleSheet());
@@ -2010,14 +2013,17 @@ QPushButton* settings::create_text_widget(QBoxLayout& _layout, const param_widge
         QObject::connect(
             dir_selector.data(),
             &QPushButton::clicked,
-            [edit]()
+            [edit, _type]()
             {
                 static auto default_directory = std::make_shared<core::location::single_folder>();
 
                 sight::ui::dialog::location dialog_file;
                 dialog_file.set_title("Select file");
                 dialog_file.set_default_location(default_directory);
-                dialog_file.set_option(sight::ui::dialog::location::read);
+
+                using sight::ui::dialog::location;
+                dialog_file.set_option(_type == "file_write" ? location::write : location::read);
+
                 dialog_file.set_type(sight::ui::dialog::location::single_file);
 
                 auto result = std::dynamic_pointer_cast<core::location::single_file>(dialog_file.show());
@@ -2029,7 +2035,7 @@ QPushButton* settings::create_text_widget(QBoxLayout& _layout, const param_widge
                 }
             });
     }
-    else if(_type == "dir")
+    else if(_type == "dir" or _type == "dir_read" or _type == "dir_write")
     {
         QPointer<QPushButton> dir_selector = new QPushButton("...");
         dir_selector->setStyleSheet(qApp->styleSheet());
@@ -2037,14 +2043,17 @@ QPushButton* settings::create_text_widget(QBoxLayout& _layout, const param_widge
         QObject::connect(
             dir_selector.data(),
             &QPushButton::clicked,
-            [edit]()
+            [edit, _type]()
             {
                 static auto default_directory = std::make_shared<core::location::single_folder>();
 
                 sight::ui::dialog::location dialog_file;
                 dialog_file.set_title("Select directory");
                 dialog_file.set_default_location(default_directory);
-                dialog_file.set_option(sight::ui::dialog::location::write);
+
+                using sight::ui::dialog::location;
+                dialog_file.set_option(_type == "dir_read" ? location::read : location::write);
+
                 dialog_file.set_type(sight::ui::dialog::location::folder);
 
                 const auto result = std::dynamic_pointer_cast<core::location::single_folder>(dialog_file.show());

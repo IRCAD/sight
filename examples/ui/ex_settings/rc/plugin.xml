@@ -20,8 +20,8 @@ This example shows the possibilities of properties:
                 <item key="enable" uid="enable_obj" type="sight::data::boolean" value="true" />
                 <item key="bool_1" uid="bool_obj" type="sight::data::boolean" value="false" />
                 <item key="text" uid="text_obj" type="sight::data::string" value="Hello" />
-                <item key="file" uid="file_obj" type="sight::data::string" value="path/to/file" />
-                <item key="dir" uid="dir_obj" type="sight::data::string" value="path/to/dir" />
+                <item key="file" uid="file_obj" type="sight::data::string" value="path/to/file/to/read" />
+                <item key="dir" uid="dir_obj" type="sight::data::string" value="path/to/dir/to/write" />
                 <item key="color_1" uid="color_obj" type="sight::data::color" value="#a55376b9" />
                 <item key="double_1" uid="double_1_obj" type="sight::data::real" value="0.03" />
                 <item key="double_2" uid="double_2_obj" type="sight::data::real" value="0.01" />
@@ -91,8 +91,8 @@ This example shows the possibilities of properties:
                         <item value="button5" icon="sight::module::ui::icons/find.svg" />
                     </item>
                     <item name="Text" key="text" widget="text" depends="enable" />
-                    <item name="File" key="file" widget="file" depends="enable" />
-                    <item name="Dir" key="dir" widget="dir" depends="enable" />
+                    <item name="File" key="file" widget="file_write" depends="enable" />
+                    <item name="Dir" key="dir" widget="dir_read" depends="enable" />
                 </ui>
             </service>
 
@@ -139,8 +139,8 @@ This example shows the possibilities of properties:
                         <item value="button5" icon="sight::module::ui::icons/find.svg" />
                     </item>
                     <item name="Text" widget="text" depends="enable_obj" />
-                    <item name="File" widget="file" depends="enable_obj" />
-                    <item name="Dir" widget="dir" depends="enable_obj" />
+                    <item name="File" widget="file_write" depends="enable_obj" />
+                    <item name="Dir" widget="dir_read" depends="enable_obj" />
                 </ui>
             </service>
 
