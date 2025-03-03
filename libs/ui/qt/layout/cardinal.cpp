@@ -379,7 +379,7 @@ void cardinal::modify_layout(const ui::parameter_t& _parameter, const std::strin
                     }
                 }
             }
-            else if(auto* const dock_child = qobject_cast<QDockWidget*>(widget->parentWidget()); dock_child)
+            else if(auto* const dock_child = widget->parentWidget(); dock_child)
             {
                 // Not central. Move it to the central widget
                 // Save the state to restore the sizes later
