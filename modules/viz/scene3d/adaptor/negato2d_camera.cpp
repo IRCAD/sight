@@ -502,8 +502,6 @@ void negato2d_camera::reset_camera()
         camera->setOrthoWindowWidth(w + w * m_margin);
     }
 
-    auto origin = sight::viz::scene3d::utils::get_ogre_origin(*image);
-
     const auto axis = static_cast<std::size_t>(m_axis);
     Ogre::Vector3 cam_pos(
         static_cast<Ogre::Real>(static_cast<double>(size[0]) * spacing[0] * 0.5),
@@ -511,7 +509,7 @@ void negato2d_camera::reset_camera()
         static_cast<Ogre::Real>(static_cast<double>(size[2]) * spacing[2] * 0.5)
     );
 
-    const auto distance_pos = static_cast<Ogre::Real>(origin[axis] - static_cast<double>(size[axis]) * spacing[axis]);
+    const auto distance_pos = static_cast<Ogre::Real>(-static_cast<double>(size[axis]) * spacing[axis]);
 
     // Special case, distance is equal to 0, so move camera to -1.
     cam_pos[axis] = core::is_equal(0.F, distance_pos) ? -1.F : distance_pos;
