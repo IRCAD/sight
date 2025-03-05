@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -624,13 +624,16 @@ service::base::sptr config_manager::create_service(const detail::service_config&
 
     if(!_srv_config.m_worker.empty())
     {
-        core::thread::worker::sptr worker = core::thread::get_worker(_srv_config.m_worker);
+        // Make the worker name unique to prevent conflicts between configurations
+        const auto worker_registry_name   = core::id::join(m_config_uid, _srv_config.m_worker);
+        core::thread::worker::sptr worker = core::thread::get_worker(worker_registry_name);
         if(!worker)
         {
             worker = core::thread::worker::make();
+            // We keep the original non-unique name for the name of the worker, which is only used for debugging
             worker->set_thread_name(_srv_config.m_worker);
 
-            core::thread::add_worker(_srv_config.m_worker, worker);
+            core::thread::add_worker(worker_registry_name, worker);
             m_created_workers.push_back(worker);
         }
 
