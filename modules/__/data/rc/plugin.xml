@@ -8,6 +8,13 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
+        <service>sight::module::data::reset</service>
+        <object>sight::data::object</object>
+        <desc>This service resets an object using the default constructor.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
         <service>sight::module::data::manage</service>
         <object key="object">sight::data::object</object>
         <object key="container">sight::data::object</object>
