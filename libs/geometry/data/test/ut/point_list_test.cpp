@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -159,7 +159,7 @@ void point_list_test::transform()
         sight::data::point_list::sptr pl2 = std::make_shared<sight::data::point_list>();
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp = points1[i]->get_coord();
+            const auto& tmp = (*points1[i]);
             pl2->push_back(std::make_shared<sight::data::point>(tmp[0], tmp[1], tmp[2]));
         }
 
@@ -169,8 +169,8 @@ void point_list_test::transform()
         const sight::data::point_list::container_t points2 = pl2->get_points();
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
-            const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
+            const auto& tmp1 = (*points1[i]);
+            const auto& tmp2 = (*points2[i]);
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
@@ -204,7 +204,7 @@ void point_list_test::transform()
         sight::data::point_list::sptr pl2 = std::make_shared<sight::data::point_list>();
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp = points1[i]->get_coord();
+            const auto& tmp = (*points1[i]);
             pl2->push_back(
                 std::make_shared<sight::data::point>(
                     tmp[0] + translation[0],
@@ -223,8 +223,8 @@ void point_list_test::transform()
         const sight::data::point_list::container_t points2 = pl2->get_points();
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
-            const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
+            const auto& tmp1 = (*points1[i]);
+            const auto& tmp2 = (*points2[i]);
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
@@ -271,8 +271,8 @@ void point_list_test::transform()
 
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
-            const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
+            const auto& tmp1 = (*points1[i]);
+            const auto& tmp2 = (*points2[i]);
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[1], tmp2[1], 1e-8);
@@ -342,8 +342,8 @@ void point_list_test::associate()
 
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
-            const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
+            const auto& tmp1 = (*points1[i]);
+            const auto& tmp2 = (*points2[i]);
 
             // Check that the last component is equal to i
             CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[0], tmp2[0], 1e-8);
@@ -407,8 +407,8 @@ void point_list_test::associate()
 
         for(std::size_t i = 0 ; i < size ; i++)
         {
-            const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
-            const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
+            const auto& tmp1 = (*points1[i]);
+            const auto& tmp2 = (*points2[i]);
 
             // Compare the components
             for(std::size_t j = 0 ; j < nb_components ; j++)
@@ -475,9 +475,9 @@ void point_list_test::remove_closest_point_nominal()
         const auto p_res =
             geometry::data::point_list::remove_closest_point(pl, p, std::numeric_limits<float>::max());
         CPPUNIT_ASSERT(p_res != nullptr);
-        CPPUNIT_ASSERT_EQUAL(p_res->get_coord()[0], p->get_coord()[0]);
-        CPPUNIT_ASSERT_EQUAL(p_res->get_coord()[1], p->get_coord()[1]);
-        CPPUNIT_ASSERT_EQUAL(p_res->get_coord()[2], p->get_coord()[2]);
+        CPPUNIT_ASSERT_EQUAL((*p_res)[0], (*p)[0]);
+        CPPUNIT_ASSERT_EQUAL((*p_res)[1], (*p)[1]);
+        CPPUNIT_ASSERT_EQUAL((*p_res)[2], (*p)[2]);
     }
 }
 
@@ -519,9 +519,9 @@ void point_list_test::remove_closest_point_extreme()
         const auto p_res =
             geometry::data::point_list::remove_closest_point(pl, p, std::numeric_limits<float>::max());
         CPPUNIT_ASSERT(p_res != nullptr);
-        CPPUNIT_ASSERT_EQUAL(p_res->get_coord()[0], p->get_coord()[0]);
-        CPPUNIT_ASSERT_EQUAL(p_res->get_coord()[1], p->get_coord()[1]);
-        CPPUNIT_ASSERT_EQUAL(p_res->get_coord()[2], p->get_coord()[2]);
+        CPPUNIT_ASSERT_EQUAL((*p_res)[0], (*p)[0]);
+        CPPUNIT_ASSERT_EQUAL((*p_res)[1], (*p)[1]);
+        CPPUNIT_ASSERT_EQUAL((*p_res)[2], (*p)[2]);
     }
 }
 

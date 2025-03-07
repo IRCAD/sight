@@ -111,16 +111,14 @@ void multiply(
     // and perform the inverse multiplication
     const glm::dmat4x4 mat = glm::make_mat4<double>(_trf.data());
 
-    const auto& in_coord = _input.get_coord();
     glm::dvec4 in;
-    in[0] = in_coord[0];
-    in[1] = in_coord[1];
-    in[2] = in_coord[2];
+    in[0] = _input[0];
+    in[1] = _input[1];
+    in[2] = _input[2];
     in[3] = 1;
 
-    glm::dvec4 out            = in * mat;
-    std::array<double, 3> res = {{out[0], out[1], out[2]}};
-    _output.set_coord(res);
+    glm::dvec4 out = in * mat;
+    _output = {out[0], out[1], out[2]};
 }
 
 // ----------------------------------------------------------------------------

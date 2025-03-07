@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -282,13 +282,13 @@ bool parameter_adaptor::set_parameter(Ogre::Technique& _technique)
 
             for(int i = 0 ; i < nb_points * 3 ; )
             {
-                param_values[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->get_coord()[0]);
+                param_values[i] = static_cast<float>((*points[static_cast<std::size_t>(i)])[0]);
                 i++;
 
-                param_values[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->get_coord()[1]);
+                param_values[i] = static_cast<float>((*points[static_cast<std::size_t>(i)])[1]);
                 i++;
 
-                param_values[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->get_coord()[2]);
+                param_values[i] = static_cast<float>((*points[static_cast<std::size_t>(i)])[2]);
                 i++;
             }
 

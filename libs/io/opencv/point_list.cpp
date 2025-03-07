@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,8 @@ namespace sight::io::opencv
 
 void point_list::copy_to_cv(const data::point::csptr& _src, cv::Point2d& _dst)
 {
-    _dst.x = _src->get_coord()[0];
-    _dst.y = _src->get_coord()[1];
+    _dst.x = (*_src)[0];
+    _dst.y = (*_src)[1];
 }
 
 //------------------------------------------------------------------------------

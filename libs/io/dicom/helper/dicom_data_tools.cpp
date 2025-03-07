@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -155,7 +155,7 @@ std::size_t dicom_data_tools::convert_point_to_frame_number(
     const double z_origin = (_image->num_dimensions() > 2) ? (_image->origin()[2]) : 0;
 
     // Retrieve Z coordinate
-    const auto z_coordinate = static_cast<double>(_point->get_coord()[2]);
+    const auto z_coordinate = static_cast<double>((*_point)[2]);
 
     // Compute frame number
     const std::size_t frame_number = static_cast<std::size_t>(floor((z_coordinate - z_origin) / z_spacing + 0.5)) + 1;

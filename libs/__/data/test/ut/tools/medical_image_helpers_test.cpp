@@ -486,7 +486,7 @@ void medical_image_helpers_test::test_landmarks()
 
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
-        CPPUNIT_ASSERT_EQUAL(p->get_coord()[i], point->get_coord()[i]);
+        CPPUNIT_ASSERT_EQUAL((*p)[i], (*point)[i]);
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,45 +38,18 @@ static constexpr std::string_view FIELD_LABEL_ID = "m_labelId";
 
 //------------------------------------------------------------------------------
 
-point::point()
+point::point(const point_coord_array_t& _coord)
 {
-    m_v_coord[0] = 0.0;
-    m_v_coord[1] = 0.0;
-    m_v_coord[2] = 0.0;
-}
-
-//------------------------------------------------------------------------------
-
-point::point(float _x, float _y, float _z)
-{
-    m_v_coord[0] = _x;
-    m_v_coord[1] = _y;
-    m_v_coord[2] = _z;
-}
-
-//------------------------------------------------------------------------------
-
-point::point(double _x, double _y, double _z)
-{
-    m_v_coord[0] = _x;
-    m_v_coord[1] = _y;
-    m_v_coord[2] = _z;
-}
-
-//------------------------------------------------------------------------------
-
-point::point(const point_coord_array_t& _coord) :
-    m_v_coord(_coord)
-{
+    std::copy(_coord.cbegin(), _coord.cend(), inserter(*this));
 }
 
 //------------------------------------------------------------------------------
 
 point::point(const point::sptr& _p)
 {
-    m_v_coord[0] = _p->m_v_coord[0];
-    m_v_coord[1] = _p->m_v_coord[1];
-    m_v_coord[2] = _p->m_v_coord[2];
+    (*this)[0] = (*_p)[0];
+    (*this)[1] = (*_p)[1];
+    (*this)[2] = (*_p)[2];
 }
 
 //------------------------------------------------------------------------------
@@ -92,8 +65,6 @@ void point::shallow_copy(const object::csptr& _source)
         ),
         !bool(other)
     );
-
-    m_v_coord = other->m_v_coord;
 
     base_class_t::shallow_copy(other);
 }
@@ -111,8 +82,6 @@ void point::deep_copy(const object::csptr& _source, const std::unique_ptr<deep_c
         ),
         !bool(other)
     );
-
-    m_v_coord = other->m_v_coord;
 
     base_class_t::deep_copy(other, _cache);
 }
@@ -143,7 +112,7 @@ void point::set_label(const std::string& _label)
 
 bool point::operator==(const point& _other) const noexcept
 {
-    if(!core::is_equal(m_v_coord, _other.m_v_coord))
+    if(!core::is_equal(*this, _other))
     {
         return false;
     }
@@ -165,7 +134,7 @@ std::ostream& operator<<(std::ostream& _out, const point& _p)
 {
     _out << "{";
     bool first = true;
-    for(double e : _p.get_coord())
+    for(const double& e : _p)
     {
         if(!first)
         {

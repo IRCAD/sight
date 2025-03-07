@@ -303,7 +303,7 @@ void point_list::create_label(const data::point_list::csptr& _point_list)
         text_label->attach_to_node(node, this->layer()->get_default_camera());
         m_labels.push_back(text_label);
 
-        data::point::point_coord_array_t coord = point->get_coord();
+        const auto& coord = *point;
         node->translate(static_cast<float>(coord[0]), static_cast<float>(coord[1]), static_cast<float>(coord[2]));
         i++;
     }

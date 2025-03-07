@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,6 +40,8 @@
 #include <cmath>
 #include <filesystem>
 #include <regex>
+
+// cspell:ignore imread
 
 namespace sight::module::io::video
 {
@@ -978,9 +980,7 @@ void frame_grabber::set_step(int _step, std::string _key)
 
 void frame_grabber::add_roi_center(sight::data::point::sptr _p)
 {
-    const auto& coord = _p->get_coord();
-
-    m_zoom_center = {{static_cast<int>(std::nearbyint(coord[0])), static_cast<int>(std::nearbyint(coord[1]))}};
+    m_zoom_center = {{static_cast<int>(std::nearbyint((*_p)[0])), static_cast<int>(std::nearbyint((*_p)[1]))}};
 }
 
 //------------------------------------------------------------------------------

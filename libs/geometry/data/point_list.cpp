@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,10 +59,10 @@ sight::data::array::sptr point_list::compute_distance(
 
     for(std::size_t i = 0 ; i < size ; ++i)
     {
-        const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
-        const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
-        const glm::dvec3 pt1                               = glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
-        const glm::dvec3 pt2                               = glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
+        const auto& tmp1     = *points1[i];
+        const auto& tmp2     = *points2[i];
+        const glm::dvec3 pt1 = glm::dvec3(tmp1[0], tmp1[1], tmp1[2]);
+        const glm::dvec3 pt2 = glm::dvec3(tmp2[0], tmp2[1], tmp2[2]);
         *distance_array_itr = glm::distance(pt1, pt2);
         ++distance_array_itr;
     }
@@ -114,8 +114,8 @@ void point_list::associate(
 
     for(std::size_t i = 0 ; i < size ; ++i)
     {
-        const sight::data::point::point_coord_array_t tmp1 = points1[i]->get_coord();
-        const sight::data::point::point_coord_array_t tmp2 = points2[i]->get_coord();
+        const auto& tmp1 = *points1[i];
+        const auto& tmp2 = *points2[i];
 
         // Add the point to vector/list
         vec1.emplace_back(tmp1[0], tmp1[1], tmp1[2]);
@@ -140,13 +140,8 @@ void point_list::associate(
             }
         }
 
-        sight::data::point::point_coord_array_t point_coord;
-        point_coord[0] = it_closest_point->x;
-        point_coord[1] = it_closest_point->y;
-        point_coord[2] = it_closest_point->z;
-
         const sight::data::point::sptr& pt = points2[index];
-        pt->set_coord(point_coord);
+        *pt = {it_closest_point->x, it_closest_point->y, it_closest_point->z};
         ++index;
 
         // Erase the already matched point
@@ -166,8 +161,7 @@ sight::data::point::sptr point_list::remove_closest_point(
     const auto& list = _point_list->get_points();
     if(!list.empty())
     {
-        const auto& coord1 = _point->get_coord();
-        const glm::vec3 p1 {coord1[0], coord1[1], coord1[2]};
+        const glm::vec3 p1 {(*_point)[0], (*_point)[1], (*_point)[2]};
 
         // Data to find the closest point
         float closest                  = std::numeric_limits<float>::max();
@@ -178,7 +172,7 @@ sight::data::point::sptr point_list::remove_closest_point(
         // Find the closest one
         for(std::size_t i = 0 ; i < list.size() ; ++i)
         {
-            const auto& coord2 = list[i]->get_coord();
+            const auto& coord2 = (*list[i]);
             const glm::vec3 p2 {coord2[0], coord2[1], coord2[2]};
 
             float temp_closest = NAN;

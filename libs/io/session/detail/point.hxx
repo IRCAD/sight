@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -50,10 +50,9 @@ inline static void write(
     // Add a version number. Not mandatory, but could help for future release
     helper::write_version<data::point>(_tree, 1);
 
-    const auto& coordinate = point->get_coord();
-    _tree.put(X, coordinate[0]);
-    _tree.put(Y, coordinate[1]);
-    _tree.put(Z, coordinate[2]);
+    _tree.put(X, (*point)[0]);
+    _tree.put(Y, (*point)[1]);
+    _tree.put(Z, (*point)[2]);
 }
 
 //------------------------------------------------------------------------------
@@ -72,14 +71,7 @@ inline static data::point::sptr read(
     // Check version number. Not mandatory, but could help for future release
     helper::read_version<data::point>(_tree, 0, 1);
 
-    const std::array<double, 3> coordinates = {
-        _tree.get<double>(X),
-        _tree.get<double>(Y),
-        _tree.get<double>(Z)
-    };
-
-    point->set_coord(coordinates);
-
+    *point = {_tree.get<double>(X), _tree.get<double>(Y), _tree.get<double>(Z)};
     return point;
 }
 

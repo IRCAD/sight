@@ -417,7 +417,7 @@ void video::update_pl()
 
     for(const auto& in_point : in_points)
     {
-        const data::point::point_coord_array_t& point = in_point->get_coord();
+        const auto& point = *in_point;
         out_points.push_back(
             std::make_shared<data::point>(
                 point[0] - static_cast<double>(image->size()[0]) * 0.5,

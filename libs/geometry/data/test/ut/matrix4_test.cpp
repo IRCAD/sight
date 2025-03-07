@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -130,9 +130,9 @@ void matrix4_test::identity_matrix_test()
 #else
     geometry::data::multiply(tm1, *p1, *p2);
 #endif
-    CPPUNIT_ASSERT_EQUAL(p1->get_coord()[0], p2->get_coord()[0]);
-    CPPUNIT_ASSERT_EQUAL(p1->get_coord()[1], p2->get_coord()[1]);
-    CPPUNIT_ASSERT_EQUAL(p1->get_coord()[2], p2->get_coord()[2]);
+    CPPUNIT_ASSERT_EQUAL((*p1)[0], (*p2)[0]);
+    CPPUNIT_ASSERT_EQUAL((*p1)[1], (*p2)[1]);
+    CPPUNIT_ASSERT_EQUAL((*p1)[2], (*p2)[2]);
 }
 
 //------------------------------------------------------------------------------
@@ -231,9 +231,9 @@ void matrix4_test::matrix_test()
     auto p2 = std::make_shared<sight::data::point>();
 
     geometry::data::multiply(tm1, *p1, *p2);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(24.9, p2->get_coord()[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(62.5, p2->get_coord()[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(100.1, p2->get_coord()[2], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(24.9, (*p2)[0], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(62.5, (*p2)[1], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(100.1, (*p2)[2], 0.00001);
 
     geometry::data::identity(tm1);
     geometry::data::identity(tm2);

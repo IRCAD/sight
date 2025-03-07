@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -140,11 +140,8 @@ void point_list_registration::compute_registration(core::clock::type /*timestamp
 
                     if(label_ref == label_reg)
                     {
-                        auto coord = point_ref->get_coord();
-                        source_pts->InsertNextPoint(coord[0], coord[1], coord[2]);
-
-                        coord = point_reg->get_coord();
-                        target_pts->InsertNextPoint(coord[0], coord[1], coord[2]);
+                        source_pts->InsertNextPoint((*point_ref)[0], (*point_ref)[1], (*point_ref)[2]);
+                        target_pts->InsertNextPoint((*point_reg)[0], (*point_reg)[1], (*point_reg)[2]);
                     }
                 }
             }
@@ -154,14 +151,12 @@ void point_list_registration::compute_registration(core::clock::type /*timestamp
             // ... Else match them according to their order.
             for(const auto& ref_point : reference_pl->get_points())
             {
-                const auto& coords = ref_point->get_coord();
-                source_pts->InsertNextPoint(coords[0], coords[1], coords[2]);
+                source_pts->InsertNextPoint((*ref_point)[0], (*ref_point)[1], (*ref_point)[2]);
             }
 
             for(const auto& reg_point : registered_pl->get_points())
             {
-                const auto& coords = reg_point->get_coord();
-                target_pts->InsertNextPoint(coords[0], coords[1], coords[2]);
+                target_pts->InsertNextPoint((*reg_point)[0], (*reg_point)[1], (*reg_point)[2]);
             }
         }
 

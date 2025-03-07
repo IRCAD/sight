@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,7 @@
 
 #include <sight/data/config.hpp>
 
-#include "data/factory/new.hpp"
-#include "data/object.hpp"
+#include "container.hpp"
 
 #include <array>
 
@@ -35,36 +34,48 @@ namespace sight::data
 /**
  * @brief   This class define a 3D point.
  */
-class SIGHT_DATA_CLASS_API point final : public object
+class SIGHT_DATA_CLASS_API point final : public container<std::array<double,
+                                                                     3> >
 {
 public:
 
-    using point_coord_t       = double;
-    using point_coord_array_t = std::array<double, 3>;
+    /// This will enable common collection constructors / assignment operators
+    using container<point::container_t>::container;
+    using container<point::container_t>::operator=;
 
-    SIGHT_DECLARE_CLASS(point, object);
+    using point_coord_t       = double;
+    using point_coord_array_t = point::container_t; // For backwards compatibility
+
+    SIGHT_DECLARE_CLASS(point, container<point::container_t>);
 
     /// point factory
-    SIGHT_DATA_API point(float _x, float _y   = 0.F, float _z = 0.F);
-    SIGHT_DATA_API point(double _x, double _y = 0., double _z = 0.);
+    point();
+    point(std::initializer_list<value_type> _init_list);
+    point(float _x, float _y   = 0.F, float _z = 0.F);
+    point(double _x, double _y = 0., double _z = 0.);
     SIGHT_DATA_API point(const point_coord_array_t& _coord);
     SIGHT_DATA_API point(const point::sptr& _p);
 
-    SIGHT_DATA_API point();
-
     /// Destructor
-    SIGHT_DATA_API ~point() noexcept override = default;
+    SIGHT_DATA_API ~point() noexcept final = default;
 
     /// @brief get/set point coordinates
     /// @{
-    point_coord_array_t& get_coord();
-    const point_coord_array_t& get_coord() const;
-    void set_coord(const point_coord_array_t& _v_coord);
+    [[deprecated("Use operator[] instead")]] point_coord_array_t get_coord();
+    [[deprecated("Use operator[] instead")]] const point_coord_array_t get_coord() const;
+    [[deprecated("Use operator[] instead")]] void set_coord(const point_coord_array_t& _v_coord);
     /// @}
 
     SIGHT_DATA_API std::string get_label() const;
-
     SIGHT_DATA_API void set_label(const std::string& _label);
+
+    /// Assignment operator
+    /// @{
+    inline point& operator=(std::initializer_list<value_type> _init_list);
+
+    template<typename T>
+    inline point& operator=(const T& _data);
+    /// @}
 
     /// Equality comparison operators
     /// @{
@@ -85,32 +96,78 @@ public:
         const object::csptr& _source,
         const std::unique_ptr<deep_copy_cache_t>& _cache = std::make_unique<deep_copy_cache_t>()
     ) override;
-
-protected:
-
-    /// point coordinates
-    point_coord_array_t m_v_coord {};
 }; // end class point
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-inline point::point_coord_array_t& point::get_coord()
+inline point::point() :
+    point({0.0, 0.0, 0.0})
 {
-    return this->m_v_coord;
+}
+
+//------------------------------------------------------------------------------
+
+inline point::point(float _x, float _y, float _z) :
+    point({_x, _y, _z})
+{
+}
+
+//------------------------------------------------------------------------------
+
+inline point::point(double _x, double _y, double _z) :
+    point({_x, _y, _z})
+{
+}
+
+//------------------------------------------------------------------------------
+
+inline point::point(std::initializer_list<value_type> _init_list)
+{
+    this->operator=<std::initializer_list<value_type> >(_init_list);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline point& point::operator=(const T& _data)
+{
+    ///@todo make this functions constexpr once we support C++23 which will support SIGHT_ASSERT
+    SIGHT_ASSERT(
+        std::string(__func__) + " need 3 elements: " + std::to_string(_data.size()) + " given.",
+        _data.size() == this->size()
+    );
+
+    std::copy(_data.begin(), _data.end(), this->begin());
+    return *this;
+}
+
+//------------------------------------------------------------------------------
+
+inline point& point::operator=(std::initializer_list<value_type> _init_list)
+{
+    this->operator=<std::initializer_list<value_type> >(_init_list);
+    return *this;
 }
 
 //-----------------------------------------------------------------------------
 
-inline const point::point_coord_array_t& point::get_coord() const
+inline point::point_coord_array_t point::get_coord()
 {
-    return this->m_v_coord;
+    return this->get_content();
+}
+
+//-----------------------------------------------------------------------------
+
+inline const point::point_coord_array_t point::get_coord() const
+{
+    return this->get_content();
 }
 
 //-----------------------------------------------------------------------------
 
 inline void point::set_coord(const point_coord_array_t& _v_coord)
 {
-    this->m_v_coord = _v_coord;
+    *this = _v_coord;
 }
 
 SIGHT_DATA_API std::ostream& operator<<(std::ostream& _out, const point& _p);

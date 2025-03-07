@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -128,9 +128,9 @@ void labeling_test::compute_centroids()
     {
         data::point::sptr p = landmarks->get_points().at(f);
 
-        CPPUNIT_ASSERT_EQUAL(feature_origin[f][0] + (feature_size[f][0] - 1.0) / 2.0, p->get_coord()[0]);
-        CPPUNIT_ASSERT_EQUAL(feature_origin[f][1] + (feature_size[f][1] - 1.0) / 2.0, p->get_coord()[1]);
-        CPPUNIT_ASSERT_EQUAL(feature_origin[f][2] + (feature_size[f][2] - 1.0) / 2.0, p->get_coord()[2]);
+        CPPUNIT_ASSERT_EQUAL(feature_origin[f][0] + (feature_size[f][0] - 1.0) / 2.0, (*p)[0]);
+        CPPUNIT_ASSERT_EQUAL(feature_origin[f][1] + (feature_size[f][1] - 1.0) / 2.0, (*p)[1]);
+        CPPUNIT_ASSERT_EQUAL(feature_origin[f][2] + (feature_size[f][2] - 1.0) / 2.0, (*p)[2]);
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,14 +60,14 @@ line_converter::~line_converter()
 
     dest = ::igtl::PositionMessage::New();
     std::transform(
-        src_line->get_position()->get_coord().begin(),
-        src_line->get_position()->get_coord().end(),
+        (*src_line->get_position()).begin(),
+        (*src_line->get_position()).end(),
         pos.data(),
         boost::numeric_cast<double, float>
     );
     std::transform(
-        src_line->get_direction()->get_coord().begin(),
-        src_line->get_direction()->get_coord().end(),
+        (*src_line->get_direction()).begin(),
+        (*src_line->get_direction()).end(),
         direction.data(),
         boost::numeric_cast<double, float>
     );
@@ -95,13 +95,13 @@ data::object::sptr line_converter::from_igtl_message(const ::igtl::MessageBase::
     std::transform(
         igtl_pos.begin(),
         igtl_pos.end(),
-        dest->get_position()->get_coord().begin(),
+        (*dest->get_position()).begin(),
         boost::numeric_cast<float, double>
     );
     std::transform(
         igtl_direction.begin(),
         igtl_direction.begin() + 3,
-        dest->get_direction()->get_coord().begin(),
+        (*dest->get_direction()).begin(),
         boost::numeric_cast<float, double>
     );
 

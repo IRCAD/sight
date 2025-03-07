@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,12 +97,12 @@ void measurement::create_measurement(
     const data::point::sptr point2 = _point_list->get_points()[1];
 
     std::array coordinates {
-        point1->get_coord()[0],
-        point1->get_coord()[1],
-        point1->get_coord()[2],
-        point2->get_coord()[0],
-        point2->get_coord()[1],
-        point2->get_coord()[2]
+        (*point1)[0],
+        (*point1)[1],
+        (*point1)[2],
+        (*point2)[0],
+        (*point2)[1],
+        (*point2)[2]
     };
 
     const double distance = sqrt(
@@ -132,12 +132,12 @@ void measurement::create_measurement(
     {
         // Create SCoord Node
         std::vector<float> scoord_vector {
-            static_cast<float>(point1->get_coord()[0]),
-            static_cast<float>(point1->get_coord()[1]),
-            static_cast<float>(point1->get_coord()[2]),
-            static_cast<float>(point2->get_coord()[0]),
-            static_cast<float>(point2->get_coord()[1]),
-            static_cast<float>(point2->get_coord()[2])
+            static_cast<float>((*point1)[0]),
+            static_cast<float>((*point1)[1]),
+            static_cast<float>((*point1)[2]),
+            static_cast<float>((*point2)[0]),
+            static_cast<float>((*point2)[1]),
+            static_cast<float>((*point2)[2])
         };
         SPTR(io::dicom::container::sr::dicom_srs_coord3_d_node) scoord_node =
             std::make_shared<io::dicom::container::sr::dicom_srs_coord3_d_node>(
@@ -158,10 +158,10 @@ void measurement::create_measurement(
 
         // Create SCoord Node
         std::vector<float> scoord_vector {
-            static_cast<float>(point1->get_coord()[0]),
-            static_cast<float>(point1->get_coord()[1]),
-            static_cast<float>(point2->get_coord()[0]),
-            static_cast<float>(point2->get_coord()[1])
+            static_cast<float>((*point1)[0]),
+            static_cast<float>((*point1)[1]),
+            static_cast<float>((*point2)[0]),
+            static_cast<float>((*point2)[1])
         };
         SPTR(io::dicom::container::sr::dicom_srs_coord_node) scoord_node =
             std::make_shared<io::dicom::container::sr::dicom_srs_coord_node>(

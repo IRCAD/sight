@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -759,7 +759,7 @@ inline data::point::sptr generate<data::point>(const std::size_t /*unused*/)
 {
     auto object = std::make_shared<data::point>();
 
-    object->set_coord({random<double>(), random<double>(), random<double>()});
+    *object = {random<double>(), random<double>(), random<double>()};
 
     return object;
 }

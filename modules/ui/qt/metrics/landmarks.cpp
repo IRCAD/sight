@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -851,12 +851,8 @@ void landmarks::update_current_landmark(data::landmarks::point_t& _world_coord) 
     auto current_landmark = m_current_landmark.lock();
     if(current_landmark)
     {
-        current_landmark->set_coord(_world_coord);
-        auto current_landmark_modified_sig =
-            current_landmark->signal<sight::data::object::modified_signal_t>(
-                sight::data::object::MODIFIED_SIG
-            );
-        current_landmark_modified_sig->async_emit();
+        *current_landmark = _world_coord;
+        current_landmark->async_emit(sight::data::object::MODIFIED_SIG);
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -191,7 +191,7 @@ void spatial_fiducials::write_landmarks(gdcm::SmartPointer<gdcm::SequenceOfItems
             gdcm::DataSet& graphic_data_item_dataset = graphic_data_item.GetNestedDataSet();
 
             // Graphic Data - Type 1
-            std::array coordinates {static_cast<float>(point->get_coord()[0]), static_cast<float>(point->get_coord()[1])
+            std::array coordinates {static_cast<float>((*point)[0]), static_cast<float>((*point)[1])
             };
             io::dicom::helper::dicom_data_writer::set_tag_values<float, 0x0070, 0x0022>(
                 coordinates.data(),

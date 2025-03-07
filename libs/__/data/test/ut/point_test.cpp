@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -51,9 +51,9 @@ void point_test::copy_test()
         data::point::sptr p2 = std::make_shared<data::point>();
 
         CPPUNIT_ASSERT_NO_THROW(p2->shallow_copy(p1));
-        CPPUNIT_ASSERT_EQUAL(p1->get_coord()[0], p2->get_coord()[0]);
-        CPPUNIT_ASSERT_EQUAL(p1->get_coord()[1], p2->get_coord()[1]);
-        CPPUNIT_ASSERT_EQUAL(p1->get_coord()[2], p2->get_coord()[2]);
+        CPPUNIT_ASSERT_EQUAL((*p1)[0], (*p2)[0]);
+        CPPUNIT_ASSERT_EQUAL((*p1)[1], (*p2)[1]);
+        CPPUNIT_ASSERT_EQUAL((*p1)[2], (*p2)[2]);
     }
 
     // Deep copy
@@ -62,9 +62,9 @@ void point_test::copy_test()
         data::point::sptr p2 = std::make_shared<data::point>();
 
         CPPUNIT_ASSERT_NO_THROW(p2->deep_copy(p1));
-        CPPUNIT_ASSERT_EQUAL(p1->get_coord()[0], p2->get_coord()[0]);
-        CPPUNIT_ASSERT_EQUAL(p1->get_coord()[1], p2->get_coord()[1]);
-        CPPUNIT_ASSERT_EQUAL(p1->get_coord()[2], p2->get_coord()[2]);
+        CPPUNIT_ASSERT_EQUAL((*p1)[0], (*p2)[0]);
+        CPPUNIT_ASSERT_EQUAL((*p1)[1], (*p2)[1]);
+        CPPUNIT_ASSERT_EQUAL((*p1)[2], (*p2)[2]);
     }
 }
 
@@ -74,13 +74,11 @@ void point_test::getter_test()
 {
     data::point::sptr p1 = std::make_shared<data::point>();
 
-    p1->set_coord({0., 1., 10.});
+    *p1 = {0., 1., 10.};
 
-    const auto coords = p1->get_coord();
-
-    CPPUNIT_ASSERT_EQUAL(0., coords[0]);
-    CPPUNIT_ASSERT_EQUAL(1., coords[1]);
-    CPPUNIT_ASSERT_EQUAL(10., coords[2]);
+    CPPUNIT_ASSERT_EQUAL(0., (*p1)[0]);
+    CPPUNIT_ASSERT_EQUAL(1., (*p1)[1]);
+    CPPUNIT_ASSERT_EQUAL(10., (*p1)[2]);
 }
 
 //------------------------------------------------------------------------------
@@ -91,12 +89,11 @@ void point_test::setter_test()
 
     data::point::point_coord_array_t expected = {0.1, 0.2, 0.3};
 
-    p1->set_coord(expected);
-    const auto actual = p1->get_coord();
+    *p1 = {expected};
 
-    CPPUNIT_ASSERT_EQUAL(expected[0], actual[0]);
-    CPPUNIT_ASSERT_EQUAL(expected[1], actual[1]);
-    CPPUNIT_ASSERT_EQUAL(expected[2], actual[2]);
+    CPPUNIT_ASSERT_EQUAL(expected[0], (*p1)[0]);
+    CPPUNIT_ASSERT_EQUAL(expected[1], (*p1)[1]);
+    CPPUNIT_ASSERT_EQUAL(expected[2], (*p1)[2]);
 }
 
 //------------------------------------------------------------------------------
@@ -134,9 +131,9 @@ void point_test::equality_test()
                 *point1 == *point2 && !(*point1 != *point2) \
             );
 
-    TEST(set_coord({1, 0, 0}));
-    TEST(set_coord({0, 1, 0}));
-    TEST(set_coord({0, 0, 1}));
+    TEST(operator=({1, 0, 0}));
+    TEST(operator=({0, 1, 0}));
+    TEST(operator=({0, 0, 1}));
     TEST(set_label("1"));
 
     #undef TEST

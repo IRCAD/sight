@@ -770,8 +770,8 @@ void mesh::update_vertices(const data::point_list::csptr& _point_list)
         FW_PROFILE_AVG("UPDATE BBOX", 5);
         for(std::size_t i = 0 ; i < num_points ; ++i)
         {
-            const auto point = points[i]->get_coord();
-            const auto& pt0  = point[0];
+            const auto& point = *points[i];
+            const auto& pt0   = point[0];
             x_min = std::min(x_min, pt0);
             x_max = std::max(x_max, pt0);
 
@@ -789,7 +789,7 @@ void mesh::update_vertices(const data::point_list::csptr& _point_list)
         FW_PROFILE_AVG("UPDATE POS", 5);
         for(std::size_t i = 0 ; i < num_points ; ++i)
         {
-            const auto point = points[i]->get_coord();
+            const auto& point = *points[i];
             p_pos[0] = static_cast<float>(point[0]);
             p_pos[1] = static_cast<float>(point[1]);
             p_pos[2] = static_cast<float>(point[2]);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,6 +38,8 @@
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 
+// cspell:ignore imread
+
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::vision::ut::helper_test);
 
@@ -70,7 +72,7 @@ static inline void compare_chessboards(
     for(std::uint32_t i = 0 ; i < _expected.size() ; ++i)
     {
         const auto& expected_coords = _expected[i];
-        const auto& detected_coords = _detected->get_points()[i]->get_coord();
+        const auto& detected_coords = (*_detected->get_points()[i]);
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[0], detected_coords[0], 0.01);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[1], detected_coords[1], 0.01);
@@ -686,8 +688,8 @@ void helper_test::chessboard_detection_scale_test()
 
     for(std::uint32_t i = 0 ; i < detected_chess_full_scale->get_points().size() ; ++i)
     {
-        const auto& full_scale_coords    = detected_chess_full_scale->get_points()[i]->get_coord();
-        const auto& quarter_scale_coords = detected_chess_quarter_scale->get_points()[i]->get_coord();
+        const auto& full_scale_coords    = (*detected_chess_full_scale->get_points()[i]);
+        const auto& quarter_scale_coords = (*detected_chess_quarter_scale->get_points()[i]);
 
         for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {

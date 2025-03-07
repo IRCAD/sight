@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -265,7 +265,7 @@ void data_converter_test::point_list_converter_test()
     for(std::size_t i = 0 ; i < 2 ; ++i)
     {
         point = std::make_shared<data::point>();
-        std::copy(points[i].begin(), points[i].end(), point->get_coord().begin());
+        std::copy(points[i].begin(), points[i].end(), point->begin());
         point_list->get_points().push_back(point);
     }
 
@@ -288,8 +288,8 @@ void data_converter_test::point_list_converter_test()
     {
         CPPUNIT_ASSERT(
             std::equal(
-                point_list2->get_points()[i]->get_coord().begin(),
-                point_list2->get_points()[i]->get_coord().end(),
+                (*point_list2->get_points()[i]).begin(),
+                (*point_list2->get_points()[i]).end(),
                 points[i].begin()
             )
         );
@@ -337,8 +337,8 @@ void data_converter_test::line_converter_test()
     line = std::make_shared<data::line>();
     line->set_position(std::make_shared<data::point>());
     line->set_direction(std::make_shared<data::point>());
-    std::copy(direction.begin(), direction.begin() + 3, line->get_direction()->get_coord().begin());
-    std::copy(position.begin(), position.end(), line->get_position()->get_coord().begin());
+    std::copy(direction.begin(), direction.begin() + 3, (*line->get_direction()).begin());
+    std::copy(position.begin(), position.end(), (*line->get_position()).begin());
     line_msg =
         ::igtl::PositionMessage::Pointer(
             dynamic_cast< ::igtl::PositionMessage*>(converter->from_fw_object(
@@ -349,15 +349,15 @@ void data_converter_test::line_converter_test()
     line_msg->GetQuaternion(direction.data());
     CPPUNIT_ASSERT(
         std::equal(
-            line->get_position()->get_coord().begin(),
-            line->get_position()->get_coord().end(),
+            (*line->get_position()).begin(),
+            (*line->get_position()).end(),
             position.begin()
         )
     );
     CPPUNIT_ASSERT(
         std::equal(
-            line->get_direction()->get_coord().begin(),
-            line->get_direction()->get_coord().end(),
+            (*line->get_direction()).begin(),
+            (*line->get_direction()).end(),
             direction.begin()
         )
     );
@@ -366,15 +366,15 @@ void data_converter_test::line_converter_test()
     data::line::sptr line2      = std::dynamic_pointer_cast<data::line>(dest_obj);
     CPPUNIT_ASSERT(
         std::equal(
-            line2->get_position()->get_coord().begin(),
-            line2->get_position()->get_coord().end(),
+            (*line2->get_position()).begin(),
+            (*line2->get_position()).end(),
             position.begin()
         )
     );
     CPPUNIT_ASSERT(
         std::equal(
-            line2->get_direction()->get_coord().begin(),
-            line2->get_direction()->get_coord().end(),
+            (*line2->get_direction()).begin(),
+            (*line2->get_direction()).end(),
             direction.begin()
         )
     );

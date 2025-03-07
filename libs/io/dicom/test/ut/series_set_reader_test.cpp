@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -723,17 +723,17 @@ void series_set_reader_test::read_sf_series()
     const data::point::sptr& point_a = point_list->get_points()[0];
     const std::string label_a        = point_a->get_label();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), label_a);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), point_a->get_coord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), point_a->get_coord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), point_a->get_coord()[2], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), (*point_a)[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), (*point_a)[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), (*point_a)[2], delta);
 
     // Verify second landmark
     const data::point::sptr& point_b = point_list->get_points()[1];
     const std::string label_b        = point_b->get_label();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), label_b);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), point_b->get_coord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), point_b->get_coord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), point_b->get_coord()[2], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), (*point_b)[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), (*point_b)[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), (*point_b)[2], delta);
 }
 
 //------------------------------------------------------------------------------
@@ -774,17 +774,17 @@ void series_set_reader_test::read_sr_series()
     const data::point::sptr& point_a = landmark_point_list->get_points()[0];
     const std::string label_a        = point_a->get_label();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), label_a);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), point_a->get_coord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), point_a->get_coord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), point_a->get_coord()[2], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), (*point_a)[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), (*point_a)[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), (*point_a)[2], delta);
 
     // Verify second landmark
     const data::point::sptr& point_b = landmark_point_list->get_points()[1];
     const std::string label_b        = point_b->get_label();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), label_b);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), point_b->get_coord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), point_b->get_coord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), point_b->get_coord()[2], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), (*point_b)[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), (*point_b)[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), (*point_b)[2], delta);
 
     // Retrieve distances
     data::vector::sptr distance_vector = data::helper::medical_image::get_distances(*series);
@@ -792,13 +792,13 @@ void series_set_reader_test::read_sr_series()
     // Verify first distance
     auto distance_point_list         = std::dynamic_pointer_cast<data::point_list>((*distance_vector)[0]);
     const data::point::sptr& point_c = distance_point_list->get_points()[0];
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(38.34), point_c->get_coord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(116.67), point_c->get_coord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), point_c->get_coord()[2], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(38.34), (*point_c)[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(116.67), (*point_c)[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), (*point_c)[2], delta);
     const data::point::sptr& point_d = distance_point_list->get_points()[1];
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(329.41), point_d->get_coord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(302.33), point_d->get_coord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), point_d->get_coord()[2], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(329.41), (*point_d)[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(302.33), (*point_d)[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), (*point_d)[2], delta);
 }
 
 //------------------------------------------------------------------------------
@@ -837,17 +837,17 @@ void series_set_reader_test::read_3d_sr_series()
     const data::point::sptr& point_a = landmark_point_list->get_points()[0];
     const std::string label_a        = point_a->get_label();
     CPPUNIT_ASSERT_EQUAL(std::string("Label1"), label_a);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), point_a->get_coord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), point_a->get_coord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), point_a->get_coord()[2], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(80.89), (*point_a)[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(102.16), (*point_a)[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(153), (*point_a)[2], delta);
 
     // Verify second landmark
     const data::point::sptr& point_b = landmark_point_list->get_points()[1];
     const std::string label_b        = point_b->get_label();
     CPPUNIT_ASSERT_EQUAL(std::string("Label2"), label_b);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), point_b->get_coord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), point_b->get_coord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), point_b->get_coord()[2], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), (*point_b)[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(326.52), (*point_b)[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), (*point_b)[2], delta);
 
     // Retrieve distances
     data::vector::sptr distance_vector = data::helper::medical_image::get_distances(*series);
@@ -855,13 +855,13 @@ void series_set_reader_test::read_3d_sr_series()
     // Verify first distance
     auto distance_point_list         = std::dynamic_pointer_cast<data::point_list>((*distance_vector)[0]);
     const data::point::sptr& point_c = distance_point_list->get_points()[0];
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), point_c->get_coord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(99.30), point_c->get_coord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(87.26), point_c->get_coord()[2], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(281.63), (*point_c)[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(99.30), (*point_c)[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(87.26), (*point_c)[2], delta);
     const data::point::sptr& point_d = distance_point_list->get_points()[1];
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(329.41), point_d->get_coord()[0], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(302.33), point_d->get_coord()[1], delta);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), point_d->get_coord()[2], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(329.41), (*point_d)[0], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(302.33), (*point_d)[1], delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(276), (*point_d)[2], delta);
 }
 
 //------------------------------------------------------------------------------

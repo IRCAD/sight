@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,8 +90,8 @@ void open_cv_intrinsic::updating()
             {
                 SIGHT_ASSERT("point is null", point);
                 dst.emplace_back(
-                    static_cast<float>(point->get_coord()[0]),
-                    static_cast<float>(point->get_coord()[1])
+                    static_cast<float>((*point)[0]),
+                    static_cast<float>((*point)[1])
 
                 );
             }

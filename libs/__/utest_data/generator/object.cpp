@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -270,7 +270,7 @@ data::point::sptr object::generate_point()
                                    static_cast<double>(safe_rand() % 300)
     };
     data::point::sptr point = std::make_shared<data::point>();
-    point->set_coord(coord);
+    *point = coord;
     return point;
 }
 

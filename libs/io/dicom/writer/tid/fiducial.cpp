@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -137,9 +137,9 @@ void fiducial::create_fiducial(
     {
         // Create SCoord3D Node
         std::vector<float> scoord_vector {
-            static_cast<float>(_point->get_coord()[0]),
-            static_cast<float>(_point->get_coord()[1]),
-            static_cast<float>(_point->get_coord()[2])
+            static_cast<float>((*_point)[0]),
+            static_cast<float>((*_point)[1]),
+            static_cast<float>((*_point)[2])
         };
         SPTR(io::dicom::container::sr::dicom_srs_coord3_d_node) scoord_3d_node =
             std::make_shared<io::dicom::container::sr::dicom_srs_coord3_d_node>(
@@ -155,8 +155,8 @@ void fiducial::create_fiducial(
     {
         // Create SCoord Node
         std::vector<float> scoord_vector {
-            static_cast<float>(_point->get_coord()[0]),
-            static_cast<float>(_point->get_coord()[1])
+            static_cast<float>((*_point)[0]),
+            static_cast<float>((*_point)[1])
         };
         SPTR(io::dicom::container::sr::dicom_srs_coord_node) scoord_node =
             std::make_shared<io::dicom::container::sr::dicom_srs_coord_node>(

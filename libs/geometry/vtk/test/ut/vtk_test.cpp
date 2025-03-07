@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,9 +70,9 @@ void vtk_test::compute_center_of_mass()
     mesh->push_cell(3, 7, 6, 2);
     sight::data::point::sptr computed_center_of_mass = geometry::vtk::compute_center_of_mass(mesh);
 
-    CPPUNIT_ASSERT_EQUAL(center_of_mass[0], computed_center_of_mass->get_coord()[0]);
-    CPPUNIT_ASSERT_EQUAL(center_of_mass[1], computed_center_of_mass->get_coord()[1]);
-    CPPUNIT_ASSERT_EQUAL(center_of_mass[2], computed_center_of_mass->get_coord()[2]);
+    CPPUNIT_ASSERT_EQUAL(center_of_mass[0], (*computed_center_of_mass)[0]);
+    CPPUNIT_ASSERT_EQUAL(center_of_mass[1], (*computed_center_of_mass)[1]);
+    CPPUNIT_ASSERT_EQUAL(center_of_mass[2], (*computed_center_of_mass)[2]);
 }
 
 //------------------------------------------------------------------------------

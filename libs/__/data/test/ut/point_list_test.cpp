@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,15 +73,15 @@ void point_list_test::getter_test()
 
     data::point::sptr point2 = pl1->get_points()[0];
 
-    CPPUNIT_ASSERT_EQUAL(point1->get_coord()[0], point2->get_coord()[0]);
-    CPPUNIT_ASSERT_EQUAL(point1->get_coord()[1], point2->get_coord()[1]);
-    CPPUNIT_ASSERT_EQUAL(point1->get_coord()[2], point2->get_coord()[2]);
+    CPPUNIT_ASSERT_EQUAL((*point1)[0], (*point2)[0]);
+    CPPUNIT_ASSERT_EQUAL((*point1)[1], (*point2)[1]);
+    CPPUNIT_ASSERT_EQUAL((*point1)[2], (*point2)[2]);
 
     data::point_list::container_t& container = pl1->get_points();
 
-    CPPUNIT_ASSERT_EQUAL(point1->get_coord()[0], container[0]->get_coord()[0]);
-    CPPUNIT_ASSERT_EQUAL(point1->get_coord()[1], container[0]->get_coord()[1]);
-    CPPUNIT_ASSERT_EQUAL(point1->get_coord()[2], container[0]->get_coord()[2]);
+    CPPUNIT_ASSERT_EQUAL((*point1)[0], (*container[0])[0]);
+    CPPUNIT_ASSERT_EQUAL((*point1)[1], (*container[0])[1]);
+    CPPUNIT_ASSERT_EQUAL((*point1)[2], (*container[0])[2]);
 }
 
 //------------------------------------------------------------------------------
@@ -104,7 +104,7 @@ void point_list_test::setter_test()
     {
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            CPPUNIT_ASSERT_EQUAL(vec[p]->get_coord()[i], container[p]->get_coord()[i]);
+            CPPUNIT_ASSERT_EQUAL((*vec[p])[i], (*container[p])[i]);
         }
     }
 }
@@ -130,7 +130,7 @@ void point_list_test::push_test()
     {
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            CPPUNIT_ASSERT_EQUAL(vec[p]->get_coord()[i], container[p]->get_coord()[i]);
+            CPPUNIT_ASSERT_EQUAL((*vec[p])[i], (*container[p])[i]);
         }
     }
 }
@@ -201,7 +201,7 @@ void point_list_test::remove_test()
             CPPUNIT_ASSERT_EQUAL(--size, pl->get_points().size());
             for(const auto& p : pl->get_points())
             {
-                CPPUNIT_ASSERT(ref->get_coord()[0] != p->get_coord()[0]);
+                CPPUNIT_ASSERT((*ref)[0] != (*p)[0]);
             }
         }
     }

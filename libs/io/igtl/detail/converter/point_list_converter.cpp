@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,8 +60,8 @@ point_list_converter::~point_list_converter()
     for(data::point::sptr const& src_point : src_points->get_points())
     {
         std::transform(
-            src_point->get_coord().begin(),
-            src_point->get_coord().end(),
+            (*src_point).begin(),
+            (*src_point).end(),
             pos.begin(),
             boost::numeric_cast<double, float>
         );
@@ -93,7 +93,7 @@ data::object::sptr point_list_converter::from_igtl_message(const ::igtl::Message
         std::transform(
             igtl_pos.begin(),
             igtl_pos.end(),
-            fw_point->get_coord().begin(),
+            (*fw_point).begin(),
             boost::numeric_cast<float, double>
         );
         fw_points.push_back(fw_point);

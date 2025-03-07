@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,8 +69,7 @@ void matrix_regressor::updating()
     // Convert the point list.
     for(const auto& pt : point_list->get_points())
     {
-        const auto& pt_coords = pt->get_coord();
-        pt_list.emplace_back(pt_coords[0], pt_coords[1], pt_coords[2], 1.);
+        pt_list.emplace_back((*pt)[0], (*pt)[1], (*pt)[2], 1.);
     }
 
     if(!matrix_list->empty() && !pt_list.empty())

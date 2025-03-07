@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,8 +84,8 @@ void solve_pnp::compute_registration(core::clock::type /*timestamp*/)
         data::point::csptr p2d = fw_points2d->get_points()[i];
         cv::Point2f cv_p2d;
 
-        cv_p2d.x = static_cast<float>(p2d->get_coord()[0]) - shift_x;
-        cv_p2d.y = static_cast<float>(p2d->get_coord()[1]) - shift_y;
+        cv_p2d.x = static_cast<float>((*p2d)[0]) - shift_x;
+        cv_p2d.y = static_cast<float>((*p2d)[1]) - shift_y;
 
         points2d[i] = cv_p2d;
 
@@ -93,9 +93,9 @@ void solve_pnp::compute_registration(core::clock::type /*timestamp*/)
         data::point::csptr p3d = fw_points3d->get_points()[i];
         cv::Point3f cv_p3d;
 
-        cv_p3d.x = static_cast<float>(p3d->get_coord()[0]);
-        cv_p3d.y = static_cast<float>(p3d->get_coord()[1]);
-        cv_p3d.z = static_cast<float>(p3d->get_coord()[2]);
+        cv_p3d.x = static_cast<float>((*p3d)[0]);
+        cv_p3d.y = static_cast<float>((*p3d)[1]);
+        cv_p3d.z = static_cast<float>((*p3d)[2]);
 
         points3d[i] = cv_p3d;
     }
