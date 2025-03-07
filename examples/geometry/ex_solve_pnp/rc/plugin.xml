@@ -315,8 +315,8 @@
             </service>
 
             <service uid="pointListVRManagerSrv" type="sight::module::geometry::manage_point_list">
-                <inout key="pointList" uid="3dPoints" />
-                <config label="true" tolerance="0.1" />
+                <inout key="point_list" uid="3dPoints" />
+                <config label="true" tolerance="0.1" modifier="CTRL" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

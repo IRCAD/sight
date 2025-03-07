@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,27 +34,31 @@ namespace sight::module::geometry
 {
 
 /**
- * @brief Add point in a data::point_list
+ * @brief Adds point in a data::point_list.
+ * This can work in two different ways. Either by listening to an input transform and calling update(), either by
+ * receiving a picking position.
  *
  * @section Slots Slots
- * - \b pick(data::tools::picking_info): Add or remove the closest point to the picking position, actions occur when
- * `CTRL` is pressed.
- * - \b clearPoints(): Remove all points from the point lists.
+ * - \b pick(data::tools::picking_info): Add or remove the closest point to the picking position.
+ * - \b clear(): Remove all points from the point lists.
 
  * @section XML XML Configuration
  * @code{.xml}
         <service uid="..." type="sight::module::geometry::manage_point_list">
-            <inout key="pointList" uid="..." />
-            <in key="matrix" uid="..." />
-            <config max="0" removable="true" label="false" tolerance="10.0" />
+            <in key="transform" uid="..." />
+            <inout key="point_list" uid="..." />
+            <config max="0" removable="true" label="false" tolerance="10.0" modifier="CTRL"/>
        </service>
    @endcode
  *
+ * @subsection Input Input:
+ * - \b position [sight::data::matrix4](optional): source transform to listen.
+ *
  * @subsection In-Out In-Out:
- * - \b pointList [sight::data::point_list]: Target point list.
+ * - \b point_list [sight::data::point_list]: Target point list.
  *
  * @subsection Input Input:
- * - \b matrix [sight::data::matrix4](optional): Transformation applied to picked positions.
+ * - \b transform [sight::data::matrix4](optional): Transformation applied to picked positions.
  *
  * @subsection Configuration Configuration:
  * - \b max (optional, std::size_t, default=0): set the maximum number of points contained in the point list, if it's 0,
@@ -63,10 +67,17 @@ namespace sight::module::geometry
  * - \b removable (optional, bool, default=true): allow points to be removed.
  * - \b label (optional, bool, default=false): add an ID label to added points.
  * - \b tolerance (optional, float, default=10.0): the tolerance used to remove a point.
+ * - \b modifier (optional, string, default=""): the modifier to use when picking a point.
  */
 class manage_point_list final : public service::controller
 {
 public:
+
+    struct slots
+    {
+        static inline const core::com::slots::key_t PICK  = "pick";
+        static inline const core::com::slots::key_t CLEAR = "clear";
+    };
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(manage_point_list, sight::service::controller);
@@ -75,12 +86,12 @@ public:
     manage_point_list() noexcept;
 
     /// Destroys the service.
-    ~manage_point_list() noexcept final;
+    ~manage_point_list() noexcept final = default;
 
 private:
 
     /// Configures the service.
-    void configuring() final;
+    void configuring(const config_t& _config) final;
 
     /// Does nothing.
     void starting() final;
@@ -110,7 +121,7 @@ private:
     void remove_point(const data::point::csptr _point) const;
 
     /// SLOT: Clears the point list.
-    void clear_points() const;
+    void clear() const;
 
     /// Maximum number of contained points.
     std::size_t m_max {0};
@@ -121,10 +132,15 @@ private:
     /// Allows to add an ID label the points.
     bool m_label {false};
 
+    /// Maximum distance to add a new point
     float m_tolerance {10.F};
 
-    data::ptr<data::matrix4, sight::data::access::in> m_transform {this, "matrix", true};
-    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "pointList"};
+    /// Key modifier when picking a point
+    data::tools::picking_info::modifier m_modifier {data::tools::picking_info::modifier::none};
+
+    data::ptr<data::matrix4, sight::data::access::in> m_position {this, "position"};
+    data::ptr<data::matrix4, sight::data::access::in> m_transform {this, "transform", true};
+    data::ptr<data::point_list, sight::data::access::inout> m_point_list {this, "point_list"};
 };
 
 } // namespace sight::module::geometry

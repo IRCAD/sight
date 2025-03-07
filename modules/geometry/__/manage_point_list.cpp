@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,46 +27,42 @@
 
 #include <data/string.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
-
 namespace sight::module::geometry
 {
-
-static const core::com::slots::key_t PICK_SLOT         = "pick";
-static const core::com::slots::key_t CLEAR_POINTS_SLOT = "clearPoints";
-
-static const std::string MAX_CONFIG       = "max";
-static const std::string REMOVABLE_CONFIG = "removable";
-static const std::string LABEL_CONFIG     = "label";
-static const std::string TOLERANCE_CONFIG = "tolerance";
 
 //------------------------------------------------------------------------------
 
 manage_point_list::manage_point_list() noexcept
 {
-    new_slot(PICK_SLOT, &manage_point_list::pick, this);
-    new_slot(CLEAR_POINTS_SLOT, &manage_point_list::clear_points, this);
+    new_slot(slots::PICK, &manage_point_list::pick, this);
+    new_slot(slots::CLEAR, &manage_point_list::clear, this);
 }
 
 //------------------------------------------------------------------------------
 
-manage_point_list::~manage_point_list() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-void manage_point_list::configuring()
+void manage_point_list::configuring(const config_t& _config)
 {
-    const auto tree   = this->get_config();
-    const auto config = tree.get_child_optional("config.<xmlattr>");
+    const auto config = _config.get_child_optional("config.<xmlattr>");
 
     if(config)
     {
-        m_max       = config->get<std::size_t>(MAX_CONFIG, m_max);
-        m_removable = config->get<bool>(REMOVABLE_CONFIG, m_removable);
-        m_label     = config->get<bool>(LABEL_CONFIG, m_label);
-        m_tolerance = config->get<float>(TOLERANCE_CONFIG, m_tolerance);
+        m_max       = config->get<std::size_t>("max", m_max);
+        m_removable = config->get<bool>("removable", m_removable);
+        m_label     = config->get<bool>("label", m_label);
+        m_tolerance = config->get<float>("tolerance", m_tolerance);
+        auto modifier = boost::to_lower_copy(config->get<std::string>("modifier", ""));
+        if(modifier == "ctrl")
+        {
+            m_modifier = data::tools::picking_info::ctrl;
+        }
+        else if(modifier == "shift")
+        {
+            m_modifier = data::tools::picking_info::shift;
+        }
     }
 }
 
@@ -80,6 +76,28 @@ void manage_point_list::starting()
 
 void manage_point_list::updating()
 {
+    const auto input_position = m_position.lock();
+    if(input_position == nullptr)
+    {
+        return;
+    }
+
+    const data::point::sptr new_point = std::make_shared<data::point>();
+    const auto matrix                 = m_transform.lock();
+    if(matrix)
+    {
+        const glm::dmat4x4 mat = sight::geometry::data::to_glm_mat(*matrix);
+
+        const glm::dvec4 point          = {(*input_position)[3], (*input_position)[7], (*input_position)[11], 1.0};
+        const glm::dvec4 modified_point = mat * point;
+        *new_point = {modified_point[0], modified_point[1], modified_point[2]};
+    }
+    else
+    {
+        *new_point = {(*input_position)[3], (*input_position)[7], (*input_position)[11]};
+    }
+
+    this->add_point(new_point);
 }
 
 //------------------------------------------------------------------------------
@@ -92,35 +110,31 @@ void manage_point_list::stopping()
 
 void manage_point_list::pick(data::tools::picking_info _info) const
 {
-    if((_info.m_modifier_mask & data::tools::picking_info::ctrl) != 0)
+    if(_info.m_modifier_mask == m_modifier)
     {
-        const data::point::sptr point = std::make_shared<data::point>();
+        const data::point::sptr new_point = std::make_shared<data::point>();
 
         const auto matrix = m_transform.lock();
-
         if(matrix)
         {
-            const std::array<double, 3>& picked_coord = _info.m_world_pos;
-            const glm::dvec4 picked_point             =
-                glm::dvec4 {picked_coord[0], picked_coord[1], picked_coord[2], 1.0
-            };
-            const glm::dmat4x4 mat = sight::geometry::data::to_glm_mat(*matrix);
+            const glm::dvec4 picked_point = {_info.m_world_pos[0], _info.m_world_pos[1], _info.m_world_pos[2], 1.0};
+            const glm::dmat4x4 mat        = sight::geometry::data::to_glm_mat(*matrix);
 
             const glm::dvec4 modified_picked_point = mat * picked_point;
-            point->set_coord({modified_picked_point[0], modified_picked_point[1], modified_picked_point[2]});
+            *new_point = {modified_picked_point[0], modified_picked_point[1], modified_picked_point[2]};
         }
         else
         {
-            point->set_coord({_info.m_world_pos[0], _info.m_world_pos[1], _info.m_world_pos[2]});
+            *new_point = {_info.m_world_pos[0], _info.m_world_pos[1], _info.m_world_pos[2]};
         }
 
         if(_info.m_event_id == data::tools::picking_info::event::mouse_left_up)
         {
-            this->add_point(point);
+            this->add_point(new_point);
         }
         else if(_info.m_event_id == data::tools::picking_info::event::mouse_right_up)
         {
-            this->remove_point(point);
+            this->remove_point(new_point);
         }
     }
 }
@@ -138,19 +152,13 @@ void manage_point_list::add_point(const data::point::sptr _point) const
     }
 
     point_list->push_back(_point);
-    const auto& sig_added = point_list->signal<data::point_list::point_added_signal_t>(
-        data::point_list::POINT_ADDED_SIG
-    );
-    sig_added->async_emit(_point);
+    point_list->async_emit(data::point_list::POINT_ADDED_SIG, _point);
 
     if(m_max != 0 && point_list->get_points().size() > m_max)
     {
         const data::point::sptr removed_point = point_list->get_points().front();
         point_list->remove(0);
-        const auto& sig_removed = point_list->signal<data::point_list::point_removed_signal_t>(
-            data::point_list::POINT_REMOVED_SIG
-        );
-        sig_removed->async_emit(removed_point);
+        point_list->async_emit(data::point_list::POINT_REMOVED_SIG, removed_point);
     }
 }
 
@@ -166,17 +174,14 @@ void manage_point_list::remove_point(const data::point::csptr _point) const
 
         if(point_res != nullptr)
         {
-            const auto& sig_removed = point_list->signal<data::point_list::point_removed_signal_t>(
-                data::point_list::POINT_REMOVED_SIG
-            );
-            sig_removed->async_emit(point_res);
+            point_list->async_emit(data::point_list::POINT_REMOVED_SIG, point_res);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void manage_point_list::clear_points() const
+void manage_point_list::clear() const
 {
     const auto point_list = m_point_list.lock();
 
@@ -186,10 +191,7 @@ void manage_point_list::clear_points() const
 
     for(const auto& point : container)
     {
-        const auto& sig_removed = point_list->signal<data::point_list::point_removed_signal_t>(
-            data::point_list::POINT_REMOVED_SIG
-        );
-        sig_removed->async_emit(point);
+        point_list->async_emit(data::point_list::POINT_REMOVED_SIG, point);
     }
 }
 

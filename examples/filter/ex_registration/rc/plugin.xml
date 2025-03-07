@@ -317,12 +317,13 @@ Detail of the ToolBar
 
             <!-- Services to add a point in the pointlist when the user clicks in the scene -->
             <service uid="addLAndmarksInPL1Srv" type="sight::module::geometry::manage_point_list">
-                <inout key="pointList" uid="pointList1" />
-                <config label="true" />
+                <inout key="point_list" uid="pointList1" />
+                <config label="true" modifier="CTRL" />
             </service>
 
             <service uid="addLAndmarksInPL2Srv" type="sight::module::geometry::manage_point_list">
-                <inout key="pointList" uid="pointList2" />
+                <inout key="point_list" uid="pointList2" />
+                <config modifier="CTRL" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
