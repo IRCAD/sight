@@ -64,7 +64,7 @@
 
             <object uid="vr_visibility" type="sight::data::boolean" value="false" />
             <object uid="negato_visibility" type="sight::data::boolean" value="false" />
-            <object uid="model_visibility" type="sight::data::boolean" value="false" />
+            <object uid="model_visibility" type="sight::data::boolean" value="true" />
             <object uid="axis_visibility" type="sight::data::boolean" value="false" />
 
             <!-- ******************************* UI declaration *********************************** -->
@@ -617,7 +617,6 @@
             <connect>
                 <signal>extractSeriesSrv/model_selected</signal>
                 <slot>meshVisibilityAct/enable</slot>
-                <slot>meshVisibilityAct/check</slot>
             </connect>
 
             <connect>

@@ -89,7 +89,7 @@ void model_series::configuring()
         m_query_flags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 
-    if(config.get_optional<bool>("visible"))
+    if(config.get_optional<bool>(CONFIG + "visible") || config.get_optional<bool>("properties.<xmlattr>.visible"))
     {
         m_is_visible_tag = true;
     }
@@ -127,17 +127,23 @@ void model_series::updating()
 
     this->unregister_services();
 
-    // showRec indicates if we have to show the associated reconstructions or not
-    const bool show_rec =
-        model_series->get_field("ShowReconstructions", std::make_shared<data::boolean>(true))->value();
-
     for(const auto& reconstruction : model_series->get_reconstruction_db())
     {
         auto adaptor = this->register_service<module::viz::scene3d::adaptor::reconstruction>(
             "sight::module::viz::scene3d::adaptor::reconstruction"
         );
         adaptor->set_input(reconstruction, "reconstruction", true);
-        adaptor->configure();
+
+        bool is_visible = visible();
+        if(const auto visibility_field = model_series->get_field("ShowReconstructions"); visibility_field)
+        {
+            const bool show_rec = std::dynamic_pointer_cast<sight::data::boolean>(visibility_field)->value();
+            is_visible = is_visible && show_rec;
+        }
+
+        config_t rec_adaptor_config;
+        rec_adaptor_config.put("properties.<xmlattr>.visible", is_visible);
+        adaptor->configure(rec_adaptor_config);
 
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
         adaptor->set_id(this->get_id(), adaptor->get_id());
@@ -150,16 +156,6 @@ void model_series::updating()
         adaptor->set_query_flags(m_query_flags);
 
         adaptor->start();
-
-        if(m_is_visible_tag)
-        {
-            adaptor->update_visibility(!visible());
-            SIGHT_WARN("The value of the modelSeries field will not be taken into account");
-        }
-        else
-        {
-            adaptor->update_visibility(!show_rec);
-        }
 
         module::viz::scene3d::adaptor::mesh::sptr mesh_adaptor = adaptor->get_mesh_adaptor();
         mesh_adaptor->set_dynamic(m_is_dynamic);
@@ -187,7 +183,7 @@ void model_series::set_visible(bool _visible)
     for(const auto& adaptor : adaptors)
     {
         auto rec_adaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::reconstruction>(adaptor.lock());
-        rec_adaptor->update_visibility(!_visible);
+        rec_adaptor->update_visibility(_visible);
     }
 }
 
@@ -204,7 +200,7 @@ void model_series::show_reconstructions_on_field_changed()
     for(const auto& adaptor : adaptors)
     {
         auto rec_adaptor = std::dynamic_pointer_cast<module::viz::scene3d::adaptor::reconstruction>(adaptor.lock());
-        rec_adaptor->update_visibility(!show_rec);
+        rec_adaptor->update_visibility(show_rec);
     }
 }
 

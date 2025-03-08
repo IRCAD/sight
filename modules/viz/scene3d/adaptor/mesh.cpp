@@ -281,6 +281,11 @@ void module::viz::scene3d::adaptor::mesh::set_visible(bool _visible)
 
         m_mesh_geometry->set_visible(_visible);
 
+        if(m_auto_reset_camera && _visible)
+        {
+            this->render_service()->reset_camera_coordinates(m_layer_id);
+        }
+
         this->request_render();
     }
 }

@@ -75,6 +75,7 @@ service::connections_t module::viz::scene3d::adaptor::reconstruction::auto_conne
 {
     service::connections_t connections = adaptor::auto_connections();
     connections.push(RECONSTRUCTION_INPUT, data::reconstruction::MESH_CHANGED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(RECONSTRUCTION_INPUT, data::reconstruction::VISIBILITY_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
     return connections;
 }
 
@@ -94,8 +95,9 @@ void reconstruction::updating()
         {
             // Updates the mesh adaptor according to the reconstruction
             mesh_adaptor->set_material(std::const_pointer_cast<data::material>(reconstruction->get_material()));
-            mesh_adaptor->set_visible(reconstruction->get_is_visible());
         }
+
+        mesh_adaptor->set_visible(reconstruction->get_is_visible());
     }
     else
     {
@@ -131,7 +133,9 @@ void reconstruction::create_mesh_service()
         );
         mesh_adaptor->set_input(mesh, "mesh", true);
 
-        mesh_adaptor->configure();
+        config_t mesh_adaptor_config;
+        mesh_adaptor_config.put("properties.<xmlattr>.visible", visible() && reconstruction->get_is_visible());
+        mesh_adaptor->configure(mesh_adaptor_config);
         mesh_adaptor->set_id(gen_id(mesh_adaptor->get_id()));
         mesh_adaptor->set_layer_id(m_layer_id);
         mesh_adaptor->set_render_service(this->render_service());
@@ -142,7 +146,6 @@ void reconstruction::create_mesh_service()
         mesh_adaptor->set_material_template_name(m_material_template_name);
         mesh_adaptor->set_auto_reset_camera(m_auto_reset_camera);
         mesh_adaptor->set_transform_id(this->get_transform_id());
-        mesh_adaptor->set_visible(reconstruction->get_is_visible());
         mesh_adaptor->set_dynamic(m_is_dynamic);
         mesh_adaptor->set_dynamic_vertices(m_is_dynamic_vertices);
         mesh_adaptor->set_query_flags(m_query_flags);
@@ -164,7 +167,7 @@ void reconstruction::set_visible(bool _visible)
         if(mesh_adaptor)
         {
             const auto reconstruction = m_reconstruction.lock();
-            mesh_adaptor->set_visible(_visible ? false : reconstruction->get_is_visible());
+            mesh_adaptor->update_visibility(_visible and reconstruction->get_is_visible());
         }
     }
 }

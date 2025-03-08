@@ -13,9 +13,6 @@ include:
       ref: 8d212bf32b05fbf1dcf714d70fc870995723392c
       file: "/.templates/build.yml"
 
-variables:
-    TEST_DATA_REF: "dev"
-
 lint:ubuntu-24.04:
     extends: .lint
     variables:
@@ -35,6 +32,7 @@ lint:ubuntu-24.04:
         SIGHT_BUILD_SDK: "OFF"
         SIGHT_ENABLE_REALSENSE: "OFF"
         SIGHT_ENABLE_GDB: "OFF"
+        TEST_DATA_REF: "30affcdc46"
     script:
         # Reset the modified time of all files to improve ccache performance
         - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
@@ -286,6 +284,7 @@ deploy:apps-linux-release:
         SIGHT_BUILD_SDK: "OFF"
         MSVC_VERSION: "17"
         CUDA_VERSION: "12_5"
+        TEST_DATA_REF: "30affcdc46"
     stage: build
     script:
         # Print CCache statistics
