@@ -53,12 +53,6 @@
 #include <cctype> // Needed for isspace()
 #include <filesystem>
 
-#if _WIN32
-constexpr const char* PLUGIN_PATH = "plugins_win32.cfg";
-#else
-constexpr const char* PLUGIN_PATH = "plugins.cfg";
-#endif
-
 namespace sight::viz::scene3d
 {
 
@@ -175,108 +169,44 @@ Ogre::Root* utils::get_ogre_root()
 
     if(root == nullptr)
     {
-        const auto& conf_path = core::runtime::get_library_resource_file_path("viz_scene3d/"s + PLUGIN_PATH);
-
-        // Check file existence
-        if(!std::filesystem::exists(conf_path))
-        {
-            SIGHT_FATAL("File '" + conf_path.string() + "' doesn't exist. Ogre needs it to be configured");
-        }
-
         core::os::temp_file tmp_plugin_cfg;
 
         // Set the actual plugin path in the plugin config file and add application plugins.
         {
-            std::ofstream new_plugin(tmp_plugin_cfg.string());
+            std::ofstream tmp_plugin_cfg_stream(tmp_plugin_cfg.string());
 
             SIGHT_FATAL_IF(
                 "Can't create temporary config file'" + tmp_plugin_cfg.string() + "'",
                 !std::filesystem::exists(tmp_plugin_cfg)
             );
-            SIGHT_FATAL_IF("Failed to open new plugin file", !new_plugin.is_open());
 
-            /*
-             * Intermediate lambda which parses the configuration file and plugins enabled from setOgrePlugins.
-             * @param confPath: path to the initial Ogre configuration file.
-             * @returns std::string holding the actual configuration given to Ogre::Root constructor.
-             */
-            constexpr auto generate_ogre_config =
-                [](const std::filesystem::path& _conf_path) -> std::string
-                {
-                    std::ifstream in(_conf_path.string());
-                    std::stringstream plugins;
-                    std::string pluginfolder;
+            SIGHT_FATAL_IF("Failed to open new plugin file", !tmp_plugin_cfg_stream.is_open());
 
-#if defined(WIN32) && defined(DEBUG)
-                    constexpr auto lib_name = "OgreMain_d";
+            // Find the path of the OgreMain library and deduce the path of the plugins
+            const std::string ogre_main_name =
+#if defined(_WIN32) && defined(_DEBUG)
+                "OgreMain_d";
 #else
-                    constexpr auto lib_name = "OgreMain";
+                "OgreMain";
 #endif
 
-                    constexpr std::string_view plugin_folder_token = "PluginFolder=";
-                    constexpr std::string_view plugin_token        = "Plugin=";
+            const auto ogre_main_path = core::tools::os::get_shared_library_path(ogre_main_name);
+            SIGHT_FATAL_IF("Failed to find `" + ogre_main_name + "`", !std::filesystem::exists(ogre_main_path));
+            const auto ogre_lib_path = ogre_main_path.parent_path();
 
-#if defined(WIN32)
-                    const std::string module = std::filesystem::weakly_canonical(
-                        core::tools::os::get_shared_library_path(lib_name).remove_filename() / ".." / "plugins" / "ogre"
-                    ).string();
+            // Find the ogre plugins path
+
+#if defined(_WIN32)
+            const auto ogre_plugins_path = ogre_lib_path.parent_path() / "plugins" / "ogre";
 #else
-                    const std::string module =
-                        core::tools::os::get_shared_library_path(lib_name).remove_filename().string();
+            const auto ogre_plugins_path = ogre_lib_path / "OGRE";
 #endif
 
-                    // First parse config and looks for required plugin and plugin folder
-                    {
-                        for(std::string line ; std::getline(in, line) ; )
-                        {
-                            // Remove all spaces
-                            {
-                                line.erase(std::remove(line.begin(), line.end(), ' '), line.end());
-                            }
-
-                            // Skip comments
-                            if(line.empty() || line.front() == '#')
-                            {
-                                continue;
-                            }
-
-                            // Line starts with a plugin name
-                            if(line.starts_with(plugin_token))
-                            {
-                                plugins << line << std::endl;
-                                SIGHT_DEBUG("Adding " << line << " to Ogre plugins");
-                            }
-
-                            // Line starts with plugin folder path
-                            if(line.starts_with(plugin_folder_token))
-                            {
-                                constexpr std::size_t offset = std::string_view(plugin_folder_token).size();
-
-                                pluginfolder = line;
-                                pluginfolder.insert(offset, module); //Insert the module path after "PluginFolder="
-                            }
-                        }
-                    }
-
-                    // Then, add application plugins
-                    {
-                        for(const auto& plugin : s_ogre_plugins)
-                        {
-                            plugins << plugin_token << plugin << std::endl;
-                        }
-                    }
-
-                    SIGHT_FATAL_IF("No 'PluginFolder' folder set in " + _conf_path.string(), pluginfolder.empty());
-                    std::stringstream result;
-                    result << plugins.str() << std::endl << pluginfolder;
-
-                    return result.str();
-                };
-
-            const auto ogre_config = generate_ogre_config(conf_path);
+            // Add render system plugin
+            tmp_plugin_cfg_stream << "Plugin=RenderSystem_GL3Plus" << std::endl << std::endl;
 
             // Write to the new plugin file
-            new_plugin << ogre_config << std::endl;
+            tmp_plugin_cfg_stream << "PluginFolder=" << std::filesystem::canonical(ogre_plugins_path).string();
         }
 
         root = new Ogre::Root(tmp_plugin_cfg.string());

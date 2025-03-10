@@ -222,7 +222,9 @@ void worker_qt::init(int& _argc, char** _argv)
     const auto qt6_core_path = core::tools::os::get_shared_library_path("Qt6Core");
     SIGHT_ASSERT("Could not find Qt6Core library", std::filesystem::is_regular_file(qt6_core_path));
 
-    const auto qt6_plugins_path = qt6_core_path.parent_path().parent_path() / "Qt6" / "plugins";
+    // This is the installed Qt 6 plugins path
+    const auto qt6_root_path    = qt6_core_path.parent_path().parent_path();
+    const auto qt6_plugins_path = qt6_root_path / "plugins";
 
     if(QDir plugins_dir(qt6_plugins_path); plugins_dir.exists())
     {
@@ -231,7 +233,24 @@ void worker_qt::init(int& _argc, char** _argv)
     }
     else
     {
-        SIGHT_ERROR("Could not determine qt6 plugins path, tried with: " + qt6_plugins_path.string());
+        // Try the vcpkg path
+        const auto vcpkg_qt6_plugins_path = qt6_root_path / "Qt6" / "plugins";
+
+        if(QDir vcpkg_plugins_dir(vcpkg_qt6_plugins_path); vcpkg_plugins_dir.exists())
+        {
+            SIGHT_INFO("Load Qt6 plugins path from: " + vcpkg_qt6_plugins_path.string());
+            QCoreApplication::addLibraryPath(vcpkg_plugins_dir.canonicalPath());
+        }
+        else
+        {
+            SIGHT_FATAL(
+                "Could not determine qt6 plugins path, tried with `"
+                + qt6_plugins_path.string()
+                + "` and `"
+                + vcpkg_qt6_plugins_path.string()
+                + "`"
+            );
+        }
     }
 #endif
 
