@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -154,10 +154,10 @@ void action::set_enabled(bool _enabled)
 {
     {
         const auto enabled = m_enabled.lock();
-        *enabled = _enabled;
 
         if(_enabled != enabled->value())
         {
+            *enabled = _enabled;
             enabled->async_emit(this, data::object::MODIFIED_SIG);
         }
     }
@@ -194,10 +194,10 @@ void action::set_visible(bool _visible)
 {
     {
         const auto visible = m_visible.lock();
-        *visible = _visible;
 
         if(_visible != visible->value())
         {
+            *visible = _visible;
             visible->async_emit(this, data::object::MODIFIED_SIG);
         }
     }

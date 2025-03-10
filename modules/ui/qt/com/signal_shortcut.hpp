@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,30 +37,40 @@ namespace sight::module::ui::qt::com
  * @code{.xml}
    <service uid="..." impl="sight::module::ui::qt::com::signal_shortcut" >
         <properties enabled="false/true/${property_uid}"/>
-        <config shortcut="..." sid="..." />
+        <config shortcut="CTRL+F;d" sid="..." />
    </service>
    @endcode
  *
  * @subsection Configuration Configuration
- * - \b shortcut: associated shortcut
+ * - \b shortcut: comma or semi-colon separated list of shortcuts
  * - \b sid/wid (exclusive): id of the service/window associated to the gui container
  *   to which the shortcut will be associated
+ *
+ * @subsection Properties Properties
+ * - \b enabled: enables or disables the shortcut.
+ * - \b checked: initial value if you want to use this dual state.
  *
  * @section Signals Signals
  * - \b activated(): This signal is emitted when the shortcut is received.
  * - \b is_enabled(bool): This signal is emitted when the service change the enables state (current state is sent as a
  * boolean parameter)
  * - \b enabled(): This signal is emitted when the service is enabled.
- * - \b disabled(): This signal is emitted when the service is disabled.
+ * - \b disabled(): This signal is emitted when the service is disabled
+ * - \b is_checked(bool): Emitted when the state is checked or unchecked.
+ * - \b checked(): Emitted when the state is checked.
+ * - \b unchecked(): Emitted when the state is unchecked..
  *
  * @section Slots Slots
- * - \b set_enabled(bool): Sets whether the service emits "activated" when the key-sequence is triggerd
+ * - \b set_enabled(bool): Sets whether the service emits "activated" when the key-sequence is triggered
  * - \b set_disabled(bool): Opposite of set_enabled(bool).
  * - \b enable(): Make the service active.
- * - \b disable(): Make the service not inactive.
+ * - \b disable(): Make the service inactive.
+ * - \b set_checked(bool): sets whether the state is checked.
+ * - \b check(): check the state.
+ * - \b uncheck(): uncheck the state.
  */
-class signal_shortcut : public QObject,
-                        public service::base
+class signal_shortcut final : public QObject,
+                              public service::base
 {
 Q_OBJECT
 
@@ -74,6 +84,9 @@ public:
         static inline const core::com::signals::key_t IS_ENABLED = "is_enabled";
         static inline const core::com::signals::key_t ENABLED    = "enabled";
         static inline const core::com::signals::key_t DISABLED   = "disabled";
+        static inline const core::com::signals::key_t IS_CHECKED = "is_checked";
+        static inline const core::com::signals::key_t CHECKED    = "checked";
+        static inline const core::com::signals::key_t UNCHECKED  = "unchecked";
         static inline const core::com::signals::key_t ACTIVATED  = "activated";
     };
 
@@ -84,6 +97,10 @@ public:
         static inline const core::com::slots::key_t ENABLE        = "enable";
         static inline const core::com::slots::key_t DISABLE       = "disable";
         static inline const core::com::slots::key_t APPLY_ENABLED = "apply_enabled";
+        static inline const core::com::slots::key_t SET_CHECKED   = "set_checked";
+        static inline const core::com::slots::key_t CHECK         = "check";
+        static inline const core::com::slots::key_t UNCHECK       = "uncheck";
+        static inline const core::com::slots::key_t APPLY_CHECKED = "apply_checked";
     };
 
     SIGHT_DECLARE_SERVICE(signal_shortcut, service::base);
@@ -92,37 +109,40 @@ public:
     signal_shortcut() noexcept;
 
     /// Destructor. Do nothing.
-    ~signal_shortcut() noexcept override;
+    ~signal_shortcut() noexcept final = default;
 
     /// Enables or disables the shortcut service.
     void set_enabled(bool _enabled);
 
+    /// Checks or unchecks the shortcut service.
+    void set_checked(bool _checked);
+
 protected:
 
-    /** @name Service methods ( override from service::base )
+    /** @name Service methods ( final from service::base )
      * @{
      */
 
     /// This method configures the service
-    void configuring() override;
+    void configuring() final;
 
     /**
      * @brief This method enables the eventFilter
      */
-    void starting() override;
+    void starting() final;
 
     /**
      * @brief This method deletes the eventFilter
      */
-    void stopping() override;
+    void stopping() final;
 
     /**
      * @brief This method does nothing.
      */
-    void updating() override;
+    void updating() final;
 
     /// Connects the properties
-    service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const final;
 
 private Q_SLOTS:
 
@@ -130,7 +150,13 @@ private Q_SLOTS:
 
 private:
 
-    /// string containing the shortcut to trigger
+    /// Creates the shortcuts
+    void enable();
+
+    /// Destroys the shortcuts
+    void disable();
+
+    /// string containing the shortcut(s) to trigger, separated by , or ;
     std::string m_shortcut;
 
     /// Service id used to get the widget of the activity to set up a shortcut in
@@ -141,13 +167,16 @@ private:
     /// Either this member or m_sid has to be specified
     std::string m_wid;
 
-    /// Qt shortcut object
-    QShortcut* m_shortcut_object {nullptr};
+    /// Qt shortcut objects
+    std::vector<QPointer<QShortcut> > m_shortcut_objects;
 
     /// Enabled property
     /// True: the "activated" signal is triggered when key sequence is detected.
     /// False: the key sequence is ignored.
     sight::data::property<sight::data::boolean> m_enabled {this, "enabled", true};
+
+    /// Dual state, on/off
+    sight::data::property<sight::data::boolean> m_checked {this, "checked", false};
 };
 
 } // namespace sight::module::ui::qt::com

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "core/runtime/module.hpp"
+
 #include <service/base.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
@@ -34,7 +36,11 @@ namespace sight::module::ui::qt::ut
 class signal_shortcut_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(signal_shortcut_test);
-CPPUNIT_TEST(basic_test);
+CPPUNIT_TEST(single_shortcut_test);
+CPPUNIT_TEST(multiple_shortcuts_test);
+CPPUNIT_TEST(enable_disable_test);
+CPPUNIT_TEST(check_uncheck_test);
+CPPUNIT_TEST(two_instances_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,15 +49,23 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void basic_test();
+    void single_shortcut_test();
+    void multiple_shortcuts_test();
+    void enable_disable_test();
+    void check_uncheck_test();
+    void two_instances_test();
 
 private:
 
     /// The container service.
     sight::service::base::sptr m_container;
 
-    /// The child uuid to use to be added to the container.
-    std::string m_child_uuid;
+    // The worker for the test slots
+    sight::core::thread::worker::sptr m_worker;
+
+    /// The child uid to use to be added to the container.
+    std::string m_child_uid;
+    std::shared_ptr<sight::core::runtime::module> m_module;
 };
 
 } // namespace sight::module::ui::qt::ut
