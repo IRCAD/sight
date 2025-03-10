@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,8 @@
 
 #include <sight/core/config.hpp>
 
-#include <libxml/tree.h>
 #include <libxml/xmlschemastypes.h>
+#include <libxml/xmlversion.h>
 
 #include <filesystem>
 #include <sstream>
@@ -131,7 +131,14 @@ private:
     schema_sptr m_schema;
     schema_valid_ctxt_sptr m_schema_valid_context;
 
-    static void error_handler(void* _user_data, xmlErrorPtr _error);
+    static void error_handler(
+        void* _user_data,
+#if LIBXML_VERSION >= 21305
+        const xmlError * _error
+#else
+        xmlErrorPtr _error
+#endif
+    );
 };
 
 } // namespace sight::core::runtime::detail::io

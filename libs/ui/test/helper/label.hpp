@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -74,7 +74,7 @@ public:
         const selector& _label,
         double _expected,
         double _tolerance,
-        QRegExp _re = QRegExp("(.*)")
+        QRegularExpression _re = QRegularExpression("(.*)")
     );
 
     /**

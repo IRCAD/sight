@@ -29,7 +29,6 @@
 #include <ui/qt/container/widget.hpp>
 
 #include <QPdfWriter>
-#include <QtWidgets>
 
 namespace sight::module::io::document
 {

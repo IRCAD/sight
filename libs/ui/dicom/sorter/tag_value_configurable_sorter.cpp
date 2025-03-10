@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ui/dicom/sorter/tag_value_configurable_sorter.hpp"
 
-#include "ui/dicom/widget/qtag_selector_widget.hpp"
+#include "ui/dicom/widget/tag_selector_widget.hpp"
 
 #include <filter/dicom/registry/macros.hpp>
 
@@ -84,7 +84,7 @@ void tag_value_configurable_sorter::configure_with_gui()
 
     // Create tag selectors
     auto* tag_selector =
-        new ui::dicom::widget::q_tag_selector_widget();
+        new ui::dicom::widget::tag_selector_widget();
     tag_selector->set_tag_value(m_tag);
     main_layout->addWidget(tag_selector);
 

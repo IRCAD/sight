@@ -105,18 +105,13 @@ add_compile_definitions("$<$<CONFIG:MinSizeRel,Release,RelWithDebInfo>:NDEBUG>")
 
 # Add a global definition to silence a windows warning when using boost, saying _WIN32_WINNT is not defined.
 # Beware this must match the value used to compile BOOST, otherwise libraries that uses Boost::Log will NOT link.
-add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:WINVER=0x0601>")
-add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:_WIN32_WINNT=0x0601>")
-add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:BOOST_USE_WINAPI_VERSION=0x0601>")
+add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:_WIN32_WINNT=0x0A00>")
 
 # Avoid conflicts with std::min / std::max when including windows.h
 add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:NOMINMAX>")
 
 # Suppress MSVC specific warnings
 add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:_ENABLE_EXTENDED_ALIGNED_STORAGE>")
-
-# We need this because of OgreUTFString.h, which is removed in more recent Ogre versions
-add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:_SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING>")
 
 #
 # Options: Warnings
@@ -301,6 +296,10 @@ if(MSVC)
 
     # CMAKE_MSVC_DEBUG_INFORMATION_FORMAT doesn't always work
     replace_flags("/Z[iI]" "/Z7")
+
+    # Force source file encoding to UTF-8 to ignore changes from dependencies like Qt6, which may break PCH or CCache
+    add_compile_options("$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:C,CXX>>:/utf-8>")
+    add_compile_options("$<$<AND:$<CXX_COMPILER_ID:MSVC>,$<COMPILE_LANGUAGE:CUDA>>:-Xcompiler=-utf-8>")
 
     # On MSVC, we want different optimizations depending on the target
     # CMake does allow us to override CXX_FLAGS, so we reset them here and

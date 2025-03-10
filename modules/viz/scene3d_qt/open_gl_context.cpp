@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include <core/spy_log.hpp>
 
 #include <QOpenGLFunctions_4_1_Core>
+#include <QOpenGLVersionFunctionsFactory>
 
 namespace sight::module::viz::scene3d_qt
 {
@@ -58,9 +59,10 @@ QOpenGLContext* open_gl_context::create_ogre_gl_context(QOpenGLContext* const _s
     }
 
     const bool success = gl_context->create();
+
     SIGHT_FATAL_IF(
         "Did not manage to create an OpenGL 4.1 core context for ogre.",
-        !success || gl_context->versionFunctions<QOpenGLFunctions_4_1_Core>() == nullptr
+        !success || QOpenGLVersionFunctionsFactory::get<QOpenGLFunctions_4_1_Core>(gl_context) == nullptr
     );
 
     return gl_context;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,12 +26,9 @@
 
 #include <core/macros.hpp>
 
-#include <QCameraInfo>
-#include <QCameraViewfinderSettings>
 #include <QComboBox>
 #include <QDialog>
 #include <QListWidget>
-#include <QObject>
 
 namespace sight::data
 {

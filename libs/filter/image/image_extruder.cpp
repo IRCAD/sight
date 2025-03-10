@@ -28,9 +28,12 @@
 #include <geometry/data/matrix4.hpp>
 
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/intersect.hpp>
 #include <glm/matrix.hpp>
 #include <glm/vec2.hpp>
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/intersect.hpp>
+#undef GLM_ENABLE_EXPERIMENTAL
 
 #include <cmath>
 

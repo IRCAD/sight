@@ -12,17 +12,20 @@ cmake_policy(SET CMP0063 NEW)
 cmake_policy(SET CMP0057 NEW)
 # Use new policy to use CMAKE_CXX_STANDARD in try_compile() macro
 cmake_policy(SET CMP0067 NEW)
-# Use old policy for Documentation to add cache variables and find VTK documentation dependent packages.
-# (Needed for doxygen..)
-cmake_policy(SET CMP0106 OLD)
 # Use new policy for CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
 cmake_policy(SET CMP0141 NEW)
-# Use old policy for now because of openCV
-cmake_policy(SET CMP0146 OLD)
 
-if(${CMAKE_VERSION} VERSION_GREATER "3.25.0")
-    # Transform the ``DEPFILE`` after running the custom command for Ninja generator.
-    cmake_policy(SET CMP0116 OLD)
+if(${CMAKE_VERSION} VERSION_GREATER "3.31.0")
+    # Use new policy for removed FindBoost module
+    cmake_policy(SET CMP0167 NEW)
+    # Use new policy for empty string variable after a single-value keyword
+    cmake_policy(SET CMP0174 NEW)
+    # Use new policy for normalized install() DESTINATION paths
+    cmake_policy(SET CMP0177 NEW)
+else()
+    # Use old policy for Documentation to add cache variables and find VTK documentation dependent packages.
+    # (Needed for doxygen..)
+    cmake_policy(SET CMP0106 OLD)
 endif()
 
 # On Windows, if the user doesn't specify a value,
@@ -44,7 +47,7 @@ endif()
 
 project(
     sight
-    VERSION 24.0.0
+    VERSION 25.0.0
     DESCRIPTION "Surgical Image Guidance and Healthcare Toolkit"
     HOMEPAGE_URL "https://git.ircad.fr/sight/sight"
 )
@@ -69,8 +72,14 @@ include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modules)
 
+# We need to find Qt6 before ITK/VTK, otherwise they find Qt5 and CMake fails with a cryptic
+# "Targets not yet defined: Qt::XXXXPrivate", even if we don't use ITK-Qt or VTK-Qt extensions
+if(UNIX)
+    find_package(Qt6 CONFIG QUIET COMPONENTS Core Gui Widgets OpenGL)
+endif()
+
 # We find VTK to know its version so we can enable PCL or not
-find_package(VTK CONFIG QUIET REQUIRED)
+find_package(VTK CONFIG QUIET)
 
 ########################################################################################################################
 # User options
@@ -108,10 +117,6 @@ if(SIGHT_ENABLE_CLANG_TIDY)
     # Also generate compile_commands.json which is useful when launching clang-tidy by "hand"
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 endif()
-
-# QML_IMPORT_PATH allows qtCreator to find the qml modules created in our modules
-set(QML_IMPORT_PATH "" CACHE STRING "Path of the Qml modules." FORCE)
-mark_as_advanced(QML_IMPORT_PATH)
 
 if(CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE} CACHE STRING "List of supported configurations." FORCE)
@@ -210,14 +215,16 @@ sight_configure_pch()
 
 add_subdirectory(libs)
 add_subdirectory(modules)
-add_subdirectory(configs)
 add_subdirectory(activities)
+add_subdirectory(configs)
 add_subdirectory(utils)
 add_subdirectory(apps)
+
 if(SIGHT_BUILD_EXAMPLES)
     add_subdirectory(tutorials)
     add_subdirectory(examples)
 endif()
+
 add_subdirectory(3rd-party)
 
 ########################################################################################################################

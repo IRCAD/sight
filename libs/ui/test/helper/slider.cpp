@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -51,28 +51,6 @@ static std::string position_to_string(slider::position _pos)
 
 //------------------------------------------------------------------------------
 
-static QPoint position_of(slider::position _pos, const QWidget* _widget)
-{
-    switch(_pos)
-    {
-        case slider::position::top:
-            return tester::top_of(_widget);
-
-        case slider::position::right:
-            return tester::right_of(_widget);
-
-        case slider::position::bottom:
-            return tester::bottom_of(_widget);
-
-        case slider::position::left:
-            return tester::left_of(_widget);
-    }
-
-    return {};
-}
-
-//------------------------------------------------------------------------------
-
 static QSlider* take(tester& _tester, const selector& _slider)
 {
     _slider.select(_tester);
@@ -88,11 +66,15 @@ static QSlider* take(tester& _tester, const selector& _slider)
 
 static void move_impl(tester& _tester, const selector& _slider, slider::position _pos, int _times = 1)
 {
-    QSlider* s      = take(_tester, _slider);
-    QPoint position = position_of(_pos, s);
+    const QAbstractSlider::SliderAction action = _pos == slider::position::left || _pos == slider::position::top
+                                                 ? QAbstractSlider::SliderAction::SliderPageStepSub
+                                                 : QAbstractSlider::SliderAction::SliderPageStepAdd;
+
+    QSlider* const slider = take(_tester, _slider);
+
     for(int i = 0 ; i < _times ; i++)
     {
-        _tester.interact(std::make_unique<mouse_click>(Qt::LeftButton, Qt::NoModifier, position));
+        slider->triggerAction(action);
     }
 }
 

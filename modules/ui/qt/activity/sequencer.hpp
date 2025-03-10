@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,9 +28,8 @@
 
 #include <ui/__/editor.hpp>
 
-#include <QObject>
+#include <QButtonGroup>
 #include <QPointer>
-#include <QQuickWidget>
 
 namespace sight::module::ui::qt::activity
 {
@@ -77,13 +76,6 @@ namespace sight::module::ui::qt::activity
         <activity id="..." name="..." />
         <activity id="..." name="..." />
         <clearActivities>false</clearActivities>
-        <clear>#FFFFFF</clear>
-        <theme>#FF00FF</theme>
-        <accent>#FF00FF</accent>
-        <foreground>#FF00FF</foreground>
-        <background>#FF00FF</background>
-        <primary>#FF00FF</primary>
-        <elevation>#FF00FF</elevation>
         <buttonWidth>200</buttonWidth>
         <fontSize>12</fontSize>
     </service>
@@ -103,13 +95,6 @@ namespace sight::module::ui::qt::activity
  *          used
  * - \b clearActivities (optional, default: false): defines if the activities and their requirements should be removed
  * when going backward.
- * - \b theme (optional, light/dark): the global theme used by the sequencer.
- * - \b clear (optional): the color of the opengl background scene.
- * - \b accent (optional): the accent color used by the sequencer.
- * - \b foreground (optional): the foreground color used by the sequencer.
- * - \b background (optional): the background color used by the sequencer.
- * - \b primary (optional): the primary color used by the sequencer.
- * - \b elevation (optional): the elevation color used by the sequencer.
  * - \b buttonWidth (optional): the width of the buttons of the sequencer.
  * - \b fontSize (optional): the size of the font used in the buttons of the sequencer.
  *
@@ -237,7 +222,8 @@ private:
     /// List of the activities
     std::vector<std::string> m_activity_names;
 
-    QPointer<QQuickWidget> m_widget;
+    QPointer<QWidget> m_widget;
+    QPointer<QButtonGroup> m_button_group;
 
     /// Defines if the activities should be cleared when going backward
     bool m_clear_activities {false};
@@ -247,14 +233,6 @@ private:
     /// Configured warning message, if empty no warnings are displayed.
     std::string m_warning_message;
 
-    /// Colors used to customize sequencer
-    std::string m_theme;
-    std::string m_accent;
-    std::string m_clear;
-    std::string m_foreground;
-    std::string m_background;
-    std::string m_primary;
-    std::string m_elevation;
     std::string m_button_width {"200"};
     double m_font_size {12.0};
 

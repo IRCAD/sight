@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ui/qt/widget/slide_bar.hpp"
 
-#include "ui/qt/qt_main_frame.hpp"
+#include "ui/qt/main_frame.hpp"
 
 #include <core/spy_log.hpp>
 

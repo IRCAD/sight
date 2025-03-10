@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -119,7 +119,7 @@ void client_qt_test::tearDown()
     m_thread.disconnect();
     m_server.disconnect();
 
-    m_worker->post([]{return QCoreApplication::quit();});
+    m_worker->post([]{QCoreApplication::quit();});
     m_worker->get_future().wait();
     m_worker.reset();
 
@@ -194,16 +194,6 @@ void client_qt_test::post()
         {
             QTcpSocket* socket = m_server.nextPendingConnection();
             QByteArray data;
-            while(socket->isOpen() && socket->waitForReadyRead())
-            {
-                data += socket->readAll();
-
-                if(data.endsWith("\r\n\r\n"))
-                {
-                    break;
-                }
-            }
-
             while(socket->isOpen() && socket->waitForReadyRead())
             {
                 data += socket->readAll();

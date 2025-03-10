@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,11 +34,9 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QListWidget>
-#include <QObject>
 #include <QPointer>
 #include <QPushButton>
 #include <QShortcut>
-#include <QWidget>
 
 namespace sight::module::ui::dicom
 {

@@ -132,7 +132,7 @@ public:
             case QEvent::MouseMove:
                 if(auto* const mouse_event = dynamic_cast<QMouseEvent*>(_event); mouse_event != nullptr)
                 {
-                    if(forward_event(_target, _event, mouse_event->globalPos()))
+                    if(forward_event(_target, _event, mouse_event->globalPosition().toPoint()))
                     {
                         return true;
                     }
@@ -143,7 +143,7 @@ public:
             case QEvent::Wheel:
                 if(auto* const wheel_event = dynamic_cast<QWheelEvent*>(_event); wheel_event != nullptr)
                 {
-                    if(forward_event(_target, _event, wheel_event->globalPos()))
+                    if(forward_event(_target, _event, wheel_event->globalPosition().toPoint()))
                     {
                         return true;
                     }
@@ -158,7 +158,7 @@ public:
                 {
                     if(auto* const widget = dynamic_cast<QWidget*>(_target); widget != nullptr)
                     {
-                        if(forward_event(_target, _event, widget->mapToGlobal(hover_event->pos())))
+                        if(forward_event(_target, _event, widget->mapToGlobal(hover_event->position().toPoint())))
                         {
                             return true;
                         }

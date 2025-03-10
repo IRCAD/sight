@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,7 +116,7 @@ void model_series_list::starting()
 
     m_tree = new QTreeWidget();
 
-    m_tree->setColumnCount(m_headers.size());
+    m_tree->setColumnCount(static_cast<int>(m_headers.size()));
     m_tree->setHeaderLabels(m_headers);
 
     if(m_enable_hide_all)

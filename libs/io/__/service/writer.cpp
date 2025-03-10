@@ -339,7 +339,6 @@ void writer::update_base_folder(std::string& _out_base_folder) const
         // We need to check for potential updates to the base folder
         // In case the user updates an associated preference during runtime
         // We also re-read the xml configuration for file and folder if baseFolder was set
-
         sight::ui::preferences preferences;
 
         // We need to provide the separator, otherwise the 2-args method will be selected

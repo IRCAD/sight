@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -139,7 +139,7 @@ public:
     SIGHT_CORE_API virtual thread_id_t get_thread_id() const = 0;
 
     /// Sets the worker's name (useful for debugging).
-    SIGHT_CORE_API virtual void set_thread_name(const std::string& _thread_name) const = 0;
+    SIGHT_CORE_API virtual void set_thread_name(const std::string& _thread_name) = 0;
 
     /// Creates and returns a core::thread::timer running in this Worker
     SIGHT_CORE_API virtual SPTR(core::thread::timer) create_timer() = 0;

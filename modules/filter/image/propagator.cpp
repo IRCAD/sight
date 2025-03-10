@@ -116,8 +116,7 @@ void propagator::propagate()
                     point_list->get_points(),
                     [&](const auto& _x)
                 {
-                    const auto& pt     = _x->get_coord();
-                    const auto indices = geometry::data::world_to_image(*image_in, pt, true);
+                    const auto indices = geometry::data::world_to_image(*image_in, *_x, true);
 
                     if(indices[0] >= 0 && indices[0] < std::int64_t(sizes[0])
                        && indices[1] >= 0 && indices[1] < std::int64_t(sizes[1])

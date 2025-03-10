@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 
 #include <utest_data/data.hpp>
 
-#include <boost/compute/detail/sha1.hpp>
+#include <boost/uuid/detail/sha1.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -283,11 +283,18 @@ void reader_test::read_multiple_rescale_series_set_test()
     sha1.get_digest(digest);
 
     // Check digests
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 808070165U, digest[0]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 1419762457U, digest[1]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 664759744U, digest[2]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 4220766428U, digest[3]);
-    CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", 2226307254U, digest[4]);
+    boost::uuids::detail::sha1::digest_type expected_digest = {
+#if BOOST_VERSION >= 108600
+        48, 42, 44, 21, 84, 159, 219, 25, 39, 159, 109, 192, 251, 147, 200, 220, 132, 178, 192, 182
+#else
+        808070165U, 1419762457U, 664759744U, 4220766428U, 2226307254U
+#endif
+    };
+
+    for(std::size_t i = 0 ; i < sizeof(digest) / sizeof(*digest) ; ++i)
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Multiple rescale image hash comparison failed ", expected_digest[i], digest[i]);
+    }
 }
 
 //------------------------------------------------------------------------------

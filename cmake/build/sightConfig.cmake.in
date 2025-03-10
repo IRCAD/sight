@@ -3,6 +3,21 @@ cmake_minimum_required (VERSION 3.18)
 # Use new policy to use CMAKE_CXX_STANDARD in trysight_compile() macro
 cmake_policy(SET CMP0067 NEW)
 
+if(${CMAKE_VERSION} VERSION_GREATER "3.31.0")
+    # Use new policy for removed FindBoost module
+    cmake_policy(SET CMP0167 NEW)
+    # Use new policy for empty string variable after a single-value keyword
+    cmake_policy(SET CMP0174 NEW)
+    # Use new policy for normalized install() DESTINATION paths
+    cmake_policy(SET CMP0177 NEW)
+endif()
+
+# We need to find Qt6 before ITK/VTK, otherwise they find Qt5 and CMake fails with a cryptic
+# "Targets not yet defined: Qt::XXXXPrivate", even if we don't use ITK-Qt or VTK-Qt extensions
+if(UNIX)
+    find_package(Qt6 CONFIG QUIET COMPONENTS Core Gui Widgets OpenGL)
+endif()
+
 set(FW_BUILD_EXTERNAL 1)
 
 include(GNUInstallDirs)
@@ -37,7 +52,6 @@ if(NOT SIGHT_CONFIGURED)
             COPYONLY
         )
     endif()
-    
 
     set(FW_INSTALL_PATH_SUFFIX "${PROJECT_NAME}")
     set(FWCONFIG_PACKAGE_LOCATION lib/cmake/${PROJECT_NAME})

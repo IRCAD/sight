@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -1457,7 +1457,7 @@ void macro_saver::save()
                 interaction->how_to_find_receiver.pop_back();
             }
 
-            for(int i = interaction->how_to_find_receiver.size() - 1 ; i >= 0 ; i--)
+            for(auto i = interaction->how_to_find_receiver.size() - 1 ; i >= 0 ; i--)
             {
                 find_strategy strat = interaction->how_to_find_receiver[i];
                 if(strat.type == find_strategy_t::root)

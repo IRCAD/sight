@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,11 +31,12 @@
 #include <ui/qt/container/widget.hpp>
 
 #include <QApplication>
-#include <QDir>
-#include <QQmlContext>
-#include <QQmlEngine>
-#include <QQuickItem>
+#include <QFrame>
+#include <QPainter>
+#include <QPushButton>
 #include <QVBoxLayout>
+
+// cspell:ignore Roboto
 
 namespace sight::module::ui::qt::activity
 {
@@ -43,18 +44,90 @@ namespace sight::module::ui::qt::activity
 //------------------------------------------------------------------------------
 
 static const std::string CLEAR_ACTIVITIES_CONFIG = "clearActivities";
-static const std::string THEME_CONFIG            = "theme";
-static const std::string CLEAR_CONFIG            = "clear";
-static const std::string ACCENT_CONFIG           = "accent";
-static const std::string FOREGROUND_CONFIG       = "foreground";
-static const std::string BACKGROUND_CONFIG       = "background";
-static const std::string PRIMARY_CONFIG          = "primary";
-static const std::string ELEVATION_CONFIG        = "elevation";
 static const std::string BUTTON_WIDTH            = "buttonWidth";
 static const std::string FONT_SIZE               = "fontSize";
 static const std::string WARNING_MESSAGE         = "warning_message";
 
+class number_icon final : public QIcon
+{
+public:
+
+    explicit number_icon(int _number, const QColor& _background = Qt::white)
+    {
+        QPixmap pixmap(256, 256);
+        pixmap.fill(Qt::transparent);
+
+        QPainter painter(&pixmap);
+        painter.setRenderHint(QPainter::Antialiasing);
+
+        // Draw the white circle
+        painter.setBrush(_background);
+        painter.drawEllipse(0, 0, 255, 255);
+
+        // Draw the number
+        painter.setPen(Qt::transparent);
+        painter.setBrush(Qt::transparent);
+        painter.setCompositionMode(QPainter::CompositionMode_Clear);
+        painter.setBackgroundMode(Qt::TransparentMode);
+        painter.setFont(QFont("Roboto", 100, QFont::Bold));
+        painter.drawText(pixmap.rect(), Qt::AlignCenter, QString::number(_number));
+
+        painter.end();
+        this->addPixmap(pixmap, QIcon::Normal);
+    }
+};
+
+class sequencer_button final : public QPushButton
+{
+public:
+
+    explicit sequencer_button(const QString& _text, QWidget* _parent = nullptr) :
+        QPushButton(" " + _text, _parent)
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] QSize minimumSizeHint() const final
+    {
+        // This allows well painted rounded button
+        return QPushButton::minimumSizeHint().grownBy(QMargins(3, 0, 3, 0));
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] QSize sizeHint() const final
+    {
+        // This allows well painted rounded button
+        return QPushButton::sizeHint().grownBy(QMargins(3, 0, 3, 0));
+    }
+};
+
 //------------------------------------------------------------------------------
+
+inline static void set_button_enabled(
+    QButtonGroup* _button_group,
+    int _index,
+    bool _enabled,
+    std::optional<bool> _checked = std::nullopt
+)
+{
+    if(auto* const button = _button_group->button(_index); button != nullptr)
+    {
+        const auto& sibling = button->parentWidget()->findChildren<QWidget*>();
+        if(const auto spacer_index = sibling.indexOf(button) - 1; spacer_index >= 0)
+        {
+            sibling[spacer_index]->setEnabled(_enabled);
+        }
+
+        button->setEnabled(_enabled);
+
+        if(_checked.has_value())
+        {
+            button->setChecked(*_checked);
+        }
+    }
+}
 
 sequencer::sequencer() noexcept
 {
@@ -88,13 +161,6 @@ void sequencer::configuring()
 
     m_clear_activities = config.get<bool>(CLEAR_ACTIVITIES_CONFIG, m_clear_activities);
 
-    m_theme           = config.get<std::string>(THEME_CONFIG, m_theme);
-    m_clear           = config.get<std::string>(CLEAR_CONFIG, m_clear);
-    m_accent          = config.get<std::string>(ACCENT_CONFIG, m_accent);
-    m_foreground      = config.get<std::string>(FOREGROUND_CONFIG, m_foreground);
-    m_background      = config.get<std::string>(BACKGROUND_CONFIG, m_background);
-    m_primary         = config.get<std::string>(PRIMARY_CONFIG, m_primary);
-    m_elevation       = config.get<std::string>(ELEVATION_CONFIG, m_elevation);
     m_button_width    = config.get<std::string>(BUTTON_WIDTH, m_button_width);
     m_font_size       = config.get<double>(FONT_SIZE, m_font_size);
     m_warning_message = config.get<std::string>(WARNING_MESSAGE, m_warning_message);
@@ -108,103 +174,67 @@ void sequencer::starting()
 {
     this->sight::ui::service::create();
 
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
+    const auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(get_container());
 
-    auto* main_layout = new QVBoxLayout();
-    main_layout->setContentsMargins(0, 0, 0, 0);
+    m_widget = new QWidget();
+    m_widget->setObjectName(base_id() + "/sequencer");
+    m_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_widget->setProperty("class", "sequencer");
 
-    m_widget = new QQuickWidget();
-    main_layout->addWidget(m_widget);
+    auto* const widget_layout = new QHBoxLayout();
+    widget_layout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
 
-    const auto path =
-        core::runtime::get_module_resource_file_path("sight::module::ui::qt", "ActivitySequencer.qml");
-    QWidget* parent = qt_container->get_qt_container();
-    auto* engine    = m_widget->engine();
-    m_widget->setResizeMode(QQuickWidget::SizeRootObjectToView);
-
-    QColor clear;
-    if(m_clear.empty())
-    {
-        clear = parent->palette().color(QPalette::Window);
-
-        // styleSheet override QPalette
-        // we assume that styleSheet is the dark style
-        if(!qApp->styleSheet().isEmpty())
-        {
-            clear = QColor("#31363b");
-        }
-    }
-    else
-    {
-        clear = QColor(QString::fromStdString(m_clear));
-    }
-
-    m_widget->setClearColor(clear);
-    m_widget->setAttribute(Qt::WA_AlwaysStackOnTop);
-    QString theme = QString::fromStdString(m_theme);
-    if(theme.isEmpty())
-    {
-        theme = "light";
-
-        // styleSheet override QPalette
-        // we assume that styleSheet is the dark style
-        if(!qApp->styleSheet().isEmpty())
-        {
-            theme = "dark";
-        }
-    }
-
-    QStringList activities_name;
+    // Build buttons
+    m_button_group = new QButtonGroup(m_widget);
+    m_button_group->setExclusive(true);
 
     auto activity_reg = sight::activity::extension::activity::get_default();
-    for(std::size_t i = 0 ; i < m_activity_ids.size() ; ++i)
+    for(int i = 0, last = int(m_activity_ids.size()) - 1 ; i <= last ; ++i)
     {
-        std::string name = m_activity_names[i];
-        if(name.empty())
-        {
-            const auto info = activity_reg->get_info(m_activity_ids[i]);
-            name = info.title;
-        }
+        const auto button_label = QString::fromStdString(
+            m_activity_names[std::size_t(i)].empty()
+            ? activity_reg->get_info(m_activity_ids[std::size_t(i)]).title
+            : m_activity_names[std::size_t(i)]
+        );
 
-        activities_name.append(QString::fromStdString(name));
+        auto* const button = new sequencer_button(button_label, m_widget);
+        button->setObjectName(m_widget->objectName() + "/" + button_label + "_button");
+        button->setProperty("class", "sequencer_button");
+        button->setCheckable(true);
+        button->setEnabled(false);
+        button->setIcon(number_icon(i + 1));
+        button->setIconSize(QSize(32, 32));
+        widget_layout->addWidget(button);
+        m_button_group->addButton(button, i);
+
+        if(i != last)
+        {
+            auto* const sequencer_spacer = new QFrame(m_widget);
+            sequencer_spacer->setObjectName(m_widget->objectName() + "/" + button_label + "_spacer");
+            sequencer_spacer->setProperty("class", "sequencer_spacer");
+            sequencer_spacer->setFrameShape(QFrame::Shape::HLine);
+            sequencer_spacer->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Minimum);
+            sequencer_spacer->setEnabled(false);
+            widget_layout->addWidget(sequencer_spacer);
+        }
     }
 
-    engine->rootContext()->setContextProperty("activityNameList", activities_name);
-    engine->rootContext()->setContextProperty("widgetWidth", m_widget->width());
-    engine->rootContext()->setContextProperty(QString::fromStdString(THEME_CONFIG), theme);
-    engine->rootContext()->setContextProperty(
-        QString::fromStdString(ACCENT_CONFIG),
-        QString::fromStdString(m_accent)
-    );
-    engine->rootContext()->setContextProperty(
-        QString::fromStdString(FOREGROUND_CONFIG),
-        QString::fromStdString(m_foreground)
-    );
-    engine->rootContext()->setContextProperty(
-        QString::fromStdString(BACKGROUND_CONFIG),
-        QString::fromStdString(m_background)
-    );
-    engine->rootContext()->setContextProperty(
-        QString::fromStdString(PRIMARY_CONFIG),
-        QString::fromStdString(
-            m_primary
-        )
-    );
-    engine->rootContext()->setContextProperty(
-        QString::fromStdString(ELEVATION_CONFIG),
-        QString::fromStdString(m_elevation)
-    );
-    engine->rootContext()->setContextProperty(
-        QString::fromStdString(BUTTON_WIDTH),
-        QString::fromStdString(m_button_width)
-    );
-    engine->rootContext()->setContextProperty(QString::fromStdString(FONT_SIZE), m_font_size);
+    widget_layout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
+    m_widget->setLayout(widget_layout);
 
-    m_widget->setSource(QUrl::fromLocalFile(QString::fromStdString(path.string())));
+    QObject::connect(m_button_group, &QButtonGroup::idClicked, this, &sequencer::go_to);
 
-    QObject::connect(m_widget->rootObject(), SIGNAL(activitySelected(int)), this, SLOT(go_to(int)));
+    // Add the sequencer to the container
+    auto* main_layout = qt_container->get_qt_container()->layout();
 
-    qt_container->set_layout(main_layout);
+    if(main_layout == nullptr)
+    {
+        main_layout = new QVBoxLayout();
+        main_layout->setContentsMargins(0, 0, 0, 0);
+        qt_container->set_layout(main_layout);
+    }
+
+    main_layout->addWidget(m_widget);
 }
 
 //------------------------------------------------------------------------------
@@ -344,13 +374,8 @@ void sequencer::go_to(int _index)
         m_activity_created->async_emit(activity);
 
         m_current_activity = _index;
-        QObject* object = m_widget->rootObject();
 
-        ok = QMetaObject::invokeMethod(object, "setCurrentActivity", Q_ARG(QVariant, _index));
-        SIGHT_ASSERT("The slot `setCurrentActivity` was not found.", ok);
-
-        ok = QMetaObject::invokeMethod(object, "enableActivity", Q_ARG(QVariant, _index));
-        SIGHT_ASSERT("The slot `enableActivity` was not found.", ok);
+        set_button_enabled(m_button_group, _index, true, true);
     }
     else
     {
@@ -522,20 +547,14 @@ void sequencer::send_info() const
 
 void sequencer::enable_activity(int _index)
 {
-    QObject* object = m_widget->rootObject();
-
-    [[maybe_unused]] const bool ok = QMetaObject::invokeMethod(object, "enableActivity", Q_ARG(QVariant, _index));
-    SIGHT_ASSERT("The slot `enableActivity` was not found.", ok);
+    set_button_enabled(m_button_group, _index, true);
 }
 
 //------------------------------------------------------------------------------
 
 void sequencer::disable_activity(int _index)
 {
-    QObject* object = m_widget->rootObject();
-
-    [[maybe_unused]] const bool ok = QMetaObject::invokeMethod(object, "disableActivity", Q_ARG(QVariant, _index));
-    SIGHT_ASSERT("The slot `disableActivity` was not found.", ok);
+    set_button_enabled(m_button_group, _index, false);
 }
 
 //------------------------------------------------------------------------------

@@ -43,10 +43,10 @@ toolbox::~toolbox()
 
 toolbox::toolbox(QWidget* _parent, QColor _icon_color) :
     QFrame(_parent),
-    m_icon_color(std::move(_icon_color)),
+    m_icon_color(_icon_color),
     m_layout(new QFormLayout(this))
 {
-    this->m_layout->setMargin(0);
+    this->m_layout->setContentsMargins(0, 0, 0, 0);
     m_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     m_layout->setHorizontalSpacing(0);
     m_layout->setVerticalSpacing(1);
@@ -199,7 +199,7 @@ int toolbox::insert_item(int _index, QWidget* _widget, const QString& _text)
 
     c.sv = new QFrame(this);
     auto* vertical_layout = new QVBoxLayout(c.sv);
-    vertical_layout->setMargin(0);
+    vertical_layout->setContentsMargins(0, 0, 0, 0);
     vertical_layout->addWidget(_widget);
     c.sv->hide();
     c.sv->setProperty("class", "toolbox_frame");
@@ -209,7 +209,7 @@ int toolbox::insert_item(int _index, QWidget* _widget, const QString& _text)
 
     if(_index < 0 || _index >= this->m_page_list.count())
     {
-        _index = this->m_page_list.count();
+        _index = int(this->m_page_list.count());
         this->m_page_list.append(c);
         this->m_layout->addWidget(c.button);
         this->m_layout->addWidget(c.sv);
@@ -248,7 +248,7 @@ void toolbox::button_toggled(bool _checked)
 
 int toolbox::count() const
 {
-    return this->m_page_list.count();
+    return int(this->m_page_list.count());
 }
 
 //-----------------------------------------------------------------------------
@@ -257,7 +257,7 @@ void toolbox::relayout()
 {
     delete m_layout;
     m_layout = new QFormLayout(this);
-    m_layout->setMargin(0);
+    m_layout->setContentsMargins(0, 0, 0, 0);
     m_layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     m_layout->setHorizontalSpacing(0);
     m_layout->setVerticalSpacing(1);
@@ -315,7 +315,7 @@ QWidget* toolbox::widget(int _index) const
 int toolbox::index_of(QWidget* _widget) const
 {
     const widget::page* c = (_widget != nullptr ? this->page(_widget) : nullptr);
-    return c != nullptr ? this->m_page_list.indexOf(*c) : -1;
+    return c != nullptr ? int(this->m_page_list.indexOf(*c)) : -1;
 }
 
 //-----------------------------------------------------------------------------

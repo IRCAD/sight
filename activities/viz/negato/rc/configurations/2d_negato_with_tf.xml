@@ -8,7 +8,6 @@
         <param name="patient_name" default="" />
         <!-- axial, frontal, sagittal -->
         <param name="orientation" default="axial" />
-        <param name="CrossTypeChannel" default="crossTypeChannel" />
         <param name="PickingChannel" default="pickingChannel" />
     </parameters>
     <config>
@@ -134,10 +133,6 @@
         <connect>
             <signal>distanceNegatoEditor/distance_requested</signal>
             <slot>multiDistances/create_distance</slot>
-        </connect>
-
-        <connect channel="${CrossTypeChannel}">
-            <slot>MPRNegato/set_cross_scale</slot>
         </connect>
 
         <connect channel="${PickingChannel}">

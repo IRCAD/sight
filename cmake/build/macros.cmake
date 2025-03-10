@@ -1286,17 +1286,6 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
         # Add a fixup target for every app
         if(WIN32)
-
-            # Determine if we need to copy Qml plugins
-            find_target_dependencies(${APP} "${SIGHT_COMPONENTS};${SIGHT_IMPORTED_COMPONENTS}" DEPENDS_FOR_QML)
-            foreach(DEP ${DEPENDS_FOR_QML})
-                get_target_property(LINKED_DEPENDS ${DEP} LINK_LIBRARIES)
-                if("${DEP}" MATCHES "sight::module_ui_qt" OR "${LINKED_DEPENDS}" MATCHES "Qml")
-                    set(QML_SOURCE_DIR "${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>/qml")
-                    break()
-                endif()
-            endforeach()
-
             list(APPEND DEPENDS ${IMPORTED_DEPENDS})
             list(REMOVE_DUPLICATES DEPENDS)
             add_custom_target(
@@ -1304,8 +1293,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
                 ${CMAKE_COMMAND}
                 -DDEPENDS="${DEPENDS}"
                 -DBUILD_TYPE=${CMAKE_BUILD_TYPE}
-                -DQT_PLUGINS_SOURCE_DIR="${Qt5_DIR}/../../..$<$<CONFIG:Debug>:/debug>/plugins"
-                -DQML_SOURCE_DIR="${QML_SOURCE_DIR}"
+                -DQT_PLUGINS_SOURCE_DIR="${Qt6_DIR}/../..$<$<CONFIG:Debug>:/debug>/Qt6/plugins"
                 -DQT_DESTINATION="${CMAKE_INSTALL_BINDIR}/.."
                 -DOGRE_PLUGIN_DIR="${OGRE_PLUGIN_DIR}"
                 -DCMAKE_INSTALL_PREFIX="${CMAKE_INSTALL_PREFIX}"

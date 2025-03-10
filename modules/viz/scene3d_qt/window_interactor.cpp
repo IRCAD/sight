@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,6 @@
 #include <viz/scene3d/registry/macros.hpp>
 #include <viz/scene3d/render.hpp>
 
-#include <QDesktopWidget>
 #include <QEvent>
 #include <QGestureEvent>
 #include <QGuiApplication>
@@ -91,22 +90,15 @@ void window_interactor::create_container(
     SIGHT_ASSERT("Invalid parent.", _parent);
     m_parent_container = std::dynamic_pointer_cast<ui::qt::container::widget>(_parent);
 
-    auto* layout = new QVBoxLayout();
-    m_parent_container->set_layout(layout);
-    layout->setContentsMargins(0, 0, 0, 0);
-
     m_ogre_widget = new module::viz::scene3d_qt::window();
 
     m_ogre_widget->setObjectName(QString::fromStdString(_id));
 
-    layout->addWidget(m_ogre_widget);
     m_ogre_widget->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     m_ogre_widget->setMouseTracking(true);
 
     m_ogre_widget->grabGesture(Qt::PinchGesture); // For zooming
     m_ogre_widget->grabGesture(Qt::PanGesture);   // For translating
-
-    this->set_fullscreen(_fullscreen, -1);
 
     const auto render_service = std::dynamic_pointer_cast<sight::viz::scene3d::render>(m_render_service.lock());
     SIGHT_ASSERT("RenderService wrongly instantiated. ", render_service);
@@ -121,6 +113,17 @@ void window_interactor::create_container(
     {
         m_ogre_widget->register_layer(layer.second);
     }
+
+    auto* container = m_parent_container->get_qt_container();
+    if(container->layout() == nullptr)
+    {
+        auto* const layout = new QVBoxLayout();
+        layout->setContentsMargins(0, 0, 0, 0);
+        container->setLayout(layout);
+    }
+
+    // Also add to the layout if not in fullscreen mode
+    this->set_fullscreen(_fullscreen, -1);
 
     QShowEvent show_event;
     QCoreApplication::sendEvent(m_ogre_widget, &show_event);
@@ -214,32 +217,44 @@ void window_interactor::set_fullscreen(bool _fullscreen, int _screen_number)
         m_fullscreen_shortcut.clear();
     }
 
-    QWidget* const container = m_parent_container->get_qt_container();
+    auto* const container = m_parent_container->get_qt_container();
     m_is_full_screen = _fullscreen;
+
     if(_fullscreen)
     {
-        container->layout()->removeWidget(m_ogre_widget);
-
-        const QDesktopWidget* desktop = QApplication::desktop();
-
-        QRect screenres;
-        if(_screen_number < 0)
+        if(auto* const layout = container->layout(); layout != nullptr)
         {
-            _screen_number = desktop->screenNumber(container) + 1;
+            layout->removeWidget(m_ogre_widget);
         }
 
-        if(_screen_number >= QGuiApplication::screens().count())
+        const auto& screens = QGuiApplication::screens();
+
+        QRect screen_geometry;
+
+        if(_screen_number < 0)
         {
-            screenres = QGuiApplication::primaryScreen()->geometry();
+            if(const auto* const container_screen =
+                   QGuiApplication::screenAt(container->mapToGlobal(container->rect().center())); container_screen)
+            {
+                screen_geometry = container_screen->geometry();
+            }
+            else
+            {
+                screen_geometry = QGuiApplication::primaryScreen()->geometry();
+            }
+        }
+        else if(_screen_number < screens.count())
+        {
+            screen_geometry = screens[_screen_number]->geometry();
         }
         else
         {
-            screenres = QGuiApplication::screens()[_screen_number]->geometry();
+            screen_geometry = QGuiApplication::primaryScreen()->geometry();
         }
 
         m_ogre_widget->setParent(nullptr);
         m_ogre_widget->showFullScreen();
-        m_ogre_widget->setGeometry(screenres);
+        m_ogre_widget->setGeometry(screen_geometry);
 
         m_fullscreen_shortcut = new QShortcut(
             QKeySequence::FullScreen,
@@ -269,9 +284,9 @@ void window_interactor::set_fullscreen(bool _fullscreen, int _screen_number)
                 }
             });
     }
-    else if(container->layout()->isEmpty())
+    else if(auto* layout = container->layout(); layout != nullptr && layout->isEmpty())
     {
-        container->layout()->addWidget(m_ogre_widget);
+        layout->addWidget(m_ogre_widget);
     }
 }
 

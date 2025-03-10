@@ -1,1 +1,1 @@
-find_package(Qt5 QUIET COMPONENTS Widgets Test REQUIRED)
+find_package(Qt6 QUIET COMPONENTS Widgets Test REQUIRED)

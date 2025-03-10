@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ public:
 
     SIGHT_VIZ_SCENE2D_API void wheelEvent(QWheelEvent* _event) override;
 
-    SIGHT_VIZ_SCENE2D_API void enterEvent(QEvent* _event) override;
+    SIGHT_VIZ_SCENE2D_API void enterEvent(QEnterEvent* _event) override;
     SIGHT_VIZ_SCENE2D_API void leaveEvent(QEvent* _event) override;
 
     SIGHT_VIZ_SCENE2D_API QSize sizeHint() const override;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,14 +32,13 @@ namespace sight::ui::qt
 {
 
 /**
- * @brief   Gives access to the qml application part.
+ * @brief Allow to show an exit confirmation dialog.
  */
 class SIGHT_UI_QT_CLASS_API application : public ui::application
 {
 public:
 
-    ~application() override
-    = default;
+    ~application() override = default;
 
     /// Tells the application to exit with a returncode
     SIGHT_UI_QT_API void exit(int _return_code = 0, bool _async = true) override;

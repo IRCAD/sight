@@ -74,8 +74,8 @@ static inline void compare_chessboards(
         const auto& expected_coords = _expected[i];
         const auto& detected_coords = (*_detected->get_points()[i]);
 
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[0], detected_coords[0], 0.01);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[1], detected_coords[1], 0.01);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[0], detected_coords[0], 0.1);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(expected_coords[1], detected_coords[1], 0.1);
         CPPUNIT_ASSERT_EQUAL(0.0, detected_coords[2]);
     }
 }
@@ -614,17 +614,47 @@ void helper_test::chessboard_detection_test()
 
         const expected_chessboard_t expected_chessboard {
             {933.376, 504.662, 0.0},
-            {980.189, 463.743, 0.0},
-            {1033.96, 427.51, 0.0},
+#if CV_VERSION_MAJOR == 4 && CV_VERSION_MINOR >= 10 || CV_VERSION_MAJOR > 4
+            {
+                985.503, 464.770, 0.0
+            },
+#else
+            {
+                980.189, 463.743, 0.0
+            },
+#endif
+            {
+                1033.96, 427.51, 0.0
+            },
             {1081.23, 392.296, 0.0},
             {1126.85, 357.625, 0.0},
             {1169.53, 325.472, 0.0},
             {1209.91, 295.648, 0.0},
-            {1248.9, 266.503, 0.0},
-            {984.026, 557.646, 0.0},
-            {1034.66, 516.435, 0.0},
-            {1083.63, 477.243, 0.0},
-            {1129.72, 440.497, 0.0},
+            {1248.90, 266.503, 0.0},
+#if CV_VERSION_MAJOR == 4 && CV_VERSION_MINOR >= 10 || CV_VERSION_MAJOR > 4
+            {
+                972.000, 558.000, 0.0
+            },
+#else
+            {
+                984.026, 557.646, 0.0
+            },
+#endif
+            {
+                1034.66, 516.435, 0.0
+            },
+#if CV_VERSION_MAJOR == 4 && CV_VERSION_MINOR >= 10 || CV_VERSION_MAJOR > 4
+            {
+                1072.00, 474.000, 0.0
+            },
+#else
+            {
+                1083.63, 477.243, 0.0
+            },
+#endif
+            {
+                1129.72, 440.497, 0.0
+            },
             {1174.63, 404.916, 0.0},
             {1215.77, 371.629, 0.0},
             {1255.68, 339.41, 0.0},

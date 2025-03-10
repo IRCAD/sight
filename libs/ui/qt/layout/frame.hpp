@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ public:
 
     SIGHT_DECLARE_CLASS(frame, ui::layout::frame_manager, ui::factory::make<frame>)
 
-    SIGHT_UI_QT_API_QT ~frame() override;
+    SIGHT_UI_QT_API_QT ~frame() override = default;
 
     /**
      * @brief Instantiate frame.

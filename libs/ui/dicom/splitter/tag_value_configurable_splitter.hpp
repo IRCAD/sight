@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,8 +34,8 @@ namespace sight::ui::dicom::splitter
 /**
  * @brief filter that uses a tag to split the instances.
  */
-class SIGHT_UI_DICOM_CLASS_API tag_value_configurable_splitter : public sight::filter::dicom::splitter::
-                                                                 tag_value_splitter
+class SIGHT_UI_DICOM_CLASS_API tag_value_configurable_splitter :
+    public sight::filter::dicom::splitter::tag_value_splitter
 {
 public:
 

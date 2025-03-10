@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -130,14 +130,14 @@ void image_position_patient_splitter_test::negative_spacing_application()
     // which is the opposite on windows (???)... Assuming the Dicom is file based, the way the OS sorts files may
     // explain the different behaviors. We should investigate this ....
     // The test is written to assume the one of 304 elements is taken.
-    if(dicom_series->num_instances() != 304)
+    if(dicom_series->get_number_of_instances() != 304)
     {
         dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series_set->at(1));
         CPPUNIT_ASSERT(dicom_series);
     }
 
     // Just in case we load the wrong series or the data is corrupted.
-    CPPUNIT_ASSERT_EQUAL(std::size_t(304), dicom_series->num_instances());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(304), dicom_series->get_number_of_instances());
 
     std::vector<data::dicom_series::sptr> dicom_series_container;
     dicom_series_container.push_back(dicom_series);

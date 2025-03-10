@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ const QString SERIES_DATE("20171028");
 const QString SERIES_TIME("180156.734");
 const QString SERIES_DESCRIPTION("OS 0.5");
 const QString MODALITY("CT");
-const QString NUMBER_OF_SERIES_RELATED_INSTANCES(403);
+const QString NUMBER_OF_SERIES_RELATED_INSTANCES("403");
 const QString PATIENT_NAME("ANONYMIZED^ANONYMIZED");
 const QString PATIENT_ID("ANONYMIZED");
 const QString PATIENT_BIRTH_DATE("19000101");
@@ -97,39 +97,37 @@ void series_test::tearDown()
 
 void series_test::test_series()
 {
-    io::http::helper::series::DicomSeriesContainer series_vector =
-        io::http::helper::series::to_fw_med_data(m_json);
+    auto series_vector = io::http::helper::series::to_fw_med_data(m_json);
     CPPUNIT_ASSERT(series_vector.size() == 1);
     const auto& series = series_vector[0];
     CPPUNIT_ASSERT(series);
 
     data::dicom_series::sptr dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series);
     CPPUNIT_ASSERT(dicom_series);
-    CPPUNIT_ASSERT_EQUAL(dicom_series->get_series_instance_uid(), SERIES_INSTANCE_UID.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicom_series->get_series_date(), SERIES_DATE.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicom_series->get_series_time(), SERIES_TIME.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicom_series->get_series_description(), SERIES_DESCRIPTION.toStdString());
-    CPPUNIT_ASSERT_EQUAL(dicom_series->get_modality_string(), MODALITY.toStdString());
+    CPPUNIT_ASSERT_EQUAL(SERIES_INSTANCE_UID.toStdString(), dicom_series->get_series_instance_uid());
+    CPPUNIT_ASSERT_EQUAL(SERIES_DATE.toStdString(), dicom_series->get_series_date());
+    CPPUNIT_ASSERT_EQUAL(SERIES_TIME.toStdString(), dicom_series->get_series_time());
+    CPPUNIT_ASSERT_EQUAL(SERIES_DESCRIPTION.toStdString(), dicom_series->get_series_description());
+    CPPUNIT_ASSERT_EQUAL(MODALITY.toStdString(), dicom_series->get_modality_string());
     CPPUNIT_ASSERT_EQUAL(
-        dicom_series->num_instances(),
-        static_cast<std::size_t>(NUMBER_OF_SERIES_RELATED_INSTANCES.toULong())
+        std::size_t(NUMBER_OF_SERIES_RELATED_INSTANCES.toULongLong()),
+        dicom_series->get_number_of_instances()
     );
 
-    CPPUNIT_ASSERT_EQUAL(series->get_patient_name(), PATIENT_NAME.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->get_patient_id(), PATIENT_ID.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->get_patient_birth_date(), PATIENT_BIRTH_DATE.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->get_patient_sex(), PATIENT_SEX.toStdString());
+    CPPUNIT_ASSERT_EQUAL(PATIENT_NAME.toStdString(), series->get_patient_name());
+    CPPUNIT_ASSERT_EQUAL(PATIENT_ID.toStdString(), series->get_patient_id());
+    CPPUNIT_ASSERT_EQUAL(PATIENT_BIRTH_DATE.toStdString(), series->get_patient_birth_date());
+    CPPUNIT_ASSERT_EQUAL(PATIENT_SEX.toStdString(), series->get_patient_sex());
 
-    CPPUNIT_ASSERT_EQUAL(series->get_study_instance_uid(), STUDY_INSTANCE_UID.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->get_study_date(), STUDY_DATE.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->get_study_time(), STUDY_TIME.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->get_study_description(), STUDY_DESCRIPTION.toStdString());
-    CPPUNIT_ASSERT_EQUAL(series->get_patient_age(), PATIENT_AGE.toStdString());
+    CPPUNIT_ASSERT_EQUAL(STUDY_INSTANCE_UID.toStdString(), series->get_study_instance_uid());
+    CPPUNIT_ASSERT_EQUAL(STUDY_DATE.toStdString(), series->get_study_date());
+    CPPUNIT_ASSERT_EQUAL(STUDY_TIME.toStdString(), series->get_study_time());
+    CPPUNIT_ASSERT_EQUAL(STUDY_DESCRIPTION.toStdString(), series->get_study_description());
+    CPPUNIT_ASSERT_EQUAL(PATIENT_AGE.toStdString(), series->get_patient_age());
 
-    CPPUNIT_ASSERT_EQUAL(series->get_institution_name(), INSTITUTION_NAME.toStdString());
+    CPPUNIT_ASSERT_EQUAL(INSTITUTION_NAME.toStdString(), series->get_institution_name());
 
-    io::http::helper::series::InstanceUIDContainer instances =
-        io::http::helper::series::to_series_instance_uid_container(series_vector);
+    auto instances = io::http::helper::series::to_series_instance_uid_container(series_vector);
     CPPUNIT_ASSERT(instances.size() == 1);
 }
 

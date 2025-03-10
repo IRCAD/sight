@@ -1,13 +1,14 @@
 sight_add_target(io_http TYPE LIBRARY)
 
-find_package(Qt5 QUIET COMPONENTS Core Gui Network REQUIRED)
+find_package(Qt6 QUIET COMPONENTS Network REQUIRED)
+target_link_libraries(${SIGHT_TARGET} PUBLIC Qt6::Network)
+set_target_properties(${SIGHT_TARGET} PROPERTIES AUTOMOC TRUE)
+target_compile_definitions(${SIGHT_TARGET} PUBLIC "QT_NO_KEYWORDS")
+
 find_package(CURL QUIET REQUIRED)
+target_link_libraries(${SIGHT_TARGET} PRIVATE CURL::libcurl)
 
-target_link_libraries(io_http PUBLIC Qt5::Core Qt5::Gui Qt5::Network)
-set_target_properties(io_http PROPERTIES AUTOMOC TRUE)
-
-target_link_libraries(io_http PUBLIC core data ui ui_qt)
-target_link_libraries(io_http PRIVATE CURL::libcurl)
+target_link_libraries(${SIGHT_TARGET} PUBLIC core data ui)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/ut)

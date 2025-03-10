@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@
 #include <QPushButton>
 #include <QStandardItem>
 #include <QString>
-#include <QTextCodec>
+#include <QStringDecoder>
 #include <QTreeView>
 
 #include <regex>
@@ -111,7 +111,7 @@ inline static std::string format_date(const std::string& _date)
     return _date;
 }
 
-enum class when
+enum class when : std::uint8_t
 {
     study,
     series
@@ -120,33 +120,29 @@ enum class when
 struct column_display_information
 {
     std::string header;
-    std::function<QStandardItem* (data::series::csptr, when)> get_info;
+    std::function<QStandardItem* (data::series::csptr, QStringDecoder&, when)> get_info;
 };
 
 //------------------------------------------------------------------------------
 
-inline static QTextCodec* get_codec(data::series::csptr _series)
+inline static QStringDecoder get_decoder(data::series::csptr _series)
 {
-    QTextCodec* codec = QTextCodec::codecForName(_series->get_encoding().c_str());
-    if(codec == nullptr)
-    {
-        return QTextCodec::codecForName("UTF-8");
-    }
-
-    return codec;
+    return QStringDecoder(
+        QStringDecoder::encodingForName(_series->get_encoding().c_str()).value_or(QStringDecoder::Utf8)
+    );
 }
 
 /* *INDENT-OFF* */
 static const std::map<std::string, column_display_information> COLUMN_MAP {
     {"PatientName", {.header = "Name", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& _decoder, when _when)
         {
             if(_when == when::series)
             {
                 return new QStandardItem;
             }
 
-            QString res = get_codec(_series)->toUnicode(_series->get_patient_name().c_str());
+            QString res = _decoder(_series->get_patient_name().c_str());
             QString upper_patient_name = res.toUpper();
             if(upper_patient_name.isEmpty() || upper_patient_name.contains("ANONYMIZED") || upper_patient_name == "UNKNOWN"
                 || upper_patient_name.contains("ANONYMOUS") || upper_patient_name == "NONE" || upper_patient_name == "NA")
@@ -160,7 +156,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"SeriesInstanceUID", {.header = "Name", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             if(_when == when::study)
             {
@@ -178,11 +174,11 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"PatientName/SeriesInstanceUID", {.header = "Name", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& _decoder, when _when)
         {
             if(_when == when::study)
             {
-                QString res = get_codec(_series)->toUnicode(_series->get_patient_name().c_str());
+                QString res = _decoder(_series->get_patient_name().c_str());
                 QString upper_patient_name = res.toUpper();
                 if(upper_patient_name.isEmpty() || upper_patient_name.contains("ANONYMIZED") || upper_patient_name == "UNKNOWN"
                     || upper_patient_name.contains("ANONYMOUS") || upper_patient_name == "NONE" || upper_patient_name == "NA")
@@ -204,14 +200,14 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"PatientSex", {.header = "Sex", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(QString::fromStdString(_when == when::study ? _series->get_patient_sex() : ""));
         }
      }
     },
     {"PatientBirthDate", {.header = "Birthdate", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(
                 QString::fromStdString(_when == when::study ? format_date(_series->get_patient_birth_date()) : ""));
@@ -219,7 +215,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"Icon", {.header = "Icon", .get_info =
-        [](data::series::csptr /*series*/, when _when)
+        [](data::series::csptr /*series*/, QStringDecoder& /*_decoder*/, when _when)
         {
             if(_when == when::study)
             {
@@ -233,7 +229,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"PatientBirthDate/Icon", {.header = "Birthdate", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             if(_when == when::study)
             {
@@ -247,18 +243,18 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"Modality", {.header = "Modality", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(QString::fromStdString(_when == when::series ? _series->get_modality_string() : ""));
         }
      }
     },
     {"StudyDescription", {.header = "Description", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& _decoder, when _when)
         {
             if(_when == when::study)
             {
-                return new QStandardItem(get_codec(_series)->toUnicode(_series->get_study_description().c_str()));
+                return new QStandardItem(_decoder(_series->get_study_description().c_str()));
             }
 
             return new QStandardItem();
@@ -266,7 +262,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"SeriesDescription", {.header = "Description", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& _decoder, when _when)
         {
             if(_when == when::study)
             {
@@ -285,7 +281,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
             }
 
             QString full_description = QString::fromStdString(infos);
-            const auto& description = get_codec(_series)->toUnicode(_series->get_series_description().c_str());
+            QString description = _decoder(_series->get_series_description().c_str());
 
             if(!description.isEmpty())
             {
@@ -297,11 +293,11 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"StudyDescription/SeriesDescription", {.header = "Description", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& _decoder, when _when)
         {
             if(_when == when::study)
             {
-                return new QStandardItem(get_codec(_series)->toUnicode(_series->get_description().c_str()));
+                return new QStandardItem(_decoder(_series->get_description().c_str()));
             }
 
             std::string infos(_series->get_sop_class_name());
@@ -316,7 +312,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
             }
 
             QString full_description = QString::fromStdString(infos);
-            const auto& description = get_codec(_series)->toUnicode(_series->get_series_description().c_str());
+            QString description = _decoder(_series->get_series_description().c_str());
 
             if(!description.isEmpty())
             {
@@ -328,7 +324,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"StudyDate", {.header = "Date", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(
                 QString::fromStdString(_when == when::study ? format_date(_series->get_study_date()) : ""));
@@ -336,7 +332,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"SeriesDate", {.header = "Date", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(
                 QString::fromStdString(_when == when::series ? format_date(_series->get_series_date()) : ""));
@@ -344,7 +340,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"StudyDate/SeriesDate", {.header = "Date", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(QString::fromStdString(
                 format_date(_when == when::study ? _series->get_study_date() : _series->get_series_date())));
@@ -352,7 +348,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"StudyTime", {.header = "Time", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(
                 QString::fromStdString(_when == when::study ? format_time(_series->get_study_time()) : ""));
@@ -360,7 +356,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"SeriesTime", {.header = "Time", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(
                 QString::fromStdString(_when == when::series ? format_time(_series->get_series_time()) : ""));
@@ -368,7 +364,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"StudyTime/SeriesTime", {.header = "Time", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(QString::fromStdString(
                 format_time(_when == when::study ? _series->get_study_time() : _series->get_series_time())));
@@ -376,14 +372,14 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"PatientAge", {.header = "Patient age", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(QString::fromStdString(_when == when::study ? _series->get_patient_age() : ""));
         }
      }
     },
     {"BodyPartExamined", {.header = "Body part examined", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(QString::fromStdString(
                 _when == when::series && _series->get_dicom_type() == data::series::dicom_t::image
@@ -393,7 +389,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"PatientPositionString", {.header = "Patient position", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(QString::fromStdString(
                 _when == when::series && _series->get_dicom_type() == data::series::dicom_t::image
@@ -403,7 +399,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"ContrastBolusAgent", {.header = "Contrast agent", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(QString::fromStdString(
                 _when == when::series && _series->get_dicom_type() == data::series::dicom_t::image
@@ -413,7 +409,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"AcquisitionTime", {.header = "Acquisition time", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(QString::fromStdString(
                 _when == when::series && _series->get_dicom_type() == data::series::dicom_t::image
@@ -423,7 +419,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"ContrastBolusStartTime", {.header = "Contrast/bolus time", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(QString::fromStdString(
                 _when == when::series && _series->get_dicom_type() == data::series::dicom_t::image
@@ -433,7 +429,7 @@ static const std::map<std::string, column_display_information> COLUMN_MAP {
      }
     },
     {"PatientID", {.header = "Patient ID", .get_info =
-        [](data::series::csptr _series, when _when)
+        [](data::series::csptr _series, QStringDecoder& /*_decoder*/, when _when)
         {
             return new QStandardItem(QString::fromStdString(_when == when::study ? _series->get_patient_id() : ""));
         }
@@ -509,6 +505,7 @@ data::image::spacing_t round_spacing(const data::image::spacing_t& _spacing)
 
 void selector_model::add_series(data::series::sptr _series)
 {
+    auto decoder                   = get_decoder(_series);
     const auto study_instance_uid  = _series->get_study_instance_uid();
     auto itr                       = m_items.find(study_instance_uid);
     QStandardItem* study_root_item = nullptr;
@@ -525,7 +522,7 @@ void selector_model::add_series(data::series::sptr _series)
             setItem(
                 m_study_row_count,
                 static_cast<int>(i),
-                COLUMN_MAP.at(display_column).get_info(_series, when::study)
+                COLUMN_MAP.at(display_column).get_info(_series, decoder, when::study)
             );
             i++;
         }
@@ -568,7 +565,7 @@ void selector_model::add_series(data::series::sptr _series)
     std::size_t i              = 0;
     for(const std::string& display_column : m_display_columns)
     {
-        QStandardItem* item = COLUMN_MAP.at(display_column).get_info(_series, when::series);
+        QStandardItem* item = COLUMN_MAP.at(display_column).get_info(_series, decoder, when::series);
         study_root_item->setChild(nb_row, static_cast<int>(i), item);
         if(item->data(role::icon).toBool())
         {

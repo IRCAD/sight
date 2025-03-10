@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "ui/dicom/widget/qtag_selector_widget.hpp"
+#include "ui/dicom/widget/tag_selector_widget.hpp"
 
 #include <core/spy_log.hpp>
 
@@ -34,10 +34,10 @@ namespace sight::ui::dicom::widget
 
 //-----------------------------------------------------------------------------
 
-q_tag_selector_widget::q_tag_selector_widget(QWidget* _parent) :
+tag_selector_widget::tag_selector_widget(QWidget* _parent) :
     QWidget(_parent),
-    m_group_spin_box(new ui::dicom::widget::q_hex_spin_box()),
-    m_element_spin_box(new ui::dicom::widget::q_hex_spin_box())
+    m_group_spin_box(new ui::dicom::widget::hex_spin_box()),
+    m_element_spin_box(new ui::dicom::widget::hex_spin_box())
 {
     // Create main layout
     auto* main_layout = new QVBoxLayout();
@@ -71,7 +71,7 @@ q_tag_selector_widget::q_tag_selector_widget(QWidget* _parent) :
 
 //-----------------------------------------------------------------------------
 
-q_tag_selector_widget::~q_tag_selector_widget()
+tag_selector_widget::~tag_selector_widget()
 {
     // Disconnect signales/slots
     QObject::disconnect(m_group_spin_box, SIGNAL(valueChanged(int)), this, SLOT(update_tag_name(int)));
@@ -80,7 +80,7 @@ q_tag_selector_widget::~q_tag_selector_widget()
 
 //-----------------------------------------------------------------------------
 
-void q_tag_selector_widget::update_tag_name(int /*value*/)
+void tag_selector_widget::update_tag_name(int /*value*/)
 {
     DcmTag tag(Uint16(m_group_spin_box->value()), Uint16(m_element_spin_box->value()));
     std::string text = "<b>Tag name :</b> " + std::string(tag.getTagName());
@@ -89,7 +89,7 @@ void q_tag_selector_widget::update_tag_name(int /*value*/)
 
 //-----------------------------------------------------------------------------
 
-void q_tag_selector_widget::set_tag_value(const DcmTagKey& _tag)
+void tag_selector_widget::set_tag_value(const DcmTagKey& _tag)
 {
     m_group_spin_box->setValue(_tag.getGroup());
     m_element_spin_box->setValue(_tag.getElement());
@@ -98,7 +98,7 @@ void q_tag_selector_widget::set_tag_value(const DcmTagKey& _tag)
 
 //-----------------------------------------------------------------------------
 
-DcmTagKey q_tag_selector_widget::get_tag()
+DcmTagKey tag_selector_widget::get_tag()
 {
     return {Uint16(m_group_spin_box->value()), Uint16(m_element_spin_box->value())};
 }

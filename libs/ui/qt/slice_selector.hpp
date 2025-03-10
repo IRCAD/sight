@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,6 +37,7 @@
 #include <boost/function.hpp>
 
 #include <QColor>
+#include <QComboBox>
 #include <QObject>
 #include <QPointer>
 #include <QProxyStyle>
@@ -45,12 +46,6 @@
 #include <functional>
 #include <string>
 #include <variant>
-
-// Qt
-class QSlider;
-class QLineEdit;
-class QComboBox;
-class QStringList;
 
 namespace sight::ui::qt
 {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -74,21 +74,24 @@ void label::exactly_match(tester& _tester, const selector& _label, const std::st
 
 //------------------------------------------------------------------------------
 
-void label::equal(tester& _tester, const selector& _label, double _expected, double _tolerance, QRegExp _re)
+void label::equal(tester& _tester, const selector& _label, double _expected, double _tolerance, QRegularExpression _re)
 {
     auto bt = _tester.add_in_backtrace(
         "checking if '" + _label.get_description(_tester) + "' label is equal to "
         + std::to_string(_expected) + " (with " + std::to_string(_tolerance) + " tolerance)"
     );
+
     _label.select(_tester);
-    _tester.get<QLabel*>()->text().indexOf(_re);
+
+    const auto match  = _re.match(_tester.get<QLabel*>()->text());
+    const auto actual = match.captured(1);
+
     _tester.doubt<QLabel*>(
         "'" + _label.get_description(_tester) + "' label should be equal to '" + std::to_string(_expected)
-        + "' (current: " + _re.cap(1).toStdString() + ")",
-        [&_expected, &_tolerance, &_re](QLabel* _obj)
+        + "' (current: " + actual.toStdString() + ")",
+        [&_expected, &_tolerance, &actual](QLabel* /*_obj*/)
         {
-            _obj->text().indexOf(_re);
-            return std::abs(_re.cap(1).toDouble() - _expected) <= _tolerance;
+            return !actual.isEmpty() && std::abs(actual.toDouble() - _expected) <= _tolerance;
         });
 }
 

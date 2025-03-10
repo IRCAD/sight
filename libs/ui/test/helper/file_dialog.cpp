@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,9 @@ void file_dialog::fill(tester& _tester, const std::filesystem::path& _path)
     dialog::take<QFileDialog*>(_tester, "file window");
     const QPointer<QFileDialog> file_window = _tester.get<QFileDialog*>();
     helper::field::fill(_tester, selector::from_dialog("fileNameEdit"), _path.string());
+
     _tester.interact(std::make_unique<keyboard_click>(Qt::Key_Enter));
+
     _tester.doubt(
         "the file window is closed",
         [&file_window](QObject*)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,22 +20,17 @@
  *
  ***********************************************************************/
 
-//#include <ios_base.h> not necessary on win32
-#include <filesystem>
-#include <libxml/xmlversion.h>
-#ifndef LIBXML_SCHEMAS_ENABLED
-    #warning "Error libxml schemas disabled"
-#endif
-#include <libxml/tree.h>
-#include <libxml/parser.h>
-#include <libxml/xinclude.h>
-#include <libxml/xmlschemas.h>
-#include <libxml/xmlschemastypes.h>
+#include "validator.hpp"
 
 #include "core/runtime/runtime_exception.hpp"
-#include "core/runtime/detail/io/validator.hpp"
 
 #include <core/base.hpp>
+
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#include <libxml/xinclude.h>
+
+#include <filesystem>
 #include <utility>
 
 namespace sight::core::runtime::detail::io
@@ -201,7 +196,14 @@ bool validator::validate(xmlNodePtr _node)
 
 //------------------------------------------------------------------------------
 
-void validator::error_handler(void* _user_data, xmlErrorPtr _error)
+void validator::error_handler(
+    void* _user_data,
+#if LIBXML_VERSION >= 21305
+    const xmlError* _error
+#else
+    xmlErrorPtr _error
+#endif
+)
 {
     auto* validator = reinterpret_cast<class validator*>(_user_data);
 

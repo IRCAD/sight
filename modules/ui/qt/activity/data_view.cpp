@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -140,7 +140,7 @@ bool data_view::eventFilter(QObject* _obj, QEvent* _event)
         }
 
         // check if the limit number of data is exceeded
-        int nb_child = tree->topLevelItemCount() + item_list.size();
+        auto nb_child = tree->topLevelItemCount() + item_list.size();
         if(static_cast<unsigned int>(nb_child) > requirement.max_occurs)
         {
             QMessageBox::warning(

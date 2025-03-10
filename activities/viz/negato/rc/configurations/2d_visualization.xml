@@ -49,7 +49,6 @@
                 <key name="image" uid="${imageSeries}" />
             </inout>
             <parameter replace="WID_PARENT" by="view_negato1" />
-            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
             <parameter replace="PickingChannel" by="pickerChannel" />
             <parameter replace="orientation" by="axial" />
         </service>
@@ -60,7 +59,6 @@
                 <key name="image" uid="${imageSeries}" />
             </inout>
             <parameter replace="WID_PARENT" by="view_negato2" />
-            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
             <parameter replace="PickingChannel" by="pickerChannel" />
             <parameter replace="orientation" by="frontal" />
         </service>
@@ -71,7 +69,6 @@
                 <key name="image" uid="${imageSeries}" />
             </inout>
             <parameter replace="WID_PARENT" by="view_negato3" />
-            <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
             <parameter replace="PickingChannel" by="pickerChannel" />
             <parameter replace="orientation" by="sagittal" />
         </service>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -68,6 +68,7 @@ void writer_test::tearDown()
 
     // Clear the preferences
     ui::preferences::clear();
+
     // Disables the preferences
     sight::ui::preferences::set_enabled(false);
 }

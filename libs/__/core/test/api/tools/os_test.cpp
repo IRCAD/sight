@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ void os::get_shared_library_path()
     CPPUNIT_ASSERT_THROW(core::tools::os::get_shared_library_path("foo"), core::exception);
 
     // Test that a call with a not loaded library throws an error
-    CPPUNIT_ASSERT_THROW(core::tools::os::get_shared_library_path("Qt5Core"), core::exception);
+    CPPUNIT_ASSERT_THROW(core::tools::os::get_shared_library_path("Qt6Core"), core::exception);
 
     // Now load that library and check that we find it
     const auto boost_path = fs::canonical(fs::path(BOOST_LIB_DIR));
@@ -142,7 +142,7 @@ public:
         }
     }
 
-    std::filesystem::path m_to_be_cleaned {};
+    std::filesystem::path m_to_be_cleaned;
 };
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -210,7 +210,7 @@ void selector::starting()
 
     qt_container->set_layout(main_layout);
 
-    this->connect(m_button_group, SIGNAL(buttonClicked(int)), SLOT(on_clicked(int)));
+    QObject::connect(m_button_group, &QButtonGroup::idClicked, this, &selector::on_clicked);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -111,10 +111,10 @@ private:
         z = 2
     };
 
-    using image_3d_t     = itk::Image<PIX, 3>;
-    using image_2d_t     = itk::Image<float, 2>;
-    using image_3d_ptr_t = typename itk::Image<PIX, 3>::Pointer;
-    using image_2d_ptr_t = typename itk::Image<float, 2>::Pointer;
+    using image_3d_t     = itk::Image<PIX, 3u>;
+    using image_2d_t     = itk::Image<float, 2u>;
+    using image_3d_ptr_t = typename image_3d_t::Pointer;
+    using image_2d_ptr_t = typename image_2d_t::Pointer;
 
     using mip_filter_t         = itk::MaximumProjectionImageFilter<image_3d_t, image_2d_t>;
     using correlation_filter_t = itk::FFTNormalizedCorrelationImageFilter<image_2d_t, image_2d_t>;

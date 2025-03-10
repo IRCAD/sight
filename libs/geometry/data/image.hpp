@@ -29,7 +29,10 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/vec_swizzle.hpp>
+#undef GLM_ENABLE_EXPERIMENTAL
 
 namespace sight::geometry::data
 {

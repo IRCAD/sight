@@ -49,8 +49,9 @@ public:
     itkNewMacro(self_t)
 
     /** Run-time type information (and related methods). */
-    itkTypeMacro(inr_image_io, superclass_t) inr_image_io(const Self&) = delete; //purposely not implemented
-    void operator=(const Self&)                                        = delete; //purposely not implemented
+    itkTypeMacro(inr_image_io, superclass_t);
+    inr_image_io(const Self&)   = delete; //purposely not implemented
+    void operator=(const Self&) = delete; //purposely not implemented
 
     /*-------- This part of the interfaces deals with reading data. ----- */
 

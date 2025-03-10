@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,19 +20,40 @@
  *
  ***********************************************************************/
 
-#include "viz/qt3d/registry/detail.hpp"
+#pragma once
 
-#include <core/lazy_instantiator.hpp>
+#include <sight/ui/dicom/config.hpp>
 
-namespace sight::viz::qt3d::registry
+#include <QRegularExpressionValidator>
+#include <QSpinBox>
+
+namespace sight::ui::dicom::widget
 {
 
-struct render_qt3_d_registry_instantiator_tag {};
-
-SPTR(type) get()
+/**
+ * @brief QSpinBox for hexadecimal values
+ */
+class hex_spin_box : public QSpinBox
 {
-    using instantiator_t = core::lazy_instantiator<type, render_qt3_d_registry_instantiator_tag>;
-    return instantiator_t::get_instance();
-}
+Q_OBJECT;
 
-} // namespace sight::viz::qt3d::registry
+public:
+
+    /// Constructor
+    hex_spin_box(QWidget* _parent = nullptr);
+
+protected:
+
+    /// Override
+    QValidator::State validate(QString& _text, int& _pos) const override;
+
+    /// Override
+    [[nodiscard]] int valueFromText(const QString& _text) const override;
+
+    /// Override
+    [[nodiscard]] QString textFromValue(int _value) const override;
+
+    QRegularExpressionValidator* m_validator;
+};
+
+} // namespace sight::ui::dicom::widget

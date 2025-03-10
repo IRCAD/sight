@@ -21,10 +21,10 @@ add_dependencies(
     module_data
 )
 
-# Allow dark theme via module_ui_qt
+# Allow noctura theme via module_ui_qt
 module_param(
-    module_ui_qt PARAM_LIST resource stylesheet PARAM_VALUES sight::module::ui::qt/flatdark.rcc
-                                                             sight::module::ui::qt/flatdark.qss
+    module_ui_qt PARAM_LIST resource stylesheet touch_friendly PARAM_VALUES sight::module::ui::qt/noctura.rcc
+                                                                            sight::module::ui::qt/noctura.qss true
 )
 
 # Main application's configuration to launch

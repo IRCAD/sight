@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,7 @@ inline static void write(
     series::write(_archive, _tree, dicom_series, _children, _password);
 
     // Serialize other attributes
-    _tree.put(NUMBER_OF_INSTANCES, dicom_series->num_instances());
+    _tree.put(NUMBER_OF_INSTANCES, dicom_series->get_number_of_instances());
     _tree.put(FIRST_INSTANCE_NUMBER, dicom_series->get_first_instance_number());
 
     // sop_classUIDs

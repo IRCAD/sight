@@ -1,6 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
+ * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -21,31 +22,45 @@
 
 #pragma once
 
-#include <QGuiApplication>
+#include <sight/ui/qt/config.hpp>
 
-#include <array>
-#include <string>
+#include <QMainWindow>
 
-struct arg_v
+#include <functional>
+
+namespace sight::ui::qt
 {
-#ifdef WIN32
-    std::array<std::string, 1> m_argvs = {"test_application"};
-    std::array<char*, 2> m_argv        = {m_argvs[0].data(), nullptr};
-#else
-    std::array<std::string, 3> m_argvs = {"test_application", "-platform", "offscreen"};
-    std::array<char*, 4> m_argv        = {m_argvs[0].data(), m_argvs[1].data(), m_argvs[2].data(), nullptr};
-#endif
-    int m_argc {int(m_argvs.size())};
-};
 
-class test_application : private arg_v,
-                         public QGuiApplication
+/**
+ * @brief defines the Qt main frame.
+ *
+ */
+class SIGHT_UI_QT_CLASS_API_QT main_frame : public QMainWindow
 {
+Q_OBJECT
+
 public:
 
-    test_application() :
-        arg_v(),
-        QGuiApplication(m_argc, m_argv.data())
-    {
-    }
+    /**
+     * @brief Constructor.
+     */
+    SIGHT_UI_QT_API_QT main_frame() noexcept = default;
+
+    /// @brief Destructor.
+    SIGHT_UI_QT_API_QT ~main_frame() noexcept override = default;
+
+    using CloseCallback = std::function<void ()>;
+    SIGHT_UI_QT_API_QT void set_close_callback(CloseCallback _fct);
+
+protected:
+
+    void closeEvent(QCloseEvent* _event) override;
+
+    void showEvent(QShowEvent* _event) override;
+
+private:
+
+    CloseCallback m_fct_close_callback;
 };
+
+} // namespace sight::ui::qt

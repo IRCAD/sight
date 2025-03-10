@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,7 @@
 #include <boost/range/iterator_range_core.hpp>
 
 #include <QAction>
+#include <QActionGroup>
 #include <QMenu>
 #include <QPushButton>
 #include <QString>

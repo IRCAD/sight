@@ -7,6 +7,7 @@ find_library(JPEG_LIBRARY libjpeg)
 
 target_include_directories(io_itk SYSTEM PRIVATE ${ZLIB_INCLUDE_DIRS})
 target_link_libraries(io_itk PRIVATE ${ZLIB_LIBRARIES} ${JPEG_LIBRARY})
+
 # Since ITK is template-based, this makes sense to force the link for dependencies
 target_link_libraries(
     io_itk
@@ -15,7 +16,7 @@ target_link_libraries(
            ITKIOJPEG
            ITKMetaIO
            itksys
-           itkopenjpeg
+           ITKIOJPEG2000
            ITKIONIFTI
 )
 

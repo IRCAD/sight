@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,6 @@
 #include <QAction>
 #include <QApplication>
 #include <QColorDialog>
-#include <QDesktopWidget>
 #include <QGraphicsRectItem>
 #include <QMenu>
 #include <QTimer>
@@ -406,7 +405,7 @@ void transfer_function::create_tf_polygon(piece_view* const _piece_view)
             vec2d_t pt = this->map_adaptor_to_scene({f, color.a});
 
             QColor q_color;
-            q_color.setRgbF(color.r, color.g, color.b, 1.0);
+            q_color.setRgbF(float(color.r), float(color.g), float(color.b), 1.0F);
             QBrush brush = QBrush(q_color);
 
             auto* rect = new QGraphicsRectItem(pt.x, 0.0, step, pt.y);
@@ -1182,7 +1181,7 @@ void transfer_function::left_button_double_click_on_point_event(
 
         // Opens a QColorDialog with the selected circle color and the tf point alpha as default rgba color.
         old_color = _tf_point.second->brush().color();
-        old_color.setAlphaF(-_tf_point.first.y);
+        old_color.setAlphaF(float(-_tf_point.first.y));
     }
 
     QColor new_color = QColorDialog::getColor(

@@ -189,6 +189,133 @@ inline std::filesystem::path parse_path(
 
 //------------------------------------------------------------------------------
 
+inline gdcm::VR::VRType tag_to_vr(std::uint16_t _group, std::uint16_t _element)
+{
+    const auto& attribute = dicom::attribute::get(_group, _element);
+
+    switch(attribute.m_vr)
+    {
+        case dicom::attribute::VR::INVALID:
+            return gdcm::VR::INVALID;
+
+        case dicom::attribute::VR::AE:
+            return gdcm::VR::AE;
+
+        case dicom::attribute::VR::AS:
+            return gdcm::VR::AS;
+
+        case dicom::attribute::VR::AT:
+            return gdcm::VR::AT;
+
+        case dicom::attribute::VR::CS:
+            return gdcm::VR::CS;
+
+        case dicom::attribute::VR::DA:
+            return gdcm::VR::DA;
+
+        case dicom::attribute::VR::DS:
+            return gdcm::VR::DS;
+
+        case dicom::attribute::VR::DT:
+            return gdcm::VR::DT;
+
+        case dicom::attribute::VR::FD:
+            return gdcm::VR::FD;
+
+        case dicom::attribute::VR::FL:
+            return gdcm::VR::FL;
+
+        case dicom::attribute::VR::IS:
+            return gdcm::VR::IS;
+
+        case dicom::attribute::VR::LO:
+            return gdcm::VR::LO;
+
+        case dicom::attribute::VR::LT:
+            return gdcm::VR::LT;
+
+        case dicom::attribute::VR::OB:
+            return gdcm::VR::OB;
+
+        case dicom::attribute::VR::OB_OW:
+            return gdcm::VR::OB_OW;
+
+        case dicom::attribute::VR::OD:
+            return gdcm::VR::OD;
+
+        case dicom::attribute::VR::OF:
+            return gdcm::VR::OF;
+
+        case dicom::attribute::VR::OL:
+            return gdcm::VR::OL;
+
+        case dicom::attribute::VR::OV:
+            return gdcm::VR::OV;
+
+        case dicom::attribute::VR::OW:
+            return gdcm::VR::OW;
+
+        case dicom::attribute::VR::OW_US:
+            return gdcm::VR::US_OW;
+
+        case dicom::attribute::VR::PN:
+            return gdcm::VR::PN;
+
+        case dicom::attribute::VR::SH:
+            return gdcm::VR::SH;
+
+        case dicom::attribute::VR::SL:
+            return gdcm::VR::SL;
+
+        case dicom::attribute::VR::SQ:
+            return gdcm::VR::SQ;
+
+        case dicom::attribute::VR::SS:
+            return gdcm::VR::SS;
+
+        case dicom::attribute::VR::SS_US:
+            return gdcm::VR::US_SS;
+
+        case dicom::attribute::VR::ST:
+            return gdcm::VR::ST;
+
+        case dicom::attribute::VR::SV:
+            return gdcm::VR::SV;
+
+        case dicom::attribute::VR::TM:
+            return gdcm::VR::TM;
+
+        case dicom::attribute::VR::UC:
+            return gdcm::VR::UC;
+
+        case dicom::attribute::VR::UI:
+            return gdcm::VR::UI;
+
+        case dicom::attribute::VR::UL:
+            return gdcm::VR::UL;
+
+        case dicom::attribute::VR::UN:
+            return gdcm::VR::UN;
+
+        case dicom::attribute::VR::UR:
+            return gdcm::VR::UR;
+
+        case dicom::attribute::VR::US:
+            return gdcm::VR::US;
+
+        case dicom::attribute::VR::UT:
+            return gdcm::VR::UT;
+
+        case dicom::attribute::VR::UV:
+            return gdcm::VR::UV;
+
+        default:
+            return gdcm::VR::INVALID;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 [[maybe_unused]] inline bool is_orthogonal(const matrix4& _transform)
 {
     const glm::dvec3 x(_transform[0], _transform[4], _transform[8]);
@@ -896,8 +1023,9 @@ void series::set_byte_value(
 )
 {
     // Get the VR
+
     const gdcm::Tag tag(_group, _element);
-    const gdcm::VR vr(gdcm::GetVRFromTag(tag));
+    const gdcm::VR vr(tag_to_vr(_group, _element));
 
     // Get the padding char.
     const auto [size, fixed, padding] = detail::get_vr_format(vr);
@@ -947,7 +1075,7 @@ void series::set_string_value(
 {
     // Get the VR
     const gdcm::Tag tag(_group, _element);
-    const gdcm::VR vr(gdcm::GetVRFromTag(tag));
+    const gdcm::VR vr(tag_to_vr(_group, _element));
 
     // Nothing to do if the VR is an ASCII one
     if(gdcm::VR::IsASCII(vr))
@@ -1006,7 +1134,7 @@ std::string series::get_string_value(std::uint16_t _group, std::uint16_t _elemen
 {
     // Get the VR
     const gdcm::Tag tag(_group, _element);
-    const gdcm::VR vr(gdcm::GetVRFromTag(tag));
+    const gdcm::VR vr(tag_to_vr(_group, _element));
 
     // Nothing to do if the VR is an ASCII one
     if(gdcm::VR::IsASCII(vr))

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,14 @@
 #include <ui/__/preferences.hpp>
 
 #include <QCamera>
+#include <QCameraDevice>
+#include <QCameraFormat>
 #include <QHBoxLayout>
+#include <QImageCapture>
 #include <QLabel>
+#include <QMediaCaptureSession>
+#include <QMediaDevices>
 #include <QMessageBox>
-#include <QObject>
 #include <QPushButton>
 #include <QtMultimedia>
 #include <QVBoxLayout>
@@ -43,7 +47,8 @@
 #include <sstream>
 #include <unordered_map>
 
-Q_DECLARE_METATYPE(QCameraInfo)
+Q_DECLARE_METATYPE(QCameraDevice);
+Q_DECLARE_METATYPE(QCameraFormat);
 
 namespace sight::module::ui::qt::video
 {
@@ -66,16 +71,16 @@ camera_device_dlg::camera_device_dlg(std::string _xml_resolution_config) :
     selector_layout->addWidget(m_devices_combo_box);
 
     // Detect available devices.
-    const QList<QCameraInfo> devices = QCameraInfo::availableCameras();
+    const auto& devices = QMediaDevices::videoInputs();
 
-    std::map<std::string, QCameraInfo> name_to_uid;
+    std::map<std::string, QCameraDevice> name_to_uid;
     std::vector<std::string> name_list;
 
     //We should keep the same order as given by Qt, and uniquely identify cameras with the same name.
 
     // First run: collect all detected device names and UIDs
     std::size_t index = 0;
-    for(const QCameraInfo& cam_info : devices)
+    for(const auto& cam_info : devices)
     {
         //MacOs appends random number when cameras has same names, remove it to do it ourself.
         const std::string qt_cam_name = cam_info.description().toStdString();
@@ -146,12 +151,8 @@ bool camera_device_dlg::get_selected_camera(data::camera::sptr& _camera, std::st
     int index = m_devices_combo_box->currentIndex();
     if(index >= 0)
     {
-        auto cam_info = qvariant_cast<QCameraInfo>(m_devices_combo_box->itemData(index));
-        QCamera cam(cam_info);
-        cam.load();
-
-        QCameraImageCapture image_capture(&cam);
-        const QList<QSize> supported_resolutions = image_capture.supportedResolutions();
+        const auto cam_info              = qvariant_cast<QCameraDevice>(m_devices_combo_box->itemData(index));
+        const auto supported_resolutions = cam_info.photoResolutions();
 
         [[maybe_unused]] enum data::camera::pixel_format_t format = data::camera::pixel_format_t::invalid;
 
@@ -173,8 +174,8 @@ bool camera_device_dlg::get_selected_camera(data::camera::sptr& _camera, std::st
         if(((item != nullptr) && _resolution_xml_option == "preferences")
            || ((item != nullptr) && _resolution_xml_option == "prompt"))
         {
-            auto settings = qvariant_cast<QCameraViewfinderSettings>(item->data(Qt::UserRole));
-            _camera->set_maximum_frame_rate(static_cast<float>(settings.maximumFrameRate()));
+            const auto settings = qvariant_cast<QCameraFormat>(item->data(Qt::UserRole));
+            _camera->set_maximum_frame_rate(settings.maxFrameRate());
 
             if((_camera->get_width() != 0 || _camera->get_height() != 0)
                && !(_camera->get_width() == static_cast<size_t>(settings.resolution().width())
@@ -190,8 +191,9 @@ bool camera_device_dlg::get_selected_camera(data::camera::sptr& _camera, std::st
                 return false;
             }
 
-            _camera->set_width(static_cast<std::size_t>(settings.resolution().width()));
-            _camera->set_height(static_cast<std::size_t>(settings.resolution().height()));
+            const auto resolution = settings.resolution();
+            _camera->set_width(static_cast<std::size_t>(resolution.width()));
+            _camera->set_height(static_cast<std::size_t>(resolution.height()));
 
             pixel_format_translator_t::left_const_iterator iter;
             iter = pixel_format_translator.left.find(settings.pixelFormat());
@@ -258,7 +260,7 @@ bool camera_device_dlg::get_selected_camera(data::camera::sptr& _camera, std::st
         _camera->set_pixel_format(format);
 #endif
         _camera->set_camera_source(data::camera::device);
-        _camera->set_camera_id(cam_info.deviceName().toStdString());
+        _camera->set_camera_id(cam_info.id().toStdString());
         //Use our description.
         _camera->set_description(m_devices_combo_box->currentText().toStdString());
         return true;
@@ -274,56 +276,9 @@ void camera_device_dlg::on_select_device(int _index)
     m_cam_settings->clear();
     if(_index >= 0)
     {
-        auto cam_info = qvariant_cast<QCameraInfo>(m_devices_combo_box->itemData(_index));
-        auto* cam     = new QCamera(cam_info);
-        cam->load();
+        const auto& cam_info = qvariant_cast<QCameraDevice>(m_devices_combo_box->itemData(_index));
 
-#ifdef __linux__
-        //NOTE : Work around for the camera resolution settings on linux (maybe on OSX too)
-        auto* image_capture                         = new QCameraImageCapture(cam);
-        QList<QSize> res                            = image_capture->supportedResolutions();
-        QList<QVideoFrame::PixelFormat> pix_formats = image_capture->supportedBufferFormats();
-
-        for(const QSize& supported_size : res)
-        {
-            for(const QVideoFrame::PixelFormat& pix_format : pix_formats)
-            {
-                auto format = data::camera::pixel_format_t::invalid;
-
-                pixel_format_translator_t::left_const_iterator iter;
-                iter = pixel_format_translator.left.find(pix_format);
-
-                if(iter != pixel_format_translator.left.end())
-                {
-                    format = iter->second;
-                }
-                else
-                {
-                    SIGHT_ERROR("No compatible pixel format found");
-                }
-
-                //Create QCameraViewfinderSettings from the information of the QCameraImageCapture
-                QCameraViewfinderSettings settings;
-                //TODO : Can we get the maximum frameRate from an other way ?
-                settings.setMaximumFrameRate(30.0);
-                settings.setResolution(supported_size);
-                //FIXME : Setting the pixel format generate an error (gstreamer) (see getSelectedCamera method)
-                settings.setPixelFormat(pix_format);
-
-                std::stringstream stream;
-                stream << "[" << settings.resolution().width() << "X" << settings.resolution().height() << "]";
-                stream << "\t" << settings.maximumFrameRate() << " fps";
-                stream << "\tFormat:" << data::camera::get_pixel_format_name(format);
-                auto* item = new QListWidgetItem(QString::fromStdString(stream.str()));
-                item->setData(Qt::UserRole, QVariant::fromValue(settings));
-                m_cam_settings->addItem(item);
-            }
-        }
-
-        delete image_capture;
-#else
-        QList<QCameraViewfinderSettings> settingsList = cam->supportedViewfinderSettings();
-        for(const QCameraViewfinderSettings& settings : settingsList)
+        for(const auto& settings : cam_info.videoFormats())
         {
             auto format = data::camera::pixel_format_t::invalid;
 
@@ -341,17 +296,12 @@ void camera_device_dlg::on_select_device(int _index)
 
             std::stringstream stream;
             stream << "[" << settings.resolution().width() << "X" << settings.resolution().height() << "]";
-            stream << "\t" << settings.maximumFrameRate() << " fps";
+            stream << "\t" << settings.maxFrameRate() << " fps";
             stream << "\tFormat:" << data::camera::get_pixel_format_name(format);
-            QListWidgetItem* item = new QListWidgetItem(QString::fromStdString(stream.str()));
+            auto* item = new QListWidgetItem(QString::fromStdString(stream.str()));
             item->setData(Qt::UserRole, QVariant::fromValue(settings));
             m_cam_settings->addItem(item);
         }
-#endif //linux
-
-        cam->unload();
-
-        delete cam;
     }
 }
 
@@ -397,19 +347,16 @@ QSize camera_device_dlg::get_resolution(
                 const QSize res {xml_width, xml_height};
 
                 // find the resolution among the supportedResolutions list
-                int i = _supported_resolutions.indexOf(res);
-                if(i == -1)
-                {
-                    QMessageBox::critical(
-                        this,
-                        "Error",
-                        "The requested resolution is not supported."
-                    );
-                }
-                else
+                if(_supported_resolutions.indexOf(res) >= 0)
                 {
                     return res;
                 }
+
+                QMessageBox::critical(
+                    this,
+                    "Error",
+                    "The requested resolution is not supported."
+                );
             }
             else
             {
@@ -437,19 +384,16 @@ QSize camera_device_dlg::get_resolution(
             const QSize res {xml_width, xml_height};
 
             // find the resolution among the supportedResolutions list
-            int i = _supported_resolutions.indexOf(res);
-            if(i == -1)
-            {
-                QMessageBox::critical(
-                    this,
-                    "Error",
-                    "The requested resolution is not supported."
-                );
-            }
-            else
+            if(_supported_resolutions.indexOf(res) >= 0)
             {
                 return res;
             }
+
+            QMessageBox::critical(
+                this,
+                "Error",
+                "The requested resolution is not supported."
+            );
         }
         else
         {

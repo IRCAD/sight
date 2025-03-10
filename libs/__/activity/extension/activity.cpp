@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,9 +84,13 @@ activity_requirement::activity_requirement(const config_t& _config) :
     description(_config.get<std::string>("desc", "")),
     validator(_config.get<std::string>("validator", "")),
     min_occurs(_config.get<unsigned int>("<xmlattr>.minOccurs", 1)),
-    max_occurs(_config.get<unsigned int>("<xmlattr>.maxOccurs", 1)),
-    object_config(_config.get_child("config", config_t()))
+    max_occurs(_config.get<unsigned int>("<xmlattr>.maxOccurs", 1))
 {
+    if(const auto& optional = _config.get_child_optional("config"); optional)
+    {
+        object_config = *optional;
+    }
+
     for(const auto& v : boost::make_iterator_range(_config.equal_range("key")))
     {
         keys.emplace_back(v.second);

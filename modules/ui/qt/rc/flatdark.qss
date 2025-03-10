@@ -1465,17 +1465,38 @@ QProgressBar::chunk
   background: none;
 }
 
-.view_background 
+.view_background
 {
     background: #2E2F30;
 }
-.scene2d_render 
+.scene2d_render
 {
     background: #36393E
 }
 
-
 QPushButton.Bracket:disabled
 {
   background: none;
+}
+
+.sequencer_spacer[frameShape="4"]
+{
+    background: rgb(194, 198, 199);
+    min-height: 2px;
+    max-height: 2px;
+    min-width: 6px;
+    max-width: 100px;
+    border-radius: 4px;
+}
+
+.sequencer_spacer[frameShape="4"]:disabled
+{
+    background: rgb(69, 69, 69);
+}
+
+.sequencer_button
+{
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 18px
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,7 +98,7 @@ public:
      * @brief Gets the number of instances in the series.
      * @return The number of instances in the series.
      */
-    std::size_t num_instances() const
+    std::size_t get_number_of_instances() const
     {
         return m_number_of_instances;
     }

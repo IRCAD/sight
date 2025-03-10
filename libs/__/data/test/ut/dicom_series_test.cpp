@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,7 +69,7 @@ void dicom_series_test::dicom_test()
     const std::size_t nb_instances = 100;
     CPPUNIT_ASSERT(!m_series->is_instance_available(42));
     m_series->set_number_of_instances(nb_instances);
-    CPPUNIT_ASSERT_EQUAL(nb_instances, m_series->num_instances());
+    CPPUNIT_ASSERT_EQUAL(nb_instances, m_series->get_number_of_instances());
 
     //Paths
     m_series->add_dicom_path(42, tmp_file);
@@ -92,7 +92,7 @@ void dicom_series_test::equality_test()
 
     dicom_series1->set_number_of_instances(666);
     CPPUNIT_ASSERT(*dicom_series1 != *dicom_series2 && !(*dicom_series1 == *dicom_series2));
-    dicom_series2->set_number_of_instances(dicom_series1->num_instances());
+    dicom_series2->set_number_of_instances(dicom_series1->get_number_of_instances());
     CPPUNIT_ASSERT(*dicom_series1 == *dicom_series2 && !(*dicom_series1 != *dicom_series2));
 
     dicom_series1->set_sop_class_ui_ds({"1", "2", "3"});

@@ -492,7 +492,7 @@ QGroupBox
 {
     border: 2px solid #FFFFFF;
     border-radius: 4px;
-    margin-top: 1px;
+    margin-top: 15px;
 }
 
 QGroupBox::indicator
@@ -1155,15 +1155,15 @@ QTabBar::tab {
     padding: 9px;
     font-size: 13pt;
     border: 0;
-} 
+}
 
 QTabBar::tab:selected {
-    background: rgba(255, 255, 255, 10%); 
-    border: 1px solid rgba(55, 60, 91, 100%); 
+    background: rgba(255, 255, 255, 10%);
+    border: 1px solid rgba(55, 60, 91, 100%);
     border-bottom : 0px;
 }
 
-QTabWidget::pane { 
+QTabWidget::pane {
     background: rgba(255, 255, 255, 0%);
     border: 1px solid rgba(55, 60, 91, 100%);
 }
@@ -1381,6 +1381,37 @@ QProgressBar::chunk
     background: #303A65;
 }
 
+.sequencer_spacer[frameShape="4"]
+{
+    background: rgb(255,255,255);
+    min-height: 2px;
+    max-height: 2px;
+    min-width: 6px;
+    max-width: 100px;
+    border-radius: 4px;
+}
+
+.sequencer_spacer[frameShape="4"]:disabled
+{
+    background: rgb(86, 90, 94);
+}
+
+.sequencer_button
+{
+    border-radius: 24px;
+    font-size: 18pt;
+}
+
+.sequencer_button:checked
+{
+    border: 2px solid #FFFFFF;
+}
+
+.sequencer_button:hover
+{
+    background-color: #C0B3D8;
+}
+
 /************************************************************************/
 /************************** SActivityWizard *****************************/
 /************************************************************************/
@@ -1426,6 +1457,7 @@ QProgressBar::chunk
     background-color: #303A65;
     border-color: rgba(255, 255, 255, 30%);
 }
+
 .toolbox_frame
 {
     background-color: rgba(255, 255, 255, 10%);

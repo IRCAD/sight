@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,7 +34,7 @@ namespace sight::module::viz::scene3d_qt
 inline void init_resources()
 {
     static Ogre::RenderWindow* s_render_window {};
-    std::mutex s_mutex;
+    static std::mutex s_mutex;
 
     std::unique_lock lock(s_mutex);
     if(s_render_window == nullptr)

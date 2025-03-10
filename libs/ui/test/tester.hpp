@@ -551,7 +551,7 @@ public:
     /**
      * @brief Returns a dummy touch screen to emulate touch events
      */
-    static QTouchDevice* get_dummy_touch_screen();
+    static QPointingDevice* get_dummy_touch_screen();
 
     /// The default timeout as used in the methods @ref take, @ref doubt, @ref yields and @ref maybe_take
     static const int DEFAULT_TIMEOUT = 10000;
@@ -561,7 +561,7 @@ private:
     static SIGHT_UI_TEST_API void fail(const std::string& _message);
     std::string generate_failure_message();
 
-    static QVector<QVector<QVector<double> > > compute_histogram(const QImage& _img);
+    static void compute_histogram(const QImage& _img, std::map<std::uint32_t, std::uint64_t>& _histogram);
     static QImage normalize(QImage _img);
     static QImage voodooize(const QImage& _img);
     SIGHT_UI_TEST_API static bool wait_for_asynchronously(

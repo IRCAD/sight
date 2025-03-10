@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,6 +78,9 @@ public:
     /// Renders the frame as soon as possible.
     void request_render();
 
+    /// Without giving a minimum size, the scene might be rendered "black" in sight_viewever in Qt 6.4.x on Linux.
+    QSize minimumSizeHint() const override;
+
 Q_SIGNALS:
 
     /// Emits when the user interacts with the scene using the mouse and keyboard.
@@ -113,7 +116,7 @@ private:
     void leaveEvent(QEvent* _e) override;
 
     /// Manages mouse entering the widget
-    void enterEvent(QEvent* _e) override;
+    void enterEvent(QEnterEvent* _e) override;
 
     /// Manages gestures.
     void gesture_event(QGestureEvent* _e);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -151,18 +151,16 @@ QByteArray client_qt::post(request::sptr _request, const QByteArray& _body)
 
     QNetworkReply* reply = network_manager.post(qt_request, _body);
     QEventLoop loop;
-    QObject::connect(reply, SIGNAL(finished()), &loop, SLOT(quit()));
+    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     QObject::connect(
         reply,
-        QOverload<QNetworkReply::NetworkError>::of(
-            &QNetworkReply::errorOccurred
-        ),
+        &QNetworkReply::errorOccurred,
         this,
         &client_qt::process_error
     );
     loop.exec();
     QByteArray data = reply->readAll();
-    reply->deleteLater();
+    delete reply;
     return data;
 }
 
@@ -187,7 +185,7 @@ request::headers_t client_qt::head(request::sptr _request)
     const QUrl qt_url(QString::fromStdString(_request->get_url()));
     QNetworkRequest qt_request(qt_url);
 
-    this->compute_headers(qt_request, _request->get_headers());
+    client_qt::compute_headers(qt_request, _request->get_headers());
 
     QNetworkReply* reply = network_manager.head(qt_request);
     QEventLoop loop;

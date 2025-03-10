@@ -189,9 +189,9 @@ void query_editor::query_patient_name()
         const QByteArray& series_answer = m_client_qt.post(request, QJsonDocument(body).toJson());
         QJsonDocument json_response     = QJsonDocument::fromJson(series_answer);
         QJsonArray series_array         = json_response.array();
-        const int series_array_size     = series_array.count();
+        const auto series_array_size    = series_array.count();
 
-        for(int i = 0 ; i < series_array_size ; ++i)
+        for(auto i = 0 ; i < series_array_size ; ++i)
         {
             const std::string& series_uid = series_array.at(i).toString().toStdString();
             const std::string instances_list_url(pacs_server + "/series/" + series_uid);
@@ -265,9 +265,9 @@ void query_editor::query_study_date()
         }
         QJsonDocument json_response          = QJsonDocument::fromJson(studies_list_answer);
         const QJsonArray& studies_list_array = json_response.array();
-        const int studies_list_array_size    = studies_list_array.count();
+        const auto studies_list_array_size   = studies_list_array.count();
 
-        for(int i = 0 ; i < studies_list_array_size ; ++i)
+        for(auto i = 0 ; i < studies_list_array_size ; ++i)
         {
             const std::string& studies_uid = studies_list_array.at(i).toString().toStdString();
             const std::string studies_url(pacs_server + "/studies/" + studies_uid);
@@ -276,9 +276,9 @@ void query_editor::query_study_date()
             json_response = QJsonDocument::fromJson(studies_answer);
             const QJsonObject& json_obj    = json_response.object();
             const QJsonArray& series_array = json_obj["Series"].toArray();
-            const int series_array_size    = series_array.count();
+            const auto series_array_size   = series_array.count();
 
-            for(int j = 0 ; j < series_array_size ; ++j)
+            for(auto j = 0 ; j < series_array_size ; ++j)
             {
                 const std::string& series_uid = series_array.at(j).toString().toStdString();
                 const std::string instances_url(pacs_server + "/series/" + series_uid);

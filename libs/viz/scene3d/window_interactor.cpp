@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,16 +64,6 @@ window_interactor::sptr window_interactor::create_offscreen_manager(
     );
     return manager;
 }
-
-//-----------------------------------------------------------------------------
-
-window_interactor::window_interactor()
-= default;
-
-//-----------------------------------------------------------------------------
-
-window_interactor::~window_interactor()
-= default;
 
 //-----------------------------------------------------------------------------
 

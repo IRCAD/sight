@@ -1,15 +1,14 @@
 sight_add_target(module_io_dicomweb TYPE MODULE)
 
-find_package(Qt5 QUIET COMPONENTS Core Gui Network Widgets REQUIRED)
+find_package(Qt6 QUIET COMPONENTS Widgets REQUIRED)
+target_link_libraries(${SIGHT_TARGET} PUBLIC Qt6::Widgets)
+set_target_properties(${SIGHT_TARGET} PROPERTIES AUTOMOC TRUE)
+target_compile_definitions(${SIGHT_TARGET} PUBLIC "QT_NO_KEYWORDS")
 
-target_link_libraries(module_io_dicomweb PUBLIC Qt5::Core Qt5::Gui Qt5::Network Qt5::Widgets)
-
-set_target_properties(module_io_dicomweb PROPERTIES AUTOMOC TRUE)
-
-add_dependencies(module_io_dicomweb data module_service)
+add_dependencies(${SIGHT_TARGET} data module_service)
 
 target_link_libraries(
-    module_io_dicomweb
+    ${SIGHT_TARGET}
     PUBLIC core
            ui
            ui_qt

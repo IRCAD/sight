@@ -1,9 +1,10 @@
 sight_add_target(module_ui_qt_ut TYPE TEST)
 
-find_package(Qt5 QUIET COMPONENTS Core Gui Widgets Concurrent Svg Test REQUIRED)
-target_link_libraries(module_ui_qt_ut PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent Qt5::Svg Qt5::Test)
-set_target_properties(module_ui_qt_ut PROPERTIES AUTOMOC TRUE)
+find_package(Qt6 QUIET COMPONENTS Widgets SvgWidgets Test REQUIRED)
+target_link_libraries(${SIGHT_TARGET} PRIVATE Qt6::Widgets Qt6::SvgWidgets Qt6::Test)
+set_target_properties(${SIGHT_TARGET} PROPERTIES AUTOMOC TRUE)
+target_compile_definitions(${SIGHT_TARGET} PUBLIC "QT_NO_KEYWORDS")
 
-add_dependencies(module_ui_qt_ut module_service module_ui module_ui_qt module_app)
+add_dependencies(${SIGHT_TARGET} module_service module_ui module_ui_qt module_app)
 
-target_link_libraries(module_ui_qt_ut PUBLIC utest utest_data core data service ui_qt)
+target_link_libraries(${SIGHT_TARGET} PUBLIC utest utest_data core data service ui_qt)

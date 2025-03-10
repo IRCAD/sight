@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -309,12 +309,12 @@ void notification::update()
                 const QRect new_available(
                     0,
                     0,
-                    available.width() - int(button_size.width()),
+                    available.width() - button_size.width(),
                     available.height()
                 );
 
                 // Truncate
-                for(int step = truncated.length() / 2 ; step > 2 ; step = step / 2)
+                for(auto step = truncated.length() / 2 ; step > 2 ; step = step / 2)
                 {
                     // Truncate roughly
                     if(!check_message_length(metrics, new_available, truncated, true))
@@ -325,7 +325,7 @@ void notification::update()
                     // Refine
                     if(check_message_length(metrics, new_available, truncated, true))
                     {
-                        const int previous = truncated.length() + step;
+                        const auto previous = truncated.length() + step;
                         truncated = QString::fromStdString(m_notification.message);
                         truncated.truncate(previous);
                     }

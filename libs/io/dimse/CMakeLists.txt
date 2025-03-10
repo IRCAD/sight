@@ -9,16 +9,12 @@ endif()
 # original system dcmtk resources path
 set(STORESCP "/etc/dcmtk/storescp.cfg")
 
-# try various paths, depending of the package manager / platforms / ...
+# On windows, the path depends of the build type (and base dir is /etc/storescp.cfg)
 if(VCPKG_TARGET_TRIPLET)
-    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND (EXISTS "${DCMTK_DIR}/../../debug${STORESCP}"))
-        set(STORESCP "${DCMTK_DIR}/../../debug${STORESCP}")
-    elseif(EXISTS "${DCMTK_DIR}/..${STORESCP}")
-        set(STORESCP "${DCMTK_DIR}/..${STORESCP}")
-    elseif(EXISTS "${DCMTK_DIR}/../..${STORESCP}")
-        set(STORESCP "${DCMTK_DIR}/../..${STORESCP}")
-    elseif(EXISTS "${DCMTK_DIR}/../../..${STORESCP}")
-        set(STORESCP "${DCMTK_DIR}/../../..${STORESCP}")
+    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND (EXISTS "${DCMTK_DIR}/../../debug/etc/storescp.cfg"))
+        set(STORESCP "${DCMTK_DIR}/../../debug/etc/storescp.cfg")
+    elseif(EXISTS "${DCMTK_DIR}/../../etc/storescp.cfg")
+        set(STORESCP "${DCMTK_DIR}/../../etc/storescp.cfg")
     endif()
 endif()
 

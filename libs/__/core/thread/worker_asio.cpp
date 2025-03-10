@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,9 @@
 
 #include <core/time_stamp.hpp>
 
+#include <boost/asio.hpp>
 #include <boost/asio/deadline_timer.hpp>
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/io_context.hpp>
 #include <boost/asio/placeholders.hpp>
 #include <boost/bind.hpp>
 
@@ -35,43 +36,30 @@
 namespace sight::core::thread
 {
 
-//------------------------------------------------------------------------------
-
-std::size_t worker_thread(SPTR(boost::asio::io_service)_io_service)
-{
-    std::size_t res = _io_service->run();
-    return res;
-}
-
 /**
  * @brief Private implementation of core::thread::worker using boost::asio.
  */
-class worker_asio : public core::thread::worker
+class worker_asio final : public core::thread::worker
 {
 public:
 
-    using ioservice_type = boost::asio::io_service;
-    using work_type      = boost::asio::io_service::work;
-    using work_ptr_type  = std::shared_ptr<work_type>;
-    using thread_type    = std::thread;
-
     worker_asio();
 
-    ~worker_asio() override;
+    ~worker_asio() final;
 
-    void stop() override;
+    void stop() final;
 
-    void post(task_t _handler) override;
+    void post(task_t _handler) final;
 
-    [[nodiscard]] thread_id_t get_thread_id() const override;
+    [[nodiscard]] thread_id_t get_thread_id() const final;
 
-    void set_thread_name(const std::string& _thread_name) const override;
+    void set_thread_name(const std::string& _thread_name) final;
 
-    SPTR(core::thread::timer) create_timer() override;
+    SPTR(core::thread::timer) create_timer() final;
 
-    void process_tasks() override;
+    void process_tasks() final;
 
-    void process_tasks(period_t _maxtime) override;
+    void process_tasks(period_t _maxtime) final;
 
 protected:
 
@@ -83,17 +71,21 @@ protected:
 
 private:
 
-    /// Class provides functionality to manipulate asynchronous tasks.
-    SPTR(ioservice_type) m_io_service;
+    struct context
+    {
+        /// Class provides functionality to manipulate asynchronous tasks.
+        boost::asio::io_context m_io_context;
 
-    /// Class to inform the io_service when it has work to do.
-    work_ptr_type m_work;
+        /// Class to inform the io_context when it has work to do.
+        boost::asio::executor_work_guard<boost::asio::io_context::executor_type> m_work_guard {
+            m_io_context.get_executor()
+        };
 
-    /// Thread created and managed by the worker.
-    SPTR(thread_type) m_thread;
+        /// Thread created and managed by the worker.
+        std::thread m_thread;
+    };
 
-    /// To avoid race conditions when calling stop()
-    std::recursive_mutex m_stop_mutex;
+    std::shared_ptr<context> m_context {std::make_shared<context>()};
 };
 
 //------------------------------------------------------------------------------
@@ -101,7 +93,7 @@ private:
 /**
  * @brief Private Timer implementation using boost::asio.
  */
-class timer_asio : public core::thread::timer
+class timer_asio final : public core::thread::timer
 {
 public:
 
@@ -109,37 +101,37 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /**
-     * @brief Constructs a TimerAsio from given io_service.
+     * @brief Constructs a TimerAsio from given io_context.
      */
-    explicit timer_asio(boost::asio::io_service& _io_srv);
+    explicit timer_asio(boost::asio::io_context& _io_srv);
 
-    ~timer_asio() override;
+    ~timer_asio() final;
 
     /// Starts or restarts the timer.
-    void start() override;
+    void start() final;
 
     /// Stops the timer and cancel all pending operations.
-    void stop() override;
+    void stop() final;
 
     /// Sets time duration.
-    void set_duration(time_duration_t _duration) override;
+    void set_duration(time_duration_t _duration) final;
 
     /// Returns if the timer mode is 'one shot'.
-    bool is_one_shot() const override
+    bool is_one_shot() const final
     {
         core::mt::scoped_lock lock(m_mutex);
         return m_one_shot;
     }
 
     /// Sets timer mode.
-    void set_one_shot(bool _one_shot) override
+    void set_one_shot(bool _one_shot) final
     {
         core::mt::scoped_lock lock(m_mutex);
         m_one_shot = _one_shot;
     }
 
     /// Returns true if the timer is currently running.
-    bool is_running() const override
+    bool is_running() const final
     {
         core::mt::scoped_lock lock(m_mutex);
         return m_running;
@@ -177,30 +169,29 @@ private:
 
 // ---------- WorkerAsio private implementation ----------
 
-worker_asio::worker_asio() :
-    m_io_service(std::make_shared<ioservice_type>()),
-    m_work(std::make_shared<work_type>(*m_io_service))
+worker_asio::worker_asio()
 {
-    std::packaged_task<core::thread::worker::exit_return_type()> task([this](auto&& ...)
-            {
-                                                                      return worker_thread(m_io_service);
-            });
-    std::future<core::thread::worker::exit_return_type> future = task.get_future();
+    // Explicitly copy the shared context to keep it alive.
+    auto work =
+        [context = this->m_context](auto&& ...)
+        {
+            // run() is blocking while work_guard is alive.
+            return context->m_io_context.run();
+        };
 
-    m_thread = std::make_shared<thread_type>(std::move(task));
+    std::packaged_task<core::thread::worker::exit_return_type()> task(work);
 
-    m_future = std::move(future);
+    m_future            = task.get_future();
+    m_context->m_thread = std::thread(std::move(task));
 }
 
 //------------------------------------------------------------------------------
 
 worker_asio::~worker_asio()
 {
-    std::unique_lock<std::recursive_mutex> lock(m_stop_mutex);
-
     SIGHT_ASSERT(
         "Worker must be properly stopped. Try to call stop() from the caller thread before.",
-        !m_thread->joinable()
+        !m_context->m_thread.joinable()
     );
 }
 
@@ -208,52 +199,49 @@ worker_asio::~worker_asio()
 
 void worker_asio::stop()
 {
-    // stop() is also called in the destructor, so we need to put a critical section here
-    std::unique_lock<std::recursive_mutex> lock(m_stop_mutex);
-
-    SIGHT_ASSERT("Thread is not joinable", m_thread->joinable());
+    SIGHT_ASSERT("Thread is not joinable", m_context->m_thread.joinable());
     SIGHT_ASSERT(
         "Can not destroy a thread while running it. Try to call stop() from the caller thread before.",
-        m_thread->get_id() != core::thread::get_current_thread_id()
+        m_context->m_thread.get_id() != core::thread::get_current_thread_id()
     );
 
-    m_work.reset();
-    m_thread->join();
+    m_context->m_work_guard.reset();
+    m_context->m_thread.join();
 }
 
 //------------------------------------------------------------------------------
 
 SPTR(core::thread::timer) worker_asio::create_timer()
 {
-    return std::make_shared<timer_asio>(*m_io_service);
+    return std::make_shared<timer_asio>(m_context->m_io_context);
 }
 
 //------------------------------------------------------------------------------
 
 void worker_asio::post(task_t _handler)
 {
-    m_io_service->post(_handler);
+    boost::asio::post(m_context->m_io_context, _handler);
 }
 
 //------------------------------------------------------------------------------
 
 thread_id_t worker_asio::get_thread_id() const
 {
-    return m_thread->get_id();
+    return m_context->m_thread.get_id();
 }
 
 //------------------------------------------------------------------------------
 
-void worker_asio::set_thread_name(const std::string& _thread_name) const
+void worker_asio::set_thread_name(const std::string& _thread_name)
 {
-    core::thread::set_thread_name(_thread_name, m_thread->native_handle());
+    core::thread::set_thread_name(_thread_name, m_context->m_thread.native_handle());
 }
 
 //------------------------------------------------------------------------------
 
 void worker_asio::process_tasks()
 {
-    m_io_service->poll();
+    m_context->m_io_context.poll();
 }
 
 //------------------------------------------------------------------------------
@@ -265,7 +253,7 @@ void worker_asio::process_tasks(period_t _maxtime)
     time_stamp.modified();
     while(time_stamp.period_expired())
     {
-        m_io_service->poll_one();
+        m_context->m_io_context.poll_one();
     }
 }
 
@@ -277,14 +265,13 @@ SPTR(worker) worker::make()
 
 // ---------- Timer private implementation ----------
 
-timer_asio::timer_asio(boost::asio::io_service& _io_srv) :
+timer_asio::timer_asio(boost::asio::io_context& _io_srv) :
     m_timer(_io_srv),
     m_duration(std::chrono::seconds(1))
 {
 }
 
-timer_asio::~timer_asio()
-= default;
+timer_asio::~timer_asio() = default;
 
 //------------------------------------------------------------------------------
 

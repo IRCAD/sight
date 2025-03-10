@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -32,7 +32,24 @@ void field::fill(tester& _tester, const selector& _field, const std::string& _te
 {
     auto bt = _tester.add_in_backtrace("fill " + _field.get_description(_tester) + " field with '" + _text + "'");
     _field.select(_tester);
-    _tester.do_something<QLineEdit*>([&_text](QLineEdit* _obj){_obj->setText(QString::fromStdString(_text));});
+
+    _tester.do_something_asynchronously<QLineEdit*>(
+        [_text](QLineEdit* _obj)
+        {
+            _obj->setText(QString::fromStdString(_text));
+        });
+
+    _tester.doubt(
+        "the " + _field.get_description(_tester) + " field should not be empty.",
+        [_text](QObject* _obj)
+        {
+            if(auto* line_edit = dynamic_cast<QLineEdit*>(_obj); line_edit != nullptr)
+            {
+                return !line_edit->text().isEmpty();
+            }
+
+            return false;
+        });
 }
 
 } // namespace sight::ui::test::helper

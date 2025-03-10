@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -61,6 +61,9 @@ void test::open_file(
 
     // Fill the file dialog, tap PATH
     helper::file_dialog::fill(_tester, _path);
+
+    // Ensure the image loading is started, otherwise it will hang the test.
+    QTest::qWait(1000);
 
     if(_format == "DICOM" || _format == "Nifti or Inr images")
     {

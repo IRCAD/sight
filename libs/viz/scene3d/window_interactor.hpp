@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -142,10 +142,10 @@ public:
     );
 
     /// Constructor. Do nothing.
-    SIGHT_VIZ_SCENE3D_API window_interactor();
+    SIGHT_VIZ_SCENE3D_API window_interactor() = default;
 
     /// Destructor. Do nothing.
-    SIGHT_VIZ_SCENE3D_API ~window_interactor() override;
+    SIGHT_VIZ_SCENE3D_API ~window_interactor() override = default;
 
     /// Call Ogre Widget render immediately
     SIGHT_VIZ_SCENE3D_API virtual void render_now() = 0;

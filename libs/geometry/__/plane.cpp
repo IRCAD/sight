@@ -23,7 +23,10 @@
 
 #include <glm/ext.hpp>
 #include <glm/glm.hpp>
+
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/vec_swizzle.hpp>
+#undef GLM_ENABLE_EXPERIMENTAL
 
 constexpr double EPSILON = 0.00000001;
 

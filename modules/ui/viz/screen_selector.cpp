@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,6 @@
 #include <service/macros.hpp>
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QGuiApplication>
 #include <QInputDialog>
 #include <QPointer>
@@ -84,21 +83,25 @@ void screen_selector::updating()
     }
     else
     {
-        const QDesktopWidget* desktop = QApplication::desktop();
+        const auto& screens = QGuiApplication::screens();
 
-        screen_num = desktop->screenNumber(qApp->activeWindow());
-
-        if(m_mode == "neighbor")
+        if(const auto* const active_window = qApp->activeWindow(); active_window)
         {
-            screen_num++;
+            if(const auto* const window_screen =
+                   QGuiApplication::screenAt(active_window->mapToGlobal(active_window->rect().center())); window_screen)
+            {
+                screen_num = int(screens.indexOf(window_screen));
+
+                if(m_mode == "neighbor")
+                {
+                    ++screen_num;
+                }
+            }
         }
 
-        const auto screens = QGuiApplication::screens();
-        if(screen_num >= QGuiApplication::screens().count())
+        if(screen_num >= screens.count())
         {
-            QScreen* screen = QGuiApplication::primaryScreen();
-            auto it         = std::ranges::find(screens, screen);
-            screen_num = it - screens.begin();
+            screen_num = int(screens.indexOf(QGuiApplication::primaryScreen()));
         }
     }
 

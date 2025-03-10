@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ public:
      * @param _request the request
      * @return headers resulting of the request
      */
-    SIGHT_IO_HTTP_API request::headers_t head(request::sptr _request);
+    SIGHT_IO_HTTP_API static request::headers_t head(request::sptr _request);
 
     /**
      * @brief Performs POST request

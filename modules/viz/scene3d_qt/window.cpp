@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,6 +112,13 @@ void window::request_render()
     {
         update();
     }
+}
+
+//------------------------------------------------------------------------------
+
+QSize window::minimumSizeHint() const
+{
+    return QOpenGLWidget::minimumSizeHint().expandedTo(QSize(5, 5));
 }
 
 //------------------------------------------------------------------------------
@@ -295,14 +302,15 @@ window::interaction_info window::convert_mouse_event(
 
     const auto ratio = devicePixelRatioF();
     info.interaction_type = _interaction_type;
-    info.x                = static_cast<int>(_evt->x() * ratio);
-    info.y                = static_cast<int>(_evt->y() * ratio);
+    const auto position = _evt->position();
+    info.x = static_cast<int>(position.x() * ratio);
+    info.y = static_cast<int>(position.y() * ratio);
 
     if(m_last_mouse_position)
     {
         const auto& point = m_last_mouse_position.value();
-        info.dx = static_cast<int>((point.x() - _evt->x()) * ratio);
-        info.dy = static_cast<int>((point.y() - _evt->y()) * ratio);
+        info.dx = static_cast<int>((point.x() - position.x()) * ratio);
+        info.dy = static_cast<int>((point.y() - position.y()) * ratio);
     }
     else
     {
@@ -409,7 +417,7 @@ void window::leaveEvent(QEvent* /*_e*/)
 
 // ----------------------------------------------------------------------------
 
-void window::enterEvent(QEvent* /*_e*/)
+void window::enterEvent(QEnterEvent* /*_e*/)
 {
     sight::viz::scene3d::window_interactor::interaction_info info {};
     info.interaction_type = sight::viz::scene3d::window_interactor::interaction_info::enter;

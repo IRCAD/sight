@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,9 +40,11 @@
 #include <ui/qt/container/widget.hpp>
 
 #include <QByteArray>
+#include <QCameraDevice>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMediaDevices>
 #include <QMessageBox>
 #include <QPushButton>
 
@@ -136,7 +138,7 @@ void camera::starting()
     {
         auto path = core::runtime::get_module_resource_path("sight::module::ui::icons");
         // Add preference setting button
-        QPointer<QPushButton> set_pref_button = new QPushButton();
+        auto* set_pref_button = new QPushButton();
         set_pref_button->setProperty("class", "signal-button");
         set_pref_button->setIcon(QIcon(QString::fromStdString((path / "gear.svg").string())));
         set_pref_button->setToolTip("Set camera resolution preference");
@@ -280,31 +282,32 @@ void camera::on_choose_file()
                 const auto parent_dir = dir.parent_path();
                 const auto cur_dir    = *(--dir.end());
 
-                const auto find_valid_image_path = [&](std::set<std::string> _folders)
-                                                   {
-                                                       for(const auto& leaf_dir : _folders)
-                                                       {
-                                                           const auto dir = parent_dir / leaf_dir;
+                const auto find_valid_image_path =
+                    [&](std::set<std::string> _folders)
+                    {
+                        for(const auto& leaf_dir : _folders)
+                        {
+                            const auto dir = parent_dir / leaf_dir;
 
-                                                           if(std::filesystem::exists(dir))
-                                                           {
-                                                               std::filesystem::directory_iterator current_entry(dir);
-                                                               std::filesystem::directory_iterator end_entry;
-                                                               while(current_entry != end_entry)
-                                                               {
-                                                                   std::filesystem::path entry_path = *current_entry;
-                                                                   if(entry_path.has_stem())
-                                                                   {
-                                                                       return entry_path;
-                                                                   }
+                            if(std::filesystem::exists(dir))
+                            {
+                                std::filesystem::directory_iterator current_entry(dir);
+                                std::filesystem::directory_iterator end_entry;
+                                while(current_entry != end_entry)
+                                {
+                                    std::filesystem::path entry_path = *current_entry;
+                                    if(entry_path.has_stem())
+                                    {
+                                        return entry_path;
+                                    }
 
-                                                                   ++current_entry;
-                                                               }
-                                                           }
-                                                       }
+                                    ++current_entry;
+                                }
+                            }
+                        }
 
-                                                       return std::filesystem::path();
-                                                   };
+                        return std::filesystem::path();
+                    };
 
                 static const std::set<std::string> s_DEPTH_FOLDERS = {{"d", "D", "depth", "Depth", "DEPTH"}};
                 static const std::set<std::string> s_COLOR_FOLDERS = {{"c", "C", "color", "Color", "COLOR", "RGB"}};
@@ -434,7 +437,7 @@ void camera::on_choose_device()
     }
 
     std::vector<data::camera::sptr> cameras = this->get_cameras();
-    const QList<QCameraInfo> devices        = QCameraInfo::availableCameras();
+    const auto& devices                     = QMediaDevices::videoInputs();
     if(devices.isEmpty())
     {
         auto* error_message_box = new QMessageBox(

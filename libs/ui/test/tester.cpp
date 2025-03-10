@@ -25,6 +25,7 @@
 #include <core/os/temp_path.hpp>
 #include <core/spy_log.hpp>
 
+#include <ui/__/application.hpp>
 #include <ui/__/preferences.hpp>
 
 #include <boost/algorithm/string.hpp>
@@ -40,6 +41,7 @@
 #include <cmath>
 #include <iostream>
 #include <ranges>
+#include <set>
 
 namespace sight::ui::test
 {
@@ -369,44 +371,32 @@ void tester::start(std::function<void()> _f)
                     qDebug() << "Waiting up to " << DEFAULT_TIMEOUT << "ms for the main window to close";
                 }
 
-                // Flush the event queue, before closing the application and stopping the event loop
-                const bool stable = wait_for_asynchronously(
-                    []() -> bool
+                wait_for_asynchronously(
+                    [this]() -> bool
                 {
-                    qApp->processEvents();
-
-                    if(auto* event_dispatcher = QAbstractEventDispatcher::instance(); event_dispatcher != nullptr)
-                    {
-                        return !event_dispatcher->hasPendingEvents();
-                    }
+                    m_main_window->hide();
+                    qApp->closeAllWindows();
+                    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
 
                     return true;
                 },
                     DEFAULT_TIMEOUT
                 );
 
-                if(!stable && m_verbose_mode)
-                {
-                    qDebug() << "The event queue is not stable after the test";
-                }
-
-                // Close all windows
-                qApp->closeAllWindows();
-                qApp->processEvents();
+                // Exit the application with a return code, asynchronously
+                sight::ui::application::get()->exit(m_failed ? 1 : 0, true);
 
                 // Wait for the main window to close
-                bool closed = QTest::qWaitFor(
+                const bool closed = QTest::qWaitFor(
                     [this]() -> bool
                 {
-                    return m_main_window.isNull() || m_main_window->windowHandle() == nullptr;
+                    qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+
+                    return m_main_window.isNull() || m_main_window->windowHandle() == nullptr
+                           || !m_main_window->isVisible();
                 },
                     DEFAULT_TIMEOUT
                 );
-
-                if(m_failed || !closed)
-                {
-                    qApp->exit(1);
-                }
 
                 if(!closed)
                 {
@@ -490,7 +480,7 @@ void tester::should_be_present(
 
 bool tester::exists()
 {
-    return m_graphic_component != nullptr;
+    return !m_graphic_component.isNull();
 }
 
 //------------------------------------------------------------------------------
@@ -553,7 +543,7 @@ void tester::init()
 
 QWidget* tester::get_widget_from_action(QAction* _action)
 {
-    return _action != nullptr ? _action->associatedWidgets().last() : nullptr;
+    return _action != nullptr ? qobject_cast<QWidget*>(_action->associatedObjects().last()) : nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -711,22 +701,38 @@ double tester::compare_images_cosine(QImage _a, QImage _b, bool _strict)
 
 double tester::compare_images_histogram(const QImage& _x, const QImage& _y)
 {
-    const QVector<QVector<QVector<double> > > histogram_a = compute_histogram(_x);
-    const QVector<QVector<QVector<double> > > histogram_b = compute_histogram(_y);
-    double res                                            = 0;
-    for(int r = 0 ; r < 256 ; r++)
+    // Compute histograms
+    std::map<std::uint32_t, std::uint64_t> histogram_a;
+    std::map<std::uint32_t, std::uint64_t> histogram_b;
+
+    compute_histogram(_x, histogram_a);
+    compute_histogram(_y, histogram_b);
+
+    // Build color set
+    std::set<std::uint32_t> colors;
+
+    for(const auto& color : histogram_a)
     {
-        for(int g = 0 ; g < 256 ; g++)
-        {
-            for(int b = 0 ; b < 256 ; b++)
-            {
-                double addition = histogram_a[r][g][b] + histogram_b[r][g][b];
-                if(addition > 0)
-                {
-                    res += std::pow(histogram_a[r][g][b] - histogram_b[r][g][b], 2) / addition;
-                }
-            }
-        }
+        colors.insert(color.first);
+    }
+
+    for(const auto& color : histogram_b)
+    {
+        colors.insert(color.first);
+    }
+
+    // Compute histogram distance
+    double res = 0;
+
+    for(const auto& color : colors)
+    {
+        const auto color_a_found = histogram_a.find(color);
+        const auto color_b_found = histogram_b.find(color);
+
+        const auto color_a = color_a_found != histogram_a.end() ? color_a_found->second : 0;
+        const auto color_b = color_b_found != histogram_b.end() ? color_b_found->second : 0;
+
+        res += std::pow(color_a - color_b, 2);
     }
 
     return 1 - (res / 2);
@@ -787,7 +793,7 @@ void tester::fail(const std::string& _message)
 std::string tester::generate_failure_message()
 {
     std::string message;
-    if(m_graphic_component != nullptr)
+    if(!m_graphic_component.isNull())
     {
         message += "GIVEN: " + m_component_description + '\n';
     }
@@ -823,30 +829,20 @@ std::string tester::generate_failure_message()
 
 //------------------------------------------------------------------------------
 
-QVector<QVector<QVector<double> > > tester::compute_histogram(const QImage& _img)
+void tester::compute_histogram(const QImage& _img, std::map<std::uint32_t, std::uint64_t>& _histogram)
 {
-    QVector<QVector<QVector<double> > > histogram(256, QVector(256, QVector(256, 0.0)));
     for(int y = 0 ; y < _img.height() ; y++)
     {
         for(int x = 0 ; x < _img.width() ; x++)
         {
-            QColor color = _img.pixelColor(x, y);
-            histogram[color.red()][color.green()][color.blue()]++;
+            _histogram[_img.pixelColor(x, y).rgb()]++;
         }
     }
 
-    for(int r = 0 ; r < 256 ; r++)
+    for(auto& color : _histogram)
     {
-        for(int g = 0 ; g < 256 ; g++)
-        {
-            for(int b = 0 ; b < 256 ; b++)
-            {
-                histogram[r][g][b] /= _img.width() * _img.height();
-            }
-        }
+        color.second /= static_cast<uint64_t>(_img.width() * _img.height());
     }
-
-    return histogram;
 }
 
 //------------------------------------------------------------------------------
@@ -961,23 +957,59 @@ QImage tester::voodooize(const QImage& _img)
 bool tester::wait_for_asynchronously(std::function<bool()> _predicate, int _timeout)
 {
     return QTest::qWaitFor(
-        [_predicate]() -> bool
+        [_predicate, _timeout]() -> bool
         {
-            QMutex mutex;
-            mutex.lock(); // Lock the mutex by default
-            bool ok = false;
+            std::mutex mutex;
+            std::condition_variable condition_variable;
+
+            bool ready     = false;
+            bool processed = false;
+            bool result    = false;
+
             qApp->postEvent(
                 qApp,
                 new test_event(
-                    [&mutex, &ok, _predicate]
+                    [&mutex, &condition_variable, &ready, &result, &processed, _predicate, _timeout]
             {
-                ok = _predicate();
-                mutex.unlock(); // Unlock the mutex for the calling thread to be unlocked
+                // Wait until test thread is ready
+                std::unique_lock lock(mutex);
+
+                if(condition_variable.wait_for(lock, std::chrono::milliseconds(_timeout), [&ready]{return ready;}))
+                {
+                    // Execute the predicate
+                    result = _predicate();
+                }
+                else
+                {
+                    result = false;
+                }
+
+                // Send result to test thread
+                processed = true;
+
+                // Manual unlocking is done before notifying, to avoid waking up the waiting thread only to block again
+                lock.unlock();
+                condition_variable.notify_one();
             })
             );
-            mutex.lock();   // Wait for the main thread to execute the predicate
-            mutex.unlock(); // We must unlock it, as destroying a locked mutex is undefined behavior
-            return ok;
+
+            // Make the test event in the event loop ready
+            {
+                std::unique_lock lock(mutex);
+                ready = true;
+            }
+
+            condition_variable.notify_one();
+
+            // Wait for the event loop
+            std::unique_lock lock(mutex);
+
+            if(condition_variable.wait_for(lock, std::chrono::milliseconds(_timeout), [&processed]{return processed;}))
+            {
+                return result;
+            }
+
+            return false;
         },
         _timeout
     );
@@ -1027,15 +1059,9 @@ std::filesystem::path tester::get_image_output_path()
 
 //------------------------------------------------------------------------------
 
-QTouchDevice* tester::get_dummy_touch_screen()
+QPointingDevice* tester::get_dummy_touch_screen()
 {
-    static QTouchDevice* res = nullptr;
-    if(res == nullptr)
-    {
-        res = QTest::createTouchDevice();
-        res->setMaximumTouchPoints(2);
-    }
-
+    static QPointingDevice* res = QTest::createTouchDevice();
     return res;
 }
 

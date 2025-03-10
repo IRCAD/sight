@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -146,7 +146,7 @@ void histogram::updating()
         {
             // Update color with opacity
             QColor color = m_color.color();
-            color.setAlphaF(m_opacity);
+            color.setAlphaF(static_cast<float>(m_opacity));
             m_color.setColor(color);
 
             const double min      = m_histogram->min();

@@ -93,29 +93,47 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
 
     for(std::size_t idx = 0 ; const view_info& view_info : views)
     {
-        QWidget* inside_widget   = nullptr;
-        QScrollArea* scroll_area = nullptr;
+        // top_widget is the child container
+        QWidget* top_widget = nullptr;
+
+        // bottom_widget is widget added to parent container layout
+        QWidget* bottom_widget = nullptr;
 
         if(view_info.m_align == center)
         {
-            if(view_info.m_caption.first)
-            {
-                auto* groupbox = new QGroupBox(m_qt_window);
-                groupbox->setObjectName(q_id + '/' + view_info.m_caption.second.c_str());
-                groupbox->setTitle(QString::fromStdString(view_info.m_caption.second));
-                inside_widget = groupbox;
-            }
-            else
-            {
-                inside_widget = new QWidget(m_qt_window);
-                inside_widget->setObjectName(q_id + '/' + QString("%1").arg(idx));
-            }
-
-            QWidget* widget = inside_widget;
             SIGHT_ASSERT(
                 "multiple center views are not managed in Qt version of cardinal",
                 !has_central
             );
+
+            has_central = true;
+
+            top_widget = new QWidget(m_qt_window);
+            top_widget->setObjectName(q_id + '/' + QString("%1").arg(idx));
+            QWidget* mid_widget = top_widget;
+
+            if(view_info.m_caption.first)
+            {
+                auto* group_box = new QGroupBox(m_qt_window);
+                group_box->setObjectName(q_id + '/' + view_info.m_caption.second.c_str());
+                group_box->setTitle(QString::fromStdString(view_info.m_caption.second));
+
+                auto* group_box_layout = new QVBoxLayout(group_box);
+                group_box_layout->addWidget(top_widget);
+                group_box->setLayout(group_box_layout);
+                mid_widget = group_box;
+            }
+
+            bottom_widget = mid_widget;
+
+            if(view_info.m_use_scroll_bar)
+            {
+                auto* scroll_area = new QScrollArea(m_qt_window);
+                scroll_area->setWidget(mid_widget);
+                scroll_area->setWidgetResizable(true);
+
+                bottom_widget = scroll_area;
+            }
 
             if(!view_info.m_background_color.empty())
             {
@@ -127,72 +145,37 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
                 << static_cast<std::int16_t>(rgba[2]) << ','
                 << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
                 const QString style = QString::fromStdString(ss.str());
-                widget->setStyleSheet(style + qApp->styleSheet());
+                bottom_widget->setStyleSheet(style + qApp->styleSheet());
             }
 
             if(!view_info.m_qss_key.empty())
             {
-                widget->setProperty("class", QString::fromStdString(view_info.m_qss_key));
+                bottom_widget->setProperty("class", QString::fromStdString(view_info.m_qss_key));
             }
 
-            if(view_info.m_use_scroll_bar)
-            {
-                scroll_area = new QScrollArea(m_qt_window);
-                scroll_area->setWidget(widget);
-                scroll_area->setWidgetResizable(true);
-                if(!view_info.m_background_color.empty())
-                {
-                    std::array<std::uint8_t, 4> rgba {};
-                    data::tools::color::hexa_string_to_rgba(view_info.m_background_color, rgba);
-                    std::stringstream ss;
-                    ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
-                    << static_cast<std::int16_t>(rgba[1]) << ','
-                    << static_cast<std::int16_t>(rgba[2]) << ','
-                    << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
-                    const QString style = QString::fromStdString(ss.str());
-                    scroll_area->setStyleSheet(style + qApp->styleSheet());
-                }
+            bottom_widget->setMinimumSize(
+                std::max(view_info.m_min_size.first, 0),
+                std::max(view_info.m_min_size.second, 0)
+            );
 
-                scroll_area->setMinimumSize(
-                    std::max(view_info.m_min_size.first, 0),
-                    std::max(view_info.m_min_size.second, 0)
-                );
+            bottom_widget->setMaximumSize(
+                std::min(view_info.m_max_size.first, QWIDGETSIZE_MAX),
+                std::min(view_info.m_max_size.second, QWIDGETSIZE_MAX)
+            );
 
-                scroll_area->setMaximumSize(
-                    std::min(view_info.m_max_size.first, QWIDGETSIZE_MAX),
-                    std::min(view_info.m_max_size.second, QWIDGETSIZE_MAX)
-                );
+            m_qt_window->setCentralWidget(bottom_widget);
 
-                m_qt_window->setCentralWidget(scroll_area);
-            }
-            else
-            {
-                widget->setMinimumSize(
-                    std::max(view_info.m_min_size.first, 0),
-                    std::max(view_info.m_min_size.second, 0)
-                );
-
-                widget->setMaximumSize(
-                    std::min(view_info.m_max_size.first, QWIDGETSIZE_MAX),
-                    std::min(view_info.m_max_size.second, QWIDGETSIZE_MAX)
-                );
-
-                m_qt_window->setCentralWidget(widget);
-            }
-
-            inside_widget->setVisible(view_info.m_visible);
+            bottom_widget->setVisible(view_info.m_visible);
 
             if(!view_info.m_tool_tip.empty())
             {
-                inside_widget->setToolTip(QString::fromStdString(view_info.m_tool_tip));
+                top_widget->setToolTip(QString::fromStdString(view_info.m_tool_tip));
             }
-
-            has_central = true;
         }
         else
         {
             auto* dock_widget = new QDockWidget(m_qt_window);
-            inside_widget = new QWidget(dock_widget);
+            top_widget = new QWidget(dock_widget);
             QDockWidget::DockWidgetFeatures features;
 
             features = QDockWidget::DockWidgetMovable;
@@ -237,7 +220,7 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
                 // and QWidget::sizeHint() return -1 for widget without a layout...
                 auto* another_layout = new QHBoxLayout;
                 another_layout->setSpacing(0);
-                another_layout->setMargin(0);
+                another_layout->setContentsMargins(0, 0, 0, 0);
 
                 auto* widget = new QWidget;
                 widget->setObjectName(q_id + '/' + QString("%1").arg(idx));
@@ -257,8 +240,8 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
 
             if(view_info.m_use_scroll_bar)
             {
-                scroll_area = new QScrollArea(dock_child);
-                scroll_area->setWidget(inside_widget);
+                auto* scroll_area = new QScrollArea(dock_child);
+                scroll_area->setWidget(top_widget);
                 scroll_area->setWidgetResizable(true);
                 if(view_info.m_background_color != "default")
                 {
@@ -272,7 +255,7 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
             }
             else
             {
-                dock_child_layout->addWidget(inside_widget);
+                dock_child_layout->addWidget(top_widget);
             }
 
             dock_child->setMinimumSize(
@@ -327,7 +310,7 @@ void cardinal::create_layout(ui::container::widget::sptr _parent, const std::str
         // - viewInfo.m_visible
 
         ui::qt::container::widget::sptr sub_container = ui::qt::container::widget::make();
-        sub_container->set_qt_container(inside_widget);
+        sub_container->set_qt_container(top_widget, bottom_widget);
         m_sub_views.push_back(sub_container);
     }
 

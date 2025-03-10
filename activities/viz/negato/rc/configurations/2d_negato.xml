@@ -7,7 +7,6 @@
         <param name="patient_name" default="" />
         <!-- axial, frontal, sagittal -->
         <param name="orientation" default="axial" />
-        <param name="CrossTypeChannel" default="crossTypeChannel" />
         <param name="PickingChannel" default="pickingChannel" />
     </parameters>
     <config>
@@ -147,10 +146,6 @@
             <dialog policy="always" />
             <backends enable="all" mode="best" />
         </service>
-
-        <connect channel="${CrossTypeChannel}">
-            <slot>MPRNegato/set_cross_scale</slot>
-        </connect>
 
         <connect channel="${PickingChannel}">
             <signal>pickerInteractorAdp/picked</signal>

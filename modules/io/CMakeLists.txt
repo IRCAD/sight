@@ -14,7 +14,3 @@ add_subdirectory(zip)
 if(SIGHT_ENABLE_REALSENSE)
     add_subdirectory(realsense)
 endif()
-
-if(${VTK_MAJOR_VERSION} VERSION_LESS "8")
-    add_subdirectory(pcl)
-endif()

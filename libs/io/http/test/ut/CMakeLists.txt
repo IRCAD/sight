@@ -1,7 +1,8 @@
 sight_add_target(io_http_ut TYPE TEST)
 
-find_package(Qt5 QUIET COMPONENTS Core Gui Network REQUIRED)
-target_link_libraries(io_http_ut PUBLIC Qt5::Core Qt5::Gui Qt5::Network)
-set_target_properties(io_http_ut PROPERTIES AUTOMOC TRUE)
+find_package(Qt6 QUIET COMPONENTS Network REQUIRED)
+target_link_libraries(${SIGHT_TARGET} PRIVATE Qt6::Network)
+set_target_properties(${SIGHT_TARGET} PROPERTIES AUTOMOC TRUE)
+target_compile_definitions(${SIGHT_TARGET} PRIVATE "QT_NO_KEYWORDS")
 
-target_link_libraries(io_http_ut PUBLIC io_http core utest_data data)
+target_link_libraries(${SIGHT_TARGET} PRIVATE io_http core ui_qt utest_data data)

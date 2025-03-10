@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,7 +101,7 @@ void graphics_view::mousePressEvent(QMouseEvent* _event)
 {
     scene2d::data::event scene_event;
     scene_event.set_type(scene2d::data::event::mouse_button_press);
-    scene_event.set_coord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
+    scene_event.set_coord(scene2d::vec2d_t(_event->position().x(), _event->position().y()));
     scene_event.set_button(sight::viz::scene2d::graphics_view::get_scene_2d_button_from_event(_event));
     scene_event.set_modifier(sight::viz::scene2d::graphics_view::get_scene_2d_modifier_from_event(_event));
 
@@ -114,7 +114,7 @@ void graphics_view::mouseDoubleClickEvent(QMouseEvent* _event)
 {
     scene2d::data::event scene_event;
     scene_event.set_type(scene2d::data::event::mouse_button_double_click);
-    scene_event.set_coord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
+    scene_event.set_coord(scene2d::vec2d_t(_event->position().x(), _event->position().y()));
     scene_event.set_button(sight::viz::scene2d::graphics_view::get_scene_2d_button_from_event(_event));
     scene_event.set_modifier(sight::viz::scene2d::graphics_view::get_scene_2d_modifier_from_event(_event));
 
@@ -127,7 +127,7 @@ void graphics_view::mouseReleaseEvent(QMouseEvent* _event)
 {
     scene2d::data::event scene_event;
     scene_event.set_type(scene2d::data::event::mouse_button_release);
-    scene_event.set_coord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
+    scene_event.set_coord(scene2d::vec2d_t(_event->position().x(), _event->position().y()));
     scene_event.set_button(sight::viz::scene2d::graphics_view::get_scene_2d_button_from_event(_event));
     scene_event.set_modifier(sight::viz::scene2d::graphics_view::get_scene_2d_modifier_from_event(_event));
 
@@ -140,7 +140,7 @@ void graphics_view::mouseMoveEvent(QMouseEvent* _event)
 {
     scene2d::data::event scene_event;
     scene_event.set_type(scene2d::data::event::mouse_move);
-    scene_event.set_coord(scene2d::vec2d_t(_event->localPos().x(), _event->localPos().y()));
+    scene_event.set_coord(scene2d::vec2d_t(_event->position().x(), _event->position().y()));
     scene_event.set_button(sight::viz::scene2d::graphics_view::get_scene_2d_button_from_event(_event));
     scene_event.set_modifier(sight::viz::scene2d::graphics_view::get_scene_2d_modifier_from_event(_event));
 
@@ -162,7 +162,7 @@ void graphics_view::wheelEvent(QWheelEvent* _event)
 
 //-----------------------------------------------------------------------------
 
-void graphics_view::enterEvent(QEvent* /*event*/)
+void graphics_view::enterEvent(QEnterEvent* /*event*/)
 {
     scene2d::data::event scene_event;
     scene_event.set_type(scene2d::data::event::enter_event);

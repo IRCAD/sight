@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -620,7 +620,7 @@ void parameters::updating()
                     if(auto* checked_button = button_group->checkedButton(); checked_button != nullptr)
                     {
                         // Find the currently checked button
-                        const int button_index = button_group->buttons().indexOf(checked_button);
+                        const int button_index = static_cast<int>(button_group->buttons().indexOf(checked_button));
 
                         const std::string value = checked_button->property("value").toString().toStdString();
                         this->signal<signals::enum_changed_signal_t>(signals::ENUM_CHANGED_SIG)->async_emit(value, key);

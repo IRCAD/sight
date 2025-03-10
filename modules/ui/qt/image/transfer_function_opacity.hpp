@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,9 +26,8 @@
 #include <ui/__/editor.hpp>
 
 #include <QPointer>
-
-class QSlider;
-class QTimer;
+#include <QSlider>
+#include <QTimer>
 
 namespace sight::module::ui::qt::image
 {

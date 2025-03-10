@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,7 +94,7 @@ public:
 
     [[nodiscard]] core::thread::thread_id_t get_thread_id() const override;
 
-    void set_thread_name(const std::string& _thread_name) const override;
+    void set_thread_name(const std::string& _thread_name) override;
 
     void process_tasks() override;
 
@@ -211,27 +211,27 @@ worker_qt::worker_qt() :
 
 void worker_qt::init(int& _argc, char** _argv)
 {
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
 #ifdef WIN32
     // To get Qt initialized properly, we need to find its plugins
     // This is difficult to do, especially because the location of the deps is different whether
     // you are executing the application in the build tree or in the install tree
-    // Thus the strategy here is to locate the Qt5Core library and then compute the path relatively
+    // Thus the strategy here is to locate the Qt6Core library and then compute the path relatively
     // This work in all cases when we use VCPkg.
-    std::filesystem::path qt5LibDir           = core::tools::os::get_shared_library_path("Qt5Core").remove_filename();
-    const std::filesystem::path qt5PluginsDir = (qt5LibDir.parent_path().parent_path()) / "plugins";
+    const auto qt6_core_path = core::tools::os::get_shared_library_path("Qt6Core");
+    SIGHT_ASSERT("Could not find Qt6Core library", std::filesystem::is_regular_file(qt6_core_path));
 
-    QDir pluginDir(QString::fromStdString(qt5PluginsDir.string()));
-    if(pluginDir.exists())
+    const auto qt6_plugins_path = qt6_core_path.parent_path().parent_path() / "Qt6" / "plugins";
+
+    if(QDir plugins_dir(qt6_plugins_path); plugins_dir.exists())
     {
-        SIGHT_INFO("Load Qt5 plugins path from: " + qt5PluginsDir.string());
-        QCoreApplication::setLibraryPaths(QStringList(pluginDir.absolutePath()));
+        SIGHT_INFO("Load Qt6 plugins path from: " + qt6_plugins_path.string());
+        QCoreApplication::addLibraryPath(plugins_dir.canonicalPath());
     }
     else
     {
-        SIGHT_ERROR("Could not determine qt5 plugins path, tried with: " + qt5PluginsDir.string());
+        SIGHT_ERROR("Could not determine qt6 plugins path, tried with: " + qt6_plugins_path.string());
     }
 #endif
 
@@ -289,7 +289,7 @@ core::thread::thread_id_t worker_qt::get_thread_id() const
 
 //------------------------------------------------------------------------------
 
-void worker_qt::set_thread_name([[maybe_unused]] const std::string& _thread_name) const
+void worker_qt::set_thread_name([[maybe_unused]] const std::string& _thread_name)
 {
 #ifdef _WIN32
     core::thread::set_thread_name(_thread_name, m_thread_native_id);

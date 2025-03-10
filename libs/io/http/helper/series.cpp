@@ -20,9 +20,7 @@
  *
  ***********************************************************************/
 
-#include "io/http/helper/series.hpp"
-
-#include <core/spy_log.hpp>
+#include "series.hpp"
 
 #include <data/dicom_series.hpp>
 #include <data/image_series.hpp>
@@ -76,7 +74,12 @@ series::DicomSeriesContainer series::to_fw_med_data(const QJsonObject& _series_j
     // ==================================
     // Number of instances
     // ==================================
-    series->set_number_of_instances(static_cast<std::size_t>(_series_json["NumberOfSeriesRelatedInstances"].toInt()));
+    const auto& num_instances_json  = _series_json["NumberOfSeriesRelatedInstances"];
+    const std::size_t num_instances = num_instances_json.isString()
+                                      ? num_instances_json.toString("0").toULongLong()
+                                      : std::size_t(num_instances_json.toInt());
+
+    series->set_number_of_instances(num_instances);
 
     // Add series to container
     series_container.push_back(series);

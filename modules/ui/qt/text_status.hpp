@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,8 @@
 
 #include <ui/__/editor.hpp>
 
+#include <QLabel>
 #include <QPointer>
-
-class QLabel;
 
 namespace sight::module::ui::qt
 {

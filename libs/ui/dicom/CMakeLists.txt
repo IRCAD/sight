@@ -1,15 +1,11 @@
 sight_add_target(ui_dicom TYPE LIBRARY)
 
 find_package(DCMTK REQUIRED)
+target_link_libraries(${SIGHT_TARGET} PRIVATE DCMTK::dcmdata)
 
-if(${DCMTK_VERSION} VERSION_GREATER_EQUAL 3.6.7)
-    target_link_libraries(ui_dicom PRIVATE DCMTK::dcmdata)
-else()
-    target_link_libraries(ui_dicom PRIVATE dcmdata)
-endif()
+find_package(Qt6 QUIET COMPONENTS Widgets REQUIRED)
+target_link_libraries(${SIGHT_TARGET} PUBLIC Qt6::Widgets)
+set_target_properties(${SIGHT_TARGET} PROPERTIES AUTOMOC TRUE)
+target_compile_definitions(${SIGHT_TARGET} PUBLIC "QT_NO_KEYWORDS")
 
-find_package(Qt5 QUIET COMPONENTS Core Gui Widgets Concurrent REQUIRED)
-target_link_libraries(ui_dicom PRIVATE Qt5::Core Qt5::Gui Qt5::Widgets Qt5::Concurrent)
-set_target_properties(ui_dicom PROPERTIES AUTOMOC TRUE)
-
-target_link_libraries(ui_dicom PUBLIC core data filter_dicom ui ui_qt)
+target_link_libraries(${SIGHT_TARGET} PUBLIC core data filter_dicom)

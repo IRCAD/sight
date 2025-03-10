@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,11 +33,9 @@
 
 #include <QComboBox>
 #include <QLineEdit>
-#include <QObject>
 #include <QPointer>
 #include <QPushButton>
 #include <QSpinBox>
-#include <QWidget>
 
 #include <filesystem>
 

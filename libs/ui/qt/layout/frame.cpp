@@ -21,7 +21,7 @@
  ***********************************************************************/
 
 #include "ui/qt/layout/frame.hpp"
-#include "ui/qt/qt_main_frame.hpp"
+#include "ui/qt/main_frame.hpp"
 
 #include <core/base.hpp>
 
@@ -41,11 +41,6 @@ namespace sight::ui::qt::layout
 
 //-----------------------------------------------------------------------------
 
-frame::~frame()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void frame::create_frame()
 {
     frame_info frame_info = this->get_frame_info();
@@ -53,7 +48,7 @@ void frame::create_frame()
     const std::string frame_title = frame_info.m_version.empty() ? frame_info.m_name : frame_info.m_name + " "
                                     + frame_info.m_version;
 
-    auto* mainframe = new ui::qt::qt_main_frame();
+    auto* mainframe = new ui::qt::main_frame();
     m_qt_window = mainframe;
     m_qt_window->setObjectName(QString::fromStdString(frame_info.m_name));
     if(!frame_info.m_qss_class.empty())
@@ -61,7 +56,7 @@ void frame::create_frame()
         m_qt_window->setProperty("class", QString::fromStdString(frame_info.m_qss_class));
     }
 
-    ui::qt::qt_main_frame::CloseCallback fct = [this](auto&& ...){on_close_frame();};
+    ui::qt::main_frame::CloseCallback fct = [this](auto&& ...){on_close_frame();};
     mainframe->set_close_callback(fct);
 
     // cspell: ignore QWIDGETSIZE
@@ -118,7 +113,7 @@ void frame::create_frame()
     // Get the screen at the position
     auto* screen_at_pos = QGuiApplication::screenAt(pos);
 
-    // We need to disply the window on a specific screen
+    // We need to display the window on a specific screen
     if(frame_info.m_screen >= 0)
     {
         QRect frame_rect(0, 0, width, height);

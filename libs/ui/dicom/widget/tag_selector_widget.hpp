@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,37 +24,56 @@
 
 #include <sight/ui/dicom/config.hpp>
 
-#include <QRegExpValidator>
-#include <QSpinBox>
+#include "ui/dicom/widget/hex_spin_box.hpp"
+
+#include <dcmtk/dcmdata/dctagkey.h>
+
+#include <QLabel>
+#include <QPointer>
 #include <QWidget>
 
 namespace sight::ui::dicom::widget
 {
 
 /**
- * @brief QSpinBox for hexadecimal values
+ * @brief Widget used to select a dicom tag
  */
-class q_hex_spin_box : public QSpinBox
+class tag_selector_widget : public QWidget
 {
 Q_OBJECT;
 
 public:
 
     /// Constructor
-    q_hex_spin_box(QWidget* _parent = nullptr);
+    tag_selector_widget(QWidget* _parent = nullptr);
+
+    /// Destructor
+    ~tag_selector_widget() override;
+
+    /// Set tag
+    void set_tag_value(const DcmTagKey& _tag);
+
+    /// Get tag
+    DcmTagKey get_tag();
+
+protected Q_SLOTS:
+
+    /// Update tag name when selected tag changes
+    void update_tag_name(int _value = 0);
 
 protected:
 
-    /// Override
-    QValidator::State validate(QString& _text, int& _pos) const override;
+    /// Group spin box
+    QPointer<ui::dicom::widget::hex_spin_box> m_group_spin_box;
 
-    /// Override
-    [[nodiscard]] int valueFromText(const QString& _text) const override;
+    /// Tag spin box
+    QPointer<ui::dicom::widget::hex_spin_box> m_element_spin_box;
 
-    /// Override
-    [[nodiscard]] QString textFromValue(int _value) const override;
+    /// tag name label
+    QPointer<QLabel> m_tag_name_label;
 
-    QRegExpValidator* m_validator;
+    /// Tag
+    DcmTagKey m_tag;
 };
 
 } // namespace sight::ui::dicom::widget
