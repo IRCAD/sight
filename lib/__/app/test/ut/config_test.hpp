@@ -22,9 +22,9 @@
 
 #pragma once
 
-#include <app/config_manager.hpp>
-
 #include <service/op.hpp>
+
+#include <app/config_manager.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -51,6 +51,7 @@ CPPUNIT_TEST(optional_parameter_test);
 CPPUNIT_TEST(object_config_test);
 CPPUNIT_TEST(properties_test);
 CPPUNIT_TEST(properties_signals_test);
+CPPUNIT_TEST(properties_map_element_parameter_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -73,6 +74,7 @@ public:
     void object_config_test();
     void properties_test();
     void properties_signals_test();
+    void properties_map_element_parameter_test();
 
 private:
 

@@ -59,7 +59,11 @@ core::com::helper::proxy_connections config::parse_connections(
 #ifndef _DEBUG
     SIGHT_NOT_USED(_err_msg_head);
 #endif
-    const std::string channel = _connection_cfg.get<std::string>("<xmlattr>.channel", _generate_channel_name_fn());
+    std::string channel = _connection_cfg.get<std::string>("<xmlattr>.channel", _generate_channel_name_fn());
+    if(channel == "@GEN@")
+    {
+        channel = _generate_channel_name_fn();
+    }
 
     core::com::helper::proxy_connections proxy_cnt(channel);
 
@@ -505,14 +509,37 @@ app::detail::service_config config::parse_service(
         }
     }
 
+    const auto parse_object_property =
+        [&_objects](const auto& _uid) -> std::optional<std::string>
+        {
+            std::vector<std::string> tokens;
+            boost::split(tokens, _uid, boost::is_any_of("."));
+
+            if(auto it = _objects.find(tokens[0]); it != _objects.end())
+            {
+                if(tokens.size() > 1)
+                {
+                    if(auto map = std::dynamic_pointer_cast<sight::data::map>(it->second); map != nullptr)
+                    {
+                        return (*map)[tokens[1]]->get_id();
+                    }
+                }
+
+                return _uid;
+            }
+
+            return {};
+        };
+
     for(auto&& [key, value] : properties_cfgs)
     {
-        if(_objects.contains(value))
+        const auto uid = parse_object_property(value);
+        if(uid.has_value())
         {
             app::detail::object_serviceconfig objconfig
             {
                 .m_key          = key,
-                .m_uid          = value,
+                .m_uid          = *uid,
                 .m_access       = data::access::inout,
                 .m_auto_connect = key != "from",
                 .m_optional     = false

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -125,7 +125,7 @@ public:
     using object_id_t              = std::string;
     using proxy_connections_vect_t = std::vector<core::com::helper::proxy_connections>;
     using proxy_connections_map_t  = std::map<object_id_t, proxy_connections_vect_t>;
-    using objects_set_t            = std::set<std::string>;
+    using objects_set_t            = std::unordered_map<std::string, data::object::sptr>;
 
     /**
      * @brief Parses "<connect>" tags from given configuration and return a structure containing the signal and
@@ -156,7 +156,7 @@ public:
     SIGHT_APP_API static app::detail::service_config parse_service(
         const boost::property_tree::ptree& _srv_elem,
         const std::string& _err_msg_head,
-        const service::object_parser::objects_set_t& _objects
+        const objects_set_t& _objects
     );
 
     SIGHT_APP_API static bool is_key_optional(const std::string& _service_type, const std::string& _key);

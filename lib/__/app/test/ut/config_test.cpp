@@ -1704,6 +1704,26 @@ void config_test::properties_test()
         }
         srv->m_callback_called_parameter = "";
     }
+    {
+        core::object::sptr service = core::id::get_object("test_service_map_object_props_2");
+        auto srv                   = std::dynamic_pointer_cast<app::ut::test_service_with_properties>(service);
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(true, srv->started());
+        srv->m_slot_called = false;
+
+        CPPUNIT_ASSERT_EQUAL(std::int64_t(45), *srv->m_int_prop);
+        {
+            auto map_object = std::dynamic_pointer_cast<data::map>(core::id::get_object("properties_map"));
+            CPPUNIT_ASSERT(map_object != nullptr);
+            (*map_object)["integer"]->async_emit(data::object::MODIFIED_SIG);
+
+            SIGHT_TEST_WAIT(srv->m_slot_called);
+            CPPUNIT_ASSERT_EQUAL(false, srv->m_slot_called);
+
+            CPPUNIT_ASSERT_EQUAL(std::string_view("integer"), srv->m_callback_called_parameter);
+        }
+        srv->m_callback_called_parameter = "";
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -1734,6 +1754,51 @@ void config_test::properties_signals_test()
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), srv->m_signal_count);
         }
         srv->m_callback_called_parameter = "";
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void config_test::properties_map_element_parameter_test()
+{
+    m_app_config_mgr = app::ut::launch_app_config_mgr("properties_map_element_parameter_test", true);
+
+    core::object::sptr data1_in_config1;
+    {
+        int j = 0;
+        while(data1_in_config1 == nullptr && j++ < 200)
+        {
+            data1_in_config1 = core::id::get_object("properties_map_element_parameter_test", j, "data1_in_map");
+        }
+    }
+    CPPUNIT_ASSERT(data1_in_config1 != nullptr);
+    {
+        auto str = std::dynamic_pointer_cast<sight::data::string>(data1_in_config1);
+        CPPUNIT_ASSERT_EQUAL(std::string("yeah"), str->to_string());
+    }
+
+    {
+        core::object::sptr service;
+        {
+            int j = 0;
+            while(service == nullptr && j++ < 200)
+            {
+                service = core::id::get_object(
+                    "default_object_id_test_sub_config",
+                    j,
+                    "test_service_parse_props_1"
+                );
+            }
+        }
+        CPPUNIT_ASSERT(service != nullptr);
+        auto srv = std::dynamic_pointer_cast<app::ut::test_service_with_properties>(service);
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv->config_status());
+
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(true, srv->started());
+
+        CPPUNIT_ASSERT_EQUAL(std::string("yeah"), *srv->m_string_prop);
     }
 }
 

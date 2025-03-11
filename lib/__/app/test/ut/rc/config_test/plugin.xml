@@ -391,7 +391,11 @@
             <object uid="data1" type="sight::data::string" optional="true" value="default_value" />
         </parameters>
         <desc>Sub-configuration for optional parameter replace</desc>
-        <config />
+        <config>
+            <service uid="test_service_parse_props_1" type="sight::app::ut::test_service_with_properties">
+                <properties string="${data1}" />
+            </service>
+        </config>
     </extension>
 
     <extension implements="sight::app::extension::config">
@@ -499,6 +503,32 @@
 
             <service uid="test_service_map_object_props_1" type="sight::app::ut::test_service_with_properties">
                 <properties integer="${integer_uid}" />
+            </service>
+
+            <service uid="test_service_map_object_props_2" type="sight::app::ut::test_service_with_properties">
+                <properties integer="${properties_map}.integer" />
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>properties_map_element_parameter_test</id>
+        <parameters>
+            <param name="data1" default="data1Id" />
+        </parameters>
+        <desc>Test configuration for passing map element</desc>
+        <config>
+            <object uid="properties_map" type="sight::data::map">
+                <item key="string">
+                    <object uid="data1_in_map" type="sight::data::string" value="yeah" />
+                </item>
+            </object>
+
+            <service uid="test1_srv" type="sight::app::config_launcher">
+                <properties config="default_object_id_test_sub_config" />
+                <inout group="object">
+                    <key name="data1" uid="${properties_map}.string" />
+                </inout>
             </service>
         </config>
     </extension>

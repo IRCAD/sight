@@ -306,6 +306,10 @@ void config_manager::add_existing_deferred_object(const data::object::sptr& _obj
         "Existing deferred objects must be added before starting the configuration, it's useless to do it later",
         m_state == state_destroyed
     );
+    SIGHT_ASSERT(
+        "Optional objects passed in the config launcher must be declared as deferred in the configuration.",
+        m_deferred_objects.contains(_uid)
+    );
     deferred_object_t deferred_object;
     deferred_object.m_object = _obj;
     m_deferred_objects.insert(std::make_pair(_uid, deferred_object));
@@ -332,11 +336,24 @@ data::object::sptr config_manager::find_object(const std::string& _uid, std::str
 #endif
     data::object::sptr obj;
 
-    // Look first in objects created in this appConfig
-    auto it = m_created_objects.find(_uid);
+    std::vector<std::string> uid_tokens;
+    boost::split(uid_tokens, _uid, boost::is_any_of("."));
+
+    // Look first in objects created in this config
+    auto it = m_created_objects.find(uid_tokens[0]);
     if(it != m_created_objects.end())
     {
         obj = it->second;
+        if(uid_tokens.size() > 1)
+        {
+            SIGHT_ASSERT(
+                this->msg_head() + "Only one nested object level '" << _uid << "' supported in maps" << _err_msg_tail,
+                uid_tokens.size() <= 2
+            );
+            auto map = std::dynamic_pointer_cast<sight::data::map>(obj);
+            SIGHT_ASSERT("Cannot use point operator on other data than sight::data::map", obj != nullptr);
+            obj = (*map)[uid_tokens[1]];
+        }
     }
     else
     {
@@ -547,14 +564,10 @@ void config_manager::create_objects(const core::runtime::config_t& _cfg_elem)
 
 void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
 {
-    std::set<std::string> objects;
-    std::ranges::transform(m_created_objects, std::inserter(objects, objects.begin()), [](auto& _x){return _x.first;});
-
-    std::vector<service::base::shared_future_t> futures;
     for(const auto& service_cfg : boost::make_iterator_range(_cfg_elem.equal_range("service")))
     {
         // Parse the service configuration
-        auto srv_config = app::helper::config::parse_service(service_cfg.second, this->msg_head(), objects);
+        auto srv_config = app::helper::config::parse_service(service_cfg.second, this->msg_head(), m_created_objects);
 
         // Check if we can start the service now or if we must deferred its creation
         bool create_service = true;
@@ -617,9 +630,6 @@ void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
             m_deferred_start_srv.push_back(srv_config.m_uid);
         }
     }
-
-    boost::wait_for_all(futures.begin(), futures.end());
-    futures.clear();
 
     for(const auto& service_cfg : boost::make_iterator_range(_cfg_elem.equal_range("serviceList")))
     {
@@ -753,7 +763,7 @@ void config_manager::create_connections()
             proxy_connections_t created_objects_proxy(connection_infos.m_channel);
 
             // Register signals
-            for(const auto& signal_info : connection_infos.m_signals)
+            for(auto& signal_info : connection_infos.m_signals)
             {
                 auto it_deferred_obj = m_deferred_objects.find(signal_info.first);
                 if(it_deferred_obj != m_deferred_objects.end())
@@ -764,9 +774,26 @@ void config_manager::create_connections()
                 }
                 else
                 {
-                    auto it_obj = m_created_objects.find(signal_info.first);
-                    if(it_obj != m_created_objects.end())
+                    std::vector<std::string> uid_tokens;
+                    boost::split(uid_tokens, signal_info.first, boost::is_any_of("."));
+
+                    if(auto it_obj = m_created_objects.find(uid_tokens[0]); it_obj != m_created_objects.end())
                     {
+                        if(uid_tokens.size() > 1)
+                        {
+                            SIGHT_ASSERT(
+                                this->msg_head() + "Only one nested object level '" << signal_info.first
+                                << "' supported in maps",
+                                uid_tokens.size() <= 2
+                            );
+                            auto map = std::dynamic_pointer_cast<sight::data::map>(it_obj->second);
+                            SIGHT_ASSERT(
+                                "Cannot use point operator on other data than sight::data::map",
+                                map != nullptr
+                            );
+                            signal_info.first = (*map)[uid_tokens[1]]->get_id();
+                        }
+
                         // Regular object
                         created_objects_proxy.add_signal_connection(signal_info);
                     }

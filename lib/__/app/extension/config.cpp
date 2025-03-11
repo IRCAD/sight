@@ -35,7 +35,8 @@
 namespace sight::app::extension
 {
 
-std::string config::s_mandatory_parameter_identifier = "@mandatory@";
+static const std::string S_MANDATORY_PARAMETER_IDENTIFIER = "@mandatory@";
+static const std::string S_GENERATE_IDENTIFIER            = "@GEN@";
 
 config::uid_definition_t config::s_uid_definition_dictionary = {
     {"object", "uid"},
@@ -118,7 +119,7 @@ void config::parse_plugin_infos()
                     "Parameter " << std::quoted(name) << " already declared as object",
                     !objects.contains(name)
                 );
-                parameters[name] = param.second.get<std::string>("<xmlattr>.default", s_mandatory_parameter_identifier);
+                parameters[name] = param.second.get<std::string>("<xmlattr>.default", S_MANDATORY_PARAMETER_IDENTIFIER);
             }
 
             for(const auto& param : boost::make_iterator_range(parameters_cfg->equal_range("channel")))
@@ -132,12 +133,12 @@ void config::parse_plugin_infos()
                 );
                 if(param.second.get<bool>("<xmlattr>.optional", false))
                 {
-                    // Default channel name
-                    parameters[name] = name;
+                    // This will generate a unique default channel in get_adapted_template_config
+                    parameters[name] = S_GENERATE_IDENTIFIER;
                 }
                 else
                 {
-                    parameters[name] = s_mandatory_parameter_identifier;
+                    parameters[name] = S_MANDATORY_PARAMETER_IDENTIFIER;
                 }
             }
 
@@ -243,7 +244,7 @@ core::runtime::config_t config::get_adapted_template_config(
         {
             fields[variable] = iter_field->second;
         }
-        else if(param.second != s_mandatory_parameter_identifier)
+        else if(param.second != S_MANDATORY_PARAMETER_IDENTIFIER)
         {
             fields[variable] = param.second;
         }

@@ -196,9 +196,6 @@ private:
     /// Used to protect the registry access.
     mutable core::mt::read_write_mutex m_registry_mutex;
 
-    /// The static identifier for mandatory parameters.
-    static std::string s_mandatory_parameter_identifier;
-
     /// Associations of <tag id, generic-uid attribute>.
     using uid_definition_t = std::multimap<std::string, std::string>;
     static uid_definition_t s_uid_definition_dictionary;
