@@ -97,6 +97,10 @@ void frame::create_frame()
     {
         frame_info.m_state = frame_state::full_screen;
     }
+    else if(frame_info.m_style == ui::layout::frame_manager::frameless)
+    {
+        m_qt_window->setWindowFlags(Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint);
+    }
 
     const auto& [width, height] =
         [&]

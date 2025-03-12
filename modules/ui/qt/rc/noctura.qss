@@ -1326,6 +1326,13 @@ QProgressBar::chunk
    border-width: 0px;
 }
 
+.rounded_background {
+    border-image: url(:/resources/background.jpg) 0 0 0 0 stretch stretch;
+    border-width: 0px;
+    border-radius: 30%;
+    background: transparent;
+}
+
 .Welcome_panel
 {
     border-radius:40px;
@@ -1343,6 +1350,7 @@ QProgressBar::chunk
     margin-top: 10px;
     padding: 5px;
 }
+
 .SelectorView::title
 {
     font-weight: bold;

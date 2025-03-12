@@ -49,7 +49,8 @@ public:
         DEFAULT,
         stay_on_top,
         modal,
-        fullscreen
+        fullscreen,
+        frameless
     };
 
     using registry_key_t = std::string;

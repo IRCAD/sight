@@ -144,10 +144,15 @@ void frame_manager::initialize(const ui::config_t& _configuration)
         {
             m_frame_info.m_style = fullscreen;
         }
+        else if(mode.value() == "FRAMELESS")
+        {
+            m_frame_info.m_style = frameless;
+        }
         else
         {
             SIGHT_FATAL(
-                "The style " << mode.value() << " is unknown, it should be DEFAULT, STAY_ON_TOP, FULLSCREEN or MODAL."
+                "The style " << mode.value()
+                << " is unknown, it should be DEFAULT, STAY_ON_TOP, FULLSCREEN, FRAMELESS or MODAL."
             );
         }
     }
