@@ -31,19 +31,35 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="view5VisibilityAct" start="true" />
+                    <menuItem sid="view_5_visibility_act" start="true" />
                 </registry>
             </service>
 
-            <service uid="view5VisibilityAct" type="sight::module::ui::action">
+            <service uid="view_5_visibility_act" type="sight::module::ui::action">
                 <state checked="true" inverse="true" />
             </service>
 
+            <service uid="hide_logo_shortcut" type="sight::module::ui::qt::com::signal_shortcut">
+                <config shortcut="Ctrl+l" sid="view" />
+                <properties checked="true" />
+            </service>
+
+            <connect>
+                <signal>hide_logo_shortcut/checked</signal>
+                <slot>view_5_visibility_act/check</slot>
+            </connect>
+
+            <connect>
+                <signal>hide_logo_shortcut/unchecked</signal>
+                <slot>view_5_visibility_act/uncheck</slot>
+            </connect>
+
             <connect channel="${LOGO_VISIBILITY_CHANNEL}">
-                <signal>view5VisibilityAct/is_checked</signal>
+                <signal>view_5_visibility_act/is_checked</signal>
             </connect>
 
             <start uid="view" />
+            <start uid="hide_logo_shortcut" />
         </config>
     </extension>
 

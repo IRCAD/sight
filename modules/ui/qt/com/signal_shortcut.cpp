@@ -156,6 +156,18 @@ void signal_shortcut::starting()
     if(*m_enabled)
     {
         this->enable();
+
+        // Make sure that we propagate this status to imitate action behaviour.
+        if(*m_checked)
+        {
+            auto sig = this->signal<signals::void_t>(signals::CHECKED);
+            sig->async_emit();
+        }
+        else
+        {
+            auto sig = this->signal<signals::void_t>(signals::UNCHECKED);
+            sig->async_emit();
+        }
     }
 }
 
