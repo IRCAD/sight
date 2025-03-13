@@ -313,7 +313,7 @@ deploy:apps-linux-release:
         # Launch tests
         - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j6 --output-junit junit1.xml --repeat until-pass:2
         - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j6 --output-junit junit2.xml --repeat until-pass:2
-        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j1 --output-junit junit3.xml --repeat until-pass:2
+        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j6 --output-junit junit3.xml --repeat until-pass:2
         - |
             if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
               ninja sight_viewer_package

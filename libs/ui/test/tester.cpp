@@ -29,15 +29,17 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include <QAbstractEventDispatcher>
 #include <QAction>
 #include <QApplication>
+#include <QMainWindow>
 #include <QMutex>
 #include <QScreen>
 #include <QTest>
-#include <QTimer>
 
 #include <cmath>
 #include <iostream>
+#include <ranges>
 
 namespace sight::ui::test
 {
@@ -112,6 +114,10 @@ tester::tester(std::string _test_name, bool _verbose_mode) :
     m_test_name(std::move(_test_name)),
     m_verbose_mode(_verbose_mode)
 {
+    if(m_verbose_mode)
+    {
+        qDebug() << "\n---- Starting `" << QString::fromStdString(m_test_name) << "` ----\n";
+    }
 }
 
 tester::~tester()
@@ -297,97 +303,141 @@ void tester::start(std::function<void()> _f)
                     qDebug() << "Waiting up to 5000 ms for the main window to appear";
                 }
 
-                bool ok = wait_for_asynchronously(
+                bool ok = QTest::qWaitFor(
                     [this]() -> bool
                 {
-                    m_main_window = qApp->activeWindow();
-                    return m_main_window != nullptr && m_main_window->isVisible();
+                    return std::ranges::any_of(
+                        qApp->topLevelWidgets(),
+                        [this](auto* _top_level_widget) -> bool
+                    {
+                        if(dynamic_cast<QMainWindow*>(_top_level_widget) != nullptr && _top_level_widget->isVisible())
+                        {
+                            m_main_window = _top_level_widget;
+                            return true;
+                        }
+
+                        return false;
+                    });
                 },
                     DEFAULT_TIMEOUT
                 );
+
                 if(!ok)
                 {
                     fail("The main window has never showed up");
                 }
 
-                QTest::qWait(2000); // Temporize, because the window takes time to effectively show up
+                // Temporize, because the window takes time to effectively show up
+                ok = QTest::qWaitForWindowExposed(m_main_window, DEFAULT_TIMEOUT);
+
+                if(!ok)
+                {
+                    fail("The main window was never exposed");
+                }
 
                 _f();
+            }
+            catch(const tester_assertion_failed& e)
+            {
+                m_failure_message = generate_failure_message() + "Failure: " + e.what();
+                m_failed          = true;
+
+                // Take a screenshot
+                if(m_main_window != nullptr)
+                {
+                    m_main_window->screen()->grabWindow(0).save(
+                        QString::fromStdString((s_image_output_path / (m_test_name + "_failure.png")).string())
+                    );
+                }
+            }
+            catch(const std::exception& e)
+            {
+                m_failure_message = generate_failure_message() + "Unexpected error: " + e.what();
+                m_failed          = true;
+            }
+
+            try
+            {
+                if(m_failed && m_verbose_mode)
+                {
+                    qDebug() << "\n---- Failure in `" << QString::fromStdString(m_test_name) << "` ----\n";
+                    qDebug() << m_failure_message.c_str();
+                }
 
                 if(m_verbose_mode)
                 {
-                    qDebug() << "Waiting up to 5000 ms for the main window to close";
+                    qDebug() << "Waiting up to " << DEFAULT_TIMEOUT << "ms for the main window to close";
                 }
 
-                ok = QTest::qWaitFor(
-                    [this]() -> bool
+                // Flush the event queue, before closing the application and stopping the event loop
+                const bool stable = wait_for_asynchronously(
+                    []() -> bool
                 {
-                    QTimer::singleShot(0, m_main_window, &QWidget::close);
-                    return qApp->activeWindow() == nullptr || !m_main_window->isVisible();
+                    qApp->processEvents();
+
+                    if(auto* event_dispatcher = QAbstractEventDispatcher::instance(); event_dispatcher != nullptr)
+                    {
+                        return !event_dispatcher->hasPendingEvents();
+                    }
+
+                    return true;
                 },
                     DEFAULT_TIMEOUT
                 );
 
-                if(!ok)
+                if(!stable && m_verbose_mode)
                 {
-                    fail("The main window never closed");
-                }
-            }
-            catch(tester_assertion_failed& e)
-            {
-                m_failure_message = generate_failure_message() + "Failure: " + e.what();
-                m_failed          = true;
-                if(m_verbose_mode)
-                {
-                    qDebug() << m_failure_message.c_str();
+                    qDebug() << "The event queue is not stable after the test";
                 }
 
-                if(m_main_window != nullptr)
-                {
-                    m_main_window->screen()->grabWindow(0).save(
-                        QString::fromStdString(
-                            (s_image_output_path
-                             / (m_test_name + "_failure.png")).string()
-                        )
-                    );
-                }
+                // Close all windows
+                qApp->closeAllWindows();
+                qApp->processEvents();
 
-                qApp->exit(1);
-
-                // If the application hasn't closed after 5 seconds, force-quit.
-                bool ok = QTest::qWaitFor(
+                // Wait for the main window to close
+                bool closed = QTest::qWaitFor(
                     [this]() -> bool
                 {
-                    return qApp->activeWindow() == nullptr || m_main_window == nullptr || !m_main_window->isVisible();
-                });
-                if(!ok)
+                    return m_main_window.isNull() || m_main_window->windowHandle() == nullptr;
+                },
+                    DEFAULT_TIMEOUT
+                );
+
+                if(m_failed || !closed)
                 {
-                    qDebug() << "The application didn't close in 5 seconds, force-quitting.";
+                    qApp->exit(1);
+                }
+
+                if(!closed)
+                {
+                    if(m_verbose_mode)
+                    {
+                        qDebug() << "\n---- Failure in `" << QString::fromStdString(m_test_name) << "` ----\n";
+                        qDebug() << "The application didn't close in " << DEFAULT_TIMEOUT << "ms, force-quitting.";
+                    }
+
                     std::exit(1);
                 }
             }
-            catch(std::exception& e)
+            catch(const std::exception& e)
             {
-                m_failure_message = generate_failure_message() + "Unexpected error: " + e.what();
-                m_failed          = true;
+                // This one is for avoiding CRT error dialog in windows
                 if(m_verbose_mode)
                 {
-                    qDebug() << m_failure_message.c_str();
+                    std::cerr << "\n---- Failure in `" << m_test_name << "': " << e.what() << "` ----\n" << std::endl;
                 }
 
-                qApp->exit(1);
-
-                // If the application hasn't closed after 5 seconds, force-quit.
-                bool ok = QTest::qWaitFor(
-                    [this]() -> bool
+                std::exit(2);
+            }
+            catch(...)
+            {
+                // This one also...
+                if(m_verbose_mode)
                 {
-                    return qApp->activeWindow() == nullptr || m_main_window == nullptr || !m_main_window->isVisible();
-                });
-                if(!ok)
-                {
-                    qDebug() << "The application didn't close in 5 seconds, force-quitting.";
-                    std::exit(1);
+                    std::cerr << "\n---- Failure in `" << m_test_name << "` ----\n" << std::endl;
                 }
+
+                std::exit(3);
             }
         });
 }
@@ -496,13 +546,6 @@ void tester::init()
         sight::ui::preferences::ignore_filesystem(true);
 
         s_already_loaded = true;
-
-    #ifdef WIN32
-        _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
-        _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
-        _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
-        _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
-    #endif
     }
 }
 

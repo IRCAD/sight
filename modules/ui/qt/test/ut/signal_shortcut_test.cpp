@@ -231,19 +231,19 @@ void signal_shortcut_test::check_uncheck_test()
 {
     test_context context(m_child_uid, "SHIFT+S;CTRL+F2;L");
 
-    bool called = false;
+    std::atomic_bool called = false;
 
     auto slot = sight::core::com::new_slot(
-        [&]()
+        [&called]()
         {
             called = true;
         });
     slot->set_worker(m_worker);
     context.signal_shortcut_srv->signal("activated")->connect(slot);
 
-    bool checked      = false;
-    auto checked_slot = sight::core::com::new_slot(
-        [&]()
+    std::atomic_bool checked = false;
+    auto checked_slot        = sight::core::com::new_slot(
+        [&checked]()
         {
             checked = true;
         });
@@ -251,7 +251,7 @@ void signal_shortcut_test::check_uncheck_test()
     context.signal_shortcut_srv->signal("checked")->connect(checked_slot);
 
     auto unchecked_slot = sight::core::com::new_slot(
-        [&]()
+        [&checked]()
         {
             checked = false;
         });
@@ -264,53 +264,53 @@ void signal_shortcut_test::check_uncheck_test()
 
     QTest::keyClick(qApp->activeWindow(), Qt::Key_F2, Qt::ControlModifier);
     SIGHT_TEST_WAIT(called);
-    CPPUNIT_ASSERT_EQUAL(true, called);
+    CPPUNIT_ASSERT_EQUAL(true, called.load());
     SIGHT_TEST_WAIT(checked);
-    CPPUNIT_ASSERT_EQUAL(true, checked);
+    CPPUNIT_ASSERT_EQUAL(true, checked.load());
 
     called = false;
     QTest::keyClick(qApp->activeWindow(), Qt::Key_S, Qt::ShiftModifier);
     SIGHT_TEST_WAIT(called);
-    CPPUNIT_ASSERT_EQUAL(true, called);
+    CPPUNIT_ASSERT_EQUAL(true, called.load());
     SIGHT_TEST_WAIT(not checked);
-    CPPUNIT_ASSERT_EQUAL(false, checked);
+    CPPUNIT_ASSERT_EQUAL(false, checked.load());
 
     called = false;
     context.signal_shortcut_srv->slot("check")->run();
-    CPPUNIT_ASSERT_EQUAL(false, called);
+    CPPUNIT_ASSERT_EQUAL(false, called.load());
     SIGHT_TEST_WAIT(checked);
-    CPPUNIT_ASSERT_EQUAL(true, checked);
+    CPPUNIT_ASSERT_EQUAL(true, checked.load());
 
     called = false;
     QTest::keyClick(qApp->activeWindow(), Qt::Key_L, Qt::NoModifier);
     SIGHT_TEST_WAIT(called);
-    CPPUNIT_ASSERT_EQUAL(true, called);
+    CPPUNIT_ASSERT_EQUAL(true, called.load());
     SIGHT_TEST_WAIT(not checked);
-    CPPUNIT_ASSERT_EQUAL(false, checked);
+    CPPUNIT_ASSERT_EQUAL(false, checked.load());
 
     QTest::keyClick(qApp->activeWindow(), Qt::Key_F2, Qt::ControlModifier);
     SIGHT_TEST_WAIT(called);
-    CPPUNIT_ASSERT_EQUAL(true, called);
+    CPPUNIT_ASSERT_EQUAL(true, called.load());
     SIGHT_TEST_WAIT(checked);
-    CPPUNIT_ASSERT_EQUAL(true, checked);
+    CPPUNIT_ASSERT_EQUAL(true, checked.load());
 
     called = false;
     context.signal_shortcut_srv->slot("uncheck")->run();
-    CPPUNIT_ASSERT_EQUAL(false, called);
+    CPPUNIT_ASSERT_EQUAL(false, called.load());
     SIGHT_TEST_WAIT(not checked);
-    CPPUNIT_ASSERT_EQUAL(false, checked);
+    CPPUNIT_ASSERT_EQUAL(false, checked.load());
 
     called = false;
     context.signal_shortcut_srv->slot("set_checked")->run(true);
-    CPPUNIT_ASSERT_EQUAL(false, called);
+    CPPUNIT_ASSERT_EQUAL(false, called.load());
     SIGHT_TEST_WAIT(checked);
-    CPPUNIT_ASSERT_EQUAL(true, checked);
+    CPPUNIT_ASSERT_EQUAL(true, checked.load());
 
     called = false;
     context.signal_shortcut_srv->slot("set_checked")->run(false);
-    CPPUNIT_ASSERT_EQUAL(false, called);
-    SIGHT_TEST_WAIT(checked);
-    CPPUNIT_ASSERT_EQUAL(true, checked);
+    CPPUNIT_ASSERT_EQUAL(false, called.load());
+    SIGHT_TEST_WAIT(not checked);
+    CPPUNIT_ASSERT_EQUAL(false, checked.load());
 }
 
 //------------------------------------------------------------------------------

@@ -31,10 +31,6 @@
 
 #include <utest_data/data.hpp>
 
-#include <QLabel>
-
-#include <array>
-
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sight_calibrator::uit::video_controls);
 
 namespace sight::sight_calibrator::uit
@@ -88,8 +84,9 @@ void video_controls::test()
             // When enabling loop, we should return to the current position after 5 seconds.
             helper::video_controls::loop(_tester, "videoToolbarView");
             helper::video_controls::play(_tester, "videoToolbarView");
-            QTest::qWait(5000);
+            QTest::qWait(4000);
             helper::label::exactly_match(_tester, "videoSliderSrv/currentPosition", current_position);
+            helper::video_controls::stop(_tester, "videoToolbarView");
 #endif
         },
         true

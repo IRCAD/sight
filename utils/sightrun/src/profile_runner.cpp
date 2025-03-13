@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -328,14 +328,14 @@ int main(int argc, char* argv[])
     }
 
 #ifdef WIN32
-    if(!enableAbortDialog)
+    if(!enableAbortDialog || std::getenv("DISABLE_ABORT_DIALOG") != nullptr)
     {
         _set_error_mode(_OUT_TO_STDERR);
-        SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX);
-        _set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
-        _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
+        SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOALIGNMENTFAULTEXCEPT);
+        _set_abort_behavior(0, _WRITE_ABORT_MSG);
+        _CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE);
         _CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
-        _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
+        _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
         _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
     }
 #endif

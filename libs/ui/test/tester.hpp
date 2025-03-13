@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,13 +23,9 @@
 
 #pragma once
 
-#include <QEvent>
-#include <QObject>
-#include <Qt>
 #include <QTest>
 #include <QWidget>
 
-#include <iostream>
 #include <thread>
 #include <filesystem>
 
@@ -578,7 +574,7 @@ private:
     std::vector<std::unique_ptr<interaction> > m_interactions;
     bool m_failed = false;
     std::thread m_thread;
-    QWidget* m_main_window = nullptr;
+    QPointer<QWidget> m_main_window;
     std::string m_failure_message;
     std::string m_result_description;
     const std::string m_test_name;
@@ -589,6 +585,6 @@ private:
     static std::filesystem::path s_image_output_path;
 };
 
-} // namespace sight::ui::testCore
+} // namespace sight::ui::test
 
 #include "tester.hxx"
