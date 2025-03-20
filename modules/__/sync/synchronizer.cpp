@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -308,8 +308,8 @@ void synchronizer::synchronize()
 
     if(max_synchronization_timestamp == 0)
     {
-        // there is nothing to synchronize
-        SIGHT_INFO("skip sync, because there is nothing to sync");
+        // Nothing to synchronize, print a debug message
+        SIGHT_DEBUG("skip sync, because there is nothing to sync");
         this->signal<signals::timestamp_t>(signals::SYNCHRONIZATION_DONE)->async_emit(max_synchronization_timestamp);
         return;
     }
