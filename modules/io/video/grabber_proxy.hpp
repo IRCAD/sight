@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,6 +78,7 @@ namespace sight::module::io::video
             <inout key="depthTL" uid="..." />
             <config>
                 <camera type="RGBD" />
+                <match id="Webcam" service="sight::module::io::video::frame_grabber" />
                 <selection mode="include" />
                 <addSelection service="sight::module::io::video::frame_grabber" />
                 <config id="cvGrabberConfig" service="sight::module::io::video::frame_grabber" />
@@ -121,8 +122,7 @@ public:
     {
         using key_t = sight::core::com::slots::key_t;
 
-        static inline const key_t RECONFIGURE         = "reconfigure";
-        static inline const key_t START_TARGET_CAMERA = "start_target_camera";
+        static inline const key_t RECONFIGURE = "reconfigure";
 
         static inline const key_t MODIFY_POSITION = "modifyPosition";
         static inline const key_t MODIFY_DURATION = "modifyDuration";

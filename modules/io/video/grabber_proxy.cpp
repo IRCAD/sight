@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,6 @@ using sight::io::service::grabber;
 grabber_proxy::grabber_proxy() noexcept
 {
     new_slot(slots::RECONFIGURE, &grabber_proxy::reconfigure, this);
-    new_slot(slots::START_TARGET_CAMERA, &grabber_proxy::start_target_camera, this);
 
     new_slot(slots::MODIFY_POSITION, &grabber_proxy::modify_position, this);
     new_slot(slots::MODIFY_DURATION, &grabber_proxy::modify_duration, this);
@@ -163,13 +162,6 @@ void grabber_proxy::updating()
 
 void grabber_proxy::start_camera()
 {
-    this->start_target_camera("");
-}
-
-//-----------------------------------------------------------------------------
-
-void grabber_proxy::start_target_camera(std::string _impl)
-{
     if(m_services.empty())
     {
         if(m_grabber_impl.empty())
@@ -190,16 +182,28 @@ void grabber_proxy::start_target_camera(std::string _impl)
 
             std::move(rgb_grabbers_impl.begin(), rgb_grabbers_impl.end(), std::back_inserter(grabbers_impl));
 
-            // If we asked for a specific implementation
-            // filter the other out
-            if(!_impl.empty())
+            if(const auto config = this->get_config().get_child_optional("config"); config.has_value())
             {
-                std::erase_if(
-                    grabbers_impl,
-                    [&](std::string _g)
+                auto camera_input = m_camera.lock();
+                auto camera       = std::dynamic_pointer_cast<const data::camera>(camera_input.get_shared());
+                if(camera)
+                {
+                    auto match_config = config->equal_range("match");
+                    for(const auto& match : boost::make_iterator_range(match_config))
                     {
-                        return _g != _impl;
-                    });
+                        const auto id = match.second.get<std::string>("<xmlattr>.id");
+                        if(camera->get_camera_id() == id)
+                        {
+                            auto service_impl = match.second.get<std::string>("<xmlattr>.service");
+                            std::erase_if(
+                                grabbers_impl,
+                                [&](std::string _g)
+                                {
+                                    return _g != service_impl;
+                                });
+                        }
+                    }
+                }
             }
 
             data::camera::source_t source_type = data::camera::unknown;
