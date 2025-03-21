@@ -170,6 +170,7 @@
                         <menuItem name="start A-B / stop 2-3" style="radio" icon="tuto14_gui/icons/important.png" />
                         <editor />
                         <spacer />
+                        <menuItem name="Enable/Disable Toolbar" style="check" />
                         <menuItem name="Hide/Show Toolbar" style="check" />
                         <menu name="Test Hide/Show" start="true" />
                         <menuItem name="Quit" icon="sight::module::ui::icons/cross.svg" />
@@ -187,6 +188,7 @@
                     <menuItem sid="item16Act" start="true" />
                     <menuItem sid="item17Act" start="true" />
                     <editor wid="subToolBarView" />
+                    <menuItem sid="enable_disable_toolbar" start="true" />
                     <menuItem sid="hideShowToolbar" start="true" />
                     <menu sid="testHideShowView" start="true" />
                     <menuItem sid="quitAct" start="true" />
@@ -194,6 +196,10 @@
             </service>
 
             <service uid="hideShowToolbar" type="sight::module::ui::action">
+                <state checked="true" />
+            </service>
+
+            <service uid="enable_disable_toolbar" type="sight::module::ui::action">
                 <state checked="true" />
             </service>
 
@@ -453,6 +459,21 @@
                 <slot>startAct/show</slot>
                 <slot>stopAct/disable</slot>
                 <slot>pauseAct/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>enable_disable_toolbar/is_checked</signal>
+                <slot>toolbar2View/set_enabled</slot>
+            </connect>
+
+            <connect>
+                <signal>enable_disable_toolbar/checked</signal>
+                <slot>toolbar2View/enable</slot>
+            </connect>
+
+            <connect>
+                <signal>enable_disable_toolbar/unchecked</signal>
+                <slot>toolbar2View/disable</slot>
             </connect>
 
             <connect>

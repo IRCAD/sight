@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,6 +80,15 @@ public:
     /// SLOT: hide the container
     SIGHT_UI_API void hide();
 
+    /// SLOT: enable/disable the container
+    SIGHT_UI_API void set_enabled(bool _enabled);
+
+    /// SLOT: enable the container
+    SIGHT_UI_API void enable();
+
+    /// SLOT: disable the container
+    SIGHT_UI_API void disable();
+
 protected:
 
     SIGHT_UI_API toolbar();
@@ -152,10 +161,13 @@ protected:
     struct slots
     {
         using key_t = sight::core::com::slots::key_t;
-        static inline const key_t SET_VISIBLE_SLOT          = "set_visible";
-        static inline const key_t SET_VISIBLE_BY_PARAM_SLOT = "setVisibleByParam";
-        static inline const key_t SHOW_SLOT                 = "show";
-        static inline const key_t HIDE_SLOT                 = "hide";
+        static inline const key_t SET_VISIBLE          = "set_visible";
+        static inline const key_t SET_VISIBLE_BY_PARAM = "setVisibleByParam";
+        static inline const key_t SHOW                 = "show";
+        static inline const key_t HIDE                 = "hide";
+        static inline const key_t SET_ENABLED          = "set_enabled";
+        static inline const key_t ENABLE               = "enable";
+        static inline const key_t DISABLE              = "disable";
     };
 
 private:

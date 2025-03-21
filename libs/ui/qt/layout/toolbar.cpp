@@ -396,6 +396,30 @@ bool toolbar::visible() const
     return false;
 }
 
+//-----------------------------------------------------------------------------
+
+void toolbar::set_enabled(bool _enabled)
+{
+    auto* const toolbar = m_parent->get_qt_tool_bar();
+    if(toolbar != nullptr)
+    {
+        toolbar->setEnabled(_enabled);
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+bool toolbar::enabled() const
+{
+    const auto* const toolbar = m_parent->get_qt_tool_bar();
+    if(toolbar != nullptr)
+    {
+        return toolbar->isEnabled();
+    }
+
+    return false;
+}
+
 //------------------------------------------------------------------------------
 
 void toolbar::schedule_adjust_size()

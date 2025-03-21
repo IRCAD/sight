@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,10 +41,13 @@ namespace sight::ui
 
 toolbar::toolbar()
 {
-    new_slot(slots::SET_VISIBLE_SLOT, &toolbar::set_visible, this);
-    new_slot(slots::SET_VISIBLE_BY_PARAM_SLOT, &toolbar::set_visible_by_parameter, this);
-    new_slot(slots::SHOW_SLOT, &toolbar::show, this);
-    new_slot(slots::HIDE_SLOT, &toolbar::hide, this);
+    new_slot(slots::SET_VISIBLE, &toolbar::set_visible, this);
+    new_slot(slots::SET_VISIBLE_BY_PARAM, &toolbar::set_visible_by_parameter, this);
+    new_slot(slots::SHOW, &toolbar::show, this);
+    new_slot(slots::HIDE, &toolbar::hide, this);
+    new_slot(slots::SET_ENABLED, &toolbar::set_enabled, this);
+    new_slot(slots::ENABLE, &toolbar::enable, this);
+    new_slot(slots::DISABLE, &toolbar::disable, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -277,6 +280,27 @@ void toolbar::show()
 void toolbar::hide()
 {
     this->set_visible(false);
+}
+
+//-----------------------------------------------------------------------------
+
+void toolbar::set_enabled(bool _enabled)
+{
+    m_layout_manager->set_enabled(_enabled);
+}
+
+//-----------------------------------------------------------------------------
+
+void toolbar::enable()
+{
+    m_layout_manager->set_enabled(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void toolbar::disable()
+{
+    m_layout_manager->set_enabled(false);
 }
 
 } // namespace sight::ui

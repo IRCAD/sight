@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -201,6 +201,16 @@ public:
      * @brief Get the toolbar visibility.
      */
     SIGHT_UI_API virtual bool visible() const = 0;
+
+    /**
+     * @brief Set the toolbar enabled state.
+     */
+    SIGHT_UI_API virtual void set_enabled(bool _enabled) = 0;
+
+    /**
+     * @brief Get the toolbar enabled state.
+     */
+    SIGHT_UI_API virtual bool enabled() const = 0;
 
     /**
      * @brief Sets callbacks associate with toolbar items.

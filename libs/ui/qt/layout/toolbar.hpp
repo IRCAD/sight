@@ -83,6 +83,9 @@ public:
     SIGHT_UI_QT_API void set_visible(bool _is_visible) override;
     SIGHT_UI_QT_API bool visible() const override;
 
+    SIGHT_UI_QT_API void set_enabled(bool _enabled) override;
+    SIGHT_UI_QT_API bool enabled() const override;
+
 protected:
 
     ui::qt::container::toolbar::sptr m_parent;
