@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ void launcher::parse_configuration(const configuration_t& _config, const in_out_
                 SIGHT_ASSERT("Missing 'uid' tag.", !uid.empty());
 
                 const bool optional = it_cfg.second.get<bool>("<xmlattr>.optional", false);
-                const auto& obj_id  = _inouts[i++];
+                const auto& obj_id  = _inouts[i];
                 parameter_t param;
                 param.replace = key;
                 if(optional)
@@ -69,6 +69,7 @@ void launcher::parse_configuration(const configuration_t& _config, const in_out_
                 else
                 {
                     param.by = obj_id;
+                    ++i;
                 }
 
                 m_parameters.push_back(param);

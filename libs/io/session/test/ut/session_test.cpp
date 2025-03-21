@@ -508,10 +508,10 @@ inline data::activity::sptr generate<data::activity>(const std::size_t _variant)
 {
     auto object = std::make_shared<data::activity>();
 
-    (*object)[data::boolean::classname()] = create<data::boolean>(_variant);
-    (*object)[data::integer::classname()] = create<data::integer>(_variant);
-    (*object)[data::real::classname()]    = create<data::real>(_variant);
-    (*object)[data::string::classname()]  = create<data::string>(_variant);
+    (*object)[data::boolean::classname() + std::to_string(_variant)] = create<data::boolean>(_variant);
+    (*object)[data::integer::classname() + std::to_string(_variant)] = create<data::integer>(_variant);
+    (*object)[data::real::classname() + std::to_string(_variant)]    = create<data::real>(_variant);
+    (*object)[data::string::classname() + std::to_string(_variant)]  = create<data::string>(_variant);
 
     return object;
 }

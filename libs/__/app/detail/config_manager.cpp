@@ -184,6 +184,7 @@ void config_manager::create()
 void config_manager::start()
 {
     SIGHT_ASSERT("Manager must be created first.", m_state == state_created || m_state == state_stopped);
+    SIGHT_INFO(std::quoted(this->m_config_id) << " started");
 
     core::com::has_slots::m_slots.set_worker(core::thread::get_default_worker());
 
@@ -220,6 +221,7 @@ void config_manager::update()
 void config_manager::stop()
 {
     SIGHT_ASSERT("Manager is not started, cannot stop.", m_state == state_started);
+    SIGHT_INFO(std::quoted(this->m_config_id) << " stopped");
 
     m_add_object_connection.disconnect();
     m_remove_object_connection.disconnect();
@@ -269,6 +271,9 @@ void config_manager::destroy()
         << service::get_registry_information()
     );
 
+    m_pref_objects.clear();
+    m_pref_service_uid.clear();
+    m_updater_srv_start.clear();
     m_cfg_elem.clear();
     m_created_objects.clear();
     m_deferred_objects.clear();
@@ -1322,8 +1327,11 @@ void config_manager::remove_objects(data::object::sptr _obj, const std::string& 
 
                     std::erase_if(m_started_srv, [&srv](auto& _x){return srv == _x.lock();});
 
-                    SIGHT_ASSERT("Service " << srv->get_id() << " already stopped.", !srv->stopped());
-                    srv->stop().wait();
+                    if(srv->started())
+                    {
+                        // Don't bother with the current state, we may have stopped by slot before
+                        srv->stop().wait();
+                    }
 
                     // 2. Destroy the service
                     SIGHT_ASSERT(

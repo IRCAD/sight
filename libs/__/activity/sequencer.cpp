@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,8 @@
 
 namespace sight::activity
 {
+
+static std::int64_t activity_id_counter = 0;
 
 //------------------------------------------------------------------------------
 
@@ -139,6 +141,12 @@ data::activity::sptr sequencer::get_activity(
             {
                 // Create the new data
                 auto object = sight::activity::detail::data::create(req.type, req.object_config);
+
+                // Generate a unique id for each object according to the requirement name, otherwise the ids are based
+                // on data type. This would make debugging harder and it is required for some other services to work.
+                const auto id = core::id::join("activity", std::to_string(activity_id_counter), req.name);
+                object->set_id(id);
+
                 activity->insert_or_assign(req.name, object);
                 m_requirements.insert_or_assign(req.name, object);
             }
@@ -178,8 +186,11 @@ void sequencer::remove_last_activities(data::activity_set& _activity_set, std::s
         // Remove the activities behind the index
         _activity_set.erase(_activity_set.cbegin() + int(_index), _activity_set.cend());
 
-        // clear the requirements and parse the remaining activities to regereate the requirements
+        // clear the requirements and parse the remaining activities to recreate the requirements
         m_requirements.clear();
+        // increase the id counter, because we will recreate new requirements if we start again activities
+        // and the current requirements can still be referenced by some services until the restart is processed;
+        ++activity_id_counter;
         this->parse_activities(_activity_set);
     }
 }

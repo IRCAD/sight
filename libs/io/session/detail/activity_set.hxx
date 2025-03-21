@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -90,6 +90,27 @@ inline static data::activity_set::sptr read(
 
         activity_set->push_back(activity);
     }
+
+    // Generate a unique id for each object according to the requirement name, otherwise the ids are based on data type
+    // This would make debugging harder and it is required for some other services to work
+    static std::int64_t counter = 0;
+    std::ranges::for_each(
+        *activity_set,
+        [](const auto& _activity)
+        {
+            std::ranges::for_each(
+                *_activity,
+                [](const auto& _x)
+            {
+                const auto full_id = core::id::join("loaded_activity", std::to_string(counter), _x.first);
+                if(_x.second->get_id() != full_id)
+                {
+                    _x.second->set_id(full_id);
+                }
+            });
+        });
+
+    counter++;
 
     return activity_set;
 }
