@@ -42,6 +42,7 @@
         <object key="camera">sight::data::camera</object>
         <desc>This service extracts camera parameters from a camera series</desc>
     </extension>
+
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::data::get_mesh</service>
@@ -56,6 +57,13 @@
         <object key="seriesSet">sight::data::series_set</object>
         <object key="series">sight::data::series</object>
         <desc>This service extracts series from database of series</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::data::get_activity_object</service>
+        <object key="activity_set">sight::data::activity_set</object>
+        <desc>This service extracts objects from activities</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">
