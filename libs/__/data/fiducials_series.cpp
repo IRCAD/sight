@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,12 +28,15 @@
 #include <core/tools/uuid.hpp>
 
 #include <data/helper/fiducials_series.hpp>
+#include <data/registry/macros.hpp>
 
 #include <gdcmSequenceOfItems.h>
 #include <gdcmSmartPointer.h>
 #include <gdcmTagKeywords.h>
 
 #include <array>
+
+SIGHT_REGISTER_DATA(sight::data::fiducials_series)
 
 namespace sight::data
 {

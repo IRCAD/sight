@@ -23,18 +23,14 @@
 
 #include <sight/io/session/config.hpp>
 
-#include "io/session/detail/fiducials_series.hxx"
-#include "io/session/detail/image.hxx"
 #include "io/session/detail/series.hxx"
 #include "io/session/helper.hpp"
 #include "io/session/macros.hpp"
 
-#include <data/image_series.hpp>
+#include <data/fiducials_series.hpp>
 
-namespace sight::io::session::detail::image_series
+namespace sight::io::session::detail::fiducials_series
 {
-
-constexpr static auto DICOM_REFERENCE {"DicomReference"};
 
 //------------------------------------------------------------------------------
 
@@ -46,24 +42,18 @@ inline static void write(
     const core::crypto::secure_string& _password = ""
 )
 {
-    const auto image_series = helper::safe_cast<data::image_series>(_object);
+    const auto fiducials_series = helper::safe_cast<data::fiducials_series>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::image_series>(_tree, 2);
+    helper::write_version<data::fiducials_series>(_tree, 1);
 
-    // Since image_series inherits from Series, we could use SeriesSerializer
-    series::write(_archive, _tree, image_series, _children, _password);
-    image::write(_archive, _tree, image_series, _children, _password);
-
-    _children[data::fiducials_series::classname()] = image_series->get_fiducials();
-
-    // Serialize other attributes
-    _children[DICOM_REFERENCE] = image_series->get_dicom_reference();
+    // Since fiducials_series inherits from Series, we could use SeriesSerializer
+    series::write(_archive, _tree, fiducials_series, _children, _password);
 }
 
 //------------------------------------------------------------------------------
 
-inline static data::image_series::sptr read(
+inline static data::fiducials_series::sptr read(
     zip::archive_reader& _archive,
     const boost::property_tree::ptree& _tree,
     const std::map<std::string, data::object::sptr>& _children,
@@ -72,28 +62,17 @@ inline static data::image_series::sptr read(
 )
 {
     // Create or reuse the object
-    auto image_series = helper::cast_or_create<data::image_series>(_object);
+    auto fiducials_series = helper::cast_or_create<data::fiducials_series>(_object);
 
     // Check version number. Not mandatory, but could help for future release
-    const int version = helper::read_version<data::image_series>(_tree, 0, 2);
+    helper::read_version<data::fiducials_series>(_tree, 0, 1);
 
-    if(version == 2)
-    {
-        auto fiducials_series_child = _children.at(data::fiducials_series::classname());
-        auto fiducials_series       = image_series->get_fiducials();
-        fiducials_series->shallow_copy(fiducials_series_child);
-    }
-
-    image::read(_archive, _tree, _children, image_series, _password);
     // Deserialize series last since it overwrites some attributes of image.
-    series::read(_archive, _tree, _children, image_series, _password);
+    series::read(_archive, _tree, _children, fiducials_series, _password);
 
-    // Deserialize other attributes
-    image_series->set_dicom_reference(std::dynamic_pointer_cast<data::dicom_series>(_children.at(DICOM_REFERENCE)));
-
-    return image_series;
+    return fiducials_series;
 }
 
-SIGHT_REGISTER_SERIALIZER(data::image_series, write, read);
+SIGHT_REGISTER_SERIALIZER(data::fiducials_series, write, read);
 
-} // namespace sight::io::session::detail::image_series
+} // namespace sight::io::session::detail::fiducials_series

@@ -36,6 +36,7 @@
 #include <data/camera_set.hpp>
 #include <data/color.hpp>
 #include <data/dicom_series.hpp>
+#include <data/fiducials_series.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
@@ -1427,6 +1428,9 @@ inline data::image_series::sptr generate<data::image_series>(const std::size_t _
     object->image::shallow_copy(get_expected<data::image>(_variant));
     object->series::shallow_copy(get_expected<data::series>(_variant));
 
+    // Children
+    object->get_fiducials()->shallow_copy(get_expected<data::fiducials_series>(_variant));
+
     object->set_contrast_bolus_agent(uuid::generate());
     object->set_contrast_bolus_route(uuid::generate());
     object->set_contrast_bolus_volume(double(_variant));
@@ -1505,6 +1509,69 @@ void session_test::model_series_test()
     }
 
     test_combine<data::model_series>();
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline data::fiducials_series::sptr generate<data::fiducials_series>(const std::size_t _variant)
+{
+    auto fs = std::make_shared<sight::data::fiducials_series>();
+    fs->set_content_label(std::to_string(_variant));
+    fs->set_content_description("FS");
+    fs->set_content_creator_name("John Doe");
+
+    // Adds a dummy fiducial set
+    data::fiducials_series::fiducial_set fiducial_set;
+
+    data::fiducials_series::referenced_image referenced_image;
+    referenced_image.referenced_sop_class_uid    = "1";
+    referenced_image.referenced_sop_instance_uid = "2";
+    referenced_image.referenced_frame_number     = {3};
+    referenced_image.referenced_segment_number   = {4};
+    fiducial_set.referenced_image_sequence       = {referenced_image};
+
+    fiducial_set.frame_of_reference_uid = "5";
+
+    data::fiducials_series::fiducial fiducial;
+    fiducial.shape_type           = data::fiducials_series::shape::point;
+    fiducial.fiducial_description = "6";
+    fiducial.fiducial_identifier  = "7";
+
+    data::fiducials_series::graphic_coordinates_data graphic_coordinates_data;
+    graphic_coordinates_data.referenced_image_sequence.referenced_sop_class_uid    = "8";
+    graphic_coordinates_data.referenced_image_sequence.referenced_sop_instance_uid = "9";
+    graphic_coordinates_data.referenced_image_sequence.referenced_frame_number     = {10};
+    graphic_coordinates_data.referenced_image_sequence.referenced_segment_number   = {11};
+    graphic_coordinates_data.graphic_data                                          = {{12, 13}};
+    fiducial.graphic_coordinates_data_sequence                                     = {graphic_coordinates_data};
+
+    fiducial.fiducial_uid = "14";
+    fiducial.contour_data = {{15, 16, 17}};
+    fiducial_set.fiducial_sequence.push_back(fiducial);
+
+    fiducial_set.group_name = "18";
+    fiducial_set.color      = {{19, 20, 21, 22}};
+    fiducial_set.size       = 23.F;
+    fiducial_set.shape      = data::fiducials_series::private_shape::cube;
+    fiducial_set.visibility = true;
+
+    // Test setFiducialSets method
+    fs->set_fiducial_sets({fiducial_set});
+
+    return fs;
+}
+
+//------------------------------------------------------------------------------
+
+void session_test::fiducials_series_test()
+{
+    if(utest::filter::ignore_slow_tests())
+    {
+        return;
+    }
+
+    test_combine<data::fiducials_series>();
 }
 
 //------------------------------------------------------------------------------

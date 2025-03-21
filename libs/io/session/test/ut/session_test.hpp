@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,6 +64,7 @@ public:
     CPPUNIT_TEST(dicom_series_test);
     CPPUNIT_TEST(image_series_test);
     CPPUNIT_TEST(model_series_test);
+    CPPUNIT_TEST(fiducials_series_test);
     CPPUNIT_TEST(activity_set_test);
     CPPUNIT_TEST(camera_set_test);
     CPPUNIT_TEST(series_set_test);
@@ -111,6 +112,7 @@ public:
     static void dicom_series_test();
     static void image_series_test();
     static void model_series_test();
+    static void fiducials_series_test();
     static void activity_set_test();
     static void camera_set_test();
     static void series_set_test();
