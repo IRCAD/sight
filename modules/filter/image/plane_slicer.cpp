@@ -88,6 +88,10 @@ void plane_slicer::updating()
     const auto image_in = m_image.lock();
     if(not sight::data::helper::medical_image::check_image_validity(*image_in))
     {
+        // Resets the slice
+        auto slice = m_slice.lock();
+        slice->deep_copy(std::make_shared<sight::data::image>());
+        slice->async_emit(data::image::MODIFIED_SIG);
         return;
     }
 

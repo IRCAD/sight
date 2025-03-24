@@ -30,6 +30,7 @@ class plane_slicer_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(plane_slicer_test);
 CPPUNIT_TEST(basic);
+CPPUNIT_TEST(empty_image);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,6 +40,7 @@ public:
     void tearDown();
 
     static void basic();
+    static void empty_image();
 };
 
 } // namespace sight::module::filter::image::ut
