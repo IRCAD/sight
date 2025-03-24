@@ -36,6 +36,7 @@ private:
     CPPUNIT_TEST(check_distance);
     CPPUNIT_TEST(check_normal);
     CPPUNIT_TEST(check_intersect);
+    CPPUNIT_TEST(check_intersect_ray);
     CPPUNIT_TEST(check_is_in_half_space);
     CPPUNIT_TEST(check_offset);
     CPPUNIT_TEST(check_transform);
@@ -53,6 +54,7 @@ public:
     static void check_distance();
     static void check_normal();
     static void check_intersect();
+    static void check_intersect_ray();
     static void check_is_in_half_space();
     static void check_offset();
     static void check_transform();

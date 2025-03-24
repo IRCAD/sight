@@ -31,6 +31,8 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::plane_test);
 namespace sight::geometry::data::ut
 {
 
+static const double EPSILON = 1e-5;
+
 //------------------------------------------------------------------------------
 
 void plane_test::setUp()
@@ -58,10 +60,10 @@ void plane_test::check_get_plane()
 
     plane_t plane2 = geometry::get_plane(normal, plan_pt1);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[0], plane2[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[1], plane2[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[2], plane2[2], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[3], plane2[3], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[0], plane2[0], std::numeric_limits<double>::epsilon());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[1], plane2[1], std::numeric_limits<double>::epsilon());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[2], plane2[2], std::numeric_limits<double>::epsilon());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane1[3], plane2[3], std::numeric_limits<double>::epsilon());
 }
 
 //------------------------------------------------------------------------------
@@ -90,10 +92,10 @@ void plane_test::check_set_plane()
     plane_t plane;
     geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[0], normal[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[1], normal[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[2], normal[2], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[3], distance, 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[0], normal[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[1], normal[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[2], normal[2], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[3], distance, EPSILON);
 }
 
 //------------------------------------------------------------------------------
@@ -135,43 +137,78 @@ void plane_test::check_normal()
     geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
     glm::dvec3 plane_normal = geometry::get_normal(plane);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal[0], normal[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal[1], normal[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal[2], normal[2], 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal[0], normal[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal[1], normal[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal[2], normal[2], EPSILON);
 
     geometry::set_normal(plane, normal2);
     glm::dvec3 plane_normal2 = geometry::get_normal(plane);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal2[0], normal2[0], 0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal2[1], normal2[1], 0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal2[2], normal2[2], 0.001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal2[0], normal2[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal2[1], normal2[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane_normal2[2], normal2[2], EPSILON);
 }
 
 //------------------------------------------------------------------------------
 
 void plane_test::check_intersect()
 {
-    const glm::dvec3 line_pos = {1.0, 2.0, 4.0};
-//  const glm::dvec3 lineDirection = {{1.0, 0.0, 0.0}};  // ==> No intersection
-//   const glm::dvec3 line_direction = {3.0, 0.0, 4.0};  // ==> intersection
-    const glm::dvec3 line_direction = {0.0, 0.0, 4.0}; // ==> intersection in (0.0, 0.0, 0.0)
-
-    const line_t line = std::make_pair(line_pos, line_pos + line_direction);
-
     const glm::dvec3 plan_pt1 = {0.0, 0.0, 0.0};
     const glm::dvec3 plan_pt2 = {2.0, 0.0, 0.0};
     const glm::dvec3 plan_pt3 = {0.0, 2.0, 0.0};
     plane_t plane;
     geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
 
-    glm::dvec3 point;
-    const bool intersect = geometry::intersect(plane, line, point);
+    const glm::dvec3 line_pos = {1.0, 2.0, 4.0};
+    {
+        const glm::dvec3 line_direction = {0.0, 0.0, 4.0}; // ==> intersection in (0.0, 0.0, 0.0)
+        const line_t line               = {line_pos, line_pos + line_direction};
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point[0], 1.0, 0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point[1], 2.0, 0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point[2], 0.0, 0.001);
+        const auto intersect = geometry::intersect(plane, line);
 
-    CPPUNIT_ASSERT_EQUAL(true, intersect);
+        CPPUNIT_ASSERT(intersect.has_value());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(intersect.value()[0], 1.0, std::numeric_limits<double>::epsilon());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(intersect.value()[1], 2.0, std::numeric_limits<double>::epsilon());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(intersect.value()[2], 0.0, std::numeric_limits<double>::epsilon());
+    }
+    {
+        const glm::dvec3 line_direction = {12.0, 0.0, 0.0}; // ==> intersection in (0.0, 0.0, 0.0)
+        const line_t line               = {line_pos, line_pos + line_direction};
+
+        const auto intersect = geometry::intersect(plane, line);
+        CPPUNIT_ASSERT(not intersect.has_value());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void plane_test::check_intersect_ray()
+{
+    const glm::dvec3 plan_pt1 = {0.0, 0.0, 0.0};
+    const glm::dvec3 plan_pt2 = {2.0, 0.0, 0.0};
+    const glm::dvec3 plan_pt3 = {0.0, 2.0, 0.0};
+    plane_t plane;
+    geometry::set_plane(plane, plan_pt1, plan_pt2, plan_pt3);
+
+    const glm::dvec3 line_pos = {1.0, 2.0, 4.0};
+    {
+        const glm::dvec3 line_direction = {0.0, 0.0, 1.0};
+        const ray_t line                = {line_pos, line_direction};
+
+        const auto intersect = geometry::intersect_ray(plane, line);
+
+        CPPUNIT_ASSERT(intersect.has_value());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(intersect.value()[0], 1.0, std::numeric_limits<double>::epsilon());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(intersect.value()[1], 2.0, std::numeric_limits<double>::epsilon());
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(intersect.value()[2], 0.0, std::numeric_limits<double>::epsilon());
+    }
+    {
+        const glm::dvec3 line_direction = {1.0, 0.0, 0.0};
+        const ray_t line                = {line_pos, line_direction};
+
+        const auto intersect = geometry::intersect_ray(plane, line);
+        CPPUNIT_ASSERT(not intersect.has_value());
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -232,14 +269,14 @@ void plane_test::check_offset()
     geometry::offset(plane, s_OFFSET);
     double offset = geometry::get_distance(plane);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.320620, offset, 0.001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.320620, offset, EPSILON);
 }
 
 //------------------------------------------------------------------------------
 
 void plane_test::check_transform()
 {
-    const glm::dvec3 normal_res = {0.832, -0.554, 0.0};
+    const glm::dvec3 normal_res = {0.83205, -0.55470, 0.0};
     const double distance_res   = -0.028691;
 
     const glm::dvec3 normal = {4.0, 3.0, 2.0};
@@ -257,10 +294,10 @@ void plane_test::check_transform()
 
     geometry::transform(plane, matrice);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[0], normal_res[0], 0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[1], normal_res[1], 0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[2], normal_res[2], 0.001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[3], distance_res, 0.001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[0], normal_res[0], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[1], normal_res[1], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[2], normal_res[2], EPSILON);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(plane[3], distance_res, EPSILON);
 }
 
 //------------------------------------------------------------------------------

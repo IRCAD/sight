@@ -28,6 +28,8 @@
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
 
+#include <optional>
+
 namespace sight::geometry
 {
 
@@ -35,8 +37,6 @@ namespace sight::geometry
  * @brief Definition of type for a plane defined by a normal and a distance
  */
 using plane_t = glm::dvec4;
-
-static const double EPSILON = 0.001;
 
 /**
  * @brief
@@ -90,14 +90,22 @@ SIGHT_GEOMETRY_API double get_distance(const plane_t& _plane);
  *  @return [out] _plane
  */
 SIGHT_GEOMETRY_API void set_distance(plane_t& _plane, double _distance);
+
 /**
  *  @brief Give the intersection between a plane and a line. The result is returned in a point (_point)
- *  @param [in]  _plane_t
+ *  @param [in]  _plane
  *  @param [in]  _line
- *  @param [out] _point intersection point.
- *  @return true if an intersection is found.
+ *  @return intersection if found, nullopt otherwise.
  */
-SIGHT_GEOMETRY_API bool intersect(const plane_t& _plane_t, const line_t& _line, glm::dvec3& _point);
+SIGHT_GEOMETRY_API std::optional<glm::dvec3> intersect(const plane_t& _plane, const line_t& _line);
+
+/**
+ *  @brief Give the intersection between a plane and a ray. The result is returned in a point (_point)
+ *  @param [in]  _plane
+ *  @param [in]  ray
+ *  @return intersection if found, nullopt otherwise
+ */
+SIGHT_GEOMETRY_API std::optional<glm::dvec3> intersect_ray(const plane_t& _plane, const ray_t& _ray);
 
 /**
  *  @brief Compute if a point is in a half plane.

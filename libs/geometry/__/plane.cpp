@@ -28,7 +28,7 @@
 #include <glm/gtx/vec_swizzle.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
 
-constexpr double EPSILON = 0.00000001;
+static constexpr double EPSILON = 1.0E-8;
 
 namespace sight::geometry
 {
@@ -103,32 +103,40 @@ void set_distance(plane_t& _plane, const double _distance)
 
 //------------------------------------------------------------------------------
 
-bool intersect(const plane_t& _plane, const line_t& _line, glm::dvec3& _point)
+std::optional<glm::dvec3> intersect(const plane_t& _plane, const line_t& _line)
 {
-    glm::dvec3 normal(_plane[0], _plane[1], _plane[2]);
-    normal = glm::normalize(normal);
-    glm::dvec3 line_direction(_line.second[0] - _line.first[0],
-                              _line.second[1] - _line.first[1],
-                              _line.second[2] - _line.first[2]);
-    line_direction = glm::normalize(line_direction);
-    glm::dvec3 line_origin(_line.first[0], _line.first[1], _line.first[2]);
+    const glm::dvec3 normal(_plane[0], _plane[1], _plane[2]);
+    const glm::dvec3 line_direction = glm::normalize((_line.second - _line.first));
 
-    double intersection_distance = 0.;
-    double d                     = glm::dot(line_direction, normal);
+    const double d = glm::dot(line_direction, normal);
 
     if(std::abs(d) < EPSILON)
     {
-        return false;
+        return {};
     }
 
-    intersection_distance = (_plane[3] - glm::dot(normal, line_origin)) / d;
+    const double intersection_distance = (_plane[3] - glm::dot(normal, _line.first)) / d;
 
-    line_origin += line_direction * intersection_distance;
-    _point[0]    = line_origin[0];
-    _point[1]    = line_origin[1];
-    _point[2]    = line_origin[2];
+    const glm::dvec3 intersection = _line.first + line_direction * intersection_distance;
+    return intersection;
+}
 
-    return true;
+//------------------------------------------------------------------------------
+
+std::optional<glm::dvec3> intersect_ray(const plane_t& _plane, const ray_t& _ray)
+{
+    glm::dvec3 normal(_plane[0], _plane[1], _plane[2]);
+    const double d = glm::dot(_ray.second, normal);
+
+    if(std::abs(d) < EPSILON)
+    {
+        return {};
+    }
+
+    const double intersection_distance = (_plane[3] - glm::dot(normal, _ray.first)) / d;
+
+    const glm::dvec3 intersection = _ray.first + _ray.second * intersection_distance;
+    return intersection;
 }
 
 //------------------------------------------------------------------------------

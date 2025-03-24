@@ -153,8 +153,13 @@ bool intersect(
     const glm::dvec3& normal = get_normal(plane);
     _front = ((dot(normal, v)) >= 0.0);
 
-    return !(!intersect(plane, _line, _point) || ((dot(normal, cross(v01, _point - _v1))) < 0.0)
-             || ((dot(normal, cross(v12, _point - _v2))) < 0.0) || ((dot(normal, cross(v20, _point - _v3))) < 0.0));
+    if(auto intersection = intersect(plane, _line); intersection.has_value())
+    {
+        return !(((dot(normal, cross(v01, _point - _v1))) < 0.0)
+                 || ((dot(normal, cross(v12, _point - _v2))) < 0.0) || ((dot(normal, cross(v20, _point - _v3))) < 0.0));
+    }
+
+    return false;
 }
 
 //------------------------------------------------------------------------------
