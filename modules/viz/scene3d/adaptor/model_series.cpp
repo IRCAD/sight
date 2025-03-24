@@ -65,15 +65,17 @@ void model_series::configuring()
         )
     );
 
-    static const std::string s_AUTORESET_CAMERA_CONFIG = CONFIG + "autoresetcamera";
-    static const std::string s_MATERIAL_CONFIG         = CONFIG + "material";
-    static const std::string s_DYNAMIC_CONFIG          = CONFIG + "dynamic";
-    static const std::string s_DYNAMIC_VERTICES_CONFIG = CONFIG + "dynamicVertices";
-    static const std::string s_QUERY_CONFIG            = CONFIG + "queryFlags";
+    static const std::string s_AUTORESET_CAMERA_CONFIG  = CONFIG + "autoresetcamera";
+    static const std::string s_MATERIAL_CONFIG          = CONFIG + "material_name";
+    static const std::string s_MATERIAL_TEMPLATE_CONFIG = CONFIG + "material_template";
+    static const std::string s_DYNAMIC_CONFIG           = CONFIG + "dynamic";
+    static const std::string s_DYNAMIC_VERTICES_CONFIG  = CONFIG + "dynamicVertices";
+    static const std::string s_QUERY_CONFIG             = CONFIG + "queryFlags";
 
     m_auto_reset_camera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 
-    m_material_template_name = config.get<std::string>(s_MATERIAL_CONFIG, m_material_template_name);
+    m_material_name          = config.get<std::string>(s_MATERIAL_CONFIG, m_material_name);
+    m_material_template_name = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG, m_material_template_name);
     m_is_dynamic             = config.get<bool>(s_DYNAMIC_CONFIG, m_is_dynamic);
     m_is_dynamic_vertices    = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_is_dynamic_vertices);
 
@@ -143,6 +145,16 @@ void model_series::updating()
 
         config_t rec_adaptor_config;
         rec_adaptor_config.put("properties.<xmlattr>.visible", is_visible);
+
+        if(not m_material_name.empty())
+        {
+            rec_adaptor_config.put("config.<xmlattr>.material_name", m_material_name);
+        }
+        else
+        {
+            rec_adaptor_config.put("config.<xmlattr>.material_template", m_material_template_name);
+        }
+
         adaptor->configure(rec_adaptor_config);
 
         // We use the default service ID to get a unique number because a ModelSeries contains several Reconstructions
@@ -151,7 +163,6 @@ void model_series::updating()
         adaptor->set_render_service(this->render_service());
         adaptor->set_layer_id(m_layer_id);
         adaptor->set_transform_id(this->get_transform_id());
-        adaptor->set_material_template_name(m_material_template_name);
         adaptor->set_auto_reset_camera(m_auto_reset_camera);
         adaptor->set_query_flags(m_query_flags);
 

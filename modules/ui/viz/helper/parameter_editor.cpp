@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,8 +80,7 @@ service::config_t parameter_editor::create_config(
     service::config_t param_config;
 
     /// Getting associated object infos
-    const auto shader_obj =
-        _adaptor->inout(sight::viz::scene3d::parameter_adaptor::PARAMETER_INOUT).lock();
+    const auto shader_obj = _adaptor->inout(sight::viz::scene3d::parameter_adaptor::PARAMETER_INOUT).lock();
 
     const auto& obj_type = shader_obj->get_classname();
 

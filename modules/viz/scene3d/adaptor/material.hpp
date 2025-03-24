@@ -63,7 +63,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::material">
         <inout key="material" uid="..." />
-        <config materialTemplate="materialTemplateName" materialName="meshMaterial" textureName="texName"
+        <config material_template="materialTemplateName" material_name="meshMaterial" textureName="texName"
                 shadingMode="phong" normalLength="0.1" representationMode="SURFACE" />
     </service>
    @endcode
@@ -73,8 +73,8 @@ namespace sight::module::viz::scene3d::adaptor
  *      of the adaptor.
  *
  * @subsection Configuration Configuration:
- * - \b materialTemplate (optional, string, default=""): name of the base Ogre material/
- * - \b materialName (optional, string, default=""): name of the Ogre material. This is necessary to bind a
+ * - \b material_template (optional, string, default=""): name of the base Ogre material/
+ * - \b material_name (optional, string, default=""): name of the Ogre material. This is necessary to bind a
  *      sight::module::viz::scene3d:mesh or a sight::module::viz::scene3d:model_series to this material;
  *      simply specify the same Ogre material in its configuration.
  * - \b textureName (optional, string, default=""): the Ogre texture name used the material. Use it if you want to
@@ -242,7 +242,11 @@ private:
     /// Implementation of the material.
     sight::viz::scene3d::material::generic::uptr m_material_impl;
 
-    data::ptr<data::material, data::access::inout> m_material_data {this, MATERIAL_INOUT};
+    /// Used to keep alive the material data if it is not provided in the configuration
+    sight::data::material::sptr m_internal_material;
+
+    data::ptr<data::material, data::access::inout> m_material_data {this, MATERIAL_INOUT, true};
+    data::ptr_vector<data::object, data::access::inout> m_parameters {this, "parameters", true};
 };
 
 //------------------------------------------------------------------------------

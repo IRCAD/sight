@@ -177,12 +177,6 @@ public:
      */
     void set_query_flags(std::uint32_t _query_flags);
 
-    /**
-     * @brief Sets if the reconstruction is managed or not.
-     * @param _is_reconstruction_managed use true if the reconstruction is managed.
-     */
-    void set_is_reconstruction_managed(bool _is_reconstruction_managed);
-
     /// Flags the r2vb objects as dirty and asks the render service to update.
     void request_render() override;
 
@@ -282,9 +276,6 @@ private:
 
     /// Defines the attached texture adaptor name.
     std::string m_texture_name;
-
-    /// Defines if the mesh adaptor is managed by a reconstruction adaptor.
-    bool m_is_reconstruction_managed {false};
 
     /// Defines if the mesh adaptor has to create a new material adaptor or simply use the one that is XML configured.
     bool m_use_new_material_adaptor {false};
@@ -391,13 +382,6 @@ inline void mesh::set_dynamic_vertices(bool _is_dynamic)
 inline void mesh::set_query_flags(uint32_t _query_flags)
 {
     m_query_flags = _query_flags;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void mesh::set_is_reconstruction_managed(bool _is_reconstruction_managed)
-{
-    m_is_reconstruction_managed = _is_reconstruction_managed;
 }
 
 //------------------------------------------------------------------------------

@@ -61,7 +61,7 @@
         </service>
         <service uid="materialSelectorSrv" type="sight::module::ui::viz::material_selector">
             <inout key="reconstruction" uid="reconstruction" />
-            <config materials="Basic,Default,OrenNayar,Foggy" />
+            <config materials="Basic,Default,OrenNayar,Foggy,Ghost" />
         </service>
         <service uid="shaderParametersSrv" type="sight::module::ui::viz::shader_parameter_editor">
             <inout key="reconstruction" uid="reconstruction" />

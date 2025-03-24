@@ -47,6 +47,9 @@ void reconstruction::configuring()
     );
     m_auto_reset_camera = config.get<bool>(CONFIG + "autoresetcamera", true);
 
+    m_material_name          = config.get<std::string>(CONFIG + "material_name", m_material_name);
+    m_material_template_name = config.get<std::string>(CONFIG + "material_template", m_material_template_name);
+
     const std::string hexa_mask = config.get<std::string>(CONFIG + "queryFlags", "");
     if(!hexa_mask.empty())
     {
@@ -135,15 +138,22 @@ void reconstruction::create_mesh_service()
 
         config_t mesh_adaptor_config;
         mesh_adaptor_config.put("properties.<xmlattr>.visible", visible() && reconstruction->get_is_visible());
+        if(not m_material_name.empty())
+        {
+            mesh_adaptor_config.put("config.<xmlattr>.material_name", m_material_name);
+        }
+        else
+        {
+            mesh_adaptor_config.put("config.<xmlattr>.material_template", m_material_template_name);
+        }
+
         mesh_adaptor->configure(mesh_adaptor_config);
         mesh_adaptor->set_id(gen_id(mesh_adaptor->get_id()));
         mesh_adaptor->set_layer_id(m_layer_id);
         mesh_adaptor->set_render_service(this->render_service());
 
-        mesh_adaptor->set_is_reconstruction_managed(true);
         // Here Material cannot be const since material created by mesh can modify it.
         mesh_adaptor->set_material(std::const_pointer_cast<data::material>(reconstruction->get_material()));
-        mesh_adaptor->set_material_template_name(m_material_template_name);
         mesh_adaptor->set_auto_reset_camera(m_auto_reset_camera);
         mesh_adaptor->set_transform_id(this->get_transform_id());
         mesh_adaptor->set_dynamic(m_is_dynamic);

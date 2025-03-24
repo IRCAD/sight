@@ -102,7 +102,7 @@ void mesh::configuring()
     // If a material is configured in the XML scene, we keep its name to retrieve the adaptor later
     // Else we keep the name of the configured Ogre material (if it exists),
     //      it will be passed to the created material
-    if(const auto material_name = config.get_optional<std::string>(CONFIG + "materialName");
+    if(const auto material_name = config.get_optional<std::string>(CONFIG + "material_name");
        material_name.has_value())
     {
         m_material_name = material_name.value();
@@ -110,7 +110,7 @@ void mesh::configuring()
     else
     {
         // An existing Ogre material will be used for this mesh
-        m_material_template_name = config.get<std::string>(CONFIG + "materialTemplate", m_material_template_name);
+        m_material_template_name = config.get<std::string>(CONFIG + "material_template", m_material_template_name);
 
         // The mesh adaptor will pass the texture name to the created material adaptor
         m_texture_name = config.get<std::string>(CONFIG + "textureName", m_texture_name);
@@ -159,7 +159,7 @@ void mesh::starting()
 
     // We have to create a new material adaptor only if this adaptor is instantiated by a reconstruction adaptor
     // or if no material adaptor uid has been configured
-    m_use_new_material_adaptor = m_is_reconstruction_managed || m_material_name.empty();
+    m_use_new_material_adaptor = m_material_name.empty();
 
     if(!m_use_new_material_adaptor)
     {

@@ -1,0 +1,50 @@
+// Default material
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/ghost_fp glsl
+{
+    source ghost_fp.glsl
+    default_params
+    {
+        param_named u_rim_params float3 0.7 0.9 0.8
+        param_named_auto u_view view_matrix
+        param_named_auto u_cameraPos camera_position
+        param_named_auto u_diffuse surface_diffuse_colour
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+material Ghost
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.05 0.05 0.05
+            specular 0.5 0.5 0.5 25.0
+
+            scene_blend alpha_blend
+            cull_hardware none
+
+            vertex_program_ref Default/PixelLit_VP
+            {
+            }
+
+            fragment_program_ref Default/ghost_fp
+            {
+            }
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            vertex_program_ref Render_VP
+            {
+            }
+        }
+    }
+}

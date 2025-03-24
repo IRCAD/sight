@@ -27,6 +27,7 @@
 #include <data/array.hpp>
 #include <data/boolean.hpp>
 #include <data/color.hpp>
+#include <data/dvec3.hpp>
 #include <data/image.hpp>
 #include <data/integer.hpp>
 #include <data/matrix4.hpp>
@@ -313,6 +314,16 @@ bool parameter_adaptor::set_parameter(Ogre::Technique& _technique)
                 param_values.data(),
                 static_cast<std::size_t>(16),
                 static_cast<std::size_t>(1)
+            );
+        }
+        else if(obj_class == "sight::data::dvec3")
+        {
+            const auto vec = std::dynamic_pointer_cast<const data::dvec3>(obj.get_shared());
+            SIGHT_ASSERT("The object is nullptr", vec);
+
+            params->setNamedConstant(
+                m_param_name,
+                Ogre::Vector3((float) (*vec)[0], (float) (*vec)[1], (float) (*vec)[2])
             );
         }
         else if(obj_class == "sight::data::array")

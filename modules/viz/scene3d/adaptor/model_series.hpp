@@ -53,7 +53,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::model_series">
         <in key="model" uid="..." />
-        <config transform="..." material="..." autoresetcamera="true" dynamic="false"
+        <config transform="..." material_name="..." autoresetcamera="true" dynamic="false"
  * dynamicVertices="false"
         queryFlags="0x40000000" />
    </service>
@@ -137,6 +137,9 @@ private:
 
     /// Defines the texture name.
     std::string m_texture_adaptor_uid;
+
+    /// Defines the material name.
+    std::string m_material_name;
 
     /// Defines the material name.
     std::string m_material_template_name {sight::viz::scene3d::material::standard::TEMPLATE};

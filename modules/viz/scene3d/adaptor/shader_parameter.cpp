@@ -55,6 +55,8 @@ void shader_parameter::starting()
         sight::viz::scene3d::RESOURCE_GROUP
     );
     this->set_material(material);
+
+    this->updating();
 }
 
 //------------------------------------------------------------------------------

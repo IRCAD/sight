@@ -71,8 +71,8 @@ void material::configuring()
 
     const config_t config = this->get_config();
 
-    static const std::string s_MATERIAL_TEMPLATE_NAME_CONFIG = CONFIG + "materialTemplate";
-    static const std::string s_MATERIAL_NAME_CONFIG          = CONFIG + "materialName";
+    static const std::string s_MATERIAL_TEMPLATE_NAME_CONFIG = CONFIG + "material_template";
+    static const std::string s_MATERIAL_NAME_CONFIG          = CONFIG + "material_name";
     static const std::string s_TEXTURE_NAME_CONFIG           = CONFIG + "textureName";
     static const std::string s_SHADING_MODE_CONFIG           = CONFIG + "shadingMode";
     static const std::string s_REPRESENTATION_MODE_CONFIG    = CONFIG + "representationMode";
@@ -113,7 +113,13 @@ void material::starting()
 {
     adaptor::init();
     {
-        const auto material = m_material_data.lock();
+        auto material = m_material_data.lock();
+        if(not material)
+        {
+            m_internal_material = std::make_shared<sight::data::material>();
+            this->set_inout(m_internal_material, MATERIAL_INOUT);
+            material = m_material_data.lock();
+        }
 
         if(!m_shading_mode.empty())
         {
@@ -246,12 +252,12 @@ void material::stopping()
     m_texture_connection.disconnect();
     this->unregister_services();
 
-    const auto material = m_material_data.lock();
-
-    if(material->get_field("shaderParameters"))
+    if(const auto material = m_material_data.lock(); material->get_field("shaderParameters"))
     {
         material->remove_field("shaderParameters");
     }
+
+    m_internal_material.reset();
 
     adaptor::deinit();
 }
@@ -271,10 +277,39 @@ void material::create_shader_parameter_adaptors()
         const auto& constant_type        = std::get<1>(constant);
         const auto& constant_value       = std::get<3>(constant);
 
-        auto obj = sight::viz::scene3d::helper::shading::create_object_from_shader_parameter(
-            constant_type,
-            constant_value
-        );
+        sight::data::object::sptr obj;
+
+        const config_t config = this->get_config();
+
+        if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
+        {
+            const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
+            if(group == "parameters")
+            {
+                std::size_t i = 0;
+                for(const auto& it_cfg : boost::make_iterator_range(inouts_cfg->equal_range("key")))
+                {
+                    const auto name = it_cfg.second.get<std::string>("<xmlattr>.name");
+                    SIGHT_ASSERT("Missing 'name' tag.", !name.empty());
+
+                    if(name == constant_name)
+                    {
+                        obj = m_parameters[i].lock().get_shared();
+                    }
+
+                    ++i;
+                }
+            }
+        }
+
+        if(obj == nullptr)
+        {
+            obj = sight::viz::scene3d::helper::shading::create_object_from_shader_parameter(
+                constant_type,
+                constant_value
+            );
+        }
+
         if(obj != nullptr)
         {
             const auto shader_type            = std::get<2>(constant);
@@ -295,23 +330,20 @@ void material::create_shader_parameter_adaptors()
             // Naming convention for shader parameters
             srv->set_render_service(this->render_service());
 
-            service::config_t config;
-            config.add("config.<xmlattr>.parameter", constant_name);
-            config.add("config.<xmlattr>.shaderType", shader_type_str);
-            config.add("config.<xmlattr>.materialName", m_material_name);
+            service::config_t srv_config;
+            srv_config.add("config.<xmlattr>.parameter", constant_name);
+            srv_config.add("config.<xmlattr>.shaderType", shader_type_str);
+            srv_config.add("config.<xmlattr>.materialName", m_material_name);
 
             srv->set_layer_id(m_layer_id);
-            srv->set_config(config);
+            srv->set_config(srv_config);
             srv->configure();
             srv->start();
 
             // Add the object to the shaderParameter map of the Material to keep the object alive
             const auto material_data = m_material_data.lock();
 
-            data::map::sptr map = material_data->set_default_field(
-                "shaderParameters",
-                std::make_shared<data::map>()
-            );
+            data::map::sptr map = material_data->set_default_field("shaderParameters", std::make_shared<data::map>());
             (*map)[constant_name] = obj;
         }
     }

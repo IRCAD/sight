@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -163,7 +163,7 @@ void shader_parameter_editor::update_gui_info()
             const object_classname_t obj_type = shader_obj->get_classname();
 
             if(obj_type == "sight::data::boolean" || obj_type == "sight::data::real"
-               || obj_type == "sight::data::integer")
+               || obj_type == "sight::data::integer" || obj_type == "sight::data::array")
             {
                 found = true;
                 break;

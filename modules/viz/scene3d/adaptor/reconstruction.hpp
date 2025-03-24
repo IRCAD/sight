@@ -144,6 +144,9 @@ private:
     bool m_auto_reset_camera {true};
 
     /// Defines the material name.
+    std::string m_material_name;
+
+    /// Defines the material template name.
     std::string m_material_template_name {sight::viz::scene3d::material::standard::TEMPLATE};
 
     /// Defines if the mesh changes dynamically.
@@ -164,13 +167,6 @@ private:
 inline void reconstruction::set_auto_reset_camera(bool _auto_reset_camera)
 {
     m_auto_reset_camera = _auto_reset_camera;
-}
-
-//------------------------------------------------------------------------------
-
-inline void reconstruction::set_material_template_name(const std::string& _material_name)
-{
-    m_material_template_name = _material_name;
 }
 
 //------------------------------------------------------------------------------
