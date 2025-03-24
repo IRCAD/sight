@@ -46,16 +46,18 @@ plane::plane(
     Ogre::SceneNode* _parent_scene_node,
     Ogre::SceneManager* _scene_manager,
     viz::scene3d::texture::sptr _tex,
+    viz::scene3d::texture::sptr _mask,
     filter_t _filtering,
+    const std::string& _material_name,
     bool _display_border,
     bool _display_other_planes,
-    float _entity_opacity,
-    bool _post_classification
+    float _entity_opacity
 ) :
     m_border({.shape       = nullptr, .material = nullptr, .enabled = _display_border}),
     m_slices_cross({.shape = nullptr, .material = nullptr, .enabled = _display_other_planes}),
     m_filtering(_filtering),
     m_texture(std::move(_tex)),
+    m_mask_texture(std::move(_mask)),
     m_scene_manager(_scene_manager),
     m_parent_scene_node(_parent_scene_node),
     m_entity_opacity(_entity_opacity)
@@ -70,10 +72,7 @@ plane::plane(
     m_plane_scene_node = m_parent_scene_node->createChildSceneNode(m_scene_node_name);
 
     const auto plane_material_name = core::id::join(m_slice_plane_name + "plane_material");
-    m_plane_material = std::make_unique<viz::scene3d::material::generic>(
-        plane_material_name,
-        _post_classification ? "Negato" : "Negato_pre"
-    );
+    m_plane_material = std::make_unique<viz::scene3d::material::generic>(plane_material_name, _material_name);
 
     const Ogre::ColourValue diffuse(1.F, 1.F, 1.F, m_entity_opacity);
     m_plane_material->material()->setDiffuse(diffuse);
@@ -219,6 +218,10 @@ void plane::update(
     m_plane_material->set_fragment_uniform("u_window", m_texture->window());
     m_plane_material->set_fragment_uniform("u_orientation", orientation_index);
     m_plane_material->set_fragment_uniform("u_enableAlpha", static_cast<int>(_enable_transparency));
+    if(m_mask_texture)
+    {
+        m_plane_material->set_texture("mask", m_mask_texture->get());
+    }
 
     if(m_border.enabled)
     {

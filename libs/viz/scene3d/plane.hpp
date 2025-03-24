@@ -84,11 +84,12 @@ public:
         Ogre::SceneNode* _parent_scene_node,
         Ogre::SceneManager* _scene_manager,
         viz::scene3d::texture::sptr _tex,
+        viz::scene3d::texture::sptr _mask,
         filter_t _filtering,
+        const std::string& _material_name,
         bool _display_border       = true,
         bool _display_other_planes = true,
-        float _entity_opacity      = 1.0F,
-        bool _post_classification  = true
+        float _entity_opacity      = 1.0F
     );
 
     /// Cleans ogre resources.
@@ -193,6 +194,9 @@ private:
 
     /// Contains the texture.
     viz::scene3d::texture::sptr m_texture;
+
+    /// Contains the mask texture.
+    viz::scene3d::texture::sptr m_mask_texture;
 
     /// Contains the scene manager containing the plane.
     Ogre::SceneManager* m_scene_manager {nullptr};

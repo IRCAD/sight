@@ -134,17 +134,28 @@ void negato2d::starting()
     m_origin_scene_node = transform_node->createChildSceneNode();
     m_negato_scene_node = m_origin_scene_node->createChildSceneNode();
 
+    const auto mask                 = m_mask.lock();
+    const auto* const material_name = mask
+                                      != nullptr ? "Negato_mask" : (*m_classification == std::string("post"))
+                                      ? "Negato" : "Negato_pre";
+
+    if(mask)
+    {
+        m_mask_texture = std::make_shared<sight::viz::scene3d::texture>(mask.get_shared());
+    }
+
     // Plane's instantiation
     m_plane = std::make_unique<sight::viz::scene3d::plane>(
         this->get_id(),
         m_negato_scene_node,
         get_scene_manager(),
         m_3d_ogre_texture,
+        m_mask_texture,
         m_filtering,
+        material_name,
         m_border,
         m_slices_cross,
-        1.0F,
-        *m_classification == std::string("post")
+        1.0F
     );
 
     this->new_image();
@@ -181,6 +192,7 @@ void negato2d::stopping()
     m_origin_scene_node = nullptr;
 
     m_picking_cross.reset();
+    m_mask_texture.reset();
     m_3d_ogre_texture.reset();
     m_gpu_tf.reset();
 
@@ -229,6 +241,10 @@ void negato2d::new_image()
 
         // Update the texture
         m_3d_ogre_texture->update();
+        if(m_mask_texture)
+        {
+            m_mask_texture->update();
+        }
 
         m_origin_scene_node->setPosition(sight::viz::scene3d::utils::get_ogre_origin(*image));
         m_origin_scene_node->setOrientation(sight::viz::scene3d::utils::get_ogre_orientation(*image));

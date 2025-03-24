@@ -143,6 +143,16 @@ void negato3d::starting()
     m_origin_scene_node = transform_node->createChildSceneNode();
     m_negato_scene_node = m_origin_scene_node->createChildSceneNode();
 
+    const auto mask                 = m_mask.lock();
+    const auto* const material_name = mask
+                                      != nullptr ? "Negato_mask" : (*m_classification == std::string("post"))
+                                      ? "Negato" : "Negato_pre";
+
+    if(mask)
+    {
+        m_mask_texture = std::make_shared<sight::viz::scene3d::texture>(mask.get_shared());
+    }
+
     // Instantiation of the planes
     for(auto& plane : m_planes)
     {
@@ -151,11 +161,12 @@ void negato3d::starting()
             m_negato_scene_node,
             this->get_scene_manager(),
             m_3d_ogre_texture,
+            m_mask_texture,
             m_filtering,
+            material_name,
             m_border,
             false,
-            1.0F,
-            *m_classification == std::string("post")
+            1.0F
         );
     }
 
@@ -241,6 +252,7 @@ void negato3d::stopping()
 
     m_picking_cross.reset();
 
+    m_mask_texture.reset();
     m_3d_ogre_texture.reset();
     m_gpu_tf.reset();
 
@@ -266,6 +278,10 @@ void negato3d::new_image()
 
         // Retrieves or creates the slice index fields
         m_3d_ogre_texture->update();
+        if(m_mask_texture)
+        {
+            m_mask_texture->update();
+        }
 
         const auto spacing = sight::viz::scene3d::utils::get_ogre_spacing(*image);
 

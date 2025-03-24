@@ -61,6 +61,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::negato3d">
         <in key="image" uid="..." />
+        <in key="mask" uid="..." />
         <inout key="tf" uid="..." />
         <config sliceIndex="axial" filtering="none" tfAlpha="true" />
         <properties classification="pre" />
@@ -69,6 +70,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection Input Input:
  * - \b image [sight::data::image]: image to display.
+ * - \b mask [sight::data::image] (optional): mask to apply onto the image. Values < 0.5 are considered masked.
  *
  * @subsection In-Out In-Out:
  * - \b tf [sight::data::transfer_function]: the current TransferFunction. If it is not defined, we use the
@@ -256,6 +258,9 @@ private:
     /// Contains the ogre texture which will be displayed on the negato.
     sight::viz::scene3d::texture::sptr m_3d_ogre_texture;
 
+    /// Contains the optional mask texture which will be applied on top of the negato.
+    sight::viz::scene3d::texture::sptr m_mask_texture;
+
     /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
     sight::viz::scene3d::transfer_function::uptr m_gpu_tf {nullptr};
 
@@ -299,6 +304,7 @@ private:
     };
 
     data::ptr<data::image, data::access::in> m_image {this, "image"};
+    data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "mask", true};
     data::ptr<data::transfer_function, data::access::inout> m_tf {this, "tf"};
 
     sight::data::property<sight::data::string> m_classification {this, "classification", std::string("post")};

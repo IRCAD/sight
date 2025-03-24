@@ -56,6 +56,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::negato2d">
         <in key="image" uid="..." />
+        <in key="mask" uid="..." />
         <in key="tf" uid="..." />
         <config sliceIndex="axial" filtering="none" tf_alpha="true" />
         <properties classification="pre" visible="true" />
@@ -64,6 +65,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection Input Input:
  * - \b image [sight::data::image]: image to display.
+ * - \b mask [sight::data::image] (optional): mask to apply onto the image. Values < 0.5 are considered masked.
  * - \b tf [sight::data::transfer_function] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
@@ -221,6 +223,9 @@ private:
     /// Contains the texture which will be displayed on the negato.
     sight::viz::scene3d::texture::sptr m_3d_ogre_texture;
 
+    /// Contains the optional mask texture which will be applied on top of the negato.
+    sight::viz::scene3d::texture::sptr m_mask_texture;
+
     /// Contains and manages the textures used to store the transfer function (GPU point of view).
     sight::viz::scene3d::transfer_function::uptr m_gpu_tf;
 
@@ -267,6 +272,7 @@ private:
     };
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
+    sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "mask", true};
     sight::data::ptr<sight::data::transfer_function, sight::data::access::in> m_tf {this, "tf"};
 
     sight::data::property<sight::data::string> m_classification {this, "classification", std::string("post")};
