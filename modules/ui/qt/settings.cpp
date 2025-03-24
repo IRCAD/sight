@@ -2127,6 +2127,28 @@ void settings::update_enum_range(std::string _options, std::string _key)
             ++idx;
         }
 
+        const bool is_string = settings::data<sight::data::string>(combobox) != nullptr;
+        if(is_string)
+        {
+            const auto obj        = settings::data<sight::data::string>(combobox);
+            const auto init_value = obj->value();
+            for(std::size_t index = 0 ; const auto& choice : data)
+            {
+                if(choice == init_value)
+                {
+                    combobox->setCurrentIndex(static_cast<int>(index));
+                }
+
+                ++index;
+            }
+        }
+        else
+        {
+            const auto obj        = settings::data<sight::data::integer>(combobox);
+            const auto init_value = obj->value();
+            combobox->setCurrentIndex(static_cast<int>(init_value));
+        }
+
         combobox->blockSignals(false);
     }
 
