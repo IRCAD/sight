@@ -284,7 +284,7 @@ void material::create_shader_parameter_adaptors()
         if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
         {
             const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
-            if(group == "parameters")
+            if(group == "uniforms")
             {
                 std::size_t i = 0;
                 for(const auto& it_cfg : boost::make_iterator_range(inouts_cfg->equal_range("key")))
@@ -294,7 +294,7 @@ void material::create_shader_parameter_adaptors()
 
                     if(name == constant_name)
                     {
-                        obj = m_parameters[i].lock().get_shared();
+                        obj = m_uniforms[i].lock().get_shared();
                     }
 
                     ++i;

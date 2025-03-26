@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -121,7 +121,7 @@ void material_selector::starting()
 
     QObject::connect(
         m_material_box,
-        SIGNAL(activated(const QString&)),
+        SIGNAL(currentTextChanged(const QString&)),
         this,
         SLOT(on_selected_mode_item(const QString&))
     );

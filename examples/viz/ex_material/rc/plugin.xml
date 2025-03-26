@@ -1,0 +1,173 @@
+<!--
+This example shows some possibilities of material configuration in the 3D scene:
+- setting a material
+- setting uniform parameters
+-->
+<plugin id="ex_material">
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3d_qt" />
+
+    <extension implements="sight::service::extension::config">
+        <id>vtk_srv_cfg</id>
+        <desc>VTK</desc>
+        <config>
+            <windowTitle>Open VTK file</windowTitle>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>ex_material_app_cfg</id>
+        <config>
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <object uid="ghost_material_param" type="sight::data::dvec3" value="0.5;0.7;0.85" />
+
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="model_series" type="sight::data::model_series" />
+            <object uid="snapshot" type="sight::data::image" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="main_frame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>ex_material</name>
+                        <icon>ex_material/app.ico</icon>
+                        <minSize width="720" height="480" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="main_view" start="true" />
+                </registry>
+            </service>
+
+            <!-- Status bar used to display the progress bar for reading -->
+            <service uid="progress_bar_view" type="sight::module::ui::qt::progress_bar" />
+
+            <!-- main view -->
+            <service uid="main_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::overlay">
+                        <view />
+                        <view x="1%" y="1%" />
+                        <view x="0" y="-5%" width="100%" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="scene_srv" start="true" />
+                    <view sid="toolbar_view" start="true" />
+                    <view sid="progress_bar_view" start="true" />
+                </registry>
+            </service>
+
+            <service uid="toolbar_view" type="sight::module::ui::view">
+                <gui>
+                    <toolbar backgroundColor="#00000000" />
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                    </layout>
+                </gui>
+                <registry>
+                    <toolbar sid="toolbar" start="true" />
+                </registry>
+            </service>
+
+            <service uid="toolbar" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout>
+                        <menuItem name="Load a model series" icon="sight::module::ui::icons/model_series.svg" />
+                        <menuItem name="Make a snapshot" icon="sight::module::ui::icons/frame.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="open_model_series_act" start="true" />
+                    <menuItem sid="snapshot_act" start="true" />
+                </registry>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <!-- This scene display a 3D image and a textured model_series -->
+            <service uid="scene_srv" type="sight::viz::scene3d::render">
+                <scene>
+                    <background topColor="#2c3c5c" bottomColor="#191234" topScale="0.6" bottomScale="1.0" />
+
+                    <layer id="default" order="1" transparency="DepthPeeling">
+                        <adaptor uid="trackball_interactor_adp" />
+                        <adaptor uid="model_series_adp" />
+                        <adaptor uid="snapshot_adp" />
+                    </layer>
+                </scene>
+            </service>
+
+            <service uid="trackball_interactor_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
+                <config priority="0" />
+            </service>
+
+            <service uid="model_series_adp" type="sight::module::viz::scene3d::adaptor::model_series">
+                <in key="model" uid="model_series" />
+                <inout group="uniforms">
+                    <key uid="ghost_material_param" name="u_rim_params" />
+                </inout>
+                <config material_template="Ghost" />
+            </service>
+
+            <service uid="snapshot_adp" type="sight::module::viz::scene3d::adaptor::fragments_info">
+                <inout key="image" uid="snapshot" />
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="open_model_series_act" type="sight::module::ui::action" />
+
+            <service uid="snapshot_act" type="sight::module::ui::action" />
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <!-- model_series reader -->
+            <service uid="model_series_reader_srv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="model_series" />
+                <type mode="reader" />
+                <config id="vtk_srv_cfg" service="sight::module::io::vtk::model_series_reader" />
+            </service>
+
+            <!-- Write the snapshot image -->
+            <service uid="image_writer_srv" type="sight::module::io::bitmap::writer">
+                <in key="data" uid="snapshot" />
+                <dialog policy="always" />
+                <backends enable="all" mode="best" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <!-- Connects readers to status bar service -->
+            <connect>
+                <signal>model_series_reader_srv/job_created</signal>
+                <slot>progress_bar_view/show_job</slot>
+            </connect>
+
+            <connect>
+                <signal>snapshot_act/clicked</signal>
+                <slot>image_writer_srv/update</slot>
+            </connect>
+
+            <!-- ******************************* Start services ***************************************** -->
+
+            <connect>
+                <signal>open_model_series_act/clicked</signal>
+                <slot>model_series_reader_srv/update</slot>
+            </connect>
+
+            <start uid="main_frame" />
+            <start uid="image_writer_srv" />
+            <start uid="model_series_reader_srv" />
+            <start uid="trackball_interactor_adp" />
+            <start uid="model_series_adp" />
+            <start uid="snapshot_adp" />
+        </config>
+    </extension>
+</plugin>

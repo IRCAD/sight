@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,6 +67,9 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::point_list" >
         <in key="pointList" uid="..." />
+        <inout group="uniforms">
+            <key uid="..." name="u_uniform_name" />
+       </inout>
         <config transform="..." textureName="..." radius="1.0" fontSource="DejaVuSans.ttf" fontSize="16"
                labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" displayLabel="false"/>
     </service>
@@ -76,6 +79,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b pointList [sight::data::point_list] (optional): point list to display.
  * - \b mesh [sight::data::mesh] (optional): point based mesh to display. If the mesh contains any topology, it will be
  *      ignored and only raw vertices will be displayed. or add some fields.
+ * - \b uniforms: list of data to bind to material uniforms.
  *
  * @subsection Configuration Configuration:
  * - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
@@ -83,7 +87,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified in the transform adaptor.
  *      Either of the following (whether a material is configured in the XML scene or not) :
- * - \b materialTemplate (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
+ * - \b material_template (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
  *      internally created material.
  * - \b textureName (optional, string, default=""): the name of the Ogre texture that the mesh will use.
  * - \b radius (optional, float, default=1.f): billboard radius.
@@ -165,11 +169,6 @@ private:
      */
     void update_mesh(const data::mesh::csptr& _mesh);
 
-    /**
-     * @brief Instantiates a new material adaptor.
-     */
-    module::viz::scene3d::adaptor::material::sptr create_material_service(const std::string& _mesh_id);
-
     /// Associates a new material to the managed point_list.
     /// With this method, point_list is responsible for creating a material.
     void update_material_adaptor(const std::string& _mesh_id);
@@ -247,6 +246,7 @@ private:
     static constexpr std::string_view MESH_INPUT      = "mesh";
 
     data::ptr<data::point_list, data::access::in> m_point_list {this, POINTLIST_INPUT, true};
+    data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
     data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_INPUT, true};
 };
 

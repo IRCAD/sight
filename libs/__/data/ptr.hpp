@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -429,7 +429,8 @@ private:
 
             if(m_ptrs.find(index) == m_ptrs.end())
             {
-                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, *_optional, index)));
+                const bool optional = _optional.has_value() ? *_optional : this->optional();
+                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, optional, index)));
             }
 
             m_ptrs[index]->set(_obj, _auto_connect, _optional, _signal);

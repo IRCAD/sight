@@ -147,6 +147,25 @@ void reconstruction::create_mesh_service()
             mesh_adaptor_config.put("config.<xmlattr>.material_template", m_material_template_name);
         }
 
+        if(m_uniforms.size() > 0)
+        {
+            std::size_t i = 0;
+            for(const auto& uniform_data : m_uniforms)
+            {
+                mesh_adaptor->set_inout(uniform_data.second->lock().get_shared(), "uniforms", true, {}, i++);
+            }
+
+            const auto config = this->get_config();
+            if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
+            {
+                const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
+                if(group == "uniforms")
+                {
+                    mesh_adaptor_config.add_child("inout", inouts_cfg.value());
+                }
+            }
+        }
+
         mesh_adaptor->configure(mesh_adaptor_config);
         mesh_adaptor->set_id(gen_id(mesh_adaptor->get_id()));
         mesh_adaptor->set_layer_id(m_layer_id);

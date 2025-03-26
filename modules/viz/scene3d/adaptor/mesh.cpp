@@ -402,47 +402,55 @@ void mesh::update_mesh(data::mesh::csptr _mesh)
 
 //------------------------------------------------------------------------------
 
-adaptor::material::sptr mesh::create_material_service(
-    data::mesh::csptr _mesh,
-    const std::string& _material_suffix
-)
-{
-    auto material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
-        "sight::module::viz::scene3d::adaptor::material"
-    );
-    material_adaptor->set_inout(m_material, "material", true);
-
-    const std::string mtl_name = core::id::join(_mesh->get_id(), material_adaptor->get_id(), _material_suffix);
-    SIGHT_ASSERT("Template name empty", !m_material_template_name.empty());
-
-    material_adaptor->configure(
-        gen_id(material_adaptor->get_id()),
-        mtl_name,
-        this->render_service(),
-        m_layer_id,
-        m_shading_mode,
-        m_material_template_name
-    );
-    material_adaptor->set_representation_mode(m_material->get_representation_mode());
-
-    if(_material_suffix.empty())
-    {
-        // We know that we are in the case of a R2VB material, so no need to set the diffuse texture (no FP...)
-        material_adaptor->set_texture_name(m_texture_name);
-    }
-
-    return material_adaptor;
-}
-
-//------------------------------------------------------------------------------
-
 void mesh::update_new_material_adaptor(data::mesh::csptr _mesh)
 {
     if(!m_material_adaptor)
     {
         if(m_entity != nullptr)
         {
-            m_material_adaptor = this->create_material_service(_mesh);
+            m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
+                "sight::module::viz::scene3d::adaptor::material"
+            );
+            m_material_adaptor->set_inout(m_material, "material", true);
+
+            config_t material_adp_config;
+            material_adp_config.put("config.<xmlattr>.material_template", m_material_template_name);
+
+            if(m_uniforms.size() > 0)
+            {
+                std::size_t i = 0;
+                for(const auto& uniform_data : m_uniforms)
+                {
+                    m_material_adaptor->set_inout(uniform_data.second->lock().get_shared(), "uniforms", true, {}, i++);
+                }
+
+                const auto config = this->get_config();
+                if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
+                {
+                    const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
+                    if(group == "uniforms")
+                    {
+                        material_adp_config.add_child("inout", inouts_cfg.value());
+                    }
+                }
+            }
+
+            const std::string mtl_name = core::id::join(_mesh->get_id(), m_material_adaptor->get_id());
+            SIGHT_ASSERT("Template name empty", !m_material_template_name.empty());
+
+            m_material_adaptor->service::base::configure(material_adp_config);
+            m_material_adaptor->set_id(gen_id(m_material_adaptor->get_id()));
+            m_material_adaptor->set_material_name(mtl_name);
+            m_material_adaptor->set_render_service(this->render_service());
+            m_material_adaptor->set_layer_id(m_layer_id);
+            m_material_adaptor->set_shading_mode(m_shading_mode);
+            m_material_adaptor->set_material_template_name(m_material_template_name);
+
+            m_material_adaptor->set_representation_mode(m_material->get_representation_mode());
+
+            // We know that we are in the case of a R2VB material, so no need to set the diffuse texture (no FP...)
+            m_material_adaptor->set_texture_name(m_texture_name);
+
             m_material_adaptor->start();
 
             m_material_adaptor->get_material_impl()->set_layout(*m_mesh_geometry);
@@ -474,6 +482,11 @@ void mesh::update_new_material_adaptor(data::mesh::csptr _mesh)
 
 void mesh::update_xml_material_adaptor()
 {
+    SIGHT_THROW_IF(
+        "Can not provide both a user-defined material adaptor and uniforms.",
+        m_uniforms.size() > 0
+    );
+
     if(m_material_adaptor->updating_status() == updating_status::notupdating)
     {
         if(m_material_adaptor->get_material_name().empty())

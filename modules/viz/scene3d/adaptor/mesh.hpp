@@ -80,13 +80,17 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::mesh" >
         <in key="mesh" uid="..." />
-        <config transform="..." visible="true" materialName="..." shadingMode="phong" textureName="..."
+        <inout group="uniforms">
+            <key uid="..." name="u_uniform_name" />
+       </inout>
+        <config transform="..." visible="true" material_name="..." shadingMode="phong" textureName="..."
         queryFlags="0x40000000" />
     </service>
    @endcode
  *
  * @subsection Input Input
  * - \b mesh [sight::data::mesh]: adapted mesh.
+ * - \b uniforms: list of data to bind to material uniforms. They will be passed to the underlying material adaptor.
  *
  * @subsection Configuration Configuration:
  *  - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
@@ -96,11 +100,11 @@ namespace sight::module::viz::scene3d::adaptor
  *       in the transform adaptor.
  *  - \b visible (optional, bool, default=true): set the initial visibility of the mesh.
  *       Either of the following (whether a material is configured in the XML scene or not) :
- *  - \b materialName (optional, string, default=""): name of the Ogre material, as defined in the
+ *  - \b material_name (optional, string, default=""): name of the Ogre material, as defined in the
  *       module::viz::scene3d::adaptor::material you want to be bound to.
  *       Only if there is no material configured in the XML scene (in this case, it has to retrieve the material
  *       template, the texture adaptor and the shading mode) :
- *  - \b materialTemplate (optional, string, default=""): the name of the base Ogre material for the internally created
+ *  - \b material_template (optional, string, default=""): the name of the base Ogre material for the internally created
  *       material.
  *  - \b textureName (optional, default=""): the name of the Ogre texture that the mesh will use.
  *  - \b shadingMode (optional, none/flat/phong/ambient, default=phong): name of the used shading mode.
@@ -230,16 +234,6 @@ private:
     void update_mesh(data::mesh::csptr _mesh);
 
     /**
-     * @brief Instantiates a new material adaptor
-     * @param _mesh used to create an unique material name.
-     * @param _material_suffix used for the material name.
-     */
-    module::viz::scene3d::adaptor::material::sptr create_material_service(
-        data::mesh::csptr _mesh,
-        const std::string& _material_suffix = ""
-    );
-
-    /**
      * @brief Associates a new material to the managed mesh.
      * With this method, mesh is responsible for creating a material.
      * @param _mesh used to create the material service.
@@ -311,6 +305,7 @@ private:
 
     static constexpr std::string_view MESH_IN = "mesh";
     data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_IN};
+    data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
 };
 
 //------------------------------------------------------------------------------

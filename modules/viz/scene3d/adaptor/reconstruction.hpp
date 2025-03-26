@@ -55,12 +55,16 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::reconstruction">
         <in key="reconstruction" uid="..." />
+        <inout group="uniforms">
+            <key uid="..." name="u_uniform_name" />
+       </inout>
         <config transform="..." autoresetcamera="true" queryFlags="0x40000000" />
    </service>
    @endcode
  *
  * @subsection Input Input:
  * - \b reconstruction [sight::data::reconstruction]: reconstruction to display.
+ * - \b uniforms: list of data to bind to material uniforms.
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the transformation matrix to associate to the adaptor.
@@ -68,6 +72,10 @@ namespace sight::module::viz::scene3d::adaptor
  *"false".
  * - \b queryFlags (optional, unit32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *      match the flag.
+ * - \b material_name (optional, string, default=""): name of the Ogre material, as defined in the
+ *      module::viz::scene3d::adaptor::material you want to be bound to.
+ * - \b material_template (optional, string, default=""): the name of the base Ogre material for the internally created
+ *      material.
  */
 class reconstruction final : public sight::viz::scene3d::adaptor,
                              public sight::viz::scene3d::transformable
@@ -160,6 +168,7 @@ private:
 
     static constexpr std::string_view RECONSTRUCTION_INPUT = "reconstruction";
     data::ptr<data::reconstruction, data::access::in> m_reconstruction {this, RECONSTRUCTION_INPUT};
+    data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
 };
 
 //------------------------------------------------------------------------------

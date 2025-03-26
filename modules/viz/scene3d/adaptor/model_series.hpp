@@ -53,7 +53,10 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::model_series">
         <in key="model" uid="..." />
-        <config transform="..." material_name="..." autoresetcamera="true" dynamic="false"
+        <inout group="uniforms">
+            <key uid="..." name="u_uniform_name" />
+        </inout>
+        <config transform="..." material_template="..." autoresetcamera="true" dynamic="false"
  * dynamicVertices="false"
         queryFlags="0x40000000" />
    </service>
@@ -61,6 +64,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection In-Out In-Out:
  * - \b model [sight::data::model_series]: adapted model series.
+ * - \b uniforms: list of data to bind to material uniforms.
  *
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the transformation matrix to associate to the adaptor.
@@ -78,6 +82,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b visible (optional, true/false, default=true): Used to define the default visibility of the modelSeries. If the
  *      tag is not present, the visibility will be set by the value of the modelSeries field. If the tag is present,
  *      the visibility is set by the value of this tag.
+ * - \b material_template (optional, string, default=""): the name of the base Ogre material for the internally created
+ *      material.
  */
 class model_series final :
     public sight::viz::scene3d::adaptor,
@@ -138,10 +144,7 @@ private:
     /// Defines the texture name.
     std::string m_texture_adaptor_uid;
 
-    /// Defines the material name.
-    std::string m_material_name;
-
-    /// Defines the material name.
+    /// Defines the material template name.
     std::string m_material_template_name {sight::viz::scene3d::material::standard::TEMPLATE};
 
     /// Defines if the model series is dynamic.
@@ -158,6 +161,7 @@ private:
 
     static constexpr std::string_view MODEL_INPUT = "model";
     data::ptr<data::model_series, data::access::in> m_model {this, MODEL_INPUT};
+    data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
 };
 
 //------------------------------------------------------------------------------

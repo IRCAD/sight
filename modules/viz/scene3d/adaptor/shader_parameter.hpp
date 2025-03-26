@@ -28,9 +28,9 @@ namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
- * @brief This adaptor sends a Sight data as a shader parameter.
+ * @brief This adaptor sends a Sight data as a shader parameter. It can bind
  *
- * Send parameters to vertex and fragment shaders
+ * Send parameters to vertex and fragment shaders.
  *
  * @section XML XML Configuration
  * @code{.xml}

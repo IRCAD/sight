@@ -66,7 +66,6 @@ void model_series::configuring()
     );
 
     static const std::string s_AUTORESET_CAMERA_CONFIG  = CONFIG + "autoresetcamera";
-    static const std::string s_MATERIAL_CONFIG          = CONFIG + "material_name";
     static const std::string s_MATERIAL_TEMPLATE_CONFIG = CONFIG + "material_template";
     static const std::string s_DYNAMIC_CONFIG           = CONFIG + "dynamic";
     static const std::string s_DYNAMIC_VERTICES_CONFIG  = CONFIG + "dynamicVertices";
@@ -74,7 +73,6 @@ void model_series::configuring()
 
     m_auto_reset_camera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 
-    m_material_name          = config.get<std::string>(s_MATERIAL_CONFIG, m_material_name);
     m_material_template_name = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG, m_material_template_name);
     m_is_dynamic             = config.get<bool>(s_DYNAMIC_CONFIG, m_is_dynamic);
     m_is_dynamic_vertices    = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_is_dynamic_vertices);
@@ -145,14 +143,25 @@ void model_series::updating()
 
         config_t rec_adaptor_config;
         rec_adaptor_config.put("properties.<xmlattr>.visible", is_visible);
+        rec_adaptor_config.put("config.<xmlattr>.material_template", m_material_template_name);
 
-        if(not m_material_name.empty())
+        if(m_uniforms.size() > 0)
         {
-            rec_adaptor_config.put("config.<xmlattr>.material_name", m_material_name);
-        }
-        else
-        {
-            rec_adaptor_config.put("config.<xmlattr>.material_template", m_material_template_name);
+            std::size_t i = 0;
+            for(const auto& uniform_data : m_uniforms)
+            {
+                adaptor->set_inout(uniform_data.second->lock().get_shared(), "uniforms", true, {}, i++);
+            }
+
+            const auto config = this->get_config();
+            if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
+            {
+                const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
+                if(group == "uniforms")
+                {
+                    rec_adaptor_config.add_child("inout", inouts_cfg.value());
+                }
+            }
         }
 
         adaptor->configure(rec_adaptor_config);

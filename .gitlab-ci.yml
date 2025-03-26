@@ -32,7 +32,7 @@ lint:ubuntu-24.04:
         SIGHT_BUILD_SDK: "OFF"
         SIGHT_ENABLE_REALSENSE: "OFF"
         SIGHT_ENABLE_GDB: "OFF"
-        TEST_DATA_REF: "30affcdc46"
+        TEST_DATA_REF: "afac44f11"
     script:
         # Reset the modified time of all files to improve ccache performance
         - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
@@ -284,7 +284,7 @@ deploy:apps-linux-release:
         SIGHT_BUILD_SDK: "OFF"
         MSVC_VERSION: "17"
         CUDA_VERSION: "12_5"
-        TEST_DATA_REF: "30affcdc46"
+        TEST_DATA_REF: "afac44f11"
     stage: build
     script:
         # Print CCache statistics

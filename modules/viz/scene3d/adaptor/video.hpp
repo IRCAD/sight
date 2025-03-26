@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection Configuration Configuration:
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
- * - \b materialTemplate (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
+ * - \b material_template (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
  *      internally created material.
  * - \b textureName (optional, string, default=""): the name of the Ogre texture the mesh will use.
  * - \b filtering (optional, bool, default=false): whether to use or not bilinear filtering for the texture.
@@ -138,7 +138,7 @@ private:
     struct config
     {
         static inline const std::string VISIBLE           = CONFIG + "visible";
-        static inline const std::string MATERIAL_TEMPLATE = CONFIG + "materialTemplate";
+        static inline const std::string MATERIAL_TEMPLATE = CONFIG + "material_template";
         static inline const std::string TEXTURE_NAME      = CONFIG + "textureName";
         static inline const std::string FILTERING         = CONFIG + "filtering";
         static inline const std::string SCALING           = CONFIG + "scaling";

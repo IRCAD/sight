@@ -63,6 +63,9 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::material">
         <inout key="material" uid="..." />
+        <inout group="uniforms">
+            <key uid="..." name="u_uniform_name" />
+       </inout>
         <config material_template="materialTemplateName" material_name="meshMaterial" textureName="texName"
                 shadingMode="phong" normalLength="0.1" representationMode="SURFACE" />
     </service>
@@ -71,6 +74,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection In-Out In-Out
  * - \b material [sight::data::material]: adapted material. The material may be modified to comply to the configuration
  *      of the adaptor.
+ * - \b uniforms: list of data to bind to material uniforms.
  *
  * @subsection Configuration Configuration:
  * - \b material_template (optional, string, default=""): name of the base Ogre material/
@@ -246,7 +250,7 @@ private:
     sight::data::material::sptr m_internal_material;
 
     data::ptr<data::material, data::access::inout> m_material_data {this, MATERIAL_INOUT, true};
-    data::ptr_vector<data::object, data::access::inout> m_parameters {this, "parameters", true};
+    data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
 };
 
 //------------------------------------------------------------------------------

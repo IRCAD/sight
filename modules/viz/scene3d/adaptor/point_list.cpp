@@ -94,7 +94,7 @@ void point_list::configuring()
     static const std::string s_COLOR_CONFIG             = CONFIG + "color";
     static const std::string s_VISIBLE_CONFIG           = CONFIG + "visible";
     static const std::string s_AUTORESET_CAMERA_CONFIG  = CONFIG + "autoresetcamera";
-    static const std::string s_MATERIAL_TEMPLATE_CONFIG = CONFIG + "materialTemplate";
+    static const std::string s_MATERIAL_TEMPLATE_CONFIG = CONFIG + "material_template";
     static const std::string s_FIXED_SIZE_CONFIG        = CONFIG + "fixedSize";
     static const std::string s_TEXTURE_NAME_CONFIG      = CONFIG + "textureName";
     static const std::string s_QUERY_CONFIG             = CONFIG + "queryFlags";
@@ -436,36 +436,51 @@ void point_list::update_mesh(const data::mesh::csptr& _mesh)
 
 //------------------------------------------------------------------------------
 
-scene3d::adaptor::material::sptr point_list::create_material_service(const std::string& _mesh_id)
-{
-    auto material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
-        "sight::module::viz::scene3d::adaptor::material"
-    );
-    material_adaptor->set_inout(m_material, "material", true);
-
-    SIGHT_ASSERT("Template name empty", !m_material_template_name.empty());
-
-    material_adaptor->configure(
-        gen_id(material_adaptor->get_id()),
-        core::id::join(_mesh_id, material_adaptor->get_id()),
-        this->render_service(),
-        m_layer_id,
-        "",
-        m_material_template_name
-    );
-
-    return material_adaptor;
-}
-
-//------------------------------------------------------------------------------
-
 void point_list::update_material_adaptor(const std::string& _mesh_id)
 {
     if(!m_material_adaptor)
     {
         if(m_entity != nullptr)
         {
-            m_material_adaptor = this->create_material_service(_mesh_id);
+            m_material_adaptor = this->register_service<module::viz::scene3d::adaptor::material>(
+                "sight::module::viz::scene3d::adaptor::material"
+            );
+            m_material_adaptor->set_inout(m_material, "material", true);
+
+            SIGHT_ASSERT("Template name empty", !m_material_template_name.empty());
+
+            config_t material_adp_config;
+            material_adp_config.put("config.<xmlattr>.material_template", m_material_template_name);
+
+            if(m_uniforms.size() > 0)
+            {
+                std::size_t i = 0;
+                for(const auto& uniform_data : m_uniforms)
+                {
+                    m_material_adaptor->set_inout(uniform_data.second->lock().get_shared(), "uniforms", true, {}, i++);
+                }
+
+                const auto config = this->get_config();
+                if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
+                {
+                    const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
+                    if(group == "uniforms")
+                    {
+                        material_adp_config.add_child("inout", inouts_cfg.value());
+                    }
+                }
+            }
+
+            const std::string mtl_name = core::id::join(_mesh_id, m_material_adaptor->get_id());
+            SIGHT_ASSERT("Template name empty", !m_material_template_name.empty());
+
+            m_material_adaptor->service::base::configure(material_adp_config);
+            m_material_adaptor->set_id(gen_id(m_material_adaptor->get_id()));
+            m_material_adaptor->set_material_name(mtl_name);
+            m_material_adaptor->set_render_service(this->render_service());
+            m_material_adaptor->set_layer_id(m_layer_id);
+            m_material_adaptor->set_material_template_name(m_material_template_name);
+
             m_material_adaptor->start();
 
             auto* material_impl = m_material_adaptor->get_material_impl();
