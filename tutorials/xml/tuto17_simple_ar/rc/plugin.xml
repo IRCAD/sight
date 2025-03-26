@@ -160,6 +160,19 @@
                 </gui>
                 <registry>
                     <view sid="genericSceneSrv" />
+                    <view sid="error_label_view" start="true" />
+                </registry>
+            </service>
+
+            <service uid="error_label_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <view proportion="0" backgroundColor="#36393E" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
                     <view sid="errorLabelSrv" start="true" />
                 </registry>
             </service>
@@ -356,8 +369,10 @@
 
             <!-- Gui Service to display a value in a QLabel -->
             <service uid="errorLabelSrv" type="sight::module::ui::qt::text_status">
-                <label>Reprojection error (RMSE)</label>
+                <label>Reprojection error (RMSE):</label>
                 <color>#D25252</color>
+                <size>12pt</size>
+                <decimals>3</decimals>
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->

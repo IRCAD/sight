@@ -24,7 +24,7 @@
 
 #include <core/com/slots.hxx>
 
-#include <service/macros.hpp>
+#include <data/real.hpp>
 
 #include <ui/qt/container/widget.hpp>
 
@@ -41,10 +41,9 @@ static const core::com::slots::key_t SET_STRING_PARAMETER_SLOT = "set_string_par
 //-----------------------------------------------------------------------------
 
 text_status::text_status() :
-    m_label_static_text(new QLabel())
+    m_label_static_text(new QLabel()),
+    m_suffix_value(new QLabel())
 {
-    m_label_static_text->setStyleSheet("font-weight: bold;");
-
     new_slot(SET_DOUBLE_PARAMETER_SLOT, &text_status::set_double_parameter, this);
     new_slot(SET_INT_PARAMETER_SLOT, &text_status::set_int_parameter, this);
     new_slot(SET_BOOL_PARAMETER_SLOT, &text_status::set_bool_parameter, this);
@@ -53,28 +52,17 @@ text_status::text_status() :
 
 //------------------------------------------------------------------------------
 
-text_status::~text_status()
-= default;
-
-//------------------------------------------------------------------------------
-
 void text_status::configuring()
 {
-    const QString service_id = QString::fromStdString(base_id());
-
-    m_label_value = new QLabel();
-    m_label_value->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
-    m_label_value->setObjectName(service_id);
-
     this->initialize();
 
     const auto config = this->get_config();
 
-    if(const auto label = config.get_optional<std::string>("label"); label.has_value())
-    {
-        const QString txt = QString::fromStdString(label.value());
-        m_label_static_text->setText(QString(txt + ": "));
-    }
+    const QString service_id = QString::fromStdString(base_id());
+
+    const auto size   = config.get<std::string>("size", "14pt");
+    const auto weight = config.get<std::string>("weight", "normal");
+    m_decimals = config.get<int>("decimals", m_decimals);
 
     QString color = "red";
 
@@ -87,7 +75,26 @@ void text_status::configuring()
         }
     }
 
-    m_label_static_text->setStyleSheet(m_label_static_text->styleSheet() + " color: " + color + ";");
+    const QString stylesheet = " color: " + color + ";"
+                               + "font-size: " + QString::fromStdString(size) + ";"
+                               + "font-weight: " + QString::fromStdString(weight) + ";";
+
+    m_label_value = new QLabel();
+    m_label_value->setObjectName(service_id);
+    m_label_value->setStyleSheet(m_label_value->styleSheet() + stylesheet);
+
+    if(const auto label = config.get_optional<std::string>("label"); label.has_value())
+    {
+        const QString txt = QString::fromStdString(label.value());
+        m_label_static_text->setText(QString(txt));
+        m_label_static_text->setStyleSheet(m_label_static_text->styleSheet() + stylesheet);
+    }
+
+    if(const auto suffix = config.get_optional<std::string>("suffix"); suffix.has_value())
+    {
+        m_suffix_value->setText(QString::fromStdString(*suffix));
+        m_suffix_value->setStyleSheet(m_suffix_value->styleSheet() + stylesheet);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -95,23 +102,18 @@ void text_status::configuring()
 void text_status::starting()
 {
     this->create();
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
 
     auto* const layout = new QHBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(0);
     layout->addWidget(m_label_static_text);
     layout->addWidget(m_label_value);
+    layout->addWidget(m_suffix_value);
 
-    layout->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
-
+    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
     qt_container->set_layout(layout);
 
-    // Get input data.
-    const auto string_input = m_string.lock();
-
-    if(string_input)
-    {
-        m_label_value->setText(QString::fromStdString(string_input->value()));
-    }
+    this->updating();
 }
 
 //------------------------------------------------------------------------------
@@ -128,12 +130,23 @@ service::connections_t text_status::auto_connections() const
 
 void text_status::updating()
 {
-    // Get input data.
-    const auto string_input = m_string.lock();
-
-    if(string_input)
+    if(const auto string_input = m_string.lock(); string_input)
     {
-        m_label_value->setText(QString::fromStdString(string_input->value()));
+        if(const auto real = std::dynamic_pointer_cast<const data::real>(string_input.get_shared()); real)
+        {
+            m_label_value->setText(QString::number(real->value(), 'f', m_decimals));
+        }
+        else if(const auto string =
+                    std::dynamic_pointer_cast<const data::string_serializable>(string_input.get_shared()); string)
+        {
+            m_label_value->setText(QString::fromStdString(string->to_string()));
+        }
+        else
+        {
+            SIGHT_ERROR("Provided data does inherit from data::string_serializable, it cannot be displayed as string.");
+        }
+
+        m_label_value->parentWidget()->adjustSize();
     }
 }
 
@@ -158,7 +171,7 @@ void text_status::set_int_parameter(int _val)
 void text_status::set_double_parameter(double _val)
 {
     QString str;
-    str.setNum(_val, 'g', 8); // 8 decimals precision
+    str.setNum(_val, 'f', m_decimals);
     m_label_value->setText(str);
 }
 

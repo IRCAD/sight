@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include <data/string.hpp>
+#include <data/string_serializable.hpp>
 
 #include <ui/__/editor.hpp>
 
@@ -47,17 +47,24 @@ namespace sight::module::ui::qt
     <service uid="..." type="sight::module::ui::qt::text_status">
         <in key="string" uid="..." />
         <label>my label</label>
+        <suffix>units</suffix>
         <color>#FF0000</color>
+        <decimals>2<decimals>
     </service>
    @endcode
  *
  * @subsection Input Input
- * - \b string(data::string, optional): string data to display.
+ * - \b string(data::object, optional): data to display, should be displayable as a string, thus inheriting from
+ * data::string_serializable.
  *
  * @subsection Configuration Configuration
- * - \b label (optional, default="") : text to show before size of the vector
+ * - \b label (optional, default="") : text to show before the data
+ * - \b suffix (optional, default="") : text to add after the data
  * - \b color (optional, default="red") : needed color of the displayed label in a CSS style as names (ex: red),
  * rgb/rgba (ex: rgb(0,255,137,0.3)) or hexadecimal (ex: #355C66).
+ * - \b size (optional, default="14pt") : size of the font used in the label, as supported by 'font-size' QSS attribute
+ * - \b weight (optional, default="bold") : normal, bold any value supported by 'font-weight' QSS attribute
+ * - \b decimals (optional, default="2") : if a sight::data::real data is provided, number of decimals to display
  */
 class text_status final : public QObject,
                           public sight::ui::editor
@@ -71,7 +78,7 @@ public:
     text_status();
 
     /// Destroys the service.
-    ~text_status() override;
+    ~text_status() override = default;
 
 private:
 
@@ -113,8 +120,14 @@ private:
     /// Stores the static text to be displayed.
     QPointer<QLabel> m_label_static_text;
 
+    /// Stores the suffix.
+    QPointer<QLabel> m_suffix_value;
+
+    /// Number of decimals if we display a float value
+    int m_decimals {2};
+
     static constexpr std::string_view STRING_INPUT = "string";
-    data::ptr<data::string, sight::data::access::in> m_string {this, STRING_INPUT, true};
+    data::ptr<data::object, sight::data::access::in> m_string {this, STRING_INPUT, true};
 };
 
 } // namespace sight::module::ui::qt
