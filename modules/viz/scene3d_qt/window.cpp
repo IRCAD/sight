@@ -118,7 +118,7 @@ void window::request_render()
 
 QSize window::minimumSizeHint() const
 {
-    return QOpenGLWidget::minimumSizeHint().expandedTo(QSize(5, 5));
+    return QOpenGLWidget::minimumSizeHint().expandedTo(QSize(16, 16));
 }
 
 //------------------------------------------------------------------------------
