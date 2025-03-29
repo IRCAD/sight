@@ -1,7 +1,7 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2025 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -20,32 +20,34 @@
  *
  ***********************************************************************/
 
-#include "activity/builder/base.hpp"
+#pragma once
 
-#include <data/vector.hpp>
+#include <sight/data/config.hpp>
 
-namespace sight::activity::builder
+#include "data/validator/registry/detail.hpp"
+
+#include <string>
+
+namespace sight::data::validator
 {
 
-//------------------------------------------------------------------------------
+class base;
 
-data::vector::sptr base::type(const data::vector::csptr& _current_selection, const std::string& _type) const
+namespace factory
 {
-    SIGHT_ASSERT("currentSelection not instanced", _current_selection);
 
-    data::vector::sptr sub_selection = std::make_shared<data::vector>();
-    for(const auto& obj : *_current_selection)
-    {
-        SIGHT_ASSERT("Object not instanced in selection", obj);
-        if(obj->is_a(_type))
-        {
-            sub_selection->push_back(obj);
-        }
-    }
+template<class CLASSNAME>
+SPTR(CLASSNAME)  make();
 
-    return sub_selection;
+SIGHT_DATA_API SPTR(data::validator::base) make(const data::validator::registry::key_t& _classname);
+
+template<class CLASSNAME>
+SPTR(CLASSNAME)  make()
+{
+    SPTR(CLASSNAME) validator = std::make_shared<CLASSNAME>();
+    return validator;
 }
 
-//------------------------------------------------------------------------------
+} // namespace factory
 
-} // namespace sight::activity::builder
+} // namespace sight::data::validator

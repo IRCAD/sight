@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,6 @@
 
 #include <activity/extension/activity.hpp>
 #include <activity/validator/base.hpp>
-#include <activity/validator/object.hpp>
 
 #include <core/runtime/extension.hpp>
 #include <core/runtime/module.hpp>
@@ -33,6 +32,7 @@
 #include <data/image_series.hpp>
 #include <data/map.hpp>
 #include <data/model_series.hpp>
+#include <data/validator/base.hpp>
 #include <data/vector.hpp>
 
 #include <utest_data/generator/image.hpp>
@@ -75,12 +75,8 @@ static data::image_series::sptr image_to_image_series(const data::object::sptr& 
 
 void image_properties_test::properties_test()
 {
-    activity::validator::base::sptr validator =
-        activity::validator::factory::make("sight::activity::validator::image_properties");
+    const auto validator = data::validator::factory::make("sight::activity::validator::image_properties");
     CPPUNIT_ASSERT(validator);
-
-    activity::validator::object::sptr obj_validator = std::dynamic_pointer_cast<activity::validator::object>(validator);
-    CPPUNIT_ASSERT(obj_validator);
 
     {
         data::image::sptr img1 = std::make_shared<data::image>();
@@ -92,21 +88,21 @@ void image_properties_test::properties_test()
         vector->push_back(img1);
         vector->push_back(img2);
 
-        activity::validator::return_t validation;
+        data::validator::return_t validation;
 
-        validation = obj_validator->validate(vector);
+        validation = validator->validate(vector);
         CPPUNIT_ASSERT_EQUAL(false, validation.first);
 
         data::map::sptr map = std::make_shared<data::map>();
         (*map)["img1"] = img1;
         (*map)["img2"] = img2;
 
-        validation = obj_validator->validate(map);
+        validation = validator->validate(map);
         CPPUNIT_ASSERT_EQUAL(false, validation.first);
 
         auto series_vector = std::make_shared<data::vector>();
         std::ranges::transform(*vector, std::back_inserter(*series_vector), image_to_image_series);
-        validation = obj_validator->validate(activity::extension::activity_info {}, series_vector);
+        validation = validator->validate(series_vector);
         CPPUNIT_ASSERT_EQUAL(false, validation.first);
     }
 
@@ -132,19 +128,19 @@ void image_properties_test::properties_test()
 
         activity::validator::return_t validation;
 
-        validation = obj_validator->validate(vector);
+        validation = validator->validate(vector);
         CPPUNIT_ASSERT_EQUAL(true, validation.first);
 
         data::map::sptr map = std::make_shared<data::map>();
         (*map)["img1"] = img1;
         (*map)["img2"] = img2;
 
-        validation = obj_validator->validate(map);
+        validation = validator->validate(map);
         CPPUNIT_ASSERT_EQUAL(true, validation.first);
 
         auto series_vector = std::make_shared<data::vector>();
         std::ranges::transform(*vector, std::back_inserter(*series_vector), image_to_image_series);
-        validation = obj_validator->validate(activity::extension::activity_info {}, series_vector);
+        validation = validator->validate(series_vector);
         CPPUNIT_ASSERT_EQUAL(true, validation.first);
     }
 }

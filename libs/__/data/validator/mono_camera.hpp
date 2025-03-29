@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2016-2025 IRCAD France
+ * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,34 +22,33 @@
 
 #pragma once
 
-#include <sight/activity/config.hpp>
+#include <data/validator/base.hpp>
 
-#include "data/validator/base.hpp"
-
-#include <core/base.hpp>
-
-namespace sight::activity::validator
+namespace sight::data::validator::camera_set
 {
 
 /**
- * @brief Defines a validator which checks that properties of given images are the same.
+ * @brief Defines a validator which checks if the current CameraSet contains one and only one Camera and is
+ *        calibrated.
  */
-class SIGHT_ACTIVITY_CLASS_API image_properties : public data::validator::base
+class mono_camera : public sight::data::validator::base
 {
 public:
 
-    SIGHT_DECLARE_CLASS(image_properties, data::validator::base)
-
+    SIGHT_DECLARE_CLASS(
+        mono_camera,
+        sight::data::validator::base,
+        sight::data::validator::factory::make<mono_camera>
+    )
     /// Destructor. Do nothing.
-    SIGHT_ACTIVITY_API ~image_properties() override = default;
+    ~mono_camera() override = default;
 
     /**
-     * @brief Validates if the given images have the same properties (origin, spacing, ...)
-     * @note Given object must be a Vector or Map of ImageSeries (or images)
-     * @see activity::validator::base::validate
+     * @brief Checks if the current CameraSet contains one and only one Camera and is calibrated.
+     * @see data::validator::base::validate
      */
-    SIGHT_ACTIVITY_API data::validator::return_t validate(const CSPTR(data::object)& _current_object) const
+    sight::data::validator::return_t validate(const CSPTR(data::object)& _current_data) const
     override;
 };
 
-} // namespace sight::activity::validator
+} // namespace sight::data::validator::camera_set

@@ -81,4 +81,11 @@
         <object key="value">sight::data::string_serializable</object>
         <desc>Registers/unregisters the object given by the slots.</desc>
     </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
+        <service>sight::module::data::validate</service>
+        <object key="data">sight::data::object</object>
+        <desc>Validate an object.</desc>
+    </extension>
 </plugin>

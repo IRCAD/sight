@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,77 +22,24 @@
 
 #include "activity/validator/image_properties.hpp"
 
-#include "activity/validator/registry/macros.hpp"
-
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/map.hpp>
+#include <data/validator/registry/macros.hpp>
 #include <data/vector.hpp>
 
 namespace sight::activity::validator
 {
 
-SIGHT_REGISTER_ACTIVITY_VALIDATOR(sight::activity::validator::image_properties);
+SIGHT_REGISTER_DATA_VALIDATOR(sight::activity::validator::image_properties);
 
 auto f_compare = [](double _a, double _b){return std::abs(_a - _b) < 0.00001;};
 
 //-----------------------------------------------------------------------------
 
-validator::return_t image_properties::validate(
-    const activity::extension::activity_info& /*unused*/,
-    const data::vector::csptr& _current_selection
-) const
+data::validator::return_t image_properties::validate(const data::object::csptr& _current_data) const
 {
-    validator::return_t validation;
-
-    if(_current_selection->size() > 1)
-    {
-        validation.first  = true;
-        validation.second = "Input images have the same properties.";
-
-        data::image_series::sptr img_series0 = std::dynamic_pointer_cast<data::image_series>((*_current_selection)[0]);
-        SIGHT_ASSERT("Failed to retrieve an image series", img_series0);
-
-        data::image::size_t size       = img_series0->size();
-        data::image::spacing_t spacing = img_series0->spacing();
-        data::image::origin_t origin   = img_series0->origin();
-
-        data::vector::container_t::const_iterator it;
-        for(it = _current_selection->begin() + 1 ; it != _current_selection->end() ; ++it)
-        {
-            data::image_series::sptr img_series = std::dynamic_pointer_cast<data::image_series>(*it);
-            SIGHT_ASSERT("Failed to retrieve an image series", img_series);
-
-            if(size != img_series->size()
-               || !std::equal(spacing.begin(), spacing.end(), img_series->spacing().begin(), f_compare)
-               || !std::equal(origin.begin(), origin.end(), img_series->origin().begin(), f_compare))
-            {
-                std::string error_msg = "Images in selection have not the same properties :\n";
-                error_msg += (size != img_series->size()) ? "- size\n" : "";
-                error_msg += (spacing != img_series->spacing()) ? "- spacing\n" : "";
-                error_msg += (origin != img_series->origin()) ? "- origin" : "";
-
-                validation.first  = false;
-                validation.second = error_msg;
-
-                break;
-            }
-        }
-    }
-    else
-    {
-        validation.first  = true;
-        validation.second = "Only one data provided to check images properties, assuming validation as ok.";
-    }
-
-    return validation;
-}
-
-//-----------------------------------------------------------------------------
-
-validator::return_t image_properties::validate(const data::object::csptr& _current_data) const
-{
-    validator::return_t validation;
+    data::validator::return_t validation;
 
     data::vector::csptr vector = std::dynamic_pointer_cast<const data::vector>(_current_data);
     data::map::csptr map       = std::dynamic_pointer_cast<const data::map>(_current_data);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2024 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #include "activity/validator/activity.hpp"
 
-#include "activity/validator/object.hpp"
+#include "data/validator/base.hpp"
+#include "data/validator/factory/new.hpp"
 
 #include <data/activity.hpp>
 #include <data/map.hpp>
@@ -234,17 +235,14 @@ validator::return_t activity::check_object(
     else
     {
         /// Process object validator
-        auto validator      = sight::activity::validator::factory::make(_validator_impl);
-        auto data_validator = std::dynamic_pointer_cast<sight::activity::validator::object>(validator);
-
-        if(!data_validator)
+        if(auto validator = sight::data::validator::factory::make(_validator_impl); validator)
         {
-            validation.first  = false;
-            validation.second = "Validator '" + _validator_impl + "' cannot be instantiated";
+            validation = validator->validate(_object);
         }
         else
         {
-            validation = data_validator->validate(_object);
+            validation.first  = false;
+            validation.second = "Validator '" + _validator_impl + "' cannot be instantiated";
         }
     }
 

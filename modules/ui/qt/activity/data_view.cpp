@@ -24,7 +24,6 @@
 
 #include <activity/validator/activity.hpp>
 #include <activity/validator/base.hpp>
-#include <activity/validator/object.hpp>
 
 #include <core/runtime/helper.hpp>
 
@@ -37,6 +36,7 @@
 #include <data/series.hpp>
 #include <data/series_set.hpp>
 #include <data/string.hpp>
+#include <data/validator/base.hpp>
 #include <data/vector.hpp>
 
 #include <io/__/service/io_types.hpp>
@@ -540,11 +540,10 @@ data::object::sptr data_view::check_data(std::size_t _index, std::string& _error
     if(object && !req.validator.empty())
     {
         /// Process object validator
-        auto validator      = sight::activity::validator::factory::make(req.validator);
-        auto data_validator = std::dynamic_pointer_cast<sight::activity::validator::object>(validator);
+        auto data_validator = sight::data::validator::factory::make(req.validator);
         SIGHT_ASSERT("Validator '" + req.validator + "' instantiation failed", data_validator);
 
-        sight::activity::validator::return_t validation = data_validator->validate(object);
+        sight::data::validator::return_t validation = data_validator->validate(object);
         if(!validation.first)
         {
             _error_msg += "\n" + validation.second;
