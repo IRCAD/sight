@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,7 +100,11 @@ void has_services::unregister_service(const base::sptr& _service)
     SIGHT_ASSERT("service '" + _service->get_id() + "' is not registered", iter != m_sub_services.end());
     m_sub_services.erase(iter);
 
-    _service->stop().wait();
+    if(!_service->stopped())
+    {
+        _service->stop().wait();
+    }
+
     service::unregister_service(_service);
 }
 
