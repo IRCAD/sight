@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -159,16 +159,16 @@ public:
         std::filesystem::create_directories(_root);
     }
 
-    ~raw_archive_writer() override = default;
+    ~raw_archive_writer() final = default;
 
     //------------------------------------------------------------------------------
 
     std::unique_ptr<std::ostream> open_file(
         const std::filesystem::path& _file_path,
         [[maybe_unused]] const core::crypto::secure_string& _password = "",
-        [[maybe_unused]] const method _method                         = method::DEFAULT,
-        [[maybe_unused]] const level _level                           = level::DEFAULT
-    ) override
+        [[maybe_unused]] method _method                               = method::DEFAULT,
+        [[maybe_unused]] level _level                                 = level::DEFAULT
+    ) final
     {
         // Create the sub directories if needed
         const std::filesystem::path& full_path = m_root / _file_path.relative_path();
@@ -183,7 +183,29 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] bool is_raw() const override
+    void write_file(
+        const std::filesystem::path& _file_path,
+        const std::string& _content,
+        [[maybe_unused]] const core::crypto::secure_string& _password = "",
+        [[maybe_unused]] method _method                               = method::DEFAULT,
+        [[maybe_unused]] level _level                                 = level::DEFAULT
+    ) final
+    {
+        // Create the sub directories if needed
+        const std::filesystem::path& full_path = m_root / _file_path.relative_path();
+
+        if(full_path.has_parent_path())
+        {
+            std::filesystem::create_directories(full_path.parent_path());
+        }
+
+        std::ofstream file(full_path, std::ios::out | std::ios::binary | std::ios::trunc);
+        file.write(_content.data(), std::streamsize(_content.size()));
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool is_raw() const final
     {
         return true;
     }
@@ -387,6 +409,7 @@ public:
 private:
 
     friend class zip_sink;
+    friend class zip_archive_writer;
 
     // Path to the file converted to string because on Windows std::filesystem::path.c_str() returns a wchar*
     const std::string m_file_name;
@@ -415,11 +438,37 @@ public:
     // Boost use this to write things
     std::streamsize write(const char* _buffer, std::streamsize _size)
     {
-        const auto written = mz_zip_writer_entry_write(
-            m_zip_file_handle->m_zip_handle->m_zip_writer,
-            _buffer,
-            std::int32_t(_size)
+        std::streamsize remaining_size = _size;
+        const char* remaining_buffer   = _buffer;
+
+        std::int32_t block_size = std::int32_t(
+            std::min(_size, std::streamsize(std::numeric_limits<std::int32_t>::max()))
         );
+
+        while(remaining_size > 0)
+        {
+            const auto written = mz_zip_writer_entry_write(
+                m_zip_file_handle->m_zip_handle->m_zip_writer,
+                remaining_buffer,
+                block_size
+            );
+
+            SIGHT_THROW_EXCEPTION_IF(
+                exception::write(
+                    "Cannot write in file '"
+                    + m_zip_file_handle->m_file_name
+                    + "' in archive '"
+                    + m_zip_file_handle->m_zip_handle->m_archive_path
+                    + "'. Error code: "
+                    + std::to_string(written),
+                    written
+                ),
+                written < 0
+            );
+
+            remaining_size   -= written;
+            remaining_buffer += written;
+        }
 
         SIGHT_THROW_EXCEPTION_IF(
             exception::write(
@@ -427,14 +476,14 @@ public:
                 + m_zip_file_handle->m_file_name
                 + "' in archive '"
                 + m_zip_file_handle->m_zip_handle->m_archive_path
-                + "'. Error code: "
-                + std::to_string(written),
-                written
+                + "'. Remaining: "
+                + std::to_string(remaining_size),
+                MZ_WRITE_ERROR
             ),
-            written < 0
+            remaining_size > 0
         );
 
-        return written;
+        return _size;
     }
 
 private:
@@ -461,16 +510,16 @@ public:
     {
     }
 
-    ~zip_archive_writer() override = default;
+    ~zip_archive_writer() final = default;
 
     //------------------------------------------------------------------------------
 
     std::unique_ptr<std::ostream> open_file(
         const std::filesystem::path& _file_path,
         const core::crypto::secure_string& _password = "",
-        const method _method                         = method::DEFAULT,
-        const level _level                           = level::DEFAULT
-    ) override
+        method _method                               = method::DEFAULT,
+        level _level                                 = level::DEFAULT
+    ) final
     {
         const auto zip_file_handle = std::make_shared<io::zip::zip_file_handle>(
             m_zip_handle,
@@ -485,7 +534,71 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] bool is_raw() const override
+    void write_file(
+        const std::filesystem::path& _file_path,
+        const std::string& _content,
+        const core::crypto::secure_string& _password = "",
+        method _method                               = method::DEFAULT,
+        level _level                                 = level::DEFAULT
+    ) final
+    {
+        const auto zip_file_handle = std::make_shared<io::zip::zip_file_handle>(
+            m_zip_handle,
+            _file_path,
+            _password,
+            _method,
+            _level
+        );
+
+        std::size_t remaining_size   = _content.size();
+        const char* remaining_buffer = _content.data();
+
+        std::int32_t block_size = std::int32_t(
+            std::min(_content.size(), std::size_t(std::numeric_limits<std::int32_t>::max()))
+        );
+
+        while(remaining_size > 0)
+        {
+            const auto written = mz_zip_writer_entry_write(
+                zip_file_handle->m_zip_handle->m_zip_writer,
+                remaining_buffer,
+                block_size
+            );
+
+            SIGHT_THROW_EXCEPTION_IF(
+                exception::write(
+                    "Cannot write in file '"
+                    + zip_file_handle->m_file_name
+                    + "' in archive '"
+                    + zip_file_handle->m_zip_handle->m_archive_path
+                    + "'. Error code: "
+                    + std::to_string(written),
+                    written
+                ),
+                written < 0
+            );
+
+            remaining_size   -= std::size_t(written);
+            remaining_buffer += written;
+        }
+
+        SIGHT_THROW_EXCEPTION_IF(
+            exception::write(
+                "Cannot write in file '"
+                + zip_file_handle->m_file_name
+                + "' in archive '"
+                + zip_file_handle->m_zip_handle->m_archive_path
+                + "'. Remaining: "
+                + std::to_string(remaining_size),
+                MZ_WRITE_ERROR
+            ),
+            remaining_size > 0
+        );
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool is_raw() const final
     {
         return false;
     }

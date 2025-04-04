@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -77,16 +77,34 @@ public:
     {
     }
 
-    ~raw_archive_reader() override = default;
+    ~raw_archive_reader() final = default;
 
     //------------------------------------------------------------------------------
 
     std::unique_ptr<std::istream> open_file(
         const std::filesystem::path& _file_path,
         [[maybe_unused]] const core::crypto::secure_string& _password = ""
-    ) override
+    ) final
     {
         return std::make_unique<std::ifstream>(m_root / _file_path.relative_path(), std::ios::in | std::ios::binary);
+    }
+
+    //------------------------------------------------------------------------------
+
+    std::string read_file(
+        const std::filesystem::path& _file_path,
+        [[maybe_unused]] const core::crypto::secure_string& _password = ""
+    ) final
+    {
+        std::ifstream file(m_root / _file_path.relative_path(), std::ios::in | std::ios::binary | std::ios::ate);
+
+        const std::streamsize size = file.tellg();
+        file.seekg(0, std::ios::beg);
+
+        std::string content(std::size_t(size), 0);
+        file.read(content.data(), size);
+
+        return content;
     }
 
     //------------------------------------------------------------------------------
@@ -94,14 +112,14 @@ public:
     void extract_all_to(
         const std::filesystem::path& _output_path,
         const core::crypto::secure_string& /*password*/
-    ) override
+    ) final
     {
         std::filesystem::copy(m_root, _output_path, std::filesystem::copy_options::recursive);
     }
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] bool is_raw() const override
+    [[nodiscard]] bool is_raw() const final
     {
         return true;
     }
@@ -272,6 +290,7 @@ public:
 private:
 
     friend class zip_source;
+    friend class zip_archive_reader;
 
     // Path to the file converted to string because on Windows std::filesystem::path.c_str() returns a wchar*
     const std::string m_file_path;
@@ -300,10 +319,14 @@ public:
     // Boost use this to read things
     std::streamsize read(char* _buffer, std::streamsize _size)
     {
+        const std::int32_t block_size = std::int32_t(
+            std::min(_size, std::streamsize(std::numeric_limits<std::int32_t>::max()))
+        );
+
         const auto read = mz_zip_reader_entry_read(
             m_zip_file_handle->m_zip_handle->m_zip_reader,
             _buffer,
-            std::int32_t(_size)
+            block_size
         );
 
         SIGHT_THROW_EXCEPTION_IF(
@@ -319,7 +342,7 @@ public:
             read < 0
         );
 
-        return read;
+        return std::streamsize(read);
     }
 
 private:
@@ -346,14 +369,14 @@ public:
     {
     }
 
-    ~zip_archive_reader() override = default;
+    ~zip_archive_reader() final = default;
 
     //------------------------------------------------------------------------------
 
     std::unique_ptr<std::istream> open_file(
         const std::filesystem::path& _file_path,
         const core::crypto::secure_string& _password = ""
-    ) override
+    ) final
     {
         const auto file_handle = std::make_shared<zip_file_handle>(
             m_zip_handle,
@@ -366,10 +389,94 @@ public:
 
     //------------------------------------------------------------------------------
 
+    std::string read_file(
+        const std::filesystem::path& _file_path,
+        const core::crypto::secure_string& _password = ""
+    ) final
+    {
+        const auto file_handle = std::make_shared<zip_file_handle>(
+            m_zip_handle,
+            _file_path,
+            _password
+        );
+
+        mz_zip_file* file_info = nullptr;
+        const auto result      = mz_zip_reader_entry_get_info(file_handle->m_zip_handle->m_zip_reader, &file_info);
+
+        SIGHT_THROW_EXCEPTION_IF(
+            exception::read(
+                "Cannot get file info of file '"
+                + file_handle->m_file_path
+                + "' in archive '"
+                + file_handle->m_zip_handle->m_archive_path
+                + "'. Error code: "
+                + std::to_string(result),
+                result
+            ),
+            result != MZ_OK
+        );
+
+        std::string content(std::size_t(file_info->uncompressed_size), 0);
+
+        std::size_t remaining_size = content.size();
+        char* remaining_buffer     = content.data();
+
+        std::int32_t block_size = std::int32_t(
+            std::min(remaining_size, std::size_t(std::numeric_limits<std::int32_t>::max()))
+        );
+
+        while(remaining_size > 0)
+        {
+            const auto read = mz_zip_reader_entry_read(
+                file_handle->m_zip_handle->m_zip_reader,
+                remaining_buffer,
+                block_size
+            );
+
+            if(read == 0)
+            {
+                break;
+            }
+
+            SIGHT_THROW_EXCEPTION_IF(
+                exception::read(
+                    "Cannot read in file '"
+                    + file_handle->m_file_path
+                    + "' in archive '"
+                    + file_handle->m_zip_handle->m_archive_path
+                    + "'. Error code: "
+                    + std::to_string(read),
+                    read
+                ),
+                read < 0
+            );
+
+            remaining_size   -= std::size_t(read);
+            remaining_buffer += read;
+        }
+
+        SIGHT_THROW_EXCEPTION_IF(
+            exception::read(
+                "Cannot read in file '"
+                + file_handle->m_file_path
+                + "' in archive '"
+                + file_handle->m_zip_handle->m_archive_path
+                + "'. Remaining: "
+                + std::to_string(remaining_size),
+                MZ_WRITE_ERROR
+            ),
+            remaining_size > 0
+        );
+
+        return content;
+    }
+
+    //------------------------------------------------------------------------------
+
     void extract_all_to(
         const std::filesystem::path& _output_path,
         const core::crypto::secure_string& _password
-    ) override
+    ) final
     {
         mz_zip_reader_set_password(m_zip_handle->m_zip_reader, _password.empty() ? nullptr : _password.c_str());
         std::vector<std::filesystem::path> extracted_files;
@@ -441,7 +548,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] bool is_raw() const override
+    [[nodiscard]] bool is_raw() const final
     {
         return false;
     }

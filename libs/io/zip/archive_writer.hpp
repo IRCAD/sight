@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,13 +77,27 @@ public:
         archive_format _format = archive_format::DEFAULT
     );
 
-    /// Returns an std::ostream to read an archived file
+    /// Returns an std::ostream to write in a new archive file
     /// @param _file_path path of the file inside the archive.
     /// @param _password the password needed to encrypt the file.
     /// @param _method the compression algorithm to use.
     /// @param _level the compression level to use.
     SIGHT_IO_ZIP_API virtual std::unique_ptr<std::ostream> open_file(
         const std::filesystem::path& _file_path,
+        const core::crypto::secure_string& _password = "",
+        method _method                               = method::DEFAULT,
+        level _level                                 = level::DEFAULT
+    )                                                = 0;
+
+    /// Write a std::string, used as a binary buffer, in a new archive file.
+    /// @param _file_path path of the file inside the archive.
+    /// @param _content the data to write.
+    /// @param _password the password needed to encrypt the file.
+    /// @param _method the compression algorithm to use.
+    /// @param _level the compression level to use.
+    SIGHT_IO_ZIP_API virtual void write_file(
+        const std::filesystem::path& _file_path,
+        const std::string& _content,
         const core::crypto::secure_string& _password = "",
         method _method                               = method::DEFAULT,
         level _level                                 = level::DEFAULT

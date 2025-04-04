@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,6 +65,14 @@ public:
     /// @param _file_path path of an archived file.
     /// @param _password the password needed to decrypt the file.
     SIGHT_IO_ZIP_API virtual std::unique_ptr<std::istream> open_file(
+        const std::filesystem::path& _file_path,
+        const core::crypto::secure_string& _password = ""
+    )                                                = 0;
+
+    /// Returns an archived file as a std::string. std::string maybe a binary buffer, not necessarily null-terminated.
+    /// @param _file_path path of an archived file.
+    /// @param _password the password needed to decrypt the file.
+    SIGHT_IO_ZIP_API virtual std::string read_file(
         const std::filesystem::path& _file_path,
         const core::crypto::secure_string& _password = ""
     )                                                = 0;

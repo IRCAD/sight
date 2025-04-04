@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,21 +21,29 @@
 
 #pragma once
 
+//#define DEBUG_NIFTI
+
 #include <sight/io/session/config.hpp>
 
 #include "io/session/helper.hpp"
 #include "io/session/macros.hpp"
 
+//#define FW_PROFILING_DISABLED
+#include <core/profiling.hpp>
+
 #include <data/image.hpp>
 
 #include <io/vtk/vtk.hpp>
+
+#include <nifti1.h>
+#include <nifti1_io.h>
 
 #include <vtkImageData.h>
 #include <vtkSmartPointer.h>
 #include <vtkXMLImageDataReader.h>
 #include <vtkXMLImageDataWriter.h>
 
-#define USE_VTK
+// cspell:ignore qoffset XFORM qform XYZT nvox srow sform
 
 namespace sight::io::session::detail::image
 {
@@ -67,15 +75,21 @@ constexpr static auto WIDTH {"Width"};
 constexpr static auto HEIGHT {"Height"};
 constexpr static auto DEPTH {"Depth"};
 
+#ifdef DEBUG_NIFTI
+inline static struct nifti_debug
+{
+    nifti_debug()
+    {
+        nifti_set_debug_level(3);
+    }
+} nifti_debug;
+#endif
+
 //------------------------------------------------------------------------------
 
 inline static std::filesystem::path get_file_path(const std::string& _uuid)
 {
-#if defined(USE_VTK)
-    constexpr auto ext = ".vti";
-#else
-    constexpr auto ext = ".raw";
-#endif
+    constexpr auto ext = ".nii";
 
     return std::filesystem::path(_uuid + "/" + data::image::leaf_classname() + ext);
 }
@@ -93,7 +107,8 @@ inline static void write(
     auto image = helper::safe_cast<data::image>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::image>(_tree, 1);
+
+    helper::write_version<data::image>(_tree, 2);
 
     // Serialize image
     const auto& size = image->size();
@@ -153,37 +168,232 @@ inline static void write(
 
     _tree.add_child(WINDOW_WIDTHS, window_widths_tree);
 
-    // Create the output file inside the archive
-    const auto& ostream = _archive.open_file(
-        get_file_path(image->get_uuid()),
-        _password,
-        sight::io::zip::method::DEFAULT,
-        sight::io::zip::level::best
-    );
+    {
+        FW_PROFILE("write NIFTI");
 
-#if defined(USE_VTK)
-    /// @todo For now, toVTKImage doesn't handle all pixel formats we handle. For example, BGR is written as RGB.
-    /// It should be better to convert it, even if, here we don't really care as we save the real pixel format and
-    /// restore it back. It is faster, but produce a non standard vti file.
-    auto vtk_image = vtkSmartPointer<vtkImageData>::New();
-    io::vtk::to_vtk_image(image, vtk_image);
+        if(image->size_in_bytes() == 0)
+        {
+            // If the image is empty, we don't need to write anything
+            return;
+        }
 
-    // Create the vtk writer
-    const auto& vtk_writer = vtkSmartPointer<vtkXMLImageDataWriter>::New();
-    vtk_writer->SetCompressorTypeToNone();
-    vtk_writer->SetDataModeToBinary();
-    vtk_writer->WriteToOutputStringOn();
-    vtk_writer->SetInputData(vtk_image);
+        SIGHT_THROW_IF(
+            "Image size is too large for NIFTI format. NIFTI only supports images with a maximum size of 32767",
+            size[0] > std::numeric_limits<std::int16_t>::max()
+            || size[1] > std::numeric_limits<std::int16_t>::max()
+            || size[2] > std::numeric_limits<std::int16_t>::max()
+        );
 
-    // Write to internal string...
-    vtk_writer->Update();
+        // Dimensions. We always have 3D images, with one or more components.
+        const int  dim[] = {
+            // Number of "dimensions": 5 because of 3 for 3D images + 1 for time + 1 for components,
+            5,
+            // Width
+            int(size[0]),
+            // Height
+            int(size[1]),
+            // Depth
+            int(size[2]),
+            // Time
+            1,
+            // Number of components
+            int(image->num_components()),
+            // UNUSED
+            1,
+            1
+        };
 
-    // Write back to the archive
-    (*ostream) << vtk_writer->GetOutputString();
-#else
-    // Write the image data as raw bytes
-    ostream->write(reinterpret_cast<const char*>(image->buffer()), std::streamsize(image->size_in_bytes()));
+        // Type
+        const int data_type =
+            [&type]
+            {
+                switch(type)
+                {
+                    case sight::core::type::UINT8:
+                        return DT_UINT8;
+
+                    case sight::core::type::UINT16:
+                        return DT_UINT16;
+
+                    case sight::core::type::UINT32:
+                        return DT_UINT32;
+
+                    case sight::core::type::UINT64:
+                        return DT_UINT64;
+
+                    case sight::core::type::INT8:
+                        return DT_INT8;
+
+                    case sight::core::type::INT16:
+                        return DT_INT16;
+
+                    case sight::core::type::INT32:
+                        return DT_INT32;
+
+                    case sight::core::type::INT64:
+                        return DT_INT64;
+
+                    case sight::core::type::FLOAT:
+                        return DT_FLOAT;
+
+                    case sight::core::type::DOUBLE:
+                        return DT_DOUBLE;
+
+                    default:
+                        return DT_UINT8;
+                }
+            }();
+
+        auto* const nifti_header = nifti_make_new_header(dim, data_type);
+
+        // We are in mm and second
+        nifti_header->xyzt_units = SPACE_TIME_TO_XYZT(NIFTI_UNITS_MM, NIFTI_UNITS_SEC);
+
+        // Intent, vector seems to be the best choice for images with multiple components
+        nifti_header->intent_code = NIFTI_INTENT_VECTOR;
+
+        // Spacing
+        nifti_header->pixdim[1] = float(spacing[0]);
+        nifti_header->pixdim[2] = float(spacing[1]);
+        nifti_header->pixdim[3] = float(spacing[2]);
+
+        // Origin + Orientation
+        /// @note Look at the nifti1.h file for more information about the axes inversion
+        auto qto_xyz = nifti_make_orthog_mat44(
+            float(-orientation[0]),
+            float(-orientation[1]),
+            float(orientation[2]),
+            float(-orientation[3]),
+            float(-orientation[4]),
+            float(orientation[5]),
+            float(-orientation[6]),
+            float(-orientation[7]),
+            float(orientation[8])
+        );
+
+        // ITK transpose the matrix, do the same here
+        qto_xyz =
+            [&qto_xyz]
+            {
+                mat44 out;
+
+                for(unsigned int i = 0 ; i < 4 ; ++i)
+                {
+                    for(unsigned int j = 0 ; j < 4 ; ++j)
+                    {
+                        out.m[i][j] = qto_xyz.m[j][i];
+                    }
+                }
+
+                return out;
+            }();
+
+        // Set the origin
+        qto_xyz.m[0][3] = float(-origin[0]);
+        qto_xyz.m[1][3] = float(-origin[1]);
+        qto_xyz.m[2][3] = float(origin[2]);
+
+        nifti_mat44_to_quatern(
+            qto_xyz,
+            &nifti_header->quatern_b,
+            &nifti_header->quatern_c,
+            &nifti_header->quatern_d,
+            &nifti_header->qoffset_x,
+            &nifti_header->qoffset_y,
+            &nifti_header->qoffset_z,
+            nullptr,
+            nullptr,
+            nullptr,
+            &nifti_header->pixdim[0]
+        );
+
+        nifti_header->srow_x[0] = qto_xyz.m[0][0] * nifti_header->pixdim[1];
+        nifti_header->srow_x[1] = qto_xyz.m[0][1] * nifti_header->pixdim[1];
+        nifti_header->srow_x[2] = qto_xyz.m[0][2] * nifti_header->pixdim[1];
+        nifti_header->srow_x[3] = qto_xyz.m[0][3];
+
+        nifti_header->srow_y[0] = qto_xyz.m[1][0] * nifti_header->pixdim[2];
+        nifti_header->srow_y[1] = qto_xyz.m[1][1] * nifti_header->pixdim[2];
+        nifti_header->srow_y[2] = qto_xyz.m[1][2] * nifti_header->pixdim[2];
+        nifti_header->srow_y[3] = qto_xyz.m[1][3];
+
+        nifti_header->srow_z[0] = qto_xyz.m[2][0] * nifti_header->pixdim[3];
+        nifti_header->srow_z[1] = qto_xyz.m[2][1] * nifti_header->pixdim[3];
+        nifti_header->srow_z[2] = qto_xyz.m[2][2] * nifti_header->pixdim[3];
+        nifti_header->srow_y[3] = qto_xyz.m[2][3];
+
+        // NIFTI_XFORM_SCANNER_ANAT is suited when coming from DICOM convention
+        nifti_header->qform_code = NIFTI_XFORM_SCANNER_ANAT;
+        nifti_header->sform_code = NIFTI_XFORM_SCANNER_ANAT;
+
+        // Create the output file inside the archive
+        const auto& ostream = _archive.open_file(
+            get_file_path(image->get_uuid()),
+            _password,
+            sight::io::zip::method::DEFAULT,
+            sight::io::zip::level::best
+        );
+
+        // From nifti1_io.c
+        int offset = sizeof(nifti_1_header) + 4;
+        if((offset % 16) != 0)
+        {
+            offset = ((offset + 0xf) & ~0xf);
+        }
+
+        // Yes nifti creator thinks that using a float for an offset is a good idea
+        nifti_header->vox_offset = float(offset);
+
+        ostream->write(reinterpret_cast<const char*>(nifti_header), sizeof(nifti_1_header));
+
+        // Write padding
+        if(const auto padding_size = std::streamsize(offset) - std::streamsize(sizeof(nifti_1_header));
+           padding_size > 0)
+        {
+            std::string padding(std::size_t(padding_size), 0);
+            ostream->write(padding.data(), padding_size);
+        }
+
+        // Write the image data as raw bytes
+        ostream->write(reinterpret_cast<const char*>(image->buffer()), std::streamsize(image->size_in_bytes()));
+
+#ifdef DEBUG_NIFTI
+        // Write the image data to a file
+        {
+            std::ofstream os("C:\\TMP\\" + image->get_uuid() + ".nii", std::ios::binary);
+            os.write(reinterpret_cast<const char*>(nifti_header), sizeof(nifti_1_header));
+
+            if(const auto padding_size = std::streamsize(offset) - std::streamsize(sizeof(nifti_1_header));
+               padding_size > 0)
+            {
+                std::string padding(std::size_t(padding_size), 0);
+                os.write(padding.data(), padding_size);
+            }
+
+            os.write(reinterpret_cast<const char*>(image->buffer()), std::streamsize(image->size_in_bytes()));
+        }
+
+        // Try to read the file back
+        {
+            auto* nim = nifti_image_read(("C:\\TMP\\" + image->get_uuid() + ".nii").c_str(), 1);
+
+            if(nim)
+            {
+                std::cout << "NIFTI image read successfully" << std::endl;
+                std::cout << "Dimensions: " << nim->nx << " " << nim->ny << " " << nim->nz << std::endl;
+                std::cout << "Data type: " << nim->datatype << std::endl;
+                std::cout << "Data size: " << nim->nvox << std::endl;
+                nifti_image_free(nim);
+            }
+            else
+            {
+                std::cerr << "Failed to read NIFTI image" << std::endl;
+            }
+        }
 #endif
+
+        free(nifti_header);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -201,7 +411,7 @@ inline static data::image::sptr read(
     const auto dump_lock = image->dump_lock();
 
     // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::image>(_tree, 0, 1);
+    helper::read_version<data::image>(_tree, 2, 2);
 
     // Deserialize image
     const auto& size_tree          = _tree.get_child(SIZE);
@@ -271,36 +481,36 @@ inline static data::image::sptr read(
     const auto& serialized_uuid = _tree.get<std::string>(UUID);
 
     // Read the image data
-    // Create the istream from the input file inside the archive
-    const auto& istream = _archive.open_file(
-        get_file_path(serialized_uuid),
-        _password
-    );
+    std::string content;
 
-#if defined(USE_VTK)
-    // "Convert" it to a string
-    const std::string content {std::istreambuf_iterator<char>(*istream), std::istreambuf_iterator<char>()};
+    {
+        FW_PROFILE("read NIFTI");
 
-    // Create the vtk reader
-    auto vtk_reader = vtkSmartPointer<vtkXMLImageDataReader>::New();
-    vtk_reader->ReadFromInputStringOn();
-    vtk_reader->SetInputString(content);
-    vtk_reader->Update();
+        // Make room for the image
+        image->resize(size, type, format);
 
-    // Convert from VTK
-    io::vtk::from_vtk_image(vtk_reader->GetOutput(), image);
-#endif
+        // No need to read an empty image
+        if(image->size_in_bytes() != 0)
+        {
+            // Create the istream from the input file inside the archive
+            const auto& istream = _archive.open_file(get_file_path(serialized_uuid), _password);
 
-    /// @todo We should convert VTK RGB back to BGR if the original image is BGR and we produced a real vti files by
-    /// converting BGR to RGB, which is not the case right now (see io::vtk::toVTKImage). For now, we simply switch
-    /// back
-    /// to the correct pixel type.
-    image->resize(size, type, format);
+            // Read the header, just to have the offset, as we already have the information in the ptree
+            nifti_1_header header;
+            istream->read(reinterpret_cast<char*>(&header), sizeof(nifti_1_header));
 
-#if !defined(USE_VTK)
-    // Read the image data as raw bytes
-    istream->read(reinterpret_cast<char*>(image->buffer()), std::streamsize(image->size_in_bytes()));
-#endif
+            // Read the padding (we use a regular read, since seekg is not supported)
+            if(const auto padding_size = std::streamsize(header.vox_offset) - std::streamsize(sizeof(nifti_1_header));
+               padding_size > 0)
+            {
+                std::string padding(std::size_t(padding_size), 0);
+                istream->read(padding.data(), padding_size);
+            }
+
+            // Read the image data as raw bytes
+            istream->read(reinterpret_cast<char*>(image->buffer()), std::streamsize(image->size_in_bytes()));
+        }
+    }
 
     return image;
 }
