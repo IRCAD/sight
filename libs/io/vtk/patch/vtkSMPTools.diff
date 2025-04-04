@@ -1,0 +1,38 @@
+This is a dumb fix to make GCC 13.2 happy.
+
+--- /usr/include/vtk-9.1/vtkSMPTools.h  2021-11-04 16:18:11.000000000 +0100
++++ ../../../sight/libs/io/vtk/patch/vtkSMPTools.h      2025-04-07 11:24:01.180010219 +0200
+@@ -30,11 +30,11 @@
+ #ifndef vtkSMPTools_h
+ #define vtkSMPTools_h
+ 
+-#include "vtkCommonCoreModule.h" // For export macro
+-#include "vtkObject.h"
++ #include <vtkCommonCoreModule.h> // For export macro
++ #include <vtkObject.h>
+ 
+-#include "SMP/Common/vtkSMPToolsAPI.h"
+-#include "vtkSMPThreadLocal.h" // For Initialized
++ #include <SMP/Common/vtkSMPToolsAPI.h>
++ #include <vtkSMPThreadLocal.h> // For Initialized
+ 
+ #include <functional>  // For std::function
+ #include <iterator>    // For std::iterator
+@@ -103,7 +103,7 @@
+   }
+   vtkSMPTools_FunctorInternal<Functor, false>& operator=(
+     const vtkSMPTools_FunctorInternal<Functor, false>&);
+-  vtkSMPTools_FunctorInternal<Functor, false>(const vtkSMPTools_FunctorInternal<Functor, false>&);
++   vtkSMPTools_FunctorInternal(const vtkSMPTools_FunctorInternal<Functor, false>&);
+ };
+ 
+ template <typename Functor>
+@@ -134,7 +134,7 @@
+   }
+   vtkSMPTools_FunctorInternal<Functor, true>& operator=(
+     const vtkSMPTools_FunctorInternal<Functor, true>&);
+-  vtkSMPTools_FunctorInternal<Functor, true>(const vtkSMPTools_FunctorInternal<Functor, true>&);
++   vtkSMPTools_FunctorInternal(const vtkSMPTools_FunctorInternal<Functor, true>&);
+ };
+ 
+ template <typename Functor>

@@ -51,6 +51,18 @@
 #include <vtkType.h>
 #include <vtkUnstructuredGrid.h>
 
+// Ugly hack because of a "bug" in GCC 13.2 caused by two copy constructors that specify template parameters.
+#ifdef __GNUC__
+#  include <features.h>
+#  if __GNUC_PREREQ(13, 2)
+#     include "patch/vtkSMPTools.h"
+#  else
+#     include <vtkSMPTools.h>
+#  endif
+#else
+#     include <vtkSMPTools.h>
+#endif
+
 #include <chrono>
 #include <cstring>
 #include <ctime>
@@ -93,8 +105,21 @@ static bool init_vtk_log_file()
     return true;
 }
 
+// Function to initialize VTK SMP backend.
+static bool init_vtk_smp_backend()
+{
+    vtkSMPTools::SetBackend("TBB");
+    SIGHT_INFO(
+        "VTK SMP Backend: " << vtkSMPTools::GetBackend() << " with "
+        << vtkSMPTools::GetEstimatedNumberOfThreads() << " threads."
+    );
+
+    return true;
+}
+
 // static variable to call initVTKLogFile();
-static bool s_enable_log = init_vtk_log_file();
+static bool s_enable_log      = init_vtk_log_file();
+static bool s_smp_backend_log = init_vtk_smp_backend();
 
 // ------------------------------------------------------------------------------
 
