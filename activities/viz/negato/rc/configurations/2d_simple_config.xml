@@ -39,13 +39,12 @@
 
         <service uid="interactor4Negato" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
             <inout key="image" uid="${objectID}" />
-            <inout key="tf" uid="tf" />
             <config priority="0" orientation="${orientation}" />
         </service>
 
         <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
             <in key="image" uid="${objectID}" />
-            <in key="tf" uid="tf" />
+            <inout key="tf" uid="tf" />
             <config autoresetcamera="true" sliceIndex="${orientation}" />
         </service>
 

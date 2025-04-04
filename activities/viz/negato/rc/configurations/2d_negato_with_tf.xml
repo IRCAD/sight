@@ -83,7 +83,6 @@
 
         <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
             <inout key="image" uid="${image}" />
-            <inout key="tf" uid="${transferFunctionDeferred}" />
             <config priority="0" orientation="${orientation}" />
         </service>
 
@@ -93,7 +92,7 @@
 
         <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
             <in key="image" uid="${image}" />
-            <in key="tf" uid="${transferFunctionDeferred}" />
+            <inout key="tf" uid="${transferFunctionDeferred}" />
             <config sliceIndex="${orientation}" filtering="none" />
         </service>
 

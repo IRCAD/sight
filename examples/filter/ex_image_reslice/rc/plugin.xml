@@ -215,7 +215,7 @@
 
             <service uid="reslice_axial_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
                 <in key="image" uid="axial_slice" />
-                <in key="tf" uid="tf" />
+                <inout key="tf" uid="tf" />
                 <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" />
             </service>
 
@@ -226,7 +226,7 @@
 
             <service uid="reslice_frontal_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
                 <in key="image" uid="frontal_slice" />
-                <in key="tf" uid="tf" />
+                <inout key="tf" uid="tf" />
                 <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" />
             </service>
 

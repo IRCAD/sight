@@ -24,13 +24,12 @@
 
 #include <data/string.hpp>
 
-#include <viz/scene3d/adaptor.hpp>
-#include <viz/scene3d/interactor/base.hpp>
 #include <viz/scene3d/picking_cross.hpp>
 #include <viz/scene3d/plane.hpp>
 #include <viz/scene3d/texture.hpp>
 #include <viz/scene3d/transfer_function.hpp>
-#include <viz/scene3d/transformable.hpp>
+
+#include <modules/viz/scene3d/adaptor/negato.hpp>
 
 #include <OGRE/OgreManualObject.h>
 
@@ -46,7 +45,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b picked_voxel(string): sends the coordinates and intensity of the voxel picked by the cross widget.
  *
  * @section Slots Slots
- * - \b new_image(): update the image display to show the new content.
+ * - \b update_image(): update the image display to show the new content.
  * - \b sliceType(int, int): update image slice index .
  * - \b sliceIndex(int, int, int): update image slice type.
  * - \b set_transparency(double): sets the global transparency of the three image planes.
@@ -93,75 +92,38 @@ namespace sight::module::viz::scene3d::adaptor
  * to use "pre", otherwise it is likely that class of objects can be confounded.
  * - \b visible (optional, bool, default=true): set the initial visibility of the 3D negato.
  */
-class negato3d final :
-    public sight::viz::scene3d::adaptor,
-    public sight::viz::scene3d::transformable,
-    public sight::viz::scene3d::interactor::base
+class negato3d final : public sight::module::viz::scene3d::adaptor::negato
 {
 public:
 
     using axis_t = data::helper::medical_image::axis_t;
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(negato3d, sight::viz::scene3d::adaptor);
-
-    struct signals
-    {
-        using picked_voxel_t = core::com::signal<void (std::string)>;
-        static inline const core::com::signals::key_t PICKED_VOXEL = "picked_voxel";
-    };
+    SIGHT_DECLARE_SERVICE(negato3d, sight::module::viz::scene3d::adaptor::negato);
 
     struct slots
     {
-        static inline const core::com::slots::key_t UPDATE_IMAGE             = "update_image";
-        static inline const core::com::slots::key_t UPDATE_TF                = "update_tf";
-        static inline const core::com::slots::key_t SLICE_TYPE               = "slice_type";
-        static inline const core::com::slots::key_t SLICE_INDEX              = "slice_index";
-        static inline const core::com::slots::key_t UPDATE_SLICES_FROM_WORLD = "update_slices_from_world";
-        static inline const core::com::slots::key_t SET_TRANSPARENCY         = "set_transparency";
+        static inline const core::com::slots::key_t SET_TRANSPARENCY = "set_transparency";
     };
 
     /// Creates slots.
     negato3d() noexcept;
 
     /// Destroys the adaptor.
-    ~negato3d() noexcept override = default;
+    ~negato3d() noexcept final = default;
 
 protected:
 
     /// Configures the service.
-    void configuring() override;
-
-    /// Starts the service.
-    void starting() override;
-
-    /**
-     * @brief Proposals to connect service slots to associated object signals.
-     * @return A map of each proposed connection.
-     *
-     * Connect data::image::MODIFIED_SIG of s_IMAGE_INOUT to NEWIMAGE_SLOT
-     * Connect data::image::MODIFIED_SIG of BUFFER_MODIFIED_SIG to NEWIMAGE_SLOT
-     * Connect data::image::MODIFIED_SIG of SLICE_TYPE_MODIFIED_SIG to SLICETYPE_SLOT
-     * Connect data::image::MODIFIED_SIG of SLICE_INDEX_MODIFIED_SIG to SLICEINDEX_SLOT
-     */
-    service::connections_t auto_connections() const override;
-
-    /// Requests rendering of the scene.
-    void updating() override;
-
-    /// Stops the service, disconnects connections.
-    void stopping() override;
+    void configuring(const config_t& _config) final;
 
     /**
      * @brief Sets the negato visibility.
      * @param _visible the visibility status of the negato.
      */
-    void set_visible(bool _visible) override;
+    void set_visible(bool _visible) final;
 
 private:
-
-    /// Update the displayed transfer function.
-    void update_tf();
 
     /**
      * @brief Interacts with the negato if it was picked by pressing any mouse button.
@@ -178,7 +140,7 @@ private:
      * @param _dx the cursor's width displacement since the last event.
      * @param _dy the cursor's height displacement since the last event.
      */
-    void mouse_move_event(mouse_button _button, modifier /*_mods*/, int _x, int _y, int _dx, int _dy) override;
+    void mouse_move_event(mouse_button _button, modifier /*_mods*/, int _x, int _y, int _dx, int _dy) final;
 
     /**
      * @brief Attempts to pick the negato and starts interactions if picking was successful.
@@ -186,10 +148,10 @@ private:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    void button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) override;
+    void button_press_event(mouse_button _button, modifier /*_mods*/, int _x, int _y) final;
 
     /// Ends all interactions, regardless of the input.
-    void button_release_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/) override;
+    void button_release_event(mouse_button /*_button*/, modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
 
     /**
      * @brief Sets the slice intersection at the (_x, _y) screen position if possible.
@@ -205,34 +167,13 @@ private:
      */
     void pick_intensity(int _x, int _y);
 
-    /**
-     * @brief Update slices index to match x,y,z world coordinates
-     * @param _x world coordinates in double.
-     * @param _y world coordinates in double.
-     * @param _z world coordinates in double.
+    /** Uploads the input image into the texture buffer and recomputes the negato geometry.
+     * @param _new true if the image was reallocated, false if only pixel values changed.
      */
-    void update_slices_from_world(double _x, double _y, double _z);
-
-    /**
-     * @brief Updates the transfer function window and level by adding the input values.
-     * @param _dw window delta.
-     * @param _dl level delta.
-     */
-    void update_windowing(double _dw, double _dl);
-
-    /// SLOT: updates the image buffer.
-    void new_image();
+    void update_image(bool _new);
 
     /// SLOT: updates the image slice type.
-    void change_slice_type(int /*unused*/, int /*unused*/);
-
-    /**
-     * @brief SLOT: updates the image slice index.
-     * @param _axial_index new axial slice index.
-     * @param _frontal_index new frontal slice index.
-     * @param _sagittal_index new sagittal slice index.
-     */
-    void change_slice_index(int _axial_index, int _frontal_index, int _sagittal_index);
+    void change_slice_type(int /*unused*/, int /*unused*/) override;
 
     /// SLOT: sets the planes's opacity.
     void set_transparency(double _transparency);
@@ -242,72 +183,6 @@ private:
 
     /// Attemps to pick the negato planes, returns the world space position of the intersection if successful.
     std::optional<Ogre::Vector3> get_picked_slices(int _x, int _y);
-
-    /// Enables whether the camera must be auto reset when a mesh is updated or not.
-    bool m_auto_reset_camera {true};
-
-    /// Enables the opacity to that of the transfer function.
-    bool m_enable_alpha {false};
-
-    /// Enables whether or not interactions are enabled on the negato.
-    bool m_interactive {false};
-
-    /// Sets the order in which interactions take place in the scene.
-    int m_priority {1};
-
-    /// Contains the ogre texture which will be displayed on the negato.
-    sight::viz::scene3d::texture::sptr m_3d_ogre_texture;
-
-    /// Contains the optional mask texture which will be applied on top of the negato.
-    sight::viz::scene3d::texture::sptr m_mask_texture;
-
-    /// Contains and manages the Ogre textures used to store the transfer function (GPU point of view).
-    sight::viz::scene3d::transfer_function::uptr m_gpu_tf {nullptr};
-
-    /// Stores the planes on which we will apply our texture.
-    std::array<sight::viz::scene3d::plane::sptr, 3> m_planes;
-
-    /// Contains the plane that the user is currently interacting with.
-    sight::viz::scene3d::plane::sptr m_picked_plane {nullptr};
-
-    /// Contains the widget displayed to pick intensities.
-    std::unique_ptr<sight::viz::scene3d::picking_cross> m_picking_cross;
-
-    /// Contains the scene node allowing to move the entire negato.
-    Ogre::SceneNode* m_negato_scene_node {nullptr};
-
-    /// Contains the scene node used for image origin and orientation.
-    Ogre::SceneNode* m_origin_scene_node {nullptr};
-
-    /// Defines the filtering type for this negato.
-    sight::viz::scene3d::plane::filter_t m_filtering {sight::viz::scene3d::plane::filter_t::none};
-
-    /// Defines the transfer function window value at the time the interaction started.
-    double m_initial_window {0.F};
-
-    /// Defines the transfer function level value at the time the interaction started.
-    double m_initial_level {0.F};
-
-    /// Defines the mouse position at the time the windowing interaction started.
-    Ogre::Vector2i m_initial_pos {-1, -1};
-
-    /// Defines the mask used for picking request.
-    std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
-
-    /// Defines if the plane border is used or not.
-    bool m_border {true};
-
-    enum class update_flags : std::uint8_t
-    {
-        IMAGE,
-        TF
-    };
-
-    data::ptr<data::image, data::access::in> m_image {this, "image"};
-    data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "mask", true};
-    data::ptr<data::transfer_function, data::access::inout> m_tf {this, "tf"};
-
-    sight::data::property<sight::data::string> m_classification {this, "classification", std::string("post")};
 };
 
 //------------------------------------------------------------------------------

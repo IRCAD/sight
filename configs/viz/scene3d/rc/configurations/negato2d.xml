@@ -102,7 +102,7 @@
 
         <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato2d">
             <in key="image" uid="${image}" />
-            <in key="tf" uid="${transferFunction}" />
+            <inout key="tf" uid="${transferFunction}" />
             <config sliceIndex="${sliceIndex}" filtering="${filtering}" />
             <properties classification="${classification}" />
         </service>
@@ -114,7 +114,6 @@
 
         <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">
             <inout key="image" uid="${image}" />
-            <inout key="tf" uid="${transferFunction}" />
             <config priority="0" orientation="${sliceIndex}" />
         </service>
 

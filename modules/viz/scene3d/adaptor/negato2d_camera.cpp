@@ -351,13 +351,6 @@ void negato2d_camera::mouse_move_event(
         m_has_moved = true;
         this->request_render();
     }
-    else if(m_is_interacting && _button == mouse_button::right)
-    {
-        const auto dx = static_cast<double>(_x - m_initial_pos[0]);
-        const auto dy = static_cast<double>(m_initial_pos[1] - _y);
-
-        this->update_windowing(dx, dy);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -373,17 +366,6 @@ void negato2d_camera::button_press_event(interactor_3d::base::mouse_button _butt
     if(_button == mouse_button::middle)
     {
         m_is_interacting = interactor_3d::base::is_in_layer(_x, _y, layer, m_layer_order_dependant);
-    }
-    else if(_button == mouse_button::right && interactor_3d::base::is_in_layer(_x, _y, layer, m_layer_order_dependant))
-    {
-        m_is_interacting = true;
-
-        const auto tf = m_tf.const_lock();
-
-        m_initial_level  = tf->level();
-        m_initial_window = tf->window();
-
-        m_initial_pos = {_x, _y};
     }
 }
 
@@ -558,28 +540,6 @@ void negato2d_camera::change_orientation(int _from, int _to)
     {
         m_axis = to_axis;
         this->reset_camera();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void negato2d_camera::update_windowing(double _dw, double _dl)
-{
-    const double new_window = m_initial_window + _dw;
-    const double new_level  = m_initial_level - _dl;
-
-    {
-        const auto image = m_image.const_lock();
-        const auto tf    = m_tf.lock();
-
-        tf->set_window(new_window);
-        tf->set_level(new_level);
-        const auto sig = tf->template signal<data::transfer_function::windowing_modified_signal_t>(
-            data::transfer_function::WINDOWING_MODIFIED_SIG
-        );
-        {
-            sig->async_emit(new_window, new_level);
-        }
     }
 }
 

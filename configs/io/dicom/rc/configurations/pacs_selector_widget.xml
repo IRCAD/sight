@@ -257,13 +257,12 @@
 
         <service uid="p_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
             <in key="image" uid="previewImage" />
-            <in key="tf" uid="tf" />
+            <inout key="tf" uid="tf" />
             <config sliceIndex="axial" filtering="anisotropic" />
         </service>
 
         <service uid="p_negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
             <inout key="image" uid="previewImage" />
-            <inout key="tf" uid="tf" />
             <config priority="0" orientation="axial" />
         </service>
 

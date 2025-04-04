@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,6 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::negato2d_camera" >
         <inout key="image" uid="..." auto_connect="true" />
-        <inout key="tf" uid="..." />
         <config priority="0" layerOrderDependant="true" orientation="sagittal" margin="0.1" block_width_scaling="true"/>
    </service>
    @endcode
@@ -60,8 +59,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b image [sight::data::image](mandatory): image viewed in negato mode, used for auto connections only.
  *      Modification signals can be used to reset the camera's position and orientation. Useless without
  *      auto_connect="true".
- * - \b tf [sight::data::transfer_function] (optional): the current TransferFunction. If it is not defined, we use the
- *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
@@ -258,10 +255,7 @@ private:
     core::com::helper::sig_slot_connection m_layer_connection;
 
     static constexpr std::string_view IMAGE_INOUT = "image";
-    static constexpr std::string_view TF_INOUT    = "tf";
-
     sight::data::ptr<sight::data::image, sight::data::access::inout> m_image {this, IMAGE_INOUT};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, TF_INOUT, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.
