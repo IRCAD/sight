@@ -23,6 +23,7 @@
 
 #include "viz/scene3d/helper/shading.hpp"
 #include "viz/scene3d/helper/technique.hpp"
+#include "viz/scene3d/material/generic.hpp"
 
 #include <viz/scene3d/ogre.hpp>
 
@@ -189,7 +190,10 @@ Ogre::Technique* viz::scene3d::compositor::manager::oit::handleSchemeNotFound(
             pass->setDepthCheckEnabled(true);
             pass->setCullingMode(Ogre::CULL_NONE);
             pass->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
-            pass->setSceneBlending(Ogre::SBT_REPLACE);
+            if(pass->getName() != viz::scene3d::material::generic::passes::SELECTED)
+            {
+                pass->setSceneBlending(Ogre::SBT_REPLACE);
+            }
 
             if(is_cel_shading && pass->getName() != "NormalsPass" && pass->getName() != "EdgePass")
             {
@@ -280,7 +284,10 @@ Ogre::Technique* viz::scene3d::compositor::manager::oit::handleSchemeNotFound(
 
                 pass->setCullingMode(Ogre::CULL_NONE);
                 pass->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
-                pass->setSceneBlending(Ogre::SBT_REPLACE);
+                if(pass->getName() != viz::scene3d::material::generic::passes::SELECTED)
+                {
+                    pass->setSceneBlending(Ogre::SBT_REPLACE);
+                }
             }
         }
         else if(algo_pass_name == passes::WEIGHT_BLEND)

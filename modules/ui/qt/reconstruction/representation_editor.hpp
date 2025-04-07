@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,17 +99,17 @@ protected Q_SLOTS:
 
     void on_change_representation(int _id);
     void on_change_shading(int _id);
-    void on_show_normals(int _state);
+    void on_show_options(int _state);
 
 private:
 
-    void refresh_normals();
+    void refresh_options();
     void refresh_representation();
     void refresh_shading();
 
     QPointer<QButtonGroup> m_button_group;
     QPointer<QButtonGroup> m_button_group_shading;
-    QPointer<QButtonGroup> m_normals_radio_box;
+    QPointer<QButtonGroup> m_options_radio_box;
 
     data::material::sptr m_material;
 

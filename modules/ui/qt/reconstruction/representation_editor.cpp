@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -131,26 +131,30 @@ void representation_editor::starting()
     auto* group_box_normals = new QGroupBox(tr("Normals"));
     group_box_normals->setObjectName(service_id + "/" + group_box_normals->title());
     auto* layout_group_box_normals = new QVBoxLayout(group_box_normals);
-    m_normals_radio_box = new QButtonGroup();
-    m_normals_radio_box->setObjectName(service_id + "/normalsRadioBox");
+    m_options_radio_box = new QButtonGroup();
+    m_options_radio_box->setObjectName(service_id + "/normalsRadioBox");
     auto* point_normals_button = new QRadioButton(tr("Show point normals"));
     point_normals_button->setObjectName(service_id + "/" + point_normals_button->text());
     auto* cell_normals_button = new QRadioButton(tr("Show cell normals"));
     cell_normals_button->setObjectName(service_id + "/" + cell_normals_button->text());
+    auto* selected_button = new QRadioButton(tr("Selected"));
+    selected_button->setObjectName(service_id + "/" + selected_button->text());
     auto* hide_normals_button = new QRadioButton(tr("Hide normals"));
     hide_normals_button->setObjectName(service_id + "/" + hide_normals_button->text());
 
-    m_normals_radio_box->addButton(point_normals_button, 1);
-    m_normals_radio_box->addButton(cell_normals_button, 2);
-    m_normals_radio_box->addButton(hide_normals_button, 0);
+    m_options_radio_box->addButton(point_normals_button, 1);
+    m_options_radio_box->addButton(cell_normals_button, 2);
+    m_options_radio_box->addButton(selected_button, 3);
+    m_options_radio_box->addButton(hide_normals_button, 0);
 
     layout_group_box_normals->addWidget(point_normals_button);
     layout_group_box_normals->addWidget(cell_normals_button);
+    layout_group_box_normals->addWidget(selected_button);
     layout_group_box_normals->addWidget(hide_normals_button);
 
     layout->addWidget(group_box_normals);
 
-    QObject::connect(m_normals_radio_box, &QButtonGroup::idClicked, this, &self_t::on_show_normals);
+    QObject::connect(m_options_radio_box, &QButtonGroup::idClicked, this, &self_t::on_show_options);
 
     qt_container->set_layout(layout);
     qt_container->set_enabled(false);
@@ -168,7 +172,7 @@ void representation_editor::stopping()
     QObject::disconnect(m_button_group, &QButtonGroup::idClicked, this, &self_t::on_change_representation);
     QObject::disconnect(m_button_group_shading, &QButtonGroup::idClicked, this, &self_t::on_change_shading);
 
-    QObject::disconnect(m_normals_radio_box, &QButtonGroup::idClicked, this, &self_t::on_show_normals);
+    QObject::disconnect(m_options_radio_box, &QButtonGroup::idClicked, this, &self_t::on_show_options);
 
     this->destroy();
 }
@@ -196,7 +200,7 @@ void representation_editor::updating()
     container->setEnabled(!reconstruction->get_organ_name().empty());
 
     this->refresh_representation();
-    this->refresh_normals();
+    this->refresh_options();
     this->refresh_shading();
 }
 
@@ -319,17 +323,19 @@ void representation_editor::refresh_shading()
 
 //------------------------------------------------------------------------------
 
-void representation_editor::refresh_normals()
+void representation_editor::refresh_options()
 {
-    QAbstractButton* button_hide = m_normals_radio_box->button(0);
+    QAbstractButton* button_hide = m_options_radio_box->button(0);
     button_hide->setChecked(m_material->get_options_mode() == data::material::standard);
-    QAbstractButton* button_normals = m_normals_radio_box->button(1);
+    QAbstractButton* button_normals = m_options_radio_box->button(1);
     button_normals->setChecked(m_material->get_options_mode() == data::material::normals);
+    QAbstractButton* selected = m_options_radio_box->button(2);
+    selected->setChecked(m_material->get_options_mode() == data::material::selected);
 }
 
 //------------------------------------------------------------------------------
 
-void representation_editor::on_show_normals(int _state)
+void representation_editor::on_show_options(int _state)
 {
     switch(_state)
     {
@@ -343,6 +349,10 @@ void representation_editor::on_show_normals(int _state)
 
         case 2:
             m_material->set_options_mode(data::material::cells_normals);
+            break;
+
+        case 3:
+            m_material->set_options_mode(data::material::selected);
             break;
 
         default:

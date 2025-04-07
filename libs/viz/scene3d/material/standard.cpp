@@ -47,10 +47,11 @@ void standard::update_options_mode(int _options_mode)
 
     // First remove the normals pass if there is already one
     this->remove_pass(material::generic::passes::NORMALS);
+    this->remove_pass(material::generic::passes::SELECTED);
 
     const Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
-    if(_options_mode != data::material::standard)
+    if(_options_mode == data::material::normals || _options_mode == data::material::cells_normals)
     {
         for(auto* const current_technique : techniques)
         {
@@ -84,6 +85,38 @@ void standard::update_options_mode(int _options_mode)
 
             // Updates the normal length according to the bounding box's size
             normals_pass->getGeometryProgramParameters()->setNamedConstant("u_sceneSize", m_mesh_size);
+        }
+    }
+    else if(_options_mode == data::material::selected)
+    {
+        for(auto* const current_technique : techniques)
+        {
+            if(current_technique->getName() != "depth")
+            {
+                // We need the first pass of the current technique in order to copy its rendering states in the normals
+                // pass
+                Ogre::Pass* first_pass = current_technique->getPass(0);
+                SIGHT_ASSERT("Pass is null", first_pass);
+
+                // We copy the first pass, thus keeping all rendering states
+                Ogre::Pass* selected_pass = current_technique->createPass();
+                *selected_pass = *first_pass;
+                selected_pass->setName(material::generic::passes::SELECTED);
+
+                selected_pass->setFragmentProgram("Default/ghost_fp");
+                selected_pass->setDepthWriteEnabled(false);
+                selected_pass->setDepthCheckEnabled(false);
+                selected_pass->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
+                selected_pass->getFragmentProgramParameters()->setNamedConstant(
+                    "u_rim_params",
+                    Ogre::ColourValue(
+                        0.4F,
+                        0.6F,
+                        0.8F
+                    )
+                );
+                selected_pass->setDiffuse(Ogre::ColourValue(0.8F, 1.0F, 0.0F));
+            }
         }
     }
 }
@@ -122,7 +155,8 @@ void standard::set_shading(
         {
             // Nothing to do for edge and normal passes
             if(ogre_pass->getName() == material::generic::passes::EDGES
-               || ogre_pass->getName() == material::generic::passes::NORMALS)
+               || ogre_pass->getName() == material::generic::passes::NORMALS
+               || ogre_pass->getName() == material::generic::passes::SELECTED)
             {
                 continue;
             }

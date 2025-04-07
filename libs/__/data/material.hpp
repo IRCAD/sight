@@ -98,7 +98,8 @@ public:
     {
         standard      = 1,
         normals       = 2,
-        cells_normals = 3
+        cells_normals = 3,
+        selected      = 4
     };
 
     /**

@@ -60,8 +60,9 @@ public:
 
     struct passes
     {
-        static const inline std::string EDGES   = "EdgePass";
-        static const inline std::string NORMALS = "NormalsPass";
+        static const inline std::string EDGES    = "EdgePass";
+        static const inline std::string NORMALS  = "NormalsPass";
+        static const inline std::string SELECTED = "SelectedPass";
     };
 
     /// Constructor

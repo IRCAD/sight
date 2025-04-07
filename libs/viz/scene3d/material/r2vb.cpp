@@ -76,7 +76,8 @@ void r2vb::set_shading(data::material::shading_t _shading_mode)
         {
             // Nothing to do for edge and normal passes
             if(ogre_pass->getName() == material::generic::passes::EDGES
-               || ogre_pass->getName() == material::generic::passes::NORMALS)
+               || ogre_pass->getName() == material::generic::passes::NORMALS
+               || ogre_pass->getName() == material::generic::passes::SELECTED)
             {
                 // TODO_FB: useful ?
                 continue;

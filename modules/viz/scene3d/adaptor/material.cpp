@@ -224,6 +224,7 @@ void material::updating()
         // Set up representation mode
         m_standard_material_impl->set_polygon_mode(material->get_representation_mode());
 
+        m_standard_material_impl->set_ambient_diffuse(material.get_shared());
         m_standard_material_impl->update_options_mode(material->get_options_mode());
         m_standard_material_impl->set_shading(
             material->get_shading_mode(),
@@ -231,7 +232,6 @@ void material::updating()
             this->has_diffuse_texture(),
             m_tex_adaptor ? m_tex_adaptor->get_use_alpha() : false
         );
-        m_standard_material_impl->set_ambient_diffuse(material.get_shared());
     }
     else
     {
