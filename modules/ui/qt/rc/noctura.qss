@@ -1337,7 +1337,6 @@ QProgressBar::chunk
 {
     border-radius:40px;
     background: rgba(255,255,255,30%);
-    padding: 10px;
 }
 
 .SelectorView
@@ -1347,8 +1346,6 @@ QProgressBar::chunk
     border-right: none;
     border-bottom: none;
     border-radius: 0px;
-    margin-top: 10px;
-    padding: 5px;
 }
 
 .SelectorView::title
