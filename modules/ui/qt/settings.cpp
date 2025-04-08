@@ -69,20 +69,20 @@
 namespace sight::module::ui::qt
 {
 
-constexpr auto SET_MINIMUM_SIZE =
-    []
-    (QWidget* _widget, const settings::param_widget& _params)
-    {
-        if(_params.min_width.has_value())
-        {
-            _widget->setMinimumWidth(*_params.min_width);
-        }
+//------------------------------------------------------------------------------
 
-        if(_params.min_height.has_value())
-        {
-            _widget->setMinimumHeight(*_params.min_height);
-        }
-    };
+inline static void set_minimum_size(QWidget* _widget, const settings::param_widget& _params)
+{
+    if(_params.min_width.has_value())
+    {
+        _widget->setMinimumWidth(std::max(_widget->minimumWidth(), *_params.min_width));
+    }
+
+    if(_params.min_height.has_value())
+    {
+        _widget->setMinimumHeight(std::max(_widget->minimumHeight(), *_params.min_height));
+    }
+}
 
 //-----------------------------------------------------------------------------
 
@@ -106,38 +106,40 @@ void settings::configuring()
 
 void settings::starting()
 {
-    const std::set<std::string> is_text_widget {"text", "file", "dir", "file_read", "file_write", "dir_write",
-                                                "dir_read"
-    };
+    this->block_signals(true);
     this->create();
 
-    const std::string service_id = base_id();
+    const std::set<std::string> is_text_widget {
+        "text", "file", "dir", "file_read", "file_write", "dir_write", "dir_read"
+    };
 
     auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
-    qt_container->get_qt_container()->setObjectName(QString::fromStdString(service_id));
+    qt_container->get_qt_container()->setObjectName(QString::fromStdString(base_id()));
 
     QScrollArea* scroll_area = nullptr;
-    QWidget* viewport        = nullptr;
 
     service::config_t config = this->get_config();
 
     const auto& ui_cfg    = config.get_child("ui");
     const bool scrollable = ui_cfg.get<bool>("<xmlattr>.scrollable", false);
 
+    auto* layout = new QFormLayout;
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setAlignment(Qt::AlignCenter);
+    layout->setFormAlignment(Qt::AlignCenter);
+    layout->setLabelAlignment(Qt::AlignVCenter | Qt::AlignLeft);
+    layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+
     if(scrollable)
     {
         scroll_area = new QScrollArea(qt_container->get_qt_container()->parentWidget());
         scroll_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scroll_area->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        viewport = new QWidget(qt_container->get_qt_container());
+        auto* const viewport = new QWidget(qt_container->get_qt_container());
+        viewport->setLayout(layout);
+        scroll_area->setWidgetResizable(true);
+        scroll_area->setWidget(viewport);
     }
-
-    auto* layout = new QFormLayout {};
-    layout->setSpacing(0);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setAlignment(Qt::AlignCenter);
-
-    this->block_signals(true);
 
     // We don't support having multiple properties with the same key (this isn't a good idea any way).
     // This set keeps tracks of the ones we add, and triggers and assert if it already exists.
@@ -203,76 +205,73 @@ void settings::starting()
             keys.insert(widget.key).second
         );
 
-        auto* const param_box = new QGroupBox {scroll_area == nullptr ? qt_container->get_qt_container() : scroll_area};
+        auto* const param_box = new QWidget;
+        const auto qt_key     = QString::fromStdString(widget.key) + "_box";
+        param_box->setProperty(qt_property::key, qt_key);
+        param_box->setObjectName(qt_key);
+        param_box->setContentsMargins(0, 0, 0, 0);
+
+        if(orientation == Qt::Vertical)
         {
-            const auto qt_key = QString::fromStdString(widget.key) + "_box";
-
-            // This intermediate widget shouldn't be visible
-            // Note that because we're setting this stylesheet on the fly on this "top-level" widget, we must
-            // apply it again on its children: children inherits the stylesheet of their parents
-
-            // Note that these widgets aren't required for display purposes, but having them greatly simplifies the
-            // search done in get_param_widget.
-
-            param_box->setStyleSheet("background-color: rgba(0,0,0,0); border: 0px;");
-            param_box->setContentsMargins(0, 0, 0, 0);
-
-            param_box->setProperty(qt_property::key, qt_key);
-            param_box->setObjectName(qt_key);
-
-            m_param_boxes.emplace_back(param_box);
+            param_box->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::MinimumExpanding);
         }
+        else
+        {
+            param_box->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+        }
+
+        m_param_boxes.emplace_back(param_box);
 
         auto* const param_box_layout = new QBoxLayout {param_box_direction, param_box};
 
-        auto* const row_layout = new QHBoxLayout {};
-        row_layout->addWidget(param_box);
+        auto* const row_layout = new QHBoxLayout;
+        row_layout->setContentsMargins(0, 0, 0, 0);
+
+        if(orientation == Qt::Vertical)
+        {
+            row_layout->addWidget(param_box, 0, Qt::AlignCenter);
+        }
+        else
+        {
+            row_layout->addWidget(param_box, 0, Qt::AlignVCenter);
+        }
 
         // Label
+        if(!widget.name.empty())
         {
-            QLabel* parameter_label = nullptr;
-            if(!widget.name.empty())
-            {
-                parameter_label = new QLabel(QString::fromStdString(widget.name));
-                parameter_label->setWordWrap(true);
-                parameter_label->setAlignment(Qt::AlignCenter);
-                parameter_label->setStyleSheet("margin: -0.1em;");
-            }
+            auto* const parameter_label = new QLabel(QString::fromStdString(widget.name));
+            parameter_label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+            parameter_label->setWordWrap(true);
+            parameter_label->setAlignment(Qt::AlignCenter);
 
-            if(parameter_label != nullptr)
+            // When horizontal, the label is added to the "main" widget layout, otherwise, at the top of the box
+            if(orientation == Qt::Vertical)
             {
-                // When horizontal, the label is added to the "main" widget layout, otherwise, at the top of the box
-                if(orientation == Qt::Vertical)
-                {
-                    param_box_layout->addWidget(parameter_label);
-                    layout->addRow(row_layout);
-                }
-                else
-                {
-                    layout->addRow(parameter_label, row_layout);
-                }
+                param_box_layout->addWidget(parameter_label, 0, Qt::AlignCenter);
+                layout->addRow(row_layout);
             }
             else
             {
-                layout->addRow(row_layout);
+                layout->addRow(parameter_label, row_layout);
             }
         }
+        else
+        {
+            layout->addRow(row_layout);
+        }
+
+        // If we have a reset button, we need to add it to the row layout
+        QPushButton* reset = nullptr;
 
         bool created = false; // Just needed for integer type
 
         if(type == "sight::data::boolean")
         {
-            if(auto* reset = this->create_bool_widget(*param_box_layout, widget))
-            {
-                row_layout->addWidget(reset);
-            }
+            reset = this->create_bool_widget(param_box_layout, widget, orientation);
         }
         else if(type == "sight::data::color")
         {
-            if(auto* reset = this->create_color_widget(*param_box_layout, widget))
-            {
-                row_layout->addWidget(reset);
-            }
+            reset = this->create_color_widget(param_box_layout, widget);
         }
         else if(type == "sight::data::real" || type == "sight::data::dvec2" || type == "sight::data::dvec3")
         {
@@ -287,10 +286,7 @@ void settings::starting()
 
             if(widget_type == "spin")
             {
-                if(auto* reset = this->create_double_spin_widget(*param_box_layout, widget_double, count, orientation))
-                {
-                    row_layout->addWidget(reset);
-                }
+                reset = this->create_double_spin_widget(param_box_layout, widget_double, count, orientation);
             }
             else if(widget_type == "slider")
             {
@@ -300,23 +296,17 @@ void settings::starting()
                 const std::uint8_t decimals = cfg.get<std::uint8_t>("<xmlattr>.decimals", 2);
                 const bool on_release       = cfg.get<bool>("<xmlattr>.emit_on_release", false);
 
-                if(auto* reset = this->create_double_slider_widget(
-                       *param_box_layout,
-                       widget_double,
-                       decimals,
-                       orientation,
-                       on_release
-                ))
+                reset = this->create_double_slider_widget(
+                    param_box_layout,
+                    widget_double,
+                    decimals,
+                    orientation,
+                    on_release
+                );
+
+                if(orientation == Qt::Vertical)
                 {
-                    // Looks better under the rest
-                    if(orientation == Qt::Vertical)
-                    {
-                        param_box_layout->addWidget(reset, /*stretch = */ 0, Qt::AlignCenter);
-                    }
-                    else
-                    {
-                        row_layout->addWidget(reset);
-                    }
+                    param_box->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
                 }
             }
             else
@@ -340,11 +330,7 @@ void settings::starting()
 
             if(widget_type == "spin")
             {
-                if(auto* reset = this->create_integer_spin_widget(*param_box_layout, widget_int, count, orientation))
-                {
-                    row_layout->addWidget(reset);
-                }
-
+                reset   = this->create_integer_spin_widget(param_box_layout, widget_int, count, orientation);
                 created = true;
             }
             else if(widget_type == "slider")
@@ -353,18 +339,11 @@ void settings::starting()
                 SIGHT_ASSERT(get_id() << ": Count > 1 is not supported with sliders", count == 1);
 
                 const bool on_release = cfg.get<bool>("<xmlattr>.emit_on_release", false);
-                if(auto* reset =
-                       this->create_integer_slider_widget(*param_box_layout, widget_int, orientation, on_release))
+                reset = this->create_integer_slider_widget(param_box_layout, widget_int, orientation, on_release);
+
+                if(orientation == Qt::Vertical)
                 {
-                    // Looks better under the rest
-                    if(orientation == Qt::Vertical)
-                    {
-                        param_box_layout->addWidget(reset, /*stretch = */ 0, Qt::AlignCenter);
-                    }
-                    else
-                    {
-                        row_layout->addWidget(reset);
-                    }
+                    param_box->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
                 }
 
                 created = true;
@@ -391,7 +370,7 @@ void settings::starting()
                 std::vector<std::string> data;
 
                 sight::module::ui::qt::settings::parse_enum_string(options, values, data);
-                this->create_enum_combobox_widget(*param_box_layout, widget, values, data);
+                this->create_enum_combobox_widget(param_box_layout, widget, values, data);
             }
             else if(widget_type == "comboslider")
             {
@@ -403,7 +382,12 @@ void settings::starting()
                 sight::module::ui::qt::settings::parse_enum_string(options, values, data);
                 const bool on_release = cfg.get<bool>("<xmlattr>.emit_on_release", false);
 
-                this->create_enum_slider_widget(*param_box_layout, widget, values, orientation, on_release);
+                this->create_enum_slider_widget(param_box_layout, widget, values, orientation, on_release);
+
+                if(orientation == Qt::Vertical)
+                {
+                    param_box->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
+                }
             }
             else if(widget_type == "buttonBar")
             {
@@ -428,7 +412,7 @@ void settings::starting()
                 }
 
                 this->create_enum_button_bar_widget(
-                    *param_box_layout,
+                    param_box_layout,
                     widget,
                     button_list,
                     width,
@@ -440,14 +424,24 @@ void settings::starting()
             }
             else if(is_text_widget.contains(widget_type))
             {
-                if(auto* reset = this->create_text_widget(*param_box_layout, widget, widget_type))
-                {
-                    row_layout->addWidget(reset);
-                }
+                reset = this->create_text_widget(param_box_layout, widget, widget_type);
             }
             else
             {
                 SIGHT_ERROR("Unknown widget type for key: " + widget.key);
+            }
+        }
+
+        if(reset != nullptr)
+        {
+            // Looks better under the rest
+            if(orientation == Qt::Vertical)
+            {
+                param_box_layout->addWidget(reset, /*stretch = */ 0, Qt::AlignCenter);
+            }
+            else
+            {
+                row_layout->addWidget(reset);
             }
         }
     }
@@ -530,19 +524,10 @@ void settings::starting()
 
     if(scroll_area != nullptr)
     {
-        viewport->setLayout(layout);
-        scroll_area->setWidgetResizable(true);
-        scroll_area->setWidget(viewport);
-        auto* main_layout = new QGridLayout();
-        qt_container->set_layout(main_layout);
+        auto* main_layout = new QHBoxLayout();
         main_layout->addWidget(scroll_area);
-
-        // The size of the vertical scroll bar isn't taken into account when the QGridLayout fill the space, as such
-        // some buttons (particularly reset buttons) get hidden. The workaround is to biggen the right margin a little.
-        int scroll_bar_width = QScrollBar().sizeHint().width();
-        QMargins margins     = layout->contentsMargins();
-        margins.setRight(scroll_bar_width);
-        layout->setContentsMargins(margins);
+        main_layout->setContentsMargins(0, 0, 0, 0);
+        qt_container->set_layout(main_layout);
     }
     else
     {
@@ -645,6 +630,7 @@ void settings::on_color_button()
         "pick a color",
         QColorDialog::ShowAlphaChannel
     );
+
     if(color_qt.isValid())
     {
         auto* colour_button = dynamic_cast<QPushButton*>(sender);
@@ -656,9 +642,8 @@ void settings::on_color_button()
 
         colour_button->setIcon(QIcon(pix));
 
-        sight::data::color::array_t color_array({float(color_qt.redF()), float(color_qt.greenF()),
-                                                 float(color_qt.blueF()), float(color_qt.alphaF())
-                                                });
+        sight::data::color::array_t color_array(
+            {color_qt.redF(), color_qt.greenF(), color_qt.blueF(), color_qt.alphaF()});
         update_data<sight::data::color>(sender, color_array);
     }
 }
@@ -973,29 +958,34 @@ QPushButton* settings::create_reset_button(const std::string& _key, std::functio
 //-----------------------------------------------------------------------------
 
 [[nodiscard]]
-QPushButton* settings::create_bool_widget(QBoxLayout& _layout, const param_widget& _setup)
+QPushButton* settings::create_bool_widget(QBoxLayout* _layout, const param_widget& _setup, Qt::Orientation _orientation)
 {
     auto* checkbox = new QCheckBox();
+
+    // Base properties
+    const auto key = QString::fromStdString(_setup.key);
+    checkbox->setObjectName(key);
+    checkbox->setProperty(qt_property::key, key);
+    checkbox->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+
+    // Data
+    const auto obj        = data<sight::data::boolean>(checkbox);
+    const auto init_value = obj->value();
+    checkbox->setCheckState(init_value ? Qt::Checked : Qt::Unchecked);
+    connect_data(obj, _setup.key);
+
+    // Style
+    checkbox->setTristate(false);
+    checkbox->setStyleSheet(qApp->styleSheet());
+
+    if(_orientation == Qt::Vertical)
     {
-        // Base properties
-        const auto key = QString::fromStdString(_setup.key);
-        checkbox->setObjectName(key);
-        checkbox->setProperty(qt_property::key, key);
-        checkbox->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
-
-        // Data
-        const auto obj        = data<sight::data::boolean>(checkbox);
-        const auto init_value = obj->value();
-        checkbox->setCheckState(init_value ? Qt::Checked : Qt::Unchecked);
-        connect_data(obj, _setup.key);
-
-        // Style
-        checkbox->setTristate(false);
-        checkbox->setStyleSheet(qApp->styleSheet());
-        SET_MINIMUM_SIZE(checkbox, _setup);
+        _layout->addWidget(checkbox, 0, Qt::AlignCenter);
     }
-
-    _layout.addWidget(checkbox);
+    else
+    {
+        _layout->addWidget(checkbox, 0, Qt::AlignLeft | Qt::AlignVCenter);
+    }
 
     // Forward to the Sight signal
     QObject::connect(
@@ -1020,7 +1010,7 @@ QPushButton* settings::create_bool_widget(QBoxLayout& _layout, const param_widge
 //-----------------------------------------------------------------------------
 
 [[nodiscard]]
-QPushButton* settings::create_color_widget(QBoxLayout& _layout, const param_widget& _setup)
+QPushButton* settings::create_color_widget(QBoxLayout* _layout, const param_widget& _setup)
 {
     auto* colour_button = new QPushButton();
     {
@@ -1046,10 +1036,10 @@ QPushButton* settings::create_color_widget(QBoxLayout& _layout, const param_widg
         colour_button->setProperty("color", color_qt);
 
         colour_button->setStyleSheet(qApp->styleSheet());
-        SET_MINIMUM_SIZE(colour_button, _setup);
+        set_minimum_size(colour_button, _setup);
     }
 
-    _layout.addWidget(colour_button);
+    _layout->addWidget(colour_button);
 
     QObject::connect(colour_button, &QPushButton::clicked, this, &settings::on_color_button);
 
@@ -1066,7 +1056,7 @@ QPushButton* settings::create_color_widget(QBoxLayout& _layout, const param_widg
 
 [[nodiscard]]
 QPushButton* settings::create_double_spin_widget(
-    QBoxLayout& _layout,
+    QBoxLayout* _layout,
     const double_widget& _setup,
     int _count,
     Qt::Orientation _orientation
@@ -1074,32 +1064,31 @@ QPushButton* settings::create_double_spin_widget(
 {
     const auto layout_direction = _orientation == Qt::Vertical ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight;
 
-    auto* sub_layout = new QBoxLayout {layout_direction};
-    {
-        _layout.addLayout(sub_layout);
-    }
-    _layout.setProperty(qt_property::key, QString::fromStdString(_setup.key));
-    _layout.setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+    auto* const sub_layout = new QBoxLayout {layout_direction};
+    sub_layout->setContentsMargins(0, 0, 0, 0);
+    _layout->addLayout(sub_layout);
+    _layout->setProperty(qt_property::key, QString::fromStdString(_setup.key));
+    _layout->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
 
     std::array<QDoubleSpinBox*, 3> spinboxes {};
     std::array<double, 3> init_values {0., 0., 0.};
 
     if(_count == 1)
     {
-        const auto obj = data<sight::data::real>(&_layout);
+        const auto obj = data<sight::data::real>(_layout);
         init_values[0] = obj->value();
         connect_data(obj, _setup.key);
     }
     else if(_count == 2)
     {
-        const auto obj   = data<sight::data::dvec2>(&_layout);
+        const auto obj   = data<sight::data::dvec2>(_layout);
         const auto value = obj->value();
         std::ranges::copy(value, init_values.begin());
         connect_data(obj, _setup.key);
     }
     else if(_count == 3)
     {
-        const auto obj   = data<sight::data::dvec3>(&_layout);
+        const auto obj   = data<sight::data::dvec3>(_layout);
         const auto value = obj->value();
         std::ranges::copy(value, init_values.begin());
         connect_data(obj, _setup.key);
@@ -1140,7 +1129,7 @@ QPushButton* settings::create_double_spin_widget(
 
         // Style
         spinbox->setStyleSheet(qApp->styleSheet());
-        SET_MINIMUM_SIZE(spinbox, _setup);
+        set_minimum_size(spinbox, _setup);
 
         sub_layout->addWidget(spinbox);
 
@@ -1178,7 +1167,7 @@ QPushButton* settings::create_double_spin_widget(
 
 [[nodiscard]]
 QPushButton* settings::create_double_slider_widget(
-    QBoxLayout& _layout,
+    QBoxLayout* _layout,
     const double_widget& _setup,
     std::uint8_t _decimals,
     Qt::Orientation _orientation,
@@ -1187,9 +1176,8 @@ QPushButton* settings::create_double_slider_widget(
 {
     const auto layout_direction = _orientation == Qt::Vertical ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight;
     auto* const sub_layout      = new QBoxLayout {layout_direction};
-    sub_layout->setSpacing(0);
     sub_layout->setContentsMargins(0, 0, 0, 0);
-    _layout.addLayout(sub_layout);
+    _layout->addLayout(sub_layout);
 
     auto* const slider = new QSlider();
 
@@ -1223,7 +1211,7 @@ QPushButton* settings::create_double_slider_widget(
     slider->setProperty("widget#0", QVariant::fromValue<QSlider*>(slider));
 
     slider->setStyleSheet(qApp->styleSheet());
-    SET_MINIMUM_SIZE(slider, _setup);
+    set_minimum_size(slider, _setup);
 
     QFont min_max_labels_font;
     min_max_labels_font.setPointSize(7);
@@ -1309,7 +1297,7 @@ QPushButton* settings::create_double_slider_widget(
 
 [[nodiscard]]
 QPushButton* settings::create_integer_slider_widget(
-    QBoxLayout& _layout,
+    QBoxLayout* _layout,
     const int_widget& _setup,
     Qt::Orientation _orientation,
     bool _on_release
@@ -1317,8 +1305,7 @@ QPushButton* settings::create_integer_slider_widget(
 {
     const auto layout_direction = _orientation == Qt::Vertical ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight;
     auto* sub_layout            = new QBoxLayout {layout_direction};
-    _layout.addLayout(sub_layout);
-    sub_layout->setSpacing(0);
+    _layout->addLayout(sub_layout);
     sub_layout->setContentsMargins(0, 0, 0, 0);
 
     auto* slider = new QSlider();
@@ -1343,7 +1330,7 @@ QPushButton* settings::create_integer_slider_widget(
     // Style
     slider->setOrientation(_orientation);
     slider->setStyleSheet(qApp->styleSheet());
-    SET_MINIMUM_SIZE(slider, _setup);
+    set_minimum_size(slider, _setup);
 
     QFont min_max_labels_font;
     min_max_labels_font.setPointSize(7);
@@ -1426,7 +1413,7 @@ QPushButton* settings::create_integer_slider_widget(
 
 [[nodiscard]]
 QPushButton* settings::create_integer_spin_widget(
-    QBoxLayout& _layout,
+    QBoxLayout* _layout,
     const int_widget& _setup,
     int _count,
     Qt::Orientation _orientation
@@ -1434,29 +1421,30 @@ QPushButton* settings::create_integer_spin_widget(
 {
     const auto layout_direction = _orientation == Qt::Vertical ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight;
     auto* sub_layout            = new QBoxLayout {layout_direction};
-    _layout.addLayout(sub_layout);
-    _layout.setProperty(qt_property::key, QString::fromStdString(_setup.key));
-    _layout.setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+    sub_layout->setContentsMargins(0, 0, 0, 0);
+    _layout->addLayout(sub_layout);
+    _layout->setProperty(qt_property::key, QString::fromStdString(_setup.key));
+    _layout->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
 
     std::array<QSpinBox*, 3> spinboxes {};
     std::array<std::int64_t, 3> init_values {0, 0, 0};
 
     if(_count == 1)
     {
-        const auto obj = data<sight::data::integer>(&_layout);
+        const auto obj = data<sight::data::integer>(_layout);
         init_values[0] = obj->value();
         connect_data(obj, _setup.key);
     }
     else if(_count == 2)
     {
-        const auto obj   = data<sight::data::ivec2>(&_layout);
+        const auto obj   = data<sight::data::ivec2>(_layout);
         const auto value = obj->value();
         std::ranges::copy(value, init_values.begin());
         connect_data(obj, _setup.key);
     }
     else if(_count == 3)
     {
-        const auto obj   = data<sight::data::ivec3>(&_layout);
+        const auto obj   = data<sight::data::ivec3>(_layout);
         const auto value = obj->value();
         std::ranges::copy(value, init_values.begin());
         connect_data(obj, _setup.key);
@@ -1481,7 +1469,7 @@ QPushButton* settings::create_integer_spin_widget(
 
         // Style
         spinbox->setStyleSheet(qApp->styleSheet());
-        SET_MINIMUM_SIZE(spinbox, _setup);
+        set_minimum_size(spinbox, _setup);
 
         sub_layout->addWidget(spinbox);
 
@@ -1604,7 +1592,7 @@ void settings::parse_enum_string(
 //------------------------------------------------------------------------------
 
 void settings::create_enum_combobox_widget(
-    QBoxLayout& _layout,
+    QBoxLayout* _layout,
     const param_widget& _setup,
     const std::vector<std::string>& _values,
     const std::vector<std::string>& _data
@@ -1630,7 +1618,7 @@ void settings::create_enum_combobox_widget(
         ++idx;
     }
 
-    _layout.addWidget(combo_box);
+    _layout->addWidget(combo_box);
 
     const bool is_string = data<sight::data::string>(combo_box) != nullptr;
 
@@ -1678,13 +1666,13 @@ void settings::create_enum_combobox_widget(
     }
 
     // Style
-    SET_MINIMUM_SIZE(combo_box, _setup);
+    set_minimum_size(combo_box, _setup);
 }
 
 //------------------------------------------------------------------------------
 
 void settings::create_enum_slider_widget(
-    QBoxLayout& _layout,
+    QBoxLayout* _layout,
     const param_widget& _setup,
     const std::vector<std::string>& _values,
     Qt::Orientation _orientation,
@@ -1694,9 +1682,8 @@ void settings::create_enum_slider_widget(
     const auto layout_direction = _orientation == Qt::Vertical ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight;
 
     auto* sub_layout = new QBoxLayout {layout_direction};
-    {
-        _layout.addLayout(sub_layout);
-    }
+    sub_layout->setContentsMargins(0, 0, 0, 0);
+    _layout->addLayout(sub_layout);
 
     std::vector<int> int_values;
     std::ranges::transform(
@@ -1706,7 +1693,7 @@ void settings::create_enum_slider_widget(
 
     auto* const slider = new sight::ui::qt::widget::non_linear_slider();
     slider->set_orientation(_orientation);
-    SET_MINIMUM_SIZE(slider, _setup);
+    set_minimum_size(slider, _setup);
     slider->setObjectName(QString::fromStdString(_setup.key));
     slider->setProperty(qt_property::key, QString::fromStdString(_setup.key));
     slider->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
@@ -1817,7 +1804,7 @@ void settings::create_enum_slider_widget(
 //-----------------------------------------------------------------------------
 
 void settings::create_enum_button_bar_widget(
-    QBoxLayout& _layout,
+    QBoxLayout* _layout,
     const param_widget& _setup,
     const std::vector<enum_button_param>& _button_list,
     const int _width,
@@ -1830,12 +1817,14 @@ void settings::create_enum_button_bar_widget(
     const auto layout_direction = _orientation == Qt::Vertical ? QBoxLayout::TopToBottom : QBoxLayout::LeftToRight;
 
     auto* sub_layout = new QBoxLayout {layout_direction};
-    _layout.addLayout(sub_layout);
+    sub_layout->setContentsMargins(0, 0, 0, 0);
 
     if(_spacing != 0)
     {
         sub_layout->setSpacing(_spacing);
     }
+
+    _layout->addLayout(sub_layout);
 
     // create a button group to deactivate the buttons on selection
     auto* button_bar_group = new QButtonGroup(sub_layout);
@@ -1914,7 +1903,7 @@ void settings::create_enum_button_bar_widget(
         }
 
         // add the button in the grid at its place
-        sub_layout->addWidget(enum_button);
+        sub_layout->addWidget(enum_button, 0, Qt::AlignCenter);
 
         // create the connection to fire signals when the button is clicked
         QObject::connect(
@@ -1975,7 +1964,7 @@ void settings::create_enum_button_bar_widget(
 //-----------------------------------------------------------------------------
 
 [[nodiscard]]
-QPushButton* settings::create_text_widget(QBoxLayout& _layout, const param_widget& _setup, const std::string& _type)
+QPushButton* settings::create_text_widget(QBoxLayout* _layout, const param_widget& _setup, const std::string& _type)
 {
     auto* edit     = new QLineEdit();
     const auto key = QString::fromStdString(_setup.key);
@@ -1992,9 +1981,10 @@ QPushButton* settings::create_text_widget(QBoxLayout& _layout, const param_widge
     connect_data(obj, _setup.key);
 
     edit->setStyleSheet(qApp->styleSheet());
-    SET_MINIMUM_SIZE(edit, _setup);
+    edit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+    set_minimum_size(edit, _setup);
 
-    _layout.addWidget(edit);
+    _layout->addWidget(edit);
 
     // Forward to the Sight signal
     QObject::connect(
@@ -2005,13 +1995,14 @@ QPushButton* settings::create_text_widget(QBoxLayout& _layout, const param_widge
             update_data<sight::data::string>(edit, _value.toStdString());
         });
 
+    QPushButton* dir_selector = nullptr;
+
     if(_type == "file" or _type == "file_read" or _type == "file_write")
     {
-        QPointer<QPushButton> dir_selector = new QPushButton("...");
-        dir_selector->setStyleSheet(qApp->styleSheet());
-        _layout.addWidget(dir_selector);
+        dir_selector = new QPushButton("...");
+
         QObject::connect(
-            dir_selector.data(),
+            dir_selector,
             &QPushButton::clicked,
             [edit, _type]()
             {
@@ -2037,11 +2028,10 @@ QPushButton* settings::create_text_widget(QBoxLayout& _layout, const param_widge
     }
     else if(_type == "dir" or _type == "dir_read" or _type == "dir_write")
     {
-        QPointer<QPushButton> dir_selector = new QPushButton("...");
-        dir_selector->setStyleSheet(qApp->styleSheet());
-        _layout.addWidget(dir_selector);
+        dir_selector = new QPushButton("...");
+
         QObject::connect(
-            dir_selector.data(),
+            dir_selector,
             &QPushButton::clicked,
             [edit, _type]()
             {
@@ -2064,6 +2054,13 @@ QPushButton* settings::create_text_widget(QBoxLayout& _layout, const param_widge
                     dialog_file.save_default_location(default_directory);
                 }
             });
+    }
+
+    if(dir_selector != nullptr)
+    {
+        dir_selector->setMaximumWidth(20);
+        dir_selector->setStyleSheet(qApp->styleSheet());
+        _layout->addWidget(dir_selector, 0, Qt::AlignCenter);
     }
 
     // Reset button

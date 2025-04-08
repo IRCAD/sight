@@ -56,11 +56,13 @@ This example shows the possibilities of properties:
                         <orientation value="horizontal" />
                         <view proportion="0" QSSClass="Background" />
                         <view proportion="0" QSSClass="Background" />
+                        <view proportion="0" QSSClass="Background" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="properties1_srv" start="true" />
                     <view sid="properties2_srv" start="true" />
+                    <view sid="properties3_srv" start="true" />
                 </registry>
             </service>
 
@@ -141,6 +143,53 @@ This example shows the possibilities of properties:
                     <item name="Text" widget="text" depends="enable_obj" />
                     <item name="File" widget="file_write" depends="enable_obj" />
                     <item name="Dir" widget="dir_read" depends="enable_obj" />
+                </ui>
+            </service>
+
+            <service uid="properties3_srv" type="sight::module::ui::qt::settings">
+                <inout group="keys">
+                    <key uid="enable_obj" />
+                    <key uid="bool_obj" />
+                    <key uid="color_obj" />
+                    <key uid="double_1_obj" />
+                    <key uid="double_2_obj" />
+                    <key uid="double2_1_obj" />
+                    <key uid="double3_1_obj" />
+                    <key uid="int_1_obj" />
+                    <key uid="int_2_obj" />
+                    <key uid="int2_1_obj" />
+                    <key uid="int3_1_obj" />
+                    <key uid="enum_1_obj" />
+                    <key uid="nonlin_obj" />
+                    <key uid="button_obj" />
+                    <key uid="text_obj" />
+                    <key uid="file_obj" />
+                    <key uid="dir_obj" />
+                </inout>
+                <ui scrollable="true">
+                    <item name="Enable" orientation="vertical" />
+                    <item name="Boolean" depends="enable_obj" orientation="vertical" />
+                    <item name="Color" depends="enable_obj" orientation="vertical" />
+                    <item name="Double 1" min="0.01" max="1." depends="enable_obj" orientation="vertical" />
+                    <item name="Double 2" widget="slider" min="0." max="1000.58" depends="enable_obj" orientation="vertical" />
+                    <item name="2 Double" widget="spin" min="0." max="100." depends="enable_obj" orientation="vertical" />
+                    <item name="3 Double" widget="spin" min="0." max="100." depends="enable_obj" orientation="vertical" />
+                    <item name="Integer 1" widget="spin" min="0" max="100" depends="enable_obj" orientation="vertical" />
+                    <item name="Integer 2" widget="slider" min="0" max="100" depends="enable_obj" orientation="vertical" />
+                    <item name="2 Integer" widget="spin" min="0" max="100" depends="enable_obj" orientation="vertical" />
+                    <item name="3 Integer" widget="spin" min="0" max="100" depends="enable_obj" orientation="vertical" />
+                    <item name="Enum" widget="combobox" values="V0,V1=v1,V2=v2,V3=v3" depends="enable_obj" orientation="vertical" />
+                    <item name="Combo box" widget="combobox" values="25,50,90,120,150" depends="enable_obj" orientation="vertical" />
+                    <item name="Button list:" widget="buttonBar" hOffset="32" orientation="vertical">
+                        <item value="button1" label="extrude" icon="sight::module::ui::icons/extrude.svg" />
+                        <item value="button2" label="Medicine Mode" icon="sight::module::ui::icons/image_series.svg" />
+                        <item value="button3" label="Open settings" icon="sight::module::ui::icons/gear.svg" />
+                        <item value="button4" label="Device TX 3267-AFV" icon="sight::module::ui::icons/add_distance.svg" />
+                        <item value="button5" icon="sight::module::ui::icons/find.svg" />
+                    </item>
+                    <item name="Text" widget="text" depends="enable_obj" orientation="vertical" />
+                    <item name="File" widget="file_write" depends="enable_obj" orientation="vertical" />
+                    <item name="Dir" widget="dir_read" depends="enable_obj" orientation="vertical" />
                 </ui>
             </service>
 

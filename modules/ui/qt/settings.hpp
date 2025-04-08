@@ -300,18 +300,18 @@ private:
     /// Create a widget associated with a boolean type
     /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
     [[nodiscard]]
-    QPushButton* create_bool_widget(QBoxLayout& _layout, const param_widget& _setup);
+    QPushButton* create_bool_widget(QBoxLayout* _layout, const param_widget& _setup, Qt::Orientation _orientation);
 
     /// Create a widget associated with a color type
     /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
     [[nodiscard]]
-    QPushButton* create_color_widget(QBoxLayout& _layout, const param_widget& _setup);
+    QPushButton* create_color_widget(QBoxLayout* _layout, const param_widget& _setup);
 
     /// Create a widget associated with a double type
     /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
     [[nodiscard]]
     QPushButton* create_double_spin_widget(
-        QBoxLayout& _layout,
+        QBoxLayout* _layout,
         const double_widget& _setup,
         int _count,
         Qt::Orientation _orientation
@@ -321,7 +321,7 @@ private:
     /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
     [[nodiscard]]
     QPushButton* create_double_slider_widget(
-        QBoxLayout& _layout,
+        QBoxLayout* _layout,
         const double_widget& _setup,
         std::uint8_t _decimals,
         Qt::Orientation _orientation,
@@ -332,7 +332,7 @@ private:
     /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
     [[nodiscard]]
     QPushButton* create_integer_slider_widget(
-        QBoxLayout& _layout,
+        QBoxLayout* _layout,
         const int_widget& _setup,
         Qt::Orientation _orientation,
         bool _on_release
@@ -342,7 +342,7 @@ private:
     /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
     [[nodiscard]]
     QPushButton* create_integer_spin_widget(
-        QBoxLayout& _layout,
+        QBoxLayout* _layout,
         const int_widget& _setup,
         int _count,
         Qt::Orientation _orientation
@@ -358,7 +358,7 @@ private:
 
     /// Create a multi choice widget
     void create_enum_combobox_widget(
-        QBoxLayout& _layout,
+        QBoxLayout* _layout,
         const param_widget& _setup,
         const std::vector<std::string>& _values,
         const std::vector<std::string>& _data
@@ -366,7 +366,7 @@ private:
 
     /// Create a multi choice widget with integer values
     void create_enum_slider_widget(
-        QBoxLayout& _layout,
+        QBoxLayout* _layout,
         const param_widget& _setup,
         const std::vector<std::string>& _values,
         Qt::Orientation _orientation,
@@ -374,7 +374,7 @@ private:
     );
 
     void create_enum_button_bar_widget(
-        QBoxLayout& _layout,
+        QBoxLayout* _layout,
         const param_widget& _setup,
         const std::vector<enum_button_param>& _button_list,
         const int _width,
@@ -387,7 +387,7 @@ private:
     /// Create a text widget associated with a string type
     /// @returns The reset button, to put in a layout of your choice, or nullptr if not required.
     [[nodiscard]]
-    QPushButton* create_text_widget(QBoxLayout& _layout, const param_widget& _setup, const std::string& _type);
+    QPushButton* create_text_widget(QBoxLayout* _layout, const param_widget& _setup, const std::string& _type);
 
     /**
      * @name Slots
@@ -463,7 +463,7 @@ private:
     /// The list of intermediate boxes containing each widgets. This array is processed each time we need to find
     /// a parameter with a given key (when enabling/disabling, etc.).
     /// This vector is cleared upon stopping().
-    std::vector<QPointer<QGroupBox> > m_param_boxes;
+    std::vector<QPointer<QWidget> > m_param_boxes;
 
     /// Used when we bind widgets to data
     data::ptr_vector<data::object, data::access::inout> m_settings {this, "keys"};
