@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include <io/joystick/interactor.hpp>
+
 #include <ui/__/editor.hpp>
 #include <ui/__/parameter.hpp>
 
@@ -146,7 +148,8 @@ namespace sight::module::ui::qt
  * - \b min_height (optional, int) Minimum height, in device coordinates. @todo Support relative widget size.
  */
 class settings : public QObject,
-                 public sight::ui::editor
+                 public sight::ui::editor,
+                 public sight::io::joystick::interactor
 {
 Q_OBJECT
 
@@ -208,6 +211,8 @@ public:
     /// Destructor. Does nothing
     ~settings() noexcept override = default;
 
+protected:
+
     /// Configure the editor.
     void configuring() override;
 
@@ -219,6 +224,13 @@ public:
 
     /// This method is used to update services. Does nothing
     void updating() override;
+
+    /**
+     * @brief Manage joystick events
+     *
+     * @param _event
+     */
+    void joystick_axis_direction_event(const sight::io::joystick::axis_direction_event& _event) final;
 
 private Q_SLOTS:
 
@@ -474,6 +486,8 @@ private:
     using object_modified_t         = core::com::slot<void ()>;
     using settings_slot_container_t = std::map<std::string, SPTR(object_modified_t)>;
     settings_slot_container_t m_settings_slots;
+
+    std::vector<std::string> m_joystickable_widgets_key;
 };
 
 //------------------------------------------------------------------------------

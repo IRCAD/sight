@@ -395,6 +395,12 @@ void settings::starting()
                 const int width         = cfg.get<int>("<xmlattr>.width", 0);
                 const int height        = cfg.get<int>("<xmlattr>.height", 0);
                 const std::string style = cfg.get<std::string>("<xmlattr>.style", "iconOnly");
+                const bool use_joystick = cfg.get<bool>("<xmlattr>.enable_joystick", false);
+
+                if(use_joystick)
+                {
+                    m_joystickable_widgets_key.push_back(widget.key);
+                }
 
                 const auto value_config = cfg.equal_range("item");
                 std::vector<enum_button_param> button_list;
@@ -2799,6 +2805,73 @@ void settings::update_data(const QObject* _widget, const SUBTYPE& _val)
             const auto sig = obj->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
             core::com::connection::blocker block(sig->get_connection(m_settings_slots[key]));
             sig->async_emit();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void settings::joystick_axis_direction_event(const sight::io::joystick::axis_direction_event& _event)
+{
+    // Basic filtering
+    if(_event.axis != 4)
+    {
+        SIGHT_WARN("Joystick axis not recognized: " << int(_event.axis));
+        return;
+    }
+
+    SIGHT_DEBUG("Joystick index: " << _event.device->index);
+    SIGHT_DEBUG("Joystick axis: " << int(_event.axis));
+    SIGHT_DEBUG(
+        "Joystick direction: "
+        << (_event.value == sight::io::joystick::axis_direction_event::direction_t::up ? "up" : "down")
+    );
+
+    if(_event.device->index == 1)
+    {
+        //Only working for ButtonGroup
+
+        for(const auto& joystickable_widget : m_joystickable_widgets_key)
+        {
+            auto* const widget = dynamic_cast<QButtonGroup*>(get_param_widget(joystickable_widget));
+            if(widget != nullptr)
+            {
+                auto buttons    = widget->buttons();
+                const auto size = buttons.size();
+                int index       = 0;
+                for(const auto& button : buttons)
+                {
+                    if(button->isChecked())
+                    {
+                        break;
+                    }
+
+                    ++index;
+                }
+
+                if(_event.value == sight::io::joystick::axis_direction_event::direction_t::up)
+                {
+                    if(index - 1 < 0)
+                    {
+                        buttons[size - 1]->toggle();
+                    }
+                    else
+                    {
+                        buttons[qsizetype(index) - 1]->toggle();
+                    }
+                }
+                else if(_event.value == sight::io::joystick::axis_direction_event::direction_t::down)
+                {
+                    if(index + 1 > int(size - 1))
+                    {
+                        buttons[0]->toggle();
+                    }
+                    else
+                    {
+                        buttons[qsizetype(index) + 1]->toggle();
+                    }
+                }
+            }
         }
     }
 }

@@ -25,7 +25,7 @@ qt_add_binary_resources(
 add_dependencies(${SIGHT_TARGET} module_ui_qt_FLATDARK_RCC)
 add_dependencies(${SIGHT_TARGET} module_ui_qt_IRCAD_RCC)
 
-target_link_libraries(${SIGHT_TARGET} PUBLIC activity app geometry_data io ui_qt)
+target_link_libraries(${SIGHT_TARGET} PUBLIC activity app geometry_data io io_joystick ui_qt)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/ut)
