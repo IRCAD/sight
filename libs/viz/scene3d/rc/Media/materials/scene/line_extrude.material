@@ -1,0 +1,86 @@
+// Default material
+
+//---------------------------------------------------------------------------
+
+geometry_program Default/line_extrude_gp glsl
+{
+    source line_extrude_gp.glsl
+    default_params
+    {
+        param_named_auto u_proj projection_matrix
+        param_named u_size float 0.7
+    }
+}
+
+//---------------------------------------------------------------------------
+
+geometry_program Default/line_extrude_depth_gp glsl
+{
+    source line_extrude_gp.glsl
+    preprocessor_defines DEPTH=1
+    default_params
+    {
+        param_named_auto u_proj projection_matrix
+        param_named u_size float 0.7
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+fragment_program Default/line_extrude_fp glsl
+{
+    source line_extrude_fp.glsl
+    default_params
+    {
+        param_named u_fog_center_radius float4 1.0 1.0 1.0 100.0
+        param_named u_fog_color float4 0.5 0.5 0.5 0.7
+        param_named_auto u_diffuse surface_diffuse_colour
+        param_named_auto u_world_view worldview_matrix
+        param_named_auto u_near near_clip_distance
+        param_named_auto u_far far_clip_distance
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+material line_extrude
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.05 0.05 0.05
+            specular 0.5 0.5 0.5 25.0
+
+            scene_blend alpha_blend
+            cull_hardware none
+
+            vertex_program_ref Default/Billboard_VP
+            {
+            }
+
+            geometry_program_ref Default/line_extrude_gp
+            {
+            }
+
+            fragment_program_ref Default/line_extrude_fp
+            {
+            }
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            vertex_program_ref Default/Billboard_VP
+            {
+            }
+
+            geometry_program_ref Default/line_extrude_depth_gp
+            {
+            }
+        }
+    }
+}
+

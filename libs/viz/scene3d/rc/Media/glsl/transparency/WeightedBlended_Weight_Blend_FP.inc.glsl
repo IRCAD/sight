@@ -12,9 +12,13 @@ layout(binding=2) uniform sampler2D u_frontDepthBuffer;
 #endif
 
 layout(binding=3) uniform sampler2D u_occlusionDepthBuffer;
+
 uniform vec4 u_viewport;
+
+#ifndef HAS_CLIP_UNIFORM
 uniform float u_near;
 uniform float u_far;
+#endif
 
 out vec4 FragColor;
 
