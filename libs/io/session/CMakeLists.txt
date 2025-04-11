@@ -1,7 +1,6 @@
 sight_add_target(io_session TYPE LIBRARY OBJECT_LIBRARY ON)
 
 if(MSVC)
-    find_package(NIFTI COMPONENTS nifti2 niftiio REQUIRED)
     target_link_libraries(${SIGHT_TARGET}_obj PRIVATE NIFTI::niftiio NIFTI::nifti2)
 else()
     # NIFTI official cmake configuration files from Debian/Ubuntu are broken: they reference the wrong path
