@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -142,7 +142,7 @@ private:
     std::vector<core::jobs::base::wptr> m_jobs;
 
     /// Protect the jobs list
-    std::mutex m_mutex;
+    std::recursive_mutex m_mutex;
 };
 
 } // namespace sight::module::ui::qt

@@ -257,8 +257,13 @@ void progress_bar::update_widgets()
         m_cancel_button->setVisible(false);
     }
 
+    // Iterate over a copy of jobs, because they can be removed in show_job state hook while iterating over them,
+    // in the rare case where we release the last reference in "if(const auto& job = weak_job.lock();"
+    // We have the weak/shared mechanism to protect each pointer, but we also require the iterator to be safe
+    const auto safe_jobs_list = m_jobs;
+
     // Update the widgets value.
-    for(const auto& weak_job : m_jobs)
+    for(const auto& weak_job : safe_jobs_list)
     {
         // Get the current job as shared pointer.
         if(const auto& job = weak_job.lock(); job && job->get_state() == core::jobs::base::state::running)
