@@ -7,10 +7,10 @@ stages:
 
 include:
     - project: "sight/sight-gitlab"
-      ref: a3ad77bb7cf077b97e1d56b7f3326ea57b061ca7
+      ref: bb3f5b594b8a75e68e8d5d10042313a5bdbbf664
       file: "/.templates/deploy.yml"
     - project: "sight/sight-gitlab"
-      ref: a3ad77bb7cf077b97e1d56b7f3326ea57b061ca7
+      ref: bb3f5b594b8a75e68e8d5d10042313a5bdbbf664
       file: "/.templates/build.yml"
 
 lint:ubuntu-24.04:
@@ -478,6 +478,29 @@ deploy:apps-windows-release:
         URL: "IRCAD%20-%20Open/"
     rules:
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+
+deploy:linux-coverage-analysis:
+    needs:
+        - job: build:ubuntu-24.04-coverage-gcc
+          artifacts: true
+    image: "${COVERAGE_IMAGE}"
+    variables:
+        SIGHT_GIT_BRANCH: "dev"
+    stage: deploy
+    before_script:
+        - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b $SIGHT_GIT_BRANCH $CI_PROJECT_DIR/.build/sight-git
+    script:
+        - $CI_PROJECT_DIR/.build/sight-git/sight-cov.py ${CI_PROJECT_NAME} ${CI_MERGE_REQUEST_IID} --diff --html --token_config
+        - $CI_PROJECT_DIR/.build/sight-git/coverage-commentator.py ${CI_PROJECT_NAME} ${CI_MERGE_REQUEST_IID} ${CI_JOB_ID}
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+
+    artifacts:
+        paths:
+            - $CI_PROJECT_DIR/.coverage
+    tags:
+        - linux-power-runner
+    when: always
 
 # Pages must be deployed in a single job, named "pages"
 pages:
