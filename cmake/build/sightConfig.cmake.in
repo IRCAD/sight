@@ -43,8 +43,8 @@ if(NOT SIGHT_CONFIGURED)
             ${CMAKE_BINARY_DIR}/bin/exec_gui_tests.sh
             COPYONLY
         )
-        list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
-        list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+        list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/module)
+        list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/module)
     else()
         configure_file(
             ${FWCMAKE_RESOURCE_PATH}/install/windows/exec_gui_tests.bat

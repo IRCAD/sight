@@ -70,7 +70,7 @@ mark_as_advanced(SIGHT_VERBOSE_PCH)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modules)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/module)
 
 # We need to find Qt6 before ITK/VTK, otherwise they find Qt5 and CMake fails with a cryptic
 # "Targets not yet defined: Qt::XXXXPrivate", even if we don't use ITK-Qt or VTK-Qt extensions
@@ -153,14 +153,14 @@ endif()
 set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
 # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
-list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/module)
 
 if(UNIX)
-    list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/module)
 
-    list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/module)
     if(UNIX)
-        list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
+        list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/module)
     endif()
 
     set(SIGHT_EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
@@ -189,7 +189,7 @@ endif()
 find_package(CppUnit QUIET REQUIRED)
 
 ########################################################################################################################
-# Default paths settings for libraries, modules and resources
+# Default paths settings for libraries, module and resources
 ########################################################################################################################
 set(FW_INSTALL_PATH_SUFFIX "${PROJECT_NAME}")
 set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
@@ -213,16 +213,16 @@ endif()
 
 sight_configure_pch()
 
-add_subdirectory(libs)
-add_subdirectory(modules)
-add_subdirectory(activities)
-add_subdirectory(configs)
-add_subdirectory(utils)
-add_subdirectory(apps)
+add_subdirectory(lib)
+add_subdirectory(module)
+add_subdirectory(activity)
+add_subdirectory(config)
+add_subdirectory(util)
+add_subdirectory(app)
 
 if(SIGHT_BUILD_EXAMPLES)
-    add_subdirectory(tutorials)
-    add_subdirectory(examples)
+    add_subdirectory(tutorial)
+    add_subdirectory(example)
 endif()
 
 add_subdirectory(3rd-party)
@@ -260,13 +260,13 @@ configure_file(
 install(
     FILES "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake" "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
           "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake"
-          "${CMAKE_SOURCE_DIR}/cmake/build/linux/modules/FindFilesystem.cmake"
+          "${CMAKE_SOURCE_DIR}/cmake/build/linux/module/FindFilesystem.cmake"
     DESTINATION ${FWCONFIG_PACKAGE_LOCATION}
     COMPONENT dev
 )
 
-# install CppUnitConfig.cmake in a modules folder.
-install(FILES "${CMAKE_SOURCE_DIR}/cmake/modules/CppUnitConfig.cmake" DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/modules
+# install CppUnitConfig.cmake in a module folder.
+install(FILES "${CMAKE_SOURCE_DIR}/cmake/module/CppUnitConfig.cmake" DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/module
         COMPONENT dev
 )
 

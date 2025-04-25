@@ -102,11 +102,11 @@ endmacro()
 # Set the header installation directory
 function(get_header_file_install_destination)
     # Paths for config files are:
-    # activities -> activity/theme/project/
+    # activity -> activity/theme/project/
     # apps -> project
-    # examples -> project
-    # libs -> theme/project/ except for theme=main project
-    # modules -> modules/theme/project/  except for theme=main modules/project
+    # example -> project
+    # lib -> theme/project/ except for theme=main project
+    # module -> module/theme/project/  except for theme=main module/project
     # tutorials -> project
     file(RELATIVE_PATH CURRENT_SOURCE_DIR_REL ${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
     string(REPLACE "/" ";" CURRENT_SOURCE_DIRS ${CURRENT_SOURCE_DIR_REL})
@@ -123,10 +123,10 @@ function(get_header_file_install_destination)
         set(PROJECT_PATH "${THEME}/${PROJECT}")
     endif()
 
-    if("${ROOT}" STREQUAL "libs")
+    if("${ROOT}" STREQUAL "lib")
         set(HEADER_FILE_DESTINATION_REL "${PROJECT_PATH}")
     else()
-        if("${ROOT}" STREQUAL "modules" OR "${ROOT}" STREQUAL "activities")
+        if("${ROOT}" STREQUAL "module" OR "${ROOT}" STREQUAL "activity")
             set(HEADER_FILE_DESTINATION_REL "${ROOT}/${PROJECT_PATH}")
         else()
             set(HEADER_FILE_DESTINATION_REL "${PROJECT}")
@@ -397,7 +397,7 @@ macro(sight_generic_test SIGHT_TARGET)
             CURRENT_SOURCE_DIR_REL
         )
 
-        if(${CURRENT_SOURCE_DIR_REL} MATCHES "modules/")
+        if(${CURRENT_SOURCE_DIR_REL} MATCHES "module/")
             message(
                 FATAL_ERROR "${CURRENT_SOURCE_DIR_REL} No matching module target '${BASE_TARGET}' for unit-test target "
                             "'${SIGHT_TARGET}'."
@@ -598,8 +598,8 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
 
         target_include_directories(
             ${TARGET_OBJECT_LIB}
-            PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include> $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
-                   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/__/>
+            PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include> $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/>
+                   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/__/>
         )
         target_include_directories(${SIGHT_TARGET} PUBLIC $<INSTALL_INTERFACE:include>)
         target_link_libraries(${SIGHT_TARGET} PUBLIC ${TARGET_OBJECT_LIB})
@@ -610,8 +610,8 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
         )
         target_include_directories(
             ${SIGHT_TARGET}
-            PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/> $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/>
-                   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/__/> $<INSTALL_INTERFACE:include>
+            PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/> $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/>
+                   $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/__/> $<INSTALL_INTERFACE:include>
         )
     endif()
 
@@ -770,11 +770,11 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
 
         # Allows include of type <ui/config.hpp>
         target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>)
-        # Allows include of all folders in libs, i.e. <ui/..> <io/..> ...
-        target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs>)
+        # Allows include of all folders in lib, i.e. <ui/..> <io/..> ...
+        target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib>)
         # Allows include of type <__/..> <data/..> ...
-        target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/libs/__>)
-        # Allows include of type <modules/../..>
+        target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/__>)
+        # Allows include of type <module/../..>
         target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
 
         if(SIGHT_ENABLE_PCH AND NOT ${SIGHT_TARGET}_DISABLE_PCH)

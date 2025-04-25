@@ -33,7 +33,7 @@ foreach(LINE ${PLUGIN_CONTENT})
             string(REGEX REPLACE "::" "/" SERVICE_INCLUDE ${SERVICE_INCLUDE})
             set(SERVICE_INCLUDE "${PROJECT_DIR}/${SERVICE_INCLUDE}.hpp")
             if(NOT "${SERVICE}" MATCHES "module")
-                string(REGEX REPLACE "modules" "libs" SERVICE_INCLUDE ${SERVICE_INCLUDE})
+                string(REGEX REPLACE "module" "lib" SERVICE_INCLUDE ${SERVICE_INCLUDE})
             endif()
             list(APPEND REGISTER_INCLUDE "#include <${SERVICE_INCLUDE}>")
 

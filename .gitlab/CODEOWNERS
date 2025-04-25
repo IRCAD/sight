@@ -2,11 +2,11 @@
 /cmake @fbridault
 
 [Visualisation]
-/libs/viz/ @fbridault
-/modules/viz/ @fbridault
+/lib/viz/ @fbridault
+/module/viz/ @fbridault
 
 [Serialisation]
-libs/io/bitmap @dweckmann
-libs/io/session @dweckmann
-modules/io/bitmap @dweckmann
-modules/io/session @dweckmann
+lib/io/bitmap @dweckmann
+lib/io/session @dweckmann
+module/io/bitmap @dweckmann
+module/io/session @dweckmann
