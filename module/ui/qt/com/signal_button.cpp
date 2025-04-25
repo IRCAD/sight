@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2023 IRCAD France
+ * Copyright (C) 2015-2025 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,16 +27,13 @@
 #include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
-#include <ui/qt/container/widget.hpp>
-
 #include <QVariant>
 #include <QVBoxLayout>
 
+#include <ui/qt/container/widget.hpp>
+
 namespace sight::module::ui::qt::com
 {
-
-static const core::com::signals::key_t CLICKED_SIG = "clicked";
-static const core::com::signals::key_t TOGGLED_SIG = "toggled";
 
 static const core::com::slots::key_t SET_CHECKED_SLOT = "set_checked";
 static const core::com::slots::key_t CHECK_SLOT       = "check";
@@ -51,10 +48,14 @@ static const core::com::slots::key_t HIDE_SLOT        = "hide";
 
 //-----------------------------------------------------------------------------
 
-signal_button::signal_button() noexcept :
-    m_sig_clicked(new_signal<clicked_signal_t>(CLICKED_SIG)),
-    m_sig_toggled(new_signal<toggled_signal_t>(TOGGLED_SIG))
+signal_button::signal_button() noexcept
 {
+    new_signal<signals::void_t>(signals::CLICKED);
+    new_signal<signals::bool_t>(signals::IS_CHECKED);
+    new_signal<signals::bool_t>(signals::TOGGLED);
+    new_signal<signals::void_t>(signals::CHECKED);
+    new_signal<signals::void_t>(signals::UNCHECKED);
+
     new_slot(SET_CHECKED_SLOT, &signal_button::set_checked, this);
     new_slot(CHECK_SLOT, &signal_button::check, this);
     new_slot(UNCHECK_SLOT, &signal_button::uncheck, this);
@@ -176,7 +177,8 @@ void signal_button::stopping()
 
 void signal_button::on_clicked()
 {
-    m_sig_clicked->async_emit();
+    const auto sig = this->signal<signals::void_t>(signals::CLICKED);
+    sig->async_emit();
 }
 
 //-----------------------------------------------------------------------------
@@ -184,7 +186,30 @@ void signal_button::on_clicked()
 void signal_button::on_toggled(bool _toggled)
 {
     this->set_checked(_toggled);
-    m_sig_toggled->async_emit(_toggled);
+
+    // legacy
+    {
+        const auto sig = this->signal<signals::bool_t>(signals::TOGGLED);
+        sig->async_emit(_toggled);
+    }
+
+    // current signal
+    {
+        const auto sig = this->signal<signals::bool_t>(signals::IS_CHECKED);
+        sig->async_emit(_toggled);
+    }
+
+    // checked/unchecked signals
+    if(_toggled)
+    {
+        const auto sig = this->signal<signals::void_t>(signals::CHECKED);
+        sig->async_emit();
+    }
+    else
+    {
+        const auto sig = this->signal<signals::void_t>(signals::UNCHECKED);
+        sig->async_emit();
+    }
 }
 
 //-----------------------------------------------------------------------------

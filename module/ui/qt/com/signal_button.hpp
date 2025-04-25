@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2024 IRCAD France
+ * Copyright (C) 2015-2025 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include <core/tools/failed.hpp>
 
-#include <ui/__/editor.hpp>
-
 #include <QPointer>
 #include <QPushButton>
+
+#include <ui/__/editor.hpp>
 
 #include <filesystem>
 
@@ -88,6 +88,19 @@ Q_OBJECT
 
 public:
 
+    struct signals
+    {
+        using bool_t = core::com::signal<void (bool)>;
+        using void_t = core::com::signal<void ()>;
+
+        static inline const core::com::signals::key_t IS_CHECKED = "is_checked";
+        /// Same as "is_checked" but kept for legacy reasons.
+        static inline const core::com::signals::key_t TOGGLED   = "toggled";
+        static inline const core::com::signals::key_t CLICKED   = "clicked";
+        static inline const core::com::signals::key_t CHECKED   = "checked";
+        static inline const core::com::signals::key_t UNCHECKED = "unchecked";
+    };
+
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(signal_button, sight::ui::editor);
 
@@ -145,14 +158,6 @@ private:
 
     /// SLOT: hides he button.
     void hide() override;
-
-    using clicked_signal_t = core::com::signal<void ()>;
-    /// Contains the signal emitted when button is clicked.
-    clicked_signal_t::sptr m_sig_clicked {nullptr};
-
-    using toggled_signal_t = core::com::signal<void (bool)>;
-    /// Contains the signal emitted when button is checked/unchecked
-    toggled_signal_t::sptr m_sig_toggled {nullptr};
 
     /// Contains the button
     QPointer<QPushButton> m_button {nullptr};
