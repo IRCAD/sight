@@ -311,7 +311,7 @@ void event_loop::loop()
                 //      a. If the axis is not already in the list or the direction is different,
                 //         we must add it and send the event
                 const std::pair<SDL_JoystickID, std::uint8_t> axis_id {event.jaxis.which, event.jaxis.axis};
-                const auto current_axis_direction =
+                const auto stored_axis_direction =
                     [&instance, &axis_id]() -> std::optional<axis_direction_event::direction_t>
                     {
                         if(const auto found = instance->m_axis_directions.find(axis_id);
@@ -327,36 +327,64 @@ void event_loop::loop()
 
                 // Do not act as a seismographic sensor for the axis if the initial state is centered
                 // (to avoid triggers)
-                if(device->initial_axis_state[event.jaxis.axis].value_or(0) == 0
-                   && std::abs(event.jaxis.value) < DEFAULT_AXIS_DEAD_ZONE)
+                const bool regular_axis = std::abs(device->initial_axis_state[event.jaxis.axis].value_or(0))
+                                          <= DEFAULT_AXIS_DEAD_ZONE;
+
+                if(regular_axis && std::abs(event.jaxis.value) < DEFAULT_AXIS_DEAD_ZONE)
                 {
-                    // If the axis is centered, we can remove it from the list
-                    if(current_axis_direction)
+                    // If we are in the dead zone, send a "centered" event if needed (if we were not already centered)
+                    if(stored_axis_direction && *stored_axis_direction != axis_direction_event::direction_t::centered)
                     {
-                        instance->m_axis_directions.erase(axis_id);
+                        instance->m_axis_directions.insert_or_assign(
+                            axis_id,
+                            axis_direction_event::direction_t::centered
+                        );
+
+                        const auto sight_event = axis_direction_event {
+                            joystick_event {
+                                .device    = device,
+                                .timestamp = event.jaxis.timestamp,
+                                .count     = 0
+                            },
+                            event.jaxis.axis,
+                            axis_direction_event::direction_t(axis_direction_event::direction_t::centered)
+                        };
+
+                        for(const auto& interactor : instance->m_interactors)
+                        {
+                            interactor->joystick_axis_direction_event(sight_event);
+                        }
+
+                        // Remove the auto-repeat event if it exists
+                        if(const auto found = instance->m_auto_repeat_directions.find(axis_id);
+                           found != instance->m_auto_repeat_directions.end())
+                        {
+                            found->second.reset();
+                        }
                     }
 
                     break;
                 }
 
                 const auto direction =
-                    (event.jaxis.value < -DEFAULT_AXIS_DEAD_ZONE)
+                    (event.jaxis.value < -DEFAULT_WIDE_AXIS_DEAD_ZONE)
                     ? axis_direction_event::direction_t::down
-                    : (event.jaxis.value > DEFAULT_AXIS_DEAD_ZONE)
+                    : (event.jaxis.value > DEFAULT_WIDE_AXIS_DEAD_ZONE)
                     ? axis_direction_event::direction_t::up
                     : axis_direction_event::direction_t::centered;
 
-                // If the axis is not already in the list, or the direction is not the same, insert the axis
-                // direction in the list and send the event, if we are not in the dead zone
-                if(std::abs(event.jaxis.value) > DEFAULT_WIDE_AXIS_DEAD_ZONE
-                   && (!current_axis_direction || *current_axis_direction != direction))
+                if(direction != axis_direction_event::direction_t::centered
+                   && (!stored_axis_direction || *stored_axis_direction != direction))
                 {
+                    // If the axis is not already in the list, or the direction is not the same, insert the axis
+                    // direction in the list and send the event
                     instance->m_axis_directions.insert_or_assign(axis_id, direction);
 
                     const auto sight_event = axis_direction_event {
                         joystick_event {
                             .device    = device,
-                            .timestamp = event.jaxis.timestamp
+                            .timestamp = event.jaxis.timestamp,
+                            .count     = 0
                         },
                         event.jaxis.axis,
                         axis_direction_event::direction_t(direction)
@@ -364,10 +392,16 @@ void event_loop::loop()
 
                     for(const auto& interactor : instance->m_interactors)
                     {
-                        if(!interactor->events_blocked())
-                        {
-                            interactor->joystick_axis_direction_event(sight_event);
-                        }
+                        interactor->joystick_axis_direction_event(sight_event);
+                    }
+
+                    // Set the axis_direction_event of the auto-repeat, but not for triggers
+                    if(regular_axis)
+                    {
+                        instance->m_auto_repeat_directions.insert_or_assign(
+                            axis_id,
+                            std::make_shared<axis_direction_event>(sight_event)
+                        );
                     }
                 }
 
@@ -375,7 +409,8 @@ void event_loop::loop()
                 const axis_motion_event sight_event {
                     joystick_event {
                         .device    = device,
-                        .timestamp = event.jaxis.timestamp
+                        .timestamp = event.jaxis.timestamp,
+                        .count     = 0
                     },
                     event.jaxis.axis,
                     event.jaxis.value
@@ -383,10 +418,7 @@ void event_loop::loop()
 
                 for(const auto& interactor : instance->m_interactors)
                 {
-                    if(!interactor->events_blocked())
-                    {
-                        interactor->joystick_axis_motion_event(sight_event);
-                    }
+                    interactor->joystick_axis_motion_event(sight_event);
                 }
 
                 break;
@@ -399,7 +431,8 @@ void event_loop::loop()
                 const hat_motion_event sight_event {
                     joystick_event {
                         .device    = device,
-                        .timestamp = event.jhat.timestamp
+                        .timestamp = event.jhat.timestamp,
+                        .count     = 0
                     },
                     event.jhat.hat,
                     hat_motion_event::position_t(event.jhat.value)
@@ -407,10 +440,7 @@ void event_loop::loop()
 
                 for(const auto& interactor : instance->m_interactors)
                 {
-                    if(!interactor->events_blocked())
-                    {
-                        interactor->joystick_hat_motion_event(sight_event);
-                    }
+                    interactor->joystick_hat_motion_event(sight_event);
                 }
 
                 break;
@@ -423,7 +453,8 @@ void event_loop::loop()
                 const ball_motion_event sight_event {
                     joystick_event {
                         .device    = device,
-                        .timestamp = event.jball.timestamp
+                        .timestamp = event.jball.timestamp,
+                        .count     = 0
                     },
                     event.jball.ball,
                     event.jball.xrel,
@@ -432,10 +463,7 @@ void event_loop::loop()
 
                 for(const auto& interactor : instance->m_interactors)
                 {
-                    if(!interactor->events_blocked())
-                    {
-                        interactor->joystick_ball_motion_event(sight_event);
-                    }
+                    interactor->joystick_ball_motion_event(sight_event);
                 }
 
                 break;
@@ -448,7 +476,8 @@ void event_loop::loop()
                 const button_event sight_event {
                     joystick_event {
                         .device    = device,
-                        .timestamp = event.jbutton.timestamp
+                        .timestamp = event.jbutton.timestamp,
+                        .count     = 0
                     },
                     event.jbutton.button,
                     button_event::state_t(event.jbutton.state)
@@ -456,10 +485,7 @@ void event_loop::loop()
 
                 for(const auto& interactor : instance->m_interactors)
                 {
-                    if(!interactor->events_blocked())
-                    {
-                        interactor->joystick_button_pressed_event(sight_event);
-                    }
+                    interactor->joystick_button_pressed_event(sight_event);
                 }
 
                 break;
@@ -472,7 +498,8 @@ void event_loop::loop()
                 const button_event sight_event {
                     joystick_event {
                         .device    = device,
-                        .timestamp = event.jbutton.timestamp
+                        .timestamp = event.jbutton.timestamp,
+                        .count     = 0
                     },
                     event.jbutton.button,
                     button_event::state_t(event.jbutton.state)
@@ -480,10 +507,7 @@ void event_loop::loop()
 
                 for(const auto& interactor : instance->m_interactors)
                 {
-                    if(!interactor->events_blocked())
-                    {
-                        interactor->joystick_button_released_event(sight_event);
-                    }
+                    interactor->joystick_button_released_event(sight_event);
                 }
 
                 break;
@@ -495,14 +519,11 @@ void event_loop::loop()
                 std::unique_lock lock(instance->m_mutex);
                 const auto joystick_id                    = instance->add_joystick(event.jdevice.which);
                 const auto device                         = instance->m_controllers[joystick_id];
-                const joystick_event sight_event {.device = device, .timestamp = event.jdevice.timestamp};
+                const joystick_event sight_event {.device = device, .timestamp = event.jdevice.timestamp, .count = 0};
 
                 for(const auto& interactor : instance->m_interactors)
                 {
-                    if(!interactor->events_blocked())
-                    {
-                        interactor->joystick_added_event(sight_event);
-                    }
+                    interactor->joystick_added_event(sight_event);
                 }
 
                 break;
@@ -514,14 +535,11 @@ void event_loop::loop()
                 std::unique_lock lock(instance->m_mutex);
 
                 const auto device                         = instance->m_controllers[event.jdevice.which];
-                const joystick_event sight_event {.device = device, .timestamp = event.jdevice.timestamp};
+                const joystick_event sight_event {.device = device, .timestamp = event.jdevice.timestamp, .count = 0};
 
                 for(const auto& interactor : instance->m_interactors)
                 {
-                    if(!interactor->events_blocked())
-                    {
-                        interactor->joystick_removed_event(sight_event);
-                    }
+                    interactor->joystick_removed_event(sight_event);
                 }
 
                 instance->remove_joystick(event.jdevice.which);
@@ -538,6 +556,71 @@ void event_loop::loop()
                     << ")"
                 );
                 break;
+        }
+    }
+
+    // Process auto-repeat events
+    {
+        std::unique_lock lock(instance->m_mutex);
+
+        const auto timestamp = SDL_GetTicks();
+
+        for(auto& [axis_id, auto_repeat] : instance->m_auto_repeat_directions)
+        {
+            const auto delay =
+                [] (std::uint32_t _count) constexpr->std::uint32_t
+            {
+                if(_count < 2)
+                {
+                    return 500;
+                }
+
+                if(_count < 4)
+                {
+                    return 200;
+                }
+
+                if(_count < 8)
+                {
+                    return 100;
+                }
+
+                if(_count < 16)
+                {
+                    return 50;
+                }
+
+                if(_count < 32)
+                {
+                    return 25;
+                }
+
+                return 0;
+            };
+
+            // If skip if auto repeat is not set or it is not the time to repeat
+            if(!auto_repeat
+               || timestamp - auto_repeat->timestamp < delay(auto_repeat->count))
+            {
+                continue;
+            }
+
+            // Update the timestamp
+            auto_repeat = std::make_shared<axis_direction_event>(
+                axis_direction_event {
+                    joystick_event {
+                        .device    = auto_repeat->device,
+                        .timestamp = timestamp,
+                        .count     = auto_repeat->count + 1
+                    },
+                    auto_repeat->axis,
+                    auto_repeat->value
+                });
+
+            for(const auto& interactor : instance->m_interactors)
+            {
+                interactor->joystick_axis_direction_event(*auto_repeat);
+            }
         }
     }
 }
@@ -695,6 +778,25 @@ std::int32_t event_loop::add_joystick(int _index)
         })
     );
 
+    // For now, it is hardcoded...
+#ifdef _WIN32
+    static constexpr std::int32_t s_LEFT  = 0;
+    static constexpr std::int32_t s_RIGHT = 1;
+#else
+    static constexpr std::int32_t s_LEFT  = 1;
+    static constexpr std::int32_t s_RIGHT = 0;
+#endif
+
+    // It should be mapped to the first controller by a manual/auto configuration
+    if((m_left_joystick_id == -1 && m_right_joystick_id != -1) || (_index == s_LEFT && m_left_joystick_id == -1))
+    {
+        m_left_joystick_id = joystick_id;
+    }
+    else if((m_left_joystick_id != -1 && m_right_joystick_id == -1) || (_index == s_RIGHT && m_right_joystick_id == -1))
+    {
+        m_right_joystick_id = joystick_id;
+    }
+
     return joystick_id;
 }
 
@@ -708,6 +810,30 @@ void event_loop::remove_joystick(std::int32_t _id)
         SDL_JoystickClose(found->second->joystick);
         m_controllers.erase(found);
     }
+
+    if(m_left_joystick_id == _id)
+    {
+        m_left_joystick_id = -1;
+    }
+
+    if(m_right_joystick_id == _id)
+    {
+        m_right_joystick_id = -1;
+    }
+
+    std::erase_if(
+        m_axis_directions,
+        [&_id](const auto& _axis_id)
+        {
+            return _axis_id.first.first == _id;
+        });
+
+    std::erase_if(
+        m_auto_repeat_directions,
+        [&_id](const auto& _axis_id)
+        {
+            return _axis_id.first.first == _id;
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -774,6 +900,24 @@ std::vector<std::shared_ptr<const device> > event_loop::devices() const
 
 //------------------------------------------------------------------------------
 
+std::int32_t event_loop::left_joystick() const
+{
+    std::unique_lock lock(m_mutex);
+
+    return m_left_joystick_id;
+}
+
+//------------------------------------------------------------------------------
+
+std::int32_t event_loop::right_joystick() const
+{
+    std::unique_lock lock(m_mutex);
+
+    return m_right_joystick_id;
+}
+
+//------------------------------------------------------------------------------
+
 void event_loop::add_interactor(interactor* const  _interactor)
 {
     std::unique_lock lock(m_mutex);
@@ -784,12 +928,21 @@ void event_loop::add_interactor(interactor* const  _interactor)
 
 //------------------------------------------------------------------------------
 
-void event_loop::remove_interactor(const interactor* const  _interactor)
+void event_loop::remove_interactor(const interactor* const  _interactor, [[maybe_unused]] bool _finalize)
 {
     std::unique_lock lock(m_mutex);
 
     // Remove the interactor from the list
-    std::erase(m_interactors, _interactor);
+    [[maybe_unused]] const auto result = std::erase(m_interactors, _interactor);
+
+    if(_finalize)
+    {
+        SIGHT_ASSERT("Interactor still registered", result == 0);
+    }
+    else
+    {
+        SIGHT_ASSERT("Interactor not found in the list of interactors", result != 0);
+    }
 }
 
 //------------------------------------------------------------------------------

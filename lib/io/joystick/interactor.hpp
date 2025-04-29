@@ -64,6 +64,7 @@ struct SIGHT_IO_JOYSTICK_CLASS_API joystick_event
 {
     const std::shared_ptr<const sight::io::joystick::device> device {};
     const std::uint32_t timestamp {0};
+    const std::uint32_t count {0};
 };
 
 struct SIGHT_IO_JOYSTICK_CLASS_API axis_motion_event final : public joystick_event
@@ -130,8 +131,16 @@ protected:
 
     friend class detail::event_loop;
 
-    SIGHT_IO_JOYSTICK_API interactor();
     SIGHT_IO_JOYSTICK_API virtual ~interactor();
+
+    /**
+     * @brief register the interactor to the event loop
+     *
+     * @{
+     */
+    SIGHT_IO_JOYSTICK_API void start_listening_joystick();
+    SIGHT_IO_JOYSTICK_API void stop_listening_joystick() const;
+    /// @}
 
     /**
      * @brief Return the list of connected controllers with their properties
@@ -139,6 +148,17 @@ protected:
      * @return std::vector<std::shared_ptr<const device>> List of connected controllers
      */
     SIGHT_IO_JOYSTICK_API std::vector<std::shared_ptr<const device> > devices() const;
+
+    /**
+     * @brief returns the index of the left/right joystick
+     *
+     * @return id of the left/right joystick
+     *
+     * @{
+     */
+    SIGHT_IO_JOYSTICK_API std::int32_t left_joystick() const;
+    SIGHT_IO_JOYSTICK_API std::int32_t right_joystick() const;
+    /// @}
 
     /**
      * @brief Callback function called when a joystick event occurs
@@ -169,38 +189,6 @@ protected:
      * @param _event: axis direction event
      */
     SIGHT_IO_JOYSTICK_API virtual void joystick_axis_direction_event(const axis_direction_event& _event);
-
-    /**
-     * @brief block events so callback functions are not called
-     *
-     * @param _block: block all events if true
-     */
-    SIGHT_IO_JOYSTICK_API inline void block_events(bool _block = true);
-
-    /**
-     * @brief Return true if events are blocked
-     *
-     * @return bool: event blocking status
-     */
-    SIGHT_IO_JOYSTICK_API inline bool events_blocked() const;
-
-private:
-
-    std::atomic_bool m_block_events {false};
 };
-
-//------------------------------------------------------------------------------
-
-inline void interactor::block_events(bool _block)
-{
-    m_block_events = _block;
-}
-
-//------------------------------------------------------------------------------
-
-inline bool interactor::events_blocked() const
-{
-    return m_block_events;
-}
 
 } //namespace sight::io::joystick

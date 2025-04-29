@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -102,6 +102,13 @@ int non_linear_slider::value()
 std::size_t non_linear_slider::index()
 {
     return static_cast<std::size_t>(m_slider->value());
+}
+
+//------------------------------------------------------------------------------
+
+std::size_t non_linear_slider::num_values() const
+{
+    return m_values.size();
 }
 
 //------------------------------------------------------------------------------

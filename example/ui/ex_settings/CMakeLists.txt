@@ -8,6 +8,7 @@ add_dependencies(
     module_ui
     module_ui_qt
     module_service
+    module_io_joystick
 )
 
 # Allow dark theme via module_ui_qt

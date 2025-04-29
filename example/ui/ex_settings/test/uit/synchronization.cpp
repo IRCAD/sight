@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -139,7 +139,7 @@ void synchronization::test()
                         "properties1_srv",
                         "double_2/valueLabel"
                     ),
-                    "0.51"
+                    "500.31"
                 );
                 helper::label::exactly_match(
                     _tester,
@@ -147,7 +147,7 @@ void synchronization::test()
                         "properties2_srv",
                         "double_2_obj/valueLabel"
                     ),
-                    "0.51"
+                    "500.31"
                 );
             }
 

@@ -62,8 +62,9 @@ public:
      * @brief Remove an interactor to the event loop
      *
      * @param _interactor : The interactor to remove
+     * @param _finalize : If true, we will assert the interactor has already be removed from the event loop
      */
-    void remove_interactor(const interactor* const _interactor);
+    void remove_interactor(const interactor* const _interactor, bool _finalize = false);
 
     /**
      * @brief
@@ -71,6 +72,17 @@ public:
      * @return std::vector<std::shared_ptr<const device> > : The list of connected controllers
      */
     std::vector<std::shared_ptr<const device> > devices() const;
+
+    /**
+     * @brief returns the id of the left/right joystick
+     *
+     * @return index of the left/right joystick
+     *
+     * @{
+     */
+    [[nodiscard]] std::int32_t left_joystick() const;
+    [[nodiscard]] std::int32_t right_joystick() const;
+    /// @}
 
     /**
      * @brief Stop the event loop and close all the connected controllers, in the current thread
@@ -122,20 +134,27 @@ private:
      */
     std::int32_t add_joystick(int _index);
 
-    // This protects adding interactors outside the main thread
-    mutable std::mutex m_mutex;
+    /// This protects adding interactors outside the main thread
+    mutable std::recursive_mutex m_mutex;
 
-    // Connected controllers
+    /// Connected controllers
     std::map<SDL_JoystickID, std::shared_ptr<const concrete_device> > m_controllers;
 
-    // List of axis directions so we can convert analogical axis position to direction
+    /// List of axis directions so we can convert analogical axis position to direction
     std::map<std::pair<SDL_JoystickID, std::uint8_t>, axis_direction_event::direction_t> m_axis_directions;
 
-    // List of interactors that are interested in joystick events
+    /// List of interactors that are interested in joystick events
     std::vector<interactor*> m_interactors;
 
-    // Timer used to poll the SDL events and forward them to the interactors
+    /// Timer used to poll the SDL events and forward them to the interactors
     sight::core::thread::timer::sptr m_timer;
+
+    /// If true, the joystick events are sent repeatedly, until the joystick comes back to the centered position
+    std::map<std::pair<SDL_JoystickID, std::uint8_t>, std::shared_ptr<axis_direction_event> > m_auto_repeat_directions;
+
+    /// Store the joystick id of the left/right joystick
+    SDL_JoystickID m_left_joystick_id {-1};
+    SDL_JoystickID m_right_joystick_id {-1};
 };
 
 } //namespace sight::io::joystick::detail

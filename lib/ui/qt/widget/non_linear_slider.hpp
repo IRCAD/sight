@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -46,6 +46,8 @@ public:
 
     SIGHT_UI_QT_API_QT int value();
     SIGHT_UI_QT_API_QT std::size_t index();
+
+    [[nodiscard]] SIGHT_UI_QT_API_QT std::size_t num_values() const;
 
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;

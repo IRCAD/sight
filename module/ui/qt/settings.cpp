@@ -265,6 +265,12 @@ void settings::starting()
 
         bool created = false; // Just needed for integer type
 
+        // Widget who is able to be controlled by a joystick
+        if(cfg.get<bool>("<xmlattr>.enable_joystick", false))
+        {
+            m_joystickable_widgets_key.push_back(widget.key);
+        }
+
         if(type == "sight::data::boolean")
         {
             reset = this->create_bool_widget(param_box_layout, widget, orientation);
@@ -395,12 +401,6 @@ void settings::starting()
                 const int width         = cfg.get<int>("<xmlattr>.width", 0);
                 const int height        = cfg.get<int>("<xmlattr>.height", 0);
                 const std::string style = cfg.get<std::string>("<xmlattr>.style", "iconOnly");
-                const bool use_joystick = cfg.get<bool>("<xmlattr>.enable_joystick", false);
-
-                if(use_joystick)
-                {
-                    m_joystickable_widgets_key.push_back(widget.key);
-                }
 
                 const auto value_config = cfg.equal_range("item");
                 std::vector<enum_button_param> button_list;
@@ -540,6 +540,8 @@ void settings::starting()
         qt_container->set_layout(layout);
     }
 
+    this->start_listening_joystick();
+
     this->block_signals(false);
 }
 
@@ -553,6 +555,8 @@ void settings::updating()
 
 void settings::stopping()
 {
+    this->stop_listening_joystick();
+
     m_settings_slots.clear();
     m_param_boxes.clear(); // Avoid keeping dangling pointers
     this->destroy();
@@ -1212,6 +1216,9 @@ QPushButton* settings::create_double_slider_widget(
     const int default_slider_value =
         int(std::round(((init_value - _setup.min) / value_range) * double(slider->maximum())));
     slider->setValue(default_slider_value);
+
+    // Compute a "usable" page step
+    slider->setPageStep(int(std::round(value_range * 10)));
 
     // Style
     slider->setProperty("widget#0", QVariant::fromValue<QSlider*>(slider));
@@ -2813,63 +2820,186 @@ void settings::update_data(const QObject* _widget, const SUBTYPE& _val)
 
 void settings::joystick_axis_direction_event(const sight::io::joystick::axis_direction_event& _event)
 {
-    // Basic filtering
-    if(_event.axis != 4)
-    {
-        SIGHT_WARN("Joystick axis not recognized: " << int(_event.axis));
-        return;
-    }
+    using direction_t = sight::io::joystick::axis_direction_event::direction_t;
 
-    SIGHT_DEBUG("Joystick index: " << _event.device->index);
+    SIGHT_DEBUG("Joystick id: " << _event.device->id);
     SIGHT_DEBUG("Joystick axis: " << int(_event.axis));
     SIGHT_DEBUG(
         "Joystick direction: "
-        << (_event.value == sight::io::joystick::axis_direction_event::direction_t::up ? "up" : "down")
+        << (_event.value == direction_t::up ? "up" : _event.value == direction_t::down ? "down" : "centered")
     );
 
-    if(_event.device->index == 1)
+    for(const auto& joystickable_widget : m_joystickable_widgets_key)
     {
-        //Only working for ButtonGroup
+        auto* const widget = get_param_widget(joystickable_widget);
 
-        for(const auto& joystickable_widget : m_joystickable_widgets_key)
+        if(auto* const button_group = dynamic_cast<QButtonGroup*>(widget); button_group != nullptr)
         {
-            auto* const widget = dynamic_cast<QButtonGroup*>(get_param_widget(joystickable_widget));
-            if(widget != nullptr)
+            // 4th or 0th axis of the second spacemouse only for button_group
+            if((_event.axis != 0 && _event.axis != 4 && _event.axis != 2)
+               || _event.device->id != this->right_joystick())
             {
-                auto buttons    = widget->buttons();
-                const auto size = buttons.size();
-                int index       = 0;
-                for(const auto& button : buttons)
-                {
-                    if(button->isChecked())
+                continue;
+            }
+
+            // Get the list of buttons
+            const auto& buttons = button_group->buttons();
+
+            // Get the checked button
+            auto* const checked_button = button_group->checkedButton();
+
+            // Find the current index of the checked button
+            const auto checked_index = buttons.indexOf(checked_button);
+
+            // Increment / decrement the index according to the joystick event
+            if(_event.axis == 4 && _event.value == direction_t::up)
+            {
+                const auto go_down =
+                    [&buttons](auto _next_index) -> auto
                     {
-                        break;
+                        while(--_next_index >= 0)
+                        {
+                            if(auto* const next_button = buttons[_next_index];
+                               next_button->isEnabled() && next_button->isVisible())
+                            {
+                                next_button->toggle();
+                                return _next_index;
+                            }
+                        }
+
+                        return _next_index;
+                    };
+
+                auto next_index = go_down(checked_index);
+
+                if(next_index < 0)
+                {
+                    go_down(buttons.size());
+                }
+            }
+            else if(_event.axis == 4 && _event.value == direction_t::down)
+            {
+                const auto go_up =
+                    [&buttons](auto _next_index) -> auto
+                    {
+                        while(++_next_index < buttons.size())
+                        {
+                            if(auto* const next_button = buttons[_next_index];
+                               next_button->isEnabled() && next_button->isVisible())
+                            {
+                                next_button->toggle();
+                                return _next_index;
+                            }
+                        }
+
+                        return _next_index;
+                    };
+
+                auto next_index = go_up(checked_index);
+
+                if(next_index >= buttons.size())
+                {
+                    go_up(-1);
+                }
+            }
+            else if(_event.axis == 2 && _event.value == direction_t::up && checked_button != nullptr)
+            {
+                checked_button->click();
+            }
+        }
+        else if(auto* const non_linear_slider = dynamic_cast<sight::ui::qt::widget::non_linear_slider*>(widget);
+                non_linear_slider != nullptr)
+        {
+            // 4th or 0th axis of the first spacemouse only for comboslider
+            if((_event.axis != 0 && _event.axis != 4) || _event.device->id != this->left_joystick())
+            {
+                continue;
+            }
+
+            if(_event.axis == 4 && _event.value == direction_t::up)
+            {
+                const int new_index = int(non_linear_slider->index()) - 1;
+                non_linear_slider->set_index(new_index < 0 ? std::size_t(0) : std::size_t(new_index));
+            }
+            else if(_event.axis == 4 && _event.value == direction_t::down)
+            {
+                const int new_index  = int(non_linear_slider->index()) + 1;
+                const int last_index = std::max(0, int(non_linear_slider->num_values()) - 1);
+                non_linear_slider->set_index(new_index > last_index ? std::size_t(last_index) : std::size_t(new_index));
+            }
+        }
+        else if(auto* const slider = dynamic_cast<QSlider*>(widget); slider != nullptr)
+        {
+            // 4th or 0th axis of the first spacemouse only for slider
+            if((_event.axis != 0 && _event.axis != 4) || _event.device->id != this->left_joystick())
+            {
+                continue;
+            }
+
+            const auto get_step =
+                [&_event, &slider]
+                {
+                    if(_event.value == direction_t::centered)
+                    {
+                        return 0;
                     }
 
-                    ++index;
-                }
+                    if(_event.axis == 0)
+                    {
+                        return slider->singleStep();
+                    }
 
-                if(_event.value == sight::io::joystick::axis_direction_event::direction_t::up)
+                    if(_event.axis == 4)
+                    {
+                        if(slider->property("decimals").isNull() || _event.count < 10)
+                        {
+                            return slider->singleStep();
+                        }
+
+                        if(_event.count < 20)
+                        {
+                            return std::max(slider->singleStep(), slider->pageStep() / 4);
+                        }
+
+                        if(_event.count < 40)
+                        {
+                            return std::max(slider->singleStep(), slider->pageStep() / 3);
+                        }
+
+                        if(_event.count < 80)
+                        {
+                            return std::max(slider->singleStep(), slider->pageStep() / 2);
+                        }
+
+                        if(_event.count < 160)
+                        {
+                            return std::max(slider->singleStep(), slider->pageStep());
+                        }
+                    }
+
+                    return slider->singleStep();
+                };
+
+            if(_event.axis == 0)
+            {
+                if(_event.value == direction_t::down)
                 {
-                    if(index - 1 < 0)
-                    {
-                        buttons[size - 1]->toggle();
-                    }
-                    else
-                    {
-                        buttons[qsizetype(index) - 1]->toggle();
-                    }
+                    slider->setValue(slider->value() - get_step());
                 }
-                else if(_event.value == sight::io::joystick::axis_direction_event::direction_t::down)
+                else if(_event.value == direction_t::up)
                 {
-                    if(index + 1 > int(size - 1))
-                    {
-                        buttons[0]->toggle();
-                    }
-                    else
-                    {
-                        buttons[qsizetype(index) + 1]->toggle();
-                    }
+                    slider->setValue(slider->value() + get_step());
+                }
+            }
+            else if(_event.axis == 4)
+            {
+                if(_event.value == direction_t::down)
+                {
+                    slider->setValue(slider->value() + get_step());
+                }
+                else if(_event.value == direction_t::up)
+                {
+                    slider->setValue(slider->value() - get_step());
                 }
             }
         }

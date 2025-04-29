@@ -61,6 +61,16 @@ void plugin_test::basic_test()
     {
         using joystick::interactor::interactor::devices;
 
+        interactor()
+        {
+            start_listening_joystick();
+        }
+
+        ~interactor() override
+        {
+            stop_listening_joystick();
+        }
+
         //------------------------------------------------------------------------------
 
         void joystick_axis_motion_event(const joystick::axis_motion_event& _event) final

@@ -29,7 +29,17 @@
 namespace sight::io::joystick
 {
 
-interactor::interactor()
+interactor::~interactor()
+{
+    if(const auto instance = detail::event_loop::instance(); instance)
+    {
+        instance->remove_interactor(this, true);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void interactor::start_listening_joystick()
 {
     const auto instance = detail::event_loop::instance();
     SIGHT_WARN_IF("Event loop is not available", !instance);
@@ -40,7 +50,9 @@ interactor::interactor()
     }
 }
 
-interactor::~interactor()
+//------------------------------------------------------------------------------
+
+void interactor::stop_listening_joystick() const
 {
     const auto instance = detail::event_loop::instance();
     SIGHT_WARN_IF("Event loop is not available", !instance);
@@ -49,6 +61,38 @@ interactor::~interactor()
     {
         instance->remove_interactor(this);
     }
+}
+
+//------------------------------------------------------------------------------
+
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+std::int32_t interactor::left_joystick() const
+{
+    const auto instance = detail::event_loop::instance();
+    SIGHT_WARN_IF("Event loop is not available", !instance);
+
+    if(instance)
+    {
+        return instance->left_joystick();
+    }
+
+    return -1;
+}
+
+//------------------------------------------------------------------------------
+
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+std::int32_t interactor::right_joystick() const
+{
+    const auto instance = detail::event_loop::instance();
+    SIGHT_WARN_IF("Event loop is not available", !instance);
+
+    if(instance)
+    {
+        return instance->right_joystick();
+    }
+
+    return -1;
 }
 
 //------------------------------------------------------------------------------

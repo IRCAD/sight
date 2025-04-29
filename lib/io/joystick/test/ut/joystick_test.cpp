@@ -72,8 +72,18 @@ void io_joystick_test::basic_test()
         struct interactor final : public io::joystick::interactor
         {
             using io::joystick::interactor::interactor::devices;
-            using io::joystick::interactor::interactor::block_events;
-            using io::joystick::interactor::interactor::events_blocked;
+            using io::joystick::interactor::interactor::start_listening_joystick;
+            using io::joystick::interactor::interactor::stop_listening_joystick;
+
+            interactor()
+            {
+                start_listening_joystick();
+            }
+
+            ~interactor() override
+            {
+                stop_listening_joystick();
+            }
 
             //------------------------------------------------------------------------------
 
@@ -266,10 +276,10 @@ void io_joystick_test::basic_test()
             CPPUNIT_ASSERT(interactor.received_button_released_event);
 
             // Test blocing joystick events. Only the last event should be received
-            interactor.block_events();
+            interactor.stop_listening_joystick();
             interactor.received_axis_motion_event = 0;
             SDL_JoystickSetVirtualAxis(virtual_joystick, 0, 10000);
-            interactor.block_events(false);
+            interactor.start_listening_joystick();
             SDL_JoystickSetVirtualAxis(virtual_joystick, 0, 10000);
 
             SIGHT_TEST_WAIT(interactor.received_axis_motion_event > 0);
@@ -286,6 +296,100 @@ void io_joystick_test::basic_test()
 
     // The instance should not be recreated, as the original one has expired
     CPPUNIT_ASSERT(!friendly_event_loop::instance());
+}
+
+//------------------------------------------------------------------------------
+
+void io_joystick_test::auto_repeat_test()
+{
+    // Name of the virtual joystick
+    static constexpr auto s_VIRTUAL_NAME = "Virtual Flight Stick";
+
+    // Create the event loop
+    auto event_loop = friendly_event_loop::make();
+
+    struct interactor final : public io::joystick::interactor
+    {
+        interactor()
+        {
+            start_listening_joystick();
+        }
+
+        ~interactor() override
+        {
+            stop_listening_joystick();
+        }
+
+        //------------------------------------------------------------------------------
+
+        void joystick_axis_direction_event(const axis_direction_event& _event) final
+        {
+            if(_event.device->name == s_VIRTUAL_NAME)
+            {
+                ++received_axis_direction_event;
+            }
+        }
+
+        //------------------------------------------------------------------------------
+
+        void joystick_added_event(const joystick_event& _event) final
+        {
+            if(_event.device->name == s_VIRTUAL_NAME)
+            {
+                received_added_event = true;
+            }
+        }
+
+        std::atomic_int received_axis_direction_event {0};
+        std::atomic_bool received_added_event {false};
+    } interactor;
+
+    struct virtual_device
+    {
+        virtual_device() :
+            index(SDL_JoystickAttachVirtual(SDL_JoystickType::SDL_JOYSTICK_TYPE_FLIGHT_STICK, 1, 1, 1))
+        {
+            CPPUNIT_ASSERT(index >= 0);
+        }
+
+        ~virtual_device()
+        {
+            CPPUNIT_ASSERT(SDL_JoystickDetachVirtual(index) >= 0);
+        }
+
+        int index {-1};
+    } virtual_device_instance;
+
+    // Wait for the virtual joystick to be added
+    SIGHT_TEST_WAIT(interactor.received_added_event);
+    CPPUNIT_ASSERT(interactor.received_added_event);
+
+    // Retrieve the real SDL objects
+    const auto virtual_id = SDL_JoystickGetDeviceInstanceID(virtual_device_instance.index);
+    CPPUNIT_ASSERT(virtual_id >= 0);
+
+    auto* const virtual_joystick = SDL_JoystickFromInstanceID(virtual_id);
+    CPPUNIT_ASSERT(virtual_joystick != nullptr);
+
+    // Send 3 axis events
+    CPPUNIT_ASSERT(not interactor.received_axis_direction_event);
+    SDL_JoystickSetVirtualAxis(virtual_joystick, 0, 30000);
+
+    // The event should be repeated
+    SIGHT_TEST_WAIT(interactor.received_axis_direction_event > 2);
+    CPPUNIT_ASSERT(interactor.received_axis_direction_event > 2);
+
+    // ..and be stopped once we go back to the dead zone
+    SDL_JoystickSetVirtualAxis(virtual_joystick, 0, 0);
+
+    // Wait for the event to be processed
+    auto received = interactor.received_axis_direction_event.load();
+    SIGHT_TEST_WAIT(interactor.received_axis_direction_event.load() > received);
+
+    // Wait 500 ms again to see if nothing is received
+    received = interactor.received_axis_direction_event.load();
+    SIGHT_TEST_WAIT(interactor.received_axis_direction_event.load() > received, 500);
+    CPPUNIT_ASSERT(interactor.received_axis_direction_event.load() == received);
 }
 
 } //namespace sight::io::joystick::ut
