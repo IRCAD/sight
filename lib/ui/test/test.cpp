@@ -74,11 +74,12 @@ void base::compare_images(const std::filesystem::path& _a, const std::filesystem
     const double histogram    = tester::compare_images_histogram(ia, ib);
     const double correlation  = tester::compare_images_correlation(ia, ib);
     const double voodoo       = tester::compare_images_voodoo(ia, ib);
-    const std::string message = "The generated image and the reference image aren't identical";
-    const std::string score   = std::string("MSE: ") + std::to_string(mse) + "\nHistogram: " + std::to_string(histogram)
-                                + "\nCorrelation: " + std::to_string(correlation) + "\nVoodoo: "
-                                + std::to_string(voodoo)
-                                + '\n';
+    const std::string message = std::string("The generated image (" + _a.string() + ") and the reference image (")
+                                + _b.string() + ") aren't identical";
+    const std::string score = std::string("MSE: ") + std::to_string(mse) + "\nHistogram: " + std::to_string(histogram)
+                              + "\nCorrelation: " + std::to_string(correlation) + "\nVoodoo: "
+                              + std::to_string(voodoo)
+                              + '\n';
     CPPUNIT_ASSERT_MESSAGE(message + " (MSE)\n" + score, mse > 0.96);
     CPPUNIT_ASSERT_MESSAGE(message + " (histogram)\n" + score, histogram > 0.95);
     CPPUNIT_ASSERT_MESSAGE(message + " (Correlation)\n" + score, correlation > 0.69);

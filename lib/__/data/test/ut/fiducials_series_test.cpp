@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,7 @@ namespace
 //------------------------------------------------------------------------------
 
 const std::array TEST_VECTOR {
-    data::fiducials_series::fiducial_query {
+    data::fiducials_series::query_result {
         .m_fiducial_set_index   = 0,
         .m_fiducial_index       = 0,
         .m_shape_index          = 0,
@@ -58,7 +58,7 @@ const std::array TEST_VECTOR {
         .m_fiducial_identifier  = core::tools::uuid::generate(),
         .m_fiducial_uid         = core::tools::uuid::generate()
     },
-    data::fiducials_series::fiducial_query {
+    data::fiducials_series::query_result {
         .m_fiducial_set_index   = 1,
         .m_fiducial_index       = 0,
         .m_shape_index          = 0,
@@ -73,7 +73,7 @@ const std::array TEST_VECTOR {
         .m_fiducial_identifier  = core::tools::uuid::generate(),
         .m_fiducial_uid         = core::tools::uuid::generate()
     },
-    data::fiducials_series::fiducial_query {
+    data::fiducials_series::query_result {
         .m_fiducial_set_index   = 1,
         .m_fiducial_index       = 1,
         .m_shape_index          = 1,
@@ -88,7 +88,7 @@ const std::array TEST_VECTOR {
         .m_fiducial_identifier  = core::tools::uuid::generate(),
         .m_fiducial_uid         = core::tools::uuid::generate()
     },
-    data::fiducials_series::fiducial_query {
+    data::fiducials_series::query_result {
         .m_fiducial_set_index   = 2,
         .m_fiducial_index       = 0,
         .m_shape_index          = 0,
@@ -103,7 +103,7 @@ const std::array TEST_VECTOR {
         .m_fiducial_identifier  = core::tools::uuid::generate(),
         .m_fiducial_uid         = core::tools::uuid::generate()
     },
-    data::fiducials_series::fiducial_query {
+    data::fiducials_series::query_result {
         .m_fiducial_set_index   = 2,
         .m_fiducial_index       = 1,
         .m_shape_index          = 0,
@@ -118,7 +118,7 @@ const std::array TEST_VECTOR {
         .m_fiducial_identifier  = core::tools::uuid::generate(),
         .m_fiducial_uid         = core::tools::uuid::generate()
     },
-    data::fiducials_series::fiducial_query {
+    data::fiducials_series::query_result {
         .m_fiducial_set_index   = 2,
         .m_fiducial_index       = 2,
         .m_shape_index          = 0,
@@ -133,7 +133,7 @@ const std::array TEST_VECTOR {
         .m_fiducial_identifier  = core::tools::uuid::generate(),
         .m_fiducial_uid         = core::tools::uuid::generate()
     },
-    data::fiducials_series::fiducial_query {
+    data::fiducials_series::query_result {
         .m_fiducial_set_index   = 2,
         .m_fiducial_index       = 3,
         .m_shape_index          = 1,
@@ -309,8 +309,8 @@ void check_fiducial_with_gdcm(
 //------------------------------------------------------------------------------
 
 void compare_queries(
-    const data::fiducials_series::fiducial_query& _expected,
-    const data::fiducials_series::fiducial_query& _actual
+    const data::fiducials_series::query_result& _expected,
+    const data::fiducials_series::query_result& _actual
 )
 {
     CPPUNIT_ASSERT_EQUAL(_expected.m_fiducial_set_index, _actual.m_fiducial_set_index);
@@ -945,6 +945,105 @@ void fiducials_series_test::graphic_coordinates_data_setter_getter_test()
 
 //------------------------------------------------------------------------------
 
+void fiducials_series_test::static_test()
+{
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::fiducials_series::shape_to_string(
+            sight::data::fiducials_series::shape::point
+        ),
+        std::string("POINT")
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::fiducials_series::shape_to_string(
+            sight::data::fiducials_series::shape::line
+        ),
+        std::string("LINE")
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::fiducials_series::shape_to_string(
+            sight::data::fiducials_series::shape::surface
+        ),
+        std::string("SURFACE")
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::fiducials_series::shape_to_string(
+            sight::data::fiducials_series::shape::l_shape
+        ),
+        std::string("L_SHAPE")
+    );
+    CPPUNIT_ASSERT_EQUAL(
+        sight::data::fiducials_series::shape_to_string(
+            sight::data::fiducials_series::shape::t_shape
+        ),
+        std::string("T_SHAPE")
+    );
+    CPPUNIT_ASSERT(
+        sight::data::fiducials_series::shape_to_string(
+            sight::data::fiducials_series::shape::invalid
+        ).empty()
+    );
+}
+
+//------------------------------------------------------------------------------
+
+void fiducials_series_test::bounding_box_test()
+{
+    sight::data::fiducials_series::fiducial fiducial;
+
+    {
+        auto [min, max] = fiducial.contour_data_bounding_box();
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(min.x, std::numeric_limits<double>::max(), 1e-3);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(min.y, std::numeric_limits<double>::max(), 1e-3);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(min.z, std::numeric_limits<double>::max(), 1e-3);
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(max.x, std::numeric_limits<double>::min(), 1e-3);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(max.y, std::numeric_limits<double>::min(), 1e-3);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(max.z, std::numeric_limits<double>::min(), 1e-3);
+    }
+
+    {
+        auto bb = fiducial.graphic_coordinates_data_bounding_box(0);
+        CPPUNIT_ASSERT(!bb.has_value());
+    }
+
+    // Copy the current contour in the current fiducial data
+    fiducial.contour_data.emplace_back(0., 0., 0.);
+    fiducial.contour_data.emplace_back(16., 16., 16.);
+    {
+        auto [min, max] = fiducial.contour_data_bounding_box();
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(min.x, 0., 1.e-3);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(min.y, 0., 1.e-3);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(min.z, 0., 1.e-3);
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(max.x, 16., 1.e-3);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(max.y, 16., 1.e-3);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(max.z, 16., 1.e-3);
+    }
+
+    fiducial.graphic_coordinates_data_sequence = std::vector<sight::data::fiducials_series::graphic_coordinates_data>();
+    // We only need 1 element as the contour only spans the current frame
+    fiducial.graphic_coordinates_data_sequence->emplace_back();
+
+    auto& gcds0 = fiducial.graphic_coordinates_data_sequence.value().at(0);
+
+    gcds0.graphic_data.emplace_back(0., 0.);
+    gcds0.graphic_data.emplace_back(8., 8.);
+
+    {
+        auto bb = fiducial.graphic_coordinates_data_bounding_box(0);
+        CPPUNIT_ASSERT(bb.has_value());
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(std::get<0>(*bb).x, 0., 1.e-3);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(std::get<0>(*bb).y, 0., 1.e-3);
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(std::get<1>(*bb).x, 8., 1.e-3);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(std::get<1>(*bb).y, 8., 1.e-3);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void fiducials_series_test::add_fiducial_test()
 {
     auto fiducials_series = std::make_shared<data::fiducials_series>();
@@ -963,7 +1062,7 @@ void fiducials_series_test::add_fiducial_test()
         const std::string fiducial_uid {core::tools::uuid::generate()};
 
         const auto& fiducial_add_predicate =
-            [&](data::fiducials_series::fiducial_query& _result) -> bool
+            [&](data::fiducials_series::query_result& _result) -> bool
             {
                 // Fiducial set part
                 _result.m_group_name    = group_name;
@@ -1023,7 +1122,7 @@ void fiducials_series_test::add_fiducial_test()
         const std::string fiducial_uid {core::tools::uuid::generate()};
 
         const auto& fiducial_add_predicate =
-            [&](data::fiducials_series::fiducial_query& _result) -> bool
+            [&](data::fiducials_series::query_result& _result) -> bool
             {
                 // Fiducial set part
                 _result.m_group_name    = group_name;
@@ -1091,7 +1190,7 @@ void fiducials_series_test::add_fiducial_test()
         const std::string fiducial_uid {core::tools::uuid::generate()};
 
         const auto& fiducial_add_predicate =
-            [&](data::fiducials_series::fiducial_query& _result) -> bool
+            [&](data::fiducials_series::query_result& _result) -> bool
             {
                 // Fiducial set part
                 _result.m_group_name    = group_name_2;
@@ -1154,7 +1253,7 @@ void fiducials_series_test::query_fiducials_test()
     for(const auto& query_result : TEST_VECTOR)
     {
         fiducials_series->add_fiducial(
-            [&query_result](data::fiducials_series::fiducial_query& _result) -> bool
+            [&query_result](data::fiducials_series::query_result& _result) -> bool
             {
                 _result = query_result;
                 return true;
@@ -1249,7 +1348,7 @@ void fiducials_series_test::query_fiducials_test()
     // Query all fiducials with predicate
     {
         const auto& query_results = fiducials_series->query_fiducials(
-            [](const data::fiducials_series::fiducial_query& _result) -> bool
+            [](const data::fiducials_series::query_result& _result) -> bool
             {
                 return _result.m_visible.value_or(true);
             });
@@ -1289,7 +1388,7 @@ void fiducials_series_test::remove_fiducials_test()
         for(const auto& query_result : TEST_VECTOR)
         {
             fiducials_series->add_fiducial(
-                [&query_result](data::fiducials_series::fiducial_query& _result) -> bool
+                [&query_result](data::fiducials_series::query_result& _result) -> bool
                 {
                     _result = query_result;
                     return true;
@@ -1328,7 +1427,7 @@ void fiducials_series_test::remove_fiducials_test()
         for(const auto& query_result : TEST_VECTOR)
         {
             fiducials_series->add_fiducial(
-                [&query_result](data::fiducials_series::fiducial_query& _result) -> bool
+                [&query_result](data::fiducials_series::query_result& _result) -> bool
                 {
                     _result = query_result;
                     return true;
@@ -1384,7 +1483,7 @@ void fiducials_series_test::remove_fiducials_test()
         for(const auto& query_result : TEST_VECTOR)
         {
             fiducials_series->add_fiducial(
-                [&query_result](data::fiducials_series::fiducial_query& _result) -> bool
+                [&query_result](data::fiducials_series::query_result& _result) -> bool
                 {
                     _result = query_result;
                     return true;
@@ -1441,7 +1540,7 @@ void fiducials_series_test::remove_fiducials_test()
         for(const auto& query_result : TEST_VECTOR)
         {
             fiducials_series->add_fiducial(
-                [&query_result](data::fiducials_series::fiducial_query& _result) -> bool
+                [&query_result](data::fiducials_series::query_result& _result) -> bool
                 {
                     _result = query_result;
                     return true;
@@ -1453,7 +1552,7 @@ void fiducials_series_test::remove_fiducials_test()
 
         // Remove the point fiducial from group 2 with the given fiducial_uid
         const auto& removed_results = fiducials_series->remove_fiducials(
-            [](const data::fiducials_series::fiducial_query& _result) -> bool
+            [](const data::fiducials_series::query_result& _result) -> bool
             {
                 return _result.m_fiducial_uid == TEST_VECTOR[6].m_fiducial_uid;
             },
@@ -1488,7 +1587,7 @@ void fiducials_series_test::modify_fiducials_test()
     for(const auto& query_result : TEST_VECTOR)
     {
         fiducials_series->add_fiducial(
-            [&query_result](data::fiducials_series::fiducial_query& _result) -> bool
+            [&query_result](data::fiducials_series::query_result& _result) -> bool
             {
                 _result = query_result;
                 return true;
@@ -1500,7 +1599,7 @@ void fiducials_series_test::modify_fiducials_test()
 
     // Modify the contour data of the point fiducial from group 2 at index 1
     fiducials_series->modify_fiducials(
-        [](data::fiducials_series::fiducial_query& _result) -> bool
+        [](data::fiducials_series::query_result& _result) -> bool
         {
             _result.m_contour_data = {6.F, 6.F, 6.F};
             return true;
@@ -1523,6 +1622,39 @@ void fiducials_series_test::modify_fiducials_test()
             compare_queries(adjusted_test_vector[index], query_results[index]);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void fiducials_series_test::point_test()
+{
+    auto fiducials_series = std::make_shared<data::fiducials_series>();
+
+    const std::string group_name {core::tools::uuid::generate()};
+
+    // Should fail, because the group does not exists
+    CPPUNIT_ASSERT(!fiducials_series->add_point(group_name, {0., 0., 0.}));
+
+    // Should now succeed
+    fiducials_series->add_group(group_name, {1.0, 1.0, 1.0, 1.0}, 1.F);
+    CPPUNIT_ASSERT(fiducials_series->add_point(group_name, {0., 0., 0.}));
+    CPPUNIT_ASSERT(fiducials_series->add_point(group_name, {1., 1., 1.}));
+
+    // Count the number of points
+    std::vector<sight::data::fiducials_series::query_result> query_results;
+    query_results = fiducials_series->query_fiducials(
+        std::nullopt,
+        data::fiducials_series::shape::point
+    );
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), query_results.size());
+
+    // Remove a point and count again
+    fiducials_series->remove_point(group_name, 1);
+    query_results = fiducials_series->query_fiducials(
+        std::nullopt,
+        data::fiducials_series::shape::point
+    );
+    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), query_results.size());
 }
 
 } // namespace sight::data::ut

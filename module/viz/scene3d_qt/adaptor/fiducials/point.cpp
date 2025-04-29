@@ -33,16 +33,16 @@
 
 #include <geometry/data/image.hpp>
 
+#include <module/viz/scene3d_qt/window_interactor.hpp>
+
+#include <QHBoxLayout>
+#include <QPushButton>
+
 #include <ui/__/cursor.hpp>
 
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/utils.hpp>
-
-#include <module/viz/scene3d_qt/window_interactor.hpp>
-
-#include <QHBoxLayout>
-#include <QPushButton>
 
 #include <ranges>
 
@@ -117,7 +117,7 @@ private:
 };
 
 /// @return true if the fiducial_query need to be added to the list
-inline bool fiducial_query_predicate(const data::fiducials_series::fiducial_query& _result)
+inline bool fiducial_query_predicate(const data::fiducials_series::query_result& _result)
 {
     return _result.m_contour_data && _result.m_contour_data->size() == 3;
 }
@@ -520,7 +520,7 @@ void point::remove_ogre_fiducials()
 //------------------------------------------------------------------------------
 
 void point::emit_removed_signals(
-    const std::vector<data::fiducials_series::fiducial_query>& _removed_results,
+    const std::vector<data::fiducials_series::query_result>& _removed_results,
     const std::set<std::string>& _removed_fiducial_sets,
     const data::image_series& _image_series,
     bool _remove_ogre_fiducials
@@ -605,7 +605,7 @@ void point::remove_visible_fiducials()
     const auto& fiducials    = locked_image->get_fiducials();
 
     const auto visible_predicate =
-        [this, &locked_image](const data::fiducials_series::fiducial_query& _result)
+        [this, &locked_image](const data::fiducials_series::query_result& _result)
         {
             if(!_result.m_contour_data || _result.m_contour_data->size() != 3)
             {
@@ -872,7 +872,7 @@ void point::insert_point(std::string _group_name, std::size_t _index)
 //------------------------------------------------------------------------------
 
 std::shared_ptr<point::ogre_fiducial> point::create_ogre_fiducial(
-    const data::fiducials_series::fiducial_query& _query,
+    const data::fiducials_series::query_result& _query,
     const data::image_series& _image_series
 )
 {
@@ -1468,7 +1468,7 @@ void point::create_and_pick_fiducial(const std::vector<double>& _point, bool _pi
 
     // Defines the predicate to add a new fiducial.
     const auto& fiducial_add_predicate =
-        [this, &_point, &frame_of_reference_uid](data::fiducials_series::fiducial_query& _result) -> bool
+        [this, &_point, &frame_of_reference_uid](data::fiducials_series::query_result& _result) -> bool
         {
             // Fiducial set part
             if(!_result.m_group_name)
@@ -1673,7 +1673,7 @@ bool point::check_fiducial_visibility(
 //------------------------------------------------------------------------------
 
 bool point::check_fiducial_visibility(
-    const data::fiducials_series::fiducial_query& _query,
+    const data::fiducials_series::query_result& _query,
     const data::image_series& _image_series,
     const std::optional<bool>& _base_visibility
 ) const
@@ -1855,7 +1855,7 @@ void point::mouse_move_event(mouse_button /*_button*/, modifier /*_mods*/, int _
         auto fiducials    = locked_image->get_fiducials();
 
         const auto& fiducial_modify_predicate =
-            [&new_pos](data::fiducials_series::fiducial_query& _result) -> bool
+            [&new_pos](data::fiducials_series::query_result& _result) -> bool
             {
                 // Reset result so only modified fields are updated
                 _result                = {};

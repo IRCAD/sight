@@ -31,12 +31,13 @@
 
 #include <geometry/data/image.hpp>
 
+#include <module/viz/scene3d_qt/window_interactor.hpp>
+
 #include <viz/scene3d/helper/camera.hpp>
+#include <viz/scene3d/helper/fiducials.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
-
-#include <module/viz/scene3d_qt/window_interactor.hpp>
 
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
@@ -93,7 +94,6 @@ void ruler::configuring()
     static const std::string s_ALWAYS_DISPLAY_ALL_CONFIG = CONFIG + "always_display_all";
 
     m_font_size          = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_font_size);
-    m_sphere_radius      = config.get<float>(s_RADIUS_CONFIG, m_sphere_radius);
     m_priority           = config.get<int>(s_PRIORITY_CONFIG, m_priority);
     m_color              = config.get<std::string>(s_COLOR_CONFIG, m_color);
     m_always_display_all = config.get<bool>(s_ALWAYS_DISPLAY_ALL_CONFIG, m_always_display_all);
@@ -191,6 +191,7 @@ void ruler::starting()
     Ogre::Pass* const line_pass = line_tech->getPass(0);
     SIGHT_ASSERT("No pass found", line_pass);
     line_pass->setDepthCheckEnabled(true);
+    line_pass->setLineWidth(static_cast<float>(*m_line_width));
 
     // Dashed line
     m_dashed_line_material = std::make_unique<sight::viz::scene3d::material::standard>(m_dashed_line_material_name);
@@ -226,73 +227,88 @@ void ruler::updating()
 
     const sight::viz::scene3d::layer::csptr layer = this->layer();
 
-    m_sphere_material->set_shading(data::material::shading_t::phong, layer->num_lights(), false, false);
-    m_line_material->set_shading(data::material::shading_t::ambient, layer->num_lights(), false, false);
-    m_dashed_line_material->set_shading(data::material::shading_t::ambient, layer->num_lights(), false, false);
-
     while(!m_ruler_ogre_sets.empty())
     {
         this->remove_ruler_ogre_set(m_ruler_ogre_sets[0].id);
     }
 
-    const auto& fiducial_sets      = m_image.const_lock()->get_fiducials()->get_fiducial_sets();
-    std::size_t fiducial_set_index = 0;
+    const auto& fiducials = m_image.const_lock()->get_fiducials();
 
-    std::for_each(
-        fiducial_sets.cbegin(),
-        fiducial_sets.cend(),
-        [&](const auto& _fiducial_set)
+    std::size_t slice_index = 0;
+    sight::data::image::spacing_t spacing;
+    {
+        auto image = m_image.const_lock();
+        slice_index = static_cast<std::size_t>(sight::data::helper::medical_image::get_slice_index(
+                                                   *image,
+                                                   m_axis
+        ).value_or(0));
+        spacing = image->spacing();
+    }
+
+    // Get all the ruler fiducials from the image and store them locally
+    auto query_results = fiducials->query_fiducials(
+        std::nullopt,
+        data::fiducials_series::shape::ruler
+    );
+
+    // Get the generated or configured color
+    const Ogre::ColourValue& default_color = this->get_default_color();
+
+    std::array<float, 4> color = {default_color[0], default_color[1], default_color[2], default_color[3]
+    };
+
+    for(auto& q : query_results)
+    {
+        if(q.m_color.has_value())
         {
-            std::for_each(
-                _fiducial_set.fiducial_sequence.cbegin(),
-                _fiducial_set.fiducial_sequence.cend(),
-                [&](const auto& _fiducial)
+            color = q.m_color.value();
+        }
+
+        const float sphere_radius = q.m_size.value_or(static_cast<float>(*m_sphere_radius))
+                                    * (m_interactive ? 2.0F : 1.0F);
+
+        auto* const camera   = this->layer()->get_default_camera();
+        auto projection_type = camera->getProjectionType();
+
+        int si   = -1;
+        auto rfn = q.m_referenced_frame_number.value_or(std::vector<std::int32_t>());
+        if(!rfn.empty())
+        {
+            si = static_cast<int>(rfn.at(0) - 1);
+        }
+
+        bool visible = m_always_display_all ? m_always_display_all : si == static_cast<int>(slice_index);
+
+        if(projection_type == Ogre::ProjectionType::PT_ORTHOGRAPHIC)
+        {
+            if(q.m_graphic_data.has_value())
             {
-                if(_fiducial.shape_type == data::fiducials_series::shape::ruler)
-                {
-                    // Get the generated or configured color
-                    const Ogre::ColourValue& default_color = this->get_default_color();
+                const auto& gd = q.m_graphic_data.value();
 
-                    std::array<float, 4> color = {default_color[0], default_color[1], default_color[2], default_color[3]
-                    };
-
-                    if(_fiducial_set.color.has_value())
-                    {
-                        color = _fiducial_set.color.value();
-                    }
-                    else
-                    {
-                        // When the fiducial_set has no registered colors.
-                        // This case occurs when fiducials are created outside of the adaptor and not manually.
-                        // Then we need to save the default color given by the adaptor in the associated fiducial_set.
-                        const auto image = m_image.lock();
-                        if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
-                        {
-                            image_series->get_fiducials()->set_color(fiducial_set_index, color);
-                        }
-                    }
-
-                    const float sphere_radius = _fiducial_set.size.value_or(m_sphere_radius)
-                                                * (m_interactive ? 2.0F : 1.0F);
-
-                    bool visible = m_always_display_all ? m_always_display_all : this->is_visible_on_current_slice(
-                        {_fiducial.contour_data[0].x, _fiducial.contour_data[0].y, _fiducial.contour_data[0].z
-                        },
-                        {_fiducial.contour_data[1].x, _fiducial.contour_data[1].y, _fiducial.contour_data[1].z
-                        });
-
-                    this->create_ruler_ogre_set(
-                        color,
-                        sphere_radius,
-                        _fiducial.fiducial_uid,
-                        {_fiducial.contour_data[0].x, _fiducial.contour_data[0].y, _fiducial.contour_data[0].z},
-                        {_fiducial.contour_data[1].x, _fiducial.contour_data[1].y, _fiducial.contour_data[1].z},
-                        m_visible && visible
-                    );
-                }
-            });
-            fiducial_set_index++;
-        });
+                this->create_ruler_ogre_set(
+                    color,
+                    sphere_radius,
+                    q.m_fiducial_uid,
+                    {gd[0] * spacing[0], gd[1] * spacing[1], 0.},
+                    {gd[2] * spacing[0], gd[3] * spacing[1], 0.},
+                    m_visible && visible,
+                    si
+                );
+            }
+        }
+        else
+        {
+            this->create_ruler_ogre_set(
+                color,
+                sphere_radius,
+                q.m_fiducial_uid,
+                {q.m_contour_data->at(0), q.m_contour_data->at(1), q.m_contour_data->at(2)},
+                {q.m_contour_data->at(3), q.m_contour_data->at(4), q.m_contour_data->at(5)},
+                m_visible && visible,
+                si
+            );
+        }
+    }
 
     this->request_render();
 }
@@ -334,6 +350,17 @@ void ruler::create_ruler_fiducial(
     {
         if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
         {
+            const auto slice_index = sight::data::helper::medical_image::get_slice_index(
+                *image_series,
+                sight::data::helper::medical_image::axis_t::axial
+            );
+
+            if(!slice_index.has_value())
+            {
+                SIGHT_WARN("No available slice index for image series data. Cannot create fiducial.");
+                return;
+            }
+
             data::fiducials_series::fiducial_set fiducial_set;
             std::string frame_of_reference_uid = image_series->get_string_value(
                 data::dicom::attribute::Keyword::FrameOfReferenceUID
@@ -359,9 +386,32 @@ void ruler::create_ruler_fiducial(
                 {.x                       = _begin[0], .y = _begin[1], .z = _begin[2]},
                 {.x                       = _end[0], .y = _end[1], .z = _end[2]}
             };
-            // If both ContourData and GraphicCoordinatesDataSequence are set, they must be synchronized, but I'm too
-            // lazy to do that, so I simply get rid of GraphicCoordinatesDataSequence.
-            fiducial.graphic_coordinates_data_sequence = std::nullopt;
+
+            sight::data::image::spacing_t spacing = image_series->spacing();
+
+            fiducial.graphic_coordinates_data_sequence = std::vector<sight::data::fiducials_series::graphic_coordinates_data>();
+            // We only need 1 element as the contour only spans the current frame
+            fiducial.graphic_coordinates_data_sequence->emplace_back();
+
+            auto& gcds0 = fiducial.graphic_coordinates_data_sequence.value().at(0);
+
+            gcds0.referenced_image_sequence.referenced_sop_class_uid    = image_series->get_sop_class_uid();
+            gcds0.referenced_image_sequence.referenced_sop_instance_uid = image_series->get_sop_instance_uid();
+
+            // Image references are 1-indexed
+            gcds0.referenced_image_sequence.referenced_frame_number.emplace_back(slice_index.value() + 1);
+
+            SIGHT_ASSERT("Spacing is null", spacing[0] != 0. && spacing[1] != 0. && spacing[2] != 0.);
+
+            gcds0.graphic_data.emplace_back(
+                static_cast<double>(_begin[0]) / spacing[0],
+                static_cast<double>(_begin[1]) / spacing[1]
+            );
+            gcds0.graphic_data.emplace_back(
+                static_cast<double>(_end[0]) / spacing[0],
+                static_cast<double>(_end[1]) / spacing[1]
+            );
+
             fiducial_set.fiducial_sequence.push_back(fiducial);
 
             // Fill in the referenced_image with the slice index to easily retrieve fiducials associated to a specific
@@ -372,19 +422,15 @@ void ruler::create_ruler_fiducial(
             /// ReferencedSOPInstanceUID (0008,1155)
             ri.referenced_sop_instance_uid = image_series->get_sop_instance_uid();
 
-            const int slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
-                                                         *image_series,
-                                                         sight::data::helper::medical_image::axis_t::axial
-            ).value_or(-1));
-
             /// ReferencedFrameNumber (0008,1160)
-            ri.referenced_frame_number.push_back(static_cast<std::int32_t>(slice_index));
+            ri.referenced_frame_number.push_back(static_cast<std::int32_t>(slice_index.value() + 1));
             /// ReferencedSegmentNumber (0062,000B)
             ri.referenced_segment_number.push_back(0);
 
             fiducial_set.referenced_image_sequence = std::vector<sight::data::fiducials_series::referenced_image>();
             fiducial_set.referenced_image_sequence->push_back(ri);
-            fiducial_set.color = _color;
+            fiducial_set.color      = _color;
+            fiducial_set.visibility = true;
 
             image_series->get_fiducials()->append_fiducial_set(fiducial_set);
         }
@@ -401,7 +447,8 @@ void ruler::create_ruler_ogre_set(
     const std::optional<std::string> _id,
     const std::array<double, 3> _begin,
     const std::array<double, 3> _end,
-    const bool _visible
+    const bool _visible,
+    const int _slice_index
 )
 {
     auto* const root_node = this->get_scene_manager()->getRootSceneNode();
@@ -537,7 +584,9 @@ void ruler::create_ruler_ogre_set(
     line->setVisible(_visible);
     dashed_line->setVisible(_visible);
     label->set_visible(_visible);
-    ruler::ruler_ogre_set created_ruler {_id, node1, sphere1, node2, sphere2, line, dashed_line, label_node, label};
+    ruler::ruler_ogre_set created_ruler {_id, _slice_index, node1, sphere1, node2, sphere2, line, dashed_line,
+                                         label_node, label
+    };
 
     m_ruler_ogre_sets.emplace_back(created_ruler);
 }
@@ -709,6 +758,14 @@ void ruler::remove_from_current_slice()
 
 void ruler::display_on_current_slice()
 {
+    const auto image = m_image.const_lock();
+
+    // Get the current slice position
+    const auto slice_index = sight::data::helper::medical_image::get_slice_index(
+        *image,
+        m_axis
+    ).value_or(0);
+
     if(m_bin_button != nullptr)
     {
         m_bin_button->hide();
@@ -722,13 +779,7 @@ void ruler::display_on_current_slice()
 
         for(auto& ruler : m_ruler_ogre_sets)
         {
-            const std::array<double, 3> begin = {ruler.node1->getPosition().x, ruler.node1->getPosition().y,
-                                                 ruler.node1->getPosition().z
-            };
-            const std::array<double, 3> end = {ruler.node2->getPosition().x, ruler.node2->getPosition().y,
-                                               ruler.node2->getPosition().z
-            };
-            bool visible_on_current_slice = this->is_visible_on_current_slice(begin, end);
+            bool visible_on_current_slice = slice_index == ruler.slice_index;
 
             ruler.sphere1->setVisible(m_visible && visible_on_current_slice);
             ruler.sphere2->setVisible(m_visible && visible_on_current_slice);
@@ -839,15 +890,28 @@ void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
                                 position
                             );
 
+                            int slice_index = -1;
+                            {
+                                const auto image = m_image.const_lock();
+                                slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
+                                                                   *image,
+                                                                   sight::data::helper::medical_image::axis_t::axial
+                                ).value_or(-1));
+                            }
+
                             this->create_ruler_ogre_set(
                                 {default_color[0], default_color[1], default_color[2], default_color[3]},
-                                m_sphere_radius * (m_interactive ? 2.0F : 1.0F),
+                                this->control_point_radius(),
                                 ruler_fiducial_uid,
                                 position,
                                 position,
-                                m_visible
+                                m_visible,
+                                slice_index
                             );
-                            m_picked_ruler = {&m_ruler_ogre_sets[m_ruler_ogre_sets.size() - 1], true};
+                            m_picked_ruler =
+                            {.m_data       = &m_ruler_ogre_sets[m_ruler_ogre_sets.size() - 1],
+                             .m_first      = true
+                            };
 
                             // Remembers that we enter in a mode where we need to place the second point.
                             m_creation_mode = true;
@@ -967,21 +1031,23 @@ void ruler::mouse_move_event(
 
             this->request_render();
 
-            const auto image = m_image.lock();
-            const auto& sig  = image->signal<sight::data::image_series::ruler_modified_signal_t>(
-                sight::data::image_series::RULER_MODIFIED_SIG
-            );
+            {
+                const auto image = m_image.const_lock();
+                const auto& sig  = image->signal<sight::data::image_series::ruler_modified_signal_t>(
+                    sight::data::image_series::RULER_MODIFIED_SIG
+                );
 
-            sig->async_emit(
-                m_picked_ruler.m_data->id.value_or(
-                    ""
-                ),
-                {m_picked_ruler.m_data->node1->getPosition().x,
-                 m_picked_ruler.m_data->node1->getPosition().y, m_picked_ruler.m_data->node1->getPosition().z
-                },
-                {m_picked_ruler.m_data->node2->getPosition().x,
-                 m_picked_ruler.m_data->node2->getPosition().y, m_picked_ruler.m_data->node2->getPosition().z
-                });
+                sig->async_emit(
+                    m_picked_ruler.m_data->id.value_or(
+                        ""
+                    ),
+                    {m_picked_ruler.m_data->node1->getPosition().x,
+                     m_picked_ruler.m_data->node1->getPosition().y, m_picked_ruler.m_data->node1->getPosition().z
+                    },
+                    {m_picked_ruler.m_data->node2->getPosition().x,
+                     m_picked_ruler.m_data->node2->getPosition().y, m_picked_ruler.m_data->node2->getPosition().z
+                    });
+            }
         }
         else
         {
@@ -1182,8 +1248,8 @@ void ruler::update_picked_ruler(ruler_ogre_set* _ruler_to_update, Ogre::Vector3 
         dashed_line,
         _begin,
         _end,
-        m_sphere_radius * (m_interactive ? 2.0F : 1.0F),
-        m_sphere_radius * (m_interactive ? 2.0F : 1.0F)
+        this->control_point_radius(),
+        this->control_point_radius()
     );
     dashed_line->end();
 
@@ -1210,6 +1276,18 @@ void ruler::update_picked_ruler(ruler_ogre_set* _ruler_to_update, Ogre::Vector3 
                         fiducial.contour_data.clear();
                         fiducial.contour_data.push_back({.x = _begin.x, .y = _begin.y, .z = _begin.z});
                         fiducial.contour_data.push_back({.x = _end.x, .y = _end.y, .z = _end.z});
+
+                        auto spacing = image_series->spacing();
+                        auto& gcds0  = fiducial.graphic_coordinates_data_sequence.value().at(0);
+                        gcds0.graphic_data.clear();
+                        gcds0.graphic_data.emplace_back(
+                            static_cast<double>(_begin.x) / spacing[0],
+                            static_cast<double>(_begin.y) / spacing[1]
+                        );
+                        gcds0.graphic_data.emplace_back(
+                            static_cast<double>(_end.x) / spacing[0],
+                            static_cast<double>(_end.y) / spacing[1]
+                        );
                     }
                 }
             }
@@ -1234,13 +1312,23 @@ void ruler::update_modified_ruler(
         // Create ruler if it doesn't exist.
         const Ogre::ColourValue& default_color = this->get_default_color();
 
+        int slice_index = -1;
+        {
+            const auto image = m_image.const_lock();
+            slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
+                                               *image,
+                                               sight::data::helper::medical_image::axis_t::axial
+            ).value_or(-1));
+        }
+
         this->create_ruler_ogre_set(
             {default_color[0], default_color[1], default_color[2], default_color[3]},
-            m_sphere_radius * (m_interactive ? 2.0F : 1.0F),
+            this->control_point_radius(),
             _id,
             _begin,
             _end,
-            m_visible
+            m_visible,
+            slice_index
         );
         this->display_on_current_slice();
     }
@@ -1316,6 +1404,13 @@ bool ruler::is_visible_on_current_slice(std::array<double, 3> _begin, std::array
 
     // Check if the ruler positions are on the current slice or in between.
     return (slice_index - begin_position[m_axis]) * (slice_index - end_position[m_axis]) <= 0;
+}
+
+//------------------------------------------------------------------------------
+
+float ruler::control_point_radius()
+{
+    return static_cast<float>(*m_sphere_radius) * (m_interactive ? 2.0F : 1.0F);
 }
 
 } // namespace sight::module::viz::scene3d_qt::adaptor::fiducials.

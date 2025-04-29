@@ -22,16 +22,18 @@
 
 #pragma once
 
+#include "data/real.hpp"
+
 #include <data/fiducials_series.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
+
+#include <QPushButton>
 
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/interactor/base.hpp>
 #include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/text.hpp>
-
-#include <QPushButton>
 
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
@@ -117,6 +119,9 @@ protected:
     /// Removes the interactor, reset materials and m_ruler_ogre_sets.
     void stopping() final;
 
+    /// Gets the current control point radius, depending on the interactivity state.
+    float control_point_radius();
+
 private:
 
     struct private_slots final
@@ -139,6 +144,7 @@ private:
     struct ruler_ogre_set final
     {
         std::optional<std::string> id;
+        int slice_index;
         Ogre::SceneNode* node1 {nullptr};
         Ogre::ManualObject* sphere1 {nullptr};
         Ogre::SceneNode* node2 {nullptr};
@@ -174,7 +180,8 @@ private:
         const std::optional<std::string> _id,
         const std::array<double, 3> _begin,
         const std::array<double, 3> _end,
-        const bool _visible
+        const bool _visible,
+        int _slice_index
     );
 
     /// SLOT: Activates the ruler tool by changing the cursor and updating a boolean.
@@ -263,9 +270,6 @@ private:
         axis_t::z_axis
     };
 
-    /// Defines the radius of spheres.
-    float m_sphere_radius {10.0F};
-
     /// Defines the font size in points.
     std::size_t m_font_size {16};
 
@@ -331,6 +335,12 @@ private:
 
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, s_IMAGE_INOUT};
+
+    /// Defines the radius of spheres.
+    sight::data::property<sight::data::real> m_sphere_radius {this, "radius", 10.};
+
+    /// Defines the width of the lines.
+    sight::data::property<sight::data::real> m_line_width {this, "line_width", 4.};
 };
 
 } // sight::module::viz::scene3d_qt::adaptor::fiducials

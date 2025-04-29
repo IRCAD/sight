@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "data/real.hpp"
+
 #include <data/fiducials_series.hpp>
 #include <data/helper/medical_image.hpp>
 #include <data/image_series.hpp>
@@ -48,7 +50,6 @@ namespace sight::module::viz::scene3d_qt::adaptor::fiducials
  *
  * @subsection Configuration Configuration:
  * - \b orientation (optional, string, default="z_axis"): orientation of the image.
- * - \b show_on_all_slices (optional, bool, default=false): show shapes on all slices.
  * - \b fontSize (optional, int, default=12): font size in points.
  * - \b radius (optional, float, default=3.0): radius of spheres.
  * - \b interactive (optional, bool, default=true): enable interactions with shapes.
@@ -75,7 +76,7 @@ public:
     /// Destroys the adaptor.
     ~shape() noexcept final = default;
 
-    struct  slots final
+    struct slots final
     {
         using key_t = sight::core::com::slots::key_t;
 
@@ -109,38 +110,17 @@ protected:
 
 private:
 
-    struct private_slots final
-    {
-        using key_t = sight::core::com::slots::key_t;
-        inline static const key_t SHOW_ON_CURRENT_SLICE = "show_on_current_slice";
-    };
-
-    /// SLOT: Hide / show shapes when current slice change.
-    void show_on_current_slice();
-
-    struct ogre_shape;
-
-    /// Ogre shapes per frame vector.
-    /// The indexes match the indexes of the fiducial_set in the fiducial_series from the image_series.
-    std::vector<std::vector<std::shared_ptr<ogre_shape> > > m_shapes;
-
     using axis_t = sight::data::helper::medical_image::axis_t;
 
     axis_t m_axis {
         axis_t::z_axis
     };
 
-    /// Defines whether or not interactions are enabled with shapes.
-    bool m_show_on_all_slices {false};
-
-    /// Defines the radius of spheres.
-    float m_sphere_radius {3.0F};
-
     /// Defines the font size in points.
     std::size_t m_font_size {12};
 
     /// Defines whether or not interactions are enabled with shapes.
-    bool m_interactive {true};
+    bool m_interactive {false};
 
     /// Defines the priority of the interactor.
     int m_priority {2};
@@ -157,26 +137,30 @@ private:
     /// Defines the mask used to filter shapes, it optimizes the ray launched to retrieve the picked shape.
     std::uint32_t m_query_flag {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
-    /// Defines the material name with no depth check for spheres.
-    std::string m_sphere_material_name;
-
     /// Defines the material name with depth check for lines.
     std::string m_line_material_name;
-
-    /// Defines the material name with no depth check for dashed lines.
-    std::string m_dashed_line_material_name;
-
-    /// Contains the material with no depth check for spheres.
-    sight::viz::scene3d::material::standard::uptr m_sphere_material;
 
     /// Contains the material with depth check for lines.
     sight::viz::scene3d::material::standard::uptr m_line_material;
 
-    /// Contains the material with no depth check for dashed lines.
-    sight::viz::scene3d::material::standard::uptr m_dashed_line_material;
+    Ogre::ManualObject* m_line_object {nullptr};
+
+    /// Defines the material name with no depth check for spheres.
+    std::string m_sphere_material_name;
+
+    /// Contains the material with no depth check for spheres.
+    sight::viz::scene3d::material::standard::uptr m_sphere_material;
+
+    Ogre::ManualObject* m_sphere_object {nullptr};
 
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     sight::data::ptr<sight::data::image_series, sight::data::access::inout> m_image {this, s_IMAGE_INOUT};
+
+    /// Defines the radius of spheres.
+    sight::data::property<sight::data::real> m_sphere_radius {this, "radius", 10.};
+
+    /// Defines the width of the lines.
+    sight::data::property<sight::data::real> m_line_width {this, "line_width", 4.};
 };
 
 } // namespace sight::module::viz::scene3d_qt::adaptor::fiducials

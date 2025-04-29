@@ -38,8 +38,6 @@
 
 #include <geometry/data/matrix4.hpp>
 
-#include <ui/qt/container/widget.hpp>
-
 #include <QColorDialog>
 #include <QLabel>
 #include <QMessageBox>
@@ -48,7 +46,8 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-#include <cfloat>
+#include <ui/qt/container/widget.hpp>
+
 #include <cmath>
 #include <random>
 
@@ -145,15 +144,23 @@ namespace
 
     data::landmarks::landmarks_group group(color, size, shape, visibility);
 
-    std::ranges::for_each(
-        data::helper::fiducials_series::filter_fiducials(fiducial_set->first, data::fiducials_series::shape::point),
-        [&group](const data::fiducials_series::fiducial& _fiducial)
-            {
-                if(auto point = sight::data::fiducials_series::get_point(_fiducial))
-                {
-                    group.m_points.push_back(*point);
+    auto query_results = _fiducials.query_fiducials(
+        std::nullopt,
+        sight::data::fiducials_series::shape::point,
+        _group_name
+    );
+
+    for(auto q : query_results)
+    {
+        if(!q.m_contour_data.has_value())
+        {
+            group.m_points.push_back(
+                {{q.m_contour_data.value()[0], q.m_contour_data.value()[1], q.m_contour_data.value()[2]
                 }
-            });
+                });
+        }
+    }
+
     return group;
 }
 

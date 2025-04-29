@@ -29,13 +29,13 @@
 #include <data/image_series.hpp>
 #include <data/material.hpp>
 
+#include <QWidget>
+
 #include <viz/scene3d/adaptor.hpp>
 #include <viz/scene3d/fiducials_configuration.hpp>
 #include <viz/scene3d/material/standard.hpp>
 #include <viz/scene3d/text.hpp>
 #include <viz/scene3d/transformable.hpp>
-
-#include <QWidget>
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
 
@@ -455,7 +455,7 @@ private:
      * @param _remove_ogre_fiducials If true, removes also the ogre fiducials.
      */
     void emit_removed_signals(
-        const std::vector<data::fiducials_series::fiducial_query>& _removed_results,
+        const std::vector<data::fiducials_series::query_result>& _removed_results,
         const std::set<std::string>& _removed_fiducial_sets,
         const data::image_series& _image_series,
         bool _remove_ogre_fiducials = false
@@ -484,14 +484,14 @@ private:
     );
 
     /**
-     * @brief Wrapper function to create an ogre_fiducial from a fiducial_query.
+     * @brief Wrapper function to create an ogre_fiducial from a query_result.
      *
      * @param _query The fiducial information
      * @param _image_series The Locked image series
      * @return std::shared_ptr<ogre_fiducial> The created ogre fiducial
      */
     std::shared_ptr<ogre_fiducial> create_ogre_fiducial(
-        const data::fiducials_series::fiducial_query& _query,
+        const data::fiducials_series::query_result& _query,
         const data::image_series& _image_series
     );
 
@@ -553,7 +553,7 @@ private:
      * @return true if the fiducial is visible
      */
     bool check_fiducial_visibility(
-        const data::fiducials_series::fiducial_query& _query,
+        const data::fiducials_series::query_result& _query,
         const data::image_series& _image_series,
         const std::optional<bool>& _base_visibility = std::nullopt
     ) const;

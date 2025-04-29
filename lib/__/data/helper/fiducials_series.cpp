@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -82,77 +82,6 @@ data::point_list::sptr fiducials_series::to_point_list(const data::fiducials_ser
     }
 
     return res;
-}
-
-//------------------------------------------------------------------------------
-
-std::vector<data::fiducials_series::fiducial> fiducials_series::filter_fiducials(
-    const data::fiducials_series::fiducials_series::fiducial_set& _fiducial_set,
-    const std::optional<data::fiducials_series::shape> _shape,
-    const std::optional<std::int32_t> _referenced_frame_number
-)
-{
-    std::vector<data::fiducials_series::fiducial> fiducials;
-
-    if(!_shape.has_value() && !_referenced_frame_number.has_value())
-    {
-        std::ranges::copy(
-            _fiducial_set.fiducial_sequence,
-            std::back_inserter(fiducials)
-        );
-    }
-    else
-    {
-        for(std::size_t i = 0 ; i < _fiducial_set.fiducial_sequence.size() ; i++)
-        {
-            // Filter by shape
-            bool shape_ok = false;
-            // If we have no value, then we don't want to filter by shape
-            if(!_shape.has_value())
-            {
-                shape_ok = true;
-            }
-            // If we have a value we must ensure that it matches the argument
-            else
-            {
-                if(_fiducial_set.fiducial_sequence[i].shape_type == _shape)
-                {
-                    shape_ok = true;
-                }
-            }
-
-            // Filter by referenced frame number (slice index)
-            bool referenced_frame_number_ok = false;
-            if(!_referenced_frame_number.has_value())
-            {
-                referenced_frame_number_ok = true;
-            }
-            else
-            {
-                const auto& sequence = _fiducial_set.referenced_image_sequence;
-                if(sequence.has_value()
-                   && !sequence->empty()
-                   && !(sequence->at(i).referenced_frame_number.empty()))
-                {
-                    for(const auto& frame_number : sequence->at(i).referenced_frame_number)
-                    {
-                        if(frame_number == _referenced_frame_number)
-                        {
-                            referenced_frame_number_ok = true;
-                        }
-                    }
-                }
-            }
-
-            // Perform the copy if the current entry matched
-            if(shape_ok && referenced_frame_number_ok)
-            {
-                fiducials.push_back(_fiducial_set.fiducial_sequence[i]);
-            }
-        }
-    }
-
-    return fiducials;
 }
 
 } // namespace sight::data::helper

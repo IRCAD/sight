@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,7 +23,6 @@
 
 #include <sight/data/config.hpp>
 
-#include "core/com/signals.hpp"
 #include "core/macros.hpp"
 
 #include "series.hpp"
@@ -152,6 +151,8 @@ public:
         std::string fiducial_identifier {};
 
         /// GraphicCoordinatesDataSequence (0070,0318)
+        // Shall always be 1, except if the fiducial spans over several frames
+        // Should be matching the content of the contour data
         std::optional<std::vector<graphic_coordinates_data> > graphic_coordinates_data_sequence {std::nullopt};
 
         /// FiducialUID (0070,031A)
@@ -162,6 +163,12 @@ public:
 
         SIGHT_DATA_API bool operator==(const fiducial& _other) const;
         SIGHT_DATA_API bool operator!=(const fiducial& _other) const;
+
+        [[nodiscard]] SIGHT_DATA_API std::tuple<point3, point3> contour_data_bounding_box() const;
+        [[nodiscard]] SIGHT_DATA_API
+        std::optional<std::tuple<point2, point2> > graphic_coordinates_data_bounding_box(
+            std::size_t _index
+        ) const;
     };
 
     /// Struct which represents an element in the FiducialSetSequence (0070,031C) data element.
@@ -178,6 +185,8 @@ public:
 
         /// Private tags
         std::optional<std::string> group_name {std::nullopt};
+
+        // float RGBA colors in [0.0, 1.0]
         std::optional<std::array<float, 4> > color {std::nullopt};
         std::optional<float> size {std::nullopt};
         std::optional<private_shape> shape {std::nullopt};
@@ -409,16 +418,6 @@ public:
      * @param _fiducials            The fiducial sequence which will replace the existing one.
      */
     SIGHT_DATA_API void set_fiducials(std::size_t _fiducial_set_number, const std::vector<fiducial>& _fiducials);
-
-    /**
-     * Get all the fiducials satisfying one or several features.
-     * @param _fiducial_set The fiducial set whose fiducials must be filtered
-     * @return The list of fiducial whose shape type is point
-     */
-    [[nodiscard]] SIGHT_DATA_API std::vector<data::fiducials_series::fiducial> filter_fiducials(
-        const std::optional<data::fiducials_series::shape> _fiducial_set = std::nullopt,
-        const std::optional<std::int32_t> _referenced_frame_number       = std::nullopt
-    ) const;
 
     /**
      * Setter for the FiducialSequence (0070,031E) data element. Replaces the element at index _fiducial_number with the
@@ -769,13 +768,15 @@ public:
         const std::string& _group_name
     ) const;
 
-    struct SIGHT_DATA_CLASS_API fiducial_query final
+    struct SIGHT_DATA_CLASS_API query_result final
     {
         std::size_t m_fiducial_set_index {0};
         std::size_t m_fiducial_index {0};
         std::size_t m_shape_index {0};
 
         std::optional<std::string> m_frame_of_reference_uid {};
+        std::optional<std::vector<std::int32_t> > m_referenced_frame_number {};
+
         std::optional<std::string> m_group_name {};
         std::optional<bool> m_visible {};
         std::optional<float> m_size {};
@@ -784,6 +785,7 @@ public:
 
         std::optional<shape> m_shape {};
         std::optional<std::vector<double> > m_contour_data {};
+        std::optional<std::vector<float> > m_graphic_data {};
         std::optional<std::string> m_fiducial_description {};
         std::optional<std::string> m_fiducial_identifier {};
         std::optional<std::string> m_fiducial_uid {};
@@ -796,13 +798,13 @@ public:
      * @param _shape filter by shape (point, ruler, ...)
      * @param _group_name filter by group name
      * @param _fiducial_index filter by index of the same shape type in the fiducial set
-     * @return std::vector<fiducial_query> the query result
+     * @return std::vector<query_result> the query result
      */
-    [[nodiscard]] SIGHT_DATA_API std::vector<fiducial_query> query_fiducials(
-        const std::optional<std::function<bool(const fiducial_query&)> >& _predicate = std::nullopt,
-        const std::optional<shape>& _shape                                           = std::nullopt,
-        const std::optional<std::string_view>& _group_name                           = std::nullopt,
-        const std::optional<std::size_t>& _fiducial_index                            = std::nullopt
+    [[nodiscard]] SIGHT_DATA_API std::vector<query_result> query_fiducials(
+        const std::optional<std::function<bool(const query_result&)> >& _predicate = std::nullopt,
+        const std::optional<shape>& _shape                                         = std::nullopt,
+        const std::optional<std::string_view>& _group_name                         = std::nullopt,
+        const std::optional<std::size_t>& _fiducial_index                          = std::nullopt
     ) const;
 
     /**
@@ -812,14 +814,14 @@ public:
      * @param _shape filter by shape (point, ruler, ...)
      * @param _group_name filter by group name
      * @param _fiducial_index filter by index of the same shape type in the fiducial set
-     * @return std::pair<std::vector<fiducial_query>, std::set<std::string> > the removed fiducials and a set of removed
+     * @return std::pair<std::vector<query_result>, std::set<std::string> > the removed fiducials and a set of removed
      *         group names
      */
-    SIGHT_DATA_API std::pair<std::vector<fiducial_query>, std::set<std::string> > remove_fiducials(
-        const std::optional<std::function<bool(const fiducial_query&)> >& _predicate = std::nullopt,
-        const std::optional<shape>& _shape                                           = std::nullopt,
-        const std::optional<std::string_view>& _group_name                           = std::nullopt,
-        const std::optional<std::size_t>& _fiducial_index                            = std::nullopt
+    SIGHT_DATA_API std::pair<std::vector<query_result>, std::set<std::string> > remove_fiducials(
+        const std::optional<std::function<bool(const query_result&)> >& _predicate = std::nullopt,
+        const std::optional<shape>& _shape                                         = std::nullopt,
+        const std::optional<std::string_view>& _group_name                         = std::nullopt,
+        const std::optional<std::size_t>& _fiducial_index                          = std::nullopt
     );
 
     /**
@@ -830,13 +832,13 @@ public:
      * @param _shape filter by shape (point, ruler, ...)
      * @param _group_name filter by group name
      * @param _fiducial_index filter by index of the same shape type in the fiducial set
-     * @return std::vector<fiducial_query> the modified fiducials
+     * @return std::vector<query_result> the modified fiducials
      */
-    SIGHT_DATA_API std::vector<fiducial_query> modify_fiducials(
-        const std::optional<std::function<bool(fiducial_query&)> >& _predicate = std::nullopt,
-        const std::optional<shape>& _shape                                     = std::nullopt,
-        const std::optional<std::string_view>& _group_name                     = std::nullopt,
-        const std::optional<std::size_t>& _fiducial_index                      = std::nullopt
+    SIGHT_DATA_API std::vector<query_result> modify_fiducials(
+        const std::optional<std::function<bool(query_result&)> >& _predicate = std::nullopt,
+        const std::optional<shape>& _shape                                   = std::nullopt,
+        const std::optional<std::string_view>& _group_name                   = std::nullopt,
+        const std::optional<std::size_t>& _fiducial_index                    = std::nullopt
     );
 
     /**
@@ -846,11 +848,11 @@ public:
      * @param _shape filter by shape (point, ruler, ...)
      * @param _group_name filter by group name
      * @param _fiducial_index filter by index of the same shape type in the fiducial set
-     * @return std::pair<std::optional<fiducial_query>, bool> the added fiducial, and a boolean indicating if a
+     * @return std::pair<std::optional<query_result>, bool> the added fiducial, and a boolean indicating if a
      *         fiducial set was created
      */
-    SIGHT_DATA_API std::pair<std::optional<fiducial_query>, bool> add_fiducial(
-        const std::function<bool(fiducial_query&)>& _predicate,
+    SIGHT_DATA_API std::pair<std::optional<query_result>, bool> add_fiducial(
+        const std::function<bool(query_result&)>& _predicate,
         shape _shape,
         const std::string& _group_name
     );
@@ -910,8 +912,11 @@ public:
      * Add a point fiducial in a fiducial set
      * @param _group_name   The name of the group of the point
      * @param _position     The 3D position of the new point
+     * @return Whether the point has been added or not.
      */
-    SIGHT_DATA_API void add_point(const std::string& _group_name, const std::array<double, 3>& _position);
+    SIGHT_DATA_API bool add_point(const std::string& _group_name, const std::array<double, 3>& _position);
+
+    SIGHT_DATA_API static std::string shape_to_string(fiducials_series::shape _shape);
 
 private:
 

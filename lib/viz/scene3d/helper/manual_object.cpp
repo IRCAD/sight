@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -283,20 +283,20 @@ void manual_object::create_cube(
 
 //------------------------------------------------------------------------------
 
-void manual_object::create_sphere(
+Ogre::uint32 manual_object::draw_sphere(
     Ogre::ManualObject* _object,
-    const std::string& _material,
+    const Ogre::Vector3& _position,
     const Ogre::ColourValue& _color,
-    float _radius,
-    unsigned int _sample
+    const float _radius,
+    const unsigned int _sample,
+    const Ogre::uint32 _index
 )
 {
-    _object->begin(_material, Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
     _object->colour(_color);
 
     const float delta_ring = (static_cast<float>(Ogre::Math::PI) / static_cast<float>(_sample));
     const float delta_seg  = (2 * static_cast<float>(Ogre::Math::PI) / static_cast<float>(_sample));
-    Ogre::uint32 index     = 0;
+    Ogre::uint32 index     = _index;
 
     for(unsigned ring = 0 ; ring <= _sample ; ++ring)
     {
@@ -308,7 +308,7 @@ void manual_object::create_sphere(
             const float x0 = r0 * std::sin(static_cast<float>(seg) * delta_seg);
             const float z0 = r0 * std::cos(static_cast<float>(seg) * delta_seg);
 
-            _object->position(x0, y0, z0);
+            _object->position(_position.x + x0, _position.y + y0, _position.z + z0);
             _object->normal(Ogre::Vector3(x0, y0, z0).normalisedCopy());
 
             if(ring != _sample)
@@ -323,6 +323,23 @@ void manual_object::create_sphere(
             }
         }
     }
+
+    return index;
+}
+
+//------------------------------------------------------------------------------
+
+void manual_object::create_sphere(
+    Ogre::ManualObject* _object,
+    const std::string& _material,
+    const Ogre::ColourValue& _color,
+    float _radius,
+    unsigned int _sample
+)
+{
+    _object->begin(_material, Ogre::RenderOperation::OT_TRIANGLE_LIST, RESOURCE_GROUP);
+
+    manual_object::draw_sphere(_object, Ogre::Vector3(0., 0., 0.), _color, _radius, _sample);
 
     _object->end();
 

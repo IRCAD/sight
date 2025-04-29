@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -119,12 +119,6 @@ void fiducials_series_test::to_point_list()
     fiducial.contour_data.push_back({1.0, 1.0, 1.0});
     fiducial.contour_data.push_back({0.0, 1.0, 0.0});
     CPPUNIT_ASSERT(sight::data::helper::fiducials_series::to_point_list(fiducial));
-}
-
-//------------------------------------------------------------------------------
-
-void fiducials_series_test::filter_fiducials()
-{
 }
 
 } // namespace sight::data::helper::ut

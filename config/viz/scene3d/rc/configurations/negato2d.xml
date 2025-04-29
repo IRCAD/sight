@@ -109,7 +109,8 @@
 
         <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
             <inout key="image" uid="${image}" />
-            <config font_size="16" radius="1.5" query_flags="0x40000000" orientation="${sliceIndex}" />
+            <config font_size="16" query_flags="0x40000000" orientation="${sliceIndex}" />
+            <properties radius="1.5" />
         </service>
 
         <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ class manual_object
 public:
 
     /**
-     * @brief createCylinder create a cylinder in a Ogre::ManualObject along the x axis
+     * @brief create_cylinder create a cylinder in a Ogre::ManualObject along the x axis
      * @param _object the Ogre::ManualObject used to store the cylinder
      * @param _material the material used to create the cylinder
      * @param _color the cylinder's color
@@ -54,7 +54,7 @@ public:
     );
 
     /**
-     * @brief createCone create a cone in a Ogre::ManualObject along the x axis
+     * @brief create_cone create a cone in a Ogre::ManualObject along the x axis
      * @param _object the Ogre::ManualObject used to store the cone
      * @param _material the material used to create the cone
      * @param _color the cone's color
@@ -72,7 +72,7 @@ public:
     );
 
     /**
-     * @brief createCube create a cube in a Ogre::ManualObject centered in the center of the cube
+     * @brief create_cube create a cube in a Ogre::ManualObject centered in the center of the cube
      * @param _object the Ogre::ManualObject used to store the cube
      * @param _material the material used to create the cube
      * @param _color the cube's color
@@ -86,7 +86,25 @@ public:
     );
 
     /**
-     * @brief createSphere create a sphere in a Ogre::ManualObject centered in the center of the sphere
+     * @brief draw_sphere draws a sphere in an Ogre::ManualObject centered in the center of the sphere
+     * @param _object the Ogre::ManualObject used to store the sphere
+     * @param _material the material used to create the sphere
+     * @param _color the sphere's color
+     * @param _radius the sphere's radius
+     * @param _sample the number of samples used to create the sphere
+     * @param _index starting index for the triangles building the spheres
+     */
+    SIGHT_VIZ_SCENE3D_API static Ogre::uint32 draw_sphere(
+        Ogre::ManualObject* _object,
+        const Ogre::Vector3& _position,
+        const Ogre::ColourValue& _color,
+        const float _radius,
+        const unsigned int _sample,
+        const Ogre::uint32 _index = 0
+    );
+
+    /**
+     * @brief create_sphere create a sphere in an Ogre::ManualObject centered in the center of the sphere
      * @param _object the Ogre::ManualObject used to store the sphere
      * @param _material the material used to create the sphere
      * @param _color the sphere's color

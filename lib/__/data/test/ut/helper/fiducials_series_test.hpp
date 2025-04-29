@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,6 @@ class fiducials_series_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(fiducials_series_test);
 CPPUNIT_TEST(to_point_list);
-CPPUNIT_TEST(filter_fiducials);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,7 +38,6 @@ public:
     void tearDown() override;
 
     static void to_point_list();
-    static void filter_fiducials();
 };
 
-} // namespace sight::data::ut
+} // namespace sight::data::helper::ut

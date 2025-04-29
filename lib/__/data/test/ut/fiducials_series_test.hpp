@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -36,10 +36,13 @@ CPPUNIT_TEST(fiducial_set_setter_getter_test);
 CPPUNIT_TEST(referenced_image_setter_getter_test);
 CPPUNIT_TEST(fiducial_setter_getter_test);
 CPPUNIT_TEST(graphic_coordinates_data_setter_getter_test);
+CPPUNIT_TEST(static_test);
+CPPUNIT_TEST(bounding_box_test);
 CPPUNIT_TEST(add_fiducial_test);
 CPPUNIT_TEST(query_fiducials_test);
 CPPUNIT_TEST(remove_fiducials_test);
 CPPUNIT_TEST(modify_fiducials_test);
+CPPUNIT_TEST(point_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -52,10 +55,15 @@ public:
     static void fiducial_setter_getter_test();
     static void graphic_coordinates_data_setter_getter_test();
 
+    static void static_test();
+    static void bounding_box_test();
+
     static void add_fiducial_test();
     static void query_fiducials_test();
     static void remove_fiducials_test();
     static void modify_fiducials_test();
+
+    static void point_test();
 };
 
 } // namespace sight::data::ut

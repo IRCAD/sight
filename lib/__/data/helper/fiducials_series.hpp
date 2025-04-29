@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -37,17 +37,6 @@ public:
      * @return a point list.
      */
     SIGHT_DATA_API static data::point_list::sptr to_point_list(const data::fiducials_series::fiducial& _fiducial);
-
-    /**
-     * Get all the fiducials satisfying one or several features.
-     * @param _fiducial_set The fiducial set whose fiducials must be filtered
-     * @return The list of fiducial whose shape type is point
-     */
-    [[nodiscard]] SIGHT_DATA_API static std::vector<data::fiducials_series::fiducial> filter_fiducials(
-        const data::fiducials_series::fiducial_set& _fiducial_set,
-        const std::optional<data::fiducials_series::shape> _shape  = std::nullopt,
-        const std::optional<std::int32_t> _referenced_frame_number = std::nullopt
-    );
 };
 
 } // namespace sight::data::helper

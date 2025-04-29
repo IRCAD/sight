@@ -34,6 +34,7 @@
 #include <gdcmSmartPointer.h>
 #include <gdcmTagKeywords.h>
 
+#include <algorithm>
 #include <array>
 
 SIGHT_REGISTER_DATA(sight::data::fiducials_series)
@@ -56,42 +57,6 @@ enum class fiducial_set_element : std::uint8_t
     private_shape = 3,
     visible       = 4
 };
-
-//------------------------------------------------------------------------------
-
-std::string shape_to_string(fiducials_series::shape _shape)
-{
-    switch(_shape)
-    {
-        case fiducials_series::shape::point:
-            return "POINT";
-
-        case fiducials_series::shape::line:
-            return "LINE";
-
-        case fiducials_series::shape::plane:
-            return "PLANE";
-
-        case fiducials_series::shape::surface:
-            return "SURFACE";
-
-        case fiducials_series::shape::ruler:
-            return "RULER";
-
-        case fiducials_series::shape::l_shape:
-            return "L_SHAPE";
-
-        case fiducials_series::shape::t_shape:
-            return "T_SHAPE";
-
-        case fiducials_series::shape::shape:
-            return "SHAPE";
-
-        default:
-            SIGHT_WARN("Unknown shape " << static_cast<int>(_shape));
-            return "";
-    }
-}
 
 //------------------------------------------------------------------------------
 
@@ -269,7 +234,7 @@ gdcm::DataSet to_gdcm(detail::series_impl& _pimpl, fiducials_series::fiducial _f
     std::unique_lock lock(_pimpl.m_mutex);
 
     gdcm::DataSet data_set;
-    _pimpl.set_string_value<kw::ShapeType>(shape_to_string(_fiducial.shape_type), data_set);
+    _pimpl.set_string_value<kw::ShapeType>(fiducials_series::shape_to_string(_fiducial.shape_type), data_set);
     _pimpl.set_string_value<kw::FiducialDescription>(_fiducial.fiducial_description, data_set);
     _pimpl.set_string_value<kw::FiducialIdentifier>(_fiducial.fiducial_identifier, data_set);
     if(_fiducial.graphic_coordinates_data_sequence)
@@ -404,7 +369,7 @@ void append_in_sequence(
 
 void modify_fiducial(
     detail::series_impl& _pimpl,
-    const fiducials_series::fiducial_query& _query,
+    const fiducials_series::query_result& _query,
     gdcm::DataSet& _fiducial_set_dataset,
     gdcm::DataSet& _fiducial_dataset
 )
@@ -464,7 +429,7 @@ void modify_fiducial(
     // Store the fiducial set part in gdcm
     if(_query.m_shape)
     {
-        _pimpl.set_string_value<kw::ShapeType>(shape_to_string(*_query.m_shape), _fiducial_dataset);
+        _pimpl.set_string_value<kw::ShapeType>(fiducials_series::shape_to_string(*_query.m_shape), _fiducial_dataset);
     }
 
     if(_query.m_fiducial_description)
@@ -511,7 +476,7 @@ enum class query_mode : std::uint8_t
 void read_fiducial_set(
     detail::series_impl& _pimpl,
     const auto& _fiducial_set_dataset,
-    fiducials_series::fiducial_query& _fiducial_set_query
+    fiducials_series::query_result& _fiducial_set_query
 )
 {
     // Get the frame of reference uid
@@ -552,10 +517,10 @@ void read_fiducial_set(
 
 //------------------------------------------------------------------------------
 
-std::pair<std::vector<fiducials_series::fiducial_query>, std::set<std::string> > query_or_modify_fiducials(
+std::pair<std::vector<fiducials_series::query_result>, std::set<std::string> > query_or_modify_fiducials(
     detail::series_impl& _pimpl,
     query_mode _query_mode,
-    const std::optional<std::function<bool(fiducials_series::fiducial_query&)> >& _predicate,
+    const std::optional<std::function<bool(fiducials_series::query_result&)> >& _predicate,
     const std::optional<fiducials_series::shape>& _shape,
     const std::optional<std::string_view>& _group_name,
     const std::optional<std::size_t>& _shape_fiducial_index
@@ -565,14 +530,14 @@ std::pair<std::vector<fiducials_series::fiducial_query>, std::set<std::string> >
 
     std::size_t removed_fiducial_sets = 0;
 
-    std::pair<std::vector<fiducials_series::fiducial_query>, std::set<std::string> > result {{}, {}};
+    std::pair<std::vector<fiducials_series::query_result>, std::set<std::string> > out_result {{}, {}};
 
     const auto& fiducial_set_sequence = _pimpl.get_sequence<kw::FiducialSetSequence>();
 
     // Early return if no sequence
     if(fiducial_set_sequence == nullptr || fiducial_set_sequence->IsEmpty())
     {
-        return result;
+        return out_result;
     }
 
     bool stop = false;
@@ -607,7 +572,7 @@ std::pair<std::vector<fiducials_series::fiducial_query>, std::set<std::string> >
             continue;
         }
 
-        fiducials_series::fiducial_query fiducial_set_query;
+        fiducials_series::query_result fiducial_set_query;
         read_fiducial_set(_pimpl, fiducial_set_dataset, fiducial_set_query);
 
         std::map<fiducials_series::shape, std::size_t> m_shape_indexes;
@@ -642,29 +607,55 @@ std::pair<std::vector<fiducials_series::fiducial_query>, std::set<std::string> >
                     return 0;
                 }();
 
-            fiducials_series::fiducial_query query_result {
-                .m_fiducial_set_index     = i - 1 + removed_fiducial_sets,
-                .m_fiducial_index         = j - 1 + removed_fiducials,
-                .m_shape_index            = current_shape_index,
-                .m_frame_of_reference_uid = fiducial_set_query.m_frame_of_reference_uid,
-                .m_group_name             = group_name,
-                .m_visible                = fiducial_set_query.m_visible,
-                .m_size                   = fiducial_set_query.m_size,
-                .m_private_shape          = fiducial_set_query.m_private_shape,
-                .m_color                  = fiducial_set_query.m_color,
-                .m_shape                  = shape,
-                .m_contour_data           = _pimpl.get_values<kw::ContourData>(fiducial_dataset),
-                .m_fiducial_description   = _pimpl.get_value<kw::FiducialDescription>(fiducial_dataset),
-                .m_fiducial_identifier    = _pimpl.get_value<kw::FiducialIdentifier>(fiducial_dataset),
-                .m_fiducial_uid           = _pimpl.get_value<kw::FiducialUID>(fiducial_dataset)
+            auto fiducial_set_index             = i - 1 + removed_fiducial_sets;
+            auto fiducial_index                 = j - 1 + removed_fiducials;
+            auto graphic_coordinates_data_index = 0;
+
+            std::vector<std::int32_t> referenced_frame_numbers = _pimpl.get_values<kw::ReferencedFrameNumber>(
+                0,
+                {{kw::FiducialSetSequence::GetTag(), fiducial_set_index
+                }, {kw::FiducialSequence::GetTag(), fiducial_index
+                    },
+                    {kw::GraphicCoordinatesDataSequence::GetTag(), graphic_coordinates_data_index
+                    }, {kw::ReferencedImageSequence::GetTag(), 0
+                    }
+                }).value_or(std::vector<std::int32_t> {});
+
+            std::optional<std::vector<float> > graphic_data = _pimpl.get_values<kw::GraphicData>(
+                0,
+                {{kw::FiducialSetSequence::GetTag(), fiducial_set_index
+                },
+                    {kw::FiducialSequence::GetTag(), fiducial_index
+                    },
+                    {kw::GraphicCoordinatesDataSequence::GetTag(), graphic_coordinates_data_index
+                    }
+                });
+
+            fiducials_series::query_result result {
+                .m_fiducial_set_index      = fiducial_set_index,
+                .m_fiducial_index          = fiducial_index,
+                .m_shape_index             = current_shape_index,
+                .m_frame_of_reference_uid  = fiducial_set_query.m_frame_of_reference_uid,
+                .m_referenced_frame_number = referenced_frame_numbers,
+                .m_group_name              = group_name,
+                .m_visible                 = fiducial_set_query.m_visible,
+                .m_size                    = fiducial_set_query.m_size,
+                .m_private_shape           = fiducial_set_query.m_private_shape,
+                .m_color                   = fiducial_set_query.m_color,
+                .m_shape                   = shape,
+                .m_contour_data            = _pimpl.get_values<kw::ContourData>(fiducial_dataset),
+                .m_graphic_data            = graphic_data,
+                .m_fiducial_description    = _pimpl.get_value<kw::FiducialDescription>(fiducial_dataset),
+                .m_fiducial_identifier     = _pimpl.get_value<kw::FiducialIdentifier>(fiducial_dataset),
+                .m_fiducial_uid            = _pimpl.get_value<kw::FiducialUID>(fiducial_dataset)
             };
 
             // Execute the predicate if it exists
             // We only add the wanted, if any, fiducial in the group
-            if((!_shape_fiducial_index || query_result.m_shape_index == *_shape_fiducial_index)
-               && (!_predicate || (*_predicate)(query_result)))
+            if((!_shape_fiducial_index || result.m_shape_index == *_shape_fiducial_index)
+               && (!_predicate || (*_predicate)(result)))
             {
-                result.first.emplace_back(query_result);
+                out_result.first.emplace_back(result);
 
                 // Remove or modify the fiducial if needed
                 if(_query_mode == query_mode::remove)
@@ -674,12 +665,12 @@ std::pair<std::vector<fiducials_series::fiducial_query>, std::set<std::string> >
                 }
                 else if(_query_mode == query_mode::modify)
                 {
-                    modify_fiducial(_pimpl, query_result, fiducial_set_dataset, fiducial_dataset);
+                    modify_fiducial(_pimpl, result, fiducial_set_dataset, fiducial_dataset);
                 }
             }
 
             // If we reached the wanted fiducial in the group, we can do an early return
-            if(_shape_fiducial_index && query_result.m_shape_index == *_shape_fiducial_index)
+            if(_shape_fiducial_index && result.m_shape_index == *_shape_fiducial_index)
             {
                 stop = true;
             }
@@ -693,15 +684,51 @@ std::pair<std::vector<fiducials_series::fiducial_query>, std::set<std::string> >
 
             if(group_name)
             {
-                result.second.insert(*group_name);
+                out_result.second.insert(*group_name);
             }
         }
     }
 
-    return result;
+    return out_result;
 }
 
 } // namespace
+
+//------------------------------------------------------------------------------
+
+std::string fiducials_series::shape_to_string(fiducials_series::shape _shape)
+{
+    switch(_shape)
+    {
+        case fiducials_series::shape::point:
+            return "POINT";
+
+        case fiducials_series::shape::line:
+            return "LINE";
+
+        case fiducials_series::shape::plane:
+            return "PLANE";
+
+        case fiducials_series::shape::surface:
+            return "SURFACE";
+
+        case fiducials_series::shape::ruler:
+            return "RULER";
+
+        case fiducials_series::shape::l_shape:
+            return "L_SHAPE";
+
+        case fiducials_series::shape::t_shape:
+            return "T_SHAPE";
+
+        case fiducials_series::shape::shape:
+            return "SHAPE";
+
+        default:
+            SIGHT_WARN("Unknown shape " << static_cast<int>(_shape));
+            return "";
+    }
+}
 
 //------------------------------------------------------------------------------
 
@@ -798,6 +825,70 @@ bool fiducials_series::fiducial::operator==(const fiducial& _other) const
 bool fiducials_series::fiducial::operator!=(const fiducial& _other) const
 {
     return !(*this == _other);
+}
+
+//------------------------------------------------------------------------------
+
+std::tuple<fiducials_series::point3,
+           fiducials_series::point3> fiducials_series::fiducial::contour_data_bounding_box() const
+{
+    fiducials_series::point3 min {
+        .x = std::numeric_limits<double>::max(),
+        .y = std::numeric_limits<double>::max(),
+        .z = std::numeric_limits<double>::max()
+    };
+    fiducials_series::point3 max {
+        .x = std::numeric_limits<double>::min(),
+        .y = std::numeric_limits<double>::min(),
+        .z = std::numeric_limits<double>::min()
+    };
+
+    for(const auto& data : this->contour_data)
+    {
+        min.x = std::min(min.x, data.x);
+        min.y = std::min(min.y, data.y);
+        min.z = std::min(min.z, data.z);
+
+        max.x = std::max(max.x, data.x);
+        max.y = std::max(max.y, data.y);
+        max.z = std::max(max.z, data.z);
+    }
+
+    return std::make_tuple(min, max);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::tuple<fiducials_series::point2,
+                         fiducials_series::point2> > fiducials_series::fiducial::graphic_coordinates_data_bounding_box(
+    std::size_t _index
+) const
+{
+    if(!this->graphic_coordinates_data_sequence.has_value()
+       || this->graphic_coordinates_data_sequence.value().size() <= _index)
+    {
+        return std::nullopt;
+    }
+
+    fiducials_series::point2 min {
+        .x = std::numeric_limits<double>::max(),
+        .y = std::numeric_limits<double>::max(),
+    };
+    fiducials_series::point2 max {
+        .x = std::numeric_limits<double>::min(),
+        .y = std::numeric_limits<double>::min(),
+    };
+
+    for(const auto& data : this->graphic_coordinates_data_sequence.value().at(_index).graphic_data)
+    {
+        min.x = std::min(min.x, data.x);
+        min.y = std::min(min.y, data.y);
+
+        max.x = std::max(max.x, data.x);
+        max.y = std::max(max.y, data.y);
+    }
+
+    return std::make_tuple(min, max);
 }
 
 //------------------------------------------------------------------------------
@@ -1161,25 +1252,6 @@ std::vector<fiducials_series::fiducial> fiducials_series::get_fiducials(std::siz
 
 //------------------------------------------------------------------------------
 
-std::vector<data::fiducials_series::fiducial> fiducials_series::filter_fiducials(
-    const std::optional<data::fiducials_series::shape> _shape,
-    const std::optional<std::int32_t> _referenced_frame_number
-) const
-{
-    std::vector<data::fiducials_series::fiducial> fiducials;
-    std::vector<data::fiducials_series::fiducial_set> fiducial_sets = this->get_fiducial_sets();
-
-    for(auto& fiducial_set : fiducial_sets)
-    {
-        auto tmp = helper::fiducials_series::filter_fiducials(fiducial_set, _shape, _referenced_frame_number);
-        std::copy(tmp.begin(), tmp.end(), std::back_inserter(fiducials));
-    }
-
-    return fiducials;
-}
-
-//------------------------------------------------------------------------------
-
 void fiducials_series::set_fiducials(std::size_t _fiducial_set_number, const std::vector<fiducial>& _fiducials)
 {
     m_pimpl->set_sequence(
@@ -1242,7 +1314,7 @@ void fiducials_series::set_shape_type(
 )
 {
     m_pimpl->set_value<kw::ShapeType>(
-        shape_to_string(_shape_type),
+        fiducials_series::shape_to_string(_shape_type),
         0,
         {{kw::FiducialSetSequence::GetTag(), _fiducial_set_number
         }, {kw::FiducialSequence::GetTag(), _fiducial_number
@@ -1951,8 +2023,8 @@ std::optional<std::pair<fiducials_series::fiducial_set, std::size_t> > fiducials
 
 //------------------------------------------------------------------------------
 
-std::vector<fiducials_series::fiducial_query> fiducials_series::query_fiducials(
-    const std::optional<std::function<bool(const fiducial_query&)> >& _predicate,
+std::vector<fiducials_series::query_result> fiducials_series::query_fiducials(
+    const std::optional<std::function<bool(const query_result&)> >& _predicate,
     const std::optional<shape>& _shape,
     const std::optional<std::string_view>& _group_name,
     const std::optional<std::size_t>& _shape_fiducial_index
@@ -1970,9 +2042,9 @@ std::vector<fiducials_series::fiducial_query> fiducials_series::query_fiducials(
 
 //------------------------------------------------------------------------------
 
-std::pair<std::vector<fiducials_series::fiducial_query>,
+std::pair<std::vector<fiducials_series::query_result>,
           std::set<std::string> > fiducials_series::remove_fiducials(
-    const std::optional<std::function<bool(const fiducial_query&)> >& _predicate,
+    const std::optional<std::function<bool(const query_result&)> >& _predicate,
     const std::optional<shape>& _shape,
     const std::optional<std::string_view>& _group_name,
     const std::optional<std::size_t>& _shape_fiducial_index
@@ -1990,8 +2062,8 @@ std::pair<std::vector<fiducials_series::fiducial_query>,
 
 //------------------------------------------------------------------------------
 
-std::vector<fiducials_series::fiducial_query> fiducials_series::modify_fiducials(
-    const std::optional<std::function<bool(fiducial_query&)> >& _predicate,
+std::vector<fiducials_series::query_result> fiducials_series::modify_fiducials(
+    const std::optional<std::function<bool(query_result&)> >& _predicate,
     const std::optional<shape>& _shape,
     const std::optional<std::string_view>& _group_name,
     const std::optional<std::size_t>& _shape_fiducial_index
@@ -2009,8 +2081,8 @@ std::vector<fiducials_series::fiducial_query> fiducials_series::modify_fiducials
 
 //------------------------------------------------------------------------------
 
-std::pair<std::optional<fiducials_series::fiducial_query>, bool> fiducials_series::add_fiducial(
-    const std::function<bool(fiducial_query&)>& _predicate,
+std::pair<std::optional<fiducials_series::query_result>, bool> fiducials_series::add_fiducial(
+    const std::function<bool(query_result&)>& _predicate,
     shape _shape,
     const std::string& _group_name
 )
@@ -2021,16 +2093,16 @@ std::pair<std::optional<fiducials_series::fiducial_query>, bool> fiducials_serie
 
     std::unique_lock lock(m_pimpl->m_mutex);
 
-    std::pair<std::optional<fiducials_series::fiducial_query>, bool> result {std::nullopt, false};
+    std::pair<std::optional<fiducials_series::query_result>, bool> out_result {std::nullopt, false};
 
     const auto& fiducial_set_sequence = m_pimpl->get_or_create_sequence<kw::FiducialSetSequence>();
     SIGHT_ASSERT("The fiducial set sequence should be created.", fiducial_set_sequence);
 
-    fiducial_query query_result {.m_group_name = _group_name, .m_shape = _shape};
+    query_result result {.m_group_name = _group_name, .m_shape = _shape};
 
     // Find or create the fiducial set
     auto& fiducial_set_dataset =
-        [this, &fiducial_set_sequence, &_group_name, &query_result, &result]() -> gdcm::DataSet&
+        [this, &fiducial_set_sequence, &_group_name, &result, &out_result]() -> gdcm::DataSet&
         {
             // GDCM Sequence of Items is 1-indexed
             for(std::size_t i = 1 ; i <= fiducial_set_sequence->GetNumberOfItems() ; ++i)
@@ -2046,8 +2118,8 @@ std::pair<std::optional<fiducials_series::fiducial_query>, bool> fiducials_serie
 
                     if(group_name == _group_name)
                     {
-                        read_fiducial_set(*m_pimpl, fiducial_set_dataset, query_result);
-                        query_result.m_fiducial_set_index = i - 1;
+                        read_fiducial_set(*m_pimpl, fiducial_set_dataset, result);
+                        result.m_fiducial_set_index = i - 1;
                         return fiducial_set_dataset;
                     }
                 }
@@ -2057,15 +2129,15 @@ std::pair<std::optional<fiducials_series::fiducial_query>, bool> fiducials_serie
             append_fiducial_set({.group_name = _group_name});
 
             // We created a new fiducial set
-            result.second = true;
+            out_result.second = true;
 
             const auto item_index = fiducial_set_sequence->GetNumberOfItems();
-            query_result.m_fiducial_set_index = item_index - 1;
+            result.m_fiducial_set_index = item_index - 1;
             return fiducial_set_sequence->GetItem(item_index).GetNestedDataSet();
         }();
 
     // Create the new fiducial
-    append_fiducial(query_result.m_fiducial_set_index, {.shape_type = _shape});
+    append_fiducial(result.m_fiducial_set_index, {.shape_type = _shape});
 
     auto fiducial_sequence = m_pimpl->get_sequence(kw::FiducialSequence::GetTag(), fiducial_set_dataset);
 
@@ -2082,24 +2154,24 @@ std::pair<std::optional<fiducials_series::fiducial_query>, bool> fiducials_serie
         }
     }
 
-    query_result.m_fiducial_index = fiducial_sequence->GetNumberOfItems() - 1;
-    query_result.m_shape_index    = fiducial_count - 1;
+    result.m_fiducial_index = fiducial_sequence->GetNumberOfItems() - 1;
+    result.m_shape_index    = fiducial_count - 1;
 
     // Decode fiducial set
 
     // Execute the predicate
-    if(_predicate(query_result))
+    if(_predicate(result))
     {
         // Store the fiducial in gdcm
         // Get the added fiducial dataset
         auto& fiducial_dataset = fiducial_sequence->GetItem(fiducial_sequence->GetNumberOfItems()).GetNestedDataSet();
         SIGHT_ASSERT("The fiducial dataset is empty.", !fiducial_dataset.IsEmpty());
 
-        modify_fiducial(*m_pimpl, query_result, fiducial_set_dataset, fiducial_dataset);
-        result.first = query_result;
+        modify_fiducial(*m_pimpl, result, fiducial_set_dataset, fiducial_dataset);
+        out_result.first = result;
     }
 
-    return result;
+    return out_result;
 }
 
 //------------------------------------------------------------------------------
@@ -2225,22 +2297,19 @@ void fiducials_series::add_group(const std::string& _group_name, const std::arra
 
 //------------------------------------------------------------------------------
 
-void fiducials_series::add_point(const std::string& _group_name, const std::array<double, 3>& _pos)
+bool fiducials_series::add_point(const std::string& _group_name, const std::array<double, 3>& _pos)
 {
     std::optional<std::pair<fiducial_set, std::size_t> > fiducial_set = get_fiducial_set_and_index(_group_name);
     if(!fiducial_set.has_value())
     {
         SIGHT_WARN("Couldn't add point in fiducial set '" << _group_name << "', the group doesn't exist.");
-        return;
+        return false;
     }
 
-    std::string fiducial_name = _group_name + '_'
-                                + std::to_string(
-        data::helper::fiducials_series::filter_fiducials(
-            fiducial_set->first,
-            data::fiducials_series::shape::point
-        ).size()
-                                );
+    auto query_results = this->query_fiducials(std::nullopt, sight::data::fiducials_series::shape::point, _group_name);
+
+    const std::string fiducial_name = _group_name + '_' + std::to_string(query_results.size());
+
     fiducial fiducial;
     fiducial.shape_type           = shape::point;
     fiducial.fiducial_description = fiducial_name;
@@ -2248,6 +2317,8 @@ void fiducials_series::add_point(const std::string& _group_name, const std::arra
     fiducial.fiducial_uid         = core::tools::uuid::generate();
     fiducial.contour_data         = {{.x = _pos[0], .y = _pos[1], .z = _pos[2]}};
     append_fiducial(fiducial_set->second, fiducial);
+
+    return true;
 }
 
 //------------------------------------------------------------------------------
