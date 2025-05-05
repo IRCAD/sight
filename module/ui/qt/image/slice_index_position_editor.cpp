@@ -503,27 +503,62 @@ void slice_index_position_editor::update_slider_fiducial()
 
             color_list.push_back(color);
 
-            for(const auto& set : fiducials.fiducial_sequence)
+            if(image_series->get_dimension_organization_type() == data::dicom::dimension_organization_t::tiled_sparse)
             {
-                for(const auto& point : set.contour_data)
+                for(const auto& set : fiducials.fiducial_sequence)
                 {
-                    std::optional<std::int64_t> fiducial_position;
-                    const std::array<double, 3> array_point = {point.x, point.y, point.z};
-
-                    fiducial_position = geometry::data::get_fiducial_slice_index(*image, array_point, m_axis);
-
-                    if(fiducial_position.has_value())
+                    if(set.graphic_coordinates_data_sequence.has_value())
                     {
-                        if(m_label_option == label_option_t::index)
+                        for(const auto& point : *set.graphic_coordinates_data_sequence)
                         {
-                            m_slice_selector_with_index->add_slider_position(fiducial_position.value(), color);
+                            if(m_label_option == label_option_t::index)
+                            {
+                                if(not point.referenced_image_sequence.referenced_frame_number.empty())
+                                {
+                                    const auto slice_index =
+                                        point.referenced_image_sequence.referenced_frame_number.at(0) - 1;
+
+                                    m_slice_selector_with_index->add_slider_position(slice_index, color);
+                                }
+                                else
+                                {
+                                    SIGHT_ERROR(
+                                        "Cannot find referenced_frame_number for fiducial, unable to add a slider mark"
+                                    );
+                                }
+                            }
+                            else
+                            {
+                                SIGHT_ERROR("Unsupported 'position' label option with tiled sparse images");
+                            }
                         }
-                        else
+                    }
+                }
+            }
+            else
+            {
+                for(const auto& set : fiducials.fiducial_sequence)
+                {
+                    for(const auto& point : set.contour_data)
+                    {
+                        std::optional<std::int64_t> fiducial_position;
+                        const std::array<double, 3> array_point = {point.x, point.y, point.z};
+
+                        fiducial_position = geometry::data::get_fiducial_slice_index(*image, array_point, m_axis);
+
+                        if(fiducial_position.has_value())
                         {
-                            m_slice_selector_with_index->add_position_slider(
-                                static_cast<double>(fiducial_position.value()),
-                                color
-                            );
+                            if(m_label_option == label_option_t::index)
+                            {
+                                m_slice_selector_with_index->add_slider_position(fiducial_position.value(), color);
+                            }
+                            else
+                            {
+                                m_slice_selector_with_index->add_position_slider(
+                                    static_cast<double>(fiducial_position.value()),
+                                    color
+                                );
+                            }
                         }
                     }
                 }
