@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ class SIGHT_CORE_CLASS_API sig_slot_connection
 {
 public:
 
-    using key_connection_t  = std::pair<core::com::signals::signal_key_type, core::com::slots::key_t>;
+    using key_connection_t  = std::pair<core::com::signals::key_t, core::com::slots::key_t>;
     using key_connections_t = std::vector<key_connection_t>;
 
     /// Constructor, do nothing
@@ -54,7 +54,7 @@ public:
     /// Connect signal to slot, and register this new connection in  m_connections
     SIGHT_CORE_API void connect(
         const core::com::has_signals::csptr& _has_signals,
-        core::com::signals::signal_key_type _signal_key,
+        core::com::signals::key_t _signal_key,
         const core::com::has_slots::csptr& _has_slots,
         core::com::slots::key_t _slot_key
     );

@@ -47,7 +47,7 @@
                 <organ_name />
                 <volume />
             </columns>
-            <config enableDelete="${MODELSERIESLIST_ENABLE_DELETE_CONFIG}" />
+            <config enable_delete="${MODELSERIESLIST_ENABLE_DELETE_CONFIG}" />
         </service>
 
         <service uid="organMaterialEditorSrv" type="sight::module::ui::qt::reconstruction::organ_material_editor">

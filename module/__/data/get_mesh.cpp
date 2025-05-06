@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -92,7 +92,7 @@ void get_mesh::updating()
     {
         // Get the mesh from the reconstructionDB which is located at the position stored in
         // indexCfg.inputIndex
-        if(index_cfg.input_index > recs.size())
+        if(index_cfg.input_index >= recs.size())
         {
             SIGHT_THROW_EXCEPTION(sight::data::exception("Mesh index is out of bound"));
         }

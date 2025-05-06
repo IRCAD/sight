@@ -89,7 +89,7 @@ void model_series_list::configuring()
     if(config)
     {
         m_enable_hide_all = config->get<bool>("enable_hide_all", m_enable_hide_all);
-        m_enable_delete   = config->get<bool>("enableDelete", m_enable_delete);
+        m_enable_delete   = config->get<bool>("enable_delete", m_enable_delete);
     }
 
     auto columns = config_t.get_child("columns");

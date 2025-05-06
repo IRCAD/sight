@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,32 +34,33 @@ namespace sight::core::com
 struct signal_base;
 
 /**
- * @brief   This class proposes a mapping between a key_t and a SignalBase.
+ * @brief   This class proposes a mapping between a key_t and a signal_base.
  */
 class SIGHT_CORE_CLASS_API has_signals
 {
 public:
 
-    using sptr  = std::shared_ptr<has_signals>;
-    using csptr = std::shared_ptr<const has_signals>;
+    using sptr         = std::shared_ptr<has_signals>;
+    using csptr        = std::shared_ptr<const has_signals>;
+    using signal_key_t = sight::core::com::signals::key_t;
 
     has_signals()          = default;
     virtual ~has_signals() = default;
 
-    [[nodiscard]] SPTR(signal_base) signal(const signals::signal_key_type& _key) const
+    [[nodiscard]] SPTR(signal_base) signal(const signals::key_t& _key) const
     {
         return m_signals[_key];
     }
 
     template<typename signal_type>
-    [[nodiscard]] SPTR(signal_type) signal(const signals::signal_key_type& _key) const
+    [[nodiscard]] SPTR(signal_type) signal(const signals::key_t& _key) const
     {
         auto signal = std::dynamic_pointer_cast<signal_type>(this->signal(_key));
         return signal;
     }
 
     template<typename signal_type>
-    SPTR(signal_type) new_signal(const signals::signal_key_type& _key)
+    SPTR(signal_type) new_signal(const signals::key_t& _key)
     {
         auto sig = std::make_shared<signal_type>();
         m_signals(_key, sig);
@@ -74,7 +75,7 @@ public:
      * @param _a Arguments of the signal
      */
     template<typename ... A>
-    void emit(const signals::signal_key_type& _key, A ... _a) const
+    void emit(const signals::key_t& _key, A ... _a) const
     {
         auto signal = this->typed_signal<A ...>(_key);
         signal->emit(_a ...);
@@ -91,7 +92,7 @@ public:
      * @param _a Arguments of the signal
      */
     template<typename ... A>
-    void emit(com::has_slots* _caller, const signals::signal_key_type& _key, A ... _a) const
+    void emit(com::has_slots* _caller, const signals::key_t& _key, A ... _a) const
     {
         SIGHT_ASSERT("Caller is null", _caller);
 
@@ -108,7 +109,7 @@ public:
      * @param _a Arguments of the signal
      */
     template<typename ... A>
-    void async_emit(const signals::signal_key_type& _key, A ... _a) const
+    void async_emit(const signals::key_t& _key, A ... _a) const
     {
         auto signal = this->typed_signal<A ...>(_key);
         signal->async_emit(_a ...);
@@ -125,7 +126,7 @@ public:
      * @param _a Arguments of the signal
      */
     template<typename ... A>
-    void async_emit(com::has_slots* _caller, const signals::signal_key_type& _key, A ... _a) const
+    void async_emit(com::has_slots* _caller, const signals::key_t& _key, A ... _a) const
     {
         SIGHT_ASSERT("Caller is null", _caller);
 
@@ -158,7 +159,7 @@ private:
      * @return signal with the function signature, ready to be emitted.
      */
     template<typename ... A>
-    core::com::signal<void(A ...)>::sptr typed_signal(const signals::signal_key_type& _key) const
+    core::com::signal<void(A ...)>::sptr typed_signal(const signals::key_t& _key) const
     {
         auto signal = this->signal(_key);
         SIGHT_ASSERT("Can't find signal " << std::quoted(_key), signal);

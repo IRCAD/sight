@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -111,10 +111,10 @@ inline static std::pair<sight::service::base::sptr, sight::data::image_series::s
                 }
                 else
                 {
-                    std::int16_t threshold = 255;
-                    image_series->set_pixel(index, reinterpret_cast<data::image::buffer_t*>(&threshold));
+                    std::int16_t value = 255;
+                    image_series->set_pixel(index, reinterpret_cast<data::image::buffer_t*>(&value));
                     CPPUNIT_ASSERT_EQUAL(
-                        threshold,
+                        value,
                         *reinterpret_cast<const std::int16_t*>(image_series->get_pixel(index))
                     );
                 }
@@ -136,30 +136,34 @@ inline static std::pair<sight::service::base::sptr, sight::data::image_series::s
 void vtk_mesher_test::generate_mesh()
 {
     // Create service
-    auto [mesherService, imageSeries] = generate_mesh_service();
+    auto [mesher_service, image_series] = generate_mesh_service();
 
     service::config_t config;
     std::stringstream config_string;
     config_string
-    << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
-       "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<properties percent_reduction=\"50\" threshold=\"255\"/>";
+    << R"(<in key="image_series" uid="image_series"/>)"
+       R"(<out key="model_series" uid="modelSeries"/>)"
+       R"(<properties percent_reduction="50" value="255" pass_band="0.1" boundary_smoothing="true" )"
+       R"(feature_smoothing="true" feature_angle="120"/>)";
+
+    auto model_series = std::make_shared<sight::data::model_series>();
 
     boost::property_tree::read_xml(config_string, config);
-    mesherService->set_config(config);
-    mesherService->set_input(imageSeries, "imageSeries");
-    mesherService->configure();
-    mesherService->start().wait();
-    mesherService->update().wait();
+    mesher_service->set_config(config);
+    mesher_service->set_input(image_series, "image_series");
+    mesher_service->set_inout(model_series, "model_series");
+    mesher_service->configure();
+    mesher_service->start().get();
+    mesher_service->update().get();
     {
-        auto model_series          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
         unsigned int number_points = 77;
-        unsigned int number_cells  = 125;
-        CPPUNIT_ASSERT_EQUAL(model_series->get_reconstruction_db()[0]->get_mesh()->num_points(), number_points);
-        CPPUNIT_ASSERT_EQUAL(model_series->get_reconstruction_db()[0]->get_mesh()->num_cells(), number_cells);
+        unsigned int number_cells  = 126;
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), model_series->get_reconstruction_db().size());
+        CPPUNIT_ASSERT_EQUAL(number_points, model_series->get_reconstruction_db()[0]->get_mesh()->num_points());
+        CPPUNIT_ASSERT_EQUAL(number_cells, model_series->get_reconstruction_db()[0]->get_mesh()->num_cells());
     }
-    mesherService->stop().wait();
-    sight::service::remove(mesherService);
+    mesher_service->stop().get();
+    sight::service::remove(mesher_service);
 }
 
 //------------------------------------------------------------------------------
@@ -167,30 +171,33 @@ void vtk_mesher_test::generate_mesh()
 void vtk_mesher_test::generate_mesh_with_min_reduction()
 {
     // Create service
-    auto [mesherService, imageSeries] = generate_mesh_service();
+    auto [mesher_service, image_series] = generate_mesh_service();
 
     service::config_t config;
     std::stringstream config_string;
     config_string
-    << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
-       "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<properties percent_reduction=\"0\" threshold=\"255\"/>";
+    << "<in key=\"image_series\" uid=\"image_series\"/>"
+       "<out key=\"model_series\" uid=\"modelSeries\"/>"
+       "<properties percent_reduction=\"0\" value=\"255\"/>";
+
+    auto model_series = std::make_shared<sight::data::model_series>();
 
     boost::property_tree::read_xml(config_string, config);
-    mesherService->set_config(config);
-    mesherService->set_input(imageSeries, "imageSeries");
-    mesherService->configure();
-    mesherService->start().wait();
-    mesherService->update().wait();
+    mesher_service->set_config(config);
+    mesher_service->set_input(image_series, "image_series");
+    mesher_service->set_inout(model_series, "model_series");
+    mesher_service->configure();
+    mesher_service->start().get();
+    mesher_service->update().get();
     {
-        auto model_series          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
         unsigned int number_points = 147;
         unsigned int number_cells  = 253;
-        CPPUNIT_ASSERT_EQUAL(model_series->get_reconstruction_db()[0]->get_mesh()->num_points(), number_points);
-        CPPUNIT_ASSERT_EQUAL(model_series->get_reconstruction_db()[0]->get_mesh()->num_cells(), number_cells);
+        CPPUNIT_ASSERT_EQUAL(std::size_t(1), model_series->get_reconstruction_db().size());
+        CPPUNIT_ASSERT_EQUAL(number_points, model_series->get_reconstruction_db()[0]->get_mesh()->num_points());
+        CPPUNIT_ASSERT_EQUAL(number_cells, model_series->get_reconstruction_db()[0]->get_mesh()->num_cells());
     }
-    mesherService->stop().wait();
-    sight::service::remove(mesherService);
+    mesher_service->stop().get();
+    sight::service::remove(mesher_service);
 }
 
 //------------------------------------------------------------------------------
@@ -198,30 +205,29 @@ void vtk_mesher_test::generate_mesh_with_min_reduction()
 void vtk_mesher_test::no_mesh_generated()
 {
     // Create service
-    auto [mesherService, imageSeries] = generate_mesh_service();
+    auto [mesher_service, image_series] = generate_mesh_service();
 
     service::config_t config;
     std::stringstream config_string;
     config_string
-    << "<in key=\"imageSeries\" uid=\"imageSeries\"/>"
-       "<out key=\"modelSeries\" uid=\"modelSeries\"/>"
-       "<properties percent_reduction=\"90\" threshold=\"30\"/>";
+    << "<in key=\"image_series\" uid=\"image_series\"/>"
+       "<out key=\"model_series\" uid=\"modelSeries\"/>"
+       "<properties percent_reduction=\"90\" value=\"30\"/>";
+
+    auto model_series = std::make_shared<sight::data::model_series>();
 
     boost::property_tree::read_xml(config_string, config);
-    mesherService->set_config(config);
-    mesherService->set_input(imageSeries, "imageSeries");
-    mesherService->configure();
-    mesherService->start().wait();
-    mesherService->update().wait();
-    {
-        auto model_series          = mesherService->output<sight::data::model_series>("modelSeries").const_lock();
-        unsigned int number_points = 0;
-        unsigned int number_cells  = 0;
-        CPPUNIT_ASSERT_EQUAL(model_series->get_reconstruction_db()[0]->get_mesh()->num_points(), number_points);
-        CPPUNIT_ASSERT_EQUAL(model_series->get_reconstruction_db()[0]->get_mesh()->num_cells(), number_cells);
-    }
-    mesherService->stop().wait();
-    sight::service::remove(mesherService);
+    mesher_service->set_config(config);
+    mesher_service->set_input(image_series, "image_series");
+    mesher_service->set_inout(model_series, "model_series");
+    mesher_service->configure();
+    mesher_service->start().get();
+    mesher_service->update().get();
+
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), model_series->get_reconstruction_db().size());
+
+    mesher_service->stop().get();
+    sight::service::remove(mesher_service);
 }
 
 } // namespace sight::module::filter::mesh::ut

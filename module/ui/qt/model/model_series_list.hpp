@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ namespace sight::module::ui::qt::model
  * @subsection Configuration Configuration
  * - \b enable_hide_all (optional, bool, default=true): if 'true', allows to hide all models through a single checkbox
  *      displayed in UI.
- * - \b enableDelete (optional, bool, default=false): if 'true', allows to delete models through a single button
+ * - \b enable_delete (optional, bool, default=false): if 'true', allows to delete models through a single button
  *      displayed in UI.
  * - \b column (optional, string, default=""): defines columns to be shown in reconstruction list. XML child element
  *      names follow data::reconstruction serialization attribute names.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,6 @@ class SIGHT_CORE_CLASS_API slots : public std::map<std::string,
 public:
 
     using key_t                = std::string;
-    using slot_key_type        = key_t;
     using slot_key_container_t = std::vector<key_t>;
 
     SIGHT_CORE_API slots()          = default;

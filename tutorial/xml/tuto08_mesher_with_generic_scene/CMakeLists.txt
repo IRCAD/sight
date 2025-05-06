@@ -13,6 +13,7 @@ add_dependencies(
     module_ui
     module_ui_icons
     module_io_matrix
+    module_io_itk
     module_io_vtk
     module_io_bitmap
     module_data

@@ -388,15 +388,9 @@ void negato::update_windowing(double _dw, double _dl)
     {
         const auto image = m_image.const_lock();
         const auto tf    = m_tf.lock();
-
-        tf->set_window(new_window);
+        tf->set_window(std::copysign(std::max(1.0, std::abs(new_window)), new_window));
         tf->set_level(new_level);
-        const auto sig = tf->template signal<data::transfer_function::windowing_modified_signal_t>(
-            data::transfer_function::WINDOWING_MODIFIED_SIG
-        );
-        {
-            sig->async_emit(new_window, new_level);
-        }
+        tf->async_emit(data::transfer_function::WINDOWING_MODIFIED_SIG, new_window, new_level);
     }
 }
 

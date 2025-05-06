@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,8 +43,9 @@ class SIGHT_CORE_CLASS_API has_slots
 {
 public:
 
-    using sptr  = std::shared_ptr<has_slots>;
-    using csptr = std::shared_ptr<const has_slots>;
+    using sptr       = std::shared_ptr<has_slots>;
+    using csptr      = std::shared_ptr<const has_slots>;
+    using slot_key_t = sight::core::com::slots::key_t;
 
     has_slots() = default;
 

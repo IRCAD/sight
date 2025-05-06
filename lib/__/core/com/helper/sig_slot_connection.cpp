@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ sig_slot_connection::~sig_slot_connection()
 
 void sig_slot_connection::connect(
     const core::com::has_signals::csptr& _has_signals,
-    core::com::signals::signal_key_type _signal_key,
+    core::com::signals::key_t _signal_key,
     const core::com::has_slots::csptr& _has_slots,
     core::com::slots::key_t _slot_key
 )

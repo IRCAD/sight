@@ -11,7 +11,7 @@
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="tf" type="sight::data::transfer_function" />
-        <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
+        <object uid="modelSeries" type="sight::data::model_series" />
         <object uid="reconstructionUID" type="sight::data::reconstruction" deferred="true" />
         <object uid="snapshot" type="sight::data::image" />
 
@@ -96,9 +96,9 @@
         <!-- ************************************* Action ************************************ -->
 
         <service uid="mesherAct" type="sight::module::filter::mesh::vtk_mesher">
-            <in key="imageSeries" uid="${imageSeries}" />
-            <out key="modelSeries" uid="modelSeries" />
-            <config percent_reduction="0" threshold="255" />
+            <in key="image_series" uid="${imageSeries}" />
+            <inout key="model_series" uid="modelSeries" />
+            <config percent_reduction="0" value="255" />
         </service>
 
         <service uid="exportAct" type="sight::module::ui::series::exporter" auto_connect="true">

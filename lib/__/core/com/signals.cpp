@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@ namespace sight::core::com
 
 //-----------------------------------------------------------------------------
 
-signals& signals::operator()(const signal_key_type& _key, const signal_base::sptr& _signal)
+signals& signals::operator()(const key_t& _key, const signal_base::sptr& _signal)
 {
     m_signals.insert({_key, _signal});
     return *this;
@@ -37,7 +37,7 @@ signals& signals::operator()(const signal_key_type& _key, const signal_base::spt
 
 //-----------------------------------------------------------------------------
 
-signal_base::sptr signals::operator[](const signal_key_type& _key) const
+signal_base::sptr signals::operator[](const key_t& _key) const
 {
     auto it = m_signals.find(_key);
 
