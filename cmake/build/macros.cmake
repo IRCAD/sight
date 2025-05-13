@@ -1536,10 +1536,6 @@ macro(sight_create_pch_target _og)
 
     target_precompile_headers(${SIGHT_PCH_NAME} PUBLIC ${SIGHT_PCH_HEADERS})
 
-    # CLang does not always support std::filesystem
-    find_package(Filesystem REQUIRED)
-    target_link_libraries(${SIGHT_PCH_NAME} PUBLIC std::filesystem)
-
     # Boost
     find_package(Boost QUIET COMPONENTS system date_time iostreams log log_setup REQUIRED)
 

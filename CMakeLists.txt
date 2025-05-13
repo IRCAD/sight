@@ -70,7 +70,6 @@ mark_as_advanced(SIGHT_VERBOSE_PCH)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/module)
 
 # We need to find Qt6 before ITK/VTK, otherwise they find Qt5 and CMake fails with a cryptic
 # "Targets not yet defined: Qt::XXXXPrivate", even if we don't use ITK-Qt or VTK-Qt extensions
@@ -257,12 +256,8 @@ configure_file(
 )
 
 # Install the sightConfig.cmake and sightConfigVersion.cmake
-install(
-    FILES "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake" "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
-          "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake"
-          "${CMAKE_SOURCE_DIR}/cmake/build/linux/module/FindFilesystem.cmake"
-    DESTINATION ${FWCONFIG_PACKAGE_LOCATION}
-    COMPONENT dev
+install(FILES "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake" "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
+              "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake" DESTINATION ${FWCONFIG_PACKAGE_LOCATION} COMPONENT dev
 )
 
 # install CppUnitConfig.cmake in a module folder.
