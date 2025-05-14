@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,10 +45,10 @@ public:
     SIGHT_DECLARE_CLASS(notification_base, ui::object);
 
     /// Notification Type (changes Qss style).
-    using type = enum sight::service::notification::type;
+    using type = sight::service::notification::type;
 
     /// Where to display notifications.
-    using position = enum sight::service::notification::position;
+    using position = sight::service::notification::position;
 
     /// Constructor. Does nothing.
     SIGHT_UI_API notification_base();

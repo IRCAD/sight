@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -39,15 +39,15 @@ namespace sight::service
 struct SIGHT_SERVICE_CLASS_API notification final
 {
     // Notification Type (changes Qss style).
-    enum type
+    enum class type : uint8_t
     {
         info = 0,
         success,
         failure
-    } type {type::info};
+    } m_type {type::info};
 
     /// Where to display notifications.
-    enum position
+    enum class position : uint8_t
     {
         top_right = 0,
         top_left,
@@ -56,14 +56,14 @@ struct SIGHT_SERVICE_CLASS_API notification final
         centered,
         centered_top,
         centered_bottom
-    } position {position::top_right};
+    } m_position {position::top_right};
 
-    std::string message {};
-    std::optional<std::chrono::milliseconds> duration {std::chrono::seconds(3)};
-    std::string channel {};
-    std::optional<bool> closable {std::nullopt};
-    std::array<int, 2> size {200, 60};
-    std::optional<bool> sound {std::nullopt};
+    std::string m_message {};
+    std::optional<std::chrono::milliseconds> m_duration {std::chrono::seconds(3)};
+    std::string m_channel {};
+    std::optional<bool> m_closable {std::nullopt};
+    std::array<int, 2> m_size {200, 60};
+    std::optional<bool> m_sound {std::nullopt};
 };
 
 /**
@@ -115,7 +115,7 @@ protected:
     /// @{
     SIGHT_SERVICE_API void notify(notification _notification) const;
     inline void notify(
-        enum notification::type _type,
+        notification::type _type,
         std::string _message,
         std::string _channel = "",
         bool sound           = false
@@ -145,7 +145,7 @@ private:
 //------------------------------------------------------------------------------
 
 inline void notifier::notify(
-    enum notification::type _type,
+    notification::type _type,
     std::string _message,
     std::string _channel,
     bool _sound
@@ -153,10 +153,10 @@ inline void notifier::notify(
 {
     this->notify(
         {
-            .type    = std::move(_type),
-            .message = std::move(_message),
-            .channel = std::move(_channel),
-            .sound   = std::move(_sound)
+            .m_type    = std::move(_type),
+            .m_message = std::move(_message),
+            .m_channel = std::move(_channel),
+            .m_sound   = std::move(_sound)
         });
 }
 

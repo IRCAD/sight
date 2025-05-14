@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,8 +48,8 @@ public:
     /// @{
     inline static void show(
         std::string _message,
-        enum sight::service::notification::type _type    = sight::service::notification::type::info,
-        enum sight::service::notification::position _pos = sight::service::notification::position::top_right
+        sight::service::notification::type _type    = sight::service::notification::type::info,
+        sight::service::notification::position _pos = sight::service::notification::position::top_right
     );
     SIGHT_UI_API static void show(sight::service::notification _notification);
     /// @}
@@ -64,10 +64,10 @@ public:
     /// @{
     inline explicit notification(
         std::string _message,
-        enum sight::service::notification::type _type    = sight::service::notification::type::info,
-        enum sight::service::notification::position _pos = sight::service::notification::position::top_right
+        sight::service::notification::type _type    = sight::service::notification::type::info,
+        sight::service::notification::position _pos = sight::service::notification::position::top_right
     ) :
-        notification({.type = _type, .position = _pos, .message = std::move(_message)})
+        notification({.m_type = _type, .m_position = _pos, .m_message = std::move(_message)})
     {
     }
 
@@ -139,11 +139,11 @@ protected:
 
 inline void notification::show(
     std::string _message,
-    enum sight::service::notification::type _type,
-    enum sight::service::notification::position _pos
+    sight::service::notification::type _type,
+    sight::service::notification::position _pos
 )
 {
-    show({.type = _type, .position = _pos, .message = std::move(_message)});
+    show({.m_type = _type, .m_position = _pos, .m_message = std::move(_message)});
 }
 
 } // namespace sight::ui::dialog

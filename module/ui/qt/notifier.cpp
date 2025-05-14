@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -296,11 +296,11 @@ void notifier::set_enum_parameter(std::string _val, std::string _key)
 
 void notifier::pop(service::notification _notification)
 {
-    const bool channel_configured = m_channels.contains(_notification.channel);
+    const bool channel_configured = m_channels.contains(_notification.m_channel);
 
     // Get channel configuration (or global configuration if there is no channel)
     const auto& channel_configuration = channel_configured
-                                        ? m_channels[_notification.channel]
+                                        ? m_channels[_notification.m_channel]
                                         : m_channels[""];
 
     const auto& default_configuration = m_channels[""];
@@ -310,19 +310,19 @@ void notifier::pop(service::notification _notification)
     const auto& position = channel_configured && channel_configuration.position
                            ? *channel_configuration.position
                            : (channel_configured && !channel_configuration.position) || !default_configuration.position
-                           ? _notification.position
+                           ? _notification.m_position
                            : *default_configuration.position;
 
     const auto& duration = channel_configured && channel_configuration.duration
                            ? *channel_configuration.duration
                            : (channel_configured && !channel_configuration.duration) || !default_configuration.duration
-                           ? _notification.duration
+                           ? _notification.m_duration
                            : *default_configuration.duration;
 
     const auto& size = channel_configured && channel_configuration.size
                        ? *channel_configuration.size
                        : (channel_configured && !channel_configuration.size) || !default_configuration.size
-                       ? _notification.size
+                       ? _notification.m_size
                        : *default_configuration.size;
 
     const auto& max = channel_configuration.max
@@ -334,7 +334,7 @@ void notifier::pop(service::notification _notification)
     const auto& closable = channel_configured && channel_configuration.closable
                            ? *channel_configuration.closable
                            : (channel_configured && !channel_configuration.closable) || !default_configuration.closable
-                           ? _notification.closable
+                           ? _notification.m_closable
                            : *default_configuration.closable;
 
     // Get the wanted stack
@@ -361,13 +361,13 @@ void notifier::pop(service::notification _notification)
         [&]
         {
             // If a channel is present, try to retrieve the associated dialog
-            if(!_notification.channel.empty())
+            if(!_notification.m_channel.empty())
             {
                 for(auto& [old_position, stack] : m_stacks)
                 {
                     for(const auto& popup : stack.popups)
                     {
-                        if(popup->get_channel() == _notification.channel)
+                        if(popup->get_channel() == _notification.m_channel)
                         {
                             // If the position doesn't match, fix it
                             if(old_position != position)
@@ -399,10 +399,10 @@ void notifier::pop(service::notification _notification)
 
     popup->set_container(m_container_where_to_display_notifs);
 
-    const std::string& message_to_show = _notification.message.empty() ? m_default_message : _notification.message;
+    const std::string& message_to_show = _notification.m_message.empty() ? m_default_message : _notification.m_message;
     popup->set_message(message_to_show);
 
-    popup->set_type(_notification.type);
+    popup->set_type(_notification.m_type);
     popup->set_position(position);
     popup->set_duration(duration);
     popup->set_size(*target_stack.size);
@@ -416,13 +416,17 @@ void notifier::pop(service::notification _notification)
                 notifier->on_notification_closed(popup);
             }
         });
-    popup->set_channel(_notification.channel);
+    popup->set_channel(_notification.m_channel);
     popup->set_closable(closable);
     popup->show();
 
-    if(_notification.sound.has_value() && _notification.sound.value())
+    if(_notification.m_sound.has_value() && _notification.m_sound.value())
     {
-        m_sound->setSource(QUrl::fromLocalFile(QString::fromStdString(SOUND_BOARD[_notification.type].string())));
+        m_sound->setSource(
+            QUrl::fromLocalFile(
+                QString::fromStdString(SOUND_BOARD[std::size_t(_notification.m_type)].string())
+            )
+        );
         m_sound->play();
     }
 }

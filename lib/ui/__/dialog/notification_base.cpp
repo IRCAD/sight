@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ const notification_base::factory_registry_key_t notification_base::REGISTRY_KEY 
 //-----------------------------------------------------------------------------
 
 notification_base::notification_base() :
-    m_notification({.message = DEFAULT_MESSAGE})
+    m_notification({.m_message = DEFAULT_MESSAGE})
 {
 }
 
@@ -44,11 +44,11 @@ void notification_base::set_message(std::string _msg)
     if(_msg.empty())
     {
         SIGHT_ERROR("Cannot set an empty message to notification, using 'Empty Message'");
-        m_notification.message = DEFAULT_MESSAGE;
+        m_notification.m_message = DEFAULT_MESSAGE;
     }
     else
     {
-        m_notification.message = std::move(_msg);
+        m_notification.m_message = std::move(_msg);
     }
 }
 
@@ -56,28 +56,28 @@ void notification_base::set_message(std::string _msg)
 
 void notification_base::set_position(notification_base::position _position)
 {
-    m_notification.position = _position;
+    m_notification.m_position = _position;
 }
 
 //-----------------------------------------------------------------------------
 
 void notification_base::set_type(notification_base::type _type)
 {
-    m_notification.type = _type;
+    m_notification.m_type = _type;
 }
 
 //-----------------------------------------------------------------------------
 
 void notification_base::set_size(std::array<int, 2> _size)
 {
-    m_notification.size = _size;
+    m_notification.m_size = _size;
 }
 
 //------------------------------------------------------------------------------
 
 std::array<int, 2> notification_base::size() const
 {
-    return m_notification.size;
+    return m_notification.m_size;
 }
 
 //-----------------------------------------------------------------------------
@@ -91,42 +91,42 @@ void notification_base::set_index(unsigned int _index)
 
 void notification_base::set_duration(std::optional<std::chrono::milliseconds> _duration_in_ms)
 {
-    m_notification.duration = _duration_in_ms;
+    m_notification.m_duration = _duration_in_ms;
 }
 
 //------------------------------------------------------------------------------
 
 void notification_base::set_channel(std::string _channel)
 {
-    m_notification.channel = std::move(_channel);
+    m_notification.m_channel = std::move(_channel);
 }
 
 //------------------------------------------------------------------------------
 
 std::string notification_base::get_channel() const
 {
-    return m_notification.channel;
+    return m_notification.m_channel;
 }
 
 //------------------------------------------------------------------------------
 
 void notification_base::set_closable(std::optional<bool> _closable)
 {
-    m_notification.closable = _closable;
+    m_notification.m_closable = _closable;
 }
 
 //------------------------------------------------------------------------------
 
 std::optional<bool> notification_base::is_closable() const
 {
-    return m_notification.closable;
+    return m_notification.m_closable;
 }
 
 //------------------------------------------------------------------------------
 
 std::optional<std::chrono::milliseconds> notification_base::get_duration() const
 {
-    return m_notification.duration;
+    return m_notification.m_duration;
 }
 
 //------------------------------------------------------------------------------

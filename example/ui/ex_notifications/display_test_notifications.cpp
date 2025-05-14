@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,31 +57,31 @@ void display_test_notifications::set_enum_parameter(std::string _val, std::strin
         }
         else if(_val == "TOP_LEFT")
         {
-            m_notification.position = ::dial::notification::position::top_left;
+            m_notification.m_position = ::dial::notification::position::top_left;
         }
         else if(_val == "TOP_RIGHT")
         {
-            m_notification.position = ::dial::notification::position::top_right;
+            m_notification.m_position = ::dial::notification::position::top_right;
         }
         else if(_val == "CENTERED_TOP")
         {
-            m_notification.position = ::dial::notification::position::centered_top;
+            m_notification.m_position = ::dial::notification::position::centered_top;
         }
         else if(_val == "CENTERED")
         {
-            m_notification.position = ::dial::notification::position::centered;
+            m_notification.m_position = ::dial::notification::position::centered;
         }
         else if(_val == "BOTTOM_LEFT")
         {
-            m_notification.position = ::dial::notification::position::bottom_left;
+            m_notification.m_position = ::dial::notification::position::bottom_left;
         }
         else if(_val == "BOTTOM_RIGHT")
         {
-            m_notification.position = ::dial::notification::position::bottom_right;
+            m_notification.m_position = ::dial::notification::position::bottom_right;
         }
         else if(_val == "CENTERED_BOTTOM")
         {
-            m_notification.position = ::dial::notification::position::centered_bottom;
+            m_notification.m_position = ::dial::notification::position::centered_bottom;
         }
         else
         {
@@ -92,15 +92,15 @@ void display_test_notifications::set_enum_parameter(std::string _val, std::strin
     {
         if(_val == "SUCCESS")
         {
-            m_notification.type = ::dial::notification::type::success;
+            m_notification.m_type = ::dial::notification::type::success;
         }
         else if(_val == "INFO")
         {
-            m_notification.type = ::dial::notification::type::info;
+            m_notification.m_type = ::dial::notification::type::info;
         }
         else if(_val == "FAILURE")
         {
-            m_notification.type = ::dial::notification::type::failure;
+            m_notification.m_type = ::dial::notification::type::failure;
         }
         else
         {
@@ -113,11 +113,11 @@ void display_test_notifications::set_enum_parameter(std::string _val, std::strin
         {
             if(_val == "infinite")
             {
-                m_notification.duration = std::nullopt;
+                m_notification.m_duration = std::nullopt;
             }
             else
             {
-                m_notification.duration = std::chrono::milliseconds(std::stoul(_val));
+                m_notification.m_duration = std::chrono::milliseconds(std::stoul(_val));
             }
         }
         catch(...)
@@ -129,17 +129,17 @@ void display_test_notifications::set_enum_parameter(std::string _val, std::strin
     {
         if(_val == "CHANNEL1")
         {
-            m_notification.channel  = "CHANNEL1";
-            m_notification.closable = std::nullopt;
+            m_notification.m_channel  = "CHANNEL1";
+            m_notification.m_closable = std::nullopt;
         }
         else if(_val == "CHANNEL2")
         {
-            m_notification.channel = "CHANNEL2";
+            m_notification.m_channel = "CHANNEL2";
         }
         else if(_val == "GLOBAL")
         {
-            m_notification.channel.clear();
-            m_notification.closable = std::nullopt;
+            m_notification.m_channel.clear();
+            m_notification.m_closable = std::nullopt;
         }
         else
         {
@@ -166,7 +166,7 @@ void display_test_notifications::set_bool_parameter(bool _val, std::string _key)
     }
     else if(_key == "sound")
     {
-        m_notification.sound = _val;
+        m_notification.m_sound = _val;
     }
     else
     {
@@ -202,7 +202,7 @@ void display_test_notifications::updating()
 {
     static std::uint64_t count = 1;
 
-    std::string channel = m_notification.channel;
+    std::string channel = m_notification.m_channel;
     if(!channel.empty())
     {
         channel += ", ";
@@ -214,10 +214,10 @@ void display_test_notifications::updating()
     {
         duration += "5s";
     }
-    else if(m_notification.duration && m_notification.duration->count() > 0)
+    else if(m_notification.m_duration && m_notification.m_duration->count() > 0)
     {
         duration += std::to_string(
-            std::chrono::duration_cast<std::chrono::seconds>(*m_notification.duration).count()
+            std::chrono::duration_cast<std::chrono::seconds>(*m_notification.m_duration).count()
                     ) + "s";
     }
     else
@@ -228,8 +228,8 @@ void display_test_notifications::updating()
     std::string closable;
 
     if(channel != "CHANNEL2"
-       && ((m_notification.closable && *m_notification.closable)
-           || (!m_notification.closable && m_notification.duration && m_notification.duration->count() > 0)))
+       && ((m_notification.m_closable && *m_notification.m_closable)
+           || (!m_notification.m_closable && m_notification.m_duration && m_notification.m_duration->count() > 0)))
     {
         closable = ", closable";
     }
@@ -260,12 +260,12 @@ void display_test_notifications::updating()
 
         this->notify(
             {
-                .type     = m_notification.type,
-                .message  = message,
-                .duration = m_notification.duration,
-                .channel  = m_notification.channel,
-                .closable = m_notification.closable,
-                .sound    = m_notification.sound
+                .m_type     = m_notification.m_type,
+                .m_message  = message,
+                .m_duration = m_notification.m_duration,
+                .m_channel  = m_notification.m_channel,
+                .m_closable = m_notification.m_closable,
+                .m_sound    = m_notification.m_sound
             });
     }
     else
@@ -273,7 +273,7 @@ void display_test_notifications::updating()
         // Mode 2: Standalone, you decide where to pop the notification by calling directly the notification.
         if(m_display_all)
         {
-            using position_t = enum sight::service::notification::position;
+            using position_t = sight::service::notification::position;
 
             for(const auto& position : {
                     position_t::top_left,
@@ -288,12 +288,12 @@ void display_test_notifications::updating()
                 ::dial::notification::show(
                     sight::service::notification
                     {
-                        .type     = m_notification.type,
-                        .position = position,
-                        .message  = message,
-                        .duration = m_notification.duration,
-                        .channel  = m_notification.channel,
-                        .closable = m_notification.closable
+                        .m_type     = m_notification.m_type,
+                        .m_position = position,
+                        .m_message  = message,
+                        .m_duration = m_notification.m_duration,
+                        .m_channel  = m_notification.m_channel,
+                        .m_closable = m_notification.m_closable
                     });
             }
         }
@@ -302,12 +302,12 @@ void display_test_notifications::updating()
             ::dial::notification::show(
                 sight::service::notification
                 {
-                    .type     = m_notification.type,
-                    .position = m_notification.position,
-                    .message  = message,
-                    .duration = m_notification.duration,
-                    .channel  = m_notification.channel,
-                    .closable = m_notification.closable
+                    .m_type     = m_notification.m_type,
+                    .m_position = m_notification.m_position,
+                    .m_message  = message,
+                    .m_duration = m_notification.m_duration,
+                    .m_channel  = m_notification.m_channel,
+                    .m_closable = m_notification.m_closable
                 });
         }
     }

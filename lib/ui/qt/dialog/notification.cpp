@@ -104,8 +104,8 @@ void notification::build()
     m_widget = new widget(this->compute_position(), m_parent);
     m_widget->setGraphicsEffect(effect);
     m_widget->setContentsMargins(0, 0, 0, 0);
-    m_widget->setMinimumSize(m_notification.size[0], m_notification.size[1]);
-    m_widget->setMaximumSize(m_notification.size[0], m_notification.size[1]);
+    m_widget->setMinimumSize(m_notification.m_size[0], m_notification.m_size[1]);
+    m_widget->setMaximumSize(m_notification.m_size[0], m_notification.m_size[1]);
     m_widget->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
     // Creates container layout.
@@ -220,7 +220,7 @@ void notification::update()
     static constexpr auto s_INFO_NAME {"NotificationDialog_Info"};
 
     // Set object names
-    switch(m_notification.type)
+    switch(m_notification.m_type)
     {
         case notification_base::type::success:
             m_sub_widget->setObjectName(s_SUCCESS_NAME);
@@ -260,7 +260,7 @@ void notification::update()
                 "background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
             };
 
-            switch(m_notification.type)
+            switch(m_notification.m_type)
             {
                 case notification_base::type::success:
                     m_sub_widget->setStyleSheet(s_SUCCESS_STYLE);
@@ -287,20 +287,20 @@ void notification::update()
     const auto& [is_truncated, message] =
         [&]
         {
-            SIGHT_ASSERT("Width is invalid", m_notification.size[0] > 0);
-            SIGHT_ASSERT("Height is invalid", m_notification.size[1] > 0);
+            SIGHT_ASSERT("Width is invalid", m_notification.m_size[0] > 0);
+            SIGHT_ASSERT("Height is invalid", m_notification.m_size[1] > 0);
 
             const QRect available(
                 0,
                 0,
-                int(m_notification.size[0] - 0.1 * m_notification.size[0]),
-                int(m_notification.size[1] - 0.1 * m_notification.size[1])
+                int(m_notification.m_size[0] - 0.1 * m_notification.m_size[0]),
+                int(m_notification.m_size[1] - 0.1 * m_notification.m_size[1])
             );
 
             const QFontMetrics metrics(m_msg_box->font());
 
             // Initial message
-            auto truncated    = QString::fromStdString(m_notification.message);
+            auto truncated    = QString::fromStdString(m_notification.m_message);
             bool is_truncated = !check_message_length(metrics, available, truncated, false);
 
             if(is_truncated)
@@ -326,7 +326,7 @@ void notification::update()
                     if(check_message_length(metrics, new_available, truncated, true))
                     {
                         const auto previous = truncated.length() + step;
-                        truncated = QString::fromStdString(m_notification.message);
+                        truncated = QString::fromStdString(m_notification.m_message);
                         truncated.truncate(previous);
                     }
                 }
@@ -348,18 +348,18 @@ void notification::update()
 
         // Create a real message box with the full text
         auto icon = QMessageBox::NoIcon;
-        if(m_notification.type == notification_base::type::failure)
+        if(m_notification.m_type == notification_base::type::failure)
         {
             icon = QMessageBox::Critical;
         }
-        else if(m_notification.type == notification_base::type::info)
+        else if(m_notification.m_type == notification_base::type::info)
         {
             icon = QMessageBox::Information;
         }
 
         m_show_more_box->setIcon(icon);
         m_show_more_box->setWindowTitle(truncated_message);
-        m_show_more_box->setText(QString::fromStdString(m_notification.message));
+        m_show_more_box->setText(QString::fromStdString(m_notification.m_message));
     }
     else
     {
@@ -375,11 +375,11 @@ void notification::update()
     m_widget->set_position_fct(position_fct);
 
     // (re)Start / stop the fadeout timer
-    m_msg_box->timed_fadeout(m_notification.duration);
+    m_msg_box->timed_fadeout(m_notification.m_duration);
 
     // If the notification has a closable attribute, use it, otherwise, make it closable if not permanent
-    if((m_notification.closable && *m_notification.closable)
-       || (!m_notification.closable && (m_notification.duration && m_notification.duration->count() != 0)))
+    if((m_notification.m_closable && *m_notification.m_closable)
+       || (!m_notification.m_closable && (m_notification.m_duration && m_notification.m_duration->count() != 0)))
     {
         // Fadeout when clicked.
         QObject::connect(m_msg_box, &clickable_q_label::clicked, m_msg_box, &clickable_q_label::fadeout);
@@ -407,7 +407,7 @@ bool notification::is_visible() const
 
 void notification::close() const
 {
-    if(m_msg_box != nullptr)
+    if(!m_msg_box.isNull())
     {
         // Closing after a fade out effect.
         m_msg_box->fadeout();
@@ -445,8 +445,8 @@ void notification::set_size(std::array<int, 2> _size)
     // Apply the size change
     if(!m_widget.isNull())
     {
-        m_widget->setMinimumSize(m_notification.size[0], m_notification.size[1]);
-        m_widget->setMaximumSize(m_notification.size[0], m_notification.size[1]);
+        m_widget->setMinimumSize(m_notification.m_size[0], m_notification.m_size[1]);
+        m_widget->setMaximumSize(m_notification.m_size[0], m_notification.m_size[1]);
     }
 }
 
@@ -456,7 +456,7 @@ std::function<QPoint(QWidget*)> notification::compute_position()
 {
     constexpr int margin = 5;
 
-    switch(m_notification.position)
+    switch(m_notification.m_position)
     {
         case position::centered:
             return [this](QWidget* _parent) -> QPoint
@@ -464,8 +464,8 @@ std::function<QPoint(QWidget*)> notification::compute_position()
                        const auto parent_pos_center = _parent->rect().center();
 
                        return {
-                           parent_pos_center.x() - static_cast<int>(m_notification.size[0] / 2),
-                           parent_pos_center.y() - static_cast<int>(m_notification.size[1] / 2)
+                           parent_pos_center.x() - static_cast<int>(m_notification.m_size[0] / 2),
+                           parent_pos_center.y() - static_cast<int>(m_notification.m_size[1] / 2)
                        };
                    };
 
@@ -474,10 +474,10 @@ std::function<QPoint(QWidget*)> notification::compute_position()
                    {
                        const int parent_x = _parent->rect().center().x();
                        const int parent_y = _parent->rect().topLeft().y();
-                       const int height   = static_cast<int>(m_notification.size[1]) + margin;
+                       const int height   = static_cast<int>(m_notification.m_size[1]) + margin;
 
                        return {
-                           parent_x - static_cast<int>(m_notification.size[0] / 2),
+                           parent_x - static_cast<int>(m_notification.m_size[0] / 2),
                            parent_y + margin + (height * static_cast<int>(m_index))
                        };
                    };
@@ -487,10 +487,10 @@ std::function<QPoint(QWidget*)> notification::compute_position()
                    {
                        const int parent_x = _parent->rect().center().x();
                        const int parent_y = _parent->rect().bottomLeft().y();
-                       const int height   = static_cast<int>(m_notification.size[1]) + margin;
+                       const int height   = static_cast<int>(m_notification.m_size[1]) + margin;
 
                        return {
-                           parent_x - static_cast<int>(m_notification.size[0] / 2),
+                           parent_x - static_cast<int>(m_notification.m_size[0] / 2),
                            parent_y - margin - (height * (static_cast<int>(m_index) + 1))
                        };
                    };
@@ -501,7 +501,7 @@ std::function<QPoint(QWidget*)> notification::compute_position()
                        const auto parrent_top_left = _parent->rect().topLeft();
                        const int parent_x          = parrent_top_left.x();
                        const int parent_y          = parrent_top_left.y();
-                       const int height            = static_cast<int>(m_notification.size[1]) + margin;
+                       const int height            = static_cast<int>(m_notification.m_size[1]) + margin;
 
                        return {
                            parent_x + margin,
@@ -515,10 +515,10 @@ std::function<QPoint(QWidget*)> notification::compute_position()
                        const auto parrent_top_right = _parent->rect().topRight();
                        const int parent_x           = parrent_top_right.x();
                        const int parent_y           = parrent_top_right.y();
-                       const int height             = static_cast<int>(m_notification.size[1]) + margin;
+                       const int height             = static_cast<int>(m_notification.m_size[1]) + margin;
 
                        return {
-                           parent_x - margin - static_cast<int>(m_notification.size[0]),
+                           parent_x - margin - static_cast<int>(m_notification.m_size[0]),
                            parent_y + margin + (height * static_cast<int>(m_index))
                        };
                    };
@@ -529,7 +529,7 @@ std::function<QPoint(QWidget*)> notification::compute_position()
                        const auto parrent_bottom_left = _parent->rect().bottomLeft();
                        const int parent_x             = parrent_bottom_left.x();
                        const int parent_y             = parrent_bottom_left.y();
-                       const int height               = static_cast<int>(m_notification.size[1]) + margin;
+                       const int height               = static_cast<int>(m_notification.m_size[1]) + margin;
 
                        return {
                            parent_x + margin,
@@ -543,16 +543,16 @@ std::function<QPoint(QWidget*)> notification::compute_position()
                        const auto parrent_bottom_right = _parent->rect().bottomRight();
                        const int parent_x              = parrent_bottom_right.x();
                        const int parent_y              = parrent_bottom_right.y();
-                       const int height                = static_cast<int>(m_notification.size[1]) + margin;
+                       const int height                = static_cast<int>(m_notification.m_size[1]) + margin;
 
                        return {
-                           parent_x - margin - static_cast<int>(m_notification.size[0]),
+                           parent_x - margin - static_cast<int>(m_notification.m_size[0]),
                            parent_y - (height * (static_cast<int>(m_index) + 1))
                        };
                    };
 
         default:
-            SIGHT_ASSERT("position '" + std::to_string(int(m_notification.position)) + "' is unknown.", false);
+            SIGHT_ASSERT("position '" + std::to_string(int(m_notification.m_position)) + "' is unknown.", false);
 
             return [](QWidget* _parent) -> QPoint
                    {

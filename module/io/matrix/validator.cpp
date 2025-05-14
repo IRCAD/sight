@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -70,7 +70,7 @@ void validator::updating()
     if(!matrix)
     {
         this->signal<signals::void_signal_t>(signals::INVALID)->async_emit();
-        this->notify(sight::service::notification::failure, "matrix is empty");
+        this->notify(sight::service::notification::type::failure, "matrix is empty");
         return;
     }
 
@@ -78,7 +78,7 @@ void validator::updating()
 
     if(!is_ortho)
     {
-        this->notify(sight::service::notification::failure, "matrix is not orthogonal");
+        this->notify(sight::service::notification::type::failure, "matrix is not orthogonal");
         this->signal<signals::void_signal_t>(signals::INVALID)->async_emit();
         return;
     }
@@ -87,7 +87,7 @@ void validator::updating()
 
     if(!is_homogeneous)
     {
-        this->notify(sight::service::notification::failure, "matrix is not homogeneous");
+        this->notify(sight::service::notification::type::failure, "matrix is not homogeneous");
         this->signal<signals::void_signal_t>(signals::INVALID)->async_emit();
         return;
     }

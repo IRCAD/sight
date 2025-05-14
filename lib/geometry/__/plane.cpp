@@ -145,7 +145,7 @@ bool is_in_half_space(const plane_t& _plane, const glm::dvec3& _point)
 {
     glm::dvec3 point_glm(_point[0], _point[1], _point[2]);
     glm::dvec3 normal(_plane[0], _plane[1], _plane[2]);
-    glm::normalize(normal);
+    normal = glm::normalize(normal);
     glm::dvec3 pos = normal * _plane[3];
     return glm::dot(normal, point_glm - pos) >= 0.0;
 }

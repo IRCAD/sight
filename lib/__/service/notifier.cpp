@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -38,8 +38,12 @@ notifier::notifier(core::com::signals& _signals) noexcept
 
 void notifier::notify(notification _notification) const
 {
-    SIGHT_FATAL_IF("channel '" + _notification.channel + "' not found.", !m_channels.contains(_notification.channel));
-    _notification.channel = m_channels.at(_notification.channel);
+    SIGHT_FATAL_IF(
+        "channel '" + _notification.m_channel + "' not found.",
+        !m_channels.contains(_notification.m_channel)
+    );
+
+    _notification.m_channel = m_channels.at(_notification.m_channel);
     m_notified_sig->async_emit(std::move(_notification));
 }
 
