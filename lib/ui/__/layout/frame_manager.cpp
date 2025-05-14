@@ -191,19 +191,21 @@ void frame_manager::read_config()
     {
         ui::preferences preferences;
 
-        m_frame_info.m_state =
-            static_cast<frame_state>(preferences.get(
-                                         get_frame_state_key(m_frame_info.m_name),
-                                         static_cast<std::uint8_t>(m_frame_info.m_state)
-            ));
-        m_frame_info.m_size.first =
-            preferences.get(get_frame_w_key(m_frame_info.m_name), m_frame_info.m_size.first);
-        m_frame_info.m_size.second =
-            preferences.get(get_frame_h_key(m_frame_info.m_name), m_frame_info.m_size.second);
+        m_frame_info.m_state = static_cast<frame_state>(
+            preferences.get(
+                get_frame_state_key(m_frame_info.m_name),
+                std::underlying_type_t<frame_state>(m_frame_info.m_state)
+            )
+        );
+
+        m_frame_info.m_size.first  = preferences.get(get_frame_w_key(m_frame_info.m_name), m_frame_info.m_size.first);
+        m_frame_info.m_size.second = preferences.get(get_frame_h_key(m_frame_info.m_name), m_frame_info.m_size.second);
+
         m_frame_info.m_position.first = preferences.get(
             get_frame_x_key(m_frame_info.m_name),
             m_frame_info.m_position.first
         );
+
         m_frame_info.m_position.second = preferences.get(
             get_frame_y_key(m_frame_info.m_name),
             m_frame_info.m_position.second
@@ -225,9 +227,7 @@ void frame_manager::write_config() const
 
         preferences.put(
             get_frame_state_key(m_frame_info.m_name),
-            static_cast<std::uint8_t>(
-                m_frame_info.m_state == frame_state::iconized ? frame_state::normal : m_frame_info.m_state
-            )
+            std::underlying_type_t<frame_state>(m_frame_info.m_state)
         );
 
         preferences.put(get_frame_w_key(m_frame_info.m_name), m_frame_info.m_size.first);

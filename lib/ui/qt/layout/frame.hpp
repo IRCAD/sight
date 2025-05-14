@@ -72,8 +72,7 @@ private Q_SLOTS:
 
 private:
 
-    void set_state(frame_state _state);
-    frame_state get_state();
+    void set_full_screen(bool _full_screen = true);
 
     QPointer<QMainWindow> m_qt_window;
     QPointer<QShortcut> m_shortcut;

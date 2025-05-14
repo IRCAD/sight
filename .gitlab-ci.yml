@@ -493,7 +493,7 @@ deploy:linux-coverage-analysis:
         - $CI_PROJECT_DIR/.build/sight-git/sight-cov.py ${CI_PROJECT_NAME} ${CI_MERGE_REQUEST_IID} --diff --html --token_config
         - $CI_PROJECT_DIR/.build/sight-git/coverage-commentator.py ${CI_PROJECT_NAME} ${CI_MERGE_REQUEST_IID} ${CI_JOB_ID}
     rules:
-        - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
 
     artifacts:
         paths:

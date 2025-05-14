@@ -55,7 +55,7 @@ core::location::base::sptr location::show()
     dialog.setWindowTitle(caption);
     // @todo: On Linux with GTK location dialog are stuck on .exec(), it seems that paint event is never posted.
     // Temporary we use qt dialog as a work-around.
-#ifdef _WIN32_
+#ifdef _WIN32
     dialog.setOption(QFileDialog::Option::DontUseNativeDialog, !qgetenv("GUI_TESTS_ARE_RUNNING").isEmpty());
 #else
     dialog.setOption(QFileDialog::Option::DontUseNativeDialog, true);

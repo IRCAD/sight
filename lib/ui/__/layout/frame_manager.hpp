@@ -64,11 +64,10 @@ public:
 
     enum class frame_state : std::uint8_t
     {
-        unknown     = 0, ///< the unknown state
+        normal      = 0, ///< the normal state
         iconized    = 1, ///< the minimized state
         maximized   = 2, ///< the maximied state
-        full_screen = 3, ///< the full screen state
-        normal      = 4  ///< the normal state
+        full_screen = 4  ///< the full screen state
     };
 
     class frame_info
@@ -102,7 +101,7 @@ public:
         std::pair<int, int> m_position {-1, -1};
 
         /// Frame state (maximize, minized, full screen)
-        frame_state m_state {frame_state::unknown};
+        frame_state m_state {frame_state::normal};
 
         /// Frame visibility
         bool m_visibility {true};
