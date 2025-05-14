@@ -256,7 +256,7 @@
             <inout key="frameTL" uid="frameTL" />
         </service>
 
-        <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer">
+        <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer" auto_connect="false">
             <in group="frameTL">
                 <key uid="frameTL" />
             </in>
@@ -266,15 +266,15 @@
             <tolerance>200</tolerance>
         </service>
 
-        <service uid="distorterSrv" type="sight::module::geometry::vision::distortion">
-            <in key="camera" uid="${camera}" auto_connect="true" />
+        <service uid="distorterSrv" type="sight::module::geometry::vision::distortion" auto_connect="false">
+            <in key="camera" uid="${camera}" />
             <in key="input" uid="videoFrame" />
             <inout key="output" uid="distortedFrame" />
             <mode>undistort</mode>
         </service>
 
-        <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" worker="chess_checker">
-            <in group="image" auto_connect="true">
+        <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" worker="chess_checker" auto_connect="false">
+            <in group="image">
                 <key uid="videoFrame" />
             </in>
             <inout group="calInfo">
@@ -286,7 +286,7 @@
             <properties from="${board_properties}" />
         </service>
 
-        <service uid="chessboardReprojectionSrv" type="sight::module::geometry::vision::chessboard_reprojection">
+        <service uid="chessboardReprojectionSrv" type="sight::module::geometry::vision::chessboard_reprojection" worker="chess_reproj" auto_connect="false">
             <in key="transform" uid="cameraPoseMx" />
             <in key="camera" uid="${camera}" />
             <in key="detectedChessboard" uid="detectedChessboard" />
@@ -299,7 +299,7 @@
         <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
-            <scene renderMode="sync">
+            <scene renderMode="manual">
                 <background topColor="#000000" bottomColor="#000000" />
 
                 <layer id="default" order="1">
@@ -322,6 +322,7 @@
         <connect>
             <signal>startVideoAct/clicked</signal>
             <slot>videoGrabberSrv/start_camera</slot>
+            <slot>update_loop/start</slot>
         </connect>
 
         <connect>
@@ -329,6 +330,7 @@
             <slot>videoGrabberSrv/pause_camera</slot>
             <slot>resumeVideoAct/show</slot>
             <slot>pauseVideoAct/hide</slot>
+            <slot>update_loop/stop</slot>
         </connect>
 
         <connect>
@@ -336,6 +338,7 @@
             <slot>videoGrabberSrv/pause_camera</slot>
             <slot>resumeVideoAct/hide</slot>
             <slot>pauseVideoAct/show</slot>
+            <slot>update_loop/start</slot>
         </connect>
 
         <connect>
@@ -347,6 +350,7 @@
             <slot>stopVideoAct/disable</slot>
             <slot>loopVideoAct/disable</slot>
             <slot>loopVideoAct/uncheck</slot>
+            <slot>update_loop/stop</slot>
         </connect>
 
         <connect>
@@ -477,33 +481,6 @@
             <signal>${calibrationInfo}/reset_record</signal>
             <slot>calibrationInfoEditorSrv/update</slot>
         </connect>
-
-        <connect>
-            <signal>chessboardDetectorSrv/updated</signal>
-            <slot>computeCameraPoseSrv/update</slot>
-        </connect>
-
-        <connect>
-            <signal>computeCameraPoseSrv/updated</signal>
-            <slot>distorterSrv/update</slot>
-        </connect>
-
-        <connect>
-            <signal>distorterSrv/updated</signal>
-            <slot>chessboardReprojectionSrv/update</slot>
-        </connect>
-
-        <connect>
-            <signal>chessboardReprojectionSrv/updated</signal>
-            <slot>videoAdp/update</slot>
-        </connect>
-
-        <connect>
-            <signal>videoAdp/updated</signal>
-            <slot>genericSceneSrv/render</slot>
-            <slot>frameSynchronizerSrv/request_sync</slot>
-        </connect>
-
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainView" />
@@ -519,5 +496,16 @@
         <start uid="distorterSrv" />
         <start uid="computeCameraPoseSrv" />
         <start uid="videoAdp" />
+
+        <update>
+            <sequence uid="update_loop" loop="true">
+                <service uid="frameSynchronizerSrv" />
+                <service uid="chessboardDetectorSrv" />
+                <service uid="computeCameraPoseSrv" />
+                <service uid="distorterSrv" />
+                <service uid="chessboardReprojectionSrv" />
+                <service uid="genericSceneSrv" />
+            </sequence>
+        </update>
     </config>
 </extension>

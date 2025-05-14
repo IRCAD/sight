@@ -217,11 +217,11 @@
             </scene>
         </service>
 
-        <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
+        <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="false">
             <in key="image" uid="frame1" />
         </service>
 
-        <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
+        <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="false">
             <in key="image" uid="frame2" />
         </service>
 
@@ -230,7 +230,7 @@
         <service uid="videoSliderSrv" type="sight::module::ui::qt::video::slider" />
 
         <!-- Extracts images for the detection algorithm. -->
-        <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer">
+        <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer" auto_connect="false">
             <in group="frameTL">
                 <key uid="frame1TL" />
                 <key uid="frame2TL" />
@@ -263,7 +263,7 @@
         </service>
 
         <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" worker="extr_chess_checker">
-            <in group="image" auto_connect="true">
+            <in group="image" auto_connect="false">
                 <key uid="frame1" />
                 <key uid="frame2" />
             </in>
@@ -360,7 +360,7 @@
         <connect>
             <signal>goOpenCVAct/clicked</signal>
             <slot>openCVExtrinsicCalSrv/update</slot>
-            <slot>Status/change_to_orange</slot>
+            <slot>detectionStatusSrv/change_to_orange</slot>
         </connect>
 
         <connect>
@@ -372,6 +372,7 @@
             <signal>startVideoAct/clicked</signal>
             <slot>videoGrabber1Srv/start_camera</slot>
             <slot>videoGrabber2Srv/start_camera</slot>
+            <slot>update_loop/start</slot>
         </connect>
 
         <connect>
@@ -380,6 +381,7 @@
             <slot>videoGrabber2Srv/pause_camera</slot>
             <slot>resumeVideoAct/show</slot>
             <slot>pauseVideoAct/hide</slot>
+            <slot>update_loop/stop</slot>
         </connect>
 
         <connect>
@@ -388,6 +390,7 @@
             <slot>videoGrabber2Srv/pause_camera</slot>
             <slot>resumeVideoAct/hide</slot>
             <slot>pauseVideoAct/show</slot>
+            <slot>update_loop/start</slot>
         </connect>
 
         <connect>
@@ -400,6 +403,7 @@
             <slot>stopVideoAct/disable</slot>
             <slot>loopVideoAct/disable</slot>
             <slot>loopVideoAct/uncheck</slot>
+            <slot>update_loop/stop</slot>
         </connect>
 
         <connect>
@@ -440,13 +444,15 @@
         </connect>
 
         <connect>
-            <signal>${camera}/id_modified</signal>
+            <signal>${camera1}/id_modified</signal>
+            <signal>${camera2}/id_modified</signal>
             <slot>videoGrabber1Srv/stop_camera</slot>
             <slot>videoGrabber2Srv/stop_camera</slot>
         </connect>
 
         <connect>
-            <signal>${camera}/modified</signal>
+            <signal>${camera1}/modified</signal>
+            <signal>${camera2}/modified</signal>
             <slot>stopVideoAct/update</slot>
         </connect>
 
@@ -471,14 +477,7 @@
 
         <connect>
             <signal>chessboardDetectorSrv/chessboard_detected</signal>
-            <slot>frameSynchronizerSrv/request_sync</slot>
             <slot>detectionStatusSrv/toggle_green_red</slot>
-        </connect>
-
-        <connect>
-            <signal>chessboardDetectorSrv/updated</signal>
-            <slot>genericSceneSrv/render</slot>
-            <slot>frameSynchronizerSrv/request_sync</slot>
         </connect>
 
         <connect>
@@ -515,5 +514,13 @@
         <start uid="calibrationDataReader2Srv" />
         <start uid="video1Adp" />
         <start uid="video2Adp" />
+
+        <update>
+            <sequence uid="update_loop" loop="true">
+                <service uid="frameSynchronizerSrv" />
+                <service uid="chessboardDetectorSrv" />
+                <service uid="genericSceneSrv" />
+            </sequence>
+        </update>
     </config>
 </extension>

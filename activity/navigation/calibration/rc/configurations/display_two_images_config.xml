@@ -43,7 +43,7 @@
         <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericScene1Srv" type="sight::viz::scene3d::render">
-            <scene>
+            <scene renderMode="auto">
                 <background topColor="#000000" bottomColor="#000000" />
 
                 <layer id="video" order="1">
@@ -55,13 +55,13 @@
         <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
             <in key="image" uid="${imageId1}" />
             <in key="pointList" uid="${pointListId1}" />
-            <config radius="1.0" color="#6997BB" fixedSize="true" textureName="circle.dds" />
+            <config radius="1.0" color="#00FFFF" fixedSize="true" textureName="circle.dds" />
         </service>
 
         <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericScene2Srv" type="sight::viz::scene3d::render">
-            <scene>
+            <scene renderMode="auto">
                 <background topColor="#000000" bottomColor="#000000" />
 
                 <layer id="video" order="1">
@@ -73,7 +73,7 @@
         <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
             <in key="image" uid="${imageId2}" />
             <in key="pointList" uid="${pointListId2}" />
-            <config radius="1.0" color="#6997BB" fixedSize="true" textureName="circle.dds" />
+            <config radius="1.0" color="#00FFFF" fixedSize="true" textureName="circle.dds" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
@@ -88,7 +88,16 @@
         <start uid="video1Adp" />
         <start uid="video2Adp" />
 
-        <update uid="video1Adp" />
-        <update uid="video2Adp" />
+        <start uid="update_at_start" />
+
+        <update>
+            <service uid="update_at_start" />
+            <sequence uid="update_at_start">
+                <service uid="video1Adp" slot="update_image" />
+                <service uid="video1Adp" slot="update_pl" />
+                <service uid="video2Adp" slot="update_image" />
+                <service uid="video2Adp" slot="update_pl" />
+            </sequence>
+        </update>
     </config>
 </extension>
