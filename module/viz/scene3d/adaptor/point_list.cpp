@@ -168,28 +168,7 @@ void point_list::starting()
     Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
     m_scene_node = this->get_or_create_transform_node(root_scene_node);
 
-    const auto point_list = m_point_list.lock();
-    if(point_list)
-    {
-        this->update_mesh(point_list.get_shared());
-    }
-    else
-    {
-        const auto mesh = m_mesh.lock();
-        if(mesh)
-        {
-            if(!m_custom_material && mesh->has<data::mesh::attribute::point_colors>())
-            {
-                m_material_template_name += "_PerPointColor";
-            }
-
-            this->update_mesh(mesh.get_shared());
-        }
-        else
-        {
-            SIGHT_ERROR("No '" << POINTLIST_INPUT << "' or '" << MESH_INPUT << "' specified.")
-        }
-    }
+    this->updating();
 
     this->apply_visibility();
 }
@@ -199,12 +178,14 @@ void point_list::starting()
 service::connections_t point_list::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(POINTLIST_INPUT, data::point_list::POINT_ADDED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(POINTLIST_INPUT, data::point_list::POINT_REMOVED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(POINTLIST_INPUT, data::point_list::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_point_list, data::point_list::POINT_ADDED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_point_list, data::point_list::POINT_REMOVED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_point_list, data::point_list::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
 
-    connections.push(MESH_INPUT, data::mesh::VERTEX_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(MESH_INPUT, data::mesh::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_points, data::object::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+
+    connections.push(m_mesh, data::mesh::VERTEX_MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_mesh, data::mesh::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
 
     return connections;
 }
@@ -247,21 +228,39 @@ void point_list::updating()
 
     this->destroy_label();
 
-    const auto point_list = m_point_list.lock();
-    if(point_list)
+    if(const auto point_list = m_point_list.lock(); point_list)
     {
         this->update_mesh(point_list.get_shared());
     }
     else
     {
-        const auto mesh = m_mesh.lock();
-        if(mesh)
+        if(not m_points.empty())
         {
-            this->update_mesh(mesh.get_shared());
+            const auto tmp_list = std::make_shared<sight::data::point_list>();
+            std::ranges::for_each(
+                m_points,
+                [&tmp_list](const auto& _x)
+                {
+                    const auto point = _x.second->const_lock();
+                    tmp_list->get_points().push_back(std::const_pointer_cast<sight::data::point>(point.get_shared()));
+                });
+            this->update_mesh(tmp_list);
         }
         else
         {
-            SIGHT_ERROR("No '" << POINTLIST_INPUT << "' or '" << MESH_INPUT << "' specified.")
+            if(const auto mesh = m_mesh.lock(); mesh)
+            {
+                if(!m_custom_material && mesh->has<data::mesh::attribute::point_colors>())
+                {
+                    m_material_template_name += "_PerPointColor";
+                }
+
+                this->update_mesh(mesh.get_shared());
+            }
+            else
+            {
+                SIGHT_ERROR("No 'pointList', 'points' or 'mesh' specified.")
+            }
         }
     }
 
@@ -452,7 +451,7 @@ void point_list::update_material_adaptor(const std::string& _mesh_id)
             config_t material_adp_config;
             material_adp_config.put("config.<xmlattr>.material_template", m_material_template_name);
 
-            if(m_uniforms.size() > 0)
+            if(!m_uniforms.empty())
             {
                 std::size_t i = 0;
                 for(const auto& uniform_data : m_uniforms)

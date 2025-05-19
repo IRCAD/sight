@@ -65,18 +65,43 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @section XML XML Configuration
  * @code{.xml}
+ *  The service can be configured in three different ways, with 3 different input data:
+ *  - a sight::data::point_list:
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::point_list" >
+        <in key="pointList" uid="..." />
+        <!-- .... />
+    </service>
+
+    - a set of sight::data::point (for conveniency with a few points):
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::point_list" >
+        <in group="points" >
+            <key uid="..." />
+        </in>
+        <!-- .... />
+    </service>
+
+ *  - a sight::data::mesh (the most efficient structure):
+    <service uid="..." type="sight::module::viz::scene3d::adaptor::point_list" >
+        <in key="mesh" uid="..." />
+        <!-- .... />
+    </service>
+
+    Whatever the input data type, it provides other options:
+
     <service uid="..." type="sight::module::viz::scene3d::adaptor::point_list" >
         <in key="pointList" uid="..." />
         <inout group="uniforms">
             <key uid="..." name="u_uniform_name" />
        </inout>
         <config transform="..." textureName="..." radius="1.0" fontSource="DejaVuSans.ttf" fontSize="16"
-               labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" displayLabel="false"/>
+                labelColor="#0xFFFFFF" fixedSize="false" queryFlags="0x40000000" displayLabel="false"/>
+        <properties visible="true" />
     </service>
    @endcode
  *
  * @subsection Input Input
  * - \b pointList [sight::data::point_list] (optional): point list to display.
+ * - \b points [sight::data::point] (optional): group of points to display.
  * - \b mesh [sight::data::mesh] (optional): point based mesh to display. If the mesh contains any topology, it will be
  *      ignored and only raw vertices will be displayed. or add some fields.
  * - \b uniforms: list of data to bind to material uniforms.
@@ -97,9 +122,11 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b fixedSize (optional, bool, default=false): if true, the billboard will have a fixed size in screen space.
  * - \b queryFlags (optional, uint32, default=0x40000000): Picking flags. Points can be picked by pickers with a
  *      matching mask.
- * - \b visible (optional, bool, default=true): the pointlist visibility at start.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): true_t font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
+ *
+ * @subsection Properties Properties:
+ * - \b visible (optional, bool, default=true): the pointlist visibility at start.
  */
 class point_list final :
     public sight::viz::scene3d::adaptor,
@@ -242,12 +269,10 @@ private:
     /// Defines the font size in points.
     std::size_t m_font_size {16};
 
-    static constexpr std::string_view POINTLIST_INPUT = "pointList";
-    static constexpr std::string_view MESH_INPUT      = "mesh";
-
-    data::ptr<data::point_list, data::access::in> m_point_list {this, POINTLIST_INPUT, true};
+    data::ptr<data::point_list, data::access::in> m_point_list {this, "pointList", true};
+    data::ptr_vector<data::point, data::access::in> m_points {this, "points", true};
+    data::ptr<data::mesh, data::access::in> m_mesh {this, "mesh", true};
     data::ptr_vector<data::object, data::access::inout> m_uniforms {this, "uniforms", true};
-    data::ptr<data::mesh, data::access::in> m_mesh {this, MESH_INPUT, true};
 };
 
 //------------------------------------------------------------------------------

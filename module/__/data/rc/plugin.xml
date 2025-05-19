@@ -53,6 +53,14 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
+        <service>sight::module::data::get_point</service>
+        <object key="image">sight::data::image_series</object>
+        <object key="points">sight::data::point</object>
+        <desc>Extracts fiducials from an image series into individual points</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::controller</type>
         <service>sight::module::data::get_series</service>
         <object key="seriesSet">sight::data::series_set</object>
         <object key="series">sight::data::series</object>

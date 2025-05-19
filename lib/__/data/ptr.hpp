@@ -355,6 +355,12 @@ public:
         return *m_ptrs.at(_index);
     }
 
+    /// Returns true if the map of registered pointers is empty
+    [[nodiscard]] bool empty() const
+    {
+        return m_ptrs.empty();
+    }
+
     /// Return the number of registered pointers
     [[nodiscard]] std::size_t size() const
     {

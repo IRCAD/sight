@@ -51,6 +51,9 @@ void manage_point_list_test::tearDown()
 
 //------------------------------------------------------------------------------
 
+namespace
+{
+
 class context final
 {
 public:
@@ -94,6 +97,8 @@ public:
     sight::service::base::sptr srv;
     sight::data::point_list::sptr point_list;
 };
+
+} // namespace
 
 //------------------------------------------------------------------------------
 

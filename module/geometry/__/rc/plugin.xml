@@ -18,6 +18,14 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
+        <type>sight::service::filter</type>
+        <service>sight::module::geometry::matrix_to_point</service>
+        <object key="matrix">sight::data::matrix4</object>
+        <object key="point">sight::data::point</object>
+        <desc>Extract the translation part of a matrix as a point</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::geometry::manage_point_list</service>
         <object key="pointList">sight::data::point_list</object>
