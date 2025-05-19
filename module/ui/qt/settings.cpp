@@ -43,6 +43,7 @@
 #include <ui/__/dialog/location.hpp>
 #include <ui/qt/container/widget.hpp>
 #include <ui/qt/widget/non_linear_slider.hpp>
+#include <ui/qt/widget/tickmarks_slider.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -443,6 +444,16 @@ void settings::starting()
                     style,
                     orientation
                 );
+            }
+            else if(widget_type == "tickmarks")
+            {
+                const auto options = cfg.get<std::string>("<xmlattr>.values", "");
+
+                std::vector<std::string> labels;
+                std::vector<std::string> data;
+                sight::module::ui::qt::settings::parse_enum_string(options, labels, data);
+
+                this->create_tickmarks_widget(param_box_layout, widget, labels);
             }
             else if(is_text_widget.contains(widget_type))
             {
@@ -1831,6 +1842,99 @@ void settings::create_enum_slider_widget(
 }
 
 //-----------------------------------------------------------------------------
+void settings::create_tickmarks_widget(
+    QBoxLayout* _layout,
+    const param_widget& _setup,
+    const std::vector<std::string>& _values
+)
+{
+    auto* tick_widget = new sight::ui::qt::widget::tickmarks_slider();
+    tick_widget->setProperty(
+        qt_property::key,
+        QString::fromStdString(_setup.key)
+    );
+    tick_widget->setProperty(
+        qt_property::data_index,
+        static_cast<uint>(_setup.data_index)
+    );
+
+    tick_widget->setObjectName(QString::fromStdString(_setup.key));
+    tick_widget->set_range(0, static_cast<int>(_values.size()) - 1);
+
+    tick_widget->set_tick_labels(_values);
+    QStringList q_labels;
+    for(const auto& s : _values)
+    {
+        q_labels << QString::fromStdString(s);
+    }
+
+    tick_widget->setProperty("tickLabels", q_labels);
+    tick_widget->set_tick_interval(1);
+    tick_widget->set_current_tick(0);
+    tick_widget->setMinimumSize(100, 50);
+
+    auto* value_label = new QLabel();
+
+    value_label->setObjectName(QString::fromStdString(_setup.key + "/valueLabel"));
+    value_label->setVisible(false);
+    const bool is_string = data<sight::data::string>(tick_widget) != nullptr;
+
+    if(is_string)
+    {
+        const auto obj        = data<sight::data::string>(tick_widget);
+        const auto init_value = obj->value();
+        tick_widget->set_tick_labels({init_value});
+        connect_data(obj, _setup.key);
+    }
+    else
+    {
+        auto obj        = data<sight::data::integer>(tick_widget);
+        int  init_index = static_cast<int>(obj->value());
+        init_index = std::clamp(init_index, 0, int(_values.size()) - 1);
+        tick_widget->set_current_tick(init_index);
+        value_label->setText(
+            QString::fromStdString(
+                _values[static_cast<std::size_t>(init_index)]
+            )
+        );
+
+        connect_data(obj, _setup.key);
+    }
+
+    connect(
+        tick_widget,
+        &sight::ui::qt::widget::tickmarks_slider::value_changed,
+        this,
+        [this, tick_widget](int _index)
+        {
+            const auto& labels = tick_widget->tick_labels();
+            if(_index < 0 || _index >= static_cast<int>(labels.size()))
+            {
+                return;
+            }
+
+            const std::string& tick_value = labels[static_cast<size_t>(_index)];
+            if(auto str = data<sight::data::string>(tick_widget))
+            {
+                update_data<sight::data::string>(tick_widget, tick_value);
+            }
+            else
+            {
+                update_data<sight::data::integer>(
+                    tick_widget,
+                    static_cast<std::int64_t>(_index)
+                );
+            }
+        });
+
+    _layout->addWidget(tick_widget);
+    std::string options = boost::algorithm::join(_values, ",");
+
+    _layout->addWidget(value_label);
+    this->update_tickmarks(options, _setup.key);
+}
+
+//-----------------------------------------------------------------------------
 
 void settings::create_enum_button_bar_widget(
     QBoxLayout* _layout,
@@ -2177,8 +2281,56 @@ void settings::update_enum_range(std::string _options, std::string _key)
 
         combobox->blockSignals(false);
     }
+    else
+    {
+        this->update_tickmarks(_options, _key);
+    }
 
     this->block_signals(false);
+}
+
+//------------------------------------------------------------------------------
+void settings::update_tickmarks(const std::string _options, const std::string _key)
+{
+    QObject* widget_ptr = this->get_param_widget(_key);
+
+    auto* tickmarks_widget = qobject_cast<sight::ui::qt::widget::tickmarks_slider*>(widget_ptr);
+    if(tickmarks_widget == nullptr)
+    {
+        SIGHT_ERROR("TickMarksWidget not found for key: " + _key);
+        return;
+    }
+
+    QSignalBlocker guard(tickmarks_widget);
+
+    std::vector<std::string> tick_labels;
+    std::vector<std::string> tick_data;
+    sight::module::ui::qt::settings::parse_enum_string(_options, tick_labels, tick_data);
+
+    if(!tick_labels.empty())
+    {
+        const int max_index = static_cast<int>(tick_labels.size()) - 1;
+        tickmarks_widget->set_range(0, max_index);
+        tickmarks_widget->set_tick_interval(1);
+        tickmarks_widget->set_tick_labels(tick_labels);
+
+        int current_index = 0;
+        if(auto string_data = settings::data<sight::data::string>(tickmarks_widget))
+        {
+            const std::string& current_value = string_data->value();
+            auto it                          = std::find(tick_data.begin(), tick_data.end(), current_value);
+            if(it != tick_data.end())
+            {
+                current_index = static_cast<int>(std::distance(tick_data.begin(), it));
+            }
+        }
+        else if(auto integer_data = settings::data<sight::data::integer>(tickmarks_widget))
+        {
+            current_index = static_cast<int>(std::clamp<std::int64_t>(integer_data->value(), 0, max_index));
+        }
+
+        tickmarks_widget->set_current_tick(current_index);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -2571,6 +2723,14 @@ void settings::set_parameter<sight::data::string>(const std::string& _val, std::
     {
         line_edit->setText(QString::fromStdString(_val));
     }
+    else if(auto* tickmarks_widget = qobject_cast<sight::ui::qt::widget::tickmarks_slider*>(widget);
+            tickmarks_widget != nullptr)
+    {
+        auto  q_labels  = tickmarks_widget->property("tickLabels").toStringList();
+        qsizetype idx_q = q_labels.indexOf(QString::fromStdString(_val));
+        int idx         = static_cast<int>(idx_q >= 0 ? idx_q : 0);
+        tickmarks_widget->set_current_tick(idx >= 0 ? idx : 0);
+    }
     else
     {
         SIGHT_ERROR("Unknown widget type in set_parameter callback");
@@ -2604,6 +2764,11 @@ void settings::set_parameter<sight::data::integer>(const std::int64_t& _val, std
             non_linear_slider != nullptr)
     {
         non_linear_slider->set_index(std::size_t(val));
+    }
+    else if(auto* tickmarks_widget = qobject_cast<sight::ui::qt::widget::tickmarks_slider*>(widget);
+            tickmarks_widget != nullptr)
+    {
+        tickmarks_widget->set_current_tick(val);
     }
     else if(combobox != nullptr)
     {

@@ -9,7 +9,6 @@ target_compile_definitions(
 target_link_libraries(${SIGHT_TARGET} PUBLIC Qt6::Widgets Qt6::Concurrent Qt6::OpenGLWidgets)
 set_target_properties(${SIGHT_TARGET} PROPERTIES AUTOMOC TRUE)
 target_compile_definitions(${SIGHT_TARGET} PUBLIC "QT_NO_KEYWORDS")
-
 target_link_libraries(${SIGHT_TARGET} PUBLIC core data ui service)
 
 if(SIGHT_BUILD_TESTS)

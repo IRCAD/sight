@@ -1493,3 +1493,26 @@ QProgressBar::chunk
     font-size: 20px;
     border-radius: 4px;
 }
+
+
+/************************************************************************/
+/****************************** tickmarks_slider ************************/
+/************************************************************************/
+
+
+.tickmarks_slider::groove:horizontal 
+{
+    height: 2px;
+    background: transparent
+}
+.tickmarks_slider::handle:horizontal 
+{
+    width: 6px;           
+    margin: -4px 0;       
+    background: transparent;
+    border-radius: 3px;
+}
+
+
+
+

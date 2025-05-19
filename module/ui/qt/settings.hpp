@@ -125,8 +125,8 @@ namespace sight::module::ui::qt
  * - \b widget (optional) : widget type, available for types 'sight::data::integer', 'sight::data::real',
  * 'sight::data::string'.
  * For 'sight::data::real', you can choose between a 'spin' or a 'slider' widget. Defaults to 'spin'.
- * For 'sight::data::integer', you can choose between a 'spin', a 'slider', a 'combobox', a 'comboslider', or
- * a 'buttonBar'.
+ * For 'sight::data::integer', you can choose between a 'spin', a 'slider', a 'combobox', a 'comboslider', a 'tickmarks'
+ *  , or a 'buttonBar'.
  * For 'string', you can choose between 'text', 'file_[read/write]', 'dir_[read/write]',
  * buttonBar widget requires additional configuration.
  *     - \b value: the enum value sent when clicking on the button.
@@ -305,6 +305,9 @@ private:
      */
     bool eventFilter(QObject* _watched, QEvent* _event) override;
 
+    /// Updates the values of tickmarks widgets
+    void update_tickmarks(const std::string _options, const std::string _key);
+
     /// Creates a reset button for one widget.
     /// @param _key Name of the parameter it resets.
     /// @param _on_click Slot to call when the button is clicked (when QPushButton::clicked is sent)
@@ -386,6 +389,13 @@ private:
         const std::vector<std::string>& _values,
         Qt::Orientation _orientation,
         bool _on_release
+    );
+
+    /// Create a tickmarks widget
+    void create_tickmarks_widget(
+        QBoxLayout* _layout,
+        const param_widget& _setup,
+        const std::vector<std::string>& _values
     );
 
     void create_enum_button_bar_widget(

@@ -23,6 +23,9 @@
 
 #include <core/runtime/path.hpp>
 
+#include <data/activity.hpp>
+#include <data/string.hpp>
+
 #include <ui/test/helper/button.hpp>
 #include <ui/test/helper/check_box.hpp>
 #include <ui/test/helper/color_parameter.hpp>
@@ -31,12 +34,14 @@
 #include <ui/test/helper/line_edit.hpp>
 #include <ui/test/helper/slider.hpp>
 #include <ui/test/helper/spin_box.hpp>
+#include <ui/test/helper/tickmarks_slider_test.hpp>
 #include <ui/test/tester.hpp>
 
+#include <QLabel>
+#include <QSlider>
 #include <QToolButton>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::example::ui::ex_settings::uit::synchronization);
-
 namespace sight::example::ui::ex_settings::uit
 {
 
@@ -339,6 +344,48 @@ void synchronization::test()
                 auto bt = _tester.add_in_backtrace("Check synchronization text string");
                 helper::line_edit::set_current_text(_tester, selector::from_parent("properties1_srv", "dir"), "dd");
                 helper::line_edit::match(_tester, selector::from_parent("properties2_srv", "dir_obj"), "dd");
+            }
+
+            {
+                auto bt = _tester.add_in_backtrace("Check synchronization between 'tickmarks slider' sliders");
+
+                helper::tickmarks_slider_test::move(
+                    _tester,
+                    selector::from_parent("properties1_srv", "text_ticks"),
+                    helper::tickmarks_slider_test::position::right,
+                    1
+                );
+
+                helper::label::exactly_match(
+                    _tester,
+                    selector::from_parent("properties1_srv", "text_ticks/valueLabel"),
+                    ""
+                );
+
+                helper::tickmarks_slider_test::move(
+                    _tester,
+                    selector::from_parent("properties1_srv", "text_ticks"),
+                    helper::tickmarks_slider_test::position::right,
+                    1
+                );
+
+                helper::label::exactly_match(
+                    _tester,
+                    selector::from_parent("properties1_srv", "text_ticks/valueLabel"),
+                    ""
+                );
+
+                helper::tickmarks_slider_test::move(
+                    _tester,
+                    selector::from_parent("properties2_srv", "ticks_obj"),
+                    helper::tickmarks_slider_test::position::right,
+                    1
+                );
+                helper::tickmarks_slider_test::check_value(
+                    _tester,
+                    selector::from_parent("properties2_srv", "ticks_obj"),
+                    1
+                );
             }
         },
         true
