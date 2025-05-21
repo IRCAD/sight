@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,5 +84,39 @@ void gui_qt_test::test_default_frame()
 }
 
 //------------------------------------------------------------------------------
+
+void gui_qt_test::test_fullscreen_frame()
+{
+    data::string::sptr object = std::make_shared<data::string>();
+
+    service::config_t frame_config;
+
+    frame_config.put("gui.frame.name", "gui_qt_test_test_fullscreen_frame");
+    frame_config.put("gui.frame.minSize.<xmlattr>.width", "800");
+    frame_config.put("gui.frame.minSize.<xmlattr>.height", "600");
+#ifndef _WIN32
+    frame_config.put("gui.frame.style.<xmlattr>.mode", "FULLSCREEN");
+#else
+    frame_config.put("gui.frame.style.<xmlattr>.mode", "FRAMELESS");
+#endif
+    frame_config.put("gui.frame.screen.<xmlattr>.index", "0");
+
+    service::base::sptr srv = service::add("sight::module::ui::frame");
+    ASSERT_NOT_NULL(srv);
+
+    srv->set_config(frame_config);
+    srv->configure();
+    srv->start();
+
+    auto* window = qobject_cast<QMainWindow*>(qApp->activeWindow());
+
+    ASSERT_NOT_NULL(qApp);
+    ASSERT_NOT_NULL(qApp->activeWindow());
+    ASSERT_NOT_NULL(window);
+    CPPUNIT_ASSERT_EQUAL(std::string("guiQtUnitTest"), window->windowTitle().toStdString());
+
+    srv->stop();
+    service::unregister_service(srv);
+}
 
 } // namespace sight::module::ui::qt::ut

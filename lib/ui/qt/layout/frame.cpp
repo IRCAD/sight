@@ -35,6 +35,7 @@
 #include <QShortcut>
 #include <QStyle>
 #include <QWindow>
+#include <QTimer>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -51,16 +52,40 @@ void frame::create_frame()
 {
     frame_info frame_info = this->get_frame_info();
 
-    const std::string frame_title = frame_info.m_version.empty()
-                                    ? frame_info.m_name
-                                    : frame_info.m_name + " " + frame_info.m_version;
+    const std::string frame_title =
+        [&frame_info]
+        {
+            std::string title;
+
+            if(frame_info.m_name && !frame_info.m_name->empty())
+            {
+                title = *frame_info.m_name;
+            }
+
+            if(frame_info.m_version && !frame_info.m_version->empty())
+            {
+                if(!title.empty())
+                {
+                    title += " ";
+                }
+
+                title += *frame_info.m_version;
+            }
+
+            return title;
+        }();
 
     auto* mainframe = new ui::qt::main_frame();
     m_qt_window = mainframe;
-    m_qt_window->setObjectName(QString::fromStdString(frame_info.m_name));
-    if(!frame_info.m_qss_class.empty())
+
+    if(frame_info.m_name && !frame_info.m_name->empty())
     {
-        m_qt_window->setProperty("class", QString::fromStdString(frame_info.m_qss_class));
+        m_qt_window->setObjectName(QString::fromStdString(*frame_info.m_name));
+    }
+
+    if(frame_info.m_qss_class && !frame_info.m_qss_class->empty())
+    {
+        m_qt_window->setProperty("class", QString::fromStdString(*frame_info.m_qss_class));
     }
 
     ui::qt::main_frame::CloseCallback fct = [this](auto&& ...){on_close_frame();};
@@ -72,37 +97,33 @@ void frame::create_frame()
     // Set a minimum size if needed
     const auto minimum = m_qt_window->minimumSizeHint();
 
-    if(frame_info.m_min_size.first > 0)
+    if(frame_info.m_min_width && *frame_info.m_min_width > minimum.width())
     {
-        m_qt_window->setMinimumWidth(
-            std::max(frame_info.m_min_size.first, minimum.width())
-        );
+        m_qt_window->setMinimumWidth(*frame_info.m_min_width);
     }
 
-    if(frame_info.m_min_size.second > 0)
+    if(frame_info.m_min_height && *frame_info.m_min_height > minimum.height())
     {
-        m_qt_window->setMinimumHeight(
-            std::max(frame_info.m_min_size.second, minimum.height())
-        );
+        m_qt_window->setMinimumHeight(*frame_info.m_min_height);
     }
 
     // Set a maximum size if needed
-    if(frame_info.m_max_size.first > 0)
+    if(frame_info.m_max_width && *frame_info.m_max_width > 0)
     {
-        m_qt_window->setMaximumWidth(frame_info.m_max_size.first);
+        m_qt_window->setMaximumWidth(*frame_info.m_max_width);
     }
 
-    if(frame_info.m_max_size.second > 0)
+    if(frame_info.m_max_height && *frame_info.m_max_height > 0)
     {
-        m_qt_window->setMaximumHeight(frame_info.m_max_size.second);
+        m_qt_window->setMaximumHeight(*frame_info.m_max_height);
     }
 
     m_qt_window->adjustSize();
 
-    if(!frame_info.m_icon_path.empty())
+    if(frame_info.m_icon_path && !frame_info.m_icon_path->empty())
     {
-        QIcon icon(QString::fromStdString(frame_info.m_icon_path.string()));
-        SIGHT_ASSERT("Unable to create an icon instance from " << frame_info.m_icon_path.string(), !icon.isNull());
+        QIcon icon(QString::fromStdString(frame_info.m_icon_path->string()));
+        SIGHT_ASSERT("Unable to create an icon instance from " << frame_info.m_icon_path->string(), !icon.isNull());
         m_qt_window->setWindowIcon(icon);
     }
 
@@ -122,7 +143,7 @@ void frame::create_frame()
     {
         m_qt_window->setWindowModality(Qt::ApplicationModal);
     }
-    else if(frame_info.m_style == ui::layout::frame_manager::fullscreen && frame_info.m_state == frame_state::normal)
+    else if(frame_info.m_style == ui::layout::frame_manager::fullscreen && !frame_info.m_state)
     {
         frame_info.m_state = frame_state::full_screen;
     }
@@ -136,78 +157,141 @@ void frame::create_frame()
 
     // Use stored position and size (if available from preference)
     QRect frame_rect(
-        frame_info.m_position.first,
-        frame_info.m_position.second,
-        frame_info.m_size.first > m_qt_window->minimumWidth()
-        && frame_info.m_size.first < m_qt_window->maximumWidth()
-        ? frame_info.m_size.first : frame_size.width(),
-        frame_info.m_size.second > m_qt_window->minimumHeight()
-        && frame_info.m_size.first < m_qt_window->maximumHeight()
-        ? frame_info.m_size.second : frame_size.height()
+        frame_info.m_x.value_or(0),
+        frame_info.m_y.value_or(0),
+        frame_info.m_width
+        && *frame_info.m_width > m_qt_window->minimumWidth()
+        && *frame_info.m_width < m_qt_window->maximumWidth()
+        ? *frame_info.m_width : frame_size.width(),
+        frame_info.m_height
+        && *frame_info.m_height > m_qt_window->minimumHeight()
+        && *frame_info.m_height < m_qt_window->maximumHeight()
+        ? *frame_info.m_height : frame_size.height()
     );
 
     // Get the screen at the center of the window (if available from preference)
-    auto* const screen_at_pos = frame_info.m_size.first >= 0 && frame_info.m_size.second >= 0
-                                ? QGuiApplication::screenAt(frame_rect.center()) : nullptr;
+    auto* const preferences_screen = frame_info.m_width && frame_info.m_height
+                                     ? QGuiApplication::screenAt(frame_rect.center()) : nullptr;
 
-    // We need to display the window on a specific screen
-    if(const auto& screens = QGuiApplication::screens();
-       screen_at_pos == nullptr || frame_info.m_screen >= screens.size())
-    {
-        // Wanted screen doesn't exist and no screen at pos, use default screen
-        frame_rect.moveCenter(QGuiApplication::primaryScreen()->availableGeometry().center());
-    }
-    else if(frame_info.m_screen >= 0 && screen_at_pos != nullptr && screens.indexOf(
-                screen_at_pos,
-                0
-            ) != frame_info.m_screen)
-    {
-        // Wanted screen is not the same as screen at, use it
-        frame_rect.moveCenter(screens.at(frame_info.m_screen)->availableGeometry().center());
-    }
+    // Screen position read from preferences.
+    const bool preferences_screen_valid = (preferences_screen != nullptr);
 
-    m_qt_window->setGeometry(frame_rect);
+    // A screen index as been set, test if it exists.
+    const auto& screens                = QGuiApplication::screens();
+    const bool configured_screen_valid = (frame_info.m_configured_screen
+                                          && *frame_info.m_configured_screen >= 0
+                                          && *frame_info.m_configured_screen < screens.size());
 
-#ifndef _WIN32
-    if((frame_info.m_state & frame_state::full_screen) == frame_state::full_screen)
+    if(preferences_screen_valid)
     {
-        m_qt_window->showFullScreen();
+        // If the screen from preferences is valid, we still need to check if the configuration have changed
+        if(configured_screen_valid && *frame_info.m_configured_screen != *frame_info.m_saved_screen)
+        {
+            frame_rect.moveCenter(screens.at(*frame_info.m_configured_screen)->availableGeometry().center());
+        }
     }
-    else if((frame_info.m_state & frame_state::maximized) == frame_state::maximized)
+    else if(configured_screen_valid)
     {
-        m_qt_window->showMaximized();
-    }
-    else if((frame_info.m_state & frame_state::iconized) == frame_state::iconized)
-    {
-        m_qt_window->showMinimized();
+        // If there is no screen from preferences, we can use the configured screen
+        frame_rect.moveCenter(screens.at(*frame_info.m_configured_screen)->availableGeometry().center());
     }
     else
     {
+        // Last resort, use the primary screen
+        frame_rect.moveCenter(QGuiApplication::primaryScreen()->availableGeometry().center());
+    }
+
+    // Set the geometry will also place the window on the correct screen
+    m_qt_window->setGeometry(frame_rect);
+
+#ifndef _WIN32
+    /// @note: On Linux, calling showXXX() is mandatory. On Windows setWindowState() is enough.
+    if(frame_info.m_state)
+    {
+        if((*frame_info.m_state & frame_state::full_screen) == frame_state::full_screen)
+        {
+            m_qt_window->showFullScreen();
+        }
+        else if((*frame_info.m_state & frame_state::maximized) == frame_state::maximized)
+        {
+            m_qt_window->showMaximized();
+        }
+        else if((*frame_info.m_state & frame_state::iconized) == frame_state::iconized)
+        {
+            m_qt_window->showMinimized();
+        }
+        else
+        {
+            m_qt_window->showNormal();
+        }
+    }
+    else
+    {
+        // Default behavior
         m_qt_window->showNormal();
     }
 #endif
 
     // Restore the window state
-    if((frame_info.m_state & frame_state::iconized) == frame_state::iconized
-       && (m_qt_window->windowState() & Qt::WindowMinimized) != Qt::WindowMinimized)
+    if(frame_info.m_state)
     {
-        m_qt_window->setWindowState(m_qt_window->windowState() | Qt::WindowMinimized);
+        if((*frame_info.m_state & frame_state::iconized) == frame_state::iconized
+           && (m_qt_window->windowState() & Qt::WindowMinimized) != Qt::WindowMinimized)
+        {
+            m_qt_window->setWindowState(m_qt_window->windowState() | Qt::WindowMinimized);
+        }
+
+        if((*frame_info.m_state & frame_state::maximized) == frame_state::maximized
+           && (m_qt_window->windowState() & Qt::WindowMaximized) != Qt::WindowMaximized)
+        {
+            m_qt_window->setWindowState(m_qt_window->windowState() | Qt::WindowMaximized);
+        }
+
+        if((*frame_info.m_state & frame_state::full_screen) == frame_state::full_screen
+           && (m_qt_window->windowState() & Qt::WindowFullScreen) != Qt::WindowFullScreen)
+        {
+            this->set_full_screen(true);
+        }
     }
 
-    if((frame_info.m_state & frame_state::maximized) == frame_state::maximized
-       && (m_qt_window->windowState() & Qt::WindowMaximized) != Qt::WindowMaximized)
+#ifndef _WIN32
+    /// @note: Workaround to force the first window state on linux, when using multiple windows.
+    ///        Without this, the window state is ignored and the window appear in "normal" state.
+    if(frame_info.m_state)
     {
-        m_qt_window->setWindowState(m_qt_window->windowState() | Qt::WindowMaximized);
-    }
+        const auto set_window_state =
+            [qt_window = QPointer(m_qt_window)](Qt::WindowState _state)
+            {
+                QTimer::singleShot(
+                    0,
+                    [qt_window, _state]
+                {
+                    if(!qt_window.isNull())
+                    {
+                        qt_window->setWindowState(qt_window->windowState() | _state);
+                    }
+                });
+            };
 
-    if((frame_info.m_state & frame_state::full_screen) == frame_state::full_screen
-       && (m_qt_window->windowState() & Qt::WindowFullScreen) != Qt::WindowFullScreen)
-    {
-        this->set_full_screen(true);
-    }
+        if((*frame_info.m_state & frame_state::iconized) == frame_state::iconized)
+        {
+            set_window_state(Qt::WindowMinimized);
+        }
 
-    auto* qwidget = new QWidget(m_qt_window);
-    m_qt_window->setCentralWidget(qwidget);
+        if((*frame_info.m_state & frame_state::maximized) == frame_state::maximized)
+        {
+            set_window_state(Qt::WindowMaximized);
+        }
+
+        if((*frame_info.m_state & frame_state::full_screen) == frame_state::full_screen)
+        {
+            set_window_state(Qt::WindowFullScreen);
+        }
+    }
+#endif
+
+    auto* central_widget = new QWidget(m_qt_window);
+    m_qt_window->setCentralWidget(central_widget);
 
     QObject::connect(m_qt_window, &QMainWindow::destroyed, this, &frame::on_close_frame);
 
@@ -221,13 +305,13 @@ void frame::create_frame()
         });
 
     ui::qt::container::widget::sptr container = ui::qt::container::widget::make();
-    container->set_qt_container(qwidget);
+    container->set_qt_container(central_widget);
     m_container = container;
 
     ui::qt::container::widget::sptr frame_container = ui::qt::container::widget::make();
     frame_container->set_qt_container(m_qt_window);
     m_frame = frame_container;
-    m_frame->set_visible(frame_info.m_visibility);
+    m_frame->set_visible(frame_info.m_visibility.value_or(true));
 
     if(frame_info.m_visibility)
     {
@@ -240,8 +324,8 @@ void frame::create_frame()
 
 void frame::destroy_frame()
 {
-    auto& frame_info = this->get_frame_info();
-    frame_info.m_state = frame_state::normal;
+    auto& frame_info  = this->get_frame_info();
+    frame_state state = frame_state::normal;
 
     // Save the frame position and size
     // Get the Qt states
@@ -249,18 +333,20 @@ void frame::destroy_frame()
 
     if((window_states& Qt::WindowFullScreen) == Qt::WindowFullScreen)
     {
-        frame_info.m_state |= frame_state::full_screen;
+        state |= frame_state::full_screen;
     }
 
     if((window_states& Qt::WindowMaximized) == Qt::WindowMaximized)
     {
-        frame_info.m_state |= frame_state::maximized;
+        state |= frame_state::maximized;
     }
 
     if((window_states& Qt::WindowMinimized) == Qt::WindowMinimized)
     {
-        frame_info.m_state |= frame_state::iconized;
+        state |= frame_state::iconized;
     }
+
+    frame_info.m_state = state;
 
     // Get the Qt geometry
     auto window_geometry = m_qt_window->geometry();
@@ -277,10 +363,10 @@ void frame::destroy_frame()
         window_geometry.moveCenter(m_qt_window->screen()->availableGeometry().center());
     }
 
-    frame_info.m_position.first  = window_geometry.x();
-    frame_info.m_position.second = window_geometry.y();
-    frame_info.m_size.first      = window_geometry.width();
-    frame_info.m_size.second     = window_geometry.height();
+    frame_info.m_x      = window_geometry.x();
+    frame_info.m_y      = window_geometry.y();
+    frame_info.m_width  = window_geometry.width();
+    frame_info.m_height = window_geometry.height();
 
     this->write_config();
 

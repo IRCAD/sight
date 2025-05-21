@@ -30,6 +30,8 @@
 #include <ui/__/container/widget.hpp>
 
 #include <QLayout>
+#include <qmainwindow.h>
+#include <qnamespace.h>
 #include <QPointer>
 #include <QWidget>
 
@@ -72,6 +74,8 @@ private:
 
     QPointer<QWidget> m_container;
     QPointer<QWidget> m_root;
+
+    bool m_is_fullscreen {false};
 };
 
 //-----------------------------------------------------------------------------

@@ -24,7 +24,12 @@
 
 #include <core/macros.hpp>
 
+#include <qapplication.h>
 #include <QDockWidget>
+#include <qeventloop.h>
+#include <qmainwindow.h>
+#include <QMainWindow>
+#include <QTimer>
 
 namespace sight::ui::qt::container
 {
@@ -124,6 +129,28 @@ void widget::set_visible(bool _is_visible)
             dock->setVisible(_is_visible);
         }
 
+        /* Note: On linux when hide then show a QMainWindow on fullscreen,
+           the window is not reset back into fullscreen.
+         */
+#ifndef _WIN32
+        if(QPointer<QMainWindow> main_window = qobject_cast<QMainWindow*>(root); main_window != nullptr)
+        {
+            if(!_is_visible and main_window->isVisible())
+            {
+                // Save fullscreen state.
+                m_is_fullscreen = main_window->isFullScreen();
+                main_window->setVisible(false);
+                return;
+            }
+
+            if(m_is_fullscreen and not main_window->isVisible())
+            {
+                // Force fullscreen.
+                main_window->showFullScreen();
+                return;
+            }
+        }
+#endif
         root->setVisible(_is_visible);
     }
 }

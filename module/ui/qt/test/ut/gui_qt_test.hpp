@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,7 @@ class gui_qt_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(gui_qt_test);
 CPPUNIT_TEST(test_default_frame);
+CPPUNIT_TEST(test_fullscreen_frame);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,6 +44,7 @@ public:
     void tearDown() override;
 
     static void test_default_frame();
+    static void test_fullscreen_frame();
 };
 
 } // namespace sight::module::ui::qt::ut

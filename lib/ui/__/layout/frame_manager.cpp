@@ -50,6 +50,7 @@ const std::string frame_manager::FRAME_SIZE_W_UI     = "FRAME_SIZE_W_UI";
 const std::string frame_manager::FRAME_SIZE_H_UI     = "FRAME_SIZE_H_UI";
 const std::string frame_manager::FRAME_POSITION_X_UI = "FRAME_POSITION_X_UI";
 const std::string frame_manager::FRAME_POSITION_Y_UI = "FRAME_POSITION_Y_UI";
+const std::string frame_manager::FRAME_SCREEN        = "FRAME_SCREEN";
 
 //------------------------------------------------------------------------------
 
@@ -95,6 +96,13 @@ inline static std::string get_frame_y_key(const std::string& _name)
 
 //-----------------------------------------------------------------------------
 
+inline static std::string get_frame_screen_key(const std::string& _name)
+{
+    return get_frame_key(_name) + "." + frame_manager::FRAME_SCREEN;
+}
+
+//-----------------------------------------------------------------------------
+
 frame_manager::frame_manager()
 {
     this->frame_manager::set_close_callback(default_close_callback);
@@ -104,27 +112,49 @@ frame_manager::frame_manager()
 
 void frame_manager::initialize(const ui::config_t& _configuration)
 {
-    m_frame_info.m_name       = _configuration.get<std::string>("name", m_frame_info.m_name);
-    m_frame_info.m_version    = _configuration.get<std::string>("version", "");
-    m_frame_info.m_visibility = _configuration.get<bool>("visibility", m_frame_info.m_visibility);
+    if(const auto& name = _configuration.get_optional<std::string>("name"); name)
+    {
+        m_frame_info.m_name = *name;
+    }
+
+    if(const auto& version = _configuration.get_optional<std::string>("version"); version)
+    {
+        m_frame_info.m_version = *version;
+    }
+
+    if(const auto& visibility = _configuration.get_optional<bool>("visibility"); visibility)
+    {
+        m_frame_info.m_visibility = *visibility;
+    }
 
     if(const auto icon = _configuration.get_optional<std::string>("icon"); icon.has_value())
     {
         m_frame_info.m_icon_path = core::runtime::get_module_resource_file_path(icon.value());
         SIGHT_ASSERT(
-            "The icon " << m_frame_info.m_icon_path << " doesn't exist, please ensure that the path is correct",
-            std::filesystem::exists(m_frame_info.m_icon_path)
+            "The icon " << *m_frame_info.m_icon_path << " doesn't exist, please ensure that the path is correct",
+            std::filesystem::exists(*m_frame_info.m_icon_path)
         );
     }
 
-    m_frame_info.m_min_size.first  = _configuration.get<int>("minSize.<xmlattr>.width", m_frame_info.m_min_size.first);
-    m_frame_info.m_min_size.second =
-        _configuration.get<int>("minSize.<xmlattr>.height", m_frame_info.m_min_size.second);
-    m_frame_info.m_max_size.first  = _configuration.get<int>("maxSize.<xmlattr>.width", m_frame_info.m_max_size.first);
-    m_frame_info.m_max_size.second = _configuration.get<int>(
-        "maxSize.<xmlattr>.height",
-        m_frame_info.m_max_size.second
-    );
+    if(const auto& width = _configuration.get_optional<int>("minSize.<xmlattr>.width"); width)
+    {
+        m_frame_info.m_min_width = *width;
+    }
+
+    if(const auto& height = _configuration.get_optional<int>("minSize.<xmlattr>.height"); height)
+    {
+        m_frame_info.m_min_height = *height;
+    }
+
+    if(const auto& width = _configuration.get_optional<int>("maxSize.<xmlattr>.width"); width)
+    {
+        m_frame_info.m_max_width = *width;
+    }
+
+    if(const auto& height = _configuration.get_optional<int>("maxSize.<xmlattr>.height"); height)
+    {
+        m_frame_info.m_max_height = *height;
+    }
 
     if(const auto mode = _configuration.get_optional<std::string>("style.<xmlattr>.mode"); mode.has_value())
     {
@@ -157,14 +187,15 @@ void frame_manager::initialize(const ui::config_t& _configuration)
         }
     }
 
-    if(const auto qss_class = _configuration.get_optional<std::string>(
-           "style.<xmlattr>.QSSClass"
-    ); qss_class.has_value())
+    if(const auto& qss_class = _configuration.get_optional<std::string>("style.<xmlattr>.QSSClass"); qss_class)
     {
-        m_frame_info.m_qss_class = qss_class.get();
+        m_frame_info.m_qss_class = *qss_class;
     }
 
-    m_frame_info.m_screen = _configuration.get<int>("screen.<xmlattr>.index", m_frame_info.m_screen);
+    if(const auto& screen = _configuration.get_optional<int>("screen.<xmlattr>.index"); screen)
+    {
+        m_frame_info.m_configured_screen = *screen;
+    }
 
     this->read_config();
 }
@@ -191,25 +222,39 @@ void frame_manager::read_config()
     {
         ui::preferences preferences;
 
-        m_frame_info.m_state = static_cast<frame_state>(
-            preferences.get(
-                get_frame_state_key(m_frame_info.m_name),
-                std::underlying_type_t<frame_state>(m_frame_info.m_state)
-            )
-        );
+        const std::string frame_name = m_frame_info.m_name.value_or("");
 
-        m_frame_info.m_size.first  = preferences.get(get_frame_w_key(m_frame_info.m_name), m_frame_info.m_size.first);
-        m_frame_info.m_size.second = preferences.get(get_frame_h_key(m_frame_info.m_name), m_frame_info.m_size.second);
+        using state_t = std::underlying_type_t<frame_state>;
 
-        m_frame_info.m_position.first = preferences.get(
-            get_frame_x_key(m_frame_info.m_name),
-            m_frame_info.m_position.first
-        );
+        if(const auto& state = preferences.get_optional<state_t>(get_frame_state_key(frame_name)); state)
+        {
+            m_frame_info.m_state = static_cast<frame_state>(*state);
+        }
 
-        m_frame_info.m_position.second = preferences.get(
-            get_frame_y_key(m_frame_info.m_name),
-            m_frame_info.m_position.second
-        );
+        if(const auto& width = preferences.get_optional<int>(get_frame_w_key(frame_name)); width)
+        {
+            m_frame_info.m_width = *width;
+        }
+
+        if(const auto& height = preferences.get_optional<int>(get_frame_h_key(frame_name)); height)
+        {
+            m_frame_info.m_height = *height;
+        }
+
+        if(const auto& x = preferences.get_optional<int>(get_frame_x_key(frame_name)); x)
+        {
+            m_frame_info.m_x = *x;
+        }
+
+        if(const auto& y = preferences.get_optional<int>(get_frame_y_key(frame_name)); y)
+        {
+            m_frame_info.m_y = *y;
+        }
+
+        if(const auto& screen = preferences.get_optional<int>(get_frame_screen_key(frame_name)); screen)
+        {
+            m_frame_info.m_saved_screen = *screen;
+        }
     }
     catch(const ui::preferences_disabled&)
     {
@@ -225,15 +270,55 @@ void frame_manager::write_config() const
     {
         ui::preferences preferences;
 
-        preferences.put(
-            get_frame_state_key(m_frame_info.m_name),
-            std::underlying_type_t<frame_state>(m_frame_info.m_state)
-        );
+        const std::string frame_name = m_frame_info.m_name.value_or("");
 
-        preferences.put(get_frame_w_key(m_frame_info.m_name), m_frame_info.m_size.first);
-        preferences.put(get_frame_h_key(m_frame_info.m_name), m_frame_info.m_size.second);
-        preferences.put(get_frame_x_key(m_frame_info.m_name), m_frame_info.m_position.first);
-        preferences.put(get_frame_y_key(m_frame_info.m_name), m_frame_info.m_position.second);
+        if(m_frame_info.m_state)
+        {
+            preferences.put(
+                get_frame_state_key(frame_name),
+                std::underlying_type_t<frame_state>(*m_frame_info.m_state)
+            );
+        }
+
+        if(m_frame_info.m_width)
+        {
+            preferences.put(get_frame_w_key(frame_name), *m_frame_info.m_width);
+        }
+
+        if(m_frame_info.m_height)
+        {
+            preferences.put(get_frame_h_key(frame_name), *m_frame_info.m_height);
+        }
+
+        if(m_frame_info.m_saved_screen)
+        {
+            preferences.put(get_frame_screen_key(frame_name), *m_frame_info.m_saved_screen);
+        }
+
+        if(m_frame_info.m_x)
+        {
+            preferences.put(get_frame_x_key(frame_name), *m_frame_info.m_x);
+        }
+
+        if(m_frame_info.m_y)
+        {
+            preferences.put(get_frame_y_key(frame_name), *m_frame_info.m_y);
+        }
+
+        if(m_frame_info.m_x)
+        {
+            preferences.put(get_frame_x_key(frame_name), *m_frame_info.m_x);
+        }
+
+        if(m_frame_info.m_y)
+        {
+            preferences.put(get_frame_y_key(frame_name), *m_frame_info.m_y);
+        }
+
+        if(m_frame_info.m_configured_screen)
+        {
+            preferences.put(get_frame_screen_key(frame_name), *m_frame_info.m_configured_screen);
+        }
     }
     catch(const ui::preferences_disabled&)
     {

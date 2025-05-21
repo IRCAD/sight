@@ -61,6 +61,7 @@ public:
     static const std::string FRAME_SIZE_H_UI;
     static const std::string FRAME_POSITION_X_UI;
     static const std::string FRAME_POSITION_Y_UI;
+    static const std::string FRAME_SCREEN;
 
     enum class frame_state : std::uint8_t
     {
@@ -70,46 +71,49 @@ public:
         full_screen = 4  ///< the full screen state
     };
 
-    class frame_info
+    struct frame_info final
     {
-    public:
-
-        frame_info() = default;
-
         /// Frame name.
-        std::string m_name;
+        std::optional<std::string> m_name {std::nullopt};
 
         /// Optional version number, displayed in the title if specified.
-        std::string m_version;
+        std::optional<std::string> m_version {std::nullopt};
 
         /// Frame icon.
-        std::filesystem::path m_icon_path;
+        std::optional<std::filesystem::path> m_icon_path {std::nullopt};
 
-        /// Frame minimum size (min width and min height)
-        std::pair<int, int> m_min_size {-1, -1};
+        /// Frame minimum min width
+        std::optional<int> m_min_width {std::nullopt};
+        std::optional<int> m_min_height {std::nullopt};
 
         /// Frame maximum size (max width and max height)
-        std::pair<int, int> m_max_size {-1, -1};
+        std::optional<int> m_max_width {std::nullopt};
+        std::optional<int> m_max_height {std::nullopt};
 
         /// Frame style
-        style m_style {DEFAULT};
+        std::optional<style> m_style {std::nullopt};
 
         /// Frame size
-        std::pair<int, int> m_size {-1, -1};
+        std::optional<int> m_width {std::nullopt};
+        std::optional<int> m_height {std::nullopt};
 
         /// Frame position
-        std::pair<int, int> m_position {-1, -1};
+        std::optional<int> m_x {std::nullopt};
+        std::optional<int> m_y {std::nullopt};
 
         /// Frame state (maximize, minized, full screen)
-        frame_state m_state {frame_state::normal};
+        std::optional<frame_state> m_state {std::nullopt};
 
         /// Frame visibility
-        bool m_visibility {true};
+        std::optional<bool> m_visibility {std::nullopt};
 
-        std::string m_qss_class;
+        std::optional<std::string> m_qss_class {std::nullopt};
 
-        /// Wanted Screen index (-1 means unset)
-        int m_screen {-1};
+        /// Configured screen from xml configuration.
+        std::optional<int> m_configured_screen {std::nullopt};
+
+        /// Screen from preferences.
+        std::optional<int> m_saved_screen {std::nullopt};
     };
 
     /// Constructor. Do nothing.
