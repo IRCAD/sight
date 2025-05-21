@@ -266,9 +266,25 @@ void settings::starting()
         bool created = false; // Just needed for integer type
 
         // Widget who is able to be controlled by a joystick
-        if(cfg.get<bool>("<xmlattr>.enable_joystick", false))
+        if(const auto& joystick = to_joystick(cfg.get<std::string>("<xmlattr>.joystick", ""));
+           joystick != sight::io::joystick::joystick_t::unknown)
         {
-            m_joystickable_widgets_key.push_back(widget.key);
+            std::vector<std::string> axes;
+            boost::split(
+                axes,
+                cfg.get<std::string>("<xmlattr>.joystick_axis", ""),
+                boost::is_any_of(",; \t"),
+                boost::token_compress_on
+            );
+
+            m_widget_joysticks.insert_or_assign(
+                widget.key,
+                widget_joystick {
+                    .alias  = joystick,
+                    .axis_1 = !axes.empty() ? to_axis(axes[0]) : sight::io::joystick::axis_t::unknown,
+                    .axis_2 = axes.size() > 1 ? to_axis(axes[1]) : sight::io::joystick::axis_t::unknown,
+                    .axis_3 = axes.size() > 2 ? to_axis(axes[2]) : sight::io::joystick::axis_t::unknown
+                });
         }
 
         if(type == "sight::data::boolean")
@@ -2822,22 +2838,21 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
 {
     using direction_t = sight::io::joystick::axis_direction_event::direction_t;
 
-    SIGHT_DEBUG("Joystick id: " << _event.device->id);
+    SIGHT_DEBUG("Joystick alias: " << this->to_string(_event.device->alias));
+    SIGHT_DEBUG("Joystick axis alias: " << this->to_string(_event.axis_alias));
     SIGHT_DEBUG("Joystick axis: " << int(_event.axis));
-    SIGHT_DEBUG(
-        "Joystick direction: "
-        << (_event.value == direction_t::up ? "up" : _event.value == direction_t::down ? "down" : "centered")
-    );
+    SIGHT_DEBUG("Joystick direction: " << this->to_string(_event.value));
 
-    for(const auto& joystickable_widget : m_joystickable_widgets_key)
+    for(const auto& [widget_key, widget_joystick] : m_widget_joysticks)
     {
-        auto* const widget = get_param_widget(joystickable_widget);
+        auto* const widget = get_param_widget(widget_key);
 
         if(auto* const button_group = dynamic_cast<QButtonGroup*>(widget); button_group != nullptr)
         {
-            // 4th or 0th axis of the second spacemouse only for button_group
-            if((_event.axis != 0 && _event.axis != 4 && _event.axis != 2)
-               || _event.device->id != this->right_joystick())
+            // Filter the joystick event to only handle the right joystick
+            if((_event.axis_alias != widget_joystick.axis_1
+                && _event.axis_alias != widget_joystick.axis_2)
+               || _event.device->alias != widget_joystick.alias)
             {
                 continue;
             }
@@ -2852,9 +2867,9 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
             const auto checked_index = buttons.indexOf(checked_button);
 
             // Increment / decrement the index according to the joystick event
-            if(_event.axis == 4 && _event.value == direction_t::up)
+            if(_event.axis_alias == widget_joystick.axis_1 && _event.value == direction_t::left)
             {
-                const auto go_down =
+                const auto go_left_or_down =
                     [&buttons](auto _next_index) -> auto
                     {
                         while(--_next_index >= 0)
@@ -2870,16 +2885,16 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
                         return _next_index;
                     };
 
-                auto next_index = go_down(checked_index);
+                auto next_index = go_left_or_down(checked_index);
 
                 if(next_index < 0)
                 {
-                    go_down(buttons.size());
+                    go_left_or_down(buttons.size());
                 }
             }
-            else if(_event.axis == 4 && _event.value == direction_t::down)
+            else if(_event.axis_alias == widget_joystick.axis_1 && _event.value == direction_t::right)
             {
-                const auto go_up =
+                const auto go_right_or_up =
                     [&buttons](auto _next_index) -> auto
                     {
                         while(++_next_index < buttons.size())
@@ -2895,14 +2910,15 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
                         return _next_index;
                     };
 
-                auto next_index = go_up(checked_index);
+                auto next_index = go_right_or_up(checked_index);
 
                 if(next_index >= buttons.size())
                 {
-                    go_up(-1);
+                    go_right_or_up(-1);
                 }
             }
-            else if(_event.axis == 2 && _event.value == direction_t::up && checked_button != nullptr)
+            else if(_event.axis_alias == widget_joystick.axis_2 && _event.value == direction_t::backward
+                    && checked_button != nullptr)
             {
                 checked_button->click();
             }
@@ -2910,18 +2926,19 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
         else if(auto* const non_linear_slider = dynamic_cast<sight::ui::qt::widget::non_linear_slider*>(widget);
                 non_linear_slider != nullptr)
         {
-            // 4th or 0th axis of the first spacemouse only for comboslider
-            if((_event.axis != 0 && _event.axis != 4) || _event.device->id != this->left_joystick())
+            // Filter the joystick event to only handle the right joystick
+            if(_event.axis_alias != widget_joystick.axis_1
+               || _event.device->alias != widget_joystick.alias)
             {
                 continue;
             }
 
-            if(_event.axis == 4 && _event.value == direction_t::up)
+            if(_event.value == direction_t::left)
             {
                 const int new_index = int(non_linear_slider->index()) - 1;
                 non_linear_slider->set_index(new_index < 0 ? std::size_t(0) : std::size_t(new_index));
             }
-            else if(_event.axis == 4 && _event.value == direction_t::down)
+            else if(_event.value == direction_t::right)
             {
                 const int new_index  = int(non_linear_slider->index()) + 1;
                 const int last_index = std::max(0, int(non_linear_slider->num_values()) - 1);
@@ -2930,8 +2947,10 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
         }
         else if(auto* const slider = dynamic_cast<QSlider*>(widget); slider != nullptr)
         {
-            // 4th or 0th axis of the first spacemouse only for slider
-            if((_event.axis != 0 && _event.axis != 4) || _event.device->id != this->left_joystick())
+            // Filter the joystick event to only handle the right joystick
+            if((_event.axis_alias != widget_joystick.axis_1
+                && _event.axis_alias != widget_joystick.axis_2)
+               || _event.device->alias != widget_joystick.alias)
             {
                 continue;
             }
@@ -2980,24 +2999,24 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
                     return slider->singleStep();
                 };
 
-            if(_event.axis == 0)
+            if(_event.axis_alias == widget_joystick.axis_2)
             {
-                if(_event.value == direction_t::down)
+                if(_event.value == direction_t::left)
                 {
                     slider->setValue(slider->value() - get_step());
                 }
-                else if(_event.value == direction_t::up)
+                else if(_event.value == direction_t::right)
                 {
                     slider->setValue(slider->value() + get_step());
                 }
             }
-            else if(_event.axis == 4)
+            else if(_event.axis_alias == widget_joystick.axis_1)
             {
-                if(_event.value == direction_t::down)
+                if(_event.value == direction_t::right)
                 {
                     slider->setValue(slider->value() + get_step());
                 }
-                else if(_event.value == direction_t::up)
+                else if(_event.value == direction_t::left)
                 {
                     slider->setValue(slider->value() - get_step());
                 }

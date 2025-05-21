@@ -31,6 +31,7 @@ class io_joystick_test : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(io_joystick_test);
 CPPUNIT_TEST(basic_test);
 CPPUNIT_TEST(auto_repeat_test);
+CPPUNIT_TEST(alias_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,6 +41,7 @@ public:
 
     static void basic_test();
     static void auto_repeat_test();
+    static void alias_test();
 };
 
 } //namespace sight::io::joystick::ut

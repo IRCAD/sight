@@ -146,6 +146,9 @@ namespace sight::module::ui::qt
  * send value when value changed otherwise.
  * - \b min_width (optional, int) Minimum width, in device coordinates. @todo Support relative widget size.
  * - \b min_height (optional, int) Minimum height, in device coordinates. @todo Support relative widget size.
+ * - \b joystick (optional, string): joystick alias to use for the widget. It can be 'left' or 'right'.
+ * - \b joystick_axis (optional, string): joystick axes to use for the widget. It can be a combination up to three axes.
+ *                                        Allowed values: 'rx', 'ry', 'rz', 'tx', 'ty', 'tz'.
  */
 class settings : public QObject,
                  public sight::ui::editor,
@@ -487,7 +490,15 @@ private:
     using settings_slot_container_t = std::map<std::string, SPTR(object_modified_t)>;
     settings_slot_container_t m_settings_slots;
 
-    std::vector<std::string> m_joystickable_widgets_key;
+    struct widget_joystick
+    {
+        sight::io::joystick::joystick_t  alias {sight::io::joystick::joystick_t::unknown};
+        sight::io::joystick::axis_t axis_1 {sight::io::joystick::axis_t::unknown};
+        sight::io::joystick::axis_t axis_2 {sight::io::joystick::axis_t::unknown};
+        sight::io::joystick::axis_t axis_3 {sight::io::joystick::axis_t::unknown};
+    };
+
+    std::map<std::string, widget_joystick> m_widget_joysticks;
 };
 
 //------------------------------------------------------------------------------

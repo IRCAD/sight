@@ -74,15 +74,12 @@ public:
     std::vector<std::shared_ptr<const device> > devices() const;
 
     /**
-     * @brief returns the id of the left/right joystick
+     * @brief Set joystick alias. This is a global setting and will be applied to all interactors.
      *
-     * @return index of the left/right joystick
-     *
-     * @{
+     * @param _id Joystick ID
+     * @param _alias Joystick alias (left, right)
      */
-    [[nodiscard]] std::int32_t left_joystick() const;
-    [[nodiscard]] std::int32_t right_joystick() const;
-    /// @}
+    void set_joystick_alias(std::int32_t _id, joystick_t _alias);
 
     /**
      * @brief Stop the event loop and close all the connected controllers, in the current thread
@@ -100,10 +97,20 @@ protected:
 
 private:
 
+    using direction_t      = axis_direction_event::direction_t;
+    using axis_direction_t = std::pair<axis_t, direction_t>;
+    using axis_aliases_t   = std::map<std::uint8_t, axis_direction_t>;
+
     struct concrete_device final : public device
     {
+        /// Real SDL joystick handle
         SDL_Joystick* const joystick {nullptr};
+
+        /// This allows to discriminate triggers from regular axis
         const std::vector<std::optional<std::int16_t> > initial_axis_state;
+
+        /// Axis alias mapping and the upward direction
+        const axis_aliases_t axis_aliases;
     };
 
     /// Non-copyable
@@ -119,20 +126,34 @@ private:
     static void loop();
 
     /**
+     * @brief perform the mapping of the axis index to the axis alias + direction
+     *
+     * @param _axis_aliases
+     * @param _axis_index
+     * @param _direction
+     * @return axis_direction_t
+     */
+    static axis_direction_t map_axis(
+        const axis_aliases_t& _axis_aliases,
+        std::uint8_t _axis_index,
+        direction_t _direction
+    );
+
+    /**
      * @brief Remove a joystick from the list of connected controllers
      *
      * @param _id : The joystick id
      */
-    void remove_joystick(std::int32_t _id);
+    void remove_joystick(SDL_JoystickID _id);
 
     /**
      * @brief Add a joystick to the list of connected controllers and retrieve its properties
      *
      * @param _index SDL joystick index
      *
-     * @return std::int32_t : The joystick id
+     * @return SDL_JoystickID : The joystick id
      */
-    std::int32_t add_joystick(int _index);
+    SDL_JoystickID add_joystick(int _index);
 
     /// This protects adding interactors outside the main thread
     mutable std::recursive_mutex m_mutex;
@@ -151,10 +172,6 @@ private:
 
     /// If true, the joystick events are sent repeatedly, until the joystick comes back to the centered position
     std::map<std::pair<SDL_JoystickID, std::uint8_t>, std::shared_ptr<axis_direction_event> > m_auto_repeat_directions;
-
-    /// Store the joystick id of the left/right joystick
-    SDL_JoystickID m_left_joystick_id {-1};
-    SDL_JoystickID m_right_joystick_id {-1};
 };
 
 } //namespace sight::io::joystick::detail

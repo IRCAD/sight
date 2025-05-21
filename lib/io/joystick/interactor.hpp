@@ -39,6 +39,24 @@ class event_loop;
 
 }
 
+enum class joystick_t : std::uint8_t
+{
+    unknown = 0x00,
+    left    = 0x01,
+    right   = 0x02
+};
+
+enum class axis_t : std::uint8_t
+{
+    unknown = 0x00,
+    rx      = 0x01,
+    ry      = 0x02,
+    rz      = 0x04,
+    tx      = 0x08,
+    ty      = 0x10,
+    tz      = 0x20
+};
+
 /**
  * @brief Device information structure
  *
@@ -58,6 +76,7 @@ struct SIGHT_IO_JOYSTICK_CLASS_API device
     const std::int32_t buttons {0};
     const std::int32_t hats {0};
     const std::int32_t balls {0};
+    const joystick_t alias {joystick_t::unknown};
 };
 
 struct SIGHT_IO_JOYSTICK_CLASS_API joystick_event
@@ -71,6 +90,7 @@ struct SIGHT_IO_JOYSTICK_CLASS_API axis_motion_event final : public joystick_eve
 {
     const std::uint8_t axis {0xFF};
     const std::int16_t value {0};
+    const axis_t axis_alias {axis_t::unknown};
 };
 
 struct SIGHT_IO_JOYSTICK_CLASS_API axis_direction_event final : public joystick_event
@@ -80,8 +100,13 @@ struct SIGHT_IO_JOYSTICK_CLASS_API axis_direction_event final : public joystick_
     {
         centered = 0x00,
         up       = 0x01,
-        down     = 0x04
+        right    = up,
+        forward  = up,
+        down     = 0x02,
+        left     = down,
+        backward = down
     } value {direction_t::centered};
+    const axis_t axis_alias {axis_t::unknown};
 };
 
 struct SIGHT_IO_JOYSTICK_CLASS_API hat_motion_event final : public joystick_event
@@ -150,15 +175,12 @@ protected:
     SIGHT_IO_JOYSTICK_API std::vector<std::shared_ptr<const device> > devices() const;
 
     /**
-     * @brief returns the index of the left/right joystick
+     * @brief Set joystick alias. This is a global setting and will be applied to all interactors.
      *
-     * @return id of the left/right joystick
-     *
-     * @{
+     * @param _id Joystick ID
+     * @param _alias Joystick alias (left, right)
      */
-    SIGHT_IO_JOYSTICK_API std::int32_t left_joystick() const;
-    SIGHT_IO_JOYSTICK_API std::int32_t right_joystick() const;
-    /// @}
+    SIGHT_IO_JOYSTICK_API void set_joystick_alias(std::int32_t _id, joystick_t _alias) const;
 
     /**
      * @brief Callback function called when a joystick event occurs
@@ -189,6 +211,131 @@ protected:
      * @param _event: axis direction event
      */
     SIGHT_IO_JOYSTICK_API virtual void joystick_axis_direction_event(const axis_direction_event& _event);
+
+    /**
+     * @brief enum class to string conversion
+     *
+     * @{
+     */
+    static constexpr std::string_view to_string(joystick_t _joystick)
+    {
+        switch(_joystick)
+        {
+            case joystick_t::left:
+                return "left";
+
+            case joystick_t::right:
+                return "right";
+
+            default:
+                return "unknown";
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    static constexpr joystick_t to_joystick(const std::string_view& _alias)
+    {
+        if(constexpr auto value = to_string(joystick_t::left); _alias == value)
+        {
+            return joystick_t::left;
+        }
+
+        if(constexpr auto value = to_string(joystick_t::right); _alias == value)
+        {
+            return joystick_t::right;
+        }
+
+        return joystick_t::unknown;
+    }
+
+    //------------------------------------------------------------------------------
+
+    static constexpr std::string_view to_string(axis_t _axis)
+    {
+        switch(_axis)
+        {
+            case axis_t::rx:
+                return "rx";
+
+            case axis_t::ry:
+                return "ry";
+
+            case axis_t::rz:
+                return "rz";
+
+            case axis_t::tx:
+                return "tx";
+
+            case axis_t::ty:
+                return "ty";
+
+            case axis_t::tz:
+                return "tz";
+
+            default:
+                return "unknown";
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    static constexpr axis_t to_axis(const std::string_view& _alias)
+    {
+        if(constexpr auto value = to_string(axis_t::rx); _alias == value)
+        {
+            return axis_t::rx;
+        }
+
+        if(constexpr auto value = to_string(axis_t::ry); _alias == value)
+        {
+            return axis_t::ry;
+        }
+
+        if(constexpr auto value = to_string(axis_t::rz); _alias == value)
+        {
+            return axis_t::rz;
+        }
+
+        if(constexpr auto value = to_string(axis_t::tx); _alias == value)
+        {
+            return axis_t::tx;
+        }
+
+        if(constexpr auto value = to_string(axis_t::ty); _alias == value)
+        {
+            return axis_t::ty;
+        }
+
+        if(constexpr auto value = to_string(axis_t::tz); _alias == value)
+        {
+            return axis_t::tz;
+        }
+
+        return axis_t::unknown;
+    }
+
+    //------------------------------------------------------------------------------
+
+    static constexpr std::string_view to_string(axis_direction_event::direction_t _direction)
+    {
+        switch(_direction)
+        {
+            case axis_direction_event::direction_t::up:
+                return "up";
+
+            case axis_direction_event::direction_t::down:
+                return "down";
+
+            case axis_direction_event::direction_t::centered:
+                return "centered";
+
+            default:
+                return "unknown";
+        }
+    }
+
+    /// @}
 };
 
 } //namespace sight::io::joystick

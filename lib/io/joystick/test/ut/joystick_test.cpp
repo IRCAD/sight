@@ -392,4 +392,96 @@ void io_joystick_test::auto_repeat_test()
     CPPUNIT_ASSERT(interactor.received_axis_direction_event.load() == received);
 }
 
+//------------------------------------------------------------------------------
+
+void io_joystick_test::alias_test()
+{
+    // Name of the virtual joystick
+    static constexpr auto s_VIRTUAL_NAME = "Virtual Flight Stick";
+
+    // Create the event loop
+    auto event_loop = friendly_event_loop::make();
+
+    struct interactor final : public io::joystick::interactor
+    {
+        using io::joystick::interactor::interactor::set_joystick_alias;
+        using io::joystick::interactor::interactor::to_joystick;
+
+        interactor()
+        {
+            start_listening_joystick();
+        }
+
+        ~interactor() override
+        {
+            stop_listening_joystick();
+        }
+
+        //------------------------------------------------------------------------------
+
+        void joystick_axis_direction_event(const axis_direction_event& _event) final
+        {
+            // Test the aliases (axis 0 == tx)
+            if(_event.device->name == s_VIRTUAL_NAME
+               && _event.device->alias != to_joystick("left")
+               && _event.axis_alias != to_axis("ty")
+               && _event.axis_alias != to_axis("tz")
+               && _event.axis_alias != to_axis("rx")
+               && _event.axis_alias != to_axis("ry")
+               && _event.axis_alias != to_axis("rz"))
+            {
+                ++received_axis_direction_event;
+            }
+        }
+
+        //------------------------------------------------------------------------------
+
+        void joystick_added_event(const joystick_event& _event) final
+        {
+            if(_event.device->name == s_VIRTUAL_NAME)
+            {
+                received_added_event = true;
+            }
+        }
+
+        std::atomic_int received_axis_direction_event {0};
+        std::atomic_bool received_added_event {false};
+    } interactor;
+
+    struct virtual_device
+    {
+        virtual_device() :
+            index(SDL_JoystickAttachVirtual(SDL_JoystickType::SDL_JOYSTICK_TYPE_FLIGHT_STICK, 1, 1, 1))
+        {
+            CPPUNIT_ASSERT(index >= 0);
+        }
+
+        ~virtual_device()
+        {
+            CPPUNIT_ASSERT(SDL_JoystickDetachVirtual(index) >= 0);
+        }
+
+        int index {-1};
+    } virtual_device_instance;
+
+    // Wait for the virtual joystick to be added
+    SIGHT_TEST_WAIT(interactor.received_added_event);
+    CPPUNIT_ASSERT(interactor.received_added_event);
+
+    // Retrieve the real SDL objects
+    const auto virtual_id = SDL_JoystickGetDeviceInstanceID(virtual_device_instance.index);
+    CPPUNIT_ASSERT(virtual_id >= 0);
+
+    auto* const virtual_joystick = SDL_JoystickFromInstanceID(virtual_id);
+    CPPUNIT_ASSERT(virtual_joystick != nullptr);
+
+    interactor.set_joystick_alias(virtual_id, interactor::to_joystick("right"));
+
+    // Start the test
+    CPPUNIT_ASSERT(not interactor.received_axis_direction_event);
+    SDL_JoystickSetVirtualAxis(virtual_joystick, 0, 30000);
+    SIGHT_TEST_WAIT(interactor.received_axis_direction_event > 1);
+    SDL_JoystickSetVirtualAxis(virtual_joystick, 0, 0);
+}
+
 } //namespace sight::io::joystick::ut

@@ -238,6 +238,45 @@ static std::weak_ptr<event_loop> s_weak_instance;
 
 //------------------------------------------------------------------------------
 
+event_loop::axis_direction_t event_loop::map_axis(
+    const axis_aliases_t& _axis_aliases,
+    std::uint8_t _axis_index,
+    direction_t _direction
+)
+{
+    if(const auto& found = _axis_aliases.find(_axis_index); found != _axis_aliases.end())
+    {
+        if(found->second.second == axis_direction_event::direction_t::up)
+        {
+            // No inversion for the up direction
+            return {found->second.first, _direction};
+        }
+
+        if(found->second.second == axis_direction_event::direction_t::down)
+        {
+            // We need to inverse the direction
+            if(_direction == axis_direction_event::direction_t::up)
+            {
+                // Inversion for the up direction
+                return {found->second.first, axis_direction_event::direction_t::down};
+            }
+
+            if(_direction == axis_direction_event::direction_t::down)
+            {
+                // Inversion for the down direction
+                return {found->second.first, axis_direction_event::direction_t::up};
+            }
+
+            // Centered direction
+            return {found->second.first, axis_direction_event::direction_t::centered};
+        }
+    }
+
+    return {axis_t::unknown, axis_direction_event::direction_t::centered};
+}
+
+//------------------------------------------------------------------------------
+
 event_loop::event_loop()
 {
     // Initialize SDL2
@@ -340,6 +379,12 @@ void event_loop::loop()
                             axis_direction_event::direction_t::centered
                         );
 
+                        const auto axis_alias = map_axis(
+                            device->axis_aliases,
+                            event.jaxis.axis,
+                            axis_direction_event::direction_t::centered
+                        );
+
                         const auto sight_event = axis_direction_event {
                             joystick_event {
                                 .device    = device,
@@ -347,7 +392,8 @@ void event_loop::loop()
                                 .count     = 0
                             },
                             event.jaxis.axis,
-                            axis_direction_event::direction_t(axis_direction_event::direction_t::centered)
+                            axis_alias.second,
+                            axis_alias.first
                         };
 
                         for(const auto& interactor : instance->m_interactors)
@@ -355,7 +401,7 @@ void event_loop::loop()
                             interactor->joystick_axis_direction_event(sight_event);
                         }
 
-                        // Remove the auto-repeat event if it exists
+                        // Remove the auto-repeat
                         if(const auto found = instance->m_auto_repeat_directions.find(axis_id);
                            found != instance->m_auto_repeat_directions.end())
                         {
@@ -373,6 +419,8 @@ void event_loop::loop()
                     ? axis_direction_event::direction_t::up
                     : axis_direction_event::direction_t::centered;
 
+                const auto axis_alias = map_axis(device->axis_aliases, event.jaxis.axis, direction);
+
                 if(direction != axis_direction_event::direction_t::centered
                    && (!stored_axis_direction || *stored_axis_direction != direction))
                 {
@@ -387,7 +435,8 @@ void event_loop::loop()
                             .count     = 0
                         },
                         event.jaxis.axis,
-                        axis_direction_event::direction_t(direction)
+                        axis_alias.second,
+                        axis_alias.first
                     };
 
                     for(const auto& interactor : instance->m_interactors)
@@ -413,7 +462,8 @@ void event_loop::loop()
                         .count     = 0
                     },
                     event.jaxis.axis,
-                    event.jaxis.value
+                    event.jaxis.value,
+                    axis_alias.first
                 };
 
                 for(const auto& interactor : instance->m_interactors)
@@ -614,7 +664,8 @@ void event_loop::loop()
                         .count     = auto_repeat->count + 1
                     },
                     auto_repeat->axis,
-                    auto_repeat->value
+                    auto_repeat->value,
+                    auto_repeat->axis_alias
                 });
 
             for(const auto& interactor : instance->m_interactors)
@@ -627,8 +678,16 @@ void event_loop::loop()
 
 //------------------------------------------------------------------------------
 
-std::int32_t event_loop::add_joystick(int _index)
+SDL_JoystickID event_loop::add_joystick(int _index)
 {
+    // No need to add the joystick if it is already added
+    if(const auto already_open = SDL_JoystickGetDeviceInstanceID(_index);
+       already_open >= 0 && m_controllers.contains(already_open))
+    {
+        // Joystick already added
+        return already_open;
+    }
+
     auto* const joystick   = SDL_JoystickOpen(_index);
     const auto joystick_id = SDL_JoystickInstanceID(joystick);
 
@@ -754,6 +813,65 @@ std::int32_t event_loop::add_joystick(int _index)
         joystick_serial = serial;
     }
 
+    // Compute the alias
+    // For now, it is hardcoded...
+#ifdef _WIN32
+    static constexpr std::int32_t s_LEFT  = 0;
+    static constexpr std::int32_t s_RIGHT = 1;
+#else
+    static constexpr std::int32_t s_LEFT  = 1;
+    static constexpr std::int32_t s_RIGHT = 0;
+#endif
+
+    // Search if we already have a controller with the same alias
+    const auto left_found = std::ranges::any_of(
+        m_controllers,
+        [](const auto& _controller)
+        {
+            return _controller.second->alias == joystick_t::left;
+        });
+
+    const auto right_found = std::ranges::any_of(
+        m_controllers,
+        [](const auto& _controller)
+        {
+            return _controller.second->alias == joystick_t::right;
+        });
+
+    joystick_t alias = joystick_t::unknown;
+
+    // Map axis aliases, also hard coded for now
+    axis_aliases_t axis_aliases;
+
+    if(joystick_name.find("SpaceMouse") != std::string::npos)
+    {
+        // It should be mapped to the first controller by a manual/auto configuration
+        if(!left_found && (right_found || _index == s_LEFT))
+        {
+            alias = joystick_t::left;
+        }
+        else if(!right_found && (left_found || _index == s_RIGHT))
+        {
+            alias = joystick_t::right;
+        }
+
+        axis_aliases[0] = {axis_t::tx, axis_direction_event::direction_t::right};
+        axis_aliases[1] = {axis_t::ty, axis_direction_event::direction_t::down};
+        axis_aliases[2] = {axis_t::tz, axis_direction_event::direction_t::backward};
+        axis_aliases[3] = {axis_t::ry, axis_direction_event::direction_t::down};
+        axis_aliases[4] = {axis_t::rx, axis_direction_event::direction_t::left};
+        axis_aliases[5] = {axis_t::rz, axis_direction_event::direction_t::left};
+    }
+    else
+    {
+        axis_aliases[0] = {axis_t::tx, axis_direction_event::direction_t::right};
+        axis_aliases[1] = {axis_t::ty, axis_direction_event::direction_t::up};
+        axis_aliases[2] = {axis_t::tz, axis_direction_event::direction_t::forward};
+        axis_aliases[3] = {axis_t::rx, axis_direction_event::direction_t::right};
+        axis_aliases[4] = {axis_t::ry, axis_direction_event::direction_t::up};
+        axis_aliases[5] = {axis_t::rz, axis_direction_event::direction_t::right};
+    }
+
     m_controllers.insert_or_assign(
         joystick_id,
         std::make_shared<concrete_device>(
@@ -771,54 +889,27 @@ std::int32_t event_loop::add_joystick(int _index)
                 .axes    = joystick_axes,
                 .buttons = joystick_buttons,
                 .hats    = joystick_hats,
-                .balls   = joystick_balls
+                .balls   = joystick_balls,
+                .alias   = alias
             },
             joystick,
-            initial_axis_state
+            initial_axis_state,
+            axis_aliases
         })
     );
-
-    // For now, it is hardcoded...
-#ifdef _WIN32
-    static constexpr std::int32_t s_LEFT  = 0;
-    static constexpr std::int32_t s_RIGHT = 1;
-#else
-    static constexpr std::int32_t s_LEFT  = 1;
-    static constexpr std::int32_t s_RIGHT = 0;
-#endif
-
-    // It should be mapped to the first controller by a manual/auto configuration
-    if((m_left_joystick_id == -1 && m_right_joystick_id != -1) || (_index == s_LEFT && m_left_joystick_id == -1))
-    {
-        m_left_joystick_id = joystick_id;
-    }
-    else if((m_left_joystick_id != -1 && m_right_joystick_id == -1) || (_index == s_RIGHT && m_right_joystick_id == -1))
-    {
-        m_right_joystick_id = joystick_id;
-    }
 
     return joystick_id;
 }
 
 //------------------------------------------------------------------------------
 
-void event_loop::remove_joystick(std::int32_t _id)
+void event_loop::remove_joystick(SDL_JoystickID _id)
 {
     if(const auto found = m_controllers.find(_id);
        found != m_controllers.end())
     {
         SDL_JoystickClose(found->second->joystick);
         m_controllers.erase(found);
-    }
-
-    if(m_left_joystick_id == _id)
-    {
-        m_left_joystick_id = -1;
-    }
-
-    if(m_right_joystick_id == _id)
-    {
-        m_right_joystick_id = -1;
     }
 
     std::erase_if(
@@ -900,20 +991,40 @@ std::vector<std::shared_ptr<const device> > event_loop::devices() const
 
 //------------------------------------------------------------------------------
 
-std::int32_t event_loop::left_joystick() const
+void event_loop::set_joystick_alias(std::int32_t _id, joystick_t _alias)
 {
     std::unique_lock lock(m_mutex);
 
-    return m_left_joystick_id;
-}
-
-//------------------------------------------------------------------------------
-
-std::int32_t event_loop::right_joystick() const
-{
-    std::unique_lock lock(m_mutex);
-
-    return m_right_joystick_id;
+    if(auto found = m_controllers.find(_id);
+       found != m_controllers.end())
+    {
+        found->second = std::make_shared<concrete_device>(
+            concrete_device {
+                device {
+                    .index   = found->second->index,
+                    .id      = found->second->id,
+                    .name    = found->second->name,
+                    .path    = found->second->path,
+                    .guid    = found->second->guid,
+                    .vendor  = found->second->vendor,
+                    .product = found->second->product,
+                    .version = found->second->version,
+                    .serial  = found->second->serial,
+                    .axes    = found->second->axes,
+                    .buttons = found->second->buttons,
+                    .hats    = found->second->hats,
+                    .balls   = found->second->balls,
+                    .alias   = _alias
+                },
+                found->second->joystick,
+                found->second->initial_axis_state,
+                found->second->axis_aliases
+            });
+    }
+    else
+    {
+        SIGHT_ERROR("Could not find the controller with id: " << _id);
+    }
 }
 
 //------------------------------------------------------------------------------

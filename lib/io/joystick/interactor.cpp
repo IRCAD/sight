@@ -66,38 +66,6 @@ void interactor::stop_listening_joystick() const
 //------------------------------------------------------------------------------
 
 // NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-std::int32_t interactor::left_joystick() const
-{
-    const auto instance = detail::event_loop::instance();
-    SIGHT_WARN_IF("Event loop is not available", !instance);
-
-    if(instance)
-    {
-        return instance->left_joystick();
-    }
-
-    return -1;
-}
-
-//------------------------------------------------------------------------------
-
-// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
-std::int32_t interactor::right_joystick() const
-{
-    const auto instance = detail::event_loop::instance();
-    SIGHT_WARN_IF("Event loop is not available", !instance);
-
-    if(instance)
-    {
-        return instance->right_joystick();
-    }
-
-    return -1;
-}
-
-//------------------------------------------------------------------------------
-
-// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
 std::vector<std::shared_ptr<const device> > interactor::devices() const
 {
     if(const auto instance = detail::event_loop::instance(); instance)
@@ -106,6 +74,20 @@ std::vector<std::shared_ptr<const device> > interactor::devices() const
     }
 
     return {};
+}
+
+//------------------------------------------------------------------------------
+
+// NOLINTNEXTLINE(readability-convert-member-functions-to-static)
+void interactor::set_joystick_alias(std::int32_t _id, joystick_t _alias) const
+{
+    const auto instance = detail::event_loop::instance();
+    SIGHT_WARN_IF("Event loop is not available", !instance);
+
+    if(instance)
+    {
+        instance->set_joystick_alias(_id, _alias);
+    }
 }
 
 //------------------------------------------------------------------------------
