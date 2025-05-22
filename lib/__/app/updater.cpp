@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,9 +35,10 @@ void updater::configuring(const config_t& _config)
     {
         if(element.first == "service")
         {
-            const auto uid  = element.second.get<std::string>("<xmlattr>.uid");
-            const auto slot = element.second.get<std::string>("<xmlattr>.slot", "update");
-            m_elements.push_back({uid, slot, type_t::SERVICE});
+            const auto uid            = element.second.get<std::string>("<xmlattr>.uid");
+            const auto slot           = element.second.get<std::string>("<xmlattr>.slot", "update");
+            const auto ignore_stopped = element.second.get<bool>("<xmlattr>.ignore_stopped", false);
+            m_elements.push_back({uid, slot, type_t::SERVICE, ignore_stopped});
         }
         else if(element.first == "updater")
         {

@@ -110,15 +110,18 @@ void update_sequence::updating()
             // Service is stopped or will be stopped and current slot isn't start or stop = NOK we discard the sequence
             else if((is_stopped or will_be_stopped) and not is_slot_start and not is_slot_stop)
             {
-                SIGHT_WARN(
-                    "[sight::app::update_sequence] Service " << std::quoted(element.uid)
-                    << " is stopped or will be stopped."
-                );
-                services.clear();
-                break;
+                if(not element.ignore_stopped)
+                {
+                    SIGHT_WARN(
+                        "[sight::app::update_sequence] Service " << std::quoted(element.uid)
+                        << " is stopped or will be stopped."
+                    );
+                    services.clear();
+                    break;
+                }
             }
-            // Service isn't stopped and slot ins't stop = OK we add slot
-            else if(!(is_stopped or will_be_stopped) or !is_slot_stop)
+            // Service isn't stopped and slot isn't stop = OK we add slot
+            else if(not (is_stopped or will_be_stopped) or not is_slot_stop)
             {
                 services.emplace_back(srv, element.slot);
                 if(srv->is_auto_connected())

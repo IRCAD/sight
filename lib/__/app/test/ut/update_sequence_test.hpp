@@ -40,6 +40,7 @@ CPPUNIT_TEST(call_stop_while_stopped);
 CPPUNIT_TEST(call_start_slot_stop);
 CPPUNIT_TEST(call_stop_slot_start);
 CPPUNIT_TEST(call_stop_start);
+CPPUNIT_TEST(ignore_stopped);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -56,6 +57,7 @@ public:
     static void call_start_slot_stop();
     static void call_stop_slot_start();
     static void call_stop_start();
+    static void ignore_stopped();
 };
 
 } // namespace sight::app::ut

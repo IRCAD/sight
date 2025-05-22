@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -50,7 +50,8 @@ protected:
     {
         std::string uid;
         std::string slot;
-        type_t type;
+        type_t type {type_t::SERVICE};
+        bool ignore_stopped {false};
     };
 
     SIGHT_APP_API ~updater() override = default;

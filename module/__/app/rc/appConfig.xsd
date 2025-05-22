@@ -134,7 +134,7 @@
             </xs:choice>
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' />
-        <xs:attribute name='loop' type='xs:string' />
+        <xs:attribute name='loop' type='boolean_t' />
         <xs:attribute name='parent' type='xs:string' />
     </xs:complexType>
 
@@ -147,13 +147,14 @@
             </xs:choice>
         </xs:sequence>
         <xs:attribute name='uid' type='xs:string' />
-        <xs:attribute name='loop' type='xs:string' />
+        <xs:attribute name='loop' type='boolean_t' />
         <xs:attribute name='parent' type='xs:string' />
     </xs:complexType>
 
     <xs:complexType name="service_update_t">
         <xs:attribute name="uid" type="xs:string" use="required" />
         <xs:attribute name="slot" type="xs:string" use="optional" />
+        <xs:attribute name="ignore_stopped" type="boolean_t" use="optional" />
     </xs:complexType>
 
     <!-- ServiceList Type -->

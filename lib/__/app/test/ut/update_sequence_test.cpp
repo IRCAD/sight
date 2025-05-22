@@ -475,4 +475,44 @@ void update_sequence_test::call_stop_start()
     service::remove(update_srv);
 }
 
+//------------------------------------------------------------------------------
+
+void update_sequence_test::ignore_stopped()
+{
+    auto srv0 = create_order_srv();
+    auto srv1 = create_order_srv(false);
+    auto srv2 = create_order_srv();
+    auto srv3 = create_order_srv();
+
+    std::stringstream srv_config;
+    srv_config
+    << "<config>"
+    << "<service uid=" << std::quoted(srv0->get_id()) << "/>"
+    << "<service uid=" << std::quoted(srv1->get_id()) << " ignore_stopped=\"true\" />"
+    << "<service uid=" << std::quoted(srv2->get_id()) << "/>"
+    << "<service uid=" << std::quoted(srv3->get_id()) << "/>"
+    << "</config>"
+    ;
+    service::config_t config;
+    boost::property_tree::read_xml(srv_config, config);
+
+    auto update_srv = service::add("sight::app::update_sequence");
+    CPPUNIT_ASSERT(update_srv->is_a("sight::app::update_sequence"));
+    CPPUNIT_ASSERT(update_srv->is_a("sight::app::updater"));
+    update_srv->set_config(config);
+    CPPUNIT_ASSERT_NO_THROW(update_srv->configure());
+    CPPUNIT_ASSERT_NO_THROW(update_srv->start().get());
+
+    test_order_srv::s_ORDER = 0;
+    update_srv->update().get();
+    CPPUNIT_ASSERT_EQUAL((unsigned int) (0), srv0->update_order());
+    CPPUNIT_ASSERT_EQUAL((unsigned int) (0), srv1->update_order());
+    CPPUNIT_ASSERT_EQUAL((unsigned int) (1), srv2->update_order());
+    CPPUNIT_ASSERT_EQUAL((unsigned int) (2), srv3->update_order());
+
+    CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+
+    service::remove(update_srv);
+}
+
 } // namespace sight::app::ut
