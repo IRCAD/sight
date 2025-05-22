@@ -105,8 +105,8 @@ void pdf_writer::updating()
     if(this->has_location_defined())
     {
         QPdfWriter pdf_writer(this->get_locations().front().string().c_str());
-        QPainter painter(&pdf_writer);
         pdf_writer.setPageSize(QPageSize(QPageSize::A4));
+        QPainter painter(&pdf_writer);
 
         // Scale value to fit the images to a PDF page
         const int scale = pdf_writer.logicalDpiX() * 8;
@@ -148,26 +148,29 @@ void pdf_writer::updating()
         const std::size_t size_images_to_scale = images_to_scale.size();
         for(std::size_t idx = 0 ; idx < size_images_to_scale ; ++idx)
         {
-            auto fn = [&]{images_to_scale[idx] = images_to_scale[idx].scaledToWidth(scale, Qt::FastTransformation);};
+            auto fn = [idx, &images_to_scale, scale]()
+                      {
+                          images_to_scale[idx] = images_to_scale[idx].scaledToWidth(scale, Qt::FastTransformation);
+                      };
             futures.emplace_back(std::async(std::launch::async, fn));
         }
 
         std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 
         // Draws images onto the PDF.
-        for(QImage& q_image : images_to_scale)
+        for(size_t i = 0 ; i < images_to_scale.size() ; ++i)
         {
-            if(pdf_writer.newPage())
+            if(i > 0)
             {
+                pdf_writer.newPage();
                 pdf_writer.setPageSize(QPageSize(QPageSize::A4));
-                if(!q_image.isNull() && q_image.bits() != nullptr)
-                {
-                    painter.drawImage(0, 0, q_image);
-                }
             }
+
+            painter.drawImage(0, 0, images_to_scale[i]);
         }
 
         painter.end();
+        this->clear_locations();
     }
 }
 

@@ -15,6 +15,7 @@ add_dependencies(
     module_io_matrix
     module_io_vtk
     module_io_bitmap
+    module_io_document
 )
 
 # Allow dark theme via module_ui_qt

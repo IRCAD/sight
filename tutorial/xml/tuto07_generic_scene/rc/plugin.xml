@@ -8,6 +8,7 @@
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
     <requirement id="sight::module::viz::scene3d_qt" />
+    <requirement id="sight::module::io::document" />
 
     <extension implements="sight::app::extension::config">
         <id>Tuto07GenericScene_AppCfg</id>
@@ -142,6 +143,13 @@
                 <inout key="image" uid="snapshot" />
             </service>
 
+            <service uid="pdf_writer" type="sight::module::io::document::pdf_writer">
+                <in group="data">
+                    <key uid="snapshot" />
+                </in>
+                <container uid="genericSceneSrv" />
+            </service>
+
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Actions to call readers -->
@@ -235,6 +243,7 @@
 
             <connect>
                 <signal>snapshotSrv/clicked</signal>
+                <slot>pdf_writer/update</slot>
                 <slot>imageWriterSrv/update</slot>
             </connect>
 
@@ -308,6 +317,7 @@
             <start uid="meshAdp" />
             <start uid="negatoAdp" />
             <start uid="snapshotAdp" />
+            <start uid="pdf_writer" />
         </config>
     </extension>
 </plugin>
