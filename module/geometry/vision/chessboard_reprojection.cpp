@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "chessboard_reprojection.hpp"
 
+#include "core/spy_log.hpp"
+
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
@@ -39,22 +41,25 @@
 #include <ui/__/preferences.hpp>
 
 #include <opencv2/calib3d.hpp>
+#include <opencv2/core/types.hpp>
 #include <opencv2/opencv.hpp>
+
+#include <cstddef>
 
 namespace sight::module::geometry::vision
 {
 
 static const core::com::signals::key_t ERROR_COMPUTED_SIG = "error_computed";
 
-static const core::com::slots::key_t TOGGLE_DISTORTION_SLOT      = "toggle_distortion";
-static const core::com::slots::key_t UPDATE_CHESSBOARD_SIZE_SLOT = "update_chessboard_size";
+static const core::com::slots::key_t TOGGLE_DISTORTION_SLOT       = "toggle_distortion";
+static const core::com::slots::key_t UPDATE_CHESSBOARD_MODEL_SLOT = "update_chessboard_model";
 
 //-----------------------------------------------------------------------------
 
 chessboard_reprojection::chessboard_reprojection()
 {
     new_slot(TOGGLE_DISTORTION_SLOT, &chessboard_reprojection::toggle_distortion, this);
-    new_slot(UPDATE_CHESSBOARD_SIZE_SLOT, &chessboard_reprojection::update_chessboard_size, this);
+    new_slot(UPDATE_CHESSBOARD_MODEL_SLOT, &chessboard_reprojection::update_chessboard_model, this);
 
     m_error_computed_sig = new_signal<error_computed_t>(ERROR_COMPUTED_SIG);
 }
@@ -66,12 +71,6 @@ void chessboard_reprojection::configuring()
     const config_t config_tree = this->get_config();
     const config_t config      = config_tree.get_child("config.<xmlattr>");
 
-    const std::string output_key = config_tree.get_optional<std::string>("out.<xmlattr>.key").get_value_or("");
-    if(output_key == CHESSBOARD_MODEL_OUTPUT)
-    {
-        m_has_output_chessboard = true;
-    }
-
     m_distort_reprojection = config.get<bool>("distortReprojection", true);
     m_draw_reprojection    = config.get<bool>("drawReprojection", true);
     m_draw_detected        = config.get<bool>("drawDetected", true);
@@ -81,13 +80,17 @@ void chessboard_reprojection::configuring()
 
 void chessboard_reprojection::starting()
 {
-    this->update_chessboard_size();
 }
 
 //-----------------------------------------------------------------------------
 
 void chessboard_reprojection::updating()
 {
+    if(m_chessboard_model_3d.empty())
+    {
+        update_chessboard_model();
+    }
+
     const auto detected_chessboard = m_detected_chessboard.lock();
     SIGHT_ASSERT("Missing 'detectedChessboard'.", detected_chessboard);
 
@@ -125,7 +128,7 @@ void chessboard_reprojection::updating()
         io::opencv::matrix::copy_to_cv(transform.get_shared(), rvec, tvec);
 
         std::tie(rmse, reprojected_pts) = sight::geometry::vision::helper::compute_reprojection_error(
-            m_chessboard_model,
+            m_chessboard_model_3d,
             detected_points_f,
             rvec,
             tvec,
@@ -203,7 +206,7 @@ void chessboard_reprojection::updating()
                 {
                     // Project the model but assume the image isn't distorted.
                     cv::projectPoints(
-                        cv::Mat(m_chessboard_model),
+                        cv::Mat(m_chessboard_model_3d),
                         rvec,
                         tvec,
                         camera_mx,
@@ -251,7 +254,6 @@ void chessboard_reprojection::updating()
 
 void chessboard_reprojection::stopping()
 {
-    m_chessboard_model_out.reset();
 }
 
 //-----------------------------------------------------------------------------
@@ -261,33 +263,24 @@ void chessboard_reprojection::toggle_distortion()
     m_distort_reprojection = !m_distort_reprojection;
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void chessboard_reprojection::update_chessboard_size()
+void chessboard_reprojection::update_chessboard_model()
 {
-    auto width  = static_cast<std::uint64_t>(*m_width);
-    auto height = static_cast<std::uint64_t>(*m_height);
-    double square_size(*m_square_size);
-
-    m_chessboard_model.clear();
-
-    data::point_list::sptr chessboard_model_pl = std::make_shared<data::point_list>();
-
-    for(std::uint64_t i = 0 ; i < height - 1 ; ++i)
+    const auto chessboard_model = m_chessboard_model.lock();
+    SIGHT_ASSERT("Missing 'chessboard_model'.", chessboard_model);
+    SIGHT_ASSERT("chessboard_model doesn't contain any points", !chessboard_model->get_points().empty());
+    m_chessboard_model_3d.clear();
+    m_chessboard_model_3d.resize(chessboard_model->get_points().size());
+    std::size_t i = 0;
+    for(const auto& pt : chessboard_model->get_points())
     {
-        const double x = double(i) * square_size;
-
-        for(std::uint64_t j = 0 ; j < width - 1 ; ++j)
-        {
-            const double y = double(j) * square_size;
-            m_chessboard_model.push_back(cv::Point3d(x, y, 0.));
-            chessboard_model_pl->push_back(std::make_shared<data::point>(x, y, 0.));
-        }
-    }
-
-    if(m_has_output_chessboard)
-    {
-        m_chessboard_model_out = chessboard_model_pl;
+        cv::Point3f pt3d;
+        pt3d.x                   = static_cast<float>((*pt)[0]);
+        pt3d.y                   = static_cast<float>((*pt)[1]);
+        pt3d.z                   = static_cast<float>((*pt)[2]);
+        m_chessboard_model_3d[i] = pt3d;
+        ++i;
     }
 }
 
@@ -300,9 +293,7 @@ service::connections_t chessboard_reprojection::auto_connections() const
         {DETECTED_CHESSBOARD_INPUT, data::point_list::MODIFIED_SIG, service::slots::UPDATE},
         {CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, service::slots::UPDATE},
         {CAMERA_INPUT, data::camera::MODIFIED_SIG, service::slots::UPDATE},
-        {m_width, data::object::MODIFIED_SIG, UPDATE_CHESSBOARD_SIZE_SLOT},
-        {m_height, data::object::MODIFIED_SIG, UPDATE_CHESSBOARD_SIZE_SLOT},
-        {m_square_size, data::object::MODIFIED_SIG, UPDATE_CHESSBOARD_SIZE_SLOT}
+        {CHESSBOARD_MODEL, data::point_list::MODIFIED_SIG, UPDATE_CHESSBOARD_MODEL_SLOT}
     };
 }
 

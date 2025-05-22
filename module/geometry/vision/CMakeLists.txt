@@ -19,3 +19,7 @@ endif()
 add_dependencies(module_geometry_vision data module_service)
 
 target_link_libraries(module_geometry_vision PUBLIC geometry_vision core data ui service io_opencv)
+
+if(SIGHT_BUILD_TESTS)
+    add_subdirectory(test/ut)
+endif(SIGHT_BUILD_TESTS)

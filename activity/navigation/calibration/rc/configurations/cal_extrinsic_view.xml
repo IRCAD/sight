@@ -202,7 +202,7 @@
         <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
-            <scene renderMode="sync">
+            <scene renderMode="manual">
                 <background topColor="#000000" bottomColor="#000000" />
 
                 <layer id="video1" order="1">
@@ -217,11 +217,11 @@
             </scene>
         </service>
 
-        <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="false">
+        <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::video">
             <in key="image" uid="frame1" />
         </service>
 
-        <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="false">
+        <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::video">
             <in key="image" uid="frame2" />
         </service>
 

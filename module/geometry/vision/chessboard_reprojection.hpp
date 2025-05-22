@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,6 +32,7 @@
 #include <service/controller.hpp>
 
 #include <opencv2/core.hpp>
+#include <opencv2/core/types.hpp>
 
 namespace sight::module::geometry::vision
 {
@@ -116,10 +117,10 @@ protected:
 
 private:
 
-    using error_computed_t = core::com::signal<void (double)>;
+    /// Updates the chessboard model from input data.
+    void update_chessboard_model();
 
-    /// Fetches the chessboard dimension from the preferences and computes the model.
-    void update_chessboard_size();
+    using error_computed_t = core::com::signal<void (double)>;
 
     /// Enables/disabled distorting the reprojected points.
     void toggle_distortion();
@@ -136,11 +137,8 @@ private:
     /// Draw the reprojection error on the image if true.
     bool m_draw_reprojection_error {true};
 
-    /// True if this service outputs the chessboard model.
-    bool m_has_output_chessboard {false};
-
-    /// Chessboard model.
-    std::vector<cv::Point3f> m_chessboard_model;
+    /// Chessboard model in 3D, used to compute the reprojection error.
+    std::vector<cv::Point3f> m_chessboard_model_3d;
 
     /// Signal sent when the reprojection error is computed.
     error_computed_t::sptr m_error_computed_sig;
@@ -148,22 +146,13 @@ private:
     static constexpr std::string_view TRANSFORM_INPUT           = "transform";
     static constexpr std::string_view DETECTED_CHESSBOARD_INPUT = "detectedChessboard";
     static constexpr std::string_view CAMERA_INPUT              = "camera";
-    static constexpr std::string_view CHESSBOARD_MODEL_OUTPUT   = "chessboardModel";
+    static constexpr std::string_view CHESSBOARD_MODEL          = "chessboard_model";
 
     data::ptr<data::matrix4, data::access::in> m_transform {this, TRANSFORM_INPUT};
     data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
     data::ptr<data::point_list, data::access::in> m_detected_chessboard {this, DETECTED_CHESSBOARD_INPUT};
+    data::ptr<data::point_list, data::access::in> m_chessboard_model {this, CHESSBOARD_MODEL};
     data::ptr<data::image, data::access::inout> m_video_image {this, "videoImage"};
-    data::ptr<data::point_list, data::access::out> m_chessboard_model_out {this, CHESSBOARD_MODEL_OUTPUT};
-
-    /// Width of the chessboard.
-    sight::data::property<sight::data::integer> m_width {this, "board_width", 11};
-
-    /// Height of the chessboard.
-    sight::data::property<sight::data::integer> m_height {this, "board_height", 8};
-
-    /// Square size of the chessboard.
-    sight::data::property<sight::data::real> m_square_size {this, "board_square_size", 1.};
 };
 
 } //namespace sight::module::geometry::vision

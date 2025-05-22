@@ -16,7 +16,7 @@
         <object uid="distortedFrame" type="sight::data::image" />
 
         <object uid="detectedChessboard" type="sight::data::point_list" />
-        <object uid="chessboardModel" type="sight::data::point_list" deferred="true" />
+        <object uid="chessboardModel" type="sight::data::point_list" />
         <object uid="cameraPoseMx" type="sight::data::matrix4" />
 
         <!-- ******************************* UI declaration *********************************** -->
@@ -219,7 +219,7 @@
             <properties from="${board_properties}" />
         </service>
 
-        <service uid="computeCameraPoseSrv" type="sight::module::geometry::vision::solve_pnp" worker="chess_checker">
+        <service uid="computeCameraPoseSrv" type="sight::module::geometry::vision::solve_pnp" auto_connect="false">
             <in key="pointList2d" uid="detectedChessboard" />
             <in key="pointList3d" uid="chessboardModel" />
             <in key="calibration" uid="${camera}" />
@@ -273,7 +273,7 @@
             <mode>undistort</mode>
         </service>
 
-        <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" worker="chess_checker" auto_connect="false">
+        <service uid="chessboardDetectorSrv" type="sight::module::geometry::vision::chess_board_detector" auto_connect="false">
             <in group="image">
                 <key uid="videoFrame" />
             </in>
@@ -286,14 +286,18 @@
             <properties from="${board_properties}" />
         </service>
 
-        <service uid="chessboardReprojectionSrv" type="sight::module::geometry::vision::chessboard_reprojection" worker="chess_reproj" auto_connect="false">
+        <service uid="chessboardReprojectionSrv" type="sight::module::geometry::vision::chessboard_reprojection" auto_connect="false">
             <in key="transform" uid="cameraPoseMx" />
             <in key="camera" uid="${camera}" />
             <in key="detectedChessboard" uid="detectedChessboard" />
+            <in key="chessboard_model" uid="chessboardModel" />
             <inout key="videoImage" uid="distortedFrame" />
-            <out key="chessboardModel" uid="chessboardModel" />
-            <properties from="${board_properties}" />
             <config drawDetected="true" drawReprojection="true" distortReprojection="true" />
+        </service>
+
+        <service uid="chessboard_creator" type="sight::module::geometry::vision::chessboard_creator">
+            <inout key="chessboard_model" uid="chessboardModel" />
+            <properties from="${board_properties}" />
         </service>
 
         <!-- ******************************* Begin Generic scene ******************************* -->
@@ -496,6 +500,7 @@
         <start uid="distorterSrv" />
         <start uid="computeCameraPoseSrv" />
         <start uid="videoAdp" />
+        <start uid="chessboard_creator" />
 
         <update>
             <sequence uid="update_loop" loop="true">

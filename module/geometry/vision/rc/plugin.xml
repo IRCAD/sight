@@ -14,6 +14,13 @@
         <service>sight::module::geometry::vision::chessboard_reprojection</service>
         <desc>Reprojects the chessboard model onto the detected points using the estimated camera pose and calibration.</desc>
     </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::base</type>
+        <service>sight::module::geometry::vision::chessboard_creator</service>
+        <desc>Creates a 3d model of the chessboard using height, width and square size properties</desc>
+    </extension>
+
     <extension implements="sight::service::extension::factory">
         <type>sight::service::filter</type>
         <service>sight::module::geometry::vision::distortion</service>

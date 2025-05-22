@@ -56,10 +56,16 @@ void solve_pnp::compute_registration(core::clock::type /*timestamp*/)
 
     auto fw_matrix = m_matrix.lock();
 
-    //points list should have same number of points
-    if(fw_points2d->get_points().size() != fw_points3d->get_points().size())
+    // ignore if no detected points or if sizes do not match.
+    const bool points_2d_empty = fw_points2d->get_points().empty();
+    const bool points_equals   = fw_points2d->get_points().size() == fw_points3d->get_points().size();
+
+    if(!points_equals)
     {
-        SIGHT_ERROR("The 2d and 3d point lists should have the same number of points");
+        if(!points_2d_empty)
+        {
+            SIGHT_ERROR("The 2d and 3d point lists should have the same number of points");
+        }
 
         return;
     }
