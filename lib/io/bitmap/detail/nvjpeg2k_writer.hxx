@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,6 +23,7 @@
 
 #include "writer_impl.hxx"
 
+#include <npp.h>
 #include <nvjpeg2k.h>
 
 // cspell:ignore nvjpeg nvjpeg2k nppi bitstream LRCP NOLINTNEXTLINE
@@ -413,12 +414,13 @@ private:
                         };
 
                         CHECK_CUDA(
-                            nppiCopy_8u_C3P3R(
+                            nppiCopy_8u_C3P3R_Ctx(
                                 in_buffer,
                                 out_step * int(num_components),
                                 out_buffer.data(),
                                 out_step,
-                                nppi_size
+                                nppi_size,
+                                m_npp_stream_context
                             ),
                             NPP_SUCCESS
                         );
@@ -432,12 +434,13 @@ private:
                         };
 
                         CHECK_CUDA(
-                            nppiCopy_8u_C3P3R(
+                            nppiCopy_8u_C3P3R_Ctx(
                                 in_buffer,
                                 out_step * int(num_components),
                                 out_buffer.data(),
                                 out_step,
-                                nppi_size
+                                nppi_size,
+                                m_npp_stream_context
                             ),
                             NPP_SUCCESS
                         );
@@ -459,12 +462,13 @@ private:
                         };
 
                         CHECK_CUDA(
-                            nppiCopy_8u_C4P4R(
+                            nppiCopy_8u_C4P4R_Ctx(
                                 in_buffer,
                                 out_step * int(num_components),
                                 out_buffer.data(),
                                 out_step,
-                                nppi_size
+                                nppi_size,
+                                m_npp_stream_context
                             ),
                             NPP_SUCCESS
                         );
@@ -479,12 +483,13 @@ private:
                         };
 
                         CHECK_CUDA(
-                            nppiCopy_8u_C4P4R(
+                            nppiCopy_8u_C4P4R_Ctx(
                                 in_buffer,
                                 out_step * int(num_components),
                                 out_buffer.data(),
                                 out_step,
-                                nppi_size
+                                nppi_size,
+                                m_npp_stream_context
                             ),
                             NPP_SUCCESS
                         );
@@ -511,12 +516,13 @@ private:
                         };
 
                         CHECK_CUDA(
-                            nppiCopy_16u_C3P3R(
+                            nppiCopy_16u_C3P3R_Ctx(
                                 in_buffer,
                                 out_step * int(num_components),
                                 out_buffer.data(),
                                 out_step,
-                                nppi_size
+                                nppi_size,
+                                m_npp_stream_context
                             ),
                             NPP_SUCCESS
                         );
@@ -530,12 +536,13 @@ private:
                         };
 
                         CHECK_CUDA(
-                            nppiCopy_16u_C3P3R(
+                            nppiCopy_16u_C3P3R_Ctx(
                                 in_buffer,
                                 out_step * int(num_components),
                                 out_buffer.data(),
                                 out_step,
-                                nppi_size
+                                nppi_size,
+                                m_npp_stream_context
                             ),
                             NPP_SUCCESS
                         );
@@ -557,12 +564,13 @@ private:
                         };
 
                         CHECK_CUDA(
-                            nppiCopy_16u_C4P4R(
+                            nppiCopy_16u_C4P4R_Ctx(
                                 in_buffer,
                                 out_step * int(num_components),
                                 out_buffer.data(),
                                 out_step,
-                                nppi_size
+                                nppi_size,
+                                m_npp_stream_context
                             ),
                             NPP_SUCCESS
                         );
@@ -577,12 +585,13 @@ private:
                         };
 
                         CHECK_CUDA(
-                            nppiCopy_16u_C4P4R(
+                            nppiCopy_16u_C4P4R_Ctx(
                                 in_buffer,
                                 out_step * int(num_components),
                                 out_buffer.data(),
                                 out_step,
-                                nppi_size
+                                nppi_size,
+                                m_npp_stream_context
                             ),
                             NPP_SUCCESS
                         );
@@ -609,12 +618,13 @@ private:
                         };
 
                         CHECK_CUDA(
-                            nppiCopy_16s_C3P3R(
+                            nppiCopy_16s_C3P3R_Ctx(
                                 in_buffer,
                                 out_step * int(num_components),
                                 out_buffer.data(),
                                 out_step,
-                                nppi_size
+                                nppi_size,
+                                m_npp_stream_context
                             ),
                             NPP_SUCCESS
                         );
@@ -628,12 +638,13 @@ private:
                         };
 
                         CHECK_CUDA(
-                            nppiCopy_16s_C3P3R(
+                            nppiCopy_16s_C3P3R_Ctx(
                                 in_buffer,
                                 out_step * int(num_components),
                                 out_buffer.data(),
                                 out_step,
-                                nppi_size
+                                nppi_size,
+                                m_npp_stream_context
                             ),
                             NPP_SUCCESS
                         );
@@ -655,12 +666,13 @@ private:
                         };
 
                         CHECK_CUDA(
-                            nppiCopy_16s_C4P4R(
+                            nppiCopy_16s_C4P4R_Ctx(
                                 in_buffer,
                                 out_step * int(num_components),
                                 out_buffer.data(),
                                 out_step,
-                                nppi_size
+                                nppi_size,
+                                m_npp_stream_context
                             ),
                             NPP_SUCCESS
                         );
@@ -675,12 +687,13 @@ private:
                         };
 
                         CHECK_CUDA(
-                            nppiCopy_16s_C4P4R(
+                            nppiCopy_16s_C4P4R_Ctx(
                                 in_buffer,
                                 out_step * int(num_components),
                                 out_buffer.data(),
                                 out_step,
-                                nppi_size
+                                nppi_size,
+                                m_npp_stream_context
                             ),
                             NPP_SUCCESS
                         );
@@ -755,6 +768,7 @@ private:
     nvjpeg2kEncoder_t m_handle {nullptr};
     nvjpeg2kEncodeState_t m_state {nullptr};
     nvjpeg2kEncodeParams_t m_params {nullptr};
+    NppStreamContext m_npp_stream_context {};
 
     void* m_packed_gpu_buffer {nullptr};
     std::size_t m_packed_gpu_buffer_size {0};

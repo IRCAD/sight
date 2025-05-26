@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -235,12 +235,13 @@ public:
                     };
 
                     CHECK_CUDA(
-                        nppiCopy_8u_P3C3R(
+                        nppiCopy_8u_P3C3R_Ctx(
                             in_buffer.data(),
                             in_step,
                             out_buffer,
                             in_step * int(image_info.num_components),
-                            nppi_size
+                            nppi_size,
+                            m_npp_stream_context
                         ),
                         NPP_SUCCESS
                     );
@@ -255,12 +256,13 @@ public:
                     };
 
                     CHECK_CUDA(
-                        nppiCopy_8u_P4C4R(
+                        nppiCopy_8u_P4C4R_Ctx(
                             in_buffer.data(),
                             in_step,
                             out_buffer,
                             in_step * int(image_info.num_components),
-                            nppi_size
+                            nppi_size,
+                            m_npp_stream_context
                         ),
                         NPP_SUCCESS
                     );
@@ -280,12 +282,13 @@ public:
                     };
 
                     CHECK_CUDA(
-                        nppiCopy_16u_P3C3R(
+                        nppiCopy_16u_P3C3R_Ctx(
                             in_buffer.data(),
                             in_step,
                             out_buffer,
                             in_step * int(image_info.num_components),
-                            nppi_size
+                            nppi_size,
+                            m_npp_stream_context
                         ),
                         NPP_SUCCESS
                     );
@@ -300,12 +303,13 @@ public:
                     };
 
                     CHECK_CUDA(
-                        nppiCopy_16u_P4C4R(
+                        nppiCopy_16u_P4C4R_Ctx(
                             in_buffer.data(),
                             in_step,
                             out_buffer,
                             in_step * int(image_info.num_components),
-                            nppi_size
+                            nppi_size,
+                            m_npp_stream_context
                         ),
                         NPP_SUCCESS
                     );
@@ -397,6 +401,7 @@ private:
     nvjpeg2kStream_t m_stream {nullptr};
     cudaStream_t m_cuda_stream {nullptr};
     nvjpeg2kDecodeParams_t m_params {nullptr};
+    NppStreamContext m_npp_stream_context {};
 
     std::vector<void*> m_planar_gpu_buffers;
     std::vector<std::size_t> m_planar_sizes;
