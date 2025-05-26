@@ -52,6 +52,8 @@ predefined_camera::predefined_camera() noexcept
                 m_interactor->previous_position();
             }
         });
+
+    new_slot(slots::RESET, &predefined_camera::reset, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -125,6 +127,24 @@ void predefined_camera::starting()
     m_interactor->set_mouse_rotation(m_manual_rotation);
 
     layer->add_interactor(m_interactor, m_priority);
+
+    this->updating();
+}
+
+//------------------------------------------------------------------------------
+
+void predefined_camera::reset()
+{
+    Ogre::Vector3 view_up_axis = sight::viz::scene3d::interactor::DEFAULT_VIEW_UP;
+    if(const auto& view_up = m_view_up.const_lock(); view_up)
+    {
+        const auto view_up_matrix = sight::viz::scene3d::utils::to_ogre_matrix(view_up.get_shared());
+        view_up_axis = Ogre::Vector3(view_up_matrix[0][1], view_up_matrix[1][1], view_up_matrix[2][1]);
+    }
+
+    m_interactor->set_view_up(view_up_axis);
+
+    m_interactor->reset();
 
     this->updating();
 }

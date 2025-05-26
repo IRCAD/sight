@@ -45,7 +45,7 @@ class SIGHT_VIZ_SCENE3D_CLASS_API predefined_position_interactor final : public 
 {
 public:
 
-    /// Predefined position with name and Rx, Ry,Rz rotation in degree.
+    /// Predefined position with name and Rx, Ry, Rz rotation in degree.
     struct predefined_position_t
     {
         float rx {0.F};
@@ -54,7 +54,7 @@ public:
         std::string name {""};
     };
 
-    /// Initializes the interractor.
+    /// Initializes the interactor.
     SIGHT_VIZ_SCENE3D_API predefined_position_interactor(
         SPTR(layer)_layer,
         bool _layer_order_dependant,
@@ -134,6 +134,8 @@ public:
     /// Enables/disables the mouse rotation.
     SIGHT_VIZ_SCENE3D_API void inline set_mouse_rotation(bool _enable);
 
+    SIGHT_VIZ_SCENE3D_API void inline set_view_up(Ogre::Vector3 _view_up);
+
     /// Returns current state of mouse rotation.
     SIGHT_VIZ_SCENE3D_API bool inline mouse_rotation() const;
 
@@ -142,6 +144,9 @@ public:
     SIGHT_VIZ_SCENE3D_API Ogre::Matrix4 inline transform() const;
 
     SIGHT_VIZ_SCENE3D_API Ogre::Quaternion inline transform_quaternion() const;
+
+    /// Resets the camera.
+    SIGHT_VIZ_SCENE3D_API void reset();
 
 private:
 
@@ -192,8 +197,6 @@ private:
     /// Stores the initial rotation.
     const Ogre::Quaternion m_camera_init_rotation {Ogre::Quaternion(Ogre::Degree(180), Ogre::Vector3::NEGATIVE_UNIT_X)};
 
-    Ogre::Quaternion m_current_orientation;
-
     Ogre::Quaternion m_last_orientation;
 
     /// Vector of predefined position to loop.
@@ -202,7 +205,7 @@ private:
     /// Defines if an animation is performed when switching positions
     bool m_animate {true};
 
-    /// Defines if we use a fixed orientation or if we follow the orientation of the targe
+    /// Defines if we use a fixed orientation or if we follow the orientation of the target
     bool m_follow_orientation {false};
 
     /// Stores the current index in m_predefined_positions.
@@ -228,6 +231,13 @@ private:
 void inline predefined_position_interactor::set_mouse_rotation(bool _enable)
 {
     m_mouse_move = _enable;
+}
+
+//------------------------------------------------------------------------------
+
+void inline predefined_position_interactor::set_view_up(Ogre::Vector3 _view_up)
+{
+    m_view_up = _view_up;
 }
 
 //------------------------------------------------------------------------------

@@ -158,18 +158,37 @@ void predefined_position_interactor::pinch_gesture_event(double _scale_factor, i
 
 // ----------------------------------------------------------------------------
 
+void predefined_position_interactor::reset()
+{
+    if(auto layer = m_layer.lock())
+    {
+        layer->reset_camera_coordinates();
+        m_last_orientation = Ogre::Quaternion();
+        auto current_position = m_current_position_idx;
+        this->init();
+        this->follow_transform();
+        if(current_position.has_value())
+        {
+            this->to_predefined_position(current_position.value(), m_animate);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void predefined_position_interactor::key_press_event(int _key, modifier /*_mods*/, int _mouse_x, int _mouse_y)
 {
     if(_key == 'R' || _key == 'r')
     {
+        bool in_layer = false;
         if(auto layer = m_layer.lock())
         {
-            if(is_in_layer(_mouse_x, _mouse_y, layer, m_layer_order_dependant) && !m_timer->is_running())
-            {
-                layer->reset_camera_coordinates();
-                this->init();
-                this->follow_transform();
-            }
+            in_layer = is_in_layer(_mouse_x, _mouse_y, layer, m_layer_order_dependant);
+        }
+
+        if(in_layer && !m_timer->is_running())
+        {
+            this->reset();
         }
     }
 }
@@ -203,7 +222,6 @@ void predefined_position_interactor::init()
     this->rotate_camera(cam_node, m_camera_init_rotation);
 
     m_current_position_idx = std::nullopt;
-    m_current_orientation  = cam_node->getOrientation();
 }
 
 //------------------------------------------------------------------------------
@@ -354,8 +372,6 @@ void predefined_position_interactor::to_predefined_position(std::size_t _idx, bo
 
                     this->rotate_camera(cam_node, rotation);
 
-                    m_current_orientation = cam_node->getOrientation();
-
                     layer->request_render();
 
                     if(is_last_step)
@@ -389,7 +405,6 @@ void predefined_position_interactor::to_predefined_position(std::size_t _idx, bo
         }
 
         m_current_position_idx = _idx;
-        m_current_orientation  = cam_node->getOrientation();
     }
 }
 
@@ -457,8 +472,6 @@ void predefined_position_interactor::follow_transform()
 
     // 4. Get back to same level of zoom
     cam_node->translate(Ogre::Vector3(0, 0, m_look_at_z), Ogre::Node::TS_LOCAL);
-
-    m_current_orientation = cam_node->getOrientation();
 
     m_layer.lock()->request_render();
 

@@ -69,17 +69,17 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b mouseRotation (optional, bool, default=true): defines if mouse rotation through mouse is activated or not.
  * - \b defaultPosition (optional, string, default=""): defines the default position to use.
  * - \b animate (optional, bool, default=true): defines if an animation is used when switching position or not.
- * - \b follow_orientation (optional, bool, default=false) defines if we use a fixed orientation or if we follow the
- * orientation of the target.
+ * - \b follow_orientation (optional, bool, default=false) defines if we use a fixed orientation
+ *      or if we follow the orientation of the target.
  * - \b zoom (optional, default="1.0"): defines the zoom ratio against the size of the scene.
  *
  * @section Slots Slots
  * - \b set_parameter(parameter_t value, std::string key): If key = "position", looking for value in the position name,
- * then goes to that position if found.
+ *      then goes to that position if found.
  * - \b nextPosition: Go to the next position (cyclic iteration).
  * - \b previousPosition: Go to the previous position (cyclic iteration).
  * - \b update: Update adaptor using the input transformation,
- * this slot is called automatically if auto_connect="true".
+ *      this slot is called automatically if auto_connect="true".
  */
 class predefined_camera final : public sight::viz::scene3d::adaptor
 {
@@ -89,6 +89,7 @@ public:
     {
         using slots_t = core::com::slots::key_t;
 
+        inline static const slots_t RESET             = "reset";
         inline static const slots_t SET_PARAMETER     = "set_parameter";
         inline static const slots_t NEXT_POSITION     = "nextPosition";
         inline static const slots_t PREVIOUS_POSITION = "previousPosition";
@@ -104,6 +105,8 @@ public:
     ~predefined_camera() noexcept final = default;
 
 protected:
+
+    void reset();
 
     /// Configures the layer and the interaction priority.
     void configuring() final;
@@ -127,6 +130,7 @@ private:
         sight::viz::scene3d::interactor::predefined_position_interactor::predefined_position_t;
 
     std::vector<predefined_position_t> m_camera_positions;
+
     /// Contains the interaction handler.
     std::shared_ptr<sight::viz::scene3d::interactor::predefined_position_interactor> m_interactor;
 
@@ -136,16 +140,16 @@ private:
     /// Defines if the interaction must take into account above layers.
     bool m_layer_order_dependant {true};
 
-    /// Defines if one can move using the mouse interaction (default off)
+    /// Defines if one can move using the mouse interaction (default off).
     bool m_manual_rotation {false};
 
     /// Defines the default position to use.
     std::optional<std::string> m_default_position;
 
-    /// Defines if an animation is performed when switching positions
+    /// Defines if an animation is performed when switching positions.
     bool m_animate {true};
 
-    /// Zoom ratio
+    /// Zoom ratio.
     float m_zoom {1.0};
 
     /// Input transform.
