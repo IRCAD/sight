@@ -24,7 +24,13 @@
 
 #include <data/array.hpp>
 #include <data/color.hpp>
+#include <data/dvec2.hpp>
+#include <data/dvec3.hpp>
+#include <data/dvec4.hpp>
 #include <data/integer.hpp>
+#include <data/ivec2.hpp>
+#include <data/ivec3.hpp>
+#include <data/ivec4.hpp>
 #include <data/real.hpp>
 
 #include <cmath>
@@ -72,9 +78,7 @@ std::pair<T, T> get_range(T _value)
 //-----------------------------------------------------------------------------
 
 service::config_t parameter_editor::create_config(
-    const sight::viz::scene3d::parameter_adaptor::csptr& _adaptor,
-    const service::base::csptr& _param_srv,
-    core::com::helper::sig_slot_connection& _connections
+    const sight::viz::scene3d::parameter_adaptor::csptr& _adaptor
 )
 {
     service::config_t param_config;
@@ -84,151 +88,69 @@ service::config_t parameter_editor::create_config(
 
     const auto& obj_type = shader_obj->get_classname();
 
-    if(obj_type == "sight::data::boolean")
-    {
-        _connections.connect(_param_srv, "bool_changed", _adaptor, "set_bool_parameter");
+    const auto set_config =
+        [&](auto& _data)
+        {
+            const auto minmax = get_range(_data);
+            param_config.add("<xmlattr>.name", _adaptor->get_param_name());
+            param_config.add("<xmlattr>.key", _adaptor->get_param_name());
+            param_config.add("<xmlattr>.min", minmax.first);
+            param_config.add("<xmlattr>.max", minmax.second);
+        };
 
-        param_config.add("<xmlattr>.type", "bool");
+    if(obj_type == "sight::data::boolean" || obj_type == "sight::data::color")
+    {
         param_config.add("<xmlattr>.name", _adaptor->get_param_name());
         param_config.add("<xmlattr>.key", _adaptor->get_param_name());
-        param_config.add("<xmlattr>.defaultValue", false);
-    }
-    else if(obj_type == "sight::data::color")
-    {
-        _connections.connect(_param_srv, "color_changed", _adaptor, "set_color_parameter");
-
-        auto color_value = std::dynamic_pointer_cast<data::color>(shader_obj.get_shared());
-
-        int r = static_cast<unsigned char>(color_value->red() * 255);
-        int g = static_cast<unsigned char>(color_value->green() * 255);
-        int b = static_cast<unsigned char>(color_value->blue() * 255);
-        int a = static_cast<unsigned char>(color_value->alpha() * 255);
-
-        std::stringstream hex_str;
-        hex_str << "#" << std::hex;
-        hex_str << ((r < 0x10) ? "0" : "") << r;
-        hex_str << ((g < 0x10) ? "0" : "") << g;
-        hex_str << ((b < 0x10) ? "0" : "") << b;
-        hex_str << ((a < 0x10) ? "0" : "") << a;
-
-        param_config.add("<xmlattr>.type", "color");
-        param_config.add("<xmlattr>.name", _adaptor->get_param_name());
-        param_config.add("<xmlattr>.key", _adaptor->get_param_name());
-        param_config.add("<xmlattr>.defaultValue", hex_str.str());
     }
     else if(obj_type == "sight::data::real")
     {
-        _connections.connect(_param_srv, "double_changed", _adaptor, "set_double_parameter");
-
-        auto float_value         = std::dynamic_pointer_cast<data::real>(shader_obj.get_shared());
-        const auto default_value = static_cast<double>(float_value->value());
-        const auto minmax        = get_range(default_value);
-        const double min         = minmax.first;
-        const double max         = minmax.second;
-
-        param_config.add("<xmlattr>.type", "double");
-        param_config.add("<xmlattr>.name", _adaptor->get_param_name());
-        param_config.add("<xmlattr>.key", _adaptor->get_param_name());
-        param_config.add("<xmlattr>.defaultValue", std::to_string(default_value));
-        param_config.add("<xmlattr>.min", min);
-        param_config.add("<xmlattr>.max", max);
+        auto float_value = std::dynamic_pointer_cast<data::real>(shader_obj.get_shared());
+        set_config(float_value->value());
+        param_config.add("<xmlattr>.widget", "slider");
     }
     else if(obj_type == "sight::data::integer")
     {
-        _connections.connect(_param_srv, "int_changed", _adaptor, "set_int_parameter");
-
-        auto int_value          = std::dynamic_pointer_cast<data::integer>(shader_obj.get_shared());
-        const int default_value = int(int_value->value());
-        const auto minmax       = get_range(default_value);
-        const int min           = minmax.first;
-        const int max           = minmax.second;
-
-        param_config.add("<xmlattr>.type", "int");
-        param_config.add("<xmlattr>.name", _adaptor->get_param_name());
-        param_config.add("<xmlattr>.key", _adaptor->get_param_name());
-        param_config.add("<xmlattr>.defaultValue", std::to_string(default_value));
-        param_config.add("<xmlattr>.min", min);
-        param_config.add("<xmlattr>.max", max);
+        auto int_value = std::dynamic_pointer_cast<data::integer>(shader_obj.get_shared());
+        set_config(int_value->value());
+        param_config.add("<xmlattr>.widget", "slider");
     }
-    else if(obj_type == "sight::data::array")
+    else if(obj_type == "sight::data::ivec2")
     {
-        auto array_object         = std::dynamic_pointer_cast<data::array>(shader_obj.get_shared());
-        const auto num_components = array_object->size()[0];
-        if(num_components <= 3)
-        {
-            std::string str_size = std::to_string(num_components);
-
-            if(array_object->type() == core::type::FLOAT
-               || array_object->type() == core::type::DOUBLE)
-            {
-                _connections.connect(
-                    _param_srv,
-                    "double" + str_size + "_changed",
-                    _adaptor,
-                    "set_double" + str_size + "_parameter"
-                );
-
-                // We can't give a default value for each component to parameters :/
-                // For now fill it with the first one
-                const auto dump_lock = array_object->dump_lock();
-
-                double default_value = NAN;
-                if(array_object->type() == core::type::FLOAT)
-                {
-                    default_value = static_cast<double>(array_object->at<float>(0));
-                }
-                else
-                {
-                    default_value = array_object->at<double>(0);
-                }
-
-                const auto minmax = get_range(default_value);
-                const double min  = minmax.first;
-                const double max  = minmax.second;
-
-                param_config.add("<xmlattr>.type", "double" + str_size);
-                param_config.add("<xmlattr>.name", _adaptor->get_param_name());
-                param_config.add("<xmlattr>.key", _adaptor->get_param_name());
-                param_config.add("<xmlattr>.defaultValue", std::to_string(default_value));
-                param_config.add("<xmlattr>.min", min);
-                param_config.add("<xmlattr>.max", max);
-            }
-            else if(array_object->type() == core::type::INT32)
-            {
-                _connections.connect(
-                    _param_srv,
-                    "int" + str_size + "_changed",
-                    _adaptor,
-                    "set_int" + str_size + "_parameter"
-                );
-                const auto dump_lock = array_object->dump_lock();
-
-                const int default_value = array_object->at<std::int32_t>(0);
-                const auto minmax       = get_range(default_value);
-                const int min           = minmax.first;
-                const int max           = minmax.second;
-
-                param_config.add("<xmlattr>.type", "int" + str_size);
-                param_config.add("<xmlattr>.name", _adaptor->get_param_name());
-                param_config.add("<xmlattr>.key", _adaptor->get_param_name());
-                param_config.add("<xmlattr>.defaultValue", std::to_string(default_value));
-                param_config.add("<xmlattr>.min", min);
-                param_config.add("<xmlattr>.max", max);
-            }
-            else
-            {
-                SIGHT_ERROR("Array type not handled: " << array_object->type());
-            }
-        }
-        else
-        {
-            SIGHT_ERROR("Array size not handled: " << num_components);
-        }
+        auto data = std::dynamic_pointer_cast<data::ivec2>(shader_obj.get_shared());
+        set_config(data->value()[0]);
+    }
+    else if(obj_type == "sight::data::ivec3")
+    {
+        auto data = std::dynamic_pointer_cast<data::ivec3>(shader_obj.get_shared());
+        set_config(data->value()[0]);
+    }
+    else if(obj_type == "sight::data::ivec4")
+    {
+        auto data = std::dynamic_pointer_cast<data::ivec4>(shader_obj.get_shared());
+        set_config(data->value()[0]);
+    }
+    else if(obj_type == "sight::data::dvec2")
+    {
+        auto data = std::dynamic_pointer_cast<data::dvec2>(shader_obj.get_shared());
+        set_config(data->value()[0]);
+    }
+    else if(obj_type == "sight::data::dvec3")
+    {
+        auto data = std::dynamic_pointer_cast<data::dvec3>(shader_obj.get_shared());
+        set_config(data->value()[0]);
+    }
+    else if(obj_type == "sight::data::dvec4")
+    {
+        auto data = std::dynamic_pointer_cast<data::dvec4>(shader_obj.get_shared());
+        set_config(data->value()[0]);
     }
     else
     {
         SIGHT_ERROR("No editor found for the object of type " << obj_type);
     }
+
+    param_config.add("<xmlattr>.reset", "false");
 
     return param_config;
 }

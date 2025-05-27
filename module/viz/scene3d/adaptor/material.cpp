@@ -44,23 +44,16 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::slots::key_t material::UPDATE_FIELD_SLOT   = "updateField";
-const core::com::slots::key_t material::SWAP_TEXTURE_SLOT   = "swapTexture";
-const core::com::slots::key_t material::ADD_TEXTURE_SLOT    = "addTexture";
-const core::com::slots::key_t material::REMOVE_TEXTURE_SLOT = "removeTexture";
-
-const std::string material::MATERIAL_INOUT = "material";
-
 //------------------------------------------------------------------------------
 
 material::material() noexcept
 {
     new_signal<signals::changed_t>(signals::CHANGED);
 
-    new_slot(UPDATE_FIELD_SLOT, &material::update_field, this);
-    new_slot(SWAP_TEXTURE_SLOT, &material::swap_texture, this);
-    new_slot(ADD_TEXTURE_SLOT, &material::create_texture_adaptor, this);
-    new_slot(REMOVE_TEXTURE_SLOT, &material::remove_texture_adaptor, this);
+    new_slot(slots::UPDATE_FIELD, &material::update_field, this);
+    new_slot(slots::SWAP_TEXTURE, &material::swap_texture, this);
+    new_slot(slots::ADD_TEXTURE, &material::create_texture_adaptor, this);
+    new_slot(slots::REMOVE_TEXTURE, &material::remove_texture_adaptor, this);
 }
 
 //------------------------------------------------------------------------------
@@ -117,7 +110,7 @@ void material::starting()
         if(not material)
         {
             m_internal_material = std::make_shared<sight::data::material>();
-            this->set_inout(m_internal_material, MATERIAL_INOUT);
+            this->set_inout(m_internal_material, m_material_data.key());
             material = m_material_data.lock();
         }
 
@@ -139,6 +132,22 @@ void material::starting()
 
         material->set_representation_mode(m_representation_mode);
 
+        if(const auto material_field = material->get_field("material", nullptr); material_field != nullptr)
+        {
+            data::string::csptr string = std::dynamic_pointer_cast<data::string>(material_field);
+            SIGHT_ASSERT("Material name field must be a sight::data::string", string);
+            m_material_template_name = string->get_value();
+        }
+        else
+        {
+            data::string::sptr string = std::make_shared<data::string>();
+            string->set_value(m_material_template_name);
+
+            data::helper::field helper(material.get_shared());
+            helper.set_field("material", string);
+            helper.notify();
+        }
+
         if(m_material_template_name == sight::viz::scene3d::material::standard::TEMPLATE)
         {
             m_standard_material_impl = std::make_unique<sight::viz::scene3d::material::standard>(m_material_name);
@@ -150,13 +159,6 @@ void material::starting()
                 m_material_template_name
             );
         }
-
-        data::string::sptr string = std::make_shared<data::string>();
-        string->set_value(m_material_template_name);
-
-        data::helper::field helper(material.get_shared());
-        helper.set_field("ogreMaterial", string);
-        helper.notify();
     }
 
     this->create_shader_parameter_adaptors();
@@ -179,7 +181,7 @@ void material::starting()
             m_tex_adaptor,
             module::viz::scene3d::adaptor::texture::TEXTURE_SWAPPED_SIG,
             this->get_sptr(),
-            module::viz::scene3d::adaptor::material::SWAP_TEXTURE_SLOT
+            slots::SWAP_TEXTURE
         );
 
         if(m_tex_adaptor->started())
@@ -205,11 +207,11 @@ void material::starting()
 service::connections_t material::auto_connections() const
 {
     service::connections_t connections = adaptor::auto_connections();
-    connections.push(MATERIAL_INOUT, data::material::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
-    connections.push(MATERIAL_INOUT, data::material::ADDED_FIELDS_SIG, UPDATE_FIELD_SLOT);
-    connections.push(MATERIAL_INOUT, data::material::CHANGED_FIELDS_SIG, UPDATE_FIELD_SLOT);
-    connections.push(MATERIAL_INOUT, data::material::ADDED_TEXTURE_SIG, ADD_TEXTURE_SLOT);
-    connections.push(MATERIAL_INOUT, data::material::REMOVED_TEXTURE_SIG, REMOVE_TEXTURE_SLOT);
+    connections.push(m_material_data.key(), data::material::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE);
+    connections.push(m_material_data.key(), data::material::ADDED_FIELDS_SIG, slots::UPDATE_FIELD);
+    connections.push(m_material_data.key(), data::material::CHANGED_FIELDS_SIG, slots::UPDATE_FIELD);
+    connections.push(m_material_data.key(), data::material::ADDED_TEXTURE_SIG, slots::ADD_TEXTURE);
+    connections.push(m_material_data.key(), data::material::REMOVED_TEXTURE_SIG, slots::REMOVE_TEXTURE);
     return connections;
 }
 
@@ -272,6 +274,25 @@ void material::create_shader_parameter_adaptors()
 
     SIGHT_ASSERT("Material '" + m_material_template_name + "'' not found", material);
 
+    std::map<std::string, std::string> uniform_values;
+    const auto material_data = m_material_data.lock();
+    if(auto uniform_field = material_data->get_field("uniforms", nullptr); uniform_field != nullptr)
+    {
+        const auto uniform_field_str = std::dynamic_pointer_cast<sight::data::string>(uniform_field);
+        SIGHT_ASSERT("Uniform field must be a sight::data::string", uniform_field_str);
+
+        std::vector<std::string> uniforms;
+        boost::split(uniforms, uniform_field_str->value(), boost::is_any_of("|"));
+        for(const auto& uniform : uniforms)
+        {
+            std::vector<std::string> key_values;
+            boost::split(key_values, uniform, boost::is_any_of("="));
+            SIGHT_ASSERT("Uniforms value should be passed as key=value1;value2|key=value3", key_values.size() == 2);
+
+            uniform_values[key_values[0]] = key_values[1];
+        }
+    }
+
     const auto constants = sight::viz::scene3d::helper::shading::find_material_constants(*material);
     for(const auto& constant : constants)
     {
@@ -310,10 +331,18 @@ void material::create_shader_parameter_adaptors()
                 constant_type,
                 constant_value
             );
+            obj->set_id(core::id::join(this->get_id(), constant_name));
         }
 
         if(obj != nullptr)
         {
+            if(const auto uniform_value = uniform_values.find(constant_name); uniform_value != uniform_values.end())
+            {
+                const auto uniform_str = std::dynamic_pointer_cast<sight::data::string_serializable>(obj);
+                SIGHT_ASSERT("Uniform data must be a sight::data::string", uniform_str);
+                uniform_str->from_string(uniform_value->second);
+            }
+
             const auto shader_type            = std::get<2>(constant);
             const std::string shader_type_str = shader_type == Ogre::GPT_VERTEX_PROGRAM ? "vertex"
                                                                                         :
@@ -343,8 +372,6 @@ void material::create_shader_parameter_adaptors()
             srv->start();
 
             // Add the object to the shaderParameter map of the Material to keep the object alive
-            const auto material_data = m_material_data.lock();
-
             data::map::sptr map = material_data->set_default_field("shaderParameters", std::make_shared<data::map>());
             (*map)[constant_name] = obj;
         }
@@ -387,7 +414,7 @@ void material::update_field(data::object::fields_container_t _fields)
 {
     for(const auto& elt : _fields)
     {
-        if(elt.first == "ogreMaterial")
+        if(elt.first == "material")
         {
             this->unregister_services("sight::module::viz::scene3d::adaptor::shader_parameter");
             {
@@ -406,7 +433,6 @@ void material::update_field(data::object::fields_container_t _fields)
                 m_material_name = m_material_name + std::to_string(s_I);
                 if(m_material_template_name == sight::viz::scene3d::material::standard::TEMPLATE)
                 {
-                    // this->emit(signals::CHANGED, Ogre::MaterialPtr());
                     m_material_impl.reset();
                     m_standard_material_impl =
                         std::make_unique<sight::viz::scene3d::material::standard>(m_material_name);
@@ -414,7 +440,6 @@ void material::update_field(data::object::fields_container_t _fields)
                 }
                 else
                 {
-                    // this->emit(signals::CHANGED, Ogre::MaterialPtr());
                     m_standard_material_impl.reset();
                     m_material_impl = std::make_unique<sight::viz::scene3d::material::generic>(
                         m_material_name,
@@ -511,7 +536,7 @@ void material::create_texture_adaptor()
             m_tex_adaptor,
             module::viz::scene3d::adaptor::texture::TEXTURE_SWAPPED_SIG,
             this->get_sptr(),
-            module::viz::scene3d::adaptor::material::SWAP_TEXTURE_SLOT
+            module::viz::scene3d::adaptor::material::slots::SWAP_TEXTURE
         );
 
         m_tex_adaptor->configure();

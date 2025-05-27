@@ -25,7 +25,13 @@
 #include "viz/scene3d/ogre.hpp"
 
 #include <data/boolean.hpp>
+#include <data/dvec2.hpp>
+#include <data/dvec3.hpp>
+#include <data/dvec4.hpp>
 #include <data/integer.hpp>
+#include <data/ivec2.hpp>
+#include <data/ivec3.hpp>
+#include <data/ivec4.hpp>
 #include <data/matrix4.hpp>
 #include <data/point.hpp>
 #include <data/point_list.hpp>
@@ -306,14 +312,10 @@ data::object::sptr shading::create_object_from_shader_parameter(Ogre::GpuConstan
 
         case Ogre::GpuConstantType::GCT_FLOAT2:
         {
-            data::array::sptr array_object = std::make_shared<data::array>();
+            auto array_object = std::make_shared<data::dvec2>();
 
-            array_object->resize({2}, core::type::FLOAT);
-
-            const auto dump_lock = array_object->dump_lock();
-
-            array_object->at<float>(0) = _value.f[0];
-            array_object->at<float>(1) = _value.f[1];
+            (*array_object)[0] = _value.f[0];
+            (*array_object)[1] = _value.f[1];
 
             object = array_object;
             break;
@@ -321,15 +323,11 @@ data::object::sptr shading::create_object_from_shader_parameter(Ogre::GpuConstan
 
         case Ogre::GpuConstantType::GCT_FLOAT3:
         {
-            data::array::sptr array_object = std::make_shared<data::array>();
+            auto array_object = std::make_shared<data::dvec3>();
 
-            array_object->resize({3}, core::type::FLOAT);
-
-            const auto dump_lock = array_object->dump_lock();
-
-            array_object->at<float>(0) = _value.f[0];
-            array_object->at<float>(1) = _value.f[1];
-            array_object->at<float>(2) = _value.f[2];
+            (*array_object)[0] = _value.f[0];
+            (*array_object)[1] = _value.f[1];
+            (*array_object)[2] = _value.f[2];
 
             object = array_object;
             break;
@@ -357,14 +355,10 @@ data::object::sptr shading::create_object_from_shader_parameter(Ogre::GpuConstan
 
         case Ogre::GpuConstantType::GCT_INT2:
         {
-            data::array::sptr array_object = std::make_shared<data::array>();
+            auto array_object = std::make_shared<data::ivec2>();
 
-            array_object->resize({2}, core::type::INT32);
-
-            const auto dump_lock = array_object->dump_lock();
-
-            array_object->at<std::uint32_t>(0) = static_cast<std::uint32_t>(_value.i[0]);
-            array_object->at<std::uint32_t>(1) = static_cast<std::uint32_t>(_value.i[1]);
+            (*array_object)[0] = _value.i[0];
+            (*array_object)[1] = _value.i[1];
 
             object = array_object;
             break;
@@ -372,15 +366,11 @@ data::object::sptr shading::create_object_from_shader_parameter(Ogre::GpuConstan
 
         case Ogre::GpuConstantType::GCT_INT3:
         {
-            data::array::sptr array_object = std::make_shared<data::array>();
+            auto array_object = std::make_shared<data::ivec3>();
 
-            array_object->resize({3}, core::type::INT32);
-
-            const auto dump_lock = array_object->dump_lock();
-
-            array_object->at<std::uint32_t>(0) = static_cast<std::uint32_t>(_value.i[0]);
-            array_object->at<std::uint32_t>(1) = static_cast<std::uint32_t>(_value.i[1]);
-            array_object->at<std::uint32_t>(2) = static_cast<std::uint32_t>(_value.i[2]);
+            (*array_object)[0] = _value.i[0];
+            (*array_object)[1] = _value.i[1];
+            (*array_object)[2] = _value.i[2];
 
             object = array_object;
             break;
@@ -388,16 +378,12 @@ data::object::sptr shading::create_object_from_shader_parameter(Ogre::GpuConstan
 
         case Ogre::GpuConstantType::GCT_INT4:
         {
-            data::array::sptr array_object = std::make_shared<data::array>();
+            auto array_object = std::make_shared<data::ivec4>();
 
-            array_object->resize({4}, core::type::INT32);
-
-            const auto dump_lock = array_object->dump_lock();
-
-            array_object->at<std::uint32_t>(0) = static_cast<std::uint32_t>(_value.i[0]);
-            array_object->at<std::uint32_t>(1) = static_cast<std::uint32_t>(_value.i[1]);
-            array_object->at<std::uint32_t>(2) = static_cast<std::uint32_t>(_value.i[2]);
-            array_object->at<std::uint32_t>(3) = static_cast<std::uint32_t>(_value.i[3]);
+            (*array_object)[0] = _value.i[0];
+            (*array_object)[1] = _value.i[1];
+            (*array_object)[2] = _value.i[2];
+            (*array_object)[3] = _value.i[3];
 
             object = array_object;
             break;
@@ -413,14 +399,10 @@ data::object::sptr shading::create_object_from_shader_parameter(Ogre::GpuConstan
 
         case Ogre::GpuConstantType::GCT_DOUBLE2:
         {
-            data::array::sptr array_object = std::make_shared<data::array>();
+            auto array_object = std::make_shared<data::dvec2>();
 
-            array_object->resize({2}, core::type::DOUBLE);
-
-            const auto dump_lock = array_object->dump_lock();
-
-            array_object->at<double>(0) = _value.d[0];
-            array_object->at<double>(1) = _value.d[1];
+            (*array_object)[0] = _value.d[0];
+            (*array_object)[1] = _value.d[1];
 
             object = array_object;
             break;
@@ -428,15 +410,11 @@ data::object::sptr shading::create_object_from_shader_parameter(Ogre::GpuConstan
 
         case Ogre::GpuConstantType::GCT_DOUBLE3:
         {
-            data::array::sptr array_object = std::make_shared<data::array>();
+            auto array_object = std::make_shared<data::dvec3>();
 
-            array_object->resize({3}, core::type::DOUBLE);
-
-            const auto dump_lock = array_object->dump_lock();
-
-            array_object->at<double>(0) = _value.d[0];
-            array_object->at<double>(1) = _value.d[1];
-            array_object->at<double>(2) = _value.d[2];
+            (*array_object)[0] = _value.d[0];
+            (*array_object)[1] = _value.d[1];
+            (*array_object)[2] = _value.d[2];
 
             object = array_object;
             break;
@@ -444,16 +422,12 @@ data::object::sptr shading::create_object_from_shader_parameter(Ogre::GpuConstan
 
         case Ogre::GpuConstantType::GCT_DOUBLE4:
         {
-            data::array::sptr array_object = std::make_shared<data::array>();
+            auto array_object = std::make_shared<data::dvec4>();
 
-            array_object->resize({4}, core::type::DOUBLE);
-
-            const auto dump_lock = array_object->dump_lock();
-
-            array_object->at<double>(0) = _value.d[0];
-            array_object->at<double>(1) = _value.d[1];
-            array_object->at<double>(2) = _value.d[2];
-            array_object->at<double>(3) = _value.d[3];
+            (*array_object)[0] = _value.d[0];
+            (*array_object)[1] = _value.d[1];
+            (*array_object)[2] = _value.d[2];
+            (*array_object)[3] = _value.d[3];
 
             object = array_object;
             break;

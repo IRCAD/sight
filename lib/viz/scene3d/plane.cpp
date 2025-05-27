@@ -51,7 +51,8 @@ plane::plane(
     const std::string& _material_name,
     bool _display_border,
     bool _display_other_planes,
-    float _entity_opacity
+    float _entity_opacity,
+    float _depth_bias
 ) :
     m_border({.shape       = nullptr, .material = nullptr, .enabled = _display_border}),
     m_slices_cross({.shape = nullptr, .material = nullptr, .enabled = _display_other_planes}),
@@ -76,6 +77,10 @@ plane::plane(
 
     const Ogre::ColourValue diffuse(1.F, 1.F, 1.F, m_entity_opacity);
     m_plane_material->material()->setDiffuse(diffuse);
+    if(_depth_bias != 0.F)
+    {
+        m_plane_material->material()->setDepthBias(_depth_bias, 0.F);
+    }
 
     auto& material_mgr = Ogre::MaterialManager::getSingleton();
     if(m_border.enabled)

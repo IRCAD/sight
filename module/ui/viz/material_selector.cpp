@@ -28,8 +28,6 @@
 #include <data/material.hpp>
 #include <data/string.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/qt/container/widget.hpp>
 
 #include <viz/scene3d/ogre.hpp>
@@ -148,7 +146,7 @@ void material_selector::update_material()
 {
     const auto reconstruction     = m_reconstruction.lock();
     data::material::sptr material = reconstruction->get_material();
-    data::object::sptr field_obj  = material->get_field("ogreMaterial");
+    data::object::sptr field_obj  = material->get_field("material");
     if(field_obj != nullptr)
     {
         data::string::sptr field = std::dynamic_pointer_cast<data::string>(field_obj);
@@ -166,7 +164,7 @@ void material_selector::on_selected_mode_item(const QString& _text)
     string->set_value(_text.toStdString());
 
     data::helper::field helper(material);
-    helper.set_field("ogreMaterial", string);
+    helper.set_field("material", string);
     helper.notify();
 
     auto sig = this->signal<selected_signal_t>(SELECTED_SIG);

@@ -40,15 +40,6 @@ namespace sight::module::ui::viz
 {
 
 //------------------------------------------------------------------------------
-shader_parameter_editor::shader_parameter_editor() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-shader_parameter_editor::~shader_parameter_editor() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
 
 void shader_parameter_editor::starting()
 {
@@ -101,8 +92,6 @@ void shader_parameter_editor::updating()
 //------------------------------------------------------------------------------
 void shader_parameter_editor::clear()
 {
-    m_editor_info.connections.disconnect();
-
     service::base::sptr obj_service = m_editor_info.srv.lock();
 
     if(obj_service)
@@ -163,7 +152,10 @@ void shader_parameter_editor::update_gui_info()
             const object_classname_t obj_type = shader_obj->get_classname();
 
             if(obj_type == "sight::data::boolean" || obj_type == "sight::data::real"
-               || obj_type == "sight::data::integer" || obj_type == "sight::data::array")
+               || obj_type == "sight::data::integer" || obj_type == "sight::data::array"
+               || obj_type == "sight::data::ivec2" || obj_type == "sight::data::dvec2"
+               || obj_type == "sight::data::ivec3" || obj_type == "sight::data::dvec3"
+               || obj_type == "sight::data::ivec4" || obj_type == "sight::data::dvec4")
             {
                 found = true;
                 break;
@@ -189,27 +181,27 @@ void shader_parameter_editor::update_gui_info()
 
     sight::ui::registry::register_sid_container(m_editor_info.uuid, m_editor_info.editor_panel);
 
-    auto editor_service = sight::service::add("sight::module::ui::qt::parameters", m_editor_info.uuid);
+    auto editor_service = sight::service::add("sight::module::ui::qt::settings", m_editor_info.uuid);
     m_editor_info.srv = editor_service;
 
     service::config_t editor_config;
 
     // Get all ShaderParameter subservices from the corresponding Material adaptor
+    std::size_t i = 0;
     for(const auto& w_adaptor : mat_service->get_registered_services())
     {
         const auto adaptor = w_adaptor.lock();
         if(adaptor->get_classname() == "sight::module::viz::scene3d::adaptor::shader_parameter")
         {
             auto param_adaptor = std::dynamic_pointer_cast<sight::viz::scene3d::parameter_adaptor>(adaptor);
-            auto param_config  = module::ui::viz::helper::parameter_editor::create_config(
-                param_adaptor,
-                m_editor_info.srv.lock(),
-                m_editor_info.connections
-            );
+            auto param_config  = module::ui::viz::helper::parameter_editor::create_config(param_adaptor);
+
+            const auto obj = param_adaptor->inout(sight::viz::scene3d::parameter_adaptor::PARAMETER_INOUT).lock();
+            editor_service->set_inout(obj.get_shared(), "keys", true, false, i++);
 
             if(!param_config.empty())
             {
-                editor_config.add_child("parameters.param", param_config);
+                editor_config.add_child("ui.item", param_config);
             }
         }
     }

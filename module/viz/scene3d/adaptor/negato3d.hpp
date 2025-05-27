@@ -91,6 +91,7 @@ namespace sight::module::viz::scene3d::adaptor
  * after the sampling of the transfer function, and "post" after. When using labelled images, it is highly recommended
  * to use "pre", otherwise it is likely that class of objects can be confounded.
  * - \b visible (optional, bool, default=true): set the initial visibility of the 3D negato.
+ * - \b depth_bias: useful to superimpose multiple negatos on top of each other
  */
 class negato3d final : public sight::module::viz::scene3d::adaptor::negato
 {

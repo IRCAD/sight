@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -94,7 +94,6 @@ private:
         std::string uuid;
         sight::ui::qt::container::widget::sptr editor_panel;
         service::base::wptr srv;
-        core::com::helper::sig_slot_connection connections;
     };
 
     shader_editor_info m_editor_info;

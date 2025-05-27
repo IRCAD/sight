@@ -22,6 +22,7 @@
 #pragma once
 
 #include <data/helper/medical_image.hpp>
+#include <data/real.hpp>
 #include <data/string.hpp>
 
 #include <viz/scene3d/adaptor.hpp>
@@ -223,6 +224,7 @@ private:
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "mask", true};
     sight::data::property<sight::data::string> m_classification {this, "classification", std::string("post")};
+    sight::data::property<sight::data::real> m_depth_bias {this, "depth_bias", 0.};
 };
 
 //------------------------------------------------------------------------------

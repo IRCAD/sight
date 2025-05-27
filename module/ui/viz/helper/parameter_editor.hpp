@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,14 +37,9 @@ public:
      * @brief Create a config that will be used to expose an shader parameter adaptor in a parameters.
      *
      * @param[in] _adaptor adaptor to bind.
-     * @param[in] _param_srv editor service.
      * @param[inout] _connections helper that stores connections between the editor and the adaptors.
      */
-    static service::config_t create_config(
-        const sight::viz::scene3d::parameter_adaptor::csptr& _adaptor,
-        const service::base::csptr& _param_srv,
-        core::com::helper::sig_slot_connection& _connections
-    );
+    static service::config_t create_config(const sight::viz::scene3d::parameter_adaptor::csptr& _adaptor);
 };
 
 } // namespace sight::module::ui::viz::helper

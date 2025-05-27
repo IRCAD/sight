@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -152,7 +152,7 @@ void compositor_parameter_editor::update_compositor(
 
         sight::ui::registry::register_sid_container(m_editor_info.uuid, m_editor_info.editor_panel);
 
-        auto editor_service = sight::service::add("sight::module::ui::qt::parameters", m_editor_info.uuid);
+        auto editor_service = sight::service::add("sight::module::ui::qt::settings", m_editor_info.uuid);
         m_editor_info.srv = editor_service;
 
         service::config_t editor_config;
@@ -164,15 +164,11 @@ void compositor_parameter_editor::update_compositor(
             if(adaptor->get_classname() == "sight::module::viz::scene3d::adaptor::compositor_parameter")
             {
                 auto param_adaptor = std::dynamic_pointer_cast<const sight::viz::scene3d::parameter_adaptor>(adaptor);
-                auto param_config  = module::ui::viz::helper::parameter_editor::create_config(
-                    param_adaptor,
-                    m_editor_info.srv.lock(),
-                    m_editor_info.connections
-                );
+                auto param_config  = module::ui::viz::helper::parameter_editor::create_config(param_adaptor);
 
                 if(!param_config.empty())
                 {
-                    editor_config.add_child("parameters.param", param_config);
+                    editor_config.add_child("ui.item", param_config);
                 }
             }
         }

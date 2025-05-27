@@ -77,7 +77,7 @@ public:
      * @param _display_border display a border around the negato plane.
      * @param _display_other_planes display a line indicating the location of the two other planes.
      * @param _entity_opacity opacity of the entity.
-     * @param _post_classification pre or post classification.
+     * @param _depth_bias depth bias to pass to the material.
      */
     SIGHT_VIZ_SCENE3D_API plane(
         const core::id::type& _negato_id,
@@ -89,7 +89,8 @@ public:
         const std::string& _material_name,
         bool _display_border       = true,
         bool _display_other_planes = true,
-        float _entity_opacity      = 1.0F
+        float _entity_opacity      = 1.0F,
+        float _depth_bias          = 0.F
     );
 
     /// Cleans ogre resources.

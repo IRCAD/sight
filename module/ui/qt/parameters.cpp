@@ -29,8 +29,6 @@
 
 #include <data/tools/color.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/qt/container/widget.hpp>
 #include <ui/qt/widget/non_linear_slider.hpp>
 

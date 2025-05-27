@@ -126,4 +126,7 @@ void main(void)
 
 #endif // R2VB
 
+#ifdef OFFSET
+    gl_Position.w += .01f;
+#endif
 }

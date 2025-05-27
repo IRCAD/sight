@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,7 +50,7 @@ namespace sight::module::ui::viz
  * @subsection In-Out In-Out:
  * - \b reconstruction [sight::data::reconstruction]: reconstruction whose paremeters should be edited.
  */
-class shader_parameter_editor : public sight::ui::editor
+class shader_parameter_editor final : public sight::ui::editor
 {
 public:
 
@@ -62,24 +62,24 @@ public:
     using editor_map_t            = std::map<object_classname_t, editor_implementation_t>;
 
     /// Constructor.
-    shader_parameter_editor() noexcept;
+    shader_parameter_editor() noexcept = default;
 
     /// Destructor. Destroy UI
-    ~shader_parameter_editor() noexcept override;
+    ~shader_parameter_editor() noexcept final = default;
 
 protected:
 
     /// Initialize the container
-    void configuring() override;
+    void configuring() final;
 
     /// Start the service, slot connections, widget initialization .
-    void starting() override;
+    void starting() final;
 
     /// Destroy the service and the container.
-    void stopping() override;
+    void stopping() final;
 
     /// Update the interface.
-    void updating() override;
+    void updating() final;
 
 private:
 
@@ -96,7 +96,6 @@ private:
         std::string uuid;
         sight::ui::qt::container::widget::sptr editor_panel;
         service::base::wptr srv;
-        core::com::helper::sig_slot_connection connections;
     };
 
     shader_editor_info m_editor_info;

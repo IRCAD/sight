@@ -22,12 +22,15 @@
 
 #include "shading_test.hpp"
 
-#include "core/type.hpp"
-
-#include "data/array.hpp"
-#include "data/color.hpp"
-#include "data/integer.hpp"
-#include "data/real.hpp"
+#include <data/color.hpp>
+#include <data/dvec2.hpp>
+#include <data/dvec3.hpp>
+#include <data/dvec4.hpp>
+#include <data/integer.hpp>
+#include <data/ivec2.hpp>
+#include <data/ivec3.hpp>
+#include <data/ivec4.hpp>
+#include <data/real.hpp>
 
 #include <viz/scene3d/helper/shading.hpp>
 #include <viz/scene3d/ogre.hpp>
@@ -136,24 +139,23 @@ void shading_test::set_technique_in_program_name()
 
 void shading_test::create_object_from_shader_parameter()
 {
-    data::object::sptr obj;
-
+    shading::constant_value_t value {};
     // Scalar types
     {
-        shading::constant_value_t value {};
-
         value.d = {{2.0, 0., 0., 0.}};
-        obj     = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_DOUBLE1, value);
+        auto obj = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_DOUBLE1, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::real"), obj->get_classname());
         CPPUNIT_ASSERT_EQUAL(2.0, std::dynamic_pointer_cast<data::real>(obj)->get_value());
-
+    }
+    {
         value.f = {{2.5F, 0.F, 0.F, 0.F}};
-        obj     = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_FLOAT1, value);
+        auto obj = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_FLOAT1, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::real"), obj->get_classname());
         CPPUNIT_ASSERT_EQUAL(2.5, std::dynamic_pointer_cast<data::real>(obj)->get_value());
-
+    }
+    {
         value.i = {{321, 0, 0, 0}};
-        obj     = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_INT1, value);
+        auto obj = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_INT1, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::integer"), obj->get_classname());
         CPPUNIT_ASSERT_EQUAL(
             static_cast<std::int64_t>(321),
@@ -161,141 +163,92 @@ void shading_test::create_object_from_shader_parameter()
         );
     }
 
-    // Array types
     {
-        data::array::sptr array_object;
-        data::array::size_t size;
-        shading::constant_value_t value {};
-
         value.d = {{2.0, 4.5, 0., 0.}};
-        obj     = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_DOUBLE2, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::array"), obj->get_classname());
+        auto obj = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_DOUBLE2, value);
+        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::dvec2"), obj->get_classname());
 
-        array_object = std::dynamic_pointer_cast<data::array>(obj);
-        size         = array_object->size();
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), size[0]);
-        CPPUNIT_ASSERT_EQUAL(core::type::DOUBLE, array_object->type());
-        {
-            const auto dump_lock = array_object->dump_lock();
-            CPPUNIT_ASSERT_EQUAL(2.0, array_object->at<double>({0}));
-            CPPUNIT_ASSERT_EQUAL(4.5, array_object->at<double>({1}));
-        }
+        auto typed_obj = std::dynamic_pointer_cast<data::dvec2>(obj);
+        CPPUNIT_ASSERT_EQUAL(2.0, (*typed_obj)[0]);
+        CPPUNIT_ASSERT_EQUAL(4.5, (*typed_obj)[1]);
+    }
 
+    {
         value.d = {{-4.1, 1.5, 3.7, 0.}};
-        obj     = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_DOUBLE3, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::array"), obj->get_classname());
+        auto obj = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_DOUBLE3, value);
+        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::dvec3"), obj->get_classname());
 
-        array_object = std::dynamic_pointer_cast<data::array>(obj);
-        size         = array_object->size();
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), size[0]);
-        CPPUNIT_ASSERT_EQUAL(core::type::DOUBLE, array_object->type());
-        {
-            const auto dump_lock = array_object->dump_lock();
-            CPPUNIT_ASSERT_EQUAL(-4.1, array_object->at<double>({0}));
-            CPPUNIT_ASSERT_EQUAL(1.5, array_object->at<double>({1}));
-            CPPUNIT_ASSERT_EQUAL(3.7, array_object->at<double>({2}));
-        }
+        auto typed_obj = std::dynamic_pointer_cast<data::dvec3>(obj);
+        CPPUNIT_ASSERT_EQUAL(-4.1, (*typed_obj)[0]);
+        CPPUNIT_ASSERT_EQUAL(1.5, (*typed_obj)[1]);
+        CPPUNIT_ASSERT_EQUAL(3.7, (*typed_obj)[2]);
+    }
 
+    {
         value.d = {{-1.1, -5.5, -1.7, 4.1}};
-        obj     = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_DOUBLE4, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::array"), obj->get_classname());
+        auto obj = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_DOUBLE4, value);
+        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::dvec4"), obj->get_classname());
 
-        array_object = std::dynamic_pointer_cast<data::array>(obj);
-        size         = array_object->size();
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), size[0]);
-        CPPUNIT_ASSERT_EQUAL(core::type::DOUBLE, array_object->type());
-        {
-            const auto dump_lock = array_object->dump_lock();
-            CPPUNIT_ASSERT_EQUAL(-1.1, array_object->at<double>({0}));
-            CPPUNIT_ASSERT_EQUAL(-5.5, array_object->at<double>({1}));
-            CPPUNIT_ASSERT_EQUAL(-1.7, array_object->at<double>({2}));
-            CPPUNIT_ASSERT_EQUAL(4.1, array_object->at<double>({3}));
-        }
+        auto typed_obj = std::dynamic_pointer_cast<data::dvec4>(obj);
+        CPPUNIT_ASSERT_EQUAL(-1.1, (*typed_obj)[0]);
+        CPPUNIT_ASSERT_EQUAL(-5.5, (*typed_obj)[1]);
+        CPPUNIT_ASSERT_EQUAL(-1.7, (*typed_obj)[2]);
+        CPPUNIT_ASSERT_EQUAL(4.1, (*typed_obj)[3]);
+    }
 
+    {
         value.i = {{-1, 5, 0, 4}};
-        obj     = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_INT2, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::array"), obj->get_classname());
+        auto obj = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_INT2, value);
+        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::ivec2"), obj->get_classname());
 
-        array_object = std::dynamic_pointer_cast<data::array>(obj);
-        size         = array_object->size();
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), size[0]);
-        CPPUNIT_ASSERT_EQUAL(core::type::INT32, array_object->type());
-        {
-            const auto dump_lock = array_object->dump_lock();
-            CPPUNIT_ASSERT_EQUAL(-1, array_object->at<int>({0}));
-            CPPUNIT_ASSERT_EQUAL(5, array_object->at<int>({1}));
-        }
-
+        auto typed_obj = std::dynamic_pointer_cast<data::ivec2>(obj);
+        CPPUNIT_ASSERT_EQUAL(data::ivec2::value_t::value_type(-1), (*typed_obj)[0]);
+        CPPUNIT_ASSERT_EQUAL(data::ivec2::value_t::value_type(5), (*typed_obj)[1]);
+    }
+    {
         value.i = {{2, -4, 3, 4}};
-        obj     = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_INT3, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::array"), obj->get_classname());
+        auto obj = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_INT3, value);
+        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::ivec3"), obj->get_classname());
 
-        array_object = std::dynamic_pointer_cast<data::array>(obj);
-        size         = array_object->size();
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), size[0]);
-        CPPUNIT_ASSERT_EQUAL(core::type::INT32, array_object->type());
-        {
-            const auto dump_lock = array_object->dump_lock();
-            CPPUNIT_ASSERT_EQUAL(2, array_object->at<int>({0}));
-            CPPUNIT_ASSERT_EQUAL(-4, array_object->at<int>({1}));
-            CPPUNIT_ASSERT_EQUAL(3, array_object->at<int>({2}));
-        }
-
+        auto typed_obj = std::dynamic_pointer_cast<data::ivec3>(obj);
+        CPPUNIT_ASSERT_EQUAL(data::ivec3::value_t::value_type(2), (*typed_obj)[0]);
+        CPPUNIT_ASSERT_EQUAL(data::ivec3::value_t::value_type(-4), (*typed_obj)[1]);
+        CPPUNIT_ASSERT_EQUAL(data::ivec3::value_t::value_type(3), (*typed_obj)[2]);
+    }
+    {
         value.i = {{-1, 5, 9, 1}};
-        obj     = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_INT4, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::array"), obj->get_classname());
+        auto obj = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_INT4, value);
+        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::ivec4"), obj->get_classname());
 
-        array_object = std::dynamic_pointer_cast<data::array>(obj);
-        size         = array_object->size();
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), size[0]);
-        CPPUNIT_ASSERT_EQUAL(core::type::INT32, array_object->type());
-        {
-            const auto dump_lock = array_object->dump_lock();
-            CPPUNIT_ASSERT_EQUAL(-1, array_object->at<int>({0}));
-            CPPUNIT_ASSERT_EQUAL(5, array_object->at<int>({1}));
-            CPPUNIT_ASSERT_EQUAL(9, array_object->at<int>({2}));
-            CPPUNIT_ASSERT_EQUAL(1, array_object->at<int>({3}));
-        }
-
+        auto typed_obj = std::dynamic_pointer_cast<data::ivec4>(obj);
+        CPPUNIT_ASSERT_EQUAL(data::ivec4::value_t::value_type(-1), (*typed_obj)[0]);
+        CPPUNIT_ASSERT_EQUAL(data::ivec4::value_t::value_type(5), (*typed_obj)[1]);
+        CPPUNIT_ASSERT_EQUAL(data::ivec4::value_t::value_type(9), (*typed_obj)[2]);
+        CPPUNIT_ASSERT_EQUAL(data::ivec4::value_t::value_type(1), (*typed_obj)[3]);
+    }
+    static const double s_EPSILON = 1e-5;
+    {
         value.f = {{21.1F, -2.5F, 9.F, 1.F}};
-        obj     = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_FLOAT2, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::array"), obj->get_classname());
+        auto obj = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_FLOAT2, value);
+        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::dvec2"), obj->get_classname());
 
-        array_object = std::dynamic_pointer_cast<data::array>(obj);
-        size         = array_object->size();
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), size[0]);
-        CPPUNIT_ASSERT_EQUAL(core::type::FLOAT, array_object->type());
-        {
-            const auto dump_lock = array_object->dump_lock();
-            CPPUNIT_ASSERT_EQUAL(21.1F, array_object->at<float>({0}));
-            CPPUNIT_ASSERT_EQUAL(-2.5F, array_object->at<float>({1}));
-        }
-
+        auto typed_obj = std::dynamic_pointer_cast<data::dvec2>(obj);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(21.1, (*typed_obj)[0], s_EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-2.5, (*typed_obj)[1], s_EPSILON);
+    }
+    {
         value.f = {{21.1F, 2.5F, -9.F, 1.F}};
-        obj     = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_FLOAT3, value);
-        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::array"), obj->get_classname());
+        auto obj = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_FLOAT3, value);
+        CPPUNIT_ASSERT_EQUAL(std::string("sight::data::dvec3"), obj->get_classname());
 
-        array_object = std::dynamic_pointer_cast<data::array>(obj);
-        size         = array_object->size();
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), size.size());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(3), size[0]);
-        CPPUNIT_ASSERT_EQUAL(core::type::FLOAT, array_object->type());
-        {
-            const auto dump_lock = array_object->dump_lock();
-            CPPUNIT_ASSERT_EQUAL(21.1F, array_object->at<float>({0}));
-            CPPUNIT_ASSERT_EQUAL(2.5F, array_object->at<float>({1}));
-            CPPUNIT_ASSERT_EQUAL(-9.F, array_object->at<float>({2}));
-        }
-
+        auto typed_obj = std::dynamic_pointer_cast<data::dvec3>(obj);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(21.1, (*typed_obj)[0], s_EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(2.5, (*typed_obj)[1], s_EPSILON);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(-9., (*typed_obj)[2], s_EPSILON);
+    }
+    {
         value.f = {{0.12F, .5F, 1.F, 8.F}};
-        obj     = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_FLOAT4, value);
+        auto obj = shading::create_object_from_shader_parameter(Ogre::GpuConstantType::GCT_FLOAT4, value);
         CPPUNIT_ASSERT_EQUAL(std::string("sight::data::color"), obj->get_classname());
 
         data::color::sptr color = std::dynamic_pointer_cast<data::color>(obj);

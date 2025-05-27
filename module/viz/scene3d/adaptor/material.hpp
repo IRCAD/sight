@@ -51,13 +51,18 @@ namespace sight::module::viz::scene3d::adaptor
 {
 
 /**
- * @brief This adaptor adapts a data::material, allowing to tweak material parameters.
+ * @brief This adaptor adapts a data::material, allowing to tweak material parameters and shader uniforms.
+ * Both the material and the uniform can be specified as XML configuration parameters as described below.
+ * They can also be passed directly from the material data, with two specific data fields:
+ * - material: string containing the Ogre material name
+ * - uniforms: "|"" separated list of uniform keys/values, where values can be interpreted as a
+ * sight::data::string_serializable i.e. "u_float=1.0|u_vec3=1.0;5.0;6.0".
  *
  * @section Slots Slots
- * - \b updateField(data::object::fields_container_t): listen to the fields in the data::material.
- * - \b swapTexture(): listen to the module::viz::scene3d::adaptor::texture changes.
- * - \b addTexture(): called when a texture is added in the data::material.
- * - \b removeTexture(): called when a texture is removed in the data::material.
+ * - \b update_field(data::object::fields_container_t): listen to the fields in the data::material.
+ * - \b swap_texture(): listen to the module::viz::scene3d::adaptor::texture changes.
+ * - \b add_texture(): called when a texture is added in the data::material.
+ * - \b remove_texture(): called when a texture is removed in the data::material.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -98,31 +103,24 @@ public:
     struct signals
     {
         using changed_t = core::com::signal<void (Ogre::MaterialPtr)>;
-        static inline const core::com::signals::key_t CHANGED = "changed";
+        static inline const signal_key_t CHANGED = "changed";
     };
 
-    /**
-     * @name Slots API
-     * @{
-     */
-    static const core::com::slots::key_t UPDATE_FIELD_SLOT;
-    static const core::com::slots::key_t SWAP_TEXTURE_SLOT;
-    static const core::com::slots::key_t ADD_TEXTURE_SLOT;
-    static const core::com::slots::key_t REMOVE_TEXTURE_SLOT;
-    /** @} */
+    struct slots
+    {
+        static const inline slot_key_t UPDATE_FIELD   = "update_field";
+        static const inline slot_key_t SWAP_TEXTURE   = "swap_texture";
+        static const inline slot_key_t ADD_TEXTURE    = "add_texture";
+        static const inline slot_key_t REMOVE_TEXTURE = "remove_texture";
+    };
 
-    /**
-     * @name In-Out In-Out API
-     * @{
-     */
-    static const std::string MATERIAL_INOUT;
-    /** @} */
+    static const inline std::string MATERIAL_INOUT = "material";
 
     /// Initializes slots.
     material() noexcept;
 
     /// Destroys the adaptor.
-    ~material() noexcept override = default;
+    ~material() noexcept final = default;
 
     /// Configures the adaptor without using the XML configuration.
     void configure(
@@ -170,34 +168,34 @@ public:
 protected:
 
     /// Configures the adaptor.
-    void configuring() override;
+    void configuring() final;
 
     /// Creates the material.
-    void starting() override;
+    void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
      * Connect data::material::MODIFIED_SIG of s_MATERIAL_INOUT to service::slots::UPDATE
-     * Connect data::material::ADDED_FIELDS_SIG of s_MATERIAL_INOUT to UPDATE_FIELD_SLOT
-     * Connect data::material::CHANGED_FIELDS_SIG of s_MATERIAL_INOUT to UPDATE_FIELD_SLOT
-     * Connect data::material::ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to ADD_TEXTURE_SLOT
-     * Connect data::material::REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to REMOVE_TEXTURE_SLOT
+     * Connect data::material::ADDED_FIELDS_SIG of s_MATERIAL_INOUT to UPDATE_FIELD
+     * Connect data::material::CHANGED_FIELDS_SIG of s_MATERIAL_INOUT to UPDATE_FIELD
+     * Connect data::material::ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to ADD_TEXTURE
+     * Connect data::material::REMOVED_TEXTURE_SIG of s_MATERIAL_INOUT to REMOVE_TEXTURE
      */
-    service::connections_t auto_connections() const override;
+    service::connections_t auto_connections() const final;
 
     /// Updates fixed function pipeline parameters.
-    void updating() override;
+    void updating() final;
 
     /// Release Ogre resources.
-    void stopping() override;
+    void stopping() final;
 
 private:
 
     /**
      * @brief SLOT: updates the material from the input data fields.
-     * @param _fields fields to update, only "ogreMaterial" is taken into account.
+     * @param _fields fields to update, only "material" and "uniforms" are taken into account.
      */
     void update_field(data::object::fields_container_t _fields);
 

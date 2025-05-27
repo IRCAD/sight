@@ -26,10 +26,12 @@
 #include <core/com/slots.hxx>
 #include <core/profiling.hpp>
 
+#include <data/helper/field.hpp>
 #include <data/image_series.hpp>
 #include <data/mesh.hpp>
 #include <data/model_series.hpp>
 #include <data/reconstruction.hpp>
+#include <data/string.hpp>
 
 #include <io/vtk/helper/mesh.hpp>
 #include <io/vtk/vtk.hpp>
@@ -320,6 +322,8 @@ void vtk_mesher::post_reconstruction_jobs(
                 const auto name           = elt.second.get<std::string>("<xmlattr>.name", "organ");
                 const auto type           = elt.second.get<std::string>("<xmlattr>.type", "");
                 const auto color_cfg      = elt.second.get<std::string>("<xmlattr>.color", "#ffffffff");
+                const auto material_cfg   = elt.second.get_optional<std::string>("<xmlattr>.material");
+                const auto uniforms_cfg   = elt.second.get_optional<std::string>("<xmlattr>.uniforms");
                 const auto representation = elt.second.get<std::string>("<xmlattr>.representation", "SURFACE");
                 const auto split          = elt.second.get<bool>("<xmlattr>.split", false);
                 const auto selected       = elt.second.get<bool>("<xmlattr>.selected", false);
@@ -352,8 +356,21 @@ void vtk_mesher::post_reconstruction_jobs(
                                            material->set_options_mode(sight::data::material::options_t::selected);
                                        }
 
-                                       reconstruction->set_material(material);
+                                       if(material_cfg.has_value())
+                                       {
+                                           data::string::sptr material_str = std::make_shared<data::string>();
+                                           material_str->set_value(*material_cfg);
 
+                                           data::string::sptr uniforms_str = std::make_shared<data::string>();
+                                           uniforms_str->set_value(*uniforms_cfg);
+
+                                           data::helper::field helper(material);
+                                           helper.set_field("material", material_str);
+                                           helper.set_field("uniforms", uniforms_str);
+                                           helper.notify();
+                                       }
+
+                                       reconstruction->set_material(material);
                                        recs.push_back(reconstruction);
                                    };
                 if(poly_data != nullptr)

@@ -99,6 +99,9 @@ namespace sight::module::filter::mesh
  * connected.
  *   - \b selected (optional, boolean): Specify if the reconstruction is marked as selected, which will can be used
  * later for instance to highlight it in the visualisation.
+ *   - \b material (optional, string): name of the Ogre material used for rendering.
+ *   - \b uniforms (optional, string): "|" separated list of uniform keys/values, where values can be interpreted as a
+ * sight::data::string_serializable i.e. "u_float=1.0|u_vec3=1.0;5.0;6.0".
  */
 
 class vtk_mesher : public service::filter,

@@ -14,6 +14,22 @@ fragment_program Default/ghost_fp glsl
     }
 }
 
+//---------------------------------------------------------------------------
+
+vertex_program Default/PixelLit_Offset_VP glsl
+{
+    source RenderScene_VP.glsl
+
+    preprocessor_defines PHONG=1,OFFSET=1
+    default_params
+    {
+        // Common
+        param_named_auto u_worldViewProj worldviewproj_matrix
+        param_named_auto u_world world_matrix
+        param_named_auto u_normalMatrix inverse_transpose_world_matrix
+    }
+}
+
 //-----------------------------------------------------------------------------
 
 material Ghost
@@ -29,6 +45,41 @@ material Ghost
             cull_hardware none
 
             vertex_program_ref Default/PixelLit_VP
+            {
+            }
+
+            fragment_program_ref Default/ghost_fp
+            {
+            }
+        }
+    }
+
+    technique depth
+    {
+        pass
+        {
+            vertex_program_ref Render_VP
+            {
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+material Ghost_Offset
+{
+    technique
+    {
+        pass
+        {
+            ambient 0.05 0.05 0.05
+            specular 0.5 0.5 0.5 25.0
+
+            scene_blend alpha_blend
+            cull_hardware none
+
+            vertex_program_ref Default/PixelLit_Offset_VP
             {
             }
 

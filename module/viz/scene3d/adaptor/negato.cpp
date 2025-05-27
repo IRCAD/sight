@@ -170,7 +170,8 @@ void negato::starting()
             material_name,
             m_border,
             m_slices_cross,
-            1.0F
+            1.0F,
+            static_cast<float>(*m_depth_bias)
         );
     }
 
