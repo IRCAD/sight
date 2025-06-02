@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,6 +37,9 @@ namespace sight::module::data
  * - data::vector: the object is added or removed from the container
  * - data::series_set: the object is added or removed from the container
  * - data::object: the object is added or removed from the field map at the given key
+ * activity
+ * @section Slots Slots
+ * - \b failed(): Sent on failure.
  *
  * @section Slots Slots
  * - \b add() : Adds the object into the target (Vector, series_set, Map), if target is a Map or a field, it
@@ -46,10 +49,11 @@ namespace sight::module::data
  * - \b add_or_swap() : Adds the object if it is not present in the target, else if target is a map or a field,
  * the
  * object is swapped.
- * - \b swapObj() : Only if target is a Map or a field : swaps the object into the map with the key given by
- * config.
+ * - \b pop_front() : Extracts the first object of the collection and removes it.
  * - \b remove() : Removes the object.
- * - \b removeIfPresent() : Removes the object if it is present.
+ * - \b remove_if_present() : Removes the object if it is present.
+ * - \b swap_obj() : Only if target is a Map or a field : swaps the object into the map with the key given by
+ * config.
  * - \b clear() : Removes all objects.
  *
  * @section XML XML Configuration
@@ -99,7 +103,7 @@ namespace sight::module::data
  * - \b mapKey (optional, only used if the target object in a Map) : key of the object in the map
  * - \b field (optional) : name of the field
  */
-class manage : public service::controller
+class manage final : public service::controller
 {
 public:
 
@@ -109,36 +113,39 @@ public:
     manage() noexcept;
 
     /// Destructor. Do nothing.
-    ~manage() noexcept override;
+    ~manage() noexcept final = default;
 
-    /**
-     * @name Slots
-     * @{
-     */
-    static const core::com::slots::key_t ADD_SLOT;
-    static const core::com::slots::key_t ADD_COPY_SLOT;
-    static const core::com::slots::key_t ADD_OR_SWAP_SLOT;
-    static const core::com::slots::key_t SWAP_OBJ_SLOT;
-    static const core::com::slots::key_t REMOVE_SLOT;
-    static const core::com::slots::key_t REMOVE_IF_PRESENT_SLOT;
-    static const core::com::slots::key_t CLEAR_SLOT;
-/**
- * @}
- */
+    struct signals
+    {
+        static inline const signal_key_t FAILED = "failed";
+        using empty_t = core::com::signal<void (void)>;
+    };
+
+    struct slots
+    {
+        static const inline slot_key_t ADD               = "add";
+        static const inline slot_key_t ADD_COPY          = "add_copy";
+        static const inline slot_key_t ADD_OR_SWAP       = "add_or_swap";
+        static const inline slot_key_t SWAP_OBJ          = "swap_obj";
+        static const inline slot_key_t POP_FRONT         = "pop_front";
+        static const inline slot_key_t REMOVE            = "remove";
+        static const inline slot_key_t REMOVE_IF_PRESENT = "remove_if_present";
+        static const inline slot_key_t CLEAR             = "clear";
+    };
 
 protected:
 
     /// Configures the service.
-    void configuring() override;
+    void configuring() final;
 
     /// Implements starting method derived from base. Do nothing.
-    void starting() override;
+    void starting() final;
 
     /// Implements stopping method derived from base. Do nothing.
-    void stopping() override;
+    void stopping() final;
 
     /// Implements updating method derived from base. Do nothing.
-    void updating() override;
+    void updating() final;
 
     /**
      * @name Slots
@@ -159,6 +166,9 @@ protected:
 
     /// Swaps the object into the map with the key given by config.
     void swap();
+
+    /// Swaps the object into the map with the key given by config.
+    void pop_front();
 
     /// Removes the object from the map at the key given by config.
     void remove();

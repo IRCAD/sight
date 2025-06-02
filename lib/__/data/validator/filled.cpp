@@ -26,6 +26,7 @@
 #include <data/model_series.hpp>
 #include <data/point_list.hpp>
 #include <data/validator/registry/macros.hpp>
+#include <data/vector.hpp>
 
 namespace sight::data::validator
 {
@@ -59,9 +60,16 @@ sight::data::validator::return_t filled::validate(const data::object::csptr& _ob
             validation = {false, "Point list is empty."};
         }
     }
+    else if(const auto vector = std::dynamic_pointer_cast<const data::vector>(_object); vector)
+    {
+        if(vector->empty())
+        {
+            validation = {false, "Vector is empty."};
+        }
+    }
     else
     {
-        validation = {false, "Current object should be either an image, an image_series a model_series or"
+        validation = {false, "Current object should be either an image, an image_series a model_series, a vector or"
                              "a point_list."
         };
     }

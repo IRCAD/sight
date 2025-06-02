@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -51,6 +51,11 @@ CPPUNIT_TEST(add_or_swap_and_present_in_vector_test);
 CPPUNIT_TEST(add_or_swap_and_present_in_series_set_test);
 CPPUNIT_TEST(add_or_swap_and_present_in_field_test);
 
+CPPUNIT_TEST(pop_front_in_map_test);
+CPPUNIT_TEST(pop_front_in_vector_test);
+CPPUNIT_TEST(pop_front_in_series_set_test);
+CPPUNIT_TEST(pop_front_in_field_test);
+
 CPPUNIT_TEST(swap_obj_in_map_test);
 CPPUNIT_TEST(swap_obj_and_not_present_in_field_test);
 CPPUNIT_TEST(swap_obj_and_present_in_field_test);
@@ -95,6 +100,11 @@ public:
     void add_or_swap_and_present_in_vector_test();
     void add_or_swap_and_present_in_series_set_test();
     void add_or_swap_and_present_in_field_test();
+
+    void pop_front_in_map_test();
+    void pop_front_in_vector_test();
+    void pop_front_in_series_set_test();
+    void pop_front_in_field_test();
 
     void swap_obj_in_map_test();
     void swap_obj_and_not_present_in_field_test();

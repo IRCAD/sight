@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -318,21 +318,21 @@ void manage_test::add_or_swap_and_present_in_field_test()
 
 void manage_test::swap_obj_in_map_test()
 {
-    generic_add_in_map_test("swapObj");
+    generic_add_in_map_test("swap_obj");
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::swap_obj_and_not_present_in_field_test()
 {
-    CPPUNIT_ASSERT_THROW(generic_add_in_field_test("swapObj"), sight::data::exception);
+    CPPUNIT_ASSERT_THROW(generic_add_in_field_test("swap_obj"), sight::data::exception);
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::swap_obj_and_present_in_field_test()
 {
-    generic_add_in_field_test("swapObj", true);
+    generic_add_in_field_test("swap_obj", true);
 }
 
 //------------------------------------------------------------------------------
@@ -416,6 +416,34 @@ void manage_test::generic_remove_in_field_test(const std::string& _slot_name)
 
 //------------------------------------------------------------------------------
 
+void manage_test::pop_front_in_map_test()
+{
+    generic_remove_in_map_test("pop_front");
+}
+
+//------------------------------------------------------------------------------
+
+void manage_test::pop_front_in_vector_test()
+{
+    generic_remove_in_vector_test("pop_front");
+}
+
+//------------------------------------------------------------------------------
+
+void manage_test::pop_front_in_series_set_test()
+{
+    generic_remove_in_series_set_test("pop_front");
+}
+
+//------------------------------------------------------------------------------
+
+void manage_test::pop_front_in_field_test()
+{
+    generic_remove_in_field_test("pop_front");
+}
+
+//------------------------------------------------------------------------------
+
 void manage_test::remove_in_map_test()
 {
     generic_remove_in_map_test("remove");
@@ -446,7 +474,7 @@ void manage_test::remove_in_field_test()
 
 void manage_test::remove_if_present_in_map_test()
 {
-    generic_remove_in_map_test("removeIfPresent");
+    generic_remove_in_map_test("remove_if_present");
 }
 
 //------------------------------------------------------------------------------
@@ -454,21 +482,21 @@ void manage_test::remove_if_present_in_map_test()
 void manage_test::remove_if_present_in_vector_test()
 {
     m_manage->start().get();
-    //genericRemoveInVectorTest("removeIfPresent"); // TODO: fix crash
+    //genericRemoveInVectorTest("remove_if_present"); // TODO: fix crash
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::remove_if_present_in_series_set_test()
 {
-    generic_remove_in_series_set_test("removeIfPresent");
+    generic_remove_in_series_set_test("remove_if_present");
 }
 
 //------------------------------------------------------------------------------
 
 void manage_test::remove_if_present_in_field_test()
 {
-    generic_remove_in_field_test("removeIfPresent");
+    generic_remove_in_field_test("remove_if_present");
 }
 
 //------------------------------------------------------------------------------

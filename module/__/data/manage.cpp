@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2024 IRCAD France
+ * Copyright (C) 2015-2025 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,7 @@
 
 #include "manage.hpp"
 
-#include <core/com/slot.hpp>
-#include <core/com/slot.hxx>
-#include <core/com/slots.hpp>
+#include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
 
 #include <data/exception.hpp>
@@ -34,36 +32,24 @@
 #include <data/series_set.hpp>
 #include <data/vector.hpp>
 
-#include <service/macros.hpp>
-
 namespace sight::module::data
 {
-
-const core::com::slots::key_t manage::ADD_SLOT               = "add";
-const core::com::slots::key_t manage::ADD_COPY_SLOT          = "add_copy";
-const core::com::slots::key_t manage::ADD_OR_SWAP_SLOT       = "add_or_swap";
-const core::com::slots::key_t manage::SWAP_OBJ_SLOT          = "swapObj";
-const core::com::slots::key_t manage::REMOVE_SLOT            = "remove";
-const core::com::slots::key_t manage::REMOVE_IF_PRESENT_SLOT = "removeIfPresent";
-const core::com::slots::key_t manage::CLEAR_SLOT             = "clear";
 
 //-----------------------------------------------------------------------------
 
 manage::manage() noexcept
 {
-    new_slot(ADD_SLOT, &manage::add, this);
-    new_slot(ADD_COPY_SLOT, &manage::add_copy, this);
-    new_slot(ADD_OR_SWAP_SLOT, &manage::add_or_swap, this);
-    new_slot(SWAP_OBJ_SLOT, &manage::swap, this);
-    new_slot(REMOVE_SLOT, &manage::remove, this);
-    new_slot(REMOVE_IF_PRESENT_SLOT, &manage::remove_if_present, this);
-    new_slot(CLEAR_SLOT, &manage::clear, this);
+    new_signal<signals::empty_t>(signals::FAILED);
+
+    new_slot(slots::ADD, &manage::add, this);
+    new_slot(slots::ADD_COPY, &manage::add_copy, this);
+    new_slot(slots::ADD_OR_SWAP, &manage::add_or_swap, this);
+    new_slot(slots::SWAP_OBJ, &manage::swap, this);
+    new_slot(slots::POP_FRONT, &manage::pop_front, this);
+    new_slot(slots::REMOVE, &manage::remove, this);
+    new_slot(slots::REMOVE_IF_PRESENT, &manage::remove_if_present, this);
+    new_slot(slots::CLEAR, &manage::clear, this);
 }
-
-//-----------------------------------------------------------------------------
-
-manage::~manage() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 
@@ -111,8 +97,6 @@ void manage::add_copy()
 
 void manage::add_or_swap()
 {
-    SIGHT_ASSERT("Service is not started", this->started());
-
     const auto obj = m_object.lock();
     SIGHT_ASSERT("Object is missing.", obj);
 
@@ -140,6 +124,7 @@ void manage::add_or_swap()
             }
             else
             {
+                this->async_emit(signals::FAILED);
                 SIGHT_WARN("Object already exists in the Vector, does nothing.");
             }
         }
@@ -155,6 +140,7 @@ void manage::add_or_swap()
             }
             else
             {
+                this->async_emit(signals::FAILED);
                 SIGHT_WARN("Series already exists in the series_set, does nothing.");
             }
         }
@@ -170,8 +156,6 @@ void manage::add_or_swap()
 // NOLINTNEXTLINE(cppcoreguidelines-noexcept-swap,performance-noexcept-swap)
 void manage::swap()
 {
-    SIGHT_ASSERT("Service is not started", this->started());
-
     const auto obj = m_object.lock();
     SIGHT_ASSERT("Object is missing.", obj);
 
@@ -190,7 +174,61 @@ void manage::swap()
     }
     else
     {
+        this->async_emit(signals::FAILED);
         SIGHT_WARN("'swap' slot is only managed for 'map' or 'fieldHolder'");
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void manage::pop_front()
+{
+    const auto obj = m_object.lock();
+
+    const auto container = m_container.lock();
+
+    if(!m_field_name.empty())
+    {
+        sight::data::helper::field helper(container.get_shared());
+
+        obj->deep_copy(container->get_field(m_field_name));
+
+        helper.remove(m_field_name);
+        helper.notify();
+    }
+    else
+    {
+        if(const auto map = std::dynamic_pointer_cast<sight::data::map>(container.get_shared()); map)
+        {
+            const auto scoped_emitter = map->scoped_emit();
+            SIGHT_ASSERT("Can not find element " << std::quoted(m_map_key), map->find(m_map_key) != map->end());
+            obj->deep_copy((*map)[m_map_key]);
+            map->erase(m_map_key);
+        }
+        else
+        {
+            if(const auto vector = std::dynamic_pointer_cast<sight::data::vector>(container.get_shared());
+               vector&& !vector->empty())
+            {
+                const auto scoped_emitter = vector->scoped_emit();
+                const auto object         = vector->front();
+                obj->deep_copy(object);
+                vector->remove(object);
+            }
+            else if(const auto series_set = std::dynamic_pointer_cast<sight::data::series_set>(container.get_shared());
+                    series_set&& !series_set->empty())
+            {
+                const auto scoped_emitter = series_set->scoped_emit();
+                const auto object         = series_set->front();
+                obj->deep_copy(object);
+                series_set->remove(object);
+            }
+            else
+            {
+                SIGHT_INFO("Nothing to pop");
+                this->async_emit(signals::FAILED);
+            }
+        }
     }
 }
 
@@ -198,8 +236,6 @@ void manage::swap()
 
 void manage::remove()
 {
-    SIGHT_ASSERT("Service is not started", this->started());
-
     const auto obj = m_object.lock();
 
     const auto container = m_container.lock();
@@ -246,8 +282,6 @@ void manage::remove()
 
 void manage::remove_if_present()
 {
-    SIGHT_ASSERT("Service is not started", this->started());
-
     const auto obj = m_object.lock();
 
     const auto container = m_container.lock();
@@ -296,6 +330,7 @@ void manage::remove_if_present()
                 }
                 else
                 {
+                    this->async_emit(signals::FAILED);
                     SIGHT_WARN("Object does not exist in the series_set, does nothing.");
                 }
             }
@@ -311,8 +346,6 @@ void manage::remove_if_present()
 
 void manage::clear()
 {
-    SIGHT_ASSERT("Service is not started", this->started());
-
     const auto container = m_container.lock();
 
     if(!m_field_name.empty())
@@ -350,8 +383,6 @@ void manage::clear()
 
 void manage::internal_add(bool _copy)
 {
-    SIGHT_ASSERT("Service is not started", this->started());
-
     const auto object = m_object.lock();
     SIGHT_ASSERT("Object is missing.", object);
 
