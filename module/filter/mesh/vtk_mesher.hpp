@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <core/jobs/job.hpp>
+
 #include <data/boolean.hpp>
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
@@ -113,10 +115,12 @@ public:
 
     struct signals
     {
-        static inline const signal_key_t COMPLETED = "completed";
-        static inline const signal_key_t FAILED    = "failed";
+        static inline const signal_key_t COMPLETED   = "completed";
+        static inline const signal_key_t FAILED      = "failed";
+        static inline const signal_key_t JOB_CREATED = "job_created";
 
-        using empty_t = sight::core::com::signal<void ()>;
+        using empty_t       = sight::core::com::signal<void ()>;
+        using job_created_t = sight::core::com::signal<void (sight::core::jobs::base::sptr)>;
     };
 
     vtk_mesher() noexcept;
@@ -141,7 +145,11 @@ protected:
 private:
 
     vtkSmartPointer<vtkPolyData> reconstruct(vtkSmartPointer<vtkImageData> _image, int _value);
-    void post_reconstruction_jobs(vtkSmartPointer<vtkImageData> _image, sight::data::model_series::sptr _model_series);
+    void post_reconstruction_jobs(
+        vtkSmartPointer<vtkImageData> _image,
+        sight::data::model_series::sptr _model_series,
+        sight::core::jobs::job& _running_job
+    );
 
     enum class mode_t : std::uint8_t
     {

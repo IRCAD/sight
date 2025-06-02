@@ -58,8 +58,6 @@
                 </registry>
             </service>
 
-            <service uid="progress_bar_view" type="sight::module::ui::job_bar" />
-
             <service uid="menu_bar_view" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
@@ -106,13 +104,17 @@
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" resizable="false" backgroundColor="#3E4453" />
+                        <view proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="container_view" start="true" />
                     <view sid="scene_editors_view" start="true" />
+                    <view sid="progress_bar_view" start="true" />
                 </registry>
             </service>
+
+            <service uid="progress_bar_view" type="sight::module::ui::qt::progress_bar" />
 
             <service uid="container_view" type="sight::module::ui::view">
                 <gui>
@@ -269,7 +271,7 @@
                 <config orientation="axial" label="index" display_axis_selector="false" display_step_buttons="false" />
             </service>
 
-            <service uid="mesher_srv" type="sight::module::filter::mesh::vtk_mesher">
+            <service uid="mesher_srv" type="sight::module::filter::mesh::vtk_mesher" worker="mesher">
                 <in key="image_series" uid="image_series" />
                 <inout key="model_series" uid="model_series" />
                 <properties from="${mesher_properties}" />
@@ -307,6 +309,7 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
+                <signal>mesher_srv/job_created</signal>
                 <signal>model_series_writer_srv/job_created</signal>
                 <slot>progress_bar_view/show_job</slot>
             </connect>
@@ -354,7 +357,6 @@
             </connect>
 
             <start uid="main_frame" />
-            <start uid="progress_bar_view" />
             <start uid="image_writer_srv" />
             <start uid="updater_reconst_srv" />
             <start uid="representation_editor_srv" />

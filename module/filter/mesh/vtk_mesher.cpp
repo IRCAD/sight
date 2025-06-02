@@ -107,6 +107,7 @@ vtk_mesher::vtk_mesher() noexcept :
 {
     new_signal<signals::empty_t>(signals::COMPLETED);
     new_signal<signals::empty_t>(signals::FAILED);
+    new_signal<signals::job_created_t>(signals::JOB_CREATED);
 }
 
 //-----------------------------------------------------------------------------
@@ -144,37 +145,50 @@ void vtk_mesher::stopping()
 
 void vtk_mesher::updating()
 {
-    FW_PROFILE("mesh");
+    const auto job = std::make_shared<sight::core::jobs::job>(
+        "Meshing segmentation",
+        [this](sight::core::jobs::job& _running_job)
+        {
+            FW_PROFILE("mesh");
 
-    auto image_series = m_image.lock();
-    auto model_series = m_model.lock();
+            auto image_series = m_image.lock();
+            auto model_series = m_model.lock();
 
-    if(!image_series || !model_series)
-    {
-        std::string msg = "Invalid input/output data for model series reconstruction.";
-        SIGHT_ERROR(msg);
-        this->notifier::failure(msg);
+            if(!image_series || !model_series)
+            {
+                std::string msg = "Invalid input/output data for model series reconstruction.";
+                SIGHT_ERROR(msg);
+                this->notifier::failure(msg);
 
-        this->async_emit(signals::FAILED);
+                this->async_emit(signals::FAILED);
+                _running_job.done();
 
-        return;
-    }
+                return;
+            }
 
-    model_series->series::deep_copy(image_series.get_shared());
-    model_series->set_dicom_reference(image_series->get_dicom_reference());
+            model_series->series::deep_copy(image_series.get_shared());
+            model_series->set_dicom_reference(image_series->get_dicom_reference());
 
-    // vtk img
-    auto vtk_image = vtkSmartPointer<vtkImageData>::New();
-    sight::io::vtk::to_vtk_image(image_series.get_shared(), vtk_image);
+            // vtk img
+            auto vtk_image = vtkSmartPointer<vtkImageData>::New();
+            sight::io::vtk::to_vtk_image(image_series.get_shared(), vtk_image);
 
-    post_reconstruction_jobs(vtk_image, model_series.get_shared());
-    {
-        this->async_emit(signals::COMPLETED);
-    }
+            _running_job.done_work(1);
 
-    {
-        model_series->async_emit(sight::data::object::MODIFIED_SIG);
-    }
+            post_reconstruction_jobs(vtk_image, model_series.get_shared(), _running_job);
+            {
+                this->async_emit(signals::COMPLETED);
+            }
+
+            {
+                model_series->async_emit(sight::data::object::MODIFIED_SIG);
+            }
+            _running_job.done();
+        });
+
+    job->set_cancelable(false);
+    this->signal<signals::job_created_t>(signals::JOB_CREATED)->emit(job);
+    job->run().get();
 }
 
 //-----------------------------------------------------------------------------
@@ -294,7 +308,8 @@ vtkSmartPointer<vtkPolyData> vtk_mesher::reconstruct(vtkSmartPointer<vtkImageDat
 
 void vtk_mesher::post_reconstruction_jobs(
     vtkSmartPointer<vtkImageData> _image,
-    sight::data::model_series::sptr _model_series
+    sight::data::model_series::sptr _model_series,
+    sight::core::jobs::job& _running_job
 )
 {
     sight::data::model_series::reconstruction_vector_t recs;
@@ -310,13 +325,16 @@ void vtk_mesher::post_reconstruction_jobs(
 
     const auto srv_config = config.get_child("config");
 
-    const auto num_threads = std::min((unsigned int) (srv_config.count("organ")), std::thread::hardware_concurrency());
-    auto thread_pool       = std::make_shared<boost::asio::thread_pool>(num_threads);
+    const std::size_t num_organs = srv_config.count("organ");
+    const auto num_threads       = std::min((unsigned int) num_organs, std::thread::hardware_concurrency());
+    auto thread_pool             = std::make_shared<boost::asio::thread_pool>(num_threads);
 
+    std::atomic<std::uint64_t> done             = 0;
+    static const std::uint64_t s_DONE_INCREMENT = 100 / (num_organs * 2); // 2 increments per organ
     for(const auto& elt : boost::make_iterator_range(srv_config.equal_range("organ")))
     {
         auto reconstruct_lambda =
-            [this, _image, elt, &recs]
+            [this, _image, elt, &recs, &_running_job, &done]
             {
                 const auto value          = elt.second.get<int>("<xmlattr>.value");
                 const auto name           = elt.second.get<std::string>("<xmlattr>.name", "organ");
@@ -373,6 +391,10 @@ void vtk_mesher::post_reconstruction_jobs(
                                        reconstruction->set_material(material);
                                        recs.push_back(reconstruction);
                                    };
+
+                done += s_DONE_INCREMENT;
+                _running_job.done_work(done);
+
                 if(poly_data != nullptr)
                 {
                     if(split)
@@ -410,8 +432,10 @@ void vtk_mesher::post_reconstruction_jobs(
                         create_mesh(poly_data);
                     }
                 }
-            };
 
+                done += s_DONE_INCREMENT;
+                _running_job.done_work(done);
+            };
         boost::asio::post(
             *thread_pool,
             reconstruct_lambda
