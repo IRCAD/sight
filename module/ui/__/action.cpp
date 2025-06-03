@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -52,6 +52,8 @@ void action::configuring()
         const auto& unchecked = parameter->get_optional<std::string>("<xmlattr>.unchecked");
         m_unchecked = unchecked ? std::make_optional(*unchecked) : std::nullopt;
     }
+
+    m_joystick_alias = sight::io::joystick::interactor::to_joystick(config.get<std::string>("joystick", ""));
 }
 
 //-----------------------------------------------------------------------------
@@ -59,6 +61,11 @@ void action::configuring()
 void action::starting()
 {
     this->action_service_starting();
+
+    if(m_joystick_alias != sight::io::joystick::joystick_t::unknown)
+    {
+        this->start_listening_joystick();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -66,6 +73,11 @@ void action::starting()
 void action::stopping()
 {
     this->action_service_stopping();
+
+    if(m_joystick_alias != sight::io::joystick::joystick_t::unknown)
+    {
+        this->stop_listening_joystick();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -112,6 +124,20 @@ void action::updating()
                     *m_key
                 );
             }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void action::joystick_axis_direction_event(const sight::io::joystick::axis_direction_event& _event)
+{
+    if(_event.device->alias == m_joystick_alias)
+    {
+        if(_event.axis_alias == sight::io::joystick::axis_t::tz and _event.value
+           == sight::io::joystick::axis_direction_event::direction_t::backward)
+        {
+            this->updating();
         }
     }
 }

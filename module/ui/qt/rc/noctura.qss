@@ -309,6 +309,12 @@ QToolButton::menu-button:pressed
     background: rgba(192, 179, 216, 50%);
 }
 
+
+QToolButton::checked
+{
+    background: rgba(192, 179, 216, 50%);
+}
+
 /************************************************************************/
 /*********************** QToolButton in button bar **********************/
 /************************************************************************/
@@ -324,6 +330,31 @@ QToolButton.buttonBar
     margin-left:32px;
     margin-right:32px;
     width:128px;
+    
+}
+
+
+/************************************************************************/
+/*********************** selected QAbstractButton in button bar **********************/
+/************************************************************************/
+
+QAbstractButton.selectedButtonBar
+{
+    margin-left:32px;
+    margin-right:32px;
+    width:128px;
+
+    
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    padding: 5px;
+}
+
+QAbstractButton.selectedButtonBar:checked
+{
+    background: rgba(192, 179, 216, 50%);
+    border: 1px solid white ;
 }
 
 /************************************************************************/

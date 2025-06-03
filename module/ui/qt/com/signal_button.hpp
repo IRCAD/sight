@@ -24,10 +24,12 @@
 
 #include <core/tools/failed.hpp>
 
-#include <QPointer>
-#include <QPushButton>
+#include <io/joystick/interactor.hpp>
 
 #include <ui/__/editor.hpp>
+
+#include <QPointer>
+#include <QPushButton>
 
 #include <filesystem>
 
@@ -66,6 +68,7 @@ namespace sight::module::ui::qt::com
           <checked>true|false</checked>
           <iconWidth>...</iconWidth>
           <iconHeight>...</iconHeight>
+          <joystick>left/right</joystick>
        </config>
    </service>
    @endcode
@@ -80,9 +83,11 @@ namespace sight::module::ui::qt::com
  * - \b checked (optional, bool, default=false): if true, the button is checked at start.
  * - \b iconWidth (optional, unsigned, default=0): icon width.
  * - \b iconHeight (optional, unsigned, default=0): icon height.
+ * - \b joystick (optional, string, default=""): assign left or right joystick push (tz) on button click.
  */
-class signal_button : public QObject,
-                      public sight::ui::editor
+class signal_button final : public QObject,
+                            public sight::ui::editor,
+                            public sight::io::joystick::interactor
 {
 Q_OBJECT
 
@@ -108,21 +113,28 @@ public:
     signal_button() noexcept;
 
     /// Destroys the service.
-    ~signal_button() noexcept override;
+    ~signal_button() noexcept final;
 
 protected:
 
     /// Configures the class parameters.
-    void configuring() override;
+    void configuring() final;
 
     /// Launches the editor::starting method.
-    void starting() override;
+    void starting() final;
 
     ///Does nothing.
-    void updating() override;
+    void updating() final;
 
     /// Launches the editor::stopping method.
-    void stopping() override;
+    void stopping() final;
+
+    /**
+     * @brief Manage joystick events
+     *
+     * @param _event
+     */
+    void joystick_axis_direction_event(const sight::io::joystick::axis_direction_event& _event) final;
 
 private Q_SLOTS:
 
@@ -142,22 +154,22 @@ private:
     void uncheck();
 
     /// SLOT: sets the button executability.
-    void set_enabled(bool _is_enabled) override;
+    void set_enabled(bool _is_enabled) final;
 
     /// SLOT: sets the button executable.
-    void enable() override;
+    void enable() final;
 
     /// SLOT: sets the button inexecutable.
-    void disable() override;
+    void disable() final;
 
     /// SLOT: sets the button visibility.
-    void set_visible(bool _is_visible) override;
+    void set_visible(bool _is_visible) final;
 
     /// SLOT: shows the button.
-    void show() override;
+    void show() final;
 
     /// SLOT: hides he button.
-    void hide() override;
+    void hide() final;
 
     /// Contains the button
     QPointer<QPushButton> m_button {nullptr};
@@ -191,6 +203,9 @@ private:
 
     /// Defines the button tooltip.
     std::string m_tool_tip;
+
+    /// Left/Right or none for joystick usage.
+    sight::io::joystick::joystick_t m_joystick_alias {sight::io::joystick::joystick_t::unknown};
 };
 
 } // namespace sight::module::ui::qt::com

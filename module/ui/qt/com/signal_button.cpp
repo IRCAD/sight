@@ -27,10 +27,12 @@
 #include <core/com/slots.hxx>
 #include <core/runtime/path.hpp>
 
-#include <QVariant>
-#include <QVBoxLayout>
+#include <io/joystick/interactor.hpp>
 
 #include <ui/qt/container/widget.hpp>
+
+#include <QVariant>
+#include <QVBoxLayout>
 
 namespace sight::module::ui::qt::com
 {
@@ -102,6 +104,8 @@ void signal_button::configuring()
             m_icon2 = core::runtime::get_module_resource_file_path(icon.value());
         }
 
+        m_joystick_alias = sight::io::joystick::interactor::to_joystick(config->get<std::string>("joystick", ""));
+
         m_icon_width  = config->get<unsigned int>("iconWidth", m_icon_width);
         m_icon_height = config->get<unsigned int>("iconHeight", m_icon_height);
     }
@@ -118,6 +122,10 @@ void signal_button::starting()
     auto* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
     m_button->setEnabled(m_enable);
+
+    const QString service_id = QString::fromStdString(base_id());
+    m_button->setObjectName(service_id + "/signal_button");
+
     m_button->setProperty("class", "signal-button");
     layout->addWidget(m_button);
     qt_container->set_layout(layout);
@@ -158,6 +166,11 @@ void signal_button::starting()
 
     QObject::connect(m_button.data(), &QPushButton::clicked, this, &signal_button::on_clicked);
     QObject::connect(m_button.data(), &QPushButton::toggled, this, &signal_button::on_toggled);
+
+    if(m_joystick_alias != sight::io::joystick::joystick_t::unknown)
+    {
+        this->start_listening_joystick();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -171,6 +184,25 @@ void signal_button::updating()
 void signal_button::stopping()
 {
     this->destroy();
+
+    if(m_joystick_alias != sight::io::joystick::joystick_t::unknown)
+    {
+        this->stop_listening_joystick();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void signal_button::joystick_axis_direction_event(const sight::io::joystick::axis_direction_event& _event)
+{
+    if(_event.device->alias == m_joystick_alias)
+    {
+        if(_event.axis_alias == sight::io::joystick::axis_t::tz and _event.value
+           == sight::io::joystick::axis_direction_event::direction_t::backward)
+        {
+            m_button->animateClick();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

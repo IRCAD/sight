@@ -1964,7 +1964,8 @@ void settings::create_enum_button_bar_widget(
     button_bar_group->setObjectName(QString::fromStdString(_setup.key));
 
     // create the buttons from the provided list
-    int button_index = 0;
+    int button_index         = 0;
+    const auto is_button_bar = _width != 0 || _height != 0;
     for(const auto& button_param : _button_list)
     {
         auto* enum_button = new QToolButton();
@@ -1984,7 +1985,8 @@ void settings::create_enum_button_bar_widget(
 
         enum_button->setText(QString::fromStdString(button_param.label));
 
-        enum_button->setStyleSheet(qApp->styleSheet());
+        enum_button->setStyleSheet("border : 1px solid transparent;");
+
         if(_orientation == Qt::Vertical)
         {
             enum_button->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Expanding);
@@ -2022,7 +2024,7 @@ void settings::create_enum_button_bar_widget(
         enum_button->setGraphicsEffect(effect);
 
         // the size depends on the configuration. xml > qss
-        if(_width != 0 || _height != 0)
+        if(is_button_bar)
         {
             // the size is provided through the xml config. Don't use the qss and ignore _setup.min_size
             const int width  = _width == 0 ? _height : _width;
@@ -2092,6 +2094,23 @@ void settings::create_enum_button_bar_widget(
 
         ++button_index;
     }
+
+    // create the connection to fire signals when the button is clicked
+    connect(
+        button_bar_group,
+        &QButtonGroup::buttonClicked,
+        [button_bar_group, is_button_bar](QAbstractButton* _selected_button)
+        {
+            if(is_button_bar)
+            {
+                for(const auto& button : button_bar_group->buttons())
+                {
+                    button->setStyleSheet("border: 1px solid transparent;");
+                }
+
+                _selected_button->setStyleSheet("border: 1px solid white;");
+            }
+        });
 }
 
 //-----------------------------------------------------------------------------
@@ -3085,7 +3104,8 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
             else if(_event.axis_alias == widget_joystick.axis_2 && _event.value == direction_t::backward
                     && checked_button != nullptr)
             {
-                checked_button->click();
+                checked_button->animateClick();
+                button_group->idClicked(static_cast<int>(checked_index));
             }
         }
         else if(auto* const non_linear_slider = dynamic_cast<sight::ui::qt::widget::non_linear_slider*>(widget);

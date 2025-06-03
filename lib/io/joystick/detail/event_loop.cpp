@@ -860,7 +860,7 @@ SDL_JoystickID event_loop::add_joystick(int _index)
         axis_aliases[2] = {axis_t::tz, axis_direction_event::direction_t::backward};
         axis_aliases[3] = {axis_t::ry, axis_direction_event::direction_t::down};
         axis_aliases[4] = {axis_t::rx, axis_direction_event::direction_t::left};
-        axis_aliases[5] = {axis_t::rz, axis_direction_event::direction_t::left};
+        axis_aliases[5] = {axis_t::rz, axis_direction_event::direction_t::right};
     }
     else
     {

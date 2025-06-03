@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,6 +22,8 @@
 #pragma once
 
 #include <data/boolean.hpp>
+
+#include <io/joystick/interactor.hpp>
 
 #include <ui/__/action.hpp>
 #include <ui/__/parameter.hpp>
@@ -60,7 +62,8 @@ namespace sight::module::ui
  *   - \b checked: the value used in parameterChanged signal on setChecked(true)
  *   - \b unchecked: the value used in parameterChanged signal on setChecked(false)
  */
-class action final : public sight::ui::action
+class action final : public sight::ui::action,
+                     public sight::io::joystick::interactor
 {
 public:
 
@@ -89,6 +92,13 @@ protected:
     /// Emits the clicked signal
     void updating() final;
 
+    /**
+     * @brief Manage joystick events
+     *
+     * @param _event
+     */
+    void joystick_axis_direction_event(const sight::io::joystick::axis_direction_event& _event) final;
+
 private:
 
     /// Signals
@@ -110,6 +120,9 @@ private:
     std::optional<std::string> m_clicked;
     std::optional<std::string> m_checked;
     std::optional<std::string> m_unchecked;
+
+    /// Left/Right or none for joystick usage.
+    sight::io::joystick::joystick_t m_joystick_alias {sight::io::joystick::joystick_t::unknown};
 };
 
 } // namespace sight::module::ui
