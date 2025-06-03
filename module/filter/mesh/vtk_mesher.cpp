@@ -326,123 +326,111 @@ void vtk_mesher::post_reconstruction_jobs(
     const auto srv_config = config.get_child("config");
 
     const std::size_t num_organs = srv_config.count("organ");
-    const auto num_threads       = std::min((unsigned int) num_organs, std::thread::hardware_concurrency());
-    auto thread_pool             = std::make_shared<boost::asio::thread_pool>(num_threads);
 
     std::atomic<std::uint64_t> done             = 0;
     static const std::uint64_t s_DONE_INCREMENT = 100 / (num_organs * 2); // 2 increments per organ
     for(const auto& elt : boost::make_iterator_range(srv_config.equal_range("organ")))
     {
-        auto reconstruct_lambda =
-            [this, _image, elt, &recs, &_running_job, &done]
+        const auto value          = elt.second.get<int>("<xmlattr>.value");
+        const auto name           = elt.second.get<std::string>("<xmlattr>.name", "organ");
+        const auto type           = elt.second.get<std::string>("<xmlattr>.type", "");
+        const auto color_cfg      = elt.second.get<std::string>("<xmlattr>.color", "#ffffffff");
+        const auto material_cfg   = elt.second.get_optional<std::string>("<xmlattr>.material");
+        const auto uniforms_cfg   = elt.second.get_optional<std::string>("<xmlattr>.uniforms");
+        const auto representation = elt.second.get<std::string>("<xmlattr>.representation", "SURFACE");
+        const auto split          = elt.second.get<bool>("<xmlattr>.split", false);
+        const auto selected       = elt.second.get<bool>("<xmlattr>.selected", false);
+
+        // Initialize the contour filter
+        vtkSmartPointer<vtkPolyData> poly_data = this->reconstruct(_image, value);
+
+        auto create_mesh = [&](vtkSmartPointer<vtkPolyData> _poly_data)
+                           {
+                               auto mesh = std::make_shared<sight::data::mesh>();
+                               sight::io::vtk::helper::mesh::from_vtk_mesh(_poly_data, mesh);
+
+                               auto reconstruction = std::make_shared<sight::data::reconstruction>();
+
+                               reconstruction->set_organ_name(name);
+                               reconstruction->set_structure_type(type);
+                               reconstruction->set_is_visible(true);
+                               reconstruction->set_mesh(mesh);
+
+                               auto material = std::make_shared<sight::data::material>();
+                               auto color    = std::make_shared<sight::data::color>(color_cfg);
+                               material->set_diffuse(color);
+                               material->set_representation_mode(
+                                   sight::data::material::string_to_representation_mode(
+                                       representation
+                                   )
+                               );
+                               if(selected)
+                               {
+                                   material->set_options_mode(sight::data::material::options_t::selected);
+                               }
+
+                               if(material_cfg.has_value())
+                               {
+                                   data::string::sptr material_str = std::make_shared<data::string>();
+                                   material_str->set_value(*material_cfg);
+
+                                   data::string::sptr uniforms_str = std::make_shared<data::string>();
+                                   uniforms_str->set_value(*uniforms_cfg);
+
+                                   data::helper::field helper(material);
+                                   helper.set_field("material", material_str);
+                                   helper.set_field("uniforms", uniforms_str);
+                                   helper.notify();
+                               }
+
+                               reconstruction->set_material(material);
+                               recs.push_back(reconstruction);
+                           };
+
+        done += s_DONE_INCREMENT;
+        _running_job.done_work(done);
+
+        if(poly_data != nullptr)
+        {
+            if(split)
             {
-                const auto value          = elt.second.get<int>("<xmlattr>.value");
-                const auto name           = elt.second.get<std::string>("<xmlattr>.name", "organ");
-                const auto type           = elt.second.get<std::string>("<xmlattr>.type", "");
-                const auto color_cfg      = elt.second.get<std::string>("<xmlattr>.color", "#ffffffff");
-                const auto material_cfg   = elt.second.get_optional<std::string>("<xmlattr>.material");
-                const auto uniforms_cfg   = elt.second.get_optional<std::string>("<xmlattr>.uniforms");
-                const auto representation = elt.second.get<std::string>("<xmlattr>.representation", "SURFACE");
-                const auto split          = elt.second.get<bool>("<xmlattr>.split", false);
-                const auto selected       = elt.second.get<bool>("<xmlattr>.selected", false);
-
-                // Initialize the contour filter
-                vtkSmartPointer<vtkPolyData> poly_data = this->reconstruct(_image, value);
-
-                auto create_mesh = [&](vtkSmartPointer<vtkPolyData> _poly_data)
-                                   {
-                                       auto mesh = std::make_shared<sight::data::mesh>();
-                                       sight::io::vtk::helper::mesh::from_vtk_mesh(_poly_data, mesh);
-
-                                       auto reconstruction = std::make_shared<sight::data::reconstruction>();
-
-                                       reconstruction->set_organ_name(name);
-                                       reconstruction->set_structure_type(type);
-                                       reconstruction->set_is_visible(true);
-                                       reconstruction->set_mesh(mesh);
-
-                                       auto material = std::make_shared<sight::data::material>();
-                                       auto color    = std::make_shared<sight::data::color>(color_cfg);
-                                       material->set_diffuse(color);
-                                       material->set_representation_mode(
-                                           sight::data::material::string_to_representation_mode(
-                                               representation
-                                           )
-                                       );
-                                       if(selected)
-                                       {
-                                           material->set_options_mode(sight::data::material::options_t::selected);
-                                       }
-
-                                       if(material_cfg.has_value())
-                                       {
-                                           data::string::sptr material_str = std::make_shared<data::string>();
-                                           material_str->set_value(*material_cfg);
-
-                                           data::string::sptr uniforms_str = std::make_shared<data::string>();
-                                           uniforms_str->set_value(*uniforms_cfg);
-
-                                           data::helper::field helper(material);
-                                           helper.set_field("material", material_str);
-                                           helper.set_field("uniforms", uniforms_str);
-                                           helper.notify();
-                                       }
-
-                                       reconstruction->set_material(material);
-                                       recs.push_back(reconstruction);
-                                   };
-
-                done += s_DONE_INCREMENT;
-                _running_job.done_work(done);
-
-                if(poly_data != nullptr)
+                auto connectivity_filter = vtkSmartPointer<vtkConnectivityFilter>::New();
+                connectivity_filter->SetInputData(poly_data);
+                connectivity_filter->SetExtractionModeToAllRegions();
+                connectivity_filter->ColorRegionsOn();
+                connectivity_filter->Update();
+                for(int i = 0 ; i < connectivity_filter->GetNumberOfExtractedRegions() ; i++)
                 {
-                    if(split)
-                    {
-                        auto connectivity_filter = vtkSmartPointer<vtkConnectivityFilter>::New();
-                        connectivity_filter->SetInputData(poly_data);
-                        connectivity_filter->SetExtractionModeToAllRegions();
-                        connectivity_filter->ColorRegionsOn();
-                        connectivity_filter->Update();
-                        for(int i = 0 ; i < connectivity_filter->GetNumberOfExtractedRegions() ; i++)
-                        {
-                            auto threshold_filter = vtkSmartPointer<vtkThreshold>::New();
-                            threshold_filter->SetInputData(connectivity_filter->GetOutput());
-                            threshold_filter->SetLowerThreshold(i);
-                            threshold_filter->SetUpperThreshold(i);
-                            threshold_filter->SetInputArrayToProcess(
-                                0,
-                                0,
-                                0,
-                                vtkDataObject::FIELD_ASSOCIATION_CELLS,
-                                "RegionId"
-                            );
-                            threshold_filter->Update();
+                    auto threshold_filter = vtkSmartPointer<vtkThreshold>::New();
+                    threshold_filter->SetInputData(connectivity_filter->GetOutput());
+                    threshold_filter->SetLowerThreshold(i);
+                    threshold_filter->SetUpperThreshold(i);
+                    threshold_filter->SetInputArrayToProcess(
+                        0,
+                        0,
+                        0,
+                        vtkDataObject::FIELD_ASSOCIATION_CELLS,
+                        "RegionId"
+                    );
+                    threshold_filter->Update();
 
-                            auto geometry_filter = vtkSmartPointer<vtkGeometryFilter>::New();
-                            geometry_filter->SetInputData(threshold_filter->GetOutput());
-                            geometry_filter->Update();
+                    auto geometry_filter = vtkSmartPointer<vtkGeometryFilter>::New();
+                    geometry_filter->SetInputData(threshold_filter->GetOutput());
+                    geometry_filter->Update();
 
-                            vtkSmartPointer<vtkPolyData> region_poly_data = geometry_filter->GetOutput();
-                            create_mesh(region_poly_data);
-                        }
-                    }
-                    else
-                    {
-                        create_mesh(poly_data);
-                    }
+                    vtkSmartPointer<vtkPolyData> region_poly_data = geometry_filter->GetOutput();
+                    create_mesh(region_poly_data);
                 }
+            }
+            else
+            {
+                create_mesh(poly_data);
+            }
+        }
 
-                done += s_DONE_INCREMENT;
-                _running_job.done_work(done);
-            };
-        boost::asio::post(
-            *thread_pool,
-            reconstruct_lambda
-        );
+        done += s_DONE_INCREMENT;
+        _running_job.done_work(done);
     }
-
-    thread_pool->join();
 
     sight::data::model_series::reconstruction_vector_t out_recs = _model_series->get_reconstruction_db();
     if(m_mode == mode_t::REPLACE)
