@@ -221,7 +221,7 @@ void point_list::updating()
 {
     this->render_service()->make_current();
 
-    if((!get_visibility() || !this->render_service()->is_shown_on_screen()))
+    if(!get_visibility())
     {
         return;
     }
