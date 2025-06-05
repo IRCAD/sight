@@ -26,6 +26,8 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPaintEvent>
+#include <QPoint>
+#include <QPropertyAnimation>
 #include <QSlider>
 namespace sight::ui::qt::widget
 {
@@ -35,8 +37,28 @@ namespace sight::ui::qt::widget
 class SIGHT_UI_QT_CLASS_API_QT tickmarks_slider : public QWidget
 {
 Q_OBJECT
+Q_PROPERTY(double animated_tick READ animated_tick WRITE set_animated_tick)
 
 public:
+
+    /**
+     * @brief Returns the current animated tick.
+     * @return The value of m_animated_tick.
+     */
+    double animated_tick() const
+    {
+        return m_animated_tick;
+    }
+
+    /**
+     * @brief Sets the animated tick and triggers an update.
+     * @param t The new value for m_animated_tick.
+     */
+    void set_animated_tick(double t)
+    {
+        m_animated_tick = t;
+        update();
+    }
 
     /**
      * @brief tickmarks_slider widget constructor.
@@ -71,6 +93,19 @@ public:
      */
     SIGHT_UI_QT_API_QT  void set_current_tick(int _tick);
 
+    /**
+     * @brief Paints the animated tick-mark scale.
+     *
+     * Workflow:
+     * 1. Compute horizontal padding from the widest label.
+     * 2. Spread every tick across the remaining width.
+     * 3. Shift the whole scale so the current tick (`m_animated_tick`)
+     *    stays roughly centered.
+     * 4. For each visible tick, pick length (25/15/10 px) based on distance
+     *    from the current tick and draw the vertical line.
+     * 5. Draw the label of the current tick, centered under the scale.
+     *
+     */
     SIGHT_UI_QT_API_QT  void paintEvent(QPaintEvent*  /*event*/) override;
 
     SIGHT_UI_QT_API_QT  void mouseMoveEvent(QMouseEvent* _event) override;
@@ -85,19 +120,19 @@ Q_SIGNALS:
 
 private:
 
-    /**
-     * @brief Calculates and updates the tick index based on a pixel position.
-     * @param _x_pos X position (in pixels) relative to the widget’s left edge.
-     */
-    SIGHT_UI_QT_API_QT void update_tick_from_pos(const int _x_pos);
-
     int m_min {0};
     int m_max {10};
-    int m_interval {2};
-    int m_currentTick {0};
+    int m_interval {1};
+    int m_current_tick {0};
+    int m_last_x {0};
+    int step_px = 8;
     std::vector<int> m_values;
+    double m_animated_tick = 0.0;
+    QPropertyAnimation* m_drag_anim {nullptr};
     bool m_dragging {false};
-    std::vector<std::string> m_tickLabels;
+    QPoint m_press_pos;
+    bool m_released {false};
+    std::vector<std::string> m_tick_labels;
     std::unique_ptr<QSlider> m_slider = std::make_unique<QSlider>(this);
 };
 
@@ -105,7 +140,7 @@ private:
 
 inline const std::vector<std::string>& tickmarks_slider::tick_labels() const
 {
-    return m_tickLabels;
+    return m_tick_labels;
 }
 
 } //namespace sight::ui::qt::widget

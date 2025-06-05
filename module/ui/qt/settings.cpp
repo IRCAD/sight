@@ -2314,41 +2314,38 @@ void settings::update_tickmarks(const std::string _options, const std::string _k
     QObject* widget_ptr = this->get_param_widget(_key);
 
     auto* tickmarks_widget = qobject_cast<sight::ui::qt::widget::tickmarks_slider*>(widget_ptr);
-    if(tickmarks_widget == nullptr)
+    if(tickmarks_widget != nullptr)
     {
-        SIGHT_ERROR("TickMarksWidget not found for key: " + _key);
-        return;
-    }
+        QSignalBlocker guard(tickmarks_widget);
 
-    QSignalBlocker guard(tickmarks_widget);
+        std::vector<std::string> tick_labels;
+        std::vector<std::string> tick_data;
+        sight::module::ui::qt::settings::parse_enum_string(_options, tick_labels, tick_data);
 
-    std::vector<std::string> tick_labels;
-    std::vector<std::string> tick_data;
-    sight::module::ui::qt::settings::parse_enum_string(_options, tick_labels, tick_data);
-
-    if(!tick_labels.empty())
-    {
-        const int max_index = static_cast<int>(tick_labels.size()) - 1;
-        tickmarks_widget->set_range(0, max_index);
-        tickmarks_widget->set_tick_interval(1);
-        tickmarks_widget->set_tick_labels(tick_labels);
-
-        int current_index = 0;
-        if(auto string_data = settings::data<sight::data::string>(tickmarks_widget))
+        if(!tick_labels.empty())
         {
-            const std::string& current_value = string_data->value();
-            auto it                          = std::find(tick_data.begin(), tick_data.end(), current_value);
-            if(it != tick_data.end())
+            const int max_index = static_cast<int>(tick_labels.size()) - 1;
+            tickmarks_widget->set_range(0, max_index);
+            tickmarks_widget->set_tick_interval(1);
+            tickmarks_widget->set_tick_labels(tick_labels);
+
+            int current_index = 0;
+            if(auto string_data = settings::data<sight::data::string>(tickmarks_widget))
             {
-                current_index = static_cast<int>(std::distance(tick_data.begin(), it));
+                const std::string& current_value = string_data->value();
+                auto it                          = std::find(tick_data.begin(), tick_data.end(), current_value);
+                if(it != tick_data.end())
+                {
+                    current_index = static_cast<int>(std::distance(tick_data.begin(), it));
+                }
             }
-        }
-        else if(auto integer_data = settings::data<sight::data::integer>(tickmarks_widget))
-        {
-            current_index = static_cast<int>(std::clamp<std::int64_t>(integer_data->value(), 0, max_index));
-        }
+            else if(auto integer_data = settings::data<sight::data::integer>(tickmarks_widget))
+            {
+                current_index = static_cast<int>(std::clamp<std::int64_t>(integer_data->value(), 0, max_index));
+            }
 
-        tickmarks_widget->set_current_tick(current_index);
+            tickmarks_widget->set_current_tick(current_index);
+        }
     }
 }
 
