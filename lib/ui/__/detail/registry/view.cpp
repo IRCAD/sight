@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,8 +118,7 @@ void view::initialize(const ui::config_t& _configuration)
         SIGHT_ASSERT("<view> tag must have sid or wid attribute", !sid.empty() || !wid.empty());
         if(!sid.empty())
         {
-            const bool start = core::runtime::get_ptree_value(view, "<xmlattr>.start", false);
-            m_sids[sid] = sid_container_map_type::mapped_type(index, start);
+            m_sids[sid] = index;
         }
         else if(!wid.empty())
         {
@@ -163,29 +162,11 @@ void view::manage(std::vector<ui::container::widget::sptr> _sub_views)
     {
         SIGHT_ASSERT(
             "The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
-            << (sid.second.first + 1) << " views in <registry>, but only " << _sub_views.size() << " in <layout>.",
-            sid.second.first < _sub_views.size()
+            << (sid.second + 1) << " views in <registry>, but only " << _sub_views.size() << " in <layout>.",
+            sid.second < _sub_views.size()
         );
-        container = _sub_views.at(sid.second.first);
+        container = _sub_views.at(sid.second);
         ui::registry::register_sid_container(sid.first, container);
-        if(sid.second.second) //service is auto started?
-        {
-            SIGHT_ASSERT(
-                "The service '" + sid.first + "' does not exist, but is declared in '" + m_sid + "' view, "
-                                                                                                 "the service may be created later if it uses deferred objects, thus use start=\"no\" and start "
-                                                                                                 "it at the end of the configuration",
-                core::id::exist(
-                    sid.first
-                )
-            );
-            service::base::sptr service = service::get(sid.first);
-            SIGHT_ASSERT(
-                "The service '" + sid.first + "' cannot be started by '" + m_sid + "' because it is not stopped."
-                ,
-                service->stopped()
-            );
-            service->start();
-        }
     }
 
     for(const auto& wid : m_wids)
@@ -205,15 +186,6 @@ void view::manage(std::vector<ui::container::widget::sptr> _sub_views)
 void view::manage_menu_bar(ui::container::menubar::sptr _menu_bar)
 {
     ui::registry::register_sid_menu_bar(m_menu_bar_sid.first, std::move(_menu_bar));
-    if(m_menu_bar_sid.second) //service is auto started?
-    {
-        SIGHT_ASSERT(
-            "The menubar service '" + m_menu_bar_sid.first + "' declared by '" + m_sid + "' does not exist.",
-            core::id::exist(m_menu_bar_sid.first)
-        );
-        service::base::sptr service = service::get(m_menu_bar_sid.first);
-        service->start();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -221,15 +193,6 @@ void view::manage_menu_bar(ui::container::menubar::sptr _menu_bar)
 void view::manage_tool_bar(ui::container::toolbar::sptr _tool_bar)
 {
     ui::registry::register_sid_tool_bar(m_tool_bar_sid.first, std::move(_tool_bar));
-    if(m_tool_bar_sid.second) //service is auto started?
-    {
-        SIGHT_ASSERT(
-            "The toolbar service '" + m_tool_bar_sid.first + "' declared by '" + m_sid + "' does not exist.",
-            core::id::exist(m_tool_bar_sid.first)
-        );
-        service::base::sptr service = service::get(m_tool_bar_sid.first);
-        service->start();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -238,17 +201,6 @@ void view::unmanage()
 {
     for(const auto& sid : m_sids)
     {
-        if(sid.second.second) //service is auto started?
-        {
-            SIGHT_ASSERT(
-                "The view '" + m_sid + "' try to stop the service '" + sid.first + "' but it does not exist. "
-                                                                                   "It may have been destroyed by the configuration if it uses deferred objects.",
-                core::id::exist(sid.first)
-            );
-            service::base::sptr service = service::get(sid.first);
-            service->stop().wait();
-        }
-
         ui::registry::unregister_sid_container(sid.first);
     }
 
@@ -264,16 +216,6 @@ void view::unmanage_tool_bar()
 {
     if(!m_tool_bar_sid.first.empty())
     {
-        if(m_tool_bar_sid.second) //service is auto started?
-        {
-            SIGHT_ASSERT(
-                "The toolbar service '" + m_tool_bar_sid.first + "' declared by '" + m_sid + "' does not exist.",
-                core::id::exist(m_tool_bar_sid.first)
-            );
-            service::base::sptr service = service::get(m_tool_bar_sid.first);
-            service->stop().wait();
-        }
-
         ui::registry::unregister_sid_tool_bar(m_tool_bar_sid.first);
     }
 }
@@ -284,16 +226,6 @@ void view::unmanage_menu_bar()
 {
     if(!m_menu_bar_sid.first.empty())
     {
-        if(m_menu_bar_sid.second) //service is auto started?
-        {
-            SIGHT_ASSERT(
-                "The menubar service '" + m_menu_bar_sid.first + "' declared by '" + m_sid + "' does not exist.",
-                core::id::exist(m_menu_bar_sid.first)
-            );
-            service::base::sptr service = service::get(m_menu_bar_sid.first);
-            service->stop().wait();
-        }
-
         ui::registry::unregister_sid_menu_bar(m_menu_bar_sid.first);
     }
 }

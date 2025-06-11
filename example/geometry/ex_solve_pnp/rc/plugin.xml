@@ -35,9 +35,9 @@
                     <toolbar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <toolbar sid="toolbarView" start="true" />
-                    <view sid="cameraView" start="true" />
+                    <menubar sid="menuBarView" />
+                    <toolbar sid="toolbarView" />
+                    <view sid="cameraView" />
                 </registry>
             </service>
 
@@ -49,8 +49,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="true" />
-                    <menu sid="menuPreferencesView" start="true" />
+                    <menu sid="menuFileView" />
+                    <menu sid="menuPreferencesView" />
                 </registry>
             </service>
 
@@ -61,7 +61,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -72,7 +72,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="videoDirAct" start="true" />
+                    <menuItem sid="videoDirAct" />
                 </registry>
             </service>
 
@@ -91,14 +91,14 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadCalibAct" start="true" />
+                    <menuItem sid="loadCalibAct" />
                     <editor sid="videoSelectorSrv" />
-                    <menuItem sid="startVideoAct" start="true" />
-                    <menuItem sid="pauseVideoAct" start="true" />
-                    <menuItem sid="resumeVideoAct" start="true" />
-                    <menuItem sid="stopVideoAct" start="true" />
-                    <menuItem sid="loopVideoAct" start="true" />
-                    <menuItem sid="registerAct" start="true" />
+                    <menuItem sid="startVideoAct" />
+                    <menuItem sid="pauseVideoAct" />
+                    <menuItem sid="resumeVideoAct" />
+                    <menuItem sid="stopVideoAct" />
+                    <menuItem sid="loopVideoAct" />
+                    <menuItem sid="registerAct" />
                 </registry>
             </service>
 
@@ -111,7 +111,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="sceneView" start="true" />
+                    <view sid="sceneView" />
                 </registry>
             </service>
 
@@ -124,8 +124,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="ARSceneSrv" start="true" />
-                    <view sid="VRSceneSrv" start="true" />
+                    <view sid="ARSceneSrv" />
+                    <view sid="VRSceneSrv" />
                 </registry>
             </service>
 
@@ -183,7 +183,7 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="ARSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="sync">
+                <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video" order="1">
@@ -215,7 +215,7 @@
 
             <service uid="ARCameraAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
                 <inout key="transform" uid="registrationMatrix" />
-                <in key="camera" uid="camera" />
+                <in key="calibration" uid="camera" />
             </service>
 
             <service uid="ARMeshAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
@@ -291,7 +291,7 @@
             </service>
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer">
-                <in group="frameTL">
+                <in group="frameTL" auto_connect="false">
                     <key uid="frameTL" />
                 </in>
                 <inout group="frames">
@@ -328,6 +328,7 @@
             <connect>
                 <signal>startVideoAct/clicked</signal>
                 <slot>videoGrabberSrv/start_camera</slot>
+                <slot>updater/start</slot>
             </connect>
 
             <connect>
@@ -335,6 +336,7 @@
                 <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/show</slot>
                 <slot>pauseVideoAct/hide</slot>
+                <slot>updater/stop</slot>
             </connect>
 
             <connect>
@@ -342,6 +344,7 @@
                 <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/show</slot>
+                <slot>updater/start</slot>
             </connect>
 
             <connect>
@@ -353,6 +356,7 @@
                 <slot>stopVideoAct/disable</slot>
                 <slot>loopVideoAct/disable</slot>
                 <slot>loopVideoAct/uncheck</slot>
+                <slot>updater/stop</slot>
             </connect>
 
             <connect>
@@ -396,38 +400,16 @@
                 <slot>cameraExtractorSrv/update</slot>
             </connect>
 
-            <connect>
-                <signal>frameUpdaterSrv/synchronization_done</signal>
-                <slot>ARSceneSrv/render</slot>
-                <slot>frameUpdaterSrv/request_sync</slot>
-            </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="videoGrabberSrv" />
-            <start uid="calibrationReaderSrv" />
-            <start uid="videoSelectorSrv" />
-            <start uid="cameraExtractorSrv" />
-            <start uid="meshReaderSrv" />
-            <start uid="solvePnPSrv" />
-            <start uid="frameUpdaterSrv" />
-            <start uid="imagePickerSrv" />
-            <start uid="pointListVRManagerSrv" />
-            <start uid="ARPickerAdp" />
-            <start uid="ARVideoAdp" />
-            <start uid="ARCameraAdp" />
-            <start uid="ARMeshAdp" />
-            <start uid="ARPointListAdp" />
-            <start uid="VRTrackballInteractorAdp" />
-            <start uid="VRPickerAdp" />
-            <start uid="VRPointListAdp" />
-            <start uid="VRMeshAdp" />
-            <start uid="VRAxisAdp" />
-
             <!-- ******************************* Update services ***************************************** -->
 
-            <update uid="meshReaderSrv" />
+            <update>
+                <service uid="meshReaderSrv" />
+
+                <sequence uid="updater" loop="true" start="false">
+                    <service uid="frameUpdaterSrv" />
+                    <service uid="ARSceneSrv" />
+                </sequence>
+            </update>
         </config>
     </extension>
 </plugin>

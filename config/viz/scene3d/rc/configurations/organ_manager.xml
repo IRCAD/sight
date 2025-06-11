@@ -26,12 +26,12 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="listOrganEditorSrv" start="true" />
-                <view sid="organMaterialEditorSrv" start="false" />
-                <view sid="representationEditorSrv" start="false" />
-                <view sid="textureSelectorSrv" start="false" />
-                <view sid="materialSelectorSrv" start="false" />
-                <view sid="shaderParametersSrv" start="false" />
+                <view sid="listOrganEditorSrv" />
+                <view sid="organMaterialEditorSrv" />
+                <view sid="representationEditorSrv" />
+                <view sid="textureSelectorSrv" />
+                <view sid="materialSelectorSrv" />
+                <view sid="shaderParametersSrv" />
             </registry>
         </service>
 
@@ -83,16 +83,5 @@
             <signal>materialSelectorSrv/selected</signal>
             <slot>shaderParametersSrv/update</slot>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="organView" />
-        <start uid="selectReconstructionSrv" />
-
-        <start uid="materialSelectorSrv" />
-        <start uid="representationEditorSrv" />
-        <start uid="shaderParametersSrv" />
-        <start uid="organMaterialEditorSrv" />
-        <start uid="textureSelectorSrv" />
     </config>
 </extension>

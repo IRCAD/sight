@@ -109,8 +109,16 @@ void update_sequence_test::basic()
     CPPUNIT_ASSERT_EQUAL((unsigned int) (3), srv3->update_order());
 
     CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv0->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv1->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv2->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv3->stop().get());
 
     service::remove(update_srv);
+    service::remove(srv0);
+    service::remove(srv1);
+    service::remove(srv2);
+    service::remove(srv3);
 }
 
 //------------------------------------------------------------------------------
@@ -191,6 +199,20 @@ void update_sequence_test::parent()
     }
 
     CPPUNIT_ASSERT_NO_THROW(main_updater->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(child_updater_1->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(child_updater_1_1->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(child_updater_2->stop().get());
+
+    service::remove(main_updater);
+    service::remove(child_updater_1);
+    service::remove(child_updater_1_1);
+    service::remove(child_updater_2);
+
+    for(const auto i : std::views::iota(0U, 7U))
+    {
+        CPPUNIT_ASSERT_NO_THROW(srv[i]->stop().get());
+        service::remove(srv[i]);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -226,8 +248,11 @@ void update_sequence_test::call_start_stop()
     CPPUNIT_ASSERT_EQUAL(true, srv_to_start->started());
 
     CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv_to_start->stop().get());
 
     service::remove(update_srv);
+    service::remove(srv_to_stop);
+    service::remove(srv_to_start);
 }
 
 //------------------------------------------------------------------------------
@@ -264,8 +289,11 @@ void update_sequence_test::call_slot_while_stopped()
     CPPUNIT_ASSERT_EQUAL(true, srv_to_update_but_stopped->stopped());
 
     CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv_to_stop_1->stop().get());
 
     service::remove(update_srv);
+    service::remove(srv_to_stop_1);
+    service::remove(srv_to_update_but_stopped);
 }
 
 //------------------------------------------------------------------------------
@@ -304,8 +332,11 @@ void update_sequence_test::call_slot_after_a_start()
     CPPUNIT_ASSERT_EQUAL(true, srv_to_update_but_stopped->started());
 
     CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv_to_update_but_stopped->stop().get());
 
     service::remove(update_srv);
+    service::remove(srv_to_stop_1);
+    service::remove(srv_to_update_but_stopped);
 }
 
 //------------------------------------------------------------------------------
@@ -340,6 +371,7 @@ void update_sequence_test::call_stop_while_stopped()
     CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
 
     service::remove(update_srv);
+    service::remove(srv_to_stop);
 }
 
 //------------------------------------------------------------------------------
@@ -377,6 +409,7 @@ void update_sequence_test::call_start_slot_stop()
     CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
 
     service::remove(update_srv);
+    service::remove(srv);
 }
 
 //------------------------------------------------------------------------------
@@ -414,6 +447,7 @@ void update_sequence_test::call_stop_slot_start()
     CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
 
     service::remove(update_srv);
+    service::remove(srv);
 }
 
 //------------------------------------------------------------------------------
@@ -471,8 +505,10 @@ void update_sequence_test::call_stop_start()
     SIGHT_TEST_WAIT(call_stop == true);
 
     CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv->stop().get());
 
     service::remove(update_srv);
+    service::remove(srv);
 }
 
 //------------------------------------------------------------------------------
@@ -511,8 +547,15 @@ void update_sequence_test::ignore_stopped()
     CPPUNIT_ASSERT_EQUAL((unsigned int) (2), srv3->update_order());
 
     CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv3->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv2->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv0->stop().get());
 
     service::remove(update_srv);
+    service::remove(srv3);
+    service::remove(srv2);
+    service::remove(srv1);
+    service::remove(srv0);
 }
 
 } // namespace sight::app::ut

@@ -62,7 +62,7 @@
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="dynamicViewSrv" start="true" />
+                    <view sid="dynamicViewSrv" />
                 </registry>
             </service>
 
@@ -85,10 +85,6 @@
             <connect channel="DYNAMICVIEW_RECIEVER_CHANNEL">
                 <slot>dynamicViewSrv/create_tab</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
         </config>
     </extension>
 </plugin>

@@ -43,7 +43,7 @@
             </registry>
         </service>
 
-        <service uid="cfgNegato1" type="sight::app::config_controller">
+        <service uid="cfgNegato1" type="sight::app::config_launcher">
             <properties config="2DNegato" />
             <inout group="data">
                 <key name="image" uid="${imageSeries}" />
@@ -53,7 +53,7 @@
             <parameter replace="orientation" by="axial" />
         </service>
 
-        <service uid="cfgNegato2" type="sight::app::config_controller">
+        <service uid="cfgNegato2" type="sight::app::config_launcher">
             <properties config="2DNegato" />
             <inout group="data">
                 <key name="image" uid="${imageSeries}" />
@@ -63,7 +63,7 @@
             <parameter replace="orientation" by="frontal" />
         </service>
 
-        <service uid="cfgNegato3" type="sight::app::config_controller">
+        <service uid="cfgNegato3" type="sight::app::config_launcher">
             <properties config="2DNegato" />
             <inout group="data">
                 <key name="image" uid="${imageSeries}" />
@@ -106,15 +106,5 @@
         <connect channel="${nextActivityChannel}">
             <signal>ActionNext/clicked</signal>
         </connect>
-
-        <!-- START AND STOP SERVICES -->
-        <start uid="mainView" />
-        <start uid="toolbar" />
-        <start uid="ActionPrevious" />
-        <start uid="ActionNext" />
-
-        <start uid="cfgNegato1" />
-        <start uid="cfgNegato2" />
-        <start uid="cfgNegato3" />
     </config>
 </extension>

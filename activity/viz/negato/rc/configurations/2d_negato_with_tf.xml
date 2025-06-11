@@ -23,8 +23,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="negato" start="true" />
-                <view sid="multiView_negato_bottom" start="true" />
+                <view sid="negato" />
+                <view sid="multiView_negato_bottom" />
             </registry>
         </service>
 
@@ -39,9 +39,9 @@
                 </layout>
             </gui>
             <registry>
-                <toolbar sid="topToolbarView" start="true" />
-                <view sid="slider_negato" start="true" />
-                <view sid="distanceNegatoEditor" start="true" />
+                <toolbar sid="topToolbarView" />
+                <view sid="slider_negato" />
+                <view sid="distanceNegatoEditor" />
             </registry>
         </service>
 
@@ -52,7 +52,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="snapshotAct" start="true" />
+                <menuItem sid="snapshotAct" />
             </registry>
         </service>
 
@@ -129,7 +129,6 @@
             <backends enable="all" mode="best" />
         </service>
 
-        <!-- START AND STOP SERVICES -->
         <connect>
             <signal>distanceNegatoEditor/distance_requested</signal>
             <slot>multiDistances/create_distance</slot>
@@ -144,15 +143,6 @@
             <slot>imageWriterSrv/update</slot>
         </connect>
 
-        <start uid="LockImageSrv" />
-        <start uid="mainView" />
-
         <!-- negato adaptors -->
-        <start uid="snapshotAdp" />
-        <start uid="negatoCameraAdp" />
-        <start uid="pickerInteractorAdp" />
-        <start uid="negatoAdp" />
-        <start uid="ruler_fiducial_adp" />
-        <start uid="landmarksAdp" />
     </config>
 </extension>

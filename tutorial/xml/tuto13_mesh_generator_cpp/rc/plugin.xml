@@ -29,8 +29,8 @@
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <view sid="genericSceneSrv" start="true" />
+                    <menubar sid="menuBarView" />
+                    <view sid="genericSceneSrv" />
                 </registry>
             </service>
 
@@ -44,8 +44,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="true" />
-                    <menu sid="modifierFileView" start="true" />
+                    <menu sid="menuFileView" />
+                    <menu sid="modifierFileView" />
                 </registry>
             </service>
 
@@ -59,9 +59,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openMeshAct" start="true" />
-                    <menuItem sid="saveMeshAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="openMeshAct" />
+                    <menuItem sid="saveMeshAct" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -83,14 +83,14 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="shakeMeshPointAct" start="true" />
-                    <menuItem sid="colorizeMeshPointAct" start="true" />
-                    <menuItem sid="colorizeMeshCellsAct" start="true" />
-                    <menuItem sid="colorizeComputePointsNormalsAct" start="true" />
-                    <menuItem sid="colorizeComputeCellsNormalsAct" start="true" />
-                    <menuItem sid="shakePointsNormalsAct" start="true" />
-                    <menuItem sid="shakeCellsNormalsAct" start="true" />
-                    <menuItem sid="meshDeformationAct" start="true" />
+                    <menuItem sid="shakeMeshPointAct" />
+                    <menuItem sid="colorizeMeshPointAct" />
+                    <menuItem sid="colorizeMeshCellsAct" />
+                    <menuItem sid="colorizeComputePointsNormalsAct" />
+                    <menuItem sid="colorizeComputeCellsNormalsAct" />
+                    <menuItem sid="shakePointsNormalsAct" />
+                    <menuItem sid="shakeCellsNormalsAct" />
+                    <menuItem sid="meshDeformationAct" />
                 </registry>
             </service>
 
@@ -191,15 +191,6 @@
                 <signal>saveMeshAct/clicked</signal>
                 <slot>meshWriterSrv/update</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="progressBarView" />
-            <start uid="trackballInteractorAdp" />
-            <start uid="meshAdp" />
-            <start uid="meshReaderSrv" />
-            <start uid="meshWriterSrv" />
         </config>
     </extension>
 </plugin>

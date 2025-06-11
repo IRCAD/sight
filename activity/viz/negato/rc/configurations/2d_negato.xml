@@ -23,9 +23,9 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="negato" start="true" />
-                <view sid="negato_top_slider_view" start="true" />
-                <view sid="negato_bottom_slider_view" start="true" />
+                <view sid="negato" />
+                <view sid="negato_top_slider_view" />
+                <view sid="negato_bottom_slider_view" />
             </registry>
         </service>
 
@@ -37,7 +37,7 @@
                 </layout>
             </gui>
             <registry>
-                <toolbar sid="topToolbarView" start="true" />
+                <toolbar sid="topToolbarView" />
             </registry>
         </service>
 
@@ -49,7 +49,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="snapshotAct" start="true" />
+                <menuItem sid="snapshotAct" />
             </registry>
         </service>
 
@@ -62,7 +62,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="multiView_negato_bottom" start="true" />
+                <view sid="multiView_negato_bottom" />
             </registry>
         </service>
 
@@ -74,7 +74,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="slider_negato" start="true" />
+                <view sid="slider_negato" />
             </registry>
         </service>
 
@@ -163,16 +163,6 @@
             <slot>imageWriterSrv/update</slot>
         </connect>
 
-        <start uid="LockImageSrv" />
-        <start uid="mainView" />
-
         <!-- negato adaptors -->
-        <start uid="snapshotAdp" />
-        <start uid="negatoCameraAdp" />
-        <start uid="pickerInteractorAdp" />
-        <start uid="negatoAdp" />
-        <start uid="ruler_fiducial_adp" />
-        <start uid="landmarksAdp" />
-        <start uid="imageWriterSrv" />
     </config>
 </extension>

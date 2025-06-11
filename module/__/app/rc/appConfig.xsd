@@ -136,6 +136,7 @@
         <xs:attribute name='uid' type='xs:string' />
         <xs:attribute name='loop' type='boolean_t' />
         <xs:attribute name='parent' type='xs:string' />
+        <xs:attribute name='start' type='boolean_t' />
     </xs:complexType>
 
     <xs:complexType name="parallel_t">

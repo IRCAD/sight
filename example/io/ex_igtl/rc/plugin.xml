@@ -34,8 +34,8 @@
                     </frame>
                 </gui>
                 <registry>
-                    <toolbar sid="toolbarView" start="true" />
-                    <view sid="genericSceneSrv" start="true" />
+                    <toolbar sid="toolbarView" />
+                    <view sid="genericSceneSrv" />
                 </registry>
             </service>
 
@@ -56,13 +56,13 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadMeshAct" start="true" />
-                    <menuItem sid="startServerAct" start="true" />
-                    <menuItem sid="stopServerAct" start="true" />
-                    <menuItem sid="configureServerAct" start="true" />
-                    <menuItem sid="startClientAct" start="true" />
-                    <menuItem sid="stopClientAct" start="true" />
-                    <menuItem sid="configureClientAct" start="true" />
+                    <menuItem sid="loadMeshAct" />
+                    <menuItem sid="startServerAct" />
+                    <menuItem sid="stopServerAct" />
+                    <menuItem sid="configureServerAct" />
+                    <menuItem sid="startClientAct" />
+                    <menuItem sid="stopClientAct" />
+                    <menuItem sid="configureClientAct" />
                 </registry>
             </service>
 
@@ -152,6 +152,7 @@
                     <key uid="cameraMatrix" deviceName="device02" />
                 </inout>
                 <server>%CLIENT_IP_KEY%:%CLIENT_PORT_KEY%</server>
+                <properties start="false" />
             </service>
 
             <service uid="matrixNetworkSenderSrv" type="sight::module::io::igtl::server_sender" auto_connect="true">
@@ -160,6 +161,7 @@
                     <key uid="cameraMatrix" deviceName="device02" />
                 </in>
                 <port>%SERVER_PORT_KEY%</port>
+                <properties start="false" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
@@ -212,15 +214,6 @@
                 <signal>stopClientAct/clicked</signal>
                 <slot>matrixNetworkListenerSrv/stop</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="meshReaderSrv" />
-            <start uid="trackballInteractorAdp" />
-            <start uid="cameraAdp" />
-            <start uid="transformAdp" />
-            <start uid="meshAdp" />
         </config>
     </extension>
 </plugin>

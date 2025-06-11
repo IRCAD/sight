@@ -12,6 +12,7 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="image" type="sight::data::image" />
+            <object uid="config_started" type="sight::data::boolean" value="false" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -25,8 +26,8 @@
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <view sid="imageRendereSrv" start="true" />
+                    <menubar sid="menuBarView" />
+                    <view sid="imageRendereSrv" />
                 </registry>
             </service>
 
@@ -37,7 +38,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuFileView" />
                 </registry>
             </service>
 
@@ -52,9 +53,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="true" />
-                    <menuItem sid="launchConfigAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="openImageAct" />
+                    <menuItem sid="launch_config_act" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -63,6 +64,9 @@
             <service uid="openImageAct" type="sight::module::ui::action" />
 
             <service uid="quitAct" type="sight::module::ui::quit" />
+            <service uid="launch_config_act" type="sight::module::ui::action">
+                <properties checked="${config_started}" />
+            </service>
 
             <!-- ************************ Configuration launchers ********************************* -->
 
@@ -71,8 +75,8 @@
                 This service allows to launch a sub-configuration.
                 The configuration is defined by its id.
             -->
-            <service uid="launchConfigAct" type="sight::module::ui::config_launcher">
-                <appConfig id="Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg" />
+            <service uid="frame_cfg" type="sight::app::config_launcher">
+                <properties config="Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg" start="${config_started}" />
                 <!--
                     replace ${image} in the sub-config by the uid of the object with the key
                     (ie. ${image} is replaced by "image")
@@ -96,11 +100,6 @@
                 <signal>openImageAct/clicked</signal>
                 <slot>imageReaderSrv/update</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="imageReaderSrv" />
         </config>
     </extension>
 </plugin>

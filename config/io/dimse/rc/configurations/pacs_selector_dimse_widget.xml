@@ -25,7 +25,7 @@
             </gui>
             <registry>
                 <parent wid="${WID_QUERY_EDITOR_PARENT}" />
-                <view sid="query_editor_srv" start="true" />
+                <view sid="query_editor_srv" />
             </registry>
         </service>
 
@@ -40,9 +40,9 @@
             </gui>
             <registry>
                 <parent wid="${WID_SLIDER_PREVIEW_PARENT}" />
-                <view sid="slider_index_dicom_puller_editor_srv" start="false" />
-                <view sid="series_puller_act" start="true" />
-                <view sid="wait_act" start="true" />
+                <view sid="slider_index_dicom_puller_editor_srv" />
+                <view sid="series_puller_act" />
+                <view sid="wait_act" />
             </registry>
         </service>
 
@@ -124,12 +124,5 @@
             <signal>series_puller_act/clicked</signal>
             <slot>series_puller_srv/update</slot>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-        <start uid="container_background_view" />
-        <start uid="series_puller_srv" />
-        <start uid="left_notifier_srv" />
-        <start uid="preview_dicom_slider_view" />
-        <start uid="slider_index_dicom_puller_editor_srv" />
     </config>
 </extension>

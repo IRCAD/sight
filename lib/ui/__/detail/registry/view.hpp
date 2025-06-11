@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,9 +89,9 @@ public:
             </gui>
             <registry>
                 <parent wid="my_view" />
-                <toolbar sid="toolbar" start="true" />
-                <menubar sid="menubar" start="true" />
-                <view sid="subview3" start="true" />
+                <toolbar sid="toolbar" />
+                <menubar sid="menubar" />
+                <view sid="subview3" />
                 <view wid="subview4" />
                 <view wid="subview5" />
             </registry>
@@ -101,20 +101,14 @@ public:
      * attribute
      * is used to find its parent container.
      * Otherwise, the service uid is used to find its parent container.
-     * - \<toolbar sid="toolbar1" start="true" /\> : This section isn't mandatory.
+     * - \<toolbar sid="toolbar1" /\> : This section isn't mandatory.
      *   - \b sid  (mandatory): the tool bar identifier.
-     *   - \b start = {true| false} (default value false): indicate if the tool bar service must be started by the
      * service.
-     * - \<menubar sid="menubar1" start="true" /\> : This section isn't mandatory.
+     * - \<menubar sid="menubar1" /\> : This section isn't mandatory.
      *   - \b sid  (mandatory): the menu bar identifier.
-     *   - \b start = {true| false} (default value false): indicate if the menu bar service must be started by the
      * service.
-     * - \<view sid="subview3" start="true" /\> : define the service of the view to add in the container.
+     * - \<view sid="subview3" /\> : define the service of the view to add in the container.
      *   - \b sid  (mandatory): the service identifier.
-     *   - \b start = {true| false} (default value false): indicate if the view service must be started by the service.
-     * - \<view wid="subview4" /\> : reserve a sub container for the view in the parent container with the name
-     *"subview4". The service which want to use this sub container
-     *   will have define a parent with \<parent wid="subview4" /\>.
      *   - \b wid  (mandatory): the window identifier.
      *
      * @warning
@@ -130,8 +124,6 @@ public:
 
     /**
      * @brief Starting view manager.
-     * All services managed in local subviews
-     * and with start="true" in configuration will be started.
      * @pre view must be initialized before.
      * @pre sub containers must be instanced before.
      */
@@ -139,13 +131,11 @@ public:
 
     /**
      * @brief Register menu bar.
-     * If start="true" in configuration the menu bar services will be started.
      */
     SIGHT_UI_API virtual void manage_menu_bar(SPTR(ui::container::menubar) _menu_bar);
 
     /**
      * @brief Register tool bar.
-     * If start="true" in configuration the tool bar services will be started.
      */
     SIGHT_UI_API virtual void manage_tool_bar(SPTR(ui::container::toolbar) _tool_bar);
 
@@ -169,7 +159,7 @@ public:
 
 protected:
 
-    using sid_container_map_type = std::map<std::string, std::pair<unsigned int, bool> >;
+    using sid_container_map_type = std::map<std::string, unsigned int>;
     using wid_container_map_type = std::map<std::string, unsigned int>;
     using sid_menu_bar_pair_type = std::pair<std::string, bool>;
     using sid_tool_bar_pair_type = std::pair<std::string, bool>;

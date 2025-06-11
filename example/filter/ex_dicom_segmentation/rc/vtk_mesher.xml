@@ -201,27 +201,5 @@
             <signal>snapshotSrv/clicked</signal>
             <slot>imageWriterSrv/update</slot>
         </connect>
-
-        <!-- ******************************* Start services ***************************************** -->
-
-        <start uid="mainView" />
-        <start uid="toolBarView" />
-        <start uid="containerView" />
-        <start uid="materialView" />
-        <start uid="parametersView" />
-        <start uid="selectReconstructionSrv" />
-        <start uid="imageWriterSrv" />
-        <start uid="materialEditorSrv" />
-        <start uid="representationSrv" />
-        <start uid="modelSeriesListSrv" />
-        <start uid="genericSceneSrv" />
-        <start uid="modelSeriesAdp" />
-        <start uid="negatoAdp" />
-        <start uid="snapshotAdp" />
-        <start uid="exportAct" />
-        <start uid="sliceIndexEditorSrv" />
-        <start uid="mesherAct" />
-        <start uid="showHideNegatoSrv" />
-        <start uid="snapshotSrv" />
     </config>
 </extension>

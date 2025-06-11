@@ -18,7 +18,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="genericSceneSrv" start="true" />
+                <view sid="genericSceneSrv" />
             </registry>
         </service>
 
@@ -45,12 +45,6 @@
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>mainFrame/closed</signal>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainFrame" />
-        <start uid="videoAdp" />
-        <start uid="update_at_start" />
 
         <update>
             <service uid="update_at_start" />

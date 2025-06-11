@@ -17,7 +17,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="main_view" start="true" />
+                <view sid="main_view" />
             </registry>
         </service>
 
@@ -29,7 +29,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="chessboard_settings" start="true" />
+                <view sid="chessboard_settings" />
             </registry>
         </service>
 
@@ -50,9 +50,5 @@
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>main_frame/closed</signal>
         </connect>
-
-        <!-- ******************************* Start services ***************************************** -->
-
-        <start uid="main_frame" />
     </config>
 </extension>

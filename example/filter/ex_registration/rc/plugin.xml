@@ -90,7 +90,7 @@ Detail of the ToolBar
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="mainView" start="true" />
+                    <view sid="mainView" />
                 </registry>
             </service>
 
@@ -102,8 +102,8 @@ Detail of the ToolBar
                     <toolbar />
                 </gui>
                 <registry>
-                    <toolbar sid="toolBarView" start="true" />
-                    <view sid="multiView" start="true" />
+                    <toolbar sid="toolBarView" />
+                    <view sid="multiView" />
                 </registry>
             </service>
 
@@ -120,10 +120,10 @@ Detail of the ToolBar
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="true" />
-                    <menuItem sid="openMesh1Act" start="true" />
-                    <menuItem sid="openMesh2Act" start="true" />
-                    <menuItem sid="registerAct" start="true" />
+                    <menuItem sid="openImageAct" />
+                    <menuItem sid="openMesh1Act" />
+                    <menuItem sid="openMesh2Act" />
+                    <menuItem sid="registerAct" />
                 </registry>
             </service>
 
@@ -137,9 +137,9 @@ Detail of the ToolBar
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="image1View" start="true" />
-                    <view sid="negato2SceneSrv" start="true" />
-                    <view sid="negato3SceneSrv" start="true" />
+                    <view sid="image1View" />
+                    <view sid="negato2SceneSrv" />
+                    <view sid="negato3SceneSrv" />
                 </registry>
             </service>
 
@@ -153,8 +153,8 @@ Detail of the ToolBar
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="negato1SceneSrv" start="true" />
-                    <view sid="sliderNegatoSrv" start="true" />
+                    <view sid="negato1SceneSrv" />
+                    <view sid="sliderNegatoSrv" />
                 </registry>
             </service>
 
@@ -355,29 +355,6 @@ Detail of the ToolBar
                 <signal>openMesh2Act/clicked</signal>
                 <slot>meshReader2Srv/update</slot>
             </connect>
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="PLRegistrationSrv" />
-            <start uid="addLAndmarksInPL1Srv" />
-            <start uid="addLAndmarksInPL2Srv" />
-            <start uid="N1TrackballInteractorAdp" />
-            <start uid="N1NegatoAdp" />
-            <start uid="N1MeshAdp" />
-            <start uid="N1PointListAdp" />
-            <start uid="N1PickerAdp" />
-            <start uid="N2TrackballInteractorAdp" />
-            <start uid="N2MeshAdp" />
-            <start uid="N2PointListAdp" />
-            <start uid="N2PickerAdp" />
-            <start uid="N3TrackballInteractorAdp" />
-            <start uid="N3Mesh2Adp" />
-            <start uid="N3Mesh1Adp" />
-            <start uid="N3NegatoAdp" />
-            <start uid="N3TransformAdp" />
-            <start uid="imageReaderSrv" />
-            <start uid="meshReader1Srv" />
-            <start uid="meshReader2Srv" />
         </config>
     </extension>
 </plugin>

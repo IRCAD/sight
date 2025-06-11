@@ -80,7 +80,7 @@
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="mainContainerView" start="true" />
+                    <view sid="mainContainerView" />
                 </registry>
             </service>
 
@@ -92,7 +92,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="containerView" start="true" />
+                    <view sid="containerView" />
                 </registry>
             </service>
 
@@ -105,9 +105,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <toolbar sid="toolBarView" start="true" />
-                    <view sid="sceneParameterView" start="true" />
-                    <view sid="rightToolbarSliderView" start="true" />
+                    <toolbar sid="toolBarView" />
+                    <view sid="sceneParameterView" />
+                    <view sid="rightToolbarSliderView" />
                 </registry>
             </service>
 
@@ -120,8 +120,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view wid="sceneView" start="true" />
-                    <view sid="parameterView" start="true" />
+                    <view wid="sceneView" />
+                    <view sid="parameterView" />
                 </registry>
             </service>
 
@@ -133,7 +133,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <toolbar sid="rightToolbarView" start="true" />
+                    <toolbar sid="rightToolbarView" />
                 </registry>
             </service>
 
@@ -145,7 +145,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="showParameterAct" start="true" />
+                    <menuItem sid="showParameterAct" />
                 </registry>
             </service>
 
@@ -163,12 +163,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <toolbar sid="parameterToolBarView" start="true" />
-                    <view sid="volumeParameterView" start="true" />
-                    <view sid="TFParameterView" start="true" />
+                    <toolbar sid="parameterToolBarView" />
+                    <view sid="volumeParameterView" />
+                    <view sid="TFParameterView" />
                     <view wid="organsParameterView" />
-                    <view sid="landmarksParameterView" start="true" />
-                    <view sid="lightParameterView" start="true" />
+                    <view sid="landmarksParameterView" />
+                    <view sid="lightParameterView" />
                 </registry>
             </service>
 
@@ -183,7 +183,7 @@
                 </gui>
                 <registry>
                     <view wid="TFCfgParameterView" />
-                    <view sid="transparencyParameterSrv" start="true" />
+                    <view sid="transparencyParameterSrv" />
                 </registry>
             </service>
 
@@ -200,12 +200,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="volumeManagerAct" start="true" />
-                    <menuItem sid="TFManagerAct" start="true" />
-                    <menuItem sid="organsManagerAct" start="true" />
-                    <menuItem sid="landmarksManagerAct" start="true" />
-                    <menuItem sid="lightManagerAct" start="true" />
-                    <menuItem sid="hideParameterAct" start="true" />
+                    <menuItem sid="volumeManagerAct" />
+                    <menuItem sid="TFManagerAct" />
+                    <menuItem sid="organsManagerAct" />
+                    <menuItem sid="landmarksManagerAct" />
+                    <menuItem sid="lightManagerAct" />
+                    <menuItem sid="hideParameterAct" />
                 </registry>
             </service>
 
@@ -218,7 +218,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="volumeParameterSrv" start="true" />
+                    <view sid="volumeParameterSrv" />
                 </registry>
             </service>
 
@@ -231,7 +231,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="landmarksParameterSrv" start="false" />
+                    <view sid="landmarksParameterSrv" />
                 </registry>
             </service>
 
@@ -283,28 +283,30 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openSeriesSetAct" start="true" />
-                    <menuItem sid="pacsAct" start="true" />
-                    <menuItem sid="meshVisibilityAct" start="true" />
-                    <menuItem sid="volumeVisibilityAct" start="true" />
-                    <menuItem sid="negato3DVisibilityAct" start="true" />
-                    <menuItem sid="boxWidgetVisibilityAct" start="true" />
-                    <menuItem sid="boxWidgetResetAct" start="true" />
-                    <menuItem sid="shapeExtruderAct" start="true" />
-                    <menuItem sid="shapeExtruderUndoAct" start="true" />
-                    <menuItem sid="landmarksEditModeAct" start="true" />
-                    <menuItem sid="removeAllLandmarksAct" start="true" />
-                    <menuItem sid="add_ruler_act" start="true" />
-                    <menuItem sid="remove_all_rulers_act" start="true" />
-                    <menuItem sid="show_ruler_act" start="true" />
-                    <menuItem sid="axisVisibilityAct" start="true" />
+                    <menuItem sid="open_series_set_act" />
+                    <menuItem sid="pacs_act" />
+                    <menuItem sid="meshVisibilityAct" />
+                    <menuItem sid="volumeVisibilityAct" />
+                    <menuItem sid="negato3DVisibilityAct" />
+                    <menuItem sid="boxWidgetVisibilityAct" />
+                    <menuItem sid="boxWidgetResetAct" />
+                    <menuItem sid="shapeExtruderAct" />
+                    <menuItem sid="shapeExtruderUndoAct" />
+                    <menuItem sid="landmarksEditModeAct" />
+                    <menuItem sid="removeAllLandmarksAct" />
+                    <menuItem sid="add_ruler_act" />
+                    <menuItem sid="remove_all_rulers_act" />
+                    <menuItem sid="show_ruler_act" />
+                    <menuItem sid="axisVisibilityAct" />
                 </registry>
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
+            <service uid="open_series_set_act" type="sight::module::ui::action" />
+
             <!-- Read a series -->
-            <service uid="openSeriesSetAct" type="sight::module::ui::io::selector" worker="COMPUTE">
+            <service uid="open_series_set_srv" type="sight::module::ui::io::selector" worker="COMPUTE">
                 <inout key="data" uid="seriesSet" />
                 <type mode="reader" />
                 <selection mode="exclude" />
@@ -375,14 +377,7 @@
             </service>
 
             <!-- PACS manager -->
-            <service uid="pacsAct" type="sight::module::ui::config_launcher">
-                <appConfig id="sight::config::io::dicom::pacs_selector_window" />
-                <inout group="data">
-                    <key name="outputSeriesSet" uid="pacsSeriesSet" />
-                </inout>
-                <parameter replace="WINDOW_TITLE" by="PACS" />
-                <parameter replace="WINDOW_ICON" by="sight_viewer/Ogre_logo.svg" />
-            </service>
+            <service uid="pacs_act" type="sight::module::ui::action" />
 
             <!-- Adaptors visibility -->
             <service uid="volumeVisibilityAct" type="sight::module::ui::action">
@@ -436,7 +431,7 @@
 
             <!-- ************************ Configuration launchers ********************************* -->
 
-            <service uid="ogreGenericSceneCfg" type="sight::app::config_controller">
+            <service uid="ogreGenericSceneCfg" type="sight::app::config_launcher">
                 <properties config="sight::config::viz::scene3d::image_split_views" />
                 <parameter replace="WID_PARENT" by="sceneView" />
                 <parameter replace="VR_BOOL_PARAM_RECEIVER_CHANNEL" by="VOLUME_BOOL_SENDER_CHANNEL" />
@@ -471,7 +466,7 @@
             </service>
 
             <!-- TF manager -->
-            <service uid="TFManagerCfg" type="sight::app::config_controller">
+            <service uid="TFManagerCfg" type="sight::app::config_launcher">
                 <properties config="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
                 <parameter replace="WID_PARENT" by="TFCfgParameterView" />
                 <inout group="data">
@@ -480,13 +475,22 @@
                 </inout>
             </service>
 
-            <service uid="organManagerCfg" type="sight::app::config_controller">
+            <service uid="organManagerCfg" type="sight::app::config_launcher">
                 <properties config="sight::config::viz::scene3d::organManager" />
                 <parameter replace="WID_PARENT" by="organsParameterView" />
                 <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
                 <inout group="data">
                     <key name="organManagerModelSeries" uid="modelSeries" />
                 </inout>
+            </service>
+
+            <service uid="pacs_cfg" type="sight::app::config_launcher">
+                <properties config="sight::config::io::dicom::pacs_selector_window" start="false" />
+                <inout group="data">
+                    <key name="outputSeriesSet" uid="pacsSeriesSet" />
+                </inout>
+                <parameter replace="WINDOW_TITLE" by="PACS" />
+                <parameter replace="WINDOW_ICON" by="sight_viewer/Ogre_logo.svg" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
@@ -540,6 +544,11 @@
 
             <!-- ******************************* Connections ***************************************** -->
 
+            <connect>
+                <signal>open_series_set_act/clicked</signal>
+                <slot>open_series_set_srv/update</slot>
+            </connect>
+
             <connect channel="BOX_WIDGET_VISIBILITY_SENDER_CHANNEL">
                 <signal>boxWidgetVisibilityAct/is_checked</signal>
             </connect>
@@ -592,6 +601,11 @@
             <connect>
                 <signal>landmarksEditModeAct/checked</signal>
                 <slot>add_ruler_act/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>pacs_act/clicked</signal>
+                <slot>pacs_cfg/start</slot>
             </connect>
 
             <connect>
@@ -736,18 +750,6 @@
                 <slot>landmarksEditModeAct/set_checked</slot>
             </connect>
 
-            <!-- ******************************* Start/Stop services ***************************************** -->
-
-            <start uid="mainView" />
-            <start uid="ogreGenericSceneCfg" />
-            <start uid="TFManagerCfg" />
-            <start uid="organManagerCfg" />
-            <start uid="extractSeriesSrv" />
-            <start uid="extractPacsImageSrv" />
-            <start uid="lightSelectorSrv" />
-            <start uid="lightEditorSrv" />
-            <start uid="compositor_selector_srv" />
-            <start uid="landmarksParameterSrv" />
             <update uid="TFManagerAct" />
             <update uid="volumeParameterSrv" />
         </config>

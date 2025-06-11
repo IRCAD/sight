@@ -1763,11 +1763,6 @@ service::config_t config_test::build_config()
     connect_cfg.add("slot", "myTestService1/update");
     cfg.add_child("connect", connect_cfg);
 
-    // Start method from object's services
-    service::config_t start_cfg;
-    start_cfg.add("<xmlattr>.uid", "myTestService1");
-    cfg.add_child("start", start_cfg);
-
     // Update method from object's services
     service::config_t update_cfg;
     update_cfg.add("<xmlattr>.uid", "myTestService1");

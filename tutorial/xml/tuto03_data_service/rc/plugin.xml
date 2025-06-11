@@ -15,7 +15,7 @@
             <!-- Frame service:
                 The frame creates a container for the rendering service and a menu bar.
                 In this tutorial, the gui services will automatically start the services they register using the
-                'start="true"' attribute.
+                '' attribute.
             -->
             <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
@@ -27,8 +27,8 @@
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <view sid="imageRenderSrv" start="true" />
+                    <menubar sid="menuBarView" />
+                    <view sid="imageRenderSrv" />
                 </registry>
             </service>
 
@@ -47,7 +47,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuView" start="true" />
+                    <menu sid="menuView" />
                 </registry>
             </service>
 
@@ -71,8 +71,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="openImageAct" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -120,17 +120,6 @@
                 <signal>openImageAct/clicked</signal>
                 <slot>imageReaderSrv/update</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <!--
-                Here, we only start the frame because all the others services are managed by the gui service:
-                - the frame starts the menu bar and the redering service
-                - the menu bar starts the menu services
-                - the menus starts the actions
-            -->
-            <start uid="mainFrame" />
-            <start uid="imageReaderSrv" />
         </config>
     </extension>
 </plugin>

@@ -112,6 +112,8 @@ void extract_test::basic_archive_test()
 
     CPPUNIT_ASSERT(ui::test::dialog::location::clear());
     CPPUNIT_ASSERT(ui::test::dialog::message::clear());
+
+    CPPUNIT_ASSERT_NO_THROW(extract->stop().get());
 }
 
 //------------------------------------------------------------------------------
@@ -169,6 +171,8 @@ void extract_test::encrypted_archive_test()
     CPPUNIT_ASSERT(ui::test::dialog::location::clear());
     CPPUNIT_ASSERT(ui::test::dialog::input::clear());
     CPPUNIT_ASSERT(ui::test::dialog::message::clear());
+
+    CPPUNIT_ASSERT_NO_THROW(extract->stop().get());
 }
 
 //------------------------------------------------------------------------------

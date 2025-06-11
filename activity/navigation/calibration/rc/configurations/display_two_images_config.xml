@@ -22,7 +22,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="mainView" start="true" />
+                <view sid="mainView" />
             </registry>
         </service>
 
@@ -35,8 +35,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="genericScene1Srv" start="true" />
-                <view sid="genericScene2Srv" start="true" />
+                <view sid="genericScene1Srv" />
+                <view sid="genericScene2Srv" />
             </registry>
         </service>
 
@@ -81,14 +81,6 @@
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>mainFrame/closed</signal>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainFrame" />
-        <start uid="video1Adp" />
-        <start uid="video2Adp" />
-
-        <start uid="update_at_start" />
 
         <update>
             <service uid="update_at_start" />

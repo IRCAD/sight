@@ -20,23 +20,28 @@
  *
  ***********************************************************************/
 
-#include "app/config_controller.hpp"
+#include "app/config_launcher.hpp"
 
-#include "service/macros.hpp"
+#include <core/com/proxy.hpp>
+#include <core/com/signal.hxx>
+#include <core/com/slots.hxx>
 
 namespace sight::app
 {
 
+static const std::string S_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
+
 //------------------------------------------------------------------------------
 
-config_controller::config_controller() noexcept :
+config_launcher::config_launcher() noexcept :
     m_config_launcher(std::make_unique<app::helper::config_launcher>())
 {
+    new_signal<signals::launched_t>(signals::LAUNCHED);
 }
 
 //------------------------------------------------------------------------------
 
-service::connections_t config_controller::auto_connections() const
+service::connections_t config_launcher::auto_connections() const
 {
     return {
         {m_config_id, sight::data::object::MODIFIED_SIG, slots::UPDATE}
@@ -45,14 +50,15 @@ service::connections_t config_controller::auto_connections() const
 
 //------------------------------------------------------------------------------
 
-void config_controller::configuring(const config_t& _config)
+void config_launcher::configuring(const config_t& _config)
 {
     m_config_launcher->parse_config(_config, this->get_sptr());
+    m_proxy_channel = this->get_id() + "_stop_config";
 }
 
 //------------------------------------------------------------------------------
 
-void config_controller::starting()
+void config_launcher::starting()
 {
     const auto config = *m_config_id;
     if(not config.empty())
@@ -62,20 +68,20 @@ void config_controller::starting()
 
     if(not m_config_launcher->config().empty())
     {
-        m_config_launcher->start_config(this->get_sptr());
+        this->start_config();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void config_controller::stopping()
+void config_launcher::stopping()
 {
-    m_config_launcher->stop_config();
+    this->stop_config();
 }
 
 //------------------------------------------------------------------------------
 
-void config_controller::updating()
+void config_launcher::updating()
 {
     bool start = !m_config_launcher->config_is_running();
 
@@ -91,13 +97,51 @@ void config_controller::updating()
         if(!start)
         {
             start = true;
-            m_config_launcher->stop_config();
+            this->stop_config();
         }
     }
 
     if(start)
     {
-        m_config_launcher->start_config(this->get_sptr());
+        this->start_config();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void config_launcher::start_config()
+{
+    if(!m_config_launcher->config_is_running())
+    {
+        core::com::proxy::sptr proxies = core::com::proxy::get();
+        proxies->connect(m_proxy_channel, this->slot(service::base::slots::STOP));
+        app::field_adaptor_t replace_map;
+        replace_map[S_CLOSE_CONFIG_CHANNEL_ID] = m_proxy_channel;
+        try
+        {
+            m_config_launcher->start_config(this->get_sptr(), replace_map);
+            this->async_emit(signals::LAUNCHED);
+        }
+        catch(const std::exception& /*e*/)
+        {
+            // Disconnect to avoid inconsistent state
+            proxies->disconnect(m_proxy_channel, this->slot(service::base::slots::STOP));
+
+            // Rethrow the same exception
+            throw;
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void config_launcher::stop_config()
+{
+    if(m_config_launcher->config_is_running())
+    {
+        m_config_launcher->stop_config();
+        core::com::proxy::sptr proxies = core::com::proxy::get();
+        proxies->disconnect(m_proxy_channel, this->slot(service::base::slots::STOP));
     }
 }
 

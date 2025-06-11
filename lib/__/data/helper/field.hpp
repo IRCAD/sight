@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -127,13 +127,13 @@ protected:
     );
 
     /// Map of added objects, send on notify
-    data::object::fields_container_t m_addedfields;
+    data::fields_container_t m_addedfields;
     /// Map of new changed objects, send on notify
-    data::object::fields_container_t m_new_changedfields;
+    data::fields_container_t m_new_changedfields;
     /// Map of old changed objects, send on notify
-    data::object::fields_container_t m_old_changedfields;
+    data::fields_container_t m_old_changedfields;
     /// Map of removed objects, send on notify
-    data::object::fields_container_t m_removedfields;
+    data::fields_container_t m_removedfields;
     /// Map to add/remove/change objects
 
     data::object::wptr m_object;

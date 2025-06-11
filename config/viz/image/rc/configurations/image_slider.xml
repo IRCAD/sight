@@ -1,7 +1,7 @@
 <!--
 Example:
 
-<service uid="..." type="sight::app::config_controller">
+<service uid="..." type="sight::app::config_launcher">
     <properties config="sight::config::viz::image::imageSlider2D" />
     <inout group="data">
         <key name="image" uid="${image}" />
@@ -36,8 +36,8 @@ Example:
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="toolBarView" start="true" />
-                <view sid="sliderView" start="true" />
+                <view sid="toolBarView" />
+                <view sid="sliderView" />
             </registry>
         </service>
 
@@ -49,7 +49,7 @@ Example:
                 </layout>
             </gui>
             <registry>
-                <toolbar sid="topToolbarView" start="true" />
+                <toolbar sid="topToolbarView" />
             </registry>
         </service>
 
@@ -63,9 +63,9 @@ Example:
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="sliceAct" start="true" />
-                <menuItem sid="windowingAct" start="true" />
-                <menuItem sid="opacityAct" start="true" />
+                <menuItem sid="sliceAct" />
+                <menuItem sid="windowingAct" />
+                <menuItem sid="opacityAct" />
             </registry>
         </service>
 
@@ -79,9 +79,9 @@ Example:
                 </layout>
             </gui>
             <registry>
-                <view sid="negatoSlicerSrv" start="${enableSliceSlider}" />
-                <view sid="windowLevelImage" start="true" />
-                <view sid="transferFunctionOpacity" start="true" />
+                <view sid="negatoSlicerSrv" />
+                <view sid="windowLevelImage" />
+                <view sid="transferFunctionOpacity" />
             </registry>
         </service>
 
@@ -104,6 +104,7 @@ Example:
         <service uid="negatoSlicerSrv" type="sight::module::ui::qt::image::slice_index_position_editor">
             <inout key="image" uid="${image}" />
             <config orientation="${sliceIndex}" label="index" display_axis_selector="true" display_step_buttons="true" />
+            <properties start="${enableSliceSlider}" />
         </service>
 
         <service uid="windowLevelImage" type="sight::module::ui::qt::image::window_level">
@@ -147,7 +148,5 @@ Example:
             <slot>sliceAct/check</slot>
             <slot>sliceAct/update</slot>
         </connect>
-
-        <start uid="view" />
     </config>
 </extension>

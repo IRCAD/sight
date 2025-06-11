@@ -24,8 +24,8 @@ This example shows the possibilities of parameters:
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <view sid="mainview" start="true" />
+                    <menubar sid="menuBarView" />
+                    <view sid="mainview" />
                 </registry>
             </service>
 
@@ -36,7 +36,7 @@ This example shows the possibilities of parameters:
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuPreferencesView" start="true" />
+                    <menu sid="menuPreferencesView" />
                 </registry>
             </service>
 
@@ -47,7 +47,7 @@ This example shows the possibilities of parameters:
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="preferencesAct" start="true" />
+                    <menuItem sid="preferencesAct" />
                 </registry>
             </service>
 
@@ -60,8 +60,8 @@ This example shows the possibilities of parameters:
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="parametersView" start="true" />
-                    <view sid="minmaxParametersSrvView" start="true" />
+                    <view sid="parametersView" />
+                    <view sid="minmaxParametersSrvView" />
                 </registry>
             </service>
 
@@ -74,8 +74,8 @@ This example shows the possibilities of parameters:
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="parameters1Srv" start="true" />
-                    <view sid="parameters2Srv" start="true" />
+                    <view sid="parameters1Srv" />
+                    <view sid="parameters2Srv" />
                 </registry>
             </service>
 
@@ -89,9 +89,9 @@ This example shows the possibilities of parameters:
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="minParametersSrv" start="true" />
-                    <view sid="maxParametersSrv" start="true" />
-                    <view sid="vert_parameters_srv" start="true" />
+                    <view sid="minParametersSrv" />
+                    <view sid="maxParametersSrv" />
+                    <view sid="vert_parameters_srv" />
                 </registry>
             </service>
 
@@ -348,10 +348,6 @@ This example shows the possibilities of parameters:
                 <slot>parameters2Srv/update_double_max_parameter</slot>
                 <slot>minParametersSrv/update_double_max_parameter</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
 
             <!-- ******************************* Update services ***************************************** -->
 

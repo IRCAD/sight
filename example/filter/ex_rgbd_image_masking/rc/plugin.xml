@@ -44,9 +44,9 @@
                     <toolbar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <toolbar sid="toolbarView" start="true" />
-                    <view sid="mainView" start="true" />
+                    <menubar sid="menuBarView" />
+                    <toolbar sid="toolbarView" />
+                    <view sid="mainView" />
                 </registry>
             </service>
 
@@ -57,7 +57,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuView" start="true" />
+                    <menu sid="menuView" />
                 </registry>
             </service>
 
@@ -72,9 +72,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadTransformationAct" start="true" />
-                    <menuItem sid="loadMeshAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="loadTransformationAct" />
+                    <menuItem sid="loadMeshAct" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -96,15 +96,15 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="videoSelectorSrv" start="true" />
-                    <menuItem sid="startVideoAct" start="true" />
-                    <menuItem sid="pauseVideoAct" start="true" />
-                    <menuItem sid="resumeVideoAct" start="true" />
-                    <menuItem sid="stopVideoAct" start="true" />
-                    <menuItem sid="loopVideoAct" start="true" />
-                    <menuItem sid="learnBackgroundAct" start="true" />
-                    <menuItem sid="organManagerAct" start="false" />
-                    <menuItem sid="showSettingsAct" start="true" />
+                    <editor sid="videoSelectorSrv" />
+                    <menuItem sid="startVideoAct" />
+                    <menuItem sid="pauseVideoAct" />
+                    <menuItem sid="resumeVideoAct" />
+                    <menuItem sid="stopVideoAct" />
+                    <menuItem sid="loopVideoAct" />
+                    <menuItem sid="learnBackgroundAct" />
+                    <menuItem sid="organ_manager_act" />
+                    <menuItem sid="showSettingsAct" />
                 </registry>
             </service>
 
@@ -117,7 +117,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="settingsView" start="true" />
+                    <view sid="settingsView" />
                     <view sid="genericSceneSrv" />
                 </registry>
             </service>
@@ -132,8 +132,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="enableHoleFillingFilterParamSrv" start="true" />
-                    <view sid="maskerThresholdParamSrv" start="true" />
+                    <view sid="enableHoleFillingFilterParamSrv" />
+                    <view sid="maskerThresholdParamSrv" />
                 </registry>
             </service>
 
@@ -173,8 +173,10 @@
 
             <service uid="learnBackgroundAct" type="sight::module::ui::action" />
 
-            <service uid="organManagerAct" type="sight::module::ui::config_launcher">
-                <appConfig id="ModelSeriesManagerWindow" />
+            <service uid="organ_manager_act" type="sight::module::ui::action" />
+
+            <service uid="organ_manager_cfg" type="sight::app::config_launcher">
+                <properties config="ModelSeriesManagerWindow" start="false" />
                 <inout group="data">
                     <key name="organ_manager_modelseries" uid="modelSeries" />
                 </inout>
@@ -186,7 +188,7 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="sync">
+                <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video" order="1">
@@ -279,7 +281,7 @@
 
             <!-- To synchronize matrix, frame and detection -->
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
-                <in group="frameTL">
+                <in group="frameTL" auto_connect="false">
                     <key uid="frameTLVideo" />
                     <key uid="frameTLDepth" />
                 </in>
@@ -287,12 +289,6 @@
                     <key uid="videoImage" tl="0" />
                     <key uid="depthImage" tl="1" />
                 </inout>
-            </service>
-
-            <!-- Wait for the undistortion and the matrix inversion to be finished -->
-            <service uid="syncGenericSceneSrv" type="sight::module::sync::signal_gate">
-                <signal>frameUpdaterSrv/synchronization_done</signal>
-                <signal>maskerSrv/updated</signal>
             </service>
 
             <!-- Matrix (trf format) reader -->
@@ -353,7 +349,7 @@
             <service uid="maskerSrv" type="sight::module::filter::vision::depth_image_masking" worker="masker">
                 <in key="maskImage" uid="offscreenImage" />
                 <in key="videoImage" uid="videoImage" />
-                <in key="depthImage" uid="depthImage" auto_connect="true" />
+                <in key="depthImage" uid="depthImage" auto_connect="false" />
                 <inout key="foregroundImage" uid="foregroundImage" />
             </service>
 
@@ -372,6 +368,7 @@
             <connect>
                 <signal>startVideoAct/clicked</signal>
                 <slot>videoGrabberSrv/start_camera</slot>
+                <slot>updater/start</slot>
             </connect>
 
             <connect>
@@ -379,6 +376,7 @@
                 <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/show</slot>
                 <slot>pauseVideoAct/hide</slot>
+                <slot>updater/stop</slot>
             </connect>
 
             <connect>
@@ -386,6 +384,7 @@
                 <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/show</slot>
+                <slot>updater/start</slot>
             </connect>
 
             <connect>
@@ -397,6 +396,7 @@
                 <slot>stopVideoAct/disable</slot>
                 <slot>loopVideoAct/disable</slot>
                 <slot>loopVideoAct/uncheck</slot>
+                <slot>updater/stop</slot>
             </connect>
 
             <connect>
@@ -462,41 +462,25 @@
             </connect>
 
             <connect>
-                <signal>syncGenericSceneSrv/all_received</signal>
-                <slot>genericSceneSrv/render</slot>
-                <slot>frameUpdaterSrv/request_sync</slot>
+                <signal>organ_manager_act/checked</signal>
+                <slot>organ_manager_cfg/start</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="organManagerAct" />
-            <start uid="frameUpdaterSrv" />
-            <start uid="syncGenericSceneSrv" />
-            <start uid="videoGrabberSrv" />
-            <start uid="extractCameraSrv" />
-            <start uid="transformReaderSrv" />
-            <start uid="maskerSrv" />
-            <start uid="meshReaderSrv" />
-            <start uid="extractModelSeriesSrv" />
-            <start uid="extractSkinSrv" />
-            <start uid="concatenateSrv" />
-            <start uid="genericSceneSrv" />
-            <start uid="videoAdp" />
-            <start uid="videoARAdp" />
-            <start uid="cameraAdp" />
-            <start uid="meshAdp" />
-            <start uid="offscreenSceneSrv" />
-            <start uid="meshOffscreenAdp" />
-            <start uid="cameraOffscreenAdp" />
 
             <!-- ******************************* Update services ***************************************** -->
 
-            <update uid="extractSkinSrv" />
-            <update uid="extractCameraSrv" />
-            <update uid="concatenateSrv" />
-            <update uid="enableHoleFillingFilterParamSrv" />
-            <update uid="meshAdp" />
+            <update>
+                <service uid="extractSkinSrv" />
+                <service uid="extractCameraSrv" />
+                <service uid="concatenateSrv" />
+                <service uid="enableHoleFillingFilterParamSrv" />
+                <service uid="meshAdp" />
+
+                <sequence uid="updater" loop="true" start="false">
+                    <service uid="frameUpdaterSrv" />
+                    <service uid="maskerSrv" />
+                    <service uid="genericSceneSrv" />
+                </sequence>
+            </update>
         </config>
     </extension>
 </plugin>

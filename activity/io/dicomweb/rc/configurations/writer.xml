@@ -22,8 +22,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolbar sid="toolbar" start="true" />
-                <view sid="selector" start="true" />
+                <toolbar sid="toolbar" />
+                <view sid="selector" />
                 <view wid="preview" />
             </registry>
         </service>
@@ -37,9 +37,9 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="action_import" start="true" />
-                <menuItem sid="action_anonymize" start="true" />
-                <menuItem sid="action_pushSeriesToPacs" start="true" />
+                <menuItem sid="action_import" />
+                <menuItem sid="action_anonymize" />
+                <menuItem sid="action_pushSeriesToPacs" />
             </registry>
         </service>
 
@@ -103,11 +103,5 @@
             <slot>action_pushSeriesToPacs/disable</slot>
             <slot>pushSeriesController/update</slot>
         </connect>
-
-        <!-- START AND STOP SERVICES -->
-        <start uid="mainView" />
-        <start uid="viewer" />
-        <start uid="anonymizeController" />
-        <start uid="pushSeriesController" />
     </config>
 </extension>

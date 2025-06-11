@@ -53,8 +53,8 @@ namespace sight::app::detail
 
 static const core::com::slots::key_t ADD_OBJECTS_SLOT        = "addObject";
 static const core::com::slots::key_t REMOVE_OBJECTS_SLOT     = "removeObjects";
-static const core::com::slots::key_t ADD_STARTED_SRV_SLOT    = "addStartedService";
-static const core::com::slots::key_t REMOVE_STARTED_SRV_SLOT = "removeStartedService";
+static const core::com::slots::key_t ADD_STARTED_SRV_SLOT    = "add_started_service";
+static const core::com::slots::key_t REMOVE_STARTED_SRV_SLOT = "remove_started_service";
 
 static const std::string PREFERENCES_SRV = "__generated_preference_srv";
 
@@ -71,7 +71,15 @@ config_manager::config_manager()
             core::mt::scoped_lock lock(m_mutex);
             if(auto srv = _srv.lock(); srv)
             {
-                m_started_srv.push_back(srv);
+                if(std::ranges::find_if(
+                       m_started_srv,
+                       [&srv](auto& _x)
+                {
+                    return srv == _x.lock();
+                }) == m_started_srv.end())
+                {
+                    m_started_srv.push_back(srv);
+                }
             }
         });
     new_slot(
@@ -202,7 +210,7 @@ void config_manager::start()
             }
         };
     add_start_elements(m_cfg_elem);
-    add_start_elements(m_updater_srv_start);
+    add_start_elements(m_srv_auto_start);
 
     this->process_start_items(start_config);
 
@@ -227,6 +235,7 @@ void config_manager::stop()
     m_remove_object_connection.disconnect();
 
     std::vector<service::base::shared_future_t> futures;
+    std::vector<core::com::connection::blocker> blockers;
     {
         core::mt::scoped_lock lock(m_mutex);
 
@@ -236,7 +245,10 @@ void config_manager::stop()
         for(auto& w_srv : std::views::reverse(m_started_srv))
         {
             const service::base::sptr srv = w_srv.lock();
-            SIGHT_ASSERT("Service expired.", srv);
+            SIGHT_ASSERT(
+                "Service expired.",
+                srv
+            );
 
             // The service can have been stopped just before...
             // This is a rare case, but nothing can really prevent that. So we just warn the developer, because if it
@@ -247,6 +259,8 @@ void config_manager::stop()
             }
             else
             {
+                auto sig = srv->signal(service::signals::STOPPED);
+                blockers.emplace_back(sig->get_connection(slot(REMOVE_STARTED_SRV_SLOT)));
                 futures.emplace_back(srv->stop());
             }
         }
@@ -273,7 +287,7 @@ void config_manager::destroy()
 
     m_pref_objects.clear();
     m_pref_service_uid.clear();
-    m_updater_srv_start.clear();
+    m_srv_auto_start.clear();
     m_cfg_elem.clear();
     m_created_objects.clear();
     m_deferred_objects.clear();
@@ -391,16 +405,7 @@ void config_manager::destroy_created_services()
 void config_manager::process_start_items(const core::runtime::config_t& _element)
 {
     std::vector<service::base::shared_future_t> futures;
-
-    // Start the preference service first.
-    // This way the preferences objects already have the correct value before the services use them.
-    // This avoids to send signals for each object.
-    if(core::id::exist(m_pref_service_uid))
-    {
-        const service::base::sptr srv = service::get(m_pref_service_uid);
-        futures.emplace_back(srv->start());
-        m_started_srv.push_back(srv);
-    }
+    std::vector<core::com::connection::blocker> blockers;
 
     for(const auto& elem : _element)
     {
@@ -411,16 +416,7 @@ void config_manager::process_start_items(const core::runtime::config_t& _element
 
             if(!core::id::exist(uid))
             {
-                if(m_deferred_services.find(uid) != m_deferred_services.end())
-                {
-                    m_deferred_start_srv.push_back(uid);
-                    SIGHT_DEBUG(
-                        this->msg_head() + "Start for service '" + uid + "' will be deferred since at least one "
-                                                                         "of its data is missing. With DEBUG log level, you can know which are the "
-                                                                         "missing objects."
-                    );
-                }
-                else
+                if(m_deferred_services.find(uid) == m_deferred_services.end())
                 {
                     SIGHT_FATAL(
                         this->msg_head() + "Start is requested for service '" + uid
@@ -437,8 +433,9 @@ void config_manager::process_start_items(const core::runtime::config_t& _element
                     !srv
                 );
 
+                auto sig = srv->signal(service::signals::STARTED);
+                blockers.emplace_back(sig->get_connection(slot(ADD_STARTED_SRV_SLOT)));
                 futures.emplace_back(srv->start());
-
                 m_started_srv.push_back(srv);
             }
         }
@@ -554,6 +551,7 @@ void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
     std::set<std::string> objects;
     std::ranges::transform(m_created_objects, std::inserter(objects, objects.begin()), [](auto& _x){return _x.first;});
 
+    std::vector<service::base::shared_future_t> futures;
     for(const auto& service_cfg : boost::make_iterator_range(_cfg_elem.equal_range("service")))
     {
         // Parse the service configuration
@@ -594,7 +592,14 @@ void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
 
         if(create_service)
         {
-            this->create_service(srv_config);
+            auto srv                  = this->create_service(srv_config);
+            const auto start_property = srv->inout<sight::data::boolean>("start");
+            if(*start_property.lock())
+            {
+                config_t auto_start_cfg;
+                auto_start_cfg.add("<xmlattr>.uid", srv_config.m_uid);
+                m_srv_auto_start.add_child("start", auto_start_cfg);
+            }
         }
         else
         {
@@ -609,8 +614,13 @@ void config_manager::create_services(const core::runtime::config_t& _cfg_elem)
                 this->msg_head() + "Service '" + srv_config.m_uid
                 + "' has not been created because the object" + msg + "not available."
             );
+
+            m_deferred_start_srv.push_back(srv_config.m_uid);
         }
     }
+
+    boost::wait_for_all(futures.begin(), futures.end());
+    futures.clear();
 
     for(const auto& service_cfg : boost::make_iterator_range(_cfg_elem.equal_range("serviceList")))
     {
@@ -677,8 +687,6 @@ service::base::sptr config_manager::create_service(const detail::service_config&
         }
     }
 
-    bool has_start_connection = false;
-    bool has_stop_connection  = false;
     // Set the proxies
     const auto& it_srv_proxy = m_services_proxies.find(_srv_config.m_uid);
     if(it_srv_proxy != m_services_proxies.end())
@@ -686,40 +694,14 @@ service::base::sptr config_manager::create_service(const detail::service_config&
         for(const auto& it_proxy : it_srv_proxy->second.m_proxy_cnt)
         {
             add_connection(srv, it_proxy.second);
-
-            // Check if we need to monitor the start/stop state because of connections
-            for(const auto& slot : it_proxy.second.m_slots)
-            {
-                if(slot.first == _srv_config.m_uid)
-                {
-                    if(slot.second == service::slots::START)
-                    {
-                        has_start_connection = true;
-                        break;
-                    }
-                    // NOLINTNEXTLINE(llvm-else-after-return,readability-else-after-return)
-                    else if(slot.second == service::slots::STOP)
-                    {
-                        has_stop_connection = true;
-                        break;
-                    }
-                }
-            }
         }
     }
 
     // Configure
     srv->configure();
 
-    if(has_start_connection)
-    {
-        srv->signal(service::signals::STARTED)->connect(this->slot(ADD_STARTED_SRV_SLOT));
-    }
-
-    if(has_stop_connection)
-    {
-        srv->signal(service::signals::STOPPED)->connect(this->slot(REMOVE_STARTED_SRV_SLOT));
-    }
+    srv->signal(service::signals::STARTED)->connect(this->slot(ADD_STARTED_SRV_SLOT));
+    srv->signal(service::signals::STOPPED)->connect(this->slot(REMOVE_STARTED_SRV_SLOT));
 
     return srv;
 }
@@ -883,7 +865,7 @@ void config_manager::create_preferences_service()
 void config_manager::create_updater_services()
 {
     const std::function<std::string(const service::config_t&, bool, bool)> process_update =
-        [this, &process_update](const service::config_t& _elem, bool _sequence, bool _root)
+        [this, &process_update](const service::config_t& _elem, bool _sequence, [[maybe_unused]] bool _root)
         {
             auto uid = _elem.get<std::string>("<xmlattr>.uid", "");
             if(uid.empty())
@@ -940,12 +922,10 @@ void config_manager::create_updater_services()
 
             service_cfg.add_child("config", config);
 
-            if(!parent.empty() || not _root)
-            {
-                config_t updater_start_cfg;
-                updater_start_cfg.add("<xmlattr>.uid", uid);
-                m_updater_srv_start.add_child("start", updater_start_cfg);
-            }
+            config_t properties;
+            const auto start = _elem.get("<xmlattr>.start", true);
+            properties.put("<xmlattr>.start", start);
+            service_cfg.add_child("properties", properties);
 
             config_t updater_service_cfg;
             updater_service_cfg.add_child("service", service_cfg);
@@ -1229,14 +1209,19 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
         auto it_srv = new_services.find(uid);
         if(it_srv != new_services.end())
         {
-            futures.push_back(it_srv->second->start());
-            m_started_srv.push_back(it_srv->second);
+            const auto start_property = it_srv->second->inout<sight::data::boolean>("start");
+            // Autostart with respect to the start property
+            if(*start_property.lock())
+            {
+                futures.push_back(it_srv->second->start());
+                m_started_srv.push_back(it_srv->second);
 
-            // Debug message
-            SIGHT_INFO(
-                this->msg_head() + "Service '" + uid
-                + "' has been automatically started because its objects are all available."
-            );
+                // Debug message
+                SIGHT_INFO(
+                    this->msg_head() + "Service '" + uid
+                    + "' has been automatically started because its objects are all available."
+                );
+            }
         }
     }
 
@@ -1319,12 +1304,12 @@ void config_manager::remove_objects(data::object::sptr _obj, const std::string& 
                     }
                 }
 
+                service::base::sptr srv = service::get(srv_cfg.m_uid);
+                SIGHT_ASSERT(this->msg_head() + "No service registered with UID \"" << srv_cfg.m_uid << "\".", srv);
+
                 if(!optional)
                 {
                     // 1. Stop the service
-                    service::base::sptr srv = service::get(srv_cfg.m_uid);
-                    SIGHT_ASSERT(this->msg_head() + "No service registered with UID \"" << srv_cfg.m_uid << "\".", srv);
-
                     std::erase_if(m_started_srv, [&srv](auto& _x){return srv == _x.lock();});
 
                     if(srv->started())
@@ -1358,12 +1343,8 @@ void config_manager::remove_objects(data::object::sptr _obj, const std::string& 
                         + _id + " is no longer available."
                     );
                 }
-                else
+                else if(srv->started())
                 {
-                    // Update auto connections
-                    service::base::sptr srv = service::get(srv_cfg.m_uid);
-                    SIGHT_ASSERT(this->msg_head() + "No service registered with UID \"" << srv_cfg.m_uid << "\".", srv);
-
                     auto_disconnect(srv);
                     auto_connect(srv);
                 }

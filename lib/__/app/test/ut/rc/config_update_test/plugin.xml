@@ -13,13 +13,8 @@
                 <slot>updater1/start</slot>
             </connect>
 
-            <start uid="test1_srv" />
-            <start uid="test2_srv" />
-            <start uid="test3_srv" />
-            <start uid="test4_srv" />
-
             <update>
-                <sequence uid="updater1" loop="true">
+                <sequence uid="updater1" loop="true" start="false">
                     <service uid="test1_srv" />
                     <service uid="test2_srv" />
                     <service uid="test3_srv" />
@@ -46,16 +41,8 @@
                 <slot>updater1/start</slot>
             </connect>
 
-            <start uid="test1_srv" />
-            <start uid="test2_srv" />
-            <start uid="test3_srv" />
-            <start uid="test4_srv" />
-            <start uid="test5_srv" />
-            <start uid="test6_srv" />
-            <start uid="test7_srv" />
-
             <update>
-                <sequence uid="updater1" loop="true">
+                <sequence uid="updater1" loop="true" start="false">
                     <service uid="test1_srv" />
                     <service uid="test2_srv" />
                     <parallel>
@@ -82,9 +69,6 @@
             <service uid="test1_srv" type="sight::app::ut::test_order_srv" />
             <service uid="test2_srv" type="sight::app::ut::test_order_srv" />
 
-            <start uid="test1_srv" />
-            <start uid="test2_srv" />
-
             <update>
                 <sequence parent="${updater}">
                     <service uid="test1_srv" />
@@ -103,23 +87,15 @@
             <service uid="test7_srv" type="sight::app::ut::test_order_srv" />
             <service uid="test8_srv" type="sight::app::ut::test_reset_order_srv" />
 
-            <service uid="sub_cfg1_srv" type="sight::app::config_controller">
+            <service uid="sub_cfg1_srv" type="sight::app::config_launcher">
                 <properties config="sub_sequence_cfg_test" />
                 <parameter replace="updater" by="sub_updater1" />
             </service>
 
-            <service uid="sub_cfg2_srv" type="sight::app::config_controller">
+            <service uid="sub_cfg2_srv" type="sight::app::config_launcher">
                 <properties config="sub_sequence_cfg_test" />
                 <parameter replace="updater" by="sub_updater2" />
             </service>
-
-            <start uid="test1_srv" />
-            <start uid="test4_srv" />
-            <start uid="test7_srv" />
-            <start uid="test8_srv" />
-            <start uid="sub_cfg1_srv" />
-            <start uid="sub_cfg2_srv" />
-            <start uid="updater1" />
 
             <update>
                 <sequence uid="updater1" loop="true">

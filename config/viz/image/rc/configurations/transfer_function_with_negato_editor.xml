@@ -1,7 +1,7 @@
 <!--
 Example:
 
-<service uid="..." type="sight::app::config_controller">
+<service uid="..." type="sight::app::config_launcher">
     <properties config="TransferFunctionWithNegatoEditor" />
     <inout group="data">
         <key name="image" uid="..." />
@@ -38,8 +38,8 @@ Example:
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="tfm" start="false" />
-                <view sid="tfmTab" start="true" />
+                <view sid="tfm" />
+                <view sid="tfmTab" />
             </registry>
         </service>
 
@@ -72,7 +72,7 @@ Example:
             </registry>
         </service>
 
-        <service uid="cfgNegato" type="sight::app::config_controller">
+        <service uid="cfgNegato" type="sight::app::config_launcher">
             <properties config="2DNegatoWithTF" />
             <inout group="data">
                 <key name="image" uid="${image}" />
@@ -81,7 +81,7 @@ Example:
             <parameter replace="WID_PARENT" by="negatoView" />
         </service>
 
-        <service uid="tfWidget" type="sight::app::config_controller">
+        <service uid="tfWidget" type="sight::app::config_launcher">
             <properties config="TransferFunctionWidget" />
             <inout group="data">
                 <key name="image" uid="${image}" />
@@ -95,12 +95,6 @@ Example:
             <signal>${image}/modified</signal>
             <slot>fieldMgr/add_or_swap</slot>
         </connect>
-
-        <start uid="tfEditor" />
-        <start uid="fieldMgr" />
-        <start uid="tfWidget" />
-        <start uid="cfgNegato" />
-        <start uid="tfm" />
 
         <update uid="fieldMgr" />
     </config>

@@ -97,8 +97,8 @@ public:
                </layout>
            </gui>
            <registry>
-               <view sid="view1" start="true" />
-               <view sid="view2" start="true" />
+               <view sid="view1" />
+               <view sid="view2" />
            </registry>
        </service>
        @endcode

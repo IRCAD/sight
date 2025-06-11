@@ -32,28 +32,11 @@ namespace sight::module::viz::scene3d::adaptor
 
 predefined_camera::predefined_camera() noexcept
 {
-    new_slot(slots::SET_PARAMETER, &predefined_camera::set_parameter, this);
-    new_slot(
-        slots::NEXT_POSITION,
-        [this]()
-        {
-            if(m_interactor)
-            {
-                m_interactor->next_position();
-            }
-        });
-
-    new_slot(
-        slots::PREVIOUS_POSITION,
-        [this]()
-        {
-            if(m_interactor)
-            {
-                m_interactor->previous_position();
-            }
-        });
-
-    new_slot(slots::RESET, &predefined_camera::reset, this);
+    new_slot(slots::RESET, [this](){lazy_update(update_flags::RESET);});
+    new_slot(slots::SET_TRANSFORM, [this](){lazy_update(update_flags::SET_TRANSFORM);});
+    new_slot(slots::SET_POSITION, [this](){lazy_update(update_flags::SET_POSITION);});
+    new_slot(slots::NEXT_POSITION, [this](){lazy_update(update_flags::NEXT_POSITION);});
+    new_slot(slots::PREV_POSITION, [this](){lazy_update(update_flags::PREV_POSITION);});
 }
 
 //-----------------------------------------------------------------------------
@@ -68,9 +51,6 @@ void predefined_camera::configuring()
     m_layer_order_dependant = config.get(CONFIG + "layerOrderDependant", m_layer_order_dependant);
 
     m_manual_rotation = config.get(CONFIG + "mouseRotation", m_manual_rotation);
-
-    const auto& default_position = config.get_optional<std::string>(CONFIG + "defaultPosition");
-    m_default_position = default_position ? std::make_optional(*default_position) : std::nullopt;
 
     m_animate = config.get(CONFIG + "animate", m_animate);
     m_zoom    = config.get(CONFIG + "zoom", m_zoom);
@@ -117,7 +97,7 @@ void predefined_camera::starting()
             layer,
             m_layer_order_dependant,
             m_camera_positions,
-            m_default_position,
+            *m_position,
             m_animate,
             *m_follow_orientation,
             m_zoom,
@@ -143,21 +123,49 @@ void predefined_camera::reset()
     }
 
     m_interactor->set_view_up(view_up_axis);
-
     m_interactor->reset();
-
-    this->updating();
 }
 
 //-----------------------------------------------------------------------------
 
 void predefined_camera::updating() noexcept
 {
-    if(const auto& transform = m_transform.const_lock(); transform)
+    if(update_needed(update_flags::RESET))
     {
-        const auto ogre_mat = sight::viz::scene3d::utils::to_ogre_matrix(transform.get_shared());
+        this->reset();
+    }
 
-        m_interactor->set_transform(ogre_mat);
+    // Do first the transform update, otherwise the position will not calculated on the right target
+    if(update_needed(update_flags::SET_TRANSFORM))
+    {
+        if(const auto& transform = m_transform.const_lock(); transform)
+        {
+            const auto ogre_mat = sight::viz::scene3d::utils::to_ogre_matrix(transform.get_shared());
+
+            m_interactor->set_transform(ogre_mat);
+        }
+    }
+
+    if(update_needed(update_flags::SET_POSITION))
+    {
+        if(m_interactor)
+        {
+            m_interactor->set_position(*m_position);
+        }
+    }
+    else if(update_needed(update_flags::NEXT_POSITION))
+    {
+        if(m_interactor)
+        {
+            m_interactor->next_position();
+        }
+    }
+    else if(update_needed(update_flags::PREV_POSITION))
+    {
+        if(m_interactor)
+        {
+            m_interactor->previous_position();
+        }
     }
 
     update_done();
@@ -175,22 +183,13 @@ void predefined_camera::stopping()
     adaptor::deinit();
 }
 
-//------------------------------------------------------------------------------
-
-void predefined_camera::set_parameter(ui::parameter_t _value, std::string _key)
-{
-    if(m_interactor)
-    {
-        m_interactor->set_parameter(_value, _key);
-    }
-}
-
 //-----------------------------------------------------------------------------
 
 predefined_camera::connections_t predefined_camera::auto_connections() const
 {
     service::connections_t connections = {
-        {m_transform, sight::data::matrix4::MODIFIED_SIG, adaptor::slots::LAZY_UPDATE}
+        {m_transform, sight::data::matrix4::MODIFIED_SIG, slots::SET_TRANSFORM},
+        {m_position, sight::data::string::MODIFIED_SIG, slots::SET_POSITION}
     };
     return connections + adaptor::auto_connections();
 }

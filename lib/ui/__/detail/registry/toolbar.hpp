@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,21 +99,17 @@ public:
                    <menuItem sid="item4" />
                    <menuItem sid="item5" />
                    <menu sid="menu" />
-                   <editor sid="editor" start="true"/>
+                   <editor sid="editor"/>
                    <editor wid="editorWindow" />
                </registry>
            </service>
        @endcode
      * This method analyzes the registry section of the configuration.
      *
-     * - \<menuItem sid="item2" start="false" /\> : define the service of the menuItem to add in the toolbar.
+     * - \<menuItem sid="item2"  /\> : define the service of the menuItem to add in the toolbar.
      *   - \b sid (mandatory): the service identifier.
-     *   - \b start = {true| false} (default value false): indicate if the service must be started by the toolbar
-     * service.
-     * - \<editor sid="editor" start="true" /\> : define the service of the editor to add in the toolbar.
+     * - \<editor sid="editor" /\> : define the service of the editor to add in the toolbar.
      *   - \b sid  (mandatory): the service identifier.
-     *   - \b start = {true| false} (default value false): indicate if the editor service must be started by the
-     * service.
      * - \<editor wid="editorWindow" /\> : reserve a sub container for the editor in the toolbar with the name
      *   "editorWindow". The service which want to use this sub container will have to define a parent
      *   with \<parent wid="editorWindow" /\>.
@@ -126,9 +122,9 @@ public:
      *
      * Register the menuItem containers for the associated services. Start the services if start=true.
      *
-     * If a menuItem has attribute start="false", the associated action won't be started and the menuItem will be
+     * If a menuItem is not started, the associated action won't be started and the menuItem will be
      * disabled.
-     * If a menuItem has attribute start="true", two possibilities: \n
+     * If a menuItem is started, two possibilities: \n
      *  - the associated action has attribute enabled="false" then the menuItem will be disabled.\n
      *  - the associated action has attribute enabled="true" then the menuItem will be enabled.\n
      *
@@ -181,7 +177,7 @@ public:
 
 protected:
 
-    using sid_toolbar_map_t     = std::map<std::string, std::pair<unsigned int, bool> >;
+    using sid_toolbar_map_t     = std::map<std::string, unsigned int>;
     using wid_tool_bar_map_type = std::map<std::string, unsigned int>;
 
     /**

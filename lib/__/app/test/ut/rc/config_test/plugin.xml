@@ -20,9 +20,6 @@
                 <slot>myTestService1/update</slot>
             </connect>
 
-            <start uid="myTestService1" />
-            <start uid="${UID_SERVICE2}" />
-
             <update uid="myTestService1" />
         </config>
     </extension>
@@ -47,22 +44,15 @@
             <service uid="TestService3Uid" type="sight::app::ut::test1_opt_input">
                 <in key="data1" uid="data2Id" />
             </service>
-            <service uid="TestService4Uid" type="sight::app::ut::test1_input">
-                <in key="data1" uid="data2Id" />
-            </service>
             <service uid="TestService5Uid" type="sight::app::ut::test4_inputs">
                 <in key="data1" uid="data1Id" />
                 <in key="data2" uid="data2Id" optional="false" />
                 <in key="data3" uid="data3Id" optional="false" />
                 <in key="data4" uid="data4Id" optional="false" />
             </service>
-
-            <start uid="SGenerateData" />
-            <start uid="TestService1Uid" />
-            <start uid="TestService2Uid" />
-            <start uid="TestService3Uid" />
-            <start uid="TestService5Uid" />
-            <start uid="TestService4Uid" />
+            <service uid="TestService4Uid" type="sight::app::ut::test1_input">
+                <in key="data1" uid="data2Id" />
+            </service>
 
             <update uid="TestService1Uid" />
             <update uid="TestService4Uid" />
@@ -101,13 +91,6 @@
                 <in key="data1" uid="data1Id" />
                 <in key="data2" uid="data3Id" />
             </service>
-
-            <start uid="SGenerateData" />
-            <start uid="TestService1Uid" />
-            <start uid="TestService2Uid" />
-            <start uid="TestService3Uid" />
-            <start uid="TestService5Uid" />
-            <start uid="TestService4Uid" />
         </config>
     </extension>
 
@@ -171,12 +154,6 @@
                 <signal>TestService3Uid/stopped</signal>
                 <slot>TestService4Uid/update2</slot>
             </connect>
-
-            <start uid="SGenerateData" />
-            <start uid="TestService1Uid" />
-            <start uid="TestService2Uid" />
-            <start uid="TestService3Uid" />
-            <start uid="TestService4Uid" />
         </config>
     </extension>
 
@@ -185,7 +162,9 @@
         <desc>Test configuration for start/stop connections</desc>
         <config>
             <service uid="TestService5Uid" type="sight::app::ut::test_no_data" />
-            <service uid="TestService6Uid" type="sight::app::ut::test_no_data" />
+            <service uid="TestService6Uid" type="sight::app::ut::test_no_data">
+                <properties start="false" />
+            </service>
             <service uid="TestService7Uid" type="sight::app::ut::test_no_data" />
 
             <connect>
@@ -202,9 +181,6 @@
                 <signal>TestService6Uid/updated</signal>
                 <slot>TestService7Uid/stop</slot>
             </connect>
-
-            <start uid="TestService5Uid" />
-            <start uid="TestService7Uid" />
         </config>
     </extension>
 
@@ -248,11 +224,6 @@
                 <slot>TestService1Uid/update</slot>
                 <slot>TestService2Uid/update</slot>
             </connect>
-
-            <start uid="SGenerateData" />
-            <start uid="SGenerateData2" />
-            <start uid="TestService1Uid" />
-            <start uid="TestService2Uid" />
         </config>
     </extension>
 
@@ -310,11 +281,6 @@
                 <signal>data1Id/modified</signal>
                 <slot>TestService2Uid/update</slot>
             </connect>
-
-            <start uid="SGenerateData" />
-            <start uid="TestService1Uid" />
-            <start uid="TestService2Uid" />
-            <start uid="TestService3Uid" />
         </config>
     </extension>
 
@@ -335,7 +301,7 @@
                 <view wid="view1" />
             </service>
 
-            <service uid="TestService2Uid" type="sight::app::config_controller">
+            <service uid="TestService2Uid" type="sight::app::config_launcher">
                 <properties config="parameter_replace_test_sub_config" />
                 <inout group="data">
                     <key name="data1" uid="${data1}" />
@@ -355,9 +321,6 @@
             <connect channel="Channel No5">
                 <signal>data2Id/modified</signal>
             </connect>
-
-            <start uid="TestService1Uid" />
-            <start uid="TestService2Uid" />
         </config>
     </extension>
 
@@ -398,9 +361,6 @@
             <connect channel="${channel2}">
                 <signal>${data1}/modified</signal>
             </connect>
-
-            <start uid="test_service1_uid" />
-            <start uid="test_service2_uid" />
         </config>
     </extension>
 
@@ -411,21 +371,17 @@
         </parameters>
         <desc>Test configuration for optional parameter replace</desc>
         <config>
-            <service uid="test1_srv" type="sight::app::config_controller">
+            <service uid="test1_srv" type="sight::app::config_launcher">
                 <properties config="default_object_id_test_sub_config" />
             </service>
 
-            <service uid="test2_srv" type="sight::app::config_controller">
+            <service uid="test2_srv" type="sight::app::config_launcher">
                 <properties config="default_object_id_test_sub_config" />
             </service>
 
-            <service uid="test3_srv" type="sight::app::config_controller">
+            <service uid="test3_srv" type="sight::app::config_launcher">
                 <properties config="default_object_id_test_sub_config" />
             </service>
-
-            <start uid="test1_srv" />
-            <start uid="test2_srv" />
-            <start uid="test3_srv" />
         </config>
     </extension>
 
@@ -453,8 +409,6 @@
             <service uid="TestService1Uid" type="sight::app::ut::test1_input" config="serviceConfigTest">
                 <in key="data1" uid="compo1Id" />
             </service>
-
-            <start uid="TestService1Uid" />
         </config>
     </extension>
 
@@ -473,13 +427,11 @@
         <parameters>
             <param name="param1" default="" />
         </parameters>
-        <desc>Test configuration for multi_config_controller_1</desc>
+        <desc>Test configuration for multi_config_launcher_1</desc>
         <config>
             <service uid="srv" type="sight::app::ut::test_config">
                 <param1>${param1}</param1>
             </service>
-
-            <start uid="srv" />
         </config>
     </extension>
 
@@ -488,12 +440,11 @@
         <parameters>
             <param name="param1" default="" />
         </parameters>
-        <desc>Test configuration for multi_config_controller_2</desc>
+        <desc>Test configuration for multi_config_launcher_2</desc>
         <config>
             <service uid="srv" type="sight::app::ut::test_config">
                 <param1>${param1}</param1>
             </service>
-            <start uid="srv" />
         </config>
     </extension>
 
@@ -549,14 +500,6 @@
             <service uid="test_service_map_object_props_1" type="sight::app::ut::test_service_with_properties">
                 <properties integer="${integer_uid}" />
             </service>
-
-            <start uid="test_service_default_props" />
-            <start uid="test_service_parse_props_1" />
-            <start uid="test_service_parse_props_2" />
-            <start uid="test_service_object_props_1" />
-            <start uid="test_service_mix_props_1" />
-            <start uid="test_service_map_props_1" />
-            <start uid="test_service_map_object_props_1" />
         </config>
     </extension>
 </plugin>

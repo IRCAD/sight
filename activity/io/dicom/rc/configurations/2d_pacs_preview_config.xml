@@ -19,8 +19,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="gs" start="true" />
-                <view sid="sliderIndexDicomPullerEditor" start="true" />
+                <view sid="gs" />
+                <view sid="sliderIndexDicomPullerEditor" />
             </registry>
         </service>
 
@@ -60,12 +60,5 @@
             <inout key="image" uid="image" />
             <config dicomReader="sight::module::io::dicom::series_set_reader" />
         </service>
-
-        <start uid="mainview" />
-        <!-- Deferred start -->
-        <start uid="imageDumpLocker" />
-        <!-- VTK scene 'gs' -->
-        <start uid="pNegatoAdp" />
-        <start uid="pNegatoCameraAdp" />
     </config>
 </extension>

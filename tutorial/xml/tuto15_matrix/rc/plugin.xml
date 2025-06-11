@@ -32,8 +32,8 @@
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <view sid="containerView" start="true" />
+                    <menubar sid="menuBarView" />
+                    <view sid="containerView" />
                 </registry>
             </service>
 
@@ -44,7 +44,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuFileView" />
                 </registry>
             </service>
 
@@ -57,8 +57,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openMeshAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="openMeshAct" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -78,8 +78,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneSrv" start="true" />
-                    <view sid="editorsView" start="true" />
+                    <view sid="genericSceneSrv" />
+                    <view sid="editorsView" />
                 </registry>
             </service>
 
@@ -92,8 +92,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="shhowMeshSrv" start="true" />
-                    <view sid="matrixView" start="true" />
+                    <view sid="shhowMeshSrv" />
+                    <view sid="matrixView" />
                 </registry>
             </service>
 
@@ -248,24 +248,6 @@
                 <signal>openMeshAct/clicked</signal>
                 <slot>meshReaderSrv/update</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="matrixDecomposerAdp" />
-            <start uid="concatenateTranslationAndRotationArv" />
-            <start uid="concatenateRotationAndTranslationSrv" />
-            <start uid="mesh1Adp" />
-            <start uid="mesh2Adp" />
-            <start uid="matrix1Adp" />
-            <start uid="matrix2Adp" />
-            <start uid="axis1Adp" />
-            <start uid="axis2Adp" />
-            <start uid="originAxisAdp" />
-            <start uid="text1Adp" />
-            <start uid="text2Adp" />
-            <start uid="trackballInteractorAdp" />
-            <start uid="meshReaderSrv" />
         </config>
     </extension>
 </plugin>

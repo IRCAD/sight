@@ -25,7 +25,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="imageRendereSrv" start="false" />
+                <view sid="imageRendereSrv" />
             </registry>
         </service>
 
@@ -40,10 +40,5 @@
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>mainFrame/closed</signal>
         </connect>
-
-        <!-- ******************************* Start services ***************************************** -->
-
-        <start uid="mainFrame" />
-        <start uid="imageRendereSrv" />
     </config>
 </extension>

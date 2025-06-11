@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,18 +45,14 @@ namespace sight::core::runtime
 template<typename T>
 T get_ptree_value(const boost::property_tree::ptree& _tree, const std::string& _path, T _default_value)
 {
-    boost::property_tree::ptree element;
-    try
-    {
-        element = _tree.get_child(_path);
-    }
-    catch(const boost::property_tree::ptree_bad_path&)
+    auto element = _tree.get_child_optional(_path);
+    if(not element.has_value())
     {
         // 3.
         return _default_value;
     }
 
-    if(boost::optional<T> value = element.get_value_optional<T>())
+    if(boost::optional<T> value = element->get_value_optional<T>())
     {
         // 1.
         return *value;
@@ -64,7 +60,6 @@ T get_ptree_value(const boost::property_tree::ptree& _tree, const std::string& _
 
     // 2.
     SIGHT_THROW_EXCEPTION(core::exception("Wrong value set in path: " + _path));
-    return _default_value;
 }
 
 namespace property_tree

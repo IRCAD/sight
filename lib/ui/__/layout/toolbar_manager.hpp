@@ -51,9 +51,9 @@
            <menuItem sid="item5" />
            <menu sid="menu" />
            <editor sid="editor" />
-           <menuItem sid="distanceActionsVisibilityAct" start="true" />
-           <menuItem sid="addDistanceAct" start="true" />
-           <menuItem sid="removeDistanceAct" start="false" />
+           <menuItem sid="distanceActionsVisibilityAct" />
+           <menuItem sid="addDistanceAct" />
+           <menuItem sid="removeDistanceAct"  />
        </registry>
    </service>
    @endcode

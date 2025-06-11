@@ -18,7 +18,7 @@
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="containerView" start="true" />
+                    <view sid="containerView" />
                 </registry>
             </service>
 
@@ -30,7 +30,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <toolbar sid="toolBarView" start="true" />
+                    <toolbar sid="toolBarView" />
                 </registry>
             </service>
 
@@ -41,7 +41,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="extractArchiveAct" start="true" />
+                    <menuItem sid="extractArchiveAct" />
                 </registry>
             </service>
 
@@ -66,13 +66,6 @@
                 <signal>extractArchiveSrv/job_created</signal>
                 <slot>progressStatusbar/show_job</slot>
             </connect>
-
-            <!-- ******************************* Start/Stop services ***************************************** -->
-
-            <start uid="mainView" />
-            <start uid="progressStatusbar" />
-
-            <start uid="extractArchiveSrv" />
         </config>
     </extension>
 </plugin>

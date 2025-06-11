@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -188,10 +188,6 @@ void icon_speed_dial::starting()
         std::string sid = action.sid;
         auto service    = std::dynamic_pointer_cast<sight::ui::action>(sight::service::get(sid));
         SIGHT_ASSERT("icon_speed_dial only supports action", service != nullptr);
-        if(!service->started())
-        {
-            sight::service::get(sid)->start();
-        }
 
         auto update_if_enabled = [sid]
                                  {

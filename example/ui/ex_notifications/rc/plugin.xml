@@ -35,8 +35,8 @@ are already displayed and where they are displayed on screen.
                     <toolbar />
                 </gui>
                 <registry>
-                    <toolbar sid="toolbarView" start="true" />
-                    <view sid="mainview" start="true" />
+                    <toolbar sid="toolbarView" />
+                    <view sid="mainview" />
                 </registry>
             </service>
 
@@ -59,16 +59,16 @@ are already displayed and where they are displayed on screen.
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="useNotifierAct" start="true" />
-                    <editor sid="maxChar" start="true" />
-                    <editor sid="useSound" start="true" />
-                    <editor sid="durationAct" start="true" />
-                    <editor sid="typeAct" start="true" />
-                    <editor sid="positionAct" start="true" />
-                    <editor sid="channelAct" start="true" />
-                    <menuItem sid="notifyAct" start="true" />
-                    <menuItem sid="closeAct" start="true" />
-                    <menuItem sid="changeThemeAct" start="true" />
+                    <editor sid="useNotifierAct" />
+                    <editor sid="maxChar" />
+                    <editor sid="useSound" />
+                    <editor sid="durationAct" />
+                    <editor sid="typeAct" />
+                    <editor sid="positionAct" />
+                    <editor sid="channelAct" />
+                    <menuItem sid="notifyAct" />
+                    <menuItem sid="closeAct" />
+                    <menuItem sid="changeThemeAct" />
                 </registry>
             </service>
 
@@ -222,13 +222,6 @@ are already displayed and where they are displayed on screen.
                 <signal>closeAct/clicked</signal>
                 <slot>testNotifierSrv/close_channel1</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="notifierSrv" />
-            <start uid="testNotifierSrv" />
-            <start uid="qt_style_changer_srv" />
         </config>
     </extension>
 </plugin>

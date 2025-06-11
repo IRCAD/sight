@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,18 +89,17 @@ public:
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="item1" start="true" />
-                <menuItem sid="item2" start="false" />
-                <menuItem sid="item3" start="false" />
-                <menu sid="my_menu" start="true" />
-                <menuItem sid="actionQuit" start="false" />
+                <menuItem sid="item1" />
+                <menuItem sid="item2"  />
+                <menuItem sid="item3"  />
+                <menu sid="my_menu" />
+                <menuItem sid="actionQuit"  />
             </registry>
         </service>
        @endcode
      * This method analyzes the registry section of the configuration.
-     *  - \<menuItem sid="item1" start="false" /\> : define the service of the menuItem to add in the menu.
+     *  - \<menuItem sid="item1"  /\> : define the service of the menuItem to add in the menu.
      *   - \b sid  (mandatory): the service identifier.
-     *   - \b start = {true| false} (default value false): indicate if the service must be started by the menu service.
      */
     virtual void initialize(const ui::config_t&);
 
@@ -109,9 +108,8 @@ public:
      *
      * Register the menuItem containers for the associated services. Start the services if start=true.
      *
-     * If a menuItem has attribute start="false", the associated action won't be started and the menuItem will be
-     * disabled.
-     * If a menuItem has attribute start="true", two possibilities: \n
+     * If the associated action of a menu is not started, the menuItem will be disabled.
+     * If a menuItem is started, two possibilities: \n
      *  - the associated action has attribute enabled="false" then the menuItem will be disabled.\n
      *  - the associated action has attribute enabled="true" then the menuItem will be enabled.\n
      *
@@ -128,8 +126,8 @@ public:
     /**
      * @brief manages menu service associated with menu of menu.
      *
-     * If a menuItem has attribute start="false", the associated menu won't be started.
-     * If a menuItem has attribute start="true", the associated menu will be started
+     * If a menuItem is not started, the associated menu won't be started.
+     * If a menuItem is started, the associated menu will be started
      *
      * @pre menu must be initialized before.
      * @pre sub menu items must be instanced before.
@@ -157,7 +155,7 @@ public:
 
 protected:
 
-    using sid_menu_map_t = std::map<std::string, std::pair<unsigned int, bool> >;
+    using sid_menu_map_t = std::map<std::string, unsigned int>;
 
     /**
      * @brief All menu services ID (sid) managed is associated with pair containing:

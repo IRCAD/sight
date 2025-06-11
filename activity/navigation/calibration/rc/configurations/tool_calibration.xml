@@ -27,9 +27,9 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="resultView" start="true" />
-                <view sid="footer" start="true" />
-                <toolbar sid="toolbar" start="true" />
+                <view sid="resultView" />
+                <view sid="footer" />
+                <toolbar sid="toolbar" />
             </registry>
         </service>
 
@@ -41,7 +41,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="status" start="true" />
+                <view sid="status" />
             </registry>
         </service>
 
@@ -57,12 +57,12 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="actionStartOpenIGTLinkClient" start="true" />
-                <menuItem sid="actionStopOpenIGTLinkClient" start="true" />
-                <menuItem sid="configureClient" start="true" />
-                <menuItem sid="actionAddPoint" start="true" />
-                <menuItem sid="actionComputeCalibration" start="true" />
-                <menuItem sid="actionExportMatrix" start="true" />
+                <menuItem sid="actionStartOpenIGTLinkClient" />
+                <menuItem sid="actionStopOpenIGTLinkClient" />
+                <menuItem sid="configureClient" />
+                <menuItem sid="actionAddPoint" />
+                <menuItem sid="actionComputeCalibration" />
+                <menuItem sid="actionExportMatrix" />
             </registry>
         </service>
 
@@ -104,6 +104,7 @@
             <TData>
                 <matrix name="Input0" index="0" />
             </TData>
+            <properties start="false" />
         </service>
 
         <service uid="trackerTLMatrixSynchronizer" type="sight::module::sync::synchronizer">
@@ -291,26 +292,7 @@
 
         <!-- *************************** End Connections *************************** -->
 
-        <start uid="mainView" />
-        <start uid="trackerTLMatrixSynchronizer" />
-        <start uid="originToPoint" />
-        <start uid="toolCalibration" />
-        <start uid="manageVector" />
-        <start uid="calibrationMatrixWriter" />
-        <start uid="concatenateMatrices" />
-
         <!-- Ogre scene 'resultView' -->
-
-        <start uid="trackballInteractorAdp" />
-        <start uid="trackedMatrixAdp" />
-        <start uid="calibMatAdp" />
-        <start uid="calibAxisMatAdp" />
-        <start uid="systemCenterAxisAdp" />
-        <start uid="trackerAxis0Adp" />
-        <start uid="pointlistAdp" />
-        <start uid="toolCalibrationAdp" />
-        <start uid="toolAxisAdp" />
-        <start uid="calibrationAxisAdp" />
 
         <update uid="concatenateMatrices" />
     </config>

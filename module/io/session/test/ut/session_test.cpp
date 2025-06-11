@@ -221,6 +221,7 @@ static void bad_policy_test(bool _reader, const std::string& _key, const std::st
     CPPUNIT_ASSERT(service);
     service->set_config(config);
     CPPUNIT_ASSERT_THROW(service->configure(), sight::core::exception);
+    service::remove(service);
 }
 
 //------------------------------------------------------------------------------

@@ -25,9 +25,9 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolbar sid="toolBarView" start="true" />
-                <view wid="negato1View" start="true" />
-                <view wid="negato2View" start="true" />
+                <toolbar sid="toolBarView" />
+                <view wid="negato1View" />
+                <view wid="negato2View" />
             </registry>
         </service>
 
@@ -39,8 +39,8 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="thresholdAct" start="true" />
-                <menuItem sid="exportAct" start="false" />
+                <menuItem sid="thresholdAct" />
+                <menuItem sid="exportAct" />
             </registry>
         </service>
 
@@ -61,7 +61,7 @@
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="negato1Srv" type="sight::app::config_controller">
+        <service uid="negato1Srv" type="sight::app::config_launcher">
             <properties config="2DNegato" />
             <inout group="data">
                 <key name="image" uid="${imageSeries}" />
@@ -70,7 +70,7 @@
             <parameter replace="patient_name" by="Source Image" />
         </service>
 
-        <service uid="negato2Srv" type="sight::app::config_controller">
+        <service uid="negato2Srv" type="sight::app::config_launcher">
             <properties config="2DNegato" />
             <inout group="data">
                 <key name="image" uid="imageSeriesMask" />
@@ -78,12 +78,5 @@
             <parameter replace="WID_PARENT" by="negato2View" />
             <parameter replace="patient_name" by="Mask Image" />
         </service>
-
-        <!-- ******************************* Start services ***************************************** -->
-
-        <start uid="mainView" />
-        <start uid="negato1Srv" />
-        <start uid="negato2Srv" />
-        <start uid="exportAct" />
     </config>
 </extension>

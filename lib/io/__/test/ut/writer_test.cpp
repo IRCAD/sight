@@ -90,6 +90,8 @@ void writer_test::test_type_ok()
 
         CPPUNIT_ASSERT_NO_THROW(srv->get_file());
         CPPUNIT_ASSERT_THROW(srv->get_folder(), FWCORE_EXCEPTION_CLASS);
+
+        srv->stop();
     }
 
     // Test using the wrong method for accessing a folder
@@ -105,6 +107,8 @@ void writer_test::test_type_ok()
 
         CPPUNIT_ASSERT_THROW(srv->get_file(), FWCORE_EXCEPTION_CLASS);
         CPPUNIT_ASSERT_NO_THROW(srv->get_folder());
+
+        srv->stop();
     }
 }
 
@@ -120,6 +124,8 @@ void writer_test::test_has_location_defined()
         srv->start();
 
         CPPUNIT_ASSERT(!srv->has_location_defined());
+
+        srv->stop();
     }
 
     // No absolute location defined
@@ -133,6 +139,8 @@ void writer_test::test_has_location_defined()
         srv->start();
 
         CPPUNIT_ASSERT(!srv->has_location_defined());
+
+        srv->stop();
     }
 
     // Absolute location defined
@@ -145,6 +153,8 @@ void writer_test::test_has_location_defined()
         srv->start();
 
         CPPUNIT_ASSERT(srv->has_location_defined());
+
+        srv->stop();
     }
 }
 
@@ -163,6 +173,8 @@ void writer_test::test_has_location_defined_with_base_folder()
         srv->start();
 
         CPPUNIT_ASSERT(!srv->has_location_defined());
+
+        srv->stop();
     }
 
     // Base location defined and a file in FILE mode
@@ -177,6 +189,8 @@ void writer_test::test_has_location_defined_with_base_folder()
         srv->start();
 
         CPPUNIT_ASSERT(srv->has_location_defined());
+
+        srv->stop();
     }
 
     // Base location defined and in FOLDER mode
@@ -190,6 +204,8 @@ void writer_test::test_has_location_defined_with_base_folder()
         srv->start();
 
         CPPUNIT_ASSERT(srv->has_location_defined());
+
+        srv->stop();
     }
 
     // Base location defined and in FOLDER mode with an additional folder
@@ -204,6 +220,8 @@ void writer_test::test_has_location_defined_with_base_folder()
         srv->start();
 
         CPPUNIT_ASSERT(srv->has_location_defined());
+
+        srv->stop();
     }
 }
 
@@ -222,6 +240,8 @@ void writer_test::test_output_paths()
         srv->start();
 
         CPPUNIT_ASSERT(srv->get_folder() == (m_root_path / m_folder).string());
+
+        srv->stop();
     }
 
     // Test file access
@@ -235,6 +255,8 @@ void writer_test::test_output_paths()
         srv->start();
 
         CPPUNIT_ASSERT(srv->get_file() == (m_root_path / m_file).string());
+
+        srv->stop();
     }
 
     // Test base folder with file
@@ -249,6 +271,8 @@ void writer_test::test_output_paths()
         srv->start();
 
         CPPUNIT_ASSERT(srv->get_file() == (m_root_path / m_file).string());
+
+        srv->stop();
     }
 
     // Test base folder with folder
@@ -263,6 +287,8 @@ void writer_test::test_output_paths()
         srv->start();
 
         CPPUNIT_ASSERT(srv->get_folder() == (m_root_path / m_folder).string());
+
+        srv->stop();
     }
 }
 

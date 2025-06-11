@@ -123,12 +123,12 @@ public:
     /// Recomputes the mouse's scale and focus point from the updated scene length.
     SIGHT_VIZ_SCENE3D_API void set_scene_length(float _scene_length) override;
 
-    /// SLOT: Sets a parameter value with its key.
-    SIGHT_VIZ_SCENE3D_API void set_parameter(ui::parameter_t _value, std::string _key);
+    /// Sets a position according to its name.
+    SIGHT_VIZ_SCENE3D_API void set_position(const std::string& _value);
 
-    ///SLOT: Goes to the next predefined position (return to first one after the latest).
+    /// Goes to the next predefined position (return to first one after the latest).
     SIGHT_VIZ_SCENE3D_API void next_position();
-    ///SLOT: Goes to the previous predefined position (return to last one after the first).
+    /// Goes to the previous predefined position (return to last one after the first).
     SIGHT_VIZ_SCENE3D_API void previous_position();
 
     /// Enables/disables the mouse rotation.

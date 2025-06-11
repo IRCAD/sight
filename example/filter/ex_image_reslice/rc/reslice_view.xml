@@ -28,8 +28,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="negato_scene" start="true" />
-                <view sid="offset_slider" start="true" />
+                <view sid="negato_scene" />
+                <view sid="offset_slider" />
             </registry>
         </service>
 
@@ -102,16 +102,5 @@
             <signal>slicer_srv/slice_range_changed</signal>
             <slot>offset_slider/set_translation_range</slot>
         </connect>
-
-        <!-- ******************************* Start services ***************************************** -->
-
-        <start uid="scene_view" />
-
-        <start uid="negato_camera_adp" />
-        <start uid="negato_adp" />
-        <start uid="mask_negato_camera_adp" />
-        <start uid="mask_negato_adp" />
-        <start uid="slicer_srv" />
-        <start uid="mask_slicer_srv" />
     </config>
 </extension>

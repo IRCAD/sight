@@ -25,7 +25,7 @@ The `OgreLightManager` configuration can be included with the following code:
 
 ```xml
 
-<service uid="lightManagerCfg"  type="sight::app::config_controller" >
+<service uid="lightManagerCfg"  type="sight::app::config_launcher" >
     <properties config="OgreLightManager" />
     <parameter replace="WID_PARENT" by="parentView" />
 </service>
@@ -38,7 +38,7 @@ Last, the `OgreOrganManager` configuration can be included with the following co
 
 ```xml
 
-<service uid="organManagerCfg"  type="sight::app::config_controller" >
+<service uid="organManagerCfg"  type="sight::app::config_launcher" >
     <properties config="OgreOrganManager" />
     <parameter replace="WID_PARENT" by="parentView" />
     <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />

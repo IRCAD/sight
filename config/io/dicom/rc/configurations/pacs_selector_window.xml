@@ -23,7 +23,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="pacsSelectorView" start="true" />
+                <view sid="pacsSelectorView" />
             </registry>
         </service>
 
@@ -40,7 +40,7 @@
         </service>
 
         <!-- TF manager -->
-        <service uid="PACSselectorCfg" type="sight::app::config_controller">
+        <service uid="PACSselectorCfg" type="sight::app::config_launcher">
             <properties config="sight::config::io::dicom::pacs_selector_widget" />
             <parameter replace="WID_PARENT" by="view" />
             <inout group="data">
@@ -53,10 +53,5 @@
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>mainView/closed</signal>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainView" />
-        <start uid="PACSselectorCfg" />
     </config>
 </extension>

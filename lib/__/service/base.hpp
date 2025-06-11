@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,7 @@
 #include <core/com/slot.hpp>
 #include <core/object.hpp>
 
+#include <data/boolean.hpp>
 #include <data/map.hpp>
 #include <data/mt/locked_ptr.hpp>
 #include <data/ptr.hpp>
@@ -65,6 +66,8 @@ struct slots
     static inline const core::com::slots::key_t STOP     = "stop";
     static inline const core::com::slots::key_t UPDATE   = "update";
     static inline const core::com::slots::key_t SWAP_KEY = "swap_key";
+    // Internal slot
+    static inline const core::com::slots::key_t START_ON_PROPERTY = "start_on_property";
 };
 
 struct signals
@@ -127,6 +130,9 @@ struct SIGHT_SERVICE_CLASS_API connections_t
  * - \b update() : Update the service.
  * - \b stop() : Stop the service.
  * - \b swap_key(const key_t&, data::object::sptr) : Swap the object at the given key with the object in parameter.
+ *
+ * @subsection Properties Properties:
+ * - \b start (boolean, default="true"): indicates if the service is automatically started in XML applications.
  */
 class SIGHT_SERVICE_CLASS_API base : public core::object,
                                      public core::com::has_slots,
@@ -375,6 +381,9 @@ private:
 
     // Object storing properties when passed as a map instead of individual objects
     sight::data::ptr<sight::data::map, sight::data::access::inout> m_properties_map {this, "from"};
+
+    /// Allows to control the automatic start of the service
+    data::property<data::boolean> m_start_property {this, "start", true};
 };
 
 //------------------------------------------------------------------------------

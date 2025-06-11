@@ -410,7 +410,7 @@ void material::set_texture_name(const std::string& _texture_name)
 
 //------------------------------------------------------------------------------
 
-void material::update_field(data::object::fields_container_t _fields)
+void material::update_field(data::fields_container_t _fields)
 {
     for(const auto& elt : _fields)
     {

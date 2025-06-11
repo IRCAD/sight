@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,6 +122,25 @@ base::base() :
         [this](std::string_view _key, data::object::sptr _obj)
         {
             m_pimpl->swap_key(_key, _obj, true);
+        });
+    new_slot(
+        slots::START_ON_PROPERTY,
+        [this]()
+        {
+            if(*m_start_property)
+            {
+                if(not started())
+                {
+                    m_pimpl->start(true);
+                }
+            }
+            else
+            {
+                if(not stopped())
+                {
+                    m_pimpl->stop(true);
+                }
+            }
         });
 }
 

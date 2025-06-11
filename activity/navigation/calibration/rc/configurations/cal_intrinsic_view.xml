@@ -31,8 +31,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="toolboxView" start="true" />
-                <view sid="cameraView" start="true" />
+                <view sid="toolboxView" />
+                <view sid="cameraView" />
             </registry>
         </service>
 
@@ -46,9 +46,9 @@
                 </layout>
             </gui>
             <registry>
-                <toolbar sid="videoToolbarView" start="true" />
-                <view sid="calibrationDataView" start="true" />
-                <view sid="cameraInfoSrv" start="true" />
+                <toolbar sid="videoToolbarView" />
+                <view sid="calibrationDataView" />
+                <view sid="cameraInfoSrv" />
             </registry>
         </service>
 
@@ -67,13 +67,13 @@
                 </layout>
             </gui>
             <registry>
-                <editor sid="videoSelectorSrv" start="true" />
-                <menuItem sid="startVideoAct" start="true" />
-                <menuItem sid="pauseVideoAct" start="true" />
-                <menuItem sid="resumeVideoAct" start="true" />
-                <menuItem sid="stopVideoAct" start="true" />
-                <menuItem sid="loopVideoAct" start="true" />
-                <menuItem sid="distortionAct" start="true" />
+                <editor sid="videoSelectorSrv" />
+                <menuItem sid="startVideoAct" />
+                <menuItem sid="pauseVideoAct" />
+                <menuItem sid="resumeVideoAct" />
+                <menuItem sid="stopVideoAct" />
+                <menuItem sid="loopVideoAct" />
+                <menuItem sid="distortionAct" />
             </registry>
         </service>
 
@@ -88,8 +88,8 @@
                 </layout>
             </gui>
             <registry>
-                <toolbar sid="intrinsicCameraView" start="true" />
-                <view sid="calibrationInfoEditorSrv" start="true" />
+                <toolbar sid="intrinsicCameraView" />
+                <view sid="calibrationInfoEditorSrv" />
             </registry>
         </service>
 
@@ -108,15 +108,15 @@
                 </layout>
             </gui>
             <registry>
-                <editor sid="detectionStatusSrv" start="true" />
-                <menuItem sid="addAct" start="true" />
-                <menuItem sid="removeAct" start="true" />
-                <menuItem sid="goOpenCVAct" start="true" />
-                <menuItem sid="displayImageAct" start="true" />
-                <menuItem sid="editionAct" start="true" />
-                <menuItem sid="resetAct" start="true" />
-                <menuItem sid="saveInputsAct" start="true" />
-                <menuItem sid="loadInputsAct" start="true" />
+                <editor sid="detectionStatusSrv" />
+                <menuItem sid="addAct" />
+                <menuItem sid="removeAct" />
+                <menuItem sid="goOpenCVAct" />
+                <menuItem sid="displayImageAct" />
+                <menuItem sid="editionAct" />
+                <menuItem sid="resetAct" />
+                <menuItem sid="saveInputsAct" />
+                <menuItem sid="loadInputsAct" />
             </registry>
         </service>
 
@@ -128,8 +128,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="genericSceneSrv" start="true" />
-                <view sid="videoSliderView" start="true" />
+                <view sid="genericSceneSrv" />
+                <view sid="videoSliderView" />
             </registry>
         </service>
 
@@ -142,7 +142,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="videoSliderSrv" start="true" />
+                <view sid="videoSliderSrv" />
             </registry>
         </service>
 
@@ -485,25 +485,9 @@
             <signal>${calibrationInfo}/reset_record</signal>
             <slot>calibrationInfoEditorSrv/update</slot>
         </connect>
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainView" />
-        <start uid="intrinsicCalibrationSrv" />
-        <start uid="chessboardDetectorSrv" />
-        <start uid="chessboardReprojectionSrv" />
-        <start uid="displayCalibrationInfoSrv" />
-        <start uid="intrinsicEditionSrv" />
-        <start uid="calibrationDataWriterSrv" />
-        <start uid="calibrationDataReaderSrv" />
-        <start uid="videoGrabberSrv" />
-        <start uid="frameSynchronizerSrv" />
-        <start uid="distorterSrv" />
-        <start uid="computeCameraPoseSrv" />
-        <start uid="videoAdp" />
-        <start uid="chessboard_creator" />
 
         <update>
-            <sequence uid="update_loop" loop="true">
+            <sequence uid="update_loop" loop="true" start="false">
                 <service uid="frameSynchronizerSrv" />
                 <service uid="chessboardDetectorSrv" />
                 <service uid="computeCameraPoseSrv" />

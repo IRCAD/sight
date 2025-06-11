@@ -24,7 +24,7 @@ The `TransferFunctionWidget` configuration can be included with the following co
 
 ```xml
 
-<service uid="..."  type="sight::app::config_controller" >
+<service uid="..."  type="sight::app::config_launcher" >
     <properties config="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
     <parameter replace="WID_PARENT" by="..." />
     <inout group="data">
@@ -43,7 +43,7 @@ The `TransferFunctionWindow` configuration can be included with the following co
 
 ```xml
 
-<service uid="..."  type="sight::app::config_controller" >
+<service uid="..."  type="sight::app::config_launcher" >
     <properties config="sight::config::viz::scene2d::TransferFunctionWindowCfg" />
     <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
     <parameter replace="WINDOW_ICON" by="path/to/icon.svg" />

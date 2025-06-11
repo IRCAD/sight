@@ -53,8 +53,8 @@
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menu_bar_view" start="true" />
-                    <view sid="main_view" start="true" />
+                    <menubar sid="menu_bar_view" />
+                    <view sid="main_view" />
                 </registry>
             </service>
 
@@ -66,8 +66,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menu_file_view" start="true" />
-                    <menu sid="menu_mesher_view" start="true" />
+                    <menu sid="menu_file_view" />
+                    <menu sid="menu_mesher_view" />
                 </registry>
             </service>
 
@@ -81,9 +81,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="open_image_act" start="true" />
-                    <menuItem sid="save_model_series_act" start="true" />
-                    <menuItem sid="quit_act" start="true" />
+                    <menuItem sid="open_image_act" />
+                    <menuItem sid="save_model_series_act" />
+                    <menuItem sid="quit_act" />
                 </registry>
             </service>
 
@@ -94,7 +94,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="create_mesh_act" start="true" />
+                    <menuItem sid="create_mesh_act" />
                 </registry>
             </service>
 
@@ -108,9 +108,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="container_view" start="true" />
-                    <view sid="scene_editors_view" start="true" />
-                    <view sid="progress_bar_view" start="true" />
+                    <view sid="container_view" />
+                    <view sid="scene_editors_view" />
+                    <view sid="progress_bar_view" />
                 </registry>
             </service>
 
@@ -125,8 +125,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="generic_scene_srv" start="true" />
-                    <view sid="right_view" start="true" />
+                    <view sid="generic_scene_srv" />
+                    <view sid="right_view" />
                 </registry>
             </service>
 
@@ -139,7 +139,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="organs_view" start="true" />
+                    <view sid="organs_view" />
                 </registry>
             </service>
 
@@ -154,10 +154,10 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="mesher_settings_srv" start="false" />
-                    <view sid="list_organ_editor_srv" start="false" />
-                    <view sid="organ_material_editor_srv" start="false" />
-                    <view sid="representation_editor_srv" start="false" />
+                    <view sid="mesher_settings_srv" />
+                    <view sid="list_organ_editor_srv" />
+                    <view sid="organ_material_editor_srv" />
+                    <view sid="representation_editor_srv" />
                 </registry>
             </service>
 
@@ -171,9 +171,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="show_negato_srv" start="true" />
-                    <view sid="slider_index_editor_srv" start="false" />
-                    <view sid="snapshot_srv" start="true" />
+                    <view sid="show_negato_srv" />
+                    <view sid="slider_index_editor_srv" />
+                    <view sid="snapshot_srv" />
                 </registry>
             </service>
 
@@ -339,8 +339,6 @@
                 <slot>negato_adp/update_visibility</slot>
             </connect>
 
-            <!-- ******************************* Start services ***************************************** -->
-
             <connect>
                 <signal>open_image_act/clicked</signal>
                 <slot>image_reader_srv/update</slot>
@@ -355,22 +353,6 @@
                 <signal>create_mesh_act/clicked</signal>
                 <slot>mesher_srv/update</slot>
             </connect>
-
-            <start uid="main_frame" />
-            <start uid="image_writer_srv" />
-            <start uid="updater_reconst_srv" />
-            <start uid="representation_editor_srv" />
-            <start uid="organ_material_editor_srv" />
-            <start uid="slider_index_editor_srv" />
-            <start uid="mesher_settings_srv" />
-            <start uid="list_organ_editor_srv" />
-            <start uid="mesher_srv" />
-            <start uid="trackball_interactor_adp" />
-            <start uid="model_series_adp" />
-            <start uid="negato_adp" />
-            <start uid="snapshot_adp" />
-            <start uid="image_reader_srv" />
-            <start uid="model_series_writer_srv" />
         </config>
     </extension>
 </plugin>

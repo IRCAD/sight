@@ -59,7 +59,7 @@
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="main_view" start="true" />
+                    <view sid="main_view" />
                 </registry>
             </service>
 
@@ -71,8 +71,8 @@
                     <toolbar />
                 </gui>
                 <registry>
-                    <toolbar sid="tool_bar_view" start="true" />
-                    <view sid="sub_view" start="true" />
+                    <toolbar sid="tool_bar_view" />
+                    <view sid="sub_view" />
                 </registry>
             </service>
 
@@ -85,8 +85,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="open_image_act" start="true" />
-                    <menuItem sid="open_mask_act" start="true" />
+                    <menuItem sid="open_image_act" />
+                    <menuItem sid="open_mask_act" />
                 </registry>
             </service>
 
@@ -100,9 +100,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="main_scene_srv" start="true" />
-                    <view sid="2d_negato_view" start="true" />
-                    <view sid="transform_view" start="true" />
+                    <view sid="main_scene_srv" />
+                    <view sid="2d_negato_view" />
+                    <view sid="transform_view" />
                 </registry>
             </service>
 
@@ -115,8 +115,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view wid="axial_negato_view" start="false" />
-                    <view wid="frontal_negato_view" start="false" />
+                    <view wid="axial_negato_view" />
+                    <view wid="frontal_negato_view" />
                 </registry>
             </service>
 
@@ -130,8 +130,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="transform_editor_srv" start="true" />
-                    <view sid="center_editor_srv" start="true" />
+                    <view sid="transform_editor_srv" />
+                    <view sid="center_editor_srv" />
                 </registry>
             </service>
 
@@ -237,7 +237,7 @@
 
             <!-- ******************************* In-plane negato view ******************************* -->
 
-            <service uid="axial_negato_cfg" type="sight::app::config_controller">
+            <service uid="axial_negato_cfg" type="sight::app::config_launcher">
                 <properties config="ex_image_reslice::reslice_view" />
                 <parameter replace="WID_PARENT" by="axial_negato_view" />
                 <inout group="data">
@@ -254,7 +254,7 @@
 
             <!-- ******************************* Frontal negato view ******************************* -->
 
-            <service uid="frontal_negato_cfg" type="sight::app::config_controller">
+            <service uid="frontal_negato_cfg" type="sight::app::config_launcher">
                 <properties config="ex_image_reslice::reslice_view" />
                 <parameter replace="WID_PARENT" by="frontal_negato_view" />
                 <inout group="data">
@@ -292,29 +292,6 @@
                 <signal>open_mask_act/clicked</signal>
                 <slot>read_mask_srv/update</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="main_frame" />
-
-            <start uid="origin_transform_adp" />
-            <start uid="origin_axis_adp" />
-            <start uid="concatenate_matrices" />
-
-            <start uid="trackball_interactor_adp" />
-            <start uid="3d_negato_adp" />
-            <start uid="reslice_axial_negato_adp" />
-            <start uid="reslice_frontal_negato_adp" />
-            <start uid="axial_slice_axis_adp" />
-            <start uid="frontal_slice_axis_adp" />
-
-            <start uid="image_axis_adp" />
-
-            <start uid="axial_negato_cfg" />
-            <start uid="frontal_negato_cfg" />
-
-            <start uid="read_image_srv" />
-            <start uid="read_mask_srv" />
 
             <update uid="concatenate_matrices" />
         </config>

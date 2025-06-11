@@ -26,10 +26,10 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolbar sid="toolBarView" start="true" />
-                <view sid="camerasView" start="true" />
-                <view sid="videoSliderSrv" start="true" />
-                <view sid="cameraInfoView" start="true" />
+                <toolbar sid="toolBarView" />
+                <view sid="camerasView" />
+                <view sid="videoSliderSrv" />
+                <view sid="cameraInfoView" />
             </registry>
         </service>
 
@@ -47,12 +47,12 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="exportAct" start="false" />
-                <menuItem sid="writeCalibrationAct" start="true" />
-                <menuItem sid="startVideoAct" start="true" />
-                <menuItem sid="stopVideoAct" start="true" />
-                <menuItem sid="pauseVideoAct" start="true" />
-                <menuItem sid="loopVideoAct" start="true" />
+                <menuItem sid="exportAct" />
+                <menuItem sid="writeCalibrationAct" />
+                <menuItem sid="startVideoAct" />
+                <menuItem sid="stopVideoAct" />
+                <menuItem sid="pauseVideoAct" />
+                <menuItem sid="loopVideoAct" />
             </registry>
         </service>
 
@@ -80,9 +80,9 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="cameraInfo1Srv" start="false" />
-                <view sid="cameraInfo2Srv" start="false" />
-                <view sid="cameraSetInfoSrv" start="false" />
+                <view sid="cameraInfo1Srv" />
+                <view sid="cameraInfo2Srv" />
+                <view sid="cameraSetInfoSrv" />
             </registry>
         </service>
 
@@ -106,7 +106,7 @@
 
         <!-- ************************ Configuration launchers ********************************* -->
 
-        <service uid="camera0LauncherCfg" type="sight::app::config_controller">
+        <service uid="camera0LauncherCfg" type="sight::app::config_launcher">
             <properties config="videoEdition" />
             <inout group="data">
                 <key name="camera" uid="camera0" />
@@ -123,7 +123,7 @@
             <parameter replace="videoDurationModifiedChannel" by="videoDurationModified" />
         </service>
 
-        <service uid="camera1LauncherCfg" type="sight::app::config_controller">
+        <service uid="camera1LauncherCfg" type="sight::app::config_launcher">
             <properties config="videoEdition" />
             <inout group="data">
                 <key name="camera" uid="camera1" />
@@ -210,19 +210,6 @@
         <connect channel="videoDurationModified">
             <slot>videoSliderSrv/set_duration_slider</slot>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainView" />
-        <start uid="copyCameraSetSrv" />
-        <start uid="extractCamerasSrv" />
-        <start uid="cameraSetInfoSrv" />
-        <start uid="CalibrationXmlWriter" />
-        <start uid="exportAct" />
-        <start uid="cameraInfo1Srv" />
-        <start uid="cameraInfo2Srv" />
-        <start uid="camera0LauncherCfg" />
-        <start uid="camera1LauncherCfg" />
 
         <update uid="copyCameraSetSrv" />
         <update uid="extractCamerasSrv" />

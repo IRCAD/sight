@@ -24,8 +24,8 @@
                 <menubar />
             </gui>
             <registry>
-                <menubar sid="menuBarView" start="true" />
-                <view sid="mainview" start="true" />
+                <menubar sid="menuBarView" />
+                <view sid="mainview" />
             </registry>
         </service>
 
@@ -37,8 +37,8 @@
                 </layout>
             </gui>
             <registry>
-                <menu sid="menuFileView" start="true" />
-                <menu sid="menuPreferencesView" start="true" />
+                <menu sid="menuFileView" />
+                <menu sid="menuPreferencesView" />
             </registry>
         </service>
 
@@ -53,11 +53,11 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="openDataSetAct" start="true" />
-                <menuItem sid="openActivityAct" start="true" />
-                <menuItem sid="saveAct" start="true" />
-                <menuItem sid="saveActivityAct" start="true" />
-                <menuItem sid="quitAct" start="true" />
+                <menuItem sid="openDataSetAct" />
+                <menuItem sid="openActivityAct" />
+                <menuItem sid="saveAct" />
+                <menuItem sid="saveActivityAct" />
+                <menuItem sid="quitAct" />
             </registry>
         </service>
 
@@ -68,7 +68,7 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="videoDirectoryAct" start="true" />
+                <menuItem sid="videoDirectoryAct" />
             </registry>
         </service>
 
@@ -79,7 +79,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="dynamicView" start="true" />
+                <view sid="dynamicView" />
             </registry>
         </service>
 
@@ -173,13 +173,5 @@
             <signal>saveActivityAct/clicked</signal>
             <slot>activitySetWriterSrv/update</slot>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainFrame" />
-        <start uid="dataSetReaderSrv" />
-        <start uid="activitySetReaderSrv" />
-        <start uid="dataSetWriterSrv" />
-        <start uid="activitySetWriterSrv" />
     </config>
 </extension>

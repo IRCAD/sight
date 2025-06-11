@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,6 +34,9 @@
 namespace sight::service::detail
 {
 
+// To avoid any conflict with other slots
+const auto MAKE_PROPERTY_SLOT_NAME = [](const std::string& _property){return core::id::join(_property, "property");};
+
 //-----------------------------------------------------------------------------
 
 service::service(sight::service::base& _service) :
@@ -45,6 +48,23 @@ service::service(sight::service::base& _service) :
 
 service::~service()
 {
+    SIGHT_ASSERT(
+        "service " << m_id_copy << " not stopped upon destruction, call stop() beforehand",
+        m_global_state == base::global_status::stopped
+    );
+
+    {
+        const auto started = m_service.m_start_property.lock();
+        if(started)
+        {
+            auto sig = started->signal(sight::data::signals::MODIFIED);
+            if(auto conn = sig->get_connection(m_service.slot(sight::service::slots::START_ON_PROPERTY));
+               not conn.expired())
+            {
+                conn.disconnect();
+            }
+        }
+    }
     m_connections.disconnect_start_slot(m_service);
 }
 
@@ -157,20 +177,25 @@ void service::configure()
                     }
                 }
 
-                // Create a slot for each property
+                // Create a slot for each property - avoid recreating them if configured multiple times
                 for(const auto& [key, ptr] : m_service.container())
                 {
                     const auto& key_str = key.first;
 
                     if(dynamic_cast<data::property_base*>(ptr) != nullptr)
                     {
-                        auto slot = m_service.new_slot(
-                            std::string(key_str),
-                            [&]()
-                            {
-                                m_service.on_property_set(key_str);
-                            });
-                        slot->set_worker(m_service.worker());
+                        const auto slot_name = MAKE_PROPERTY_SLOT_NAME(std::string(key_str));
+                        const auto& slots    = dynamic_cast<sight::core::com::has_slots&>(m_service).slots();
+                        if(not slots.contains(slot_name))
+                        {
+                            auto slot = m_service.new_slot(
+                                MAKE_PROPERTY_SLOT_NAME(std::string(key_str)),
+                                [&]()
+                                {
+                                    m_service.on_property_set(key_str);
+                                });
+                            slot->set_worker(m_service.worker());
+                        }
                     }
                 }
 
@@ -197,6 +222,15 @@ void service::configure()
             );
         }
 
+        {
+            const auto started = m_service.m_start_property.lock();
+            auto sig           = started->signal(sight::data::signals::MODIFIED);
+            if(auto conn = sig->get_connection(m_service.slot(sight::service::slots::START_ON_PROPERTY));
+               conn.expired())
+            {
+                sig->connect(m_service.slot(sight::service::slots::START_ON_PROPERTY));
+            }
+        }
         m_configuration_state = base::configuration_status::configured;
     }
 
@@ -207,6 +241,18 @@ void service::configure()
 
 base::shared_future_t service::start(bool _async)
 {
+    m_id_copy = m_service.get_id();
+    if(m_configuration_state == base::configuration_status::unconfigured)
+    {
+        // Well we could be stricter and require this to be done before, but a lot of legacy code would need
+        // to be fixed and I don't think this bring so much value
+        this->configure();
+    }
+
+    SIGHT_ASSERT(
+        "service " << m_service.get_id() << " requested to start, but it is not configured",
+        m_configuration_state == base::configuration_status::configured
+    );
     SIGHT_FATAL_IF(
         "service " << m_service.get_id() << " already started",
         m_global_state != base::global_status::stopped
@@ -244,6 +290,12 @@ base::shared_future_t service::start(bool _async)
     m_global_state = base::global_status::started;
 
     this->auto_connect();
+
+    {
+        const auto started = m_service.m_start_property.lock();
+        *started = true;
+        started->async_emit(&m_service, sight::data::signals::MODIFIED);
+    }
 
     auto sig = m_service.signal<sight::service::signals::started_t>(sight::service::signals::STARTED);
     sig->async_emit(m_service.get_sptr());
@@ -293,6 +345,12 @@ base::shared_future_t service::stop(bool _async)
 
     auto sig = m_service.signal<sight::service::signals::stopped_t>(sight::service::signals::STOPPED);
     sig->async_emit(m_service.get_sptr());
+
+    {
+        const auto started = m_service.m_start_property.lock();
+        *started = false;
+        started->async_emit(&m_service, sight::data::signals::MODIFIED);
+    }
 
     m_connections.disconnect(m_service);
 
@@ -431,9 +489,9 @@ void service::auto_connect()
             // Connect the properties
             if(!connected && dynamic_cast<data::property_base*>(ptr) != nullptr)
             {
-                const auto sig = obj->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
+                const auto sig = obj->signal<data::signals::modified_t>(data::signals::MODIFIED);
 
-                auto slot = m_service.slot(std::string(key_str));
+                auto slot = m_service.slot(MAKE_PROPERTY_SLOT_NAME(std::string(key_str)));
                 SIGHT_ASSERT("Slot not found for property: " << key_str, slot);
                 m_auto_connections.add_connection(sig->connect(slot));
             }

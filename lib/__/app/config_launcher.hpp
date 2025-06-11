@@ -1,7 +1,6 @@
 /************************************************************************
  *
  * Copyright (C) 2009-2025 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -43,10 +42,13 @@ namespace sight::app
  * in the configuration. <out> is also not supported because if we assume that the target configuration produces the
  * object, thus we would not get a valid id for the matching parameter.
  *
+ * @section Signals Signals
+ * - \b launched(): Sent when the configuration has been launched.
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
-        <service type="sight::app::config_controller" >
+        <service type="sight::app::config_launcher" >
             <properties config="..." />
             <inout group="data">
                 <key name="object1" uid="..." />
@@ -64,19 +66,26 @@ namespace sight::app
  * identifies the objects whose uid are passed as value of the parameter.
  * @subsection Configuration Configuration:
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
- * this parameter. The variable GENERIC_UID can be used as unique identifier when the configuration is launched.
+ * this parameter.
+ * The parameter CLOSE_CONFIG_CHANNEL can be used inside the configuration to stop it.
  */
-class SIGHT_APP_CLASS_API config_controller : public service::controller
+class SIGHT_APP_CLASS_API config_launcher : public service::controller
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(config_controller, service::controller);
+    struct signals
+    {
+        using launched_t = core::com::signal<void ()>;
+        static const inline signal_key_t LAUNCHED = "launched";
+    };
+
+    SIGHT_DECLARE_SERVICE(config_launcher, service::controller);
 
     /// Constructor. Does nothing.
-    SIGHT_APP_API config_controller() noexcept;
+    SIGHT_APP_API config_launcher() noexcept;
 
     /// Destructor. Does nothing.
-    SIGHT_APP_API ~config_controller() noexcept override = default;
+    SIGHT_APP_API ~config_launcher() noexcept override = default;
 
 protected:
 
@@ -97,8 +106,16 @@ protected:
 
 private:
 
+    void start_config();
+
+    /// Slot: stop the config.
+    void stop_config();
+
     /// config manager
     app::helper::config_launcher::uptr m_config_launcher;
+
+    /// Name of the channel used to connect stopConfig slot to the config frame closing.
+    std::string m_proxy_channel;
 
     /// Input data to pass to the configuration
     data::ptr_vector<data::object, data::access::inout> m_data {this, app::helper::config_launcher::DATA_GROUP};

@@ -31,7 +31,7 @@ This example shows the possibilities of progress bar in SIGHT.:
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="main_view" start="true" />
+                    <view sid="main_view" />
                 </registry>
             </service>
 
@@ -47,7 +47,7 @@ This example shows the possibilities of progress bar in SIGHT.:
                     </frame>
                 </gui>
                 <registry>
-                    <toolbar sid="toolbar" start="true" />
+                    <toolbar sid="toolbar" />
                 </registry>
             </service>
 
@@ -61,10 +61,10 @@ This example shows the possibilities of progress bar in SIGHT.:
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="job_1_act" start="true" />
-                    <menuItem sid="job_2_act" start="true" />
-                    <menuItem sid="job_3_act" start="true" />
-                    <editor sid="progress_bar_5" start="true" />
+                    <menuItem sid="job_1_act" />
+                    <menuItem sid="job_2_act" />
+                    <menuItem sid="job_3_act" />
+                    <editor sid="progress_bar_5" />
                 </registry>
             </service>
 
@@ -80,10 +80,10 @@ This example shows the possibilities of progress bar in SIGHT.:
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="progress_bar_1" start="true" />
-                    <view sid="progress_bar_2" start="true" />
-                    <view sid="progress_bar_3" start="true" />
-                    <view sid="progress_bar_4" start="true" />
+                    <view sid="progress_bar_1" />
+                    <view sid="progress_bar_2" />
+                    <view sid="progress_bar_3" />
+                    <view sid="progress_bar_4" />
                 </registry>
             </service>
 
@@ -195,15 +195,6 @@ This example shows the possibilities of progress bar in SIGHT.:
                 <slot>progress_bar_4/show_job</slot>
                 <slot>progress_bar_5/show_job</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="display" />
-            <start uid="command" />
-
-            <start uid="job_1_srv" />
-            <start uid="job_2_srv" />
-            <start uid="job_3_srv" />
 
             <!-- ******************************* Update services ***************************************** -->
         </config>

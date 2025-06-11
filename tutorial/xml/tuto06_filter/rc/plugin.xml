@@ -26,8 +26,8 @@
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <view sid="containerView" start="true" />
+                    <menubar sid="menuBarView" />
+                    <view sid="containerView" />
                 </registry>
             </service>
 
@@ -39,8 +39,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="true" />
-                    <menu sid="menuFilterView" start="true" />
+                    <menu sid="menuFileView" />
+                    <menu sid="menuFilterView" />
                 </registry>
             </service>
 
@@ -54,8 +54,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="openImageAct" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -67,8 +67,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="imageFilterAct" start="true" />
-                    <menuItem sid="imageFlipperAct" start="true" />
+                    <menuItem sid="imageFilterAct" />
+                    <menuItem sid="imageFlipperAct" />
                 </registry>
             </service>
 
@@ -81,9 +81,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="image1Srv" start="true" />
+                    <view sid="image1Srv" />
                     <!-- As the output image is deferred, the service cannot be started at the beginning. -->
-                    <view sid="image2Srv" start="false" />
+                    <view sid="image2Srv" />
                 </registry>
             </service>
 
@@ -150,8 +150,6 @@
                 <in key="image" uid="myImage2" />
             </service>
 
-            <!-- ******************************* Start services ***************************************** -->
-
             <connect>
                 <signal>openImageAct/updated</signal>
                 <slot>imageReaderSrv/update</slot>
@@ -166,14 +164,6 @@
                 <signal>imageFlipperAct/updated</signal>
                 <slot>imageFlipperSrv/flip_axis_y</slot>
             </connect>
-
-            <start uid="mainFrame" />
-            <start uid="imageReaderSrv" />
-            <start uid="imageFilterSrv" />
-            <start uid="imageFlipperSrv" />
-
-            <!-- start the service using a deferred image -->
-            <start uid="image2Srv" />
         </config>
     </extension>
 </plugin>

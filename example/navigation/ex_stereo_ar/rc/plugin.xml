@@ -68,9 +68,9 @@
                     <toolbar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <toolbar sid="toolbarView" start="true" />
-                    <view sid="cameraView" start="true" />
+                    <menubar sid="menuBarView" />
+                    <toolbar sid="toolbarView" />
+                    <view sid="cameraView" />
                 </registry>
             </service>
 
@@ -82,8 +82,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="true" />
-                    <menu sid="menuPreferencesView" start="true" />
+                    <menu sid="menuFileView" />
+                    <menu sid="menuPreferencesView" />
                 </registry>
             </service>
 
@@ -95,8 +95,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="showParametersAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="showParametersAct" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -107,7 +107,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="videoDirAct" start="true" />
+                    <menuItem sid="videoDirAct" />
                 </registry>
             </service>
 
@@ -126,14 +126,14 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadCalibAct" start="true" />
+                    <menuItem sid="loadCalibAct" />
                     <editor sid="videoSelector1Srv" />
                     <editor sid="videoSelector2Srv" />
-                    <menuItem sid="startVideoAct" start="true" />
-                    <menuItem sid="stopVideoAct" start="true" />
-                    <menuItem sid="pauseVideoAct" start="true" />
-                    <menuItem sid="startRecordAct" start="true" />
-                    <menuItem sid="stopRecordAct" start="true" />
+                    <menuItem sid="startVideoAct" />
+                    <menuItem sid="stopVideoAct" />
+                    <menuItem sid="pauseVideoAct" />
+                    <menuItem sid="startRecordAct" />
+                    <menuItem sid="stopRecordAct" />
                 </registry>
             </service>
 
@@ -146,8 +146,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="videoView" start="true" />
-                    <view sid="parametersView" start="true" />
+                    <view sid="videoView" />
+                    <view sid="parametersView" />
                 </registry>
             </service>
 
@@ -160,8 +160,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="stereoView" start="true" />
-                    <view sid="infoView" start="true" />
+                    <view sid="stereoView" />
+                    <view sid="infoView" />
                 </registry>
             </service>
 
@@ -174,8 +174,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="reprojectionInfoView" start="true" />
-                    <view sid="reprojectionMatrixStatusSrv" start="true" />
+                    <view sid="reprojectionInfoView" />
+                    <view sid="reprojectionMatrixStatusSrv" />
                 </registry>
             </service>
 
@@ -202,8 +202,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="errorLabelLeftSrv" start="true" />
-                    <view sid="errorLabelRightSrv" start="true" />
+                    <view sid="errorLabelLeftSrv" />
+                    <view sid="errorLabelRightSrv" />
                 </registry>
             </service>
 
@@ -218,9 +218,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="aruco_parameters_srv" start="true" />
-                    <view sid="reprojection_parameters_srv" start="true" />
-                    <view sid="synchroParamsSrv" start="true" />
+                    <view sid="aruco_parameters_srv" />
+                    <view sid="reprojection_parameters_srv" />
+                    <view sid="synchroParamsSrv" />
                 </registry>
             </service>
 
@@ -257,7 +257,7 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="leftGenericSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="sync">
+                <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video" order="1">
@@ -287,7 +287,7 @@
 
             <!-- scene in which the video and the 3D will be rendered -->
             <service uid="rightGenericSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="sync">
+                <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video" order="1">
@@ -426,7 +426,7 @@
             <!-- Aruco tracker service -->
             <service uid="arucoTracker1Srv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking1">
                 <in key="camera" uid="camera1" />
-                <inout key="frame" uid="videoImage1" auto_connect="true" />
+                <inout key="frame" uid="videoImage1" auto_connect="false" />
                 <inout group="markerMap">
                     <!-- timeline of detected tag(s) -->
                     <key uid="markerMap1" />
@@ -440,7 +440,7 @@
 
             <service uid="arucoTracker2Srv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking2">
                 <in key="camera" uid="camera2" />
-                <inout key="frame" uid="videoImage2" auto_connect="true" />
+                <inout key="frame" uid="videoImage2" auto_connect="false" />
                 <inout group="markerMap">
                     <!-- timeline of detected tag(s) -->
                     <key uid="markerMap2" />
@@ -453,7 +453,7 @@
             </service>
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
-            <service uid="registrationSrv" type="sight::module::geometry::vision::pose_from2d" worker="registration">
+            <service uid="registrationSrv" type="sight::module::geometry::vision::pose_from2d" worker="registration" auto_connect="false">
                 <in group="markerMap">
                     <key uid="markerMap1" />
                     <key uid="markerMap2" />
@@ -471,7 +471,7 @@
 
             <!-- This will compute the reprojection error Left -->
             <service uid="leftReprojectionErrorSrv" type="sight::module::geometry::vision::reprojection_error" worker="error1">
-                <in group="matrix" auto_connect="true">
+                <in group="matrix" auto_connect="false">
                     <key uid="matrix" id="101" />
                 </in>
                 <in key="camera" uid="camera1" />
@@ -481,7 +481,7 @@
             </service>
 
             <service uid="rightReprojectionErrorSrv" type="sight::module::geometry::vision::reprojection_error" worker="error2">
-                <in group="matrix" auto_connect="true">
+                <in group="matrix" auto_connect="false">
                     <key uid="matrix" id="101" />
                 </in>
                 <in key="extrinsic" uid="extrinsic" />
@@ -493,7 +493,7 @@
 
             <!-- To synchronize matrix, frame and detection -->
             <service uid="frameMatrixSynchronizerSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
-                <in group="frameTL">
+                <in group="frameTL" auto_connect="false">
                     <key uid="frameTL1" />
                     <key uid="frameTL2" />
                 </in>
@@ -507,15 +507,15 @@
             <!-- to multiply matrices (here only used to inverse "matrix" )-->
             <service uid="matrixReverserSrv" type="sight::module::geometry::concatenate_matrices">
                 <in group="matrix">
-                    <key uid="matrix" auto_connect="true" inverse="true" />
+                    <key uid="matrix" auto_connect="false" inverse="true" />
                 </in>
                 <inout key="output" uid="inverseMat" />
             </service>
 
             <!-- to multiply matrices -->
             <service uid="concatenateSrv" type="sight::module::geometry::concatenate_matrices">
-                <in group="matrix">
-                    <key uid="inverseMat" auto_connect="true" inverse="false" />
+                <in group="matrix" auto_connect="false">
+                    <key uid="inverseMat" inverse="false" />
                     <key uid="extrinsic" inverse="true" />
                 </in>
                 <inout key="output" uid="rightMat" />
@@ -523,34 +523,7 @@
 
             <service uid="hideAxisSrv" type="sight::module::ui::action" />
 
-            <!-- Wait for both poses -->
-            <service uid="syncPose" type="sight::module::sync::signal_gate">
-                <signal>markerMap1/modified</signal>
-                <signal>markerMap2/modified</signal>
-            </service>
-
-            <!-- Wait for the undistortion and the matrix inversion to be finished -->
-            <service uid="syncGenericSceneSrv" type="sight::module::sync::signal_gate">
-                <signal>videoImage1/buffer_modified</signal>
-                <signal>videoImage2/buffer_modified</signal>
-                <signal>rightMat/modified</signal>
-                <signal>inverseMat/modified</signal>
-            </service>
-
             <!-- ******************************* Connections ***************************************** -->
-
-            <connect>
-                <signal>syncPose/all_received</signal>
-                <slot>registrationSrv/update</slot>
-            </connect>
-            <!-- When the undistortion and the matrix inversion are done, trigger the rendering -->
-            <!-- then process a new frame -->
-            <connect>
-                <signal>syncGenericSceneSrv/all_received</signal>
-                <slot>leftGenericSceneSrv/render</slot>
-                <slot>rightGenericSceneSrv/render</slot>
-                <slot>frameMatrixSynchronizerSrv/request_sync</slot>
-            </connect>
 
             <connect>
                 <signal>loadCalibAct/clicked</signal>
@@ -561,18 +534,21 @@
                 <signal>startVideoAct/clicked</signal>
                 <slot>videoGrabber1Srv/start_camera</slot>
                 <slot>videoGrabber2Srv/start_camera</slot>
+                <slot>updater/start</slot>
             </connect>
 
             <connect>
                 <signal>stopVideoAct/clicked</signal>
                 <slot>videoGrabber1Srv/stop_camera</slot>
                 <slot>videoGrabber2Srv/stop_camera</slot>
+                <slot>updater/stop</slot>
             </connect>
 
             <connect>
                 <signal>pauseVideoAct/clicked</signal>
                 <slot>videoGrabber1Srv/pause_camera</slot>
                 <slot>videoGrabber2Srv/pause_camera</slot>
+                <slot>updater/start</slot>
             </connect>
 
             <connect>
@@ -610,11 +586,6 @@
             </connect>
 
             <connect>
-                <signal>frameMatrixSynchronizerSrv/synchronization_done</signal>
-                <slot>matricesWriterSrv/write</slot>
-            </connect>
-
-            <connect>
                 <signal>cameraSet/added_camera</signal>
                 <slot>cameraExtractorSrv/update</slot>
             </connect>
@@ -623,12 +594,14 @@
                 <signal>camera1/id_modified</signal>
                 <slot>videoGrabber1Srv/stop_camera</slot>
                 <slot>videoGrabber2Srv/stop_camera</slot>
+                <slot>updater/stop</slot>
             </connect>
 
             <connect>
                 <signal>camera2/id_modified</signal>
                 <slot>videoGrabber1Srv/stop_camera</slot>
                 <slot>videoGrabber2Srv/stop_camera</slot>
+                <slot>updater/stop</slot>
             </connect>
 
             <connect>
@@ -652,40 +625,26 @@
                 <slot>RAxisAdp/update_visibility</slot>
             </connect>
 
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="calibrationReaderSrv" />
-            <start uid="cameraExtractorSrv" />
-            <start uid="videoSelector1Srv" />
-            <start uid="videoSelector2Srv" />
-            <start uid="videoGrabber1Srv" />
-            <start uid="videoGrabber2Srv" />
-            <start uid="frameMatrixSynchronizerSrv" />
-            <start uid="matricesWriterSrv" />
-            <start uid="arucoTracker1Srv" />
-            <start uid="arucoTracker2Srv" />
-            <start uid="registrationSrv" />
-            <start uid="leftReprojectionErrorSrv" />
-            <start uid="rightReprojectionErrorSrv" />
-            <start uid="matrixReverserSrv" />
-            <start uid="concatenateSrv" />
-            <start uid="hideAxisSrv" />
-            <start uid="leftGenericSceneSrv" />
-            <start uid="rightGenericSceneSrv" />
-            <start uid="LVideoAdp" />
-            <start uid="LAxisAdp" />
-            <start uid="LCameraAdp" />
-            <start uid="RVideoAdp" />
-            <start uid="RAxisAdp" />
-            <start uid="RCameraAdp" />
-            <start uid="syncPose" />
-            <start uid="syncGenericSceneSrv" />
-
             <!-- ******************************* Update services ***************************************** -->
 
-            <update uid="showParametersAct" />
-            <update uid="hideAxisSrv" />
+            <update>
+                <service uid="showParametersAct" />
+                <service uid="hideAxisSrv" />
+
+                <sequence uid="updater" loop="true" start="false">
+                    <service uid="frameMatrixSynchronizerSrv" />
+                    <service uid="matricesWriterSrv" />
+                    <service uid="arucoTracker1Srv" />
+                    <service uid="arucoTracker2Srv" />
+                    <service uid="registrationSrv" />
+                    <service uid="leftReprojectionErrorSrv" />
+                    <service uid="rightReprojectionErrorSrv" />
+                    <service uid="matrixReverserSrv" />
+                    <service uid="concatenateSrv" />
+                    <service uid="leftGenericSceneSrv" />
+                    <service uid="rightGenericSceneSrv" />
+                </sequence>
+            </update>
         </config>
     </extension>
 </plugin>

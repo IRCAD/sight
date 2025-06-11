@@ -26,8 +26,8 @@
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menu_bar_view" start="true" />
-                    <view sid="container_view" start="true" />
+                    <menubar sid="menu_bar_view" />
+                    <view sid="container_view" />
                 </registry>
             </service>
 
@@ -39,8 +39,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menu_file_view" start="true" />
-                    <menu sid="menu_mesher_view" start="true" />
+                    <menu sid="menu_file_view" />
+                    <menu sid="menu_mesher_view" />
                 </registry>
             </service>
 
@@ -56,10 +56,10 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="open_image_act" start="true" />
-                    <menuItem sid="save_image_act" start="true" />
-                    <menuItem sid="save_mesh_act" start="true" />
-                    <menuItem sid="quit_act" start="true" />
+                    <menuItem sid="open_image_act" />
+                    <menuItem sid="save_image_act" />
+                    <menuItem sid="save_mesh_act" />
+                    <menuItem sid="quit_act" />
                 </registry>
             </service>
 
@@ -70,7 +70,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="create_mesh_act" start="true" />
+                    <menuItem sid="create_mesh_act" />
                 </registry>
             </service>
 
@@ -90,8 +90,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="image_srv" start="true" />
-                    <view sid="mesh_render_srv" start="false" />
+                    <view sid="image_srv" />
+                    <view sid="mesh_render_srv" />
                 </registry>
             </service>
 
@@ -196,15 +196,6 @@
                 <slot>mesh_writer_srv/update</slot>
             </connect>
 
-            <!-- ******************************* Start services ***************************************** -->
-            <start uid="main_frame" />
-            <start uid="image_reader_srv" />
-            <start uid="image_writer_srv" />
-            <start uid="mesh_writer_srv" />
-            <start uid="extract_mesh_srv" />
-            <start uid="shortcut_srv" />
-            <start uid="mesher_srv" />
-            <start uid="mesh_render_srv" />
             <update uid="extract_mesh_srv" />
         </config>
     </extension>

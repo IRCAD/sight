@@ -30,7 +30,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="activityLauncherSrv" type="sight::app::config_controller">
+        <service uid="activityLauncherSrv" type="sight::app::config_launcher">
             <properties config="ActivityLauncher" />
             <inout group="data">
                 <key name="activitySet" uid="activitySet" />
@@ -42,10 +42,5 @@
             <parameter replace="SESSION_READER_CONFIG" by="SessionReaderConfig" />
             <parameter replace="SESSION_WRITER_CONFIG" by="SessionWriterConfig" />
         </service>
-
-        <!-- ******************************* Start services ***************************************** -->
-
-        <start uid="mainFrame" />
-        <start uid="activityLauncherSrv" />
     </config>
 </extension>

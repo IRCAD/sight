@@ -45,8 +45,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="topScenesView" start="true" />
-                <view sid="bottomScenesView" start="true" />
+                <view sid="topScenesView" />
+                <view sid="bottomScenesView" />
             </registry>
         </service>
 
@@ -80,7 +80,7 @@
 
         <!-- ******************************* Begin 3D scene ******************************* -->
 
-        <service uid="mainSceneCfg" type="sight::app::config_controller">
+        <service uid="mainSceneCfg" type="sight::app::config_launcher">
             <properties config="sight::config::viz::scene3d::volumeRendering" />
             <parameter replace="WID_PARENT" by="mainSceneView" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_SCENE3D_VISIBILITY_RECEIVER_CHANNEL" />
@@ -119,7 +119,7 @@
 
         <!-- ************************************* 2D Negato views ************************************ -->
 
-        <service uid="axialNegatoCfg" type="sight::app::config_controller">
+        <service uid="axialNegatoCfg" type="sight::app::config_launcher">
             <properties config="sight::config::viz::scene3d::negato2d" />
             <parameter replace="WID_PARENT" by="axialSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
@@ -138,7 +138,7 @@
             </inout>
         </service>
 
-        <service uid="sagittalNegatoCfg" type="sight::app::config_controller">
+        <service uid="sagittalNegatoCfg" type="sight::app::config_launcher">
             <properties config="sight::config::viz::scene3d::negato2d" />
             <parameter replace="WID_PARENT" by="sagittalSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
@@ -157,7 +157,7 @@
             </inout>
         </service>
 
-        <service uid="frontalNegatoCfg" type="sight::app::config_controller">
+        <service uid="frontalNegatoCfg" type="sight::app::config_launcher">
             <properties config="sight::config::viz::scene3d::negato2d" />
             <parameter replace="WID_PARENT" by="frontalSceneView" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
@@ -229,19 +229,5 @@
         <connect channel="TOGGLE_FRONTAL_VISIBILITY_RECEIVER_CHANNEL">
             <slot>frontalNegatoVisibilityAct/update</slot>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainView" />
-
-        <start uid="mainSceneCfg" />
-        <start uid="axialNegatoCfg" />
-        <start uid="sagittalNegatoCfg" />
-        <start uid="frontalNegatoCfg" />
-
-        <start uid="mainSceneVisibilityAct" />
-        <start uid="axialNegatoVisibilityAct" />
-        <start uid="sagittalNegatoVisibilityAct" />
-        <start uid="frontalNegatoVisibilityAct" />
     </config>
 </extension>

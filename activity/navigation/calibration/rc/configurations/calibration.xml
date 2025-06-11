@@ -31,7 +31,7 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolbar sid="toolBarView" start="true" />
+                <toolbar sid="toolBarView" />
                 <view wid="calibrationView" />
             </registry>
         </service>
@@ -51,12 +51,12 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="previousAct" start="true" />
-                <menuItem sid="nextAct" start="true" />
-                <menuItem sid="exportAct" start="true" />
-                <menuItem sid="writeCalibrationAct" start="true" />
+                <menuItem sid="previousAct" />
+                <menuItem sid="nextAct" />
+                <menuItem sid="exportAct" />
+                <menuItem sid="writeCalibrationAct" />
                 <editor sid="cameraLauncherAct" start="false" />
-                <menuItem sid="chessboard_size_act" start="true" />
+                <menuItem sid="chessboard_size_act" />
             </registry>
         </service>
 
@@ -85,11 +85,14 @@
             </config>
         </service>
 
-        <service uid="chessboard_size_act" type="sight::module::ui::config_launcher">
+        <service uid="chessboard_size_act" type="sight::module::ui::action" />
+
+        <service uid="chessboard_size_cfg" type="sight::app::config_launcher">
             <appConfig id="sight::navigation::calibration::chessboard_settings" />
             <inout group="data">
                 <key name="board_properties" uid="${board_properties}" />
             </inout>
+            <properties start="false" />
         </service>
 
         <service uid="exportAct" type="sight::module::ui::export_set" auto_connect="true">
@@ -120,6 +123,16 @@
             <slot>calibrationWriterSrv/update</slot>
         </connect>
 
+        <connect>
+            <signal>chessboard_size_act/checked</signal>
+            <slot>chessboard_size_cfg/start</slot>
+        </connect>
+
+        <connect>
+            <signal>chessboard_size_cfg/stopped</signal>
+            <slot>chessboard_size_act/uncheck</slot>
+        </connect>
+
         <!-- Connection to enable "previous" action. It should be connected to a sequencer in the application configuration.-->
         <connect channel="${hasPreviousChannel}">
             <slot>exportAct/hide</slot>
@@ -143,12 +156,5 @@
         <connect channel="${nextActivityChannel}">
             <signal>nextAct/clicked</signal>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainView" />
-        <!-- Must be started after mainView -->
-        <start uid="cameraLauncherAct" />
-        <start uid="calibrationWriterSrv" />
     </config>
 </extension>

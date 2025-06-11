@@ -20,7 +20,7 @@
                 </gui>
                 <registry>
                     <parent wid="${TOOLBAR}" />
-                    <toolbar sid="toolBarView" start="true" />
+                    <toolbar sid="toolBarView" />
                 </registry>
             </service>
 
@@ -31,7 +31,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="view_5_visibility_act" start="true" />
+                    <menuItem sid="view_5_visibility_act" />
                 </registry>
             </service>
 
@@ -57,9 +57,6 @@
             <connect channel="${LOGO_VISIBILITY_CHANNEL}">
                 <signal>view_5_visibility_act/is_checked</signal>
             </connect>
-
-            <start uid="view" />
-            <start uid="hide_logo_shortcut" />
         </config>
     </extension>
 
@@ -91,9 +88,9 @@
                     </frame>
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <toolbar sid="toolBarView" start="true" />
-                    <view sid="backgroundView" start="true" />
+                    <menubar sid="menuBarView" />
+                    <toolbar sid="toolBarView" />
+                    <view sid="backgroundView" />
                 </registry>
             </service>
 
@@ -106,8 +103,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menu1View" start="true" />
-                    <menu sid="menu2View" start="true" />
+                    <menu sid="menu1View" />
+                    <menu sid="menu2View" />
                 </registry>
             </service>
 
@@ -126,12 +123,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="item1Act" start="false" />
-                    <menuItem sid="item2Act" start="false" />
-                    <menuItem sid="item3Act" start="false" />
-                    <menuItem sid="item4Act" start="false" />
-                    <menuItem sid="item5Act" start="false" />
-                    <menuItem sid="quitAct" start="false" />
+                    <menuItem sid="item1Act" />
+                    <menuItem sid="item2Act" />
+                    <menuItem sid="item3Act" />
+                    <menuItem sid="item4Act" />
+                    <menuItem sid="item5Act" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -145,9 +142,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="item1Act" start="false" />
-                    <menuItem sid="item16Act" start="false" />
-                    <menuItem sid="item17Act" start="false" />
+                    <menuItem sid="item1Act" />
+                    <menuItem sid="item16Act" />
+                    <menuItem sid="item17Act" />
                 </registry>
             </service>
 
@@ -172,26 +169,26 @@
                         <spacer />
                         <menuItem name="Enable/Disable Toolbar" style="check" />
                         <menuItem name="Hide/Show Toolbar" style="check" />
-                        <menu name="Test Hide/Show" start="true" />
+                        <menu name="Test Hide/Show" />
                         <menuItem name="Quit" icon="sight::module::ui::icons/cross.svg" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="startAct" start="true" />
-                    <menuItem sid="pauseAct" start="true" />
-                    <menuItem sid="stopAct" start="true" />
-                    <menuItem sid="item1Act" start="true" />
-                    <menuItem sid="item2Act" start="false" />
-                    <menuItem sid="item3Act" start="false" />
-                    <menuItem sid="item4Act" start="false" />
-                    <menuItem sid="item5Act" start="false" />
-                    <menuItem sid="item16Act" start="true" />
-                    <menuItem sid="item17Act" start="true" />
+                    <menuItem sid="startAct" />
+                    <menuItem sid="pauseAct" />
+                    <menuItem sid="stopAct" />
+                    <menuItem sid="item1Act" />
+                    <menuItem sid="item2Act" />
+                    <menuItem sid="item3Act" />
+                    <menuItem sid="item4Act" />
+                    <menuItem sid="item5Act" />
+                    <menuItem sid="item16Act" />
+                    <menuItem sid="item17Act" />
                     <editor wid="subToolBarView" />
-                    <menuItem sid="enable_disable_toolbar" start="true" />
-                    <menuItem sid="hideShowToolbar" start="true" />
-                    <menu sid="testHideShowView" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="enable_disable_toolbar" />
+                    <menuItem sid="hideShowToolbar" />
+                    <menu sid="testHideShowView" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -212,9 +209,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="startAct" start="false" />
-                    <menuItem sid="pauseAct" start="false" />
-                    <menuItem sid="stopAct" start="false" />
+                    <menuItem sid="startAct" />
+                    <menuItem sid="pauseAct" />
+                    <menuItem sid="stopAct" />
                 </registry>
             </service>
 
@@ -226,7 +223,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="containerView" start="true" />
+                    <view sid="containerView" />
                 </registry>
             </service>
 
@@ -240,7 +237,7 @@
                 </gui>
                 <registry>
                     <view wid="subWidView" />
-                    <view sid="sub2View" start="true" />
+                    <view sid="sub2View" />
                 </registry>
             </service>
 
@@ -255,9 +252,9 @@
                 </gui>
                 <registry>
                     <parent wid="subWidView" />
-                    <view sid="sub3View" start="true" />
-                    <view sid="sub4View" start="true" />
-                    <view sid="sub5View" start="true" />
+                    <view sid="sub3View" />
+                    <view sid="sub4View" />
+                    <view sid="sub5View" />
                 </registry>
             </service>
 
@@ -270,7 +267,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="view12" start="true" />
+                    <view sid="view12" />
                 </registry>
             </service>
 
@@ -295,7 +292,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="text_statusSrv" start="true" />
+                    <view sid="text_statusSrv" />
                 </registry>
             </service>
 
@@ -309,7 +306,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="ircadLogoSrv" start="true" />
+                    <view sid="ircadLogoSrv" />
                 </registry>
             </service>
 
@@ -324,10 +321,10 @@
                     <toolbar />
                 </gui>
                 <registry>
-                    <view sid="clickSrv" start="true" />
-                    <view sid="meSrv" start="true" />
-                    <view sid="checkableSrv" start="true" />
-                    <toolbar sid="toolbar2View" start="true" />
+                    <view sid="clickSrv" />
+                    <view sid="meSrv" />
+                    <view sid="checkableSrv" />
+                    <toolbar sid="toolbar2View" />
                 </registry>
             </service>
 
@@ -352,21 +349,23 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <service uid="item1Act" type="sight::module::ui::action">
-                <state checked="true" />
+                <properties checked="true" />
             </service>
 
             <service uid="item2Act" type="sight::module::ui::action">
-                <state checked="true" />
+                <properties checked="true" start="false" />
             </service>
 
-            <service uid="item3Act" type="sight::module::ui::action" />
+            <service uid="item3Act" type="sight::module::ui::action">
+                <properties start="false" />
+            </service>
 
             <service uid="item4Act" type="sight::module::ui::action">
-                <state checked="false" />
+                <properties checked="false" start="false" />
             </service>
 
             <service uid="item5Act" type="sight::module::ui::action">
-                <state checked="true" />
+                <properties checked="true" start="false" />
             </service>
 
             <service uid="startAct" type="sight::module::ui::action">
@@ -374,15 +373,15 @@
             </service>
 
             <service uid="stopAct" type="sight::module::ui::action">
-                <state enabled="false" />
+                <properties enabled="false" />
             </service>
 
             <service uid="pauseAct" type="sight::module::ui::action">
-                <state checked="true" visible="false" />
+                <properties checked="true" visible="false" />
             </service>
 
             <service uid="item16Act" type="sight::module::ui::action">
-                <state checked="true" />
+                <properties checked="true" />
             </service>
 
             <service uid="item17Act" type="sight::module::ui::action" />
@@ -423,7 +422,7 @@
 
             <service uid="quitAct" type="sight::module::ui::quit" />
 
-            <service uid="subToolBarConfig" type="sight::app::config_controller">
+            <service uid="subToolBarConfig" type="sight::app::config_launcher">
                 <properties config="SubToolBarCfg" />
                 <parameter replace="TOOLBAR" by="subToolBarView" />
                 <parameter replace="LOGO_VISIBILITY_CHANNEL" by="LOGO_VISIBILITY_CHANNEL" />
@@ -496,12 +495,6 @@
                 <slot>item4Act/start</slot>
                 <slot>item5Act/start</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="sub1View" />
-            <start uid="subToolBarConfig" />
         </config>
     </extension>
 </plugin>

@@ -31,8 +31,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="sceneView" start="true" />
-                <view sid="toolbarView" start="true" />
+                <view sid="sceneView" />
+                <view sid="toolbarView" />
             </registry>
         </service>
 
@@ -45,7 +45,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="sceneSrv" start="true" />
+                <view sid="sceneSrv" />
                 <view wid="negatoSliderView" />
             </registry>
         </service>
@@ -58,7 +58,7 @@
                 </layout>
             </gui>
             <registry>
-                <toolbar sid="toolbar" start="true" />
+                <toolbar sid="toolbar" />
             </registry>
         </service>
 
@@ -71,8 +71,8 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="maximizeAct" start="true" />
-                <menuItem sid="minimizeAct" start="true" />
+                <menuItem sid="maximizeAct" />
+                <menuItem sid="minimizeAct" />
             </registry>
         </service>
 
@@ -137,7 +137,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="negatoSliderCfg" type="sight::app::config_controller">
+        <service uid="negatoSliderCfg" type="sight::app::config_launcher">
             <properties config="sight::config::viz::image::imageSlider" />
             <parameter replace="WID_PARENT" by="negatoSliderView" />
             <parameter replace="sliceIndex" by="${sliceIndex}" />
@@ -204,19 +204,5 @@
             <slot>minimizeAct/hide</slot>
             <slot>maximizeAct/show</slot>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainView" />
-
-        <start uid="negatoCameraAdp" />
-        <start uid="negatoAdp" />
-        <start uid="ruler_fiducial_adp" />
-        <start uid="pickerInteractorAdp" />
-        <start uid="landmarksAdp" />
-        <start uid="pickedVoxelTextAdp" />
-        <start uid="eventAdp" />
-
-        <start uid="negatoSliderCfg" />
     </config>
 </extension>

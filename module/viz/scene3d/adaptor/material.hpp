@@ -59,7 +59,7 @@ namespace sight::module::viz::scene3d::adaptor
  * sight::data::string_serializable i.e. "u_float=1.0|u_vec3=1.0;5.0;6.0".
  *
  * @section Slots Slots
- * - \b update_field(data::object::fields_container_t): listen to the fields in the data::material.
+ * - \b update_field(data::fields_container_t): listen to the fields in the data::material.
  * - \b swap_texture(): listen to the module::viz::scene3d::adaptor::texture changes.
  * - \b add_texture(): called when a texture is added in the data::material.
  * - \b remove_texture(): called when a texture is removed in the data::material.
@@ -197,7 +197,7 @@ private:
      * @brief SLOT: updates the material from the input data fields.
      * @param _fields fields to update, only "material" and "uniforms" are taken into account.
      */
-    void update_field(data::object::fields_container_t _fields);
+    void update_field(data::fields_container_t _fields);
 
     /// SLOT: swaps the texture of the material.
     void swap_texture();

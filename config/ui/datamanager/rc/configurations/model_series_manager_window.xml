@@ -3,7 +3,7 @@ This config open a windows containing the editors to manage the ModelSeries: sho
 color, ...
 
 Example:
-<service uid="..." type="sight::app::config_controller">
+<service uid="..." type="sight::app::config_launcher">
     <properties config="ModelSeriesManagerWindow" />
     <inout group="data">
         <key name="organ_manager_modelseries" uid="..." />
@@ -42,7 +42,7 @@ With:
             </registry>
         </service>
 
-        <service uid="modelManager" type="sight::app::config_controller">
+        <service uid="modelManager" type="sight::app::config_launcher">
             <properties config="ModelSeriesManagerView" />
             <inout group="data">
                 <key name="organ_manager_modelseries" uid="${organ_manager_modelseries}" />
@@ -53,9 +53,5 @@ With:
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>organManagerFrame/closed</signal>
         </connect>
-
-        <!-- START AND STOP SERVICES -->
-        <start uid="organManagerFrame" />
-        <start uid="modelManager" />
     </config>
 </extension>

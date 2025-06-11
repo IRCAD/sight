@@ -27,8 +27,8 @@
                     <toolbar />
                 </gui>
                 <registry>
-                    <toolbar sid="toolbarView" start="true" />
-                    <view sid="genericSceneSrv" start="true" />
+                    <toolbar sid="toolbarView" />
+                    <view sid="genericSceneSrv" />
                 </registry>
             </service>
 
@@ -45,12 +45,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="videoSelectorSrv" start="true" />
-                    <menuItem sid="startVideoAct" start="true" />
-                    <menuItem sid="stopVideoAct" start="true" />
-                    <menuItem sid="pauseVideoAct" start="true" />
-                    <menuItem sid="previousImageAct" start="true" />
-                    <menuItem sid="nextImageAct" start="true" />
+                    <editor sid="videoSelectorSrv" />
+                    <menuItem sid="startVideoAct" />
+                    <menuItem sid="stopVideoAct" />
+                    <menuItem sid="pauseVideoAct" />
+                    <menuItem sid="previousImageAct" />
+                    <menuItem sid="nextImageAct" />
                 </registry>
             </service>
 
@@ -65,7 +65,7 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="sync">
+                <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default" order="1">
@@ -94,7 +94,7 @@
             </service>
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
-                <in group="frameTL">
+                <in group="frameTL" auto_connect="false">
                     <key uid="frameTL" />
                 </in>
                 <inout group="frames">
@@ -107,16 +107,19 @@
             <connect>
                 <signal>startVideoAct/clicked</signal>
                 <slot>videoGrabberSrv/start_camera</slot>
+                <slot>updater/start</slot>
             </connect>
 
             <connect>
                 <signal>stopVideoAct/clicked</signal>
                 <slot>videoGrabberSrv/stop_camera</slot>
+                <slot>updater/stop</slot>
             </connect>
 
             <connect>
                 <signal>pauseVideoAct/clicked</signal>
                 <slot>videoGrabberSrv/pause_camera</slot>
+                <slot>updater/stop</slot>
             </connect>
 
             <connect>
@@ -132,20 +135,15 @@
             <connect>
                 <signal>camera/id_modified</signal>
                 <slot>videoGrabberSrv/stop_camera</slot>
+                <slot>updater/stop</slot>
             </connect>
 
-            <connect>
-                <signal>frameUpdaterSrv/synchronization_done</signal>
-                <slot>genericSceneSrv/render</slot>
-                <slot>frameUpdaterSrv/request_sync</slot>
-            </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="videoGrabberSrv" />
-            <start uid="frameUpdaterSrv" />
-            <start uid="videoAdp" />
+            <update>
+                <sequence uid="updater" loop="true" start="false">
+                    <service uid="frameUpdaterSrv" />
+                    <service uid="genericSceneSrv" />
+                </sequence>
+            </update>
         </config>
     </extension>
 </plugin>

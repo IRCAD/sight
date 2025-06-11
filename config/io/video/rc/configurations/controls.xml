@@ -48,7 +48,7 @@ channels - in (optional):
 
 Usage:
 
-        <service uid="..." type="sight::app::config_controller">
+        <service uid="..." type="sight::app::config_launcher">
             <properties config="sight::config::io::video::controls" />
             <inout group="data">
                 <key name="camera" uid="..." />
@@ -120,13 +120,8 @@ Usage:
             </gui>
             <registry>
                 <parent wid="${TOOLBAR}" />
-                <toolbar sid="toolbarViewSrv" start="true" />
+                <toolbar sid="toolbarViewSrv" />
             </registry>
-        </service>
-
-        <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
-            <inout key="camera" uid="${camera}" />
-            <videoSupport>${videoSupport}</videoSupport>
         </service>
 
         <service uid="toolbarViewSrv" type="sight::module::ui::toolbar">
@@ -141,18 +136,18 @@ Usage:
                 </layout>
             </gui>
             <registry>
-                <editor sid="videoSelectorSrv" start="true" />
-                <menuItem sid="startVideoAct" start="true" />
-                <menuItem sid="pauseVideoAct" start="true" />
-                <menuItem sid="resumeVideoAct" start="true" />
-                <menuItem sid="stopVideoAct" start="true" />
-                <menuItem sid="loopVideoAct" start="true" />
+                <editor sid="videoSelectorSrv" />
+                <menuItem sid="startVideoAct" />
+                <menuItem sid="pauseVideoAct" />
+                <menuItem sid="resumeVideoAct" />
+                <menuItem sid="stopVideoAct" />
+                <menuItem sid="loopVideoAct" />
             </registry>
         </service>
 
-        <service uid="grabberProxySrv" type="sight::module::io::video::grabber_proxy">
-            <in key="camera" uid="${camera}" />
-            <inout key="frameTL" uid="${frameTL}" />
+        <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
+            <inout key="camera" uid="${camera}" />
+            <videoSupport>${videoSupport}</videoSupport>
         </service>
 
         <!-- ******************************* Actions ****************************** -->
@@ -178,6 +173,11 @@ Usage:
         <!-- Loop the frame grabber -->
         <service uid="loopVideoAct" type="sight::module::ui::action">
             <state enabled="false" />
+        </service>
+
+        <service uid="grabberProxySrv" type="sight::module::io::video::grabber_proxy">
+            <in key="camera" uid="${camera}" />
+            <inout key="frameTL" uid="${frameTL}" />
         </service>
 
         <!-- ******************************* Connections ******************************* -->
@@ -298,8 +298,5 @@ Usage:
         <connect channel="${optimizeGrabberIn}">
             <slot>grabberProxySrv/optimize</slot>
         </connect>
-
-        <start uid="containerViewSrv" />
-        <start uid="grabberProxySrv" />
     </config>
 </extension>

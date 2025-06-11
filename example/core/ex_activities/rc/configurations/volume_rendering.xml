@@ -22,12 +22,13 @@
                     <view proportion="0" />
                     <view proportion="0" />
                 </layout>
+                <toolbar />
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="imageScene" />
                 <view sid="tfm" />
-                <toolbar sid="toolBarView" start="true" />
+                <toolbar sid="toolBarView" />
             </registry>
         </service>
 
@@ -84,16 +85,6 @@
             <inout key="tf" uid="tf" />
             <in key="image" uid="${imageSeries}" />
         </service>
-
-        <!-- ******************************* Start services ***************************************** -->
-
-        <start uid="mainView" />
-        <start uid="imageScene" />
-        <start uid="cameraInteractorAdaptor" />
-        <start uid="volumeRender" />
-        <start uid="tfm" />
-        <start uid="importAct" />
-        <start uid="imageExtruderSrv" />
 
         <update uid="imageExtruderSrv" />
     </config>

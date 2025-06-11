@@ -19,11 +19,9 @@
  *
  ***********************************************************************/
 
-#include "config_controller_test.hpp"
+#include "config_launcher_test.hpp"
 
 #include "test_service.hpp"
-
-#include <app/extension/parameters.hpp>
 
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
@@ -35,6 +33,8 @@
 
 #include <utest/wait.hpp>
 
+#include <app/extension/parameters.hpp>
+
 #include <boost/config.hpp>
 #include <boost/property_tree/xml_parser.hpp>
 
@@ -42,7 +42,7 @@
 #include <regex>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::ut::config_controller_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::app::ut::config_launcher_test);
 
 namespace sight::app::ut
 {
@@ -63,7 +63,7 @@ int get_current_id()
 
 //------------------------------------------------------------------------------
 
-void config_controller_test::setUp()
+void config_launcher_test::setUp()
 {
     // Set up context before running a test
     core::runtime::init();
@@ -82,12 +82,12 @@ void config_controller_test::setUp()
 
 //------------------------------------------------------------------------------
 
-void config_controller_test::tearDown()
+void config_launcher_test::tearDown()
 {
     // Clean up after the test run.
     // unregister the services that have not been unregistered because a test failed.
 
-    auto services = sight::service::get_services("sight::app::config_controller");
+    auto services = sight::service::get_services("sight::app::config_launcher");
     for(const auto& srv : services)
     {
         if(srv->started())
@@ -101,11 +101,11 @@ void config_controller_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void config_controller_test::multi_config_test()
+void config_launcher_test::multi_config_test()
 {
     auto config_id = std::make_shared<sight::data::string>();
 
-    auto srv = service::add("sight::app::config_controller");
+    auto srv = service::add("sight::app::config_launcher");
     srv->set_inout(config_id, "config");
 
     srv->configure();
@@ -172,12 +172,12 @@ void config_controller_test::multi_config_test()
 
 //------------------------------------------------------------------------------
 
-void config_controller_test::set_config_key_test()
+void config_launcher_test::set_config_key_test()
 {
     auto config_id = std::make_shared<sight::data::string>(MULTI_CFG_CTL_1);
 
     // Initialise the testing service
-    service::base::sptr srv = service::add("sight::app::config_controller");
+    service::base::sptr srv = service::add("sight::app::config_launcher");
     srv->set_inout(config_id, "config");
 
     srv->configure();

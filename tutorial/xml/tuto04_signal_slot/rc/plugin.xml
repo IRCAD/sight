@@ -22,8 +22,8 @@
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <view sid="containerView" start="true" />
+                    <menubar sid="menuBarView" />
+                    <view sid="containerView" />
                 </registry>
             </service>
 
@@ -34,7 +34,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuFileView" />
                 </registry>
             </service>
 
@@ -47,8 +47,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openMeshAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="openMeshAct" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -70,9 +70,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="rendering1Srv" start="true" />
-                    <view sid="rendering2Srv" start="true" />
-                    <view sid="rendering3Srv" start="true" />
+                    <view sid="rendering1Srv" />
+                    <view sid="rendering2Srv" />
+                    <view sid="rendering3Srv" />
                 </registry>
             </service>
 
@@ -132,11 +132,6 @@
                 <signal>openMeshAct/clicked</signal>
                 <slot>meshReaderSrv/update</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="meshReaderSrv" />
         </config>
     </extension>
 </plugin>

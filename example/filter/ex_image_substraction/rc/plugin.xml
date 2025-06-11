@@ -82,7 +82,7 @@
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="mainView" start="true" />
+                    <view sid="mainView" />
                 </registry>
             </service>
 
@@ -94,8 +94,8 @@
                     <toolbar />
                 </gui>
                 <registry>
-                    <toolbar sid="toolBarView" start="true" />
-                    <view sid="multiView" start="true" />
+                    <toolbar sid="toolBarView" />
+                    <view sid="multiView" />
                 </registry>
             </service>
 
@@ -112,10 +112,10 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImage1Act" start="true" />
-                    <menuItem sid="openImage2Act" start="true" />
-                    <menuItem sid="saveImageAct" start="true" />
-                    <menuItem sid="computeImageAct" start="true" />
+                    <menuItem sid="openImage1Act" />
+                    <menuItem sid="openImage2Act" />
+                    <menuItem sid="saveImageAct" />
+                    <menuItem sid="computeImageAct" />
                 </registry>
             </service>
 
@@ -129,9 +129,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="image1View" start="true" />
-                    <view sid="image2View" start="true" />
-                    <view sid="substractionView" start="true" />
+                    <view sid="image1View" />
+                    <view sid="image2View" />
+                    <view sid="substractionView" />
                 </registry>
             </service>
 
@@ -145,8 +145,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="negato1SceneSrv" start="true" />
-                    <view sid="image1BottomView" start="true" />
+                    <view sid="negato1SceneSrv" />
+                    <view sid="image1BottomView" />
                 </registry>
             </service>
 
@@ -159,8 +159,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="snapshotNegato1EditorSrv" start="true" />
-                    <view sid="sliderNegato1Srv" start="false" />
+                    <view sid="snapshotNegato1EditorSrv" />
+                    <view sid="sliderNegato1Srv" />
                 </registry>
             </service>
 
@@ -174,8 +174,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="negato2SceneSrv" start="true" />
-                    <view sid="image2BottomView" start="true" />
+                    <view sid="negato2SceneSrv" />
+                    <view sid="image2BottomView" />
                 </registry>
             </service>
 
@@ -188,8 +188,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="snapshotNegato2EditorSrv" start="true" />
-                    <view sid="sliderNegato2Srv" start="false" />
+                    <view sid="snapshotNegato2EditorSrv" />
+                    <view sid="sliderNegato2Srv" />
                 </registry>
             </service>
 
@@ -203,8 +203,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="negato3SceneSrv" start="true" />
-                    <view sid="substractionBottomView" start="true" />
+                    <view sid="negato3SceneSrv" />
+                    <view sid="substractionBottomView" />
                 </registry>
             </service>
 
@@ -217,7 +217,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="snapshotNegato3EditorSrv" start="true" />
+                    <view sid="snapshotNegato3EditorSrv" />
                     <view sid="sliderNegato3Srv" />
                 </registry>
             </service>
@@ -434,30 +434,6 @@
                 <signal>saveImageAct/clicked</signal>
                 <slot>imageWriterSrv/update</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="sliderNegato1Srv" />
-            <start uid="sliderNegato2Srv" />
-            <start uid="sliderNegato3Srv" />
-            <start uid="imageWriter1Srv" />
-            <start uid="imageWriter2Srv" />
-            <start uid="imageWriter3Srv" />
-            <start uid="imageSubstractSrv" />
-            <start uid="N1TrackballInteractorAdp" />
-            <start uid="N1SnapshotAdp" />
-            <start uid="N1NegatoAdp" />
-            <start uid="N2TrackballInteractorAdp" />
-            <start uid="N2SnapshotAdp" />
-            <start uid="N2NegatoAdp" />
-            <start uid="N3TrackballInteractorAdp" />
-            <start uid="N3SnapshotAdp" />
-            <start uid="N3NegatoAdp" />
-
-            <start uid="readerFile1Srv" />
-            <start uid="readerFile2Srv" />
-            <start uid="imageWriterSrv" />
         </config>
     </extension>
 </plugin>

@@ -26,9 +26,9 @@
                     </frame>
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <toolbar sid="toolbarView" start="true" />
-                    <view sid="genericSceneSrv" start="true" />
+                    <menubar sid="menuBarView" />
+                    <toolbar sid="toolbarView" />
+                    <view sid="genericSceneSrv" />
                 </registry>
             </service>
 
@@ -40,8 +40,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="true" />
-                    <menu sid="menuPreferencesView" start="true" />
+                    <menu sid="menuFileView" />
+                    <menu sid="menuPreferencesView" />
                 </registry>
             </service>
 
@@ -52,7 +52,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -63,7 +63,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="videoDirAct" start="true" />
+                    <menuItem sid="videoDirAct" />
                 </registry>
             </service>
 
@@ -82,12 +82,12 @@
                 </gui>
                 <registry>
                     <editor sid="videoSelectorSrv" />
-                    <menuItem sid="startVideoAct" start="true" />
-                    <menuItem sid="pauseVideoAct" start="true" />
-                    <menuItem sid="resumeVideoAct" start="true" />
-                    <menuItem sid="stopVideoAct" start="true" />
-                    <menuItem sid="loopVideoAct" start="true" />
-                    <editor sid="motionStatusSrv" start="true" />
+                    <menuItem sid="startVideoAct" />
+                    <menuItem sid="pauseVideoAct" />
+                    <menuItem sid="resumeVideoAct" />
+                    <menuItem sid="stopVideoAct" />
+                    <menuItem sid="loopVideoAct" />
+                    <editor sid="motionStatusSrv" />
                 </registry>
             </service>
 
@@ -135,7 +135,7 @@
 
             <!-- scene in which the video will be rendered -->
             <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="sync">
+                <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default" order="1">
@@ -170,7 +170,7 @@
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer">
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" auto_connect="false">
                 <in group="frameTL">
                     <key uid="frameTL" />
                 </in>
@@ -179,8 +179,8 @@
                 </inout>
             </service>
 
-            <service uid="opticalFlowSrv" type="sight::module::filter::vision::optical_flow" worker="ofWorker">
-                <in key="timeline" uid="frameTL" auto_connect="true" />
+            <service uid="opticalFlowSrv" type="sight::module::filter::vision::optical_flow">
+                <in key="timeline" uid="frameTL" auto_connect="false" />
                 <config scaleFactor="3.6" />
             </service>
 
@@ -189,6 +189,7 @@
             <connect>
                 <signal>startVideoAct/clicked</signal>
                 <slot>videoGrabberSrv/start_camera</slot>
+                <slot>updater/start</slot>
             </connect>
 
             <connect>
@@ -196,6 +197,7 @@
                 <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/show</slot>
                 <slot>pauseVideoAct/hide</slot>
+                <slot>updater/stop</slot>
             </connect>
 
             <connect>
@@ -203,6 +205,7 @@
                 <slot>videoGrabberSrv/pause_camera</slot>
                 <slot>resumeVideoAct/hide</slot>
                 <slot>pauseVideoAct/show</slot>
+                <slot>updater/start</slot>
             </connect>
 
             <connect>
@@ -219,6 +222,7 @@
                 <slot>stopVideoAct/disable</slot>
                 <slot>loopVideoAct/disable</slot>
                 <slot>loopVideoAct/uncheck</slot>
+                <slot>updater/stop</slot>
             </connect>
 
             <connect>
@@ -239,6 +243,7 @@
             <connect>
                 <signal>camera/id_modified</signal>
                 <slot>videoGrabberSrv/stop_camera</slot>
+                <slot>updater/stop</slot>
             </connect>
 
             <connect>
@@ -257,20 +262,13 @@
                 <slot>motionStatusSrv/change_to_red</slot>
             </connect>
 
-            <connect>
-                <signal>frameUpdaterSrv/synchronization_done</signal>
-                <slot>genericSceneSrv/render</slot>
-                <slot>frameUpdaterSrv/request_sync</slot>
-            </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="videoSelectorSrv" />
-            <start uid="videoGrabberSrv" />
-            <start uid="frameUpdaterSrv" />
-            <start uid="opticalFlowSrv" />
-            <start uid="videoAdp" />
+            <update>
+                <sequence uid="updater" loop="true" start="false">
+                    <service uid="frameUpdaterSrv" />
+                    <service uid="opticalFlowSrv" />
+                    <service uid="genericSceneSrv" />
+                </sequence>
+            </update>
         </config>
     </extension>
 </plugin>

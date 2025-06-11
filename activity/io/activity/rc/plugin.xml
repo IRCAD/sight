@@ -54,7 +54,6 @@
                 <selection mode="exclude" />
                 <addSelection service="sight::module::io::session::writer" />
             </service>
-            <start uid="export_selection" />
             <update uid="export_selection" />
         </config>
     </extension>
@@ -73,7 +72,6 @@
                 <addSelection service="sight::module::io::dicom::surface_segmentation_writer" />
             </service>
 
-            <start uid="exportSelection" />
             <update uid="exportSelection" />
         </config>
     </extension>

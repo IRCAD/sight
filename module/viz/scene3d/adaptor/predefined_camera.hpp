@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include <data/landmarks.hpp>
+#include <data/string.hpp>
 
 #include <ui/__/parameter.hpp>
 
@@ -46,7 +46,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::predefined_camera">
-        <config priority="0" mouseRotation="true" defaultPosition="pos3" zoom="1.5"/>
+        <config priority="0" mouseRotation="true" zoom="1.5"/>
         <in key="transform" uid="..." auto_connect="true"/>
         <in key="view_up" uid="..." />
         <positions>
@@ -54,7 +54,7 @@ namespace sight::module::viz::scene3d::adaptor
             <position name="pos2" rx="-30.0" ry="90.0" />
             <position name="pos3" rx="-30.0" ry="-90.0"/>
         </positions>
-        <properties follow_orientation="false" />
+        <properties position="pos3" follow_orientation="false" />
    </service>
    @endcode
  *
@@ -67,19 +67,20 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
  * - \b layerOrderDependant (optional, bool, default=true): defines if interaction must take into account above layers.
  * - \b mouseRotation (optional, bool, default=true): defines if mouse rotation through mouse is activated or not.
- * - \b defaultPosition (optional, string, default=""): defines the default position to use.
  * - \b animate (optional, bool, default=true): defines if an animation is used when switching position or not.
- * - \b follow_orientation (optional, bool, default=false) defines if we use a fixed orientation
- *      or if we follow the orientation of the target.
  * - \b zoom (optional, default="1.0"): defines the zoom ratio against the size of the scene.
  *
+ * @subsection Properties Properties:
+ * - \b position (optional, string, default=""): defines the default position to use.
+ * - \b follow_orientation (optional, bool, default=false) defines if we use a fixed orientation
+ *      or if we follow the orientation of the target.
+ *
  * @section Slots Slots
- * - \b set_parameter(parameter_t value, std::string key): If key = "position", looking for value in the position name,
- *      then goes to that position if found.
- * - \b nextPosition: Go to the next position (cyclic iteration).
- * - \b previousPosition: Go to the previous position (cyclic iteration).
- * - \b update: Update adaptor using the input transformation,
- *      this slot is called automatically if auto_connect="true".
+ * - \b reset: Reset the point of view.
+ * - \b set_transform: Update adaptor using the input transformation.
+ * - \b set_position: looking for value in the position name, then goes to that position if found.
+ * - \b next_position: Go to the next position (cyclic iteration).
+ * - \b prev_position: Go to the previous position (cyclic iteration).
  */
 class predefined_camera final : public sight::viz::scene3d::adaptor
 {
@@ -89,10 +90,11 @@ public:
     {
         using slots_t = core::com::slots::key_t;
 
-        inline static const slots_t RESET             = "reset";
-        inline static const slots_t SET_PARAMETER     = "set_parameter";
-        inline static const slots_t NEXT_POSITION     = "nextPosition";
-        inline static const slots_t PREVIOUS_POSITION = "previousPosition";
+        inline static const slots_t RESET         = "reset";
+        inline static const slots_t SET_TRANSFORM = "set_transform";
+        inline static const slots_t SET_POSITION  = "set_position";
+        inline static const slots_t NEXT_POSITION = "next_position";
+        inline static const slots_t PREV_POSITION = "prev_position";
     };
 
     /// Generates default methods as New, dynamicCast, ...
@@ -124,7 +126,15 @@ private:
 
     connections_t auto_connections() const final;
 
-    void set_parameter(ui::parameter_t _value, std::string _key);
+    enum class update_flags : std::uint8_t
+    {
+        RESET,
+        SET_TRANSFORM,
+        SET_POSITION,
+        NEXT_POSITION,
+        PREV_POSITION,
+        _NUM
+    };
 
     using predefined_position_t =
         sight::viz::scene3d::interactor::predefined_position_interactor::predefined_position_t;
@@ -143,9 +153,6 @@ private:
     /// Defines if one can move using the mouse interaction (default off).
     bool m_manual_rotation {false};
 
-    /// Defines the default position to use.
-    std::optional<std::string> m_default_position;
-
     /// Defines if an animation is performed when switching positions.
     bool m_animate {true};
 
@@ -160,6 +167,9 @@ private:
 
     /// Defines if we use a fixed orientation or if we follow the orientation of the target.
     sight::data::property<sight::data::boolean> m_follow_orientation {this, "follow_orientation", false};
+
+    /// Defines if we use a fixed orientation or if we follow the orientation of the target.
+    sight::data::property<sight::data::string> m_position {this, "position", {}};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

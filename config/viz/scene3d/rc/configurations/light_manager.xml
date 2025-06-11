@@ -19,8 +19,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="light_selector" start="true" />
-                <view sid="light_editor" start="true" />
+                <view sid="light_selector" />
+                <view sid="light_editor" />
             </registry>
         </service>
 
@@ -35,7 +35,5 @@
             <signal>light_selector/light_selected</signal>
             <slot>light_editor/edit_light</slot>
         </connect>
-
-        <start uid="LightView" />
     </config>
 </extension>

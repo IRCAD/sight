@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -72,11 +72,11 @@ public:
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="scenesView" start="true" />
-                <view sid="topToolbarSliderView" start="true" />
-                <view sid="rightToolbarSliderView" start="true" />
-                <view sid="videoSliderView" start="true" />
-                <view sid="advancedQueryEditorSliderView" start="true" />
+                <view sid="scenesView" />
+                <view sid="topToolbarSliderView" />
+                <view sid="rightToolbarSliderView" />
+                <view sid="videoSliderView" />
+                <view sid="advancedQueryEditorSliderView" />
             </registry>
         </service>
 

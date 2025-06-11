@@ -50,9 +50,9 @@
                     <toolbar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <toolbar sid="toolbarView" start="true" />
-                    <view sid="containerView" start="true" />
+                    <menubar sid="menuBarView" />
+                    <toolbar sid="toolbarView" />
+                    <view sid="containerView" />
                 </registry>
             </service>
 
@@ -64,8 +64,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="true" />
-                    <menu sid="menuOptionsView" start="true" />
+                    <menu sid="menuFileView" />
+                    <menu sid="menuOptionsView" />
                 </registry>
             </service>
 
@@ -77,8 +77,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="configureRecordingPathAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="configureRecordingPathAct" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -91,9 +91,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="showfilterSettingsAct" start="true" />
-                    <menuItem sid="showPCDepthAct" start="true" />
-                    <menuItem sid="showPCColorAct" start="true" />
+                    <menuItem sid="showfilterSettingsAct" />
+                    <menuItem sid="showPCDepthAct" />
+                    <menuItem sid="showPCColorAct" />
                 </registry>
             </service>
 
@@ -120,18 +120,18 @@
                     </layout>
                 </gui>
                 <registry>
-                    <editor sid="videoSelectorSrv" start="true" />
-                    <menuItem sid="startVideoAct" start="true" />
-                    <menuItem sid="pauseVideoAct" start="true" />
-                    <menuItem sid="resumeVideoAct" start="true" />
-                    <menuItem sid="stopVideoAct" start="true" />
-                    <menuItem sid="loopVideoAct" start="true" />
-                    <menuItem sid="recordAct" start="true" />
-                    <editor sid="presetsSrv" start="true" />
-                    <editor sid="alignmentSrv" start="true" />
-                    <editor sid="infraredEmitterSrv" start="true" />
-                    <editor sid="switchInfraToColorSrv" start="true" />
-                    <editor sid="distanceSrv" start="true" />
+                    <editor sid="videoSelectorSrv" />
+                    <menuItem sid="startVideoAct" />
+                    <menuItem sid="pauseVideoAct" />
+                    <menuItem sid="resumeVideoAct" />
+                    <menuItem sid="stopVideoAct" />
+                    <menuItem sid="loopVideoAct" />
+                    <menuItem sid="recordAct" />
+                    <editor sid="presetsSrv" />
+                    <editor sid="alignmentSrv" />
+                    <editor sid="infraredEmitterSrv" />
+                    <editor sid="switchInfraToColorSrv" />
+                    <editor sid="distanceSrv" />
                     <menuItem sid="configureRecordingPathAct" />
                     <menuItem sid="showfilterSettingsAct" />
                 </registry>
@@ -146,8 +146,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="scanningView" start="true" />
-                    <view sid="filterSettingsView" start="true" />
+                    <view sid="scanningView" />
+                    <view sid="filterSettingsView" />
                 </registry>
             </service>
 
@@ -160,8 +160,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="RGBDView" start="true" />
-                    <view sid="bottomView" start="true" />
+                    <view sid="RGBDView" />
+                    <view sid="bottomView" />
                 </registry>
             </service>
 
@@ -174,8 +174,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="TFView" start="true" />
-                    <view sid="pointcloudView" start="true" />
+                    <view sid="TFView" />
+                    <view sid="pointcloudView" />
                 </registry>
             </service>
 
@@ -188,8 +188,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="distanceMapRenderSrv" start="true" />
-                    <view sid="videoRenderSrv" start="true" />
+                    <view sid="distanceMapRenderSrv" />
+                    <view sid="videoRenderSrv" />
                 </registry>
             </service>
 
@@ -202,8 +202,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="reconstructionRenderSrv" start="true" />
-                    <view sid="rangeEditorSrv" start="true" />
+                    <view sid="reconstructionRenderSrv" />
+                    <view sid="rangeEditorSrv" />
                 </registry>
             </service>
 
@@ -216,8 +216,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneTFSrv" start="true" />
-                    <view sid="genericSceneViewportSelectorSrv" start="true" />
+                    <view sid="genericSceneTFSrv" />
+                    <view sid="genericSceneViewportSelectorSrv" />
                 </registry>
             </service>
 
@@ -235,12 +235,12 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="enableSpacialFilterParamsSrv" start="true" />
-                    <view sid="spacialFilterParamsSrv" start="true" />
-                    <view sid="enableTemporalFilterParamsSrv" start="true" />
-                    <view sid="temporalFilterParamsSrv" start="true" />
-                    <view sid="enableHoleFillingFilterParamsSrv" start="true" />
-                    <view sid="holeFillingFilterParamsSrv" start="true" />
+                    <view sid="enableSpacialFilterParamsSrv" />
+                    <view sid="spacialFilterParamsSrv" />
+                    <view sid="enableTemporalFilterParamsSrv" />
+                    <view sid="temporalFilterParamsSrv" />
+                    <view sid="enableHoleFillingFilterParamsSrv" />
+                    <view sid="holeFillingFilterParamsSrv" />
                 </registry>
             </service>
 
@@ -296,7 +296,7 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="distanceMapRenderSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="sync">
+                <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video" order="1">
@@ -329,7 +329,7 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="videoRenderSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="sync">
+                <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video" order="1">
@@ -361,7 +361,7 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="reconstructionRenderSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="sync">
+                <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default" order="1">
@@ -757,35 +757,6 @@
                 <signal>showfilterSettingsAct/is_checked</signal>
                 <slot>filterSettingsView/set_visible</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="videoGrabberSrv" />
-            <start uid="frameUpdaterSrv" />
-            <start uid="extractCameraSrv" />
-            <start uid="DMDepthAdp" />
-            <start uid="DMPointAdp" />
-            <start uid="DMCameraAdp" />
-            <start uid="VVideoAdp" />
-            <start uid="VPointAdp" />
-            <start uid="VCameraAdp" />
-            <start uid="RPointAdp" />
-            <start uid="RCameraAdp" />
-
-            <start uid="shutterAbscissa" />
-            <start uid="shutterOrdinate" />
-            <start uid="VSRangeSelectorAdp" />
-
-            <start uid="TFViewportRangeUpdaterAdp" />
-            <start uid="TFGridAdp" />
-            <start uid="TFAbscissaAdp" />
-            <start uid="TFOrdinateAdp" />
-            <start uid="TFMaxOpacityAdp" />
-            <start uid="TFTransferFunctionAdp" />
-            <start uid="TFAxisLeftAdp" />
-            <start uid="TFAxisBottomAdp" />
-            <start uid="syncGenericSceneSrv" />
 
             <!-- ******************************* Update services ***************************************** -->
 

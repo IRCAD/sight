@@ -22,7 +22,7 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="containerView" start="true" />
+                <view sid="containerView" />
             </registry>
         </service>
 
@@ -37,8 +37,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolbar sid="toolBarView" start="true" />
-                <view sid="selectorSrv" start="true" />
+                <toolbar sid="toolBarView" />
+                <view sid="selectorSrv" />
                 <view wid="previewView" />
             </registry>
         </service>
@@ -53,10 +53,10 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="importAct" start="true" />
-                <menuItem sid="exportAct" start="true" />
-                <menuItem sid="thresholdAct" start="true" />
-                <menuItem sid="mesherAct" start="true" />
+                <menuItem sid="importAct" />
+                <menuItem sid="exportAct" />
+                <menuItem sid="thresholdAct" />
+                <menuItem sid="mesherAct" />
             </registry>
         </service>
 
@@ -129,10 +129,5 @@
             <signal>thresholdAct/activity_launched</signal>
             <signal>mesherAct/activity_launched</signal>
         </connect>
-
-        <!-- ******************************* Start services ***************************************** -->
-
-        <start uid="mainView" />
-        <start uid="seriesViewerSrv" />
     </config>
 </extension>

@@ -41,12 +41,9 @@ This example shows some possibilities of material configuration in the 3D scene:
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="main_view" start="true" />
+                    <view sid="main_view" />
                 </registry>
             </service>
-
-            <!-- Status bar used to display the progress bar for reading -->
-            <service uid="progress_bar_view" type="sight::module::ui::qt::progress_bar" />
 
             <!-- main view -->
             <service uid="main_view" type="sight::module::ui::view">
@@ -58,9 +55,9 @@ This example shows some possibilities of material configuration in the 3D scene:
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="scene_srv" start="true" />
-                    <view sid="toolbar_view" start="true" />
-                    <view sid="progress_bar_view" start="true" />
+                    <view sid="scene_srv" />
+                    <view sid="toolbar_view" />
+                    <view sid="progress_bar_view" />
                 </registry>
             </service>
 
@@ -72,7 +69,7 @@ This example shows some possibilities of material configuration in the 3D scene:
                     </layout>
                 </gui>
                 <registry>
-                    <toolbar sid="toolbar" start="true" />
+                    <toolbar sid="toolbar" />
                 </registry>
             </service>
 
@@ -84,10 +81,13 @@ This example shows some possibilities of material configuration in the 3D scene:
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="open_model_series_act" start="true" />
-                    <menuItem sid="snapshot_act" start="true" />
+                    <menuItem sid="open_model_series_act" />
+                    <menuItem sid="snapshot_act" />
                 </registry>
             </service>
+
+            <!-- Status bar used to display the progress bar for reading -->
+            <service uid="progress_bar_view" type="sight::module::ui::qt::progress_bar" />
 
             <!-- *************************** Begin generic scene *************************** -->
 
@@ -155,19 +155,10 @@ This example shows some possibilities of material configuration in the 3D scene:
                 <slot>image_writer_srv/update</slot>
             </connect>
 
-            <!-- ******************************* Start services ***************************************** -->
-
             <connect>
                 <signal>open_model_series_act/clicked</signal>
                 <slot>model_series_reader_srv/update</slot>
             </connect>
-
-            <start uid="main_frame" />
-            <start uid="image_writer_srv" />
-            <start uid="model_series_reader_srv" />
-            <start uid="trackball_interactor_adp" />
-            <start uid="model_series_adp" />
-            <start uid="snapshot_adp" />
         </config>
     </extension>
 </plugin>

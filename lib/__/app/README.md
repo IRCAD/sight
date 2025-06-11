@@ -13,7 +13,7 @@ The library proposes different base classes to implement services. They bring a 
 
 - **controller**: generic interface meant to define control services
 - **object_parser**: generic interface meant to define services which build objects or associated services from an XML-based description
-- **config_controller**: starts/stops a template configuration
+- **config_launcher**: starts/stops a template configuration
 
 ### _extension_
 

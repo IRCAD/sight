@@ -44,11 +44,5 @@
         <connect channel="${validationChannel}">
             <signal>${imageSeries}/modified</signal>
         </connect>
-
-        <!-- ******************************* Start services ***************************************** -->
-
-        <start uid="mainView" />
-        <start uid="imageScene" />
-        <start uid="importAct" />
     </config>
 </extension>

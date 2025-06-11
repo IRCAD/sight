@@ -44,15 +44,6 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="videoToolbarConfig" type="sight::app::config_controller">
-                <properties config="sight::config::io::video::controls" />
-                <inout group="data">
-                    <key name="camera" uid="camera" />
-                    <key name="frameTL" uid="frameTL" />
-                </inout>
-                <parameter replace="TOOLBAR" by="subToolbarView" />
-            </service>
-
             <service uid="mainFrame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
@@ -63,8 +54,8 @@
                     <toolbar />
                 </gui>
                 <registry>
-                    <toolbar sid="toolbarView" start="true" />
-                    <view sid="cameraView" start="true" />
+                    <toolbar sid="toolbarView" />
+                    <view sid="cameraView" />
                 </registry>
             </service>
 
@@ -79,6 +70,19 @@
                 </registry>
             </service>
 
+            <service uid="videoToolbarConfig" type="sight::app::config_launcher">
+                <properties config="sight::config::io::video::controls" />
+                <inout group="data">
+                    <key name="camera" uid="camera" />
+                    <key name="frameTL" uid="frameTL" />
+                </inout>
+                <parameter replace="TOOLBAR" by="subToolbarView" />
+                <parameter replace="cameraStartedChannelOut" by="camera_started_channel" />
+                <parameter replace="cameraPausedChannelOut" by="camera_paused_channel" />
+                <parameter replace="cameraResumePauseChannelOut" by="camera_resume_pause_channel" />
+                <parameter replace="cameraStoppedChannelOut" by="camera_stopped_channel" />
+            </service>
+
             <service uid="cameraView" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::line">
@@ -88,15 +92,15 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneSrv" start="true" />
-                    <view sid="aruco_parameters_srv" start="true" />
+                    <view sid="genericSceneSrv" />
+                    <view sid="aruco_parameters_srv" />
                 </registry>
             </service>
 
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
-                <scene renderMode="sync">
+                <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default" order="1">
@@ -140,7 +144,7 @@
             </service>
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
-                <in group="frameTL">
+                <in group="frameTL" auto_connect="false">
                     <key uid="frameTL" />
                 </in>
                 <inout group="frames">
@@ -148,9 +152,9 @@
                 </inout>
             </service>
 
-            <service uid="trackerSrv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking">
+            <service uid="trackerSrv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking" auto_connect="false">
                 <in key="camera" uid="camera" />
-                <inout key="frame" uid="videoImage" auto_connect="true" />
+                <inout key="frame" uid="videoImage" />
                 <inout group="markerMap">
                     <key uid="markerMap" />
                 </inout>
@@ -162,19 +166,29 @@
 
             <!-- ******************************* Connections ***************************************** -->
 
-            <connect>
-                <signal>markerMap/modified</signal>
-                <slot>genericSceneSrv/render</slot>
-                <slot>frameUpdaterSrv/request_sync</slot>
+            <connect channel="camera_started_channel">
+                <slot>updater/start</slot>
             </connect>
 
-            <!-- ******************************* Start services ***************************************** -->
+            <connect channel="camera_paused_channel">
+                <slot>updater/stop</slot>
+            </connect>
 
-            <start uid="mainFrame" />
-            <start uid="videoToolbarConfig" />
-            <start uid="frameUpdaterSrv" />
-            <start uid="trackerSrv" />
-            <start uid="videoAdp" />
+            <connect channel="camera_resumed_channel">
+                <slot>updater/start</slot>
+            </connect>
+
+            <connect channel="camera_stopped_channel">
+                <slot>updater/stop</slot>
+            </connect>
+
+            <update>
+                <sequence uid="updater" loop="true" start="false">
+                    <service uid="frameUpdaterSrv" />
+                    <service uid="trackerSrv" />
+                    <service uid="genericSceneSrv" />
+                </sequence>
+            </update>
         </config>
     </extension>
 </plugin>

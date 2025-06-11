@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -129,6 +129,10 @@ public:
 
     /// Tells if the service is auto-connected or not. Could be reevaluated but normally safe to store.
     bool m_auto_connected {false};
+
+    /// Copy of the identifier, only used to report potential errors in the destructor
+    /// In this place get_id() seems no longer accessible and throws bad_weak_ptr
+    core::id::type m_id_copy;
 };
 
 } // namespace sight::service::detail

@@ -410,29 +410,24 @@ void predefined_position_interactor::to_predefined_position(std::size_t _idx, bo
 
 // ----------------------------------------------------------------------------
 
-void predefined_position_interactor::set_parameter(ui::parameter_t _value, std::string _key)
+void predefined_position_interactor::set_position(const std::string& _value)
 {
-    if(_key == "position")
-    {
-        const std::string predefined_position_name = std::get<std::string>(_value);
-
-        const auto it = std::ranges::find_if(
-            m_predefined_positions,
-            [predefined_position_name](const predefined_position_t& _p)
-            {
-                return _p.name == predefined_position_name;
-            });
-
-        const auto index = std::size_t(it - m_predefined_positions.begin());
-
-        if(index >= m_predefined_positions.size())
+    const auto it = std::ranges::find_if(
+        m_predefined_positions,
+        [_value](const predefined_position_t& _p)
         {
-            SIGHT_ERROR("Cannot move to position '" << index << " / " << m_predefined_positions.size() << "'");
-            return;
-        }
+            return _p.name == _value;
+        });
 
-        this->to_predefined_position(static_cast<std::size_t>(index), m_animate);
+    const auto index = std::size_t(it - m_predefined_positions.begin());
+
+    if(index >= m_predefined_positions.size())
+    {
+        SIGHT_ERROR("Cannot move to position '" << index << " / " << m_predefined_positions.size() << "'");
+        return;
     }
+
+    this->to_predefined_position(static_cast<std::size_t>(index), m_animate);
 }
 
 // ----------------------------------------------------------------------------

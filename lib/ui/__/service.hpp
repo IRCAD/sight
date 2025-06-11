@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,8 +101,8 @@ class slideview;
        </gui>
        <registry>
            <parent wid="myView" />
-           <toolbar sid="toolbar1" start="true" />
-           <view sid="subView3" start="true" />
+           <toolbar sid="toolbar1" />
+           <view sid="subView3" />
            <view wid="subView4" />
            <view sid="subView5" />
            <slideView sid="slideView1" start="true />

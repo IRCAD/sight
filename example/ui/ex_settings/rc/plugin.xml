@@ -48,7 +48,7 @@ This example shows the possibilities of properties:
                     <menubar />
                 </gui>
                 <registry>
-                    <view sid="mainview" start="true" />
+                    <view sid="mainview" />
                 </registry>
             </service>
 
@@ -62,9 +62,9 @@ This example shows the possibilities of properties:
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="properties1_srv" start="true" />
-                    <view sid="properties2_srv" start="true" />
-                    <view sid="properties3_srv" start="true" />
+                    <view sid="properties1_srv" />
+                    <view sid="properties2_srv" />
+                    <view sid="properties3_srv" />
                 </registry>
             </service>
 
@@ -197,10 +197,6 @@ This example shows the possibilities of properties:
                     <item name="Dir" widget="dir_read" depends="enable_obj" orientation="vertical" />
                 </ui>
             </service>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="main_frame" />
         </config>
     </extension>
 </plugin>

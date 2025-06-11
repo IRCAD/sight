@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,8 +62,8 @@ protected:
               </layout>
           </gui>
           <registry>
-              <menu sid="myMenu" start="true" />
-              <menu sid="myMenu2" start="true" />
+              <menu sid="myMenu" />
+              <menu sid="myMenu2" />
           </registry>
        </service>
        @endcode

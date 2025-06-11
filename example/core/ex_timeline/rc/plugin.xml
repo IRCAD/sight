@@ -62,14 +62,6 @@
                 <signal>messageTL/object_pushed</signal>
                 <slot>consumer1Srv/consume</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="producer1Srv" />
-            <start uid="producer2Srv" />
-            <start uid="producer3Srv" />
-            <start uid="consumer1Srv" />
-            <start uid="consumer2Srv" />
         </config>
     </extension>
 </plugin>

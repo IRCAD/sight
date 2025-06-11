@@ -501,9 +501,9 @@ void grabber_proxy::start_camera()
                     const auto srv_cfg              =
                         srv_config_registry->get_service_config(m_grabber_config, m_grabber_impl);
                     srv->set_config(srv_cfg);
-                    srv->configure();
                 }
 
+                srv->configure();
                 srv->set_worker(this->worker());
                 srv->start();
 

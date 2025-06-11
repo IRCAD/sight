@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,11 +116,11 @@ public:
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="item1" start="true" />
-                <menuItem sid="item2" start="false" />
-                <menuItem sid="item3" start="false" />
-                <menu sid="myMenu" start="true" />
-                <menuItem sid="actionQuit" start="false" />
+                <menuItem sid="item1" />
+                <menuItem sid="item2"  />
+                <menuItem sid="item3"  />
+                <menu sid="myMenu" />
+                <menuItem sid="actionQuit"  />
             </registry>
        </service>
        @endcode

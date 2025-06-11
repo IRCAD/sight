@@ -18,8 +18,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="gs" start="true" />
-                <view sid="sliderIndexDicomPullerEditor" start="true" />
+                <view sid="gs" />
+                <view sid="sliderIndexDicomPullerEditor" />
             </registry>
         </service>
 
@@ -67,12 +67,5 @@
                 </readerConfig>
             </config>
         </service>
-
-        <start uid="mainview" />
-        <!-- Deferred start -->
-        <start uid="imageDumpLocker" />
-        <!-- 3D scene 'gs' -->
-        <start uid="pNegatoAdp" />
-        <start uid="pNegatoCameraAdp" />
     </config>
 </extension>

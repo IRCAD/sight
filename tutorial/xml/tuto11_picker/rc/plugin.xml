@@ -26,8 +26,8 @@
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <view sid="containerView" start="true" />
+                    <menubar sid="menuBarView" />
+                    <view sid="containerView" />
                 </registry>
             </service>
 
@@ -38,7 +38,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuFileView" />
                 </registry>
             </service>
 
@@ -52,9 +52,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" start="true" />
-                    <menuItem sid="openMeshAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="openImageAct" />
+                    <menuItem sid="openMeshAct" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -67,8 +67,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="pointEditorSrv" start="true" />
-                    <view sid="sceneView" start="true" />
+                    <view sid="pointEditorSrv" />
+                    <view sid="sceneView" />
                 </registry>
             </service>
 
@@ -81,8 +81,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneSrv" start="true" />
-                    <view sid="editorsView" start="true" />
+                    <view sid="genericSceneSrv" />
+                    <view sid="editorsView" />
                 </registry>
             </service>
 
@@ -96,9 +96,9 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="showNegatoSrv" start="true" />
-                    <view sid="sliderIndexEditorSrv" start="true" />
-                    <view sid="snapshotSrv" start="true" />
+                    <view sid="showNegatoSrv" />
+                    <view sid="sliderIndexEditorSrv" />
+                    <view sid="snapshotSrv" />
                 </registry>
             </service>
 
@@ -218,18 +218,6 @@
                 <signal>openMeshAct/clicked</signal>
                 <slot>meshReaderSrv/update</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="imageWriterSrv" />
-            <start uid="trackballInteractorAdp" />
-            <start uid="pickerInteractorAdp" />
-            <start uid="meshAdp" />
-            <start uid="negatoAdp" />
-            <start uid="snapshotAdp" />
-            <start uid="imageReaderSrv" />
-            <start uid="meshReaderSrv" />
         </config>
     </extension>
 </plugin>

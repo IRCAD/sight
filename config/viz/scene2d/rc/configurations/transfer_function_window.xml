@@ -28,7 +28,7 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="transferFunctionEditorView" start="true" />
+                <view sid="transferFunctionEditorView" />
             </registry>
         </service>
 
@@ -45,7 +45,7 @@
         </service>
 
         <!-- TF manager -->
-        <service uid="TFManagerCfg" type="sight::app::config_controller">
+        <service uid="TFManagerCfg" type="sight::app::config_launcher">
             <properties config="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
             <parameter replace="WID_PARENT" by="tfView" />
             <inout group="data">
@@ -62,10 +62,5 @@
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
             <signal>mainView/closed</signal>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainView" />
-        <start uid="TFManagerCfg" />
     </config>
 </extension>

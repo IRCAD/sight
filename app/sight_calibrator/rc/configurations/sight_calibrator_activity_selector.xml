@@ -22,8 +22,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="activityWizardSrv" start="true" />
-                <view sid="activityCreatorSrv" start="true" />
+                <view sid="activityWizardSrv" />
+                <view sid="activityCreatorSrv" />
             </registry>
         </service>
 
@@ -84,9 +84,5 @@
         <connect channel="${LOAD_ACTIVITY_SENDER_CHANNEL}">
             <signal>activityCreatorSrv/load_requested</signal>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainview" />
     </config>
 </extension>

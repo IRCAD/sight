@@ -17,7 +17,7 @@
                     </frame>
                 </gui>
                 <registry>
-                    <view sid="mainView" start="true" />
+                    <view sid="mainView" />
                 </registry>
             </service>
 
@@ -30,8 +30,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneSrv" start="false" />
-                    <view sid="editorView" start="true" />
+                    <view sid="genericSceneSrv" />
+                    <view sid="editorView" />
                 </registry>
             </service>
 
@@ -44,8 +44,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="spacingEditorSrv" start="false" />
-                    <view sid="depthRangeSliderSrv" start="false" />
+                    <view sid="spacingEditorSrv" />
+                    <view sid="depthRangeSliderSrv" />
                 </registry>
             </service>
 
@@ -110,18 +110,6 @@
                 <signal>depthRangeSliderSrv/double_changed</signal>
                 <slot>square1Adp/set_double_parameter</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="genericSceneSrv" />
-            <start uid="spacingEditorSrv" />
-            <start uid="depthRangeSliderSrv" />
-            <start uid="gridAdp" />
-            <start uid="square1Adp" />
-            <start uid="square2Adp" />
-            <start uid="abscissaAdp" />
-            <start uid="ordinateAdp" />
         </config>
     </extension>
 </plugin>

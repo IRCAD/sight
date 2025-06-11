@@ -96,8 +96,8 @@
                     <toolbar />
                 </gui>
                 <registry>
-                    <toolbar sid="toolbarView" start="true" />
-                    <view sid="cameraView" start="true" />
+                    <toolbar sid="toolbarView" />
+                    <view sid="cameraView" />
                 </registry>
             </service>
 
@@ -122,17 +122,17 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="loadCalibAct" start="true" />
+                    <menuItem sid="loadCalibAct" />
                     <editor sid="videoSelectorSrv" />
-                    <menuItem sid="startVideoAct" start="true" />
-                    <menuItem sid="pauseVideoAct" start="true" />
-                    <menuItem sid="resumeVideoAct" start="true" />
-                    <menuItem sid="stopVideoAct" start="true" />
-                    <menuItem sid="loopVideoAct" start="true" />
-                    <menuItem sid="startUndistortAct" start="true" />
-                    <menuItem sid="startDistortAct" start="true" />
-                    <menuItem sid="showMeshAct" start="true" />
-                    <menuItem sid="showParametersAct" start="true" />
+                    <menuItem sid="startVideoAct" />
+                    <menuItem sid="pauseVideoAct" />
+                    <menuItem sid="resumeVideoAct" />
+                    <menuItem sid="stopVideoAct" />
+                    <menuItem sid="loopVideoAct" />
+                    <menuItem sid="startUndistortAct" />
+                    <menuItem sid="startDistortAct" />
+                    <menuItem sid="showMeshAct" />
+                    <menuItem sid="showParametersAct" />
                 </registry>
             </service>
 
@@ -145,8 +145,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="videoView" start="true" />
-                    <view sid="parametersView" start="true" />
+                    <view sid="videoView" />
+                    <view sid="parametersView" />
                 </registry>
             </service>
 
@@ -160,7 +160,7 @@
                 </gui>
                 <registry>
                     <view sid="genericSceneSrv" />
-                    <view sid="error_label_view" start="true" />
+                    <view sid="error_label_view" />
                 </registry>
             </service>
 
@@ -173,7 +173,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="errorLabelSrv" start="true" />
+                    <view sid="errorLabelSrv" />
                 </registry>
             </service>
 
@@ -189,10 +189,10 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="aruco_parameters_srv" start="true" />
-                    <view sid="reprojection_parameters_srv" start="true" />
-                    <view sid="material_opacity_editor" start="true" />
-                    <view sid="damping_parameters_srv" start="true" />
+                    <view sid="aruco_parameters_srv" />
+                    <view sid="reprojection_parameters_srv" />
+                    <view sid="material_opacity_editor" />
+                    <view sid="damping_parameters_srv" />
                 </registry>
             </service>
 
@@ -415,8 +415,8 @@
             </service>
 
             <!-- Computes the pose of the camera with tag(s) detected by aruco -->
-            <service uid="registrationSrv" type="sight::module::geometry::vision::pose_from2d" worker="tracking">
-                <in group="markerMap" auto_connect="true">
+            <service uid="registrationSrv" type="sight::module::geometry::vision::pose_from2d" worker="tracking" auto_connect="false">
+                <in group="markerMap">
                     <key uid="markerMap" />
                 </in>
                 <in group="camera">
@@ -429,8 +429,8 @@
             </service>
 
             <!-- Computes the reprojection error -->
-            <service uid="errorSrv" type="sight::module::geometry::vision::reprojection_error" worker="error">
-                <in group="matrix" auto_connect="true">
+            <service uid="errorSrv" type="sight::module::geometry::vision::reprojection_error" worker="error" auto_connect="false">
+                <in group="matrix">
                     <key uid="markerToCamera" id="101" />
                 </in>
                 <in key="markerMap" uid="markerMap" />
@@ -516,7 +516,6 @@
             <connect>
                 <signal>cameraSet/modified</signal>
                 <slot>extractCameraSrv/update</slot>
-                <slot>errorSrv/update</slot>
             </connect>
 
             <connect>
@@ -592,32 +591,6 @@
                 <slot>startUndistortAct/enable</slot>
             </connect>
 
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="videoGrabberSrv" />
-            <start uid="frameUpdaterSrv" />
-            <start uid="registrationSrv" />
-            <start uid="trackerSrv" />
-            <start uid="calibrationReaderSrv" />
-            <start uid="videoSelectorSrv" />
-            <start uid="extractCameraSrv" />
-            <start uid="matrixReverserSrv" />
-            <start uid="errorSrv" />
-            <start uid="hideAxisSrv" />
-            <start uid="undistorterSrv" />
-            <start uid="distorterSrv" />
-            <start uid="loadMeshSrv" />
-            <start uid="genericSceneSrv" />
-            <start uid="materialAdp" />
-            <start uid="videoAdp" />
-            <start uid="undistortAdp" />
-            <start uid="axisAdp" />
-            <start uid="cameraAdp" />
-            <start uid="cubeAdp" />
-            <start uid="distortAdp" />
-            <start uid="damp_matrix_srv" />
-
             <!-- ******************************* Update services ***************************************** -->
 
             <!-- At launch, enable the synchronization with the non-offscreen rendering -->
@@ -626,9 +599,11 @@
                 <service uid="hideAxisSrv" />
                 <service uid="loadMeshSrv" />
 
-                <sequence uid="updater" loop="true">
+                <sequence uid="updater" loop="true" start="false">
                     <service uid="frameUpdaterSrv" />
                     <service uid="trackerSrv" />
+                    <service uid="registrationSrv" />
+                    <service uid="errorSrv" />
                     <service uid="matrixReverserSrv" />
                     <service uid="damp_matrix_srv" />
                     <service uid="genericSceneSrv" />

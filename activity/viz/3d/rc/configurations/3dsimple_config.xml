@@ -13,7 +13,7 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="gs" start="true" />
+                <view sid="gs" />
             </registry>
         </service>
 
@@ -40,10 +40,6 @@
 
         <!-- *************************** End generic scene *************************** -->
 
-        <start uid="mainview" />
-
         <!-- gs adaptors -->
-        <start uid="cameraInteractorAdaptor" />
-        <start uid="modelAdaptor" />
     </config>
 </extension>

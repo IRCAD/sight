@@ -80,8 +80,8 @@
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" start="true" />
-                    <view sid="mainView" start="true" />
+                    <menubar sid="menuBarView" />
+                    <view sid="mainView" />
                 </registry>
             </service>
 
@@ -92,7 +92,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" start="true" />
+                    <menu sid="menuFileView" />
                 </registry>
             </service>
 
@@ -105,8 +105,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openMeshAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
+                    <menuItem sid="openMeshAct" />
+                    <menuItem sid="quitAct" />
                 </registry>
             </service>
 
@@ -119,8 +119,8 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="genericSceneSrv" start="true" />
-                    <view sid="matrixEditorSrv" start="true" />
+                    <view sid="genericSceneSrv" />
+                    <view sid="matrixEditorSrv" />
                 </registry>
             </service>
 
@@ -240,22 +240,6 @@
                 <signal>openMeshAct/clicked</signal>
                 <slot>meshReaderSrv/update</slot>
             </connect>
-
-            <!-- ******************************* Start services ***************************************** -->
-
-            <start uid="mainFrame" />
-            <start uid="rotation1Srv" />
-            <start uid="rotation2Srv" />
-            <start uid="rotation3Srv" />
-            <start uid="trackballInteractorAdp" />
-            <start uid="mesh0Adp" />
-            <start uid="transform1Adp" />
-            <start uid="mesh1Adp" />
-            <start uid="transform2Adp" />
-            <start uid="mesh2Adp" />
-            <start uid="transform3Adp" />
-            <start uid="mesh3Adp" />
-            <start uid="meshReaderSrv" />
 
             <update uid="rotation1Srv" />
             <update uid="rotation2Srv" />

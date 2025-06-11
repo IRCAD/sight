@@ -3,9 +3,9 @@
     It displays a "stepper" that allows to select the current activity, they are enabled sequencially when their
     inputs are present.
 
-    The configuration can be launched by a 'config_controller':
+    The configuration can be launched by a 'config_launcher':
 
-    <service uid="activityLauncher" type="sight::app::config_controller">
+    <service uid="activityLauncher" type="sight::app::config_launcher">
         <properties config="ActivityLauncher" />
         <inout group="data">
             <key name="activitySet" uid="..." />
@@ -89,9 +89,9 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="stepperView" start="true" />
-                <view sid="dynamicView" start="true" />
-                <view sid="activityCreator" start="true" />
+                <view sid="stepperView" />
+                <view sid="dynamicView" />
+                <view sid="activityCreator" />
             </registry>
         </service>
 
@@ -108,11 +108,11 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="appLogoView" start="true" />
-                <view sid="activitySequencer" start="true" />
-                <view sid="openButton" start="true" />
-                <view sid="saveButton" start="true" />
-                <view sid="ircadLogoView" start="true" />
+                <view sid="appLogoView" />
+                <view sid="activitySequencer" />
+                <view sid="openButton" />
+                <view sid="saveButton" />
+                <view sid="ircadLogoView" />
             </registry>
         </service>
 
@@ -247,11 +247,7 @@
             <slot>activitySequencer/go_to</slot>
         </connect>
 
-        <!-- *************************************** Begin start and update **************************************** -->
-
-        <start uid="mainView" />
-        <start uid="SDBReader" />
-        <start uid="SDBWriter" />
+        <!-- *************************************** update **************************************** -->
 
         <!-- Load the sub-activities contained in the SeriesSet, or launch the first activity from the sequencer -->
         <update uid="activitySequencer" />

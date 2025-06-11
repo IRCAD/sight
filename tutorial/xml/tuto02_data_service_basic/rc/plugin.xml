@@ -53,17 +53,6 @@
                 <in key="image" uid="imageData" />
             </service>
 
-            <!-- ******************************* Start services ***************************************** -->
-
-            <!--
-                Definition of the starting order of the different services:
-                The frame defines the 3D scene container, so it must be started first.
-                The services will be stopped the reverse order compared to the starting one.
-            -->
-            <start uid="mainFrame" />
-            <start uid="imageReaderSrv" />
-            <start uid="imageRendereSrv" />
-
             <!-- ******************************* Update services ***************************************** -->
 
             <!--

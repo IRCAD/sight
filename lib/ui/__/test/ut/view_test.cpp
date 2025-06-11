@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,11 +70,11 @@ void view_test::configuring_test()
         xml_config << ""
                       "<menubar sid=\"myMenu\"/>"
                       "<toolbar sid=\"myToolBar\"/>"
-                      "<view sid=\"view1\" start=\"true\"/>"
-                      "<view sid=\"view2\" start=\"true\"/>"
-                      "<slideView sid=\"slideView1\" start=\"false\"/>"
+                      "<view sid=\"view1\" />"
+                      "<view sid=\"view2\" />"
+                      "<slideView sid=\"slideView1\" />"
                       "<view sid=\"view3\" />"
-                      "<slideView sid=\"slideView2\" start=\"true\"/>"
+                      "<slideView sid=\"slideView2\" />"
                       "<menubar sid=\"ignored\"/>"
                       "<toolbar sid=\"ignored\"/>"
                       "";
@@ -84,15 +84,10 @@ void view_test::configuring_test()
         view->initialize(config);
 
         CPPUNIT_ASSERT(view->m_sids.find("view1") != view->m_sids.end());
-        CPPUNIT_ASSERT_EQUAL(true, view->m_sids.find("view1")->second.second);
         CPPUNIT_ASSERT(view->m_sids.find("view2") != view->m_sids.end());
-        CPPUNIT_ASSERT_EQUAL(true, view->m_sids.find("view2")->second.second);
         CPPUNIT_ASSERT(view->m_sids.find("slideView1") != view->m_sids.end());
-        CPPUNIT_ASSERT_EQUAL(false, view->m_sids.find("slideView1")->second.second);
         CPPUNIT_ASSERT(view->m_sids.find("view3") != view->m_sids.end());
-        CPPUNIT_ASSERT_EQUAL(false, view->m_sids.find("view3")->second.second);
         CPPUNIT_ASSERT(view->m_sids.find("slideView2") != view->m_sids.end());
-        CPPUNIT_ASSERT_EQUAL(true, view->m_sids.find("slideView2")->second.second);
         CPPUNIT_ASSERT(view->m_sids.find("view4") == view->m_sids.end());
         CPPUNIT_ASSERT(view->m_sids.find("slideView3") == view->m_sids.end());
         CPPUNIT_ASSERT_EQUAL(std::string("myMenu"), view->m_menu_bar_sid.first);

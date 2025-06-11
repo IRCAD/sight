@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,6 +39,29 @@
 
 namespace sight::data
 {
+
+class object;
+
+using fields_container_t = std::map<std::string, SPTR(object)>;
+
+// Generic signals
+struct signals
+{
+    using modified_t = core::com::signal<void ()>;
+    static const inline core::com::signals::key_t MODIFIED = "modified";
+
+    /// Type of signal when objects are added
+    using added_fields_t = core::com::signal<void (fields_container_t)>;
+    static const inline core::com::signals::key_t ADDED_FIELDS = "addedFields";
+
+    /// Type of signal when objects are changed (newObjects, oldObjects)
+    using changed_fields_t = core::com::signal<void (fields_container_t, fields_container_t)>;
+    static const inline core::com::signals::key_t CHANGED_FIELDS = "changedFields";
+
+    /// Type of signal when objects are removed
+    using removed_fields_t = core::com::signal<void (fields_container_t)>;
+    static const inline core::com::signals::key_t REMOVED_FIELDS = "removedFields";
+};
 
 namespace mt
 {
@@ -84,24 +107,21 @@ public:
      * @name Signals
      * @{
      */
-    /// Type of signal m_sigModified
-    using modified_signal_t = core::com::signal<void ()>;
+    // For backward compatibility
+    using modified_signal_t = signals::modified_t;
+    static const inline signal_key_t MODIFIED_SIG = signals::MODIFIED;
 
-    /// Key in m_signals map of signal m_sigModified
-    SIGHT_DATA_API static const core::com::signals::key_t MODIFIED_SIG;
-
-    using fields_container_t = std::map<std::string, object::sptr>;
     /// Type of signal when objects are added
-    using added_fields_signal_t = core::com::signal<void (fields_container_t)>;
-    SIGHT_DATA_API static const core::com::signals::key_t ADDED_FIELDS_SIG;
+    using added_fields_signal_t = signals::added_fields_t;
+    static const inline signal_key_t ADDED_FIELDS_SIG = signals::ADDED_FIELDS;
 
     /// Type of signal when objects are changed (newObjects, oldObjects)
-    using changed_fields_signal_t = core::com::signal<void (fields_container_t, fields_container_t)>;
-    SIGHT_DATA_API static const core::com::signals::key_t CHANGED_FIELDS_SIG;
+    using changed_fields_signal_t = signals::changed_fields_t;
+    static const inline signal_key_t CHANGED_FIELDS_SIG = signals::CHANGED_FIELDS;
 
     /// Type of signal when objects are removed
-    using removed_fields_signal_t = core::com::signal<void (fields_container_t)>;
-    SIGHT_DATA_API static const core::com::signals::key_t REMOVED_FIELDS_SIG;
+    using removed_fields_signal_t = signals::removed_fields_t;
+    static const inline signal_key_t REMOVED_FIELDS_SIG = signals::REMOVED_FIELDS;
     /**
      * @}
      */

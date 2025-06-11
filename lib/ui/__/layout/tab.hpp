@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,9 +85,9 @@ public:
                </layout>
            </gui>
            <registry>
-               <view sid="view1" start="true" />
-               <view sid="view2" start="true" />
-               <view sid="view3" start="true" />
+               <view sid="view1" />
+               <view sid="view2" />
+               <view sid="view3" />
            </registry>
        </service>
        @endcode

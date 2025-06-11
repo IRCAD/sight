@@ -3,12 +3,6 @@
 
     <extension implements="sight::service::extension::factory">
         <type>sight::ui::action</type>
-        <service>sight::module::ui::config_launcher</service>
-        <desc>This action starts/stops a template configuration.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::ui::action</type>
         <service>sight::module::ui::action</service>
         <desc>Defines the default action to have a simple action button.</desc>
     </extension>

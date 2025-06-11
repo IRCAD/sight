@@ -187,7 +187,7 @@ void vtk_mesher::updating()
         });
 
     job->set_cancelable(false);
-    this->signal<signals::job_created_t>(signals::JOB_CREATED)->emit(job);
+    this->signal<signals::job_created_t>(signals::JOB_CREATED)->async_emit(job);
     job->run().get();
 }
 

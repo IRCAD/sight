@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,9 +70,9 @@ class view;
          <menubar />
      </gui>
      <registry>
-         <toolbar sid="toolbar1" start="true" />
-         <menubar sid="menubar1" start="true" />
-         <view sid="myView" start="true" />
+         <toolbar sid="toolbar1" />
+         <menubar sid="menubar1" />
+         <view sid="myView" />
      </registry>
    </service>
    @endcode

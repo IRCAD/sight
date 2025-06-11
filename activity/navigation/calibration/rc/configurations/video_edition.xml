@@ -32,8 +32,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolbar sid="toolBarView" start="true" />
-                <view sid="genericSceneSrv" start="true" />
+                <toolbar sid="toolBarView" />
+                <view sid="genericSceneSrv" />
             </registry>
         </service>
 
@@ -45,8 +45,8 @@
                 </layout>
             </gui>
             <registry>
-                <editor sid="videoSelectorSrv" start="true" />
-                <menuItem sid="editionAct" start="true" />
+                <editor sid="videoSelectorSrv" />
+                <menuItem sid="editionAct" />
             </registry>
         </service>
 
@@ -57,7 +57,7 @@
         <!-- ******************************* Begin Generic scene ******************************* -->
 
         <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
-            <scene renderMode="sync">
+            <scene renderMode="manual">
                 <background topColor="#000000" bottomColor="#000000" />
 
                 <layer id="default" order="1">
@@ -103,14 +103,17 @@
 
         <connect channel="${videoStartedChannel}">
             <slot>videoGrabberSrv/start_camera</slot>
+            <slot>updater/start</slot>
         </connect>
 
         <connect channel="${videoStoppedChannel}">
             <slot>videoGrabberSrv/stop_camera</slot>
+            <slot>updater/stop</slot>
         </connect>
 
         <connect channel="${videoPausedChannel}">
             <slot>videoGrabberSrv/pause_camera</slot>
+            <slot>updater/stop</slot>
         </connect>
 
         <connect channel="${videoLoopedChannel}">
@@ -125,12 +128,6 @@
         <connect>
             <signal>videoSelectorSrv/configured_cameras</signal>
             <slot>videoGrabberSrv/reconfigure</slot>
-        </connect>
-
-        <connect>
-            <signal>frameSynchronizerSrv/synchronization_done</signal>
-            <slot>genericSceneSrv/render</slot>
-            <slot>frameSynchronizerSrv/request_sync</slot>
         </connect>
 
         <connect>
@@ -168,12 +165,11 @@
             <signal>videoGrabberSrv/duration_modified</signal>
         </connect>
 
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainView" />
-        <start uid="videoGrabberSrv" />
-        <start uid="frameSynchronizerSrv" />
-        <start uid="intrinsicEditionSrv" />
-        <start uid="videoAdp" />
+        <update>
+            <sequence uid="updater" loop="true" start="false">
+                <service uid="frameSynchronizerSrv" />
+                <service uid="genericSceneSrv" />
+            </sequence>
+        </update>
     </config>
 </extension>

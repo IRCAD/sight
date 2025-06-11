@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2024 IRCAD France
+ * Copyright (C) 2015-2025 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -262,7 +262,7 @@ private:
     std::string m_pref_service_uid;
 
     /// Configuration element built to start updaters
-    service::config_t m_updater_srv_start;
+    service::config_t m_srv_auto_start;
 };
 
 // ------------------------------------------------------------------------

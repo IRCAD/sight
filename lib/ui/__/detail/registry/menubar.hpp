@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,15 +81,14 @@ public:
               </layout>
           </gui>
           <registry>
-              <menu sid="myMenu" start="true" />
-              <menu sid="myMenu2" start="true" />
+              <menu sid="myMenu" />
+              <menu sid="myMenu2" />
           </registry>
        </service>
        @endcode
      * This method analyzes the registry section of the configuration.
-     *  - \<menu sid="myMenu" start="true" /\> : define the service of the menu to add in the menu bar.
+     *  - \<menu sid="myMenu" /\> : define the service of the menu to add in the menu bar.
      *   - \b sid  (mandatory): the service identifier.
-     *   - \b start = {true| false} (default value false): indicate if the service must be started by the menu bar
      * service.
      */
 
@@ -97,8 +96,6 @@ public:
 
     /**
      * @brief Starting menu bar registry.
-     * All services managed in local menus
-     * and with start="true" in configuration will be started.
      * @pre menu_bar must be initialized before.
      * @pre sub menus must be instanced before.
      */

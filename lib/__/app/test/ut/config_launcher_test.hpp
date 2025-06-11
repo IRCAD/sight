@@ -31,9 +31,9 @@ namespace sight::app::ut
 /**
  * @brief Test .
  */
-class config_controller_test : public CPPUNIT_NS::TestFixture
+class config_launcher_test : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(config_controller_test);
+CPPUNIT_TEST_SUITE(config_launcher_test);
 CPPUNIT_TEST(multi_config_test);
 CPPUNIT_TEST(set_config_key_test);
 CPPUNIT_TEST_SUITE_END();

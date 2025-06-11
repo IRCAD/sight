@@ -27,10 +27,10 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <toolbar sid="toolbar" start="true" />
-                <view sid="topView" start="true" />
-                <view sid="centerView" start="true" />
-                <view sid="bottomView" start="true" />
+                <toolbar sid="toolbar" />
+                <view sid="topView" />
+                <view sid="centerView" />
+                <view sid="bottomView" />
             </registry>
         </service>
 
@@ -42,8 +42,8 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="action_pullSeries" start="true" />
-                <menuItem sid="action_pushSeries" start="true" />
+                <menuItem sid="action_pullSeries" />
+                <menuItem sid="action_pushSeries" />
             </registry>
         </service>
 
@@ -55,7 +55,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="queryEditor" start="true" />
+                <view sid="queryEditor" />
             </registry>
         </service>
 
@@ -68,8 +68,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="previewSelector" start="true" />
-                <view wid="pacsPreview" start="true" />
+                <view sid="previewSelector" />
+                <view wid="pacsPreview" />
             </registry>
         </service>
 
@@ -82,8 +82,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="localSelector" start="true" />
-                <view wid="localPreview" start="true" />
+                <view sid="localSelector" />
+                <view wid="localPreview" />
             </registry>
         </service>
 
@@ -150,12 +150,5 @@
             <slot>action_pullSeries/disable</slot>
             <slot>pullSeriesController/update</slot>
         </connect>
-
-        <!-- START AND STOP SERVICES -->
-        <start uid="mainView" />
-        <start uid="pullSeriesController" />
-        <start uid="localViewer" />
-        <start uid="pacsViewer" />
-        <start uid="seriesSetReader" />
     </config>
 </extension>

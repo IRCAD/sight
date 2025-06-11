@@ -4,7 +4,7 @@ for slices and transfer function.
 
 Example:
 
-<service uid="..." type="sight::app::config_controller">
+<service uid="..." type="sight::app::config_launcher">
     <properties config="ImageManager" />
     <parameter replace="WID_PARENT" by="referenceSceneEditor" />
     <inout group="data">
@@ -37,8 +37,8 @@ Example:
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="windowLevelImage" start="true" />
-                <view sid="sliderView" start="true" />
+                <view sid="windowLevelImage" />
+                <view sid="sliderView" />
             </registry>
         </service>
 
@@ -50,7 +50,7 @@ Example:
                 </layout>
             </gui>
             <registry>
-                <view sid="selectorSliderNegatoImage" start="true" />
+                <view sid="selectorSliderNegatoImage" />
             </registry>
         </service>
 
@@ -65,7 +65,5 @@ Example:
             <in key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunction}" />
         </service>
-
-        <start uid="imageManagerView" />
     </config>
 </extension>

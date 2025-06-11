@@ -24,10 +24,6 @@
 
 #include "test_services.hpp"
 
-#include <app/config_manager.hpp>
-#include <app/parser/image.hpp>
-#include <app/parser/transfer_function.hpp>
-
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
@@ -36,6 +32,10 @@
 #include <data/transfer_function.hpp>
 
 #include <service/op.hpp>
+
+#include <app/config_manager.hpp>
+#include <app/parser/image.hpp>
+#include <app/parser/transfer_function.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
 
@@ -286,14 +286,6 @@ service::config_t data_parser_test::build_object_config()
     service_b.add("<xmlattr>.uid", "myTestService2");
     service_b.add("<xmlattr>.type", "sight::app::ut::test1_image");
     config.add_child("service", service_b);
-
-    // Start method from object's services
-    service::config_t start_a;
-    start_a.add("<xmlattr>.uid", "myTestService1");
-    config.add_child("start", start_a);
-    service::config_t start_b;
-    start_b.add("<xmlattr>.uid", "myTestService2");
-    config.add_child("start", start_b);
 
     // Update method from object's services
     service::config_t update1;

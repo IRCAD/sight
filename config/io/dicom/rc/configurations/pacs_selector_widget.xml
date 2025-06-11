@@ -39,9 +39,9 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="container_background_view" start="true" />
-                <view sid="advanced_query_editor_slider_view" start="true" />
-                <view sid="connection_view" start="true" />
+                <view sid="container_background_view" />
+                <view sid="advanced_query_editor_slider_view" />
+                <view sid="connection_view" />
             </registry>
         </service>
 
@@ -54,8 +54,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="connection_type_selector_srv" start="true" />
-                <view sid="editors_view" start="true" />
+                <view sid="connection_type_selector_srv" />
+                <view sid="editors_view" />
             </registry>
         </service>
 
@@ -68,8 +68,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="configure_pac_slider_view" start="true" />
-                <view sid="dicomweb_srv" start="true" />
+                <view sid="configure_pac_slider_view" />
+                <view sid="dicomweb_srv" />
             </registry>
         </service>
 
@@ -82,8 +82,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="query_view" start="true" />
-                <view sid="selectors_view" start="true" />
+                <view sid="query_view" />
+                <view sid="selectors_view" />
             </registry>
         </service>
 
@@ -100,11 +100,11 @@
                 </layout>
             </gui>
             <registry>
-                <view wid="queryEditor_srv" start="false" />
-                <view sid="show_advanced_query_editor_srv" start="true" />
-                <view sid="hide_advanced_query_editor_srv" start="true" />
-                <view sid="show_pacs_configuration_srv" start="true" />
-                <view sid="hide_pacs_configuration_srv" start="true" />
+                <view wid="queryEditor_srv" />
+                <view sid="show_advanced_query_editor_srv" />
+                <view sid="hide_advanced_query_editor_srv" />
+                <view sid="show_pacs_configuration_srv" />
+                <view sid="hide_pacs_configuration_srv" />
             </registry>
         </service>
 
@@ -117,8 +117,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="preview_view" start="true" />
-                <view sid="local_view" start="true" />
+                <view sid="preview_view" />
+                <view sid="local_view" />
             </registry>
         </service>
 
@@ -131,7 +131,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="advanced_query_editor_srv" start="true" />
+                <view sid="advanced_query_editor_srv" />
             </registry>
         </service>
 
@@ -144,7 +144,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="configure_pacs_editor_srv" start="true" />
+                <view sid="configure_pacs_editor_srv" />
             </registry>
         </service>
 
@@ -157,8 +157,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="preview_selector_srv" start="true" />
-                <view sid="preview_scene_view" start="true" />
+                <view sid="preview_selector_srv" />
+                <view sid="preview_scene_view" />
             </registry>
         </service>
 
@@ -170,8 +170,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="generic_scene_preview_srv" start="true" />
-                <view sid="preview_scene_slider_view" start="true" />
+                <view sid="generic_scene_preview_srv" />
+                <view sid="preview_scene_slider_view" />
             </registry>
         </service>
 
@@ -185,7 +185,7 @@
                 </layout>
             </gui>
             <registry>
-                <view wid="preview_dicom_slider_view" start="false" />
+                <view wid="preview_dicom_slider_view" />
             </registry>
         </service>
 
@@ -198,8 +198,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="local_selector_srv" start="true" />
-                <view sid="local_scene_view" start="true" />
+                <view sid="local_selector_srv" />
+                <view sid="local_scene_view" />
             </registry>
         </service>
 
@@ -211,8 +211,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="generic_scene_local_srv" start="true" />
-                <view sid="local_scene_slider_view" start="true" />
+                <view sid="generic_scene_local_srv" />
+                <view sid="local_scene_slider_view" />
             </registry>
         </service>
 
@@ -225,7 +225,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="local_slider_view" start="true" />
+                <view sid="local_slider_view" />
             </registry>
         </service>
 
@@ -238,7 +238,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="export_image_act" start="true" />
+                <view sid="export_image_act" />
             </registry>
         </service>
 
@@ -296,8 +296,8 @@
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="dicomweb_cfg" type="sight::app::config_controller">
-            <appConfig id="sight::config::io::dicomweb::selector_widget" />
+        <service uid="dicomweb_cfg" type="sight::app::config_launcher">
+            <properties config="sight::config::io::dicomweb::selector_widget" start="false" />
             <inout group="data">
                 <key name="previewSeriesSet" uid="${previewSeriesSet}" />
                 <key name="previewDicom" uid="${previewDicom}" optional="true" />
@@ -311,8 +311,8 @@
             <parameter replace="WID_SLIDER_PREVIEW_PARENT" by="preview_dicom_slider_view" />
         </service>
 
-        <service uid="dimse_cfg" type="sight::app::config_controller">
-            <appConfig id="sight::config::io::dimse::selector_widget" />
+        <service uid="dimse_cfg" type="sight::app::config_launcher">
+            <properties config="sight::config::io::dimse::selector_widget" start="false" />
             <inout group="data">
                 <key name="previewSeriesSet" uid="${previewSeriesSet}" />
                 <key name="previewDicom" uid="${previewDicom}" optional="true" />
@@ -570,21 +570,6 @@
             <slot>dicomweb_cfg/start</slot>
             <slot>dimse_cfg/stop</slot>
         </connect>
-
-        <!-- ******************************* Start/Stop services ***************************************** -->
-        <start uid="configure_pacs_initializer_srv" />
-        <start uid="container_view" />
-        <start uid="reset_preview_srv" />
-        <start uid="extract_preview_srv" />
-        <start uid="extract_local_image_series_srv" />
-        <start uid="export_image_srv" />
-        <start uid="p_negato_adp" />
-        <start uid="p_negato_camera_adp" />
-        <start uid="l_negato_adp" />
-        <start uid="l_negato_camera_adp" />
-        <start uid="l_text_adp" />
-        <start uid="right_notifier_srv" />
-        <start uid="action_start_cfg" />
 
         <update uid="hide_advanced_query_editor_srv" />
         <update uid="hide_pacs_configuration_srv" />

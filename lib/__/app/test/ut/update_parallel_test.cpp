@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -141,7 +141,16 @@ void update_parallel_test::basic_test()
     CPPUNIT_ASSERT_EQUAL(true, srv3->m_updated);
 
     CPPUNIT_ASSERT_NO_THROW(update_srv->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv0->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv1->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv2->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(srv3->stop().get());
+
     service::remove(update_srv);
+    service::remove(srv0);
+    service::remove(srv1);
+    service::remove(srv2);
+    service::remove(srv3);
 }
 
 //------------------------------------------------------------------------------
@@ -221,6 +230,20 @@ void update_parallel_test::parent_test()
     }
 
     CPPUNIT_ASSERT_NO_THROW(main_updater->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(child_updater_1->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(child_updater_1_1->stop().get());
+    CPPUNIT_ASSERT_NO_THROW(child_updater_2->stop().get());
+
+    service::remove(main_updater);
+    service::remove(child_updater_1);
+    service::remove(child_updater_1_1);
+    service::remove(child_updater_2);
+
+    for(const auto i : std::views::iota(0U, 7U))
+    {
+        CPPUNIT_ASSERT_NO_THROW(srv[i]->stop().get());
+        service::remove(srv[i]);
+    }
 }
 
 } // namespace sight::app::ut

@@ -35,8 +35,8 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="toolboxView" start="true" />
-                <view sid="videoView" start="true" />
+                <view sid="toolboxView" />
+                <view sid="videoView" />
             </registry>
         </service>
 
@@ -50,9 +50,9 @@
                 </layout>
             </gui>
             <registry>
-                <toolbar sid="videoToolbarView" start="true" />
-                <view sid="calibrationDataView" start="true" />
-                <view sid="cameraInfoView" start="true" />
+                <toolbar sid="videoToolbarView" />
+                <view sid="calibrationDataView" />
+                <view sid="cameraInfoView" />
             </registry>
         </service>
 
@@ -67,11 +67,11 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="startVideoAct" start="true" />
-                <menuItem sid="pauseVideoAct" start="true" />
-                <menuItem sid="resumeVideoAct" start="true" />
-                <menuItem sid="stopVideoAct" start="true" />
-                <menuItem sid="loopVideoAct" start="true" />
+                <menuItem sid="startVideoAct" />
+                <menuItem sid="pauseVideoAct" />
+                <menuItem sid="resumeVideoAct" />
+                <menuItem sid="stopVideoAct" />
+                <menuItem sid="loopVideoAct" />
             </registry>
         </service>
 
@@ -85,8 +85,8 @@
                 </layout>
             </gui>
             <registry>
-                <toolbar sid="extrinsicCameraView" start="true" />
-                <view sid="calibrationInfoEditorSrv" start="true" />
+                <toolbar sid="extrinsicCameraView" />
+                <view sid="calibrationInfoEditorSrv" />
             </registry>
         </service>
 
@@ -100,9 +100,9 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="cameraInfo1Srv" start="true" />
-                <view sid="cameraInfo2Srv" start="true" />
-                <view sid="cameraSetInfoSrv" start="true" />
+                <view sid="cameraInfo1Srv" />
+                <view sid="cameraInfo2Srv" />
+                <view sid="cameraSetInfoSrv" />
             </registry>
         </service>
 
@@ -121,15 +121,15 @@
                 </layout>
             </gui>
             <registry>
-                <editor sid="detectionStatusSrv" start="true" />
-                <menuItem sid="addAct" start="true" />
-                <menuItem sid="removeAct" start="true" />
-                <menuItem sid="goOpenCVAct" start="true" />
-                <menuItem sid="displayImageAct" start="true" />
-                <menuItem sid="resetAct" start="true" />
-                <menuItem sid="exportExtrinsicAct" start="true" />
-                <menuItem sid="saveInputsAct" start="true" />
-                <menuItem sid="loadInputsAct" start="true" />
+                <editor sid="detectionStatusSrv" />
+                <menuItem sid="addAct" />
+                <menuItem sid="removeAct" />
+                <menuItem sid="goOpenCVAct" />
+                <menuItem sid="displayImageAct" />
+                <menuItem sid="resetAct" />
+                <menuItem sid="exportExtrinsicAct" />
+                <menuItem sid="saveInputsAct" />
+                <menuItem sid="loadInputsAct" />
             </registry>
         </service>
 
@@ -141,8 +141,8 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="genericSceneSrv" start="true" />
-                <view sid="videoSliderView" start="true" />
+                <view sid="genericSceneSrv" />
+                <view sid="videoSliderView" />
             </registry>
         </service>
 
@@ -155,7 +155,7 @@
                 </layout>
             </gui>
             <registry>
-                <view sid="videoSliderSrv" start="true" />
+                <view sid="videoSliderSrv" />
             </registry>
         </service>
 
@@ -498,25 +498,8 @@
             <slot>videoSliderView/show</slot>
         </connect>
 
-        <!-- ******************************* Start/Stop services ***************************************** -->
-
-        <start uid="mainView" />
-        <start uid="openCVExtrinsicCalSrv" />
-        <start uid="chessboardDetectorSrv" />
-        <start uid="displayCalibrationInfoSrv" />
-        <start uid="extrinsicExporterSrv" />
-        <start uid="frameSynchronizerSrv" />
-        <start uid="videoGrabber1Srv" />
-        <start uid="videoGrabber2Srv" />
-        <start uid="calibrationDataWriter1Srv" />
-        <start uid="calibrationDataWriter2Srv" />
-        <start uid="calibrationDataReader1Srv" />
-        <start uid="calibrationDataReader2Srv" />
-        <start uid="video1Adp" />
-        <start uid="video2Adp" />
-
         <update>
-            <sequence uid="update_loop" loop="true">
+            <sequence uid="update_loop" loop="true" start="false">
                 <service uid="frameSynchronizerSrv" />
                 <service uid="chessboardDetectorSrv" />
                 <service uid="genericSceneSrv" />

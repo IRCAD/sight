@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,13 +30,6 @@
 
 namespace sight::data
 {
-
-//------------------------------------------------------------------------------
-
-const core::com::signals::key_t object::MODIFIED_SIG       = "modified";
-const core::com::signals::key_t object::ADDED_FIELDS_SIG   = "addedFields";
-const core::com::signals::key_t object::CHANGED_FIELDS_SIG = "changedFields";
-const core::com::signals::key_t object::REMOVED_FIELDS_SIG = "removedFields";
 
 //------------------------------------------------------------------------------
 

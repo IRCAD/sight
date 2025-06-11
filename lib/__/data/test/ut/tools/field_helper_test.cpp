@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,9 +71,9 @@ void field_helper_test::test_helper()
     std::mutex mutex;
     std::condition_variable condition;
 
-    data::object::fields_container_t added_fields;
-    std::function<void(data::object::fields_container_t)> fn_add =
-        [&](data::object::fields_container_t _f)
+    data::fields_container_t added_fields;
+    std::function<void(data::fields_container_t)> fn_add =
+        [&](data::fields_container_t _f)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
@@ -89,10 +89,10 @@ void field_helper_test::test_helper()
     sig_added->connect(slot_added);
 
     unsigned int num_removed_notif = 0;
-    data::object::fields_container_t removed_fields;
+    data::fields_container_t removed_fields;
 
-    std::function<void(data::object::fields_container_t)> fn_remove =
-        [&](data::object::fields_container_t _f)
+    std::function<void(data::fields_container_t)> fn_remove =
+        [&](data::fields_container_t _f)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
@@ -107,11 +107,11 @@ void field_helper_test::test_helper()
     sig_removed->connect(slot_removed);
 
     unsigned int num_changed_notif = 0;
-    data::object::fields_container_t new_fields;
-    data::object::fields_container_t old_fields;
+    data::fields_container_t new_fields;
+    data::fields_container_t old_fields;
 
-    std::function<void(data::object::fields_container_t, data::object::fields_container_t)> fn_change =
-        [&](data::object::fields_container_t _new_f, data::object::fields_container_t _old_f)
+    std::function<void(data::fields_container_t, data::fields_container_t)> fn_change =
+        [&](data::fields_container_t _new_f, data::fields_container_t _old_f)
         {
             {
                 std::unique_lock<std::mutex> lock(mutex);
