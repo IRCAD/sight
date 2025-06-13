@@ -107,21 +107,21 @@ public:
      * @name Signals
      * @{
      */
-    // For backward compatibility
+    // For backward compatibility - this is duplicated for now because of a runtime error with GCC/Clang mix
     using modified_signal_t = signals::modified_t;
-    static const inline signal_key_t MODIFIED_SIG = signals::MODIFIED;
+    static const inline signal_key_t MODIFIED_SIG = "modified";
 
     /// Type of signal when objects are added
     using added_fields_signal_t = signals::added_fields_t;
-    static const inline signal_key_t ADDED_FIELDS_SIG = signals::ADDED_FIELDS;
+    static const inline signal_key_t ADDED_FIELDS_SIG = "addedFields";
 
     /// Type of signal when objects are changed (newObjects, oldObjects)
     using changed_fields_signal_t = signals::changed_fields_t;
-    static const inline signal_key_t CHANGED_FIELDS_SIG = signals::CHANGED_FIELDS;
+    static const inline signal_key_t CHANGED_FIELDS_SIG = "changedFields";
 
     /// Type of signal when objects are removed
     using removed_fields_signal_t = signals::removed_fields_t;
-    static const inline signal_key_t REMOVED_FIELDS_SIG = signals::REMOVED_FIELDS;
+    static const inline signal_key_t REMOVED_FIELDS_SIG = "removedFields";
     /**
      * @}
      */

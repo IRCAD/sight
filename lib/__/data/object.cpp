@@ -35,10 +35,10 @@ namespace sight::data
 
 object::object()
 {
-    new_signal<modified_signal_t>(MODIFIED_SIG);
-    new_signal<added_fields_signal_t>(ADDED_FIELDS_SIG);
-    new_signal<changed_fields_signal_t>(CHANGED_FIELDS_SIG);
-    new_signal<removed_fields_signal_t>(REMOVED_FIELDS_SIG);
+    new_signal<modified_signal_t>(signals::MODIFIED);
+    new_signal<added_fields_signal_t>(signals::ADDED_FIELDS);
+    new_signal<changed_fields_signal_t>(signals::CHANGED_FIELDS);
+    new_signal<removed_fields_signal_t>(signals::REMOVED_FIELDS);
 }
 
 //------------------------------------------------------------------------------
