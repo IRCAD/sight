@@ -287,7 +287,7 @@ void volume_render::new_image()
 
         // Ignore this update to avoid flickering when loading a new image
         // We will be signaled later when either the image or the mask will be updated
-        if(image->size() != mask->size())
+        if(image->size() != mask->size() || !data::helper::medical_image::check_image_validity(image.get_shared()))
         {
             return;
         }
