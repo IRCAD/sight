@@ -120,4 +120,23 @@ void tickmarks_slider_test::check_value(tester& _tester, const selector& _slider
     CPPUNIT_ASSERT_EQUAL(_expected, value);
 }
 
+//----------------------------------------------------------------------------------
+void tickmarks_slider_test::mouse_drag_test(tester& _tester, const selector& _slider, QPoint _from, QPoint _to)
+{
+    auto bt = _tester.add_in_backtrace("dragging \"" + _slider.get_description(_tester) + "\"");
+
+    QSlider* s = take(_tester, _slider);
+
+    QMetaObject::invokeMethod(
+        s,
+        [ = ]
+        {
+            QTest::mousePress(s, Qt::LeftButton, Qt::NoModifier, _from);
+            QTest::mouseMove(s, _to);
+            QTest::mouseRelease(s, Qt::LeftButton, Qt::NoModifier, _to);
+        },
+        Qt::BlockingQueuedConnection
+    );
+}
+
 } // namespace sight::ui::test::helper

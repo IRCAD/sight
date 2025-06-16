@@ -349,6 +349,13 @@ void synchronization::test()
             {
                 auto bt = _tester.add_in_backtrace("Check synchronization between 'tickmarks slider' sliders");
 
+                helper::tickmarks_slider_test::mouse_drag_test(
+                    _tester,
+                    selector::from_parent("properties1_srv", "text_ticks"),
+                    QPoint {150, 150},
+                    QPoint {250, 200
+                    });
+
                 helper::tickmarks_slider_test::move(
                     _tester,
                     selector::from_parent("properties1_srv", "text_ticks"),
@@ -374,7 +381,6 @@ void synchronization::test()
                     selector::from_parent("properties1_srv", "text_ticks/valueLabel"),
                     ""
                 );
-
                 helper::tickmarks_slider_test::move(
                     _tester,
                     selector::from_parent("properties2_srv", "ticks_obj"),

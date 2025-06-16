@@ -52,11 +52,19 @@ public:
 
     /**
      * @brief Sets the animated tick and triggers an update.
-     * @param t The new value for m_animated_tick.
+     * @param value The new value for m_animated_tick.
      */
-    void set_animated_tick(double t)
+    void set_animated_tick(double value)
     {
-        m_animated_tick = t;
+        m_animated_tick = value;
+        const int tick = int(std::round(value));
+        if(tick != m_current_tick)
+        {
+            m_current_tick = tick;
+            m_slider->setValue(tick);
+            Q_EMIT value_changed(tick);
+        }
+
         update();
     }
 
@@ -99,9 +107,9 @@ public:
      * Workflow:
      * 1. Compute horizontal padding from the widest label.
      * 2. Spread every tick across the remaining width.
-     * 3. Shift the whole scale so the current tick (`m_animated_tick`)
+     * 3. Shift the whole scale so the current tick (m_animated_tick)
      *    stays roughly centered.
-     * 4. For each visible tick, pick length (25/15/10 px) based on distance
+     * 4. For each visible tick, pick length that  based on distance
      *    from the current tick and draw the vertical line.
      * 5. Draw the label of the current tick, centered under the scale.
      *
@@ -124,14 +132,12 @@ private:
     int m_max {10};
     int m_interval {1};
     int m_current_tick {0};
-    int m_last_x {0};
-    int step_px = 8;
+    double m_drag_start_tick {0.0};
     std::vector<int> m_values;
     double m_animated_tick = 0.0;
     QPropertyAnimation* m_drag_anim {nullptr};
     bool m_dragging {false};
     QPoint m_press_pos;
-    bool m_released {false};
     std::vector<std::string> m_tick_labels;
     std::unique_ptr<QSlider> m_slider = std::make_unique<QSlider>(this);
 };

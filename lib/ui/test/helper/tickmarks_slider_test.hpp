@@ -48,6 +48,26 @@ public:
         left
     };
 
+    struct mouse_drag
+    {
+        mouse_drag(
+            const QPoint& from,
+            const QPoint& to,
+            Qt::MouseButton button
+        ) :
+            m_from(from),
+            m_to(to),
+            m_button(button)
+        {
+        }
+
+        QPoint m_from;
+        QPoint m_to;
+        Qt::MouseButton m_button;
+    };
+
+    SIGHT_UI_TEST_API static void mouse_drag_test(tester& _tester, const selector& _slider, QPoint _from, QPoint _to);
+
     SIGHT_UI_TEST_API  static void move(
         tester& _tester,
         const selector& _slider,
