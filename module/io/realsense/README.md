@@ -33,7 +33,7 @@ The simplest way is to use the [realsense-viewer application](https://github.com
 #### 2. Auto-load presets in videoRealSense module
 
 You need first copy the json file in the _rc/presets_ folder.
-To be loaded correclty the preset file should have a name like "NAMEPreset.json".
+To be loaded correctly the preset file should have a name like "NAMEPreset.json".
 
 The service parses the presets folder and generates a map with [Name, path].
 ex HandPreset.json will give: ["Hand", "rc/presets/HandPreset.json"].
@@ -47,9 +47,9 @@ You can achieve this in two different ways:
 ```xml
 <service uid="videoGrabber" type ="sight::module::io::realsense::scan" auto_connect="no">
     <inout key="depthTL" uid="..." />
-    <inout key="frameTL" uid="..." />
+    <inout key="frame_tl" uid="..." />
     <out key="pointcloud" uid="..." />
-    <inout key="cameraSet" uid="..." />
+    <inout key="camera_set" uid="..." />
     <config preset="NAME" />
 </service>
    ```

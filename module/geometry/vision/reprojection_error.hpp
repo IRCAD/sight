@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,15 +56,15 @@ namespace sight::module::geometry::vision
              <key uid="..." />
              <key uid="..." />
          </in>
-         <in key="markerMap" uid="..." />
+         <in key="marker_map" uid="..." />
          <in key="camera" uid="..."/>
          <in key="extrinsic" uid="..." />
          <inout key="frame" uid="..." />
-         <patternWidth>80</patternWidth>
+         <pattern_width>80</pattern_width>
      </service>
    @endcode
  * @subsection Input Input
- * - \b markerMap [sight::data::marker_map]: markers map list.
+ * - \b marker_map [sight::data::marker_map]: markers map list.
  * - \b camera [sight::data::camera]: calibrated cameras.
  * - \b extrinsic [sight::data::matrix4]: extrinsic matrix, only used if you have two cameras configured.
  * - \b matrix [sight::data::matrix4]: list of matrices related to the markers. The marker's id must be
@@ -74,7 +74,7 @@ namespace sight::module::geometry::vision
  * @subsection Output Output
  * - \b error [sight::data::real] : computed error
  * @subsection Configuration Configuration
- * - \b patternWidth : width of the tag.
+ * - \b pattern_width : width of the tag.
  */
 class reprojection_error : public service::controller
 {
@@ -135,14 +135,14 @@ private:
     /// List of tags associated with each input matrix
     std::vector<data::marker_map::key_t> m_matrices_tag;
 
-    static constexpr std::string_view MATRIX_INPUT    = "matrix";
-    static constexpr std::string_view MARKERMAP_INPUT = "markerMap";
-    static constexpr std::string_view CAMERA_INPUT    = "camera";
-    static constexpr std::string_view EXTRINSIC_INPUT = "extrinsic";
-    static constexpr std::string_view FRAME_INOUT     = "frame";
+    static constexpr std::string_view MATRIX_INPUT     = "matrix";
+    static constexpr std::string_view marker_map_INPUT = "marker_map";
+    static constexpr std::string_view CAMERA_INPUT     = "camera";
+    static constexpr std::string_view EXTRINSIC_INPUT  = "extrinsic";
+    static constexpr std::string_view FRAME_INOUT      = "frame";
 
     data::ptr_vector<data::matrix4, data::access::in> m_matrix {this, MATRIX_INPUT};
-    data::ptr<data::marker_map, data::access::in> m_marker_map {this, MARKERMAP_INPUT};
+    data::ptr<data::marker_map, data::access::in> m_marker_map {this, marker_map_INPUT};
     data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
     data::ptr<data::matrix4, data::access::in> m_extrinsic {this, EXTRINSIC_INPUT};
     data::ptr<data::image, data::access::inout> m_frame {this, FRAME_INOUT};

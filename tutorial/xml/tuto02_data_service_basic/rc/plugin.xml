@@ -5,12 +5,12 @@
     <requirement id="sight::module::ui::qt" />
 
     <extension implements="sight::app::extension::config">
-        <id>TutoDataServiceBasic_AppCfg</id>
+        <id>tuto02_data_service_basic</id>
         <config>
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <!-- In tutoDataServiceBasic, the central data object is a sight::data::image. -->
-            <object uid="imageData" type="sight::data::image" />
+            <!-- In this tutorial, the central data object is a sight::data::image. -->
+            <object uid="image_data" type="sight::data::image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -20,17 +20,17 @@
                 containers in the application main window.
                 Here, it declares a container for the 3D rendering service.
             -->
-            <service uid="mainFrame" type="sight::module::ui::frame">
+            <service uid="main_frame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
-                        <name>tuto02_data_service_basic</name>
+                        <name>Tutorial 2: Data and service basic</name>
                         <icon>tuto02_data_service_basic/tuto.ico</icon>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                     </frame>
                 </gui>
                 <registry>
                     <!-- Associate the container for the rendering service. -->
-                    <view sid="imageRendereSrv" />
+                    <view sid="image_renderer_srv" />
                 </registry>
             </service>
 
@@ -40,8 +40,8 @@
                 Reading service:
                 The <resource> tag defines the resource path (/rc) of a module or application.
             -->
-            <service uid="imageReaderSrv" type="sight::module::io::vtk::image_reader">
-                <inout key="data" uid="imageData" />
+            <service uid="image_reader_srv" type="sight::module::io::vtk::image_reader">
+                <inout key="data" uid="image_data" />
                 <resource>tuto02_data_service_basic/img-test.vtk</resource>
             </service>
 
@@ -49,8 +49,8 @@
                 Visualization service of a 3D medical image:
                 This service will render the 3D image.
             -->
-            <service uid="imageRendereSrv" type="sight::module::viz::sample::image">
-                <in key="image" uid="imageData" />
+            <service uid="image_renderer_srv" type="sight::module::viz::sample::image">
+                <in key="image" uid="image_data" />
             </service>
 
             <!-- ******************************* Update services ***************************************** -->
@@ -60,8 +60,8 @@
                 The reading service load the data on the update.
                 The render update must be called after the reading of the image.
             -->
-            <update uid="imageReaderSrv" />
-            <update uid="imageRendereSrv" />
+            <update uid="image_reader_srv" />
+            <update uid="image_renderer_srv" />
         </config>
     </extension>
 </plugin>

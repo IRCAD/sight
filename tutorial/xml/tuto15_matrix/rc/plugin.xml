@@ -27,7 +27,7 @@
                     <frame>
                         <name>tuto15_matrix</name>
                         <icon>tuto15_matrix/tuto.ico</icon>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                     </frame>
                     <menubar />
                 </gui>
@@ -53,7 +53,7 @@
                     <layout>
                         <menuItem name="Open mesh" shortcut="Ctrl+M" />
                         <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        <menuItem name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
@@ -74,7 +74,7 @@
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="2" />
-                        <view proportion="1" backgroundColor="#36393E" />
+                        <view proportion="1" background_color="#36393E" />
                     </layout>
                 </gui>
                 <registry>

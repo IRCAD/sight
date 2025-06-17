@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,16 +41,16 @@ namespace sight::module::ui::qt::calibration
 
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::calibration::camera_set_editor" >
-        <in key="cameraSet" uid="..." />
+        <in key="camera_set" uid="..." />
         <index>...</index>
     </service>
    @endcode
 
  * @subsection Configuration Configuration
- * - \b index (optional, default: 1): index of the camera in cameraSet used to display extrinsic matrix
+ * - \b index (optional, default: 1): index of the camera in camera_set used to display extrinsic matrix
  *
  * @subsection Inputs Inputs
- * - \b cameraSet [sight::data::camera_set]: input cameraSet.
+ * - \b camera_set [sight::data::camera_set]: input camera_set.
  *
  * @subsection Slots Slots
  * -\b updateInformations(): Updates the informations of the intrinsic calibration.
@@ -123,11 +123,10 @@ protected:
 
     QVector<QPointer<QLabel> > m_matrix_labels; ///< Labels for matrix's elements
 
-    /// Index of the camera in cameraSet used to display extrinsic matrix.
+    /// Index of the camera in camera_set used to display extrinsic matrix.
     std::size_t m_cam_index;
 
-    static constexpr std::string_view CAMERASET = "cameraSet";
-    data::ptr<data::camera_set, data::access::in> m_camera_set {this, CAMERASET};
+    data::ptr<data::camera_set, data::access::in> m_camera_set {this, "camera_set"};
 };
 
 } // namespace sight::module::ui::qt::calibration

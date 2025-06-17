@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,10 +33,10 @@ namespace sight::module::sync::ut
  *
    @code{.xml}
         <service type="sight::module::sync::synchronizer" auto_connect="true">
-            <in group="frameTL">
-                <key uid="frameTL1" />
-                <key uid="frameTL4" />
-                <key uid="frameTL6" />
+            <in group="frame_tl">
+                <key uid="frame_tl1" />
+                <key uid="frame_tl4" />
+                <key uid="frame_tl6" />
             </in>
             <inout group="frames">
                 <key uid="frame1" sendStatus="true" />
@@ -44,7 +44,7 @@ namespace sight::module::sync::ut
                 <key uid="frame4" tl="1" sendStatus="false"/>
                 <key uid="frame11" tl="0"  sendStatus="true" />
             </inout>
-            <in group="matrixTL">
+            <in group="matrix_tl">
                 <key uid="matrixTL1" />
                 <key uid="matrixTL2" />
             </in>
@@ -112,7 +112,7 @@ public:
     /// Synchronisation process
     /// For this section, the max delay for a successful synchronisation is 5.
 
-    /// Give frames to  only one frameTL and check that the out frame is well filled
+    /// Give frames to  only one frame_tl and check that the out frame is well filled
     static void single_frame_tl_population();
 
     /// Give matrix to  only one matrixTL and check that the out matrix is well filled
@@ -139,7 +139,7 @@ public:
     //multi matrixTL Configurations without framesTL
     static void mixt_matrix_tl_config_test();
 
-    // single frameTL without matrixTL
+    // single frame_tl without matrixTL
     static void single_frame_tl_config_test();
 
     // Multi framesTL configuration without matrixTL

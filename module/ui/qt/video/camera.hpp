@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ namespace sight::module::ui::qt::video
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::video::camera" >
         <inout key="camera" uid="..."/>
-        <videoSupport>true</videoSupport>
+        <video_support>true</video_support>
         <label>Video source: </label>
     </service>
    @endcode
@@ -69,9 +69,9 @@ namespace sight::module::ui::qt::video
  *
  * @code{.xml}
     <service uid="..." type="sight::module::ui::qt::video::camera" >
-        <inout key="cameraSet" uid="..."/>
+        <inout key="camera_set" uid="..."/>
         <createCameraNumber>2</createCameraNumber>
-        <videoSupport>true</videoSupport>
+        <video_support>true</video_support>
         <useAbsolutePath>false</useAbsolutePath>
         <label>Video source: </label>
         <resolution>min/max/preferences/prompt/640x480</resolution>
@@ -80,10 +80,10 @@ namespace sight::module::ui::qt::video
  *
  * @subsection In-Out In-Out
  * - \b camera [sight::data::camera]: camera data.
- * - \b cameraSet [sight::data::camera_set]: camera series thus containing several camera.
+ * - \b camera_set [sight::data::camera_set]: camera series thus containing several camera.
  *
  * @subsection Configuration Configuration
- * - \b videoSupport (optional, default="false"): if we can open a video file in addition with cameras.
+ * - \b video_support (optional, default="false"): if we can open a video file in addition with cameras.
  * - \b useAbsolutePath (optional, default="false"): when using a file input, tells if the path should be stored as
  * absolute or relative to the video preferences directory.
  * - \b createCameraNumber (optional, default="0"): number of cameras to create. If the parameter is set and the
@@ -175,7 +175,7 @@ private:
     // Sets the file path as absolute ones
     bool m_use_absolute_path {false};
 
-    /// Signal emitted when the cameraSet has been configured.
+    /// Signal emitted when the camera_set has been configured.
     configured_signal_t::sptr m_sig_configured_cameras;
 
     /// Label of the selector.
@@ -190,7 +190,7 @@ private:
     bool m_preference_mode {false};
 
     static constexpr std::string_view CAMERA     = "camera";
-    static constexpr std::string_view CAMERA_SET = "cameraSet";
+    static constexpr std::string_view CAMERA_SET = "camera_set";
 
     data::ptr<data::camera, data::access::inout> m_camera {this, CAMERA, true};
     data::ptr<data::camera_set, data::access::inout> m_camera_set {this, CAMERA_SET, true};

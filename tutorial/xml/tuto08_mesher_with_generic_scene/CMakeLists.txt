@@ -27,4 +27,4 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_app PARAM_LIST config PARAM_VALUES tuto08_mesher_with_generic_scene_app_cfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES tuto08_mesher_with_generic_scene)

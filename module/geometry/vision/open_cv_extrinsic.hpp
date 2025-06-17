@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ namespace sight::module::geometry::vision
         <service type="sight::module::geometry::vision::open_cv_extrinsic">
             <in key="calibrationInfo1" uid="..." />
             <in key="calibrationInfo2" uid="..." />
-            <inout key="cameraSet" uid="..." />
+            <inout key="camera_set" uid="..." />
             <out key="matrix" uid="..." />
             <camIndex>...</camIndex>
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
@@ -59,7 +59,7 @@ namespace sight::module::geometry::vision
  *  @subsection Output Output:
  * - \b matrix [sight::data::matrix4]: Extrinsic matrix (for export purpose) (optional).
  * @subsection Configuration Configuration:
- * - \b camIndex (optional, default: 1): index of the camera in \b cameraSet used to compute extrinsic matrix
+ * - \b camIndex (optional, default: 1): index of the camera in \b camera_set used to compute extrinsic matrix
  *      (from camera[0] to camera[index]).
  * - \b board : preference key to retrieve the number of square in 2 dimensions of the chessboard.
  */
@@ -97,12 +97,12 @@ private:
     /// FwId of the second calibrationInfo
     std::string m_calibration_info2_id;
 
-    /// Index of the camera in cameraSet used to compute extrinsic matrix (from camera[0] to camera[index]).
+    /// Index of the camera in camera_set used to compute extrinsic matrix (from camera[0] to camera[index]).
     std::size_t m_cam_index {1};
 
     data::ptr<data::calibration_info, data::access::in> m_calibration_info1 {this, "calibrationInfo1"};
     data::ptr<data::calibration_info, data::access::in> m_calibration_info2 {this, "calibrationInfo2"};
-    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, "cameraSet"};
+    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, "camera_set"};
     data::ptr<data::matrix4, data::access::out> m_matrix {this, "matrix"};
 
     /// Width of the chessboard.

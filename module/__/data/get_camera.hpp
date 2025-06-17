@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -37,7 +37,7 @@ namespace sight::module::data
  *
  * @code{.xml}
    <service uid="..." type="sight::module::data::get_camera" >
-    <inout key="cameraSet" uid="..."/>
+    <inout key="camera_set" uid="..."/>
     <out group="camera" >
         <key index="0" uid="..." />
         <key index="1" uid="..." />
@@ -48,7 +48,7 @@ namespace sight::module::data
    </service>
        @endcode
  * @subsection Inout Inout
- * - \b cameraSet [sight::data::get_camera]: camera series from which the parameters will be extracted
+ * - \b camera_set [sight::data::get_camera]: camera series from which the parameters will be extracted
  *
  * @subsection Output Output
  * - \b camera [sight::data::camera]: output camera extracted from the input Camera series.
@@ -86,7 +86,7 @@ private:
     std::vector<std::size_t> m_camera_index_numbers;
     std::vector<std::size_t> m_extrinsic_index_numbers;
 
-    sight::data::ptr<sight::data::camera_set, sight::data::access::inout> m_camera_set {this, "cameraSet"};
+    sight::data::ptr<sight::data::camera_set, sight::data::access::inout> m_camera_set {this, "camera_set"};
     sight::data::ptr_vector<sight::data::camera, sight::data::access::out> m_camera {this, "camera"};
     sight::data::ptr_vector<sight::data::matrix4, sight::data::access::out> m_extrinsic {this, "extrinsic"};
 };

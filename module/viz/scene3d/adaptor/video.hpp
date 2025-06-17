@@ -51,7 +51,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::video" auto_connect="true" >
         <in key="image" uid="..." />
         <in key="tf" uid="..." />
-        <config textureName="videoFrame" />
+        <config texture_name="videoFrame" />
     </service>
    @endcode
  *
@@ -64,7 +64,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  * - \b material_template (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
  *      internally created material.
- * - \b textureName (optional, string, default=""): the name of the Ogre texture the mesh will use.
+ * - \b texture_name (optional, string, default=""): the name of the Ogre texture the mesh will use.
  * - \b filtering (optional, bool, default=false): whether to use or not bilinear filtering for the texture.
  * - \b scaling (optional, bool, default=true): whether to scale the video to the viewport or
  *      keep it at its original resolution.
@@ -73,7 +73,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b labelColor (optional, hexadecimal, default=0xFFFFFF): color of the label in hexadecimal.
  * - \b color (optional, hexadecimal, default=#FFFFFFFF): color of the texture in hexadecimal.
  * - \b fixedSize (optional, bool, default=false): if true, the billboard will have a fixed size in screen space.
- * - \b queryFlags (optional, uint32, default=0x40000000): Picking flags. Points can be picked by pickers with a
+ * - \b query_flags (optional, uint32, default=0x40000000): Picking flags. Points can be picked by pickers with a
  *      matching mask.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): true_t font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
@@ -139,7 +139,7 @@ private:
     {
         static inline const std::string VISIBLE           = CONFIG + "visible";
         static inline const std::string MATERIAL_TEMPLATE = CONFIG + "material_template";
-        static inline const std::string TEXTURE_NAME      = CONFIG + "textureName";
+        static inline const std::string TEXTURE_NAME      = CONFIG + "texture_name";
         static inline const std::string FILTERING         = CONFIG + "filtering";
         static inline const std::string SCALING           = CONFIG + "scaling";
         static inline const std::string RADIUS            = CONFIG + "radius";
@@ -147,7 +147,7 @@ private:
         static inline const std::string LABEL_COLOR       = CONFIG + "labelColor";
         static inline const std::string COLOR             = CONFIG + "color";
         static inline const std::string FIXED_SIZE        = CONFIG + "fixedSize";
-        static inline const std::string QUERY             = CONFIG + "queryFlags";
+        static inline const std::string QUERY             = CONFIG + "query_flags";
         static inline const std::string FONT_SOURCE       = CONFIG + "fontSource";
         static inline const std::string FONT_SIZE         = CONFIG + "fontSize";
     };

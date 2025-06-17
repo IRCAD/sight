@@ -14,7 +14,7 @@
             <object uid="frameTL" type="sight::data::frame_tl">
                 <value>100</value>
             </object>
-            <object uid="markerMap" type="sight::data::marker_map" />
+            <object uid="marker_map" type="sight::data::marker_map" />
             <object uid="videoImage" type="sight::data::image" />
 
             <!-- Aruco tracker parameters -->
@@ -35,7 +35,7 @@
                 <item key="cornerRefinementMaxIterations" type="sight::data::integer" value="30" />
                 <item key="cornerRefinementMinAccuracy" type="sight::data::real" value="0.1" />
                 <item key="markerBorderBits" type="sight::data::integer" value="1" />
-                <item key="perspectiveRemovePixelPerCell" type="sight::data::integer" value="8" />
+                <item key="perspective_remove_pixel_per_cell" type="sight::data::integer" value="8" />
                 <item key="perspectiveRemoveIgnoredMarginPerCell" type="sight::data::real" value="0.1" />
                 <item key="maxErroneousBitsInBorderRate" type="sight::data::real" value="0.3" />
                 <item key="minOtsuStdDev" type="sight::data::real" value="5.0" />
@@ -49,7 +49,7 @@
                     <frame>
                         <name>ex_video_tracking</name>
                         <icon>ex_video_tracking/app.ico</icon>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                     </frame>
                     <toolbar />
                 </gui>
@@ -88,7 +88,7 @@
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="1" />
-                        <view proportion="0" backgroundColor="#36393E" />
+                        <view proportion="0" background_color="#36393E" />
                     </layout>
                 </gui>
                 <registry>
@@ -129,22 +129,22 @@
                     <item name="Max. Marker Perimeter Rate" key="max_marker_perimeter_rate" min="1." max="10." />
                     <item name="Polygonal Approx. Accuracy Rate" key="polygonal_approx_accuracy_rate" min="0.01" max="1." />
                     <item name="Min. Corner Distance Rate" key="min_corner_distance_rate" min="0." max="1." />
-                    <item name="Min. Distance to Border" key="minDistanceToBorder" widget="slider" min="0" max="10" />
-                    <item name="Min. Marker Distance Rate" key="minMarkerDistanceRate" min="0." max="1." />
-                    <item name="Corner Refinement Win. Size" key="cornerRefinementWinSize" widget="slider" min="1" max="100" />
-                    <item name="Corner Refinement Max Iterations" key="cornerRefinementMaxIterations" widget="slider" min="1" max="10" />
-                    <item name="Corner Refinement Min. Accuracy" key="cornerRefinementMinAccuracy" min="0.01" max="10." />
-                    <item name="Marker Border Bits" key="markerBorderBits" widget="slider" min="1" max="100" />
-                    <item name="Perspective Remove Pixel per Cell" key="perspectiveRemovePixelPerCell" widget="slider" min="1" max="32" />
-                    <item name="Perspective Remove Ignored Margin Per Cell" key="perspectiveRemoveIgnoredMarginPerCell" min="0." max="1." />
-                    <item name="Max. Erroneous Bits In Border Rate" key="maxErroneousBitsInBorderRate" min="0." max="1." />
-                    <item name="Min. Otsu Std. Dev." key="minOtsuStdDev" min="0." max="100." />
-                    <item name="Error Correction Rate" key="errorCorrectionRate" min="0." max="1." />
+                    <item name="Min. Distance to Border" key="min_distance_to_border" widget="slider" min="0" max="10" />
+                    <item name="Min. Marker Distance Rate" key="min_marker_distance_rate" min="0." max="1." />
+                    <item name="Corner Refinement Win. Size" key="corner_refinement_win_size" widget="slider" min="1" max="100" />
+                    <item name="Corner Refinement Max Iterations" key="corner_refinement_max_iterations" widget="slider" min="1" max="10" />
+                    <item name="Corner Refinement Min. Accuracy" key="corner_refinement_min_accuracy" min="0.01" max="10." />
+                    <item name="Marker Border Bits" key="marker_border_bits" widget="slider" min="1" max="100" />
+                    <item name="Perspective Remove Pixel per Cell" key="perspective_remove_pixel_per_cell" widget="slider" min="1" max="32" />
+                    <item name="Perspective Remove Ignored Margin Per Cell" key="perspective_remove_ignored_margin_per_cell" min="0." max="1." />
+                    <item name="Max. Erroneous Bits In Border Rate" key="max_erroneous_bits_in_border_rate" min="0." max="1." />
+                    <item name="Min. Otsu Std. Dev." key="min_otsu_std_dev" min="0." max="100." />
+                    <item name="Error Correction Rate" key="error_correction_rate" min="0." max="1." />
                 </ui>
             </service>
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
-                <in group="frameTL" auto_connect="false">
+                <in group="frame_tl" auto_connect="false">
                     <key uid="frameTL" />
                 </in>
                 <inout group="frames">
@@ -155,8 +155,8 @@
             <service uid="trackerSrv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking" auto_connect="false">
                 <in key="camera" uid="camera" />
                 <inout key="frame" uid="videoImage" />
-                <inout group="markerMap">
-                    <key uid="markerMap" />
+                <inout group="marker_map">
+                    <key uid="marker_map" />
                 </inout>
                 <track>
                     <marker id="0,1,2,3,4,5,6,7,8,42,100,101,102,103,104,105" />

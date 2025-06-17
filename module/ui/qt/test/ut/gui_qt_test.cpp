@@ -62,8 +62,8 @@ void gui_qt_test::test_default_frame()
     service::config_t frame_config;
 
     frame_config.put("gui.frame.name", "guiQtUnitTest");
-    frame_config.put("gui.frame.minSize.<xmlattr>.width", "800");
-    frame_config.put("gui.frame.minSize.<xmlattr>.height", "600");
+    frame_config.put("gui.frame.min_size.<xmlattr>.width", "800");
+    frame_config.put("gui.frame.min_size.<xmlattr>.height", "600");
 
     service::base::sptr srv = service::add("sight::module::ui::frame");
     ASSERT_NOT_NULL(srv);
@@ -92,8 +92,8 @@ void gui_qt_test::test_fullscreen_frame()
     service::config_t frame_config;
 
     frame_config.put("gui.frame.name", "gui_qt_test_test_fullscreen_frame");
-    frame_config.put("gui.frame.minSize.<xmlattr>.width", "800");
-    frame_config.put("gui.frame.minSize.<xmlattr>.height", "600");
+    frame_config.put("gui.frame.min_size.<xmlattr>.width", "800");
+    frame_config.put("gui.frame.min_size.<xmlattr>.height", "600");
 #ifndef _WIN32
     frame_config.put("gui.frame.style.<xmlattr>.mode", "FULLSCREEN");
 #else

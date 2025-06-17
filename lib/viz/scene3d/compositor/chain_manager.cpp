@@ -285,9 +285,9 @@ void chain_manager::update_compositor_adaptors(compositor_id_t _compositor_name,
                             shader_param_service->set_render_service(render_service);
 
                             service::config_t config;
-                            config.add("config.<xmlattr>.compositorName", _compositor_name);
+                            config.add("config.<xmlattr>.compositor_name", _compositor_name);
                             config.add("config.<xmlattr>.parameter", constant_name);
-                            config.add("config.<xmlattr>.shaderType", shader_type_str);
+                            config.add("config.<xmlattr>.shader_type", shader_type_str);
 
                             shader_param_service->set_layer_id(layer->layer_id());
                             shader_param_service->set_config(config);

@@ -42,7 +42,7 @@
         </service>
 
         <service uid="listOrganEditorSrv" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
-            <inout key="modelSeries" uid="${organManagerModelSeries}" />
+            <inout key="model_series" uid="${organManagerModelSeries}" />
             <columns>
                 <organ_name />
                 <volume />

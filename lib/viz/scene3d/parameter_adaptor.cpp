@@ -91,9 +91,9 @@ void parameter_adaptor::configuring()
 
     m_technique_name = config.get<std::string>(CONFIG + "technique", "");
 
-    if(config.count("shaderType") != 0U)
+    if(config.count("shader_type") != 0U)
     {
-        const auto shader_type = config.get<std::string>(CONFIG + "shaderType");
+        const auto shader_type = config.get<std::string>(CONFIG + "shader_type");
         if(shader_type == "vertex")
         {
             m_shader_type = Ogre::GPT_VERTEX_PROGRAM;

@@ -30,7 +30,7 @@ are already displayed and where they are displayed on screen.
                     <frame>
                         <name>ex_notifications</name>
                         <icon>ex_notifications/app.ico</icon>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                     </frame>
                     <toolbar />
                 </gui>

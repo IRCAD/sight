@@ -76,7 +76,7 @@
 
         <service uid="topToolbarSliderView" type="sight::module::ui::view">
             <gui>
-                <toolbar backgroundColor="#00000000" />
+                <toolbar background_color="#00000000" />
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                 </layout>
@@ -146,7 +146,7 @@
 
         <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
             <in key="model" uid="${modelSeries}" />
-            <config queryFlags="0x40000000" autoresetcamera="true" />
+            <config query_flags="0x40000000" autoresetcamera="true" />
             <properties visible="${model_visibility}" />
         </service>
 
@@ -162,7 +162,7 @@
         <service uid="3DNegatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d">
             <in key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
-            <config queryFlags="0x40000000" interactive="true" priority="2" />
+            <config query_flags="0x40000000" interactive="true" priority="2" />
             <properties visible="${negato_visibility}" />
         </service>
 

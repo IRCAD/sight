@@ -18,7 +18,7 @@
             <gui>
                 <frame>
                     <name>Display calibration images</name>
-                    <minSize width="900" height="600" />
+                    <min_size width="900" height="600" />
                 </frame>
             </gui>
             <registry>
@@ -55,7 +55,7 @@
         <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
             <in key="image" uid="${imageId1}" />
             <in key="pointList" uid="${pointListId1}" />
-            <config radius="1.0" color="#00FFFF" fixedSize="true" textureName="circle.dds" />
+            <config radius="1.0" color="#00FFFF" fixedSize="true" texture_name="circle.dds" />
         </service>
 
         <!-- ******************************* Begin Generic scene ******************************* -->
@@ -73,7 +73,7 @@
         <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
             <in key="image" uid="${imageId2}" />
             <in key="pointList" uid="${pointListId2}" />
-            <config radius="1.0" color="#00FFFF" fixedSize="true" textureName="circle.dds" />
+            <config radius="1.0" color="#00FFFF" fixedSize="true" texture_name="circle.dds" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

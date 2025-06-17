@@ -86,7 +86,7 @@ Detail of the ToolBar
                     <frame>
                         <name>ex_registration</name>
                         <icon>ex_registration/app.ico</icon>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                     </frame>
                 </gui>
                 <registry>
@@ -131,9 +131,9 @@ Detail of the ToolBar
             <service uid="multiView" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::tab">
-                        <view caption="Point List 1" selected="true" border="5" backgroundColor="#2E3034" />
-                        <view caption="Point List 2" border="5" backgroundColor="#2E3034" />
-                        <view caption="Registration" border="5" backgroundColor="#2E3034" />
+                        <view caption="Point List 1" selected="true" border="5" background_color="#2E3034" />
+                        <view caption="Point List 2" border="5" background_color="#2E3034" />
+                        <view caption="Registration" border="5" background_color="#2E3034" />
                     </layout>
                 </gui>
                 <registry>
@@ -149,7 +149,7 @@ Detail of the ToolBar
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
-                        <view proportion="0" minHeight="30" backgroundColor="#36393E" />
+                        <view proportion="0" minHeight="30" background_color="#36393E" />
                     </layout>
                 </gui>
                 <registry>
@@ -196,7 +196,7 @@ Detail of the ToolBar
             <service uid="N1NegatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
                 <in key="image" uid="myImage" />
                 <inout key="tf" uid="tf" />
-                <config sliceIndex="axial" interactive="true" />
+                <config orientation="axial" interactive="true" />
             </service>
 
             <service uid="N1MeshAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
@@ -206,7 +206,7 @@ Detail of the ToolBar
 
             <service uid="N1PointListAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
                 <in key="pointList" uid="pointList1" />
-                <config color="#619647" radius="1.0" fixedSize="true" textureName="cross.dds" />
+                <config color="#619647" radius="1.0" fixedSize="true" texture_name="cross.dds" />
             </service>
 
             <service uid="N1PickerAdp" type="sight::module::viz::scene3d::adaptor::picker" />
@@ -276,7 +276,7 @@ Detail of the ToolBar
             <service uid="N3NegatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
                 <in key="image" uid="myImage" />
                 <inout key="tf" uid="tf" />
-                <config sliceIndex="axial" interactive="true" />
+                <config orientation="axial" interactive="true" />
             </service>
 
             <service uid="N3TransformAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">

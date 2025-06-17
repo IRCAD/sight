@@ -2,9 +2,9 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::io::service::rgbd_grabber</type>
         <service>sight::module::io::realsense::scan</service>
-        <object key="depthTL">sight::data::frame_tl</object>
-        <object key="frameTL">sight::data::frame_tl</object>
-        <object key="cameraSet">sight::data::camera_set</object>
+        <object key="depth_tl">sight::data::frame_tl</object>
+        <object key="frame_tl">sight::data::frame_tl</object>
+        <object key="camera_set">sight::data::camera_set</object>
         <object key="pointcloud">sight::data::mesh</object>
         <desc>RealSense Camera Grabber</desc>
         <tags>FILE, DEVICE</tags>

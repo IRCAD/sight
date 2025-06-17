@@ -58,7 +58,7 @@ All concrete data classes implement this interface.
 - **Camera**: contains intrinsic and extrinsic parameters of a camera.
 - **CameraSet**: stores a collection of cameras.
 - **FrameTL**: defines a timeline of `sight::data::image`.
-- **MarkerMap**: stores a map of optical markers (2D).
+- **marker_map**: stores a map of optical markers (2D).
 - **MarkerTL**: defines a timeline of 2D markers from their four corner positions.
 - **MatrixTL**: defines a timeline of raw 4x4 matrices.
 - **RawBufferTL**: defines a timeline of buffers.

@@ -52,7 +52,7 @@
 
         <service uid="toolbarView" type="sight::module::ui::view">
             <gui>
-                <toolbar backgroundColor="#00000000" />
+                <toolbar background_color="#00000000" />
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                 </layout>
@@ -103,7 +103,7 @@
         <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato2d">
             <in key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunction}" />
-            <config sliceIndex="${sliceIndex}" filtering="${filtering}" />
+            <config orientation="${sliceIndex}" filtering="${filtering}" />
             <properties classification="${classification}" />
         </service>
 

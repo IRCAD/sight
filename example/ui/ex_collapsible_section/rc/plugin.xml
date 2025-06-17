@@ -23,7 +23,7 @@ This example shows how to use collapsible section.
                     <frame>
                         <name>ex_collapsible_section</name>
                         <icon>ex_collapsible_section/app.ico</icon>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                     </frame>
                     <menubar />
                 </gui>

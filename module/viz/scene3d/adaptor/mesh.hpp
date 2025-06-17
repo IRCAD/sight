@@ -83,8 +83,8 @@ namespace sight::module::viz::scene3d::adaptor
         <inout group="uniforms">
             <key uid="..." name="u_uniform_name" />
        </inout>
-        <config transform="..." visible="true" material_name="..." shadingMode="phong" textureName="..."
-        queryFlags="0x40000000" />
+        <config transform="..." visible="true" material_name="..." shading="phong" texture_name="..."
+        query_flags="0x40000000" />
     </service>
    @endcode
  *
@@ -106,9 +106,9 @@ namespace sight::module::viz::scene3d::adaptor
  *       template, the texture adaptor and the shading mode) :
  *  - \b material_template (optional, string, default=""): the name of the base Ogre material for the internally created
  *       material.
- *  - \b textureName (optional, default=""): the name of the Ogre texture that the mesh will use.
- *  - \b shadingMode (optional, none/flat/phong/ambient, default=phong): name of the used shading mode.
- *  - \b queryFlags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
+ *  - \b texture_name (optional, default=""): the name of the Ogre texture that the mesh will use.
+ *  - \b shading (optional, none/flat/phong/ambient, default=phong): name of the used shading mode.
+ *  - \b query_flags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *       match the flag.
  */
 class mesh final :

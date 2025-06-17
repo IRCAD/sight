@@ -24,7 +24,7 @@ add_dependencies(my_target module_sync ... )
 Please find here some example of frame matrix synchronizer
 ```
 <service type="sight::module::sync::synchronizer" auto_connect="true">
-    <in group="frameTL">
+    <in group="frame_tl">
         <key uid="frameTL1" />
         <key uid="frameTL4" delay="36" />
         <key uid="frameTL6" />
@@ -35,7 +35,7 @@ Please find here some example of frame matrix synchronizer
         <key uid="frame4" tl="1" sendStatus="false"/>
         <key uid="frame11" tl="0"  sendStatus="true" />
     </inout>
-    <in group="matrixTL">
+    <in group="matrix_tl">
         <key uid="matrixTL1" />
         <key uid="matrixTL2" delay="56" />
     </in>

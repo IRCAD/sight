@@ -2,7 +2,7 @@
     <id>calibrationEdition</id>
     <parameters>
         <object uid="dataSet" type="sight::data::set" />
-        <object uid="cameraSet" type="sight::data::camera_set" />
+        <object uid="camera_set" type="sight::data::camera_set" />
 
         <param name="WID_PARENT" />
     </parameters>
@@ -150,7 +150,7 @@
         </service>
 
         <service uid="extractCamerasSrv" type="sight::module::data::get_camera">
-            <inout key="CAMERASET" uid="newCameraSet" />
+            <inout key="camera_set" uid="newCameraSet" />
             <out group="camera">
                 <key index="0" uid="camera0" />
                 <key index="1" uid="camera1" />
@@ -158,7 +158,7 @@
         </service>
 
         <service uid="cameraSetInfoSrv" type="sight::module::ui::qt::calibration::camera_set_editor">
-            <in key="CAMERASET" uid="${cameraSet}" auto_connect="true" />
+            <in key="camera_set" uid="${cameraSet}" auto_connect="true" />
             <in key="notUsed" uid="camera1" />
             <!-- Not used, it allows to start this service only if we have a stereo calibration -->
         </service>

@@ -28,6 +28,7 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
+#include <core/ptree.hpp>
 
 #include <data/string.hpp>
 
@@ -96,8 +97,6 @@ void point_list::configuring()
     static const std::string s_AUTORESET_CAMERA_CONFIG  = CONFIG + "autoresetcamera";
     static const std::string s_MATERIAL_TEMPLATE_CONFIG = CONFIG + "material_template";
     static const std::string s_FIXED_SIZE_CONFIG        = CONFIG + "fixedSize";
-    static const std::string s_TEXTURE_NAME_CONFIG      = CONFIG + "textureName";
-    static const std::string s_QUERY_CONFIG             = CONFIG + "queryFlags";
     static const std::string s_RADIUS_CONFIG            = CONFIG + "radius";
     static const std::string s_DISPLAY_LABEL_CONFIG     = CONFIG + "displayLabel";
     static const std::string s_LABEL_COLOR_CONFIG       = CONFIG + "labelColor";
@@ -123,7 +122,13 @@ void point_list::configuring()
     }
 
     // The mesh adaptor will pass the texture name to the created material adaptor
-    m_texture_name = config.get(s_TEXTURE_NAME_CONFIG, m_texture_name);
+    m_texture_name = core::ptree::get_and_deprecate(
+        config,
+        CONFIG + "texture_name",
+        CONFIG + "textureName",
+        "26.0",
+        m_texture_name
+    );
 
     this->set_transform_id(
         config.get<std::string>(
@@ -132,8 +137,13 @@ void point_list::configuring()
         )
     );
 
-    const std::string hexa_mask = config.get<std::string>(s_QUERY_CONFIG, "");
-    if(!hexa_mask.empty())
+    const auto hexa_mask = core::ptree::get_and_deprecate<std::string>(
+        config,
+        CONFIG + "query_flags",
+        CONFIG + "queryFlags",
+        "26.0"
+    );
+    if(not hexa_mask.empty())
     {
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"

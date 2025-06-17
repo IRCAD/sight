@@ -26,6 +26,7 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
+#include <core/ptree.hpp>
 
 #include <geometry/data/mesh.hpp>
 
@@ -113,9 +114,21 @@ void mesh::configuring()
         m_material_template_name = config.get<std::string>(CONFIG + "material_template", m_material_template_name);
 
         // The mesh adaptor will pass the texture name to the created material adaptor
-        m_texture_name = config.get<std::string>(CONFIG + "textureName", m_texture_name);
+        m_texture_name = core::ptree::get_and_deprecate(
+            config,
+            CONFIG + "texture_name",
+            CONFIG + "textureName",
+            "26.0",
+            m_texture_name
+        );
 
-        m_shading_mode = config.get<std::string>(CONFIG + "shadingMode", m_shading_mode);
+        m_shading_mode = core::ptree::get_and_deprecate(
+            config,
+            CONFIG + "shading",
+            CONFIG + "shadingMode",
+            "26.0",
+            m_shading_mode
+        );
     }
 
     this->set_transform_id(
@@ -126,17 +139,23 @@ void mesh::configuring()
     );
 
     m_is_dynamic          = config.get<bool>(CONFIG + "dynamic", m_is_dynamic);
-    m_is_dynamic_vertices = config.get<bool>(CONFIG + "dynamicVertices", m_is_dynamic_vertices);
+    m_is_dynamic_vertices = config.get<bool>(CONFIG + "dynamic_vertices", m_is_dynamic_vertices);
 
-    if(const auto hexa_mask = config.get_optional<std::string>(CONFIG + "queryFlags"); hexa_mask.has_value())
+    const auto hexa_mask = core::ptree::get_and_deprecate<std::string>(
+        config,
+        CONFIG + "query_flags",
+        CONFIG + "queryFlags",
+        "26.0"
+    );
+    if(not hexa_mask.empty())
     {
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
-            "Given value : " + hexa_mask.value(),
-            hexa_mask->length() > 2
-            && hexa_mask->substr(0, 2) == "0x"
+            "Given value : " + hexa_mask,
+            hexa_mask.length() > 2
+            && hexa_mask.substr(0, 2) == "0x"
         );
-        m_query_flags = static_cast<std::uint32_t>(std::stoul(hexa_mask.value(), nullptr, 16));
+        m_query_flags = static_cast<std::uint32_t>(std::stoul(hexa_mask, nullptr, 16));
     }
 }
 
@@ -416,7 +435,7 @@ void mesh::update_new_material_adaptor(data::mesh::csptr _mesh)
             config_t material_adp_config;
             material_adp_config.put("config.<xmlattr>.material_template", m_material_template_name);
 
-            if(m_uniforms.size() > 0)
+            if(!m_uniforms.empty())
             {
                 std::size_t i = 0;
                 for(const auto& uniform_data : m_uniforms)
@@ -484,7 +503,7 @@ void mesh::update_xml_material_adaptor()
 {
     SIGHT_THROW_IF(
         "Can not provide both a user-defined material adaptor and uniforms.",
-        m_uniforms.size() > 0
+        !m_uniforms.empty()
     );
 
     if(m_material_adaptor->updating_status() == updating_status::notupdating)

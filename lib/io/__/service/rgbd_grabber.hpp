@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ public:
      * @name Data API
      * @{
      */
-    static constexpr std::string_view s_DEPTHTL_INOUT = "depthTL";
+    static constexpr std::string_view s_DEPTHTL_INOUT = "depth_tl";
     /** @} */
 
     /// Constructor.

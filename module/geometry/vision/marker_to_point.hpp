@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,25 +31,26 @@ namespace sight::module::geometry::vision
 {
 
 /**
- * @brief This service update a pointlist with the center of the marker (from a matrixTL) when the extractMarker slot is
+ * @brief This service update a pointlist with the center of the marker (from a matrix_tl) when the extractMarker slot
+ * is
  * called
  * This service can be used to save the displacement of a marker in time. (each point of the pointlist will be a
  * position).
  *
  * @section Slots Slots
- * - \b add_point() : Add marker position in the pointList. Position is extracted from matrixTL.
+ * - \b add_point() : Add marker position in the pointList. Position is extracted from matrix_tl.
  * - \b clear() : Clear the pointList.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
      <service uid="markerToPoint" type="sight::module::geometry::vision::marker_to_point">
-         <in key="matrixTL" uid="matrixTL" />
+         <in key="matrix_tl" uid="matrix_tl" />
          <inout key="pointList" uid="markersPL" />
      </service>
    @endcode
  * @subsection Input Input
- * - \b matrixTL [sight::data::matrix_tl]: timeline for tool matrices.
+ * - \b matrix_tl [sight::data::matrix_tl]: timeline for tool matrices.
  * @subsection In-Out In-Out
  * - \b pointList [sight::data::Pointlist]: marker position.
  */
@@ -88,13 +89,13 @@ protected:
     /// Does nothing.
     void stopping() override;
 
-    /// Slot called to extract position from the latest matrix of the MatrixTL and push it in the pointList
+    /// Slot called to extract position from the latest matrix of the matrix_tl and push it in the pointList
     void add_point();
 
     /// Slot called to clear the pointlist
     void clear();
 
-    data::ptr<data::matrix_tl, data::access::in> m_matrix_tl {this, "matrixTL"};
+    data::ptr<data::matrix_tl, data::access::in> m_matrix_tl {this, "matrix_tl"};
     data::ptr<data::point_list, data::access::inout> m_point_list {this, "pointList"};
 };
 

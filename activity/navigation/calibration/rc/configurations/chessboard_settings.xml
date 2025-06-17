@@ -12,7 +12,7 @@
             <gui>
                 <frame>
                     <name>Chessboard settings</name>
-                    <minSize width="400" />
+                    <min_size width="400" />
                     <style mode="MODAL" />
                 </frame>
             </gui>

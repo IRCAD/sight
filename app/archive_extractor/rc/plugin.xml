@@ -13,8 +13,8 @@
                     <frame>
                         <name>Archive Extractor</name>
                         <version>@archive_extractor_VERSION@</version>
-                        <minSize height="80" />
-                        <maxSize height="80" />
+                        <min_size height="80" />
+                        <max_size height="80" />
                     </frame>
                 </gui>
                 <registry>

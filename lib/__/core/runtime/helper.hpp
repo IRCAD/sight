@@ -27,8 +27,7 @@
 #include "core/runtime/extension.hpp"
 
 #include <core/base.hpp>
-
-#include <boost/property_tree/ptree.hpp>
+#include <core/ptree.hpp>
 
 namespace sight::core::runtime
 {
@@ -43,29 +42,22 @@ namespace sight::core::runtime
  * @throw   sight::core::exception if the value type is not compatible
  */
 template<typename T>
+[[deprecated("Use sight::core::ptree::get_value() instead")]]
 T get_ptree_value(const boost::property_tree::ptree& _tree, const std::string& _path, T _default_value)
 {
-    auto element = _tree.get_child_optional(_path);
-    if(not element.has_value())
-    {
-        // 3.
-        return _default_value;
-    }
-
-    if(boost::optional<T> value = element->get_value_optional<T>())
-    {
-        // 1.
-        return *value;
-    }
-
-    // 2.
-    SIGHT_THROW_EXCEPTION(core::exception("Wrong value set in path: " + _path));
+    return core::ptree::get_value(_tree, _path, _default_value);
 }
 
 namespace property_tree
 {
 
-SIGHT_CORE_API std::string to_string(const boost::property_tree::ptree& _pt);
+//------------------------------------------------------------------------------
+
+[[deprecated("Use sight::core::ptree::to_string() instead")]]
+inline std::string to_string(const boost::property_tree::ptree& _pt)
+{
+    return core::ptree::to_string(_pt);
+}
 
 }
 

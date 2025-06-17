@@ -23,6 +23,7 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
+#include <core/ptree.hpp>
 
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
@@ -84,7 +85,6 @@ void negato::configuring(const config_t& _config)
     static const std::string s_BORDER_CONFIG      = CONFIG + "border";
     static const std::string s_INTERACTIVE_CONFIG = CONFIG + "interactive";
     static const std::string s_PRIORITY_CONFIG    = CONFIG + "priority";
-    static const std::string s_QUERY_CONFIG       = CONFIG + "queryFlags";
 
     if(const auto filtering_cfg = _config.get_optional<std::string>(s_FILTERING_CONFIG); filtering_cfg.has_value())
     {
@@ -102,8 +102,13 @@ void negato::configuring(const config_t& _config)
         this->set_filtering(filtering);
     }
 
-    const std::string hexa_mask = _config.get<std::string>(s_QUERY_CONFIG, "");
-    if(!hexa_mask.empty())
+    const auto hexa_mask = core::ptree::get_and_deprecate<std::string>(
+        _config,
+        CONFIG + "query_flags",
+        CONFIG + "queryFlags",
+        "26.0"
+    );
+    if(not hexa_mask.empty())
     {
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"

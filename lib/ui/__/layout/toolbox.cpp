@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,8 @@
  */
 
 #include "ui/__/layout/toolbox.hpp"
+
+#include "ui/__/detail/parser.hpp"
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -70,10 +72,8 @@ void toolbox::initialize(const ui::config_t& _configuration)
                 vi.m_bottom_border = view_cfg->get<int>("bottomBorder", vi.m_bottom_border);
             }
 
-            vi.m_min_size.first  = view_cfg->get<int>("minWidth", vi.m_min_size.first);
-            vi.m_min_size.second = view_cfg->get<int>("minHeight", vi.m_min_size.second);
-            vi.m_max_size.first  = view_cfg->get<int>("maxWidth", vi.m_max_size.first);
-            vi.m_max_size.second = view_cfg->get<int>("maxHeight", vi.m_max_size.second);
+            vi.m_min_size = detail::parse_min_size(*view_cfg);
+            vi.m_max_size = detail::parse_max_size(*view_cfg);
 
             vi.m_visible        = view_cfg->get<bool>("visible", vi.m_visible);
             vi.m_use_scroll_bar = view_cfg->get<bool>("useScrollBar", vi.m_use_scroll_bar);
@@ -82,16 +82,7 @@ void toolbox::initialize(const ui::config_t& _configuration)
             vi.m_caption = view_cfg->get<std::string>("caption", "");
             vi.m_qss_key = view_cfg->get<std::string>("QSSClass", "");
 
-            if(const auto hexa_color = view_cfg->get<std::string>("backgroundColor", ""); !hexa_color.empty())
-            {
-                SIGHT_ASSERT(
-                    "Color string should start with '#' and followed by 6 or 8 "
-                    "hexadecimal digits. Given color: " << hexa_color,
-                    hexa_color[0] == '#'
-                    && (hexa_color.length() == 7 || hexa_color.length() == 9)
-                );
-                vi.m_background_color = hexa_color;
-            }
+            vi.m_background_color = detail::parse_background_color(*view_cfg);
         }
 
         m_views.push_back(vi);

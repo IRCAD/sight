@@ -20,7 +20,7 @@
         <desc>Calibrate the intrinsic and extrinsic parameters of cameras.</desc>
         <icon>sight::module::ui::icons/calibration.svg</icon>
         <requirements>
-            <requirement name="cameraSet" type="sight::data::camera_set" minOccurs="0" maxOccurs="0" />
+            <requirement name="camera_set" type="sight::data::camera_set" minOccurs="0" maxOccurs="0" />
         </requirements>
         <appConfig id="calibration" />
     </extension>
@@ -37,7 +37,7 @@
         </desc>
         <icon>sight::module::ui::icons/gear.svg</icon>
         <requirements>
-            <requirement name="cameraSet" type="sight::data::camera_set" minOccurs="1" maxOccurs="1">
+            <requirement name="camera_set" type="sight::data::camera_set" minOccurs="1" maxOccurs="1">
                 <desc>Calibrated camera series.</desc>
             </requirement>
         </requirements>

@@ -40,4 +40,4 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_app PARAM_LIST config PARAM_VALUES Tuto17SimpleAR_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES tuto17_simple_ar)

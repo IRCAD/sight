@@ -24,7 +24,7 @@
 
 #include "app/detail/config_manager.hpp"
 
-#include <core/runtime/helper.hpp>
+#include <core/ptree.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
@@ -95,7 +95,7 @@ service::config_t config_launcher::init_config(
 
             parameter_cfg.add("<xmlattr>.replace", key);
 
-            const bool optional = core::runtime::get_ptree_value(it_cfg.second, "<xmlattr>.optional", false);
+            const bool optional = core::ptree::get_value(it_cfg.second, "<xmlattr>.optional", false);
 
             if(optional)
             {

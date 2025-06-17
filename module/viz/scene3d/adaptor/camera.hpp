@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service uid="cameraAdaptor" type="sight::module::viz::scene3d::adaptor::camera">
         <inout key="transform" uid="..." />
         <in key="calibration" uid="..." />
-        <in key="cameraSet" uid="..." />
+        <in key="camera_set" uid="..." />
     </service>
  * @endcode
  *
@@ -158,7 +158,7 @@ private:
     };
 
     static constexpr std::string_view CALIBRATION_INPUT = "calibration";
-    static constexpr std::string_view CAMERA_SET_INPUT  = "cameraSet";
+    static constexpr std::string_view CAMERA_SET_INPUT  = "camera_set";
     static constexpr std::string_view TRANSFORM_INOUT   = "transform";
 
     data::ptr<data::camera, data::access::in> m_camera_calibration {this, CALIBRATION_INPUT, true};

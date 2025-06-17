@@ -1,4 +1,4 @@
-add_subdirectory(tuto01_basic)
+add_subdirectory(tuto01_hello_world)
 add_subdirectory(tuto02_data_service_basic)
 add_subdirectory(tuto03_data_service)
 add_subdirectory(tuto04_signal_slot)

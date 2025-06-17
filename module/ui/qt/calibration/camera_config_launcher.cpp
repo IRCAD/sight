@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -476,7 +476,7 @@ void camera_config_launcher::start_extrinsic_config(std::size_t _index)
         replace_map["calibrationInfo2"] = calib_info2->get_id();
         replace_map["camIndex"]         = std::to_string(_index);
         replace_map["board_properties"] = board_properties->get_id();
-        replace_map["cameraSet"]        = camera_set->get_id();
+        replace_map["camera_set"]       = camera_set->get_id();
     }
 
     m_extrinsic_launcher.stop_config();

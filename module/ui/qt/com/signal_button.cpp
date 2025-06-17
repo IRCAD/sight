@@ -25,6 +25,7 @@
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
+#include <core/ptree.hpp>
 #include <core/runtime/path.hpp>
 
 #include <io/joystick/interactor.hpp>
@@ -82,32 +83,32 @@ void signal_button::configuring()
 
     const auto configuration = this->get_config();
 
-    const auto config = configuration.get_child_optional("config");
+    const auto cfg = configuration.get_child_optional("config");
 
-    if(config.has_value())
+    if(cfg.has_value())
     {
-        m_checkable      = config->get<bool>("checkable", m_checkable);
-        m_check_at_start = config->get<bool>("checked", m_check_at_start);
-        m_enable         = config->get<bool>("enable", m_enable);
+        m_checkable      = cfg->get<bool>("checkable", m_checkable);
+        m_check_at_start = cfg->get<bool>("checked", m_check_at_start);
+        m_enable         = cfg->get<bool>("enable", m_enable);
 
-        m_text     = config->get<std::string>("text", m_text);
-        m_text2    = config->get<std::string>("text2", m_text2);
-        m_tool_tip = config->get<std::string>("toolTip", m_tool_tip);
+        m_text     = cfg->get<std::string>("text", m_text);
+        m_text2    = cfg->get<std::string>("text2", m_text2);
+        m_tool_tip = core::ptree::get_and_deprecate(*cfg, "tool_tip", "toolTip", "26.0", m_tool_tip);
 
-        if(const auto icon = config->get_optional<std::string>("icon"); icon.has_value())
+        if(const auto icon = cfg->get_optional<std::string>("icon"); icon.has_value())
         {
             m_icon = core::runtime::get_module_resource_file_path(icon.value());
         }
 
-        if(const auto icon = config->get_optional<std::string>("icon2"); icon.has_value())
+        if(const auto icon = cfg->get_optional<std::string>("icon2"); icon.has_value())
         {
             m_icon2 = core::runtime::get_module_resource_file_path(icon.value());
         }
 
-        m_joystick_alias = sight::io::joystick::interactor::to_joystick(config->get<std::string>("joystick", ""));
+        m_joystick_alias = sight::io::joystick::interactor::to_joystick(cfg->get<std::string>("joystick", ""));
 
-        m_icon_width  = config->get<unsigned int>("iconWidth", m_icon_width);
-        m_icon_height = config->get<unsigned int>("iconHeight", m_icon_height);
+        m_icon_width  = core::ptree::get_and_deprecate(*cfg, "icon_width", "iconWidth", "26.0", m_icon_width);
+        m_icon_height = core::ptree::get_and_deprecate(*cfg, "icon_height", "iconHeight", "26.0", m_icon_height);
     }
 }
 

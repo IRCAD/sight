@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -69,8 +69,8 @@ std::tuple<service::base::sptr, std::string> make_container(const std::string& _
 
     service::config_t container_config;
     container_config.put("gui.frame.name", "guiQtUnitTest");
-    container_config.put("gui.frame.minSize.<xmlattr>.width", "640");
-    container_config.put("gui.frame.minSize.<xmlattr>.height", "480");
+    container_config.put("gui.frame.min_size.<xmlattr>.width", "640");
+    container_config.put("gui.frame.min_size.<xmlattr>.height", "480");
     container_config.put("registry.view.<xmlattr>.sid", uuid);
 
     // Configure and start the container service

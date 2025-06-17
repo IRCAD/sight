@@ -45,7 +45,7 @@
         <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
             <in key="image" uid="${objectID}" />
             <inout key="tf" uid="tf" />
-            <config autoresetcamera="true" sliceIndex="${orientation}" />
+            <config autoresetcamera="true" orientation="${orientation}" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->

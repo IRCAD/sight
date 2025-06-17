@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ namespace sight::module::geometry::vision
  *
  * @code{.xml}
      <service uid="..." type="sight::module::geometry::vision::pose_from2d">
-         <in group="markerMap" auto_connect="true">
+         <in group="marker_map" auto_connect="true">
              <key uid="..." />
              <key uid="..." />
          </in>
@@ -63,11 +63,11 @@ namespace sight::module::geometry::vision
              <key uid="..." id="103"/>
              <key uid="..." id="104"/>
          </in>
-         <patternWidth>80</patternWidth>
+         <pattern_width>80</pattern_width>
      </service>
    @endcode
  * @subsection Input Input
- * - \b markerMap [sight::data::marker_map]: markers map list.
+ * - \b marker_map [sight::data::marker_map]: markers map list.
  * - \b camera [sight::data::camera]: calibrated cameras.
  * - \b extrinsic [sight::data::matrix4]: extrinsic matrix, only used if you have two cameras configured.
  * @subsection In-Out In-Out
@@ -75,7 +75,7 @@ namespace sight::module::geometry::vision
  * specified using the \b id tag to be found in the marker map.
  * - \b pointList [sight::data::point_list] (optional): list of points corresponding to the model.
  * @subsection Configuration Configuration
- * - \b patternWidth : width of the tag.
+ * - \b pattern_width : width of the tag.
  */
 class pose_from2d : public service::registerer
 {
@@ -180,13 +180,13 @@ private:
     /// List of tags associated with each inout matrix
     std::vector<data::marker_map::key_t> m_matrices_tag;
 
-    static constexpr std::string_view MARKERMAP_INPUT = "markerMap";
-    static constexpr std::string_view CAMERA_INPUT    = "camera";
-    static constexpr std::string_view EXTRINSIC_INPUT = "extrinsic";
-    static constexpr std::string_view MATRIX_INOUT    = "matrix";
-    static constexpr std::string_view POINTLIST_INOUT = "pointList";
+    static constexpr std::string_view marker_map_INPUT = "marker_map";
+    static constexpr std::string_view CAMERA_INPUT     = "camera";
+    static constexpr std::string_view EXTRINSIC_INPUT  = "extrinsic";
+    static constexpr std::string_view MATRIX_INOUT     = "matrix";
+    static constexpr std::string_view POINTLIST_INOUT  = "pointList";
 
-    data::ptr_vector<data::marker_map, data::access::in> m_marker_map {this, MARKERMAP_INPUT};
+    data::ptr_vector<data::marker_map, data::access::in> m_marker_map {this, marker_map_INPUT};
     data::ptr_vector<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
     data::ptr<data::matrix4, data::access::in> m_extrinsic {this, EXTRINSIC_INPUT};
     data::ptr_vector<data::matrix4, data::access::inout> m_matrix {this, MATRIX_INOUT};

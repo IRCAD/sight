@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -77,7 +77,7 @@ public:
 
         std::stringstream config_string;
         config_string
-        << "<in group=\"frameTL\">"
+        << "<in group=\"frame_tl\">"
            "    <key uid=\"frameTL1\" />"
            "    <key uid=\"frameTL2\" />"
            "</in>"
@@ -85,7 +85,7 @@ public:
            "    <key uid=\"frame1\" tl=\"0\"/>"
            "    <key uid=\"frame2\" tl=\"1\" />"
            "</inout>"
-           "<in group=\"matrixTL\">"
+           "<in group=\"matrix_tl\">"
            "    <key uid=\"matrixTL1\" />"
            "</in>"
            "<inout group=\"matrix\">"
@@ -145,9 +145,9 @@ public:
         matrix_tl_1 = std::make_shared<data::matrix_tl>();
         matrix_tl_1->init_pool_size(4);
 
-        srv->set_input(frame_tl_1, "frameTL", true, false, 0);
-        srv->set_input(frame_tl_2, "frameTL", true, false, 1);
-        srv->set_input(matrix_tl_1, "matrixTL", true, false, 0);
+        srv->set_input(frame_tl_1, "frame_tl", true, false, 0);
+        srv->set_input(frame_tl_2, "frame_tl", true, false, 1);
+        srv->set_input(matrix_tl_1, "matrix_tl", true, false, 0);
 
         // create and set the inout which will be filled in the synchronization process
         frame1 = std::make_shared<data::image>();
@@ -884,7 +884,7 @@ void synchronizer_test::reset_and_loop_synchronisation()
 //------------------------------------------------------------------------------
 
 //<service type="sight::module::sync::synchronizer" auto_connect="true">
-//     <in group="matrixTL">
+//     <in group="matrix_tl">
 //         <key uid="matrixTL1" />
 //     </in>
 //     <inout group="matrix">
@@ -896,7 +896,7 @@ void synchronizer_test::single_matrix_tl_config_test()
 {
     std::stringstream config_string;
     config_string
-    << "<in group=\"matrixTL\">"
+    << "<in group=\"matrix_tl\">"
        "   <key uid=\"matrixTL1\" />"
        "</in>"
        "<inout group=\"matrix\">"
@@ -910,7 +910,7 @@ void synchronizer_test::single_matrix_tl_config_test()
     // create input TLs
     data::matrix_tl::sptr matrix_tl_1 = std::make_shared<data::matrix_tl>();
     matrix_tl_1->init_pool_size(4);
-    tester.srv->set_input(matrix_tl_1, "matrixTL", true, false, 0);
+    tester.srv->set_input(matrix_tl_1, "matrix_tl", true, false, 0);
 
     // create output vars
     auto matrix0 = std::make_shared<data::matrix4>();
@@ -957,7 +957,7 @@ void synchronizer_test::mixt_matrix_tl_config_test()
 {
     std::stringstream config_string;
     config_string
-    << "<in group=\"matrixTL\">"
+    << "<in group=\"matrix_tl\">"
        "   <key uid=\"matrixTL1\" />"
        "   <key uid=\"matrixTL2\" />"
        "</in>"
@@ -977,8 +977,8 @@ void synchronizer_test::mixt_matrix_tl_config_test()
     data::matrix_tl::sptr matrix_tl_2 = std::make_shared<data::matrix_tl>();
     matrix_tl_1->init_pool_size(4);
     matrix_tl_2->init_pool_size(4);
-    tester.srv->set_input(matrix_tl_1, "matrixTL", true, false, 0);
-    tester.srv->set_input(matrix_tl_2, "matrixTL", true, false, 1);
+    tester.srv->set_input(matrix_tl_1, "matrix_tl", true, false, 0);
+    tester.srv->set_input(matrix_tl_2, "matrix_tl", true, false, 1);
 
     // create output vars
     auto matrix0 = std::make_shared<data::matrix4>();
@@ -1034,7 +1034,7 @@ void synchronizer_test::single_frame_tl_config_test()
 {
     std::stringstream config_string;
     config_string
-    << "<in group=\"frameTL\">"
+    << "<in group=\"frame_tl\">"
        "    <key uid=\"frameTL\" />"
        "</in>"
        "<inout group=\"frames\">"
@@ -1053,7 +1053,7 @@ void synchronizer_test::single_frame_tl_config_test()
         sight::data::frame_tl::pixel_format::gray_scale
     );
 
-    tester.srv->set_input(frame_tl, "frameTL", true, false, 0);
+    tester.srv->set_input(frame_tl, "frame_tl", true, false, 0);
 
     // create output vars
     auto frame = std::make_shared<data::image>();
@@ -1105,7 +1105,7 @@ void synchronizer_test::mixt_frame_tl_config_test()
 {
     std::stringstream config_string;
     config_string
-    << "<in group=\"frameTL\">"
+    << "<in group=\"frame_tl\">"
        "    <key uid=\"frameTL1\" />"
        "    <key uid=\"frameTL4\" />"
        "    <key uid=\"frameTL6\" />"
@@ -1145,9 +1145,9 @@ void synchronizer_test::mixt_frame_tl_config_test()
         sight::data::frame_tl::pixel_format::gray_scale
     );
 
-    tester.srv->set_input(frame_tl_1, "frameTL", true, false, 0);
-    tester.srv->set_input(frame_tl_4, "frameTL", true, false, 1);
-    tester.srv->set_input(frame_tl_6, "frameTL", true, false, 2);
+    tester.srv->set_input(frame_tl_1, "frame_tl", true, false, 0);
+    tester.srv->set_input(frame_tl_4, "frame_tl", true, false, 1);
+    tester.srv->set_input(frame_tl_6, "frame_tl", true, false, 2);
 
     // create output vars
     auto frame1 = std::make_shared<data::image>();
@@ -1234,7 +1234,7 @@ void synchronizer_test::full_config_test()
 {
     std::stringstream config_string;
     config_string
-    << "<in group=\"frameTL\">"
+    << "<in group=\"frame_tl\">"
        "    <key uid=\"frameTL1\" />"
        "    <key uid=\"frameTL4\" />"
        "    <key uid=\"frameTL6\" />"
@@ -1245,7 +1245,7 @@ void synchronizer_test::full_config_test()
        "    <key uid=\"frame4\" tl=\"1\" sendStatus=\"false\"/>"
        "    <key uid=\"frame11\" tl=\"0\"  sendStatus=\"true\" />"
        "</inout>"
-       "<in group=\"matrixTL\">"
+       "<in group=\"matrix_tl\">"
        "    <key uid=\"matrixTL1\" />"
        "    <key uid=\"matrixTL2\" />"
        "</in>"
@@ -1284,16 +1284,16 @@ void synchronizer_test::full_config_test()
         sight::data::frame_tl::pixel_format::gray_scale
     );
 
-    tester.srv->set_input(frame_tl_1, "frameTL", true, false, 0);
-    tester.srv->set_input(frame_tl_4, "frameTL", true, false, 1);
-    tester.srv->set_input(frame_tl_6, "frameTL", true, false, 2);
+    tester.srv->set_input(frame_tl_1, "frame_tl", true, false, 0);
+    tester.srv->set_input(frame_tl_4, "frame_tl", true, false, 1);
+    tester.srv->set_input(frame_tl_6, "frame_tl", true, false, 2);
 
     data::matrix_tl::sptr matrix_tl_1 = std::make_shared<data::matrix_tl>();
     data::matrix_tl::sptr matrix_tl_2 = std::make_shared<data::matrix_tl>();
     matrix_tl_1->init_pool_size(4);
     matrix_tl_2->init_pool_size(4);
-    tester.srv->set_input(matrix_tl_1, "matrixTL", true, false, 0);
-    tester.srv->set_input(matrix_tl_2, "matrixTL", true, false, 1);
+    tester.srv->set_input(matrix_tl_1, "matrix_tl", true, false, 0);
+    tester.srv->set_input(matrix_tl_2, "matrix_tl", true, false, 1);
 
     // create output vars
     auto frame1 = std::make_shared<data::image>();
@@ -1525,7 +1525,7 @@ void synchronizer_test::send_status_test()
 {
     std::stringstream config_string;
     config_string
-    << "<in group=\"frameTL\">"
+    << "<in group=\"frame_tl\">"
        "    <key uid=\"frameTL1\"  />"
        "    <key uid=\"frameTL2\" />"
        "</in>"
@@ -1533,7 +1533,7 @@ void synchronizer_test::send_status_test()
        "    <key uid=\"frame1\" sendStatus=\"true\" />"
        "    <key uid=\"frame2\" tl=\"1\" />"
        "</inout>"
-       "<in group=\"matrixTL\">"
+       "<in group=\"matrix_tl\">"
        "    <key uid=\"matrixTL\" />"
        "</in>"
        "<inout group=\"matrix\">"
@@ -1704,7 +1704,7 @@ void synchronizer_test::delay_test()
 {
     std::stringstream config_string;
     config_string
-    << "<in group=\"frameTL\">"
+    << "<in group=\"frame_tl\">"
        "    <key uid=\"frameTL1\" delay=\"2\" />"
        "    <key uid=\"frameTL2\" />"
        "</in>"
@@ -1712,7 +1712,7 @@ void synchronizer_test::delay_test()
        "    <key uid=\"frame1\" />"
        "    <key uid=\"frame2\" tl=\"1\" />"
        "</inout>"
-       "<in group=\"matrixTL\">"
+       "<in group=\"matrix_tl\">"
        "    <key uid=\"matrixTL\" delay=\"3\"/>"
        "</in>"
        "<inout group=\"matrix\">"
@@ -1896,7 +1896,7 @@ void synchronizer_test::image_series_time_tagging_test()
 
     std::stringstream config_string;
     config_string
-    << "<in group=\"frameTL\">"
+    << "<in group=\"frame_tl\">"
        "    <key uid=\"frameTL1\" />"
        "</in>"
        "<inout group=\"frames\">"
@@ -1919,7 +1919,7 @@ void synchronizer_test::image_series_time_tagging_test()
         sight::data::frame_tl::pixel_format::gray_scale
     );
 
-    tester.srv->set_input(frame_tl_1, "frameTL", true, false, 0);
+    tester.srv->set_input(frame_tl_1, "frame_tl", true, false, 0);
 
     // create and set the inout which will be filled in the synchronization process
     sight::data::image_series::sptr frame1 = std::make_shared<sight::data::image_series>();
@@ -1982,7 +1982,7 @@ void synchronizer_test::single_image_series_tl_population()
     /// Service setup
     std::stringstream config_string;
     config_string
-    << "<in group=\"frameTL\">"
+    << "<in group=\"frame_tl\">"
        "    <key uid=\"frameTL1\" />"
        "    <key uid=\"frameTL2\" />"
        "</in>"
@@ -1990,7 +1990,7 @@ void synchronizer_test::single_image_series_tl_population()
        "    <key uid=\"frame1\" tl=\"0\"/>"
        "    <key uid=\"frame2\" tl=\"1\" />"
        "</inout>"
-       "<in group=\"matrixTL\">"
+       "<in group=\"matrix_tl\">"
        "    <key uid=\"matrixTL1\" />"
        "</in>"
        "<inout group=\"matrix\">"
@@ -2023,9 +2023,9 @@ void synchronizer_test::single_image_series_tl_population()
     data::matrix_tl::sptr matrix_tl_1 = std::make_shared<data::matrix_tl>();
     matrix_tl_1->init_pool_size(4);
 
-    tester.srv->set_input(frame_tl_1, "frameTL", true, false, 0);
-    tester.srv->set_input(frame_tl_2, "frameTL", true, false, 1);
-    tester.srv->set_input(matrix_tl_1, "matrixTL", true, false, 0);
+    tester.srv->set_input(frame_tl_1, "frame_tl", true, false, 0);
+    tester.srv->set_input(frame_tl_2, "frame_tl", true, false, 1);
+    tester.srv->set_input(matrix_tl_1, "matrix_tl", true, false, 0);
 
     // create and set the inout which will be filled in the synchronization process
     sight::data::image_series::sptr frame1 = std::make_shared<sight::data::image_series>();

@@ -55,7 +55,7 @@
                         <menuItem name="Open mesh" shortcut="Ctrl+O" />
                         <menuItem name="Save mesh" shortcut="Ctrl+S" />
                         <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        <menuItem name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>

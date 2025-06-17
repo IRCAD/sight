@@ -22,12 +22,12 @@
 
 #pragma once
 
-#include <app/helper/config_launcher.hpp>
-
 #include <data/activity.hpp>
 #include <data/camera_set.hpp>
 
 #include <ui/__/editor.hpp>
+
+#include <app/helper/config_launcher.hpp>
 
 #include <QComboBox>
 #include <QObject>
@@ -48,7 +48,7 @@ namespace sight::module::ui::qt::calibration
  *
  * @code{.xml}
    <service uid="cameraLauncher" type="sight::module::ui::qt::calibration::camera_config_launcher">
-       <inout key="cameraSet" uid="..." />
+       <inout key="camera_set" uid="..." />
        <inout key="activity" uid="..." />
        <config>
            <intrinsic>
@@ -58,7 +58,7 @@ namespace sight::module::ui::qt::calibration
            </intrinsic>
            <extrinsic>
                <properties config="sight::navigation::calibration::cal_extrinsic_view" />
-               <inout key="cameraSet" uid="..." />
+               <inout key="camera_set" uid="..." />
                <parameter replace="WID_PARENT" by="calibrationView" />
                <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
            </extrinsic>
@@ -67,7 +67,7 @@ namespace sight::module::ui::qt::calibration
    @endcode
  *
  * @subsection In-Out In-Out:
- * - \b cameraSet [sight::data::camera_set] : stores camera calibrations.
+ * - \b camera_set [sight::data::camera_set] : stores camera calibrations.
  * - \b activity [sight::data::activity]: stores the information used to generate the calibration.
  *        It allows to re-open the activity with this information.
  *
@@ -122,7 +122,7 @@ private:
     /// Start the configuration for the extrinsic calibration
     void start_extrinsic_config(std::size_t _index);
 
-    /// Adds a Camera in cameraSet and the CalibrationInfo in the activity
+    /// Adds a Camera in camera_set and the CalibrationInfo in the activity
     void add_camera();
 
     QPointer<QComboBox> m_camera_combo_box;
@@ -134,7 +134,7 @@ private:
     sight::app::helper::config_launcher m_intrinsic_launcher;
     sight::app::helper::config_launcher m_extrinsic_launcher;
 
-    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, "cameraSet"};
+    data::ptr<data::camera_set, data::access::inout> m_camera_set {this, "camera_set"};
     data::ptr<data::activity, data::access::inout> m_activity {this, "activity"};
     data::ptr<data::map, data::access::inout> m_board_properties {this, "board_properties"};
 };

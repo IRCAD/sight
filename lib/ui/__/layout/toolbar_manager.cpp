@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ std::vector<toolbar_manager::action_info> configure(
 )
 {
     std::vector<toolbar_manager::action_info> infos;
-    if(_tool_bar_item.first == "menuItem")
+    if(_tool_bar_item.first == "menu_item" or _tool_bar_item.first == "menuItem")
     {
         toolbar_manager::action_info info;
 
@@ -121,7 +121,7 @@ std::vector<toolbar_manager::action_info> configure(
             if(first)
             {
                 SIGHT_ASSERT(
-                    "the first element in an accordion list must be a menuItem with style=\"check\"",
+                    "the first element in an accordion list must be a menu_item with style=\"check\"",
                     info.m_is_checkable
                 );
             }

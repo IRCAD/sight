@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@
 #include <core/com/has_slots.hpp>
 #include <core/com/helper/sig_slot_connection.hpp>
 #include <core/object.hpp>
-#include <core/runtime/helper.hpp>
+#include <core/ptree.hpp>
 #include <core/runtime/runtime.hpp>
 
 #include <data/object.hpp>
@@ -317,7 +317,7 @@ app::detail::service_config config::parse_service(
     );
 
     // AutoConnect
-    srvconfig.m_global_auto_connect = core::runtime::get_ptree_value(_srv_elem, "<xmlattr>.auto_connect", true);
+    srvconfig.m_global_auto_connect = core::ptree::get_value(_srv_elem, "<xmlattr>.auto_connect", true);
 
     // Worker key
     srvconfig.m_worker = _srv_elem.get<std::string>("<xmlattr>.worker", "");
@@ -394,7 +394,7 @@ app::detail::service_config config::parse_service(
             // Optional is global to all keys in the group
             if(objconfig.m_access != data::access::out)
             {
-                objconfig.m_optional = core::runtime::get_ptree_value(
+                objconfig.m_optional = core::ptree::get_value(
                     cfg.second,
                     "<xmlattr>.optional",
                     default_optional_cfg
@@ -426,7 +426,7 @@ app::detail::service_config config::parse_service(
                 // Optional can be overriden by element in the group
                 if(group_objconfig.m_access != data::access::out)
                 {
-                    group_objconfig.m_optional = core::runtime::get_ptree_value(
+                    group_objconfig.m_optional = core::ptree::get_value(
                         group_cfg->second,
                         "<xmlattr>.optional",
                         objconfig.m_optional
@@ -465,7 +465,7 @@ app::detail::service_config config::parse_service(
             // Optional
             if(objconfig.m_access != data::access::out)
             {
-                objconfig.m_optional = core::runtime::get_ptree_value(
+                objconfig.m_optional = core::ptree::get_value(
                     cfg.second,
                     "<xmlattr>.optional",
                     default_optional_cfg

@@ -1,5 +1,5 @@
 <extension implements="sight::app::extension::config">
-    <id>Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg</id>
+    <id>tuto10_launch_basic_config::basic_frame_config</id>
     <!-- Declared the required parameters -->
     <parameters>
         <!-- image is defined by the previous configuration that called the config_launcher. -->
@@ -8,37 +8,37 @@
         <!--
             CLOSE_CONFIG_CHANNEL is defined by config_launcher. It allows to connect the frame signal "closed" to the
             config_launcher slot "stopConfig".
-            The default value "DummyChannel" is used if the paramter CLOSE_CONFIG_CHANNEL is not defined (for example if
-            the configuration is launched from another service.
+            The default value "dummy_channel" is used if the parameter CLOSE_CONFIG_CHANNEL is not defined (for example 
+            if the configuration is launched from another service.
          -->
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <param name="CLOSE_CONFIG_CHANNEL" default="dummy_channel" />
     </parameters>
     <config>
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="sight::module::ui::frame">
+        <service uid="main_frame" type="sight::module::ui::frame">
             <window onclose="notify" />
             <gui>
                 <frame>
                     <name>Basic frame config</name>
-                    <minSize width="900" height="600" />
+                    <min_size width="900" height="600" />
                 </frame>
             </gui>
             <registry>
-                <view sid="imageRendereSrv" />
+                <view sid="image_renderer_srv" />
             </registry>
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
-        <service uid="imageRendereSrv" type="sight::module::viz::sample::image">
+        <service uid="image_renderer_srv" type="sight::module::viz::sample::image">
             <in key="image" uid="${image}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
 
         <connect channel="${CLOSE_CONFIG_CHANNEL}">
-            <signal>mainFrame/closed</signal>
+            <signal>main_frame/closed</signal>
         </connect>
     </config>
 </extension>

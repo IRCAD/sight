@@ -22,6 +22,8 @@
 
 #include "app/parser/transfer_function.hpp"
 
+#include <core/ptree.hpp>
+
 #include <data/color.hpp>
 #include <data/transfer_function.hpp>
 
@@ -74,7 +76,13 @@ void transfer_function::parse(
 
             tf_data->set_window_min_max(tf_data->min_max());
 
-            const bool is_clamped = color_cfg->get<bool>("<xmlattr>.isClamped", true);
+            const auto is_clamped = core::ptree::get_and_deprecate(
+                *color_cfg,
+                "<xmlattr>.is_clamped",
+                "<xmlattr>.isClamped",
+                "26.0",
+                true
+            );
             tf_data->set_clamped(is_clamped);
 
             const bool resample_to_max_texture_size = color_cfg->get<bool>(

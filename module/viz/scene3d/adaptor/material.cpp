@@ -27,6 +27,7 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
+#include <core/ptree.hpp>
 
 #include <data/helper/field.hpp>
 #include <data/map.hpp>
@@ -58,23 +59,34 @@ material::material() noexcept
 
 //------------------------------------------------------------------------------
 
-void material::configuring()
+void material::configuring(const config_t& _config)
 {
     this->configure_params();
 
-    const config_t config = this->get_config();
+    m_material_template_name = _config.get(CONFIG + "material_template", m_material_template_name);
+    m_material_name          = _config.get(CONFIG + "material_name", this->get_id());
 
-    static const std::string s_MATERIAL_TEMPLATE_NAME_CONFIG = CONFIG + "material_template";
-    static const std::string s_MATERIAL_NAME_CONFIG          = CONFIG + "material_name";
-    static const std::string s_TEXTURE_NAME_CONFIG           = CONFIG + "textureName";
-    static const std::string s_SHADING_MODE_CONFIG           = CONFIG + "shadingMode";
-    static const std::string s_REPRESENTATION_MODE_CONFIG    = CONFIG + "representationMode";
-
-    m_material_template_name = config.get(s_MATERIAL_TEMPLATE_NAME_CONFIG, m_material_template_name);
-    m_material_name          = config.get(s_MATERIAL_NAME_CONFIG, this->get_id());
-    m_texture_name           = config.get(s_TEXTURE_NAME_CONFIG, m_texture_name);
-    m_shading_mode           = config.get(s_SHADING_MODE_CONFIG, m_shading_mode);
-    std::string representation_mode = config.get(s_REPRESENTATION_MODE_CONFIG, "SURFACE");
+    m_shading_mode = core::ptree::get_and_deprecate(
+        _config,
+        CONFIG + "shading",
+        CONFIG + "shadingMode",
+        "26.0",
+        m_shading_mode
+    );
+    m_texture_name = core::ptree::get_and_deprecate(
+        _config,
+        CONFIG + "texture_name",
+        CONFIG + "textureName",
+        "26.0",
+        m_texture_name
+    );
+    const auto representation_mode = core::ptree::get_and_deprecate<std::string>(
+        _config,
+        CONFIG + "representation",
+        CONFIG + "representationMode",
+        "26.0",
+        "SURFACE"
+    );
 
     // Make sure the representation is properly defined
     m_representation_mode = sight::data::material::string_to_representation_mode(representation_mode);
@@ -306,7 +318,7 @@ void material::create_shader_parameter_adaptors()
 
         if(const auto inouts_cfg = config.get_child_optional("inout"); inouts_cfg.has_value())
         {
-            const auto group = inouts_cfg->get<std::string>("<xmlattr>.group");
+            const auto group = inouts_cfg->get<std::string>("<xmlattr>.group", "");
             if(group == "uniforms")
             {
                 std::size_t i = 0;
@@ -363,7 +375,7 @@ void material::create_shader_parameter_adaptors()
 
             service::config_t srv_config;
             srv_config.add("config.<xmlattr>.parameter", constant_name);
-            srv_config.add("config.<xmlattr>.shaderType", shader_type_str);
+            srv_config.add("config.<xmlattr>.shader_type", shader_type_str);
             srv_config.add("config.<xmlattr>.materialName", m_material_name);
 
             srv->set_layer_id(m_layer_id);

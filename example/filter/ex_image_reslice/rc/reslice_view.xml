@@ -81,7 +81,7 @@
         <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
             <in key="image" uid="${slice}" />
             <inout key="tf" uid="${tf}" />
-            <config filtering="linear" border="false" interactive="false" slicesCross="false" />
+            <config filtering="linear" border="false" interactive="false" cross="false" />
         </service>
 
         <service uid="mask_negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">
@@ -92,7 +92,7 @@
         <service uid="mask_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
             <in key="image" uid="${mask_slice}" />
             <inout key="tf" uid="${mask_tf}" />
-            <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" tf_alpha="true" />
+            <config orientation="axial" filtering="linear" border="false" interactive="false" cross="false" tf_alpha="true" />
             <properties classification="pre" />
         </service>
 

@@ -44,7 +44,7 @@
                     <frame>
                         <name>ex_real_sense</name>
                         <icon>ex_real_sense/app.ico</icon>
-                        <minSize width="1280" height="820" />
+                        <min_size width="1280" height="820" />
                     </frame>
                     <menubar />
                     <toolbar />
@@ -73,7 +73,7 @@
                 <gui>
                     <layout>
                         <menuItem name="Recording Path..." shortcut="Ctrl+S" />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        <menuItem name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
@@ -142,7 +142,7 @@
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="1" />
-                        <view proportion="0" visible="false" backgroundColor="#36393E" />
+                        <view proportion="0" visible="false" background_color="#36393E" />
                     </layout>
                 </gui>
                 <registry>
@@ -198,7 +198,7 @@
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
-                        <view proportion="0" backgroundColor="#36393E" />
+                        <view proportion="0" background_color="#36393E" />
                     </layout>
                 </gui>
                 <registry>
@@ -476,21 +476,21 @@
 
             <!-- GUI to select camera (device, file, or stream) -->
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
-                <inout key="cameraSet" uid="RGBDCameraSet" />
+                <inout key="camera_set" uid="RGBDCameraSet" />
                 <createCameraNumber>1</createCameraNumber>
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- Manages Sense camera configuration -->
             <service uid="videoGrabberSrv" type="sight::module::io::realsense::scan">
-                <inout key="cameraSet" uid="RGBDCameraSet" />
-                <inout key="depthTL" uid="frameTLDepth" />
-                <inout key="frameTL" uid="frameTLVideo" />
+                <inout key="camera_set" uid="RGBDCameraSet" />
+                <inout key="depth_tl" uid="frameTLDepth" />
+                <inout key="frame_tl" uid="frameTLVideo" />
                 <out key="pointcloud" uid="pointcloud" />
             </service>
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer">
-                <in group="frameTL">
+                <in group="frame_tl">
                     <key uid="frameTLVideo" />
                     <key uid="frameTLDepth" />
                 </in>
@@ -503,7 +503,7 @@
 
             <!-- extract a sight::data::camera from the sight::data::camera_set -->
             <service uid="extractCameraSrv" type="sight::module::data::get_camera">
-                <inout key="cameraSet" uid="RGBDCameraSet" auto_connect="true" />
+                <inout key="camera_set" uid="RGBDCameraSet" auto_connect="true" />
                 <out group="camera">
                     <!-- Depth/Infrared1 Camera -->
                     <key index="0" uid="DCamera" />

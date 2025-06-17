@@ -24,11 +24,10 @@
 
 #include <core/com/signals.hpp>
 #include <core/com/slots.hxx>
+#include <core/ptree.hpp>
 
 #include <data/helper/medical_image.hpp>
 #include <data/image.hpp>
-
-#include <service/macros.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
@@ -54,10 +53,13 @@ void negato2d::configuring(const config_t& _config)
 {
     negato::configuring(_config);
 
-    static const std::string s_SLICE_INDEX_CONFIG  = CONFIG + "sliceIndex";
-    static const std::string s_SLICES_CROSS_CONFIG = CONFIG + "slicesCross";
-
-    const auto axis = _config.get<std::string>(s_SLICE_INDEX_CONFIG, "axial");
+    const auto axis = core::ptree::get_and_deprecate<std::string>(
+        _config,
+        CONFIG + "orientation",
+        CONFIG + "sliceIndex",
+        "26.0",
+        "axial"
+    );
     if(axis == "axial")
     {
         m_planes[0].second = axis_t::z_axis;
@@ -71,7 +73,13 @@ void negato2d::configuring(const config_t& _config)
         m_planes[0].second = axis_t::x_axis;
     }
 
-    m_slices_cross = _config.get<bool>(s_SLICES_CROSS_CONFIG, true);
+    m_slices_cross = core::ptree::get_and_deprecate<bool>(
+        _config,
+        CONFIG + "cross",
+        CONFIG + "slicesCross",
+        "26.0",
+        true
+    );
 }
 
 //------------------------------------------------------------------------------

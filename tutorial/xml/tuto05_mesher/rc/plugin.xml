@@ -2,7 +2,7 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
     <extension implements="sight::app::extension::config">
-        <id>Tuto05Mesher_AppCfg</id>
+        <id>tuto05_mesher</id>
         <config>
             <!-- ******************************* Objects declaration ****************************** -->
 
@@ -19,9 +19,9 @@
             <service uid="main_frame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
-                        <name>tuto05_mesher</name>
+                        <name>Tutorial 5: Mesh a segmentation mask</name>
                         <icon>tuto05_mesher/tuto.ico</icon>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                     </frame>
                     <menubar />
                 </gui>
@@ -47,30 +47,30 @@
             <service uid="menu_file_view" type="sight::module::ui::menu">
                 <gui>
                     <layout>
-                        <menuItem name="Open image" shortcut="Ctrl+O" />
-                        <menuItem name="Save image" />
+                        <menu_item name="Open image" shortcut="Ctrl+O" />
+                        <menu_item name="Save image" />
                         <separator />
-                        <menuItem name="Save mesh" />
+                        <menu_item name="Save mesh" />
                         <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        <menu_item name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="open_image_act" />
-                    <menuItem sid="save_image_act" />
-                    <menuItem sid="save_mesh_act" />
-                    <menuItem sid="quit_act" />
+                    <menu_item sid="open_image_act" />
+                    <menu_item sid="save_image_act" />
+                    <menu_item sid="save_mesh_act" />
+                    <menu_item sid="quit_act" />
                 </registry>
             </service>
 
             <service uid="menu_mesher_view" type="sight::module::ui::menu">
                 <gui>
                     <layout>
-                        <menuItem name="Compute Mesh (VTK)" />
+                        <menu_item name="Compute Mesh (VTK)" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="create_mesh_act" />
+                    <menu_item sid="create_mesh_act" />
                 </registry>
             </service>
 

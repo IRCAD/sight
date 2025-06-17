@@ -108,7 +108,7 @@ void mesh_list::starting()
             this->register_service<sight::viz::scene3d::adaptor>("sight::module::viz::scene3d::adaptor::texture");
 
         service::config_t texture_config = config;
-        texture_config.add("config.<xmlattr>.textureName", image->get_id());
+        texture_config.add("config.<xmlattr>.texture_name", image->get_id());
         texture_config.add("config.<xmlattr>.useAlpha", "true");
 
         texture_adaptor->set_layer_id(m_layer_id);
@@ -125,7 +125,7 @@ void mesh_list::starting()
             this->register_service<sight::viz::scene3d::adaptor>("sight::module::viz::scene3d::adaptor::mesh");
 
         service::config_t mesh_config = config;
-        mesh_config.add("config.<xmlattr>.textureName", image->get_id());
+        mesh_config.add("config.<xmlattr>.texture_name", image->get_id());
 
         mesh_adaptor->set_layer_id(m_layer_id);
         mesh_adaptor->set_render_service(this->render_service());

@@ -28,7 +28,7 @@ namespace sight::data::validator::camera_set
 {
 
 /**
- * @brief Defines a validator which checks if the current CameraSet contains two calibrated cameras and an extrinsic
+ * @brief Defines a validator which checks if the current camera_set contains two calibrated cameras and an extrinsic
  *        matrix.
  */
 class stereo_camera : public sight::data::validator::base
@@ -44,7 +44,7 @@ public:
     ~stereo_camera() override = default;
 
     /**
-     * @brief Checks if the current CameraSet contains two calibrated Cameras and an extrinsic matrix.
+     * @brief Checks if the current camera_set contains two calibrated Cameras and an extrinsic matrix.
      * @see data::validator::base::validate
      */
     sight::data::validator::return_t validate(const CSPTR(data::object)& _current_data) const

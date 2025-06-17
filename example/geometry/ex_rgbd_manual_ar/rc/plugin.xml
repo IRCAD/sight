@@ -10,7 +10,7 @@
         <config>
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="cameraSet" type="sight::data::camera_set" />
+            <object uid="camera_set" type="sight::data::camera_set" />
             <object uid="cameraRGB" type="sight::data::camera" deferred="true" />
             <object uid="cameraDepth" type="sight::data::camera" deferred="true" />
             <object uid="seriesSet" type="sight::data::series_set" />
@@ -59,7 +59,7 @@
             <service uid="menuFileView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        <menuItem name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
@@ -266,7 +266,7 @@
 
             <service uid="meshOffscreenAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
                 <in key="mesh" uid="skinMesh" />
-                <config autoresetcamera="false" shadingMode="ambient" />
+                <config autoresetcamera="false" shading="ambient" />
             </service>
 
             <service uid="cameraOffscreenAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
@@ -289,7 +289,7 @@
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="calibrationReaderSrv" type="sight::module::io::vision::open_cv_reader">
-                <inout key="data" uid="cameraSet" />
+                <inout key="data" uid="camera_set" />
             </service>
 
             <!-- Matrix (trf format) reader -->
@@ -304,7 +304,7 @@
 
             <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::camera_set -->
             <service uid="cameraExtractorSrv" type="sight::module::data::get_camera">
-                <inout key="cameraSet" uid="cameraSet" />
+                <inout key="camera_set" uid="camera_set" />
                 <!-- destination -->
                 <out group="camera">
                     <key index="0" uid="cameraDepth" />
@@ -348,7 +348,7 @@
             <!-- Grab image from camera device and fill a frame timeline -->
             <service uid="videoGrabberSrv" type="sight::module::io::video::frame_grabber">
                 <in key="camera" uid="cameraRGB" />
-                <inout key="frameTL" uid="frameTL" />
+                <inout key="frame_tl" uid="frameTL" />
             </service>
 
             <!-- Use the extrinsic matrix to get back in the RGB space -->
@@ -362,7 +362,7 @@
 
             <!-- To synchronize matrix, frame and detection -->
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
-                <in group="frameTL" auto_connect="false">
+                <in group="frame_tl" auto_connect="false">
                     <key uid="frameTL" />
                     <key uid="maskTL" />
                 </in>
@@ -485,7 +485,7 @@
             </connect>
 
             <connect>
-                <signal>cameraSet/added_camera</signal>
+                <signal>camera_set/added_camera</signal>
                 <slot>cameraExtractorSrv/update</slot>
             </connect>
 

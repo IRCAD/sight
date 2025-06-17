@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ class CompositorListener;
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::compositor_parameter">
         <inout key="parameter" uid="collimation" />
-        <config compositorName="compositor" parameter="u_value" shaderType="fragment" />
+        <config compositor_name="compositor" parameter="u_value" shader_type="fragment" />
     </service>
    @endcode
  *
@@ -60,10 +60,10 @@ class CompositorListener;
  *
  * @subsection Configuration Configuration:
  * - \b visible (optional, bool, default=true): defines if the compositor is enabled or not.
- * - \b compositorName (mandatory, string): the name of the associated Ogre compositor.
+ * - \b compositor_name (mandatory, string): the name of the associated Ogre compositor.
  * - \b parameter (mandatory, string): name of the shader parameter to set.
  * - \b technique (optional, string, default=""): name of the technique, default to the first in the compositor.
- * - \b shaderType (optional, string, default=""): the type of the shader (vertex, geometry, fragment). Default to
+ * - \b shader_type (optional, string, default=""): the type of the shader (vertex, geometry, fragment). Default to
  *      fragment.
  */
 class compositor_parameter final : public sight::viz::scene3d::parameter_adaptor

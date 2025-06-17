@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::texture">
         <in key="image" uid="..." />
-        <config textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
+        <config texture_name="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
     </service>
    @endcode
  *
@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b image [sight::data::image]: the image to map as a texture.
  *
  * @subsection Configuration Configuration:
- *  - \b textureName (optional, string, default="") : the name of the ogre texture managed by the adaptor
+ *  - \b texture_name (optional, string, default="") : the name of the ogre texture managed by the adaptor
  *  - \b filtering (optional nearest/linear, default=linear) : filtering of the texture
  *  - \b wrapping (optional, clamp/repeat, default=repeat) : wrapping of the texture
  *  - \b useAlpha (optional, bool, default=true) : whether or not the alpha channel is used

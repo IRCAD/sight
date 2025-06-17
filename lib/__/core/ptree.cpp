@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,16 +19,13 @@
  *
  ***********************************************************************/
 
-#include "core/runtime/helper.hpp"
-
-#include <core/runtime/detail/extension_point.hpp>
-#include <core/runtime/detail/runtime.hpp>
+#include <core/ptree.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
 
 #include <iostream>
 
-namespace sight::core::runtime::property_tree
+namespace sight::core::ptree
 {
 
 //------------------------------------------------------------------------------
@@ -50,6 +46,4 @@ std::string to_string(const boost::property_tree::ptree& _pt)
     return str;
 }
 
-//------------------------------------------------------------------------------
-
-} // namespace sight::core::runtime::property_tree
+} // namespace sight::core::ptree

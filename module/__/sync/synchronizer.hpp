@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -73,10 +73,10 @@ namespace sight::module::sync
  *
  * @code{.xml}
     <service type="sight::module::sync::synchronizer" auto_connect="true">
-        <in group="frameTL">
-            <key uid="frameTL1" />
-            <key uid="frameTL4" delay="36" />
-            <key uid="frameTL6" />
+        <in group="frame_tl">
+            <key uid="frame_tl1" />
+            <key uid="frame_tl4" delay="36" />
+            <key uid="frame_tl6" />
         </in>
         <inout group="frames">
             <key uid="frame1" sendStatus="true" />
@@ -84,7 +84,7 @@ namespace sight::module::sync
             <key uid="frame4" tl="1" sendStatus="false"/>
             <key uid="frame11" tl="0"  sendStatus="true" />
         </inout>
-        <in group="matrixTL">
+        <in group="matrix_tl">
             <key uid="matrixTL1" />
             <key uid="matrixTL2" delay="56" />
         </in>
@@ -102,9 +102,9 @@ namespace sight::module::sync
  * For more configurations samples, please have a look at synchronizerTest.
  *
  * @subsection Input Input
- * - \b frameTL [sight::data::frame_tl]: defines the frameTL to synchronize.
- *  each frameTL can have an optional attribute, which is the delay to apply to the timeline.
- * - \b matrixTL [sight::data::matrix_tl]: defines the frameTL to synchronize.
+ * - \b frame_tl [sight::data::frame_tl]: defines the frame_tl to synchronize.
+ *  each frame_tl can have an optional attribute, which is the delay to apply to the timeline.
+ * - \b matrixTL [sight::data::matrix_tl]: defines the frame_tl to synchronize.
  *  each matrixTL can have an optional attribute, which is the delay to apply to the timeline.
  *
  * @subsection In-Out In-Out
@@ -172,9 +172,9 @@ public:
         static inline const std::string TL_DELAY             = "<xmlattr>.delay";
         static inline const std::string KEY                  = "key";
 
-        static inline const std::string FRAMETL_INPUT     = "frameTL";
+        static inline const std::string FRAMETL_INPUT     = "frame_tl";
         static inline const std::string FRAME_INOUT       = "frames";
-        static inline const std::string MATRIXTL_INPUT    = "matrixTL";
+        static inline const std::string MATRIXTL_INPUT    = "matrix_tl";
         static inline const std::string MATRIX_INOUT      = "matrix";
         static inline const std::string TOLERANCE         = "tolerance";
         static inline const std::string LEGACY_AUTO_SYNCH = "legacyAutoSync";
@@ -297,14 +297,14 @@ private:
     /**
      * @brief Get the index of the frame output vars, associated to the given TL
      *
-     * @param _frame_tl_index : the index of the frameTL to treat
+     * @param _frame_tl_index : the index of the frame_tl to treat
      */
     std::vector<out_var_parameter> get_frame_tl_output_var_index(std::size_t _frame_tl_index);
 
     /**
      * @brief Copy the synchronized frame from the tl toward the corresponding output variables.
      *
-     * @param _frame_tl_index : the index of the frameTL to treat
+     * @param _frame_tl_index : the index of the frame_tl to treat
      * @param _synchronization_timestamp : the synchronization timestamp
      */
     void copy_frame_from_tl_to_output(

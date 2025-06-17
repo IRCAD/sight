@@ -28,12 +28,15 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
+
+#include <core/ptree.hpp>
 #include <data/map.hpp>
 
 #define FW_PROFILING_DISABLED
 #include <core/profiling.hpp>
 
 #include <core/runtime/utils/generic_executable_factory_registry.hpp>
+#include <core/ptree.hpp>
 
 #include <service/macros.hpp>
 
@@ -127,7 +130,13 @@ void render::configuring()
 
     m_fullscreen = scene_cfg.get<bool>("<xmlattr>.fullscreen", false);
 
-    const auto render_mode = scene_cfg.get<std::string>("<xmlattr>.renderMode", "auto");
+    const auto render_mode = core::ptree::get_and_deprecate<std::string>(
+        config,
+        "<xmlattr>.render_mode",
+        "<xmlattr>.renderMode",
+        "26.0",
+        "auto"
+    );
     if(render_mode == "auto")
     {
         m_render_mode = render_mode::AUTO;
@@ -393,12 +402,25 @@ void render::configure_background_layer(const config_t& _cfg)
         const auto color = attributes.get<std::string>("color");
         ogre_layer->set_background_color(color, color);
     }
-    else if((attributes.count("topColor") != 0U) && (attributes.count("bottomColor") != 0U))
+    else
     {
-        const auto top_color = attributes.get<std::string>("topColor");
-        const auto bot_color = attributes.get<std::string>("bottomColor");
+        const auto top_color = core::ptree::get_and_deprecate<std::string>(
+            attributes,
+            "top_color",
+            "topColor",
+            "26.0"
+        );
+        const auto bottom_color = core::ptree::get_and_deprecate<std::string>(
+            attributes,
+            "bottom_color",
+            "bottomColor",
+            "26.0"
+        );
 
-        ogre_layer->set_background_color(top_color, bot_color);
+        if(not top_color.empty() and not bottom_color.empty())
+        {
+            ogre_layer->set_background_color(top_color, bottom_color);
+        }
     }
 
     if((attributes.count("topScale") != 0U) && (attributes.count("bottomScale") != 0U))

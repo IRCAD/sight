@@ -55,7 +55,7 @@
                 <gui>
                     <frame>
                         <name>ex_image_reslice</name>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                     </frame>
                 </gui>
                 <registry>
@@ -205,7 +205,7 @@
             <service uid="3d_negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d">
                 <in key="image" uid="input_image" />
                 <inout key="tf" uid="tf" />
-                <config sliceIndex="axial" interactive="true" />
+                <config orientation="axial" interactive="true" />
             </service>
 
             <service uid="image_axis_adp" type="sight::module::viz::scene3d::adaptor::axis">
@@ -216,7 +216,7 @@
             <service uid="reslice_axial_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
                 <in key="image" uid="axial_slice" />
                 <inout key="tf" uid="tf" />
-                <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" />
+                <config orientation="axial" filtering="linear" border="false" interactive="false" cross="false" />
             </service>
 
             <service uid="axial_slice_axis_adp" type="sight::module::viz::scene3d::adaptor::axis">
@@ -227,7 +227,7 @@
             <service uid="reslice_frontal_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
                 <in key="image" uid="frontal_slice" />
                 <inout key="tf" uid="tf" />
-                <config sliceIndex="axial" filtering="linear" border="false" interactive="false" slicesCross="false" />
+                <config orientation="axial" filtering="linear" border="false" interactive="false" cross="false" />
             </service>
 
             <service uid="frontal_slice_axis_adp" type="sight::module::viz::scene3d::adaptor::axis">

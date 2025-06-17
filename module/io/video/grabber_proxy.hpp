@@ -74,8 +74,8 @@ namespace sight::module::io::video
  * @code{.xml}
         <service uid="..." type="sight::module::io::video::grabber_proxy">
             <in key="camera" uid="..." />
-            <inout key="frameTL" uid="..." />
-            <inout key="depthTL" uid="..." />
+            <inout key="frame_tl" uid="..." />
+            <inout key="depth_tl" uid="..." />
             <config>
                 <camera type="RGBD" />
                 <match id="Webcam" service="sight::module::io::video::frame_grabber" />
@@ -89,8 +89,8 @@ namespace sight::module::io::video
  * @subsection Input Input
  * - \b camera [sight::data::camera]: camera used to display video.
  * @subsection In-Out In-Out
- * - \b frameTL [sight::data::frame_tl]: timeline where to extract the video frames.
- * - \b      [sight::data::frame_tl] (optional): timeline where to extract the depth frames.
+ * - \b frame_tl [sight::data::frame_tl]: timeline where to extract the video frames.
+ * - \b depth_tl [sight::data::frame_tl] (optional): timeline where to extract the depth frames.
  * @subsection Configuration Configuration
  *  - \b type (optional, default="RGB"): allows to filter for RGB or RGBD grabbers
  *  - \b selection

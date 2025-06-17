@@ -139,7 +139,7 @@
             </service>
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
-                <in group="frameTL" auto_connect="false">
+                <in group="frame_tl" auto_connect="false">
                     <key uid="frameTL" />
                 </in>
                 <inout group="frames">

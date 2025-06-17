@@ -99,7 +99,7 @@ void compositor_parameter::configuring()
 
     const config_t config = this->get_config();
 
-    static const std::string s_COMPOSITOR_NAME_CONFIG = CONFIG + "compositorName";
+    static const std::string s_COMPOSITOR_NAME_CONFIG = CONFIG + "compositor_name";
     m_compositor_name = config.get<std::string>(s_COMPOSITOR_NAME_CONFIG);
     SIGHT_ERROR_IF("'" + s_COMPOSITOR_NAME_CONFIG + "' attribute not set", m_compositor_name.empty());
 }

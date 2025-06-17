@@ -3,7 +3,7 @@
     <parameters>
         <object uid="calibrationInfo1" type="sight::data::calibration_info" />
         <object uid="calibrationInfo2" type="sight::data::calibration_info" />
-        <object uid="cameraSet" type="sight::data::camera_set" />
+        <object uid="camera_set" type="sight::data::camera_set" />
         <object uid="camera1" type="sight::data::camera" />
         <object uid="camera2" type="sight::data::camera" />
         <object uid="board_properties" type="sight::data::map" />
@@ -231,7 +231,7 @@
 
         <!-- Extracts images for the detection algorithm. -->
         <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer" auto_connect="false">
-            <in group="frameTL">
+            <in group="frame_tl">
                 <key uid="frame1TL" />
                 <key uid="frame2TL" />
             </in>
@@ -281,7 +281,7 @@
 
         <service uid="videoGrabber1Srv" type="sight::module::io::video::grabber_proxy">
             <in key="camera" uid="${camera1}" />
-            <inout key="frameTL" uid="frame1TL" />
+            <inout key="frame_tl" uid="frame1TL" />
             <config>
                 <gui title="Please select the first camera grabber" />
             </config>
@@ -289,7 +289,7 @@
 
         <service uid="videoGrabber2Srv" type="sight::module::io::video::grabber_proxy">
             <in key="camera" uid="${camera2}" />
-            <inout key="frameTL" uid="frame2TL" />
+            <inout key="frame_tl" uid="frame2TL" />
             <config>
                 <gui title="Please select the second camera grabber" />
             </config>
@@ -298,14 +298,14 @@
         <service uid="openCVExtrinsicCalSrv" type="sight::module::geometry::vision::open_cv_extrinsic" worker="extr_chess_checker">
             <in key="calibrationInfo1" uid="${calibrationInfo1}" />
             <in key="calibrationInfo2" uid="${calibrationInfo2}" />
-            <inout key="cameraSet" uid="${cameraSet}" />
+            <inout key="camera_set" uid="${cameraSet}" />
             <out key="matrix" uid="exportExtrinsicMat" />
             <camIndex>${camIndex}</camIndex>
             <properties from="${board_properties}" />
         </service>
 
         <service uid="cameraSetInfoSrv" type="sight::module::ui::qt::calibration::camera_set_editor" auto_connect="true">
-            <in key="cameraSet" uid="${cameraSet}" />
+            <in key="camera_set" uid="${cameraSet}" />
             <camIndex>${camIndex}</camIndex>
         </service>
 

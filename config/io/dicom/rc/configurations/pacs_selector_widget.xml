@@ -49,8 +49,8 @@
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
-                    <view proportion="0" backgroundColor="#3E4453" />
-                    <view proportion="0" backgroundColor="#3E4453" />
+                    <view proportion="0" background_color="#3E4453" />
+                    <view proportion="0" background_color="#3E4453" />
                 </layout>
             </gui>
             <registry>
@@ -77,7 +77,7 @@
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
-                    <view proportion="0" backgroundColor="#3E4453" />
+                    <view proportion="0" background_color="#3E4453" />
                     <view proportion="1" />
                 </layout>
             </gui>
@@ -126,7 +126,7 @@
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
-                    <view proportion="0" backgroundColor="#3E4453" />
+                    <view proportion="0" background_color="#3E4453" />
                     <spacer />
                 </layout>
             </gui>
@@ -139,7 +139,7 @@
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
-                    <view proportion="0" backgroundColor="#3E4453" />
+                    <view proportion="0" background_color="#3E4453" />
                     <spacer />
                 </layout>
             </gui>
@@ -221,7 +221,7 @@
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
                     <spacer />
-                    <view proportion="0" backgroundColor="#00000000" />
+                    <view proportion="0" background_color="#00000000" />
                 </layout>
             </gui>
             <registry>
@@ -258,7 +258,7 @@
         <service uid="p_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
             <in key="image" uid="previewImage" />
             <inout key="tf" uid="tf" />
-            <config sliceIndex="axial" filtering="anisotropic" />
+            <config orientation="axial" filtering="anisotropic" />
         </service>
 
         <service uid="p_negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
@@ -283,7 +283,7 @@
         <service uid="l_negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
             <in key="image" uid="localImageSeries" />
             <inout key="tf" uid="tf" />
-            <config priority="1" sliceIndex="axial" interactive="true" />
+            <config priority="1" orientation="axial" interactive="true" />
         </service>
 
         <service uid="l_negato_camera_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">

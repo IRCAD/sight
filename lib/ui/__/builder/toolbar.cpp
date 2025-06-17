@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,8 @@
  */
 
 #include "ui/__/builder/toolbar.hpp"
+
+#include "ui/__/detail/parser.hpp"
 
 #include <boost/lexical_cast.hpp>
 
@@ -70,16 +72,7 @@ void toolbar::initialize(const ui::config_t& _configuration)
         }
     }
 
-    if(const auto hexa_color = _configuration.get<std::string>("<xmlattr>.backgroundColor", ""); !hexa_color.empty())
-    {
-        SIGHT_ASSERT(
-            "Color string should start with '#' and followed by 6 or 8 "
-            "hexadecimal digits. Given color: " << hexa_color,
-            hexa_color[0] == '#'
-            && (hexa_color.length() == 7 || hexa_color.length() == 9)
-        );
-        m_background_color = hexa_color;
-    }
+    m_background_color = detail::parse_background_color(_configuration);
 
     if(const auto qss_class = _configuration.get<std::string>("<xmlattr>.QSSClass", ""); !qss_class.empty())
     {

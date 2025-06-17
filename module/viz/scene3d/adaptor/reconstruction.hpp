@@ -58,7 +58,7 @@ namespace sight::module::viz::scene3d::adaptor
         <inout group="uniforms">
             <key uid="..." name="u_uniform_name" />
        </inout>
-        <config transform="..." autoresetcamera="true" queryFlags="0x40000000" />
+        <config transform="..." autoresetcamera="true" query_flags="0x40000000" />
    </service>
    @endcode
  *
@@ -70,7 +70,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b transform (optional, string, default=""): the transformation matrix to associate to the adaptor.
  * - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
  *"false".
- * - \b queryFlags (optional, unit32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
+ * - \b query_flags (optional, unit32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *      match the flag.
  * - \b material_name (optional, string, default=""): name of the Ogre material, as defined in the
  *      module::viz::scene3d::adaptor::material you want to be bound to.

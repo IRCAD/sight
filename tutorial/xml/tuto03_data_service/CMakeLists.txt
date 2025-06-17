@@ -13,4 +13,4 @@ add_dependencies(
 )
 
 # Main application's configuration to launch
-module_param(module_app PARAM_LIST config PARAM_VALUES Tuto03DataService_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES tuto03_data_service)

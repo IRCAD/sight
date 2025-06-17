@@ -13,7 +13,7 @@
                     <frame>
                         <name>tuto12_scene2d</name>
                         <icon>tuto12_scene2d/tuto.ico</icon>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                     </frame>
                 </gui>
                 <registry>
@@ -25,8 +25,8 @@
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
-                        <view proportion="1" backgroundColor="#36393E" />
-                        <view proportion="0" backgroundColor="#36393E" />
+                        <view proportion="1" background_color="#36393E" />
+                        <view proportion="0" background_color="#36393E" />
                     </layout>
                 </gui>
                 <registry>

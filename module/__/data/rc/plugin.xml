@@ -38,7 +38,7 @@
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::data::get_camera</service>
-        <object key="cameraSet">sight::data::camera_set</object>
+        <object key="camera_set">sight::data::camera_set</object>
         <object key="camera">sight::data::camera</object>
         <desc>This service extracts camera parameters from a camera series</desc>
     </extension>

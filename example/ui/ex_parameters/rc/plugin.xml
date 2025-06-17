@@ -19,7 +19,7 @@ This example shows the possibilities of parameters:
                     <frame>
                         <name>ex_parameters</name>
                         <icon>ex_parameters/app.ico</icon>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                     </frame>
                     <menubar />
                 </gui>

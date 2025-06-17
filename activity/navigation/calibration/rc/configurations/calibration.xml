@@ -3,7 +3,7 @@
     <parameters>
         <object uid="AS_UID" type="sight::data::activity" />
         <object uid="dataSet" type="sight::data::set" />
-        <object uid="cameraSet" type="sight::data::camera_set" />
+        <object uid="camera_set" type="sight::data::camera_set" />
 
         <param name="WID_PARENT" />
         <param name="hasPreviousChannel" default="hasPreviousChannel" />
@@ -51,21 +51,21 @@
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="previousAct" />
-                <menuItem sid="nextAct" />
-                <menuItem sid="exportAct" />
-                <menuItem sid="writeCalibrationAct" />
-                <editor sid="cameraLauncherAct" start="false" />
+                <menuItem sid="previous_act" />
+                <menuItem sid="next_act" />
+                <menuItem sid="export_act" />
+                <menuItem sid="write_calibration_act" />
+                <editor sid="camera_launcher_act" start="false" />
                 <menuItem sid="chessboard_size_act" />
             </registry>
         </service>
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="writeCalibrationAct" type="sight::module::ui::action" />
+        <service uid="write_calibration_act" type="sight::module::ui::action" />
 
-        <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::camera_config_launcher">
-            <inout key="cameraSet" uid="${cameraSet}" />
+        <service uid="camera_launcher_act" type="sight::module::ui::qt::calibration::camera_config_launcher">
+            <inout key="camera_set" uid="${camera_set}" />
             <inout key="board_properties" uid="${board_properties}" />
             <inout key="activity" uid="${AS_UID}" />
             <config>
@@ -77,7 +77,7 @@
                 </intrinsic>
                 <extrinsic>
                     <appConfig id="sight::navigation::calibration::cal_extrinsic_view" />
-                    <inout key="cameraSet" uid="${cameraSet}" />
+                    <inout key="camera_set" uid="${camera_set}" />
                     <inout key="board_properties" uid="${board_properties}" />
                     <parameter replace="WID_PARENT" by="calibrationView" />
                     <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
@@ -95,31 +95,31 @@
             <properties start="false" />
         </service>
 
-        <service uid="exportAct" type="sight::module::ui::export_set" auto_connect="true">
+        <service uid="export_act" type="sight::module::ui::export_set" auto_connect="true">
             <inout key="container" uid="${dataSet}" />
-            <inout key="data" uid="${cameraSet}" />
+            <inout key="data" uid="${camera_set}" />
         </service>
 
         <!-- The action "previous" and "next" are visible only if the application use a "sequencer".
                          This service send signals to enable or not the actions. -->
-        <service uid="previousAct" type="sight::module::ui::action">
+        <service uid="previous_act" type="sight::module::ui::action">
             <state visible="false" />
         </service>
 
-        <service uid="nextAct" type="sight::module::ui::action">
+        <service uid="next_act" type="sight::module::ui::action">
             <state visible="false" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="calibrationWriterSrv" type="sight::module::io::vision::open_cv_writer">
-            <in key="data" uid="${cameraSet}" />
+            <in key="data" uid="${camera_set}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
 
         <connect>
-            <signal>writeCalibrationAct/clicked</signal>
+            <signal>write_calibration_act/clicked</signal>
             <slot>calibrationWriterSrv/update</slot>
         </connect>
 
@@ -135,26 +135,26 @@
 
         <!-- Connection to enable "previous" action. It should be connected to a sequencer in the application configuration.-->
         <connect channel="${hasPreviousChannel}">
-            <slot>exportAct/hide</slot>
-            <slot>previousAct/show</slot>
-            <slot>previousAct/set_enabled</slot>
+            <slot>export_act/hide</slot>
+            <slot>previous_act/show</slot>
+            <slot>previous_act/set_enabled</slot>
         </connect>
 
         <!-- Connection to called 'previous' slot of the application's sequencer. -->
-        <connect channel="${previousActivityChannel}">
-            <signal>previousAct/clicked</signal>
+        <connect channel="${previous_activityChannel}">
+            <signal>previous_act/clicked</signal>
         </connect>
 
         <!-- Connection to enable "next" action. It should be connected to a sequencer in the application configuration.-->
         <connect channel="${hasNextChannel}">
-            <slot>exportAct/hide</slot>
-            <slot>nextAct/show</slot>
-            <slot>nextAct/set_enabled</slot>
+            <slot>export_act/hide</slot>
+            <slot>next_act/show</slot>
+            <slot>next_act/set_enabled</slot>
         </connect>
 
         <!-- Connection to called 'next' slot of the application's sequencer. -->
-        <connect channel="${nextActivityChannel}">
-            <signal>nextAct/clicked</signal>
+        <connect channel="${next_activityChannel}">
+            <signal>next_act/clicked</signal>
         </connect>
     </config>
 </extension>

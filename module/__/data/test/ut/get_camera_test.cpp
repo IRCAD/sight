@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -93,7 +93,7 @@ void get_camera_test::extracts_camera_from_camera_set()
     boost::property_tree::read_xml(config_string, config);
 
     get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(camera_set, "cameraSet");
+    get_camera_srv->set_inout(camera_set, "camera_set");
     get_camera_srv->configure();
     get_camera_srv->start().wait();
 
@@ -126,7 +126,7 @@ void get_camera_test::extracts_invalid_camera_set()
     boost::property_tree::read_xml(config_string, config);
 
     get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(nullptr, "cameraSet");
+    get_camera_srv->set_inout(nullptr, "camera_set");
     get_camera_srv->configure();
     get_camera_srv->start().wait();
 
@@ -162,7 +162,7 @@ void get_camera_test::extracts_valid_extrinsic()
     boost::property_tree::read_xml(config_string, config);
 
     get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(camera_set, "cameraSet");
+    get_camera_srv->set_inout(camera_set, "camera_set");
     get_camera_srv->configure();
     get_camera_srv->start().wait();
 
@@ -203,7 +203,7 @@ void get_camera_test::extracts_valid_extrinsic1()
     boost::property_tree::read_xml(config_string, config);
 
     get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(camera_set, "cameraSet");
+    get_camera_srv->set_inout(camera_set, "camera_set");
     get_camera_srv->configure();
     get_camera_srv->start().wait();
 
@@ -245,7 +245,7 @@ void get_camera_test::extracts_camera_out_of_bound_index()
     boost::property_tree::read_xml(config_string, config);
 
     get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(camera_set, "cameraSet");
+    get_camera_srv->set_inout(camera_set, "camera_set");
     get_camera_srv->configure();
     get_camera_srv->start().wait();
 
@@ -285,7 +285,7 @@ void get_camera_test::extracts_extrinsic_out_of_bound_index()
     boost::property_tree::read_xml(config_string, config);
 
     get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(camera_set, "cameraSet");
+    get_camera_srv->set_inout(camera_set, "camera_set");
     get_camera_srv->configure();
     get_camera_srv->start().wait();
 
@@ -326,7 +326,7 @@ void get_camera_test::extracts_invalid_extrinsic()
     boost::property_tree::read_xml(config_string, config);
 
     get_camera_srv->set_config(config);
-    get_camera_srv->set_inout(camera_set, "cameraSet");
+    get_camera_srv->set_inout(camera_set, "camera_set");
     get_camera_srv->configure();
     get_camera_srv->start().wait();
 

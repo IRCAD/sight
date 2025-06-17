@@ -56,9 +56,8 @@ namespace sight::module::viz::scene3d::adaptor
         <inout group="uniforms">
             <key uid="..." name="u_uniform_name" />
         </inout>
-        <config transform="..." material_template="..." autoresetcamera="true" dynamic="false"
- * dynamicVertices="false"
-        queryFlags="0x40000000" />
+        <config transform="..." material_template="..." autoresetcamera="true" dynamic="false" dynamic_vertices="false"
+        query_flags="0x40000000" />
    </service>
    @endcode
  *
@@ -74,10 +73,10 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b dynamic (optional, true/false, default=false): if the modelSeries topology is likely to be updated frequently.
  * This is
  *      a performance hint that will choose a specific GPU memory pool accordingly.
- * - \b dynamicVertices (optional, true/false, default=false): if the modelSeries geometry is likely to be updated
+ * - \b dynamic_vertices (optional, true/false, default=false): if the modelSeries geometry is likely to be updated
  * frequently.
  *      This is a performance hint that will choose a specific GPU memory pool accordingly.
- * - \b queryFlags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
+ * - \b query_flags (optional, uint32, default=0x40000000): Used for picking. Picked only by pickers whose mask that
  *      match the flag.
  * - \b visible (optional, true/false, default=true): Used to define the default visibility of the modelSeries. If the
  *      tag is not present, the visibility will be set by the value of the modelSeries field. If the tag is present,

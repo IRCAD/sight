@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,13 +42,13 @@ namespace sight::module::filter::vision
  *
  * @code{.xml}
    <service type="sight::module::filter::vision::transform_depth_map2mm">
-       <in key="cameraSet" uid="..." />
+       <in key="camera_set" uid="..." />
        <in key="originDepth" uid="..." />
        <inout key="scaledDepth" uid="..." />
    </service>
    @endcode
  * @subsection Input Input
- * - \b cameraSet [sight::data::camera_set]: camera series containing the scale of the depth map.
+ * - \b camera_set [sight::data::camera_set]: camera series containing the scale of the depth map.
  * - \b originDepth [sight::data::image]: original depth map.
  * @subsection In-Out In-Out
  * - \b scaledDepth [sight::data::image]: scaled depth map.
@@ -85,7 +85,7 @@ protected:
 
 private:
 
-    static constexpr std::string_view CAMERA_SET_INPUT   = "cameraSet";
+    static constexpr std::string_view CAMERA_SET_INPUT   = "camera_set";
     static constexpr std::string_view ORIGIN_FRAME_INPUT = "originDepth";
     static constexpr std::string_view SCALED_FRAME_INOUT = "scaledDepth";
 

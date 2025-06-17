@@ -62,7 +62,7 @@ namespace sight::module::viz::scene3d::adaptor
         <in key="image" uid="..." />
         <in key="mask" uid="..." />
         <inout key="tf" uid="..." />
-        <config sliceIndex="axial" filtering="none" tfAlpha="true" />
+        <config orientation="axial" filtering="none" tfAlpha="true" />
         <properties classification="pre" />
     </service>
    @endcode
@@ -83,7 +83,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b priority (optional, int, default=1): interaction priority of the negato.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the negato, as it
  *      was specified in the transform adaptor.
- * - \b queryFlags (optional, uint32, default=0x40000000): Mask set to planes for picking request.
+ * - \b query_flags (optional, uint32, default=0x40000000): Mask set to planes for picking request.
  * - \b border (optional, bool, default=true): allows to display plane borders.
  *
  * @subsection Properties Properties:

@@ -23,6 +23,7 @@
 #include "module/viz/scene3d/adaptor/reconstruction.hpp"
 
 #include <core/com/slots.hxx>
+#include <core/ptree.hpp>
 
 #include <data/mesh.hpp>
 
@@ -50,8 +51,13 @@ void reconstruction::configuring()
     m_material_name          = config.get<std::string>(CONFIG + "material_name", m_material_name);
     m_material_template_name = config.get<std::string>(CONFIG + "material_template", m_material_template_name);
 
-    const std::string hexa_mask = config.get<std::string>(CONFIG + "queryFlags", "");
-    if(!hexa_mask.empty())
+    const auto hexa_mask = core::ptree::get_and_deprecate<std::string>(
+        config,
+        CONFIG + "query_flags",
+        CONFIG + "queryFlags",
+        "26.0"
+    );
+    if(not hexa_mask.empty())
     {
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
@@ -147,7 +153,7 @@ void reconstruction::create_mesh_service()
             mesh_adaptor_config.put("config.<xmlattr>.material_template", m_material_template_name);
         }
 
-        if(m_uniforms.size() > 0)
+        if(!m_uniforms.empty())
         {
             std::size_t i = 0;
             for(const auto& uniform_data : m_uniforms)

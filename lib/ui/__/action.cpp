@@ -28,7 +28,7 @@
 #include <core/com/signal.hxx>
 #include <core/com/slot.hxx>
 #include <core/com/slots.hxx>
-#include <core/runtime/helper.hpp>
+#include <core/ptree.hpp>
 
 namespace sight::ui
 {
@@ -72,14 +72,14 @@ void action::initialize()
     if(auto properties = config.get_child_optional("properties"); not properties.has_value())
     {
         const auto checked = m_checked.lock();
-        *checked = core::runtime::get_ptree_value(config, "state.<xmlattr>.checked", false);
+        *checked = core::ptree::get_value(config, "state.<xmlattr>.checked", false);
         const auto enabled = m_enabled.lock();
-        *enabled = core::runtime::get_ptree_value(config, "state.<xmlattr>.enabled", true);
+        *enabled = core::ptree::get_value(config, "state.<xmlattr>.enabled", true);
 
         const auto inverse = m_inverse.lock();
-        *inverse = core::runtime::get_ptree_value(config, "state.<xmlattr>.inverse", false);
+        *inverse = core::ptree::get_value(config, "state.<xmlattr>.inverse", false);
         const auto visible = m_visible.lock();
-        *visible = core::runtime::get_ptree_value(config, "state.<xmlattr>.visible", true);
+        *visible = core::ptree::get_value(config, "state.<xmlattr>.visible", true);
     }
     else
     {
@@ -89,7 +89,7 @@ void action::initialize()
     m_confirm_action  = config.get_child_optional("confirmation").has_value();
     m_confirm_message = config.get<std::string>("confirmation.<xmlattr>.message", "");
     m_default_button  =
-        core::runtime::get_ptree_value(config, "confirmation.<xmlattr>.defaultButton", m_default_button);
+        core::ptree::get_value(config, "confirmation.<xmlattr>.defaultButton", m_default_button);
 }
 
 //-----------------------------------------------------------------------------

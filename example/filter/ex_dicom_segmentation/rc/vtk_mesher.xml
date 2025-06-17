@@ -128,7 +128,7 @@
         <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato3d">
             <in key="image" uid="${imageSeries}" />
             <inout key="tf" uid="tf" />
-            <config sliceIndex="axial" />
+            <config orientation="axial" />
         </service>
 
         <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::fragments_info">
@@ -160,7 +160,7 @@
         </service>
 
         <service uid="modelSeriesListSrv" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
-            <inout key="modelSeries" uid="modelSeries" />
+            <inout key="model_series" uid="modelSeries" />
             <columns>
                 <organ_name />
             </columns>

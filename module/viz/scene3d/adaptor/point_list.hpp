@@ -93,8 +93,8 @@ namespace sight::module::viz::scene3d::adaptor
         <inout group="uniforms">
             <key uid="..." name="u_uniform_name" />
        </inout>
-        <config transform="..." textureName="..." radius="1.0" fontSource="DejaVuSans.ttf" fontSize="16"
-                labelColor="#0xFFFFFF" fixedSize="false" queryFlags="0x40000000" displayLabel="false"/>
+        <config transform="..." texture_name="..." radius="1.0" fontSource="DejaVuSans.ttf" fontSize="16"
+                labelColor="#0xFFFFFF" fixedSize="false" query_flags="0x40000000" displayLabel="false"/>
         <properties visible="true" />
     </service>
    @endcode
@@ -114,13 +114,13 @@ namespace sight::module::viz::scene3d::adaptor
  *      Either of the following (whether a material is configured in the XML scene or not) :
  * - \b material_template (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
  *      internally created material.
- * - \b textureName (optional, string, default=""): the name of the Ogre texture that the mesh will use.
+ * - \b texture_name (optional, string, default=""): the name of the Ogre texture that the mesh will use.
  * - \b radius (optional, float, default=1.f): billboard radius.
  * - \b displayLabel (optional, bool, default=false): display the label points (default = false).
  * - \b labelColor (optional, hexadecimal, default=0xFFFFFF): color of the label in hexadecimal.
  * - \b color (optional, hexadecimal, default=#FFFFFFFF): color of the texture in hexadecimal.
  * - \b fixedSize (optional, bool, default=false): if true, the billboard will have a fixed size in screen space.
- * - \b queryFlags (optional, uint32, default=0x40000000): Picking flags. Points can be picked by pickers with a
+ * - \b query_flags (optional, uint32, default=0x40000000): Picking flags. Points can be picked by pickers with a
  *      matching mask.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): true_t font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.

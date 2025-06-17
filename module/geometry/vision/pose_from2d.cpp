@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,8 +48,8 @@ pose_from2d::pose_from2d() noexcept
 void pose_from2d::configuring()
 {
     service::config_t config = this->get_config();
-    m_pattern_width = config.get<double>("patternWidth", m_pattern_width);
-    SIGHT_ASSERT("patternWidth setting is set to " << m_pattern_width << " but should be > 0.", m_pattern_width > 0);
+    m_pattern_width = config.get<double>("pattern_width", m_pattern_width);
+    SIGHT_ASSERT("pattern_width setting is set to " << m_pattern_width << " but should be > 0.", m_pattern_width > 0);
 
     auto inout_cfg = config.equal_range("inout");
     for(auto it_cfg = inout_cfg.first ; it_cfg != inout_cfg.second ; ++it_cfg)
@@ -292,7 +292,7 @@ cv::Matx44f pose_from2d::camera_pose_from_mono(const pose_from2d::marker& _marke
 service::connections_t pose_from2d::auto_connections() const
 {
     return {
-        {MARKERMAP_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE},
+        {marker_map_INPUT, data::object::MODIFIED_SIG, service::slots::UPDATE},
         {CAMERA_INPUT, data::object::MODIFIED_SIG, UPDATE_CAMERA_SLOT},
         {CAMERA_INPUT, data::camera::INTRINSIC_CALIBRATED_SIG, UPDATE_CAMERA_SLOT}
     };

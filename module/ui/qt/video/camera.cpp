@@ -28,6 +28,7 @@
 #include <core/com/slots.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
+#include <core/ptree.hpp>
 #include <core/runtime/path.hpp>
 
 #include <data/object.hpp>
@@ -62,7 +63,6 @@ static const core::com::slots::key_t CONFIGURE_DEVICE_SLOT = "configureDevice";
 static const core::com::slots::key_t CONFIGURE_FILE_SLOT   = "configureFile";
 static const core::com::slots::key_t CONFIGURE_STREAM_SLOT = "configureStream";
 
-static const std::string VIDEO_SUPPORT_CONFIG        = "videoSupport";
 static const std::string USE_ABSOLUTE_PATH           = "useAbsolutePath";
 static const std::string CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
 static const std::string LABEL_CONFIG                = "label";
@@ -90,7 +90,13 @@ void camera::configuring()
 {
     const service::config_t config = this->get_config();
 
-    m_b_video_support    = config.get<bool>(VIDEO_SUPPORT_CONFIG, false);
+    m_b_video_support = core::ptree::get_and_deprecate(
+        config,
+        "video_support",
+        "videoSupport",
+        "26.0",
+        false
+    );
     m_use_absolute_path  = config.get<bool>(USE_ABSOLUTE_PATH, false);
     m_num_create_cameras = config.get<std::size_t>(CREATE_CAMERA_NUMBER_CONFIG, m_num_create_cameras);
     m_label              = config.get<std::string>(LABEL_CONFIG, m_label);

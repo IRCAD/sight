@@ -28,6 +28,7 @@
 #include <service/op.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
+#include <boost/range/join.hpp>
 
 #include <utility>
 
@@ -71,8 +72,13 @@ void menu::initialize(const ui::config_t& _configuration)
     unsigned int index = 0;
     m_callbacks.clear();
 
+    auto menu_items            = boost::make_iterator_range(_configuration.equal_range("menu_item"));
+    auto menu_items_deprecated = boost::make_iterator_range(_configuration.equal_range("menuItem"));
+
+    auto all_menu_items = boost::range::join(menu_items, menu_items_deprecated);
+
     // initialize m_actionSids map with configuration
-    for(const auto& menu_item : boost::make_iterator_range(_configuration.equal_range("menuItem")))
+    for(const auto& menu_item : all_menu_items)
     {
         if(const auto sid = menu_item.second.get_optional<std::string>("<xmlattr>.sid"); sid.has_value())
         {

@@ -22,7 +22,7 @@
 #include "action.hpp"
 
 #include <core/com/signal.hxx>
-#include <core/runtime/helper.hpp>
+#include <core/ptree.hpp>
 namespace sight::module::ui
 {
 
@@ -33,7 +33,7 @@ void action::configuring()
     this->initialize();
 
     const auto config = this->get_config();
-    m_sync = core::runtime::get_ptree_value(config, "sync", m_sync);
+    m_sync = core::ptree::get_value(config, "sync", m_sync);
 
     if(const auto& parameter = config.get_child_optional("parameter"); parameter)
     {

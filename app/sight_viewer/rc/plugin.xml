@@ -75,7 +75,7 @@
                         <name>Sight Viewer</name>
                         <version>@sight_viewer_VERSION@</version>
                         <icon>sight_viewer/Ogre_logo.svg</icon>
-                        <minSize width="1280" height="720" />
+                        <min_size width="1280" height="720" />
                         <style QSSClass="Background" />
                     </frame>
                 </gui>

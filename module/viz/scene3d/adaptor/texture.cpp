@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ void texture::configuring()
 
     const config_t config = this->get_config();
 
-    static const std::string s_TEXTURE_NAME_CONFIG = CONFIG + "textureName";
+    static const std::string s_TEXTURE_NAME_CONFIG = CONFIG + "texture_name";
     static const std::string s_FILTERING_CONFIG    = CONFIG + "filtering";
     static const std::string s_WRAPPING_CONFIG     = CONFIG + "wrapping";
     static const std::string s_USE_ALPHA_CONFIG    = CONFIG + "useAlpha";

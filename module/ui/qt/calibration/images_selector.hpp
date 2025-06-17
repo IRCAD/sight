@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,12 +51,12 @@ namespace sight::module::ui::qt::calibration
  *
  * @code{.xml}
         <service uid="images_selectorInstance" type="sight::module::ui::qt::calibration::images_selector">
-            <in key="frameTL" uid="..." />
+            <in key="frame_tl" uid="..." />
             <inout key="selection" uid="..." />
        </service>
    @endcode
  * @subsection Input Input:
- * - \b frameTL [sight::data::frame_tl]: frame timeline used to extract images.
+ * - \b frame_tl [sight::data::frame_tl]: frame timeline used to extract images.
  * @subsection In-Out In-Out:
  * - \b key2 [sight::data::vector]: vector containing extracted images.
  */
@@ -125,7 +125,7 @@ private:
     /// Calibration point list.
     QPointer<QListWidget> m_captures_list_widget;
 
-    data::ptr<data::frame_tl, data::access::in> m_frame_tl {this, "frameTL"};
+    data::ptr<data::frame_tl, data::access::in> m_frame_tl {this, "frame_tl"};
     data::ptr<data::vector, data::access::inout> m_selected_image {this, "selection"};
 };
 

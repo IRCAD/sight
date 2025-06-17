@@ -37,7 +37,7 @@ This example shows some possibilities of material configuration in the 3D scene:
                     <frame>
                         <name>ex_material</name>
                         <icon>ex_material/app.ico</icon>
-                        <minSize width="720" height="480" />
+                        <min_size width="720" height="480" />
                     </frame>
                 </gui>
                 <registry>
@@ -63,7 +63,7 @@ This example shows some possibilities of material configuration in the 3D scene:
 
             <service uid="toolbar_view" type="sight::module::ui::view">
                 <gui>
-                    <toolbar backgroundColor="#00000000" />
+                    <toolbar background_color="#00000000" />
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                     </layout>

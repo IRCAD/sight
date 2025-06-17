@@ -17,7 +17,7 @@
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
-                    <view proportion="1" backgroundColor="#2E3034" />
+                    <view proportion="1" background_color="#2E3034" />
                 </layout>
             </gui>
             <registry>
@@ -31,8 +31,8 @@
                 <toolbar />
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
-                    <view proportion="1" backgroundColor="#36393E" />
-                    <view proportion="1" backgroundColor="#2E3034" border="5" />
+                    <view proportion="1" background_color="#36393E" />
+                    <view proportion="1" background_color="#2E3034" border="5" />
                 </layout>
             </gui>
             <registry>

@@ -3,7 +3,7 @@
     <requirement id="sight::module::ui::qt" />
 
     <extension implements="sight::app::extension::config">
-        <id>Tuto04SignalSlot_AppCfg</id>
+        <id>tuto04_signal_slot</id>
         <config>
             <!-- ******************************* Objects declaration ****************************** -->
 
@@ -12,43 +12,43 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::frame">
+            <service uid="main_frame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
-                        <name>tuto04_signal_slot</name>
+                        <name>Tutorial 4: Signals and slots</name>
                         <icon>tuto04_signal_slot/tuto.ico</icon>
-                        <minSize width="1280" height="720" />
+                        <min_size width="1280" height="720" />
                     </frame>
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" />
-                    <view sid="containerView" />
+                    <menubar sid="menubar_view" />
+                    <view sid="container_view" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menubar">
+            <service uid="menubar_view" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" />
+                    <menu sid="menu_file_view" />
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::menu">
+            <service uid="menu_file_view" type="sight::module::ui::menu">
                 <gui>
                     <layout>
-                        <menuItem name="Open mesh" shortcut="Ctrl+O" />
+                        <menu_item name="Open mesh" shortcut="Ctrl+O" />
                         <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        <menu_item name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openMeshAct" />
-                    <menuItem sid="quitAct" />
+                    <menu_item sid="open_mesh_act" />
+                    <menu_item sid="quit_act" />
                 </registry>
             </service>
 
@@ -61,29 +61,29 @@
                 Each <view> declared into the <layout> tag, must have its associated <view> into the <registry> tag.
                 A minimum window height and a width are given to the two non-central views.
             -->
-            <service uid="containerView" type="sight::module::ui::view">
+            <service uid="container_view" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::cardinal">
                         <view align="center" />
-                        <view caption="Move cameras 1,2" align="right" minWidth="600" minHeight="100" />
-                        <view caption="Move camera 3" align="right" minWidth="600" minHeight="100" />
+                        <view caption="Move cameras 1,2" align="right" min_width="600" min_height="100" />
+                        <view caption="Move camera 3" align="right" min_width="600" min_height="100" />
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="rendering1Srv" />
-                    <view sid="rendering2Srv" />
-                    <view sid="rendering3Srv" />
+                    <view sid="rendering1_srv" />
+                    <view sid="rendering2_srv" />
+                    <view sid="rendering3_srv" />
                 </registry>
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="sight::module::ui::action" />
-            <service uid="quitAct" type="sight::module::ui::quit" />
+            <service uid="open_mesh_act" type="sight::module::ui::action" />
+            <service uid="quit_act" type="sight::module::ui::quit" />
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
+            <service uid="mesh_reader_srv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="mesh" />
                 <!-- mode is optional (by default it is "reader") -->
                 <type mode="reader" />
@@ -94,15 +94,15 @@
                 We have three rendering service representing a 3D scene displaying the loaded mesh. The scene are
                 shown in the windows defines in 'view' service.
             -->
-            <service uid="rendering1Srv" type="sight::module::viz::sample::mesh">
+            <service uid="rendering1_srv" type="sight::module::viz::sample::mesh">
                 <in key="mesh" uid="mesh" auto_connect="true" />
             </service>
 
-            <service uid="rendering2Srv" type="sight::module::viz::sample::mesh">
+            <service uid="rendering2_srv" type="sight::module::viz::sample::mesh">
                 <in key="mesh" uid="mesh" auto_connect="true" />
             </service>
 
-            <service uid="rendering3Srv" type="sight::module::viz::sample::mesh">
+            <service uid="rendering3_srv" type="sight::module::viz::sample::mesh">
                 <in key="mesh" uid="mesh" auto_connect="true" />
             </service>
 
@@ -110,27 +110,27 @@
 
             <!--
                 Each 3D scene owns a 3D camera that can be moved by clicking in the scene.
-                - When the camera move, a signal 'camUpdated' is emitted with the new camera information (position,
+                - When the camera move, a signal 'cam_updated' is emitted with the new camera information (position,
                 focal, view up).
-                - To update the camera without clicking, you could call the slot 'updateCamPosition'
+                - To update the camera without clicking, you could call the slot 'update_cam_position'
 
-                Here, we connect some rendering services signal 'camUpdated' to the others service slot
-                'updateCamPosition', so the cameras are synchronized between scenes.
+                Here, we connect some rendering services signal 'cam_updated' to the others service slot
+                'update_cam_position', so the cameras are synchronized between scenes.
             -->
             <connect>
-                <signal>rendering1Srv/cam_updated</signal>
-                <slot>rendering2Srv/update_cam_position</slot>
-                <slot>rendering3Srv/update_cam_position</slot>
+                <signal>rendering1_srv/cam_updated</signal>
+                <slot>rendering2_srv/update_cam_position</slot>
+                <slot>rendering3_srv/update_cam_position</slot>
             </connect>
 
             <connect>
-                <signal>rendering2Srv/cam_updated</signal>
-                <slot>rendering1Srv/update_cam_position</slot>
+                <signal>rendering2_srv/cam_updated</signal>
+                <slot>rendering1_srv/update_cam_position</slot>
             </connect>
 
             <connect>
-                <signal>openMeshAct/clicked</signal>
-                <slot>meshReaderSrv/update</slot>
+                <signal>open_mesh_act/clicked</signal>
+                <slot>mesh_reader_srv/update</slot>
             </connect>
         </config>
     </extension>

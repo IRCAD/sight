@@ -16,7 +16,7 @@
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
-                    <view proportion="1" visible="false" backgroundColor="#2E3034" border="5" />
+                    <view proportion="1" visible="false" background_color="#2E3034" border="5" />
                     <view proportion="1" />
                 </layout>
             </gui>

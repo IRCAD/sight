@@ -28,7 +28,7 @@ namespace sight::data::validator::camera_set
 {
 
 /**
- * @brief Defines a validator which checks if the current CameraSet contains one and only one Camera and is
+ * @brief Defines a validator which checks if the current camera_set contains one and only one Camera and is
  *        calibrated.
  */
 class mono_camera : public sight::data::validator::base
@@ -44,7 +44,7 @@ public:
     ~mono_camera() override = default;
 
     /**
-     * @brief Checks if the current CameraSet contains one and only one Camera and is calibrated.
+     * @brief Checks if the current camera_set contains one and only one Camera and is calibrated.
      * @see data::validator::base::validate
      */
     sight::data::validator::return_t validate(const CSPTR(data::object)& _current_data) const

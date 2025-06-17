@@ -74,14 +74,14 @@
 
         <service uid="videoGrabberSrv" type="sight::module::io::video::grabber_proxy">
             <in key="camera" uid="${camera}" />
-            <inout key="frameTL" uid="timeLine" />
+            <inout key="frame_tl" uid="timeLine" />
             <config>
                 <gui title="${grabberProxyGuiTitle}" />
             </config>
         </service>
 
         <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer">
-            <in group="frameTL">
+            <in group="frame_tl">
                 <key uid="timeLine" />
             </in>
             <inout group="frames">

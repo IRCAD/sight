@@ -136,23 +136,43 @@ void frame_manager::initialize(const ui::config_t& _configuration)
         );
     }
 
-    if(const auto& width = _configuration.get_optional<int>("minSize.<xmlattr>.width"); width)
+    if(auto width = _configuration.get_optional<int>("min_size.<xmlattr>.width"); width)
     {
         m_frame_info.m_min_width = *width;
     }
+    else if(width = _configuration.get_optional<int>("minSize.<xmlattr>.width"); width)
+    {
+        FW_DEPRECATED_MSG("'minSize' is deprecated, use 'min_size' instead", "26.0");
+        m_frame_info.m_min_width = *width;
+    }
 
-    if(const auto& height = _configuration.get_optional<int>("minSize.<xmlattr>.height"); height)
+    if(auto height = _configuration.get_optional<int>("min_size.<xmlattr>.height"); height)
     {
         m_frame_info.m_min_height = *height;
     }
+    else if(height = _configuration.get_optional<int>("minSize.<xmlattr>.height"); height)
+    {
+        FW_DEPRECATED_MSG("'minSize' is deprecated, use 'min_size' instead", "26.0");
+        m_frame_info.m_min_height = *height;
+    }
 
-    if(const auto& width = _configuration.get_optional<int>("maxSize.<xmlattr>.width"); width)
+    if(auto width = _configuration.get_optional<int>("max_size.<xmlattr>.width"); width)
     {
         m_frame_info.m_max_width = *width;
     }
-
-    if(const auto& height = _configuration.get_optional<int>("maxSize.<xmlattr>.height"); height)
+    else if(width = _configuration.get_optional<int>("maxSize.<xmlattr>.width"); width)
     {
+        FW_DEPRECATED_MSG("'maxSize' is deprecated, use 'min_size' instead", "26.0");
+        m_frame_info.m_max_width = *width;
+    }
+
+    if(auto height = _configuration.get_optional<int>("max_size.<xmlattr>.height"); height)
+    {
+        m_frame_info.m_max_height = *height;
+    }
+    else if(height = _configuration.get_optional<int>("maxSize.<xmlattr>.height"); height)
+    {
+        FW_DEPRECATED_MSG("'maxSize' is deprecated, use 'min_size' instead", "26.0");
         m_frame_info.m_max_height = *height;
     }
 

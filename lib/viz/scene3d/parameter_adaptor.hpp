@@ -45,7 +45,7 @@ public:
     SIGHT_VIZ_SCENE3D_API parameter_adaptor() noexcept = default;
     SIGHT_VIZ_SCENE3D_API ~parameter_adaptor() noexcept override = default;
 
-    /// Set the shaderType by passing the value of the shader_enum_t of this adaptor.
+    /// Set the shader_type by passing the value of the shader_enum_t of this adaptor.
     SIGHT_VIZ_SCENE3D_API void set_shader_type(Ogre::GpuProgramType _shader_type);
 
     /// Set the name of the parameter m_paramName.

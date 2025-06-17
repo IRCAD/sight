@@ -10,14 +10,14 @@
     <requirement id="sight::module::service" />
 
     <extension implements="sight::app::extension::config">
-        <id>tuto08_mesher_with_generic_scene_app_cfg</id>
+        <id>tuto08_mesher_with_generic_scene</id>
         <config>
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="model_series" type="sight::data::model_series" />
             <object uid="image_series" type="sight::data::image_series" />
             <object uid="tf" type="sight::data::transfer_function">
-                <colors isClamped="false">
+                <colors is_clamped="false">
                     <step color="#00000000" value="0" />
                     <step color="#FF000070" value="1" />
                     <step color="#0000FFFF" value="1.5" />
@@ -47,7 +47,7 @@
             <service uid="main_frame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
-                        <name>tuto08_mesher_with_generic_scene</name>
+                        <name>Tutorial 8: Mesher and generic scene</name>
                         <icon>tuto08_mesher_with_generic_scene/tuto.ico</icon>
                     </frame>
                     <menubar />
@@ -74,27 +74,27 @@
             <service uid="menu_file_view" type="sight::module::ui::menu">
                 <gui>
                     <layout>
-                        <menuItem name="Open labelled image" shortcut="Ctrl+O" />
-                        <menuItem name="Save segmented meshes" shortcut="Ctrl+S" />
+                        <menu_item name="Open labelled image" shortcut="Ctrl+O" />
+                        <menu_item name="Save segmented meshes" shortcut="Ctrl+S" />
                         <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        <menu_item name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="open_image_act" />
-                    <menuItem sid="save_model_series_act" />
-                    <menuItem sid="quit_act" />
+                    <menu_item sid="open_image_act" />
+                    <menu_item sid="save_model_series_act" />
+                    <menu_item sid="quit_act" />
                 </registry>
             </service>
 
             <service uid="menu_mesher_view" type="sight::module::ui::menu">
                 <gui>
                     <layout>
-                        <menuItem name="Create Mesh" />
+                        <menu_item name="Create Mesh" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="create_mesh_act" />
+                    <menu_item sid="create_mesh_act" />
                 </registry>
             </service>
 
@@ -103,7 +103,7 @@
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
                         <view proportion="1" />
-                        <view proportion="0" minHeight="30" resizable="false" backgroundColor="#3E4453" />
+                        <view proportion="0" min_height="30" resizable="false" background_color="#3E4453" />
                         <view proportion="0" />
                     </layout>
                 </gui>
@@ -121,7 +121,7 @@
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="2" />
-                        <view proportion="1" backgroundColor="#36393E" />
+                        <view proportion="1" background_color="#36393E" />
                     </layout>
                 </gui>
                 <registry>
@@ -165,9 +165,9 @@
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
-                        <view proportion="0" minWidth="50" />
+                        <view proportion="0" min_width="50" />
                         <view proportion="1" />
-                        <view proportion="0" minWidth="30" />
+                        <view proportion="0" min_width="30" />
                     </layout>
                 </gui>
                 <registry>
@@ -181,7 +181,7 @@
 
             <service uid="generic_scene_srv" type="sight::viz::scene3d::render">
                 <scene>
-                    <background topColor="#36393E" bottomColor="#36393E" />
+                    <background top_color="#36393E" bottom_color="#36393E" />
 
                     <layer id="default" order="1">
                         <adaptor uid="trackball_interactor_adp" />
@@ -204,7 +204,7 @@
             <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
                 <in key="image" uid="image_series" />
                 <inout key="tf" uid="tf" />
-                <config sliceIndex="axial" interactive="true" tf_alpha="true" />
+                <config orientation="axial" interactive="true" tf_alpha="true" />
                 <properties classification="pre" />
             </service>
 
@@ -252,14 +252,14 @@
                     <checkable>true</checkable>
                     <icon>sight::module::ui::icons/cross.svg</icon>
                     <icon2>sight::module::ui::icons/layers.svg</icon2>
-                    <iconWidth>40</iconWidth>
-                    <iconHeight>16</iconHeight>
+                    <icon_width>40</icon_width>
+                    <icon_height>16</icon_height>
                     <checked>true</checked>
                 </config>
             </service>
 
             <service uid="list_organ_editor_srv" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
-                <inout key="modelSeries" uid="model_series" />
+                <inout key="model_series" uid="model_series" />
                 <columns>
                     <organ_name>@organ_name</organ_name>
                 </columns>
@@ -327,12 +327,8 @@
             <!--
                 Connection for 3D image slice:
                 Connect the button (show_negato_srv) signal "toggled" to the image adaptor (negato_adp)
-                slot "showSlice", this signals/slots contains a boolean.
-                The image slices will be show or hide when the button is checked/unchecked.
-
-                The "waitForKey" attribut means that the signal and slot are connected only if the key
-                "image" is present in the scene map. It is recommanded to used because the adaptors
-                exists only if the object is present.
+                slot "show_slice", this signals/slots contains a boolean.
+                The image slices will be shown or hidden when the button is checked/unchecked.
             -->
             <connect>
                 <signal>show_negato_srv/toggled</signal>

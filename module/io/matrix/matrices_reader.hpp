@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@ namespace sight::module::io::matrix
 {
 
 /**
- * @brief This service reads a csv file and extract matrices from it to push it into a matrixTL.
+ * @brief This service reads a csv file and extract matrices from it to push it into a matrix_tl.
  *
  * This service can be used in two ways, first one is full-automatic by setting the framerate (oneShot off),
  * the second one is one-per-one using readNext and/or readPrevious slots.
@@ -58,7 +58,7 @@ namespace sight::module::io::matrix
  *
  * @code{.xml}
    <service type="sight::module::io::matrix::matrices_reader">
-       <inout key="matrixTL" uid="..." />
+       <inout key="matrix_tl" uid="..." />
        <oneShot>false</oneShot>
        <fps>30</fps>
        <useTimelapse>true</useTimelapse>
@@ -68,7 +68,7 @@ namespace sight::module::io::matrix
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b matrixTL [sight::data::matrix_tl]: timeline in which matrices will be pushed.
+ * - \b matrix_tl [sight::data::matrix_tl]: timeline in which matrices will be pushed.
  * @subsection Configuration Configuration
  * - \b oneShot (optional): if true reader will read csv line per line.
  * to read next/previous line you should call readNext/readPrevious. If false reader will read each line with
@@ -184,8 +184,7 @@ private:
     /// Step value updated in set_step() slot used to compute a shift value when calling readPrevious()/readNext() slots
     std::uint64_t m_step_changed {1};
 
-    static constexpr std::string_view MATRIXTL = "matrixTL";
-    sight::data::ptr<sight::data::matrix_tl, sight::data::access::inout> m_matrix_tl {this, MATRIXTL};
+    sight::data::ptr<sight::data::matrix_tl, sight::data::access::inout> m_matrix_tl {this, "matrix_tl"};
 };
 
 } // namespace sight::module::io::matrix

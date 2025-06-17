@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,6 @@ CPPUNIT_TEST_SUITE(runtime_test);
 CPPUNIT_TEST(test_library);
 CPPUNIT_TEST(test_module);
 CPPUNIT_TEST(test_operations);
-CPPUNIT_TEST(test_property_tree);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,7 +49,6 @@ public:
     static void test_library();
     static void test_module();
     static void test_operations();
-    static void test_property_tree();
 };
 
 } // namespace sight::core::runtime::ut

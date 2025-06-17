@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,9 +107,6 @@ private:
 
     /// Contains the transformation adaptor.
     data::matrix4::sptr m_camera_transform;
-
-    /// Contains the signal emitted when camera position is updated.
-    cam_updated_signal_t::sptr m_sig_cam_updated;
 
     /// Stores connection with the camera transform.
     core::com::helper::sig_slot_connection m_connections;

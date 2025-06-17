@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -314,10 +314,16 @@ constexpr static const char* strip_source_path(const char* const _path)
         );
 
 /**
- * @brief Use this macro when deprecating a function to warn the developer.
+ * @brief Use this macro when deprecating something to warn the developer.
  */
 #define FW_DEPRECATED_MSG(message, version) \
         SIGHT_ERROR("[DEPRECATED] " << message << " It will be removed in '" << version << "'");
+
+/**
+ * @brief Use this macro when deprecating something to warn the developer.
+ */
+#define FW_DEPRECATED_MSG_IF(message, version, condition) \
+        SIGHT_ERROR_IF("[DEPRECATED] " << message << " It will be removed in '" << version << "'", condition);
 
 /**
  * @brief Use this macro when deprecating a service key to warn the developer.

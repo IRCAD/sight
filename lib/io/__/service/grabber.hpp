@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -132,7 +132,7 @@ public:
      * @{
      */
     static constexpr std::string_view CAMERA_INPUT  = "camera";
-    static constexpr std::string_view FRAMETL_INOUT = "frameTL";
+    static constexpr std::string_view FRAMETL_INOUT = "frame_tl";
     /** @} */
     /**
      * @brief Constructor.

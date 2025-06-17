@@ -71,8 +71,8 @@ namespace sight::module::viz::scene3d::adaptor
         <inout group="uniforms">
             <key uid="..." name="u_uniform_name" />
        </inout>
-        <config material_template="materialTemplateName" material_name="meshMaterial" textureName="texName"
-                shadingMode="phong" normalLength="0.1" representationMode="SURFACE" />
+        <config material_template="materialTemplateName" material_name="meshMaterial" texture_name="texName"
+                shading_mode="phong" normalLength="0.1" representation_mode="SURFACE" />
     </service>
    @endcode
  *
@@ -86,11 +86,11 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b material_name (optional, string, default=""): name of the Ogre material. This is necessary to bind a
  *      sight::module::viz::scene3d:mesh or a sight::module::viz::scene3d:model_series to this material;
  *      simply specify the same Ogre material in its configuration.
- * - \b textureName (optional, string, default=""): the Ogre texture name used the material. Use it if you want to
+ * - \b texture_name (optional, string, default=""): the Ogre texture name used the material. Use it if you want to
  *      reference a texture managed by an another module::viz::scene3d::adaptor::texture.
- *  - \b shadingMode (optional, none/flat/phong, default=phong): name of the used shading mode.
+ *  - \b shading (optional, none/flat/phong, default=phong): name of the used shading mode.
  *  - \b normalLength (optional, default=0.1): factor defining the length of the normals.
- *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
+ *  - \b representation (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
  *      representation mode as in data::material.
  */
 class material final : public sight::viz::scene3d::adaptor
@@ -168,7 +168,7 @@ public:
 protected:
 
     /// Configures the adaptor.
-    void configuring() final;
+    void configuring(const config_t& config) final;
 
     /// Creates the material.
     void starting() final;

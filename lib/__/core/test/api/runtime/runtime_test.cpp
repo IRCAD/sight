@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "runtime_test.hpp"
 
+#include <core/ptree.hpp>
 #include <core/runtime/extension.hpp>
-#include <core/runtime/helper.hpp>
 #include <core/runtime/module.hpp>
 #include <core/runtime/path.hpp>
 #include <core/runtime/plugin.hpp>
@@ -152,52 +152,6 @@ void runtime_test::test_operations()
 
     path = core::runtime::get_module_resource_file_path("notExistingBundle", "plugin.xml");
     CPPUNIT_ASSERT_EQUAL(std::filesystem::path(), path);
-}
-
-//------------------------------------------------------------------------------
-
-void runtime_test::test_property_tree()
-{
-    {
-        boost::property_tree::ptree config;
-        config.put("test.true", "true");
-        config.put("test.false", "false");
-        bool value = core::runtime::get_ptree_value(config, "test.true", true);
-        CPPUNIT_ASSERT_EQUAL(true, value);
-        value = core::runtime::get_ptree_value(config, "test.false", true);
-        CPPUNIT_ASSERT_EQUAL(false, value);
-        value = core::runtime::get_ptree_value(config, "not_set!!!", true);
-        CPPUNIT_ASSERT_EQUAL(true, value);
-        value = core::runtime::get_ptree_value(config, "not_set!!!", false);
-        CPPUNIT_ASSERT_EQUAL(false, value);
-    }
-
-    {
-        boost::property_tree::ptree config;
-        config.put("test.int", "42");
-        config.put("test.real", "2.34");
-        config.put("test.string", "digits");
-
-        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<int>(config, "test.real", 23), core::exception);
-        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<int>(config, "test.string", 23), core::exception);
-        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<float>(config, "test.string", 23.F), core::exception);
-        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<double>(config, "test.string", 23.), core::exception);
-
-        int value = core::runtime::get_ptree_value(config, "test.int", 23);
-        CPPUNIT_ASSERT_EQUAL(42, value);
-        value = core::runtime::get_ptree_value(config, "not_set!!!", 23);
-        CPPUNIT_ASSERT_EQUAL(23, value);
-
-        double real = core::runtime::get_ptree_value(config, "test.int", 23);
-        CPPUNIT_ASSERT_EQUAL(42., real);
-        real = core::runtime::get_ptree_value(config, "test.real", 42.3);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(2.34, real, 0.0001);
-
-        std::string str = core::runtime::get_ptree_value(config, "test.string", std::string("foo"));
-        CPPUNIT_ASSERT_EQUAL(std::string("digits"), str);
-        str = core::runtime::get_ptree_value(config, "test.missing_string", std::string("foo"));
-        CPPUNIT_ASSERT_EQUAL(std::string("foo"), str);
-    }
 }
 
 //------------------------------------------------------------------------------

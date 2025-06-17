@@ -65,7 +65,7 @@ namespace sight::module::ui::qt::model
  * @section XML XML Configuration
  * @code{.xml}
    <service module::ui::qt::editor::model_series_list">
-       <inout key="modelSeries" uid="..." auto_connect="true" />
+       <inout key="model_series" uid="..." auto_connect="true" />
        <enable_hide_all>true</enable_hide_all>
        <columns>
          <organ_name/>
@@ -76,7 +76,7 @@ namespace sight::module::ui::qt::model
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b modelSeries [sight::data::model_series]: model series containing the organs to list
+ * - \b model_series [sight::data::model_series]: model series containing the organs to list
  *
  * @subsection Configuration Configuration
  * - \b enable_hide_all (optional, bool, default=true): if 'true', allows to hide all models through a single checkbox
@@ -220,8 +220,8 @@ private:
     using show_reconstructions_slot_t = core::com::slot<void (bool)>;
     show_reconstructions_slot_t::sptr m_slot_show_reconstructions;
 
-    static constexpr std::string_view MODEL_SERIES = "modelSeries";
-    data::ptr<data::model_series, data::access::inout> m_model_series {this, "modelSeries"};
+    static constexpr std::string_view MODEL_SERIES = "model_series";
+    data::ptr<data::model_series, data::access::inout> m_model_series {this, "model_series"};
 };
 
 } // namespace sight::module::ui::qt::model

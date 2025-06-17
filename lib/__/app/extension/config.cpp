@@ -48,6 +48,7 @@ config::uid_definition_t config::s_uid_definition_dictionary = {{"object", "uid"
     {"slideView", "wid"},
     {"connect", "channel"},
     {"menuItem", "sid"},
+    {"menu_item", "sid"},
     {"channel", "uid"},
 };
 

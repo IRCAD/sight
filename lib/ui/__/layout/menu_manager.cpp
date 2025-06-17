@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ void menu_manager::initialize(const ui::config_t& _configuration)
 {
     for(const auto& menu_item : _configuration)
     {
-        if(menu_item.first == "menuItem")
+        if(menu_item.first == "menu_item" or menu_item.first == "menuItem")
         {
             action_info info;
 
@@ -56,7 +56,7 @@ void menu_manager::initialize(const ui::config_t& _configuration)
             }
 
             if(const auto action =
-                   menu_item.second.get_optional<std::string>("<xmlattr>.specialAction"); action.has_value())
+                   menu_item.second.get_optional<std::string>("<xmlattr>.special_action"); action.has_value())
             {
                 const std::string& special_action_name = action.value();
                 if(special_action_name == "DEFAULT")
@@ -81,7 +81,7 @@ void menu_manager::initialize(const ui::config_t& _configuration)
                 }
                 else
                 {
-                    SIGHT_FATAL("specialAction " << special_action_name << " is unknown.");
+                    SIGHT_FATAL("special_action " << special_action_name << " is unknown.");
                 }
             }
 

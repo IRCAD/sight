@@ -50,7 +50,7 @@ Example
         </service>
 
         <service uid="listOrganEditor" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
-            <inout key="modelSeries" uid="${organ_manager_modelseries}" />
+            <inout key="model_series" uid="${organ_manager_modelseries}" />
             <columns>
                 <organ_name />
                 <structure_type />

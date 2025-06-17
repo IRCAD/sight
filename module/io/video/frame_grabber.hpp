@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ namespace sight::module::io::video
  * @code{.xml}
         <service type="sight::module::io::video::frame_grabber">
             <in key="camera" uid="..." />
-            <inout key="frameTL" uid="..." />
+            <inout key="frame_tl" uid="..." />
             <fps>30</fps>
             <oneShot>false</oneShot>
             <createTimestamp>false</createTimestamp>
@@ -90,7 +90,7 @@ namespace sight::module::io::video
  * @subsection Input Input
  * - \b camera [sight::data::camera]: camera used to display video.
  * @subsection In-Out In-Out
- * - \b frameTL [sight::data::frame_tl]: timeline where to extract the video frames.
+ * - \b frame_tl [sight::data::frame_tl]: timeline where to extract the video frames.
  * @subsection Configuration Configuration
  * - \b fps (optional) : target playback frame rate when playing an image sequence (default: 30).
  * - \b useTimelapse (optional): if true, the difference between two image's timestamps will be use as timer duration,

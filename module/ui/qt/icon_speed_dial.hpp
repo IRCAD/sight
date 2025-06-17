@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -55,7 +55,7 @@ namespace sight::module::ui::qt
  *                                   "left".
  *    - spacing (int, default=10): The space, in pixels, between the buttons.
  *    - icon (string, mandatory): The icon of the button.
- *    - unfoldedIcon (string, default=""): The icon of the button when it is unfolded. Defaults to the icon when folded
+ *    - unfolded_icon (string, default=""): The icon of the button when it is unfolded. Defaults to the icon when folded
  *                                         if unspecified.
  *    - animationDuration (int, default=250): The duration, in milliseconds, of the animation when folding/unfolding.
  *  - \<actions\>

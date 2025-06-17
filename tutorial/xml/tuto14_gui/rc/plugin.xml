@@ -82,7 +82,7 @@
                     <frame>
                         <name>tuto14_gui</name>
                         <icon>tuto14_gui/tuto.ico</icon>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                         <size width="1600" height="1200" />
                         <style mode="FULLSCREEN" />
                     </frame>
@@ -119,7 +119,7 @@
                         <menuItem name="Item A" shortcut="A" style="radio" />
                         <menuItem name="Item B" shortcut="B" style="radio" />
                         <separator />
-                        <menuItem name="Quit" shortcut="Ctrl+Q" specialAction="QUIT" />
+                        <menuItem name="Quit" shortcut="Ctrl+Q" special_action="QUIT" />
                     </layout>
                 </gui>
                 <registry>
@@ -219,7 +219,7 @@
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
-                        <view proportion="1" backgroundColor="#2E2F30" caption="This is a background caption" />
+                        <view proportion="1" background_color="#2E2F30" caption="This is a background caption" />
                     </layout>
                 </gui>
                 <registry>
@@ -245,9 +245,9 @@
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
-                        <view proportion="1" toolTip="View with tabs inside" backgroundColor="#36393E" />
-                        <view proportion="1" toolTip="Empty view" backgroundColor="#36393E" />
-                        <view proportion="1" backgroundColor="#36393E" />
+                        <view proportion="1" toolTip="View with tabs inside" background_color="#36393E" />
+                        <view proportion="1" toolTip="Empty view" background_color="#36393E" />
+                        <view proportion="1" background_color="#36393E" />
                     </layout>
                 </gui>
                 <registry>
@@ -261,7 +261,7 @@
             <service uid="sub2View" type="sight::module::ui::view">
                 <gui>
                     <layout type="sight::ui::layout::cardinal">
-                        <view align="center" backgroundColor="#36393E" />
+                        <view align="center" background_color="#36393E" />
                         <view caption="CardinalView2" align="right" minWidth="400" />
                         <view caption="CardinalView3" align="right" minWidth="400" />
                     </layout>
@@ -301,7 +301,7 @@
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <spacer />
-                        <view proportion="0" caption="This is a logo caption" backgroundColor="#000040" />
+                        <view proportion="0" caption="This is a logo caption" background_color="#000040" />
                         <spacer />
                     </layout>
                 </gui>

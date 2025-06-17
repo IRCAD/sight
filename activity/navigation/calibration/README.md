@@ -48,8 +48,8 @@ add_dependencies(my_target activity_navigation_calibration ... )
 Example with `sight::navigation::calibration::cal_intrinsic_view` & `sight::navigation::calibration::cal_extrinsic_view`
 
 ```xml
-    <service uid="cameraLauncherAct" type="sight::module::ui::qt::calibration::camera_config_launcher">
-        <inout key="cameraSet" uid="${cameraSet}" />
+    <service uid="camera_launcher_act" type="sight::module::ui::qt::calibration::camera_config_launcher">
+        <inout key="camera_set" uid="${cameraSet}" />
         <inout key="activity" uid="${AS_UID}" />
         <config>
             <intrinsic>
@@ -59,7 +59,7 @@ Example with `sight::navigation::calibration::cal_intrinsic_view` & `sight::navi
             </intrinsic>
             <extrinsic>
                 <properties config="sight::navigation::calibration::cal_extrinsic_view" />
-                <inout key="cameraSet" uid="${cameraSet}" />
+                <inout key="camera_set" uid="${cameraSet}" />
                 <parameter replace="WID_PARENT" by="calibrationView" />
                 <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
             </extrinsic>

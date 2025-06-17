@@ -58,7 +58,7 @@ namespace sight::module::viz::scene3d::adaptor
         <in key="image" uid="..." />
         <in key="mask" uid="..." />
         <inout key="tf" uid="..." />
-        <config sliceIndex="axial" filtering="none" tf_alpha="true" />
+        <config orientation="axial" filtering="none" tf_alpha="true" />
         <properties classification="pre" visible="true" />
    </service>
    @endcode
@@ -72,11 +72,11 @@ namespace sight::module::viz::scene3d::adaptor
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
- * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
+ * - \b orientation (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
  * - \b tf_alpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
  * - \b border (optional, bool, default=true): displays a border around the plane.
- * - \b slicesCross (optional, bool, default=true): display the two other slices location as two lines.
+ * - \b cross (optional, bool, default=true): display the two other slices location as two lines.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the negato, as it
  *      was specified in the transform adaptor.
  * - \b interactive (optional, bool, default=false): enables interactions on the negato.

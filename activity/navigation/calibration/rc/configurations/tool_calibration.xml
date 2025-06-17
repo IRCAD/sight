@@ -93,7 +93,7 @@
         <!-- *************************** Begin Services *************************** -->
 
         <service uid="originToPoint" type="sight::module::geometry::vision::marker_to_point">
-            <in key="matrixTL" uid="matrixTL" />
+            <in key="matrix_tl" uid="matrixTL" />
             <inout key="pointList" uid="pointlist" />
         </service>
 
@@ -108,7 +108,7 @@
         </service>
 
         <service uid="trackerTLMatrixSynchronizer" type="sight::module::sync::synchronizer">
-            <in group="matrixTL">
+            <in group="matrix_tl">
                 <key uid="matrixTL" />
             </in>
             <inout group="matrix">
@@ -240,7 +240,7 @@
 
         <service uid="pointlistAdp" type="sight::module::viz::scene3d::adaptor::point_list" auto_connect="true">
             <in key="pointList" uid="pointlist" />
-            <config radius="3.0" fontSource="DejaVuSans.ttf" fontSize="16" labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" displayLabel="false" />
+            <config radius="3.0" fontSource="DejaVuSans.ttf" fontSize="16" labelColor="#0xFFFFFF" visible="true" fixedSize="false" query_flags="0x40000000" displayLabel="false" />
         </service>
 
         <!-- *************************** End resultView *************************** -->

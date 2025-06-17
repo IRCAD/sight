@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -103,19 +103,19 @@ namespace sight::module::io::realsense
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="videoGrabber" type ="sight::module::io::realsense::scan" auto_connect="false">
-        <inout key="depthTL" uid="..." />
-        <inout key="frameTL" uid="..." />
+        <inout key="depth_tl" uid="..." />
+        <inout key="frame_tl" uid="..." />
         <out key="pointcloud" uid="..." />
-        <inout key="cameraSet" uid="..." />
+        <inout key="camera_set" uid="..." />
         <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true/false" preset="..."
  * alignTo="Color"/>
         <recordFile>/path/to/the/file.bag</recordFile>
    </service>
    @endcode
  * @subsection In-Out In-Out
- * - \b depthTL [sight::data::frame_tl]: Frame timeline of the depth video.
- * - \b frameTL [sight::data::frame_tl]: Frame timeline of the color video.
- * - \b cameraSet [sight::data::camera_set]: Camera series that will contain device camera information.
+ * - \b depth_tl [sight::data::frame_tl]: Frame timeline of the depth video.
+ * - \b frame_tl [sight::data::frame_tl]: Frame timeline of the color video.
+ * - \b camera_set [sight::data::camera_set]: Camera series that will contain device camera information.
  *
  * @subsection Output Output
  * - \b pointcloud [sight::data::mesh]: pointcloud computed from depth map. (optional)
@@ -220,10 +220,10 @@ private:
     static const int s_MIN_DEPTH_RANGE = 0;
 
     /**
-     * @brief CameraSettings is a structure that handles parameters such as resolution of streams,
+     * @brief camera_settings is a structure that handles parameters such as resolution of streams,
      *  fps, and other options.
      */
-    struct CameraSettings
+    struct camera_settings
     {
         int fps               = 30;                ///< Default FPS of all streams.
         int colorH            = 720;               ///< Default Height of color/infrared streams.
@@ -413,7 +413,7 @@ private:
     pointcloud_colormap_enum_t m_pointcloudColorMap = PointcloudColormap::COLOR;
 
     /// Struct that contains basic camera settings (fps, resolution, preset, ...).
-    CameraSettings m_cameraSettings;
+    camera_settings m_camera_settings;
 
     /// Struct that contains the settings to apply filter on the depth frame
     FilterSettings m_filterSettings;
@@ -459,7 +459,7 @@ private:
 
     data::ptr<data::camera, data::access::in> m_camera {this, s_CAMERA_INPUT, true};
 
-    static constexpr std::string_view s_CAMERA_SET_INOUT = "cameraSet";
+    static constexpr std::string_view s_CAMERA_SET_INOUT = "camera_set";
     data::ptr<data::camera_set, data::access::inout> m_camera_set {this, s_CAMERA_SET_INOUT, true};
 
     static constexpr std::string_view s_POINTCLOUD_OUTPUT = "pointcloud";

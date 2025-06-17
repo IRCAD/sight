@@ -62,7 +62,7 @@ class view;
          <frame>
              <name>My app</name>
              <icon>myApp-1.0/icon.ico</icon>
-             <minSize width="800" height="600" />
+             <min_size width="800" height="600" />
              <style mode="MODAL" />
              <visibility>true</visibility>
          </frame>
@@ -84,9 +84,9 @@ class view;
  *   - \b style : defines frame style (modal, always on top, etc.), not mandatory.
  *     Allowed values are MODAL, STAY_ON_TOP, FULLSCREEN and DEFAULT (default value).
  *   - \b visibility : set the frame visibility when it is created. Possible values are true (default) or false.
- *   - \b minSize : the minimum width and height the application window can have
- *   - \b maxSize : the maximum width and height the application window can have
- *   - \b size : the default width and height of the application window. It is constrained by minSize and maxSize.
+ *   - \b min_size : the minimum width and height the application window can have
+ *   - \b max_size : the maximum width and height the application window can have
+ *   - \b size : the default width and height of the application window. It is constrained by min_size and max_size.
  * - The toolbar section isn't mandatory.
  * - The menubar section isn't mandatory.
 

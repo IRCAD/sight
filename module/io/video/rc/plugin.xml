@@ -3,7 +3,7 @@
         <type>sight::io::service::grabber</type>
         <service>sight::module::io::video::frame_grabber</service>
         <object key="camera">sight::data::camera</object>
-        <object key="frameTL">sight::data::frame_tl</object>
+        <object key="frame_tl">sight::data::frame_tl</object>
         <desc>OpenCV player</desc>
         <tags>FILE,DEVICE,STREAM</tags>
     </extension>

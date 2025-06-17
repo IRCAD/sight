@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2023 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ mesh::mesh() noexcept
     new_slot(UPDATE_CAM_POSITION_SLOT, &mesh::update_cam_position, this);
     new_slot(UPDATE_CAM_TRANSFORM_SLOT, &mesh::update_cam_transform, this);
 
-    m_sig_cam_updated = new_signal<cam_updated_signal_t>(CAM_UPDATED_SIG);
+    new_signal<cam_updated_signal_t>(CAM_UPDATED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -60,9 +60,7 @@ void mesh::starting()
 {
     this->sight::ui::service::create();
 
-    auto qt_container = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(
-        this->get_container()
-    );
+    auto qt_container           = std::dynamic_pointer_cast<sight::ui::qt::container::widget>(this->get_container());
     const auto generic_scene_id = this->get_id() + "-genericScene";
     sight::ui::registry::register_sid_container(generic_scene_id, qt_container);
 
@@ -161,17 +159,14 @@ void mesh::stopping()
 void mesh::update_cam_position(data::matrix4::sptr _transform)
 {
     m_camera_transform->shallow_copy(_transform);
-    m_camera_srv->update().wait();
+    m_camera_srv->slot("transform")->async_run();
 }
 
 //------------------------------------------------------------------------------
 
 void mesh::update_cam_transform()
 {
-    {
-        core::com::connection::blocker block(m_sig_cam_updated->get_connection(this->slot(UPDATE_CAM_TRANSFORM_SLOT)));
-        m_sig_cam_updated->async_emit(m_camera_transform);
-    }
+    this->async_emit(this, CAM_UPDATED_SIG, m_camera_transform);
 }
 
 //------------------------------------------------------------------------------

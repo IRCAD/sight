@@ -24,7 +24,7 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
-#include <core/runtime/helper.hpp>
+#include <core/ptree.hpp>
 
 #include <service/op.hpp>
 
@@ -74,7 +74,7 @@ void signal_shortcut::configuring()
     if(auto properties = config_tree.get_child_optional("properties"); not properties.has_value())
     {
         const auto enabled = m_enabled.lock();
-        *enabled = core::runtime::get_ptree_value(config_tree, "state.<xmlattr>.enabled", true);
+        *enabled = core::ptree::get_value(config_tree, "state.<xmlattr>.enabled", true);
     }
 
     const auto config_shortcut = config_tree.get_child("config.<xmlattr>");

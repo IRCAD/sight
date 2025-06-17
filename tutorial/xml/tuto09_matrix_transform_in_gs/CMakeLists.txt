@@ -22,4 +22,4 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_app PARAM_LIST config PARAM_VALUES Tuto09MatrixTransformInGS_AppCfg)
+module_param(module_app PARAM_LIST config PARAM_VALUES tuto09_matrix_transform_in_gs)

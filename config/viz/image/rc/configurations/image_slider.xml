@@ -43,7 +43,7 @@ Example:
 
         <service uid="toolBarView" type="sight::module::ui::view">
             <gui>
-                <toolbar backgroundColor="#00000000" />
+                <toolbar background_color="#00000000" />
                 <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                 </layout>

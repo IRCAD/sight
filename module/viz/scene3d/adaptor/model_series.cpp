@@ -27,6 +27,7 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
+#include <core/ptree.hpp>
 
 #include <data/boolean.hpp>
 #include <data/material.hpp>
@@ -68,7 +69,7 @@ void model_series::configuring()
     static const std::string s_AUTORESET_CAMERA_CONFIG  = CONFIG + "autoresetcamera";
     static const std::string s_MATERIAL_TEMPLATE_CONFIG = CONFIG + "material_template";
     static const std::string s_DYNAMIC_CONFIG           = CONFIG + "dynamic";
-    static const std::string s_DYNAMIC_VERTICES_CONFIG  = CONFIG + "dynamicVertices";
+    static const std::string s_DYNAMIC_VERTICES_CONFIG  = CONFIG + "dynamic_vertices";
     static const std::string s_QUERY_CONFIG             = CONFIG + "queryFlags";
 
     m_auto_reset_camera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
@@ -77,9 +78,14 @@ void model_series::configuring()
     m_is_dynamic             = config.get<bool>(s_DYNAMIC_CONFIG, m_is_dynamic);
     m_is_dynamic_vertices    = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_is_dynamic_vertices);
 
-    if(config.count(s_QUERY_CONFIG) != 0U)
+    const auto hexa_mask = core::ptree::get_and_deprecate<std::string>(
+        config,
+        CONFIG + "query_flags",
+        CONFIG + "queryFlags",
+        "26.0"
+    );
+    if(not hexa_mask.empty())
     {
-        const auto hexa_mask = config.get<std::string>(s_QUERY_CONFIG);
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
             "Given value : " + hexa_mask,
@@ -145,7 +151,7 @@ void model_series::updating()
         rec_adaptor_config.put("properties.<xmlattr>.visible", is_visible);
         rec_adaptor_config.put("config.<xmlattr>.material_template", m_material_template_name);
 
-        if(m_uniforms.size() > 0)
+        if(!m_uniforms.empty())
         {
             std::size_t i = 0;
             for(const auto& uniform_data : m_uniforms)

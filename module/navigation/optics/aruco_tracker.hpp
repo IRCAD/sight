@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ namespace sight::module::navigation::optics
         <service uid="..." type="sight::module::navigation::optics::aruco_tracker" >
             <in key="camera" uid="..." />
             <inout key="frame" uid="..." auto_connect="true" />
-            <inout group="markerMap">
+            <inout group="marker_map">
                 <key uid="..." /> // timeline of detected tag(s) -->
                 <key uid="..." /> // timeline of detected tag(s) -->
                 <key uid="..." /> // timeline of detected tag(s) -->
@@ -79,7 +79,7 @@ namespace sight::module::navigation::optics
  *
  * @subsection In-Out In-Out
  * - \b frame [sight::data::image]: video frame.
- * - \b markerMap [sight::data::marker_map]: markers maps list where to extract the tags. The number of keys must match
+ * - \b marker_map [sight::data::marker_map]: markers maps list where to extract the tags. The number of keys must match
  * the number of \b markers entries in the config below.
  *
  * @subsection Configuration Configuration
@@ -193,7 +193,7 @@ private:
     detection_done_signal_t::sptr m_sig_detection_done;
 
     static constexpr std::string_view CAMERA_INPUT           = "camera";
-    static constexpr std::string_view MARKER_MAP_INOUT_GROUP = "markerMap";
+    static constexpr std::string_view MARKER_MAP_INOUT_GROUP = "marker_map";
 
     data::ptr<data::camera, data::access::in> m_camera {this, CAMERA_INPUT};
     data::ptr<data::image, data::access::inout> m_frame {this, FRAME_INOUT};

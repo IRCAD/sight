@@ -48,7 +48,7 @@
             <service uid="menuFileView" type="sight::module::ui::menu">
                 <gui>
                     <layout>
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        <menuItem name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
@@ -167,11 +167,11 @@
             <!-- Grab image from camera device and fill a frame timeline -->
             <service uid="videoGrabberSrv" type="sight::module::io::video::frame_grabber">
                 <in key="camera" uid="camera" />
-                <inout key="frameTL" uid="frameTL" />
+                <inout key="frame_tl" uid="frameTL" />
             </service>
 
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" auto_connect="false">
-                <in group="frameTL">
+                <in group="frame_tl">
                     <key uid="frameTL" />
                 </in>
                 <inout group="frames">

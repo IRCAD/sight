@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,6 +26,8 @@
  */
 
 #include "ui/__/layout/overlay.hpp"
+
+#include "ui/__/detail/parser.hpp"
 
 namespace sight::ui::layout
 {
@@ -60,14 +62,13 @@ void overlay::initialize(const ui::config_t& _configuration)
         overlay::view vi;
         if(const auto view_cfg = view.second.get_child_optional("<xmlattr>"); view_cfg.has_value())
         {
-            vi.x          = parse_size(view_cfg->get("x", "0"));
-            vi.y          = parse_size(view_cfg->get("y", "0"));
-            vi.width      = parse_size(view_cfg->get("width", "0"));
-            vi.height     = parse_size(view_cfg->get("height", "0"));
-            vi.min_width  = view_cfg->get("minWidth", 0);
-            vi.min_height = view_cfg->get("minHeight", 0);
-            vi.visible    = view_cfg->get("visible", true);
-            vi.opacity    = view_cfg->get("opacity", 0.F);
+            vi.x                                  = parse_size(view_cfg->get("x", "0"));
+            vi.y                                  = parse_size(view_cfg->get("y", "0"));
+            vi.width                              = parse_size(view_cfg->get("width", "0"));
+            vi.height                             = parse_size(view_cfg->get("height", "0"));
+            vi.visible                            = view_cfg->get("visible", true);
+            vi.opacity                            = view_cfg->get("opacity", 0.F);
+            std::tie(vi.min_width, vi.min_height) = detail::parse_min_size(*view_cfg);
         }
 
         m_views.push_back(vi);

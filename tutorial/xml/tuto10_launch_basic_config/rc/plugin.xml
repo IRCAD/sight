@@ -7,7 +7,7 @@
     <xi:include href="basic_frame_config.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::app::extension::config">
-        <id>Tuto10LaunchBasicConfig_AppCfg</id>
+        <id>tuto10_launch_basic_config</id>
         <config>
             <!-- ******************************* Objects declaration ****************************** -->
 
@@ -16,54 +16,54 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::frame">
+            <service uid="main_frame" type="sight::module::ui::frame">
                 <gui>
                     <frame>
-                        <name>tuto10_launch_basic_config</name>
+                        <name>Tutorial 10: Launch a configuration</name>
                         <icon>tuto10_launch_basic_config/tuto.ico</icon>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                     </frame>
                     <menubar />
                 </gui>
                 <registry>
-                    <menubar sid="menuBarView" />
-                    <view sid="imageRendereSrv" />
+                    <menubar sid="menu_bar_view" />
+                    <view sid="image_renderer_srv" />
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::menubar">
+            <service uid="menu_bar_view" type="sight::module::ui::menubar">
                 <gui>
                     <layout>
                         <menu name="File" />
                     </layout>
                 </gui>
                 <registry>
-                    <menu sid="menuFileView" />
+                    <menu sid="menu_file_view" />
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::menu">
+            <service uid="menu_file_view" type="sight::module::ui::menu">
                 <gui>
                     <layout>
-                        <menuItem name="Open image" shortcut="Ctrl+O" />
+                        <menu_item name="Open image" shortcut="Ctrl+O" />
                         <separator />
-                        <menuItem name="Launch config" style="check" shortcut="Ctrl+L" />
+                        <menu_item name="Launch config" style="check" shortcut="Ctrl+L" />
                         <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        <menu_item name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openImageAct" />
-                    <menuItem sid="launch_config_act" />
-                    <menuItem sid="quitAct" />
+                    <menu_item sid="open_image_act" />
+                    <menu_item sid="launch_config_act" />
+                    <menu_item sid="quit_act" />
                 </registry>
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="sight::module::ui::action" />
+            <service uid="open_image_act" type="sight::module::ui::action" />
 
-            <service uid="quitAct" type="sight::module::ui::quit" />
+            <service uid="quit_act" type="sight::module::ui::quit" />
             <service uid="launch_config_act" type="sight::module::ui::action">
                 <properties checked="${config_started}" />
             </service>
@@ -76,7 +76,7 @@
                 The configuration is defined by its id.
             -->
             <service uid="frame_cfg" type="sight::app::config_launcher">
-                <properties config="Tuto10LaunchBasicConfig_BasicFrameConfig_AppCfg" start="${config_started}" />
+                <properties config="tuto10_launch_basic_config::basic_frame_config" start="${config_started}" />
                 <!--
                     replace ${image} in the sub-config by the uid of the object with the key
                     (ie. ${image} is replaced by "image")
@@ -88,17 +88,17 @@
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="imageReaderSrv" type="sight::module::ui::io::selector">
+            <service uid="image_reader_srv" type="sight::module::ui::io::selector">
                 <inout key="data" uid="image" />
             </service>
 
-            <service uid="imageRendereSrv" type="sight::module::viz::sample::image">
+            <service uid="image_renderer_srv" type="sight::module::viz::sample::image">
                 <in key="image" uid="image" />
             </service>
 
             <connect>
-                <signal>openImageAct/clicked</signal>
-                <slot>imageReaderSrv/update</slot>
+                <signal>open_image_act/clicked</signal>
+                <slot>image_reader_srv/update</slot>
             </connect>
         </config>
     </extension>

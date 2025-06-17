@@ -30,7 +30,7 @@
 
         <service uid="multiView_negato_bottom" type="sight::module::ui::view">
             <gui>
-                <toolbar backgroundColor="#00000000" />
+                <toolbar background_color="#00000000" />
                 <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
                     <view proportion="0" minWidth="30" />
@@ -93,7 +93,7 @@
         <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
             <in key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunctionDeferred}" />
-            <config sliceIndex="${orientation}" filtering="none" />
+            <config orientation="${orientation}" filtering="none" />
         </service>
 
         <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">

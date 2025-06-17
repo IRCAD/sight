@@ -253,11 +253,11 @@
 
         <service uid="videoGrabberSrv" type="sight::module::io::video::grabber_proxy">
             <in key="camera" uid="${camera}" />
-            <inout key="frameTL" uid="frameTL" />
+            <inout key="frame_tl" uid="frameTL" />
         </service>
 
         <service uid="frameSynchronizerSrv" type="sight::module::sync::synchronizer" auto_connect="false">
-            <in group="frameTL">
+            <in group="frame_tl">
                 <key uid="frameTL" />
             </in>
             <inout group="frames">

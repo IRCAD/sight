@@ -177,7 +177,7 @@ Usage:
 
         <service uid="grabberProxySrv" type="sight::module::io::video::grabber_proxy">
             <in key="camera" uid="${camera}" />
-            <inout key="frameTL" uid="${frameTL}" />
+            <inout key="frame_tl" uid="${frameTL}" />
         </service>
 
         <!-- ******************************* Connections ******************************* -->

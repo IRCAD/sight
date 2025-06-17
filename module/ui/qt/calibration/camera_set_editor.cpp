@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,6 +44,7 @@ namespace sight::module::ui::qt::calibration
 {
 
 const core::com::slots::key_t camera_set_editor::UPDATE_INFOS_SLOT = "updateInfos";
+
 // -------------------------------------------------------------------------
 
 camera_set_editor::camera_set_editor() noexcept :
@@ -134,12 +135,9 @@ void camera_set_editor::update_informations()
 
 void camera_set_editor::clear_labels()
 {
-    for(int i = 0 ; i < 4 ; ++i)
+    for(const auto& label : m_matrix_labels)
     {
-        for(int j = 0 ; j < 4 ; ++j)
-        {
-            m_matrix_labels[i * 4 + j]->setText(QString(""));
-        }
+        label->setText(QString(""));
     }
 }
 
@@ -147,11 +145,11 @@ void camera_set_editor::clear_labels()
 
 service::connections_t camera_set_editor::auto_connections() const
 {
-    service::connections_t connections;
-    connections.push(CAMERASET, data::camera_set::ADDED_CAMERA_SIG, UPDATE_INFOS_SLOT);
-    connections.push(CAMERASET, data::camera_set::EXTRINSIC_CALIBRATED_SIG, UPDATE_INFOS_SLOT);
-    connections.push(CAMERASET, data::camera_set::REMOVED_CAMERA_SIG, UPDATE_INFOS_SLOT);
-    return connections;
+    return {
+        {m_camera_set, data::camera_set::ADDED_CAMERA_SIG, UPDATE_INFOS_SLOT},
+        {m_camera_set, data::camera_set::EXTRINSIC_CALIBRATED_SIG, UPDATE_INFOS_SLOT},
+        {m_camera_set, data::camera_set::REMOVED_CAMERA_SIG, UPDATE_INFOS_SLOT},
+    };
 }
 
 } // namespace sight::module::ui::qt::calibration

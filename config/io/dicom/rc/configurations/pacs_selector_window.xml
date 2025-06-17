@@ -19,7 +19,7 @@
                 <frame>
                     <name>${WINDOW_TITLE}</name>
                     <icon>${WINDOW_ICON}</icon>
-                    <minSize width="720" height="390" />
+                    <min_size width="720" height="390" />
                 </frame>
             </gui>
             <registry>

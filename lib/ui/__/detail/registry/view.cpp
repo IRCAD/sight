@@ -27,7 +27,7 @@
 #include "ui/__/container/widget.hpp"
 #include "ui/__/registry.hpp"
 
-#include <core/runtime/helper.hpp>
+#include <core/ptree.hpp>
 
 #include <service/op.hpp>
 
@@ -137,7 +137,7 @@ void view::initialize(const ui::config_t& _configuration)
         const std::string sid = _configuration.get<std::string>("menubar.<xmlattr>.sid", "");
         if(!sid.empty())
         {
-            const bool start = core::runtime::get_ptree_value(_configuration, "menubar.<xmlattr>.start", false);
+            const bool start = core::ptree::get_value(_configuration, "menubar.<xmlattr>.start", false);
             m_menu_bar_sid = std::make_pair(sid, start);
         }
     }
@@ -147,7 +147,7 @@ void view::initialize(const ui::config_t& _configuration)
         const std::string sid = _configuration.get<std::string>("toolbar.<xmlattr>.sid", "");
         if(!sid.empty())
         {
-            const bool start = core::runtime::get_ptree_value(_configuration, "toolbar.<xmlattr>.start", false);
+            const bool start = core::ptree::get_value(_configuration, "toolbar.<xmlattr>.start", false);
             m_tool_bar_sid = std::make_pair(sid, start);
         }
     }

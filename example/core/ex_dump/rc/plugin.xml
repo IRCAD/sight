@@ -21,7 +21,7 @@
                     <frame>
                         <name>ex_dump</name>
                         <icon>ex_dump/app.ico</icon>
-                        <minSize width="800" height="600" />
+                        <min_size width="800" height="600" />
                     </frame>
                     <menubar />
                     <toolbar />
@@ -51,7 +51,7 @@
                     <layout>
                         <menuItem name="Open Series..." shortcut="Ctrl+O" />
                         <menuItem name="Save Series..." shortcut="Ctrl+S" />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        <menuItem name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
@@ -107,7 +107,7 @@
                     <layout type="sight::ui::layout::line">
                         <orientation value="horizontal" />
                         <view proportion="1" />
-                        <view proportion="0" backgroundColor="#36393E" />
+                        <view proportion="0" background_color="#36393E" />
                     </layout>
                 </gui>
                 <registry>
@@ -120,8 +120,8 @@
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
-                        <view proportion="1" backgroundColor="#36393E" />
-                        <view proportion="1" backgroundColor="#36393E" />
+                        <view proportion="1" background_color="#36393E" />
+                        <view proportion="1" background_color="#36393E" />
                     </layout>
                 </gui>
                 <registry>

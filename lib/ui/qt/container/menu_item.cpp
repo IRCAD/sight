@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,14 +31,14 @@ namespace sight::ui::qt::container
 
 void menu_item::clean()
 {
-    SIGHT_ASSERT("The qtMenuItem is not yet initialized, cleaning is thus impossible", m_menu_item);
+    SIGHT_ASSERT("The qt menu_item is not yet initialized, cleaning is thus impossible", m_menu_item);
 }
 
 //-----------------------------------------------------------------------------
 
 void menu_item::destroy_container()
 {
-    SIGHT_ASSERT("The qtMenuItem is not yet initialized, cleaning is thus impossible", m_menu_item);
+    SIGHT_ASSERT("The qt menu_item is not yet initialized, cleaning is thus impossible", m_menu_item);
 }
 
 //-----------------------------------------------------------------------------

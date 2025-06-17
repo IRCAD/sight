@@ -68,7 +68,7 @@
                         <separator />
                         <menuItem name="Load mesh" shortcut="Ctrl+M" />
                         <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
+                        <menuItem name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
                 <registry>
@@ -112,7 +112,7 @@
                 <gui>
                     <layout type="sight::ui::layout::line">
                         <orientation value="vertical" />
-                        <view proportion="0" backgroundColor="#36393E" visible="false" />
+                        <view proportion="0" background_color="#36393E" visible="false" />
                         <view proportion="1" />
                     </layout>
                 </gui>
@@ -245,7 +245,7 @@
             </service>
 
             <service uid="meshOffscreenAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
-                <in key="mesh" uid="mesh" shadingMode="ambient" />
+                <in key="mesh" uid="mesh" shading="ambient" />
                 <config transform="id" autoresetcamera="false" />
             </service>
 
@@ -266,22 +266,22 @@
             </service>
 
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::camera">
-                <inout key="cameraSet" uid="RGBDCameraSet" />
+                <inout key="camera_set" uid="RGBDCameraSet" />
                 <createCameraNumber>2</createCameraNumber>
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- To get frames from the RealSense camera -->
             <service uid="videoGrabberSrv" type="sight::module::io::realsense::scan" worker="grabber">
-                <inout key="cameraSet" uid="RGBDCameraSet" />
-                <inout key="depthTL" uid="frameTLDepth" />
-                <inout key="frameTL" uid="frameTLVideo" />
+                <inout key="camera_set" uid="RGBDCameraSet" />
+                <inout key="depth_tl" uid="frameTLDepth" />
+                <inout key="frame_tl" uid="frameTLVideo" />
                 <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" preset="Hand" alignTo="Color" />
             </service>
 
             <!-- To synchronize matrix, frame and detection -->
             <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
-                <in group="frameTL" auto_connect="false">
+                <in group="frame_tl" auto_connect="false">
                     <key uid="frameTLVideo" />
                     <key uid="frameTLDepth" />
                 </in>
@@ -325,7 +325,7 @@
             <!-- Extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::camera_set -->
             <service uid="extractCameraSrv" type="sight::module::data::get_camera">
                 <!-- Source -->
-                <inout key="cameraSet" uid="RGBDCameraSet" />
+                <inout key="camera_set" uid="RGBDCameraSet" />
                 <!-- Destination -->
                 <out group="camera">
                     <key index="0" uid="Dcamera" />
@@ -442,7 +442,7 @@
             </connect>
 
             <connect>
-                <signal>cameraSet/added_camera</signal>
+                <signal>RGBDCameraSet/added_camera</signal>
                 <slot>extractCameraSrv/update</slot>
             </connect>
 

@@ -123,7 +123,7 @@ void icon_speed_dial::configuring()
 
     m_spacing            = config.get("config.<xmlattr>.spacing", -1);
     m_icon               = config.get<std::string>("config.<xmlattr>.icon");
-    m_unfolded_icon      = config.get("config.<xmlattr>.unfoldedIcon", "");
+    m_unfolded_icon      = config.get("config.<xmlattr>.unfolded_icon", "");
     m_animation_duration = config.get("config.<xmlattr>.animationDuration", -1);
     std::ranges::transform(
         boost::make_iterator_range(config.get_child("actions").equal_range("action")),

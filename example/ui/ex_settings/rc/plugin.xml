@@ -43,7 +43,7 @@ This example shows the possibilities of properties:
                     <frame>
                         <name>ex_settings</name>
                         <icon>ex_settings/app.ico</icon>
-                        <minSize width="1200" />
+                        <min_size width="1200" />
                     </frame>
                     <menubar />
                 </gui>
