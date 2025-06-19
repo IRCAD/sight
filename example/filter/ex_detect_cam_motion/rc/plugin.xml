@@ -138,7 +138,7 @@
                 <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1">
+                    <layer id="default">
                         <adaptor uid="videoAdp" />
                     </layer>
                 </scene>

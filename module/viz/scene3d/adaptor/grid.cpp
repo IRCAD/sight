@@ -32,11 +32,35 @@
 
 #include <Ogre.h>
 #include <OgreAxisAlignedBox.h>
+#include <OgreCamera.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::slots::key_t UPDATE_LENGTH_SLOT = "updateSize";
+
+//-----------------------------------------------------------------------------
+
+/// Synchronizes the grid layer camera with the adaptor layer camera
+struct grid::camera_listener : public Ogre::Camera::Listener
+{
+    Ogre::Camera* m_camera;
+
+    //------------------------------------------------------------------------------
+
+    explicit camera_listener(Ogre::Camera* _camera) :
+        m_camera(_camera)
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    void cameraPreRenderScene(Ogre::Camera* _grid_camera) final
+    {
+        _grid_camera->getParentSceneNode()->setPosition(m_camera->getParentSceneNode()->getPosition());
+        _grid_camera->getParentSceneNode()->setOrientation(m_camera->getParentSceneNode()->getOrientation());
+    }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -84,18 +108,23 @@ void grid::starting()
 
     this->render_service()->make_current();
 
-    Ogre::SceneManager* scene_mgr = this->get_scene_manager();
+    auto grid_layer = render_service()->layer(sight::viz::scene3d::render::render::layer::GRID);
+    auto* scene_mgr = grid_layer->get_scene_manager();
 
     m_line = scene_mgr->createManualObject(gen_id("grid"));
     // Set the line as dynamic, so we can update it later on, when the length changes
     m_line->setDynamic(true);
-    m_line->setQueryFlags(Ogre::SceneManager::STATICGEOMETRY_TYPE_MASK);
 
     // Set the material
     const auto mtl_name = gen_id("material");
     m_material = std::make_unique<sight::viz::scene3d::material::standard>(mtl_name);
     m_material->set_layout(data::mesh::attribute::point_colors);
     m_material->set_shading(data::material::shading_t::ambient, this->layer()->num_lights());
+
+    auto* camera = layer()->get_default_camera();
+    m_camera_listener = new camera_listener(camera);
+    auto* grid_camera = grid_layer->get_default_camera();
+    grid_camera->addListener(m_camera_listener);
 
     // Draw the line
     this->draw_grid(false);
@@ -126,11 +155,22 @@ void grid::stopping()
 {
     this->render_service()->make_current();
 
+    if(m_camera_listener != nullptr)
+    {
+        auto grid_layer   = render_service()->layer(sight::viz::scene3d::render::render::layer::GRID);
+        auto* grid_camera = grid_layer->get_default_camera();
+        grid_camera->removeListener(m_camera_listener);
+        delete m_camera_listener;
+        m_camera_listener = nullptr;
+    }
+
     m_material.reset();
     if(m_line != nullptr)
     {
         m_line->detachFromParent();
-        this->get_scene_manager()->destroyManualObject(m_line);
+        auto* scene_mgr =
+            render_service()->layer(sight::viz::scene3d::render::render::layer::GRID)->get_scene_manager();
+        scene_mgr->destroyManualObject(m_line);
         m_line = nullptr;
     }
 
@@ -141,7 +181,9 @@ void grid::stopping()
 
 void grid::attach_node(Ogre::MovableObject* _object)
 {
-    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    auto* scene_mgr =
+        render_service()->layer(sight::viz::scene3d::render::render::layer::GRID)->get_scene_manager();
+    Ogre::SceneNode* root_scene_node = scene_mgr->getRootSceneNode();
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
     SIGHT_ASSERT("Transform node shouldn't be null", trans_node);
 
@@ -204,7 +246,9 @@ void grid::draw_grid(bool _existing_line)
 
 void grid::set_visible(bool /*_visible*/)
 {
-    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    auto* scene_mgr =
+        render_service()->layer(sight::viz::scene3d::render::render::layer::GRID)->get_scene_manager();
+    Ogre::SceneNode* root_scene_node = scene_mgr->getRootSceneNode();
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
     trans_node->setVisible(visible());
     this->updating();

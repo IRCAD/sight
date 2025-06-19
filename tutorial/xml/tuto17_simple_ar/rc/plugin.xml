@@ -259,12 +259,12 @@
                 <scene render_mode="manual">
                     <background color="#36393E" />
 
-                    <layer id="video" order="1" compositors="Remap">
+                    <layer id="video" compositors="Remap">
                         <adaptor uid="video_adp" />
                         <adaptor uid="undistort_adp" />
                     </layer>
 
-                    <layer id="default" order="3" compositors="Remap">
+                    <layer id="default" compositors="Remap">
                         <adaptor uid="axis_adp" />
                         <adaptor uid="camera_adp" />
                         <adaptor uid="material_adp" />

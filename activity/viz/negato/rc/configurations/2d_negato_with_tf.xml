@@ -66,7 +66,7 @@
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
-                <layer id="defaultLayer" order="1">
+                <layer id="defaultLayer">
                     <adaptor uid="snapshotAdp" />
                     <adaptor uid="negatoCameraAdp" />
                     <adaptor uid="pickerInteractorAdp" />

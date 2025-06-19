@@ -62,11 +62,11 @@
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
-                <layer id="defaultLayer" order="1">
+                <layer id="defaultLayer">
                     <adaptor uid="negato_camera_adp" />
                     <adaptor uid="negato_adp" />
                 </layer>
-                <layer id="overlay" order="2">
+                <layer id="overlay">
                     <adaptor uid="mask_negato_camera_adp" />
                     <adaptor uid="mask_negato_adp" />
                 </layer>

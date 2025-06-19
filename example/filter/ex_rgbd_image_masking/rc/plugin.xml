@@ -191,16 +191,16 @@
                 <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1">
+                    <layer id="video">
                         <adaptor uid="videoAdp" />
                     </layer>
 
-                    <layer id="default" order="2">
+                    <layer id="default">
                         <adaptor uid="meshAdp" />
                         <adaptor uid="cameraAdp" />
                     </layer>
 
-                    <layer id="ar" order="3">
+                    <layer id="ar">
                         <adaptor uid="videoARAdp" />
                     </layer>
                 </scene>
@@ -228,11 +228,11 @@
 
             <!-- scene in which skin mesh will be render and fill a binary image to perform image masking -->
             <service uid="offscreenSceneSrv" type="sight::viz::scene3d::render">
-                <inout key="offScreen" uid="offscreenImage" />
+                <inout key="offscreen" uid="offscreenImage" />
                 <scene width="1280" height="720">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1">
+                    <layer id="default">
                         <adaptor uid="cameraOffscreenAdp" />
                         <adaptor uid="meshOffscreenAdp" />
                     </layer>

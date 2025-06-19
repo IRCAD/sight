@@ -269,7 +269,7 @@ public:
      * @param _exclude_static Exclude static objects from the bounding box computation.
      * @return the computed bounding box of the scene.
      */
-    SIGHT_VIZ_SCENE3D_API Ogre::AxisAlignedBox compute_world_bounding_box(bool _exclude_static = false) const;
+    SIGHT_VIZ_SCENE3D_API Ogre::AxisAlignedBox compute_world_bounding_box() const;
 
     /// @returns the OIT selected.
     SIGHT_VIZ_SCENE3D_API compositor::transparency_technique get_transparency_technique();

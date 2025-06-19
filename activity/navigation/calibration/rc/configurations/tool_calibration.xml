@@ -179,7 +179,7 @@
         <service uid="resultView" type="sight::viz::scene3d::render">
             <scene>
                 <background topColor="#323245" bottomColor="#323245" />
-                <layer id="default" order="1">
+                <layer id="default">
                     <adaptor uid="trackballInteractorAdp" />
                     <adaptor uid="trackedMatrixAdp" />
                     <adaptor uid="calibMatAdp" />

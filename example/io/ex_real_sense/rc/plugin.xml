@@ -299,11 +299,11 @@
                 <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1">
+                    <layer id="video">
                         <adaptor uid="DMDepthAdp" />
                     </layer>
 
-                    <layer id="AR" order="2">
+                    <layer id="AR">
                         <adaptor uid="DMPointAdp" />
                         <adaptor uid="DMCameraAdp" />
                     </layer>
@@ -332,11 +332,11 @@
                 <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1">
+                    <layer id="video">
                         <adaptor uid="VVideoAdp" />
                     </layer>
 
-                    <layer id="AR" order="2">
+                    <layer id="AR">
                         <adaptor uid="VPointAdp" />
                         <adaptor uid="VCameraAdp" />
                     </layer>
@@ -364,7 +364,7 @@
                 <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1">
+                    <layer id="default">
                         <adaptor uid="RPointAdp" />
                         <adaptor uid="RCameraAdp" />
                     </layer>

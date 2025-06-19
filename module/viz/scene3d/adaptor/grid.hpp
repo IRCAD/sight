@@ -126,6 +126,9 @@ private:
 
     /// Defines the length of one dash, in mm.
     float m_dash_length {2.5F};
+
+    struct camera_listener;
+    camera_listener* m_camera_listener {nullptr};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

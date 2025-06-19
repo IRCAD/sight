@@ -170,7 +170,7 @@
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1">
+                    <layer id="default">
                         <adaptor uid="origin_transform_adp" />
                         <adaptor uid="origin_axis_adp" />
 

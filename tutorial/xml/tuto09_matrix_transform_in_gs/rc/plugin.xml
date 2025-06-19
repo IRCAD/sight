@@ -132,7 +132,7 @@
                 <scene>
                     <background top_color="#36393E" bottom_color="#36393E" />
 
-                    <layer id="default" order="1">
+                    <layer id="default">
                         <adaptor uid="trackball_interactor_adp" />
                         <adaptor uid="mesh0_adp" />
                         <adaptor uid="transform1_adp" />

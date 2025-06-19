@@ -186,13 +186,13 @@
                 <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1">
+                    <layer id="video">
                         <adaptor uid="ARPickerAdp" />
                         <adaptor uid="ARVideoAdp" />
                         <adaptor uid="ARPointListAdp" />
                     </layer>
 
-                    <layer id="default" order="2">
+                    <layer id="default">
                         <adaptor uid="ARCameraAdp" />
                         <adaptor uid="ARMeshAdp" />
                         <adaptor uid="ARTrfAdp" />
@@ -229,7 +229,7 @@
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" transparency="DepthPeeling" numPeels="4">
+                    <layer id="default" transparency="DepthPeeling" numPeels="4">
                         <adaptor uid="VRTrackballInteractorAdp" />
                         <adaptor uid="VRPickerAdp" />
                         <adaptor uid="VRPointListAdp" />

@@ -112,7 +112,7 @@
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
-                <layer id="default" order="1">
+                <layer id="default">
                     <adaptor uid="modelSeriesAdp" />
                     <adaptor uid="negatoAdp" />
                     <adaptor uid="snapshotAdp" />

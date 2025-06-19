@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,7 @@ class layer_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(layer_test);
 CPPUNIT_TEST(set_orthographic);
+CPPUNIT_TEST(reset_camera_clipping_range);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -40,6 +41,7 @@ public:
     void tearDown() override;
 
     static void set_orthographic();
+    static void reset_camera_clipping_range();
 
 private:
 };

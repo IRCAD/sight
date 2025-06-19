@@ -103,7 +103,7 @@
                 <scene>
                     <background color="#36393E" />
 
-                    <layer id="default" order="1" transparency="Default">
+                    <layer id="default" transparency="Default">
                         <adaptor uid="trackball_interactor_adp" />
                         <adaptor uid="texture_adp" />
                         <adaptor uid="mesh_adp" />

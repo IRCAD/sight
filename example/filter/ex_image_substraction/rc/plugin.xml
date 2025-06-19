@@ -242,7 +242,7 @@
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1">
+                    <layer id="default">
                         <adaptor uid="N1TrackballInteractorAdp" />
                         <adaptor uid="N1SnapshotAdp" />
                         <adaptor uid="N1NegatoAdp" />
@@ -270,7 +270,7 @@
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1">
+                    <layer id="default">
                         <adaptor uid="N2TrackballInteractorAdp" />
                         <adaptor uid="N2SnapshotAdp" />
                         <adaptor uid="N2NegatoAdp" />
@@ -298,7 +298,7 @@
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1">
+                    <layer id="default">
                         <adaptor uid="N3TrackballInteractorAdp" />
                         <adaptor uid="N3SnapshotAdp" />
                         <adaptor uid="N3NegatoAdp" />

@@ -96,7 +96,7 @@ This example shows some possibilities of material configuration in the 3D scene:
                 <scene>
                     <background topColor="#2c3c5c" bottomColor="#191234" topScale="0.6" bottomScale="1.0" />
 
-                    <layer id="default" order="1" transparency="DepthPeeling">
+                    <layer id="default" transparency="DepthPeeling">
                         <adaptor uid="trackball_interactor_adp" />
                         <adaptor uid="model_series_adp" />
                         <adaptor uid="snapshot_adp" />

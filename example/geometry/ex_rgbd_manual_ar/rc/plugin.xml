@@ -217,16 +217,16 @@
                 <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1">
+                    <layer id="video">
                         <adaptor uid="videoAdp" />
                     </layer>
 
-                    <layer id="default" order="2">
+                    <layer id="default">
                         <adaptor uid="modelSeriesAdp" />
                         <adaptor uid="cameraAdp" />
                     </layer>
 
-                    <layer id="foreground" order="3">
+                    <layer id="foreground">
                         <adaptor uid="foregroundAdp" />
                     </layer>
                 </scene>
@@ -253,11 +253,11 @@
             <!-- ******************************* Begin Generic scene ******************************* -->
 
             <service uid="offscreenRenderSrv" type="sight::viz::scene3d::render">
-                <inout key="offScreen" uid="backgroundMask" />
+                <inout key="offscreen" uid="backgroundMask" />
                 <scene width="1280" height="720">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1">
+                    <layer id="default">
                         <adaptor uid="meshOffscreenAdp" />
                         <adaptor uid="cameraOffscreenAdp" />
                     </layer>

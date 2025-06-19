@@ -108,7 +108,7 @@
             <scene>
                 <background material="bkg_gradient" />
 
-                <layer id="defaultLayer" order="1" transparency="Default">
+                <layer id="defaultLayer" transparency="Default">
                     <adaptor uid="gridAdp" />
                     <adaptor uid="globalCameraAdp" />
                     <adaptor uid="trackballInteractorAdp" />
@@ -125,7 +125,7 @@
                     <adaptor uid="eventAdp" />
                 </layer>
 
-                <layer id="orientationMarkerLayer" order="2">
+                <layer id="orientationMarkerLayer">
                     <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom" />
                     <adaptor uid="orientationMarkerAdp" />
                 </layer>

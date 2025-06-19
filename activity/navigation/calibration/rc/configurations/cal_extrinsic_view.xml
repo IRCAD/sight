@@ -205,12 +205,12 @@
             <scene renderMode="manual">
                 <background topColor="#000000" bottomColor="#000000" />
 
-                <layer id="video1" order="1">
+                <layer id="video1">
                     <viewport width="1.0" height="0.5" hAlign="left" vAlign="top" />
                     <adaptor uid="video1Adp" />
                 </layer>
 
-                <layer id="video2" order="2">
+                <layer id="video2">
                     <viewport width="1.0" height="0.5" hAlign="left" vAlign="bottom" />
                     <adaptor uid="video2Adp" />
                 </layer>

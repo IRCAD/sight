@@ -260,10 +260,10 @@
                 <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1">
+                    <layer id="video">
                         <adaptor uid="LVideoAdp" />
                     </layer>
-                    <layer id="default" order="2">
+                    <layer id="default">
                         <adaptor uid="LAxisAdp" />
                         <adaptor uid="LCameraAdp" />
                     </layer>
@@ -290,10 +290,10 @@
                 <scene renderMode="manual">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1">
+                    <layer id="video">
                         <adaptor uid="RVideoAdp" />
                     </layer>
-                    <layer id="default" order="2">
+                    <layer id="default">
                         <adaptor uid="RAxisAdp" />
                         <adaptor uid="RCameraAdp" />
                     </layer>

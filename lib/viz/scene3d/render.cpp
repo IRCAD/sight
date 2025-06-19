@@ -54,10 +54,6 @@ namespace sight::viz::scene3d
 
 //-----------------------------------------------------------------------------
 
-const std::string render::OGREBACKGROUNDID = "ogreBackground";
-
-//-----------------------------------------------------------------------------
-
 const core::com::slots::key_t render::COMPUTE_CAMERA_ORIG_SLOT = "computeCameraParameters";
 const core::com::slots::key_t render::RESET_CAMERAS_SLOT       = "reset_cameras";
 const core::com::slots::key_t render::REQUEST_RENDER_SLOT      = "request_render";
@@ -215,12 +211,6 @@ void render::starting()
 
     SIGHT_ERROR_IF("Overlays should be enabled at the layer level.", !scene_cfg.get("<xmlattr>.overlays", "").empty());
 
-    auto layer_configs = scene_cfg.equal_range("layer");
-    for(auto it = layer_configs.first ; it != layer_configs.second ; ++it)
-    {
-        this->configure_layer(it->second);
-    }
-
     auto bkg_configs = scene_cfg.equal_range("background");
     for(auto it = bkg_configs.first ; it != bkg_configs.second ; ++it)
     {
@@ -250,7 +240,26 @@ void render::starting()
         ogre_layer->set_has_default_light(false);
         ogre_layer->set_viewport_config({0.F, 0.F, 1.F, 1.F});
 
-        m_layers[OGREBACKGROUNDID] = ogre_layer;
+        m_layers[render::layer::BACKGROUND] = ogre_layer;
+    }
+
+    {
+        // Create a default layer for the grid
+        viz::scene3d::layer::sptr ogre_layer = std::make_shared<viz::scene3d::layer>();
+        ogre_layer->set_render_service(std::dynamic_pointer_cast<viz::scene3d::render>(this->shared_from_this()));
+        ogre_layer->set_id("gridLayer");
+        ogre_layer->set_order(1);
+        ogre_layer->set_worker(this->worker());
+        ogre_layer->set_has_default_light(false);
+        ogre_layer->set_viewport_config({0.F, 0.F, 1.F, 1.F});
+
+        m_layers[render::layer::GRID] = ogre_layer;
+    }
+
+    auto layer_configs = scene_cfg.equal_range("layer");
+    for(auto it = layer_configs.first ; it != layer_configs.second ; ++it)
+    {
+        this->configure_layer(it->second);
     }
 
     const std::string service_id = base_id();
@@ -319,7 +328,10 @@ void render::updating()
 
 void render::make_current()
 {
-    m_interactor_manager->make_current();
+    if(m_interactor_manager)
+    {
+        m_interactor_manager->make_current();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -349,8 +361,10 @@ void render::configure_layer(const config_t& _cfg)
         || stereo_mode == "Stereo"
     );
 
-    const auto layer_order = attributes.get<int>("order");
-    SIGHT_ASSERT("Attribute 'order' must be greater than 0", layer_order > 0);
+    if(const auto layer_order = attributes.get_optional<int>("order"); layer_order.has_value())
+    {
+        FW_DEPRECATED_MSG("'order' is deprecated, layer declaration order takes precedence", "26.0");
+    }
 
     viz::scene3d::layer::sptr ogre_layer              = std::make_shared<viz::scene3d::layer>();
     compositor::core::stereo_mode_t layer_stereo_mode = stereo_mode == "AutoStereo5"
@@ -363,7 +377,7 @@ void render::configure_layer(const config_t& _cfg)
 
     ogre_layer->set_render_service(std::dynamic_pointer_cast<viz::scene3d::render>(this->shared_from_this()));
     ogre_layer->set_id(id);
-    ogre_layer->set_order(layer_order);
+    ogre_layer->set_order(static_cast<int>(m_layers.size()));
     ogre_layer->set_worker(this->worker());
     ogre_layer->set_core_compositor(transparency_technique, num_peels, layer_stereo_mode);
     ogre_layer->set_compositor_chain_enabled(compositors);
@@ -374,6 +388,7 @@ void render::configure_layer(const config_t& _cfg)
         ogre_layer->set_has_default_light(false);
     }
 
+    SIGHT_ASSERT("Layer " << std::quoted(id) << " is already registered", not m_layers.contains(id));
     // Finally, the layer is pushed in the map
     m_layers[id] = ogre_layer;
 }
@@ -387,7 +402,7 @@ void render::configure_background_layer(const config_t& _cfg)
 
     viz::scene3d::layer::sptr ogre_layer = std::make_shared<viz::scene3d::layer>();
     ogre_layer->set_render_service(std::dynamic_pointer_cast<viz::scene3d::render>(this->shared_from_this()));
-    ogre_layer->set_id(OGREBACKGROUNDID);
+    ogre_layer->set_id(render::layer::BACKGROUND);
     ogre_layer->set_order(0);
     ogre_layer->set_worker(this->worker());
     ogre_layer->set_has_default_light(false);
@@ -435,14 +450,14 @@ void render::configure_background_layer(const config_t& _cfg)
         ogre_layer->set_background_scale(0.5F, 0.5F);
     }
 
-    m_layers[OGREBACKGROUNDID] = ogre_layer;
+    m_layers[render::layer::BACKGROUND] = ogre_layer;
 }
 
 //-----------------------------------------------------------------------------
 
 layer::viewport_config_t render::configure_layer_viewport(const service::config_t& _cfg)
 {
-    layer::viewport_config_t cfg_type {0.F, 0.F, 1.F, 1.F};
+    sight::viz::scene3d::layer::viewport_config_t cfg_type {0.F, 0.F, 1.F, 1.F};
     const auto vp_config = _cfg.get_child_optional("viewport.<xmlattr>");
     if(vp_config.has_value())
     {

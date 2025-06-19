@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -144,7 +144,7 @@ void stereo_selector::refresh_renderers()
         for(auto& layer_map : render->get_layers())
         {
             const std::string& id = layer_map.first;
-            if(id != sight::viz::scene3d::render::OGREBACKGROUNDID)
+            if(id != sight::viz::scene3d::render::render::layer::BACKGROUND)
             {
                 m_layers_box->addItem(QString::fromStdString(id));
                 m_layers.push_back(layer_map.second);

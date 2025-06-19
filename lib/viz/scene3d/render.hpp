@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,11 +69,11 @@ class layer;
         <scene renderMode="auto">
             <background topColor="#000000" bottomColor="#FFFFFF" topScale="0.7" bottomScale="1.0"/>
 
-            <layer id="..." order="1">
+            <layer id="...">
                 <viewport hOffset="0.03" vOffset="0.03" width="0.3" height="0.3" hAlign="right" vAlign="top"/>
                 <adaptor uid="..."/>
             </layer>
-            <layer id="..." order="2" compositors="Invert;Laplace;Posterize" defaultLight="false" overlays="...">
+            <layer id="..." compositors="Invert;Laplace;Posterize" defaultLight="false" overlays="...">
                 <adaptor uid="..."/>
             </layer>
         </scene>
@@ -81,7 +81,7 @@ class layer;
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b offScreen [sight::data::image] (optional, unused by default): If used, render the scene in an image
+ * - \b offscreen [sight::data::image] (optional, unused by default): If used, render the scene in an image
  *      and not in a window.
  *
  * @subsection Configuration Configuration
@@ -191,8 +191,11 @@ public:
     /// Contains the slot name that enables the automatic rendering mode.
     SIGHT_VIZ_SCENE3D_API static const core::com::slots::key_t SET_AUTO_MODE;
 
-    /// Defines the layer ID of the background.
-    SIGHT_VIZ_SCENE3D_API static const std::string OGREBACKGROUNDID;
+    struct layer
+    {
+        static const inline std::string BACKGROUND = "background";
+        static const inline std::string GRID       = "grid";
+    };
 
     /// Initializes slots.
     SIGHT_VIZ_SCENE3D_API render() noexcept;
@@ -268,7 +271,7 @@ private:
     void configure_layer(const config_t& _cfg);
 
     /// Retrieves the viewport parameters from the configuration.
-    static layer::viewport_config_t configure_layer_viewport(const service::config_t& _cfg);
+    static sight::viz::scene3d::layer::viewport_config_t configure_layer_viewport(const service::config_t& _cfg);
 
     /**
      * @brief Renders the scene in fullscreen on the screen with the given index.
@@ -314,7 +317,7 @@ private:
     /// Index of the adaptor according to its uid
     std::map<std::string, std::size_t> m_adaptors_index;
 
-    static constexpr std::string_view OFFSCREEN_INOUT = "offScreen";
+    static constexpr std::string_view OFFSCREEN_INOUT = "offscreen";
     data::ptr<data::image, data::access::inout> m_off_screen_image {this, OFFSCREEN_INOUT, true};
 };
 

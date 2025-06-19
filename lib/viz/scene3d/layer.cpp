@@ -652,7 +652,7 @@ void layer::remove_interactor(const viz::scene3d::interactor::base::sptr& _inter
 
 //-----------------------------------------------------------------------------
 
-Ogre::AxisAlignedBox layer::compute_world_bounding_box(bool _exclude_static) const
+Ogre::AxisAlignedBox layer::compute_world_bounding_box() const
 {
     // Getting this render service scene manager
     Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
@@ -660,7 +660,7 @@ Ogre::AxisAlignedBox layer::compute_world_bounding_box(bool _exclude_static) con
     // Needed to recompute world bounding boxes
     root_scene_node->_update(true, false);
 
-    return helper::scene::compute_bounding_box(root_scene_node, _exclude_static);
+    return helper::scene::compute_bounding_box(root_scene_node);
 }
 
 //------------------------------------------------------------------------------
@@ -748,7 +748,7 @@ float layer::compute_scene_length(const Ogre::AxisAlignedBox& _world_bounding_bo
 
 void layer::reset_camera_coordinates()
 {
-    const Ogre::AxisAlignedBox world_bounding_box = this->compute_world_bounding_box(true);
+    const Ogre::AxisAlignedBox world_bounding_box = this->compute_world_bounding_box();
 
     if((m_camera != nullptr))
     {
@@ -779,7 +779,7 @@ void layer::reset_camera_coordinates()
 
 void layer::compute_camera_parameters()
 {
-    const Ogre::AxisAlignedBox world_bounding_box = this->compute_world_bounding_box(true);
+    const Ogre::AxisAlignedBox world_bounding_box = this->compute_world_bounding_box();
 
     if((m_camera != nullptr))
     {
@@ -806,8 +806,6 @@ void layer::reset_camera_clipping_range() const
         {
             return;
         }
-
-        //Ogre::SceneNode* cam_node = m_camera->getParentSceneNode();
 
         // Set the direction of the camera
         Ogre::Quaternion quat   = m_camera->getRealOrientation();
@@ -853,10 +851,35 @@ void layer::reset_camera_clipping_range() const
         auto near = std::min(min_far, max_near);
         auto far  = std::max(min_far, max_near);
 
-        // Give ourselves a little breathing room
-        auto range = std::max((far - near) * 0.25F, 2.F);
-        far  = far + range;
-        near = near - range;
+        // Yeah, it's a kind of a magic number here.
+        auto min_space = 15.F;
+
+        if(m_camera_orthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE)
+        {
+            min_space = 2.F;
+
+            // To compute the needed orthographic height,
+            // one needs to apply the camera transformation on the world bounding box.
+            auto transformed_bb = world_bounding_box;
+            Ogre::Matrix3 camera_transform;
+
+            // We inverse the orientation because it's being applied to an object in the world coordinate system.
+            m_camera->getRealOrientation().Inverse().ToRotationMatrix(camera_transform);
+
+            transformed_bb.transform(Ogre::Matrix4(camera_transform));
+
+            // Use height as the difference on y coordinates.
+            const auto y1     = transformed_bb.getMinimum().y;
+            const auto y2     = transformed_bb.getMaximum().y;
+            Ogre::Real h      = y2 - y1;
+            Ogre::Real margin = 0.1F;
+            m_camera->setOrthoWindowHeight(h + h * margin);
+        }
+
+        // Give ourselves a little breathing room, with a minimum depending on the projection type
+        auto space = std::max((far - near) * 0.05F, min_space);
+        far  = far + space;
+        near = near - space;
 
         // Do not let the range behind the camera throw off the calculation.
         near = std::max(near, 0.1F);
@@ -875,26 +898,6 @@ void layer::reset_camera_clipping_range() const
         {
             // Near and far for SAO
             far = 10000;
-        }
-
-        if(m_camera_orthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE)
-        {
-            // To compute the needed orthographic height,
-            // one needs to apply the camera transformation on the world bounding box.
-            auto transformed_bb = world_bounding_box;
-            Ogre::Matrix3 camera_transform;
-
-            // We inverse the orientation because it's being applied to an object in the world coordinate system.
-            m_camera->getRealOrientation().Inverse().ToRotationMatrix(camera_transform);
-
-            transformed_bb.transform(Ogre::Matrix4(camera_transform));
-
-            // Use height as the difference on y coordinates.
-            const auto y1     = transformed_bb.getMinimum().y;
-            const auto y2     = transformed_bb.getMaximum().y;
-            Ogre::Real h      = y2 - y1;
-            Ogre::Real margin = 0.1F;
-            m_camera->setOrthoWindowHeight(h + h * margin);
         }
 
         // Keep the near plane close all the time. We need this for instance to display the shape extruder tool

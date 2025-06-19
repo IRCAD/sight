@@ -179,7 +179,7 @@ Detail of the ToolBar
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" transparency="DepthPeeling" numPeels="4">
+                    <layer id="default" transparency="DepthPeeling" numPeels="4">
                         <adaptor uid="N1TrackballInteractorAdp" />
                         <adaptor uid="N1NegatoAdp" />
                         <adaptor uid="N1MeshAdp" />
@@ -218,7 +218,7 @@ Detail of the ToolBar
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" transparency="DepthPeeling" numPeels="4">
+                    <layer id="default" transparency="DepthPeeling" numPeels="4">
                         <adaptor uid="N2TrackballInteractorAdp" />
                         <adaptor uid="N2MeshAdp" />
                         <adaptor uid="N2PointListAdp" />
@@ -250,7 +250,7 @@ Detail of the ToolBar
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1">
+                    <layer id="default">
                         <adaptor uid="N3TrackballInteractorAdp" />
                         <adaptor uid="N3Mesh1Adp" />
                         <adaptor uid="N3Mesh2Adp" />
