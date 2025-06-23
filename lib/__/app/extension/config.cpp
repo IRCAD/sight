@@ -37,7 +37,8 @@ namespace sight::app::extension
 
 std::string config::s_mandatory_parameter_identifier = "@mandatory@";
 
-config::uid_definition_t config::s_uid_definition_dictionary = {{"object", "uid"},
+config::uid_definition_t config::s_uid_definition_dictionary = {
+    {"object", "uid"},
     {"service", "uid"},
     {"updater", "uid"},
     {"sequence", "uid"},
@@ -118,6 +119,26 @@ void config::parse_plugin_infos()
                     !objects.contains(name)
                 );
                 parameters[name] = param.second.get<std::string>("<xmlattr>.default", s_mandatory_parameter_identifier);
+            }
+
+            for(const auto& param : boost::make_iterator_range(parameters_cfg->equal_range("channel")))
+            {
+                const auto name = param.second.get<std::string>("<xmlattr>.name");
+
+                SIGHT_ASSERT("Parameter " << std::quoted(name) << " already declared", !parameters.contains(name));
+                SIGHT_ASSERT(
+                    "Parameter " << std::quoted(name) << " already declared as object",
+                    !objects.contains(name)
+                );
+                if(param.second.get<bool>("<xmlattr>.optional", false))
+                {
+                    // Default channel name
+                    parameters[name] = name;
+                }
+                else
+                {
+                    parameters[name] = s_mandatory_parameter_identifier;
+                }
             }
 
             for(const auto& object : boost::make_iterator_range(parameters_cfg->equal_range("object")))
@@ -314,6 +335,7 @@ core::runtime::config_t config::get_adapted_template_config(
         parameter_replace_adaptors
     );
     new_config = sight::app::extension::config::adapt_config(
+        "",
         new_config,
         fields,
         parameter_replace_adaptors,
@@ -442,6 +464,7 @@ void config::collect_uid_for_parameter_replace(
 //-----------------------------------------------------------------------------
 
 core::runtime::config_t config::adapt_config(
+    const std::string& _parent,
     const core::runtime::config_t& _cfg_elem,
     const field_adaptor_t& _field_adaptors,
     const uid_parameter_replace_t& _uid_parameter_replace,
@@ -470,8 +493,9 @@ core::runtime::config_t config::adapt_config(
                     continue;
                 }
 
-                // Special case for <parameter replace="..." by="..." />
-                if(attribute.first == "by")
+                // Special case for <param name="..." value="..." />
+                // and backwards compatibility with <parameter replace="..." by="..." />
+                if(attribute.first == "by" || (_parent == "param" && attribute.first == "value"))
                 {
                     // Look inside the map of potential replacements
                     if(_uid_parameter_replace.find(attribute_value) != _uid_parameter_replace.end())
@@ -516,7 +540,7 @@ core::runtime::config_t config::adapt_config(
 
         result.add_child(
             sub_elem.first,
-            adapt_config(sub_elem.second, _field_adaptors, _uid_parameter_replace, _auto_prefix_id)
+            adapt_config(sub_elem.first, sub_elem.second, _field_adaptors, _uid_parameter_replace, _auto_prefix_id)
         );
     }
 

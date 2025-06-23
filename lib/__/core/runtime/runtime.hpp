@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,5 +122,8 @@ SIGHT_CORE_API std::vector<std::shared_ptr<core::runtime::extension> > get_all_e
 
 /// Utility function used to trim leading '::' in identifiers of modules, services, objects, extensions, etc...
 SIGHT_CORE_API std::string filter_id(const std::string& _identifier);
+
+/// Utility function used to validate an XML configuration against a XSD schema
+SIGHT_CORE_API bool validate(const config_t& _config, const std::filesystem::path& _schema);
 
 } // namespace sight::core::runtime

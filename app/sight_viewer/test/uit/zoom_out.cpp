@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,7 @@ void zoom_out::test()
             );
 
             // Drag the mouse to zoom out
-            helper::scene3d::zoom(_tester, "sceneSrv", -7);
+            helper::scene3d::zoom(_tester, "scene_srv", -7);
 
             save_snapshot(_tester, snapshot_path);
 

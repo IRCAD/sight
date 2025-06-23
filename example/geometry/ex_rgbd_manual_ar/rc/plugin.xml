@@ -173,7 +173,7 @@
 
             <service uid="organ_manager_cfg" type="sight::app::config_launcher">
                 <properties config="ModelSeriesManagerWindow" start="false" />
-                <inout group="data">
+                <inout group="object">
                     <key name="organ_manager_modelseries" uid="modelSeries" />
                 </inout>
                 <parameter replace="ICON_PATH" by="ex_rgbd_image_masking/app.ico" />

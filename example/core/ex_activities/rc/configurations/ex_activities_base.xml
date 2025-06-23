@@ -32,7 +32,7 @@
 
         <service uid="activityLauncherSrv" type="sight::app::config_launcher">
             <properties config="ActivityLauncher" />
-            <inout group="data">
+            <inout group="object">
                 <key name="activitySet" uid="activitySet" />
             </inout>
             <parameter replace="SEQUENCER_CONFIG" by="${SEQUENCER_CONFIG}" />

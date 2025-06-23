@@ -1,15 +1,15 @@
 <extension implements="sight::app::extension::config">
-    <id>sight::config::viz::scene2d::TransferFunctionWindowCfg</id>
+    <id>sight::config::viz::scene2d::transfer_function_window</id>
     <parameters>
         <object uid="image" type="sight::data::image" />
         <object uid="currentTF" type="sight::data::transfer_function" />
 
         <param name="presets" default="emptyPresets" />
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
         <param name="WINDOW_TITLE" />
         <param name="WINDOW_ICON" />
         <param name="USE_DEFAULT_TF" default="true" />
         <param name="ADDITIONAL_TF_PATH" default="" />
+        <channel name="CLOSE_CONFIG" optional="true" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
@@ -18,7 +18,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::frame">
+        <service uid="main_view" type="sight::module::ui::frame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -28,11 +28,11 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="transferFunctionEditorView" />
+                <view sid="transfer_function_editor_view" />
             </registry>
         </service>
 
-        <service uid="transferFunctionEditorView" type="sight::module::ui::view">
+        <service uid="transfer_function_editor_view" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
@@ -40,27 +40,27 @@
                 </layout>
             </gui>
             <registry>
-                <view wid="tfView" />
+                <view wid="tf_view" />
             </registry>
         </service>
 
         <!-- TF manager -->
-        <service uid="TFManagerCfg" type="sight::app::config_launcher">
+        <service uid="tf_manager_cfg" type="sight::app::config_launcher">
             <properties config="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
-            <parameter replace="WID_PARENT" by="tfView" />
-            <inout group="data">
+            <inout group="object">
                 <key name="image" uid="${image}" />
                 <key name="currentTF" uid="${currentTF}" />
                 <key name="presets" uid="${presets}" optional="true" />
             </inout>
+            <parameter replace="WID_PARENT" by="tf_view" />
             <parameter replace="USE_DEFAULT_TF" by="${USE_DEFAULT_TF}" />
             <parameter replace="ADDITIONAL_TF_PATH" by="${ADDITIONAL_TF_PATH}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <connect channel="${CLOSE_CONFIG_CHANNEL}">
-            <signal>mainView/closed</signal>
+        <connect channel="${CLOSE_CONFIG}">
+            <signal>main_view/closed</signal>
         </connect>
     </config>
 </extension>

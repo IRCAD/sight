@@ -24,6 +24,9 @@
 
 #include <sight/core/config.hpp>
 
+#include "core/runtime/types.hpp"
+#include "core/runtime/validator.hpp"
+
 #include <libxml/xmlschemastypes.h>
 #include <libxml/xmlversion.h>
 
@@ -43,18 +46,9 @@ namespace sight::core::runtime::detail::io
  * this ivar should not be
  * directly well positionned. So the recommendation is to construct Validator-Use it-destry it and never store him
  */
-class validator
+class validator : public sight::core::runtime::validator
 {
 public:
-
-    /**
-     * @brief   Copy Constructor
-     *
-     * Copy a validator.
-     *
-     * @param   _validator to be copied
-     */
-    validator(const validator& _validator);
 
     /**
      * @brief   Constructor
@@ -77,7 +71,7 @@ public:
     /**
      * @brief   Destructor
      */
-    ~validator();
+    ~validator() = default;
 
     /**
      * @brief   Clears the error log.
@@ -110,6 +104,15 @@ public:
     bool validate(xmlNodePtr _node);
 
     /**
+     * @brief   Validates the given xml configuration.
+     *
+     * @param   _config    a pointer to an xml node
+     *
+     * @return  true when the validation succeeds, false otherwise
+     */
+    bool validate(const config_t& _config);
+
+    /**
      * @brief   Returns the xsd content in string format
      *
      * @return  xsd of the validator
@@ -127,7 +130,6 @@ private:
     using schema_sptr             = std::shared_ptr<xmlSchema>;
     using schema_valid_ctxt_sptr  = std::shared_ptr<xmlSchemaValidCtxt>;
 
-    schema_parser_ctxt_sptr m_schema_parser_context;
     schema_sptr m_schema;
     schema_valid_ctxt_sptr m_schema_valid_context;
 

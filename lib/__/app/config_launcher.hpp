@@ -50,7 +50,7 @@ namespace sight::app
  * @code{.xml}
         <service type="sight::app::config_launcher" >
             <properties config="..." />
-            <inout group="data">
+            <inout group="object">
                 <key name="object1" uid="..." />
                 <key name="object2" uid="..." />
                 ...
@@ -67,7 +67,7 @@ namespace sight::app
  * @subsection Configuration Configuration:
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter.
- * The parameter CLOSE_CONFIG_CHANNEL can be used inside the configuration to stop it.
+ * The parameter CLOSE_CONFIG can be used inside the configuration to stop it.
  */
 class SIGHT_APP_CLASS_API config_launcher : public service::controller
 {
@@ -117,8 +117,11 @@ private:
     /// Name of the channel used to connect stopConfig slot to the config frame closing.
     std::string m_proxy_channel;
 
-    /// Input data to pass to the configuration
+    /// Input data to pass to the configuration - DEPRECATED
     data::ptr_vector<data::object, data::access::inout> m_data {this, app::helper::config_launcher::DATA_GROUP};
+
+    /// Input data to pass to the configuration
+    data::ptr_vector<data::object, data::access::inout> m_object {this, app::helper::config_launcher::OBJECT_GROUP};
 
     /// Input data to pass to the configuration
     data::property<data::string> m_config_id {this, "config", {}};

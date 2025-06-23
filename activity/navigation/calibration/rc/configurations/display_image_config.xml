@@ -4,7 +4,7 @@
         <object uid="imageId1" type="sight::data::image" />
         <object uid="pointListId1" type="sight::data::point_list" />
 
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <channel name="CLOSE_CONFIG" optional="true" />
     </parameters>
     <config>
         <!-- ******************************* UI declaration *********************************** -->
@@ -42,7 +42,7 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <connect channel="${CLOSE_CONFIG_CHANNEL}">
+        <connect channel="${CLOSE_CONFIG}">
             <signal>mainFrame/closed</signal>
         </connect>
 

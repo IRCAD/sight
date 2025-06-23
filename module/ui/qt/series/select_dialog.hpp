@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -46,14 +46,14 @@ namespace sight::module::ui::qt::series
  *
  * @code{.xml}
         <service uid="..." type="sight::module::ui::qt::series::select_dialog" >
-           <in key="seriesSet" uid="..."/>
-           <out key="modelSeries" uid="..."/>
+           <in key="series_set" uid="..."/>
+           <out key="model_series" uid="..."/>
            <out key="imageSeries" uid="..."/>
            <out key="image" uid="..."/>
         </service>
        @endcode
  * @subsection Input Input
- * - \b seriesSet [sight::data::series_set]: database series from which the series extracted.
+ * - \b series_set [sight::data::series_set]: database series from which the series extracted.
  *
  * @subsection Output Output
  * - \b modelSeries [sight::data::model_series]: output model series extracted from the database series.
@@ -94,8 +94,8 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::series_set, sight::data::access::in> m_series_set {this, "seriesSet"};
-    sight::data::ptr<sight::data::model_series, sight::data::access::out> m_model_series {this, "modelSeries"};
+    sight::data::ptr<sight::data::series_set, sight::data::access::in> m_series_set {this, "series_set"};
+    sight::data::ptr<sight::data::model_series, sight::data::access::out> m_model_series {this, "model_series"};
     sight::data::ptr<sight::data::image, sight::data::access::out> m_image {this, "image"};
 };
 

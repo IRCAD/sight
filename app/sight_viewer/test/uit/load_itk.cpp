@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -52,7 +52,7 @@ void load_itk::test()
                 utest_data::dir() / "sight/image/inr/image.inr.gz"
             );
 
-            helper::button::push(_tester, "toolBarView/Show/hide volume");
+            helper::button::push(_tester, "toolbar_view/Show/hide volume");
 
             save_snapshot(_tester, snapshot_path);
 

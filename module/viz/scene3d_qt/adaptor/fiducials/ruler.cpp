@@ -31,13 +31,13 @@
 
 #include <geometry/data/image.hpp>
 
-#include <module/viz/scene3d_qt/window_interactor.hpp>
-
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/fiducials.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
 #include <viz/scene3d/ogre.hpp>
+
+#include <module/viz/scene3d_qt/window_interactor.hpp>
 
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
@@ -350,10 +350,7 @@ void ruler::create_ruler_fiducial(
     {
         if(auto image_series = std::dynamic_pointer_cast<data::image_series>(image.get_shared()))
         {
-            const auto slice_index = sight::data::helper::medical_image::get_slice_index(
-                *image_series,
-                sight::data::helper::medical_image::axis_t::axial
-            );
+            const auto slice_index = sight::data::helper::medical_image::get_slice_index(*image_series, m_axis);
 
             if(!slice_index.has_value())
             {
@@ -895,7 +892,7 @@ void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
                                 const auto image = m_image.const_lock();
                                 slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
                                                                    *image,
-                                                                   sight::data::helper::medical_image::axis_t::axial
+                                                                   m_axis
                                 ).value_or(-1));
                             }
 
@@ -1317,7 +1314,7 @@ void ruler::update_modified_ruler(
             const auto image = m_image.const_lock();
             slice_index = static_cast<int>(sight::data::helper::medical_image::get_slice_index(
                                                *image,
-                                               sight::data::helper::medical_image::axis_t::axial
+                                               m_axis
             ).value_or(-1));
         }
 

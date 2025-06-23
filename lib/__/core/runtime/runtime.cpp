@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,10 @@
 #include "core/runtime/detail/dl/library.hpp"
 #include "core/runtime/detail/extension_point.hpp"
 #include "core/runtime/detail/io/profile_reader.hpp"
+#include "core/runtime/detail/io/validator.hpp"
 #include "core/runtime/detail/module.hpp"
 #include "core/runtime/detail/profile/profile.hpp"
+#include "core/runtime/path.hpp"
 
 #include <core/spy_log.hpp>
 
@@ -202,6 +204,14 @@ std::vector<std::shared_ptr<core::runtime::extension> > get_all_extensions_for_p
 std::string filter_id(const std::string& _identifier)
 {
     return boost::algorithm::trim_left_copy_if(_identifier, [](auto _x){return _x == ':';});
+}
+
+//------------------------------------------------------------------------------
+
+bool validate(const config_t& _config, const std::filesystem::path& _schema)
+{
+    detail::io::validator validator(_schema);
+    return validator.validate(_config);
 }
 
 //------------------------------------------------------------------------------

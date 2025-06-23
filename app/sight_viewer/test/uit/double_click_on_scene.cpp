@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -39,7 +39,7 @@ void double_click_on_scene::test()
             // Initial situation: the 3D scene is maximized
             _tester.take(
                 std::to_string(__LINE__) + ": ogre scene",
-                [&_tester]() -> QObject* {return _tester.get_main_window()->findChild<QWidget*>("sceneSrv");});
+                [&_tester]() -> QObject* {return _tester.get_main_window()->findChild<QWidget*>("scene_srv");});
 
             QSize size;
 

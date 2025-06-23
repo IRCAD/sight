@@ -8,7 +8,7 @@
         <id>SubToolBarCfg</id>
         <parameters>
             <param name="TOOLBAR" />
-            <param name="LOGO_VISIBILITY_CHANNEL" />
+            <channel name="logo_visibility" />
         </parameters>
         <config>
             <service uid="view" type="sight::module::ui::view">
@@ -54,7 +54,7 @@
                 <slot>view_5_visibility_act/uncheck</slot>
             </connect>
 
-            <connect channel="${LOGO_VISIBILITY_CHANNEL}">
+            <connect channel="${logo_visibility}">
                 <signal>view_5_visibility_act/is_checked</signal>
             </connect>
         </config>
@@ -424,8 +424,8 @@
 
             <service uid="subToolBarConfig" type="sight::app::config_launcher">
                 <properties config="SubToolBarCfg" />
-                <parameter replace="TOOLBAR" by="subToolBarView" />
-                <parameter replace="LOGO_VISIBILITY_CHANNEL" by="LOGO_VISIBILITY_CHANNEL" />
+                <param name="TOOLBAR" value="subToolBarView" />
+                <channel name="logo_visibility" uid="logo_visibility" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
@@ -442,7 +442,7 @@
                 <slot>checkableSrv/uncheck</slot>
             </connect>
 
-            <connect channel="LOGO_VISIBILITY_CHANNEL">
+            <connect channel="logo_visibility">
                 <slot>sub5View/set_visible</slot>
             </connect>
 

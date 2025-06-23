@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -183,6 +183,7 @@ private:
 
     /// Adapts the configuration : replace field thanks to field adaptors
     static core::runtime::config_t adapt_config(
+        const std::string& _parent,
         const core::runtime::config_t& _cfg_elem,
         const field_adaptor_t& _field_adaptors,
         const uid_parameter_replace_t& _uid_parameter_replace,

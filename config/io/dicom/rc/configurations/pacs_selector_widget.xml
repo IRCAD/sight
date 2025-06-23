@@ -1,13 +1,11 @@
 <extension implements="sight::app::extension::config">
     <id>sight::config::io::dicom::pacs_selector_widget</id>
     <parameters>
+        <object uid="output_series_set" type="sight::data::series_set" />
         <param name="WID_PARENT" />
-        <param name="outputSeriesSet" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${outputSeriesSet}" type="sight::data::series_set" src="ref" />
 
         <object uid="localSeriesSet" type="sight::data::series_set" />
 
@@ -298,7 +296,7 @@
 
         <service uid="dicomweb_cfg" type="sight::app::config_launcher">
             <properties config="sight::config::io::dicomweb::selector_widget" start="false" />
-            <inout group="data">
+            <inout group="object">
                 <key name="previewSeriesSet" uid="${previewSeriesSet}" />
                 <key name="previewDicom" uid="${previewDicom}" optional="true" />
                 <key name="previewImage" uid="${previewImage}" />
@@ -313,7 +311,7 @@
 
         <service uid="dimse_cfg" type="sight::app::config_launcher">
             <properties config="sight::config::io::dimse::selector_widget" start="false" />
-            <inout group="data">
+            <inout group="object">
                 <key name="previewSeriesSet" uid="${previewSeriesSet}" />
                 <key name="previewDicom" uid="${previewDicom}" optional="true" />
                 <key name="previewImage" uid="${previewImage}" />
@@ -474,7 +472,7 @@
 
         <service uid="export_image_srv" type="sight::module::data::manage">
             <inout key="object" uid="localImageSeries" />
-            <inout key="container" uid="${outputSeriesSet}" />
+            <inout key="container" uid="${output_series_set}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

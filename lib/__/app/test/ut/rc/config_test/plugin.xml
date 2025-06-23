@@ -303,7 +303,7 @@
 
             <service uid="TestService2Uid" type="sight::app::config_launcher">
                 <properties config="parameter_replace_test_sub_config" />
-                <inout group="data">
+                <inout group="object">
                     <key name="data1" uid="${data1}" />
                     <key name="data2" uid="data2Id" />
                     <key name="data3" uid="data3Id" />

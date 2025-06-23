@@ -7,7 +7,7 @@
 
     <service uid="activityLauncher" type="sight::app::config_launcher">
         <properties config="ActivityLauncher" />
-        <inout group="data">
+        <inout group="object">
             <key name="activitySet" uid="..." />
         </inout>
         <parameter replace="WID_PARENT" by="activityView" />
@@ -158,13 +158,11 @@
 
         <!-- Display the activity in the current view -->
         <service uid="dynamicView" type="sight::module::ui::qt::activity::view">
-            <parameters>
-                <parameter replace="ICON_PATH" by="${ICON_PATH}" />
-                <parameter replace="previousActivityChannel" by="previousActivityChannel" />
-                <parameter replace="nextActivityChannel" by="nextActivityChannel" />
-                <parameter replace="validationChannel" by="validationChannel" />
-                <parameter replace="goToChannel" by="goToChannel" />
-            </parameters>
+            <param name="ICON_PATH" uid="${ICON_PATH}" />
+            <channel name="previous_activity_channel" uid="previous_activity_channel" />
+            <channel name="next_activity_channel" uid="next_activity_channel" />
+            <channel name="validation_channel" uid="validation_channel" />
+            <channel name="go_to_channel" uid="go_to_channel" />
         </service>
 
         <!-- Display the activity data selector -->
@@ -192,7 +190,7 @@
         </connect>
 
         <!-- connect to launch the activity when it is created/updated. -->
-        <connect channel="launchActivityChannel">
+        <connect channel="launch_activity_channel">
             <signal>activitySequencer/activity_created</signal>
             <slot>dynamicView/show</slot>
             <slot>dynamicView/launch_activity</slot>
@@ -228,22 +226,22 @@
         </connect>
 
         <!-- The activity sequencer should receive the call from the "previous" action. -->
-        <connect channel="previousActivityChannel">
+        <connect channel="previous_activity_channel">
             <slot>activitySequencer/previous</slot>
         </connect>
 
         <!-- The activity sequencer should receive the call from the "next" action. -->
-        <connect channel="nextActivityChannel">
+        <connect channel="next_activity_channel">
             <slot>activitySequencer/next</slot>
         </connect>
 
         <!-- The activity sequencer should receive the call from the "previous" action. -->
-        <connect channel="validationChannel">
+        <connect channel="validation_channel">
             <slot>activitySequencer/check_next</slot>
         </connect>
 
         <!-- The activity sequencer should receive the call from the "go_to" action. -->
-        <connect channel="goToChannel">
+        <connect channel="go_to_channel">
             <slot>activitySequencer/go_to</slot>
         </connect>
 

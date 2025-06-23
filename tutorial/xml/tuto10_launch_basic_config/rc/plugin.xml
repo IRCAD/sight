@@ -81,7 +81,7 @@
                     replace ${image} in the sub-config by the uid of the object with the key
                     (ie. ${image} is replaced by "image")
                 -->
-                <inout group="data">
+                <inout group="object">
                     <key name="image" uid="image" />
                 </inout>
             </service>

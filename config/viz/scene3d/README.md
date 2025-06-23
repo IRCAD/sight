@@ -41,8 +41,8 @@ Last, the `OgreOrganManager` configuration can be included with the following co
 <service uid="organManagerCfg"  type="sight::app::config_launcher" >
     <properties config="OgreOrganManager" />
     <parameter replace="WID_PARENT" by="parentView" />
-    <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
-    <inout group="data">
+    <parameter replace="enable_delete" by="true" />
+    <inout group="object">
         <key name="organManagerModelSeries" uid="modelSeries" />
     </inout>
 </service>
@@ -50,5 +50,5 @@ Last, the `OgreOrganManager` configuration can be included with the following co
 
 where:
 - WID_PARENT is the identifier of the parent window view,
-- MODELSERIESLIST_ENABLE_DELETE_CONFIG is a boolean to enable the possibility to delete model series with the widget,
+- enable_delete is a boolean to enable the possibility to delete model series with the widget,
 - organManagerModelSeries is a `sight::data::model_series`.

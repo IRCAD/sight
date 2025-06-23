@@ -27,7 +27,7 @@ The `TransferFunctionWidget` configuration can be included with the following co
 <service uid="..."  type="sight::app::config_launcher" >
     <properties config="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
     <parameter replace="WID_PARENT" by="..." />
-    <inout group="data">
+    <inout group="object">
         <key name="image" uid="..." />
         <key name="currentTF" uid="..." />
     </inout>
@@ -44,10 +44,10 @@ The `TransferFunctionWindow` configuration can be included with the following co
 ```xml
 
 <service uid="..."  type="sight::app::config_launcher" >
-    <properties config="sight::config::viz::scene2d::TransferFunctionWindowCfg" />
+    <properties config="sight::config::viz::scene2d::transfer_function_window" />
     <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
     <parameter replace="WINDOW_ICON" by="path/to/icon.svg" />
-    <inout group="data">
+    <inout group="object">
         <key name="image" uid="..." />
         <key name="currentTF" uid="..." />
         <key name="presets" uid="..." />

@@ -1,19 +1,15 @@
 <extension implements="sight::app::extension::config">
     <id>sight::config::io::dicom::pacs_selector_window</id>
     <parameters>
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <object uid="output_series_set" type="sight::data::series_set" />
         <param name="WINDOW_TITLE" />
         <param name="WINDOW_ICON" />
-        <param name="outputSeriesSet" />
+        <channel name="CLOSE_CONFIG" optional="true" />
     </parameters>
     <config>
-        <!-- ******************************* Objects declaration ****************************** -->
-
-        <object uid="${outputSeriesSet}" type="sight::data::series_set" src="ref" />
-
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::frame">
+        <service uid="main_view" type="sight::module::ui::frame">
             <window onclose="notify" />
             <gui>
                 <frame>
@@ -23,11 +19,11 @@
                 </frame>
             </gui>
             <registry>
-                <view sid="pacsSelectorView" />
+                <view sid="pacs_selector_view" />
             </registry>
         </service>
 
-        <service uid="pacsSelectorView" type="sight::module::ui::view">
+        <service uid="pacs_selector_view" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
@@ -40,18 +36,18 @@
         </service>
 
         <!-- TF manager -->
-        <service uid="PACSselectorCfg" type="sight::app::config_launcher">
+        <service uid="pac_sselector_cfg" type="sight::app::config_launcher">
             <properties config="sight::config::io::dicom::pacs_selector_widget" />
-            <parameter replace="WID_PARENT" by="view" />
-            <inout group="data">
-                <key name="outputSeriesSet" uid="${outputSeriesSet}" />
+            <inout group="object">
+                <key name="output_series_set" uid="${output_series_set}" />
             </inout>
+            <param name="WID_PARENT" value="view" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <connect channel="${CLOSE_CONFIG_CHANNEL}">
-            <signal>mainView/closed</signal>
+        <connect channel="${CLOSE_CONFIG}">
+            <signal>main_view/closed</signal>
         </connect>
     </config>
 </extension>

@@ -240,7 +240,7 @@
             <service uid="axial_negato_cfg" type="sight::app::config_launcher">
                 <properties config="ex_image_reslice::reslice_view" />
                 <parameter replace="WID_PARENT" by="axial_negato_view" />
-                <inout group="data">
+                <inout group="object">
                     <key name="image" uid="${input_image}" />
                     <key name="mask" uid="${input_mask}" />
                     <key name="slice" uid="${axial_slice}" />
@@ -257,7 +257,7 @@
             <service uid="frontal_negato_cfg" type="sight::app::config_launcher">
                 <properties config="ex_image_reslice::reslice_view" />
                 <parameter replace="WID_PARENT" by="frontal_negato_view" />
-                <inout group="data">
+                <inout group="object">
                     <key name="image" uid="${input_image}" />
                     <key name="mask" uid="${input_mask}" />
                     <key name="slice" uid="${frontal_slice}" />

@@ -6,7 +6,7 @@
         <object uid="pointListId1" type="sight::data::point_list" />
         <object uid="pointListId2" type="sight::data::point_list" />
 
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <channel name="CLOSE_CONFIG" optional="true" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
@@ -78,7 +78,7 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <connect channel="${CLOSE_CONFIG_CHANNEL}">
+        <connect channel="${CLOSE_CONFIG}">
             <signal>mainFrame/closed</signal>
         </connect>
 

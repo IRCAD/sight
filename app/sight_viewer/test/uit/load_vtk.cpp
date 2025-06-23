@@ -71,12 +71,12 @@ void load_vtk::test()
             save_snapshot(_tester, snapshot_show1_path);
             compare_images(snapshot_show1_path, reference_show_path);
 
-            helper::button::push(_tester, "listOrganEditorSrv/Hide all organs");
+            helper::button::push(_tester, "list_organ_editor_srv/Hide all organs");
 
             save_snapshot(_tester, snapshot_hide_path);
             compare_images(snapshot_hide_path, reference_hide_path);
 
-            helper::button::push(_tester, "listOrganEditorSrv/Hide all organs");
+            helper::button::push(_tester, "list_organ_editor_srv/Hide all organs");
 
             save_snapshot(_tester, snapshot_show2_path);
             compare_images(snapshot_show2_path, reference_show_path);

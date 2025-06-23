@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@ void zoom_out_gesture::test()
 
             /* Pinch the fingers to zoom out */
             // Firstly, we need the 3D scene
-            _tester.take("ogre scene", "sceneSrv");
+            _tester.take("ogre scene", "scene_srv");
             // We need to a reference to it for later
             auto* ogre_scene = _tester.get<QWidget*>();
             ogre_scene->raise();

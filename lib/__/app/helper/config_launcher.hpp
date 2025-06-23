@@ -42,7 +42,8 @@ class SIGHT_APP_CLASS_API config_launcher final
 public:
 
     using uptr = std::unique_ptr<config_launcher>;
-    static constexpr std::string_view DATA_GROUP = "data";
+    static constexpr std::string_view DATA_GROUP   = "data";
+    static constexpr std::string_view OBJECT_GROUP = "object";
 
     /**
      * @brief Parses a configuration.
@@ -103,9 +104,6 @@ private:
 
     /// Stores the config manager.
     app::config_manager::sptr m_config_manager;
-
-    /// Defines a special key to defines the associated object him self.
-    static const std::string SELF_KEY;
 
     /// Stores key and uid of optional inputs.
     std::map<std::string, std::pair<std::string, size_t> > m_optional_inputs;

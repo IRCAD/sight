@@ -3,7 +3,7 @@ Example:
 
 <service uid="..." type="sight::app::config_launcher">
     <properties config="TransferFunctionWithNegatoEditor" />
-    <inout group="data">
+    <inout group="object">
         <key name="image" uid="..." />
         <key name="histogram" uid="..." />
         <key name="transferFunctionOutput" uid="..." />
@@ -74,7 +74,7 @@ Example:
 
         <service uid="cfgNegato" type="sight::app::config_launcher">
             <properties config="2DNegatoWithTF" />
-            <inout group="data">
+            <inout group="object">
                 <key name="image" uid="${image}" />
                 <key name="transferFunctionDeferred" uid="${transferFunctionOutput}" optional="true" />
             </inout>
@@ -83,7 +83,7 @@ Example:
 
         <service uid="tfWidget" type="sight::app::config_launcher">
             <properties config="TransferFunctionWidget" />
-            <inout group="data">
+            <inout group="object">
                 <key name="image" uid="${image}" />
                 <key name="histogram" uid="${histogram}" />
                 <key name="transferFunction" uid="${transferFunctionOutput}" />

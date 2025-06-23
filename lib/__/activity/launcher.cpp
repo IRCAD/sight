@@ -99,6 +99,35 @@ void launcher::parse_configuration(const configuration_t& _config, const in_out_
         SIGHT_ASSERT("'camp' paths are not managed in the configuration parameters", !param.is_object_path());
         m_parameters.push_back(param);
     }
+
+    for(const auto& it_cfg : boost::make_iterator_range(config_params.equal_range("param")))
+    {
+        parameter_t param;
+        const auto name = it_cfg.second.get<std::string>("<xmlattr>.name", "");
+        SIGHT_ASSERT("Missing 'name' attribute in <param>.", !name.empty());
+
+        const auto value = it_cfg.second.get_optional<std::string>("<xmlattr>.value");
+        SIGHT_ASSERT("Missing 'value' attribute  in <param>.", value.has_value());
+
+        param.replace = name;
+        param.by      = *value;
+        m_parameters.push_back(param);
+    }
+
+    for(const auto& it_cfg : boost::make_iterator_range(config_params.equal_range("channel")))
+    {
+        parameter_t param;
+
+        const auto name = it_cfg.second.get<std::string>("<xmlattr>.name", "");
+        SIGHT_ASSERT("Missing 'attribute' tag in <param>.", !name.empty());
+
+        const auto uid = it_cfg.second.get<std::string>("<xmlattr>.uid", "");
+        SIGHT_ASSERT("Missing 'uid' attribute  in <param>.", !uid.empty());
+
+        param.replace = name;
+        param.by      = uid;
+        m_parameters.push_back(param);
+    }
 }
 
 //------------------------------------------------------------------------------

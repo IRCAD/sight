@@ -5,7 +5,7 @@ color, ...
 Example:
 <service uid="..." type="sight::app::config_launcher">
     <properties config="ModelSeriesManagerWindow" />
-    <inout group="data">
+    <inout group="object">
         <key name="organ_manager_modelseries" uid="..." />
     </inout>
     <parameter replace="ICON_PATH" by="my/icon/path.ico" />
@@ -21,9 +21,9 @@ With:
     <parameters>
         <object uid="organ_manager_modelseries" type="sight::data::model_series" />
         <!--  defined by config_launcher -->
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
         <param name="ICON_PATH" />
         <param name="WindowTitle" default="Organs Manager" />
+        <channel name="CLOSE_CONFIG" optional="true" />
     </parameters>
     <desc>Open a windows containing the editors to manage the ModelSeries: show/hide reconstructions, change the color.</desc>
     <config>
@@ -44,13 +44,13 @@ With:
 
         <service uid="modelManager" type="sight::app::config_launcher">
             <properties config="ModelSeriesManagerView" />
-            <inout group="data">
+            <inout group="object">
                 <key name="organ_manager_modelseries" uid="${organ_manager_modelseries}" />
             </inout>
             <parameter replace="WID_PARENT" by="OrganManagerView" />
         </service>
 
-        <connect channel="${CLOSE_CONFIG_CHANNEL}">
+        <connect channel="${CLOSE_CONFIG}">
             <signal>organManagerFrame/closed</signal>
         </connect>
     </config>

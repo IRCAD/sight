@@ -67,7 +67,7 @@
 
             <service uid="videoToolbarConfig" type="sight::app::config_launcher">
                 <properties config="sight::config::io::video::controls" />
-                <inout group="data">
+                <inout group="object">
                     <key name="camera" uid="camera" />
                     <key name="frameTL" uid="frameTL" />
                 </inout>

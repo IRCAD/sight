@@ -37,17 +37,17 @@
                 <item key="max_marker_perimeter_rate" type="sight::data::real" value="4.0" />
                 <item key="polygonal_approx_accuracy_rate" type="sight::data::real" value="0.03" />
                 <item key="min_corner_distance_rate" type="sight::data::real" value="0.01" />
-                <item key="minDistanceToBorder" type="sight::data::integer" value="1" />
-                <item key="minMarkerDistanceRate" type="sight::data::real" value="0.0" />
-                <item key="cornerRefinementWinSize" type="sight::data::integer" value="5" />
-                <item key="cornerRefinementMaxIterations" type="sight::data::integer" value="30" />
-                <item key="cornerRefinementMinAccuracy" type="sight::data::real" value="0.1" />
-                <item key="markerBorderBits" type="sight::data::integer" value="1" />
+                <item key="min_distance_to_border" type="sight::data::integer" value="1" />
+                <item key="min_marker_distance_rate" type="sight::data::real" value="0.0" />
+                <item key="corner_refinement_win_size" type="sight::data::integer" value="5" />
+                <item key="corner_refinement_max_iterations" type="sight::data::integer" value="30" />
+                <item key="corner_refinement_min_accuracy" type="sight::data::real" value="0.1" />
+                <item key="marker_border_bits" type="sight::data::integer" value="1" />
                 <item key="perspective_remove_pixel_per_cell" type="sight::data::integer" value="8" />
-                <item key="perspectiveRemoveIgnoredMarginPerCell" type="sight::data::real" value="0.1" />
-                <item key="maxErroneousBitsInBorderRate" type="sight::data::real" value="0.3" />
-                <item key="minOtsuStdDev" type="sight::data::real" value="5.0" />
-                <item key="errorCorrectionRate" type="sight::data::real" value="0.6" />
+                <item key="perspective_remove_ignored_margin_per_cell" type="sight::data::real" value="0.1" />
+                <item key="max_erroneous_bits_in_border_rate" type="sight::data::real" value="0.3" />
+                <item key="min_otsu_std_dev" type="sight::data::real" value="5.0" />
+                <item key="error_correction_rate" type="sight::data::real" value="0.6" />
             </object>
 
             <!-- Reprojection parameters -->

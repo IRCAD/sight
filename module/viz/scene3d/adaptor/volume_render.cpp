@@ -214,21 +214,27 @@ void volume_render::updating()
     {
         new_image();
     }
-    else if(update_needed(update_flags::IMAGE_BUFFER))
+    else // new_image() already calls all the functions below
     {
-        buffer_image();
-    }
-    else if(update_needed(update_flags::MASK_BUFFER))
-    {
-        update_mask();
-    }
-    else if(update_needed(update_flags::TF))
-    {
-        update_volume_tf();
-    }
-    else if(update_needed(update_flags::CLIPPING_BOX))
-    {
-        update_clipping_box();
+        if(update_needed(update_flags::IMAGE_BUFFER))
+        {
+            buffer_image();
+        }
+
+        if(update_needed(update_flags::MASK_BUFFER))
+        {
+            update_mask();
+        }
+
+        if(update_needed(update_flags::TF))
+        {
+            update_volume_tf();
+        }
+
+        if(update_needed(update_flags::CLIPPING_BOX))
+        {
+            update_clipping_box();
+        }
     }
 
     update_done();

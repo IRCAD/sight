@@ -25,12 +25,8 @@
         <xs:sequence>
             <xs:element name="object" type="object_param_t" maxOccurs="unbounded" minOccurs="0"/>
             <xs:element name="param" type="param_t" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="channel" type="channel_t" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="param_t">
-        <xs:attribute name='name' type='xs:string' use="required" />
-        <xs:attribute name='default' type='xs:string' />
     </xs:complexType>
 
     <xs:complexType name="object_param_t">
@@ -41,6 +37,16 @@
         <xs:attribute name='deferred' type='boolean_t' />
         <xs:attribute name='reference' type='boolean_t' />
         <xs:attribute name='preference' type='boolean_t' />
+    </xs:complexType>
+
+    <xs:complexType name="param_t">
+        <xs:attribute name='name' type='xs:string' use="required" />
+        <xs:attribute name='default' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="channel_t">
+        <xs:attribute name='name' type='xs:string' use="required" />
+        <xs:attribute name='optional' type='boolean_t' />
     </xs:complexType>
 
     <xs:complexType name="config_t">

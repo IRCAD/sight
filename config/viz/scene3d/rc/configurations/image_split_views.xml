@@ -1,10 +1,10 @@
 <extension implements="sight::app::extension::config">
     <id>sight::config::viz::scene3d::image_split_views</id>
     <parameters>
-        <object uid="modelSeries" type="sight::data::model_series" deferred="true" />
+        <object uid="model_series" type="sight::data::model_series" deferred="true" />
         <object uid="image" type="sight::data::image_series" deferred="true" />
-        <object uid="volumeTF" type="sight::data::transfer_function" />
-        <object uid="extrudedModelSeries" type="sight::data::model_series" />
+        <object uid="volume_tf" type="sight::data::transfer_function" />
+        <object uid="extruded_model_series" type="sight::data::model_series" />
 
         <object uid="vr_visibility" type="sight::data::boolean" />
         <object uid="negato_visibility" type="sight::data::boolean" />
@@ -12,30 +12,31 @@
         <object uid="axis_visibility" type="sight::data::boolean" />
 
         <param name="WID_PARENT" />
-        <param name="VR_BOOL_PARAM_RECEIVER_CHANNEL" />
-        <param name="VR_INT_PARAM_RECEIVER_CHANNEL" />
-        <param name="VR_DOUBLE_PARAM_RECEIVER_CHANNEL" />
-        <param name="BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL" />
-        <param name="BOX_WIDGET_RESET_RECEIVER_CHANNEL" />
-        <param name="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" />
-        <param name="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" />
-        <param name="SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL" />
-        <param name="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" />
-        <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
-        <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
-        <param name="RULER_ACTIVATION_CHANNEL" />
-        <param name="RULER_DEACTIVATION_CHANNEL" />
-        <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
-        <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
-        <param name="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" />
-        <param name="REMOVE_ALL_RULERS_RECEIVER_CHANNEL" />
-        <param name="VISIBILITY_RULERS_RECEIVER_CHANNEL" />
-        <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
+
+        <channel name="vr_bool_param" />
+        <channel name="vr_int_param" />
+        <channel name="vr_double_param" />
+        <channel name="box_widget_visibility" />
+        <channel name="box_widget_reset" />
+        <channel name="shape_extruder_enable_tool" />
+        <channel name="shape_extruder_tool_disabled" />
+        <channel name="shape_extruder_undo" />
+        <channel name="shape_extruder_reset" />
+        <channel name="world_coords_landmarks" />
+        <channel name="negato_3d_transparency" />
+        <channel name="ruler_activation" />
+        <channel name="ruler_deactivation" />
+        <channel name="landmarks_edit_mode" />
+        <channel name="landmarks_group_selected" />
+        <channel name="remove_all_landmarks" />
+        <channel name="remove_all_rulers" />
+        <channel name="visibility_rulers" />
+        <channel name="landmarks_edit_mode_changed" />
     </parameters>
     <config>
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::view">
+        <service uid="main_view" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
@@ -45,12 +46,12 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="topScenesView" />
-                <view sid="bottomScenesView" />
+                <view sid="top_scenes_view" />
+                <view sid="bottom_scenes_view" />
             </registry>
         </service>
 
-        <service uid="topScenesView" type="sight::module::ui::view">
+        <service uid="top_scenes_view" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
@@ -59,12 +60,12 @@
                 </layout>
             </gui>
             <registry>
-                <view wid="mainSceneView" />
-                <view wid="axialSceneView" />
+                <view wid="main_scene_view" />
+                <view wid="axial_scene_view" />
             </registry>
         </service>
 
-        <service uid="bottomScenesView" type="sight::module::ui::view">
+        <service uid="bottom_scenes_view" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="horizontal" />
@@ -73,161 +74,162 @@
                 </layout>
             </gui>
             <registry>
-                <view wid="sagittalSceneView" />
-                <view wid="frontalSceneView" />
+                <view wid="sagittal_scene_view" />
+                <view wid="frontal_scene_view" />
             </registry>
         </service>
 
         <!-- ******************************* Begin 3D scene ******************************* -->
 
-        <service uid="mainSceneCfg" type="sight::app::config_launcher">
+        <service uid="main_scene_cfg" type="sight::app::config_launcher">
             <properties config="sight::config::viz::scene3d::volumeRendering" />
-            <parameter replace="WID_PARENT" by="mainSceneView" />
-            <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_SCENE3D_VISIBILITY_RECEIVER_CHANNEL" />
-            <parameter replace="VR_BOOL_PARAM_RECEIVER_CHANNEL" by="${VR_BOOL_PARAM_RECEIVER_CHANNEL}" />
-            <parameter replace="VR_INT_PARAM_RECEIVER_CHANNEL" by="${VR_INT_PARAM_RECEIVER_CHANNEL}" />
-            <parameter replace="VR_DOUBLE_PARAM_RECEIVER_CHANNEL" by="${VR_DOUBLE_PARAM_RECEIVER_CHANNEL}" />
-            <parameter replace="BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL" by="${BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL}" />
-            <parameter replace="BOX_WIDGET_RESET_RECEIVER_CHANNEL" by="${BOX_WIDGET_RESET_RECEIVER_CHANNEL}" />
-            <parameter replace="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" by="${SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL}" />
-            <parameter replace="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" by="${SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL}" />
-            <parameter replace="SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL" by="${SHAPE_EXTRUDER_UNDO_RECEIVER_CHANNEL}" />
-            <parameter replace="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" by="${SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL}" />
-            <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="${WORLD_COORDS_LANDMARKS_CHANNEL}" />
-            <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="${NEGATO3D_TRANSPARENCY_CHANNEL}" />
-            <parameter replace="RULER_ACTIVATION_CHANNEL" by="${RULER_ACTIVATION_CHANNEL}" />
-            <parameter replace="RULER_DEACTIVATION_CHANNEL" by="${RULER_DEACTIVATION_CHANNEL}" />
-            <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
-            <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
-            <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
-            <parameter replace="REMOVE_ALL_RULERS_RECEIVER_CHANNEL" by="${REMOVE_ALL_RULERS_RECEIVER_CHANNEL}" />
-            <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="${VISIBILITY_RULERS_RECEIVER_CHANNEL}" />
-            <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}" />
-            <parameter replace="maximized" by="true" />
-            <parameter replace="restored" by="false" />
-            <inout group="data">
-                <key name="modelSeries" uid="${modelSeries}" optional="true" />
+            <inout group="object">
+                <key name="model_series" uid="${model_series}" optional="true" />
                 <key name="image" uid="${image}" optional="true" />
-                <key name="volumeTF" uid="${volumeTF}" />
-                <key name="extrudedModelSeries" uid="${extrudedModelSeries}" />
+                <key name="volume_tf" uid="${volume_tf}" />
+                <key name="extruded_model_series" uid="${extruded_model_series}" />
                 <key name="vr_visibility" uid="${vr_visibility}" />
                 <key name="negato_visibility" uid="${negato_visibility}" />
                 <key name="model_visibility" uid="${model_visibility}" />
                 <key name="axis_visibility" uid="${axis_visibility}" />
             </inout>
+            <param name="WID_PARENT" value="main_scene_view" />
+            <param name="maximized" value="true" />
+            <param name="restored" value="false" />
+
+            <channel name="toggle_view_visibility" uid="toggle_scene_3d_visibility" />
+            <channel name="vr_bool_param" uid="${vr_bool_param}" />
+            <channel name="vr_int_param" uid="${vr_int_param}" />
+            <channel name="vr_double_param" uid="${vr_double_param}" />
+            <channel name="box_widget_visibility" uid="${box_widget_visibility}" />
+            <channel name="box_widget_reset" uid="${box_widget_reset}" />
+            <channel name="shape_extruder_enable_tool" uid="${shape_extruder_enable_tool}" />
+            <channel name="shape_extruder_tool_disabled" uid="${shape_extruder_tool_disabled}" />
+            <channel name="shape_extruder_undo" uid="${shape_extruder_undo}" />
+            <channel name="shape_extruder_reset" uid="${shape_extruder_reset}" />
+            <channel name="world_coords_landmarks" uid="${world_coords_landmarks}" />
+            <channel name="negato_3d_transparency" uid="${negato_3d_transparency}" />
+            <channel name="ruler_activation" uid="${ruler_activation}" />
+            <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
+            <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
+            <channel name="remove_all_landmarks" uid="${remove_all_landmarks}" />
+            <channel name="remove_all_rulers" uid="${remove_all_rulers}" />
+            <channel name="visibility_rulers" uid="${visibility_rulers}" />
+            <channel name="landmarks_edit_mode_changed" uid="${landmarks_edit_mode_changed}" />
         </service>
 
         <!-- ************************************* 2D Negato views ************************************ -->
 
-        <service uid="axialNegatoCfg" type="sight::app::config_launcher">
+        <service uid="axial_negato_cfg" type="sight::app::config_launcher">
             <properties config="sight::config::viz::scene3d::negato2d" />
-            <parameter replace="WID_PARENT" by="axialSceneView" />
-            <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
-            <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_AXIAL_VISIBILITY_RECEIVER_CHANNEL" />
-            <parameter replace="RULER_ACTIVATION_CHANNEL" by="${RULER_ACTIVATION_CHANNEL}" />
-            <parameter replace="RULER_DEACTIVATION_CHANNEL" by="${RULER_DEACTIVATION_CHANNEL}" />
-            <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="${VISIBILITY_RULERS_RECEIVER_CHANNEL}" />
-            <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
-            <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
-            <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
-            <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}" />
-            <parameter replace="sliceIndex" by="axial" />
-            <inout group="data">
+            <inout group="object">
                 <key name="image" uid="${image}" optional="true" />
-                <key name="transferFunction" uid="${volumeTF}" />
+                <key name="transfer_function" uid="${volume_tf}" />
             </inout>
+            <param name="WID_PARENT" value="axial_scene_view" />
+            <param name="slice_index" value="axial" />
+            <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
+            <channel name="toggle_view_visibility" uid="toggle_axial_visibility" />
+            <channel name="ruler_activation" uid="${ruler_activation}" />
+            <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="visibility_rulers" uid="${visibility_rulers}" />
+            <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
+            <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
+            <channel name="remove_all_landmarks" uid="${remove_all_landmarks}" />
+            <channel name="landmarks_edit_mode_changed" uid="${landmarks_edit_mode_changed}" />
         </service>
 
-        <service uid="sagittalNegatoCfg" type="sight::app::config_launcher">
+        <service uid="sagittal_negato_cfg" type="sight::app::config_launcher">
             <properties config="sight::config::viz::scene3d::negato2d" />
-            <parameter replace="WID_PARENT" by="sagittalSceneView" />
-            <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
-            <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_SAGITTAL_VISIBILITY_RECEIVER_CHANNEL" />
-            <parameter replace="RULER_ACTIVATION_CHANNEL" by="${RULER_ACTIVATION_CHANNEL}" />
-            <parameter replace="RULER_DEACTIVATION_CHANNEL" by="${RULER_DEACTIVATION_CHANNEL}" />
-            <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="${VISIBILITY_RULERS_RECEIVER_CHANNEL}" />
-            <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
-            <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
-            <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
-            <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}" />
-            <parameter replace="sliceIndex" by="sagittal" />
-            <inout group="data">
+            <inout group="object">
                 <key name="image" uid="${image}" optional="true" />
-                <key name="transferFunction" uid="${volumeTF}" />
+                <key name="transfer_function" uid="${volume_tf}" />
             </inout>
+            <param name="WID_PARENT" value="sagittal_scene_view" />
+            <param name="slice_index" value="sagittal" />
+            <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
+            <channel name="toggle_view_visibility" uid="toggle_sagittal_visibility" />
+            <channel name="ruler_activation" uid="${ruler_activation}" />
+            <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="visibility_rulers" uid="${visibility_rulers}" />
+            <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
+            <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
+            <channel name="remove_all_landmarks" uid="${remove_all_landmarks}" />
+            <channel name="landmarks_edit_mode_changed" uid="${landmarks_edit_mode_changed}" />
         </service>
 
-        <service uid="frontalNegatoCfg" type="sight::app::config_launcher">
+        <service uid="frontal_negato_cfg" type="sight::app::config_launcher">
             <properties config="sight::config::viz::scene3d::negato2d" />
-            <parameter replace="WID_PARENT" by="frontalSceneView" />
-            <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
-            <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_FRONTAL_VISIBILITY_RECEIVER_CHANNEL" />
-            <parameter replace="RULER_ACTIVATION_CHANNEL" by="${RULER_ACTIVATION_CHANNEL}" />
-            <parameter replace="RULER_DEACTIVATION_CHANNEL" by="${RULER_DEACTIVATION_CHANNEL}" />
-            <parameter replace="VISIBILITY_RULERS_RECEIVER_CHANNEL" by="${VISIBILITY_RULERS_RECEIVER_CHANNEL}" />
-            <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
-            <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
-            <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
-            <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}" />
-            <parameter replace="sliceIndex" by="frontal" />
-            <inout group="data">
+            <inout group="object">
                 <key name="image" uid="${image}" optional="true" />
-                <key name="transferFunction" uid="${volumeTF}" />
+                <key name="transfer_function" uid="${volume_tf}" />
             </inout>
+            <param name="WID_PARENT" value="frontal_scene_view" />
+            <param name="slice_index" value="frontal" />
+            <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
+            <channel name="toggle_view_visibility" uid="toggle_frontal_visibility" />
+            <channel name="ruler_activation" uid="${ruler_activation}" />
+            <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="visibility_rulers" uid="${visibility_rulers}" />
+            <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
+            <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
+            <channel name="remove_all_landmarks" uid="${remove_all_landmarks}" />
+            <channel name="landmarks_edit_mode_changed" uid="${landmarks_edit_mode_changed}" />
         </service>
 
         <!-- ************************************* Actions ************************************ -->
 
-        <service uid="mainSceneVisibilityAct" type="sight::module::ui::modify_layout">
+        <service uid="main_scene_visibility_act" type="sight::module::ui::modify_layout">
             <status checked="false" />
             <config>
-                <toggle wid="axialSceneView" />
-                <toggle wid="sagittalSceneView" />
-                <toggle wid="frontalSceneView" />
+                <toggle wid="axial_scene_view" />
+                <toggle wid="sagittal_scene_view" />
+                <toggle wid="frontal_scene_view" />
             </config>
         </service>
 
-        <service uid="axialNegatoVisibilityAct" type="sight::module::ui::modify_layout">
+        <service uid="axial_negato_visibility_act" type="sight::module::ui::modify_layout">
             <config>
-                <toggle wid="mainSceneView" />
-                <toggle wid="sagittalSceneView" />
-                <toggle wid="frontalSceneView" />
+                <toggle wid="main_scene_view" />
+                <toggle wid="sagittal_scene_view" />
+                <toggle wid="frontal_scene_view" />
             </config>
         </service>
 
-        <service uid="sagittalNegatoVisibilityAct" type="sight::module::ui::modify_layout">
+        <service uid="sagittal_negato_visibility_act" type="sight::module::ui::modify_layout">
             <config>
-                <toggle wid="mainSceneView" />
-                <toggle wid="axialSceneView" />
-                <toggle wid="frontalSceneView" />
+                <toggle wid="main_scene_view" />
+                <toggle wid="axial_scene_view" />
+                <toggle wid="frontal_scene_view" />
             </config>
         </service>
 
-        <service uid="frontalNegatoVisibilityAct" type="sight::module::ui::modify_layout">
+        <service uid="frontal_negato_visibility_act" type="sight::module::ui::modify_layout">
             <config>
-                <toggle wid="mainSceneView" />
-                <toggle wid="axialSceneView" />
-                <toggle wid="sagittalSceneView" />
+                <toggle wid="main_scene_view" />
+                <toggle wid="axial_scene_view" />
+                <toggle wid="sagittal_scene_view" />
             </config>
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
 
         <!-- Enlarge CT view by double-clicking it -->
-        <connect channel="TOGGLE_SCENE3D_VISIBILITY_RECEIVER_CHANNEL">
-            <slot>mainSceneVisibilityAct/update</slot>
+        <connect channel="toggle_scene_3d_visibility">
+            <slot>main_scene_visibility_act/update</slot>
         </connect>
 
-        <connect channel="TOGGLE_AXIAL_VISIBILITY_RECEIVER_CHANNEL">
-            <slot>axialNegatoVisibilityAct/update</slot>
+        <connect channel="toggle_axial_visibility">
+            <slot>axial_negato_visibility_act/update</slot>
         </connect>
 
-        <connect channel="TOGGLE_SAGITTAL_VISIBILITY_RECEIVER_CHANNEL">
-            <slot>sagittalNegatoVisibilityAct/update</slot>
+        <connect channel="toggle_sagittal_visibility">
+            <slot>sagittal_negato_visibility_act/update</slot>
         </connect>
 
-        <connect channel="TOGGLE_FRONTAL_VISIBILITY_RECEIVER_CHANNEL">
-            <slot>frontalNegatoVisibilityAct/update</slot>
+        <connect channel="toggle_frontal_visibility">
+            <slot>frontal_negato_visibility_act/update</slot>
         </connect>
     </config>
 </extension>

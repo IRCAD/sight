@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ static const core::com::slots::key_t STOP_CONFIG_SLOT   = "stopConfig";
 static const std::string SINGLE_IMAGE_CONFIG = "singleImageConfig";
 static const std::string TWO_IMAGES_CONFIG   = "twoImagesConfig";
 
-static const std::string CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
+static const std::string CLOSE_CONFIG_ID = "CLOSE_CONFIG";
 
 //------------------------------------------------------------------------------
 
@@ -130,7 +130,7 @@ void display_calibration_info::display_image(std::size_t _idx)
             replace_map["pointListId2"] = point_list2->get_id();
         }
 
-        replace_map[CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
+        replace_map[CLOSE_CONFIG_ID] = m_proxychannel;
 
         const auto config = app::extension::config::get()->get_adapted_template_config(
             str_config,

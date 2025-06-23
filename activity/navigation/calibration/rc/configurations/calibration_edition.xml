@@ -108,7 +108,7 @@
 
         <service uid="camera0LauncherCfg" type="sight::app::config_launcher">
             <properties config="videoEdition" />
-            <inout group="data">
+            <inout group="object">
                 <key name="camera" uid="camera0" />
             </inout>
             <parameter replace="WID_PARENT" by="camera0View" />
@@ -125,7 +125,7 @@
 
         <service uid="camera1LauncherCfg" type="sight::app::config_launcher">
             <properties config="videoEdition" />
-            <inout group="data">
+            <inout group="object">
                 <key name="camera" uid="camera1" />
             </inout>
             <parameter replace="WID_PARENT" by="camera1View" />

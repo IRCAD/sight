@@ -45,7 +45,7 @@
 
         <service uid="cfgNegato1" type="sight::app::config_launcher">
             <properties config="2DNegato" />
-            <inout group="data">
+            <inout group="object">
                 <key name="image" uid="${imageSeries}" />
             </inout>
             <parameter replace="WID_PARENT" by="view_negato1" />
@@ -55,7 +55,7 @@
 
         <service uid="cfgNegato2" type="sight::app::config_launcher">
             <properties config="2DNegato" />
-            <inout group="data">
+            <inout group="object">
                 <key name="image" uid="${imageSeries}" />
             </inout>
             <parameter replace="WID_PARENT" by="view_negato2" />
@@ -65,7 +65,7 @@
 
         <service uid="cfgNegato3" type="sight::app::config_launcher">
             <properties config="2DNegato" />
-            <inout group="data">
+            <inout group="object">
                 <key name="image" uid="${imageSeries}" />
             </inout>
             <parameter replace="WID_PARENT" by="view_negato3" />

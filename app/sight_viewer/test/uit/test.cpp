@@ -54,7 +54,7 @@ void test::open_file(
 )
 {
     // Click on the "Load series" button
-    helper::button::push(_tester, "toolBarView/Load series");
+    helper::button::push(_tester, "toolbar_view/Load series");
 
     // Once we clicked the button, a selection window should appear. We select the format we want.
     helper::selector_dialog::select(_tester, _format);
@@ -70,13 +70,13 @@ void test::open_file(
         // The Show/hide volume button becomes enabled when the image effectively shows up.
         helper::button::wait_for_clickability(
             _tester,
-            helper::selector("toolBarView/Show/hide volume").with_timeout(sight::ui::test::tester::DEFAULT_TIMEOUT * 5)
+            helper::selector("toolbar_view/Show/hide volume").with_timeout(sight::ui::test::tester::DEFAULT_TIMEOUT * 5)
         );
     }
     else if(_format == "VTK")
     {
         // The Show/hide mesh button becomes enabled when the image is loaded.
-        helper::button::wait_for_clickability(_tester, "toolBarView/Show/hide mesh");
+        helper::button::wait_for_clickability(_tester, "toolbar_view/Show/hide mesh");
     }
 }
 
@@ -85,7 +85,7 @@ void test::open_file(
 void test::save_snapshot(sight::ui::test::tester& _tester, const std::filesystem::path& _path)
 {
     // Click on the "snapshot" button
-    helper::button::push(_tester, "topToolbarView/Snapshot");
+    helper::button::push(_tester, "top_toolbar_view/Snapshot");
 
     // Fill the file dialog, tap PATH
     helper::file_dialog::fill(_tester, _path);
@@ -105,10 +105,10 @@ void test::save_snapshot(sight::ui::test::tester& _tester, const std::filesystem
 
 void test::reset_negatos(sight::ui::test::tester& _tester)
 {
-    const std::array negatos {"topScenesView/1", "bottomScenesView/0", "bottomScenesView/1"};
+    const std::array negatos {"top_scenes_view/1", "bottom_scenes_view/0", "bottom_scenes_view/1"};
     for(std::string parent : negatos)
     {
-        helper::slider::set(_tester, helper::selector::from_parent(parent, "negatoSlicerSrv"), 0);
+        helper::slider::set(_tester, helper::selector::from_parent(parent, "negato_slicer_srv"), 0);
     }
 }
 

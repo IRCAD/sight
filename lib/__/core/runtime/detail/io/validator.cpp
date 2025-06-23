@@ -26,6 +26,8 @@
 
 #include <core/base.hpp>
 
+#include <boost/property_tree/xml_parser.hpp>
+
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xinclude.h>
@@ -38,18 +40,10 @@ namespace sight::core::runtime::detail::io
 
 //------------------------------------------------------------------------------
 
-validator::validator(const validator& _validator) :
-    m_xsd_content(_validator.m_xsd_content),
-    m_schema_parser_context(_validator.m_schema_parser_context),
-    m_schema(_validator.m_schema)
-{
-}
-
-//------------------------------------------------------------------------------
-
 validator::validator(std::string _schema) :
     m_xsd_content(std::move(_schema))
 {
+    initialize_context();
 }
 
 //------------------------------------------------------------------------------
@@ -64,12 +58,9 @@ validator::validator(const std::filesystem::path& _path)
     }
 
     m_xsd_content = str_path;
+
+    initialize_context();
 }
-
-//------------------------------------------------------------------------------
-
-validator::~validator()
-= default;
 
 //------------------------------------------------------------------------------
 
@@ -89,40 +80,37 @@ std::string validator::get_error_log() const
 
 void validator::initialize_context()
 {
-    if(m_schema_valid_context)
+    if(auto schema_parser_context = schema_parser_ctxt_sptr(
+           xmlSchemaNewParserCtxt(m_xsd_content.c_str()),
+           xmlSchemaFreeParserCtxt
+    ); schema_parser_context != nullptr)
     {
-        return;
-    }
-
-    if(!m_schema_parser_context)
-    {
-        if(!(m_schema_parser_context = schema_parser_ctxt_sptr(
-                 xmlSchemaNewParserCtxt(m_xsd_content.c_str()),
-                 xmlSchemaFreeParserCtxt
-        )))
-        {
-            return;
-        }
-
         // Set the structured error callback
-        xmlSchemaSetParserStructuredErrors(m_schema_parser_context.get(), validator::error_handler, this);
-    }
+        xmlSchemaSetParserStructuredErrors(schema_parser_context.get(), validator::error_handler, this);
 
-    // Load XML schema content
-    if(!m_schema)
-    {
-        m_schema = schema_sptr(xmlSchemaParse(m_schema_parser_context.get()), xmlSchemaFree);
+        // Load XML schema content
         if(!m_schema)
         {
-            return;
+            m_schema = schema_sptr(xmlSchemaParse(schema_parser_context.get()), xmlSchemaFree);
+            if(!m_schema)
+            {
+                return;
+            }
+        }
+
+        // Create XML schemas validation context
+        if((m_schema_valid_context = schema_valid_ctxt_sptr(
+                xmlSchemaNewValidCtxt(m_schema.get()),
+                xmlSchemaFreeValidCtxt
+        )))
+        {
+            // Set the structured error callback
+            xmlSchemaSetValidStructuredErrors(m_schema_valid_context.get(), validator::error_handler, this);
         }
     }
-
-    // Create XML schemas validation context
-    if((m_schema_valid_context = schema_valid_ctxt_sptr(xmlSchemaNewValidCtxt(m_schema.get()), xmlSchemaFreeValidCtxt)))
+    else
     {
-        // Set the structured error callback
-        xmlSchemaSetValidStructuredErrors(m_schema_valid_context.get(), validator::error_handler, this);
+        return;
     }
 }
 
@@ -131,8 +119,6 @@ void validator::initialize_context()
 bool validator::validate(const std::filesystem::path& _xml_file)
 {
     int result = 0;
-
-    initialize_context();
 
     xmlDocPtr xml_doc = xmlParseFile(_xml_file.string().c_str());
     if(xml_doc == nullptr)
@@ -172,8 +158,6 @@ bool validator::validate(xmlNodePtr _node)
 {
     int result = 0;
 
-    initialize_context();
-
     if(!m_schema_valid_context)
     {
         return false;
@@ -187,6 +171,37 @@ bool validator::validate(xmlNodePtr _node)
         xmlNodeDump(buffer, _node->doc, _node, 1, 1);
         SIGHT_WARN("Validator::validation NOK, node :\n " << buffer->content);
         xmlBufferFree(buffer);
+        SIGHT_WARN("Validator::validation NOK, xsd = " << get_xsd_content());
+        SIGHT_ERROR("Validator::validation NOK, error log = " << get_error_log());
+    }
+
+    return result == 0;
+}
+
+//------------------------------------------------------------------------------
+
+bool validator::validate(const config_t& _config)
+{
+    int result = 0;
+
+    if(!m_schema_valid_context)
+    {
+        return false;
+    }
+
+    std::stringstream config_ss;
+    boost::property_tree::write_xml(config_ss, _config);
+
+    auto config_string = config_ss.str();
+    xmlDocPtr document = xmlParseMemory(config_string.c_str(), static_cast<int>(config_string.size()));
+
+    result = xmlSchemaValidateDoc(m_schema_valid_context.get(), document);
+
+    xmlFreeDoc(document);
+
+    if(result != 0)
+    {
+        SIGHT_WARN("Validator::validation NOK, xml = " << config_string);
         SIGHT_WARN("Validator::validation NOK, xsd = " << get_xsd_content());
         SIGHT_ERROR("Validator::validation NOK, error log = " << get_error_log());
     }

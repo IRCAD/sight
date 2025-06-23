@@ -89,7 +89,7 @@
 
         <service uid="chessboard_size_cfg" type="sight::app::config_launcher">
             <appConfig id="sight::navigation::calibration::chessboard_settings" />
-            <inout group="data">
+            <inout group="object">
                 <key name="board_properties" uid="${board_properties}" />
             </inout>
             <properties start="false" />

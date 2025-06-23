@@ -24,16 +24,16 @@
 
 #include "app/detail/config_manager.hpp"
 
+#include "core/profiling.hpp"
+#include "core/runtime/path.hpp"
+#include "core/runtime/validator.hpp"
+
 #include <core/ptree.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 
 namespace sight::app::helper
 {
-
-//------------------------------------------------------------------------------
-
-const std::string config_launcher::SELF_KEY = "self";
 
 //------------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ void config_launcher::parse_config(
     if(old_config.count("appConfig") == 1)
     {
         FW_DEPRECATED_MSG(
-            "appConfig attribute deprecated, use `config` property instead.",
+            std::quoted(_service->get_id()) << ": `appConfig` attribute deprecated, use `config` property instead.",
             "26.0"
         );
 
@@ -79,8 +79,17 @@ service::config_t config_launcher::init_config(
 {
     service::config_t srv_cfg;
 
-    size_t i = 0;
+    // Validation when using new syntax
+    if(_old_config.get_child_optional("param").has_value() || _old_config.get_child_optional("channel").has_value())
+    {
+        service::config_t validate_cfg;
+        validate_cfg.add_child("service", _old_config);
+        static const auto s_XSD       = core::runtime::get_library_resource_file_path("app/config_launcher.xsd");
+        static const auto s_VALIDATOR = core::runtime::validator::make(s_XSD);
+        SIGHT_FATAL_IF("validation", not s_VALIDATOR->validate(validate_cfg));
+    }
 
+    size_t i = 0;
     if(const auto inouts_cfg = _old_config.get_child_optional("inout"); inouts_cfg.has_value())
     {
         for(const auto& it_cfg : boost::make_iterator_range(inouts_cfg->equal_range("key")))
@@ -104,7 +113,13 @@ service::config_t config_launcher::init_config(
             }
             else
             {
-                const auto obj = _service->inout(DATA_GROUP, i).lock();
+                auto obj = _service->inout(OBJECT_GROUP, i).lock();
+                if(obj == nullptr)
+                {
+                    // Backwards compatibility
+                    obj = _service->inout(DATA_GROUP, i).lock();
+                }
+
                 SIGHT_ASSERT(std::string("Object key '") + key + "' with uid '" + uid + "' does not exist.", obj);
                 parameter_cfg.add("<xmlattr>.by", obj->get_id());
             }
@@ -114,16 +129,55 @@ service::config_t config_launcher::init_config(
         }
     }
 
+    bool deprecated = false;
     for(const auto& it_cfg : boost::make_iterator_range(_old_config.equal_range("parameter")))
     {
         service::config_t parameter_cfg;
 
-        const auto replace = it_cfg.second.get<std::string>("<xmlattr>.replace");
-        SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'replace' tag.", !replace.empty());
+        const auto replace = it_cfg.second.get<std::string>("<xmlattr>.replace", "");
+        SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'replace' attribute in <parameter>.", !replace.empty());
         parameter_cfg.add("<xmlattr>.replace", replace);
 
-        const auto by = it_cfg.second.get<std::string>("<xmlattr>.by");
-        parameter_cfg.add("<xmlattr>.by", by);
+        const auto by = it_cfg.second.get_optional<std::string>("<xmlattr>.by");
+        SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'by' attribute in <parameter>.", by.has_value());
+        parameter_cfg.add("<xmlattr>.by", *by);
+
+        srv_cfg.add_child("parameters.parameter", parameter_cfg);
+        deprecated = true;
+    }
+
+    FW_DEPRECATED_MSG_IF(
+        std::quoted(_service->get_id()) << ": <parameter> is deprecated, use <param> or <channel> instead",
+        "26.0",
+        deprecated
+    );
+
+    for(const auto& it_cfg : boost::make_iterator_range(_old_config.equal_range("param")))
+    {
+        service::config_t parameter_cfg;
+
+        const auto name = it_cfg.second.get<std::string>("<xmlattr>.name", "");
+        SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'name' attribute in <param>.", !name.empty());
+        parameter_cfg.add("<xmlattr>.replace", name);
+
+        const auto value = it_cfg.second.get_optional<std::string>("<xmlattr>.value");
+        SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'value' attribute  in <param>.", value.has_value());
+        parameter_cfg.add("<xmlattr>.by", *value);
+
+        srv_cfg.add_child("parameters.parameter", parameter_cfg);
+    }
+
+    for(const auto& it_cfg : boost::make_iterator_range(_old_config.equal_range("channel")))
+    {
+        service::config_t parameter_cfg;
+
+        const auto name = it_cfg.second.get<std::string>("<xmlattr>.name", "");
+        SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'attribute' tag in <param>.", !name.empty());
+        parameter_cfg.add("<xmlattr>.replace", name);
+
+        const auto uid = it_cfg.second.get<std::string>("<xmlattr>.uid", "");
+        SIGHT_ASSERT("[" + _service->get_id() + "] Missing 'uid' attribute  in <param>.", !uid.empty());
+        parameter_cfg.add("<xmlattr>.by", uid);
 
         srv_cfg.add_child("parameters.parameter", parameter_cfg);
     }
@@ -152,9 +206,16 @@ void config_launcher::start_config(
     // When a configuration is launched, deferred objects may already exist.
     // This loop allow to notify the app config manager that this data exist and can be used by services.
     // Without that, the data is considered as null.
+
     for(const auto& [key, value] : m_optional_inputs)
     {
-        const auto obj = _service->inout(DATA_GROUP, value.second).lock();
+        auto obj = _service->inout(OBJECT_GROUP, value.second).lock();
+        if(obj == nullptr)
+        {
+            // Backwards compatibility
+            obj = _service->inout(DATA_GROUP, value.second).lock();
+        }
+
         if(obj)
         {
             config_manager->add_existing_deferred_object(obj.get_shared(), value.first);

@@ -50,7 +50,7 @@ Usage:
 
         <service uid="..." type="sight::app::config_launcher">
             <properties config="sight::config::io::video::controls" />
-            <inout group="data">
+            <inout group="object">
                 <key name="camera" uid="..." />
                 <key name="frameTL" uid="..." />
             </inout>

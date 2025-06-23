@@ -7,7 +7,7 @@ Example:
 <service uid="..." type="sight::app::config_launcher">
     <properties config="ImageManager" />
     <parameter replace="WID_PARENT" by="referenceSceneEditor" />
-    <inout group="data">
+    <inout group="object">
         <key name="image" uid="..." />
         <key name="transferFunction" uid="..." />
     </inout>

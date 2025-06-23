@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="service" type="service_t" />
+
+    <xs:simpleType name="boolean_t">
+        <xs:restriction base="xs:string">
+        <xs:enumeration value="true"/>
+        <xs:enumeration value="false"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="service_t">
+        <xs:sequence>
+            <xs:element name="properties" type="properties_t" maxOccurs="1" minOccurs="1"/>
+            <xs:element name="inout" type="inout_t" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="param" type="param_t" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="channel" type="channel_t" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='type' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="properties_t">
+        <xs:attribute name='config' type='xs:string' use="required" />
+        <xs:attribute name='start' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="inout_t">
+        <xs:sequence>
+            <xs:element name="key" type="key_t" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name='group' type='xs:string' use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="key_t">
+        <xs:attribute name='name' type='xs:string' use="required" />
+        <xs:attribute name='uid' type='xs:string' use="required" />
+        <xs:attribute name='optional' type='boolean_t' />
+    </xs:complexType>
+
+    <xs:complexType name="param_t">
+        <xs:attribute name='name' type='xs:string' use="required" />
+        <xs:attribute name='value' type='xs:string' use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="channel_t">
+        <xs:attribute name='name' type='xs:string' use="required" />
+        <xs:attribute name='uid' type='xs:string' use="required" />
+    </xs:complexType>
+
+</xs:schema>

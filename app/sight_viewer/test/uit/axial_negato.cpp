@@ -56,22 +56,22 @@ void axial_negato::test()
             );
 
             // We want to hide the volume, we must click on the Show/hide volume button to achieve this
-            helper::button::push(_tester, "toolBarView/Show/hide volume");
+            helper::button::push(_tester, "toolbar_view/Show/hide volume");
 
             // Then we want to display the negato views, we must click on the restore button from the 3d scene toolbar
-            helper::button::push(_tester, "topToolbarView/Restore");
+            helper::button::push(_tester, "top_toolbar_view/Restore");
 
-            helper::line_edit::match(_tester, helper::selector::from_parent("topScenesView/1", "Label"), "67 / 133");
+            helper::line_edit::match(_tester, helper::selector::from_parent("top_scenes_view/1", "Label"), "67 / 133");
 
             // For the test to work, we must first reset all negatos to 0
             reset_negatos(_tester);
 
-            helper::line_edit::match(_tester, helper::selector::from_parent("topScenesView/1", "Label"), "0 / 133");
+            helper::line_edit::match(_tester, helper::selector::from_parent("top_scenes_view/1", "Label"), "0 / 133");
 
             // We want to move the negato, we must click in the negato slider to do that
             helper::slider::set(
                 _tester,
-                helper::selector::from_parent("topScenesView/1", "negatoSlicerSrv"),
+                helper::selector::from_parent("top_scenes_view/1", "negato_slicer_srv"),
                 133
             );
 
@@ -79,26 +79,26 @@ void axial_negato::test()
 
             compare_images(snapshot_path, reference_path);
 
-            helper::line_edit::match(_tester, helper::selector::from_parent("topScenesView/1", "Label"), "133 / 133");
+            helper::line_edit::match(_tester, helper::selector::from_parent("top_scenes_view/1", "Label"), "133 / 133");
 
-            helper::button::push(_tester, helper::selector::from_parent("topScenesView/1", "LabelButton"));
+            helper::button::push(_tester, helper::selector::from_parent("top_scenes_view/1", "LabelButton"));
 
             // we should observe the position of index 133 at QLineEdit after click.
             helper::line_edit::match(
                 _tester,
-                helper::selector::from_parent("topScenesView/1", "Label"),
+                helper::selector::from_parent("top_scenes_view/1", "Label"),
                 "S : 212.80 mm"
             );
 
             helper::slider::set(
                 _tester,
-                helper::selector::from_parent("topScenesView/1", "negatoSlicerSrv"),
+                helper::selector::from_parent("top_scenes_view/1", "negato_slicer_srv"),
                 12
             );
 
             helper::line_edit::match(
                 _tester,
-                helper::selector::from_parent("topScenesView/1", "Label"),
+                helper::selector::from_parent("top_scenes_view/1", "Label"),
                 "S : 19.20 mm"
             );
         },

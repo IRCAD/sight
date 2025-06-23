@@ -29,7 +29,7 @@
 namespace sight::app
 {
 
-static const std::string S_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
+static const std::string S_CLOSE_CONFIG_ID = "CLOSE_CONFIG";
 
 //------------------------------------------------------------------------------
 
@@ -116,7 +116,7 @@ void config_launcher::start_config()
         core::com::proxy::sptr proxies = core::com::proxy::get();
         proxies->connect(m_proxy_channel, this->slot(service::base::slots::STOP));
         app::field_adaptor_t replace_map;
-        replace_map[S_CLOSE_CONFIG_CHANNEL_ID] = m_proxy_channel;
+        replace_map[S_CLOSE_CONFIG_ID] = m_proxy_channel;
         try
         {
             m_config_launcher->start_config(this->get_sptr(), replace_map);

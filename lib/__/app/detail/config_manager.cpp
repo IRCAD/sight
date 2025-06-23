@@ -45,7 +45,6 @@
 #include <boost/thread/futures/wait_for_all.hpp>
 #include <ranges>
 
-#include <boost/property_tree/xml_parser.hpp>
 namespace sight::app::detail
 {
 

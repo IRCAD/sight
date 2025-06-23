@@ -63,7 +63,7 @@
 
         <service uid="negato1Srv" type="sight::app::config_launcher">
             <properties config="2DNegato" />
-            <inout group="data">
+            <inout group="object">
                 <key name="image" uid="${imageSeries}" />
             </inout>
             <parameter replace="WID_PARENT" by="negato1View" />
@@ -72,7 +72,7 @@
 
         <service uid="negato2Srv" type="sight::app::config_launcher">
             <properties config="2DNegato" />
-            <inout group="data">
+            <inout group="object">
                 <key name="image" uid="imageSeriesMask" />
             </inout>
             <parameter replace="WID_PARENT" by="negato2View" />
