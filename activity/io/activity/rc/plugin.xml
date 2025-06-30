@@ -146,7 +146,7 @@
             <type mode="reader" />
             <selection mode="include" />
             <addSelection service="sight::module::io::session::reader" />
-            <config id="DefaultSessionReaderConfig" service="sight::module::io::session::reader" />
+            <config id="sight::module::io::activity::default_session_reader" service="sight::module::io::session::reader" />
         </config>
     </extension>
 
@@ -158,7 +158,7 @@
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="sight::module::io::session::writer" />
-            <config id="DefaultSessionWriterConfig" service="sight::module::io::session::writer" />
+            <config id="sight::module::io::activity::default_session_writer" service="sight::module::io::session::writer" />
         </config>
     </extension>
 
@@ -174,7 +174,7 @@
 
     <!-- Service config used for session reader and writer -->
     <extension implements="sight::service::extension::config">
-        <id>DefaultSessionReaderConfig</id>
+        <id>sight::module::io::activity::default_session_reader</id>
         <service>sight::module::io::session::reader</service>
         <desc>Session reader</desc>
         <config>
@@ -184,7 +184,7 @@
     </extension>
 
     <extension implements="sight::service::extension::config">
-        <id>DefaultSessionWriterConfig</id>
+        <id>sight::module::io::activity::default_session_writer</id>
         <service>sight::module::io::session::writer</service>
         <desc>Session writer</desc>
         <config>

@@ -62,7 +62,7 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="negato1Srv" type="sight::app::config_launcher">
-            <properties config="2DNegato" />
+            <properties config="sight::activity::viz::negato::2d" />
             <inout group="object">
                 <key name="image" uid="${imageSeries}" />
             </inout>
@@ -71,7 +71,7 @@
         </service>
 
         <service uid="negato2Srv" type="sight::app::config_launcher">
-            <properties config="2DNegato" />
+            <properties config="sight::activity::viz::negato::2d" />
             <inout group="object">
                 <key name="image" uid="imageSeriesMask" />
             </inout>

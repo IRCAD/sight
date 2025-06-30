@@ -1,25 +1,25 @@
 <extension implements="sight::app::extension::config">
-    <id>ExActivities_Base_AppCfg</id>
+    <id>ex_activities::base</id>
     <parameters>
-        <param name="APP_NAME" />
-        <param name="APP_VERSION" />
-        <param name="ICON_PATH" />
-        <param name="SEQUENCER_CONFIG" />
-        <param name="WIZARD_CONFIG" />
+        <param name="app_name" />
+        <param name="app_version" />
+        <param name="icon_path" />
+        <param name="sequencer_config" />
+        <param name="wizard_config" />
     </parameters>
     <config>
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="activitySet" type="sight::data::activity_set" />
+        <object uid="activity_set" type="sight::data::activity_set" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainFrame" type="sight::module::ui::frame">
+        <service uid="main_frame" type="sight::module::ui::frame">
             <gui>
                 <frame>
-                    <name>${APP_NAME}</name>
-                    <version>${APP_VERSION}</version>
-                    <icon>${ICON_PATH}</icon>
+                    <name>${app_name}</name>
+                    <version>${app_version}</version>
+                    <icon>${icon_path}</icon>
                     <min_size width="1280" height="800" />
                 </frame>
             </gui>
@@ -30,17 +30,17 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="activityLauncherSrv" type="sight::app::config_launcher">
-            <properties config="ActivityLauncher" />
+        <service uid="activity_launcher_srv" type="sight::app::config_launcher">
+            <properties config="sight::config::ui::activity::launcher" />
             <inout group="object">
-                <key name="activitySet" uid="activitySet" />
+                <key name="activity_set" uid="activity_set" />
             </inout>
-            <parameter replace="SEQUENCER_CONFIG" by="${SEQUENCER_CONFIG}" />
-            <parameter replace="WIZARD_CONFIG" by="${WIZARD_CONFIG}" />
-            <parameter replace="ICON_PATH" by="${ICON_PATH}" />
+            <parameter replace="sequencer_config" by="${sequencer_config}" />
+            <parameter replace="wizard_config" by="${wizard_config}" />
+            <parameter replace="icon_path" by="${icon_path}" />
             <parameter replace="WID_PARENT" by="activityView" />
-            <parameter replace="SESSION_READER_CONFIG" by="SessionReaderConfig" />
-            <parameter replace="SESSION_WRITER_CONFIG" by="SessionWriterConfig" />
+            <parameter replace="session_reader_config" by="ex_activities::config::session_reader" />
+            <parameter replace="session_writer_config" by="ex_activities::config::session_writer" />
         </service>
     </config>
 </extension>

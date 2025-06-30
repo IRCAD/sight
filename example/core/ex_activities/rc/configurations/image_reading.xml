@@ -1,16 +1,16 @@
 <!-- This configuration allows to read an image and display it in a simple scene -->
 <extension implements="sight::app::extension::config">
-    <id>ExActivities_ImageReading_AppCfg</id>
+    <id>ex_activities::config::image_reading</id>
     <parameters>
-        <object uid="imageSeries" type="sight::data::image_series" />
+        <object uid="image_series" type="sight::data::image_series" />
 
         <param name="WID_PARENT" />
-        <param name="validationChannel" default="validationChannel" />
+        <channel name="validation" optional="true" />
     </parameters>
     <config>
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::view">
+        <service uid="main_view" type="sight::module::ui::view">
             <gui>
                 <layout type="sight::ui::layout::line">
                     <orientation value="vertical" />
@@ -19,14 +19,14 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="imageScene" />
+                <view sid="image_scene" />
             </registry>
         </service>
 
         <!-- ******************************* Actions ****************************************** -->
 
-        <service uid="importAct" type="sight::module::ui::io::selector">
-            <inout key="data" uid="${imageSeries}" />
+        <service uid="import_act" type="sight::module::ui::io::selector">
+            <inout key="data" uid="${image_series}" />
             <type mode="reader" />
             <selection mode="include" />
             <addSelection service="sight::module::io::vtk::image_reader" />
@@ -34,15 +34,15 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="imageScene" type="sight::module::viz::sample::image">
-            <in key="image" uid="${imageSeries}" />
+        <service uid="image_scene" type="sight::module::viz::sample::image">
+            <in key="image" uid="${image_series}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
 
         <!-- The channel is used to call "sequencer::checkNext" slot, to enable the next activity when the image is loaded. -->
-        <connect channel="${validationChannel}">
-            <signal>${imageSeries}/modified</signal>
+        <connect channel="${validation}">
+            <signal>${image_series}/modified</signal>
         </connect>
     </config>
 </extension>

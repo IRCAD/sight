@@ -28,7 +28,7 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_app PARAM_LIST config parameters PARAM_VALUES ExActivities_Base_AppCfg ExActivities_AppCfgParam)
+module_param(module_app PARAM_LIST config parameters PARAM_VALUES ex_activities::base ex_activities::parameters)
 
 module_param(
     module_ui

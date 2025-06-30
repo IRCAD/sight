@@ -77,30 +77,31 @@ void launcher::parse_configuration(const configuration_t& _config, const in_out_
         }
     }
 
-    configuration_t config_params = _config.get_child("parameters");
-
-    const auto params_cfg = config_params.equal_range("parameter");
-    for(auto it_params = params_cfg.first ; it_params != params_cfg.second ; ++it_params)
+    if(const auto config_params = _config.get_child_optional("parameters"); config_params.has_value())
     {
-        const auto replace = it_params->second.get<std::string>("<xmlattr>.replace");
-        std::string by     = it_params->second.get<std::string>("<xmlattr>.by", "");
-        if(by.empty())
+        const auto params_cfg = config_params->equal_range("parameter");
+        for(auto it_params = params_cfg.first ; it_params != params_cfg.second ; ++it_params)
         {
-            by = it_params->second.get<std::string>("<xmlattr>.uid");
-        }
+            const auto replace = it_params->second.get<std::string>("<xmlattr>.replace");
+            std::string by     = it_params->second.get<std::string>("<xmlattr>.by", "");
+            if(by.empty())
+            {
+                by = it_params->second.get<std::string>("<xmlattr>.uid");
+            }
 
-        SIGHT_ASSERT(
-            "'parameter' tag must contain valid 'replace' and 'by' attributes.",
-            !replace.empty() && !by.empty()
-        );
-        parameter_t param;
-        param.replace = replace;
-        param.by      = by;
-        SIGHT_ASSERT("'camp' paths are not managed in the configuration parameters", !param.is_object_path());
-        m_parameters.push_back(param);
+            SIGHT_ASSERT(
+                "'parameter' tag must contain valid 'replace' and 'by' attributes.",
+                !replace.empty() && !by.empty()
+            );
+            parameter_t param;
+            param.replace = replace;
+            param.by      = by;
+            SIGHT_ASSERT("'camp' paths are not managed in the configuration parameters", !param.is_object_path());
+            m_parameters.push_back(param);
+        }
     }
 
-    for(const auto& it_cfg : boost::make_iterator_range(config_params.equal_range("param")))
+    for(const auto& it_cfg : boost::make_iterator_range(_config.equal_range("param")))
     {
         parameter_t param;
         const auto name = it_cfg.second.get<std::string>("<xmlattr>.name", "");
@@ -114,7 +115,7 @@ void launcher::parse_configuration(const configuration_t& _config, const in_out_
         m_parameters.push_back(param);
     }
 
-    for(const auto& it_cfg : boost::make_iterator_range(config_params.equal_range("channel")))
+    for(const auto& it_cfg : boost::make_iterator_range(_config.equal_range("channel")))
     {
         parameter_t param;
 

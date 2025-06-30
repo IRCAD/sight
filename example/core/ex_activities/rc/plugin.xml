@@ -9,57 +9,43 @@
     <xi:include href="configurations/volume_rendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::activity::extension">
-        <id>ExImage_Import_Activity</id>
+        <id>ex_activities::activity::import</id>
         <title>ImageSeries reading</title>
         <desc>Activity to read an imageSeries</desc>
         <icon>sight::module::ui::icons/file.svg</icon>
         <requirements>
-            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
+            <requirement name="image_series" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
                 <desc>ImageSeries that will be read by this activity.</desc>
             </requirement>
         </requirements>
-        <appConfig id="ExActivities_ImageReading_AppCfg" />
+        <appConfig id="ex_activities::config::image_reading" />
     </extension>
 
     <extension implements="sight::activity::extension">
-        <id>ExImage_Negatoscope_Activity</id>
-        <title>ImageSeries displaying</title>
-        <desc>Activity to display an imageSeries</desc>
-        <icon>sight::module::ui::icons/layers.svg</icon>
-        <requirements>
-            <!-- The imageSeries must be present to launch the activity -->
-            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
-                <desc>ImageSeries that will be display by this activity.</desc>
-            </requirement>
-        </requirements>
-        <appConfig id="2DVisualization" />
-    </extension>
-
-    <extension implements="sight::activity::extension">
-        <id>ExImage_VolumeRendering_Activity</id>
+        <id>ex_activities::activity::volume_rendering</id>
         <title>ImageSeries displaying Volume</title>
         <desc>Activity to display an imageSeries in a volume rendering</desc>
         <icon>sight::module::ui::icons/volume.svg</icon>
         <requirements>
             <!-- The imageSeries must be present to launch the activity -->
-            <requirement name="imageSeries" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
+            <requirement name="image_series" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
                 <desc>ImageSeries that will be display by this activity.</desc>
             </requirement>
-            <requirement name="optionalModelSeries" type="sight::data::model_series" minOccurs="0" maxOccurs="1">
+            <requirement name="optional_model_series" type="sight::data::model_series" minOccurs="0" maxOccurs="1">
                 <desc>Optional model series.</desc>
             </requirement>
         </requirements>
-        <appConfig id="VolumeRendering" />
+        <appConfig id="ex_activities::config::volume_rendering" />
     </extension>
 
     <extension implements="sight::service::extension::config">
-        <id>ExActivities_Sequencer_SrvCfg</id>
+        <id>ex_activities::config::sequencer</id>
         <service>sight::module::ui::qt::activity::sequencer</service>
         <desc>Configuration for sequencer</desc>
         <config>
-            <activity id="ExImage_Import_Activity" name="Import" />
-            <activity id="ExImage_Negatoscope_Activity" name="Negatoscope" />
-            <activity id="ExImage_VolumeRendering_Activity" name="Volume Rendering" />
+            <activity id="ex_activities::activity::import" name="Import" />
+            <activity id="sight::activity::viz::negato::three_views" name="Negatoscope" />
+            <activity id="ex_activities::activity::volume_rendering" name="Volume Rendering" />
             <clear>#2E3034</clear>
             <primary>#6997BB</primary>
             <background>#565A5E</background>
@@ -71,7 +57,7 @@
     </extension>
 
     <extension implements="sight::service::extension::config">
-        <id>ExActivities_Wizard_SrvCfg</id>
+        <id>ex_activities::config::wizard</id>
         <service>sight::module::ui::qt::activity::wizard</service>
         <desc>Custom configuration for ex_activities wizard</desc>
         <config>
@@ -85,7 +71,7 @@
     </extension>
 
     <extension implements="sight::service::extension::config">
-        <id>SessionReaderConfig</id>
+        <id>ex_activities::config::session_reader</id>
         <service>sight::module::io::session::reader</service>
         <desc>Session reader</desc>
         <config>
@@ -95,7 +81,7 @@
     </extension>
 
     <extension implements="sight::service::extension::config">
-        <id>SessionWriterConfig</id>
+        <id>ex_activities::config::session_writer</id>
         <service>sight::module::io::session::writer</service>
         <desc>Session writer</desc>
         <config>
@@ -105,13 +91,13 @@
     </extension>
 
     <extension implements="sight::app::extension::parameters">
-        <id>ExActivities_AppCfgParam</id>
+        <id>ex_activities::parameters</id>
         <parameters>
-            <param name="APP_NAME" value="ex_activities" />
-            <param name="APP_VERSION" value="@PROJECT_VERSION@" />
-            <param name="ICON_PATH" value="ex_activities/app.ico" />
-            <param name="SEQUENCER_CONFIG" value="ExActivities_Sequencer_SrvCfg" />
-            <param name="WIZARD_CONFIG" value="ExActivities_Wizard_SrvCfg" />
+            <param name="app_name" value="ex_activities" />
+            <param name="app_version" value="@PROJECT_VERSION@" />
+            <param name="icon_path" value="ex_activities/app.ico" />
+            <param name="sequencer_config" value="ex_activities::config::sequencer" />
+            <param name="wizard_config" value="ex_activities::config::wizard" />
         </parameters>
     </extension>
 </plugin>
