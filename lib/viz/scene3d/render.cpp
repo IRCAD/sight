@@ -438,12 +438,24 @@ void render::configure_background_layer(const config_t& _cfg)
         }
     }
 
-    if((attributes.count("topScale") != 0U) && (attributes.count("bottomScale") != 0U))
-    {
-        const auto top_scale_val = attributes.get<float>("topScale");
-        const auto bot_scale_val = attributes.get<float>("bottomScale");
+    const auto top_scale = core::ptree::get_and_deprecate<float>(
+        attributes,
+        "top_scale",
+        "topScale",
+        "26.0",
+        INFINITY
+    );
+    const auto bottom_scale = core::ptree::get_and_deprecate<float>(
+        attributes,
+        "bottom_scale",
+        "bottomScale",
+        "26.0",
+        INFINITY
+    );
 
-        ogre_layer->set_background_scale(top_scale_val, bot_scale_val);
+    if(top_scale != INFINITY and bottom_scale != INFINITY)
+    {
+        ogre_layer->set_background_scale(top_scale, bottom_scale);
     }
     else
     {
