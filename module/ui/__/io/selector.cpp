@@ -22,8 +22,6 @@
 
 #include "selector.hpp"
 
-#include <app/extension/config.hpp>
-
 #include <core/base.hpp>
 #include <core/com/signal.hxx>
 #include <core/com/slots.hpp>
@@ -39,6 +37,8 @@
 #include <ui/__/dialog/message.hpp>
 #include <ui/__/dialog/selector.hpp>
 
+#include <app/extension/config.hpp>
+
 #include <boost/property_tree/xml_parser.hpp>
 #include <boost/range/iterator_range_core.hpp>
 
@@ -52,26 +52,13 @@ namespace io = sight::io;
 
 //------------------------------------------------------------------------------
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL   = "job_created";
-static const core::com::signals::key_t JOB_FAILED_SIGNAL    = "jobFailed";
-static const core::com::signals::key_t JOB_SUCCEEDED_SIGNAL = "job_succeeded";
-
-static const core::com::slots::key_t FORWARD_JOB_SLOT = "forwardJob";
-
-//------------------------------------------------------------------------------
-
 selector::selector() :
-    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL)),
-    m_sig_job_failed(new_signal<job_failed_signal_t>(JOB_FAILED_SIGNAL)),
-    m_sig_job_succeeded(new_signal<job_succeeded_signal_t>(JOB_SUCCEEDED_SIGNAL)),
-    m_slot_forward_job(new_slot(FORWARD_JOB_SLOT, &selector::forward_job, this))
+    has_jobs(m_signals),
+    m_sig_failed(new_signal<signals::failed_t>(signals::FAILED)),
+    m_sig_succeeded(new_signal<signals::succeeded_t>(signals::SUCCEEDED)),
+    m_slot_forward_job(new_slot(slots::FORWARD_JOB, &selector::forward_job, this))
 {
 }
-
-//------------------------------------------------------------------------------
-
-selector::~selector() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -249,7 +236,7 @@ void selector::updating()
 
                 if(!extension_id_found)
                 {
-                    m_sig_job_failed->async_emit();
+                    m_sig_failed->async_emit();
                 }
 
                 SIGHT_ASSERT("Problem to find the selected string.", extension_id_found);
@@ -296,7 +283,7 @@ void selector::updating()
 
                 reader->configure();
 
-                auto job_created_signal_t = reader->signal("job_created");
+                auto job_created_signal_t = reader->signal(core::jobs::has_jobs::signals::JOB_CREATED);
                 if(job_created_signal_t)
                 {
                     job_created_signal_t->connect(m_slot_forward_job);
@@ -319,15 +306,15 @@ void selector::updating()
                 {
                     std::string msg = "Failed to read : \n" + std::string(e.what());
                     sight::ui::dialog::message::show("Reader Error", msg);
-                    m_sig_job_failed->async_emit();
+                    m_sig_failed->async_emit();
                 }
                 if(reader->has_failed())
                 {
-                    m_sig_job_failed->async_emit();
+                    m_sig_failed->async_emit();
                 }
                 else
                 {
-                    m_sig_job_succeeded->async_emit();
+                    m_sig_succeeded->async_emit();
                 }
             }
             else
@@ -370,22 +357,22 @@ void selector::updating()
                 {
                     std::string msg = "Failed to write : \n" + std::string(e.what());
                     sight::ui::dialog::message::show("Writer Error", msg);
-                    m_sig_job_failed->async_emit();
+                    m_sig_failed->async_emit();
                 }
 
                 if(writer->has_failed())
                 {
-                    m_sig_job_failed->async_emit();
+                    m_sig_failed->async_emit();
                 }
                 else
                 {
-                    m_sig_job_succeeded->async_emit();
+                    m_sig_succeeded->async_emit();
                 }
             }
         }
         else
         {
-            m_sig_job_failed->async_emit();
+            m_sig_failed->async_emit();
         }
     }
     else
@@ -410,7 +397,7 @@ void selector::updating()
             message_box.show();
         }
 
-        m_sig_job_failed->async_emit();
+        m_sig_failed->async_emit();
     }
 }
 
@@ -433,7 +420,7 @@ void selector::set_io_mode(io_mode _mode)
 
 void selector::forward_job(core::jobs::base::sptr _job)
 {
-    m_sig_job_created->emit(_job);
+    this->emit(core::jobs::has_jobs::signals::JOB_CREATED, _job);
 }
 
 //------------------------------------------------------------------------------

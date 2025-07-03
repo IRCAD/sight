@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include <core/com/signal.hpp>
 #include <core/com/slot.hpp>
 #include <core/jobs/base.hpp>
+#include <core/jobs/has_jobs.hpp>
 
 #include <io/__/service/io_types.hpp>
 
@@ -38,11 +39,11 @@ namespace sight::module::ui::io
  *
  * @section Signals Signals
  * - \b job_created(core::jobs::base::sptr) : emitted when a job is created.
- * - \b jobFailed() : emitted when the job has been cancelled by the user or has failed.
- * - \b job_succeeded() : emitted when a job finishes correctly.
+ * - \b failed() : emitted when the job has been cancelled by the user or has failed.
+ * - \b succeeded() : emitted when a job finishes correctly.
  *
  * @section Slots Slots
- * - \b forwardJob(core::jobs::base::sptr ) : slot connected to the reader/writer to forward the signal 'jobCreated'
+ * - \b forward_job(core::jobs::base::sptr ) : slot connected to the reader/writer to forward the signal 'jobCreated'
  *
  * @section XML XML Configuration
  *
@@ -72,7 +73,8 @@ namespace sight::module::ui::io
  *      - \b id (mandatory) : the id of the configuration to use.
  *      - \b service (mandatory) :  the name of the service.
  */
-class selector : public sight::ui::dialog_editor
+class selector : public sight::ui::dialog_editor,
+                 public sight::core::jobs::has_jobs
 {
 public:
 
@@ -85,11 +87,20 @@ public:
 
     SIGHT_DECLARE_SERVICE(selector, sight::ui::dialog_editor);
 
-    using job_created_signal_t   = core::com::signal<void (core::jobs::base::sptr)>;
-    using job_failed_signal_t    = core::com::signal<void ()>;
-    using job_succeeded_signal_t = core::com::signal<void ()>;
+    struct signals
+    {
+        using failed_t    = core::com::signal<void ()>;
+        using succeeded_t = core::com::signal<void ()>;
 
-    using forward_job_slot_t = core::com::slot<void (core::jobs::base::sptr)>;
+        static const inline signal_key_t FAILED    = "failed";
+        static const inline signal_key_t SUCCEEDED = "succeeded";
+    };
+
+    struct slots
+    {
+        using forward_job_t = core::com::slot<void (core::jobs::base::sptr)>;
+        static const inline slot_key_t FORWARD_JOB = "forward_job";
+    };
 
     /**
      * @brief   Constructor. Do nothing (Just initialize parameters).
@@ -99,7 +110,7 @@ public:
     selector();
 
     /// Destructor. Do nothing.
-    ~selector() noexcept override;
+    ~selector() noexcept override = default;
 
     /**
      * @brief This method allows to configure the service in reader or writer mode (set selector::m_mode).
@@ -154,11 +165,10 @@ private:
     /// classname of the read object (used if the data is set as output instead of inout)
     std::string m_data_classname;
 
-    SPTR(job_created_signal_t) m_sig_job_created;
-    SPTR(job_failed_signal_t) m_sig_job_failed;
-    SPTR(job_succeeded_signal_t) m_sig_job_succeeded;
+    SPTR(signals::failed_t) m_sig_failed;
+    SPTR(signals::succeeded_t) m_sig_succeeded;
 
-    SPTR(forward_job_slot_t) m_slot_forward_job;
+    SPTR(slots::forward_job_t) m_slot_forward_job;
 
     data::ptr<data::object, data::access::inout> m_data {this, sight::io::service::DATA_KEY};
 };

@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <core/jobs/has_jobs.hpp>
 #include <core/jobs/job.hpp>
 
 #include <data/boolean.hpp>
@@ -107,7 +108,8 @@ namespace sight::module::filter::mesh
  */
 
 class vtk_mesher : public service::filter,
-                   public sight::service::notifier
+                   public sight::service::notifier,
+                   public sight::core::jobs::has_jobs
 {
 public:
 
@@ -115,12 +117,10 @@ public:
 
     struct signals
     {
-        static inline const signal_key_t COMPLETED   = "completed";
-        static inline const signal_key_t FAILED      = "failed";
-        static inline const signal_key_t JOB_CREATED = "job_created";
+        static inline const signal_key_t COMPLETED = "completed";
+        static inline const signal_key_t FAILED    = "failed";
 
-        using empty_t       = sight::core::com::signal<void ()>;
-        using job_created_t = sight::core::com::signal<void (sight::core::jobs::base::sptr)>;
+        using empty_t = sight::core::com::signal<void ()>;
     };
 
     vtk_mesher() noexcept;

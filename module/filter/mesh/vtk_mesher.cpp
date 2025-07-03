@@ -103,11 +103,11 @@ private:
 
 vtk_mesher::vtk_mesher() noexcept :
     filter(m_signals),
-    notifier(m_signals)
+    notifier(m_signals),
+    has_jobs(m_signals)
 {
     new_signal<signals::empty_t>(signals::COMPLETED);
     new_signal<signals::empty_t>(signals::FAILED);
-    new_signal<signals::job_created_t>(signals::JOB_CREATED);
 }
 
 //-----------------------------------------------------------------------------
@@ -187,7 +187,7 @@ void vtk_mesher::updating()
         });
 
     job->set_cancelable(false);
-    this->signal<signals::job_created_t>(signals::JOB_CREATED)->async_emit(job);
+    this->async_emit(has_jobs::signals::JOB_CREATED, core::jobs::base::sptr(job));
     job->run().get();
 }
 

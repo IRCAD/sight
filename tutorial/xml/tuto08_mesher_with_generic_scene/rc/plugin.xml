@@ -309,6 +309,7 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
+                <signal>image_reader_srv/job_created</signal>
                 <signal>mesher_srv/job_created</signal>
                 <signal>model_series_writer_srv/job_created</signal>
                 <slot>progress_bar_view/show_job</slot>
