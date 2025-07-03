@@ -40,7 +40,7 @@ void shader_parameter::configuring()
 
     const config_t config = this->get_config();
 
-    m_material_name = config.get<std::string>(CONFIG + "materialName");
+    m_material_name = config.get<std::string>(CONFIG + "material_name");
 }
 
 //------------------------------------------------------------------------------

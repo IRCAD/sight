@@ -45,6 +45,8 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
+static const std::string S_SHADER_PARAM_FIELD = "shader_param";
+
 //------------------------------------------------------------------------------
 
 material::material() noexcept
@@ -268,9 +270,9 @@ void material::stopping()
     m_texture_connection.disconnect();
     this->unregister_services();
 
-    if(const auto material = m_material_data.lock(); material->get_field("shaderParameters"))
+    if(const auto material = m_material_data.lock(); material->get_field(S_SHADER_PARAM_FIELD))
     {
-        material->remove_field("shaderParameters");
+        material->remove_field(S_SHADER_PARAM_FIELD);
     }
 
     m_internal_material.reset();
@@ -337,6 +339,18 @@ void material::create_shader_parameter_adaptors()
             }
         }
 
+        // Look first in the shader parameter map of the material in case another adaptor created it
+        if(obj == nullptr)
+        {
+            if(auto field = material_data->get_field<sight::data::map>(S_SHADER_PARAM_FIELD))
+            {
+                if(auto it = field->find(constant_name); it != field->end())
+                {
+                    obj = it->second;
+                }
+            }
+        }
+
         if(obj == nullptr)
         {
             obj = sight::viz::scene3d::helper::shading::create_object_from_shader_parameter(
@@ -344,49 +358,46 @@ void material::create_shader_parameter_adaptors()
                 constant_value
             );
             obj->set_id(core::id::join(this->get_id(), constant_name));
-        }
-
-        if(obj != nullptr)
-        {
-            if(const auto uniform_value = uniform_values.find(constant_name); uniform_value != uniform_values.end())
-            {
-                const auto uniform_str = std::dynamic_pointer_cast<sight::data::string_serializable>(obj);
-                SIGHT_ASSERT("Uniform data must be a sight::data::string", uniform_str);
-                uniform_str->from_string(uniform_value->second);
-            }
-
-            const auto shader_type            = std::get<2>(constant);
-            const std::string shader_type_str = shader_type == Ogre::GPT_VERTEX_PROGRAM ? "vertex"
-                                                                                        :
-                                                shader_type == Ogre::GPT_FRAGMENT_PROGRAM ? "fragment"
-                                                                                          : "geometry";
-            const core::id::type id = core::id::join(this->get_id(), shader_type_str, constant_name);
-
-            // Creates an Ogre adaptor and associates it with the Sight object
-            auto srv =
-                this->register_service<sight::module::viz::scene3d::adaptor::shader_parameter>(
-                    "sight::module::viz::scene3d::adaptor::shader_parameter",
-                    id
-                );
-            srv->set_inout(obj, "parameter", true);
-
-            // Naming convention for shader parameters
-            srv->set_render_service(this->render_service());
-
-            service::config_t srv_config;
-            srv_config.add("config.<xmlattr>.parameter", constant_name);
-            srv_config.add("config.<xmlattr>.shader_type", shader_type_str);
-            srv_config.add("config.<xmlattr>.materialName", m_material_name);
-
-            srv->set_layer_id(m_layer_id);
-            srv->set_config(srv_config);
-            srv->configure();
-            srv->start();
 
             // Add the object to the shaderParameter map of the Material to keep the object alive
-            data::map::sptr map = material_data->set_default_field("shaderParameters", std::make_shared<data::map>());
+            data::map::sptr map = material_data->set_default_field(S_SHADER_PARAM_FIELD, std::make_shared<data::map>());
             (*map)[constant_name] = obj;
         }
+
+        if(const auto uniform_value = uniform_values.find(constant_name); uniform_value != uniform_values.end())
+        {
+            const auto uniform_str = std::dynamic_pointer_cast<sight::data::string_serializable>(obj);
+            SIGHT_ASSERT("Uniform data must be a sight::data::string", uniform_str);
+            uniform_str->from_string(uniform_value->second);
+        }
+
+        const auto shader_type            = std::get<2>(constant);
+        const std::string shader_type_str = shader_type == Ogre::GPT_VERTEX_PROGRAM ? "vertex"
+                                                                                    :
+                                            shader_type == Ogre::GPT_FRAGMENT_PROGRAM ? "fragment"
+                                                                                      : "geometry";
+        const core::id::type id = core::id::join(this->get_id(), shader_type_str, constant_name);
+
+        // Creates an Ogre adaptor and associates it with the Sight object
+        auto srv =
+            this->register_service<sight::module::viz::scene3d::adaptor::shader_parameter>(
+                "sight::module::viz::scene3d::adaptor::shader_parameter",
+                id
+            );
+        srv->set_inout(obj, "parameter", true);
+
+        // Naming convention for shader parameters
+        srv->set_render_service(this->render_service());
+
+        service::config_t srv_config;
+        srv_config.add("config.<xmlattr>.parameter", constant_name);
+        srv_config.add("config.<xmlattr>.shader_type", shader_type_str);
+        srv_config.add("config.<xmlattr>.material_name", m_material_name);
+
+        srv->set_layer_id(m_layer_id);
+        srv->set_config(srv_config);
+        srv->configure();
+        srv->start();
     }
 }
 
@@ -460,9 +471,9 @@ void material::update_field(data::fields_container_t _fields)
                     this->emit(signals::CHANGED, m_material_impl->material());
                 }
 
-                if(material->get_field("shaderParameters"))
+                if(material->get_field(S_SHADER_PARAM_FIELD))
                 {
-                    material->remove_field("shaderParameters");
+                    material->remove_field(S_SHADER_PARAM_FIELD);
                 }
             }
             this->create_shader_parameter_adaptors();

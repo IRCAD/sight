@@ -36,7 +36,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="paramAdaptor" type="sight::module::viz::scene3d::adaptor::shader_parameter">
         <inout key="parameter" uid="..." />
-        <config materialName="mat" parameter="u_value" shader_type="fragment" />
+        <config material_name="mat" parameter="u_value" shader_type="fragment" />
     </service>
    @endcode
  *
@@ -44,7 +44,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b parameter [sight::data::object]: parameter containing the data to upload.
  *
  * @subsection Configuration Configuration:
- * - \b materialName (mandatory, string): the name of the associated Ogre material
+ * - \b material_name (mandatory, string): the name of the associated Ogre material
  * - \b parameter (mandatory, string): name of the shader parameter to set
  * - \b technique (optional, string, default=""): name of the technique, default to the first in the material
  * - \b shader_type (optional, vertex/geometry/fragment, default=vertex): the type of the shader.
