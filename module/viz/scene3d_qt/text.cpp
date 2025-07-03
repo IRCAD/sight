@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,10 +61,13 @@ public:
 
     void nodeUpdated(const Ogre::Node* /*unused*/) override
     {
+        auto* node = &dynamic_cast<Ogre::SceneNode&>(m_node);
+        node->_update(true, false);
+
         m_text.set_underlying_node_rect(
             sight::viz::scene3d::helper::scene::compute_bounding_rect(
                 m_camera,
-                &dynamic_cast<Ogre::SceneNode&>(m_node)
+                node
             )
         );
     }
