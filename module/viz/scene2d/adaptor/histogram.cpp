@@ -221,7 +221,7 @@ void histogram::process_interaction(sight::viz::scene2d::data::event& _event)
         if(_event.get_modifier() == sight::viz::scene2d::data::event::control_modifier)
         {
             m_histogram_bins_width = std::min(
-                static_cast<std::size_t>(m_histogram->max() - m_histogram->min()),
+                std::max(std::size_t(1), static_cast<std::size_t>(m_histogram->max() - m_histogram->min())),
                 m_histogram_bins_width * 2
             );
             this->updating();
@@ -385,7 +385,10 @@ void histogram::update_current_point(sight::viz::scene2d::data::event& _event)
 void histogram::on_image_change()
 {
     m_histogram->compute();
-    m_histogram_bins_width = static_cast<std::size_t>(m_histogram->max() - m_histogram->min()) / 50;
+    m_histogram_bins_width = std::max(
+        static_cast<std::size_t>(1),
+        static_cast<std::size_t>(m_histogram->max() - m_histogram->min()) / 50
+    );
     this->updating();
 }
 
