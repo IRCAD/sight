@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -45,7 +45,7 @@ void timer_test::tearDown()
 {
 }
 
-enum class comparison
+enum class comparison : std::uint8_t
 {
     eq,
     ge
@@ -59,7 +59,7 @@ struct test_data
     bool stop;
     comparison comp;
     int reset;
-    core::clock::type (timer::* get_elapsed_time_in_x)();
+    core::clock::type (timer::* get_elapsed_time_in_x)() const;
 };
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,26 +72,27 @@ void timer::reset(core::clock::type _initial_value)
 
 //------------------------------------------------------------------------------
 
-core::clock::type timer::get_elapsed_time_in_micro_sec()
+core::clock::type timer::get_elapsed_time_in_micro_sec() const
 {
+    auto end_time_in_micro_sec = m_end_time_in_micro_sec;
     if(!m_stopped)
     {
-        m_end_time_in_micro_sec = core::clock::get_time_in_micro_sec();
+        end_time_in_micro_sec = core::clock::get_time_in_micro_sec();
     }
 
-    return m_cumul_time_in_micro_sec + (m_end_time_in_micro_sec - m_start_time_in_micro_sec);
+    return m_cumul_time_in_micro_sec + (end_time_in_micro_sec - m_start_time_in_micro_sec);
 }
 
 //------------------------------------------------------------------------------
 
-core::clock::type timer::get_elapsed_time_in_milli_sec()
+core::clock::type timer::get_elapsed_time_in_milli_sec() const
 {
     return this->get_elapsed_time_in_micro_sec() * 0.001;
 }
 
 //------------------------------------------------------------------------------
 
-core::clock::type timer::get_elapsed_time_in_sec()
+core::clock::type timer::get_elapsed_time_in_sec() const
 {
     return this->get_elapsed_time_in_micro_sec() * 0.000001;
 }

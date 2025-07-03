@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,17 +77,17 @@ public:
     /**
      * @return Elapsed time in seconds
      */
-    SIGHT_CORE_API core::clock::type get_elapsed_time_in_sec();
+    SIGHT_CORE_API core::clock::type get_elapsed_time_in_sec() const;
 
     /**
      * @return Elapsed time in milliseconds
      */
-    SIGHT_CORE_API core::clock::type get_elapsed_time_in_milli_sec();
+    SIGHT_CORE_API core::clock::type get_elapsed_time_in_milli_sec() const;
 
     /**
      * @return Elapsed time in microseconds
      */
-    SIGHT_CORE_API core::clock::type get_elapsed_time_in_micro_sec();
+    SIGHT_CORE_API core::clock::type get_elapsed_time_in_micro_sec() const;
 
 /**  @} */
 
