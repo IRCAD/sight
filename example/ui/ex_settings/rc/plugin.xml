@@ -34,7 +34,7 @@ This example shows the possibilities of properties:
                 <item key="int2_1" uid="int2_1_obj" type="sight::data::ivec2" value="5;10" />
                 <item key="int3_1" uid="int3_1_obj" type="sight::data::ivec3" value="5;12;12" />
                 <item key="enum_1" uid="enum_1_obj" type="sight::data::string" value="V1" />
-                <item key="nonlin" uid="nonlin_obj" type="sight::data::integer" value="2" />
+                <item key="nonlin" uid="nonlin_obj" type="sight::data::integer" value="90" />
                 <item key="buttonRaw" uid="button_obj" type="sight::data::integer" value="0" />
             </object>
 
@@ -86,7 +86,7 @@ This example shows the possibilities of properties:
                     <item name="2 Integer" key="int2_1" widget="spin" min="0" max="100" depends="enable" />
                     <item name="3 Integer" key="int3_1" widget="spin" min="0" max="100" depends="enable" />
                     <item name="Enum" key="enum_1" widget="combobox" values="V0,V1=v1,V2=v2,V3=v3" />
-                    <item name="Combo slider" key="nonlin" widget="comboslider" joystick="left" joystick_axis="rx" values="25,50,90,120,150" />
+                    <item name="Combo slider" key="nonlin" widget="comboslider" joystick="left" joystick_axis="rx" use_index="false" values="25,50,90,120,150" />
                     <item name="tickmarks slider" key="text_ticks" widget="tickmarks" values="45,75,100,150,200,250,300,350,400,450,500,550,600,650,700,750,800,850,900,950,1000" />
                     <item name="Button list:" key="buttonRaw" widget="buttonBar" joystick="right" joystick_axis="rx,tz">
                         <item value="button1" label="extrude" icon="sight::module::ui::icons/extrude.svg" />
@@ -136,7 +136,7 @@ This example shows the possibilities of properties:
                     <item name="2 Integer" widget="spin" min="0" max="100" depends="enable_obj" />
                     <item name="3 Integer" widget="spin" min="0" max="100" depends="enable_obj" />
                     <item name="Enum" widget="combobox" values="V0,V1=v1,V2=v2,V3=v3" depends="enable_obj" />
-                    <item name="Combo box" widget="combobox" values="25,50,90,120,150" depends="enable_obj" />
+                    <item name="Combo box" widget="combobox" values="25,50,90,120,150" use_index="false" depends="enable_obj" />
                     <item name="tickmarks slider" widget="tickmarks" values="45,75,100,150,200,250,300,350,400,450,500,550,600,650,700,750,800,850,900,950,1000" depends="enable_obj" />
                     <item name="Button list:" widget="buttonBar" hOffset="32">
                         <item value="button1" label="extrude" icon="sight::module::ui::icons/extrude.svg" />
@@ -184,7 +184,7 @@ This example shows the possibilities of properties:
                     <item name="2 Integer" widget="spin" min="0" max="100" depends="enable_obj" orientation="vertical" />
                     <item name="3 Integer" widget="spin" min="0" max="100" depends="enable_obj" orientation="vertical" />
                     <item name="Enum" widget="combobox" values="V0,V1=v1,V2=v2,V3=v3" depends="enable_obj" orientation="vertical" />
-                    <item name="Combo box" widget="combobox" values="25,50,90,120,150" depends="enable_obj" orientation="vertical" />
+                    <item name="Combo box" widget="combobox" values="25,50,90,120,150" use_index="false" depends="enable_obj" orientation="vertical" />
                     <item name="Button list:" widget="buttonBar" hOffset="32" orientation="vertical">
                         <item value="button1" label="extrude" icon="sight::module::ui::icons/extrude.svg" />
                         <item value="button2" label="Medicine Mode" icon="sight::module::ui::icons/image_series.svg" />

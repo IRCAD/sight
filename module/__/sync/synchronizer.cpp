@@ -23,6 +23,7 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
+#include <core/ptree.hpp>
 
 #include <data/image_series.hpp>
 
@@ -74,50 +75,63 @@ void synchronizer::configuring()
 
 void synchronizer::starting()
 {
-    const config_t configuration = this->get_config();
+    const config_t& configuration = this->get_config();
 
-    const auto in_config = configuration.equal_range("in");
-    for(auto it_config = in_config.first ; it_config != in_config.second ; ++it_config)
+    // Iterates on all "in"
+    for(const auto& in_config : boost::make_iterator_range(configuration.equal_range("in")))
     {
-        const std::string group = it_config->second.get<std::string>("<xmlattr>.group", "");
-        if(group == config_key::FRAMETL_INPUT)
+        if(const auto optional_group = in_config.second.get_optional<std::string>(config_key::GROUP);
+           optional_group
+           && (*optional_group == config_key::FRAMETL_INPUT || *optional_group == config_key::MATRIXTL_INPUT))
         {
-            const auto key_config = it_config->second.equal_range(config_key::KEY);
-            for(auto frame_tl_config = key_config.first ;
-                frame_tl_config != key_config.second ;
-                ++frame_tl_config)
+            const auto& group = *optional_group;
+
+            // Iterates on all "key" in the "in"
+            for(const auto& key_config : boost::make_iterator_range(in_config.second.equal_range(config_key::KEY)))
             {
-                int delay = frame_tl_config->second.get<int>(
-                    config_key::TL_DELAY,
-                    0
-                );
-                if(delay < 0)
+                int delay = 0;
+
+                // Get the delay, if any
+                if(const auto optional_delay = key_config.second.get_optional<std::string>(config_key::TL_DELAY);
+                   optional_delay)
                 {
-                    SIGHT_WARN("Synchronization delay should be positive");
-                    delay = 0;
+                    auto string_delay = *optional_delay;
+
+                    // Try to convert it to a string serializable object
+                    // This allows to handle the case where the delay is defined with a property
+                    /// @note This may need to be improved in the future to handle all attributes as properties
+                    if(const auto object =
+                           std::dynamic_pointer_cast<data::string_serializable>(core::id::get_object(string_delay));
+                       object)
+                    {
+                        string_delay = object->to_string();
+                    }
+
+                    // Parse the string to an integer
+                    try
+                    {
+                        delay = std::stoi(string_delay);
+                    }
+                    catch(...)
+                    {
+                        SIGHT_ERROR(string_delay << " cannot be converted to an integer. 0 will be used as delay.");
+                    }
+
+                    if(delay < 0)
+                    {
+                        SIGHT_ERROR("Synchronization delay should be positive. 0 will be used as delay.");
+                        delay = 0;
+                    }
                 }
 
-                m_frame_tl_delay.push_back(delay);
-            }
-        }
-        else if(group == config_key::MATRIXTL_INPUT)
-        {
-            const auto key_config = it_config->second.equal_range(config_key::KEY);
-            for(auto matrix_tl_config = key_config.first ;
-                matrix_tl_config != key_config.second ;
-                ++matrix_tl_config)
-            {
-                int delay = matrix_tl_config->second.get<int>(
-                    config_key::TL_DELAY,
-                    0
-                );
-                if(delay < 0)
+                if(group == config_key::FRAMETL_INPUT)
                 {
-                    SIGHT_WARN("Synchronization delay should be positive");
-                    delay = 0;
+                    m_frame_tl_delay.push_back(delay);
                 }
-
-                m_matrix_tl_delay.push_back(delay);
+                else if(group == config_key::MATRIXTL_INPUT)
+                {
+                    m_matrix_tl_delay.push_back(delay);
+                }
             }
         }
     }

@@ -75,7 +75,7 @@ namespace sight::module::sync
     <service type="sight::module::sync::synchronizer" auto_connect="true">
         <in group="frame_tl">
             <key uid="frame_tl1" />
-            <key uid="frame_tl4" delay="36" />
+            <key uid="frame_tl4" delay="${my_frame_delay_property}" />
             <key uid="frame_tl6" />
         </in>
         <inout group="frames">
@@ -103,9 +103,11 @@ namespace sight::module::sync
  *
  * @subsection Input Input
  * - \b frame_tl [sight::data::frame_tl]: defines the frame_tl to synchronize.
- *  each frame_tl can have an optional attribute, which is the delay to apply to the timeline.
- * - \b matrixTL [sight::data::matrix_tl]: defines the frame_tl to synchronize.
- *  each matrixTL can have an optional attribute, which is the delay to apply to the timeline.
+ *  each frame_tl can have an optional attribute, which is the delay to apply to the timeline. The delay can be passed
+ *  using a string_serializable object.
+ * - \b matrix_tl [sight::data::matrix_tl]: defines the frame_tl to synchronize.
+ *  each matrixTL can have an optional attribute, which is the delay to apply to the timeline. The delay can be passed
+ *  using a string_serializable object.
  *
  * @subsection In-Out In-Out
  * - \b frames [sight::data::image]: defines the images where to extract the image.
@@ -170,6 +172,7 @@ public:
         static inline const std::string OUTVAR_ELEMENT_INDEX = "<xmlattr>.index";
         static inline const std::string OUTVAR_SEND_STATUS   = "<xmlattr>.sendStatus";
         static inline const std::string TL_DELAY             = "<xmlattr>.delay";
+        static inline const std::string GROUP                = "<xmlattr>.group";
         static inline const std::string KEY                  = "key";
 
         static inline const std::string FRAMETL_INPUT     = "frame_tl";

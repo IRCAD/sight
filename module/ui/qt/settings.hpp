@@ -25,17 +25,17 @@
 
 #include <ui/__/editor.hpp>
 #include <ui/__/parameter.hpp>
+#include <ui/qt/widget/tickmarks_slider.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
 #include <QGridLayout>
+#include <QGroupBox>
 #include <QLabel>
 #include <QObject>
 #include <QPointer>
 #include <QPushButton>
 #include <QSlider>
-
-class QGroupBox;
 
 namespace sight::module::ui::qt
 {
@@ -146,6 +146,8 @@ namespace sight::module::ui::qt
  * send value when value changed otherwise.
  * - \b min_width (optional, int) Minimum width, in device coordinates. @todo Support relative widget size.
  * - \b min_height (optional, int) Minimum height, in device coordinates. @todo Support relative widget size.
+ * - \b use_index (optional, bool, default=true): for 'comboslider', whether to use the index or the value (if "false")
+ * of the element.
  * - \b joystick (optional, string): joystick alias to use for the widget. It can be 'left' or 'right'.
  * - \b joystick_axis (optional, string): joystick axes to use for the widget. It can be a combination up to three axes.
  *                                        Allowed values: 'rx', 'ry', 'rz', 'tx', 'ty', 'tz'.
@@ -163,32 +165,33 @@ public:
     /// @brief  Struct to handle all slots
     struct slots
     {
-        using slot_key_t = core::com::slots::key_t;
-        inline static const slot_key_t UPDATE_ENUM_RANGE_SLOT           = "update_enum_range";
-        inline static const slot_key_t UPDATE_INT_MIN_PARAMETER_SLOT    = "update_int_min_parameter";
-        inline static const slot_key_t UPDATE_INT_MAX_PARAMETER_SLOT    = "update_int_max_parameter";
-        inline static const slot_key_t UPDATE_DOUBLE_MIN_PARAMETER_SLOT = "update_double_min_parameter";
-        inline static const slot_key_t UPDATE_DOUBLE_MAX_PARAMETER_SLOT = "update_double_max_parameter";
+        using key_t = core::com::slots::key_t;
+        inline static const key_t UPDATE_ENUM_RANGE           = "update_enum_range";
+        inline static const key_t UPDATE_INT_MIN_PARAMETER    = "update_int_min_parameter";
+        inline static const key_t UPDATE_INT_MAX_PARAMETER    = "update_int_max_parameter";
+        inline static const key_t UPDATE_DOUBLE_MIN_PARAMETER = "update_double_min_parameter";
+        inline static const key_t UPDATE_DOUBLE_MAX_PARAMETER = "update_double_max_parameter";
     };
 
     struct enum_button_param
     {
-        std::string value {""};
-        std::string label {""};
-        std::string icon_path {""};
+        std::string value {};
+        std::string label {};
+        std::string icon_path {};
     };
 
     struct param_widget
     {
-        std::string name                = {};
-        std::string key                 = {};
-        std::size_t data_index          = {0};
-        std::string default_value       = {};
-        bool reset_button               = true;
-        bool hide_min_max               = false;
-        bool preference                 = false;
-        boost::optional<int> min_width  = {};
-        boost::optional<int> min_height = {};
+        std::string name {};
+        std::string key {};
+        std::size_t data_index {0};
+        std::string default_value {};
+        bool reset_button {true};
+        bool hide_min_max {false};
+        bool preference {false};
+        boost::optional<int> min_width {};
+        boost::optional<int> min_height {};
+        bool use_index {true};
     };
 
     struct qt_property
@@ -197,6 +200,7 @@ public:
         inline static const char* data_index = "data_index";
         inline static const char* count      = "count";
         inline static const char* index      = "index";
+        inline static const char* use_index  = "use_index";
     };
 
     template<typename T>
@@ -305,9 +309,6 @@ private:
      */
     bool eventFilter(QObject* _watched, QEvent* _event) override;
 
-    /// Updates the values of tickmarks widgets
-    void update_tickmarks(const std::string _options, const std::string _key);
-
     /// Creates a reset button for one widget.
     /// @param _key Name of the parameter it resets.
     /// @param _on_click Slot to call when the button is clicked (when QPushButton::clicked is sent)
@@ -371,7 +372,7 @@ private:
         const std::string& _options,
         std::vector<std::string>& _labels,
         std::vector<std::string>& _keys,
-        std::string _separators = ", ;"
+        std::string _separators = ",;\n\t"
     );
 
     /// Create a multi choice widget
@@ -423,7 +424,7 @@ private:
     requires std::derived_from<DATATYPE, sight::data::generic<SUBTYPE> >
     void set_parameter(const SUBTYPE& _val, std::string _key);
 
-    /// Slot: This method is used to set an enum parameter.
+    /// SLOT: This method is used to set an enum parameter.
     void set_enum_parameter(std::string _val, std::string _key);
 
     /// SLOT: This method sets an enum parameter using the index of the enum
@@ -432,23 +433,22 @@ private:
     /// SLOT: This method updates the all enum values using a tokenized string ("value1;value2")
     void update_enum_range(std::string _options, std::string _key);
 
-    /// Slot: Updates the minimum value of an integer parameter (int, int2, int3)
+    /// SLOT: Updates the minimum value of an integer parameter (int, int2, int3)
     void update_int_min_parameter(int _min, std::string _key);
 
-    /// Slot: Updates the maximum value of an integer parameter (int, int2, int3)
+    /// SLOT: Updates the maximum value of an integer parameter (int, int2, int3)
     void update_int_max_parameter(int _max, std::string _key);
 
-    /// Slot: Updates the minimum value of a double parameter (double, double2, double3)
+    /// SLOT: Updates the minimum value of a double parameter (double, double2, double3)
     void update_double_min_parameter(double _min, std::string _key);
 
-    /// Slot: Updates the maximum value of a double parameter (double, double2, double3)
+    /// SLOT: Updates the maximum value of a double parameter (double, double2, double3)
     void update_double_max_parameter(double _max, std::string _key);
 
     /// @}
 
-    /// Internal function that updates enum widget value using a list of string (each element can contains value & data
-    /// ex:"Value=data")
-    void update_enum_list(const std::vector<std::string>& _list, const std::string _key);
+    /// Updates the values of tickmarks widgets
+    void update_tickmarks(sight::ui::qt::widget::tickmarks_slider* const _tickmarks, const std::string& _options);
 
     /// Return the widget of the parameter with the given key, or nullptr if it does not exist
     QObject* get_param_widget(const std::string& _key);

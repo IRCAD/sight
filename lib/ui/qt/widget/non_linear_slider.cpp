@@ -67,9 +67,14 @@ void non_linear_slider::set_values(const std::vector<int>& _values)
 
 void non_linear_slider::set_value(int _value)
 {
-    auto it = std::ranges::find(m_values, _value);
-    SIGHT_ASSERT("The value should exist in the list of possible values", it != m_values.end());
-    m_slider->setValue(static_cast<int>(std::distance(m_values.begin(), it)));
+    if(auto it = std::ranges::find(m_values, _value); it != m_values.end())
+    {
+        m_slider->setValue(static_cast<int>(std::distance(m_values.begin(), it)));
+    }
+    else
+    {
+        SIGHT_WARN("Value " + std::to_string(_value) + " is not in the slider values list");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -102,6 +107,13 @@ int non_linear_slider::value()
 std::size_t non_linear_slider::index()
 {
     return static_cast<std::size_t>(m_slider->value());
+}
+
+//------------------------------------------------------------------------------
+
+const std::vector<int>& non_linear_slider::values() const
+{
+    return m_values;
 }
 
 //------------------------------------------------------------------------------

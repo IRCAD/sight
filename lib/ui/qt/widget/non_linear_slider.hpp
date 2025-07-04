@@ -47,6 +47,7 @@ public:
     SIGHT_UI_QT_API_QT int value();
     SIGHT_UI_QT_API_QT std::size_t index();
 
+    [[nodiscard]] SIGHT_UI_QT_API_QT const std::vector<int>& values() const;
     [[nodiscard]] SIGHT_UI_QT_API_QT std::size_t num_values() const;
 
     QSize minimumSizeHint() const override;

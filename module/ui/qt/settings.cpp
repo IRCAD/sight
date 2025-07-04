@@ -43,7 +43,6 @@
 #include <ui/__/dialog/location.hpp>
 #include <ui/qt/container/widget.hpp>
 #include <ui/qt/widget/non_linear_slider.hpp>
-#include <ui/qt/widget/tickmarks_slider.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
@@ -89,11 +88,11 @@ inline static void set_minimum_size(QWidget* _widget, const settings::param_widg
 
 settings::settings() noexcept
 {
-    new_slot(slots::UPDATE_ENUM_RANGE_SLOT, &settings::update_enum_range, this);
-    new_slot(slots::UPDATE_INT_MIN_PARAMETER_SLOT, &settings::update_int_min_parameter, this);
-    new_slot(slots::UPDATE_INT_MAX_PARAMETER_SLOT, &settings::update_int_max_parameter, this);
-    new_slot(slots::UPDATE_DOUBLE_MIN_PARAMETER_SLOT, &settings::update_double_min_parameter, this);
-    new_slot(slots::UPDATE_DOUBLE_MAX_PARAMETER_SLOT, &settings::update_double_max_parameter, this);
+    new_slot(slots::UPDATE_ENUM_RANGE, &settings::update_enum_range, this);
+    new_slot(slots::UPDATE_INT_MIN_PARAMETER, &settings::update_int_min_parameter, this);
+    new_slot(slots::UPDATE_INT_MAX_PARAMETER, &settings::update_int_max_parameter, this);
+    new_slot(slots::UPDATE_DOUBLE_MIN_PARAMETER, &settings::update_double_min_parameter, this);
+    new_slot(slots::UPDATE_DOUBLE_MAX_PARAMETER, &settings::update_double_max_parameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -123,13 +122,18 @@ void settings::starting()
 
     const auto& ui_cfg    = config.get_child("ui");
     const bool scrollable = ui_cfg.get<bool>("<xmlattr>.scrollable", false);
+    const auto spacing    = ui_cfg.get_optional<int>("<xmlattr>.spacing");
 
     auto* layout = new QFormLayout;
-    layout->setContentsMargins(0, 0, 0, 0);
     layout->setAlignment(Qt::AlignCenter);
     layout->setFormAlignment(Qt::AlignCenter);
     layout->setLabelAlignment(Qt::AlignVCenter | Qt::AlignLeft);
     layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
+
+    if(spacing)
+    {
+        layout->setVerticalSpacing(*spacing);
+    }
 
     if(scrollable)
     {
@@ -166,7 +170,8 @@ void settings::starting()
             .reset_button = cfg.get<bool>("<xmlattr>.reset", true),
             .hide_min_max = cfg.get<bool>("<xmlattr>.hide_min_max", false),
             .min_width    = cfg.get_optional<int>("<xmlattr>.min_width"),
-            .min_height   = cfg.get_optional<int>("<xmlattr>.min_height")
+            .min_height   = cfg.get_optional<int>("<xmlattr>.min_height"),
+            .use_index    = cfg.get<bool>("<xmlattr>.use_index", true)
         };
 
         widget.data_index = data_index++;
@@ -224,6 +229,7 @@ void settings::starting()
         m_param_boxes.emplace_back(param_box);
 
         auto* const param_box_layout = new QBoxLayout {param_box_direction, param_box};
+        param_box_layout->setContentsMargins(0, 0, 0, 0);
 
         auto* const row_layout = new QHBoxLayout;
         row_layout->setContentsMargins(0, 0, 0, 0);
@@ -1543,65 +1549,6 @@ QPushButton* settings::create_integer_spin_widget(
 
 //-----------------------------------------------------------------------------
 
-void settings::update_enum_list(const std::vector<std::string>& _list, const std::string _key)
-{
-    std::vector<std::string> labels;
-    std::vector<std::string> keys;
-    for(const auto& s : _list)
-    {
-        std::vector<std::string> parts;
-        boost::split(parts, s, boost::is_any_of("="));
-        labels.push_back(parts[0]);
-        if(!parts[1].empty())
-        {
-            keys.push_back(parts[1]);
-        }
-        else
-        {
-            keys.push_back(parts[0]);
-        }
-    }
-
-    this->block_signals(true);
-
-    QObject* widget = this->get_param_widget(_key);
-
-    auto* combobox = qobject_cast<QComboBox*>(widget);
-
-    if(combobox != nullptr)
-    {
-        combobox->clear();
-
-        int idx = 0;
-        for(const auto& l : labels)
-        {
-            combobox->insertItem(idx, QString::fromStdString(l));
-            ++idx;
-        }
-
-        // Add optional data
-        idx = 0;
-        for(const auto& k : keys)
-        {
-            combobox->setItemData(idx, QString::fromStdString(k));
-            ++idx;
-        }
-    }
-    else if(auto* non_linear_slider = qobject_cast<sight::ui::qt::widget::non_linear_slider*>(widget);
-            non_linear_slider != nullptr)
-    {
-        std::vector<int> values;
-        values.reserve(labels.size());
-        std::ranges::transform(labels, std::back_inserter(values), [](const std::string& _s){return std::stoi(_s);});
-        non_linear_slider->set_values(values);
-        non_linear_slider->set_value(values[0]);
-    }
-
-    this->block_signals(false);
-}
-
-//-----------------------------------------------------------------------------
-
 void settings::parse_enum_string(
     const std::string& _options,
     std::vector<std::string>& _labels,
@@ -1644,6 +1591,7 @@ void settings::create_enum_combobox_widget(
 
     combo_box->setProperty(qt_property::key, QString::fromStdString(_setup.key));
     combo_box->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+    combo_box->setProperty(qt_property::use_index, _setup.use_index);
 
     for(int idx = 0 ; const auto& value : _values)
     {
@@ -1689,20 +1637,36 @@ void settings::create_enum_combobox_widget(
                 update_data<sight::data::string>(combo_box, data);
             });
     }
-    else
+    else if(const auto integer_obj = data<sight::data::integer>(combo_box); integer_obj)
     {
-        const auto obj        = data<sight::data::integer>(combo_box);
-        const auto init_value = obj->value();
-        combo_box->setCurrentIndex(static_cast<int>(init_value));
-        connect_data(obj, _setup.key);
+        const auto value = integer_obj->value();
 
-        QObject::connect(
-            combo_box,
-            QOverload<int>::of(&QComboBox::currentIndexChanged),
-            [this, combo_box](int _value)
-            {
-                update_data<sight::data::integer, std::int64_t>(combo_box, _value);
-            });
+        if(_setup.use_index)
+        {
+            combo_box->setCurrentIndex(int(value));
+
+            QObject::connect(
+                combo_box,
+                QOverload<int>::of(&QComboBox::currentIndexChanged),
+                [this, combo_box](int _value)
+                {
+                    update_data<sight::data::integer, std::int64_t>(combo_box, _value);
+                });
+        }
+        else
+        {
+            combo_box->setCurrentText(QString::number(value));
+
+            QObject::connect(
+                combo_box,
+                &QComboBox::currentTextChanged,
+                [this, combo_box](const QString& _value)
+                {
+                    update_data<sight::data::integer, std::int64_t>(combo_box, _value.toLongLong());
+                });
+        }
+
+        connect_data(integer_obj, _setup.key);
     }
 
     // Style
@@ -1737,26 +1701,31 @@ void settings::create_enum_slider_widget(
     slider->setObjectName(QString::fromStdString(_setup.key));
     slider->setProperty(qt_property::key, QString::fromStdString(_setup.key));
     slider->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+    slider->setProperty(qt_property::use_index, _setup.use_index);
 
     slider->set_values(int_values);
     slider->set_tracking(!_on_release);
 
-    const bool is_string = data<sight::data::string>(slider) != nullptr;
-
     // Set the slider to the default value
-    if(is_string)
+    if(const auto string_obj = data<sight::data::string>(slider); string_obj)
     {
-        const auto obj        = data<sight::data::string>(slider);
-        const auto init_value = obj->value();
-        slider->set_value(std::stoi(init_value));
-        connect_data(obj, _setup.key);
+        slider->set_value(std::stoi(string_obj->value()));
+        connect_data(string_obj, _setup.key);
     }
-    else
+    else if(const auto integer_obj = data<sight::data::integer>(slider); integer_obj)
     {
-        const auto obj        = data<sight::data::integer>(slider);
-        const auto init_index = obj->value();
-        slider->set_value(int_values[static_cast<std::size_t>(init_index)]);
-        connect_data(obj, _setup.key);
+        const auto value = integer_obj->value();
+
+        if(_setup.use_index)
+        {
+            slider->set_value(int_values[std::size_t(value)]);
+        }
+        else
+        {
+            slider->set_value(int(value));
+        }
+
+        connect_data(integer_obj, _setup.key);
     }
 
     slider->setStyleSheet(qApp->styleSheet());
@@ -1815,15 +1784,22 @@ void settings::create_enum_slider_widget(
         QObject::connect(
             slider,
             &sight::ui::qt::widget::non_linear_slider::value_changed,
-            [this, key = _setup.key, slider, value_label](int _value)
+            [this, key = _setup.key, slider, value_label, use_index = _setup.use_index](int _value)
             {
-                if(const auto string_obj = data<sight::data::string>(slider); string_obj == nullptr)
+                if(const auto string_obj = data<sight::data::string>(slider); string_obj)
                 {
-                    update_data<sight::data::integer>(slider, static_cast<std::int64_t>(slider->index()));
+                    update_data<sight::data::string>(slider, std::to_string(_value));
                 }
                 else
                 {
-                    update_data<sight::data::string>(slider, std::to_string(_value));
+                    if(use_index)
+                    {
+                        update_data<sight::data::integer>(slider, static_cast<std::int64_t>(slider->index()));
+                    }
+                    else
+                    {
+                        update_data<sight::data::integer>(slider, static_cast<std::int64_t>(_value));
+                    }
                 }
 
                 value_label->setText(QString::number(_value));
@@ -1931,7 +1907,7 @@ void settings::create_tickmarks_widget(
     std::string options = boost::algorithm::join(_values, ",");
 
     _layout->addWidget(value_label);
-    this->update_tickmarks(options, _setup.key);
+    this->update_tickmarks(tick_widget, options);
 }
 
 //-----------------------------------------------------------------------------
@@ -2245,21 +2221,24 @@ double settings::get_double_slider_value(const QSlider* _slider)
 
 void settings::update_enum_range(std::string _options, std::string _key)
 {
-    this->block_signals(true);
-
     QObject* widget = this->get_param_widget(_key);
 
-    auto* combobox = qobject_cast<QComboBox*>(widget);
-
-    if(combobox != nullptr)
+    // Early return if the widget is not the widget we search for
+    if(widget == nullptr)
     {
-        combobox->blockSignals(true);
+        return;
+    }
+
+    this->block_signals(true);
+
+    std::vector<std::string> values;
+    std::vector<std::string> data;
+    sight::module::ui::qt::settings::parse_enum_string(_options, values, data);
+
+    if(auto* combobox = qobject_cast<QComboBox*>(widget); combobox != nullptr)
+    {
+        QSignalBlocker blocker(combobox);
         combobox->clear();
-
-        std::vector<std::string> values;
-        std::vector<std::string> data;
-
-        sight::module::ui::qt::settings::parse_enum_string(_options, values, data);
 
         int idx = 0;
         for(const auto& value : values)
@@ -2276,76 +2255,134 @@ void settings::update_enum_range(std::string _options, std::string _key)
             ++idx;
         }
 
-        const bool is_string = settings::data<sight::data::string>(combobox) != nullptr;
-        if(is_string)
+        if(const auto string_obj = settings::data<sight::data::string>(combobox); string_obj)
         {
-            const auto obj        = settings::data<sight::data::string>(combobox);
-            const auto init_value = obj->value();
-            for(std::size_t index = 0 ; const auto& choice : data)
-            {
-                if(choice == init_value)
-                {
-                    combobox->setCurrentIndex(static_cast<int>(index));
-                }
+            const auto init_value = string_obj->value();
+            combobox->setCurrentText(QString::fromStdString(init_value));
+        }
+        else if(const auto integer_obj = settings::data<sight::data::integer>(combobox); integer_obj)
+        {
+            const auto current_value = integer_obj->value();
 
-                ++index;
+            if(combobox->property(qt_property::use_index).toBool())
+            {
+                combobox->setCurrentIndex(static_cast<int>(current_value));
+            }
+            else
+            {
+                combobox->setCurrentText(QString::number(current_value));
             }
         }
-        else
-        {
-            const auto obj        = settings::data<sight::data::integer>(combobox);
-            const auto init_value = obj->value();
-            combobox->setCurrentIndex(static_cast<int>(init_value));
-        }
-
-        combobox->blockSignals(false);
     }
-    else
+    else if(auto* const non_linear_slider = qobject_cast<sight::ui::qt::widget::non_linear_slider*>(widget);
+            non_linear_slider != nullptr)
     {
-        this->update_tickmarks(_options, _key);
+        // Convert string values to integers
+        std::vector<int> int_values;
+        int_values.reserve(values.size());
+        std::ranges::transform(
+            values,
+            std::back_inserter(int_values),
+            [](const std::string& _s)
+            {
+                return std::stoi(_s);
+            });
+
+        // Retrieve the old value before updating the slider
+        const auto& old_value =
+            [&non_linear_slider, &_key, this]() -> std::optional<int>
+            {
+                if(const auto string_obj = settings::data<sight::data::string>(non_linear_slider); string_obj)
+                {
+                    try
+                    {
+                        return std::stoi(string_obj->value());
+                    }
+                    catch(...)
+                    {
+                        SIGHT_ERROR(
+                            "Failed to convert " << string_obj->value() << " string to integer for key: " << _key
+                        );
+                    }
+                }
+                else if(const auto integer_obj = settings::data<sight::data::integer>(non_linear_slider); integer_obj)
+                {
+                    const auto& old_values   = non_linear_slider->values();
+                    const auto current_value = integer_obj->value();
+
+                    if(non_linear_slider->property(qt_property::use_index).toBool())
+                    {
+                        if(current_value >= 0 && current_value < std::int64_t(old_values.size()))
+                        {
+                            return old_values[std::size_t(current_value)];
+                        }
+                    }
+                    else
+                    {
+                        // If the slider is not using indices, return the value directly
+                        return current_value;
+                    }
+                }
+
+                return std::nullopt;
+            }();
+
+        // Apply new values
+        non_linear_slider->set_values(int_values);
+
+        // Reapply old value, if possible
+        if(old_value && std::ranges::find(int_values, *old_value) != int_values.end())
+        {
+            // If the old value is still in the new values, set it
+            non_linear_slider->set_value(*old_value);
+        }
+        else if(!int_values.empty())
+        {
+            // Otherwise, set the first value as default
+            non_linear_slider->set_index(0);
+        }
+    }
+    else if(auto* const tickmarks = qobject_cast<sight::ui::qt::widget::tickmarks_slider*>(widget);
+            tickmarks != nullptr)
+    {
+        this->update_tickmarks(tickmarks, _options);
     }
 
     this->block_signals(false);
 }
 
 //------------------------------------------------------------------------------
-void settings::update_tickmarks(const std::string _options, const std::string _key)
+void settings::update_tickmarks(sight::ui::qt::widget::tickmarks_slider* const _tickmarks, const std::string& _options)
 {
-    QObject* widget_ptr = this->get_param_widget(_key);
+    QSignalBlocker guard(_tickmarks);
 
-    auto* tickmarks_widget = qobject_cast<sight::ui::qt::widget::tickmarks_slider*>(widget_ptr);
-    if(tickmarks_widget != nullptr)
+    std::vector<std::string> tick_labels;
+    std::vector<std::string> tick_data;
+    sight::module::ui::qt::settings::parse_enum_string(_options, tick_labels, tick_data);
+
+    if(!tick_labels.empty())
     {
-        QSignalBlocker guard(tickmarks_widget);
+        const int max_index = static_cast<int>(tick_labels.size()) - 1;
+        _tickmarks->set_range(0, max_index);
+        _tickmarks->set_tick_interval(1);
+        _tickmarks->set_tick_labels(tick_labels);
 
-        std::vector<std::string> tick_labels;
-        std::vector<std::string> tick_data;
-        sight::module::ui::qt::settings::parse_enum_string(_options, tick_labels, tick_data);
-
-        if(!tick_labels.empty())
+        int current_index = 0;
+        if(auto string_data = settings::data<sight::data::string>(_tickmarks))
         {
-            const int max_index = static_cast<int>(tick_labels.size()) - 1;
-            tickmarks_widget->set_range(0, max_index);
-            tickmarks_widget->set_tick_interval(1);
-            tickmarks_widget->set_tick_labels(tick_labels);
-
-            int current_index = 0;
-            if(auto string_data = settings::data<sight::data::string>(tickmarks_widget))
+            const std::string& current_value = string_data->value();
+            auto it                          = std::find(tick_data.begin(), tick_data.end(), current_value);
+            if(it != tick_data.end())
             {
-                const std::string& current_value = string_data->value();
-                auto it                          = std::find(tick_data.begin(), tick_data.end(), current_value);
-                if(it != tick_data.end())
-                {
-                    current_index = static_cast<int>(std::distance(tick_data.begin(), it));
-                }
+                current_index = static_cast<int>(std::distance(tick_data.begin(), it));
             }
-            else if(auto integer_data = settings::data<sight::data::integer>(tickmarks_widget))
-            {
-                current_index = static_cast<int>(std::clamp<std::int64_t>(integer_data->value(), 0, max_index));
-            }
-
-            tickmarks_widget->set_current_tick(current_index);
         }
+        else if(auto integer_data = settings::data<sight::data::integer>(_tickmarks))
+        {
+            current_index = static_cast<int>(std::clamp<std::int64_t>(integer_data->value(), 0, max_index));
+        }
+
+        _tickmarks->set_current_tick(current_index);
     }
 }
 
@@ -2579,7 +2616,7 @@ QObject* settings::get_param_widget(const std::string& _key)
 
     if(it == m_param_boxes.cend())
     {
-        SIGHT_ERROR(get_id() << ": No param with '" + _key + "' found");
+        SIGHT_DEBUG(get_id() << ": No param with '" + _key + "' found");
         return nullptr;
     }
 
@@ -2779,7 +2816,15 @@ void settings::set_parameter<sight::data::integer>(const std::int64_t& _val, std
     else if(auto* non_linear_slider = qobject_cast<sight::ui::qt::widget::non_linear_slider*>(widget);
             non_linear_slider != nullptr)
     {
-        non_linear_slider->set_index(std::size_t(val));
+        if(non_linear_slider->property(qt_property::use_index).toBool())
+        {
+            non_linear_slider->set_index(std::size_t(val));
+        }
+        else
+        {
+            // If the slider is not using indices, set the value directly
+            non_linear_slider->set_value(val);
+        }
     }
     else if(auto* tickmarks_widget = qobject_cast<sight::ui::qt::widget::tickmarks_slider*>(widget);
             tickmarks_widget != nullptr)
@@ -2788,7 +2833,15 @@ void settings::set_parameter<sight::data::integer>(const std::int64_t& _val, std
     }
     else if(combobox != nullptr)
     {
-        combobox->setCurrentIndex(val);
+        if(combobox->property(qt_property::use_index).toBool())
+        {
+            combobox->setCurrentIndex(int(val));
+        }
+        else
+        {
+            // If the slider is not using indices, set the value directly
+            combobox->setCurrentText(QString::number(val));
+        }
     }
     else if(auto* button_group = qobject_cast<QButtonGroup*>(widget); button_group != nullptr)
     {

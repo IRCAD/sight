@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,7 +93,7 @@ protected:
     SIGHT_SERVICE_API tracker();
 
     ///@brief tracker destructor. Do nothing.
-    SIGHT_SERVICE_API ~tracker() override;
+    SIGHT_SERVICE_API ~tracker() override = default;
 
     SIGHT_SERVICE_API void configuring() override;
     SIGHT_SERVICE_API void configuring(const config_t& _config) override;
@@ -125,7 +125,7 @@ protected:
     bool m_drop_obj {true};
 
     /// If false, the trackMethod does nothing
-    bool m_is_tracking {false};
+    std::atomic_bool m_is_tracking {false};
 
     sight::data::ptr<sight::data::frame_tl, sight::data::access::in> m_timeline {this, TIMELINE_INPUT};
 };

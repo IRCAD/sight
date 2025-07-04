@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,11 +45,6 @@ tracker::tracker()
     new_slot(START_TRACKING_SLOT, &tracker::start_tracking, this);
     new_slot(STOP_TRACKING_SLOT, &tracker::stop_tracking, this);
 }
-
-//-----------------------------------------------------------------------------
-
-tracker::~tracker()
-= default;
 
 //-----------------------------------------------------------------------------
 
