@@ -244,6 +244,10 @@ core::runtime::config_t config::get_adapted_template_config(
         {
             fields[variable] = iter_field->second;
         }
+        else if(param.second == S_GENERATE_IDENTIFIER)
+        {
+            fields[variable] = get_unique_identifier(_config_id + "_channel_" + param.first);
+        }
         else if(param.second != S_MANDATORY_PARAMETER_IDENTIFIER)
         {
             fields[variable] = param.second;

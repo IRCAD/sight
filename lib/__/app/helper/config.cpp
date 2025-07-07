@@ -59,12 +59,7 @@ core::com::helper::proxy_connections config::parse_connections(
 #ifndef _DEBUG
     SIGHT_NOT_USED(_err_msg_head);
 #endif
-    std::string channel = _connection_cfg.get<std::string>("<xmlattr>.channel", _generate_channel_name_fn());
-    if(channel == "@GEN@")
-    {
-        channel = _generate_channel_name_fn();
-    }
-
+    const std::string channel = _connection_cfg.get<std::string>("<xmlattr>.channel", _generate_channel_name_fn());
     core::com::helper::proxy_connections proxy_cnt(channel);
 
     for(const auto& elem : _connection_cfg)

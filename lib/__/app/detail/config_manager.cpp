@@ -303,11 +303,13 @@ void config_manager::destroy()
 void config_manager::add_existing_deferred_object(const data::object::sptr& _obj, const std::string& _uid)
 {
     SIGHT_ASSERT(
-        "Existing deferred objects must be added before starting the configuration, it's useless to do it later",
+        this->msg_head()
+        + "Existing deferred objects must be added before starting the configuration, it's useless to do it later",
         m_state == state_destroyed
     );
     SIGHT_ASSERT(
-        "Optional objects passed in the config launcher must be declared as deferred in the configuration.",
+        this->msg_head()
+        + "Optional objects passed in the config launcher must be declared as deferred in the configuration.",
         m_deferred_objects.contains(_uid)
     );
     deferred_object_t deferred_object;
