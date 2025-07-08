@@ -99,6 +99,13 @@ macro(group_maker SIGHT_TARGET)
     endforeach()
 endmacro()
 
+# Generate a custom license file if a repository-wide file exists
+macro(gen_license_file)
+    if(WIN32 AND EXISTS ${CMAKE_SOURCE_DIR}/cmake/license.rtf.in)
+        configure_file(${CMAKE_SOURCE_DIR}/cmake/license.rtf.in ${CMAKE_CURRENT_BINARY_DIR}/NSIS/license.rtf @ONLY)
+    endif()
+endmacro()
+
 # Set the header installation directory
 function(get_header_file_install_destination)
     # Paths for config files are:
@@ -1031,6 +1038,7 @@ macro(sight_add_target)
         else()
             fw_exec(${SIGHT_TARGET} CONSOLE ${SIGHT_TARGET_CONSOLE})
         endif()
+        gen_license_file()
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "LIBRARY")
         fw_lib(${SIGHT_TARGET} ${SIGHT_TARGET_OBJECT_LIBRARY})
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "MODULE")
@@ -1054,6 +1062,7 @@ macro(sight_add_target)
         endif()
         set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_PROJECT_VERSION "${${SIGHT_TARGET}_VERSION}")
         set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_UNIQUE "${SIGHT_TARGET_UNIQUE}")
+        gen_license_file()
     endif()
 
     if(NOT DEFINED SIGHT_TARGET_WARNINGS_AS_ERRORS OR SIGHT_TARGET_WARNINGS_AS_ERRORS)
