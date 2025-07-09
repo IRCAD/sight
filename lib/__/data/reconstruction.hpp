@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,6 +108,13 @@ public:
     /// @}
 
     /**
+     * @brief Get/Set the label associated with the reconstructions
+     */
+    std::optional<std::uint32_t> get_label() const;
+    void set_label(const std::uint32_t _val);
+    /// @}
+
+    /**
      * @brief Get/Set the volume from mask
      */
     double get_computed_mask_volume() const;
@@ -169,6 +176,9 @@ protected:
 
     //! reconstruction's material
     material::sptr m_material;
+
+    /// Defines the label associated to the reconstruction, used for picking.
+    std::optional<std::uint32_t> m_label {std::nullopt};
 
     //! reconstruction's mask
     image::sptr m_image;
@@ -297,6 +307,20 @@ inline material::csptr reconstruction::get_material() const
 inline void reconstruction::set_material(const material::sptr& _val)
 {
     m_material = _val;
+}
+
+//-----------------------------------------------------------------------------
+
+inline std::optional<std::uint32_t> reconstruction::get_label() const
+{
+    return m_label;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void reconstruction::set_label(const std::uint32_t _val)
+{
+    m_label = _val;
 }
 
 //-----------------------------------------------------------------------------

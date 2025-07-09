@@ -183,7 +183,18 @@ void reconstruction::create_mesh_service()
         mesh_adaptor->set_transform_id(this->get_transform_id());
         mesh_adaptor->set_dynamic(m_is_dynamic);
         mesh_adaptor->set_dynamic_vertices(m_is_dynamic_vertices);
-        mesh_adaptor->set_query_flags(m_query_flags);
+
+        // Check if the reconstruction has a label set
+        // If yes, use it as a query flag
+        auto label = reconstruction->get_label();
+        if(label.has_value())
+        {
+            mesh_adaptor->set_query_flags(*label);
+        }
+        else
+        {
+            mesh_adaptor->set_query_flags(m_query_flags);
+        }
 
         mesh_adaptor->start();
 

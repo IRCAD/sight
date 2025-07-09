@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,11 +53,12 @@ void reconstruction_test::tearDown()
 
 //------------------------------------------------------------------------------
 
-void reconstruction_test::methode1() //test des setters et getters
+void reconstruction_test::accessors() // testing setters et getters
 {
     const bool is_visible            = true;
     const std::string organ_name     = "OrganName";
     const std::string structure_type = "structure_t";
+    const std::uint32_t label        = 42;
 
     // process
     auto p1 = std::make_shared<data::reconstruction>();
@@ -65,11 +66,16 @@ void reconstruction_test::methode1() //test des setters et getters
     p1->set_is_visible(is_visible);
     p1->set_organ_name(organ_name);
     p1->set_structure_type(structure_type);
+    p1->set_label(label);
 
     // check
     CPPUNIT_ASSERT_EQUAL(p1->get_is_visible(), is_visible);
     CPPUNIT_ASSERT_EQUAL(p1->get_organ_name(), organ_name);
     CPPUNIT_ASSERT_EQUAL(p1->get_structure_type(), structure_type);
+
+    auto label_opt = p1->get_label();
+    CPPUNIT_ASSERT(label_opt);
+    CPPUNIT_ASSERT_EQUAL(*label_opt, label);
 
     auto p2 = std::make_shared<data::reconstruction>();
     CPPUNIT_ASSERT(*p1 != *p2);
@@ -77,6 +83,9 @@ void reconstruction_test::methode1() //test des setters et getters
     p2->set_is_visible(is_visible);
     p2->set_organ_name(organ_name);
     p2->set_structure_type(structure_type);
+    p2->set_label(label);
+
+    CPPUNIT_ASSERT(*p1 == *p2);
 }
 
 //------------------------------------------------------------------------------

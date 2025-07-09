@@ -384,6 +384,8 @@ void vtk_mesher::post_reconstruction_jobs(
                                }
 
                                reconstruction->set_material(material);
+                               reconstruction->set_label(static_cast<std::uint32_t>(value));
+
                                recs.push_back(reconstruction);
                            };
 

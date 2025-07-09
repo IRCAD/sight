@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #include "module/viz/scene3d/adaptor/picker.hpp"
 
 #include <core/com/signals.hpp>
+#include <core/ptree.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -45,13 +46,19 @@ void picker::configuring()
     const config_t config = this->get_config();
 
     static const std::string s_PRIORITY_CONFIG              = CONFIG + "priority";
-    static const std::string s_QUERY_MASK_CONFIG            = CONFIG + "queryMask";
     static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = CONFIG + "layerOrderDependant";
 
     m_priority              = config.get<int>(s_PRIORITY_CONFIG, m_priority);
     m_layer_order_dependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layer_order_dependant);
 
-    const std::string hexa_mask = config.get<std::string>(s_QUERY_MASK_CONFIG, "");
+    const auto hexa_mask = core::ptree::get_and_deprecate<std::string>(
+        config,
+        CONFIG + "query_mask",
+        CONFIG + "queryMask",
+        "26.0",
+        ""
+    );
+
     if(!hexa_mask.empty())
     {
         SIGHT_ASSERT(

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ class reconstruction_test : public CPPUNIT_NS::TestFixture
 private:
 
     CPPUNIT_TEST_SUITE(reconstruction_test);
-    CPPUNIT_TEST(methode1);
+    CPPUNIT_TEST(accessors);
     CPPUNIT_TEST(image);
     CPPUNIT_TEST(equality_test);
     CPPUNIT_TEST_SUITE_END();
@@ -43,7 +43,7 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void methode1();
+    static void accessors();
     static void image();
     static void equality_test();
 };
