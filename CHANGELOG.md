@@ -1,3 +1,652 @@
+# sight 25.1.0
+
+## Bug fixes:
+
+### build
+
+*Build error on clang because of data signals.*
+
+*Install of Ogre and Qt6 plugins.*
+
+### ci
+
+*Remove specific linux build job for draft merge requests.*
+
+This enables the coverage deployment also for draft merge requests.
+
+### core
+
+*Wrong optional channel name substitution.*
+
+*Change update loop order in instrinsic calibration.*
+
+* introduce dedicated service to generate the 3d model of the chessboard, to avoid update sync issues
+
+*Do not stop registered services twice.*
+
+- Some services handle their services on their own. The registering service doesn't handle start so we want to at least be smart about the stop and do it only when needed
+
+*Various sequencer and activity corrections.*
+
+First, a new object validator that verifies if an object is empty. For now it handles `sight`::data::image``and `sight::data::point_list`. It is likely to be extended to support more object types in the future.
+Then some cleaning was required in the configuration manager to make recent features compatible with activities. For instance, we require activity objects to have a real unique identifier that matches the requirement names. This is mandatory to get those objects work with the recent `sight`::ui::module_qt::settings``service.
+
+*Make workers unique between XML configurations.*
+
+When using the `worker="..."` XML tag in a service configuration, it was possible to reuse the same workers as other configurations. However, each configuration creates and destroys its workers. We could end up with zombie services that could not be executed because their worker was destroyed.
+
+*Be more clever when parsing an update_sequence.*
+
+* store if a start or a stop slot is called on a sequence
+* if a start is sequenced, other slot can be called
+* if  a stop is sequenced and other slot called afterward, stop the sequence
+
+### filter
+
+*Remove threading in mesher, potential source of crash.*
+
+*Reset output slice in plane_slicer when source image is empty.*
+
+### io
+
+*Add missing serializers.*
+
+*Remove deprecated CUDA code for nvjpeg2000.*
+CUDA 12.9 deprecated (well throw an error when using them) some functions used to convert from/to interleaved to/from planar image format (rgbrgbrgb... ⇿ rrr...ggg...bbb...). This is required for nvjpeg2000. Without the fix, saving a DICOM with CMake variable `SIGHT_ENABLE_NVJPEG2K=ON`, will fail with a cryptic `The function "nppiCopy_8u_C3P3R" failed: -215` message.
+
+*Fix PDF writer.*
+
+*Build error with niftiio.*
+
+*Add serialisation for fiducials series.*
+
+### ui
+
+*Corrupted preferences file resets preferences.*
+Instead of only throwing an exception when the preferences file is corrupted, we gracefully reset the preferences file.
+
+*Use graphic data for tiled sparse image to determine the index.*
+
+*Rework screen placement for multi window apps.*
+
+* bugs arround fullscreen on linux, hide/show a fullscreen window doesn't restore fullscreen state
+* initial fullscreen of the first QMainWindow wasn't working, use a QTimer to repost the event
+* screen index are now saved into preferences
+
+*Calibration activity.*
+
+* use loop sequence in both intrinsic and extrinsic calibration
+* fix display of image and chessboard detection
+
+*Maximized windows cannot be restored back from preferences.*
+
+- when a windows state is stored in preferences and is restored, the window is too big and cannot be manipulated.
+- fixing also some strange behavior with maximization / fullscreen
+
+*Avoid deadlock in the progress_bar when job dies on the Qt thread.*
+
+*Settings widgets alignment.*
+
+- Relayout, fix spacings / margins, cleanup, fix bugs so that the settings widgets are correctly displayed. This is not perfect (the vertical mode of checkbox is not fully centered ...because the widget is not symmetric!), but this is an overall improvement.
+
+*Remove unneeded borders/padding/margins.*
+
+*Set initial value of combobox settings when range changes.*
+
+*Signal shortcut state propagation at start.*
+
+- add an example of usage for this service in the tuto14GUI
+
+*Ensure the application and GUI test is correctly closed.*
+
+This _should_ stabilize GUI tests a bit. This roughly fixes a kind of race condition in the GUI test start and stop code.
+
+When test instructions are posted in the GUI thread (because we must do that to manipulate GUI stuff), mutexes are used to allow the test thread to wait until the current test instruction is processed on the GUI thread event loop. This mechanism works well, ...until the last window is closed, which exit the application. In that case, the GUI event loop is stopped straight, which is not problematic most of the time in a real application, but unfortunately in a GUI test, if something that should have been processed is still in the event loop, like the synchronization mutex unlock, the calling thread will simply expire, making the test fail.
+
+This MR try to work around that, we try to avoid closing the window in the GUI event loop, we try to close _ALL_ window, including modal dialogs, and we try to flush the GUI event loop before exiting the test thread.
+
+*Remove cast to QDockWidget in cardinal layout.*
+
+### viz
+
+*Add properties to move and orient grid adaptor.*
+
+*Division by zero in histogram computation.*
+
+*Shader parameter creation with multiple adaptors.*
+
+Shader parameter objects created by the material adaptor were unintentionally deleted if several adaptors use the same reconstruction. These objects must actually be shared.
+
+*Ensure the scene node is properly updated in the text listener.*
+
+*Clipping planes computation.*
+
+*Volume render image validity verification.*
+
+*Remove widget visibility check in point_list adaptor.*
+
+The visibility of the widget should no longer be a concern for the adaptor with our new update mechanisms. In the current state, it can lead to miss object state changes.
+
+*Error in selected material pass.*
+
+We need to set the material permutation before generating any subsequent rendering pass, otherwise these passes, like the selected material, may end-up with the wrong vertex/fragment program.
+
+*Optimize updates for negatoscopes when only pixels change.*
+
+The 2D and 2D negatoscopes code was also widely refactored to share as much code as possible; this will make future maintenance easier.
+
+*Increase minimum OpenGL widget size to avoid crash.*
+
+*Positionning of the negato 2d camera was wrongly computed.*
+
+## Enhancement:
+
+### core
+
+*Pop_front an element from collections in data manager service.*
+
+*Add an option to ignore stopped services in update sequences.*
+
+An option was added in update sequences to ignore stopped services. This way, it is possible to include optional services in update sequence without reporting any error and above all without stopping the whole sequence.
+
+```xml
+<update>
+    <sequence parent="${updater}">
+        <service uid="update1_srv" />
+        <service uid="update2_srv" />
+        <service uid="optional_srv" ignore_stopped="true" />  <!-- This service can be started/stopped anytime -->
+        <service uid="update3_srv />
+    </sequence>
+</update>
+
+*Turn SIGHT_INFO into SIGHT_DEBUG when synchronize has nothing to sync.*
+
+*Add a toggle state in module::ui::qt::signal_shortcut.*
+
+`sight`::module::ui::qt::signal_shortcut``provides a signal that can be connected in XML, triggered by a keyboard shortcut.
+
+We added an optional toggle state, offering a similar signal/slots interface as a `sight::module::ui::action`:
+ - is_checked(bool): Emitted when the state is checked or unchecked.
+ - checked(): Emitted when the state is checked.
+ - unchecked(): Emitted when the state is unchecked..
+ - set_checked(bool): sets whether the state is checked.
+ - check(): check the state.
+ - uncheck(): uncheck the state.
+
+On top of that, three other improvements were made:
+- a comma or semi-colon-separated list of shortcuts can be given
+- the `QShortcut` are now only created when the state is enabled, which allows to have multiple services running at the same time on the same shortcut, but of course, only one can be enabled at once, and it will be up to the developer to ensure that
+- the unit test has been really implemented, testing previous and new features
+
+### filter
+
+*Add jobs support in the mesher.*
+
+*Make mesher service more customizable.*
+
+Our mesher service, based on VTK, has been improved to allow processing of multiple label values, and most of all, with many more settings exposed.
+
+### geometry
+
+*Add services to manipulate points.*
+
+Two services were added to facilitate the manipulation of `sight`::data::point``in XML:
+- `sight`::data::module::get_point`:`extracts a 3D point fiducial coordinates
+- `sight`::data::module::geometry::matrix_to_point`:`extract a matrix translation part
+
+Besides this, the adaptor `sight::module::viz::scene3d`::adaptor::point_list``was also updated to accept individual points, passed as a group.
+
+*Modernize plane/line intersection API.*
+
+*Service to store positions into a point list.*
+
+### io
+
+*Use VTK SMP TBB backend by default.*
+
+Under windows, we previously used standard threads which is significantly slower, in particular for vtkImageReslice. We now built TBB support in our VCPkg which allows us to switch to the TBB backend on both platforms.
+
+### ui
+
+*Improve the opacity and the width of tickmarks.*
+
+*Add support for joystick click on signal_button.*
+
+* also inverse rz rotation direction for better experience
+* add a new style on buttonbar for selected item
+* add joystick binding to signal_button
+* add utest for signal button
+* add joystick binding to action
+* improve joystick binding to settings
+
+*Apply the tickmarks widget.*
+
+*Add checked/unchecked/is_checked signals in signal_button.*
+
+*Add basic joystick interaction in qt::settings.*
+
+* Only for buttonbar for now
+
+*Make ui::qt::text_status more generic and more customisable.*
+
+This service allowing to display a string and a label can now take any data inheriting from data`::serializable`as input.
+A suffix can also be added, and it is possible to customize the font size and weight.
+
+*Add support to enable/disable toolbars.*
+
+*Add frameless window mode in frame.*
+
+* add new qss class to round background as toolbar
+
+*Add read/write mode for file/dir properties.*
+
+* also use qt location dialog as a temporary work-around when location dialog aren't rendered properly
+
+### viz
+
+*Add label to reconstructions to filter them out via picking.*
+
+*Allow to set uniform parameters via the material data.*
+
+The editor to edit the uniforms was also ported to use `string_serializable` data through `sight::module::ui::qt`
+
+*Add reset slot to predefined_camera adaptor.*
+
+*Improve performance of fiducial adaptors.*
+
+- Enable drawing fiducial graphic data
+- Store the referenced frame and graphic data when querying fiducial data
+- Update fiducials_series data with convenience methods
+- Add helper functions to draw fiducial content
+
+*Add a "selected" option mode to the standard material.*
+
+This option mode can be set on a material to highlight some meshes.
+
+*Pass shader uniforms directly to the entity adaptor.*
+
+Instead of creating a material adapter to bind shader uniforms and then referencing that material, we can now pass them directly to the mesh, reconstruction, model_series, and point_list adaptors. This is especially useful for model_series, because each mesh within it has its own material; so we couldn't pass a material adapter for each one.
+
+*Add an optional mask in negatoscopes.*
+
+This mask can be used to hides part of the image.
+
+*Model_series should honor visibility configuration in XML.*
+
+## New features:
+
+### build
+
+*Qt6 port + qml / qt3d removal.*
+
+This is a port from Qt 5 to Qt 6.
+
+Included:
+- Use new Qt 6 VCPKG and Qt 6 docker image
+- Updated many dependencies due to VCPKG update
+- Removed QML, Qt3D
+
+Also:
+- Removed deprecated boost::asio::io_service
+- Fixed rare race condition in worker_asio
+- Fixed selector
+- Fixed http post test
+- Fixed video_controls GUI tests
+- Fixed cardinal layout main title
+- Sequencer widget reimplementation
+- Removed CMake warnings and deprecated code
+
+### ci
+
+*Coverage analysis job on deploy stage.*
+
+- add a new job that calls sight-git's sight-cov to create a coverage report.
+- pushes a comment using gitlab api to the current MR.
+- removes any previous comment left by this same job.
+
+### core
+
+*Add new interface has_jobs to harmonize job emission.*
+
+*Add point operator support for XML sight::data::map.*
+
+In XML configuration, it is now possible to use the point operator to reference elements of `sight::daga::map`.
+
+```xml
+    <object uid="parameters" type="sight::data::map">
+        <item key="p1" type="sight::data::boolean" value="true" />
+        <item key="p2" type="sight::data::string" value="test" />
+    </object>
+    ...
+
+    <service uid="..." type="sight::sample::service1">
+        <inout key="value" uid="${parameters}.p1">
+    </service>
+
+    <service uid="..." type="sight::sample::service2">
+        <properties value="${parameters}.p2">
+    </service>
+```
+
+*Add a validator to test if string_serializable contains "true" or integer values.*
+
+*Make object validator generic, add service to validate.*
+
+A new service `sight`::module::data::validate``was implemented to validate objects in a generic way. Here is an example to check that an image is filled:
+
+```xml
+<service uid="..." type="sight::module::data::validate" >
+    <in key="data" uid="image"/>
+    <config id="sight::data::validator::filled" />
+</service>
+```
+
+It provides the following signals in XML, which can be connected to your application logic:
+
+* valid()
+* invalid()
+* is_valid(bool)
+* is_invalid(bool)
+
+Also, a new validator `sight`::data::validator::has_fiducials``was implemented to check if a series contains at least one fiducial.
+
+*Add service to extract activity objects.*
+
+A new service to extract activity objects was added. This can be useful for extracting objects in an application's main configuration, for instance.
+
+```xml
+<service uid="..." type="sight::module::data::get_activity_object" >
+    <in key="activity_set" uid="..."/>
+    <id>...</id>
+    <out group="objects">
+        <key name="requirement1" uid="..."/>
+        <key name="requirement2" uid="..."/>
+    </out>
+</service>
+```
+
+*Add a new service to reset any data.*
+
+So far, we have had no service to reset any data object to the default. We used a `sight`::data::module::copy``service with a default "empty" object to achieve that.
+
+The new service `sight`::data::module::reset``does this in a simpler way, because empty objects in XML are thus no longer necessary.
+
+```xml
+<service uid="..." type="sight::module::data::reset" >
+    <inout key="target" uid="..." />
+</service>
+```
+
+### io
+
+*Make the joystick configurable.*
+
+- Joysticks will be identified by an alias, (currently: "left" or "right"), included in the "device" structure sent in all events
+- Same for the axis, in motion and direction events, with the proposed aliases:
+  - for translation: `tx`, `ty`, `tz`.
+  - for rotation: `rx`, `ry`, `rz`.
+- Mapping the Joystick ID and the alias will use an arbitrary default (0=left, 1=right on Windows, the opposite on Linux), but a `set_joystick_alias(ID, alias)` will be available to change the default (by inviting the user to click on the "left" joystick...).
+- Mapping the axis alias, will depend on the device (for now only space mouse will be supported :smile: ), with the hope this is cross-platform (if not there will be an #ifdef).
+- xml configuration should look like:
+  ```xml
+  <item name="" key="joystick_button" widget="buttonBar" joystick="left" axis="rx,tz">
+    ...
+  </item>
+  ```
+  In this case, the "joystick_button" button bar will be controlled by the "left" joystick. Changing "left" joystick horizontal axis (rx) will change the currently highlighted button, while pushing it (tz), will "click" on it.
+
+*Speedup image session reading/writing.*
+
+- Fix large file (>2GB) support
+- use low level nifti
+
+*Joystick support.*
+
+- Updated the docker image and the sight-gitlab references
+- Implemented `sight::io::joystick::interactor`, `sight`::io::joystick::detail::event_loop``and a module `sight::modules::io::joystick`.
+
+#### sight`::modules::io::joystick`module
+
+Controls the global joystick `event_loop` instance.
+
+Basically, it starts it when `sight::modules::io::joystick::plugin::start()` is called and stops it on `sight::modules::io::joystick::plugin::stop()`. Once started, registered `interactor` will start receiving joystick events.
+
+There is a unit test (`sight::module::io::joystick::ut`) which demonstrates basic usage, the support of module unloading, etc..
+
+#### sight`::io::joystick::detail::event_loop`class
+
+This is where the whole implementation is. It is a singleton that uses a timer to poll for SDL events on the main thread. When one is catch, it is simply forwarded to the registered `interactor` with specific callback functions. It implies that all callback functions are executed on the main thread, so you may have to protect the access if your service runs on a specific worker.
+
+The code of `instance()` could have been simpler, but, since we are dealing with posted tasks on the main thread, special care has been needed to let the instance die without making waiting tasks crash.
+
+#### sight`::io::joystick::interactor`interface
+
+This register / unregister automatically to the `event_loop` any class that inherits from it. Then, these callbacks will be available:
+
+``` c++
+    void joystick_axis_motion_event(const axis_motion_event& _event);
+    void joystick_axis_direction_event(const axis_direction_event& _event);
+    void joystick_hat_motion_event(const hat_motion_event& _event);
+    void joystick_ball_motion_event(const ball_motion_event& _event);
+    void joystick_button_pressed_event(const button_event& _event);
+    void joystick_button_released_event(const button_event& _event);
+    void joystick_added_event(const joystick_event& _event);
+    void joystick_removed_event(const joystick_event& _event);
+```
+
+All callbacks use "event" structures, which should provides all needed information (device name, index, guid, axis, buttons, ...). Indeed, almost all of what is available from SDL is forwarded.
+Additionally, it is possible to list all attached devices with `devices()` and to temporary stop receiving event with `block_events(bool)`.
+
+> `joystick_axis_direction_event` is derived from `joystick_axis_motion_event`, but instead of sending the axis values on every change, it converts it to "up" or "down", and is only trigered once, until the axis goes back to neutral.
+
+### ui
+
+*Combslider improvements.*
+
+- can now send the value and not only the index when attached to a data::integer
+- remove " " (space) as a sepparator for list of item, so we can have space in combobox items
+- small unrelated improvement for tracker interface
+- synchronizer can now accept delay defined from a property
+
+*Add animation on tickmarks widget.*
+
+*Joystick support for settings sliders.*
+
+This adds joystick support for sliders in settings.
+
+#### Joystick and event_loop
+
+Using the constructor and the destructor to register interactors to the event loop was buggy, since hidden services that implement `interactor` interface are created but should not react to joystick events since they are not really "started". So, the API changed a bit to allow explicit registering to the event loop with two functions: `start_listening_joystick()` and `stop_listening_joystick`. You must explicitly call the two when you want to receive or stop to receive joystick events (usually in the `starting()` and `stopping()` functions).
+
+An "auto-repeat" feature was also added to the joystick event loop. The `joystick_axis_direction_event` will be repeated, until the axis has returned to the dead zone, 2 time after 500ms, then 2 time after 200ms, then 4 time after 100ms, then 8 time after 50 ms, then 16 time after 25 ms, then every 10 ms.
+
+> this scheme is purely arbitrary, and can be discussed and adapted.
+
+#### Settings
+
+Sliders from settings has been updated to support the joystick (Button bar already supported it). To demonstrate that, `ex_settings` has also been updated. All 3 sliders (one "double slider", one "int slider" and one "comboslider") should be modifiable by the first joystick and 4th axis. The button bar is modifiable with a second joystick with 4th index.
+
+Button_bar has been updated to "click" the selected buttons, using the 2nd axes of the second joystick (push it !)
+
+### viz
+
+*Add a shader that extrudes lines and applies a fog effect.*
+
+*Add a ghost shader, improve material handling in adaptors.*
+
+## Refactor:
+
+### build
+
+*Remove explicit std::filesystem dependency.*
+
+Compilers now all support std`::filesystem`by default
+
+### core
+
+*Explicit channel passing in XML.*
+
+Channels now have a specific XML tag to help differentiate them from other parameters:
+
+```xml
+<!-- Caller -->
+<extension implements="sight::app::extension::config">
+    ...
+    <service uid="launcher_cfg" type="sight::app::config_launcher">
+        <properties config="..." />
+        <inout group="object">
+            <key name="image" uid="${image}" />
+        </inout>
+        <param name="flag" value="12" />
+        <channel name="update" uid="update" />
+    </service>
+</extension>
+
+<!-- Callee -->
+<extension implements="sight::app::extension::config">
+    <id>...</id>
+    <parameters>
+        <object uid="image" type="sight::data::image" />
+        <param name="flag" default="0" />
+        <channel name="update" optional="true" />
+    </parameters>
+    ...
+    <connect channel="${update}">
+    ...
+    </connect>
+</extension>
+```
+
+Other changes:
+- like objects, the channels can be specified as optional with the attribute `optional`.
+- the standard parameter uses the `param` keyword when passed to the `config_launcher` to be consistent with the  <parameters/> section of the callee configuration.
+- the group data object is now designated as "object" instead of "data", also to make it more consistent with the <parameters/> section.
+
+*Snakify all tutorials.*
+
+The tutorials are the showcase of Sight and should lead by example
+
+*Autostart services in XML and simplify config launcher.*
+
+Services are now autostarted in XML. Since most services required to be started, it is simpler to start them automatically.
+
+For the rare services that do not start, you can use a new property `start`:
+
+```xml
+<service uid="..." type="sight::module::ui::action">
+    <properties start="false" />
+</service>
+```
+
+You can then start/stop the service via slots, as usual. But of course, since this is a property, you can also use a variable:
+
+```xml
+<service uid="..." type="sight::module::ui::action">
+    <properties start="${start_action}" />
+</service>
+```
+
+Other changes:
+* Renamed the `sight`::app::config_controller``into `sight::app::config_launcher`
+* Replaced all usages of `sight`::module::ui::config_launcher``with `sight::app::config_launcher`
+* Removed `sight`::module::ui::config_launcher``service
+
+*Sight::data::point inherit from stl container.*
+
+*Sight::app::config_controller rework.*
+
+`sight`::app::multi_config_controller``has been very useful, but having another service to launch configuration is not great.
+
+Actually `sight::app::multi_config_controller`, comparing to `sight`::app::config_controller``only allowed:
+
+1. to dynamically change the name of the configuration
+2. to associate a key to a configuration name
+
+To get rid of `sight::app::multi_config_controller`, we first modify `sight`::app::config_controller``to allow to set dynamically the configuration thanks to a property:
+
+```xml
+<service type="sight::app::config_controller" >
+    <properties config="..." />
+    <inout group="data">
+        <key name="object1" uid="..." />
+        <key name="object2" uid="..." />
+        ...
+    </inout>
+    <parameter replace="..." by="..." />
+</service>
+```
+
+Second, to associate a key to a configuration name, we introduced a new generic service that associates an input property with another. It allows mapping any string_serializable data to another string_serializable data, like of course key strings to key string values, but also colours to strings, booleans to strings, etc...
+
+```xml
+<service uid="..." type="sight::module::data::translate" >
+    <map>
+        <entry key="green" value="#00FF00" />
+        <entry key="red" value="#FF0000" />
+    </map>
+    <in key="key" uid="..." />
+    <inout key="value" uid="..." />
+</service>
+```
+
+To sum up, instead of writing:
+
+```xml
+<service type="sight::app::multi_config_controller" >
+    <appConfig key="..." default="config1">
+        <config name="config1" id="sight::config::config1" />
+        <config name="config2" id="sight::config::config2" />
+        <config name="config3" id="sight::config::config3" />
+        <parameter replace="model" by="model_key"  />
+    </appConfig>
+    <inout group="data">
+        <key name="object1" uid="..." />
+        <key name="object2" uid="..." />
+        ...
+    </inout>
+    <parameter replace="channel" by="..."  />
+</service>
+```
+You have to write now:
+
+```xml
+<object uid="selected_config" type="sight::data::string" />
+<object uid="selected_config_key" type="sight::data::string" />
+
+<service uid="..." type="sight::module::data::translate" >
+    <map>
+        <entry key="config1" value="sight::config::config1" />
+        <entry key="config2" value="sight::config::config2" />
+        <entry key="config3" value="sight::config::config3" />
+    </map>
+    <in key="key" uid="selected_config_key" />
+    <inout key="value" uid="selected_config" />
+</service>
+
+<service type="sight::app::config_controller" >
+    <properties config="selected_config_key" />
+    <inout group="data">
+        <key name="object1" uid="..." />
+        <key name="object2" uid="..." />
+        ...
+    </inout>
+    <parameter replace="..." by="..." />
+</service>
+```
+
+misc: apply review suggestion
+
+### io
+
+*Remove start_target_camera slot in grabber_proxy.*
+
+This slots was clearly duplicated in the API comparing to start_camera. A new configuration setting was added to select a given grabber according to the camera identifier.
+
+### viz
+
+*Deprecate some more attributes of viz::scene3d::render.*
+
+
 # sight 25.0.0
 
 ## New features:
