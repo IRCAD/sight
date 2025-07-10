@@ -48,32 +48,11 @@
 #include "series_set.hxx"
 #include "set.hxx"
 #include "string.hxx"
+#include "string_serializable.hxx"
 #include "structure_traits.hxx"
 #include "structure_traits_dictionary.hxx"
 #include "transfer_function.hxx"
 #include "vector.hxx"
 
-#include <data/boolean.hpp>
-#include <data/integer.hpp>
-#include <data/real.hpp>
-
 #include <io/session/helper.hpp>
 #include <io/session/macros.hpp>
-
-SIGHT_REGISTER_SERIALIZER(
-    sight::data::boolean,
-    &sight::io::session::helper::serialize<sight::data::boolean>,
-    &sight::io::session::helper::deserialize<sight::data::boolean>
-);
-
-SIGHT_REGISTER_SERIALIZER(
-    sight::data::real,
-    &sight::io::session::helper::serialize<sight::data::real>,
-    &sight::io::session::helper::deserialize<sight::data::real>
-);
-
-SIGHT_REGISTER_SERIALIZER(
-    sight::data::integer,
-    &sight::io::session::helper::serialize<sight::data::integer>,
-    &sight::io::session::helper::deserialize<sight::data::integer>
-);

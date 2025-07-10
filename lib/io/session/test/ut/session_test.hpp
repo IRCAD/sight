@@ -36,6 +36,7 @@ public:
     CPPUNIT_TEST(boolean_test);
     CPPUNIT_TEST(integer_test);
     CPPUNIT_TEST(float_test);
+    CPPUNIT_TEST(vec_test);
     CPPUNIT_TEST(string_test);
     CPPUNIT_TEST(map_test);
     CPPUNIT_TEST(mesh_test);
@@ -84,6 +85,7 @@ public:
     static void boolean_test();
     static void integer_test();
     static void float_test();
+    static void vec_test();
     static void string_test();
     static void map_test();
     static void mesh_test();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -40,6 +40,7 @@ constexpr static auto STRUCTURE_TYPE {"structure_t"};
 constexpr static auto MATERIAL {"Material"};
 constexpr static auto IMAGE {"image"};
 constexpr static auto MESH {"Mesh"};
+constexpr static auto LABEL {"label"};
 constexpr static auto COMPUTED_MASK_VOLUME {"ComputedMaskVolume"};
 
 //------------------------------------------------------------------------------
@@ -55,7 +56,7 @@ inline static void write(
     const auto reconstruction = helper::safe_cast<data::reconstruction>(_object);
 
     // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::reconstruction>(_tree, 1);
+    helper::write_version<data::reconstruction>(_tree, 2);
 
     // Serialize attributes
     _tree.put(IS_VISIBLE, reconstruction->get_is_visible());
@@ -67,6 +68,10 @@ inline static void write(
     _children[MESH]     = reconstruction->get_mesh();
 
     _tree.put(COMPUTED_MASK_VOLUME, reconstruction->get_computed_mask_volume());
+    if(auto label = reconstruction->get_label(); label.has_value())
+    {
+        _tree.put(LABEL, label.value());
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -82,8 +87,8 @@ inline static data::reconstruction::sptr read(
     // Create or reuse the object
     auto reconstruction = helper::cast_or_create<data::reconstruction>(_object);
 
-    // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::reconstruction>(_tree, 0, 1);
+    // Check version number.
+    const int version = helper::read_version<data::reconstruction>(_tree, 0, 2);
 
     // Deserialize attributes
     reconstruction->set_is_visible(_tree.get<bool>(IS_VISIBLE));
@@ -95,6 +100,13 @@ inline static data::reconstruction::sptr read(
     reconstruction->set_mesh(std::dynamic_pointer_cast<data::mesh>(_children.at(MESH)));
 
     reconstruction->set_computed_mask_volume(_tree.get<double>(COMPUTED_MASK_VOLUME));
+    if(version >= 2)
+    {
+        if(auto label = _tree.get_optional<std::uint32_t>(LABEL); label.has_value())
+        {
+            reconstruction->set_label(*label);
+        }
+    }
 
     return reconstruction;
 }

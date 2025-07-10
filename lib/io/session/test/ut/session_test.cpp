@@ -36,10 +36,16 @@
 #include <data/camera_set.hpp>
 #include <data/color.hpp>
 #include <data/dicom_series.hpp>
+#include <data/dvec2.hpp>
+#include <data/dvec3.hpp>
+#include <data/dvec4.hpp>
 #include <data/fiducials_series.hpp>
 #include <data/image.hpp>
 #include <data/image_series.hpp>
 #include <data/integer.hpp>
+#include <data/ivec2.hpp>
+#include <data/ivec3.hpp>
+#include <data/ivec4.hpp>
 #include <data/landmarks.hpp>
 #include <data/line.hpp>
 #include <data/map.hpp>
@@ -328,6 +334,90 @@ void session_test::integer_test()
 void session_test::float_test()
 {
     test_combine<data::real>();
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline data::dvec2::sptr generate<data::dvec2>(const std::size_t _variant)
+{
+    auto object = std::make_shared<data::dvec2>();
+    (*object)[0] = static_cast<data::dvec2::value_t::value_type>(_variant);
+    (*object)[1] = static_cast<data::dvec2::value_t::value_type>(_variant + 1);
+    return object;
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline data::dvec3::sptr generate<data::dvec3>(const std::size_t _variant)
+{
+    auto object = std::make_shared<data::dvec3>();
+    (*object)[0] = static_cast<data::dvec3::value_t::value_type>(_variant);
+    (*object)[1] = static_cast<data::dvec3::value_t::value_type>(_variant + 1);
+    (*object)[2] = static_cast<data::dvec3::value_t::value_type>(_variant + 2);
+    return object;
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline data::dvec4::sptr generate<data::dvec4>(const std::size_t _variant)
+{
+    auto object = std::make_shared<data::dvec4>();
+    (*object)[0] = static_cast<data::dvec4::value_t::value_type>(_variant);
+    (*object)[1] = static_cast<data::dvec4::value_t::value_type>(_variant + 1);
+    (*object)[2] = static_cast<data::dvec4::value_t::value_type>(_variant + 2);
+    (*object)[3] = static_cast<data::dvec4::value_t::value_type>(_variant + 3);
+    return object;
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline data::ivec2::sptr generate<data::ivec2>(const std::size_t _variant)
+{
+    auto object = std::make_shared<data::ivec2>();
+    (*object)[0] = static_cast<data::ivec2::value_t::value_type>(_variant);
+    (*object)[1] = static_cast<data::ivec2::value_t::value_type>(_variant + 1);
+    return object;
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline data::ivec3::sptr generate<data::ivec3>(const std::size_t _variant)
+{
+    auto object = std::make_shared<data::ivec3>();
+    (*object)[0] = static_cast<data::ivec3::value_t::value_type>(_variant);
+    (*object)[1] = static_cast<data::ivec3::value_t::value_type>(_variant + 1);
+    (*object)[2] = static_cast<data::ivec3::value_t::value_type>(_variant + 2);
+    return object;
+}
+
+//------------------------------------------------------------------------------
+
+template<>
+inline data::ivec4::sptr generate<data::ivec4>(const std::size_t _variant)
+{
+    auto object = std::make_shared<data::ivec4>();
+    (*object)[0] = static_cast<data::ivec4::value_t::value_type>(_variant);
+    (*object)[1] = static_cast<data::ivec4::value_t::value_type>(_variant + 1);
+    (*object)[2] = static_cast<data::ivec4::value_t::value_type>(_variant + 2);
+    (*object)[3] = static_cast<data::ivec4::value_t::value_type>(_variant + 3);
+    return object;
+}
+
+//------------------------------------------------------------------------------
+
+void session_test::vec_test()
+{
+    test_combine<data::dvec2>();
+    test_combine<data::dvec3>();
+    test_combine<data::dvec4>();
+    test_combine<data::ivec2>();
+    test_combine<data::ivec3>();
+    test_combine<data::ivec4>();
 }
 
 //------------------------------------------------------------------------------
@@ -1125,6 +1215,7 @@ inline data::reconstruction::sptr generate<data::reconstruction>(const std::size
     object->set_organ_name(uuid::generate());
     object->set_structure_type(uuid::generate());
     object->set_computed_mask_volume(random<double>());
+    object->set_label(random<std::uint32_t>());
 
     // Material
     object->set_material(create<data::material>(_variant));
