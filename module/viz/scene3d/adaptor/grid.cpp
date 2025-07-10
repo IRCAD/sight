@@ -187,6 +187,23 @@ void grid::attach_node(Ogre::MovableObject* _object)
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
     SIGHT_ASSERT("Transform node shouldn't be null", trans_node);
 
+    if(const auto orientation = m_orientation.lock(); orientation)
+    {
+        trans_node->yaw(Ogre::Degree(Ogre::Real(orientation->value()[0])));
+        trans_node->pitch(Ogre::Degree(Ogre::Real(orientation->value()[1])));
+        trans_node->roll(Ogre::Degree(Ogre::Real(orientation->value()[2])));
+    }
+
+    if(const auto position = m_position.lock(); position)
+    {
+        const auto pos = Ogre::Vector3(
+            Ogre::Real(position->value()[0]),
+            Ogre::Real(position->value()[1]),
+            Ogre::Real(position->value()[2])
+        );
+        trans_node->setPosition(pos);
+    }
+
     trans_node->setVisible(visible());
     trans_node->attachObject(_object);
 }
@@ -250,6 +267,24 @@ void grid::set_visible(bool /*_visible*/)
         render_service()->layer(sight::viz::scene3d::render::render::layer::GRID)->get_scene_manager();
     Ogre::SceneNode* root_scene_node = scene_mgr->getRootSceneNode();
     Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
+
+    if(const auto orientation = m_orientation.lock(); orientation)
+    {
+        trans_node->yaw(Ogre::Degree(Ogre::Real(orientation->value()[0])));
+        trans_node->pitch(Ogre::Degree(Ogre::Real(orientation->value()[1])));
+        trans_node->roll(Ogre::Degree(Ogre::Real(orientation->value()[2])));
+    }
+
+    if(const auto position = m_position.lock(); position)
+    {
+        const auto pos = Ogre::Vector3(
+            Ogre::Real(position->value()[0]),
+            Ogre::Real(position->value()[1]),
+            Ogre::Real(position->value()[2])
+        );
+        trans_node->setPosition(pos);
+    }
+
     trans_node->setVisible(visible());
     this->updating();
 }
