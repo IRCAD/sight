@@ -1,0 +1,253 @@
+<!--
+    This configuration allows to launch activities sequentially. It should be called from an activity like:
+    It displays a "stepper" that allows to select the current activity, they are enabled sequencially when their
+    inputs are present.
+
+    The configuration can be launched by a 'config_launcher':
+
+    <service uid="sight::config::ui::activity::launcher" type="sight::app::config_launcher">
+        <properties config="sight::config::ui::activity::launcher" />
+        <inout group="object">
+            <key name="activity_set" uid="..." />
+        </inout>
+        <parameter replace="WID_PARENT" by="activityView" />
+        <parameter replace="icon_path" by="${icon_path}" />
+        <parameter replace="sequencer_config" by="sequencerServiceConfigName" />
+    </service>
+
+    You can also launch this configuration as an activity :
+
+    <extension implements="sight::activity::extension">
+        <id>sequencerActivityName</id>
+        <title>Activity title</title>
+        <desc>Description of the activity</desc>
+        <icon>path/to</icon>
+        <requirements>
+            <requirement name="activity_set" type="sight::data::activity_set" minOccurs="0" maxOccurs="0" />
+        </requirements>
+        <properties config="sight::config::ui::activity::launcher">
+            <parameters>
+                <parameter replace="sequencer_config" by="sequencerServiceConfigName" />
+            </parameters>
+        </appConfig>
+    </extension>
+
+    The Activity representing the activities launched by this config will be saved in the ActivitySet object, when
+    they are loaded, the sequencer will jump to the last activity.
+
+    The sequencer_config represents the list of the activities to launch, like:
+
+    <extension implements="sight::service::extension::config">
+        <id>sequencerServiceConfigName</id>
+        <service>sight::module::ui::qt::activity::sequencer</service>
+        <desc>Configuration for the sequencer</desc>
+        <config>
+            <activity id="activity1" name="my activity 1" />
+            <activity id="activity2" name="my activity 2" />
+            <activity id="activity3" name="my activity 3" />
+        </config>
+    </extension>
+
+    With:
+    - id: identifier of the activity
+    - name (optional): name displayed in the activity stepper. If the name is not define, the title of the activity will
+    be used.
+
+
+    You can override the default configuration for activity reader/writer by adding the two parameters:
+    <parameter replace="ACTIVITY_READER_CONFIG" by="ActivityReaderConfig" />
+    <parameter replace="ACTIVITY_WRITER_CONFIG" by="ActivityWriterConfig" />
+
+    You can override the default activity wizard configuration by adding the parameter:
+    <parameter replace="wizard_config" by="activityWizardServiceConfigName" />
+-->
+<extension implements="sight::app::extension::config">
+    <id>sight::config::ui::activity::launcher</id>
+    <parameters>
+        <object uid="activity_set" type="sight::data::activity_set" />
+
+        <param name="WID_PARENT" />
+        <param name="icon_path" />
+        <param name="sequencer_config" />
+        <param name="wizard_config" default="sight::config::ui::activity::wizard" />
+        <param name="session_reader_config" default="sight::module::io::activity::default_session_reader" />
+        <param name="session_writer_config" default="sight::module::io::activity::default_session_writer" />
+        <param name="application_icon_path" default="sight::module::ui::icons/sight_logo.svg" />
+    </parameters>
+    <desc>Configuration to launch activities sequentially</desc>
+    <config>
+        <!-- ************************************* Begin layouts declaration *************************************** -->
+
+        <service uid="main_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="1" />
+                    <view proportion="1" visible="false" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="stepper_view" />
+                <view sid="dynamic_view" />
+                <view sid="activity_creator" />
+            </registry>
+        </service>
+
+        <service uid="stepper_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="app_logo_view" />
+                <view sid="activity_sequencer" />
+                <view sid="open_button" />
+                <view sid="save_button" />
+                <view sid="ircad_logo_view" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Begin editor declaration *************************************** -->
+
+        <service uid="open_button" type="sight::module::ui::qt::com::signal_button">
+            <config>
+                <icon>sight::module::ui::icons/load.svg</icon>
+                <iconWidth>40</iconWidth>
+                <iconHeight>40</iconHeight>
+            </config>
+        </service>
+
+        <service uid="save_button" type="sight::module::ui::qt::com::signal_button">
+            <config>
+                <icon>sight::module::ui::icons/save.svg</icon>
+                <iconWidth>40</iconWidth>
+                <iconHeight>40</iconHeight>
+            </config>
+        </service>
+
+        <service uid="app_logo_view" type="sight::module::ui::qt::image::image">
+            <path>${application_icon_path}</path>
+            <height>70</height>
+        </service>
+
+        <service uid="ircad_logo_view" type="sight::module::ui::qt::image::image">
+            <path>sight::module::ui::icons/ircad_white.svg</path>
+            <height>70</height>
+        </service>
+
+        <!-- ************************************* Begin reader/writer declaration ********************************* -->
+
+        <service uid="sdb_reader" type="sight::module::io::session::reader" config="${session_reader_config}">
+            <inout key="data" uid="${activity_set}" />
+        </service>
+
+        <service uid="sdb_writer" type="sight::module::io::session::writer" config="${session_writer_config}">
+            <in key="data" uid="${activity_set}" />
+        </service>
+
+        <!-- *************************************** Begin view declaration **************************************** -->
+
+        <!-- Display the activity in the current view -->
+        <service uid="dynamic_view" type="sight::module::ui::qt::activity::view">
+            <param name="icon_path" value="${icon_path}" />
+            <channel name="previous_activity_channel" uid="previous_activity_channel" />
+            <channel name="next_activity_channel" uid="next_activity_channel" />
+            <channel name="validation_channel" uid="validation_channel" />
+            <channel name="go_to_channel" uid="go_to_channel" />
+        </service>
+
+        <!-- Display the activity data selector -->
+        <service uid="activity_creator" type="sight::module::ui::qt::activity::wizard" config="${wizard_config}">
+            <inout key="activitySet" uid="${activity_set}" />
+        </service>
+
+        <!-- Launch the activity sequentially -->
+        <service uid="activity_sequencer" type="sight::module::ui::qt::activity::sequencer" config="${sequencer_config}">
+            <inout key="activitySet" uid="${activity_set}" auto_connect="true" />
+        </service>
+
+        <!-- ************************************ Begin connection declaration ************************************* -->
+
+        <!-- Connections to open a SeriesSet when the open button is clicked -->
+        <connect>
+            <signal>open_button/clicked</signal>
+            <slot>sdb_reader/update</slot>
+        </connect>
+
+        <!-- Connections to save the SeriesSet when the save button is clicked -->
+        <connect>
+            <signal>save_button/clicked</signal>
+            <slot>sdb_writer/update</slot>
+        </connect>
+
+        <!-- connect to launch the activity when it is created/updated. -->
+        <connect channel="launch_activity_channel">
+            <signal>activity_sequencer/activity_created</signal>
+            <slot>dynamic_view/show</slot>
+            <slot>dynamic_view/launch_activity</slot>
+            <slot>activity_creator/hide</slot>
+            <slot>activity_sequencer/check_next</slot>
+        </connect>
+
+        <!-- Update the sequencer information when an activity is updated -->
+        <connect>
+            <signal>activity_creator/activity_updated</signal>
+            <slot>activity_sequencer/update</slot>
+        </connect>
+
+        <!-- When the activity is launched, the sequencer sends the information to enable "previous" and "next" actions -->
+        <connect>
+            <signal>dynamic_view/activity_launched</signal>
+            <slot>activity_sequencer/send_info</slot>
+        </connect>
+
+        <!-- Display the wizard when data are missing for the next activity -->
+        <connect>
+            <signal>activity_sequencer/data_required</signal>
+            <slot>activity_creator/update_activity</slot>
+            <slot>activity_creator/show</slot>
+            <slot>dynamic_view/hide</slot>
+        </connect>
+
+        <!-- Hide the creator editor when the activity creation is canceled. -->
+        <connect>
+            <signal>activity_creator/canceled</signal>
+            <slot>activity_creator/hide</slot>
+            <slot>dynamic_view/show</slot>
+        </connect>
+
+        <!-- The activity sequencer should receive the call from the "previous" action. -->
+        <connect channel="previous_activity_channel">
+            <slot>activity_sequencer/previous</slot>
+        </connect>
+
+        <!-- The activity sequencer should receive the call from the "next" action. -->
+        <connect channel="next_activity_channel">
+            <slot>activity_sequencer/next</slot>
+        </connect>
+
+        <!-- The activity sequencer should receive the call from the "previous" action. -->
+        <connect channel="validation_channel">
+            <slot>activity_sequencer/check_next</slot>
+        </connect>
+
+        <!-- The activity sequencer should receive the call from the "go_to" action. -->
+        <connect channel="go_to_channel">
+            <slot>activity_sequencer/go_to</slot>
+        </connect>
+
+        <!-- *************************************** update **************************************** -->
+
+        <!-- Load the sub-activities contained in the SeriesSet, or launch the first activity from the sequencer -->
+        <update uid="activity_sequencer" />
+    </config>
+</extension>

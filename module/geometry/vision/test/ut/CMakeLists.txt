@@ -1,0 +1,5 @@
+sight_add_target(module_geometry_vision_ut TYPE TEST)
+
+add_dependencies(module_geometry_vision_ut data module_service module_data module_geometry_vision)
+
+target_link_libraries(module_geometry_vision_ut PUBLIC service CppUnit)

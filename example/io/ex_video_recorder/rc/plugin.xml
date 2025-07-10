@@ -1,0 +1,214 @@
+<plugin id="ex_video_recorder">
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3d_qt" />
+    <requirement id="sight::module::ui" />
+
+    <extension implements="sight::app::extension::config">
+        <id>ExVideoRecorder_AppCfg</id>
+        <config>
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="camera" type="sight::data::camera" />
+            <object uid="frameTL" type="sight::data::frame_tl">
+                <value>100</value>
+            </object>
+            <object uid="videoImage" type="sight::data::image" />
+
+            <object uid="2dPoints" type="sight::data::point_list" />
+            <object uid="2dPixels" type="sight::data::point_list" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>ex_video_recorder</name>
+                        <icon>ex_video_recorder/app.ico</icon>
+                    </frame>
+                    <toolbar />
+                </gui>
+                <registry>
+                    <toolbar sid="toolbarView" />
+                    <view sid="genericSceneSrv" />
+                </registry>
+            </service>
+
+            <service uid="toolbarView" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout>
+                        <editor />
+                        <separator />
+                        <menuItem name="Frame recording" icon="sight::module::ui::icons/record_frame.svg" style="check" />
+                        <menuItem name="Video recording" icon="sight::module::ui::icons/record.svg" style="check" />
+                        <editor />
+                        <spacer />
+                        <menuItem name="Preferences" icon="sight::module::ui::icons/connection.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <editor wid="subToolbarView" />
+                    <menuItem sid="frameRecordingAct" />
+                    <menuItem sid="videoRecordingAct" />
+                    <editor sid="parametersSrv" />
+                    <menuItem sid="preferences" />
+                </registry>
+            </service>
+
+            <service uid="preferences" type="sight::module::ui::qt::preferences_configuration">
+                <preference>
+                    <type>path</type>
+                    <name>Base output folder for recordings</name>
+                    <key>BASE_FOLDER</key>
+                    <default_value />
+                </preference>
+            </service>
+
+            <service uid="videoToolbarConfig" type="sight::app::config_launcher">
+                <properties config="sight::config::io::video::controls" />
+                <inout group="object">
+                    <key name="camera" uid="camera" />
+                    <key name="frameTL" uid="frameTL" />
+                </inout>
+                <parameter replace="TOOLBAR" by="subToolbarView" />
+                <parameter replace="addROICenterChannelIn" by="addROICenterChannelIn" />
+                <parameter replace="removeROICenterChannelIn" by="removeROICenterChannelIn" />
+                <parameter replace="cameraStartedChannelOut" by="camera_started_channel" />
+                <parameter replace="cameraPausedChannelOut" by="camera_paused_channel" />
+                <parameter replace="cameraResumePauseChannelOut" by="camera_resume_pause_channel" />
+                <parameter replace="cameraStoppedChannelOut" by="camera_stopped_channel" />
+            </service>
+
+            <!-- ************************************* Action ************************************ -->
+
+            <service uid="frameRecordingAct" type="sight::module::ui::com::timestamp_signal">
+                <useSystemClock>true</useSystemClock>
+            </service>
+
+            <service uid="videoRecordingAct" type="sight::module::ui::com::timestamp_signal">
+                <useSystemClock>true</useSystemClock>
+            </service>
+
+            <!-- ******************************* Begin Generic scene ******************************* -->
+
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
+                <scene renderMode="manual">
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default">
+                        <adaptor uid="pickerAdp" />
+                        <adaptor uid="videoAdp" />
+                    </layer>
+                </scene>
+            </service>
+
+            <service uid="pickerAdp" type="sight::module::viz::scene3d::adaptor::picker">
+                <config layerOrderDependant="false" />
+            </service>
+
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
+                <in key="image" uid="videoImage" />
+            </service>
+
+            <service uid="imagePickerSrv" type="sight::module::ui::video::image_picker">
+                <in key="camera" uid="camera" />
+                <inout key="pointList" uid="2dPoints" />
+                <inout key="pixelPointList" uid="2dPixels" />
+                <config videoReference="top_left" useCtrlModifier="false" singlePointMode="true" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="parametersSrv" type="sight::module::ui::qt::parameters">
+                <parameters>
+                    <param type="enum" name="Frame format" key="format" defaultValue=".tiff" values=".tiff,.jpeg,.png,.bmp,.jp2" />
+                </parameters>
+            </service>
+
+            <service uid="frameWriterSrv" type="sight::module::io::video::frame_writer" worker="frameRecordingActWorker">
+                <in key="data" uid="frameTL" auto_connect="true" />
+                <format>.tiff</format>
+                <baseFolder>%BASE_FOLDER%</baseFolder>
+            </service>
+
+            <service uid="videoWriterSrv" type="sight::module::io::video::video_writer" worker="videoRecordingActWorker">
+                <in key="data" uid="frameTL" auto_connect="true" />
+                <baseFolder>%BASE_FOLDER%</baseFolder>
+                <file>video.mp4</file>
+            </service>
+
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
+                <in group="frame_tl" auto_connect="false">
+                    <key uid="frameTL" />
+                </in>
+                <inout group="frames">
+                    <key uid="videoImage" />
+                </inout>
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect channel="camera_started_channel">
+                <slot>updater/start</slot>
+            </connect>
+
+            <connect channel="camera_paused_channel">
+                <slot>updater/stop</slot>
+            </connect>
+
+            <connect channel="camera_resumed_channel">
+                <slot>updater/start</slot>
+            </connect>
+
+            <connect channel="camera_stopped_channel">
+                <slot>updater/stop</slot>
+            </connect>
+
+            <connect>
+                <signal>parametersSrv/enum_changed</signal>
+                <slot>frameWriterSrv/set_format_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>frameRecordingAct/triggered_as_string</signal>
+                <slot>frameWriterSrv/set_prefix</slot>
+            </connect>
+
+            <connect>
+                <signal>frameWriterSrv/prefix_set</signal>
+                <slot>frameWriterSrv/toggle_recording</slot>
+            </connect>
+
+            <connect>
+                <signal>videoRecordingAct/triggered_as_string</signal>
+                <slot>videoWriterSrv/set_prefix</slot>
+            </connect>
+
+            <connect>
+                <signal>videoWriterSrv/prefix_set</signal>
+                <slot>videoWriterSrv/toggle_recording</slot>
+            </connect>
+
+            <connect>
+                <signal>pickerAdp/picked</signal>
+                <slot>imagePickerSrv/get_interaction</slot>
+            </connect>
+
+            <connect channel="addROICenterChannelIn">
+                <signal>2dPoints/point_added</signal>
+            </connect>
+
+            <connect channel="removeROICenterChannelIn">
+                <signal>2dPoints/point_removed</signal>
+            </connect>
+
+            <update>
+                <sequence uid="updater" loop="true" start="false">
+                    <service uid="frameUpdaterSrv" />
+                    <service uid="genericSceneSrv" />
+                </sequence>
+            </update>
+        </config>
+    </extension>
+</plugin>

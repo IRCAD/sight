@@ -12,17 +12,20 @@ cmake_policy(SET CMP0063 NEW)
 cmake_policy(SET CMP0057 NEW)
 # Use new policy to use CMAKE_CXX_STANDARD in try_compile() macro
 cmake_policy(SET CMP0067 NEW)
-# Use old policy for Documentation to add cache variables and find VTK documentation dependent packages.
-# (Needed for doxygen..)
-cmake_policy(SET CMP0106 OLD)
 # Use new policy for CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
 cmake_policy(SET CMP0141 NEW)
-# Use old policy for now because of openCV
-cmake_policy(SET CMP0146 OLD)
 
-if(${CMAKE_VERSION} VERSION_GREATER "3.25.0")
-    # Transform the ``DEPFILE`` after running the custom command for Ninja generator.
-    cmake_policy(SET CMP0116 OLD)
+if(${CMAKE_VERSION} VERSION_GREATER "3.31.0")
+    # Use new policy for removed FindBoost module
+    cmake_policy(SET CMP0167 NEW)
+    # Use new policy for empty string variable after a single-value keyword
+    cmake_policy(SET CMP0174 NEW)
+    # Use new policy for normalized install() DESTINATION paths
+    cmake_policy(SET CMP0177 NEW)
+else()
+    # Use old policy for Documentation to add cache variables and find VTK documentation dependent packages.
+    # (Needed for doxygen..)
+    cmake_policy(SET CMP0106 OLD)
 endif()
 
 # On Windows, if the user doesn't specify a value,
@@ -44,7 +47,7 @@ endif()
 
 project(
     sight
-    VERSION 24.0.0
+    VERSION 25.1.0
     DESCRIPTION "Surgical Image Guidance and Healthcare Toolkit"
     HOMEPAGE_URL "https://git.ircad.fr/sight/sight"
 )
@@ -67,10 +70,15 @@ mark_as_advanced(SIGHT_VERBOSE_PCH)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modules)
+
+# We need to find Qt6 before ITK/VTK, otherwise they find Qt5 and CMake fails with a cryptic
+# "Targets not yet defined: Qt::XXXXPrivate", even if we don't use ITK-Qt or VTK-Qt extensions
+if(UNIX)
+    find_package(Qt6 CONFIG QUIET COMPONENTS Core Gui Widgets OpenGL)
+endif()
 
 # We find VTK to know its version so we can enable PCL or not
-find_package(VTK CONFIG QUIET REQUIRED)
+find_package(VTK CONFIG QUIET)
 
 ########################################################################################################################
 # User options
@@ -109,10 +117,6 @@ if(SIGHT_ENABLE_CLANG_TIDY)
     set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 endif()
 
-# QML_IMPORT_PATH allows qtCreator to find the qml modules created in our modules
-set(QML_IMPORT_PATH "" CACHE STRING "Path of the Qml modules." FORCE)
-mark_as_advanced(QML_IMPORT_PATH)
-
 if(CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE} CACHE STRING "List of supported configurations." FORCE)
 endif()
@@ -148,14 +152,14 @@ endif()
 set(FWCMAKE_RESOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
 # Append our 'FindPackages.cmake' to CMAKE_MODULE_PATH
-list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+list(APPEND CMAKE_MODULE_PATH ${FWCMAKE_RESOURCE_PATH}/module)
 
 if(UNIX)
-    list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/module)
 
-    list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    list(APPEND CMAKE_FIND_ROOT_PATH ${FWCMAKE_RESOURCE_PATH}/module)
     if(UNIX)
-        list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
+        list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/module)
     endif()
 
     set(SIGHT_EXTERNAL_LIBRARIES CACHE PATH "External libraries location")
@@ -184,7 +188,7 @@ endif()
 find_package(CppUnit QUIET REQUIRED)
 
 ########################################################################################################################
-# Default paths settings for libraries, modules and resources
+# Default paths settings for libraries, module and resources
 ########################################################################################################################
 set(FW_INSTALL_PATH_SUFFIX "${PROJECT_NAME}")
 set(SIGHT_MODULE_RC_PREFIX "${CMAKE_INSTALL_DATADIR}/${FW_INSTALL_PATH_SUFFIX}")
@@ -208,16 +212,18 @@ endif()
 
 sight_configure_pch()
 
-add_subdirectory(libs)
-add_subdirectory(modules)
-add_subdirectory(configs)
-add_subdirectory(activities)
-add_subdirectory(utils)
-add_subdirectory(apps)
+add_subdirectory(lib)
+add_subdirectory(module)
+add_subdirectory(activity)
+add_subdirectory(config)
+add_subdirectory(util)
+add_subdirectory(app)
+
 if(SIGHT_BUILD_EXAMPLES)
-    add_subdirectory(tutorials)
-    add_subdirectory(examples)
+    add_subdirectory(tutorial)
+    add_subdirectory(example)
 endif()
+
 add_subdirectory(3rd-party)
 
 ########################################################################################################################
@@ -250,16 +256,12 @@ configure_file(
 )
 
 # Install the sightConfig.cmake and sightConfigVersion.cmake
-install(
-    FILES "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake" "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
-          "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake"
-          "${CMAKE_SOURCE_DIR}/cmake/build/linux/modules/FindFilesystem.cmake"
-    DESTINATION ${FWCONFIG_PACKAGE_LOCATION}
-    COMPONENT dev
+install(FILES "${CMAKE_BINARY_DIR}/cmake/sightConfig.cmake" "${CMAKE_BINARY_DIR}/cmake/sightConfigVersion.cmake"
+              "${CMAKE_SOURCE_DIR}/cmake/build/macros.cmake" DESTINATION ${FWCONFIG_PACKAGE_LOCATION} COMPONENT dev
 )
 
-# install CppUnitConfig.cmake in a modules folder.
-install(FILES "${CMAKE_SOURCE_DIR}/cmake/modules/CppUnitConfig.cmake" DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/modules
+# install CppUnitConfig.cmake in a module folder.
+install(FILES "${CMAKE_SOURCE_DIR}/cmake/module/CppUnitConfig.cmake" DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/module
         COMPONENT dev
 )
 

@@ -1,0 +1,160 @@
+<extension implements="sight::app::extension::config">
+    <id>calibration</id>
+    <parameters>
+        <object uid="AS_UID" type="sight::data::activity" />
+        <object uid="dataSet" type="sight::data::set" />
+        <object uid="camera_set" type="sight::data::camera_set" />
+
+        <param name="WID_PARENT" />
+        <param name="hasPreviousChannel" default="hasPreviousChannel" />
+        <param name="hasNextChannel" default="hasNextChannel" />
+        <param name="previousActivityChannel" default="previousActivityChannel" />
+        <param name="nextActivityChannel" default="nextActivityChannel" />
+    </parameters>
+    <config>
+        <!-- ******************************* Objects declaration ****************************** -->
+        <object uid="board_properties" type="sight::data::map" preference="true">
+            <item key="board_width" type="sight::data::integer" value="8" />
+            <item key="board_height" type="sight::data::integer" value="6" />
+            <item key="board_scale" type="sight::data::real" value="1." />
+            <item key="board_square_size" type="sight::data::real" value="10" />
+        </object>
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::view">
+            <gui>
+                <toolbar />
+                <layout type="sight::ui::layout::cardinal">
+                    <view align="center" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolbar sid="toolBarView" />
+                <view wid="calibrationView" />
+            </registry>
+        </service>
+
+        <service uid="toolBarView" type="sight::module::ui::toolbar">
+            <gui>
+                <layout>
+                    <menuItem name="Previous" icon="sight::module::ui::icons/left.svg" />
+                    <menuItem name="Next" icon="sight::module::ui::icons/right.svg" />
+                    <menuItem name="Export camera set" icon="sight::module::ui::icons/save.svg" />
+                    <separator />
+                    <menuItem name="Export xml/yaml" icon="sight::module::ui::icons/file.svg" />
+                    <separator />
+                    <editor />
+                    <separator />
+                    <menuItem name="Chessboard size" icon="sight::module::ui::icons/chessboard.svg" style="check" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="previous_act" />
+                <menuItem sid="next_act" />
+                <menuItem sid="export_act" />
+                <menuItem sid="write_calibration_act" />
+                <editor sid="camera_launcher_act" start="false" />
+                <menuItem sid="chessboard_size_act" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Action ************************************ -->
+
+        <service uid="write_calibration_act" type="sight::module::ui::action" />
+
+        <service uid="camera_launcher_act" type="sight::module::ui::qt::calibration::camera_config_launcher">
+            <inout key="camera_set" uid="${camera_set}" />
+            <inout key="board_properties" uid="${board_properties}" />
+            <inout key="activity" uid="${AS_UID}" />
+            <config>
+                <intrinsic>
+                    <appConfig id="sight::navigation::calibration::cal_intrinsic_view" />
+                    <inout key="board_properties" uid="${board_properties}" />
+                    <parameter replace="WID_PARENT" by="calibrationView" />
+                    <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
+                </intrinsic>
+                <extrinsic>
+                    <appConfig id="sight::navigation::calibration::cal_extrinsic_view" />
+                    <inout key="camera_set" uid="${camera_set}" />
+                    <inout key="board_properties" uid="${board_properties}" />
+                    <parameter replace="WID_PARENT" by="calibrationView" />
+                    <parameter replace="preferencesModifiedProxy" by="preferencesModifiedProxy" />
+                </extrinsic>
+            </config>
+        </service>
+
+        <service uid="chessboard_size_act" type="sight::module::ui::action" />
+
+        <service uid="chessboard_size_cfg" type="sight::app::config_launcher">
+            <appConfig id="sight::navigation::calibration::chessboard_settings" />
+            <inout group="object">
+                <key name="board_properties" uid="${board_properties}" />
+            </inout>
+            <properties start="false" />
+        </service>
+
+        <service uid="export_act" type="sight::module::ui::export_set" auto_connect="true">
+            <inout key="container" uid="${dataSet}" />
+            <inout key="data" uid="${camera_set}" />
+        </service>
+
+        <!-- The action "previous" and "next" are visible only if the application use a "sequencer".
+                         This service send signals to enable or not the actions. -->
+        <service uid="previous_act" type="sight::module::ui::action">
+            <state visible="false" />
+        </service>
+
+        <service uid="next_act" type="sight::module::ui::action">
+            <state visible="false" />
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="calibrationWriterSrv" type="sight::module::io::vision::open_cv_writer">
+            <in key="data" uid="${camera_set}" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect>
+            <signal>write_calibration_act/clicked</signal>
+            <slot>calibrationWriterSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>chessboard_size_act/checked</signal>
+            <slot>chessboard_size_cfg/start</slot>
+        </connect>
+
+        <connect>
+            <signal>chessboard_size_cfg/stopped</signal>
+            <slot>chessboard_size_act/uncheck</slot>
+        </connect>
+
+        <!-- Connection to enable "previous" action. It should be connected to a sequencer in the application configuration.-->
+        <connect channel="${hasPreviousChannel}">
+            <slot>export_act/hide</slot>
+            <slot>previous_act/show</slot>
+            <slot>previous_act/set_enabled</slot>
+        </connect>
+
+        <!-- Connection to called 'previous' slot of the application's sequencer. -->
+        <connect channel="${previous_activityChannel}">
+            <signal>previous_act/clicked</signal>
+        </connect>
+
+        <!-- Connection to enable "next" action. It should be connected to a sequencer in the application configuration.-->
+        <connect channel="${hasNextChannel}">
+            <slot>export_act/hide</slot>
+            <slot>next_act/show</slot>
+            <slot>next_act/set_enabled</slot>
+        </connect>
+
+        <!-- Connection to called 'next' slot of the application's sequencer. -->
+        <connect channel="${next_activityChannel}">
+            <signal>next_act/clicked</signal>
+        </connect>
+    </config>
+</extension>

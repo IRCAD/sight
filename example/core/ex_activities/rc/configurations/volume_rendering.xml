@@ -1,0 +1,91 @@
+<!-- This configuration allows to read an image and display it in a simple scene -->
+<extension implements="sight::app::extension::config">
+    <id>ex_activities::config::volume_rendering</id>
+    <parameters>
+        <object uid="image_series" type="sight::data::image_series" />
+        <param name="WID_PARENT" />
+    </parameters>
+    <config>
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="tf" type="sight::data::transfer_function" />
+        <object uid="mask" type="sight::data::image" />
+        <object uid="extruded_model_series" type="sight::data::model_series" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="main_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+                <toolbar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="image_scene" />
+                <view sid="tfm" />
+                <toolbar sid="toolbar_view" />
+            </registry>
+        </service>
+
+        <service uid="toolbar_view" type="sight::module::ui::toolbar">
+            <gui>
+                <layout>
+                    <menuItem name="Import image" icon="sight::module::ui::icons/load.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="import_act" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="import_act" type="sight::module::ui::io::selector">
+            <inout key="data" uid="${image_series}" />
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="sight::module::io::vtk::image_reader" />
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="image_scene" type="sight::viz::scene3d::render">
+            <scene>
+                <background color="#36393E" />
+                <layer id="default">
+                    <adaptor uid="camera_interactor_adp" />
+                    <adaptor uid="volume_render_adp" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="camera_interactor_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
+            <config priority="0" />
+        </service>
+
+        <service uid="volume_render_adp" type="sight::module::viz::scene3d::adaptor::volume_render">
+            <in key="image" uid="${image_series}" />
+            <in key="tf" uid="tf" />
+            <in key="mask" uid="mask" />
+            <config widgets="true" preintegration="false" autoresetcamera="true" />
+        </service>
+
+        <service uid="image_extruder_srv" type="sight::module::filter::image::image_extruder" worker="EXTRUSION">
+            <in key="meshes" uid="extruded_model_series" />
+            <in key="image" uid="${image_series}" />
+            <inout key="mask" uid="mask" />
+        </service>
+
+        <service uid="tfm" type="sight::module::ui::qt::image::transfer_function">
+            <inout key="tf" uid="tf" />
+            <in key="image" uid="${image_series}" />
+        </service>
+
+        <update uid="image_extruder_srv" />
+    </config>
+</extension>

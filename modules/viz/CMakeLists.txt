@@ -1,6 +1,0 @@
-add_subdirectory(scene2d)
-add_subdirectory(scene3d)
-add_subdirectory(scene3d_qt)
-add_subdirectory(scene3d_test)
-add_subdirectory(sample)
-add_subdirectory(qt3d)

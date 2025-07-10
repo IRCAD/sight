@@ -1,0 +1,108 @@
+<extension implements="sight::app::extension::config">
+    <id>sight::activity::viz::negato::three_views</id>
+    <parameters>
+        <object uid="image_series" type="sight::data::image_series" />
+
+        <param name="WID_PARENT" />
+        <param name="advanced_landmarks_editor" default="true" />
+
+        <channel name="has_previous" optional="true" />
+        <channel name="has_next" optional="true" />
+        <channel name="previous_activity" optional="true" />
+        <channel name="next_activity" optional="true" />
+    </parameters>
+    <config>
+        <service uid="main_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::cardinal">
+                    <view caption="Negato1" align="center" />
+                    <view caption="Negato2" align="right" minWidth="400" />
+                    <view caption="Negato3" align="right" />
+                    <view align="left" visible="false" />
+                </layout>
+                <toolbar />
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolbar sid="toolbar" />
+                <view wid="view_negato1" />
+                <view wid="view_negato2" />
+                <view wid="view_negato3" />
+            </registry>
+        </service>
+
+        <service uid="toolbar" type="sight::module::ui::toolbar">
+            <gui>
+                <layout>
+                    <menuItem name="Previous" icon="sight::module::ui::icons/left.svg" />
+                    <menuItem name="Next" icon="sight::module::ui::icons/right.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="action_previous" />
+                <menuItem sid="action_next" />
+            </registry>
+        </service>
+
+        <service uid="cfg_negato1" type="sight::app::config_launcher">
+            <properties config="sight::activity::viz::negato::2d" />
+            <inout group="object">
+                <key name="image" uid="${image_series}" />
+            </inout>
+            <parameter replace="WID_PARENT" by="view_negato1" />
+            <parameter replace="orientation" by="axial" />
+        </service>
+
+        <service uid="cfg_negato2" type="sight::app::config_launcher">
+            <properties config="sight::activity::viz::negato::2d" />
+            <inout group="object">
+                <key name="image" uid="${image_series}" />
+            </inout>
+            <parameter replace="WID_PARENT" by="view_negato2" />
+            <parameter replace="orientation" by="frontal" />
+        </service>
+
+        <service uid="cfg_negato3" type="sight::app::config_launcher">
+            <properties config="sight::activity::viz::negato::2d" />
+            <inout group="object">
+                <key name="image" uid="${image_series}" />
+            </inout>
+            <parameter replace="WID_PARENT" by="view_negato3" />
+            <parameter replace="orientation" by="sagittal" />
+        </service>
+
+        <!-- The action "previous" and "next" are visible only if the application use a "sequencer".
+             This service send signals to enable or not the actions. -->
+        <service uid="action_previous" type="sight::module::ui::action">
+            <state visible="false" />
+        </service>
+
+        <service uid="action_next" type="sight::module::ui::action">
+            <state visible="false" />
+        </service>
+
+        <!-- Connection to enable "previous" action. It should be connected to a sequencer in the application
+             configuration.-->
+        <connect channel="${has_previous}">
+            <slot>action_previous/show</slot>
+            <slot>action_previous/set_enabled</slot>
+        </connect>
+
+        <!-- Connection to called 'previous' slot of the application's sequencer. -->
+        <connect channel="${previous_activity}">
+            <signal>action_previous/clicked</signal>
+        </connect>
+
+        <!-- Connection to enable "next" action. It should be connected to a sequencer in the application
+             configuration.-->
+        <connect channel="${has_next}">
+            <slot>action_next/show</slot>
+            <slot>action_next/set_enabled</slot>
+        </connect>
+
+        <!-- Connection to called 'next' slot of the application's sequencer. -->
+        <connect channel="${next_activity}">
+            <signal>action_next/clicked</signal>
+        </connect>
+    </config>
+</extension>

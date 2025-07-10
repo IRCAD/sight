@@ -1,0 +1,355 @@
+<!--
+    This tutorial shows a VTK scene containing a 3D image and a 3D model.
+    To use this application, you should open a 3D image mask of an organ. An used the mesher actions to creates a
+    reconstruction. Then, you can update the organ color, transparence, ... using the editors in the right.
+ -->
+<plugin id="tuto08_mesher_with_generic_scene">
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+
+    <extension implements="sight::app::extension::config">
+        <id>tuto08_mesher_with_generic_scene</id>
+        <config>
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="model_series" type="sight::data::model_series" />
+            <object uid="image_series" type="sight::data::image_series" />
+            <object uid="tf" type="sight::data::transfer_function">
+                <colors is_clamped="false">
+                    <step color="#00000000" value="0" />
+                    <step color="#FF000070" value="1" />
+                    <step color="#0000FFFF" value="1.5" />
+                    <step color="#00000000" value="3" />
+                    <step color="#00000000" value="255" />
+                </colors>
+            </object>
+            <object uid="reconstruction" type="sight::data::reconstruction" deferred="true" />
+            <object uid="snapshot" type="sight::data::image" />
+
+            <object uid="mesher_properties" type="sight::data::map">
+                <item key="boundary_smoothing" type="sight::data::boolean" value="false" />
+                <item key="non_manifold_smoothing" type="sight::data::boolean" value="true" />
+                <item key="feature_smoothing" type="sight::data::boolean" value="false" />
+                <item key="preserve_topology" type="sight::data::boolean" value="false" />
+                <item key="flying_edges" type="sight::data::boolean" value="false" />
+                <item key="value" type="sight::data::integer" value="2" />
+                <item key="num_iterations" type="sight::data::integer" value="50" />
+                <item key="quadric_reduction" type="sight::data::boolean" value="false" />
+                <item key="percent_reduction" type="sight::data::real" value="50" />
+                <item key="pass_band" type="sight::data::real" value="0.01" />
+                <item key="feature_angle" type="sight::data::real" value="120.0" />
+            </object>
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="main_frame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>Tutorial 8: Mesher and generic scene</name>
+                        <icon>tuto08_mesher_with_generic_scene/tuto.ico</icon>
+                    </frame>
+                    <menubar />
+                </gui>
+                <registry>
+                    <menubar sid="menu_bar_view" />
+                    <view sid="main_view" />
+                </registry>
+            </service>
+
+            <service uid="menu_bar_view" type="sight::module::ui::menubar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="Mesher" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_file_view" />
+                    <menu sid="menu_mesher_view" />
+                </registry>
+            </service>
+
+            <service uid="menu_file_view" type="sight::module::ui::menu">
+                <gui>
+                    <layout>
+                        <menu_item name="Open labelled image" shortcut="Ctrl+O" />
+                        <menu_item name="Save segmented meshes" shortcut="Ctrl+S" />
+                        <separator />
+                        <menu_item name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu_item sid="open_image_act" />
+                    <menu_item sid="save_model_series_act" />
+                    <menu_item sid="quit_act" />
+                </registry>
+            </service>
+
+            <service uid="menu_mesher_view" type="sight::module::ui::menu">
+                <gui>
+                    <layout>
+                        <menu_item name="Create Mesh" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu_item sid="create_mesh_act" />
+                </registry>
+            </service>
+
+            <service uid="main_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" min_height="30" resizable="false" background_color="#3E4453" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="container_view" />
+                    <view sid="scene_editors_view" />
+                    <view sid="progress_bar_view" />
+                </registry>
+            </service>
+
+            <service uid="progress_bar_view" type="sight::module::ui::qt::progress_bar" />
+
+            <service uid="container_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <view proportion="2" />
+                        <view proportion="1" background_color="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="generic_scene_srv" />
+                    <view sid="right_view" />
+                </registry>
+            </service>
+
+            <service uid="right_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="organs_view" />
+                </registry>
+            </service>
+
+            <service uid="organs_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::toolbox">
+                        <icon_color value="#FFFFFF" />
+                        <view caption="Mesher" expanded="true" />
+                        <view caption="Organs" expanded="true" />
+                        <view caption="Material" expanded="true" />
+                        <view caption="Representation" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="mesher_settings_srv" />
+                    <view sid="list_organ_editor_srv" />
+                    <view sid="organ_material_editor_srv" />
+                    <view sid="representation_editor_srv" />
+                </registry>
+            </service>
+
+            <service uid="scene_editors_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <view proportion="0" min_width="50" />
+                        <view proportion="1" />
+                        <view proportion="0" min_width="30" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="show_negato_srv" />
+                    <view sid="slider_index_editor_srv" />
+                    <view sid="snapshot_srv" />
+                </registry>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <service uid="generic_scene_srv" type="sight::viz::scene3d::render">
+                <scene>
+                    <background top_color="#36393E" bottom_color="#36393E" />
+
+                    <layer id="default">
+                        <adaptor uid="trackball_interactor_adp" />
+                        <adaptor uid="model_series_adp" />
+                        <adaptor uid="negato_adp" />
+                        <adaptor uid="snapshot_adp" />
+                    </layer>
+                </scene>
+            </service>
+
+            <service uid="trackball_interactor_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
+                <config priority="0" />
+            </service>
+
+            <service uid="model_series_adp" type="sight::module::viz::scene3d::adaptor::model_series" auto_connect="true">
+                <in key="model" uid="${model_series}" />
+                <config autoresetcamera="false" />
+            </service>
+
+            <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
+                <in key="image" uid="image_series" />
+                <inout key="tf" uid="tf" />
+                <config orientation="axial" interactive="true" tf_alpha="true" />
+                <properties classification="pre" />
+            </service>
+
+            <service uid="snapshot_adp" type="sight::module::viz::scene3d::adaptor::fragments_info">
+                <inout key="image" uid="snapshot" />
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="open_image_act" type="sight::module::ui::action" />
+            <service uid="save_model_series_act" type="sight::module::ui::action" />
+
+            <service uid="quit_act" type="sight::module::ui::quit" />
+
+            <service uid="create_mesh_act" type="sight::module::ui::action" />
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="snapshot_srv" type="sight::module::ui::qt::com::signal_button">
+                <config>
+                    <checkable>false</checkable>
+                    <icon>sight::module::ui::icons/frame.svg</icon>
+                </config>
+            </service>
+
+            <service uid="mesher_settings_srv" type="sight::module::ui::qt::settings">
+                <inout key="map" uid="${mesher_properties}" />
+                <ui>
+                    <item key="boundary_smoothing" name="Boundary smoothing" />
+                    <item key="non_manifold_smoothing" name="Non manifold smoothing" />
+                    <item key="flying_edges" name="Marching Cubes/Flying edges" />
+                    <item key="num_iterations" name="Number of iterations" widget="spin" min="0" max="100" />
+                    <item key="value" name="Value" widget="spin" min="0" max="255" />
+                    <item key="pass_band" name="Pass band" widget="spin" min="0.0001" max="1." />
+                    <item key="feature_smoothing" name="Feature smoothing" />
+                    <item key="feature_angle" name="Feature angle" widget="spin" min="0.0" max="180." depends="feature_smoothing" />
+                    <item key="percent_reduction" name="Reduction" widget="slider" min="0." max="99." emit_on_release="true" />
+                    <item key="quadric_reduction" name="Quadric reduction (better but slower)" />
+                    <item key="preserve_topology" name="Preserve topology" />
+                </ui>
+            </service>
+
+            <service uid="show_negato_srv" type="sight::module::ui::qt::com::signal_button">
+                <config>
+                    <checkable>true</checkable>
+                    <icon>sight::module::ui::icons/cross.svg</icon>
+                    <icon2>sight::module::ui::icons/layers.svg</icon2>
+                    <icon_width>40</icon_width>
+                    <icon_height>16</icon_height>
+                    <checked>true</checked>
+                </config>
+            </service>
+
+            <service uid="list_organ_editor_srv" type="sight::module::ui::qt::model::model_series_list" auto_connect="true">
+                <inout key="model_series" uid="model_series" />
+                <columns>
+                    <organ_name>@organ_name</organ_name>
+                </columns>
+                <config enable_delete="true" />
+            </service>
+
+            <service uid="slider_index_editor_srv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
+                <inout key="image" uid="image_series" />
+                <config orientation="axial" label="index" display_axis_selector="false" display_step_buttons="false" />
+            </service>
+
+            <service uid="mesher_srv" type="sight::module::filter::mesh::vtk_mesher" worker="mesher">
+                <in key="image_series" uid="image_series" />
+                <inout key="model_series" uid="model_series" />
+                <properties from="${mesher_properties}" />
+            </service>
+
+            <service uid="model_series_writer_srv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="model_series" />
+                <type mode="writer" />
+            </service>
+
+            <service uid="image_reader_srv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="image_series" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="updater_reconst_srv" type="sight::module::data::select_object">
+                <out key="object" uid="reconstruction" />
+            </service>
+
+            <service uid="organ_material_editor_srv" type="sight::module::ui::qt::reconstruction::organ_material_editor" auto_connect="true">
+                <inout key="reconstruction" uid="reconstruction" />
+            </service>
+
+            <service uid="representation_editor_srv" type="sight::module::ui::qt::reconstruction::representation_editor" auto_connect="true">
+                <inout key="reconstruction" uid="reconstruction" />
+            </service>
+
+            <!-- Write the snapshot image -->
+            <service uid="image_writer_srv" type="sight::module::io::bitmap::writer">
+                <in key="data" uid="snapshot" />
+                <dialog policy="always" />
+                <backends enable="all" mode="best" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>image_reader_srv/job_created</signal>
+                <signal>mesher_srv/job_created</signal>
+                <signal>model_series_writer_srv/job_created</signal>
+                <slot>progress_bar_view/show_job</slot>
+            </connect>
+
+            <connect>
+                <signal>list_organ_editor_srv/reconstruction_selected</signal>
+                <slot>updater_reconst_srv/add</slot>
+            </connect>
+
+            <connect>
+                <signal>snapshot_srv/clicked</signal>
+                <slot>image_writer_srv/update</slot>
+            </connect>
+
+            <!--
+                Connection for 3D image slice:
+                Connect the button (show_negato_srv) signal "toggled" to the image adaptor (negato_adp)
+                slot "show_slice", this signals/slots contains a boolean.
+                The image slices will be shown or hidden when the button is checked/unchecked.
+            -->
+            <connect>
+                <signal>show_negato_srv/toggled</signal>
+                <slot>negato_adp/update_visibility</slot>
+            </connect>
+
+            <connect>
+                <signal>open_image_act/clicked</signal>
+                <slot>image_reader_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>save_model_series_act/clicked</signal>
+                <slot>model_series_writer_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>create_mesh_act/clicked</signal>
+                <slot>mesher_srv/update</slot>
+            </connect>
+        </config>
+    </extension>
+</plugin>

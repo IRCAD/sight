@@ -1,0 +1,152 @@
+<!--
+Example:
+
+<service uid="..." type="sight::app::config_launcher">
+    <properties config="sight::config::viz::image::imageSlider2D" />
+    <inout group="object">
+        <key name="image" uid="${image}" />
+        <key name="transferFunction" uid="${transferFunction}" />
+    </inout>
+    <parameter replace="WID_PARENT" by="negatoslider_view" />
+    <parameter replace="sliceIndex" by="axial" />
+    <parameter replace="enableSliceType" by="true" />
+</service>
+-->
+<extension implements="sight::app::extension::config">
+    <id>sight::config::viz::image::imageSlider</id>
+    <parameters>
+        <object uid="image" type="sight::data::image_series" />
+        <object uid="transferFunction" type="sight::data::transfer_function" />
+
+        <param name="WID_PARENT" />
+        <param name="enableSliceSlider" default="true" />
+        <param name="enableSliceType" default="true" />
+        <param name="enableOpacity" default="false" />
+        <param name="sliceIndex" default="axial" />
+    </parameters>
+    <desc>This configuration displays a tab layout containing a negato and a transfer function editor</desc>
+    <config>
+        <service uid="view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="toolbar_view" />
+                <view sid="slider_view" />
+            </registry>
+        </service>
+
+        <service uid="toolbar_view" type="sight::module::ui::view">
+            <gui>
+                <toolbar background_color="#00000000" />
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                </layout>
+            </gui>
+            <registry>
+                <toolbar sid="top_toolbar_view" />
+            </registry>
+        </service>
+
+        <service uid="top_toolbar_view" type="sight::module::ui::toolbar">
+            <gui>
+                <layout>
+                    <menuItem name="slice" icon="sight::module::ui::icons/layers.svg" style="radio" />
+                    <menuItem name="windowing" icon="sight::module::ui::icons/windowing.svg" style="radio" />
+                    <menuItem name="opacity" icon="sight::module::ui::icons/opacity.svg" style="radio" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="slice_act" />
+                <menuItem sid="windowing_act" />
+                <menuItem sid="opacity_act" />
+            </registry>
+        </service>
+
+        <service uid="slider_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" visible="false" />
+                    <view proportion="0" visible="true" />
+                    <view proportion="0" visible="false" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="negato_slicer_srv" />
+                <view sid="window_level_image" />
+                <view sid="transfer_function_opacity" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Actions ************************************ -->
+
+        <service uid="slice_act" type="sight::module::ui::action">
+            <state visible="${enableSliceSlider}" />
+        </service>
+
+        <service uid="windowing_act" type="sight::module::ui::action">
+            <state checked="true" />
+        </service>
+
+        <service uid="opacity_act" type="sight::module::ui::action">
+            <state visible="${enableOpacity}" />
+        </service>
+
+        <!-- ************************************* Services *********************************** -->
+
+        <service uid="negato_slicer_srv" type="sight::module::ui::qt::image::slice_index_position_editor">
+            <inout key="image" uid="${image}" />
+            <config orientation="${sliceIndex}" label="index" display_axis_selector="true" display_step_buttons="true" />
+            <properties start="${enableSliceSlider}" />
+        </service>
+
+        <service uid="window_level_image" type="sight::module::ui::qt::image::window_level">
+            <config minimal="true" />
+            <in key="image" uid="${image}" />
+            <inout key="tf" uid="${transferFunction}" />
+        </service>
+
+        <service uid="transfer_function_opacity" type="sight::module::ui::qt::image::transfer_function_opacity">
+            <inout key="tf" uid="${transferFunction}" />
+        </service>
+
+        <connect>
+            <signal>windowing_act/clicked</signal>
+            <slot>negato_slicer_srv/hide</slot>
+            <slot>window_level_image/show</slot>
+            <slot>transfer_function_opacity/hide</slot>
+        </connect>
+
+        <connect>
+            <signal>slice_act/clicked</signal>
+            <slot>negato_slicer_srv/show</slot>
+            <slot>window_level_image/hide</slot>
+            <slot>transfer_function_opacity/hide</slot>
+        </connect>
+
+        <connect>
+            <signal>opacity_act/clicked</signal>
+            <slot>negato_slicer_srv/hide</slot>
+            <slot>window_level_image/hide</slot>
+            <slot>transfer_function_opacity/show</slot>
+        </connect>
+
+        <connect>
+            <signal>negato_slicer_srv/started</signal>
+            <slot>negato_slicer_srv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>negato_slicer_srv/updated</signal>
+            <slot>slice_act/check</slot>
+            <slot>slice_act/update</slot>
+        </connect>
+    </config>
+</extension>

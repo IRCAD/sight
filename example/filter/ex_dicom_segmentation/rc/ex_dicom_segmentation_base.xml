@@ -1,0 +1,133 @@
+<extension implements="sight::app::extension::config">
+    <id>ExDicomSegmentation_Base_AppCfg</id>
+    <parameters>
+        <object uid="seriesSet" type="sight::data::series_set" />
+
+        <param name="WID_PARENT" />
+        <param name="DYNAMICVIEW_SENDER_CHANNEL" default="channel" />
+    </parameters>
+    <config>
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="selection" type="sight::data::vector" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="1" background_color="#2E3034" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="containerView" />
+            </registry>
+        </service>
+
+        <service uid="containerView" type="sight::module::ui::view">
+            <gui>
+                <toolbar />
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="1" background_color="#36393E" />
+                    <view proportion="1" background_color="#2E3034" border="5" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <toolbar sid="toolBarView" />
+                <view sid="selectorSrv" />
+                <view wid="previewView" />
+            </registry>
+        </service>
+
+        <service uid="toolBarView" type="sight::module::ui::toolbar">
+            <gui>
+                <layout>
+                    <menuItem name="Import" icon="sight::module::ui::icons/load.svg" />
+                    <menuItem name="Export" icon="sight::module::ui::icons/save.svg" />
+                    <menuItem name="Threshold" icon="sight::module::ui::icons/menu.svg" />
+                    <menuItem name="Mesher" icon="sight::module::ui::icons/menu.svg" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="importAct" />
+                <menuItem sid="exportAct" />
+                <menuItem sid="thresholdAct" />
+                <menuItem sid="mesherAct" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Action ************************************ -->
+
+        <service uid="importAct" type="sight::module::ui::series::db_merger">
+            <inout key="seriesSet" uid="${seriesSet}" />
+            <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
+        </service>
+
+        <service uid="exportAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
+            <in key="series" uid="selection" />
+            <config>
+                <mode>immediate</mode>
+                <parameters />
+                <filter>
+                    <mode>include</mode>
+                    <id>ImageSeriesExport</id>
+                    <id>ModelSeriesExport</id>
+                    <id>DicomSegmentationSurfaceExport</id>
+                </filter>
+            </config>
+        </service>
+
+        <service uid="mesherAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
+            <in key="series" uid="selection" />
+            <config>
+                <parameters>
+                    <parameter replace="seriesSet" by="${seriesSet}" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>ExDicomSegmentation_VTKMesher_Activity</id>
+                </filter>
+            </config>
+        </service>
+
+        <service uid="thresholdAct" type="sight::module::ui::qt::activity::launcher" auto_connect="true">
+            <in key="series" uid="selection" />
+            <config>
+                <parameters>
+                    <parameter replace="seriesSet" by="${seriesSet}" />
+                </parameters>
+                <filter>
+                    <mode>include</mode>
+                    <id>ExDicomSegmentation_Threshold_Activity</id>
+                </filter>
+            </config>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="selectorSrv" type="sight::module::ui::qt::series::selector" auto_connect="true">
+            <inout key="seriesSet" uid="${seriesSet}" />
+            <inout key="selection" uid="selection" />
+        </service>
+
+        <service uid="seriesViewerSrv" type="sight::module::ui::qt::series::viewer" auto_connect="true">
+            <in key="series" uid="selection" />
+            <parentView wid="previewView" />
+            <configs>
+                <config id="2DSimpleConfig" type="sight::data::image_series" />
+                <config id="3DSimpleConfig" type="sight::data::model_series" />
+            </configs>
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect channel="${DYNAMICVIEW_SENDER_CHANNEL}">
+            <signal>thresholdAct/activity_launched</signal>
+            <signal>mesherAct/activity_launched</signal>
+        </connect>
+    </config>
+</extension>

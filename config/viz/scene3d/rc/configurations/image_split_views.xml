@@ -1,0 +1,235 @@
+<extension implements="sight::app::extension::config">
+    <id>sight::config::viz::scene3d::image_split_views</id>
+    <parameters>
+        <object uid="model_series" type="sight::data::model_series" deferred="true" />
+        <object uid="image" type="sight::data::image_series" deferred="true" />
+        <object uid="volume_tf" type="sight::data::transfer_function" />
+        <object uid="extruded_model_series" type="sight::data::model_series" />
+
+        <object uid="vr_visibility" type="sight::data::boolean" />
+        <object uid="negato_visibility" type="sight::data::boolean" />
+        <object uid="model_visibility" type="sight::data::boolean" />
+        <object uid="axis_visibility" type="sight::data::boolean" />
+
+        <param name="WID_PARENT" />
+
+        <channel name="vr_bool_param" />
+        <channel name="vr_int_param" />
+        <channel name="vr_double_param" />
+        <channel name="box_widget_visibility" />
+        <channel name="box_widget_reset" />
+        <channel name="shape_extruder_enable_tool" />
+        <channel name="shape_extruder_tool_disabled" />
+        <channel name="shape_extruder_undo" />
+        <channel name="shape_extruder_reset" />
+        <channel name="world_coords_landmarks" />
+        <channel name="negato_3d_transparency" />
+        <channel name="ruler_activation" />
+        <channel name="ruler_deactivation" />
+        <channel name="landmarks_edit_mode" />
+        <channel name="landmarks_group_selected" />
+        <channel name="remove_all_landmarks" />
+        <channel name="remove_all_rulers" />
+        <channel name="visibility_rulers" />
+        <channel name="landmarks_edit_mode_changed" />
+    </parameters>
+    <config>
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="main_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" spacing="2" />
+                    <view proportion="0" spacing="2" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="top_scenes_view" />
+                <view sid="bottom_scenes_view" />
+            </registry>
+        </service>
+
+        <service uid="top_scenes_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view proportion="1" minWidth="0" visible="true" />
+                    <view proportion="1" minWidth="0" visible="false" spacing="2" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="main_scene_view" />
+                <view wid="axial_scene_view" />
+            </registry>
+        </service>
+
+        <service uid="bottom_scenes_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view proportion="1" minWidth="0" visible="false" />
+                    <view proportion="1" minWidth="0" visible="false" spacing="2" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="sagittal_scene_view" />
+                <view wid="frontal_scene_view" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Begin 3D scene ******************************* -->
+
+        <service uid="main_scene_cfg" type="sight::app::config_launcher">
+            <properties config="sight::config::viz::scene3d::volumeRendering" />
+            <inout group="object">
+                <key name="model_series" uid="${model_series}" optional="true" />
+                <key name="image" uid="${image}" optional="true" />
+                <key name="volume_tf" uid="${volume_tf}" />
+                <key name="extruded_model_series" uid="${extruded_model_series}" />
+                <key name="vr_visibility" uid="${vr_visibility}" />
+                <key name="negato_visibility" uid="${negato_visibility}" />
+                <key name="model_visibility" uid="${model_visibility}" />
+                <key name="axis_visibility" uid="${axis_visibility}" />
+            </inout>
+            <param name="WID_PARENT" value="main_scene_view" />
+            <param name="maximized" value="true" />
+            <param name="restored" value="false" />
+
+            <channel name="toggle_view_visibility" uid="toggle_scene_3d_visibility" />
+            <channel name="vr_bool_param" uid="${vr_bool_param}" />
+            <channel name="vr_int_param" uid="${vr_int_param}" />
+            <channel name="vr_double_param" uid="${vr_double_param}" />
+            <channel name="box_widget_visibility" uid="${box_widget_visibility}" />
+            <channel name="box_widget_reset" uid="${box_widget_reset}" />
+            <channel name="shape_extruder_enable_tool" uid="${shape_extruder_enable_tool}" />
+            <channel name="shape_extruder_tool_disabled" uid="${shape_extruder_tool_disabled}" />
+            <channel name="shape_extruder_undo" uid="${shape_extruder_undo}" />
+            <channel name="shape_extruder_reset" uid="${shape_extruder_reset}" />
+            <channel name="world_coords_landmarks" uid="${world_coords_landmarks}" />
+            <channel name="negato_3d_transparency" uid="${negato_3d_transparency}" />
+            <channel name="ruler_activation" uid="${ruler_activation}" />
+            <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
+            <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
+            <channel name="remove_all_landmarks" uid="${remove_all_landmarks}" />
+            <channel name="remove_all_rulers" uid="${remove_all_rulers}" />
+            <channel name="visibility_rulers" uid="${visibility_rulers}" />
+            <channel name="landmarks_edit_mode_changed" uid="${landmarks_edit_mode_changed}" />
+        </service>
+
+        <!-- ************************************* 2D Negato views ************************************ -->
+
+        <service uid="axial_negato_cfg" type="sight::app::config_launcher">
+            <properties config="sight::config::viz::scene3d::negato2d" />
+            <inout group="object">
+                <key name="image" uid="${image}" optional="true" />
+                <key name="transfer_function" uid="${volume_tf}" />
+            </inout>
+            <param name="WID_PARENT" value="axial_scene_view" />
+            <param name="slice_index" value="axial" />
+            <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
+            <channel name="toggle_view_visibility" uid="toggle_axial_visibility" />
+            <channel name="ruler_activation" uid="${ruler_activation}" />
+            <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="visibility_rulers" uid="${visibility_rulers}" />
+            <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
+            <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
+            <channel name="remove_all_landmarks" uid="${remove_all_landmarks}" />
+            <channel name="landmarks_edit_mode_changed" uid="${landmarks_edit_mode_changed}" />
+        </service>
+
+        <service uid="sagittal_negato_cfg" type="sight::app::config_launcher">
+            <properties config="sight::config::viz::scene3d::negato2d" />
+            <inout group="object">
+                <key name="image" uid="${image}" optional="true" />
+                <key name="transfer_function" uid="${volume_tf}" />
+            </inout>
+            <param name="WID_PARENT" value="sagittal_scene_view" />
+            <param name="slice_index" value="sagittal" />
+            <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
+            <channel name="toggle_view_visibility" uid="toggle_sagittal_visibility" />
+            <channel name="ruler_activation" uid="${ruler_activation}" />
+            <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="visibility_rulers" uid="${visibility_rulers}" />
+            <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
+            <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
+            <channel name="remove_all_landmarks" uid="${remove_all_landmarks}" />
+            <channel name="landmarks_edit_mode_changed" uid="${landmarks_edit_mode_changed}" />
+        </service>
+
+        <service uid="frontal_negato_cfg" type="sight::app::config_launcher">
+            <properties config="sight::config::viz::scene3d::negato2d" />
+            <inout group="object">
+                <key name="image" uid="${image}" optional="true" />
+                <key name="transfer_function" uid="${volume_tf}" />
+            </inout>
+            <param name="WID_PARENT" value="frontal_scene_view" />
+            <param name="slice_index" value="frontal" />
+            <channel name="world_coords_landmarks" uid="world_coords_landmarks" />
+            <channel name="toggle_view_visibility" uid="toggle_frontal_visibility" />
+            <channel name="ruler_activation" uid="${ruler_activation}" />
+            <channel name="ruler_deactivation" uid="${ruler_deactivation}" />
+            <channel name="visibility_rulers" uid="${visibility_rulers}" />
+            <channel name="landmarks_edit_mode" uid="${landmarks_edit_mode}" />
+            <channel name="landmarks_group_selected" uid="${landmarks_group_selected}" />
+            <channel name="remove_all_landmarks" uid="${remove_all_landmarks}" />
+            <channel name="landmarks_edit_mode_changed" uid="${landmarks_edit_mode_changed}" />
+        </service>
+
+        <!-- ************************************* Actions ************************************ -->
+
+        <service uid="main_scene_visibility_act" type="sight::module::ui::modify_layout">
+            <status checked="false" />
+            <config>
+                <toggle wid="axial_scene_view" />
+                <toggle wid="sagittal_scene_view" />
+                <toggle wid="frontal_scene_view" />
+            </config>
+        </service>
+
+        <service uid="axial_negato_visibility_act" type="sight::module::ui::modify_layout">
+            <config>
+                <toggle wid="main_scene_view" />
+                <toggle wid="sagittal_scene_view" />
+                <toggle wid="frontal_scene_view" />
+            </config>
+        </service>
+
+        <service uid="sagittal_negato_visibility_act" type="sight::module::ui::modify_layout">
+            <config>
+                <toggle wid="main_scene_view" />
+                <toggle wid="axial_scene_view" />
+                <toggle wid="frontal_scene_view" />
+            </config>
+        </service>
+
+        <service uid="frontal_negato_visibility_act" type="sight::module::ui::modify_layout">
+            <config>
+                <toggle wid="main_scene_view" />
+                <toggle wid="axial_scene_view" />
+                <toggle wid="sagittal_scene_view" />
+            </config>
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <!-- Enlarge CT view by double-clicking it -->
+        <connect channel="toggle_scene_3d_visibility">
+            <slot>main_scene_visibility_act/update</slot>
+        </connect>
+
+        <connect channel="toggle_axial_visibility">
+            <slot>axial_negato_visibility_act/update</slot>
+        </connect>
+
+        <connect channel="toggle_sagittal_visibility">
+            <slot>sagittal_negato_visibility_act/update</slot>
+        </connect>
+
+        <connect channel="toggle_frontal_visibility">
+            <slot>frontal_negato_visibility_act/update</slot>
+        </connect>
+    </config>
+</extension>

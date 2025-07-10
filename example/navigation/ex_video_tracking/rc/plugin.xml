@@ -1,0 +1,194 @@
+<plugin id="ex_video_tracking">
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3d_qt" />
+    <requirement id="sight::module::ui" />
+
+    <extension implements="sight::app::extension::config">
+        <id>ExVideoTracking_AppCfg</id>
+        <config>
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="camera" type="sight::data::camera" />
+            <object uid="frameTL" type="sight::data::frame_tl">
+                <value>100</value>
+            </object>
+            <object uid="marker_map" type="sight::data::marker_map" />
+            <object uid="videoImage" type="sight::data::image" />
+
+            <!-- Aruco tracker parameters -->
+            <object uid="aruco_params" type="sight::data::map">
+                <item key="debug_mode" type="sight::data::boolean" value="true" />
+                <item key="corner_refinement" type="sight::data::boolean" value="true" />
+                <item key="adaptive_th_win_size_min" type="sight::data::integer" value="3" />
+                <item key="adaptive_th_win_size_max" type="sight::data::integer" value="23" />
+                <item key="adaptive_th_win_size_step" type="sight::data::integer" value="10" />
+                <item key="adaptive_th_constant" type="sight::data::real" value="7." />
+                <item key="min_marker_perimeter_rate" type="sight::data::real" value="0.03" />
+                <item key="max_marker_perimeter_rate" type="sight::data::real" value="4.0" />
+                <item key="polygonal_approx_accuracy_rate" type="sight::data::real" value="0.03" />
+                <item key="min_corner_distance_rate" type="sight::data::real" value="0.01" />
+                <item key="min_distance_to_border" type="sight::data::integer" value="1" />
+                <item key="min_marker_distance_rate" type="sight::data::real" value="0.0" />
+                <item key="corner_refinement_win_size" type="sight::data::integer" value="5" />
+                <item key="corner_refinement_max_iterations" type="sight::data::integer" value="30" />
+                <item key="corner_refinement_min_accuracy" type="sight::data::real" value="0.1" />
+                <item key="marker_border_bits" type="sight::data::integer" value="1" />
+                <item key="perspective_remove_pixel_per_cell" type="sight::data::integer" value="8" />
+                <item key="perspective_remove_ignored_margin_per_cell" type="sight::data::real" value="0.1" />
+                <item key="max_erroneous_bits_in_border_rate" type="sight::data::real" value="0.3" />
+                <item key="min_otsu_std_dev" type="sight::data::real" value="5.0" />
+                <item key="error_correction_rate" type="sight::data::real" value="0.6" />
+            </object>
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>ex_video_tracking</name>
+                        <icon>ex_video_tracking/app.ico</icon>
+                        <min_size width="800" height="600" />
+                    </frame>
+                    <toolbar />
+                </gui>
+                <registry>
+                    <toolbar sid="toolbarView" />
+                    <view sid="cameraView" />
+                </registry>
+            </service>
+
+            <service uid="toolbarView" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout>
+                        <editor />
+                    </layout>
+                </gui>
+                <registry>
+                    <editor wid="subToolbarView" />
+                </registry>
+            </service>
+
+            <service uid="videoToolbarConfig" type="sight::app::config_launcher">
+                <properties config="sight::config::io::video::controls" />
+                <inout group="object">
+                    <key name="camera" uid="camera" />
+                    <key name="frameTL" uid="frameTL" />
+                </inout>
+                <parameter replace="TOOLBAR" by="subToolbarView" />
+                <parameter replace="cameraStartedChannelOut" by="camera_started_channel" />
+                <parameter replace="cameraPausedChannelOut" by="camera_paused_channel" />
+                <parameter replace="cameraResumePauseChannelOut" by="camera_resume_pause_channel" />
+                <parameter replace="cameraStoppedChannelOut" by="camera_stopped_channel" />
+            </service>
+
+            <service uid="cameraView" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" background_color="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="genericSceneSrv" />
+                    <view sid="aruco_parameters_srv" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Begin Generic scene ******************************* -->
+
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
+                <scene renderMode="manual">
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default">
+                        <adaptor uid="videoAdp" />
+                    </layer>
+                </scene>
+            </service>
+
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
+                <in key="image" uid="videoImage" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <!-- GUI to handle aruco tracking parameters -->
+            <service uid="aruco_parameters_srv" type="sight::module::ui::qt::settings">
+                <inout key="map" uid="${aruco_params}" />
+                <ui>
+                    <item name="Show Marker" key="debug_mode" />
+                    <item name="Corner refinement" key="corner_refinement" />
+                    <item name="adpt. Threshold win size min" key="adaptive_th_win_size_min" widget="slider" min="3" max="100" />
+                    <item name="adpt. Threshold win size max" key="adaptive_th_win_size_max" widget="slider" min="4" max="100" />
+                    <item name="adpt. Threshold win size step" key="adaptive_th_win_size_step" widget="slider" min="1" max="100" />
+                    <item name="adpt. threshold constant" key="adaptive_th_constant" min="0." max="30." />
+                    <item name="Min. Marker Perimeter Rate" key="min_marker_perimeter_rate" min="0.01" max="1.0" />
+                    <item name="Max. Marker Perimeter Rate" key="max_marker_perimeter_rate" min="1." max="10." />
+                    <item name="Polygonal Approx. Accuracy Rate" key="polygonal_approx_accuracy_rate" min="0.01" max="1." />
+                    <item name="Min. Corner Distance Rate" key="min_corner_distance_rate" min="0." max="1." />
+                    <item name="Min. Distance to Border" key="min_distance_to_border" widget="slider" min="0" max="10" />
+                    <item name="Min. Marker Distance Rate" key="min_marker_distance_rate" min="0." max="1." />
+                    <item name="Corner Refinement Win. Size" key="corner_refinement_win_size" widget="slider" min="1" max="100" />
+                    <item name="Corner Refinement Max Iterations" key="corner_refinement_max_iterations" widget="slider" min="1" max="10" />
+                    <item name="Corner Refinement Min. Accuracy" key="corner_refinement_min_accuracy" min="0.01" max="10." />
+                    <item name="Marker Border Bits" key="marker_border_bits" widget="slider" min="1" max="100" />
+                    <item name="Perspective Remove Pixel per Cell" key="perspective_remove_pixel_per_cell" widget="slider" min="1" max="32" />
+                    <item name="Perspective Remove Ignored Margin Per Cell" key="perspective_remove_ignored_margin_per_cell" min="0." max="1." />
+                    <item name="Max. Erroneous Bits In Border Rate" key="max_erroneous_bits_in_border_rate" min="0." max="1." />
+                    <item name="Min. Otsu Std. Dev." key="min_otsu_std_dev" min="0." max="100." />
+                    <item name="Error Correction Rate" key="error_correction_rate" min="0." max="1." />
+                </ui>
+            </service>
+
+            <service uid="frameUpdaterSrv" type="sight::module::sync::synchronizer" worker="videoWorker">
+                <in group="frame_tl" auto_connect="false">
+                    <key uid="frameTL" />
+                </in>
+                <inout group="frames">
+                    <key uid="videoImage" />
+                </inout>
+            </service>
+
+            <service uid="trackerSrv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking" auto_connect="false">
+                <in key="camera" uid="camera" />
+                <inout key="frame" uid="videoImage" />
+                <inout group="marker_map">
+                    <key uid="marker_map" />
+                </inout>
+                <track>
+                    <marker id="0,1,2,3,4,5,6,7,8,42,100,101,102,103,104,105" />
+                </track>
+                <properties from="${aruco_params}" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect channel="camera_started_channel">
+                <slot>updater/start</slot>
+            </connect>
+
+            <connect channel="camera_paused_channel">
+                <slot>updater/stop</slot>
+            </connect>
+
+            <connect channel="camera_resumed_channel">
+                <slot>updater/start</slot>
+            </connect>
+
+            <connect channel="camera_stopped_channel">
+                <slot>updater/stop</slot>
+            </connect>
+
+            <update>
+                <sequence uid="updater" loop="true" start="false">
+                    <service uid="frameUpdaterSrv" />
+                    <service uid="trackerSrv" />
+                    <service uid="genericSceneSrv" />
+                </sequence>
+            </update>
+        </config>
+    </extension>
+</plugin>

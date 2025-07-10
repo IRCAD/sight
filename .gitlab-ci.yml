@@ -7,14 +7,11 @@ stages:
 
 include:
     - project: "sight/sight-gitlab"
-      ref: 8d212bf32b05fbf1dcf714d70fc870995723392c
+      ref: bb3f5b594b8a75e68e8d5d10042313a5bdbbf664
       file: "/.templates/deploy.yml"
     - project: "sight/sight-gitlab"
-      ref: 8d212bf32b05fbf1dcf714d70fc870995723392c
+      ref: bb3f5b594b8a75e68e8d5d10042313a5bdbbf664
       file: "/.templates/build.yml"
-
-variables:
-    TEST_DATA_REF: "dev"
 
 lint:ubuntu-24.04:
     extends: .lint
@@ -35,6 +32,7 @@ lint:ubuntu-24.04:
         SIGHT_BUILD_SDK: "OFF"
         SIGHT_ENABLE_REALSENSE: "OFF"
         SIGHT_ENABLE_GDB: "OFF"
+        TEST_DATA_REF: "ace14232f"
     script:
         # Reset the modified time of all files to improve ccache performance
         - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
@@ -190,18 +188,6 @@ build:ubuntu-24.04-RelWithDebInfo-clang:
         - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
-build:ubuntu-22.04-RelWithDebInfo-clang:
-    extends: .linux_build
-    image: "${SIGHT_UBUNTU_22_IMAGE}"
-    variables:
-        BUILD_TYPE: "RelWithDebInfo"
-        SIGHT_IGNORE_UNSTABLE_TESTS: 1
-        CC: "clang"
-        CXX: "clang++"
-    rules:
-        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
-        - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
-
 build:ubuntu-24.04-coverage-gcc:
     extends: .linux_build
     variables:
@@ -211,19 +197,8 @@ build:ubuntu-24.04-coverage-gcc:
         CC: "gcc"
         CXX: "g++"
     rules:
-        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
-
-build:ubuntu-24.04-coverage-gcc-draft:
-    extends: .linux_build
-    variables:
-        BUILD_TYPE: "RelWithDebInfo"
-        SIGHT_ENABLE_COVERAGE: "ON"
-        SIGHT_IGNORE_UNSTABLE_TESTS: 1
-        CC: "gcc"
-        CXX: "g++"
-    rules:
-        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE =~ "/^Draft.*/"
 
 deploy-test:linux-debug:
     extends: .linux_deploy_test
@@ -298,6 +273,7 @@ deploy:apps-linux-release:
         SIGHT_BUILD_SDK: "OFF"
         MSVC_VERSION: "17"
         CUDA_VERSION: "12_5"
+        TEST_DATA_REF: "ace14232f"
     stage: build
     script:
         # Print CCache statistics
@@ -326,7 +302,7 @@ deploy:apps-linux-release:
         # Launch tests
         - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j6 --output-junit junit1.xml --repeat until-pass:2
         - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j6 --output-junit junit2.xml --repeat until-pass:2
-        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j1 --output-junit junit3.xml --repeat until-pass:2
+        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j6 --output-junit junit3.xml --repeat until-pass:2
         - |
             if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
               ninja sight_viewer_package
@@ -491,6 +467,29 @@ deploy:apps-windows-release:
         URL: "IRCAD%20-%20Open/"
     rules:
         - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
+
+deploy:linux-coverage-analysis:
+    needs:
+        - job: build:ubuntu-24.04-coverage-gcc
+          artifacts: true
+    image: "${COVERAGE_IMAGE}"
+    variables:
+        SIGHT_GIT_BRANCH: "dev"
+    stage: deploy
+    before_script:
+        - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-git.git -b $SIGHT_GIT_BRANCH $CI_PROJECT_DIR/.build/sight-git
+    script:
+        - $CI_PROJECT_DIR/.build/sight-git/sight-cov.py ${CI_PROJECT_NAME} ${CI_MERGE_REQUEST_IID} --diff --html --token_config
+        - $CI_PROJECT_DIR/.build/sight-git/coverage-commentator.py ${CI_PROJECT_NAME} ${CI_MERGE_REQUEST_IID} ${CI_JOB_ID}
+    rules:
+        - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+
+    artifacts:
+        paths:
+            - $CI_PROJECT_DIR/.coverage
+    tags:
+        - linux-power-runner
+    when: always
 
 # Pages must be deployed in a single job, named "pages"
 pages:

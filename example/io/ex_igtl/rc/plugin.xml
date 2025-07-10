@@ -1,0 +1,219 @@
+<plugin id="ex_igtl">
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::viz::scene3d_qt" />
+    <requirement id="sight::module::ui" />
+
+    <extension implements="sight::app::extension::config">
+        <id>ExIgtl_AppCfg</id>
+        <config>
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="objectMeshUid" type="sight::data::mesh" />
+            <object uid="cameraMatrix" type="sight::data::matrix4" />
+            <object uid="meshMatrix" type="sight::data::matrix4">
+                <matrix>
+                    <![CDATA[
+                        1    0    0    5
+                        0    1    0    0
+                        0    0    1    0
+                        0    0    0    1
+                    ]]>
+                </matrix>
+            </object>
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainFrame" type="sight::module::ui::frame">
+                <gui>
+                    <toolbar />
+                    <frame>
+                        <name>ex_igtl</name>
+                        <icon>ex_igtl/tuto.ico</icon>
+                    </frame>
+                </gui>
+                <registry>
+                    <toolbar sid="toolbarView" />
+                    <view sid="genericSceneSrv" />
+                </registry>
+            </service>
+
+            <service uid="toolbarView" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout>
+                        <editor />
+                        <menuItem name="Load mesh" icon="sight::module::ui::icons/load.svg" />
+                        <separator />
+                        <menuItem name="start sender" icon="sight::module::ui::icons/connect.svg" />
+                        <menuItem name="stop sender" icon="sight::module::ui::icons/disconnect.svg" />
+                        <menuItem name="configure sender" icon="sight::module::ui::icons/connection.svg" />
+                        <separator />
+                        <menuItem name="start listener" icon="sight::module::ui::icons/connect.svg" />
+                        <menuItem name="stop listener" icon="sight::module::ui::icons/disconnect.svg" />
+                        <menuItem name="configure listener" icon="sight::module::ui::icons/connection.svg" />
+                        <separator />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="loadMeshAct" />
+                    <menuItem sid="startServerAct" />
+                    <menuItem sid="stopServerAct" />
+                    <menuItem sid="configureServerAct" />
+                    <menuItem sid="startClientAct" />
+                    <menuItem sid="stopClientAct" />
+                    <menuItem sid="configureClientAct" />
+                </registry>
+            </service>
+
+            <!-- ************************************* Action ************************************ -->
+
+            <service uid="loadMeshAct" type="sight::module::ui::action" />
+
+            <service uid="startServerAct" type="sight::module::ui::action" />
+
+            <service uid="stopServerAct" type="sight::module::ui::action">
+                <state visible="false" />
+            </service>
+
+            <service uid="configureServerAct" type="sight::module::ui::qt::preferences_configuration">
+                <preference>
+                    <type>int</type>
+                    <name>Server port</name>
+                    <key>SERVER_PORT_KEY</key>
+                    <default_value>4242</default_value>
+                </preference>
+            </service>
+
+            <service uid="startClientAct" type="sight::module::ui::action" />
+
+            <service uid="stopClientAct" type="sight::module::ui::action">
+                <state visible="false" />
+            </service>
+
+            <service uid="configureClientAct" type="sight::module::ui::qt::preferences_configuration">
+                <preference>
+                    <type>text</type>
+                    <name>Client IP address</name>
+                    <key>CLIENT_IP_KEY</key>
+                    <default_value>127.0.0.1</default_value>
+                </preference>
+                <preference>
+                    <type>int</type>
+                    <name>Client port</name>
+                    <key>CLIENT_PORT_KEY</key>
+                    <default_value>4242</default_value>
+                </preference>
+            </service>
+
+            <!-- ******************************* Begin Generic scene ******************************* -->
+
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::render">
+                <scene>
+                    <background topColor="#36393E" bottomColor="#36393E" />
+
+                    <layer id="default">
+                        <adaptor uid="trackballInteractorAdp" />
+                        <adaptor uid="cameraAdp" />
+                        <adaptor uid="transformAdp" />
+                        <adaptor uid="meshAdp" />
+                    </layer>
+                </scene>
+            </service>
+
+            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
+                <config priority="0" />
+            </service>
+
+            <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::camera" auto_connect="true">
+                <inout key="transform" uid="cameraMatrix" />
+                <config />
+            </service>
+
+            <service uid="transformAdp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
+                <inout key="transform" uid="meshMatrix" />
+                <config transform="meshMatrixTransform" />
+            </service>
+
+            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
+                <in key="mesh" uid="objectMeshUid" />
+                <config transform="meshMatrixTransform" autoresetcamera="false" />
+            </service>
+
+            <!-- ************************************* Services ************************************ -->
+
+            <service uid="meshReaderSrv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="objectMeshUid" />
+            </service>
+
+            <service uid="matrixNetworkListenerSrv" type="sight::module::io::igtl::client_listener">
+                <inout group="objects">
+                    <key uid="meshMatrix" deviceName="device01" />
+                    <key uid="cameraMatrix" deviceName="device02" />
+                </inout>
+                <server>%CLIENT_IP_KEY%:%CLIENT_PORT_KEY%</server>
+                <properties start="false" />
+            </service>
+
+            <service uid="matrixNetworkSenderSrv" type="sight::module::io::igtl::server_sender" auto_connect="true">
+                <in group="objects">
+                    <key uid="meshMatrix" deviceName="device01" />
+                    <key uid="cameraMatrix" deviceName="device02" />
+                </in>
+                <port>%SERVER_PORT_KEY%</port>
+                <properties start="false" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>loadMeshAct/clicked</signal>
+                <slot>meshReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>matrixNetworkSenderSrv/connected</signal>
+                <slot>startServerAct/hide</slot>
+                <slot>stopServerAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>matrixNetworkSenderSrv/disconnected</signal>
+                <slot>startServerAct/show</slot>
+                <slot>stopServerAct/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>matrixNetworkListenerSrv/connected</signal>
+                <slot>startClientAct/hide</slot>
+                <slot>stopClientAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>matrixNetworkListenerSrv/disconnected</signal>
+                <slot>startClientAct/show</slot>
+                <slot>stopClientAct/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>startServerAct/clicked</signal>
+                <slot>matrixNetworkSenderSrv/start</slot>
+            </connect>
+
+            <connect>
+                <signal>stopServerAct/clicked</signal>
+                <slot>matrixNetworkSenderSrv/stop</slot>
+            </connect>
+
+            <connect>
+                <signal>startClientAct/clicked</signal>
+                <slot>matrixNetworkListenerSrv/start</slot>
+            </connect>
+
+            <connect>
+                <signal>stopClientAct/clicked</signal>
+                <slot>matrixNetworkListenerSrv/stop</slot>
+            </connect>
+        </config>
+    </extension>
+</plugin>

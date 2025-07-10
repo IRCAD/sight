@@ -1,0 +1,53 @@
+<extension implements="sight::app::extension::config">
+    <id>sight::config::io::dicom::pacs_selector_window</id>
+    <parameters>
+        <object uid="output_series_set" type="sight::data::series_set" />
+        <param name="WINDOW_TITLE" />
+        <param name="WINDOW_ICON" />
+        <channel name="CLOSE_CONFIG" optional="true" />
+    </parameters>
+    <config>
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="main_view" type="sight::module::ui::frame">
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>${WINDOW_TITLE}</name>
+                    <icon>${WINDOW_ICON}</icon>
+                    <min_size width="720" height="390" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="pacs_selector_view" />
+            </registry>
+        </service>
+
+        <service uid="pacs_selector_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="view" />
+            </registry>
+        </service>
+
+        <!-- TF manager -->
+        <service uid="pac_sselector_cfg" type="sight::app::config_launcher">
+            <properties config="sight::config::io::dicom::pacs_selector_widget" />
+            <inout group="object">
+                <key name="output_series_set" uid="${output_series_set}" />
+            </inout>
+            <param name="WID_PARENT" value="view" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect channel="${CLOSE_CONFIG}">
+            <signal>main_view/closed</signal>
+        </connect>
+    </config>
+</extension>

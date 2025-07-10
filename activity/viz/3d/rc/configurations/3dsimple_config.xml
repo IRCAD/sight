@@ -1,0 +1,45 @@
+<extension implements="sight::app::extension::config">
+    <id>3DSimpleConfig</id>
+    <parameters>
+        <object uid="objectID" type="sight::data::model_series" />
+        <param name="WID_PARENT" />
+    </parameters>
+    <config>
+        <service uid="mainview" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::cardinal">
+                    <view align="center" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="gs" />
+            </registry>
+        </service>
+
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="gs" type="sight::viz::scene3d::render">
+            <scene>
+                <background topColor="#36393E" bottomColor="#36393E" />
+
+                <layer id="default">
+                    <adaptor uid="cameraInteractorAdaptor" />
+                    <adaptor uid="modelAdaptor" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="cameraInteractorAdaptor" type="sight::module::viz::scene3d::adaptor::trackball_camera">
+            <config priority="0" orientation="${orientation}" />
+        </service>
+
+        <service uid="modelAdaptor" type="sight::module::viz::scene3d::adaptor::model_series">
+            <in key="model" uid="${objectID}" auto_connect="true" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <!-- gs adaptors -->
+    </config>
+</extension>

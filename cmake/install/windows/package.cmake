@@ -75,8 +75,9 @@ macro(win_package PRJ_NAME)
                                                                         ${DEFAULT_NSIS_RC_PATH}
               NO_SYSTEM_ENVIRONMENT_PATH
     )
-    find_file(CPACK_RESOURCE_FILE_LICENSE "license.rtf" PATHS "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/"
-                                                              ${DEFAULT_NSIS_RC_PATH} NO_SYSTEM_ENVIRONMENT_PATH
+    find_file(CPACK_RESOURCE_FILE_LICENSE "license.rtf"
+              PATHS "${CMAKE_CURRENT_SOURCE_DIR}/rc/NSIS/" "${CMAKE_CURRENT_BINARY_DIR}/NSIS/" ${DEFAULT_NSIS_RC_PATH}
+              NO_SYSTEM_ENVIRONMENT_PATH
     )
 
     # Extract the icon found for the installer and use it for every shortcut (Start menu, Desktop and Uninstall)

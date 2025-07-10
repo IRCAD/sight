@@ -1,0 +1,628 @@
+<!--
+    This tutorial shows a basic sample of augmented reality.
+    This exhibits:
+      - how to detect an Aruco marker,
+      - how to compute the pose of a marker,
+      - how to make a basic augmented-reality render (we superimpose a cube onto the Aruco marker)
+      - how to undistort a video according to the camera intrinsic parameters
+      - how to distort a 3D render according to the camera intrinsic parameters
+      - how to synchronize efficiently a video process pipeline with the video playback
+
+    To use this application, you must open a calibration and a video. Samples are provided in the module folder
+    of the application, `share/sight/tuto17_simple_ar` on Linux and `share\tuto17_simple_ar` on Windows:
+      - calibration.xml
+      - aruco_tag.m4v
+-->
+<plugin id="tuto17_simple_ar">
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui" />
+
+    <extension implements="sight::app::extension::config">
+        <id>tuto17_simple_ar</id>
+        <config>
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <!-- Series of camera calibration -->
+            <object uid="camera_set" type="sight::data::camera_set" />
+            <!-- Camera calibration, deferred because it is extracted from the series -->
+            <object uid="camera" type="sight::data::camera" deferred="true" />
+            <!-- Frame timeline used to buffer the output of the video grabber -->
+            <object uid="frame_tl" type="sight::data::frame_tl" />
+            <!-- Video frame that is used for the current iteration -->
+            <object uid="source_frame" type="sight::data::image" />
+            <!-- Map containing all detected markers in the current frame -->
+            <object uid="marker_map" type="sight::data::marker_map" />
+            <!-- Marker matrix in the camera world -->
+            <object uid="marker_to_camera" type="sight::data::matrix4" />
+            <!-- Camera matrix in the marker world -->
+            <object uid="camera_to_marker" type="sight::data::matrix4" />
+            <!-- Camera matrix in the marker world -->
+            <object uid="camera_to_marker_damped" type="sight::data::matrix4" />
+            <!-- Cube superimposed on the video at the marker location -->
+            <object uid="cube_mesh" type="sight::data::mesh" />
+            <object uid="undistort_map" type="sight::data::image" />
+            <object uid="distort_map" type="sight::data::image" />
+            <object uid="cube_material" type="sight::data::material" />
+
+            <!-- Aruco tracker parameters -->
+            <object uid="aruco_params" type="sight::data::map">
+                <item key="debug_mode" type="sight::data::boolean" value="true" />
+                <item key="corner_refinement" type="sight::data::boolean" value="true" />
+                <item key="adaptive_th_win_size_min" type="sight::data::integer" value="3" />
+                <item key="adaptive_th_win_size_max" type="sight::data::integer" value="23" />
+                <item key="adaptive_th_win_size_step" type="sight::data::integer" value="10" />
+                <item key="adaptive_th_constant" type="sight::data::real" value="7." />
+                <item key="min_marker_perimeter_rate" type="sight::data::real" value="0.03" />
+                <item key="max_marker_perimeter_rate" type="sight::data::real" value="4.0" />
+                <item key="polygonal_approx_accuracy_rate" type="sight::data::real" value="0.03" />
+                <item key="min_corner_distance_rate" type="sight::data::real" value="0.01" />
+                <item key="min_distance_to_border" type="sight::data::integer" value="1" />
+                <item key="min_marker_distance_rate" type="sight::data::real" value="0.0" />
+                <item key="corner_refinement_win_size" type="sight::data::integer" value="5" />
+                <item key="corner_refinement_max_iterations" type="sight::data::integer" value="30" />
+                <item key="corner_refinement_min_accuracy" type="sight::data::real" value="0.1" />
+                <item key="marker_border_bits" type="sight::data::integer" value="1" />
+                <item key="perspective_remove_pixel_per_cell" type="sight::data::integer" value="8" />
+                <item key="perspective_remove_ignored_margin_per_cell" type="sight::data::real" value="0.1" />
+                <item key="max_erroneous_bits_in_border_rate" type="sight::data::real" value="0.3" />
+                <item key="min_otsu_std_dev" type="sight::data::real" value="5.0" />
+                <item key="error_correction_rate" type="sight::data::real" value="0.6" />
+            </object>
+
+            <!-- Damping parameters -->
+            <object uid="damping_params" type="sight::data::map">
+                <item key="enabled" type="sight::data::boolean" value="false" />
+                <item key="weight" type="sight::data::real" value="0.6" />
+            </object>
+
+            <!-- Reprojection parameters -->
+            <object uid="reprojection_params" type="sight::data::map">
+                <item key="display" type="sight::data::boolean" value="true" />
+                <item key="color" type="sight::data::color" value="#ffffff" />
+            </object>
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <!-- declaration of the views, menu and toolbar -->
+            <service uid="main_frame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>Tutorial 17: Augmented-reality</name>
+                        <icon>tuto17_simple_ar/app.ico</icon>
+                    </frame>
+                    <toolbar />
+                </gui>
+                <registry>
+                    <toolbar sid="toolbar_view" />
+                    <view sid="camera_view" />
+                </registry>
+            </service>
+
+            <service uid="toolbar_view" type="sight::module::ui::toolbar">
+                <gui>
+                    <layout>
+                        <menu_item name="Load Calibration" icon="sight::module::ui::icons/calibration.svg" />
+                        <editor />
+                        <separator />
+                        <menu_item name="Start" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                        <menu_item name="Pause" icon="sight::module::ui::icons/pause.svg" shortcut="Space" />
+                        <menu_item name="Play" icon="sight::module::ui::icons/play.svg" shortcut="Space" />
+                        <menu_item name="Stop" icon="sight::module::ui::icons/stop.svg" />
+                        <menu_item name="Loop" icon="sight::module::ui::icons/loop.svg" style="check" />
+                        <separator />
+                        <menu_item name="Enable video image undistortion" icon="sight::module::ui::icons/barrel_distortion.svg" style="check" />
+                        <menu_item name="Enable 3D rendering distortion" icon="sight::module::ui::icons/pincushion_distortion.svg" style="check" />
+                        <separator />
+                        <menu_item name="Show Mesh on tag" icon="sight::module::ui::icons/mesh.svg" style="check" />
+                        <separator />
+                        <menu_item name="Settings" icon="sight::module::ui::icons/gear.svg" style="check" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu_item sid="load_calib_act" />
+                    <editor sid="video_selector_srv" />
+                    <menu_item sid="start_video_act" />
+                    <menu_item sid="pause_video_act" />
+                    <menu_item sid="resume_video_act" />
+                    <menu_item sid="stop_video_act" />
+                    <menu_item sid="loop_video_act" />
+                    <menu_item sid="start_undistort_act" />
+                    <menu_item sid="start_distort_act" />
+                    <menu_item sid="show_mesh_act" />
+                    <menu_item sid="show_parameters_act" />
+                </registry>
+            </service>
+
+            <service uid="camera_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="0" background_color="#36393E" min_width="500" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="video_view" />
+                    <view sid="parameters_view" />
+                </registry>
+            </service>
+
+            <service uid="video_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="3" />
+                        <view proportion="0" background_color="#36393E" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="generic_scene_srv" />
+                    <view sid="error_label_view" />
+                </registry>
+            </service>
+
+            <service uid="error_label_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <view proportion="0" background_color="#36393E" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="error_label_srv" />
+                </registry>
+            </service>
+
+            <service uid="parameters_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::toolbox">
+                        <orientation value="vertical" />
+                        <view caption="ArUCO" expanded="false" />
+                        <view caption="Reprojection" expanded="false" />
+                        <view caption="Visualisation" expanded="true" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="aruco_parameters_srv" />
+                    <view sid="reprojection_parameters_srv" />
+                    <view sid="viz_view" />
+                </registry>
+            </service>
+
+            <service uid="viz_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="material_opacity_editor" />
+                    <view sid="damping_parameters_srv" />
+                </registry>
+            </service>
+
+            <!-- ************************************* Action ************************************ -->
+
+            <!-- declaration of actions/slot callers -->
+            <service uid="show_parameters_act" type="sight::module::ui::action" />
+
+            <service uid="load_calib_act" type="sight::module::ui::action" />
+
+            <!-- Start the frame grabber -->
+            <service uid="start_video_act" type="sight::module::ui::action">
+                <state enabled="false" />
+            </service>
+
+            <!-- Pause the frame grabber -->
+            <service uid="pause_video_act" type="sight::module::ui::action">
+                <state visible="false" />
+            </service>
+
+            <!-- Resume the frame grabber -->
+            <service uid="resume_video_act" type="sight::module::ui::action">
+                <state visible="false" />
+            </service>
+
+            <!-- Stop the frame grabber -->
+            <service uid="stop_video_act" type="sight::module::ui::action">
+                <state enabled="false" />
+            </service>
+
+            <!-- Loop the frame grabber -->
+            <service uid="loop_video_act" type="sight::module::ui::action">
+                <state enabled="false" />
+            </service>
+
+            <service uid="start_undistort_act" type="sight::module::ui::action" />
+
+            <service uid="start_distort_act" type="sight::module::ui::action" />
+
+            <service uid="show_mesh_act" type="sight::module::ui::action">
+                <state checked="true" />
+            </service>
+
+            <!-- ******************************* Begin Generic scene ******************************* -->
+
+            <!-- scene in which the video and the 3D will be rendered -->
+            <!-- In this tutorial, we move the camera and the marker mesh is fixed -->
+            <service uid="generic_scene_srv" type="sight::viz::scene3d::render">
+                <!-- It is essential to use the 'sync' mode when doing AR -->
+                <!-- In this mode, the renderer will wait for a signal to trigger the rendering -->
+                <scene render_mode="manual">
+                    <background color="#36393E" />
+
+                    <layer id="video" compositors="Remap">
+                        <adaptor uid="video_adp" />
+                        <adaptor uid="undistort_adp" />
+                    </layer>
+
+                    <layer id="default" compositors="Remap">
+                        <adaptor uid="axis_adp" />
+                        <adaptor uid="camera_adp" />
+                        <adaptor uid="material_adp" />
+                        <adaptor uid="cube_adp" />
+                        <adaptor uid="distort_adp" />
+                    </layer>
+                </scene>
+            </service>
+
+            <service uid="video_adp" type="sight::module::viz::scene3d::adaptor::video">
+                <in key="image" uid="source_frame" />
+            </service>
+
+            <service uid="undistort_adp" type="sight::module::viz::scene3d::adaptor::compositor_parameter" auto_connect="true">
+                <inout key="parameter" uid="undistort_map" />
+                <config compositor_name="Remap" parameter="u_map" shader_type="fragment" visible="false" />
+            </service>
+
+            <service uid="axis_adp" type="sight::module::viz::scene3d::adaptor::axis">
+                <config length="30" origin="true" label="false" />
+            </service>
+
+            <!-- Camera for the 3D layer -->
+            <service uid="camera_adp" type="sight::module::viz::scene3d::adaptor::camera">
+                <inout key="transform" uid="camera_to_marker_damped" />
+                <in key="calibration" uid="camera" />
+            </service>
+
+            <service uid="material_adp" type="sight::module::viz::scene3d::adaptor::material" auto_connect="true">
+                <inout key="material" uid="cube_material" />
+                <config material_name="cube" />
+            </service>
+
+            <!-- Cube displayed on top of the marker plane -->
+            <service uid="cube_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
+                <in key="mesh" uid="cube_mesh" />
+                <config autoresetcamera="false" material_name="cube" />
+            </service>
+
+            <service uid="distort_adp" type="sight::module::viz::scene3d::adaptor::compositor_parameter" auto_connect="true">
+                <inout key="parameter" uid="distort_map" />
+                <config compositor_name="Remap" parameter="u_map" shader_type="fragment" visible="false" />
+            </service>
+
+            <!-- ************************************* Services ************************************ -->
+
+            <service uid="load_mesh_srv" type="sight::module::io::vtk::mesh_reader">
+                <inout key="data" uid="cube_mesh" />
+                <resource>tuto17_simple_ar/cube_60.vtk</resource>
+            </service>
+
+            <!-- hide axis adaptor until a marker is found -->
+            <service uid="hide_axis_srv" type="sight::module::ui::action" />
+
+            <!-- Calibration reader (here Open_cV's XML/YAML) -->
+            <service uid="calibration_reader_srv" type="sight::module::io::vision::open_cv_reader">
+                <inout key="data" uid="camera_set" />
+            </service>
+
+            <!-- extract the first sight::data::camera from the sight::data::camera_set -->
+            <service uid="extract_camera_srv" type="sight::module::data::get_camera">
+                <inout key="camera_set" uid="camera_set" />
+                <out group="camera">
+                    <key index="0" uid="camera" />
+                </out>
+            </service>
+
+            <!-- GUI to handle aruco tracking parameters -->
+            <service uid="aruco_parameters_srv" type="sight::module::ui::qt::settings">
+                <inout key="map" uid="${aruco_params}" />
+                <ui>
+                    <item name="Show Marker" key="debug_mode" />
+                    <item name="Corner refinement" key="corner_refinement" />
+                    <item name="adpt. Threshold win size min" key="adaptive_th_win_size_min" widget="slider" min="3" max="100" />
+                    <item name="adpt. Threshold win size max" key="adaptive_th_win_size_max" widget="slider" min="4" max="100" />
+                    <item name="adpt. Threshold win size step" key="adaptive_th_win_size_step" widget="slider" min="1" max="100" />
+                    <item name="adpt. threshold constant" key="adaptive_th_constant" min="0." max="30." />
+                    <item name="Min. Marker Perimeter Rate" key="min_marker_perimeter_rate" min="0.01" max="1.0" />
+                    <item name="Max. Marker Perimeter Rate" key="max_marker_perimeter_rate" min="1." max="10." />
+                    <item name="Polygonal Approx. Accuracy Rate" key="polygonal_approx_accuracy_rate" min="0.01" max="1." />
+                    <item name="Min. Corner Distance Rate" key="min_corner_distance_rate" min="0." max="1." />
+                    <item name="Min. Distance to Border" key="min_distance_to_border" widget="slider" min="0" max="10" />
+                    <item name="Min. Marker Distance Rate" key="min_marker_distance_rate" min="0." max="1." />
+                    <item name="Corner Refinement Win. Size" key="corner_refinement_win_size" widget="slider" min="1" max="100" />
+                    <item name="Corner Refinement Max Iterations" key="corner_refinement_max_iterations" widget="slider" min="1" max="10" />
+                    <item name="Corner Refinement Min. Accuracy" key="corner_refinement_min_accuracy" min="0.01" max="10." />
+                    <item name="Marker Border Bits" key="marker_border_bits" widget="slider" min="1" max="100" />
+                    <item name="Perspective Remove Pixel per Cell" key="perspective_remove_pixel_per_cell" widget="slider" min="1" max="32" />
+                    <item name="Perspective Remove Ignored Margin Per Cell" key="perspective_remove_ignored_margin_per_cell" min="0." max="1." />
+                    <item name="Max. Erroneous Bits In Border Rate" key="max_erroneous_bits_in_border_rate" min="0." max="1." />
+                    <item name="Min. Otsu Std. Dev." key="min_otsu_std_dev" min="0." max="100." />
+                    <item name="Error Correction Rate" key="error_correction_rate" min="0." max="1." />
+                </ui>
+            </service>
+
+            <service uid="reprojection_parameters_srv" type="sight::module::ui::qt::settings">
+                <inout key="map" uid="${reprojection_params}" />
+                <ui>
+                    <item name="Show reprojection" key="display" />
+                    <item name="Circle color" key="color" />
+                </ui>
+            </service>
+
+            <service uid="damping_parameters_srv" type="sight::module::ui::qt::settings">
+                <inout key="map" uid="${damping_params}" />
+                <ui>
+                    <item name="Damping" key="enabled" />
+                    <item name="Weight" key="weight" min="0.1" max="1." widget="slider" />
+                </ui>
+            </service>
+
+            <!-- Gui Service to display a value in a QLabel -->
+            <service uid="error_label_srv" type="sight::module::ui::qt::text_status">
+                <label>Reprojection error (RMSE):</label>
+                <color>#D25252</color>
+                <size>12pt</size>
+                <decimals>3</decimals>
+            </service>
+
+            <!-- GUI to select camera (device, file, or stream) -->
+            <service uid="video_selector_srv" type="sight::module::ui::qt::video::camera">
+                <inout key="camera" uid="camera" />
+                <video_support>true</video_support>
+            </service>
+
+            <!-- Grab image from camera device and fill a frame timeline -->
+            <service uid="video_grabber_srv" type="sight::module::io::video::frame_grabber">
+                <in key="camera" uid="camera" />
+                <inout key="frame_tl" uid="frame_tl" />
+            </service>
+
+            <!-- Consumes a frame in the timeline, picks the latest one to be processed -->
+            <!-- It is overkill in this sample, but mandatory when we use multiple grabbers to synchronize them. -->
+            <service uid="frame_updater_srv" type="sight::module::sync::synchronizer" auto_connect="false">
+                <in group="frame_tl">
+                    <key uid="frame_tl" />
+                </in>
+                <inout group="frames">
+                    <key uid="source_frame" />
+                </inout>
+                <tolerance>100</tolerance>
+            </service>
+
+            <!-- Aruco tracker service -->
+            <service uid="tracker_srv" type="sight::module::navigation::optics::aruco_tracker" worker="tracking" auto_connect="false">
+                <in key="camera" uid="camera" />
+                <inout key="frame" uid="source_frame" />
+                <inout group="marker_map">
+                    <!-- timeline of detected tag(s) -->
+                    <key uid="marker_map" />
+                </inout>
+                <track>
+                    <!-- list of tag's id -->
+                    <marker id="101" />
+                </track>
+                <properties from="${aruco_params}" />
+            </service>
+
+            <!-- Computes the pose of the camera with tag(s) detected by aruco -->
+            <service uid="registration_srv" type="sight::module::geometry::vision::pose_from2d" worker="tracking" auto_connect="false">
+                <in group="marker_map">
+                    <key uid="marker_map" />
+                </in>
+                <in group="camera">
+                    <key uid="camera" />
+                </in>
+                <inout group="matrix">
+                    <key uid="marker_to_camera" id="101" />
+                </inout>
+                <pattern_width>60</pattern_width>
+            </service>
+
+            <!-- Computes the reprojection error -->
+            <service uid="error_srv" type="sight::module::geometry::vision::reprojection_error" worker="error" auto_connect="false">
+                <in group="matrix">
+                    <key uid="marker_to_camera" id="101" />
+                </in>
+                <in key="marker_map" uid="marker_map" />
+                <in key="camera" uid="camera" />
+                <inout key="frame" uid="source_frame" />
+                <properties from="${reprojection_params}" pattern_width="60" />
+            </service>
+
+            <!-- Multiply matrices (here only used to inverse "marker_to_camera") -->
+            <service uid="matrix_reverser_srv" type="sight::module::geometry::concatenate_matrices">
+                <in group="matrix" auto_connect="false">
+                    <key uid="marker_to_camera" inverse="true" />
+                </in>
+                <inout key="output" uid="camera_to_marker" />
+            </service>
+
+            <service uid="undistorter_srv" type="sight::module::geometry::vision::distortion">
+                <in key="camera" uid="camera" auto_connect="true" />
+                <inout key="map" uid="undistort_map" />
+                <mode>undistort</mode>
+            </service>
+
+            <service uid="distorter_srv" type="sight::module::geometry::vision::distortion">
+                <in key="camera" uid="camera" auto_connect="true" />
+                <inout key="map" uid="distort_map" />
+                <mode>distort</mode>
+            </service>
+
+            <service uid="material_opacity_editor" type="sight::module::ui::qt::material_opacity_editor">
+                <inout key="material" uid="cube_material" />
+                <label>Cube opacity</label>
+            </service>
+
+            <service uid="damp_matrix_srv" type="sight::module::geometry::weighted_mean_matrix" auto_connect="false">
+                <in key="raw" uid="camera_to_marker" />
+                <inout key="damped" uid="camera_to_marker_damped" />
+                <properties from="${damping_params}" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>show_parameters_act/is_checked</signal>
+                <slot>parameters_view/set_visible</slot>
+            </connect>
+
+            <connect>
+                <signal>show_mesh_act/is_checked</signal>
+                <slot>cube_adp/update_visibility</slot>
+            </connect>
+
+            <connect>
+                <signal>hide_axis_srv/is_checked</signal>
+                <slot>axis_adp/update_visibility</slot>
+            </connect>
+
+            <connect>
+                <signal>video_selector_srv/configured_file</signal>
+                <signal>video_selector_srv/configured_stream</signal>
+                <signal>video_selector_srv/configured_device</signal>
+                <slot>start_video_act/update</slot>
+            </connect>
+
+            <connect>
+                <signal>video_grabber_srv/camera_started</signal>
+                <slot>pause_video_act/show</slot>
+                <slot>start_video_act/hide</slot>
+                <slot>stop_video_act/enable</slot>
+                <slot>loop_video_act/enable</slot>
+            </connect>
+
+            <connect>
+                <signal>camera/id_modified</signal>
+                <slot>video_grabber_srv/stop_camera</slot>
+            </connect>
+
+            <connect>
+                <signal>camera/modified</signal>
+                <slot>start_video_act/enable</slot>
+                <slot>stop_video_act/update</slot>
+            </connect>
+
+            <connect>
+                <signal>error_srv/error_computed</signal>
+                <slot>error_label_srv/set_double_parameter</slot>
+            </connect>
+
+            <connect>
+                <signal>camera_set/modified</signal>
+                <slot>extract_camera_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>tracker_srv/marker_detected</signal>
+                <slot>axis_adp/update_visibility</slot>
+            </connect>
+
+            <connect>
+                <signal>load_calib_act/updated</signal>
+                <slot>calibration_reader_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>start_video_act/updated</signal>
+                <slot>video_grabber_srv/start_camera</slot>
+                <slot>updater/start</slot>
+            </connect>
+
+            <connect>
+                <signal>pause_video_act/updated</signal>
+                <slot>updater/stop</slot>
+                <slot>video_grabber_srv/pause_camera</slot>
+                <slot>resume_video_act/show</slot>
+                <slot>pause_video_act/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>resume_video_act/updated</signal>
+                <slot>video_grabber_srv/pause_camera</slot>
+                <slot>updater/start</slot>
+                <slot>resume_video_act/hide</slot>
+                <slot>pause_video_act/show</slot>
+            </connect>
+
+            <connect>
+                <signal>stop_video_act/updated</signal>
+                <slot>video_grabber_srv/stop_camera</slot>
+                <slot>updater/stop</slot>
+                <slot>start_video_act/show</slot>
+                <slot>resume_video_act/hide</slot>
+                <slot>pause_video_act/hide</slot>
+                <slot>stop_video_act/disable</slot>
+                <slot>loop_video_act/disable</slot>
+                <slot>loop_video_act/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>loop_video_act/updated</signal>
+                <slot>video_grabber_srv/loop_video</slot>
+            </connect>
+
+            <connect>
+                <signal>start_undistort_act/checked</signal>
+                <slot>undistort_adp/show</slot>
+                <slot>start_distort_act/disable</slot>
+            </connect>
+
+            <connect>
+                <signal>start_undistort_act/unchecked</signal>
+                <slot>undistort_adp/hide</slot>
+                <slot>start_distort_act/enable</slot>
+            </connect>
+
+            <connect>
+                <signal>start_distort_act/checked</signal>
+                <slot>distort_adp/show</slot>
+                <slot>start_undistort_act/disable</slot>
+            </connect>
+
+            <connect>
+                <signal>start_distort_act/unchecked</signal>
+                <slot>distort_adp/hide</slot>
+                <slot>start_undistort_act/enable</slot>
+            </connect>
+
+            <!-- ******************************* Update services ***************************************** -->
+
+            <!-- At launch, enable the synchronization with the non-offscreen rendering -->
+            <update>
+                <service uid="show_parameters_act" />
+                <service uid="hide_axis_srv" />
+                <service uid="load_mesh_srv" />
+
+                <sequence uid="updater" loop="true" start="false">
+                    <service uid="frame_updater_srv" />
+                    <service uid="tracker_srv" />
+                    <service uid="registration_srv" />
+                    <service uid="error_srv" />
+                    <service uid="matrix_reverser_srv" />
+                    <service uid="damp_matrix_srv" />
+                    <service uid="generic_scene_srv" />
+                </sequence>
+            </update>
+        </config>
+    </extension>
+</plugin>

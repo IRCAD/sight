@@ -1,0 +1,52 @@
+<!--
+This example shows how to use collapsible section.
+
+-->
+<plugin id="ex_collapsible_section" library="true">
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::ui" />
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::editor</type>
+        <service>ex_collapsible_section::ex_collapsible_section_editor</service>
+        <desc>Create a generic section</desc>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>ex_collapsible_section_app_cfg</id>
+        <config>
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="main_frame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>ex_collapsible_section</name>
+                        <icon>ex_collapsible_section/app.ico</icon>
+                        <min_size width="800" height="600" />
+                    </frame>
+                    <menubar />
+                </gui>
+                <registry>
+                    <view sid="main_view" />
+                </registry>
+            </service>
+
+            <service uid="main_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <spacer />
+                        <view proportion="0" minWidth="800" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="section_widget" />
+                </registry>
+            </service>
+
+            <service uid="section_widget" type="ex_collapsible_section::ex_collapsible_section_editor" />
+        </config>
+    </extension>
+</plugin>

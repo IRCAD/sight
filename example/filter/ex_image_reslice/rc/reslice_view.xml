@@ -1,0 +1,106 @@
+<extension implements="sight::app::extension::config">
+    <id>ex_image_reslice::reslice_view</id>
+    <parameters>
+        <object uid="image" type="sight::data::image" />
+        <object uid="slice" type="sight::data::image" />
+        <object uid="tf" type="sight::data::transfer_function" />
+        <object uid="mask" type="sight::data::image" />
+        <object uid="mask_slice" type="sight::data::image" />
+        <object uid="mask_tf" type="sight::data::transfer_function" />
+        <object uid="reslice_matrix" type="sight::data::matrix4" />
+        <object uid="center" type="sight::data::boolean" />
+
+        <param name="WID_PARENT" />
+    </parameters>
+    <config>
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="offset_matrix" type="sight::data::matrix4" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="scene_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::overlay">
+                    <view />
+                    <view x="0" y="-1" height="40" width="100%" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="negato_scene" />
+                <view sid="offset_slider" />
+            </registry>
+        </service>
+
+        <service uid="offset_slider" type="sight::module::ui::qt::viz::transform_editor">
+            <inout key="matrix" uid="offset_matrix" />
+            <translation enabled="z" min="0.0" max="1.0" />
+            <rotation enabled="false" />
+            <properties minimal="false" />
+        </service>
+
+        <!-- ******************************* In-plane negato view ******************************* -->
+
+        <service uid="slicer_srv" type="sight::module::filter::image::plane_slicer">
+            <in key="image" uid="${image}" />
+            <in key="axes" uid="${reslice_matrix}" />
+            <in key="offset" uid="offset_matrix" />
+            <inout key="slice" uid="${slice}" />
+            <properties center="${center}" />
+        </service>
+
+        <service uid="mask_slicer_srv" type="sight::module::filter::image::plane_slicer">
+            <in key="image" uid="${mask}" />
+            <in key="axes" uid="${reslice_matrix}" />
+            <in key="offset" uid="offset_matrix" />
+            <inout key="slice" uid="${mask_slice}" />
+            <properties center="${center}" />
+        </service>
+
+        <service uid="negato_scene" type="sight::viz::scene3d::render">
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="defaultLayer">
+                    <adaptor uid="negato_camera_adp" />
+                    <adaptor uid="negato_adp" />
+                </layer>
+                <layer id="overlay">
+                    <adaptor uid="mask_negato_camera_adp" />
+                    <adaptor uid="mask_negato_adp" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">
+            <inout key="image" uid="${slice}" />
+            <config orientation="axial" margin="0.01" />
+        </service>
+
+        <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
+            <in key="image" uid="${slice}" />
+            <inout key="tf" uid="${tf}" />
+            <config filtering="linear" border="false" interactive="false" cross="false" />
+        </service>
+
+        <service uid="mask_negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">
+            <inout key="image" uid="${slice}" />
+            <config orientation="axial" margin="0.01" />
+        </service>
+
+        <service uid="mask_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
+            <in key="image" uid="${mask_slice}" />
+            <inout key="tf" uid="${mask_tf}" />
+            <config orientation="axial" filtering="linear" border="false" interactive="false" cross="false" tf_alpha="true" />
+            <properties classification="pre" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect>
+            <signal>slicer_srv/slice_range_changed</signal>
+            <slot>offset_slider/set_translation_range</slot>
+        </connect>
+    </config>
+</extension>

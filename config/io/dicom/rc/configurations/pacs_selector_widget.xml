@@ -1,0 +1,576 @@
+<extension implements="sight::app::extension::config">
+    <id>sight::config::io::dicom::pacs_selector_widget</id>
+    <parameters>
+        <object uid="output_series_set" type="sight::data::series_set" />
+        <param name="WID_PARENT" />
+    </parameters>
+    <config>
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="localSeriesSet" type="sight::data::series_set" />
+
+        <object uid="previewSeriesSet" type="sight::data::series_set" />
+        <object uid="pacsConfiguration" type="sight::io::dimse::data::pacs_configuration" />
+
+        <object uid="previewSelections" type="sight::data::vector" />
+        <object uid="previewDicom" type="sight::data::dicom_series" deferred="true" />
+        <object uid="previewImage" type="sight::data::image" />
+        <object uid="previewImageReset" type="sight::data::image" />
+        <object uid="tf" type="sight::data::transfer_function" />
+
+        <object uid="localSelections" type="sight::data::vector" />
+        <object uid="localImageSeries" type="sight::data::image_series" deferred="true" />
+
+        <object uid="dimse_or_dicomweb" type="sight::data::boolean" value="false" preference="true" />
+        <object uid="host_name" type="sight::data::string" value="127.0.0.1" preference="true" />
+        <object uid="port_id" type="sight::data::integer" value="8042" preference="true" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="container_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::overlay">
+                    <view />
+                    <view x="-50%" y="45" width="400" height="300" />
+                    <view x="-1" y="80" width="400" height="300" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="container_background_view" />
+                <view sid="advanced_query_editor_slider_view" />
+                <view sid="connection_view" />
+            </registry>
+        </service>
+
+        <service uid="connection_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" background_color="#3E4453" />
+                    <view proportion="0" background_color="#3E4453" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="connection_type_selector_srv" />
+                <view sid="editors_view" />
+            </registry>
+        </service>
+
+        <service uid="editors_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::toolbox">
+                    <orientation value="vertical" />
+                    <view caption="Dimse connection" expanded="false" />
+                    <view caption="Dicomweb connection " expanded="false" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="configure_pac_slider_view" />
+                <view sid="dicomweb_srv" />
+            </registry>
+        </service>
+
+        <service uid="container_background_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" background_color="#3E4453" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="query_view" />
+                <view sid="selectors_view" />
+            </registry>
+        </service>
+
+        <service uid="query_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                    <spacer />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="queryEditor_srv" />
+                <view sid="show_advanced_query_editor_srv" />
+                <view sid="hide_advanced_query_editor_srv" />
+                <view sid="show_pacs_configuration_srv" />
+                <view sid="hide_pacs_configuration_srv" />
+            </registry>
+        </service>
+
+        <service uid="selectors_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="preview_view" />
+                <view sid="local_view" />
+            </registry>
+        </service>
+
+        <service uid="advanced_query_editor_slider_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" background_color="#3E4453" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="advanced_query_editor_srv" />
+            </registry>
+        </service>
+
+        <service uid="configure_pac_slider_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" background_color="#3E4453" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="configure_pacs_editor_srv" />
+            </registry>
+        </service>
+
+        <service uid="preview_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view proportion="2" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="preview_selector_srv" />
+                <view sid="preview_scene_view" />
+            </registry>
+        </service>
+
+        <service uid="preview_scene_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::overlay">
+                    <view />
+                    <view x="0" y="-1" height="50" width="100%" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="generic_scene_preview_srv" />
+                <view sid="preview_scene_slider_view" />
+            </registry>
+        </service>
+
+        <service uid="preview_scene_slider_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <spacer />
+                    <view proportion="0" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="preview_dicom_slider_view" />
+            </registry>
+        </service>
+
+        <service uid="local_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view proportion="2" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="local_selector_srv" />
+                <view sid="local_scene_view" />
+            </registry>
+        </service>
+
+        <service uid="local_scene_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::overlay">
+                    <view />
+                    <view x="0" y="-1" height="50" width="100%" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="generic_scene_local_srv" />
+                <view sid="local_scene_slider_view" />
+            </registry>
+        </service>
+
+        <service uid="local_scene_slider_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <spacer />
+                    <view proportion="0" background_color="#00000000" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="local_slider_view" />
+            </registry>
+        </service>
+
+        <service uid="local_slider_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <spacer />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="export_image_act" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Begin Generic scene ******************************* -->
+
+        <service uid="generic_scene_preview_srv" type="sight::viz::scene3d::render">
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="defaultLayer">
+                    <adaptor uid="p_negato_adp" />
+                    <adaptor uid="p_negato_camera_adp" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="p_negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
+            <in key="image" uid="previewImage" />
+            <inout key="tf" uid="tf" />
+            <config orientation="axial" filtering="anisotropic" />
+        </service>
+
+        <service uid="p_negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
+            <inout key="image" uid="previewImage" />
+            <config priority="0" orientation="axial" />
+        </service>
+
+        <!-- ******************************* Begin Generic scene ******************************* -->
+
+        <service uid="generic_scene_local_srv" type="sight::viz::scene3d::render">
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="defaultLayer">
+                    <adaptor uid="l_negato_adp" />
+                    <adaptor uid="l_negato_camera_adp" />
+                    <adaptor uid="l_text_adp" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="l_negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
+            <in key="image" uid="localImageSeries" />
+            <inout key="tf" uid="tf" />
+            <config priority="1" orientation="axial" interactive="true" />
+        </service>
+
+        <service uid="l_negato_camera_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
+            <config priority="0" />
+        </service>
+
+        <service uid="l_text_adp" type="sight::module::viz::scene3d::adaptor::text">
+            <config x="0.025" y="0.025" hAlign="left" vAlign="top" color="#D25252" />
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="dicomweb_cfg" type="sight::app::config_launcher">
+            <properties config="sight::config::io::dicomweb::selector_widget" start="false" />
+            <inout group="object">
+                <key name="previewSeriesSet" uid="${previewSeriesSet}" />
+                <key name="previewDicom" uid="${previewDicom}" optional="true" />
+                <key name="previewImage" uid="${previewImage}" />
+                <key name="previewSelections" uid="${previewSelections}" />
+                <key name="localSeriesSet" uid="${localSeriesSet}" />
+                <key name="host_name" uid="${host_name}" />
+                <key name="port_id" uid="${port_id}" />
+            </inout>
+            <parameter replace="WID_QUERY_EDITOR_PARENT" by="queryEditor_srv" />
+            <parameter replace="WID_SLIDER_PREVIEW_PARENT" by="preview_dicom_slider_view" />
+        </service>
+
+        <service uid="dimse_cfg" type="sight::app::config_launcher">
+            <properties config="sight::config::io::dimse::selector_widget" start="false" />
+            <inout group="object">
+                <key name="previewSeriesSet" uid="${previewSeriesSet}" />
+                <key name="previewDicom" uid="${previewDicom}" optional="true" />
+                <key name="previewImage" uid="${previewImage}" />
+                <key name="previewSelections" uid="${previewSelections}" />
+                <key name="localSeriesSet" uid="${localSeriesSet}" />
+                <key name="pacsConfiguration" uid="${pacsConfiguration}" />
+            </inout>
+            <parameter replace="WID_QUERY_EDITOR_PARENT" by="queryEditor_srv" />
+            <parameter replace="WID_SLIDER_PREVIEW_PARENT" by="preview_dicom_slider_view" />
+            <parameter replace="Notified_slider" by="Notified_slider" />
+        </service>
+
+        <service uid="export_image_act" type="sight::module::ui::qt::com::signal_button">
+            <config>
+                <checkable>false</checkable>
+                <enable>false</enable>
+                <icon>sight::module::ui::icons/pull.svg</icon>
+                <iconWidth>24</iconWidth>
+                <iconHeight>24</iconHeight>
+                <toolTip>Load the image</toolTip>
+            </config>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="show_advanced_query_editor_srv" type="sight::module::ui::qt::com::signal_button">
+            <config>
+                <checkable>false</checkable>
+                <icon>sight::module::ui::icons/bottom.svg</icon>
+                <iconWidth>24</iconWidth>
+                <iconHeight>24</iconHeight>
+            </config>
+        </service>
+
+        <service uid="hide_advanced_query_editor_srv" type="sight::module::ui::qt::com::signal_button">
+            <config>
+                <checkable>false</checkable>
+                <icon>sight::module::ui::icons/top.svg</icon>
+                <iconWidth>24</iconWidth>
+                <iconHeight>24</iconHeight>
+            </config>
+        </service>
+
+        <service uid="show_pacs_configuration_srv" type="sight::module::ui::qt::com::signal_button">
+            <config>
+                <checkable>false</checkable>
+                <icon>sight::module::ui::icons/connection.svg</icon>
+                <iconWidth>24</iconWidth>
+                <iconHeight>24</iconHeight>
+                <toolTip>Show the choices of the connection</toolTip>
+            </config>
+        </service>
+
+        <service uid="hide_pacs_configuration_srv" type="sight::module::ui::qt::com::signal_button">
+            <config>
+                <checkable>false</checkable>
+                <icon>sight::module::ui::icons/connection.svg</icon>
+                <iconWidth>24</iconWidth>
+                <iconHeight>24</iconHeight>
+            </config>
+        </service>
+
+        <service uid="reset_preview_srv" type="sight::module::data::copy">
+            <in key="source" uid="previewImageReset" />
+            <inout key="target" uid="previewImage" />
+            <mode>copyOnUpdate</mode>
+        </service>
+
+        <service uid="configure_pacs_initializer_srv" type="sight::module::io::dimse::pacs_configuration_initializer">
+            <inout key="config" uid="pacsConfiguration" auto_connect="true" />
+            <config
+                localApplicationTitle="sight_viewer"
+                pacsHostName="localhost"
+                pacsApplicationTitle="PACSNAME"
+                pacsApplicationPort="4242"
+                moveApplicationTitle="sight_viewer"
+                moveApplicationPort="104"
+                retrieveMethod="MOVE"
+                preferenceKey="SIGHTVIEWER_PACS_CONFIGURATION"
+            />
+        </service>
+
+        <service uid="connection_type_selector_srv" type="sight::module::ui::qt::settings">
+            <inout group="keys">
+                <key uid="${dimse_or_dicomweb}" />
+            </inout>
+            <ui>
+                <item name="DIMSE/DICOMWeb" reset="false" />
+            </ui>
+        </service>
+
+        <service uid="action_start_cfg" type="sight::module::ui::action">
+            <properties checked="${dimse_or_dicomweb}" />
+        </service>
+
+        <service uid="dicomweb_srv" type="sight::module::ui::qt::settings">
+            <inout group="keys">
+                <key uid="${host_name}" />
+                <key uid="${port_id}" />
+            </inout>
+            <ui>
+                <item name="Hostname Ip." widget="text" reset="false" />
+                <item name="Port." widget="spin" min="80" max="99999" reset="false" />
+            </ui>
+        </service>
+
+        <service uid="configure_pacs_editor_srv" type="sight::module::io::dimse::pacs_configuration_editor">
+            <inout key="config" uid="pacsConfiguration" />
+            <config showDialog="false" />
+        </service>
+
+        <service uid="advanced_query_editor_srv" type="sight::module::io::dimse::query_editor">
+            <in key="pacsConfig" uid="pacsConfiguration" />
+            <inout key="seriesSet" uid="previewSeriesSet" />
+            <config icon="sight::module::ui::icons/find.svg" />
+        </service>
+
+        <service uid="preview_selector_srv" type="sight::module::ui::qt::series::selector" auto_connect="true">
+            <inout key="seriesSet" uid="previewSeriesSet" />
+            <inout key="selection" uid="previewSelections" />
+            <icons>
+                <icon series="sight::data::dicom_series" icon="sight::module::ui::icons/image_series.svg" />
+            </icons>
+            <config selectionMode="extended" allowedRemove="false" />
+        </service>
+
+        <service uid="extract_preview_srv" type="sight::module::data::get_vector">
+            <in key="vector" uid="previewSelections" />
+            <out group="objects">
+                <key index="0" uid="previewDicom" />
+            </out>
+        </service>
+
+        <service uid="right_notifier_srv" type="sight::module::ui::qt::notifier">
+            <parent uid="mainview" />
+            <message>Default Message</message>
+            <channels>
+                <channel position="BOTTOM_RIGHT" duration="5000" max="10" />
+            </channels>
+        </service>
+
+        <!--LOCAL-->
+        <service uid="local_selector_srv" type="sight::module::ui::qt::series::selector" auto_connect="true">
+            <inout key="seriesSet" uid="localSeriesSet" />
+            <inout key="selection" uid="localSelections" />
+            <icons>
+                <icon series="sight::data::image_series" icon="sight::module::ui::icons/volume.svg" />
+            </icons>
+            <config selectionMode="extended" removeStudyicon="sight::module::ui::icons/cross.svg" removeSerieicon="sight::module::ui::icons/image_series.svg" />
+        </service>
+
+        <service uid="extract_local_image_series_srv" type="sight::module::data::get_vector">
+            <in key="vector" uid="localSelections" />
+            <out group="objects">
+                <key index="0" uid="localImageSeries" />
+            </out>
+        </service>
+
+        <service uid="export_image_srv" type="sight::module::data::manage">
+            <inout key="object" uid="localImageSeries" />
+            <inout key="container" uid="${output_series_set}" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect>
+            <signal>container_view/started</signal>
+            <slot>preview_scene_slider_view/show</slot>
+            <slot>local_scene_slider_view/show</slot>
+        </connect>
+
+        <connect>
+            <signal>export_image_act/clicked</signal>
+            <slot>export_image_srv/add_or_swap</slot>
+        </connect>
+
+        <connect>
+            <signal>l_negato_adp/picked_voxel</signal>
+            <slot>l_text_adp/set_text</slot>
+            <slot>hide_advanced_query_editor_srv/update</slot>
+            <slot>hide_pacs_configuration_srv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>previewSelections/added_objects</signal>
+            <signal>previewSelections/removed_objects</signal>
+            <slot>hide_advanced_query_editor_srv/update</slot>
+            <slot>hide_pacs_configuration_srv/update</slot>
+            <slot>reset_preview_srv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>reset_preview_srv/updated</signal>
+            <slot>extract_preview_srv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>localSelections/added_objects</signal>
+            <signal>localSelections/removed_objects</signal>
+            <slot>extract_local_image_series_srv/update</slot>
+            <slot>hide_advanced_query_editor_srv/update</slot>
+            <slot>hide_pacs_configuration_srv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>extract_local_image_series_srv/updated</signal>
+            <slot>export_image_act/enable</slot>
+        </connect>
+
+        <!-- connection from base notify signals to the notifier,you can add as many services as you need -->
+
+        <connect channel="Notified_slider">
+            <signal>configure_pacs_editor_srv/notified</signal>
+        </connect>
+
+        <connect>
+            <signal>show_advanced_query_editor_srv/clicked</signal>
+            <slot>show_advanced_query_editor_srv/hide</slot>
+            <slot>hide_advanced_query_editor_srv/show</slot>
+            <slot>advanced_query_editor_slider_view/show</slot>
+        </connect>
+
+        <connect>
+            <signal>hide_advanced_query_editor_srv/clicked</signal>
+            <signal>hide_advanced_query_editor_srv/updated</signal>
+            <slot>hide_advanced_query_editor_srv/hide</slot>
+            <slot>show_advanced_query_editor_srv/show</slot>
+            <slot>advanced_query_editor_slider_view/hide</slot>
+        </connect>
+
+        <connect>
+            <signal>show_pacs_configuration_srv/clicked</signal>
+            <slot>show_pacs_configuration_srv/hide</slot>
+            <slot>hide_pacs_configuration_srv/show</slot>
+            <slot>connection_view/show</slot>
+        </connect>
+
+        <connect>
+            <signal>hide_pacs_configuration_srv/clicked</signal>
+            <signal>hide_pacs_configuration_srv/updated</signal>
+            <slot>hide_pacs_configuration_srv/hide</slot>
+            <slot>show_pacs_configuration_srv/show</slot>
+            <slot>connection_view/hide</slot>
+        </connect>
+
+        <connect>
+            <signal>action_start_cfg/checked</signal>
+            <slot>dimse_cfg/start</slot>
+            <slot>dicomweb_cfg/stop</slot>
+        </connect>
+
+        <connect>
+            <signal>action_start_cfg/unchecked</signal>
+            <slot>dicomweb_cfg/start</slot>
+            <slot>dimse_cfg/stop</slot>
+        </connect>
+
+        <update uid="hide_advanced_query_editor_srv" />
+        <update uid="hide_pacs_configuration_srv" />
+        <update uid="extract_preview_srv" />
+    </config>
+</extension>

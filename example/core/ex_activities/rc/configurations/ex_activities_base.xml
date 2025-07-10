@@ -1,0 +1,46 @@
+<extension implements="sight::app::extension::config">
+    <id>ex_activities::base</id>
+    <parameters>
+        <param name="app_name" />
+        <param name="app_version" />
+        <param name="icon_path" />
+        <param name="sequencer_config" />
+        <param name="wizard_config" />
+    </parameters>
+    <config>
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="activity_set" type="sight::data::activity_set" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="main_frame" type="sight::module::ui::frame">
+            <gui>
+                <frame>
+                    <name>${app_name}</name>
+                    <version>${app_version}</version>
+                    <icon>${icon_path}</icon>
+                    <min_size width="1280" height="800" />
+                </frame>
+            </gui>
+            <registry>
+                <view wid="activityView" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="activity_launcher_srv" type="sight::app::config_launcher">
+            <properties config="sight::config::ui::activity::launcher" />
+            <inout group="object">
+                <key name="activity_set" uid="activity_set" />
+            </inout>
+            <parameter replace="sequencer_config" by="${sequencer_config}" />
+            <parameter replace="wizard_config" by="${wizard_config}" />
+            <parameter replace="icon_path" by="${icon_path}" />
+            <parameter replace="WID_PARENT" by="activityView" />
+            <parameter replace="session_reader_config" by="ex_activities::config::session_reader" />
+            <parameter replace="session_writer_config" by="ex_activities::config::session_writer" />
+        </service>
+    </config>
+</extension>

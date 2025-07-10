@@ -1,0 +1,137 @@
+<plugin id="tuto04_signal_slot">
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+
+    <extension implements="sight::app::extension::config">
+        <id>tuto04_signal_slot</id>
+        <config>
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <!-- The main data object is sight::data::mesh. -->
+            <object uid="mesh" type="sight::data::mesh" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="main_frame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>Tutorial 4: Signals and slots</name>
+                        <icon>tuto04_signal_slot/tuto.ico</icon>
+                        <min_size width="1280" height="720" />
+                    </frame>
+                    <menubar />
+                </gui>
+                <registry>
+                    <menubar sid="menubar_view" />
+                    <view sid="container_view" />
+                </registry>
+            </service>
+
+            <service uid="menubar_view" type="sight::module::ui::menubar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_file_view" />
+                </registry>
+            </service>
+
+            <service uid="menu_file_view" type="sight::module::ui::menu">
+                <gui>
+                    <layout>
+                        <menu_item name="Open mesh" shortcut="Ctrl+O" />
+                        <separator />
+                        <menu_item name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu_item sid="open_mesh_act" />
+                    <menu_item sid="quit_act" />
+                </registry>
+            </service>
+
+            <!--
+                Default view service:
+                This service defines the view layout. The type 'sight::ui::layout::cardinal' represents a main
+                central view and other views at the 'right', 'left', 'bottom' or 'top'.
+                Here the application contains a central view at the right.
+
+                Each <view> declared into the <layout> tag, must have its associated <view> into the <registry> tag.
+                A minimum window height and a width are given to the two non-central views.
+            -->
+            <service uid="container_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::cardinal">
+                        <view align="center" />
+                        <view caption="Move cameras 1,2" align="right" min_width="600" min_height="100" />
+                        <view caption="Move camera 3" align="right" min_width="600" min_height="100" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="rendering1_srv" />
+                    <view sid="rendering2_srv" />
+                    <view sid="rendering3_srv" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="open_mesh_act" type="sight::module::ui::action" />
+            <service uid="quit_act" type="sight::module::ui::quit" />
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="mesh_reader_srv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="mesh" />
+                <!-- mode is optional (by default it is "reader") -->
+                <type mode="reader" />
+            </service>
+
+            <!--
+                Visualization services:
+                We have three rendering service representing a 3D scene displaying the loaded mesh. The scene are
+                shown in the windows defines in 'view' service.
+            -->
+            <service uid="rendering1_srv" type="sight::module::viz::sample::mesh">
+                <in key="mesh" uid="mesh" auto_connect="true" />
+            </service>
+
+            <service uid="rendering2_srv" type="sight::module::viz::sample::mesh">
+                <in key="mesh" uid="mesh" auto_connect="true" />
+            </service>
+
+            <service uid="rendering3_srv" type="sight::module::viz::sample::mesh">
+                <in key="mesh" uid="mesh" auto_connect="true" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <!--
+                Each 3D scene owns a 3D camera that can be moved by clicking in the scene.
+                - When the camera move, a signal 'cam_updated' is emitted with the new camera information (position,
+                focal, view up).
+                - To update the camera without clicking, you could call the slot 'update_cam_position'
+
+                Here, we connect some rendering services signal 'cam_updated' to the others service slot
+                'update_cam_position', so the cameras are synchronized between scenes.
+            -->
+            <connect>
+                <signal>rendering1_srv/cam_updated</signal>
+                <slot>rendering2_srv/update_cam_position</slot>
+                <slot>rendering3_srv/update_cam_position</slot>
+            </connect>
+
+            <connect>
+                <signal>rendering2_srv/cam_updated</signal>
+                <slot>rendering1_srv/update_cam_position</slot>
+            </connect>
+
+            <connect>
+                <signal>open_mesh_act/clicked</signal>
+                <slot>mesh_reader_srv/update</slot>
+            </connect>
+        </config>
+    </extension>
+</plugin>

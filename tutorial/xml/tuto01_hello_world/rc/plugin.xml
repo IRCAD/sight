@@ -1,0 +1,33 @@
+<!-- Application name and version (the version is automatically replaced by CMake
+     using the version defined in the Properties.cmake) -->
+<plugin id="tuto01_hello_world">
+    <!-- The modules in requirements are automatically started when this application is launched. -->
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+
+    <!-- Defines the App-config -->
+    <extension implements="sight::app::extension::config">
+        <!-- identifier of the configuration -->
+        <id>tuto01_hello_world</id>
+        <config>
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="main_frame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>Tutorial 1: Hello World!</name>
+                        <icon>tuto01_hello_world/tuto.ico</icon>
+                        <min_size width="800" height="600" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="text_srv" />
+                </registry>
+            </service>
+
+            <service uid="text_srv" type="sight::module::ui::qt::text">
+                <label>Hello World!</label>
+            </service>
+        </config>
+    </extension>
+</plugin>

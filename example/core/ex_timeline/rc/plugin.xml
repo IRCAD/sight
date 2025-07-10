@@ -1,0 +1,67 @@
+﻿<plugin id="ex_timeline" library="true">
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::console" />
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::base</type>
+        <service>ex_timeline::producer</service>
+        <object>ex_timeline::message_tl</object>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::service::base</type>
+        <service>ex_timeline::consumer</service>
+        <object>ex_timeline::message_tl</object>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
+        <id>ex_timeline_AppCfg</id>
+        <config>
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="messageTL" type="ex_timeline::message_tl" />
+
+            <!-- ************************************* Services ************************************ -->
+
+            <service uid="producer1Srv" type="ex_timeline::producer" worker="producer">
+                <inout key="timeline" uid="messageTL" />
+                <message>Hello</message>
+                <id>0</id>
+                <period>1000</period>
+                <timelineSize>2</timelineSize>
+            </service>
+
+            <service uid="producer2Srv" type="ex_timeline::producer" worker="producer">
+                <inout key="timeline" uid="messageTL" />
+                <message>World</message>
+                <id>1</id>
+                <period>2000</period>
+            </service>
+
+            <service uid="producer3Srv" type="ex_timeline::producer" worker="producer">
+                <inout key="timeline" uid="messageTL" />
+                <message>!!!!!</message>
+                <id>1</id>
+                <period>5000</period>
+            </service>
+
+            <service uid="consumer1Srv" type="ex_timeline::consumer" worker="consumer">
+                <in key="timeline" uid="messageTL" />
+                <id>100</id>
+            </service>
+
+            <service uid="consumer2Srv" type="ex_timeline::consumer" worker="consumer">
+                <in key="timeline" uid="messageTL" />
+                <id>200</id>
+                <period>5000</period>
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>messageTL/object_pushed</signal>
+                <slot>consumer1Srv/consume</slot>
+            </connect>
+        </config>
+    </extension>
+</plugin>

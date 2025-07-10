@@ -1,0 +1,148 @@
+<extension implements="sight::app::extension::config">
+    <id>2DNegatoWithTF</id>
+    <parameters>
+        <object uid="image" type="sight::data::image_series" />
+        <object uid="transferFunctionDeferred" type="sight::data::transfer_function" deferred="true" />
+
+        <param name="WID_PARENT" />
+        <param name="patient_name" default="" />
+        <!-- axial, frontal, sagittal -->
+        <param name="orientation" default="axial" />
+        <param name="PickingChannel" default="pickingChannel" />
+    </parameters>
+    <config>
+        <object uid="snapshot" type="sight::data::image" />
+
+        <service uid="mainView" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" minHeight="30" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="negato" />
+                <view sid="multiView_negato_bottom" />
+            </registry>
+        </service>
+
+        <service uid="multiView_negato_bottom" type="sight::module::ui::view">
+            <gui>
+                <toolbar background_color="#00000000" />
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view proportion="0" minWidth="30" />
+                    <view proportion="1" />
+                    <view proportion="0" minWidth="30" />
+                </layout>
+            </gui>
+            <registry>
+                <toolbar sid="topToolbarView" />
+                <view sid="slider_negato" />
+                <view sid="distanceNegatoEditor" />
+            </registry>
+        </service>
+
+        <service uid="topToolbarView" type="sight::module::ui::toolbar">
+            <gui>
+                <layout>
+                    <menuItem name="Snapshot" icon="sight::module::ui::icons/frame.svg" shortcut="CTRL+S" />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="snapshotAct" />
+            </registry>
+        </service>
+
+        <!-- Save the snapshot image -->
+        <service uid="snapshotAct" type="sight::module::ui::action" />
+
+        <!-- Generic scene Negato -->
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="negato" type="sight::viz::scene3d::render">
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="defaultLayer">
+                    <adaptor uid="snapshotAdp" />
+                    <adaptor uid="negatoCameraAdp" />
+                    <adaptor uid="pickerInteractorAdp" />
+                    <adaptor uid="negatoAdp" />
+                    <adaptor uid="ruler_fiducial_adp" />
+                    <adaptor uid="landmarksAdp" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::fragments_info">
+            <inout key="image" uid="snapshot" />
+        </service>
+
+        <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::negato2d_camera" auto_connect="true">
+            <inout key="image" uid="${image}" />
+            <config priority="0" orientation="${orientation}" />
+        </service>
+
+        <service uid="pickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::picker">
+            <config queryMask="0x40000000" priority="1" />
+        </service>
+
+        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::negato2d" auto_connect="true">
+            <in key="image" uid="${image}" />
+            <inout key="tf" uid="${transferFunctionDeferred}" />
+            <config orientation="${orientation}" filtering="none" />
+        </service>
+
+        <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
+            <inout key="image" uid="${image}" />
+            <config font_size="32" query_flags="0x40000000" priority="3" />
+            <properties radius="1.5" />
+        </service>
+
+        <service uid="landmarksAdp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
+            <inout key="imageSeries" uid="${image}" />
+            <config priority="4" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <service uid="LockImageSrv" type="sight::module::memory::lock_dump">
+            <inout key="target" uid="${image}" />
+        </service>
+
+        <service uid="slider_negato" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
+            <inout key="image" uid="${image}" />
+            <config orientation="${orientation}" label="index" display_axis_selector="false" display_step_buttons="false" />
+        </service>
+
+        <service uid="distanceNegatoEditor" type="sight::module::ui::qt::metrics::Distance">
+            <inout key="image" uid="${image}" />
+        </service>
+
+        <!-- Write the snapshot image -->
+        <service uid="imageWriterSrv" type="sight::module::io::bitmap::writer">
+            <in key="data" uid="snapshot" />
+            <dialog policy="always" />
+            <backends enable="all" mode="best" />
+        </service>
+
+        <connect>
+            <signal>distanceNegatoEditor/distance_requested</signal>
+            <slot>multiDistances/create_distance</slot>
+        </connect>
+
+        <connect channel="${PickingChannel}">
+            <signal>pickerInteractor/picked</signal>
+        </connect>
+
+        <connect>
+            <signal>snapshotAct/clicked</signal>
+            <slot>imageWriterSrv/update</slot>
+        </connect>
+
+        <!-- negato adaptors -->
+    </config>
+</extension>

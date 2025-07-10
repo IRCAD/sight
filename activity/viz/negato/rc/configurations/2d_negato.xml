@@ -1,0 +1,158 @@
+<extension implements="sight::app::extension::config">
+    <id>sight::activity::viz::negato::2d</id>
+    <parameters>
+        <object uid="image" type="sight::data::image_series" />
+
+        <param name="WID_PARENT" />
+        <param name="patient_name" default="" />
+        <!-- axial, frontal, sagittal -->
+        <param name="orientation" default="axial" />
+    </parameters>
+    <config>
+        <object uid="tf" type="sight::data::transfer_function" />
+        <object uid="snapshot" type="sight::data::image" />
+
+        <service uid="main_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::overlay">
+                    <view />
+                    <view x="0" y="0" />
+                    <view x="0" y="-1" height="35" width="100%" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="negato" />
+                <view sid="negato_top_slider_view" />
+                <view sid="negato_bottom_slider_view" />
+            </registry>
+        </service>
+
+        <service uid="negato_top_slider_view" type="sight::module::ui::view">
+            <gui>
+                <toolbar background_color="#00000000" />
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                </layout>
+            </gui>
+            <registry>
+                <toolbar sid="topToolbarView" />
+            </registry>
+        </service>
+
+        <service uid="topToolbarView" type="sight::module::ui::toolbar">
+            <gui>
+                <layout>
+                    <menuItem name="Snapshot" icon="sight::module::ui::icons/frame.svg" shortcut="CTRL+S" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="snapshot_act" />
+            </registry>
+        </service>
+
+        <service uid="negato_bottom_slider_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <spacer />
+                    <view proportion="0" background_color="#00000000" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="multiView_negato_bottom" />
+            </registry>
+        </service>
+
+        <service uid="multiView_negato_bottom" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="slider_negato" />
+            </registry>
+        </service>
+
+        <!-- Save the snapshot image -->
+        <service uid="snapshot_act" type="sight::module::ui::action" />
+
+        <!-- Generic scene Negato -->
+        <!-- *************************** Begin generic scene *************************** -->
+
+        <service uid="negato" type="sight::viz::scene3d::render">
+            <scene>
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="defaultLayer">
+                    <adaptor uid="snapshot_adp" />
+                    <adaptor uid="negato_camera_adp" />
+                    <adaptor uid="negato_adp" />
+                    <adaptor uid="ruler_fiducial_adp" />
+                    <adaptor uid="point_fiducial_adp" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="snapshot_adp" type="sight::module::viz::scene3d::adaptor::fragments_info">
+            <inout key="image" uid="snapshot" />
+        </service>
+
+        <service uid="negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">
+            <inout key="image" uid="${image}" />
+            <config priority="0" orientation="${orientation}" />
+        </service>
+
+        <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
+            <in key="image" uid="${image}" />
+            <inout key="tf" uid="tf" />
+            <config orientation="${orientation}" filtering="none" />
+        </service>
+
+        <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler">
+            <inout key="image" uid="${image}" />
+            <config font_size="32" query_flags="0x40000000" priority="3" />
+            <properties radius="1.5" />
+        </service>
+
+        <service uid="point_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point">
+            <inout key="imageSeries" uid="${image}" />
+            <config priority="4" />
+        </service>
+
+        <!-- *************************** End generic scene *************************** -->
+
+        <service uid="lock_image_srv" type="sight::module::memory::lock_dump">
+            <inout key="target" uid="${image}" />
+        </service>
+
+        <service uid="slider_negato" type="sight::module::ui::qt::image::slice_index_position_editor">
+            <inout key="image" uid="${image}" />
+            <config orientation="${orientation}" label="index" display_axis_selector="false" display_step_buttons="false" />
+        </service>
+
+        <!-- Write the snapshot image -->
+        <service uid="image_writer_srv" type="sight::module::io::bitmap::writer">
+            <in key="data" uid="snapshot" />
+            <dialog policy="always" />
+            <backends enable="all" mode="best" />
+        </service>
+
+        <!-- Slide view -->
+        <connect>
+            <signal>main_view/started</signal>
+            <slot>negato_top_slider_view/show</slot>
+            <slot>negato_bottom_slider_view/show</slot>
+        </connect>
+
+        <connect>
+            <signal>snapshot_act/clicked</signal>
+            <slot>image_writer_srv/update</slot>
+        </connect>
+
+        <!-- negato adaptors -->
+    </config>
+</extension>

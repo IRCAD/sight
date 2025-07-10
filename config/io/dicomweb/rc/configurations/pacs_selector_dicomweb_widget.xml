@@ -1,0 +1,106 @@
+<extension implements="sight::app::extension::config">
+    <id>sight::config::io::dicomweb::selector_widget</id>
+    <parameters>
+        <object uid="previewSeriesSet" type="sight::data::series_set" />
+        <object uid="previewDicom" type="sight::data::dicom_series" deferred="true" />
+        <object uid="previewImage" type="sight::data::image" />
+        <object uid="previewSelections" type="sight::data::vector" />
+        <object uid="localSeriesSet" type="sight::data::series_set" />
+
+        <object uid="host_name" type="sight::data::string" preference="true" />
+        <object uid="port_id" type="sight::data::integer" preference="true" />
+
+        <param name="WID_QUERY_EDITOR_PARENT" />
+        <param name="WID_SLIDER_PREVIEW_PARENT" />
+    </parameters>
+    <config>
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="container_background_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" background_color="#3E4453" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_QUERY_EDITOR_PARENT}" />
+                <view sid="queryEditor" />
+            </registry>
+        </service>
+
+        <service uid="preview_dicom_slider_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                    <view proportion="0" visible="false" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_SLIDER_PREVIEW_PARENT}" />
+                <view sid="slider_index_dicom_puller_editor" />
+                <view sid="series_puller_act" />
+                <view sid="wait_act" />
+            </registry>
+        </service>
+
+        <service uid="series_puller_act" type="sight::module::ui::qt::com::signal_button">
+            <config>
+                <checkable>false</checkable>
+                <icon>sight::module::ui::icons/pull.svg</icon>
+                <iconWidth>24</iconWidth>
+                <iconHeight>24</iconHeight>
+                <toolTip>Pull selected series</toolTip>
+            </config>
+        </service>
+
+        <service uid="wait_act" type="sight::module::ui::qt::com::signal_button">
+            <config>
+                <checkable>false</checkable>
+                <executable>false</executable>
+                <icon>sight::module::ui::icons/wait.svg</icon>
+                <iconWidth>24</iconWidth>
+                <iconHeight>24</iconHeight>
+                <toolTip>Pulling selected series</toolTip>
+            </config>
+        </service>
+
+        <service uid="queryEditor" type="sight::module::io::dicomweb::query_editor">
+            <inout key="series_set" uid="${previewSeriesSet}" />
+            <properties host_name="${host_name}" port="${port_id}" />
+            <config icon="sight::module::ui::icons/find.svg" advanced="false" />
+        </service>
+
+        <service uid="slider_index_dicom_puller_editor" type="sight::module::io::dicomweb::slice_index_dicom_puller_editor">
+            <inout key="series" uid="${previewDicom}" />
+            <inout key="image" uid="${previewImage}" />
+            <properties host_name="${host_name}" port="${port_id}" />
+            <config dicom_reader="sight::module::io::dicom::series_set_reader">
+                <reader_config>
+                    <config>
+                        <showLogDialog>false</showLogDialog>
+                        <enableBufferRotation>false</enableBufferRotation>
+                        <dicomdirSupport>true</dicomdirSupport>
+                    </config>
+                </reader_config>
+            </config>
+        </service>
+
+        <service uid="pull_series_controller" type="sight::module::io::dicomweb::series_puller">
+            <in key="selected_series" uid="${previewSelections}" />
+            <inout key="series_set" uid="${localSeriesSet}" />
+            <config dicom_reader="sight::module::io::dicom::series_set_reader" reader_config="sight::config::io::dicomweb::reader_config" />
+            <properties host_name="${host_name}" port="${port_id}" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect>
+            <signal>series_puller_act/clicked</signal>
+            <slot>pull_series_controller/update</slot>
+        </connect>
+    </config>
+</extension>

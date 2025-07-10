@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:element name="extension" type="extension_t" />
+
+    <xs:simpleType name="boolean_t">
+        <xs:restriction base="xs:string">
+        <xs:enumeration value="true"/>
+        <xs:enumeration value="false"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="extension_t">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string" />
+            <xs:element name="parameters" type="parameters_t" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="group" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="desc" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="config" type="config_t" />
+        </xs:sequence>
+        <xs:anyAttribute processContents="skip" />
+    </xs:complexType>
+
+    <xs:complexType name="parameters_t">
+        <xs:sequence>
+            <xs:element name="object" type="object_param_t" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="param" type="param_t" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="channel" type="channel_t" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="object_param_t">
+        <xs:attribute name='uid' type='xs:string' use="required" />
+        <xs:attribute name='type' type='xs:string' use="required" />
+        <xs:attribute name='optional' type='boolean_t' />
+        <xs:attribute name='value' type='xs:string' />
+        <xs:attribute name='deferred' type='boolean_t' />
+        <xs:attribute name='reference' type='boolean_t' />
+        <xs:attribute name='preference' type='boolean_t' />
+    </xs:complexType>
+
+    <xs:complexType name="param_t">
+        <xs:attribute name='name' type='xs:string' use="required" />
+        <xs:attribute name='default' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="channel_t">
+        <xs:attribute name='name' type='xs:string' use="required" />
+        <xs:attribute name='optional' type='boolean_t' />
+    </xs:complexType>
+
+    <xs:complexType name="config_t">
+        <xs:sequence>
+            <xs:element name="object" type="object_t" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="serviceList" type="service_list_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="service" type="service_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="connect"  type="connection_t"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="start" type="start_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="update" type="update_t" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Object Type -->
+    <xs:complexType name="object_t">
+        <xs:sequence>
+            <xs:element name="name"  type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="matrix"  type="xs:string"  minOccurs="0" maxOccurs="1" />
+            <xs:element name="value"  type="xs:string"  minOccurs="0" maxOccurs="1" />
+            <xs:element name="item"  type="item_t"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="colors"  type="color_t"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="color"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="file"  type="xs:string"  minOccurs="0" maxOccurs="1" />
+            <xs:element name="resource"  type="xs:string"  minOccurs="0" maxOccurs="1" />
+            <xs:element name="gray"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="param" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="config" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='type' type='xs:string' />
+        <xs:attribute name='src' type='xs:string' />
+        <xs:attribute name='value' type='xs:string' />
+        <xs:attribute name='deferred' type='boolean_t' />
+        <xs:attribute name='preference' type='boolean_t' />
+    </xs:complexType>
+
+    <!-- Item Type -->
+    <xs:complexType name="item_t">
+        <xs:sequence>
+             <xs:element name="object" type="object_t" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+        <xs:attribute name='key' type='xs:string' />
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='type' type='xs:string' />
+        <xs:attribute name='value' type='xs:string' />
+    </xs:complexType>
+
+    <!-- Service Type -->
+    <xs:complexType name="service_t">
+        <xs:sequence>
+            <xs:any processContents="skip" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name='uid' type='xs:string' use="required"/>
+        <xs:attribute name='type' type='xs:string' use="required" />
+        <xs:attribute name='auto_connect' type='boolean_t' />
+        <xs:attribute name='worker' type='xs:string' />
+        <xs:attribute name='config' type='xs:string' />
+    </xs:complexType>
+
+    <!-- Connection Type -->
+    <xs:complexType name="connection_t">
+        <xs:sequence>
+            <xs:element name="signal"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="slot"  type="xs:string"  minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name='channel' type='xs:string' use="optional" />
+    </xs:complexType>
+
+    <!-- Start/Update/stop Type -->
+    <xs:complexType name="start_t">
+        <xs:attribute name='uid' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="update_t">
+        <xs:sequence>
+            <xs:element name="service" type="start_t" minOccurs="0" maxOccurs="unbounded" />
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="sequence" type="sequence_t" />
+                <xs:element name="parallel" type="parallel_t" />
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name='uid' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="sequence_t">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="service" type="service_update_t" />
+                <xs:element name="updater" type="start_t" />
+                <xs:element name="parallel" type="parallel_t" />
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='loop' type='boolean_t' />
+        <xs:attribute name='parent' type='xs:string' />
+        <xs:attribute name='start' type='boolean_t' />
+    </xs:complexType>
+
+    <xs:complexType name="parallel_t">
+        <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element name="service" type="service_update_t" />
+                <xs:element name="updater" type="start_t" />
+                <xs:element name="sequence" type="sequence_t" />
+            </xs:choice>
+        </xs:sequence>
+        <xs:attribute name='uid' type='xs:string' />
+        <xs:attribute name='loop' type='boolean_t' />
+        <xs:attribute name='parent' type='xs:string' />
+    </xs:complexType>
+
+    <xs:complexType name="service_update_t">
+        <xs:attribute name="uid" type="xs:string" use="required" />
+        <xs:attribute name="slot" type="xs:string" use="optional" />
+        <xs:attribute name="ignore_stopped" type="boolean_t" use="optional" />
+    </xs:complexType>
+
+    <!-- ServiceList Type -->
+    <xs:complexType name="service_list_t">
+        <xs:sequence>
+            <xs:element name="service" type="service_t" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="color_t">
+        <xs:sequence>
+            <xs:element name="step" type="step_t" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="isClamped" type="xs:string" />
+        <xs:attribute name="is_clamped" type="xs:string" />
+        <xs:attribute name="resample_to_max_texture_size" type="boolean_t" />
+        <xs:attribute name="default" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="step_t">
+        <xs:attribute name="color" type="xs:string" use="required" />
+        <xs:attribute name="value" type="xs:string" use="required" />
+    </xs:complexType>
+
+</xs:schema>

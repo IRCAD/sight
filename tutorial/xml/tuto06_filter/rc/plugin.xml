@@ -1,0 +1,168 @@
+<plugin id="tuto06_filter">
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui::qt" />
+
+    <extension implements="sight::app::extension::config">
+        <id>tuto06_filter</id>
+        <config>
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <!-- This is the source image for the filtering. -->
+            <object uid="image1" type="sight::data::image" />
+            <!-- This is the output image for the filtering. "deferred" defines that the image is not created at the
+                 beginning, but will be created by a service. -->
+            <object uid="image2" type="sight::data::image" deferred="true" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <!-- Windows & Main Menu -->
+            <service uid="main_frame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>Tutorial 6: Filter an image</name>
+                        <icon>tuto06_filter/tuto.ico</icon>
+                        <min_size width="1280" height="720" />
+                    </frame>
+                    <menubar />
+                </gui>
+                <registry>
+                    <menubar sid="menubar_view" />
+                    <view sid="container_view" />
+                </registry>
+            </service>
+
+            <service uid="menubar_view" type="sight::module::ui::menubar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                        <menu name="filter" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_file_view" />
+                    <menu sid="menu_filter_view" />
+                </registry>
+            </service>
+
+            <!-- Menus -->
+            <service uid="menu_file_view" type="sight::module::ui::menu">
+                <gui>
+                    <layout>
+                        <menu_item name="Open image" shortcut="Ctrl+O" />
+                        <separator />
+                        <menu_item name="Quit" special_action="QUIT" shortcut="Ctrl+Q" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu_item sid="open_image_act" />
+                    <menu_item sid="quit_act" />
+                </registry>
+            </service>
+
+            <service uid="menu_filter_view" type="sight::module::ui::menu">
+                <gui>
+                    <layout>
+                        <menu_item name="Compute image filter" />
+                        <menu_item name="Toggle vertical image flipping" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu_item sid="image_filter_act" />
+                    <menu_item sid="image_flipper_act" />
+                </registry>
+            </service>
+
+            <service uid="container_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <view proportion="1" />
+                        <view proportion="1" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="image1_srv" />
+                    <view sid="image2_srv" />
+                </registry>
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <!-- Action to open image file: call update on image reader service -->
+            <service uid="open_image_act" type="sight::module::ui::action" />
+
+            <!-- Action to quit the application -->
+            <service uid="quit_act" type="sight::module::ui::quit" />
+
+            <!-- Action apply threshold filter: call update on threshold filter service -->
+            <service uid="image_filter_act" type="sight::module::ui::action" />
+
+            <!-- Action apply flip filter: call 'flipAxisY' slot on flip service -->
+            <service uid="image_flipper_act" type="sight::module::ui::action" />
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <!-- Reader of the input image -->
+            <service uid="image_reader_srv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="image1" />
+                <type mode="reader" />
+            </service>
+
+            <!--
+                Threshold filter:
+                Applies a threshold filter. The source image is 'image1' and the
+                output image is 'image2'.
+                The two images are declared above.
+             -->
+            <service uid="image_filter_srv" type="sight::module::filter::image::threshold">
+                <in key="source" uid="image1" />
+                <out key="target" uid="image2" />
+                <config>
+                    <threshold>50</threshold>
+                </config>
+            </service>
+
+            <!--
+                Flip filter:
+                Applies a flip filter. The source image is 'image1' and the
+                output image is 'image2'.
+                The two images are declared above.
+             -->
+            <service uid="image_flipper_srv" type="sight::module::filter::image::flip">
+                <in key="source" uid="image1" />
+                <out key="target" uid="image2" />
+            </service>
+
+            <!--
+                Renderer of the 1st image:
+                This is the source image for the filtering.
+            -->
+            <service uid="image1_srv" type="sight::module::viz::sample::image">
+                <in key="image" uid="image1" />
+            </service>
+
+            <!--
+                Rendered for the 2nd image:
+                This is the output image for the filtering.
+            -->
+            <service uid="image2_srv" type="sight::module::viz::sample::image">
+                <in key="image" uid="image2" />
+            </service>
+
+            <connect>
+                <signal>open_image_act/updated</signal>
+                <slot>image_reader_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>image_filter_act/updated</signal>
+                <slot>image_filter_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>image_flipper_act/updated</signal>
+                <slot>image_flipper_srv/flip_axis_y</slot>
+            </connect>
+        </config>
+    </extension>
+</plugin>

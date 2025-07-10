@@ -1,0 +1,48 @@
+<!-- This configuration allows to read an image and display it in a simple scene -->
+<extension implements="sight::app::extension::config">
+    <id>ex_activities::config::image_reading</id>
+    <parameters>
+        <object uid="image_series" type="sight::data::image_series" />
+
+        <param name="WID_PARENT" />
+        <channel name="validation" optional="true" />
+    </parameters>
+    <config>
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="main_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="image_scene" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Actions ****************************************** -->
+
+        <service uid="import_act" type="sight::module::ui::io::selector">
+            <inout key="data" uid="${image_series}" />
+            <type mode="reader" />
+            <selection mode="include" />
+            <addSelection service="sight::module::io::vtk::image_reader" />
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="image_scene" type="sight::module::viz::sample::image">
+            <in key="image" uid="${image_series}" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <!-- The channel is used to call "sequencer::checkNext" slot, to enable the next activity when the image is loaded. -->
+        <connect channel="${validation}">
+            <signal>${image_series}/modified</signal>
+        </connect>
+    </config>
+</extension>

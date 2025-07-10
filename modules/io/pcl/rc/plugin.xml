@@ -1,8 +1,0 @@
-<plugin id="sight::module::io::pcl" library="true">
-    <extension implements="sight::service::extension::factory">
-        <type>sight::io::service::grabber</type>
-        <service>sight::module::io::pcl::frame_grabber</service>
-        <object>sight::data::frame_tl</object>
-        <desc>Defines the service grabbing video frame.</desc>
-    </extension>
-</plugin>

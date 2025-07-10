@@ -1,0 +1,103 @@
+<plugin id="ex_activities">
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::activity" />
+
+    <xi:include href="configurations/ex_activities_base.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/image_reading.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/volume_rendering.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+
+    <extension implements="sight::activity::extension">
+        <id>ex_activities::activity::import</id>
+        <title>ImageSeries reading</title>
+        <desc>Activity to read an imageSeries</desc>
+        <icon>sight::module::ui::icons/file.svg</icon>
+        <requirements>
+            <requirement name="image_series" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
+                <desc>ImageSeries that will be read by this activity.</desc>
+            </requirement>
+        </requirements>
+        <appConfig id="ex_activities::config::image_reading" />
+    </extension>
+
+    <extension implements="sight::activity::extension">
+        <id>ex_activities::activity::volume_rendering</id>
+        <title>ImageSeries displaying Volume</title>
+        <desc>Activity to display an imageSeries in a volume rendering</desc>
+        <icon>sight::module::ui::icons/volume.svg</icon>
+        <requirements>
+            <!-- The imageSeries must be present to launch the activity -->
+            <requirement name="image_series" type="sight::data::image_series" minOccurs="1" maxOccurs="1">
+                <desc>ImageSeries that will be display by this activity.</desc>
+            </requirement>
+            <requirement name="optional_model_series" type="sight::data::model_series" minOccurs="0" maxOccurs="1">
+                <desc>Optional model series.</desc>
+            </requirement>
+        </requirements>
+        <appConfig id="ex_activities::config::volume_rendering" />
+    </extension>
+
+    <extension implements="sight::service::extension::config">
+        <id>ex_activities::config::sequencer</id>
+        <service>sight::module::ui::qt::activity::sequencer</service>
+        <desc>Configuration for sequencer</desc>
+        <config>
+            <activity id="ex_activities::activity::import" name="Import" />
+            <activity id="sight::activity::viz::negato::three_views" name="Negatoscope" />
+            <activity id="ex_activities::activity::volume_rendering" name="Volume Rendering" />
+            <clear>#2E3034</clear>
+            <primary>#6997BB</primary>
+            <background>#565A5E</background>
+            <elevation>#525867</elevation>
+            <accent>#666C7B</accent>
+            <foreground>#3E4453</foreground>
+            <fontSize>14</fontSize>
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::config">
+        <id>ex_activities::config::wizard</id>
+        <service>sight::module::ui::qt::activity::wizard</service>
+        <desc>Custom configuration for ex_activities wizard</desc>
+        <config>
+            <ioSelectorConfig>SDBReaderIOSelectorConfig</ioSelectorConfig>
+            <sdbIoSelectorConfig>FullSDBReaderIOSelectorConfig</sdbIoSelectorConfig>
+            <confirm>false</confirm>
+            <icons>
+                <icon type="sight::data::image" icon="sight::module::ui::icons/volume.svg" />
+            </icons>
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::config">
+        <id>ex_activities::config::session_reader</id>
+        <service>sight::module::io::session::reader</service>
+        <desc>Session reader</desc>
+        <config>
+            <dialog extension=".sample" description="Sample Sight session file" policy="always" />
+            <password policy="global" encryption="salted" />
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::config">
+        <id>ex_activities::config::session_writer</id>
+        <service>sight::module::io::session::writer</service>
+        <desc>Session writer</desc>
+        <config>
+            <dialog extension=".sample" description="Sample Sight session file" policy="once" />
+            <password policy="global" encryption="salted" />
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::parameters">
+        <id>ex_activities::parameters</id>
+        <parameters>
+            <param name="app_name" value="ex_activities" />
+            <param name="app_version" value="@PROJECT_VERSION@" />
+            <param name="icon_path" value="ex_activities/app.ico" />
+            <param name="sequencer_config" value="ex_activities::config::sequencer" />
+            <param name="wizard_config" value="ex_activities::config::wizard" />
+        </parameters>
+    </extension>
+</plugin>

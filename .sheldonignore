@@ -1,8 +1,9 @@
 /3rd-party
-/libs/__/data/dicom/attribute.*
-/libs/__/data/dicom/sop.*
-/libs/__/data/test/tu/dicom/attribute_test.*
-/libs/__/data/test/tu/dicom/sop_test.*
-/libs/io/igtl/patch/
-/libs/io/itk/patched_itk_compiler_detection.h
-/libs/io/itk/compilers/
+/lib/__/data/dicom/attribute.*
+/lib/__/data/dicom/sop.*
+/lib/__/data/test/tu/dicom/attribute_test.*
+/lib/__/data/test/tu/dicom/sop_test.*
+/lib/io/igtl/patch/
+/lib/io/itk/patched_itk_compiler_detection.h
+/lib/io/itk/compilers/
+/lib/io/vtk/patch/vtkSMPTools.h

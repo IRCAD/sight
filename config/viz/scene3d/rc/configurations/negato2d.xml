@@ -1,0 +1,209 @@
+<extension implements="sight::app::extension::config">
+    <id>sight::config::viz::scene3d::negato2d</id>
+    <parameters>
+        <object uid="image" type="sight::data::image_series" deferred="true" />
+        <object uid="transfer_function" type="sight::data::transfer_function" />
+
+        <param name="WID_PARENT" />
+        <param name="slice_index" default="axial" />
+        <param name="classification" default="post" />
+        <param name="filtering" default="linear" />
+        <param name="enable_slice_type" default="true" />
+
+        <channel name="world_coords_landmarks" optional="true" />
+        <channel name="toggle_view_visibility" optional="true" />
+        <channel name="ruler_activation" optional="true" />
+        <channel name="ruler_deactivation" optional="true" />
+        <channel name="landmarks_edit_mode" optional="true" />
+        <channel name="landmarks_group_selected" optional="true" />
+        <channel name="landmarks_edit_mode_changed" optional="true" />
+        <channel name="visibility_rulers" />
+    </parameters>
+
+    <config>
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="main_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::overlay">
+                    <view />
+                    <view x="0" y="0" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="scene_view" />
+                <view sid="toolbar_view" />
+            </registry>
+        </service>
+
+        <service uid="scene_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" QSSClass="view_background" spacing="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="scene_srv" />
+                <view wid="negato_slider_view" />
+            </registry>
+        </service>
+
+        <service uid="toolbar_view" type="sight::module::ui::view">
+            <gui>
+                <toolbar background_color="#00000000" />
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                </layout>
+            </gui>
+            <registry>
+                <toolbar sid="toolbar" />
+            </registry>
+        </service>
+
+        <service uid="toolbar" type="sight::module::ui::toolbar">
+            <gui>
+                <layout>
+                    <menuItem name="Maximize" icon="sight::module::ui::icons/maximize.svg" />
+                    <menuItem name="Minimize" icon="sight::module::ui::icons/restore.svg" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="maximize_act" />
+                <menuItem sid="minimize_act" />
+            </registry>
+        </service>
+
+        <service uid="maximize_act" type="sight::module::ui::action">
+            <state visible="true" />
+        </service>
+
+        <service uid="minimize_act" type="sight::module::ui::action">
+            <state visible="false" />
+        </service>
+
+        <service uid="scene_srv" type="sight::viz::scene3d::render">
+            <scene>
+                <background color="#303A65" />
+
+                <layer id="negatoLayer">
+                    <adaptor uid="negato_adp" />
+                    <adaptor uid="ruler_fiducial_adp" />
+                    <adaptor uid="negato_camera_adp" />
+                    <adaptor uid="picker_interactor_adp" />
+                    <adaptor uid="landmarks_adp" />
+                    <adaptor uid="picked_voxel_text_adp" />
+                    <adaptor uid="event_adp" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato2d">
+            <in key="image" uid="${image}" />
+            <inout key="tf" uid="${transfer_function}" />
+            <config orientation="${slice_index}" filtering="${filtering}" />
+            <properties classification="${classification}" />
+        </service>
+
+        <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
+            <inout key="image" uid="${image}" />
+            <config font_size="16" query_flags="0x40000000" orientation="${slice_index}" />
+            <properties radius="1.5" />
+        </service>
+
+        <service uid="negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">
+            <inout key="image" uid="${image}" />
+            <config priority="0" orientation="${slice_index}" />
+        </service>
+
+        <service uid="picker_interactor_adp" type="sight::module::viz::scene3d::adaptor::picker">
+            <config queryMask="0x40000000" />
+        </service>
+
+        <service uid="landmarks_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::point" auto_connect="true">
+            <inout key="imageSeries" uid="${image}" />
+            <config label="false" orientation="${slice_index}" priority="4" initialGroup="Group_0" initialSize="10.0" />
+        </service>
+
+        <service uid="picked_voxel_text_adp" type="sight::module::viz::scene3d::adaptor::text">
+            <config x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
+        </service>
+
+        <service uid="event_adp" type="sight::module::viz::scene3d::adaptor::event">
+            <event type="buttonDoublePress" buttons="left" modifiers="none" />
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="negato_slider_cfg" type="sight::app::config_launcher">
+            <properties config="sight::config::viz::image::imageSlider" />
+            <parameter replace="WID_PARENT" by="negato_slider_view" />
+            <parameter replace="sliceIndex" by="${slice_index}" />
+            <parameter replace="enableSliceType" by="${enable_slice_type}" />
+            <inout group="object">
+                <key name="image" uid="${image}" />
+                <key name="transferFunction" uid="${transfer_function}" />
+            </inout>
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <!-- Display the picked voxel information -->
+        <connect>
+            <signal>negato_adp/picked_voxel</signal>
+            <slot>picked_voxel_text_adp/set_text</slot>
+        </connect>
+
+        <!-- distance channels -->
+        <connect channel="${ruler_activation}">
+            <slot>ruler_fiducial_adp/activate_tool</slot>
+        </connect>
+
+        <connect channel="${ruler_deactivation}">
+            <signal>ruler_fiducial_adp/tool_deactivated</signal>
+        </connect>
+
+        <connect channel="${visibility_rulers}">
+            <slot>ruler_fiducial_adp/toggle_visibility</slot>
+        </connect>
+
+        <connect channel="${landmarks_edit_mode}">
+            <slot>landmarks_adp/change_edit_mode</slot>
+        </connect>
+
+        <connect channel="${landmarks_group_selected}">
+            <slot>landmarks_adp/set_current_group</slot>
+        </connect>
+
+        <connect channel="${landmarks_edit_mode_changed}">
+            <signal>landmarks_adp/edit_mode_changed</signal>
+        </connect>
+
+        <connect channel="${toggle_view_visibility}">
+            <signal>minimize_act/clicked</signal>
+            <signal>maximize_act/clicked</signal>
+            <signal>event_adp/triggered</signal>
+        </connect>
+
+        <connect>
+            <signal>event_adp/triggered</signal>
+            <slot>maximize_act/toggle_visibility</slot>
+            <slot>minimize_act/toggle_visibility</slot>
+        </connect>
+
+        <connect>
+            <signal>maximize_act/clicked</signal>
+            <slot>maximize_act/hide</slot>
+            <slot>minimize_act/show</slot>
+        </connect>
+
+        <connect>
+            <signal>minimize_act/clicked</signal>
+            <slot>minimize_act/hide</slot>
+            <slot>maximize_act/show</slot>
+        </connect>
+    </config>
+</extension>

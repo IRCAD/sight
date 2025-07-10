@@ -1,0 +1,309 @@
+<!--
+    This tutorial shows a scene containing a 3D image and a textured mesh.
+    To use this application, you should open a 3D image, a mesh and/or a 2D texture image.
+-->
+<plugin id="tuto07_generic_scene">
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+    <requirement id="sight::module::viz::scene3d_qt" />
+    <requirement id="sight::module::io::document" />
+
+    <extension implements="sight::app::extension::config">
+        <id>tuto07_generic_scene</id>
+        <config>
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="image" type="sight::data::image" />
+            <object uid="mesh" type="sight::data::mesh" />
+            <object uid="texture" type="sight::data::image" />
+            <object uid="tf" type="sight::data::transfer_function" />
+            <object uid="snapshot" type="sight::data::image" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="main_frame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>tuto07_generic_scene</name>
+                        <icon>tuto07_generic_scene/tuto.ico</icon>
+                        <min_size width="720" height="480" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="container_view" />
+                </registry>
+            </service>
+
+            <!-- main view -->
+            <service uid="container_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::overlay">
+                        <view />
+                        <view x="0" y="0" width="50" height="50" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="container_background_view" />
+                    <view sid="speed_dial_srv" />
+                </registry>
+            </service>
+
+            <service uid="container_background_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" min_height="30" resizable="false" background_color="#3E4453" />
+                        <view proportion="0" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="generic_scene_srv" />
+                    <view sid="editors_view" />
+                    <view sid="progress_bar_view" />
+                </registry>
+            </service>
+
+            <service uid="speed_dial_srv" type="sight::module::ui::qt::icon_speed_dial">
+                <config direction="right" icon="sight::module::ui::icons/load.svg" unfolded_icon="sight::module::ui::icons/revert.svg" />
+                <actions>
+                    <action sid="open_image_act" name="Open image" icon="sight::module::ui::icons/image_series.svg" shortcut="Ctrl+I" />
+                    <action sid="open_mesh_act" name="Open mesh" icon="sight::module::ui::icons/model_series.svg" shortcut="Ctrl+M" />
+                    <action sid="open_texture_act" name="Open texture" icon="sight::module::ui::icons/opacity.svg" shortcut="Ctrl+T" />
+                    <action sid="fullscreen_act" name="Fullscreen" icon="sight::module::ui::icons/maximize.svg" />
+                    <action sid="windowed_act" name="Windowed" icon="sight::module::ui::icons/restore.svg" />
+                </actions>
+            </service>
+
+            <!-- View for editors to update image visualization -->
+            <service uid="editors_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="horizontal" />
+                        <view proportion="0" min_width="50" />
+                        <view proportion="1" />
+                        <view proportion="0" min_width="30" />
+                        <view proportion="0" visible="false" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="show_negato_srv" />
+                    <view sid="slider_index_editor_srv" />
+                    <view sid="snapshot_srv" />
+                    <view sid="tfm_srv" />
+                </registry>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <!-- This scene display a 3D image and a textured mesh -->
+            <service uid="generic_scene_srv" type="sight::viz::scene3d::render">
+                <scene>
+                    <background color="#36393E" />
+
+                    <layer id="default" transparency="Default">
+                        <adaptor uid="trackball_interactor_adp" />
+                        <adaptor uid="texture_adp" />
+                        <adaptor uid="mesh_adp" />
+                        <adaptor uid="negato_adp" />
+                        <adaptor uid="snapshot_adp" />
+                    </layer>
+                </scene>
+            </service>
+
+            <service uid="trackball_interactor_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
+                <config priority="0" />
+            </service>
+
+            <!-- Texture adaptor, used by mesh adaptor -->
+            <service uid="texture_adp" type="sight::module::viz::scene3d::adaptor::texture" auto_connect="true">
+                <in key="image" uid="texture" />
+                <config texture_name="ogre_texture" />
+            </service>
+
+            <!-- Mesh adaptor -->
+            <service uid="mesh_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
+                <in key="mesh" uid="mesh" />
+                <config texture_name="ogre_texture" />
+            </service>
+
+            <!-- 3D image negatoscope adaptor -->
+            <service uid="negato_adp" type="sight::module::viz::scene3d::adaptor::negato3d" auto_connect="true">
+                <in key="image" uid="image" />
+                <inout key="tf" uid="tf" />
+                <config orientation="axial" interactive="true" />
+            </service>
+
+            <service uid="snapshot_adp" type="sight::module::viz::scene3d::adaptor::fragments_info">
+                <inout key="image" uid="snapshot" />
+            </service>
+
+            <!-- Status bar used to display the progress bar for reading -->
+            <service uid="progress_bar_view" type="sight::module::ui::qt::progress_bar" />
+
+            <service uid="pdf_writer" type="sight::module::io::document::pdf_writer">
+                <in group="data">
+                    <key uid="snapshot" />
+                </in>
+                <container uid="generic_scene_srv" />
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <!-- Actions to call readers -->
+            <service uid="open_image_act" type="sight::module::ui::action" />
+            <service uid="open_mesh_act" type="sight::module::ui::action" />
+            <service uid="open_texture_act" type="sight::module::ui::action" />
+
+            <!-- Set the view in full screen -->
+            <service uid="fullscreen_act" type="sight::module::ui::viz::screen_selector">
+                <config mode="select" />
+            </service>
+
+            <!-- Set the view in windowed  -->
+            <service uid="windowed_act" type="sight::module::ui::action">
+                <state visible="false" />
+            </service>
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <!-- Image displayed in the scene -->
+            <service uid="image_reader_srv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="image" />
+                <type mode="reader" />
+            </service>
+
+            <!-- Mesh reader -->
+            <service uid="mesh_reader_srv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="mesh" />
+                <type mode="reader" />
+            </service>
+
+            <!-- texture reader -->
+            <service uid="texture_reader_srv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="texture" />
+                <type mode="reader" />
+            </service>
+
+            <!--
+                Generic editor representing a simple button with an icon.
+                The button can be checkable. In this case it can have a second icon.
+                - It emits a signal "clicked" when it is clicked.
+                - It emits a signal "toggled" when it is checked/unchecked.
+
+                Here, this editor is used to show or hide the image. It is connected to the image adaptor.
+            -->
+            <service uid="show_negato_srv" type="sight::module::ui::qt::com::signal_button">
+                <config>
+                    <checkable>true</checkable>
+                    <icon>sight::module::ui::icons/cross.svg</icon>
+                    <icon2>sight::module::ui::icons/layers.svg</icon2>
+                    <icon_width>40</icon_width>
+                    <icon_height>24</icon_height>
+                    <checked>true</checked>
+                </config>
+            </service>
+
+            <!-- Editor representing a slider to navigate into image slices -->
+            <service uid="slider_index_editor_srv" type="sight::module::ui::qt::image::slice_index_position_editor" auto_connect="true">
+                <inout key="image" uid="image" />
+                <config orientation="axial" label="index" display_axis_selector="true" display_step_buttons="true" />
+            </service>
+
+            <service uid="snapshot_srv" type="sight::module::ui::qt::com::signal_button">
+                <config>
+                    <checkable>false</checkable>
+                    <icon>sight::module::ui::icons/frame.svg</icon>
+                </config>
+            </service>
+
+            <!-- Write the snapshot image -->
+            <service uid="image_writer_srv" type="sight::module::io::bitmap::writer">
+                <in key="data" uid="snapshot" />
+                <dialog policy="always" />
+                <backends enable="all" mode="best" />
+            </service>
+
+            <service uid="tfm_srv" type="sight::module::ui::qt::image::transfer_function">
+                <in key="image" uid="image" />
+                <inout key="tf" uid="tf" />
+            </service>
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <!-- Connects readers to status bar service -->
+            <connect>
+                <signal>mesh_reader_srv/job_created</signal>
+                <signal>image_reader_srv/job_created</signal>
+                <signal>texture_reader_srv/job_created</signal>
+                <slot>progress_bar_view/show_job</slot>
+            </connect>
+
+            <connect>
+                <signal>snapshot_srv/clicked</signal>
+                <slot>pdf_writer/update</slot>
+                <slot>image_writer_srv/update</slot>
+            </connect>
+
+            <!--
+                Connection for 3D image slice:
+                Connect the button (show_negato_srv) signal "toggled" to the negato adaptor (negato3D)
+                slot "update_visibility", this signals/slots contains a boolean.
+                The image slices will be show or hide when the button is checked/unchecked.
+            -->
+            <connect>
+                <signal>show_negato_srv/toggled</signal>
+                <slot>negato_adp/update_visibility</slot>
+            </connect>
+
+            <connect>
+                <signal>open_image_act/updated</signal>
+                <signal>open_mesh_act/updated</signal>
+                <signal>open_texture_act/updated</signal>
+                <signal>fullscreen_act/updated</signal>
+                <signal>windowed_act/updated</signal>
+                <slot>speed_dial_srv/fold</slot>
+            </connect>
+
+            <!-- Manage full screen -->
+            <connect>
+                <signal>fullscreen_act/screen_selected</signal>
+                <slot>generic_scene_srv/enable_fullscreen</slot>
+            </connect>
+
+            <connect>
+                <signal>generic_scene_srv/fullscreen_set</signal>
+                <slot>windowed_act/show</slot>
+                <slot>fullscreen_act/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>windowed_act/clicked</signal>
+                <slot>generic_scene_srv/disable_fullscreen</slot>
+            </connect>
+
+            <connect>
+                <signal>generic_scene_srv/fullscreen_unset</signal>
+                <slot>windowed_act/hide</slot>
+                <slot>fullscreen_act/show</slot>
+            </connect>
+
+            <connect>
+                <signal>open_image_act/clicked</signal>
+                <slot>image_reader_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>open_mesh_act/clicked</signal>
+                <slot>mesh_reader_srv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>open_texture_act/clicked</signal>
+                <slot>texture_reader_srv/update</slot>
+            </connect>
+        </config>
+    </extension>
+</plugin>

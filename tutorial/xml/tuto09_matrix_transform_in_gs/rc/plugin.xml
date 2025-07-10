@@ -1,0 +1,247 @@
+<!--
+        This tutorial explains how to perform matrix transformation using the generic scene.
+
+        To use this application, you need to load a mesh.
+-->
+<plugin id="tuto09_matrix_transform_in_gs">
+    <requirement id="sight::module::ui" />
+    <requirement id="sight::module::viz::scene3d" />
+    <requirement id="sight::module::ui::qt" />
+    <requirement id="sight::module::service" />
+
+    <extension implements="sight::app::extension::config">
+        <id>tuto09_matrix_transform_in_gs</id>
+        <config>
+            <!-- ******************************* Objects declaration ****************************** -->
+
+            <object uid="matrix_a" type="sight::data::matrix4">
+                <matrix>
+                    <![CDATA[
+                        1 0 0 2
+                        0 1 0 0
+                        0 0 1 0
+                        0 0 0 1
+                    ]]>
+                </matrix>
+            </object>
+
+            <object uid="matrix_b" type="sight::data::matrix4">
+                <matrix>
+                    <![CDATA[
+                        1 0 0 4
+                        0 1 0 0
+                        0 0 1 0
+                        0 0 0 1
+                    ]]>
+                </matrix>
+            </object>
+
+            <object uid="matrix_c" type="sight::data::matrix4">
+                <matrix>
+                    <![CDATA[
+                        1 0 0 0
+                        0 1 0 0
+                        0 0 1 2
+                        0 0 0 1
+                    ]]>
+                </matrix>
+            </object>
+
+            <object uid="matrix_d" type="sight::data::matrix4">
+                <matrix>
+                    <![CDATA[
+                        0.75 0        0        0
+                        0        0.75 0        0
+                        0        0        0.75 0
+                        0        0        0    1
+                    ]]>
+                </matrix>
+            </object>
+
+            <object uid="matrix_e" type="sight::data::matrix4" />
+
+            <object uid="rotation1" type="sight::data::matrix4" />
+            <object uid="rotation2" type="sight::data::matrix4" />
+            <object uid="rotation3" type="sight::data::matrix4" />
+
+            <object uid="mesh" type="sight::data::mesh" />
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="main_frame" type="sight::module::ui::frame">
+                <gui>
+                    <frame>
+                        <name>Tutorial 9: Matrix transformation and concatenation</name>
+                        <icon>tuto09_matrix_transform_in_gs/tuto.ico</icon>
+                        <min_size width="800" height="600" />
+                    </frame>
+                    <menubar />
+                </gui>
+                <registry>
+                    <menubar sid="menu_bar_view" />
+                    <view sid="main_view" />
+                </registry>
+            </service>
+
+            <service uid="menu_bar_view" type="sight::module::ui::menubar">
+                <gui>
+                    <layout>
+                        <menu name="File" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menu_file_view" />
+                </registry>
+            </service>
+
+            <service uid="menu_file_view" type="sight::module::ui::menu">
+                <gui>
+                    <layout>
+                        <menu_item name="Open mesh" shortcut="Ctrl+O" />
+                        <separator />
+                        <menu_item name="Quit" shortcut="Ctrl+Q" special_action="QUIT" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu_item sid="open_mesh_act" />
+                    <menu_item sid="quit_act" />
+                </registry>
+            </service>
+
+            <service uid="main_view" type="sight::module::ui::view">
+                <gui>
+                    <layout type="sight::ui::layout::line">
+                        <orientation value="vertical" />
+                        <view proportion="1" />
+                        <view proportion="0" min_height="30" resizable="false" background_color="#3E4453" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="generic_scene_srv" />
+                    <view sid="matrix_editor_srv" />
+                </registry>
+            </service>
+
+            <!-- *************************** Begin generic scene *************************** -->
+
+            <!--
+                Generic scene:
+                This scene shows four times the same mesh but with a different matrix. It manages multiples transformation matrices.
+            -->
+            <service uid="generic_scene_srv" type="sight::viz::scene3d::render">
+                <scene>
+                    <background top_color="#36393E" bottom_color="#36393E" />
+
+                    <layer id="default">
+                        <adaptor uid="trackball_interactor_adp" />
+                        <adaptor uid="mesh0_adp" />
+                        <adaptor uid="transform1_adp" />
+                        <adaptor uid="mesh1_adp" />
+                        <adaptor uid="transform2_adp" />
+                        <adaptor uid="mesh2_adp" />
+                        <adaptor uid="transform3_adp" />
+                        <adaptor uid="mesh3_adp" />
+                    </layer>
+                </scene>
+            </service>
+
+            <service uid="trackball_interactor_adp" type="sight::module::viz::scene3d::adaptor::trackball_camera">
+                <config priority="0" />
+            </service>
+
+            <service uid="mesh0_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
+                <in key="mesh" uid="mesh" />
+            </service>
+
+            <service uid="transform1_adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
+                <inout key="transform" uid="rotation1" />
+                <config transform="rotation_transform1" />
+            </service>
+
+            <service uid="mesh1_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
+                <in key="mesh" uid="mesh" />
+                <config transform="rotation_transform1" />
+            </service>
+
+            <service uid="transform2_adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
+                <inout key="transform" uid="rotation2" />
+                <config transform="rotation_transform2" />
+            </service>
+
+            <service uid="mesh2_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
+                <in key="mesh" uid="mesh" />
+                <config transform="rotation_transform2" />
+            </service>
+
+            <service uid="transform3_adp" type="sight::module::viz::scene3d::adaptor::transform" auto_connect="true">
+                <inout key="transform" uid="rotation3" />
+                <config transform="rotation_transform3" />
+            </service>
+
+            <service uid="mesh3_adp" type="sight::module::viz::scene3d::adaptor::mesh" auto_connect="true">
+                <in key="mesh" uid="mesh" />
+                <config transform="rotation_transform3" />
+            </service>
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="open_mesh_act" type="sight::module::ui::action" />
+
+            <service uid="quit_act" type="sight::module::ui::quit" />
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="matrix_editor_srv" type="sight::module::ui::qt::viz::transform_editor">
+                <inout key="matrix" uid="matrix_e" />
+                <translation enabled="false" />
+                <rotation enabled="y" min="0" max="360" />
+            </service>
+
+            <service uid="mesh_reader_srv" type="sight::module::ui::io::selector">
+                <inout key="data" uid="mesh" />
+                <type mode="reader" />
+            </service>
+
+            <service uid="rotation1_srv" type="sight::module::geometry::concatenate_matrices">
+                <in group="matrix">
+                    <key uid="matrix_e" auto_connect="true" />
+                    <key uid="matrix_a" />
+                    <key uid="matrix_d" />
+                </in>
+                <inout key="output" uid="rotation1" />
+            </service>
+
+            <service uid="rotation2_srv" type="sight::module::geometry::concatenate_matrices">
+                <in group="matrix">
+                    <key uid="matrix_b" />
+                    <key uid="matrix_e" auto_connect="true" />
+                    <key uid="matrix_e" />
+                    <key uid="matrix_e" />
+                    <key uid="matrix_d" />
+                    <key uid="matrix_d" />
+                </in>
+                <inout key="output" uid="rotation2" />
+            </service>
+
+            <service uid="rotation3_srv" type="sight::module::geometry::concatenate_matrices">
+                <in group="matrix">
+                    <key uid="matrix_c" />
+                    <key uid="matrix_e" auto_connect="true" />
+                    <key uid="matrix_d" />
+                    <key uid="matrix_d" />
+                    <key uid="matrix_d" />
+                </in>
+                <inout key="output" uid="rotation3" />
+            </service>
+
+            <connect>
+                <signal>open_mesh_act/clicked</signal>
+                <slot>mesh_reader_srv/update</slot>
+            </connect>
+
+            <update uid="rotation1_srv" />
+            <update uid="rotation2_srv" />
+            <update uid="rotation3_srv" />
+        </config>
+    </extension>
+</plugin>

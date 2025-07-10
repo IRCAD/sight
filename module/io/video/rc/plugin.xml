@@ -1,0 +1,31 @@
+<plugin id="sight::module::io::video" library="true">
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::grabber</type>
+        <service>sight::module::io::video::frame_grabber</service>
+        <object key="camera">sight::data::camera</object>
+        <object key="frame_tl">sight::data::frame_tl</object>
+        <desc>OpenCV player</desc>
+        <tags>FILE,DEVICE,STREAM</tags>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::writer</type>
+        <service>sight::module::io::video::frame_writer</service>
+        <object>sight::data::frame_tl</object>
+        <desc>This service allows to save the timeline frames in files in a folder.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::grabber</type>
+        <service>sight::module::io::video::grabber_proxy</service>
+        <object>sight::data::frame_tl</object>
+        <desc>This service allows you to select a frame grabber implementation at runtime.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
+        <type>sight::io::service::writer</type>
+        <service>sight::module::io::video::video_writer</service>
+        <object>sight::data::frame_tl</object>
+        <desc>This service allows to save the timeline frames in a video file.</desc>
+    </extension>
+</plugin>

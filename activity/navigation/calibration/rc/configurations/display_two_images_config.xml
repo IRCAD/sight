@@ -1,0 +1,95 @@
+<extension implements="sight::app::extension::config">
+    <id>displayTwoImagesConfig</id>
+    <parameters>
+        <object uid="imageId1" type="sight::data::image" />
+        <object uid="imageId2" type="sight::data::image" />
+        <object uid="pointListId1" type="sight::data::point_list" />
+        <object uid="pointListId2" type="sight::data::point_list" />
+
+        <channel name="CLOSE_CONFIG" optional="true" />
+    </parameters>
+    <config>
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainFrame" type="sight::module::ui::frame">
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>Display calibration images</name>
+                    <min_size width="900" height="600" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="mainView" />
+            </registry>
+        </service>
+
+        <service uid="mainView" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view />
+                    <view />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="genericScene1Srv" />
+                <view sid="genericScene2Srv" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Begin Generic scene ******************************* -->
+
+        <service uid="genericScene1Srv" type="sight::viz::scene3d::render">
+            <scene renderMode="auto">
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="video">
+                    <adaptor uid="video1Adp" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
+            <in key="image" uid="${imageId1}" />
+            <in key="pointList" uid="${pointListId1}" />
+            <config radius="1.0" color="#00FFFF" fixedSize="true" texture_name="circle.dds" />
+        </service>
+
+        <!-- ******************************* Begin Generic scene ******************************* -->
+
+        <service uid="genericScene2Srv" type="sight::viz::scene3d::render">
+            <scene renderMode="auto">
+                <background topColor="#000000" bottomColor="#000000" />
+
+                <layer id="video">
+                    <adaptor uid="video2Adp" />
+                </layer>
+            </scene>
+        </service>
+
+        <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::video" auto_connect="true">
+            <in key="image" uid="${imageId2}" />
+            <in key="pointList" uid="${pointListId2}" />
+            <config radius="1.0" color="#00FFFF" fixedSize="true" texture_name="circle.dds" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect channel="${CLOSE_CONFIG}">
+            <signal>mainFrame/closed</signal>
+        </connect>
+
+        <update>
+            <service uid="update_at_start" />
+            <sequence uid="update_at_start">
+                <service uid="video1Adp" slot="update_image" />
+                <service uid="video1Adp" slot="update_pl" />
+                <service uid="video2Adp" slot="update_image" />
+                <service uid="video2Adp" slot="update_pl" />
+            </sequence>
+        </update>
+    </config>
+</extension>

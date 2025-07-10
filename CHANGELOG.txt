@@ -606,7 +606,7 @@
  * General :
   * Refactoring of fwService, now an IService work on a fwData::Object (instead of fwTools::Object)
   * Disabled Qt keyword (avoid conflicts with boost signals and foreach)
-  * Continue adding array lock ( or image/mesh lock helper ) in different libs/bundles
+  * Continue adding array lock ( or image/mesh lock helper ) in different lib/bundles
   * Fixed AppConfig (adaptField if cfg element value is not empty)
   * Updated temporary folder management
   * Refactoring of AppConfigManager to be more easily extended

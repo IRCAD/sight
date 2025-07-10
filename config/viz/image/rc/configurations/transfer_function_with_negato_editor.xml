@@ -1,0 +1,101 @@
+<!--
+Example:
+
+<service uid="..." type="sight::app::config_launcher">
+    <properties config="TransferFunctionWithNegatoEditor" />
+    <inout group="object">
+        <key name="image" uid="..." />
+        <key name="histogram" uid="..." />
+        <key name="transferFunctionOutput" uid="..." />
+    </inout>
+    <parameter replace="WID_PARENT" by="..." />
+</service>
+-->
+<extension implements="sight::app::extension::config">
+    <id>TransferFunctionWithNegatoEditor</id>
+    <parameters>
+        <object uid="image" type="sight::data::image_series" />
+        <object uid="histogram" type="sight::data::histogram" />
+
+        <param name="WID_PARENT" />
+        <param name="TFPath" default="sight::module::ui::qt/tf" />
+        <param name="transferFunctionOutput" />
+    </parameters>
+    <desc>This configuration displays a tab layout containing a negato and a transfer function editor</desc>
+    <config>
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="TFSet" type="sight::data::map" deferred="true" />
+        <object uid="${transferFunctionOutput}" type="sight::data::transfer_function" deferred="true" />
+
+        <service uid="tfEditor" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="vertical" />
+                    <view proportion="0" minHeight="30" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="tfm" />
+                <view sid="tfmTab" />
+            </registry>
+        </service>
+
+        <!-- This manager adds/removes a field (m_transferFunctionCompositeId) on Image (image) -->
+        <service uid="fieldMgr" type="sight::module::data::manage">
+            <inout key="object" uid="TFSet" />
+            <inout key="container" uid="${image}" />
+            <field>m_transferFunctionCompositeId</field>
+        </service>
+
+        <service uid="tfm" type="sight::module::ui::qt::image::TransferFunctionEditor">
+            <inout key="tfPool" uid="TFSet" auto_connect="true" />
+            <in key="currentTF" uid="${transferFunctionOutput}" />
+            <out key="tf" uid="${transferFunctionOutput}" />
+            <config useDefaultPath="false">
+                <path>${TFPath}</path>
+            </config>
+        </service>
+
+        <service uid="tfmTab" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::tab">
+                    <view caption="TF-Negato" />
+                    <view caption="TF-Editor" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="negatoView" />
+                <view wid="tfScene" />
+            </registry>
+        </service>
+
+        <service uid="cfgNegato" type="sight::app::config_launcher">
+            <properties config="2DNegatoWithTF" />
+            <inout group="object">
+                <key name="image" uid="${image}" />
+                <key name="transferFunctionDeferred" uid="${transferFunctionOutput}" optional="true" />
+            </inout>
+            <parameter replace="WID_PARENT" by="negatoView" />
+        </service>
+
+        <service uid="tfWidget" type="sight::app::config_launcher">
+            <properties config="TransferFunctionWidget" />
+            <inout group="object">
+                <key name="image" uid="${image}" />
+                <key name="histogram" uid="${histogram}" />
+                <key name="transferFunction" uid="${transferFunctionOutput}" />
+            </inout>
+            <parameter replace="WID_PARENT" by="tfScene" />
+        </service>
+
+        <connect>
+            <signal>${image}/modified</signal>
+            <slot>fieldMgr/add_or_swap</slot>
+        </connect>
+
+        <update uid="fieldMgr" />
+    </config>
+</extension>

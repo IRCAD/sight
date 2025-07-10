@@ -1,0 +1,54 @@
+<extension implements="sight::app::extension::config">
+    <id>sight::navigation::calibration::chessboard_settings</id>
+    <parameters>
+        <object uid="board_properties" type="sight::data::map" />
+        <channel name="CLOSE_CONFIG" optional="true" />
+    </parameters>
+    <config>
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="main_frame" type="sight::module::ui::frame">
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>Chessboard settings</name>
+                    <min_size width="400" />
+                    <style mode="MODAL" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="main_view" />
+            </registry>
+        </service>
+
+        <service uid="main_view" type="sight::module::ui::view">
+            <gui>
+                <layout type="sight::ui::layout::line">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="chessboard_settings" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Services ***************************************** -->
+
+        <service uid="chessboard_settings" type="sight::module::ui::qt::settings">
+            <inout key="map" uid="${board_properties}" />
+            <ui>
+                <item name="Chessboard width" key="board_width" widget="spin" min="3" max="50" />
+                <item name="Chessboard height" key="board_height" widget="spin" min="3" max="50" />
+                <item name="Chessboard square size (mm)" key="board_square_size" widget="spin" min="5" max="100" />
+                <item name="Input scaling for chessboard detection" key="board_scale" widget="spin" min="0." max="10." />
+            </ui>
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect channel="${CLOSE_CONFIG}">
+            <signal>main_frame/closed</signal>
+        </connect>
+    </config>
+</extension>
