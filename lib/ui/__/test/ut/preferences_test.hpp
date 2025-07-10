@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,6 +41,7 @@ CPPUNIT_TEST(delimeter_test);
 CPPUNIT_TEST(parsed_get_test);
 CPPUNIT_TEST(encrypted_test);
 CPPUNIT_TEST(forced_encryption_test);
+CPPUNIT_TEST(corrupted_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -55,6 +56,7 @@ public:
     static void parsed_get_test();
     void encrypted_test();
     void forced_encryption_test();
+    void corrupted_test();
 
 private:
 

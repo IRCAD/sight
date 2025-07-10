@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -286,10 +286,12 @@ preferences::preferences()
                 return;
             }
 
+            std::filesystem::path preferences_filepath;
+
             try
             {
                 // Check if we can open the preferences file
-                const auto& preferences_filepath = compute_preferences_filepath();
+                preferences_filepath = compute_preferences_filepath();
                 if(!std::filesystem::exists(preferences_filepath))
                 {
                     // Create an empty preferences
@@ -397,6 +399,20 @@ preferences::preferences()
 
                 // Reset the retry counter if the password was correct
                 password_retry = 0;
+            }
+            catch(const boost::property_tree::json_parser::json_parser_error& e)
+            {
+                // This means that the preferences file is corrupted or not a valid JSON file
+                // We ignore the file and create a new one
+
+                SIGHT_ERROR(
+                    "The preferences file `" << preferences_filepath.string()
+                    << "` will be reset because it is corrupted or is not a valid JSON file: " << e.what()
+                );
+
+                s_preferences->clear();
+                s_is_preferences_modified = true;
+                s_is_enabled              = true;
             }
             catch(const io::zip::exception::bad_password& e)
             {

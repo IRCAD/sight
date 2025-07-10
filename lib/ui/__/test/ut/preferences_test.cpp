@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2023 IRCAD France
+ * Copyright (C) 2016-2025 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,6 +58,11 @@ void preferences_test::setUp()
     // Compute the expected preferences file path
     m_preferences_path = core::tools::os::get_user_config_dir(profile_name) / "preferences.json";
     m_encrypted_path   = core::tools::os::get_user_config_dir(profile_name) / "preferences.sight";
+
+    // Reset the password and disable encryption
+    ui::preferences::set_password_policy(core::crypto::password_keeper::password_policy::never);
+    ui::preferences::set_encryption_policy(core::crypto::password_keeper::encryption_policy::password);
+    ui::preferences::set_password("");
 }
 
 //------------------------------------------------------------------------------
@@ -65,7 +70,7 @@ void preferences_test::setUp()
 void preferences_test::tearDown()
 {
     ui::preferences::set_enabled(false);
-    std::filesystem::remove_all(m_preferences_path.parent_path());
+    std::filesystem::remove_all(core::tools::os::get_user_config_dir(core::runtime::get_current_profile()->name()));
 }
 
 //------------------------------------------------------------------------------
@@ -78,7 +83,7 @@ void preferences_test::runtime_test()
             ui::preferences preferences;
 
             // This mark the preference as modified so it will be saved
-            preferences.clear();
+            sight::ui::preferences::clear();
         );
     }
 
@@ -98,20 +103,20 @@ void preferences_test::simple_test()
         ui::preferences preferences;
 
         // Check get value from an empty preferences file
+        [[maybe_unused]] std::string value;
+
         CPPUNIT_ASSERT_THROW(
-            auto p = preferences.get<std::string>(root_key),
+            value = preferences.get<std::string>(root_key),
             boost::property_tree::ptree_error
         );
-        CPPUNIT_ASSERT_NO_THROW(std::string p = preferences.get(root_key, string_value));
-
-        const auto& same_value = preferences.get(root_key, string_value);
-        CPPUNIT_ASSERT_EQUAL(string_value, same_value);
+        CPPUNIT_ASSERT_NO_THROW(value = preferences.get(root_key, string_value));
+        CPPUNIT_ASSERT_EQUAL(string_value, value);
 
         // Check set value
         CPPUNIT_ASSERT_NO_THROW(
             preferences.put(string_key, string_value);
         );
-        CPPUNIT_ASSERT_NO_THROW(auto p = preferences.get<std::string>(string_key));
+        CPPUNIT_ASSERT_NO_THROW(value = preferences.get<std::string>(string_key));
         const auto& set_value = preferences.get<std::string>(string_key);
         CPPUNIT_ASSERT_EQUAL(string_value, set_value);
     }
@@ -205,21 +210,21 @@ void preferences_test::encrypted_test()
     {
         ui::preferences preferences;
 
+        [[maybe_unused]] std::string value;
+
         // Check get value from an empty preferences file
         CPPUNIT_ASSERT_THROW(
-            auto p = preferences.get<std::string>(root_key),
+            value = preferences.get<std::string>(root_key),
             boost::property_tree::ptree_error
         );
-        CPPUNIT_ASSERT_NO_THROW(std::string p = preferences.get(root_key, string_value));
-
-        const auto& same_value = preferences.get(root_key, string_value);
-        CPPUNIT_ASSERT_EQUAL(string_value, same_value);
+        CPPUNIT_ASSERT_NO_THROW(value = preferences.get(root_key, string_value));
+        CPPUNIT_ASSERT_EQUAL(string_value, value);
 
         // Check set value
         CPPUNIT_ASSERT_NO_THROW(
             preferences.put(string_key, string_value);
         );
-        CPPUNIT_ASSERT_NO_THROW(auto p = preferences.get<std::string>(string_key));
+        CPPUNIT_ASSERT_NO_THROW(value = preferences.get<std::string>(string_key));
         const auto& set_value = preferences.get<std::string>(string_key);
         CPPUNIT_ASSERT_EQUAL(string_value, set_value);
     }
@@ -281,9 +286,9 @@ void preferences_test::forced_encryption_test()
         );
 
         // check the value
-        CPPUNIT_ASSERT_NO_THROW(auto p = preferences.get<std::string>(string_key));
-        const auto& set_value = preferences.get<std::string>(string_key);
-        CPPUNIT_ASSERT_EQUAL(string_value, set_value);
+        [[maybe_unused]] std::string value;
+        CPPUNIT_ASSERT_NO_THROW(value = preferences.get<std::string>(string_key));
+        CPPUNIT_ASSERT_EQUAL(string_value, value);
     }
 
     // The preferences file should have been saved but as a .sight file
@@ -299,9 +304,70 @@ void preferences_test::forced_encryption_test()
         ui::preferences preferences;
 
         // check the value
-        CPPUNIT_ASSERT_NO_THROW(auto p = preferences.get<std::string>(string_key));
-        const auto& set_value = preferences.get<std::string>(string_key);
-        CPPUNIT_ASSERT_EQUAL(string_value, set_value);
+        [[maybe_unused]] std::string value;
+        CPPUNIT_ASSERT_NO_THROW(value = preferences.get<std::string>(string_key));
+        CPPUNIT_ASSERT_EQUAL(string_value, value);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void preferences_test::corrupted_test()
+{
+    const std::string dummy = "dummy";
+    const std::string empty = "empty";
+
+    // Create a dummy preferences file
+    {
+        ui::preferences preferences;
+        sight::ui::preferences::clear();
+        preferences.put(dummy, dummy);
+    }
+
+    // Reload it
+    {
+        ui::preferences preferences;
+        const auto& value = preferences.get<std::string>(dummy);
+        CPPUNIT_ASSERT_EQUAL(dummy, value);
+    }
+
+    // Reset the preferences to force a reload and corrupt the file
+    {
+        // Force a reload
+        ui::preferences::set_enabled(false);
+        ui::preferences::set_enabled(true);
+
+        std::ofstream ofs(m_preferences_path, std::ios::out | std::ios::trunc);
+        CPPUNIT_ASSERT(ofs.is_open());
+        ofs << "corrupted content";
+        ofs.close();
+    }
+
+    // Reload it. It should fail to retrieve the "dummy" key, but should not throw.
+    // The default "empty" value should be returned instead.
+    try
+    {
+        ui::preferences preferences;
+        const auto& value = preferences.get_optional<std::string>(dummy).value_or(empty);
+        CPPUNIT_ASSERT_EQUAL(empty, value);
+
+        preferences.put(dummy, empty);
+    }
+    catch(...)
+    {
+        // If we reach this point, it means the preferences were not recreated correctly
+        CPPUNIT_FAIL("Preferences should have been loaded with a default value after corruption.");
+    }
+
+    // Check that the "empty" value is still there
+    {
+        // Force a reload
+        ui::preferences::set_enabled(false);
+        ui::preferences::set_enabled(true);
+
+        ui::preferences preferences;
+        const auto& value = preferences.get<std::string>(dummy);
+        CPPUNIT_ASSERT_EQUAL(empty, value);
     }
 }
 
