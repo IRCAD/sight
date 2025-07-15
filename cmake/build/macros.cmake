@@ -1244,6 +1244,7 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
         # Compute all dependencies to find the imported components we need to copy
         set(IMPORTED_RC_DIRS "")
         set(IMPORTED_LIBS "")
+        set(IMPORTED_DEPENDS "")
 
         find_target_dependencies(${APP} "${SIGHT_COMPONENTS};${SIGHT_IMPORTED_COMPONENTS}" ALL_DEPENDS)
 
