@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,10 +26,6 @@
 #include <core/os/temp_path.hpp>
 #include <core/spy_log.hpp>
 #include <core/tools/uuid.hpp>
-
-#include <boost/dll.hpp>
-#include <boost/log/core.hpp>
-#include <boost/process.hpp>
 
 #include <openssl/err.h>
 #include <openssl/evp.h>

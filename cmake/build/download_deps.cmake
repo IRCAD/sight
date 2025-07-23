@@ -40,7 +40,7 @@ if(WIN32)
     endif()
 
     if(NOT SIGHT_DEPS_PACKAGE)
-        set(SIGHT_DEPS_PACKAGE "${SIGHT_DEPS_BASENAME}-5ee7af26")
+        set(SIGHT_DEPS_PACKAGE "${SIGHT_DEPS_BASENAME}-4c1baf18")
     endif()
 
     if(NOT SIGHT_DEPS_ARCHIVE)
@@ -48,11 +48,11 @@ if(WIN32)
     endif()
 
     if(NOT SIGHT_DEPS_PUBLIC_URL)
-        set(SIGHT_DEPS_PUBLIC_URL "https://cloud.ircad.fr/s/S9NAW9SaJcdBKqH/download")
+        set(SIGHT_DEPS_PUBLIC_URL "https://cloud.ircad.fr/s/6j2tDKztBQcJ8BY/download")
     endif()
 
     if(NOT SIGHT_DEPS_ARCHIVE_HASH)
-        set(SIGHT_DEPS_ARCHIVE_HASH "3326542AE8FE161FA46BC9CEB5ACE00E59514AAD25A2AE2147C1EF068F19B6B0")
+        set(SIGHT_DEPS_ARCHIVE_HASH "A5A647DD0571935B7C2FBD933EF995EC3D6C4172D5A1BA9EBFFCA57568BAACF7")
     endif()
 
     # By default, we avoid to download binary packages inside the build tree on windows
