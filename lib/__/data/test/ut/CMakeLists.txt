@@ -4,3 +4,5 @@ target_link_libraries(data_ut PUBLIC core utest_data data)
 
 find_package(GDCM QUIET REQUIRED COMPONENTS gdcmCommon gdcmMSFF)
 target_link_libraries(data_ut PRIVATE gdcmCommon gdcmMSFF)
+
+add_dependencies(data_ut module_service module_data)

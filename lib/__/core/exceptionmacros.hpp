@@ -65,9 +65,9 @@
         BOOST_THROW_EXCEPTION(excep)
 
 # define FWCORE_EXCEPT_RAISE_EXCEPTION_MSG(excep_class, msg) \
-        FWCORE_EXCEPTION_PREPARE_MSG(_fwcore_exception_msgstream, msg); \
+        FWCORE_EXCEPTION_PREPARE_MSG(exception_msgstream, msg); \
         FWCORE_EXCEPT_RAISE_EXCEPTION( \
-            excep_class(_fwcore_exception_msgstream.str()) \
+            excep_class(exception_msgstream.str()) \
         )
 
 # define FWCORE_EXCEPT_RAISE(msg) \

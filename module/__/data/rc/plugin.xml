@@ -1,4 +1,6 @@
 <plugin id="sight::module::data" library="true">
+    <extension-point id="sight::data::extension::config" schema="config.xsd" />
+
     <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::data::copy</service>

@@ -35,6 +35,7 @@
 #include <core/ptree.hpp>
 #include <core/runtime/runtime.hpp>
 
+#include <data/extension/config.hpp>
 #include <data/object.hpp>
 
 #include <array>
@@ -214,9 +215,20 @@ void config::parse_object(
             service::base::sptr srv                 = srv_factory->create(srv_impl);
             service::object_parser::sptr obj_parser = std::dynamic_pointer_cast<service::object_parser>(srv);
 
-            // in this case, we try with the xml attributes if the configuration is given
-            // on the same line than the definition, for instance for the generic parser with value=""
-            obj_parser->parse(config, obj, _objects);
+            // If we have an extension config, use it to parse the object
+            if(const auto data_config_id = config.get_optional<std::string>("<xmlattr>.config"); data_config_id)
+            {
+                const auto data_config = data::extension::config::get()->get_data_config(
+                    *data_config_id,
+                    type.second ? type.first : ""
+                );
+
+                obj_parser->parse(data_config, obj, _objects);
+            }
+            else
+            {
+                obj_parser->parse(config, obj, _objects);
+            }
         }
 
         // If there is no uid defined in the config, we use the one generated from get_id()

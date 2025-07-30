@@ -39,8 +39,14 @@
 #include <core/time_stamp.hpp>
 
 #include <data/boolean.hpp>
+#include <data/dvec3.hpp>
+#include <data/extension/config.hpp>
 #include <data/image.hpp>
+#include <data/integer.hpp>
+#include <data/ivec3.hpp>
+#include <data/matrix4.hpp>
 #include <data/string.hpp>
+#include <data/transfer_function.hpp>
 
 #include <utest/wait.hpp>
 
@@ -72,6 +78,7 @@ void config_test::setUp()
 
     core::runtime::add_modules(location);
     core::runtime::load_module("sight::module::app");
+    core::runtime::load_module("sight::module::data");
     core::runtime::load_module("config_test");
 
     auto app_config = app::extension::config::get();
@@ -81,6 +88,10 @@ void config_test::setUp()
     auto srv_config = sight::service::extension::config::get_default();
     srv_config->clear_registry();
     srv_config->parse_plugin_infos();
+
+    auto data_config = sight::data::extension::config::get();
+    data_config->clear_registry();
+    data_config->parse_plugin_infos();
 }
 
 //------------------------------------------------------------------------------
@@ -151,8 +162,8 @@ void config_test::parameters_config_test()
     app::field_adaptor_t replace_fields;
     replace_fields["TEST_IMAGE"] = "objectUUID";
 
-    std::vector<std::string> all_configs = current_app_config->get_all_configs();
-    auto it                              = std::find(all_configs.begin(), all_configs.end(), config_id);
+    const auto all_configs = current_app_config->get_all_configs();
+    const auto it          = std::ranges::find(all_configs, config_id);
     CPPUNIT_ASSERT(it != all_configs.end());
 
     core::runtime::config_t config_adapted = current_app_config->get_adapted_template_config(
@@ -1330,9 +1341,11 @@ void config_test::key_group_test()
 void config_test::concurrent_access_to_config_test()
 {
     std::vector<std::future<void> > futures;
+    futures.reserve(20);
+
     for(unsigned int i = 0 ; i < 20 ; ++i)
     {
-        futures.push_back(std::async(std::launch::async, parameters_config_test));
+        futures.emplace_back(std::async(std::launch::async, parameters_config_test));
     }
 
     for(auto& future : futures)
@@ -1800,6 +1813,114 @@ void config_test::properties_map_element_parameter_test()
 
         CPPUNIT_ASSERT_EQUAL(std::string("yeah"), *srv->m_string_prop);
     }
+}
+
+//------------------------------------------------------------------------------
+
+void config_test::map_config_test()
+{
+    m_app_config_mgr = app::ut::launch_app_config_mgr("map_config_test", true);
+
+    core::object::sptr object;
+
+    for(std::size_t i = 0 ; object == nullptr && i < 200 ; ++i)
+    {
+        object = core::id::get_object("map_config_test", i, "map");
+    }
+
+    CPPUNIT_ASSERT(object != nullptr);
+
+    auto map = std::dynamic_pointer_cast<sight::data::map>(object);
+    CPPUNIT_ASSERT(map != nullptr);
+
+    for(const auto& item : *map)
+    {
+        if(item.first == "integer")
+        {
+            auto integer = std::dynamic_pointer_cast<sight::data::integer>(item.second);
+            CPPUNIT_ASSERT(integer != nullptr);
+            CPPUNIT_ASSERT_EQUAL(std::int64_t(1), integer->value());
+        }
+        else if(item.first == "string")
+        {
+            auto string = std::dynamic_pointer_cast<sight::data::string>(item.second);
+            CPPUNIT_ASSERT(string != nullptr);
+            CPPUNIT_ASSERT_EQUAL(std::string("abc"), string->value());
+        }
+        else if(item.first == "boolean")
+        {
+            auto boolean = std::dynamic_pointer_cast<sight::data::boolean>(item.second);
+            CPPUNIT_ASSERT(boolean != nullptr);
+            CPPUNIT_ASSERT_EQUAL(true, boolean->value());
+        }
+        else if(item.first == "ivec3")
+        {
+            auto ivec3 = std::dynamic_pointer_cast<sight::data::ivec3>(item.second);
+            CPPUNIT_ASSERT(ivec3 != nullptr);
+
+            const auto& value = ivec3->value();
+            CPPUNIT_ASSERT_EQUAL(std::int64_t(0), value[0]);
+            CPPUNIT_ASSERT_EQUAL(std::int64_t(0), value[1]);
+            CPPUNIT_ASSERT_EQUAL(std::int64_t(0), value[2]);
+        }
+        else if(item.first == "dvec3")
+        {
+            auto dvec3 = std::dynamic_pointer_cast<sight::data::dvec3>(item.second);
+            CPPUNIT_ASSERT(dvec3 != nullptr);
+
+            const auto& value = dvec3->value();
+            CPPUNIT_ASSERT_EQUAL(1.0, value[0]);
+            CPPUNIT_ASSERT_EQUAL(1.0, value[1]);
+            CPPUNIT_ASSERT_EQUAL(1.0, value[2]);
+        }
+        else if(item.first == "transfer_function")
+        {
+            auto transfer_function = std::dynamic_pointer_cast<sight::data::transfer_function>(item.second);
+            CPPUNIT_ASSERT(transfer_function != nullptr);
+            CPPUNIT_ASSERT_EQUAL(std::string("CT-GreyLevel"), transfer_function->name());
+        }
+        else
+        {
+            CPPUNIT_FAIL("Unknown item in map: " + item.first);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void config_test::matrix_config_test()
+{
+    m_app_config_mgr = app::ut::launch_app_config_mgr("matrix_config_test", true);
+
+    core::object::sptr object;
+
+    for(std::size_t i = 0 ; object == nullptr && i < 200 ; ++i)
+    {
+        object = core::id::get_object("matrix_config_test", i, "matrix");
+    }
+
+    CPPUNIT_ASSERT(object != nullptr);
+
+    auto matrix = std::dynamic_pointer_cast<sight::data::matrix4>(object);
+    CPPUNIT_ASSERT(matrix != nullptr);
+
+    const auto& values = matrix->values();
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., values[0], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[1], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[2], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(5., values[3], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[4], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., values[5], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[6], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[7], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[8], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[9], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., values[10], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[11], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[12], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[13], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[14], 1e-6);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., values[15], 1e-6);
 }
 
 //------------------------------------------------------------------------------

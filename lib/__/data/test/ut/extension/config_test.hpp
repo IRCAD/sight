@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2025 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,28 +21,33 @@
 
 #pragma once
 
-#include "sight/module/data/config.hpp"
+#include <core/runtime/runtime.hpp>
 
-#include <core/runtime/plugin.hpp>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::data
+namespace sight::data::ut
 {
 
-/**
- * @brief   This class is started when the module is loaded.
- */
-struct SIGHT_MODULE_DATA_CLASS_API plugin final : public core::runtime::plugin
+class config_test : public CPPUNIT_NS::TestFixture
 {
-    /// Destructor. Do nothing.
-    SIGHT_MODULE_DATA_API ~plugin() noexcept override = default;
+private:
 
-    /**
-     * @brief Overrides start method. Object declarations.
-     */
-    SIGHT_MODULE_DATA_API void start() override;
+    CPPUNIT_TEST_SUITE(config_test);
+    CPPUNIT_TEST(basic);
+    CPPUNIT_TEST_SUITE_END();
 
-    /// Overrides stop method. Do nothing
-    SIGHT_MODULE_DATA_API void stop() noexcept override;
+public:
+
+    // interface
+    void setUp() override;
+    void tearDown() override;
+
+    static void basic();
+
+private:
+
+    std::shared_ptr<core::runtime::module> m_data_module;
+    std::shared_ptr<core::runtime::module> m_ut_config_module;
 };
 
-} // namespace sight::module::data
+} // namespace sight::data::ut

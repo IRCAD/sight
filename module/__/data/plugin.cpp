@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,24 +22,25 @@
 
 #include "plugin.hpp"
 
+#include <data/extension/config.hpp>
+
 namespace sight::module::data
 {
 
 SIGHT_REGISTER_PLUGIN("sight::module::data::plugin");
 
-plugin::~plugin() noexcept =
-    default;
-
 //------------------------------------------------------------------------------
 
 void plugin::start()
 {
+    sight::data::extension::config::get()->parse_plugin_infos();
 }
 
 //------------------------------------------------------------------------------
 
 void plugin::stop() noexcept
 {
+    sight::data::extension::config::get()->clear_registry();
 }
 
 } // namespace sight::module::data

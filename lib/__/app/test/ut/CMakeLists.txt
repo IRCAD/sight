@@ -1,5 +1,5 @@
 sight_add_target(app_ut TYPE TEST)
 
-add_dependencies(app_ut module_app)
+add_dependencies(app_ut module_app module_data)
 
 target_link_libraries(app_ut PUBLIC core utest_data app)
