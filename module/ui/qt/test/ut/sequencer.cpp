@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -37,6 +37,8 @@
 #include <ui/__/registry.hpp>
 #include <ui/qt/container/widget.hpp>
 
+#include <utest/wait.hpp>
+
 #include <QApplication>
 
 // Registers the fixture into the 'registry'
@@ -63,6 +65,8 @@ void sequencer::setUp()
 
     // Build container
     std::tie(m_container, m_child_uuid) = make_container();
+
+    m_worker = sight::core::thread::worker::make();
 }
 
 //------------------------------------------------------------------------------
@@ -71,6 +75,9 @@ void sequencer::tearDown()
 {
     // Destroy container
     destroy_container(m_container);
+
+    m_worker->stop();
+    m_worker.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -171,9 +178,63 @@ void sequencer::reset_requirements_test()
 
     // Check that the requirements are reset
     check_activity(true);
+}
 
-    // cleanup
-    CPPUNIT_ASSERT_NO_THROW(sequencer->stop().get());
+//------------------------------------------------------------------------------
+
+void sequencer::go_to_slot_test()
+{
+    // Register the service
+    sight::service::base::sptr sequencer(service::add("sight::module::ui::qt::activity::sequencer", m_child_uuid));
+    service_cleaner cleaner(sequencer);
+
+    // Set inout
+    auto activity_set = std::make_shared<data::activity_set>();
+    sequencer->set_inout(activity_set, "activitySet", true);
+
+    std::string current_activity_id;
+    {
+        auto activity_slot = sight::core::com::new_slot(
+            [&current_activity_id](data::activity::sptr _activity)
+            {
+                current_activity_id = _activity->get_activity_config_id();
+            });
+        activity_slot->set_worker(m_worker);
+        sequencer->signal<core::com::signal<void(data::activity::sptr)> >("activity_created")->connect(activity_slot);
+
+        // Build sequencer configuration
+        service::config_t sequencer_config;
+        for(int i = 0 ; i < 3 ; ++i)
+        {
+            auto& activity = sequencer_config.add("activity", "");
+            activity.put("<xmlattr>.id", "id_" + std::to_string(i));
+            activity.put("<xmlattr>.name", "name_" + std::to_string(i));
+        }
+
+        // Configure and start the service
+        CPPUNIT_ASSERT_NO_THROW(sequencer->configure(sequencer_config));
+        CPPUNIT_ASSERT_NO_THROW(sequencer->start().get());
+        CPPUNIT_ASSERT_NO_THROW(sequencer->update().get());
+
+        activity_set->at(0)->insert_or_assign("outside_1", std::make_shared<data::integer>(1));
+        activity_set->at(0)->insert_or_assign("outside_2", std::make_shared<data::integer>(2));
+
+        CPPUNIT_ASSERT_NO_THROW(sequencer->slot("go_to")->run(std::string("id_1")));
+        SIGHT_TEST_WAIT(current_activity_id == "id_1");
+        CPPUNIT_ASSERT_EQUAL(std::string("id_1"), current_activity_id);
+
+        CPPUNIT_ASSERT_NO_THROW(sequencer->slot("go_to")->run(std::string("id_2")));
+        SIGHT_TEST_WAIT(current_activity_id == "id_2");
+        CPPUNIT_ASSERT_EQUAL(std::string("id_2"), current_activity_id);
+
+        CPPUNIT_ASSERT_NO_THROW(sequencer->slot("previous")->run());
+        SIGHT_TEST_WAIT(current_activity_id == "id_1");
+        CPPUNIT_ASSERT_EQUAL(std::string("id_1"), current_activity_id);
+
+        CPPUNIT_ASSERT_NO_THROW(sequencer->slot("go_to")->run(std::string("invalid_id")));
+        SIGHT_TEST_WAIT(current_activity_id == "id_1");
+        CPPUNIT_ASSERT_EQUAL(std::string("id_1"), current_activity_id);
+    }
 }
 
 //------------------------------------------------------------------------------

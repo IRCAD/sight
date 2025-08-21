@@ -191,9 +191,10 @@ void sequencer::starting()
     auto activity_reg = sight::activity::extension::activity::get_default();
     for(int i = 0, last = int(m_activity_ids.size()) - 1 ; i <= last ; ++i)
     {
+        const auto info         = activity_reg->get_info(m_activity_ids[std::size_t(i)]);
         const auto button_label = QString::fromStdString(
             m_activity_names[std::size_t(i)].empty()
-            ? activity_reg->get_info(m_activity_ids[std::size_t(i)]).title
+            ? info.title
             : m_activity_names[std::size_t(i)]
         );
 
@@ -202,8 +203,18 @@ void sequencer::starting()
         button->setProperty("class", "sequencer_button");
         button->setCheckable(true);
         button->setEnabled(false);
-        button->setIcon(number_icon(i + 1));
-        button->setIconSize(QSize(32, 32));
+        if(*m_linear)
+        {
+            button->setIcon(number_icon(i + 1));
+            button->setIconSize(QSize(32, 32));
+        }
+        else
+        {
+            QIcon icon(QString::fromStdString(info.icon));
+            button->setIcon(icon);
+            button->setIconSize(QSize(48, 48));
+        }
+
         widget_layout->addWidget(button);
         m_button_group->addButton(button, i);
 
@@ -222,7 +233,7 @@ void sequencer::starting()
     widget_layout->addSpacerItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
     m_widget->setLayout(widget_layout);
 
-    QObject::connect(m_button_group, &QButtonGroup::idClicked, this, &sequencer::go_to);
+    QObject::connect(m_button_group, &QButtonGroup::idClicked, this, &sequencer::go_to_index);
 
     // Add the sequencer to the container
     auto* main_layout = qt_container->get_qt_container()->layout();
@@ -253,7 +264,22 @@ void sequencer::updating()
         SIGHT_ASSERT("Missing '" << ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
         m_current_activity = this->parse_activities(*activity_set);
+
+        // Enable all satisfied activities in non-linear mode
+        if(not * m_linear && activity_set->empty())
+        {
+            for(std::size_t i = 0 ; i < m_activity_ids.size() ; ++i)
+            {
+                const auto activity = this->get_activity(*activity_set, i, slot(service::slots::UPDATE));
+                const auto& [next_ok, next_error] = sequencer::validate_activity(activity);
+                if(next_ok)
+                {
+                    this->enable_activity(int(i));
+                }
+            }
+        }
     }
+
     if(m_current_activity >= 0)
     {
         for(int i = 0 ; i <= m_current_activity ; ++i)
@@ -262,13 +288,13 @@ void sequencer::updating()
         }
 
         // launch the last activity
-        this->go_to(m_current_activity);
+        this->go_to_index(m_current_activity);
     }
     else
     {
         // launch the first activity
         this->enable_activity(0);
-        this->go_to(0);
+        this->go_to_index(0);
     }
 }
 
@@ -303,7 +329,7 @@ void sequencer::disable_user_warning()
 
 //------------------------------------------------------------------------------
 
-void sequencer::go_to(int _index)
+void sequencer::go_to_index(int _index)
 {
     if(_index < 0 || _index >= static_cast<int>(m_activity_ids.size()))
     {
@@ -365,10 +391,7 @@ void sequencer::go_to(int _index)
 
     data::activity::sptr activity = this->get_activity(*activity_set, new_idx, slot(service::slots::UPDATE));
 
-    bool ok = true;
-    std::string error_msg;
-
-    std::tie(ok, error_msg) = sight::module::ui::qt::activity::sequencer::validate_activity(activity);
+    const auto [ok, error_msg] = sight::module::ui::qt::activity::sequencer::validate_activity(activity);
     if(ok)
     {
         m_activity_created->async_emit(activity);
@@ -379,8 +402,24 @@ void sequencer::go_to(int _index)
     }
     else
     {
+        SIGHT_ERROR("Activity not valid" << error_msg);
         sight::ui::dialog::message::show("Activity not valid", error_msg);
         m_data_required->async_emit(activity);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void sequencer::go_to(std::string _activity_id)
+{
+    const auto it = std::find(m_activity_ids.begin(), m_activity_ids.end(), _activity_id);
+    if(it != m_activity_ids.end())
+    {
+        this->go_to_index(static_cast<int>(std::distance(m_activity_ids.begin(), it)));
+    }
+    else
+    {
+        SIGHT_ERROR("No activity with id '" << _activity_id << "'");
     }
 }
 
@@ -522,14 +561,14 @@ void sequencer::next()
 {
     const auto next_index = m_current_activity + 1;
 
-    go_to(next_index);
+    go_to_index(next_index);
 }
 
 //------------------------------------------------------------------------------
 
 void sequencer::previous()
 {
-    this->go_to(m_current_activity - 1);
+    this->go_to_index(m_current_activity - 1);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -35,6 +35,7 @@ class sequencer : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(sequencer);
 CPPUNIT_TEST(reset_requirements_test);
+CPPUNIT_TEST(go_to_slot_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,6 +45,7 @@ public:
     void tearDown() override;
 
     void reset_requirements_test();
+    void go_to_slot_test();
 
 private:
 
@@ -52,6 +54,8 @@ private:
 
     /// The child uuid to use to be added to the container
     std::string m_child_uuid;
+
+    sight::core::thread::worker::sptr m_worker {};
 };
 
 } // namespace sight::module::ui::qt::ut

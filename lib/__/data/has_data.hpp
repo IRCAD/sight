@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -191,14 +191,16 @@ private:
     template<class DATATYPE, data::access ACCESS>
     friend class ptr_vector;
 
+    /// Finds a registered pointer, asserts if not found
+    auto find_object(std::string_view, data::object::csptr _obj) const;
     /// Registers a pointer
-    SIGHT_DATA_API void register_ptr(std::string_view _key, base_ptr* _data, std::optional<std::size_t> _index = 0);
+    void register_ptr(std::string_view _key, base_ptr* _data, std::optional<std::size_t> _index = 0);
     /// Unregisters a pointer
-    SIGHT_DATA_API void unregister_ptr(base_ptr* _data);
+    void unregister_ptr(base_ptr* _data);
     /// Notifies that a new object has been created and available
-    SIGHT_DATA_API virtual void notify_register_out(data::object::sptr, const std::string&) = 0;
+    virtual void notify_register_out(data::object::sptr, const std::string&) = 0;
     /// Notifies that a new object is being destroyed and no longer available
-    SIGHT_DATA_API virtual void notify_unregister_out(data::object::sptr, const std::string&) = 0;
+    virtual void notify_unregister_out(data::object::sptr, const std::string&) = 0;
 
     /**
      * @brief Map of data pointers, data::ptr and data::ptr_vector.
@@ -258,6 +260,16 @@ inline data::mt::weak_ptr<DATATYPE> has_data::output(std::string_view _key, std:
             )
         );
     return out;
+}
+
+//------------------------------------------------------------------------------
+
+inline auto has_data::find_object(std::string_view _key, data::object::csptr _obj) const
+{
+    auto data     = m_data_container.find({_key, {}});
+    const auto id = _obj ? " and id '" + _obj->get_id() + "'" : "";
+    SIGHT_ASSERT("Can not find any declared data::ptr with key '" << _key << "'" << id, data != m_data_container.end());
+    return data;
 }
 
 //------------------------------------------------------------------------------
