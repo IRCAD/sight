@@ -85,7 +85,7 @@ private:
 
     /// Clear the current container
     void clear();
-    /// Instanciates the needed ui editors according to the stored informations
+    /// Instantiates the needed ui editors according to the stored informations
     void fill_gui();
 
     /// Internal class that contain the informations concerning the editor that is created.

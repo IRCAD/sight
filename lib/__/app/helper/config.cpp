@@ -309,39 +309,39 @@ app::detail::service_config config::parse_service(
 #endif
 
     // Get attributes
-    app::detail::service_config srvconfig;
+    app::detail::service_config srv_config;
 
-    srvconfig.m_uid = _srv_elem.get<std::string>("<xmlattr>.uid");
-    SIGHT_ASSERT(_err_msg_head + "'uid' attribute is empty.", !srvconfig.m_uid.empty());
+    srv_config.m_uid = _srv_elem.get<std::string>("<xmlattr>.uid");
+    SIGHT_ASSERT(_err_msg_head + "'uid' attribute is empty.", !srv_config.m_uid.empty());
 
-    std::string err_msg_tail = " when parsing service '" + srvconfig.m_uid + "'.";
+    std::string err_msg_tail = " when parsing service '" + srv_config.m_uid + "'.";
 
     // config
     std::string config = _srv_elem.get<std::string>("<xmlattr>.config", "");
-    SIGHT_ASSERT(_err_msg_head + "'config' attribute is empty.", !srvconfig.m_uid.empty());
+    SIGHT_ASSERT(_err_msg_head + "'config' attribute is empty.", !srv_config.m_uid.empty());
 
     // Type
-    srvconfig.m_type = _srv_elem.get<std::string>("<xmlattr>.type", "");
+    srv_config.m_type = _srv_elem.get<std::string>("<xmlattr>.type", "");
     SIGHT_ASSERT(
         std::string(_err_msg_head) + "Attribute \"type\" is required " + err_msg_tail,
-        !srvconfig.m_type.empty()
+        !srv_config.m_type.empty()
     );
 
     // AutoConnect
-    srvconfig.m_global_auto_connect = core::ptree::get_value(_srv_elem, "<xmlattr>.auto_connect", true);
+    srv_config.m_global_auto_connect = core::ptree::get_value(_srv_elem, "<xmlattr>.auto_connect", true);
 
     // Worker key
-    srvconfig.m_worker = _srv_elem.get<std::string>("<xmlattr>.worker", "");
+    srv_config.m_worker = _srv_elem.get<std::string>("<xmlattr>.worker", "");
 
     // Get service configuration
     if(!config.empty())
     {
         const auto srv_cfg_factory = service::extension::config::get_default();
-        srvconfig.m_config = srv_cfg_factory->get_service_config(config, srvconfig.m_type);
+        srv_config.m_config = srv_cfg_factory->get_service_config(config, srv_config.m_type);
     }
     else
     {
-        srvconfig.m_config = _srv_elem;
+        srv_config.m_config = _srv_elem;
     }
 
     // Check if user did not bind a service to another service
@@ -398,7 +398,7 @@ app::detail::service_config config::parse_service(
         {
             auto key_cfgs                   = cfg.second.equal_range("key");
             const std::string& key          = group.value();
-            const auto default_optional_cfg = is_key_optional(srvconfig.m_type, key);
+            const auto default_optional_cfg = is_key_optional(srv_config.m_type, key);
 
             objconfig.m_auto_connect = cfg.second.get_optional<bool>("<xmlattr>.auto_connect");
 
@@ -449,7 +449,7 @@ app::detail::service_config config::parse_service(
                 }
 
                 // Assign the current object config in the service config
-                srvconfig.m_objects[{key, count++}] = group_objconfig;
+                srv_config.m_objects[{key, count++}] = group_objconfig;
             }
         }
         else
@@ -468,7 +468,7 @@ app::detail::service_config config::parse_service(
                 !objconfig.m_key.empty()
             );
 
-            const auto default_optional_cfg = is_key_optional(srvconfig.m_type, objconfig.m_key);
+            const auto default_optional_cfg = is_key_optional(srv_config.m_type, objconfig.m_key);
 
             // AutoConnect
             objconfig.m_auto_connect = cfg.second.get_optional<bool>("<xmlattr>.auto_connect");
@@ -488,13 +488,13 @@ app::detail::service_config config::parse_service(
             }
 
             // Assign the current object config in the service config
-            srvconfig.m_objects[{objconfig.m_key, std::nullopt}] = objconfig;
+            srv_config.m_objects[{objconfig.m_key, std::nullopt}] = objconfig;
         }
     }
 
     // Collect all properties configurations
     std::vector<std::pair<std::string, std::string> > properties_cfgs;
-    if(const auto& properties = srvconfig.m_config.get_child_optional("properties"); properties.has_value())
+    if(const auto& properties = srv_config.m_config.get_child_optional("properties"); properties.has_value())
     {
         if(const auto& attributes = properties->get_child_optional("<xmlattr>"); attributes.has_value())
         {
@@ -552,11 +552,11 @@ app::detail::service_config config::parse_service(
                 .m_optional     = false
             };
 
-            srvconfig.m_objects[{objconfig.m_key, std::nullopt}] = objconfig;
+            srv_config.m_objects[{objconfig.m_key, std::nullopt}] = objconfig;
         }
     }
 
-    return srvconfig;
+    return srv_config;
 }
 
 //------------------------------------------------------------------------------

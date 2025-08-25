@@ -1,0 +1,8 @@
+ccache
+ctest
+dbranch
+dcmake
+dget
+doutput
+dsight
+wdeprecated

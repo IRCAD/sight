@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -121,7 +121,7 @@ protected:
     /// Job observer
     SPTR(core::jobs::observer) m_job;
 
-    /// Optional anonymiser
+    /// Optional anonymizer
     SPTR(dicom_anonymizer) m_anonymizer;
 
     /// Optional output archive

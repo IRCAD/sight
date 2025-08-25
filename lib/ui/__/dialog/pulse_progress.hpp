@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ public:
         const std::string& _title,
         Stuff _stuff,
         const std::string& _msg                                         = std::string(),
-        ui::dialog::pulse_progress_base::MilliSecond _frequence_refresh = 100,
+        ui::dialog::pulse_progress_base::MilliSecond _frequency_refresh = 100,
         bool _cancellable                                               = true
     );
 

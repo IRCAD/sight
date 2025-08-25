@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ const core::type& image_type_converter::get_fw_tools_type(const std::uint8_t& _i
         }
     }
 
-    throw io::igtl::detail::exception::conversion("Cannot found a fwTools type for igtl image type");
+    throw io::igtl::detail::exception::conversion("Cannot found a type for igtl image type");
 }
 
 //-----------------------------------------------------------------------------

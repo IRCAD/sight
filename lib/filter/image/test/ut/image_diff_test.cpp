@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,13 +84,13 @@ void image_diff_test::tearDown()
 
 void image_diff_test::store_diffs_test()
 {
-    const std::uint8_t oldvalue = 0;
-    const std::uint8_t newvalue = 1;
+    const std::uint8_t old_value = 0;
+    const std::uint8_t new_value = 1;
 
-    image_diff diff(sizeof(oldvalue));
+    image_diff diff(sizeof(old_value));
 
-    const auto* old_buffer_value = reinterpret_cast<const data::image::buffer_t*>(&oldvalue);
-    const auto* new_buffer_value = reinterpret_cast<const data::image::buffer_t*>(&newvalue);
+    const auto* old_buffer_value = reinterpret_cast<const data::image::buffer_t*>(&old_value);
+    const auto* new_buffer_value = reinterpret_cast<const data::image::buffer_t*>(&new_value);
 
     const std::vector<data::image::index_t> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
@@ -115,13 +115,13 @@ void image_diff_test::store_diffs_test()
         image_diff::element_t elt = diff.get_element(i);
 
         CPPUNIT_ASSERT_EQUAL(indices[i], elt.m_index);
-        CPPUNIT_ASSERT_EQUAL(oldvalue, *reinterpret_cast<const std::uint8_t*>(elt.m_old_value));
-        CPPUNIT_ASSERT_EQUAL(newvalue, *reinterpret_cast<const std::uint8_t*>(elt.m_new_value));
+        CPPUNIT_ASSERT_EQUAL(old_value, *reinterpret_cast<const std::uint8_t*>(elt.m_old_value));
+        CPPUNIT_ASSERT_EQUAL(new_value, *reinterpret_cast<const std::uint8_t*>(elt.m_new_value));
     }
 
     // Create a second diff with 3 elements.
     const std::vector<data::image::index_t> indices2 = {{66, 42, 8888}};
-    image_diff diff2(sizeof(oldvalue));
+    image_diff diff2(sizeof(old_value));
 
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
@@ -151,15 +151,15 @@ void image_diff_test::store_diffs_test()
         image_diff::element_t elt = diff.get_element(i);
 
         CPPUNIT_ASSERT_EQUAL(merged_indices[i], elt.m_index);
-        CPPUNIT_ASSERT_EQUAL(oldvalue, *reinterpret_cast<const std::uint8_t*>(elt.m_old_value));
-        CPPUNIT_ASSERT_EQUAL(newvalue, *reinterpret_cast<const std::uint8_t*>(elt.m_new_value));
+        CPPUNIT_ASSERT_EQUAL(old_value, *reinterpret_cast<const std::uint8_t*>(elt.m_old_value));
+        CPPUNIT_ASSERT_EQUAL(new_value, *reinterpret_cast<const std::uint8_t*>(elt.m_new_value));
     }
 
     // Copy constructor test.
     image_diff copy_diff(diff);
     test_diff_equality<std::uint8_t>(diff, copy_diff);
 
-    // Copy assignement test.
+    // Copy assignment test.
     image_diff copy_diff2 = diff;
     test_diff_equality<std::uint8_t>(diff, copy_diff2);
 
@@ -167,7 +167,7 @@ void image_diff_test::store_diffs_test()
     const image_diff move_diff(std::move(copy_diff));
     test_diff_equality<std::uint8_t>(diff, move_diff);
 
-    // Move assignement test.
+    // Move assignment test.
     image_diff move_diff2 = std::move(copy_diff2);
     test_diff_equality<std::uint8_t>(diff, move_diff2);
 
@@ -197,9 +197,9 @@ void image_diff_test::undo_redo_test()
 
     image_diff diff(image->type().size());
 
-    std::uint8_t newvalue = 1;
+    std::uint8_t new_value = 1;
 
-    auto* new_buffer_value = reinterpret_cast<data::image::buffer_t*>(&newvalue);
+    auto* new_buffer_value = reinterpret_cast<data::image::buffer_t*>(&new_value);
 
     const std::vector<data::image::index_t> indices = {{51, 10, 8, 123, 1098, 23456, 6, 9999}};
 
@@ -216,7 +216,7 @@ void image_diff_test::undo_redo_test()
 
         CPPUNIT_ASSERT_EQUAL(i + 1, diff.num_elements());
         CPPUNIT_ASSERT_EQUAL(index, diff.get_element_diff_index(i));
-        CPPUNIT_ASSERT_EQUAL(newvalue, *reinterpret_cast<std::uint8_t*>(image->get_pixel(index)));
+        CPPUNIT_ASSERT_EQUAL(new_value, *reinterpret_cast<std::uint8_t*>(image->get_pixel(index)));
     }
 
     // Revert diff. Ensure that the image is the same as before (all values equal to zero).
@@ -237,11 +237,9 @@ void image_diff_test::undo_redo_test()
     for(std::size_t i = 0 ; i < image->size_in_bytes() ; ++i)
     {
         // Check if 'i' is an index
-        auto index_it = std::find(indices.begin(), indices.end(), i);
-
-        if(index_it != indices.end())
+        if(std::ranges::find(indices, i) != indices.end())
         {
-            CPPUNIT_ASSERT_EQUAL(newvalue, *reinterpret_cast<std::uint8_t*>(image->get_pixel(i)));
+            CPPUNIT_ASSERT_EQUAL(new_value, *reinterpret_cast<std::uint8_t*>(image->get_pixel(i)));
         }
         else
         {

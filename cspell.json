@@ -1,0 +1,31 @@
+{
+    "version": "0.2",
+    "allowCompoundWords": true,
+    "ignorePaths": ["./CHANGELOG.md", "*.cspell", "*.svg", "*.tar", "3rd-party/*"],
+    "useGitignore": true,
+    "dictionaryDefinitions": [
+        {
+            "name": "sight",
+            "path": "./.cspell/sight-dict.txt",
+            "addWords": true
+        }
+    ],
+    "dictionaries": ["sight", "cspell:words"],
+    "words": [],
+    "ignoreWords": [],
+    "language": "en-GB,en",
+    "languageSettings": [
+        {
+            "caseSensitive": true,
+            "languageId": "yaml",
+            "dictionaryDefinitions": [
+                {
+                    "name": "gitlab-ci",
+                    "path": "./.cspell/gitlab-dict.txt",
+                    "addWords": true
+                }
+            ],
+            "dictionaries": ["gitlab-ci"]
+        }
+    ]
+}

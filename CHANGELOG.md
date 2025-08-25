@@ -18,7 +18,7 @@ This enables the coverage deployment also for draft merge requests.
 
 *Wrong optional channel name substitution.*
 
-*Change update loop order in instrinsic calibration.*
+*Change update loop order in intrinsic calibration.*
 
 * introduce dedicated service to generate the 3d model of the chessboard, to avoid update sync issues
 
@@ -69,7 +69,7 @@ Instead of only throwing an exception when the preferences file is corrupted, we
 
 *Rework screen placement for multi window apps.*
 
-* bugs arround fullscreen on linux, hide/show a fullscreen window doesn't restore fullscreen state
+* bugs around fullscreen on linux, hide/show a fullscreen window doesn't restore fullscreen state
 * initial fullscreen of the first QMainWindow wasn't working, use a QTimer to repost the event
 * screen index are now saved into preferences
 
@@ -131,13 +131,13 @@ The visibility of the widget should no longer be a concern for the adaptor with 
 
 We need to set the material permutation before generating any subsequent rendering pass, otherwise these passes, like the selected material, may end-up with the wrong vertex/fragment program.
 
-*Optimize updates for negatoscopes when only pixels change.*
+*Optimize updates for negatoscope when only pixels change.*
 
-The 2D and 2D negatoscopes code was also widely refactored to share as much code as possible; this will make future maintenance easier.
+The 2D and 3D negatoscope code was also widely refactored to share as much code as possible; this will make future maintenance easier.
 
 *Increase minimum OpenGL widget size to avoid crash.*
 
-*Positionning of the negato 2d camera was wrongly computed.*
+*Positioning of the negato 2d camera was wrongly computed.*
 
 ## Enhancement:
 
@@ -310,7 +310,7 @@ Also:
 
 *Add point operator support for XML sight::data::map.*
 
-In XML configuration, it is now possible to use the point operator to reference elements of `sight::daga::map`.
+In XML configuration, it is now possible to use the point operator to reference elements of `sight::data::map`.
 
 ```xml
     <object uid="parameters" type="sight::data::map">

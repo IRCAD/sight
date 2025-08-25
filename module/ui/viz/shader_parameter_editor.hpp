@@ -48,7 +48,7 @@ namespace sight::module::ui::viz
         </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b reconstruction [sight::data::reconstruction]: reconstruction whose paremeters should be edited.
+ * - \b reconstruction [sight::data::reconstruction]: reconstruction whose parameters should be edited.
  */
 class shader_parameter_editor final : public sight::ui::editor
 {
@@ -87,7 +87,7 @@ private:
     void clear();
     /// Retrieves the shader parameters attached to the Reconstruction object and stores them into a collection
     void update_gui_info();
-    /// Instanciates the needed ui editors according to the stored informations
+    /// Instantiates the needed ui editors according to the stored informations
     void fill_gui();
 
     /// Internal class that contain the informations concerning the editor that is created.
