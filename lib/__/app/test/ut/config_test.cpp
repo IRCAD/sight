@@ -1813,6 +1813,29 @@ void config_test::properties_map_element_parameter_test()
 
         CPPUNIT_ASSERT_EQUAL(std::string("yeah"), *srv->m_string_prop);
     }
+    {
+        core::object::sptr service;
+        {
+            int j = 0;
+            while(service == nullptr && j++ < 200)
+            {
+                service = core::id::get_object(
+                    "properties_map_element_parameter_subconfig",
+                    j,
+                    "test_service_parse_props_1"
+                );
+            }
+        }
+        CPPUNIT_ASSERT(service != nullptr);
+        auto srv = std::dynamic_pointer_cast<app::ut::test_service_with_properties>(service);
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv->config_status());
+
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(true, srv->started());
+
+        CPPUNIT_ASSERT_EQUAL(std::string("yeah2"), *srv->m_string_prop);
+    }
 }
 
 //------------------------------------------------------------------------------

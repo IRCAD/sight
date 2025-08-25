@@ -512,6 +512,19 @@
     </extension>
 
     <extension implements="sight::app::extension::config">
+        <id>properties_map_element_parameter_subconfig</id>
+        <parameters>
+            <object uid="map" type="sight::data::map" />
+        </parameters>
+        <desc>Specifically check to access map elements in a property in a sub-config</desc>
+        <config>
+            <service uid="test_service_parse_props_1" type="sight::app::ut::test_service_with_properties">
+                <properties string="${map}.string2" />
+            </service>
+        </config>
+    </extension>
+
+    <extension implements="sight::app::extension::config">
         <id>properties_map_element_parameter_test</id>
         <parameters>
             <param name="data1" default="data1Id" />
@@ -522,12 +535,22 @@
                 <item key="string">
                     <object uid="data1_in_map" type="sight::data::string" value="yeah" />
                 </item>
+                <item key="string2">
+                    <object uid="data222_in_map" type="sight::data::string" value="yeah2" />
+                </item>
             </object>
 
             <service uid="test1_srv" type="sight::app::config_launcher">
                 <properties config="default_object_id_test_sub_config" />
                 <inout group="object">
                     <key name="data1" uid="${properties_map}.string" />
+                </inout>
+            </service>
+
+            <service uid="test2_srv" type="sight::app::config_launcher">
+                <properties config="properties_map_element_parameter_subconfig" />
+                <inout group="object">
+                    <key name="map" uid="${properties_map}" />
                 </inout>
             </service>
         </config>

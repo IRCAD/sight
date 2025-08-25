@@ -516,37 +516,22 @@ app::detail::service_config config::parse_service(
         }
     }
 
-    const auto parse_object_property =
-        [&_objects](const auto& _uid) -> std::optional<std::string>
+    const auto is_object_property =
+        [&_objects](const auto& _uid) -> bool
         {
             std::vector<std::string> tokens;
             boost::split(tokens, _uid, boost::is_any_of("."));
-
-            if(auto it = _objects.find(tokens[0]); it != _objects.end())
-            {
-                if(tokens.size() > 1)
-                {
-                    if(auto map = std::dynamic_pointer_cast<sight::data::map>(it->second); map != nullptr)
-                    {
-                        return (*map)[tokens[1]]->get_id();
-                    }
-                }
-
-                return _uid;
-            }
-
-            return {};
+            return _objects.find(tokens[0]) != _objects.end();
         };
 
-    for(auto&& [key, value] : properties_cfgs)
+    for(auto&& [key, uid] : properties_cfgs)
     {
-        const auto uid = parse_object_property(value);
-        if(uid.has_value())
+        if(is_object_property(uid))
         {
             app::detail::object_serviceconfig objconfig
             {
                 .m_key          = key,
-                .m_uid          = *uid,
+                .m_uid          = uid,
                 .m_access       = data::access::inout,
                 .m_auto_connect = key != "from",
                 .m_optional     = false
