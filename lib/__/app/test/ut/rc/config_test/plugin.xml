@@ -556,6 +556,35 @@
         </config>
     </extension>
 
+    <extension implements="sight::app::extension::config">
+        <id>properties_map_element_deferred_test</id>
+        <parameters>
+            <param name="data1" default="data1Id" />
+        </parameters>
+        <desc>Test configuration for passing map element</desc>
+        <config>
+            <object uid="properties_map" type="sight::data::map">
+                <item key="string">
+                    <object uid="data1_in_map" type="sight::data::string" value="yeah" />
+                </item>
+            </object>
+            <object uid="data_deferred" type="sight::data::string" deferred="true" />
+
+            <service uid="test3_srv" type="sight::app::config_launcher">
+                <properties config="default_object_id_test_sub_config" />
+                <inout group="object">
+                    <key name="data1" uid="${properties_map}.string" />
+                    <!-- Not declared but allows to make the service deferred and delay the start -->
+                    <key name="data_unused" uid="${data_deferred}" />
+                </inout>
+            </service>
+
+            <service uid="generate_data" type="sight::app::ut::test_out">
+                <out key="out" uid="${data_deferred}" />
+            </service>
+        </config>
+    </extension>
+
     <extension implements="sight::data::extension::config">
         <id>map_config</id>
         <object>sight::data::map</object>

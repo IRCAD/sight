@@ -183,6 +183,7 @@ negatos
 negatoscope
 nifti
 nobutton
+noctura
 nolint
 nolintbegin
 nolintend

@@ -412,7 +412,7 @@ void sequencer::go_to_index(int _index)
 
 void sequencer::go_to(std::string _activity_id)
 {
-    const auto it = std::find(m_activity_ids.begin(), m_activity_ids.end(), _activity_id);
+    const auto it = std::ranges::find(m_activity_ids, _activity_id);
     if(it != m_activity_ids.end())
     {
         this->go_to_index(static_cast<int>(std::distance(m_activity_ids.begin(), it)));

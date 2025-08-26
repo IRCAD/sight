@@ -52,6 +52,7 @@ CPPUNIT_TEST(object_config_test);
 CPPUNIT_TEST(properties_test);
 CPPUNIT_TEST(properties_signals_test);
 CPPUNIT_TEST(properties_map_element_parameter_test);
+CPPUNIT_TEST(properties_map_element_deferred_test);
 CPPUNIT_TEST(map_config_test);
 CPPUNIT_TEST(matrix_config_test);
 CPPUNIT_TEST_SUITE_END();
@@ -77,6 +78,7 @@ public:
     void properties_test();
     void properties_signals_test();
     void properties_map_element_parameter_test();
+    void properties_map_element_deferred_test();
     void map_config_test();
     void matrix_config_test();
 

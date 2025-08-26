@@ -1840,6 +1840,64 @@ void config_test::properties_map_element_parameter_test()
 
 //------------------------------------------------------------------------------
 
+void config_test::properties_map_element_deferred_test()
+{
+    m_app_config_mgr = app::ut::launch_app_config_mgr("properties_map_element_deferred_test");
+
+    {
+        core::object::sptr service;
+        {
+            int j = 0;
+            while(service == nullptr && j++ < 200)
+            {
+                service = core::id::get_object(
+                    "default_object_id_test_sub_config",
+                    j,
+                    "test_service_parse_props_1"
+                );
+            }
+        }
+        CPPUNIT_ASSERT(service == nullptr);
+
+        // Create the data that will launch the service
+        auto data1 = std::make_shared<data::string>();
+        data1->set_value("yeah2");
+
+        auto gen_data_srv = std::dynamic_pointer_cast<app::ut::test_service>(core::id::get_object("generate_data"));
+        CPPUNIT_ASSERT(gen_data_srv != nullptr);
+        gen_data_srv->set_output(data1, "out");
+
+        wait_service_started("test3_srv");
+        auto gn_srv3 = core::id::get_object("test3_srv");
+        auto srv3    = std::dynamic_pointer_cast<service::base>(gn_srv3);
+        CPPUNIT_ASSERT(srv3 != nullptr);
+        CPPUNIT_ASSERT_EQUAL(service::base::global_status::started, srv3->status());
+
+        {
+            int j = 0;
+            while(service == nullptr && j++ < 200)
+            {
+                service = core::id::get_object(
+                    "default_object_id_test_sub_config",
+                    j,
+                    "test_service_parse_props_1"
+                );
+            }
+        }
+        CPPUNIT_ASSERT(service != nullptr);
+        auto srv = std::dynamic_pointer_cast<app::ut::test_service_with_properties>(service);
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(service::base::configuration_status::configured, srv->config_status());
+
+        CPPUNIT_ASSERT(srv != nullptr);
+        CPPUNIT_ASSERT_EQUAL(true, srv->started());
+
+        CPPUNIT_ASSERT_EQUAL(std::string("yeah"), *srv->m_string_prop);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void config_test::map_config_test()
 {
     m_app_config_mgr = app::ut::launch_app_config_mgr("map_config_test", true);

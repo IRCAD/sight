@@ -1134,8 +1134,30 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
         // Look for all objects (there could be more than the current object) and check if they are all created
         for(const auto& [key, objCfg] : srv_cfg->m_objects)
         {
-            // Look first in objects created in this appConfig
-            if(m_created_objects.find(objCfg.m_uid) == m_created_objects.end())
+            data::object::sptr obj;
+
+            std::vector<std::string> uid_tokens;
+            boost::split(uid_tokens, objCfg.m_uid, boost::is_any_of("."));
+
+            // Look first in objects created in this config
+            auto it = m_created_objects.find(uid_tokens[0]);
+            if(it != m_created_objects.end())
+            {
+                obj = it->second;
+                if(uid_tokens.size() > 1)
+                {
+                    SIGHT_ASSERT(
+                        this->msg_head() + "Only one nested object level '" << objCfg.m_uid << "' supported in maps",
+                        uid_tokens.size() <= 2
+                    );
+                    auto map = std::dynamic_pointer_cast<sight::data::map>(obj);
+                    SIGHT_ASSERT("Cannot use point operator on other data than sight::data::map", obj != nullptr);
+                    obj = (*map)[uid_tokens[1]];
+                }
+            }
+
+            // If not found, look in the deferred objects
+            if(obj == nullptr)
             {
                 // Not found, now look in the objects that were marked as "deferred"
                 const auto it_local_deferred_obj = m_deferred_objects.find(objCfg.m_uid);
