@@ -17,7 +17,7 @@ lint:ubuntu-24.04:
     extends: .lint
     variables:
         ENABLE_CLANG_TIDY: "ON"
-        SIGHT_GIT_BRANCH: "move-cspell-inside-repo"
+        SIGHT_GIT_BRANCH: "dev"
     tags:
         - linux-power-runner
 
