@@ -21,8 +21,7 @@ macro(linux_package PRJ_NAME)
         set(LAUNCHER_PATH "bin/${PRJ_NAME}.bin")
         set(LAUNCHER "${PRJ_NAME}.bin")
         set(PROFILE_PATH "")
-
-    elseif()
+    else()
         message(FATAL_ERROR "'${PRJ_NAME}' is not an installable (type : ${TARGET_TYPE})")
     endif()
 

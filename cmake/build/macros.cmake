@@ -536,6 +536,10 @@ macro(sight_gui_test SIGHT_TARGET)
     add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND ${CMAKE_BINARY_DIR}/bin/exec_gui_tests.${SCRIPT_SUFFIX}
                                                  ${SIGHT_TEST_SCRIPT} WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
     )
+    # Mandatory for VSCode to trace the test location and debug it from the IDE
+    set_tests_properties(
+        "${SIGHT_TEST_SCRIPT}" PROPERTIES DEF_SOURCE_LINE "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt:1"
+    )
     unset(SCRIPT_SUFFIX)
     unset(SIGHT_TEST_SCRIPT)
 endmacro()
@@ -562,6 +566,7 @@ macro(fw_test SIGHT_TARGET)
         list(FILTER ${SIGHT_TARGET}_HEADERS EXCLUDE REGEX "/ui/")
         list(FILTER ${SIGHT_TARGET}_SOURCES EXCLUDE REGEX "/ui/")
     endif()
+
     sight_generic_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_CPPUNIT_REQUIRE_X})
 
     # Set test command
@@ -574,6 +579,10 @@ macro(fw_test SIGHT_TARGET)
                  WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
         )
     endif()
+    # Mandatory for VSCode to trace the test location and debug it from the IDE
+    set_tests_properties(
+        "${SIGHT_TEST_SCRIPT}" PROPERTIES DEF_SOURCE_LINE "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt:1"
+    )
     unset(SIGHT_TEST_SCRIPT)
 endmacro()
 

@@ -56,8 +56,6 @@ if(APPLE)
     message(FATAL_ERROR "macOS is not supported.")
 endif()
 
-enable_testing()
-
 include(CheckVariableExists)
 include(CMakeParseArguments)
 include(GNUInstallDirs)
@@ -86,6 +84,11 @@ find_package(VTK CONFIG QUIET)
 
 # Tests build / run options
 option(SIGHT_BUILD_TESTS "Configures projects associated tests (<project>Test projects)" ON)
+
+if(SIGHT_BUILD_TESTS)
+    message(STATUS "Tests enabled")
+    include(CTest)
+endif()
 
 option(SIGHT_TESTS_XML_OUTPUT "Tests will generate an xml output, suitable for CI integration" ON)
 mark_as_advanced(SIGHT_TESTS_XML_OUTPUT)
