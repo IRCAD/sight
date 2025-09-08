@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -65,6 +65,7 @@ public:
     }
 
     using core::jobs::base::done_work;
+    using core::jobs::base::done;
 };
 
 //------------------------------------------------------------------------------
@@ -100,7 +101,7 @@ void progress_bar_test::basic_test()
     tearDown();
     setUp();
 
-    //Title is shown.
+    // Title is shown.
     launch_test(true, false, false);
 }
 
@@ -156,16 +157,21 @@ void progress_bar_test::launch_test(
     CPPUNIT_ASSERT_NO_THROW(progress_bar->start().get());
 
     // Check that progress_bar is not visible before show_job().
-    auto check_visibility = wait_for_widget(
+    const auto check_visibility = wait_for_widget(
         [_show_title, _show_cancel, _svg, this](QWidget* _widget)
         {
-            if(_widget != nullptr && _widget->objectName().startsWith(QString::fromStdString(m_child_uuid)))
+            const QString root_object_name = QString::fromStdString(m_child_uuid) + "/progress_bar";
+
+            if(_widget != nullptr && _widget->objectName().startsWith(root_object_name))
             {
                 auto check_progress_widget = false;
 
                 if(_svg.empty())
                 {
-                    if(auto* progress_bar_widget = _widget->findChild<QProgressBar*>("/QProgressBar");
+                    if(auto* progress_bar_widget = _widget->findChild<QProgressBar*>(
+                           root_object_name
+                           + "/QProgressBar"
+                    );
                        progress_bar_widget != nullptr)
                     {
                         CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -178,7 +184,7 @@ void progress_bar_test::launch_test(
                 }
                 else
                 {
-                    if(auto* svg_widget = _widget->findChild<QSvgWidget*>("/QSvgWidget");
+                    if(auto* svg_widget = _widget->findChild<QSvgWidget*>(root_object_name + "/QSvgWidget");
                        svg_widget != nullptr)
                     {
                         CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -191,7 +197,7 @@ void progress_bar_test::launch_test(
                 }
 
                 auto check_label = !_show_title;
-                if(auto* label = _widget->findChild<QLabel*>("/QLabel");
+                if(auto* label = _widget->findChild<QLabel*>(root_object_name + "/QLabel");
                    label != nullptr)
                 {
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -203,7 +209,7 @@ void progress_bar_test::launch_test(
                 }
 
                 auto check_button = !_show_cancel;
-                if(auto* button = _widget->findChild<QToolButton*>("/QToolButton");
+                if(auto* button = _widget->findChild<QToolButton*>(root_object_name + "/QToolButton");
                    button != nullptr)
                 {
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -234,6 +240,22 @@ void progress_bar_test::launch_test(
     static int job_count                = 0;
     const std::string job_name          = s_JOB_NAME + std::to_string(job_count++);
     auto job                            = std::make_shared<dummy_job>(job_name);
+
+    // Create a slot and connect it to job_finished signal.
+    std::atomic_bool callback_called = false;
+
+    const auto finished_callback = core::com::new_slot(
+        [&callback_called]()
+        {
+            callback_called = true;
+        });
+
+    const auto slot_worker = core::thread::worker::make();
+    finished_callback->set_worker(slot_worker);
+
+    const auto connection = progress_bar->signal("job_finished")->connect(finished_callback);
+
+    // Show the job in the progress bar.
     progress_bar->slot("show_job")->run(std::static_pointer_cast<core::jobs::base>(job));
 
     // Check that progress_bar is set with correct information.
@@ -246,13 +268,15 @@ void progress_bar_test::launch_test(
             job->log(std::to_string(i));
         }
 
-        auto check_progress_info = wait_for_widget(
+        const auto check_progress_info = wait_for_widget(
             [_show_title, _pulse, _svg, _show_log, i, job, job_name, this](QWidget* _widget)
             {
-                if(_widget != nullptr && _widget->objectName().startsWith(QString::fromStdString(m_child_uuid)))
+                const QString root_object_name = QString::fromStdString(m_child_uuid) + "/progress_bar";
+
+                if(_widget != nullptr && _widget->objectName().startsWith(root_object_name))
                 {
                     auto correct_title = !_show_title;
-                    if(auto* label = _widget->findChild<QLabel*>("/QLabel"); label != nullptr)
+                    if(auto* label = _widget->findChild<QLabel*>(root_object_name + "/QLabel"); label != nullptr)
                     {
                         CPPUNIT_ASSERT_EQUAL_MESSAGE(
                             "The title of progress_bar should be equal to job name.",
@@ -267,7 +291,8 @@ void progress_bar_test::launch_test(
 
                     if(_svg.empty())
                     {
-                        if(auto* progress_bar_widget = _widget->findChild<QProgressBar*>("/QProgressBar");
+                        if(auto* progress_bar_widget =
+                               _widget->findChild<QProgressBar*>(root_object_name + "/QProgressBar");
                            progress_bar_widget != nullptr)
                         {
                             // In pulse mode, the value is irrelevant
@@ -287,7 +312,8 @@ void progress_bar_test::launch_test(
                     }
                     else
                     {
-                        if(auto* progress_bar_widget = _widget->findChild<QSvgWidget*>("/QSvgWidget");
+                        if(auto* progress_bar_widget =
+                               _widget->findChild<QSvgWidget*>(root_object_name + "/QSvgWidget");
                            progress_bar_widget != nullptr)
                         {
                             // In pulse mode, the value is irrelevant
@@ -311,8 +337,15 @@ void progress_bar_test::launch_test(
         CPPUNIT_ASSERT(check_progress_info.get());
     }
 
+    // Finish the job and destroy it to get the callback called.
+    job->done();
+    job.reset();
+
     // Cleanup
     CPPUNIT_ASSERT_NO_THROW(progress_bar->stop().get());
+
+    slot_worker->stop();
+    CPPUNIT_ASSERT(callback_called);
 }
 
 //------------------------------------------------------------------------------

@@ -120,7 +120,7 @@ This example shows the possibilities of progress bar in SIGHT.:
             </service>
 
             <service uid="progress_bar_5" type="sight::module::ui::qt::progress_bar">
-                <config svg="ex_progress_bar/wait_3.svg" svg_size="56" show_title="true" show_cancel="false" />
+                <config svg="ex_progress_bar/wait_3.svg" svg_size="64" show_title="false" show_cancel="false" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

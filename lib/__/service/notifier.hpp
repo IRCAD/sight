@@ -42,6 +42,7 @@ struct SIGHT_SERVICE_CLASS_API notification final
     enum class type : uint8_t
     {
         info = 0,
+        progress,
         success,
         failure
     } m_type {type::info};
