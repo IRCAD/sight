@@ -51,7 +51,9 @@ service::connections_t negato::auto_connections() const
         {m_image, data::image::SLICE_INDEX_MODIFIED_SIG, slots::SLICE_INDEX},
         {m_tf, data::transfer_function::MODIFIED_SIG, slots::UPDATE_TF},
         {m_tf, data::transfer_function::POINTS_MODIFIED_SIG, slots::UPDATE_TF},
-        {m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF}
+        {m_tf, data::transfer_function::WINDOWING_MODIFIED_SIG, slots::UPDATE_TF},
+        {m_mask, data::image::MODIFIED_SIG, slots::UPDATE_MASK},
+        {m_mask, data::image::BUFFER_MODIFIED_SIG, slots::UPDATE_MASK}
     };
     return connections + adaptor::auto_connections();
 }
@@ -64,6 +66,7 @@ negato::negato() noexcept
     new_slot(slots::UPDATE_IMAGE, [this](){lazy_update(update_flags::IMAGE);});
     new_slot(slots::UPDATE_IMAGE_BUFFER, [this](){lazy_update(update_flags::IMAGE_BUFFER);});
     new_slot(slots::UPDATE_TF, [this](){lazy_update(update_flags::TF);});
+    new_slot(slots::UPDATE_MASK, [this](){lazy_update(update_flags::MASK);});
 
     // Interaction slots
     new_slot(slots::SLICE_TYPE, &negato::change_slice_type, this);
@@ -251,9 +254,27 @@ void negato::updating()
     {
         this->update_tf();
     }
+    else if(update_needed(update_flags::MASK))
+    {
+        this->update_mask();
+    }
 
     this->update_done();
     this->request_render();
+}
+
+//------------------------------------------------------------------------------
+
+void negato::update_mask()
+{
+    if(m_mask_texture)
+    {
+        const auto mask = m_mask.lock();
+        if(mask && mask->num_elements() > 0)
+        {
+            m_mask_texture->update();
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -281,10 +302,6 @@ void negato::update_image(bool _new)
 
         // Update the texture
         m_3d_ogre_texture->update();
-        if(m_mask_texture)
-        {
-            m_mask_texture->update();
-        }
 
         if(_new)
         {

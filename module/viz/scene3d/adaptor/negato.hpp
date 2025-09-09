@@ -59,6 +59,7 @@ public:
     struct slots
     {
         static inline const core::com::slots::key_t UPDATE_IMAGE             = "update_image";
+        static inline const core::com::slots::key_t UPDATE_MASK              = "update_mask";
         static inline const core::com::slots::key_t UPDATE_IMAGE_BUFFER      = "update_image_buffer";
         static inline const core::com::slots::key_t UPDATE_TF                = "update_tf";
         static inline const core::com::slots::key_t SLICE_TYPE               = "slice_type";
@@ -119,6 +120,11 @@ private:
 
     /// Sets the filtering type.
     void set_filtering(sight::viz::scene3d::plane::filter_t _filtering);
+
+    /**
+     * @brief Updates the mask texture.
+     */
+    void update_mask();
 
     /** Uploads the input image into the texture buffer and recomputes the negato geometry.
      * @param _new true if the image was reallocated, false if only pixel values changed.
@@ -219,6 +225,7 @@ private:
     {
         IMAGE,
         IMAGE_BUFFER,
+        MASK,
         TF
     };
 
