@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,6 +30,7 @@ class timer_test : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(timer_test);
 CPPUNIT_TEST(get_time_test);
+CPPUNIT_TEST(cumulative_time_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,6 +40,7 @@ public:
     void tearDown() override;
 
     static void get_time_test();
+    static void cumulative_time_test();
 };
 
 } // namespace sight::core::ut

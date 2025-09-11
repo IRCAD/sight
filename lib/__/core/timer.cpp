@@ -38,8 +38,8 @@ void timer::start()
 {
     m_stopped = false;
 
-    m_cumul_time_in_micro_sec = m_end_time_in_micro_sec - m_start_time_in_micro_sec;
-    m_start_time_in_micro_sec = core::clock::get_time_in_micro_sec();
+    m_cumul_time_in_micro_sec += m_end_time_in_micro_sec - m_start_time_in_micro_sec;
+    m_start_time_in_micro_sec  = core::clock::get_time_in_micro_sec();
 }
 
 //------------------------------------------------------------------------------

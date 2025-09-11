@@ -68,24 +68,59 @@ void timer_test::get_time_test()
 {
     const std::array data {
         // Start the timer, stop the timer and get the time
-        test_data {1, true, true, true, comparison::ge, -1, &timer::get_elapsed_time_in_sec},
-        test_data {1000, true, true, true, comparison::ge, -1, &timer::get_elapsed_time_in_milli_sec},
-        test_data {1000000, true, true, true, comparison::ge, -1, &timer::get_elapsed_time_in_micro_sec},
+        test_data {.time                  = 1, .start = true, .wait = true, .stop = true, .comp = comparison::ge,
+                   .reset                 = -1,
+                   .get_elapsed_time_in_x = &timer::get_elapsed_time_in_sec
+        },
+        test_data {.time                  = 1000, .start = true, .wait = true, .stop = true, .comp = comparison::ge,
+                   .reset                 = -1,
+                   .get_elapsed_time_in_x = &timer::get_elapsed_time_in_milli_sec
+        },
+        test_data {.time                  = 1000000, .start = true, .wait = true, .stop = true, .comp = comparison::ge,
+                   .reset                 = -1,
+                   .get_elapsed_time_in_x = &timer::get_elapsed_time_in_micro_sec
+        },
 
         // Start the timer, reset it in the middle, stop it and get the time
-        test_data {1, true, true, true, comparison::ge, 0, &timer::get_elapsed_time_in_sec},
-        test_data {1000, true, true, true, comparison::ge, 0, &timer::get_elapsed_time_in_milli_sec},
-        test_data {1000000, true, true, true, comparison::ge, 0, &timer::get_elapsed_time_in_micro_sec},
+        test_data {.time                  = 1, .start = true, .wait = true, .stop = true, .comp = comparison::ge,
+                   .reset                 = 0,
+                   .get_elapsed_time_in_x = &timer::get_elapsed_time_in_sec
+        },
+        test_data {.time                  = 1000, .start = true, .wait = true, .stop = true, .comp = comparison::ge,
+                   .reset                 = 0,
+                   .get_elapsed_time_in_x = &timer::get_elapsed_time_in_milli_sec
+        },
+        test_data {.time                  = 1000000, .start = true, .wait = true, .stop = true, .comp = comparison::ge,
+                   .reset                 = 0,
+                   .get_elapsed_time_in_x = &timer::get_elapsed_time_in_micro_sec
+        },
 
         // Start the timer and get the time
-        test_data {1, true, true, false, comparison::ge, -1, &timer::get_elapsed_time_in_sec},
-        test_data {1000, true, true, false, comparison::ge, -1, &timer::get_elapsed_time_in_milli_sec},
-        test_data {1000000, true, true, false, comparison::ge, -1, &timer::get_elapsed_time_in_micro_sec},
+        test_data {.time                  = 1, .start = true, .wait = true, .stop = false, .comp = comparison::ge,
+                   .reset                 = -1,
+                   .get_elapsed_time_in_x = &timer::get_elapsed_time_in_sec
+        },
+        test_data {.time                  = 1000, .start = true, .wait = true, .stop = false, .comp = comparison::ge,
+                   .reset                 = -1,
+                   .get_elapsed_time_in_x = &timer::get_elapsed_time_in_milli_sec
+        },
+        test_data {.time                  = 1000000, .start = true, .wait = true, .stop = false, .comp = comparison::ge,
+                   .reset                 = -1,
+                   .get_elapsed_time_in_x = &timer::get_elapsed_time_in_micro_sec
+        },
 
         // Reset the timer and get the time
-        test_data {1, false, false, false, comparison::eq, 1000000, &timer::get_elapsed_time_in_sec},
-        test_data {1000, false, false, false, comparison::eq, 1000000, &timer::get_elapsed_time_in_milli_sec},
-        test_data {1000000, false, false, false, comparison::eq, 1000000, &timer::get_elapsed_time_in_micro_sec}
+        test_data {.time                  = 1, .start = false, .wait = false, .stop = false, .comp = comparison::eq,
+                   .reset                 = 1000000,
+                   .get_elapsed_time_in_x = &timer::get_elapsed_time_in_sec
+        },
+        test_data {.time                  = 1000, .start = false, .wait = false, .stop = false, .comp = comparison::eq,
+                   .reset                 = 1000000,
+                   .get_elapsed_time_in_x = &timer::get_elapsed_time_in_milli_sec
+        },
+        test_data {.time  = 1000000, .start = false, .wait = false, .stop = false, .comp = comparison::eq,
+                   .reset = 1000000, .get_elapsed_time_in_x = &timer::get_elapsed_time_in_micro_sec
+        }
     };
 
     for(size_t i = 0 ; i < sizeof(data) / sizeof(data[0]) ; i++)
@@ -123,6 +158,26 @@ void timer_test::get_time_test()
             CPPUNIT_ASSERT_GREATEREQUAL(time, (timer.*d.get_elapsed_time_in_x)());
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void timer_test::cumulative_time_test()
+{
+    timer t;
+    t.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    t.stop();
+    const auto elapsed1 = t.get_elapsed_time_in_milli_sec();
+
+    t.start();
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    t.stop();
+    const auto elapsed2 = t.get_elapsed_time_in_milli_sec();
+
+    // The second elapsed time should be at least 200ms
+    CPPUNIT_ASSERT(elapsed2 >= 200.0);
+    CPPUNIT_ASSERT(elapsed2 >= elapsed1);
 }
 
 } // namespace sight::core::ut
