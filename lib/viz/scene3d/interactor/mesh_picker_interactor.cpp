@@ -134,6 +134,7 @@ void mesh_picker_interactor::pick(mouse_button _button, modifier _mod, int _x, i
 
 void mesh_picker_interactor::button_press_event(mouse_button _button, modifier _mod, int _x, int _y)
 {
+    m_pressed[_button] = true;
     this->pick(_button, _mod, _x, _y, true);
 }
 
@@ -141,7 +142,25 @@ void mesh_picker_interactor::button_press_event(mouse_button _button, modifier _
 
 void mesh_picker_interactor::button_release_event(mouse_button _button, modifier _mod, int _x, int _y)
 {
+    m_pressed[_button] = false;
     this->pick(_button, _mod, _x, _y, false);
+}
+
+//------------------------------------------------------------------------------
+
+void mesh_picker_interactor::mouse_move_event(
+    mouse_button _button,
+    modifier _mod,
+    int _x,
+    int _y,
+    int /*_dx*/,
+    int /*_dy*/
+)
+{
+    if(m_pressed[_button])
+    {
+        this->pick(_button, _mod, _x, _y, true);
+    }
 }
 
 //------------------------------------------------------------------------------

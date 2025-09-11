@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2024 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,6 +58,16 @@ public:
     /// Runs a picking query when a mouse button is pressed @see mesh_picker_interactor::pick().
     SIGHT_VIZ_SCENE3D_API void button_press_event(mouse_button _button, modifier _mods, int _x, int _y) override;
 
+    /// Runs a picking query if a mouse button was pressed beforehand.
+    SIGHT_VIZ_SCENE3D_API void mouse_move_event(
+        mouse_button _button,
+        modifier _mods,
+        int _x,
+        int _y,
+        int _dx,
+        int _dy
+    ) override;
+
     /// Sets the signal to be called when picking succeeded.
     SIGHT_VIZ_SCENE3D_API void set_point_clicked_sig(const point_clicked_sig_t::sptr& _sig);
 
@@ -82,6 +92,9 @@ private:
 
     /// Defines the signal sent when picking succeeded.
     point_clicked_sig_t::sptr m_point_clicked_sig;
+
+    /// Mouse button press states
+    std::array<bool, mouse_button::_num_values> m_pressed {false, false, false, false, false};
 };
 
 } //namespace sight::viz::scene3d::interactor.
