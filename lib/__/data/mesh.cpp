@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,7 @@
 
 #include <core/com/signal.hxx>
 
+#include <array>
 #include <cstdlib>
 #include <functional>
 #include <numeric>
@@ -383,6 +384,34 @@ mesh::point_t mesh::push_point(const std::array<position_t, 3>& _p)
     return nb_points;
 }
 
+//-------------------------------------------------------------------------------
+
+const mesh::axis_aligned_box_t& mesh::get_bounding_box()
+{
+    const auto lock = dump_lock();
+
+    // Modify the bounding box only if the mesh has been changed.
+    if(m_bb_last_updated != this->last_modified())
+    {
+        m_bbox = {};
+
+        for(const auto& p : crange<data::iterator::point::xyz>())
+        {
+            m_bbox.min[0] = std::min(m_bbox.min[0], p.x);
+            m_bbox.max[0] = std::max(m_bbox.max[0], p.x);
+            m_bbox.min[1] = std::min(m_bbox.min[1], p.y);
+            m_bbox.max[1] = std::max(m_bbox.max[1], p.y);
+            m_bbox.min[2] = std::min(m_bbox.min[2], p.z);
+            m_bbox.max[2] = std::max(m_bbox.max[2], p.z);
+        }
+
+        // Save the modification timestamp.
+        m_bb_last_updated = this->last_modified();
+    }
+
+    return m_bbox;
+}
+
 //------------------------------------------------------------------------------
 
 mesh::point_t mesh::push_point(position_t _x, position_t _y, position_t _z)
@@ -486,7 +515,7 @@ mesh::cell_t mesh::push_cell(const point_t* _point_ids, std::size_t _nb_points)
     for(std::size_t i = 0 ; i < _nb_points ; ++i)
     {
         const point_t cell_value = _point_ids[i];
-        cells->at<cell_t>(static_cast<std::size_t>(m_num_cells) * cell_size + i) = cell_value;
+        cells->at<cell_t>((static_cast<std::size_t>(m_num_cells) * cell_size) + i) = cell_value;
     }
 
     ++m_num_cells;
@@ -498,9 +527,9 @@ mesh::cell_t mesh::push_cell(const point_t* _point_ids, std::size_t _nb_points)
 void mesh::set_point(point_t _id, const std::array<position_t, 3>& _p)
 {
     auto& points = m_points[static_cast<std::size_t>(point_attribute::position)];
-    points->at<position_t>(3LL * _id)     = _p[0];
-    points->at<position_t>(3LL * _id + 1) = _p[1];
-    points->at<position_t>(3LL * _id + 2) = _p[2];
+    points->at<position_t>(3LL * _id)       = _p[0];
+    points->at<position_t>((3LL * _id) + 1) = _p[1];
+    points->at<position_t>((3LL * _id) + 2) = _p[2];
 }
 
 //------------------------------------------------------------------------------
@@ -580,7 +609,7 @@ void mesh::set_cell(cell_t _id, const point_t* _point_ids, std::size_t _nb_point
     for(std::size_t i = 0 ; i < _nb_points ; ++i)
     {
         const cell_t cell_value = _point_ids[i];
-        cells->at<cell_t>(static_cast<std::size_t>(cell_size()) * _id + i) = cell_value;
+        cells->at<cell_t>((static_cast<std::size_t>(cell_size()) * _id) + i) = cell_value;
     }
 }
 
@@ -602,10 +631,10 @@ void mesh::set_point_color(
 )
 {
     auto& colors = m_points[static_cast<std::size_t>(point_attribute::colors)];
-    colors->at<color_t>(4LL * _id)     = _r;
-    colors->at<color_t>(4LL * _id + 1) = _g;
-    colors->at<color_t>(4LL * _id + 2) = _b;
-    colors->at<color_t>(4LL * _id + 3) = _a;
+    colors->at<color_t>(4LL * _id)       = _r;
+    colors->at<color_t>((4LL * _id) + 1) = _g;
+    colors->at<color_t>((4LL * _id) + 2) = _b;
+    colors->at<color_t>((4LL * _id) + 3) = _a;
 }
 
 //------------------------------------------------------------------------------
@@ -626,10 +655,10 @@ void mesh::set_cell_color(
 )
 {
     auto& colors = m_cells[static_cast<std::size_t>(cell_attribute::colors)];
-    colors->at<color_t>(4LL * _id)     = _r;
-    colors->at<color_t>(4LL * _id + 1) = _g;
-    colors->at<color_t>(4LL * _id + 2) = _b;
-    colors->at<color_t>(4LL * _id + 3) = _a;
+    colors->at<color_t>(4LL * _id)       = _r;
+    colors->at<color_t>((4LL * _id) + 1) = _g;
+    colors->at<color_t>((4LL * _id) + 2) = _b;
+    colors->at<color_t>((4LL * _id) + 3) = _a;
 }
 
 //------------------------------------------------------------------------------
@@ -649,9 +678,9 @@ void mesh::set_point_normal(
 )
 {
     auto& normals = m_points[static_cast<std::size_t>(point_attribute::normals)];
-    normals->at<normal_t>(3LL * _id)     = _nx;
-    normals->at<normal_t>(3LL * _id + 1) = _ny;
-    normals->at<normal_t>(3LL * _id + 2) = _nz;
+    normals->at<normal_t>(3LL * _id)       = _nx;
+    normals->at<normal_t>((3LL * _id) + 1) = _ny;
+    normals->at<normal_t>((3LL * _id) + 2) = _nz;
 }
 
 //------------------------------------------------------------------------------
@@ -671,9 +700,9 @@ void mesh::set_cell_normal(
 )
 {
     auto& normals = m_cells[static_cast<std::size_t>(cell_attribute::normals)];
-    normals->at<normal_t>(3LL * _id)     = _nx;
-    normals->at<normal_t>(3LL * _id + 1) = _ny;
-    normals->at<normal_t>(3LL * _id + 2) = _nz;
+    normals->at<normal_t>(3LL * _id)       = _nx;
+    normals->at<normal_t>((3LL * _id) + 1) = _ny;
+    normals->at<normal_t>((3LL * _id) + 2) = _nz;
 }
 
 //------------------------------------------------------------------------------
@@ -692,8 +721,8 @@ void mesh::set_point_tex_coord(
 )
 {
     auto& tex_coords = m_points[static_cast<std::size_t>(point_attribute::tex_coords)];
-    tex_coords->at<texcoord_t>(2LL * _id)     = _u;
-    tex_coords->at<texcoord_t>(2LL * _id + 1) = _v;
+    tex_coords->at<texcoord_t>(2LL * _id)       = _u;
+    tex_coords->at<texcoord_t>((2LL * _id) + 1) = _v;
 }
 
 //------------------------------------------------------------------------------
@@ -712,8 +741,8 @@ void mesh::set_cell_tex_coord(
 )
 {
     auto& tex_coords = m_cells[static_cast<std::size_t>(cell_attribute::tex_coords)];
-    tex_coords->at<texcoord_t>(2LL * _id)     = _u;
-    tex_coords->at<texcoord_t>(2LL * _id + 1) = _v;
+    tex_coords->at<texcoord_t>(2LL * _id)       = _u;
+    tex_coords->at<texcoord_t>((2LL * _id) + 1) = _v;
 }
 
 //------------------------------------------------------------------------------

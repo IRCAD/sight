@@ -29,11 +29,17 @@
 #include "data/factory/new.hpp"
 #include "data/iterator.hpp"
 
+#include <core/compound_types.hpp>
 #include <core/macros.hpp>
 #include <core/memory/buffered.hpp>
 
 #include <boost/range/combine.hpp>
 #include <boost/range/iterator_range_core.hpp>
+
+#include <glm/vec3.hpp>
+
+#include <OGRE/OgreManualObject.h>
+#include <OGRE/OgreMesh.h>
 
 #include <array>
 
@@ -283,6 +289,18 @@ public:
     using cell_t  = iterator::cell_t;
     using point_t = iterator::point_t;
     using size_t  = iterator::size_t;
+    struct SIGHT_DATA_CLASS_API axis_aligned_box_t
+    {
+        sight::vec3f_t min {std::numeric_limits<position_t>::max(), std::numeric_limits<position_t>::max(),
+                            std::numeric_limits<position_t>::max()
+        };
+        sight::vec3f_t max {std::numeric_limits<position_t>::lowest(), std::numeric_limits<position_t>::lowest(),
+                            std::numeric_limits<position_t>::lowest()
+        };
+    };
+
+    // Lazy-compute the bounding-box using the object timestamp
+    SIGHT_DATA_API const axis_aligned_box_t& get_bounding_box();
 
     /**
      * @name Signals
@@ -565,6 +583,7 @@ public:
      * @param _id cell index
      * @param _t texCoord
      */
+
     SIGHT_DATA_API void set_cell_tex_coord(cell_t _id, const std::array<texcoord_t, 2>& _t);
     SIGHT_DATA_API void set_cell_tex_coord(cell_t _id, texcoord_t _u, texcoord_t _v);
     /// @}
@@ -576,6 +595,7 @@ public:
     array_iterator<T> begin();
     template<typename T>
     array_iterator<T> end();
+
     template<typename T>
     const_array_iterator<T> begin() const;
     template<typename T>
@@ -628,6 +648,12 @@ protected:
     SIGHT_DATA_API void dump_lock_impl(std::vector<core::memory::buffer_object::lock_t>& _locks) const override;
 
 private:
+
+    /// Time stamp indicates if the bounding box has been computed or not.
+    std::uint64_t m_bb_last_updated {~0UL};
+
+    /// The Axis-Aligned Bounding Box of the mesh, lazy-computed in get_mesh().
+    axis_aligned_box_t m_bbox {};
 
     /// Helper function used to get the array given a point or cell attribute type
     template<class ATTR>

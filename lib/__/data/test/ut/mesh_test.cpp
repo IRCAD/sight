@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,8 @@
 #include <data/mesh.hpp>
 
 #include <utest_data/generator/mesh.hpp>
+
+#include <boost/range/algorithm.hpp>
 
 #include <algorithm>
 #include <iostream>
@@ -1161,7 +1163,7 @@ void mesh_test::iterator_copy_test()
         auto range_copy = copied_mesh->zip_range<point::xyz, point::nxyz, point::rgba, point::uv,
                                                  cell::point, cell::nxyz, cell::rgba, cell::uv>();
 
-        std::copy(range.begin(), range.end(), range_copy.begin());
+        boost::copy(range, range_copy.begin());
     }
 
     CPPUNIT_ASSERT(*mesh == *copied_mesh);
@@ -1224,16 +1226,16 @@ void mesh_test::iterator_copy_test()
                                      cell::point, cell::nxyz, cell::rgba, cell::uv>();
 
         auto point = boost::make_tuple(
-            data::iterator::point::xyz({1.0F, 1.1F, 1.2F}),
-            data::iterator::point::nxyz({1.F, 0.F, 0.F}),
-            data::iterator::point::rgba({25, 15, 18, 32}),
-            data::iterator::point::uv({0.5F, 1.F}),
+            data::iterator::point::xyz({.x   = 1.0F, .y = 1.1F, .z = 1.2F}),
+            data::iterator::point::nxyz({.nx = 1.F, .ny = 0.F, .nz = 0.F}),
+            data::iterator::point::rgba({.r  = 25, .g = 15, .b = 18, .a = 32}),
+            data::iterator::point::uv({.u    = 0.5F, .v = 1.F}),
             data::iterator::cell::point({0}),
-            data::iterator::cell::nxyz({0.F, 1.F, 0.F}),
-            data::iterator::cell::rgba({20, 13, 10, 37}),
-            data::iterator::cell::uv({0.2F, 0.8F})
+            data::iterator::cell::nxyz({.nx = 0.F, .ny = 1.F, .nz = 0.F}),
+            data::iterator::cell::rgba({.r  = 20, .g = 13, .b = 10, .a = 37}),
+            data::iterator::cell::uv({.u    = 0.2F, .v = 0.8F})
         );
-        std::fill(range.begin(), range.end(), point);
+        boost::fill(range, point);
 
         // check the mesh points are filled
         data::mesh::size_t count = 0;
@@ -1376,7 +1378,7 @@ void mesh_test::benchmark_iterator()
         FW_PROFILE("std::for_each - zip array_iterator");
         for(std::size_t i = 0 ; i < s_N ; ++i)
         {
-            std::for_each(range.begin(), range.end(), fn2);
+            std::ranges::for_each(range, fn2);
         }
     }
 
@@ -1400,6 +1402,24 @@ void mesh_test::benchmark_iterator()
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+void mesh_test::bounding_box_test()
+{
+    auto mesh = std::make_shared<data::mesh>();
+    auto lock = mesh->dump_lock();
+
+    mesh->push_point(1.F, 2.F, 3.F);
+    mesh->push_point(4.F, 4.F, 4.F);
+    sight::data::mesh::axis_aligned_box_t bbox = mesh->get_bounding_box();
+
+    CPPUNIT_ASSERT_EQUAL(1.F, bbox.min[0]);
+    CPPUNIT_ASSERT_EQUAL(2.F, bbox.min[1]);
+    CPPUNIT_ASSERT_EQUAL(3.F, bbox.min[2]);
+    CPPUNIT_ASSERT_EQUAL(4.F, bbox.max[0]);
+    CPPUNIT_ASSERT_EQUAL(4.F, bbox.max[1]);
+    CPPUNIT_ASSERT_EQUAL(4.F, bbox.max[2]);
 }
 
 //------------------------------------------------------------------------------

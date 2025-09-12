@@ -50,14 +50,14 @@ SIGHT_GEOMETRY_API ::glm::dvec3 to_barycentric_coord(
 /**
  * @brief Converts from barycentric coordinates to world coordinates, assert if u+v+w isn't equal to 1.
  * Note: no tests are performed in release mode to avoid performance issue.
- * @param _bary_coord barycentric coordinates (u, v, w) that belongs to the _A_B_C triangle.
+ * @param _barycenter barycentric coordinates (u, v, w) that belongs to the _A_B_C triangle.
  * @param _a first vertex of the triangle (_Ax, _Ay, _Az) (can also be called v1).
  * @param _b second vertex of the triangle (_Bx, _By, _Bz) (can also be called v2).
  * @param _c third vertex of the triangle (_Cx, _Cy, _Cz) (can also be called v3).
  * @return world coordinates (x, y, z).
  */
 SIGHT_GEOMETRY_API ::glm::dvec3 from_barycentric_coord(
-    const ::glm::dvec3& _bary_coord,
+    const ::glm::dvec3& _barycenter,
     const ::glm::dvec3& _a,
     const ::glm::dvec3& _b,
     const ::glm::dvec3& _c
@@ -85,7 +85,7 @@ SIGHT_GEOMETRY_API ::glm::dvec4 to_barycentric_coord(
 /**
  * @brief Converts from barycentric coordinates to world coordinates, assert if u+v+w+h isn't equal to 1.
  * @note no tests are performed in release mode to avoid performance issue.
- * @param _bary_coord barycentric coordinates (u, v, w, h) that belongs to the _A_B_C_D tetrahedron.
+ * @param _barycenter barycentric coordinates (u, v, w, h) that belongs to the _A_B_C_D tetrahedron.
  * @param _a first vertex of the tetrahedron (_Ax, _Ay, _Az) (can also be called v1).
  * @param _b second vertex of the tetrahedron (_Bx, _By, _Bz) (can also be called v2).
  * @param _c third vertex of the tetrahedron (_Cx, _Cy, _Cz) (can also be called v3).
@@ -93,7 +93,7 @@ SIGHT_GEOMETRY_API ::glm::dvec4 to_barycentric_coord(
  * @return world coordinates (x, y, z).
  */
 SIGHT_GEOMETRY_API ::glm::dvec3 from_barycentric_coord(
-    const ::glm::dvec4& _bary_coord,
+    const ::glm::dvec4& _barycenter,
     const ::glm::dvec3& _a,
     const ::glm::dvec3& _b,
     const ::glm::dvec3& _c,
@@ -124,7 +124,6 @@ SIGHT_GEOMETRY_API bool is_inside_tetrahedron(
  * @return true if the point _P is inside the tetrahedron (ABCD) false otherwise.
  */
 SIGHT_GEOMETRY_API bool is_inside_tetrahedron(::glm::dvec4 _barycentric_coord_p_inside_abcd);
-
 //-----------------------------------------------------------------------------
 
 template<typename T, typename U, typename V>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include <data/image.hpp>
+#include <data/mesh.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -41,6 +42,7 @@ CPPUNIT_TEST(transform_test);
 CPPUNIT_TEST(is_closed_test);
 CPPUNIT_TEST(cell_normal_test);
 CPPUNIT_TEST(point_normal_test);
+CPPUNIT_TEST(check_bounding_box_point);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -55,6 +57,8 @@ public:
     static void is_closed_test();
     static void cell_normal_test();
     static void point_normal_test();
+    // Checks if points are inside a bounding box or not.
+    static void check_bounding_box_point();
 };
 
 } // namespace sight::geometry::data::ut

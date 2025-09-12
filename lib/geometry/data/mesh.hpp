@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include <sight/geometry/data/config.hpp>
 
 #include <core/base.hpp>
+#include <core/compound_types.hpp>
 
 #include <data/matrix4.hpp>
 #include <data/mesh.hpp>
@@ -162,6 +163,17 @@ public:
      * The result is computed for each call.
      */
     SIGHT_GEOMETRY_DATA_API static bool is_closed(const sight::data::mesh::csptr& _mesh);
+
+    /**
+     * @brief Verify if the point is inside the Axis-aligned bounding box.
+     * @param _point : The coordinates of the point to be tested.
+     * @param  _box : The coordinates of the bounding box.
+     * @return true if the point is inside the Axis-aligned bounding box false otherwise.
+     */
+    SIGHT_GEOMETRY_DATA_API static bool is_inside_bounding_box(
+        const  sight::vec3d_t& _point,
+        const  sight::data::mesh::axis_aligned_box_t& _box
+    );
 };
 
 } // namespace sight::geometry::data

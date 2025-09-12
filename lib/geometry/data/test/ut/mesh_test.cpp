@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,6 +36,8 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 
+#include <algorithm>
+#include <numbers>
 #include <sstream>
 
 // Registers the fixture into the 'registry'
@@ -255,7 +257,7 @@ void mesh_test::colorize_cells_test()
         std::size_t count = 0;
         for(const auto& color : mesh->crange<cell::rgba>())
         {
-            auto iter = std::find(vector_num_triangle.begin(), vector_num_triangle.end(), count);
+            auto iter = std::ranges::find(vector_num_triangle, count);
             if(iter != vector_num_triangle.end())
             {
                 CPPUNIT_ASSERT_EQUAL(r, color.r);
@@ -304,7 +306,7 @@ void mesh_test::colorize_cells_test()
         std::size_t count = 0;
         for(const auto& color : mesh->crange<cell::rgba>())
         {
-            auto iter = std::find(vector_num_triangle.begin(), vector_num_triangle.end(), count);
+            auto iter = std::ranges::find(vector_num_triangle, count);
             if(iter != vector_num_triangle.end())
             {
                 CPPUNIT_ASSERT_EQUAL(r, color.r);
@@ -700,59 +702,84 @@ void mesh_test::point_normal_test()
 
     // check first point normal = {-0.57735, 0.57735, -0.57735}
     const float epsilon    = 0.00001F;
-    std::array<float, 3> n = {-0.57735F, 0.57735F, -0.57735F};
+    std::array<float, 3> n = {-std::numbers::inv_sqrt3_v<float>, std::numbers::inv_sqrt3_v<float>,
+                              -std::numbers::inv_sqrt3_v<float>
+    };
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 2 normal = {0.57735, 0.57735, -0.57735}
     ++point_iter;
-    n = {0.57735F, 0.57735F, -0.57735F};
+    n = {std::numbers::inv_sqrt3_v<float>, std::numbers::inv_sqrt3_v<float>, -std::numbers::inv_sqrt3_v<float>};
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 3 normal = {0.57735, -0.57735, -0.57735}
     ++point_iter;
-    n = {0.57735F, -0.57735F, -.57735F};
+    n = {std::numbers::inv_sqrt3_v<float>, -std::numbers::inv_sqrt3_v<float>, -std::numbers::inv_sqrt3_v<float>};
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 4 normal = {-0.57735, -0.57735, -0.57735}
     ++point_iter;
-    n = {-0.57735F, -0.57735F, -0.57735F};
+    n = {-std::numbers::inv_sqrt3_v<float>, -std::numbers::inv_sqrt3_v<float>, -std::numbers::inv_sqrt3_v<float>};
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 5 normal = {-0.57735, 0.57735, 0.57735}
     ++point_iter;
-    n = {-0.57735F, 0.57735F, 0.57735F};
+    n = {-std::numbers::inv_sqrt3_v<float>, std::numbers::inv_sqrt3_v<float>, std::numbers::inv_sqrt3_v<float>};
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 6 normal = {0.57735, 0.57735, 0.57735}
     ++point_iter;
-    n = {0.57735F, 0.57735F, 0.57735F};
+    n = {std::numbers::inv_sqrt3_v<float>, std::numbers::inv_sqrt3_v<float>, std::numbers::inv_sqrt3_v<float>};
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 7 normal = {0.57735, -0.57735, 0.57735}
     ++point_iter;
-    n = {0.57735F, -0.57735F, 0.57735F};
+    n = {std::numbers::inv_sqrt3_v<float>, -std::numbers::inv_sqrt3_v<float>, std::numbers::inv_sqrt3_v<float>};
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
 
     // check point 8 normal = {-0.57735, -0.57735, 0.57735}
     ++point_iter;
-    n = {-0.57735F, -0.57735F, 0.57735F};
+    n = {-std::numbers::inv_sqrt3_v<float>, -std::numbers::inv_sqrt3_v<float>, std::numbers::inv_sqrt3_v<float>};
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[0], point_iter->nx, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[1], point_iter->ny, epsilon);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(n[2], point_iter->nz, epsilon);
+}
+
+//---------------------------------------------------------------------------
+void mesh_test::check_bounding_box_point()
+{
+    sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
+    const auto dump_lock         = mesh->dump_lock();
+    sight::vec3d_t point_a       = {3., 4., 3.};
+    sight::vec3d_t point_b       = {8., 9., 10.};
+
+    sight::data::mesh::axis_aligned_box_t bbox_test = mesh->get_bounding_box();
+
+    bbox_test.min[0] = 1.F;
+    bbox_test.min[1] = 1.F;
+    bbox_test.min[2] = 1.F;
+    bbox_test.max[0] = 5.F;
+    bbox_test.max[1] = 5.F;
+    bbox_test.max[2] = 5.F;
+
+    const bool is_inside_bounding_box_a = sight::geometry::data::mesh::is_inside_bounding_box(point_a, bbox_test);
+    const bool is_inside_bounding_box_b = sight::geometry::data::mesh::is_inside_bounding_box(point_b, bbox_test);
+    CPPUNIT_ASSERT_EQUAL(is_inside_bounding_box_a, true);
+    CPPUNIT_ASSERT_EQUAL(is_inside_bounding_box_b, false);
 }
 
 //------------------------------------------------------------------------------
