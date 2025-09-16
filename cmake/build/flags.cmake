@@ -308,16 +308,6 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "" CACHE STRING "" FORCE)
 endif()
 
-# Color for ninja and Clang on Linux and OSX
-if(CMAKE_GENERATOR STREQUAL "Ninja")
-    add_compile_options("$<$<AND:$<CXX_COMPILER_ID:GNU>,$<COMPILE_LANGUAGE:C,CXX>>:-fdiagnostics-color>")
-    add_compile_options(
-        "$<$<AND:$<CXX_COMPILER_ID:GNU,CLANG>,$<COMPILE_LANGUAGE:CUDA>>:-Xcompiler=-fdiagnostics-color>"
-    )
-
-    add_compile_options("$<$<AND:$<CXX_COMPILER_ID:Clang>,$<COMPILE_LANGUAGE:C,CXX>>:-fcolor-diagnostics>")
-endif()
-
 # CUDA specific options: Use the Sight customized CXX/C flags, not the CMAKE default
 # NVCC flags:
 # --expt-relaxed-constexpr: allow usage of __host__ constexpr functions device side.

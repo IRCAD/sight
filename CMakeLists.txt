@@ -66,6 +66,18 @@ option(SIGHT_VERBOSE_PCH "Display debug messages to help debugging PCH" OFF)
 mark_as_advanced(SIGHT_ENABLE_PCH)
 mark_as_advanced(SIGHT_VERBOSE_PCH)
 
+# Tests build / run options
+option(SIGHT_BUILD_TESTS "Configures projects associated tests (<project>Test projects)" ON)
+
+if(SIGHT_BUILD_TESTS)
+    message(STATUS "Tests enabled")
+    include(CTest)
+    find_package(doctest REQUIRED)
+endif()
+
+option(SIGHT_TESTS_XML_OUTPUT "Tests will generate an xml output, suitable for CI integration" ON)
+mark_as_advanced(SIGHT_TESTS_XML_OUTPUT)
+
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
 
@@ -81,20 +93,6 @@ find_package(VTK CONFIG QUIET)
 ########################################################################################################################
 # User options
 ########################################################################################################################
-
-# Tests build / run options
-option(SIGHT_BUILD_TESTS "Configures projects associated tests (<project>Test projects)" ON)
-
-if(SIGHT_BUILD_TESTS)
-    message(STATUS "Tests enabled")
-    include(CTest)
-endif()
-
-option(SIGHT_TESTS_XML_OUTPUT "Tests will generate an xml output, suitable for CI integration" ON)
-mark_as_advanced(SIGHT_TESTS_XML_OUTPUT)
-
-set(SIGHT_TESTS_FILTER "" CACHE STRING "Allows to only build/run tests whose path contains the filter string.")
-mark_as_advanced(SIGHT_TESTS_FILTER)
 
 if(UNIX)
     option(SIGHT_ENABLE_GDB
@@ -187,8 +185,9 @@ if(UNIX)
     endif()
 endif()
 
-# We always need CppUnit, no need to put that in subdirectories
-find_package(CppUnit QUIET REQUIRED)
+if(SIGHT_BUILD_TESTS)
+    find_package(CppUnit QUIET REQUIRED)
+endif()
 
 ########################################################################################################################
 # Default paths settings for libraries, module and resources
@@ -273,6 +272,9 @@ install(
     FILES "${CMAKE_SOURCE_DIR}/cmake/build/configure_file.cmake"
           "${CMAKE_SOURCE_DIR}/cmake/build/flags.cmake"
           "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp.in"
+          "${FWCMAKE_RESOURCE_PATH}/build/doctest_main.cpp.in"
+          "${FWCMAKE_RESOURCE_PATH}/build/doctest.cmake"
+          "${FWCMAKE_RESOURCE_PATH}/build/doctestAddTests.cmake"
           "${FWCMAKE_RESOURCE_PATH}/build/pch.cpp"
           "${CMAKE_SOURCE_DIR}/cmake/build/config.hpp.in"
           "${CMAKE_SOURCE_DIR}/cmake/build/plugin_config.cmake"
@@ -299,7 +301,7 @@ if(WIN32)
     install(
         FILES "${CMAKE_SOURCE_DIR}/cmake/build/windows/template.bat.in"
               "${CMAKE_SOURCE_DIR}/cmake/build/windows/template_exe.bat.in"
-              "${CMAKE_SOURCE_DIR}/cmake/build/windows/template_test.bat.in"
+              "${CMAKE_SOURCE_DIR}/cmake/build/windows/sight.env.in"
         DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/build/windows
         COMPONENT dev
     )
@@ -308,7 +310,6 @@ if(WIN32)
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/install_plugins.cmake"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/template.bat.in"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/template_exe.bat.in"
-              "${CMAKE_SOURCE_DIR}/cmake/install/windows/setpath.bat.in"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/windows_fixup.cmake.in"
         DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/windows
         COMPONENT dev

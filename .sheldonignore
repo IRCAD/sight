@@ -1,4 +1,5 @@
 /3rd-party
+/cmake/build/doctest*
 /lib/__/data/dicom/attribute.*
 /lib/__/data/dicom/sop.*
 /lib/__/data/test/tu/dicom/attribute_test.*
