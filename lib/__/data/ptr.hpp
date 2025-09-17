@@ -416,6 +416,11 @@ private:
         bool _signal                      = false
     ) final
     {
+        SIGHT_ASSERT(
+            "Index parameter must be set for '" + _obj->get_classname() + "'",
+            _index.has_value()
+        );
+
         auto index = _index.value();
         if(_obj == nullptr)
         {
