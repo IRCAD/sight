@@ -1,3 +1,5 @@
+#ifndef _WIN32
+
 /* mz_os_posix.c -- System functions for posix
    part of the minizip-ng project
 
@@ -8,8 +10,6 @@
    See the accompanying LICENSE file for the full text of the license.
 */
 
-#ifndef WIN32
-
 #include "mz.h"
 #include "mz_strm.h"
 #include "mz_os.h"
@@ -17,7 +17,7 @@
 #include <stdio.h> /* rename */
 #include <errno.h>
 #if defined(HAVE_ICONV)
-#include <iconv.h>
+#  include <iconv.h>
 #endif
 #include <string.h>
 #include <sys/types.h>
@@ -39,6 +39,10 @@
 #  include <stdlib.h> /* arc4random_buf */
 #endif
 
+#ifndef MZ_PRESERVE_NATIVE_STRUCTURE
+#  define MZ_PRESERVE_NATIVE_STRUCTURE 1
+#endif
+
 /***************************************************************************/
 
 #if defined(HAVE_ICONV)
@@ -51,21 +55,17 @@ char *mz_os_utf8_string_create(const char *string, int32_t encoding) {
     char *string_utf8 = NULL;
     char *string_utf8_ptr = NULL;
 
-    if (!string)
+    if (!string || encoding <= 0)
         return NULL;
 
-    if (encoding == MZ_ENCODING_CODEPAGE_437)
-        from_encoding = "CP437";
-    else if (encoding == MZ_ENCODING_CODEPAGE_932)
-        from_encoding = "CP932";
-    else if (encoding == MZ_ENCODING_CODEPAGE_936)
-        from_encoding = "CP936";
-    else if (encoding == MZ_ENCODING_CODEPAGE_950)
-        from_encoding = "CP950";
-    else if (encoding == MZ_ENCODING_UTF8)
+    if (encoding == MZ_ENCODING_UTF8)
         from_encoding = "UTF-8";
-    else
-        return NULL;
+    else {
+        /// up to CP2147483647
+        char string_encoding[13];
+        snprintf(string_encoding, sizeof(string_encoding), "CP%03" PRId32, encoding);
+        from_encoding = string_encoding;
+    }
 
     cd = iconv_open("UTF-8", from_encoding);
     if (cd == (iconv_t)-1)
@@ -77,8 +77,7 @@ char *mz_os_utf8_string_create(const char *string, int32_t encoding) {
     string_utf8_ptr = string_utf8;
 
     if (string_utf8) {
-        result = iconv(cd, (char **)&string, &string_length,
-                (char **)&string_utf8_ptr, &string_utf8_size);
+        result = iconv(cd, (char **)&string, &string_length, (char **)&string_utf8_ptr, &string_utf8_size);
     }
 
     iconv_close(cd);
@@ -149,7 +148,7 @@ int32_t mz_os_rand(uint8_t *buf, int32_t size) {
 
     /* Ensure different random header each time */
     if (++calls == 1) {
-        #define PI_SEED 3141592654UL
+#  define PI_SEED 3141592654UL
         srand((unsigned)(time(NULL) ^ PI_SEED));
     }
 
@@ -274,11 +273,11 @@ int32_t mz_os_make_dir(const char *path) {
     return MZ_OK;
 }
 
-DIR* mz_os_open_dir(const char *path) {
+DIR *mz_os_open_dir(const char *path) {
     return opendir(path);
 }
 
-struct dirent* mz_os_read_dir(DIR *dir) {
+struct dirent *mz_os_read_dir(DIR *dir) {
     if (!dir)
         return NULL;
     return readdir(dir);
@@ -290,6 +289,18 @@ int32_t mz_os_close_dir(DIR *dir) {
     if (closedir(dir) == -1)
         return MZ_INTERNAL_ERROR;
     return MZ_OK;
+}
+
+int32_t mz_os_is_dir_separator(const char c) {
+#if MZ_PRESERVE_NATIVE_STRUCTURE
+    // While not strictly adhering to 4.4.17.1,
+    // this preserves UNIX filesystem structure.
+    return c == '/';
+#else
+    // While strictly adhering to 4.4.17.1,
+    // this corrupts UNIX filesystem structure (a filename with a '\\' will become a folder + a file).
+    return c == '\\' || c == '/';
+#endif
 }
 
 int32_t mz_os_is_dir(const char *path) {
