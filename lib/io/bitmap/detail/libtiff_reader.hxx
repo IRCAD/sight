@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,12 +21,12 @@
 
 #pragma once
 
+#include "common.hxx"
 #include "libtiff_common.hxx"
-#include "reader_impl.hxx"
 
-// cspell:ignore nvjpeg NOLINTNEXTLINE TIFFTAG IMAGEWIDTH IMAGELENGTH BITSPERSAMPLE SAMPLESPERPIXEL MINISBLACK
+// cspell:ignore NOLINTNEXTLINE TIFFTAG IMAGEWIDTH IMAGELENGTH BITSPERSAMPLE SAMPLESPERPIXEL MINISBLACK
 // cspell:ignore PLANARCONFIG TOPLEFT ROWSPERSTRIP Scanline XRESOLUTION YRESOLUTION thandle SAMPLEFORMAT
-// cspell:ignore PACKBITS EXTRASAMPLE RESOLUTIONUNIT RESUNIT EXTRASAMPLES tiffio tmsize
+// cspell:ignore PACKBITS EXTRASAMPLE RESOLUTIONUNIT RESUNIT EXTRASAMPLES tiffio tmsize hicpp
 
 namespace sight::io::bitmap::detail
 {
@@ -34,27 +34,27 @@ namespace sight::io::bitmap::detail
 // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
 #define CHECK_TIFF(func) SIGHT_THROW_IF("The function " #func " failed.", (func) == 0)
 
-class lib_tiff_reader final
+class libtiff_reader final : public reader_backend
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    lib_tiff_reader(const lib_tiff_reader&)            = delete;
-    lib_tiff_reader& operator=(const lib_tiff_reader&) = delete;
+    libtiff_reader(const libtiff_reader&)            = delete;
+    libtiff_reader& operator=(const libtiff_reader&) = delete;
 
     /// Constructor
-    inline lib_tiff_reader() noexcept = default;
+    libtiff_reader() noexcept = default;
 
     /// Destructor
-    inline ~lib_tiff_reader() noexcept = default;
+    ~libtiff_reader() noexcept final = default;
 
     /// Reading
-    inline void read(data::image& _image, std::istream& _istream, flag /*flag*/)
+    void read(data::image& _image, std::istream& _istream, flag /*flag*/) final
     {
         // Create an RAII to be sure everything is cleaned at exit
         struct keeper final
         {
-            inline ~keeper()
+            ~keeper()
             {
                 if(m_tiff != nullptr)
                 {
@@ -79,6 +79,7 @@ public:
         std::uint16_t photometric        = 0;
         std::uint16_t planar_config      = 0;
 
+        // NOLINTBEGIN(cppcoreguidelines-pro-type-vararg, hicpp-vararg)
         CHECK_TIFF(TIFFGetField(keeper.m_tiff, TIFFTAG_IMAGEWIDTH, &width));
         CHECK_TIFF(TIFFGetField(keeper.m_tiff, TIFFTAG_IMAGELENGTH, &height));
         CHECK_TIFF(TIFFGetField(keeper.m_tiff, TIFFTAG_SAMPLESPERPIXEL, &samples_per_pixels));
@@ -91,6 +92,8 @@ public:
         {
             sample_format = SAMPLEFORMAT_UINT;
         }
+
+        // NOLINTEND(cppcoreguidelines-pro-type-vararg, hicpp-vararg)
 
         // Depending of the format, we use scanline approach if possible, or libtiff automatic rgba conversion if we are
         // not able to interpret pixels data
@@ -216,9 +219,22 @@ public:
 
             for(std::uint32_t row = 0 ; row < height ; ++row)
             {
-                CHECK_TIFF(TIFFReadScanline(keeper.m_tiff, _image.get_pixel(row * width), row));
+                CHECK_TIFF(
+                    TIFFReadScanline(
+                        keeper.m_tiff,
+                        _image.get_pixel(sight::data::image::index_t(row) * sight::data::image::index_t(width)),
+                        row
+                    )
+                );
             }
         }
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool is_valid() const noexcept final
+    {
+        return m_valid;
     }
 
 private:
@@ -233,9 +249,9 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static TIFF* tiff_stream_open(std::istream& _istream)
+    static TIFF* tiff_stream_open(std::istream& _istream)
     {
-        tiff_stream_data* const data = new tiff_stream_data {.istream = _istream, .start_pos = _istream.tellg()};
+        auto* const data = new tiff_stream_data {.istream = _istream, .start_pos = _istream.tellg()};
 
         // Open for reading.
         TIFF* tiff = TIFFClientOpen(
@@ -256,25 +272,25 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static tmsize_t tiff_read_proc(thandle_t _fd, void* _buff, tmsize_t _size)
+    static tmsize_t tiff_read_proc(thandle_t _fd, void* _buff, tmsize_t _size)
     {
-        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
+        auto* const data = reinterpret_cast<tiff_stream_data*>(_fd);
         data->istream.read(reinterpret_cast<char*>(_buff), _size);
         return data->istream.gcount();
     }
 
     //------------------------------------------------------------------------------
 
-    inline static tmsize_t tiff_write_proc(thandle_t, void*, tmsize_t)
+    static tmsize_t tiff_write_proc(thandle_t /*unused*/, void* /*unused*/, tmsize_t /*unused*/)
     {
         return -1;
     }
 
     //------------------------------------------------------------------------------
 
-    inline static toff_t tiff_seek_proc(thandle_t _fd, toff_t _off, int _whence)
+    static toff_t tiff_seek_proc(thandle_t _fd, toff_t _off, int _whence)
     {
-        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
+        auto* const data = reinterpret_cast<tiff_stream_data*>(_fd);
 
         switch(_whence)
         {
@@ -289,6 +305,9 @@ private:
             case SEEK_END:
                 data->istream.seekg(std::streamoff(_off), std::ios::end);
                 break;
+
+            default:
+                return toff_t(-1);
         }
 
         return toff_t(data->istream.tellg() - data->start_pos);
@@ -296,7 +315,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static int tiff_close_proc(thandle_t _fd)
+    static int tiff_close_proc(thandle_t _fd)
     {
         // Our stream was not allocated by us, so it shouldn't be closed by us.
         delete reinterpret_cast<tiff_stream_data*>(_fd);
@@ -305,9 +324,9 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static toff_t tiff_size_proc(thandle_t _fd)
+    static toff_t tiff_size_proc(thandle_t _fd)
     {
-        tiff_stream_data* const data = reinterpret_cast<tiff_stream_data*>(_fd);
+        auto* const data = reinterpret_cast<tiff_stream_data*>(_fd);
 
         const auto initial_pos = data->istream.tellg();
 
@@ -320,10 +339,7 @@ private:
 
     /// @}
 
-public:
-
     bool m_valid {true};
-    static constexpr std::string_view m_name {"LibTIFFReader"};
 };
 
 } // namespace sight::io::bitmap::detail

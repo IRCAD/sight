@@ -21,8 +21,10 @@
 
 #pragma once
 
-#include "reader_impl.hxx"
+#include "common.hxx"
 
+#include <cuda.h>
+#include <nppi.h>
 #include <nvjpeg2k.h>
 
 // cspell:ignore nvjpeg nvjpeg2k nppi bitstream LRCP NOLINTNEXTLINE
@@ -30,16 +32,37 @@
 namespace sight::io::bitmap::detail
 {
 
-class nv_jpe_g2_k_reader final
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define CHECK_CUDA(func, success) \
+        if(const auto& status = func; status != (success)) \
+        { \
+            SIGHT_THROW("The function " #func " failed: " << status); \
+        }
+
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define CHECK_CUDA_NOEXCEPT(func, success) \
+        try \
+        { \
+            if(const auto status = func; status != (success)) \
+            { \
+                SIGHT_THROW("The function " #func " failed: " << status); \
+            } \
+        } \
+        catch(const std::exception& e) \
+        { \
+            SIGHT_ERROR(e.what()); \
+        }
+
+class nvjpeg2k_reader final : public reader_backend
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    nv_jpe_g2_k_reader(const nv_jpe_g2_k_reader&)            = delete;
-    nv_jpe_g2_k_reader& operator=(const nv_jpe_g2_k_reader&) = delete;
+    nvjpeg2k_reader(const nvjpeg2k_reader&)            = delete;
+    nvjpeg2k_reader& operator=(const nvjpeg2k_reader&) = delete;
 
     /// Constructor
-    inline nv_jpe_g2_k_reader() noexcept
+    nvjpeg2k_reader() noexcept
     {
         try
         {
@@ -63,13 +86,13 @@ public:
     }
 
     /// Destructor
-    inline ~nv_jpe_g2_k_reader() noexcept
+    ~nvjpeg2k_reader() noexcept final
     {
         free();
     }
 
     /// Reading
-    inline void read(data::image& _image, std::istream& _istream, flag /*flag*/)
+    void read(data::image& _image, std::istream& _istream, flag _flag) final
     {
         // Get input size
         _istream.seekg(0, std::ios::end);
@@ -79,7 +102,7 @@ public:
         SIGHT_THROW_IF("The stream cannot be read.", stream_size <= 0);
 
         // Allocate input buffer
-        const std::size_t input_buffer_size = std::size_t(stream_size);
+        const auto input_buffer_size = std::size_t(stream_size);
         if(m_input_buffer.size() < input_buffer_size)
         {
             m_input_buffer.resize(input_buffer_size);
@@ -88,12 +111,25 @@ public:
         // Read input data..
         _istream.read(reinterpret_cast<char*>(m_input_buffer.data()), stream_size);
 
+        read(_image, m_input_buffer.data(), input_buffer_size, nullptr, _flag);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void read(
+        const std::optional<std::reference_wrapper<data::image> >& _image,
+        const std::uint8_t* const _input,
+        std::size_t _input_size,
+        std::uint8_t* const _output,
+        flag /*_flag*/
+    ) final
+    {
         // Initialize JPEG2000 stream
         CHECK_CUDA(
             nvjpeg2kStreamParse(
                 m_handle,
-                m_input_buffer.data(),
-                input_buffer_size,
+                _input,
+                _input_size,
                 0,
                 0,
                 m_stream
@@ -172,19 +208,26 @@ public:
         );
 
         // Allocate destination image
-        _image.resize(
-            {image_info.image_width, image_info.image_height, 0},
-            output_image.pixel_type == NVJPEG2K_UINT16
-            ? core::type::UINT16
-            : core::type::UINT8,
-            image_info.num_components == 2
-            ? data::image::pixel_format_t::rg
-            : image_info.num_components == 3
-            ? data::image::pixel_format_t::rgb
-            : image_info.num_components == 4
-            ? data::image::pixel_format_t::rgba
-            : data::image::pixel_format_t::gray_scale
-        );
+        const auto output_size = image_info.image_width * image_info.image_height
+                                 * image_info.num_components
+                                 * (output_image.pixel_type == NVJPEG2K_UINT16 ? 2 : 1);
+
+        if(_image.has_value())
+        {
+            _image->get().resize(
+                {image_info.image_width, image_info.image_height, 0},
+                output_image.pixel_type == NVJPEG2K_UINT16
+                ? core::type::UINT16
+                : core::type::UINT8,
+                image_info.num_components == 2
+                ? data::image::pixel_format_t::rg
+                : image_info.num_components == 3
+                ? data::image::pixel_format_t::rgb
+                : image_info.num_components == 4
+                ? data::image::pixel_format_t::rgba
+                : data::image::pixel_format_t::gray_scale
+            );
+        }
 
         // Synchronize CUDA streams
         CHECK_CUDA(cudaStreamSynchronize(m_cuda_stream), cudaSuccess);
@@ -195,9 +238,9 @@ public:
             // Copy from GPU memory
             CHECK_CUDA(
                 cudaMemcpy(
-                    _image.buffer(),
+                    _image.has_value() ? _image->get().buffer() : _output,
                     m_planar_gpu_buffers[0],
-                    _image.size_in_bytes(),
+                    _image.has_value() ? _image->get().size_in_bytes() : output_size,
                     cudaMemcpyDeviceToHost
                 ),
                 cudaSuccess
@@ -207,7 +250,7 @@ public:
         {
             // Use nppi to convert planar to interleaved
             // Realloc if GPU packed buffer is smaller
-            const std::size_t new_packed_size = _image.size_in_bytes();
+            const std::size_t new_packed_size = _image.has_value() ? _image->get().size_in_bytes() : output_size;
             if(m_packed_size < new_packed_size)
             {
                 if(m_packed_gpu_buffer != nullptr)
@@ -319,9 +362,9 @@ public:
             // Copy from GPU memory
             CHECK_CUDA(
                 cudaMemcpy(
-                    _image.buffer(),
+                    _image.has_value() ? _image->get().buffer() : _output,
                     m_packed_gpu_buffer,
-                    _image.size_in_bytes(),
+                    _image.has_value() ? _image->get().size_in_bytes() : output_size,
                     cudaMemcpyDeviceToHost
                 ),
                 cudaSuccess
@@ -336,11 +379,18 @@ public:
         CHECK_CUDA(cudaDeviceSynchronize(), cudaSuccess);
     }
 
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool is_valid() const noexcept final
+    {
+        return m_valid;
+    }
+
 private:
 
     //------------------------------------------------------------------------------
 
-    inline void free() noexcept
+    void free() noexcept
     {
         for(auto& buffer : m_planar_gpu_buffers)
         {
@@ -409,10 +459,7 @@ private:
     void* m_packed_gpu_buffer {nullptr};
     std::size_t m_packed_size {0};
 
-public:
-
     bool m_valid {false};
-    static constexpr std::string_view m_name {"NvJPEG2KReader"};
 };
 
 } // namespace sight::io::bitmap::detail

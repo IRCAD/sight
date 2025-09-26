@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,20 +21,27 @@
 
 #pragma once
 
-#include <gdcmJPEG2000Codec.h>
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::dicom::codec
+namespace sight::module::data::ut
 {
 
-class nv_jpeg2_k : public gdcm::JPEG2000Codec
+class concat_test : public CPPUNIT_NS::TestFixture
 {
+CPPUNIT_TEST_SUITE(concat_test);
+CPPUNIT_TEST(string_to_string);
+CPPUNIT_TEST(integer_to_integer);
+CPPUNIT_TEST(format);
+CPPUNIT_TEST_SUITE_END();
+
 public:
 
-    ~nv_jpeg2_k() override = default;
+    void setUp() override;
+    void tearDown() override;
 
-    bool Code(gdcm::DataElement const& _in, gdcm::DataElement& _out) override;
-
-    ImageCodec* Clone() const override;
+    static void string_to_string();
+    static void integer_to_integer();
+    static void format();
 };
 
-}
+} // namespace sight::module::data::ut

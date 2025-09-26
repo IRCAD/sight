@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -59,16 +59,16 @@ struct has_alpha : std::false_type {};
 template<typename T>
 struct has_alpha<T, decltype((void) T::a, 0)>: std::true_type {};
 
-class open_jpeg_writer final
+class openjpeg_writer final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    open_jpeg_writer(const open_jpeg_writer&)            = delete;
-    open_jpeg_writer& operator=(const open_jpeg_writer&) = delete;
+    openjpeg_writer(const openjpeg_writer&)            = delete;
+    openjpeg_writer& operator=(const openjpeg_writer&) = delete;
 
     /// Constructor
-    inline open_jpeg_writer() noexcept
+    openjpeg_writer() noexcept
     {
         try
         {
@@ -92,25 +92,23 @@ public:
     }
 
     /// Destructor
-    inline ~open_jpeg_writer() noexcept = default;
+    ~openjpeg_writer() noexcept = default;
 
     /// Writing
     template<
-        typename O,
-        std::enable_if_t<
-            std::is_base_of_v<std::ostream, O>
-            || std::is_same_v<std::uint8_t*, O>
-            || std::is_same_v<std::uint8_t**, O>
-            || std::is_same_v<std::vector<uint8_t>, O>,
-            bool
-        > = true
-    >
-    inline std::size_t write(
+        typename O>
+    std::size_t write(
         const data::image& _image,
         O& _output,
-        writer::mode,
+        writer::mode /*_mode*/,
         flag _flag = flag::none
 )
+    requires(
+        std::is_base_of_v<std::ostream, O>
+        || std::is_same_v<std::uint8_t*, O>
+        || std::is_same_v<std::uint8_t**, O>
+        || std::is_same_v<std::vector<uint8_t>, O>
+    )
     {
         // Create codec
         /// @warning You cannot reuse the opj_codec, the opj_stream, or the opj_image.
@@ -119,7 +117,7 @@ public:
 
         const auto& image_type = _image.type();
         SIGHT_THROW_IF(
-            m_name << " - Unsupported image type: " << image_type,
+            NAME << " - Unsupported image type: " << image_type,
             image_type != core::type::INT8
             && image_type != core::type::UINT8
             && image_type != core::type::INT16
@@ -130,7 +128,7 @@ public:
 
         const auto pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
-            m_name << " - Unsupported image format: " << pixel_format,
+            NAME << " - Unsupported image format: " << pixel_format,
             pixel_format != data::image::pixel_format_t::gray_scale
             && pixel_format != data::image::pixel_format_t::rgb
             && pixel_format != data::image::pixel_format_t::rgba
@@ -141,9 +139,9 @@ public:
         // Create an RAII to be sure everything is cleaned at exit
         struct keeper final
         {
-            inline keeper() noexcept = default;
+            keeper() noexcept = default;
 
-            inline ~keeper()
+            ~keeper()
             {
                 // Cleanup
                 if(m_image)
@@ -175,7 +173,7 @@ public:
 
         CHECK_OPJ(
             keeper.m_codec = opj_create_compress(
-                _flag == flag::j2_k_stream ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
+                _flag == flag::j2k_stream ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
             )
         );
 
@@ -203,26 +201,28 @@ public:
         opj_stream_set_seek_function(keeper.m_stream, seek_callback);
 
         // Adjust parameters
-        const auto& sizes       = _image.size();
-        const OPJ_UINT32 width  = OPJ_UINT32(sizes[0]);
-        const OPJ_UINT32 height = OPJ_UINT32(sizes[1]);
+        const auto& sizes = _image.size();
+        const auto width  = OPJ_UINT32(sizes[0]);
+        const auto height = OPJ_UINT32(sizes[1]);
 
         // Format can .jp2 or .j2k
-        m_parameters.cod_format = _flag == flag::j2_k_stream ? 0 : 1;
+        m_parameters.cod_format = _flag == flag::j2k_stream ? 0 : 1;
 
         // Wavelet decomposition levels. 6-5 Seems to be a good default, but should be multiple of block size
         m_parameters.numresolution = std::min(
-            6,
-            std::min(int(width) / m_parameters.cblockw_init, int(height) / m_parameters.cblockh_init)
+            int(width) / m_parameters.cblockw_init,
+            int(height) / m_parameters.cblockh_init
         );
 
-        const OPJ_UINT32 num_components = OPJ_UINT32(_image.num_components());
+        m_parameters.numresolution = std::clamp(m_parameters.numresolution, 1, 6);
+
+        const auto num_components = OPJ_UINT32(_image.num_components());
         m_parameters.tcp_mct = num_components == 1 ? 0 : 1;
 
         // Build the component param array
         std::vector<opj_image_cmptparm_t> component_params(num_components);
 
-        const OPJ_UINT32 prec = OPJ_UINT32(image_type.size() * 8);
+        const auto prec       = OPJ_UINT32(image_type.size() * 8);
         const OPJ_UINT32 sgnd = image_type.is_signed() ? 1 : 0;
 
         std::ranges::fill(
@@ -265,11 +265,11 @@ public:
             case 8:
                 if(image_type.is_signed())
                 {
-                    to_open_jpeg<std::int8_t>(_image, *keeper.m_image);
+                    to_openjpeg<std::int8_t>(_image, *keeper.m_image);
                 }
                 else
                 {
-                    to_open_jpeg<std::uint8_t>(_image, *keeper.m_image);
+                    to_openjpeg<std::uint8_t>(_image, *keeper.m_image);
                 }
 
                 break;
@@ -277,11 +277,11 @@ public:
             case 16:
                 if(image_type.is_signed())
                 {
-                    to_open_jpeg<std::int16_t>(_image, *keeper.m_image);
+                    to_openjpeg<std::int16_t>(_image, *keeper.m_image);
                 }
                 else
                 {
-                    to_open_jpeg<std::uint16_t>(_image, *keeper.m_image);
+                    to_openjpeg<std::uint16_t>(_image, *keeper.m_image);
                 }
 
                 break;
@@ -289,17 +289,17 @@ public:
             case 32:
                 if(image_type.is_signed())
                 {
-                    to_open_jpeg<std::uint32_t>(_image, *keeper.m_image);
+                    to_openjpeg<std::int32_t>(_image, *keeper.m_image);
                 }
                 else
                 {
-                    to_open_jpeg<std::uint32_t>(_image, *keeper.m_image);
+                    to_openjpeg<std::uint32_t>(_image, *keeper.m_image);
                 }
 
                 break;
 
             default:
-                SIGHT_THROW(m_name << " - Unsupported precision.");
+                SIGHT_THROW(NAME << " - Unsupported precision.");
         }
 
         // Setup the encoder
@@ -355,7 +355,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void info_callback(const char*, void*)
+    static void info_callback(const char* /*_msg*/, void* /*_payload*/)
     {
         // Too much noise for regular "info"
         // SIGHT_DEBUG(msg);
@@ -363,21 +363,21 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void warning_callback(const char* _msg, void*)
+    static void warning_callback(const char* _msg, void* /*_payload*/)
     {
         SIGHT_WARN(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void error_callback(const char* _msg, void*)
+    static void error_callback(const char* _msg, void* /*_payload*/)
     {
         SIGHT_THROW(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_SIZE_T write_callback(void* _p_buffer, OPJ_SIZE_T _p_nb_bytes, void* _p_user_data)
+    static OPJ_SIZE_T write_callback(void* _p_buffer, OPJ_SIZE_T _p_nb_bytes, void* _p_user_data)
     {
         if(_p_user_data != nullptr)
         {
@@ -391,7 +391,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_OFF_T skip_callback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
+    static OPJ_OFF_T skip_callback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
     {
         if(_p_user_data != nullptr)
         {
@@ -405,7 +405,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_BOOL seek_callback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
+    static OPJ_BOOL seek_callback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
     {
         if(_p_user_data != nullptr)
         {
@@ -419,14 +419,14 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void free_callback(void* /*p_user_data*/)
+    static void free_callback(void* /*p_user_data*/)
     {
     }
 
     //------------------------------------------------------------------------------
 
     template<typename T>
-    inline static void to_open_jpeg(const data::image& _image, opj_image_t& _opj_image)
+    static void to_openjpeg(const data::image& _image, opj_image_t& _opj_image)
     {
         switch(_image.pixel_format())
         {
@@ -437,7 +437,7 @@ private:
                     T a;
                 };
 
-                to_open_jpeg_pixels<pixel>(_image, _opj_image);
+                to_openjpeg_pixels<pixel>(_image, _opj_image);
                 break;
             }
 
@@ -450,7 +450,7 @@ private:
                     T b;
                 };
 
-                to_open_jpeg_pixels<pixel>(_image, _opj_image);
+                to_openjpeg_pixels<pixel>(_image, _opj_image);
                 break;
             }
 
@@ -464,7 +464,7 @@ private:
                     T a;
                 };
 
-                to_open_jpeg_pixels<pixel>(_image, _opj_image);
+                to_openjpeg_pixels<pixel>(_image, _opj_image);
                 break;
             }
 
@@ -477,7 +477,7 @@ private:
                     T r;
                 };
 
-                to_open_jpeg_pixels<pixel>(_image, _opj_image);
+                to_openjpeg_pixels<pixel>(_image, _opj_image);
                 break;
             }
 
@@ -491,7 +491,7 @@ private:
                     T a;
                 };
 
-                to_open_jpeg_pixels<pixel>(_image, _opj_image);
+                to_openjpeg_pixels<pixel>(_image, _opj_image);
                 break;
             }
 
@@ -503,7 +503,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename P>
-    inline static void to_open_jpeg_pixels(const data::image& _image, opj_image_t& _opj_image)
+    static void to_openjpeg_pixels(const data::image& _image, opj_image_t& _opj_image)
     {
         const auto& sizes = _image.size();
 
@@ -540,10 +540,25 @@ private:
 
     opj_cparameters_t m_parameters {};
 
+    bool m_valid {false};
+
+    static constexpr std::string_view NAME {"OpenJPEGWriter"};
+
 public:
 
-    bool m_valid {false};
-    static constexpr std::string_view m_name {"OpenJPEGWriter"};
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool valid() const noexcept
+    {
+        return m_valid;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] static constexpr std::string_view name() noexcept
+    {
+        return NAME;
+    }
 };
 
 } // namespace sight::io::bitmap::detail

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -648,9 +648,9 @@ void series_test::equality_test()
 
     series1->set_image_type(
         {
-            dicom::pixel_data_characteristics_t::derived,
-            dicom::patient_examination_characteristics_t::secondary,
-            {"AXIAL"}
+            .pixel_data_characteristics          = dicom::pixel_data_characteristics_t::derived,
+            .patient_examination_characteristics = dicom::patient_examination_characteristics_t::secondary,
+            .other_values                        = {"AXIAL"}
         });
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->set_image_type(series1->get_image_type());
@@ -2792,24 +2792,31 @@ void series_test::private_tag_test()
 {
     const std::string expected1 {uuid::generate()};
     const std::string expected2 {uuid::generate()};
+    const std::vector<double> expected3 {1.1, 2.2, 3.3};
 
     {
         auto series = std::make_shared<data::image_series>();
-        series->set_private_value(expected1, 0x11);
-        series->set_private_value(expected2, 0x12);
 
+        series->set_private_value(expected1, 0x11);
         const auto& actual1 = series->get_private_value(0x11);
         CPPUNIT_ASSERT(actual1);
         CPPUNIT_ASSERT_EQUAL(expected1, *actual1);
 
+        series->set_private_value(expected2, 0x12);
         const auto& actual2 = series->get_private_value(0x12);
         CPPUNIT_ASSERT(actual2);
         CPPUNIT_ASSERT_EQUAL(expected2, *actual2);
 
         // test removing the tag
         series->set_private_value(std::nullopt, 0x11);
-        const auto& actual5 = series->get_private_value(0x11);
-        CPPUNIT_ASSERT(!actual5.has_value());
+        CPPUNIT_ASSERT(!series->get_private_value(0x11).has_value());
+
+        // test double vector
+        series->set_private_values(expected3, 0x13);
+        const auto actual3 = series->get_private_values(0x13);
+        CPPUNIT_ASSERT(sight::core::is_equal(expected3, actual3));
+        series->set_private_values({}, 0x13);
+        CPPUNIT_ASSERT(!series->get_private_value(0x13).has_value());
     }
 }
 
@@ -2820,6 +2827,7 @@ void series_test::multi_frame_private_tag_test()
     const std::string expected1 {uuid::generate()};
     const std::string expected2 {uuid::generate()};
     const std::string expected3 {uuid::generate()};
+    const std::vector<double> expected4 {1.1, 2.2, 3.3};
 
     {
         auto series = std::make_shared<data::image_series>();
@@ -2829,32 +2837,36 @@ void series_test::multi_frame_private_tag_test()
         CPPUNIT_ASSERT(!no_value.has_value());
 
         series->set_multi_frame_private_value(expected1, 0x11, 0);
-        const auto& actual1 = series->get_multi_frame_private_value(0x11, 0);
+        const auto actual1 = series->get_multi_frame_private_value(0x11, 0);
         CPPUNIT_ASSERT(actual1);
         CPPUNIT_ASSERT_EQUAL(expected1, *actual1);
 
         series->set_multi_frame_private_value(expected2, 0x11, 1);
-        const auto& actual2 = series->get_multi_frame_private_value(0x11, 1);
+        const auto actual2 = series->get_multi_frame_private_value(0x11, 1);
         CPPUNIT_ASSERT(actual2);
         CPPUNIT_ASSERT_EQUAL(expected2, *actual2);
 
         series->set_multi_frame_private_value(expected3, 0x11, 2);
-        const auto& actual3 = series->get_multi_frame_private_value(0x11, 2);
+        const auto actual3 = series->get_multi_frame_private_value(0x11, 2);
         CPPUNIT_ASSERT(actual3);
         CPPUNIT_ASSERT_EQUAL(expected3, *actual3);
 
         // test removing the tag
-        series->set_private_value(std::nullopt, 0x11, 0);
-        const auto& actual4 = series->get_private_value(0x11, 0);
-        CPPUNIT_ASSERT(!actual4.has_value());
+        series->set_multi_frame_private_value(std::nullopt, 0x11, 0);
+        CPPUNIT_ASSERT(!series->get_multi_frame_private_value(0x11, 0).has_value());
 
-        series->set_private_value(std::nullopt, 0x11, 1);
-        const auto& actual5 = series->get_private_value(0x11, 1);
-        CPPUNIT_ASSERT(!actual5.has_value());
+        series->set_multi_frame_private_value(std::nullopt, 0x11, 1);
+        CPPUNIT_ASSERT(!series->get_multi_frame_private_value(0x11, 1).has_value());
 
-        series->set_private_value(std::nullopt, 0x11, 2);
-        const auto& actual6 = series->get_private_value(0x11, 2);
-        CPPUNIT_ASSERT(!actual6.has_value());
+        series->set_multi_frame_private_value(std::nullopt, 0x11, 2);
+        CPPUNIT_ASSERT(!series->get_multi_frame_private_value(0x11, 2).has_value());
+
+        // test double vector
+        series->set_multi_frame_private_values(expected4, 0x12, 0);
+        const auto actual4 = series->get_multi_frame_private_values(0x12, 0);
+        CPPUNIT_ASSERT(sight::core::is_equal(expected4, actual4));
+        series->set_multi_frame_private_values({}, 0x12, 0);
+        CPPUNIT_ASSERT(!series->get_multi_frame_private_value(0x12, 0).has_value());
     }
 }
 

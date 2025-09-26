@@ -41,9 +41,8 @@ namespace sight::module::io::bitmap
 // Retrieve the backend from the extension
 sight::io::bitmap::backend reader::find_backend(const std::string& _extension) const
 {
-    const auto& it = std::find_if(
-        m_backends.cbegin(),
-        m_backends.cend(),
+    const auto& it = std::ranges::find_if(
+        m_backends,
         [&](const auto& _backend)
         {
             const auto& backend_extensions = sight::io::bitmap::extensions(_backend);
@@ -194,7 +193,7 @@ void reader::configuring()
     m_backends.emplace(sight::io::bitmap::backend::libtiff);
 
 #if defined(SIGHT_ENABLE_NVJPEG)
-    if(sight::io::bitmap::nv_jpeg())
+    if(sight::io::bitmap::nvjpeg())
     {
         m_backends.emplace(sight::io::bitmap::backend::nvjpeg);
     }
@@ -214,7 +213,7 @@ void reader::configuring()
     }
 
 #if defined(SIGHT_ENABLE_NVJPEG2K)
-    if(sight::io::bitmap::nv_jpeg_2k())
+    if(sight::io::bitmap::nvjpeg2k())
     {
         m_backends.emplace(sight::io::bitmap::backend::nvjpeg2k);
     }
@@ -273,9 +272,9 @@ void reader::updating()
             // If the user selected a specific backend, it must match the one given by the file extension.
             SIGHT_THROW(
                 "Backend mismatch: "
-                << std::uint8_t(m_selected_backend)
+                << std::uint32_t(m_selected_backend)
                 << " != "
-                << std::uint8_t(backend_from_extension)
+                << std::uint32_t(backend_from_extension)
             );
         }
     }

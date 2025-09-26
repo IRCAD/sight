@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,7 +25,7 @@
 #include "io/bitmap/writer.hpp"
 
 #ifdef SIGHT_ENABLE_NVJPEG
-#include "nv_jpeg_writer.hxx"
+#include "nvjpeg_writer.hxx"
 #endif
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
@@ -78,97 +78,67 @@ public:
         const auto dump_lock = image->dump_lock();
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-        if(nv_jpeg_2k() && _backend == backend::nvjpeg2k)
+        if(nvjpeg2k() && _backend == backend::nvjpeg2k)
         {
             try
             {
-                return write<nv_jpe_g2_k_writer>(m_nv_jpe_g2_k, *image, _output, _mode);
+                return write<nvjpeg2k_writer>(m_nvjpeg2k, *image, _output, _mode);
             }
             catch(const std::exception& e)
             {
-                // Check if the rerror is because of unsupported pixel type
-                const auto& pixel_type = image->type();
-                if(pixel_type != core::type::UINT8
-                   && pixel_type != core::type::UINT16)
-                {
-                    throw;
-                }
-
-                // Check if the rerror is because of unsupported pixel format
-                const auto& pixel_format = image->pixel_format();
-                if(pixel_format != data::image::pixel_format_t::gray_scale
-                   && pixel_format != data::image::pixel_format_t::rgb
-                   && pixel_format != data::image::pixel_format_t::rgba
-                   && pixel_format != data::image::pixel_format_t::bgr
-                   && pixel_format != data::image::pixel_format_t::bgra)
-                {
-                    throw;
-                }
-
-                /// @todo Check new version of nvjpeg2k (>0.6).
-                if((pixel_format == data::image::pixel_format_t::rgba
-                    || pixel_format == data::image::pixel_format_t::bgra)
-                   && pixel_type == core::type::UINT16)
-                {
-                    throw;
-                }
-
-                // This happens when trying to encode uniform random data which cannot be compressed
-                // This is obviously a bug in the encoder (reported and known by NVidia), although this should not
-                // happen with real data in the real world. To be in the safe side, we fallback to another backend.
-                SIGHT_ERROR("Failed to write image with nv_jpeg_2k: " << e.what() << ". Fallback to OpenJPEG.");
-                return write<open_jpeg_writer>(m_open_jpeg, *image, _output, _mode);
+                SIGHT_ERROR("Failed to write image with nvjpeg2k: " << e.what() << ".");
+                throw;
             }
         }
-        else if(nv_jpeg_2k() && _backend == backend::nvjpeg2k_j2k)
+        else if(nvjpeg2k() && _backend == backend::nvjpeg2k_j2k)
         {
             try
             {
-                return write<nv_jpe_g2_k_writer>(m_nv_jpe_g2_k, *image, _output, _mode, flag::j2_k_stream);
+                return write<nvjpeg2k_writer>(m_nvjpeg2k, *image, _output, _mode, flag::j2k_stream);
             }
             catch(const std::exception& e)
             {
                 // Same as above...
-                SIGHT_ERROR("Failed to write image with nv_jpeg_2k: " << e.what() << ". Fallback to OpenJPEG.");
-                return write<open_jpeg_writer>(m_open_jpeg, *image, _output, _mode, flag::j2_k_stream);
+                SIGHT_ERROR("Failed to write image with nvjpeg2k: " << e.what() << ".");
+                throw;
             }
         }
         else
 #endif
         if(_backend == backend::openjpeg)
         {
-            return write<open_jpeg_writer>(m_open_jpeg, *image, _output, _mode);
+            return write<openjpeg_writer>(m_openjpeg, *image, _output, _mode);
         }
         else if(_backend == backend::openjpeg_j2k)
         {
-            return write<open_jpeg_writer>(
-                m_open_jpeg,
+            return write<openjpeg_writer>(
+                m_openjpeg,
                 *image,
                 _output,
                 _mode,
-                flag::j2_k_stream
+                flag::j2k_stream
             );
         }
         else
 
 #ifdef SIGHT_ENABLE_NVJPEG
-        if(nv_jpeg() && _backend == backend::nvjpeg)
+        if(nvjpeg() && _backend == backend::nvjpeg)
         {
-            return write<nv_jpeg_writer>(m_nv_jpeg, *image, _output, _mode);
+            return write<nvjpeg_writer>(m_nvjpeg, *image, _output, _mode);
         }
         else
 #endif
         if(_backend == backend::libjpeg)
         {
-            return write<lib_jpeg_writer>(m_lib_jpeg, *image, _output, _mode);
+            return write<libjpeg_writer>(m_libjpeg, *image, _output, _mode);
         }
         else if(_backend == backend::libtiff)
         {
-            return write<lib_tiff_writer>(m_lib_tiff, *image, _output, _mode);
+            return write<libtiff_writer>(m_libtiff, *image, _output, _mode);
         }
         else if(_backend == backend::libpng)
         {
-            return write<lib_png_writer>(m_lib_png, *image, _output, _mode);
+            return write<libpng_writer>(m_libpng, *image, _output, _mode);
         }
         else
         {
@@ -181,7 +151,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename W, typename O>
-    inline static std::size_t write(
+    static std::size_t write(
         std::unique_ptr<W>& _backend,
         const data::image& _image,
         O& _output,
@@ -192,7 +162,7 @@ private:
         if(_backend == nullptr)
         {
             _backend = std::make_unique<W>();
-            SIGHT_THROW_IF("Failed to initialize" << _backend->m_name << " backend.", !_backend->m_valid);
+            SIGHT_THROW_IF("Failed to initialize" << _backend->name() << " backend.", !_backend->valid());
         }
 
         return _backend->write(_image, _output, _mode, _flag);
@@ -202,17 +172,17 @@ private:
     writer* const m_writer;
 
 #ifdef SIGHT_ENABLE_NVJPEG
-    std::unique_ptr<nv_jpeg_writer> m_nv_jpeg;
+    std::unique_ptr<nvjpeg_writer> m_nvjpeg;
 #endif
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-    std::unique_ptr<nv_jpe_g2_k_writer> m_nv_jpe_g2_k;
+    std::unique_ptr<nvjpeg2k_writer> m_nvjpeg2k;
 #endif
 
-    std::unique_ptr<lib_jpeg_writer> m_lib_jpeg;
-    std::unique_ptr<lib_tiff_writer> m_lib_tiff;
-    std::unique_ptr<lib_png_writer> m_lib_png;
-    std::unique_ptr<open_jpeg_writer> m_open_jpeg;
+    std::unique_ptr<libjpeg_writer> m_libjpeg;
+    std::unique_ptr<libtiff_writer> m_libtiff;
+    std::unique_ptr<libpng_writer> m_libpng;
+    std::unique_ptr<openjpeg_writer> m_openjpeg;
 };
 
 } // namespace sight::io::bitmap::detail

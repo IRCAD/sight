@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,27 +21,32 @@
 
 #pragma once
 
+#include "data/image.hpp"
+
 #include "writer_impl.hxx"
 
 #include <jpeglib.h>
 
+#include <array>
 #include <ostream>
 
-// cspell:ignore nvjpeg JDIMENSION jerr JSAMPROW JSAMPLE scanline scanlines JMSG
+// cspell:ignore nvjpeg JDIMENSION jerr JSAMPROW JSAMPLE scanline scanlines JMSG hicpp
+
+// NOLINTBEGIN(google-runtime-int)
 
 namespace sight::io::bitmap::detail
 {
 
-class lib_jpeg_writer final
+class libjpeg_writer final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    lib_jpeg_writer(const lib_jpeg_writer&)            = delete;
-    lib_jpeg_writer& operator=(const lib_jpeg_writer&) = delete;
+    libjpeg_writer(const libjpeg_writer&)            = delete;
+    libjpeg_writer& operator=(const libjpeg_writer&) = delete;
 
     /// Constructor
-    inline lib_jpeg_writer() noexcept
+    libjpeg_writer() noexcept
     {
         try
         {
@@ -67,33 +72,31 @@ public:
     }
 
     /// Destructor
-    inline ~lib_jpeg_writer() noexcept
+    ~libjpeg_writer() noexcept
     {
         free();
     }
 
     /// Writing
     template<
-        typename O,
-        std::enable_if_t<
-            std::is_base_of_v<std::ostream, O>
-            || std::is_same_v<std::uint8_t*, O>
-            || std::is_same_v<std::uint8_t**, O>
-            || std::is_same_v<std::vector<uint8_t>, O>,
-            bool
-        > = true
-    >
-    inline std::size_t write(
+        typename O>
+    std::size_t write(
         const data::image& _image,
         O& _output,
         writer::mode _mode,
-        flag = flag::none
+        flag /*_flag*/ = flag::none
 )
+    requires(
+        std::is_base_of_v<std::ostream, O>
+        || std::is_same_v<std::uint8_t*, O>
+        || std::is_same_v<std::uint8_t**, O>
+        || std::is_same_v<std::vector<uint8_t>, O>
+    )
     {
         //  JCS_EXT_RGBA is not yet fully supported by libjpeg-turbo, at least for writing
         const auto& pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
-            m_name << " - Unsupported image pixel format: " << pixel_format,
+            NAME << " - Unsupported image pixel format: " << pixel_format,
             pixel_format == data::image::pixel_format_t::rg
             || pixel_format == data::image::pixel_format_t::rgba
             || pixel_format == data::image::pixel_format_t::bgra
@@ -101,7 +104,7 @@ public:
 
         const auto& pixel_type = _image.type();
         SIGHT_THROW_IF(
-            m_name << " - Unsupported image type: " << pixel_type,
+            NAME << " - Unsupported image type: " << pixel_type,
             pixel_type != core::type::UINT8
         );
 
@@ -110,6 +113,7 @@ public:
         const auto image_byte_size = _image.size_in_bytes();
         if(image_byte_size > m_output_initial_buffer_size)
         {
+            // NOLINTNEXTLINE(hicpp-no-malloc,cppcoreguidelines-no-malloc)
             m_output_buffer              = reinterpret_cast<unsigned char*>(realloc(m_output_buffer, image_byte_size));
             m_output_initial_buffer_size = image_byte_size;
 
@@ -179,21 +183,25 @@ public:
         jpeg_start_compress(&m_cinfo, true);
 
         // Compression loop
-        JSAMPROW row_pointer[1] {};
+        std::array<JSAMPROW, 1> row_pointer {};
 
         while(m_cinfo.next_scanline < m_cinfo.image_height)
         {
             // jpeg_write_scanlines expects an array of pointers to scanlines.
             // libjpeg API is old -> const_cast
+
             row_pointer[0] = reinterpret_cast<unsigned char*>(
+                // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
                 const_cast<void*>(
-                    _image.get_pixel(m_cinfo.next_scanline * m_cinfo.image_width)
+                    _image.get_pixel(
+                        data::image::index_t(m_cinfo.next_scanline) * data::image::index_t(m_cinfo.image_width)
+                    )
                 )
             );
 
             SIGHT_THROW_IF(
                 "jpeg_write_scanlines failed.",
-                jpeg_write_scanlines(&m_cinfo, row_pointer, 1) != 1
+                jpeg_write_scanlines(&m_cinfo, row_pointer.data(), 1) != 1
             );
         }
 
@@ -235,10 +243,11 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline void free() noexcept
+    void free() noexcept
     {
         try
         {
+            // NOLINTNEXTLINE(hicpp-no-malloc,cppcoreguidelines-no-malloc)
             ::free(m_output_buffer);
             m_output_buffer              = nullptr;
             m_output_buffer_size         = 0;
@@ -264,28 +273,28 @@ private:
     }
 
     /// Error handler for libJPEG
-    inline static void jpeg_error_exit(j_common_ptr _cinfo)
+    static void jpeg_error_exit(j_common_ptr _cinfo)
     {
-        char jpeg_last_error_msg[JMSG_LENGTH_MAX];
+        std::array<char, JMSG_LENGTH_MAX> jpeg_last_error_msg {};
 
         // Create the message
-        (*(_cinfo->err->format_message))(_cinfo, jpeg_last_error_msg);
+        (*(_cinfo->err->format_message))(_cinfo, jpeg_last_error_msg.data());
 
         // Use exception instead of longjmp/setjmp
-        SIGHT_THROW(jpeg_last_error_msg);
+        SIGHT_THROW(jpeg_last_error_msg.data());
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void jpeg_output_message(j_common_ptr _cinfo)
+    static void jpeg_output_message(j_common_ptr _cinfo)
     {
-        char jpeg_last_error_msg[JMSG_LENGTH_MAX];
+        std::array<char, JMSG_LENGTH_MAX> jpeg_last_error_msg {};
 
         // Create the message
-        (*(_cinfo->err->format_message))(_cinfo, jpeg_last_error_msg);
+        (*(_cinfo->err->format_message))(_cinfo, jpeg_last_error_msg.data());
 
         // Log recoverable error
-        SIGHT_WARN(jpeg_last_error_msg);
+        SIGHT_WARN(jpeg_last_error_msg.data());
     }
 
     struct jpeg_error_mgr m_jerr {};
@@ -295,10 +304,27 @@ private:
     unsigned long m_output_buffer_size {0};
     std::size_t m_output_initial_buffer_size {0};
 
+    bool m_valid {true};
+
+    static constexpr std::string_view NAME {"LibJPEGWriter"};
+
 public:
 
-    bool m_valid {false};
-    static constexpr std::string_view m_name {"LibJPEGWriter"};
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool valid() const noexcept
+    {
+        return m_valid;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] static constexpr std::string_view name() noexcept
+    {
+        return NAME;
+    }
 };
+
+// NOLINTEND(google-runtime-int)
 
 } // namespace sight::io::bitmap::detail

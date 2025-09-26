@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@ data::sequenced_set<std::string> extensions(backend _backend)
             return {detail::PNG_EXT};
 
         default:
-            SIGHT_THROW("Unsupported image backend: '" << std::uint8_t(_backend) << "'");
+            SIGHT_THROW("Unsupported image backend: '" << std::uint32_t(_backend) << "'");
     }
 }
 
@@ -101,17 +101,17 @@ static const bool NVJPEG_AVAILABLE = false;
 
 //------------------------------------------------------------------------------
 
-bool nv_jpeg()
+bool nvjpeg()
 {
     return NVJPEG_AVAILABLE;
 }
 
 //------------------------------------------------------------------------------
 
-bool nv_jpeg_2k()
+bool nvjpeg2k()
 {
 #ifdef SIGHT_ENABLE_NVJPEG2K
-    return nv_jpeg();
+    return nvjpeg();
 #else
     return false;
 #endif
@@ -142,7 +142,7 @@ std::pair<std::string, std::string> wildcard_filter(backend _backend)
             return std::make_pair(detail::PNG_LABEL, std::string("*") + detail::PNG_EXT);
 
         default:
-            SIGHT_THROW("Unsupported backend: " << uint8_t(_backend));
+            SIGHT_THROW("Unsupported backend: " << uint32_t(_backend));
     }
 }
 

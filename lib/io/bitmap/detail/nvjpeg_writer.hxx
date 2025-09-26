@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -55,16 +55,16 @@ namespace sight::io::bitmap::detail
             SIGHT_ERROR(e.what()); \
         }
 
-class nv_jpeg_writer final
+class nvjpeg_writer final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    nv_jpeg_writer(const nv_jpeg_writer&)            = delete;
-    nv_jpeg_writer& operator=(const nv_jpeg_writer&) = delete;
+    nvjpeg_writer(const nvjpeg_writer&)            = delete;
+    nvjpeg_writer& operator=(const nvjpeg_writer&) = delete;
 
     /// Constructor
-    inline nv_jpeg_writer() noexcept
+    nvjpeg_writer() noexcept
     {
         try
         {
@@ -98,38 +98,36 @@ public:
     }
 
     /// Destructor
-    inline ~nv_jpeg_writer() noexcept
+    ~nvjpeg_writer() noexcept
     {
         free();
     }
 
     /// Writing
     template<
-        typename O,
-        std::enable_if_t<
-            std::is_base_of_v<std::ostream, O>
-            || std::is_same_v<std::uint8_t*, O>
-            || std::is_same_v<std::uint8_t**, O>
-            || std::is_same_v<std::vector<uint8_t>, O>,
-            bool
-        > = true
-    >
-    inline std::size_t write(
+        typename O>
+    std::size_t write(
         const data::image& _image,
         O& _output,
         writer::mode _mode,
-        flag = flag::none
+        flag /*_flag*/ = flag::none
 )
+    requires(
+        std::is_base_of_v<std::ostream, O>
+        || std::is_same_v<std::uint8_t*, O>
+        || std::is_same_v<std::uint8_t**, O>
+        || std::is_same_v<std::vector<uint8_t>, O>
+    )
     {
         const auto pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
-            m_name << " - Unsupported image pixel format: " << pixel_format,
+            NAME << " - Unsupported image pixel format: " << pixel_format,
             pixel_format != data::image::pixel_format_t::rgb && pixel_format != data::image::pixel_format_t::bgr
         );
 
         const auto& pixel_type = _image.type();
         SIGHT_THROW_IF(
-            m_name << " - Unsupported image type: " << pixel_type,
+            NAME << " - Unsupported image type: " << pixel_type,
             pixel_type != core::type::UINT8
         );
 
@@ -296,7 +294,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline void free() noexcept
+    void free() noexcept
     {
         if(m_gpu_buffer != nullptr)
         {
@@ -342,10 +340,25 @@ private:
 
     std::vector<unsigned char> m_output_buffer;
 
+    bool m_valid {false};
+
+    static constexpr std::string_view NAME {"NvJPEGWriter"};
+
 public:
 
-    bool m_valid {false};
-    static constexpr std::string_view m_name {"NvJPEGWriter"};
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool valid() const noexcept
+    {
+        return m_valid;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] static constexpr std::string_view name() noexcept
+    {
+        return NAME;
+    }
 };
 
 } // namespace sight::io::bitmap::detail

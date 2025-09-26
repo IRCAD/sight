@@ -117,6 +117,9 @@ public:
     SIGHT_IO_API static const core::com::signals::key_t CAMERA_STOPPED_SIG;
     using camera_stopped_signal_t = core::com::signal<void ()>;
 
+    SIGHT_IO_API static const core::com::signals::key_t CAMERA_PAUSED_SIG;
+    using camera_paused_signal_t = core::com::signal<void ()>;
+
     SIGHT_IO_API static const core::com::signals::key_t PARAMETER_CHANGED_SIG;
     using parameter_changed_t = core::com::signal<void (ui::parameter_t, std::string)>;
 
@@ -213,7 +216,7 @@ protected:
     /**
      * @brief sets the current start state of the grabber.
      */
-    SIGHT_IO_API void set_start_state(bool _state);
+    void set_start_state(bool _state);
     bool started() const;
 
     data::ptr<data::frame_tl, data::access::inout> m_frame {this, FRAMETL_INOUT};
@@ -227,14 +230,21 @@ private:
     SIGHT_IO_API void play_pause_camera();
 
     /// Determines whether the grabber has been started, note : this does not mean it is playing, as it could be paused.
-    bool m_is_started {false};
+    std::atomic_bool m_is_started {false};
 };
+
+//------------------------------------------------------------------------------
+
+inline void grabber::set_start_state(bool _state)
+{
+    m_is_started.store(_state);
+}
 
 //------------------------------------------------------------------------------
 
 inline bool grabber::started() const
 {
-    return m_is_started;
+    return m_is_started.load();
 }
 
 } //namespace sight::io::service

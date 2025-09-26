@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -144,12 +144,12 @@ void reader_writer_test::grayscale_uint_8_test()
     test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::uint_8, backend::libtiff>();
     test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::uint_8, backend::openjpeg>();
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::uint_8, backend::nvjpeg>(true);
     }
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::uint_8, backend::nvjpeg2k>();
     }
@@ -164,12 +164,12 @@ void reader_writer_test::grayscale_uint_16_test()
     test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::uint_16, backend::libtiff>();
     test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::uint_16, backend::openjpeg>();
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::uint_16, backend::nvjpeg>(true);
     }
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::uint_16, backend::nvjpeg2k>();
     }
@@ -184,12 +184,12 @@ void reader_writer_test::grayscale_int_8_test()
     test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::int_8, backend::libtiff>();
     test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::int_8, backend::openjpeg>();
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::int_8, backend::nvjpeg>(true);
     }
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::int_8, backend::nvjpeg2k>(true);
     }
@@ -204,12 +204,12 @@ void reader_writer_test::grayscale_int_16_test()
     test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::int_16, backend::libtiff>();
     test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::int_16, backend::openjpeg>();
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::int_16, backend::nvjpeg>(true);
     }
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         test_backend<data::image::pixel_format_t::gray_scale, core::type::type_t::int_16, backend::nvjpeg2k>(true);
     }
@@ -224,12 +224,12 @@ void reader_writer_test::rgb_uint_8_test()
     test_backend<data::image::pixel_format_t::rgb, core::type::type_t::uint_8, backend::libtiff>();
     test_backend<data::image::pixel_format_t::rgb, core::type::type_t::uint_8, backend::openjpeg>();
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         test_backend<data::image::pixel_format_t::rgb, core::type::type_t::uint_8, backend::nvjpeg>();
     }
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         test_backend<data::image::pixel_format_t::rgb, core::type::type_t::uint_8, backend::nvjpeg2k>();
     }
@@ -244,12 +244,12 @@ void reader_writer_test::rgb_uint_16_test()
     test_backend<data::image::pixel_format_t::rgb, core::type::type_t::uint_16, backend::libtiff>();
     test_backend<data::image::pixel_format_t::rgb, core::type::type_t::uint_16, backend::openjpeg>();
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         test_backend<data::image::pixel_format_t::rgb, core::type::type_t::uint_16, backend::nvjpeg>(true);
     }
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         test_backend<data::image::pixel_format_t::rgb, core::type::type_t::uint_16, backend::nvjpeg2k>();
     }
@@ -264,12 +264,12 @@ void reader_writer_test::rgb_int_8_test()
     test_backend<data::image::pixel_format_t::rgb, core::type::type_t::int_8, backend::libtiff>();
     test_backend<data::image::pixel_format_t::rgb, core::type::type_t::int_8, backend::openjpeg>();
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         test_backend<data::image::pixel_format_t::rgb, core::type::type_t::int_8, backend::nvjpeg>(true);
     }
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         test_backend<data::image::pixel_format_t::rgb, core::type::type_t::int_8, backend::nvjpeg2k>(true);
     }
@@ -284,12 +284,12 @@ void reader_writer_test::rgb_int_16_test()
     test_backend<data::image::pixel_format_t::rgb, core::type::type_t::int_16, backend::libtiff>();
     test_backend<data::image::pixel_format_t::rgb, core::type::type_t::int_16, backend::openjpeg>();
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         test_backend<data::image::pixel_format_t::rgb, core::type::type_t::int_16, backend::nvjpeg>(true);
     }
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         test_backend<data::image::pixel_format_t::rgb, core::type::type_t::int_16, backend::nvjpeg2k>(true);
     }
@@ -304,12 +304,12 @@ void reader_writer_test::rgba_uint_8_test()
     test_backend<data::image::pixel_format_t::rgba, core::type::type_t::uint_8, backend::libtiff>();
     test_backend<data::image::pixel_format_t::rgba, core::type::type_t::uint_8, backend::openjpeg>();
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         test_backend<data::image::pixel_format_t::rgba, core::type::type_t::uint_8, backend::nvjpeg>(true);
     }
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         test_backend<data::image::pixel_format_t::rgba, core::type::type_t::uint_8, backend::nvjpeg2k>();
     }
@@ -324,12 +324,12 @@ void reader_writer_test::rgba_uint_16_test()
     test_backend<data::image::pixel_format_t::rgba, core::type::type_t::uint_16, backend::libtiff>();
     test_backend<data::image::pixel_format_t::rgba, core::type::type_t::uint_16, backend::openjpeg>();
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         test_backend<data::image::pixel_format_t::rgba, core::type::type_t::uint_16, backend::nvjpeg>(true);
     }
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         test_backend<data::image::pixel_format_t::rgba, core::type::type_t::uint_16, backend::nvjpeg2k>(true);
     }
@@ -344,12 +344,12 @@ void reader_writer_test::rgba_int_8_test()
     test_backend<data::image::pixel_format_t::rgba, core::type::type_t::int_8, backend::libtiff>();
     test_backend<data::image::pixel_format_t::rgba, core::type::type_t::int_8, backend::openjpeg>();
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         test_backend<data::image::pixel_format_t::rgba, core::type::type_t::int_8, backend::nvjpeg>(true);
     }
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         test_backend<data::image::pixel_format_t::rgba, core::type::type_t::int_8, backend::nvjpeg2k>(true);
     }
@@ -364,12 +364,12 @@ void reader_writer_test::rgba_int_16_test()
     test_backend<data::image::pixel_format_t::rgba, core::type::type_t::int_16, backend::libtiff>();
     test_backend<data::image::pixel_format_t::rgba, core::type::type_t::int_16, backend::openjpeg>();
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         test_backend<data::image::pixel_format_t::rgba, core::type::type_t::int_16, backend::nvjpeg>(true);
     }
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         test_backend<data::image::pixel_format_t::rgba, core::type::type_t::int_16, backend::nvjpeg2k>(true);
     }

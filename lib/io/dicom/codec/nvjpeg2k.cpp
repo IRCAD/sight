@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,7 +19,7 @@
  *
  ***********************************************************************/
 
-#include "nv_jpeg2k.hpp"
+#include "nvjpeg2k.hpp"
 
 #include "gdcmSequenceOfFragments.h"
 
@@ -107,7 +107,7 @@ static inline enum data::image::pixel_format_t gdcm_to_sight_pi(
 
 //------------------------------------------------------------------------------
 
-bool nv_jpeg2_k::Code(gdcm::DataElement const& _in, gdcm::DataElement& _out)
+bool nvjpeg2k::Code(gdcm::DataElement const& _in, gdcm::DataElement& _out)
 {
     _out = _in;
 
@@ -173,9 +173,9 @@ bool nv_jpeg2_k::Code(gdcm::DataElement const& _in, gdcm::DataElement& _out)
 
 //------------------------------------------------------------------------------
 
-gdcm::ImageCodec* nv_jpeg2_k::Clone() const
+gdcm::ImageCodec* nvjpeg2k::Clone() const
 {
-    auto* copy = new nv_jpeg2_k;
+    auto* copy = new nvjpeg2k;
     return copy;
 }
 

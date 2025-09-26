@@ -225,10 +225,9 @@ void config::parse_object(
 
                 obj_parser->parse(data_config, obj, _objects);
             }
-            else
-            {
-                obj_parser->parse(config, obj, _objects);
-            }
+
+            // We allow direct override of object parameters in the object definition
+            obj_parser->parse(config, obj, _objects);
         }
 
         // If there is no uid defined in the config, we use the one generated from get_id()
@@ -521,7 +520,7 @@ app::detail::service_config config::parse_service(
         {
             std::vector<std::string> tokens;
             boost::split(tokens, _uid, boost::is_any_of("."));
-            return _objects.find(tokens[0]) != _objects.end();
+            return _objects.contains(tokens[0]);
         };
 
     for(auto&& [key, uid] : properties_cfgs)

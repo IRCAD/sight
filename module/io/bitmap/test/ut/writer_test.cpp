@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -141,8 +141,6 @@ inline static void test_enable(
 
         for(const auto& mode : _modes)
         {
-            const std::string mode_string(mode == sight::io::bitmap::writer::mode::best ? "best" : "fast");
-
             // Add file
             service::config_t config;
             config.add("file", file_path.string());
@@ -229,7 +227,7 @@ void writer_test::config_test()
         test_enable(tmp_dir, expected_image, modes, false);
     }
 
-    if(sight::io::bitmap::nv_jpeg())
+    if(sight::io::bitmap::nvjpeg())
     {
         test_enable(tmp_dir, expected_image, modes, true);
     }

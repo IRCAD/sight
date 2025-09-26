@@ -21,9 +21,8 @@
 
 #include "file.hpp"
 
-#include "core/jobs/job.hpp"
-
 #include <core/compare.hpp>
+#include <core/jobs/job.hpp>
 
 #include <data/dicom/sop.hpp>
 #include <data/helper/medical_image.hpp>
@@ -32,6 +31,8 @@
 #include <data/model_series.hpp>
 
 #include <geometry/__/vector.hpp>
+
+#include <io/bitmap/reader.hpp>
 
 #include <gdcmDirectory.h>
 #include <gdcmImageApplyLookupTable.h>
@@ -656,15 +657,66 @@ constexpr static void ybr_to_rgb(T* _buffer, std::size_t _size, std::uint16_t _s
 inline static const char* read_gdcm_buffer(
     const gdcm::Image& _gdcm_image,
     char* const _buffer,
-    const std::string& _filename
+    const std::string& _filename,
+    const bool _jpeg2k_bypass
 )
 {
     SIGHT_ASSERT("Null buffer.", _buffer != nullptr);
 
-    SIGHT_THROW_IF(
-        "Cannot read Pixel Data from DICOM file '" << _filename << "'.",
-        _buffer == nullptr || !_gdcm_image.GetBuffer(_buffer)
-    );
+    // Special case for JPEG2000 compressed images since GDCM could crash when the output size is too big.
+    /// @note this could happen with other compression schemes (RLE, JPEG, ...), but JPEG2000 is what we use the most.
+    if(_jpeg2k_bypass)
+    {
+        const auto& data_element            = _gdcm_image.GetDataElement();
+        const auto* const fragment_sequence = data_element.GetSequenceOfFragments();
+
+        SIGHT_THROW_IF(
+            "Cannot read Pixel Data from DICOM file '" << _filename << "'.",
+            fragment_sequence == nullptr || fragment_sequence->GetNumberOfFragments() <= 0
+        );
+
+        const auto& dimensions   = _gdcm_image.GetDimensions();
+        const auto& pixel_format = _gdcm_image.GetPixelFormat();
+        const auto pixel_size    = pixel_format.GetPixelSize();
+        const auto frame_size    = dimensions[0] * dimensions[1] * pixel_size;
+
+        bitmap::reader reader;
+
+        /// @note Using threads is not really useful here, especially with nvjpeg2k: it is even a bit slower.
+        for(std::size_t i = 0, end = fragment_sequence->GetNumberOfFragments() ; i < end ; ++i)
+        {
+            const auto& fragment = fragment_sequence->GetFragment(i);
+            SIGHT_THROW_IF(
+                "Invalid fragment[" << i << "] in DICOM file '" << _filename << "'.",
+                fragment.GetLength() <= 0
+            );
+
+            const auto* const byte_value = fragment.GetByteValue();
+            SIGHT_THROW_IF(
+                "Invalid fragment[" << i << "] in DICOM file '" << _filename << "'.",
+                byte_value == nullptr
+            );
+
+            reader.read(
+                reinterpret_cast<const uint8_t*>(byte_value->GetPointer()),
+                byte_value->GetLength(),
+#ifdef SIGHT_ENABLE_NVJPEG2K
+                bitmap::backend::nvjpeg2k_j2k,
+#else
+                bitmap::backend::openjpeg_j2k,
+#endif
+                reinterpret_cast<uint8_t*>(_buffer + (i * frame_size))
+            );
+        }
+    }
+    else
+    {
+        // In all other cases, rely on GDCM to decode the Pixel Data
+        SIGHT_THROW_IF(
+            "Cannot read Pixel Data from DICOM file '" << _filename << "'.",
+            !_gdcm_image.GetBuffer(_buffer)
+        );
+    }
 
     return _buffer;
 }
@@ -678,7 +730,8 @@ inline static bool read_buffer(
     std::unique_ptr<std::vector<char> >& _gdcm_instance_buffer,
     char* const _instance_buffer,
     const std::size_t _instance_buffer_size,
-    const std::string& _filename
+    const std::string& _filename,
+    const bool _jpeg2k_bypass
 )
 {
     if(_job && _job->cancel_requested())
@@ -704,7 +757,7 @@ inline static bool read_buffer(
         }
 
         // Read the buffer. Use the buffer from the image series object
-        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename);
+        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename, _jpeg2k_bypass);
 
         if(_job && _job->cancel_requested())
         {
@@ -761,7 +814,12 @@ inline static bool read_buffer(
         }
 
         // Read raw input buffer
-        const char* const gdcm_buffer = read_gdcm_buffer(_gdcm_image, _gdcm_instance_buffer->data(), _filename);
+        const char* const gdcm_buffer = read_gdcm_buffer(
+            _gdcm_image,
+            _gdcm_instance_buffer->data(),
+            _filename,
+            _jpeg2k_bypass
+        );
 
         if(_job && _job->cancel_requested())
         {
@@ -791,7 +849,7 @@ inline static bool read_buffer(
         }
 
         // Read the buffer. Use the buffer from the image series object
-        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename);
+        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename, _jpeg2k_bypass);
 
         // 99% of the time, the pixel type is 8 bits per component, but it can be 16 bits too.
         switch(gdcm_pixel_format.GetBitsAllocated())
@@ -823,7 +881,7 @@ inline static bool read_buffer(
     else
     {
         // Nothing to do other than copying the buffer
-        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename);
+        read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename, _jpeg2k_bypass);
     }
 
     return true;
@@ -1001,15 +1059,16 @@ inline static data::series_set::sptr read_image_instance(
     SIGHT_INFO("Reading DICOM file '" << filename << "'.");
     SIGHT_THROW_IF("Cannot read DICOM file '" << filename << "'.", !gdcm_reader.Read());
 
-    // Get the image and convert it to a suitable format
-    const auto& gdcm_image = convert_gdcm_image(gdcm_reader.GetImage(), filename);
-
     // Get the dataset and the input pixel format
     const auto& gdcm_dataset = gdcm_reader.GetFile().GetDataSet();
 
+    // Get the image and convert it to a suitable format
+    /// @note you *MUST* use a reference here, otherwise GDCM "smart" pointers will not work correctly.
+    auto& gdcm_image = gdcm_reader.GetImage();
+
     // GDCM you are disappointing. gdcm::Image::GetIntercept() and gdcm::Image::GetSlope() doesn't always work.
     const auto& [use_intercept, fixed_intercept] =
-        [&]
+        [&gdcm_image, &gdcm_dataset]
         {
             if(const double gdcm_intercept = gdcm_image.GetIntercept();
                !core::is_equal(gdcm_intercept, 0.0))
@@ -1028,7 +1087,7 @@ inline static data::series_set::sptr read_image_instance(
         }();
 
     const auto& [use_slope, fixed_slope] =
-        [&]
+        [&gdcm_image, &gdcm_dataset]
         {
             if(const double gdcm_slope = gdcm_image.GetSlope();
                !core::is_equal(gdcm_slope, 1.0))
@@ -1046,6 +1105,17 @@ inline static data::series_set::sptr read_image_instance(
             return std::make_pair(false, 1.0);
         }();
 
+    const auto& transfer_syntax = gdcm_image.GetTransferSyntax();
+
+    // Bypass GDCM for JPEG2000 compressed images with no rescale intercept / slope
+    /// @note If we want to use nvjpeg2k with slope / intercept, we need to do it ourselves !
+    const bool jpeg2k_bypass = !use_intercept && !use_slope && transfer_syntax.IsEncapsulated()
+                               && (transfer_syntax == gdcm::TransferSyntax::JPEG2000
+                                   || transfer_syntax == gdcm::TransferSyntax::JPEG2000Lossless
+                                   || transfer_syntax == gdcm::TransferSyntax::JPEG2000Part2
+                                   || transfer_syntax == gdcm::TransferSyntax::JPEG2000Part2Lossless);
+    const auto& converted_gdcm_image = jpeg2k_bypass ? gdcm_image : convert_gdcm_image(gdcm_image, filename);
+
     // Initialize the rescaler if there is a Rescale Intercept / Rescale Slope
     // The Rescale Intercept / Rescale Slope can be specific to each instance !
     std::unique_ptr<gdcm::Rescaler> gdcm_rescaler;
@@ -1054,22 +1124,22 @@ inline static data::series_set::sptr read_image_instance(
         gdcm_rescaler = std::make_unique<gdcm::Rescaler>();
         gdcm_rescaler->SetIntercept(fixed_intercept);
         gdcm_rescaler->SetSlope(fixed_slope);
-        gdcm_rescaler->SetPixelFormat(gdcm_image.GetPixelFormat());
+        gdcm_rescaler->SetPixelFormat(converted_gdcm_image.GetPixelFormat());
     }
 
     // Create the ImageSeries, if needed, get or compute needed image information
     // Special case here: if the current image is a volume, and we have more than one instance, we have no other
     // choice than splitting the series.
-    const bool split = gdcm_image.GetNumberOfDimensions() >= 3 && _source.num_instances() > 1;
+    const bool split = converted_gdcm_image.GetNumberOfDimensions() >= 3 && _source.num_instances() > 1;
     if(!_splitted_series || split)
     {
+        // User may have canceled the job
         if(_job && _job->cancel_requested())
         {
             return nullptr;
         }
 
-        // User may have canceled the job
-        if(const auto& image_series = new_image_series(_source, _job, gdcm_image, gdcm_rescaler, filename);
+        if(const auto& image_series = new_image_series(_source, _job, converted_gdcm_image, gdcm_rescaler, filename);
            image_series)
         {
             // Add the dataset to allow access to all DICOM attributes (not only the ones we have converted)
@@ -1078,7 +1148,7 @@ inline static data::series_set::sptr read_image_instance(
             // Also save the file path. It could be useful to keep a link to the original file.
             image_series->set_file(filename);
 
-            const auto& transform = compute_image_transform(gdcm_image, image_series);
+            const auto& transform = compute_image_transform(converted_gdcm_image, image_series);
             image_series->data::image::set_origin(transform.position());
             image_series->data::image::set_orientation(transform.orientation());
 
@@ -1098,6 +1168,7 @@ inline static data::series_set::sptr read_image_instance(
         }
     }
 
+    // User may have canceled the job
     if(_job && _job->cancel_requested())
     {
         return nullptr;
@@ -1126,12 +1197,13 @@ inline static data::series_set::sptr read_image_instance(
     // Read the image data and fill the image series
     if(!read_buffer(
            _job,
-           gdcm_image,
+           converted_gdcm_image,
            gdcm_rescaler,
            _gdcm_instance_buffer,
            instance_buffer,
            instance_buffer_size,
-           filename
+           filename,
+           jpeg2k_bypass
     ))
     {
         // Job have been canceled
@@ -1347,7 +1419,6 @@ public:
 
         std::ranges::transform(
             sorter,
-
             std::back_inserter(sorted),
             [](const auto& _v){return _v.second;});
 
@@ -1452,7 +1523,6 @@ public:
 
         std::ranges::transform(
             sorter,
-
             std::back_inserter(sorted),
             [](const auto& _v){return _v.second;});
 
@@ -1486,7 +1556,6 @@ public:
 
         std::ranges::transform(
             sorter,
-
             std::back_inserter(sorted),
             [](const auto& _v){return _v.second;});
 
@@ -1520,7 +1589,6 @@ public:
 
         std::ranges::transform(
             sorter,
-
             std::back_inserter(sorted),
             [](const auto& _v){return _v.second;});
 
@@ -1691,7 +1759,7 @@ public:
     }
 
     /// The default filter to select only some type (Image, Model, ...) of DICOM files.
-    data::series::SopKeywords m_filters;
+    data::series::sop_keywords m_filters;
 
     /// Contains the list of files to sort and read.
     /// Usually, it is filed by user after showing a selection dialog,
@@ -1753,7 +1821,6 @@ data::series_set::sptr file::scan()
         const auto& filenames = gdcm_directory.GetFilenames();
         std::ranges::transform(
             filenames,
-
             std::back_inserter(files),
             [](const auto& _v)
             {
@@ -1820,7 +1887,7 @@ void file::read()
 
 //------------------------------------------------------------------------------
 
-void file::set_filters(const data::series::SopKeywords& _filters)
+void file::set_filters(const data::series::sop_keywords& _filters)
 {
     m_pimpl->m_filters = _filters;
 }

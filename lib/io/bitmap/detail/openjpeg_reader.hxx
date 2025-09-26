@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,11 +21,9 @@
 
 #pragma once
 
-#include "reader_impl.hxx"
+#include "common.hxx"
 
 #include <openjpeg.h>
-
-#include <type_traits>
 
 // cspell:ignore nvjpeg NOLINTNEXTLINE numresolution cblockw cblockh sgnd CLRSPC cparameters decod dparameters
 
@@ -59,50 +57,51 @@ struct has_alpha : std::false_type {};
 template<typename T>
 struct has_alpha<T, decltype((void) T::a, 0)>: std::true_type {};
 
-class open_jpeg_reader final
+class openjpeg_reader final : public reader_backend
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    open_jpeg_reader(const open_jpeg_reader&)            = delete;
-    open_jpeg_reader& operator=(const open_jpeg_reader&) = delete;
+    openjpeg_reader(const openjpeg_reader&)            = delete;
+    openjpeg_reader& operator=(const openjpeg_reader&) = delete;
 
     /// Constructor
-    inline open_jpeg_reader() noexcept
+    openjpeg_reader() noexcept
     {
         // Set the default decoding parameters
         opj_set_default_decoder_parameters(&m_parameters);
 
+        // NOLINTNEXTLINE(cppcoreguidelines-prefer-member-initializer)
         m_valid = true;
     }
 
     /// Destructor
-    inline ~open_jpeg_reader() noexcept = default;
+    ~openjpeg_reader() noexcept final = default;
 
     /// Reading
-    inline void read(data::image& _image, std::istream& _istream, flag _flag)
+    void read(data::image& _image, std::istream& _istream, flag _flag) final
     {
         // Create an RAII to be sure everything is cleaned at exit
         struct keeper final
         {
-            inline keeper() noexcept = default;
+            keeper() noexcept = default;
 
-            inline ~keeper()
+            ~keeper()
             {
                 // Cleanup
-                if(m_image)
+                if(m_image != nullptr)
                 {
                     opj_image_destroy(m_image);
                     m_image = nullptr;
                 }
 
-                if(m_stream)
+                if(m_stream != nullptr)
                 {
                     opj_stream_destroy(m_stream);
                     m_stream = nullptr;
                 }
 
-                if(m_codec)
+                if(m_codec != nullptr)
                 {
                     opj_destroy_codec(m_codec);
                     m_codec = nullptr;
@@ -116,7 +115,7 @@ public:
 
         CHECK_OPJ(
             keeper.m_codec = opj_create_decompress(
-                _flag == flag::j2_k_stream ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
+                _flag == flag::j2k_stream ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
             )
         );
 
@@ -143,7 +142,7 @@ public:
         opj_stream_set_seek_function(keeper.m_stream, seek_callback);
 
         // Format can .jp2 or .j2k
-        m_parameters.decod_format = _flag == flag::j2_k_stream ? 0 : 1;
+        m_parameters.decod_format = _flag == flag::j2k_stream ? 0 : 1;
 
         // Setup the decoder
         CHECK_OPJ(opj_setup_decoder(keeper.m_codec, &m_parameters));
@@ -180,18 +179,18 @@ public:
                 {
                     return std::make_tuple(width, height, sgnd ? core::type::INT8 : core::type::UINT8);
                 }
-                else if(prec <= 16)
+
+                if(prec <= 16)
                 {
                     return std::make_tuple(width, height, sgnd ? core::type::INT16 : core::type::UINT16);
                 }
-                else if(prec <= 32)
+
+                if(prec <= 32)
                 {
                     return std::make_tuple(width, height, sgnd ? core::type::INT32 : core::type::UINT32);
                 }
-                else
-                {
-                    SIGHT_THROW("Unsupported precision: '" << prec << "'");
-                }
+
+                SIGHT_THROW("Unsupported precision: '" << prec << "'");
             }();
 
         // Get pixel_format
@@ -292,11 +291,18 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool is_valid() const noexcept final
+    {
+        return m_valid;
+    }
+
 private:
 
     //------------------------------------------------------------------------------
 
-    inline static void info_callback(const char*, void*)
+    static void info_callback(const char* /*unused*/, void* /*unused*/)
     {
         // Too much noise for regular "info"
         // SIGHT_DEBUG(msg);
@@ -304,21 +310,21 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void warning_callback(const char* _msg, void*)
+    static void warning_callback(const char* _msg, void* /*unused*/)
     {
         SIGHT_WARN(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void error_callback(const char* _msg, void*)
+    static void error_callback(const char* _msg, void* /*unused*/)
     {
         SIGHT_THROW(_msg);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_SIZE_T read_callback(void* _p_buffer, OPJ_SIZE_T _p_nb_bytes, void* _p_user_data)
+    static OPJ_SIZE_T read_callback(void* _p_buffer, OPJ_SIZE_T _p_nb_bytes, void* _p_user_data)
     {
         if(_p_user_data == nullptr || _p_nb_bytes == 0)
         {
@@ -342,7 +348,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_OFF_T skip_callback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
+    static OPJ_OFF_T skip_callback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
     {
         if(_p_user_data == nullptr)
         {
@@ -362,7 +368,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static OPJ_BOOL seek_callback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
+    static OPJ_BOOL seek_callback(OPJ_OFF_T _p_nb_bytes, void* _p_user_data)
     {
         if(_p_user_data == nullptr)
         {
@@ -382,7 +388,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline static void free_callback(void* /*p_user_data*/)
+    static void free_callback(void* /*p_user_data*/)
     {
         // Nothing to do, istream comes from the outside
     }
@@ -390,7 +396,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename T>
-    inline static void to_sight(const opj_image_t& _opj_image, data::image& _image)
+    static void to_sight(const opj_image_t& _opj_image, data::image& _image)
     {
         switch(_image.pixel_format())
         {
@@ -467,7 +473,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename P>
-    inline static void to_sight_pixels(const opj_image_t& _opj_image, data::image& _image)
+    static void to_sight_pixels(const opj_image_t& _opj_image, data::image& _image)
     {
         const auto& sizes = _image.size();
 
@@ -504,10 +510,7 @@ private:
 
     opj_dparameters_t m_parameters {};
 
-public:
-
     bool m_valid {false};
-    static constexpr std::string_view m_name {"OpenJPEGReader"};
 };
 
 } // namespace sight::io::bitmap::detail

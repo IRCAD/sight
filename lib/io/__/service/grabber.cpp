@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2023 IRCAD France
+ * Copyright (C) 2014-2025 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,6 +33,7 @@ const core::com::signals::key_t grabber::DURATION_MODIFIED_SIG = "duration_modif
 
 const core::com::signals::key_t grabber::CAMERA_STARTED_SIG = "camera_started";
 const core::com::signals::key_t grabber::CAMERA_STOPPED_SIG = "camera_stopped";
+const core::com::signals::key_t grabber::CAMERA_PAUSED_SIG  = "camera_paused";
 
 const core::com::signals::key_t grabber::FRAME_PRESENTED_SIG = "framePresented";
 
@@ -70,6 +71,7 @@ grabber::grabber() noexcept :
     new_signal<duration_modified_signal_t>(DURATION_MODIFIED_SIG);
     new_signal<camera_started_signal_t>(CAMERA_STARTED_SIG);
     new_signal<camera_stopped_signal_t>(CAMERA_STOPPED_SIG);
+    new_signal<camera_paused_signal_t>(CAMERA_PAUSED_SIG);
     new_signal<frame_presented_signal_t>(FRAME_PRESENTED_SIG);
 
     new_signal<parameter_changed_t>(PARAMETER_CHANGED_SIG);
@@ -173,7 +175,7 @@ void grabber::clear_timeline(data::frame_tl& _tl)
         SPTR(data::frame_tl::buffer_t) buffer = _tl.create_buffer(timestamp);
         auto* dest_buffer = reinterpret_cast<std::uint8_t*>(buffer->add_element(0));
 
-        std::memset(dest_buffer, 0, _tl.get_width() * _tl.get_height() * _tl.num_components());
+        std::memset(dest_buffer, 0, _tl.get_width() * _tl.get_height() * _tl.num_components() * _tl.type().size());
 
         // push buffer and notify
         _tl.clear_timeline();
@@ -184,13 +186,6 @@ void grabber::clear_timeline(data::frame_tl& _tl)
         );
         sig_tl->async_emit(timestamp);
     }
-}
-
-// ----------------------------------------------------------------------------
-
-void grabber::set_start_state(bool _state)
-{
-    m_is_started = _state;
 }
 
 //------------------------------------------------------------------------------

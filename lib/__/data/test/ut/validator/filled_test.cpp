@@ -24,6 +24,7 @@
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
 #include <data/point_list.hpp>
+#include <data/string.hpp>
 #include <data/validator/base.hpp>
 
 // Registers the fixture into the 'registry'
@@ -119,6 +120,30 @@ void filled_test::point_list()
     {
         point_list->push_back(std::make_shared<sight::data::point>());
         validation = obj_validator->validate(point_list);
+        CPPUNIT_ASSERT_EQUAL(true, validation.first);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void filled_test::string_serializable()
+{
+    auto validator = factory::make("sight::data::validator::filled");
+    CPPUNIT_ASSERT(validator);
+
+    auto obj_validator = std::dynamic_pointer_cast<sight::data::validator::base>(validator);
+    CPPUNIT_ASSERT(obj_validator);
+
+    sight::data::validator::return_t validation;
+    data::string_serializable::sptr string_serializable = std::make_shared<data::string>();
+
+    {
+        validation = obj_validator->validate(string_serializable);
+        CPPUNIT_ASSERT_EQUAL(false, validation.first);
+    }
+    {
+        string_serializable->from_string("Non-empty string");
+        validation = obj_validator->validate(string_serializable);
         CPPUNIT_ASSERT_EQUAL(true, validation.first);
     }
 }

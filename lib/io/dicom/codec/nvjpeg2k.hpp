@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2025 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,31 +21,20 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <gdcmJPEG2000Codec.h>
 
-namespace sight::data::validator::ut
+namespace sight::io::dicom::codec
 {
 
-/// Test the stereo_camera validator
-class filled_test : public CPPUNIT_NS::TestFixture
+class nvjpeg2k : public gdcm::JPEG2000Codec
 {
-CPPUNIT_TEST_SUITE(filled_test);
-CPPUNIT_TEST(image);
-CPPUNIT_TEST(model_series);
-CPPUNIT_TEST(point_list);
-CPPUNIT_TEST(string_serializable);
-CPPUNIT_TEST_SUITE_END();
-
 public:
 
-    // interface
-    void setUp() override;
-    void tearDown() override;
+    ~nvjpeg2k() override = default;
 
-    static void image();
-    static void model_series();
-    static void point_list();
-    static void string_serializable();
+    bool Code(gdcm::DataElement const& _in, gdcm::DataElement& _out) override;
+
+    ImageCodec* Clone() const override;
 };
 
-} // namespace sight::data::validator::ut
+}

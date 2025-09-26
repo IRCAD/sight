@@ -214,7 +214,7 @@ public:
     dialog_policy m_dialog_policy {dialog_policy::always};
 
     /// Default filters to use when scanning for DICOM files
-    data::series::SopKeywords m_filters {
+    data::series::sop_keywords m_filters {
         data::series::dicom_types_to_sops(
             static_cast<data::series::dicom_types>(data::series::dicom_t::image)
             | static_cast<data::series::dicom_types>(data::series::dicom_t::model)

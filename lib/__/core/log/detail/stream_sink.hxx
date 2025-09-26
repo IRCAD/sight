@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -43,6 +43,7 @@
 
 #include <zstd.h>
 
+#include <array>
 #include <fstream>
 
 namespace sight::core::log::detail

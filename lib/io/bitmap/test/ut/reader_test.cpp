@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -44,10 +44,11 @@ namespace sight::io::bitmap::ut
 
 //------------------------------------------------------------------------------
 
-inline static void test_backend(
+inline static void test_backend_api(
     const std::filesystem::path& _file,
     backend _backend,
-    data::image::sptr _expected_image = data::image::sptr()
+    data::image::sptr _expected_image,
+    bool _buffer_api
 )
 {
     core::os::temp_dir temp_dir;
@@ -85,10 +86,37 @@ inline static void test_backend(
     // Read the image from disk
     {
         auto reader = std::make_shared<io::bitmap::reader>();
-        reader->set_object(actual_image);
-        reader->set_file(filepath);
 
-        CPPUNIT_ASSERT_NO_THROW(reader->read(_backend));
+        if(_buffer_api)
+        {
+            // Fill the buffer with the file content
+            std::ifstream file_stream(filepath, std::ios::in | std::ios::binary);
+            CPPUNIT_ASSERT(file_stream.is_open());
+            std::stringstream string_stream;
+            string_stream << file_stream.rdbuf();
+            std::string data = std::move(string_stream).str();
+
+            // In full buffer API, the image must be already allocated
+            const auto dump_lock = actual_image->dump_lock();
+            actual_image->resize(_expected_image->size(), _expected_image->type(), _expected_image->pixel_format());
+
+            CPPUNIT_ASSERT_NO_THROW(
+                reader->read(
+                    reinterpret_cast<const std::uint8_t*>(data.data()),
+                    data.size(),
+                    _backend,
+                    reinterpret_cast<std::uint8_t*>(actual_image->buffer())
+                )
+            );
+
+            sight::data::helper::medical_image::check_image_slice_index(*actual_image);
+        }
+        else
+        {
+            reader->set_file(filepath);
+            reader->set_object(actual_image);
+            CPPUNIT_ASSERT_NO_THROW(reader->read(_backend));
+        }
     }
 
     const auto& expected_sizes = _expected_image->size();
@@ -146,6 +174,18 @@ inline static void test_backend(
 
 //------------------------------------------------------------------------------
 
+inline static void test_backend(
+    const std::filesystem::path& _file,
+    backend _backend,
+    data::image::sptr _expected_image = data::image::sptr()
+)
+{
+    test_backend_api(_file, _backend, _expected_image, false);
+    test_backend_api(_file, _backend, _expected_image, true);
+}
+
+//------------------------------------------------------------------------------
+
 inline static void profile_reader(
     std::size_t _loop,
     backend _backend
@@ -178,7 +218,7 @@ inline static void profile_reader(
                     return "libjpeg";
 
                 case backend::nvjpeg2k:
-                    return "nv_jpeg_2k";
+                    return "nvjpeg2k";
 
                 case backend::openjpeg:
                     return "openJPEG";
@@ -253,9 +293,9 @@ void reader_test::extensions_test()
     };
 
     std::vector<backend> backends {
-        io::bitmap::nv_jpeg() ? backend::nvjpeg : backend::libjpeg,
-        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k : backend::openjpeg,
-        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2k,
+        io::bitmap::nvjpeg() ? backend::nvjpeg : backend::libjpeg,
+        io::bitmap::nvjpeg2k() ? backend::nvjpeg2k : backend::openjpeg,
+        io::bitmap::nvjpeg2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2k,
         backend::libtiff,
         backend::libpng
     };
@@ -280,9 +320,9 @@ void reader_test::extensions_test()
 void reader_test::wildcard_test()
 {
     std::vector<backend> backends {
-        io::bitmap::nv_jpeg() ? backend::nvjpeg : backend::libjpeg,
-        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k : backend::openjpeg,
-        io::bitmap::nv_jpeg_2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2k,
+        io::bitmap::nvjpeg() ? backend::nvjpeg : backend::libjpeg,
+        io::bitmap::nvjpeg2k() ? backend::nvjpeg2k : backend::openjpeg,
+        io::bitmap::nvjpeg2k() ? backend::nvjpeg2k_j2k : backend::openjpeg_j2k,
         backend::libtiff,
         backend::libpng
     };
@@ -328,9 +368,9 @@ void reader_test::wildcard_test()
 
 //------------------------------------------------------------------------------
 
-void reader_test::nv_jpeg_test()
+void reader_test::nvjpeg_test()
 {
-    if(!io::bitmap::nv_jpeg())
+    if(!io::bitmap::nvjpeg())
     {
         return;
     }
@@ -342,7 +382,7 @@ void reader_test::nv_jpeg_test()
 
 void reader_test::nv_jpe_g2_k_test()
 {
-    if(!io::bitmap::nv_jpeg_2k())
+    if(!io::bitmap::nvjpeg2k())
     {
         return;
     }
@@ -357,7 +397,7 @@ void reader_test::nv_jpe_g2_k_test()
 
 //------------------------------------------------------------------------------
 
-void reader_test::lib_png_test()
+void reader_test::libpng_test()
 {
     test_backend("libPNG_RGB_UINT8.png", backend::libpng, get_synthetic_image(0));
 
@@ -370,14 +410,14 @@ void reader_test::lib_png_test()
 
 //------------------------------------------------------------------------------
 
-void reader_test::lib_jpeg_test()
+void reader_test::libjpeg_test()
 {
     test_backend("libJPEG.jpg", backend::libjpeg, get_synthetic_image(0));
 }
 
 //------------------------------------------------------------------------------
 
-void reader_test::open_jpeg_test()
+void reader_test::openjpeg_test()
 {
     test_backend(
         // Pure synthetic images cannot be read/written correctly with JASPER and openCV.
@@ -389,7 +429,7 @@ void reader_test::open_jpeg_test()
 
 //------------------------------------------------------------------------------
 
-void reader_test::lib_tiff_test()
+void reader_test::libtiff_test()
 {
     test_backend("libTIFF_RGB_UINT8.tiff", backend::libtiff, get_synthetic_image(0));
 
@@ -421,14 +461,14 @@ void reader_test::profiling_test()
 
     profile_reader(s_LOOP_COUNT, backend::libjpeg);
 
-    if(io::bitmap::nv_jpeg())
+    if(io::bitmap::nvjpeg())
     {
         profile_reader(s_LOOP_COUNT, backend::nvjpeg);
     }
 
     profile_reader(s_LOOP_COUNT, backend::openjpeg);
 
-    if(io::bitmap::nv_jpeg_2k())
+    if(io::bitmap::nvjpeg2k())
     {
         profile_reader(s_LOOP_COUNT, backend::nvjpeg2k);
     }

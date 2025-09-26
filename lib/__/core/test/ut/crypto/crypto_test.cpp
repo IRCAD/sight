@@ -26,6 +26,8 @@
 
 #include <doctest/doctest.h>
 
+#include <iostream>
+
 TEST_SUITE("sight::core::crypto::secure_string")
 {
 // cspell: disable

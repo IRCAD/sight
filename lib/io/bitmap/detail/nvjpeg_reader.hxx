@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,13 +21,11 @@
 
 #pragma once
 
-#include "reader_impl.hxx"
+#include "common.hxx"
 
 #include <cuda.h>
 #include <nppi.h>
 #include <nvjpeg.h>
-
-#include <ostream>
 
 // cspell:ignore nvjpeg BGRI RGBI NOLINTNEXTLINE
 
@@ -55,16 +53,16 @@ namespace sight::io::bitmap::detail
             SIGHT_ERROR(e.what()); \
         }
 
-class nv_jpeg_reader final
+class nvjpeg_reader final : public reader_backend
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    nv_jpeg_reader(const nv_jpeg_reader&)            = delete;
-    nv_jpeg_reader& operator=(const nv_jpeg_reader&) = delete;
+    nvjpeg_reader(const nvjpeg_reader&)            = delete;
+    nvjpeg_reader& operator=(const nvjpeg_reader&) = delete;
 
     /// Constructor
-    inline nv_jpeg_reader() noexcept
+    nvjpeg_reader() noexcept
     {
         try
         {
@@ -86,13 +84,13 @@ public:
     }
 
     /// Destructor
-    inline ~nv_jpeg_reader() noexcept
+    ~nvjpeg_reader() noexcept final
     {
         free();
     }
 
     /// Reading
-    inline void read(data::image& _image, std::istream& _istream, flag /*flag*/)
+    void read(data::image& _image, std::istream& _istream, flag _flag) final
     {
         // Get input size
         _istream.seekg(0, std::ios::end);
@@ -102,7 +100,7 @@ public:
         SIGHT_THROW_IF("The stream cannot be read.", stream_size <= 0);
 
         // Allocate input buffer
-        const std::size_t input_buffer_size = std::size_t(stream_size);
+        const auto input_buffer_size = std::size_t(stream_size);
         if(m_input_buffer.size() < input_buffer_size)
         {
             m_input_buffer.resize(input_buffer_size);
@@ -111,24 +109,37 @@ public:
         // Read input data..
         _istream.read(reinterpret_cast<char*>(m_input_buffer.data()), stream_size);
 
+        read(_image, m_input_buffer.data(), input_buffer_size, nullptr, _flag);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void read(
+        const std::optional<std::reference_wrapper<data::image> >& _image,
+        const std::uint8_t* const _input,
+        std::size_t _input_size,
+        std::uint8_t* const _output,
+        flag /*_flag*/
+    ) final
+    {
         // Decode JPEG metadata
         const auto& [num_components, subsampling, width, height] =
             [&]
             {
                 int components                        = 0;
                 nvjpegChromaSubsampling_t subsampling = NVJPEG_CSS_UNKNOWN;
-                int widths[NVJPEG_MAX_COMPONENT] {};
-                int heights[NVJPEG_MAX_COMPONENT] {};
+                std::array<int, NVJPEG_MAX_COMPONENT> widths {};
+                std::array<int, NVJPEG_MAX_COMPONENT> heights {};
 
                 CHECK_CUDA(
                     nvjpegGetImageInfo(
                         m_handle,
-                        m_input_buffer.data(),
-                        input_buffer_size,
+                        _input,
+                        _input_size,
                         &components,
                         &subsampling,
-                        widths,
-                        heights
+                        widths.data(),
+                        heights.data()
                     ),
                     NVJPEG_STATUS_SUCCESS
                 );
@@ -165,8 +176,8 @@ public:
             nvjpegDecode(
                 m_handle,
                 m_state,
-                m_input_buffer.data(),
-                input_buffer_size,
+                _input,
+                _input_size,
                 subsampling == NVJPEG_CSS_GRAY ? NVJPEG_OUTPUT_UNCHANGED : NVJPEG_OUTPUT_RGBI,
                 &nv_image,
                 m_stream
@@ -175,11 +186,14 @@ public:
         );
 
         // Allocate destination image
-        _image.resize(
-            {width, height, 0},
-            core::type::UINT8,
-            data::image::pixel_format_t::rgb
-        );
+        if(_image.has_value())
+        {
+            _image->get().resize(
+                {width, height, 0},
+                core::type::UINT8,
+                data::image::pixel_format_t::rgb
+            );
+        }
 
         // Synchronize CUDA streams
         CHECK_CUDA(cudaStreamSynchronize(m_stream), cudaSuccess);
@@ -187,7 +201,7 @@ public:
         // Copy GPU memory so we can convert to planar there
         CHECK_CUDA(
             cudaMemcpy(
-                _image.buffer(),
+                _image.has_value() ? _image->get().buffer() : _output,
                 m_gpu_buffer,
                 size_in_bytes,
                 cudaMemcpyDeviceToHost
@@ -196,11 +210,18 @@ public:
         );
     }
 
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool is_valid() const noexcept final
+    {
+        return m_valid;
+    }
+
 private:
 
     //------------------------------------------------------------------------------
 
-    inline void free() noexcept
+    void free() noexcept
     {
         if(m_gpu_buffer != nullptr)
         {
@@ -239,10 +260,7 @@ private:
 
     std::vector<unsigned char> m_input_buffer;
 
-public:
-
     bool m_valid {false};
-    static constexpr std::string_view m_name {"NvJPEGReader"};
 };
 
 } // namespace sight::io::bitmap::detail

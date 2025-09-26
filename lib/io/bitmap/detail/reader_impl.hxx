@@ -56,118 +56,190 @@ public:
     reader_impl& operator=(reader_impl&&)      = delete;
 
     /// Constructor
-    inline explicit reader_impl(reader* const _reader) :
+    explicit reader_impl(reader* const _reader) :
         m_reader(_reader)
     {
     }
 
     /// Default destructor
-    inline ~reader_impl() noexcept = default;
+    ~reader_impl() noexcept = default;
 
     /// Main read function
-    inline void read(std::istream& _istream, backend _backend)
+    void read(std::istream& _istream, backend _backend)
     {
         // Get the image pointer
         auto image = m_reader->get_concrete_object();
-        SIGHT_THROW_IF("Output image is null", image == nullptr);
+
+        if(image == nullptr)
+        {
+            image = std::make_shared<data::image>();
+            m_reader->set_object(image);
+        }
 
         // Protect the image from dump
         const auto dump_lock = image->dump_lock();
 
-#ifdef SIGHT_ENABLE_NVJPEG2K
-        if(nv_jpeg_2k() && _backend == backend::nvjpeg2k)
-        {
-            read<nv_jpe_g2_k_reader>(m_nv_jpe_g2_k, *image, _istream);
-        }
-        else if(nv_jpeg_2k() && _backend == backend::nvjpeg2k_j2k)
-        {
-            read<nv_jpe_g2_k_reader>(
-                m_nv_jpe_g2_k,
-                *image,
-                _istream,
-                flag::j2_k_stream
-            );
-        }
-        else
-#endif
-        if(_backend == backend::openjpeg)
-        {
-            read<open_jpeg_reader>(m_open_jpeg, *image, _istream);
-        }
-        else if(_backend == backend::openjpeg_j2k)
-        {
-            read<open_jpeg_reader>(
-                m_open_jpeg,
-                *image,
-                _istream,
-                flag::j2_k_stream
-            );
-        }
-        else
+        const auto& backend_impl = get_reader_backend(_backend);
+        SIGHT_THROW_IF("No suitable backend found.", backend_impl == nullptr);
 
-#ifdef SIGHT_ENABLE_NVJPEG
-        if(nv_jpeg() && _backend == backend::nvjpeg)
-        {
-            read<nv_jpeg_reader>(m_nv_jpeg, *image, _istream);
-        }
-        else
-#endif
-        if(_backend == backend::libjpeg)
-        {
-            read<lib_jpeg_reader>(m_lib_jpeg, *image, _istream);
-        }
-        else if(_backend == backend::libtiff)
-        {
-            read<lib_tiff_reader>(m_lib_tiff, *image, _istream);
-        }
-        else if(_backend == backend::libpng)
-        {
-            read<lib_png_reader>(m_lib_png, *image, _istream);
-        }
-        else
-        {
-            SIGHT_THROW("No suitable backend found.");
-        }
+        backend_impl->read(
+            *image,
+            _istream,
+            _backend == backend::nvjpeg2k_j2k
+            ? flag::j2k_stream
+            : _backend == backend::openjpeg_j2k
+            ? flag::j2k_stream
+            : flag::none
+        );
 
         sight::data::helper::medical_image::check_image_slice_index(*image);
+    }
+
+    /// Main read function
+    void read(
+        const std::uint8_t* const _input,
+        std::size_t _input_size,
+        std::uint8_t* const _output,
+        backend _backend
+)
+    {
+        const auto& backend_impl = get_reader_backend(_backend);
+
+        if(_output == nullptr)
+        {
+            // Get or create the image shared pointer
+            auto image = m_reader->get_concrete_object();
+
+            if(image == nullptr)
+            {
+                image = std::make_shared<data::image>();
+                m_reader->set_object(image);
+            }
+
+            // Dump lock in case the image has been created here
+            const auto dump_lock = image->dump_lock();
+
+            // Read the image
+            backend_impl->read(
+                *image,
+                _input,
+                _input_size,
+                nullptr,
+                _backend == backend::nvjpeg2k_j2k
+                ? flag::j2k_stream
+                : _backend == backend::openjpeg_j2k
+                ? flag::j2k_stream
+                : flag::none
+            );
+
+            sight::data::helper::medical_image::check_image_slice_index(*image);
+        }
+        else
+        {
+            backend_impl->read(
+                std::nullopt,
+                _input,
+                _input_size,
+                _output,
+                _backend == backend::nvjpeg2k_j2k
+                ? flag::j2k_stream
+                : _backend == backend::openjpeg_j2k
+                ? flag::j2k_stream
+                : flag::none
+            );
+        }
     }
 
 private:
 
     //------------------------------------------------------------------------------
 
-    template<typename W>
-    inline static void read(
-        std::unique_ptr<W>& _backend,
-        data::image& _image,
-        std::istream& _istream,
-        flag _flag = flag::none
-)
+    const std::unique_ptr<reader_backend>& get_reader_backend(backend _backend)
     {
-        if(_backend == nullptr)
+        switch(_backend)
         {
-            _backend = std::make_unique<W>();
-            SIGHT_THROW_IF("Failed to initialize" << _backend->m_name << " backend.", !_backend->m_valid);
+#ifdef SIGHT_ENABLE_NVJPEG
+            case backend::nvjpeg:
+                if(!nvjpeg())
+                {
+                    break;
+                }
+
+                if(!m_nvjpeg)
+                {
+                    m_nvjpeg = std::make_unique<nvjpeg_reader>();
+                }
+                return m_nvjpeg;
+#endif
+#ifdef SIGHT_ENABLE_NVJPEG2K
+            case backend::nvjpeg2k:
+            case backend::nvjpeg2k_j2k:
+                if(!nvjpeg2k())
+                {
+                    break;
+                }
+
+                if(!m_nvjpeg2k)
+                {
+                    m_nvjpeg2k = std::make_unique<nvjpeg2k_reader>();
+                }
+                return m_nvjpeg2k;
+#endif
+            case backend::libjpeg:
+                if(!m_libjpeg)
+                {
+                    m_libjpeg = std::make_unique<libjpeg_reader>();
+                }
+
+                return m_libjpeg;
+
+            case backend::libtiff:
+                if(!m_libtiff)
+                {
+                    m_libtiff = std::make_unique<libtiff_reader>();
+                }
+
+                return m_libtiff;
+
+            case backend::libpng:
+                if(!m_libpng)
+                {
+                    m_libpng = std::make_unique<libpng_reader>();
+                }
+
+                return m_libpng;
+
+            case backend::openjpeg:
+            case backend::openjpeg_j2k:
+                if(!m_openjpeg)
+                {
+                    m_openjpeg = std::make_unique<openjpeg_reader>();
+                }
+
+                return m_openjpeg;
+
+            default:
+                break;
         }
 
-        _backend->read(_image, _istream, _flag);
+        SIGHT_THROW("No suitable backend found.");
     }
 
     /// Pointer to the public interface
     reader* const m_reader;
 
 #ifdef SIGHT_ENABLE_NVJPEG
-    std::unique_ptr<nv_jpeg_reader> m_nv_jpeg;
+    std::unique_ptr<reader_backend> m_nvjpeg;
 #endif
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-    std::unique_ptr<nv_jpe_g2_k_reader> m_nv_jpe_g2_k;
+    std::unique_ptr<reader_backend> m_nvjpeg2k;
 #endif
 
-    std::unique_ptr<lib_jpeg_reader> m_lib_jpeg;
-    std::unique_ptr<lib_tiff_reader> m_lib_tiff;
-    std::unique_ptr<lib_png_reader> m_lib_png;
-    std::unique_ptr<open_jpeg_reader> m_open_jpeg;
+    std::unique_ptr<reader_backend> m_libjpeg;
+    std::unique_ptr<reader_backend> m_libtiff;
+    std::unique_ptr<reader_backend> m_libpng;
+    std::unique_ptr<reader_backend> m_openjpeg;
 };
 
 } // namespace sight::io::bitmap::detail

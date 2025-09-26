@@ -31,16 +31,16 @@
 namespace sight::io::bitmap::detail
 {
 
-class nv_jpe_g2_k_writer final
+class nvjpeg2k_writer final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    nv_jpe_g2_k_writer(const nv_jpe_g2_k_writer&)            = delete;
-    nv_jpe_g2_k_writer& operator=(const nv_jpe_g2_k_writer&) = delete;
+    nvjpeg2k_writer(const nvjpeg2k_writer&)            = delete;
+    nvjpeg2k_writer& operator=(const nvjpeg2k_writer&) = delete;
 
     /// Constructor
-    inline nv_jpe_g2_k_writer() noexcept
+    nvjpeg2k_writer() noexcept
     {
         try
         {
@@ -63,39 +63,37 @@ public:
     }
 
     /// Destructor
-    inline ~nv_jpe_g2_k_writer() noexcept
+    ~nvjpeg2k_writer() noexcept
     {
         free();
     }
 
     /// Writing
     template<
-        typename O,
-        std::enable_if_t<
-            std::is_base_of_v<std::ostream, O>
-            || std::is_same_v<std::uint8_t*, O>
-            || std::is_same_v<std::uint8_t**, O>
-            || std::is_same_v<std::vector<uint8_t>, O>,
-            bool
-        > = true
-    >
-    inline std::size_t write(
+        typename O>
+    std::size_t write(
         const data::image& _image,
         O& _output,
         writer::mode _mode,
         flag _flag = flag::none
 )
+    requires(
+        std::is_base_of_v<std::ostream, O>
+        || std::is_same_v<std::uint8_t*, O>
+        || std::is_same_v<std::uint8_t**, O>
+        || std::is_same_v<std::vector<uint8_t>, O>
+    )
     {
         const auto& pixel_type = _image.type();
         SIGHT_THROW_IF(
-            m_name << " - Unsupported image type: " << pixel_type,
+            NAME << " - Unsupported image type: " << pixel_type,
             pixel_type != core::type::UINT8
             && pixel_type != core::type::UINT16
         );
 
         const auto pixel_format = _image.pixel_format();
         SIGHT_THROW_IF(
-            m_name << " - Unsupported image format: " << pixel_format,
+            NAME << " - Unsupported image format: " << pixel_format,
             pixel_format != data::image::pixel_format_t::gray_scale
             && pixel_format != data::image::pixel_format_t::rgb
             && pixel_format != data::image::pixel_format_t::rgba
@@ -106,7 +104,7 @@ public:
         /// @todo Check new version of nvjpeg2k (>0.6).
         /// No idea why the decoding fails with unsigned 16 bits and 4 components images, we mark this as unsupported.
         SIGHT_THROW_IF(
-            m_name << " - Unsupported format (" << pixel_format << ") and type (" << pixel_type << ") combination",
+            NAME << " - Unsupported format (" << pixel_format << ") and type (" << pixel_type << ") combination",
             (pixel_format == data::image::pixel_format_t::rgba || pixel_format == data::image::pixel_format_t::bgra)
             && pixel_type == core::type::UINT16
         );
@@ -150,7 +148,7 @@ public:
 
         // The bitstream will be in J2K format
         // JP2 have xml meta data which are unsupported for DICOM
-        encode_config.stream_type = _flag == flag::j2_k_stream
+        encode_config.stream_type = _flag == flag::j2k_stream
                                     ? NVJPEG2K_STREAM_J2K
                                     : NVJPEG2K_STREAM_JP2;
 
@@ -191,12 +189,16 @@ public:
 
         // Wavelet decomposition levels. 6-5 Seems to be a good default
         // 1 is the fastest, but with an huge compression penalty (+20% size) - in lossless mode
+        // Cannot be greater than image/tile dimensions
         encode_config.num_resolutions = std::min(
-            std::uint32_t(6),
-            std::min(
-                std::uint32_t(sizes[0]) / encode_config.code_block_w,
-                std::uint32_t(sizes[1]) / encode_config.code_block_h
-            )
+            std::uint32_t(sizes[0]) / encode_config.code_block_w,
+            std::uint32_t(sizes[1]) / encode_config.code_block_h
+        );
+
+        encode_config.num_resolutions = std::clamp(
+            encode_config.num_resolutions,
+            std::uint32_t(1),
+            std::uint32_t(6)
         );
 
         CHECK_CUDA(
@@ -324,7 +326,7 @@ public:
 private:
 
     /// Copy an image packed data to planar in the GPU
-    inline void to_gpu(const data::image& _image)
+    void to_gpu(const data::image& _image)
     {
         const auto size_in_bytes = _image.size_in_bytes();
 
@@ -717,7 +719,7 @@ private:
 
     //------------------------------------------------------------------------------
 
-    inline void free() noexcept
+    void free() noexcept
     {
         if(m_packed_gpu_buffer != nullptr)
         {
@@ -778,10 +780,25 @@ private:
 
     std::vector<unsigned char> m_output_buffer;
 
+    bool m_valid {false};
+
+    static constexpr std::string_view NAME {"NvJPEG2KWriter"};
+
 public:
 
-    bool m_valid {false};
-    static constexpr std::string_view m_name {"NvJPEG2KWriter"};
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] bool valid() const noexcept
+    {
+        return m_valid;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] static constexpr std::string_view name() noexcept
+    {
+        return NAME;
+    }
 };
 
 } // namespace sight::io::bitmap::detail

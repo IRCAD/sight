@@ -59,10 +59,16 @@ inline static std::string format_date_time(const std::chrono::time_point<std::ch
 
     struct tm timeinfo {};
 
-#ifdef WIN32
-    localtime_s(&timeinfo, &now_time);
+#ifdef _WIN32
+    if(const auto result = localtime_s(&timeinfo, &now_time); result != 0)
+    {
+        SIGHT_THROW("localtime_s failed");
+    }
 #else
-    localtime_r(&now_time, &timeinfo);
+    if(const auto* result = localtime_r(&now_time, &timeinfo); result == nullptr)
+    {
+        SIGHT_THROW("localtime_r failed");
+    }
 #endif
 
     const auto truncated_now = std::chrono::system_clock::from_time_t(now_time);
@@ -511,7 +517,7 @@ void writer_test::force_cpu_test()
 
         writer->force_cpu(false);
 
-        if(io::bitmap::nv_jpeg_2k())
+        if(io::bitmap::nvjpeg2k())
         {
             CPPUNIT_ASSERT_NO_THROW(writer->write());
         }

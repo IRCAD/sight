@@ -41,9 +41,8 @@ namespace sight::module::io::bitmap
 // Retrieve the backend from the extension
 sight::io::bitmap::backend writer::find_backend(const std::string& _extension) const
 {
-    const auto& it = std::find_if(
-        m_mode_by_backend.cbegin(),
-        m_mode_by_backend.cend(),
+    const auto& it = std::ranges::find_if(
+        m_mode_by_backend,
         [&](const auto& _mode_by_backend)
         {
             const auto& backend_extensions = sight::io::bitmap::extensions(_mode_by_backend.first);
@@ -213,7 +212,7 @@ void writer::configuring()
     m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::libtiff, mode);
 
 #if defined(SIGHT_ENABLE_NVJPEG)
-    if(sight::io::bitmap::nv_jpeg())
+    if(sight::io::bitmap::nvjpeg())
     {
         m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg, mode);
     }
@@ -233,7 +232,7 @@ void writer::configuring()
     }
 
 #if defined(SIGHT_ENABLE_NVJPEG2K)
-    if(sight::io::bitmap::nv_jpeg_2k())
+    if(sight::io::bitmap::nvjpeg2k())
     {
         m_mode_by_backend.insert_or_assign(sight::io::bitmap::backend::nvjpeg2k, mode);
     }

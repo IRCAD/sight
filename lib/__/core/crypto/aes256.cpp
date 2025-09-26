@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,6 +28,7 @@
 
 #include <array>
 #include <cstring>
+#include <stdexcept>
 
 namespace sight::core::crypto
 {

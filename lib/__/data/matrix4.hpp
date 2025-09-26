@@ -123,7 +123,7 @@ public:
     /// @}
 
     [[nodiscard]] static constexpr container_t identity() noexcept;
-    [[nodiscard]] constexpr bool is_identity() noexcept;
+    [[nodiscard]] constexpr bool is_identity() const noexcept;
 
     /// Convert the matrix to any "ordered" container type.
     template<typename T = container_t>
@@ -330,7 +330,7 @@ constexpr matrix4::container_t matrix4::identity() noexcept
 
 //------------------------------------------------------------------------------
 
-constexpr bool matrix4::is_identity() noexcept
+constexpr bool matrix4::is_identity() const noexcept
 {
     return this->operator==(matrix4::IDENTITY);
 }
