@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 
 #include <ui/__/dialog/notification.hpp>
 
-#include <QSoundEffect>
+#include <QMediaPlayer>
 
 namespace sight::module::ui::qt
 {
@@ -85,7 +85,7 @@ namespace sight::module::ui::qt
  *                   "harmonized" across all dialogs by taking the maximum value.
  *                   @note This may change if the positioning algorithm got updated
  *
- *     - \b duration (optional): Override duration in ms (+ 1 sec for fadein & fadeout effects).
+ *     - \b duration (optional): Override duration in ms (+ 1 sec for fade-in & fade-out effects).
  *
  *     - \b max (optional): maximum number of notifications in the same position.
  *              Permanent notification are not counted.
@@ -170,7 +170,7 @@ private:
     /// Default message (if message in slot are empty), the default message can be configured in xml.
     std::string m_default_message {"Notification"};
 
-    std::unique_ptr<QSoundEffect> m_sound;
+    std::unique_ptr<QMediaPlayer> m_sound;
 
     struct configuration final
     {

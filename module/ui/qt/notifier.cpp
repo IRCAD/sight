@@ -33,6 +33,7 @@
 #include <boost/range/iterator_range_core.hpp>
 
 #include <QApplication>
+#include <QAudioOutput>
 
 namespace sight::module::ui::qt
 {
@@ -49,16 +50,26 @@ static const std::string CLOSABLE_KEY("closable");
 
 static const std::string INFINITE("infinite");
 
-static const std::vector<std::filesystem::path> SOUND_BOARD = {
-    std::filesystem::canonical(
-        sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/info_beep.wav")
-    ),
-    std::filesystem::canonical(
-        sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/success_beep.wav")
-    ),
-    std::filesystem::canonical(
-        sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/failure_beep.wav")
-    )
+static const std::map<service::notification::type, std::filesystem::path> SOUND_BOARD = {
+    {
+        service::notification::type::info,
+        std::filesystem::canonical(
+            sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/info_beep.wav")
+        )
+    }
+    ,
+    {
+        service::notification::type::success,
+        std::filesystem::canonical(
+            sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/success_beep.wav")
+        ),
+    },
+    {
+        service::notification::type::failure,
+        std::filesystem::canonical(
+            sight::core::runtime::get_resource_file_path("sight::module::ui::qt/sounds/failure_beep.wav")
+        )
+    },
 };
 
 static const std::map<const std::string, const sight::ui::dialog::notification::position> POSITION_MAP = {
@@ -197,8 +208,9 @@ void notifier::configuring()
     }
 
     // Lastly, initialize sound strutures.
-    m_sound = std::make_unique<QSoundEffect>(qApp);
-    m_sound->setVolume(1.0);
+    m_sound = std::make_unique<QMediaPlayer>(qApp);
+    auto* audio_output = new QAudioOutput(qApp);
+    m_sound->setAudioOutput(audio_output);
 
     m_default_message     = config.get<std::string>("message", m_default_message);
     m_parent_container_id = config.get<std::string>("parent.<xmlattr>.uid", m_parent_container_id);
@@ -314,10 +326,10 @@ void notifier::pop(service::notification _notification)
                            : *default_configuration.position;
 
     const auto& duration = channel_configured && channel_configuration.duration
-                           ? *channel_configuration.duration
+                           ? channel_configuration.duration
                            : (channel_configured && !channel_configuration.duration) || !default_configuration.duration
                            ? _notification.m_duration
-                           : *default_configuration.duration;
+                           : default_configuration.duration;
 
     const auto& size = channel_configured && channel_configuration.size
                        ? *channel_configuration.size
@@ -332,10 +344,10 @@ void notifier::pop(service::notification _notification)
                       : 0;
 
     const auto& closable = channel_configured && channel_configuration.closable
-                           ? *channel_configuration.closable
+                           ? channel_configuration.closable
                            : (channel_configured && !channel_configuration.closable) || !default_configuration.closable
                            ? _notification.m_closable
-                           : *default_configuration.closable;
+                           : default_configuration.closable;
 
     // Get the wanted stack
     auto& target_stack = m_stacks[position];
@@ -422,9 +434,14 @@ void notifier::pop(service::notification _notification)
 
     if(_notification.m_sound.has_value() && _notification.m_sound.value())
     {
+        SIGHT_ASSERT(
+            "Notification sound requested with a type that isn't registered in the sound board.",
+            SOUND_BOARD.contains(_notification.m_type)
+        );
+
         m_sound->setSource(
             QUrl::fromLocalFile(
-                QString::fromStdString(SOUND_BOARD[std::size_t(_notification.m_type)].string())
+                QString::fromStdString(SOUND_BOARD.at(_notification.m_type).string())
             )
         );
         m_sound->play();
@@ -459,7 +476,7 @@ void notifier::on_notification_closed(const sight::ui::dialog::notification::spt
     // If the notification still exist
     for(auto& [position, stack] : m_stacks)
     {
-        if(auto it = std::find(stack.popups.begin(), stack.popups.end(), _notif); it != stack.popups.end())
+        if(auto it = std::ranges::find(stack.popups.begin(), stack.popups.end(), _notif); it != stack.popups.end())
         {
             erase_notification(position, it);
         }
