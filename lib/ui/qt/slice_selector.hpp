@@ -21,16 +21,14 @@
  ***********************************************************************/
 
 #pragma once
-#include <sight/ui/qt/config.hpp>
 
-#include "data/landmarks.hpp"
+#include <sight/ui/qt/config.hpp>
 
 #include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
 #include <core/com/signals.hpp>
 
 #include <data/helper/fiducials_series.hpp>
-#include <data/landmarks.hpp>
 
 #include <ui/qt/container/widget.hpp>
 

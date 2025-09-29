@@ -30,7 +30,6 @@
 #include "fiducials_series.hxx"
 #include "image.hxx"
 #include "image_series.hxx"
-#include "landmarks.hxx"
 #include "line.hxx"
 #include "map.hxx"
 #include "material.hxx"

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,6 @@
 #include "data/dicom/coded_string.hpp"
 #include "data/dicom/sop.hpp"
 #include "data/factory/new.hpp"
-#include "data/landmarks.hpp"
 #include "data/matrix4.hpp"
 #include "data/object.hpp"
 #include "data/types.hpp"

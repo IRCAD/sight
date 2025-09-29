@@ -50,7 +50,6 @@ public:
     CPPUNIT_TEST(calibration_info_test);
     CPPUNIT_TEST(camera_test);
     CPPUNIT_TEST(color_test);
-    CPPUNIT_TEST(landmarks_test);
     CPPUNIT_TEST(line_test);
     CPPUNIT_TEST(material_test);
     CPPUNIT_TEST(matrix4_test);
@@ -99,7 +98,6 @@ public:
     static void calibration_info_test();
     static void camera_test();
     static void color_test();
-    static void landmarks_test();
     static void line_test();
     static void material_test();
     static void matrix4_test();

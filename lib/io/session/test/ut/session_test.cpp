@@ -46,7 +46,6 @@
 #include <data/ivec2.hpp>
 #include <data/ivec3.hpp>
 #include <data/ivec4.hpp>
-#include <data/landmarks.hpp>
 #include <data/line.hpp>
 #include <data/map.hpp>
 #include <data/material.hpp>
@@ -101,7 +100,7 @@ using core::tools::uuid;
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline T random()
+static inline T random()
 {
     using uniform_distribution = std::conditional_t<
         std::is_floating_point_v<T>,
@@ -172,7 +171,7 @@ void session_test::tearDown()
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline typename T::sptr generate(const std::size_t /*unused*/)
+static inline typename T::sptr generate(const std::size_t /*unused*/)
 {
     return std::make_shared<T>(static_cast<typename T::value_t>(random<typename T::value_t>()));
 }
@@ -180,7 +179,7 @@ inline typename T::sptr generate(const std::size_t /*unused*/)
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline const typename T::csptr& get_expected(const std::size_t _variant)
+static inline const typename T::csptr& get_expected(const std::size_t _variant)
 {
     static std::map<std::size_t, typename T::csptr> map;
     const auto& it = map.find(_variant);
@@ -199,7 +198,7 @@ inline const typename T::csptr& get_expected(const std::size_t _variant)
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline typename T::sptr create(const std::size_t _variant)
+static inline typename T::sptr create(const std::size_t _variant)
 {
     const auto& object = std::make_shared<T>();
     object->deep_copy(get_expected<T>(_variant));
@@ -209,7 +208,7 @@ inline typename T::sptr create(const std::size_t _variant)
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline void compare(const typename T::csptr& _actual, const std::size_t _variant)
+static inline void compare(const typename T::csptr& _actual, const std::size_t _variant)
 {
     CPPUNIT_ASSERT(_actual);
     CPPUNIT_ASSERT_EQUAL(get_expected<T>(_variant)->get_value(), _actual->get_value());
@@ -218,7 +217,7 @@ inline void compare(const typename T::csptr& _actual, const std::size_t _variant
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline void test(const bool _encrypt, const bool _raw, const bool _empty_obj = false)
+static inline void test(const bool _encrypt, const bool _raw, const bool _empty_obj = false)
 {
     static constexpr auto s_PASSWORD = "password";
 
@@ -297,7 +296,7 @@ inline void test(const bool _encrypt, const bool _raw, const bool _empty_obj = f
 //------------------------------------------------------------------------------
 
 template<typename T>
-inline void test_combine()
+static inline void test_combine()
 {
     test<T>(false, false, false);
     test<T>(false, false, true);
@@ -1021,43 +1020,6 @@ void session_test::color_test()
 //------------------------------------------------------------------------------
 
 template<>
-inline data::landmarks::sptr generate<data::landmarks>(const std::size_t _variant)
-{
-    auto object = std::make_shared<data::landmarks>();
-
-    for(std::size_t i = 0, i_end = _variant + 2 ; i < i_end ; ++i)
-    {
-        const std::string name = uuid::generate();
-
-        object->add_group(
-            name,
-            {random<float>(), random<float>(), random<float>(), random<float>()},
-            random<float>(),
-            _variant % 2 == 0
-            ? data::landmarks::shape::cube
-            : data::landmarks::shape::sphere,
-            _variant % 3 == 0
-        );
-
-        for(std::size_t j = 0, j_end = _variant + 2 ; j < j_end ; ++j)
-        {
-            object->add_point(name, {random<double>(), random<double>(), random<double>()});
-        }
-    }
-
-    return object;
-}
-
-//------------------------------------------------------------------------------
-
-void session_test::landmarks_test()
-{
-    test_combine<data::landmarks>();
-}
-
-//------------------------------------------------------------------------------
-
-template<>
 inline data::line::sptr generate<data::line>(const std::size_t _variant)
 {
     auto object = std::make_shared<data::line>();
@@ -1634,11 +1596,11 @@ inline data::fiducials_series::sptr generate<data::fiducials_series>(const std::
     graphic_coordinates_data.referenced_image_sequence.referenced_sop_instance_uid = "9";
     graphic_coordinates_data.referenced_image_sequence.referenced_frame_number     = {10};
     graphic_coordinates_data.referenced_image_sequence.referenced_segment_number   = {11};
-    graphic_coordinates_data.graphic_data                                          = {{12, 13}};
+    graphic_coordinates_data.graphic_data                                          = {{.x = 12, .y = 13}};
     fiducial.graphic_coordinates_data_sequence                                     = {graphic_coordinates_data};
 
     fiducial.fiducial_uid = "14";
-    fiducial.contour_data = {{15, 16, 17}};
+    fiducial.contour_data = {{.x = 15, .y = 16, .z = 17}};
     fiducial_set.fiducial_sequence.push_back(fiducial);
 
     fiducial_set.group_name = "18";

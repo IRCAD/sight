@@ -46,34 +46,10 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
-        <type>sight::service::base</type>
-        <service>sight::module::geometry::point_to_landmark_distance</service>
-        <desc>Computes the intersection between a mesh and a line.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::service::base</type>
-        <service>sight::module::geometry::point_to_landmark_vector</service>
-        <desc>Compute the vector between a point and a target</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
         <type>sight::service::controller</type>
         <service>sight::module::geometry::switch_matrices</service>
         <object>sight::data::matrix4</object>
         <desc>This service switch between several matrices.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::service::base</type>
-        <service>sight::module::geometry::targeting</service>
-        <desc>Return a pointList containing the position of a landmark on a CrossHair</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::factory">
-        <type>sight::service::base</type>
-        <service>sight::module::geometry::transform_landmark</service>
-        <desc>Apply a matrix to a landmark.</desc>
     </extension>
 
     <extension implements="sight::service::extension::factory">

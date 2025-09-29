@@ -155,7 +155,7 @@ void check_fiducial_with_gdcm(
     const gdcm::DataSet& _fiducial_set_dataset,
     const gdcm::DataSet& _fiducial_dataset,
     const std::optional<std::string>& _group_name,
-    const std::optional<std::array<float, 4> >& _color,
+    const std::optional<sight::vec4f_t>& _color,
     const std::optional<float>& _size,
     const std::optional<data::fiducials_series::private_shape>& _private_shape,
     const std::optional<bool>& _visible,
@@ -485,7 +485,7 @@ void fiducials_series_test::simple_setter_getter_test()
     COMPARE_GETSETTERS_DEMI_OPTIONAL(group_name, std::optional<std::string> {}, std::optional {"21"s}, 0);
     COMPARE_GETSETTERS_DEMI_OPTIONAL(
         color,
-        (std::optional<std::array<float, 4> > {}),
+        (std::optional<sight::vec4f_t> {}),
         (std::optional {std::array {22.F, 23.F, 24.F, 25.F}}),
         0
     );
@@ -1049,7 +1049,7 @@ void fiducials_series_test::add_fiducial_test()
 
     const std::string group_name {core::tools::uuid::generate()};
 
-    const std::array<float, 4> color {0.1F, 0.2F, 0.3F, 0.4F};
+    const sight::vec4f_t color {0.1F, 0.2F, 0.3F, 0.4F};
     const float size {32.F};
     const data::fiducials_series::private_shape private_shape {data::fiducials_series::private_shape::cube};
     const bool visible {false};
@@ -1178,7 +1178,7 @@ void fiducials_series_test::add_fiducial_test()
     {
         const std::string group_name_2 {core::tools::uuid::generate()};
 
-        const std::array<float, 4> color_2 {0.9F, 0.10F, 0.12F, 0.13F};
+        const sight::vec4f_t color_2 {0.9F, 0.10F, 0.12F, 0.13F};
         const float size_2 {16.F};
         const data::fiducials_series::private_shape private_shape_2 {data::fiducials_series::private_shape::sphere};
         const bool visible_2 {true};
