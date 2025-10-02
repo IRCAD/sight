@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,6 +51,12 @@
             std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
         }
 
+#ifdef DOCTEST_LIBRARY_INCLUDED
+    #define __SIGHT_TEST_CHECK CHECK
+#else
+    #define __SIGHT_TEST_CHECK CPPUNIT_ASSERT
+#endif
+
 #define SIGHT_TEST_FAIL_WAIT(cond, ...) \
         sight::core::time_stamp BOOST_PP_CAT(timeStamp, __LINE__); \
         BOOST_PP_CAT( \
@@ -68,4 +74,4 @@
         { \
             std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
         } \
-        CPPUNIT_ASSERT(cond);
+        __SIGHT_TEST_CHECK(cond);
