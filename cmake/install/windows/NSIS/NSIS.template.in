@@ -5,7 +5,8 @@
 
     !define VERSION "@CPACK_PACKAGE_VERSION@"
     !define PATCH  "@CPACK_PACKAGE_VERSION_PATCH@"
-    !define INST_DIR "@CPACK_TEMPORARY_DIRECTORY@"
+    !define INST_DIR_FS "@CPACK_TEMPORARY_DIRECTORY@"
+    !searchreplace INST_DIR "\\?\${INST_DIR_FS}" "/" "\"
 
 ;--------------------------------
 ;Variables
@@ -28,7 +29,7 @@ Var INSTALL_DIRECTORY
 !include "x64.nsh"
 
 ;Default installation folder
-InstallDir "$LOCALAPPDATA\@CPACK_PACKAGE_VENDOR@\@CPACK_PACKAGE_INSTALL_DIRECTORY@"
+InstallDir "\\?\$LOCALAPPDATA\@CPACK_PACKAGE_VENDOR@\@CPACK_PACKAGE_INSTALL_DIRECTORY@"
 
 ;--------------------------------
 ;General
@@ -640,7 +641,7 @@ ReserveFile "NSIS.InstallOptions.ini"
 Section "-Core installation"
     ;Use the entire tree produced by the INSTALL target.  Keep the
     ;list of directories here in sync with the RMDir commands below.
-    SetOutPath "$INSTDIR"
+    SetOutPath "\\?\$INSTDIR"
     @CPACK_NSIS_EXTRA_PREINSTALL_COMMANDS@
     @CPACK_NSIS_FULL_INSTALL@
 
@@ -739,7 +740,7 @@ Section "-Add to path"
 SectionEnd
 
 Section "Desktop Shortcut" SHORTCUT
-    SetOutPath "$INSTDIR"
+    SetOutPath "\\?\$INSTDIR"
     CreateShortCut "$DESKTOP\@CPACK_NSIS_DISPLAY_NAME@ @CPACK_PACKAGE_VERSION@.lnk" "$INSTDIR\@CPACK_LAUNCHER_PATH@" "" "$INSTDIR\@CPACK_SIGHT_MODULE_RC_PREFIX@\@CPACK_NSIS_PACKAGE_NAME@\@CPACK_NSIS_SIGHT_APP_ICON@" 0
 SectionEnd
 
