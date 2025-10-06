@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,7 +26,6 @@
 #include "backend.hpp"
 
 #include <core/location/single_file.hpp>
-#include <core/tools/progress_adviser.hpp>
 
 #include <data/image.hpp>
 
@@ -66,8 +65,7 @@ namespace sight::io::bitmap
  * (still 60 fps guaranteed on nowadays computers).
  */
 class SIGHT_IO_BITMAP_CLASS_API writer final : public io::writer::generic_object_writer<data::image>,
-                                               public core::location::single_file,
-                                               public core::tools::progress_adviser
+                                               public core::location::single_file
 {
 public:
 
@@ -89,10 +87,10 @@ public:
 
     /// Constructor/Destructor
     SIGHT_IO_BITMAP_API writer();
-    SIGHT_IO_BITMAP_API ~writer() override;
+    SIGHT_IO_BITMAP_API ~writer() final;
 
     /// Main writing method from generic_object_writer
-    SIGHT_IO_BITMAP_API void write() override;
+    SIGHT_IO_BITMAP_API void write(SPTR(sight::core::progress::observer) _progress) final;
 
     /// Specialized writing method that allows to specify the backend and the mode (Fast or Best compression)
     /// @arg backend: the backend to use. Can be LIBJPEG, LIBTIFF, LIBPNG, OPENJPEG or, if available, NVJPEG and
@@ -151,7 +149,7 @@ public:
 
     /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid
     /// @return an extension as string
-    [[nodiscard]] SIGHT_IO_BITMAP_API std::string extension() const override;
+    [[nodiscard]] SIGHT_IO_BITMAP_API std::string extension() const final;
 
 private:
 

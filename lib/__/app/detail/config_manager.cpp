@@ -25,16 +25,20 @@
 #include "app/detail/config_manager.hpp"
 
 #include "app/extension/config.hpp"
-#include "service/extension/factory.hpp"
+#include <core/progress/has_monitors.hpp>
+#include <core/thread/worker.hpp>
+#include <service/extension/factory.hpp>
 #include "app/helper/config.hpp"
-#include "service/op.hpp"
-#include "service/manager.hpp"
-#include "service/registry.hpp"
+#include <service/op.hpp>
+#include <service/manager.hpp>
+#include <service/registry.hpp>
 
+#include <boost/algorithm/string/case_conv.hpp>
 #include <core/com/proxy.hpp>
 #include <core/com/slots.hxx>
 #include <core/runtime/exit_exception.hpp>
 #include <core/runtime/runtime.hpp>
+#include <memory>
 
 #define FW_PROFILING_DISABLED
 #include <core/profiling.hpp>
@@ -307,11 +311,6 @@ void config_manager::add_existing_deferred_object(const data::object::sptr& _obj
         + "Existing deferred objects must be added before starting the configuration, it's useless to do it later",
         m_state == state_destroyed
     );
-    SIGHT_ASSERT(
-        this->msg_head()
-        + "Optional objects passed in the config launcher must be declared as deferred in the configuration.",
-        m_deferred_objects.contains(_uid)
-    );
     deferred_object_t deferred_object;
     deferred_object.m_object = _obj;
     m_deferred_objects.insert(std::make_pair(_uid, deferred_object));
@@ -434,7 +433,7 @@ void config_manager::process_start_items(const core::runtime::config_t& _element
 
             if(!core::id::exist(uid))
             {
-                if(m_deferred_services.find(uid) == m_deferred_services.end())
+                if(!m_deferred_services.contains(uid))
                 {
                     SIGHT_FATAL(
                         this->msg_head() + "Start is requested for service '" + uid
@@ -476,7 +475,7 @@ void config_manager::process_update_items()
 
             if(!core::id::exist(uid))
             {
-                if(m_deferred_services.find(uid) != m_deferred_services.end())
+                if(m_deferred_services.contains(uid))
                 {
                     m_deferred_update_srv.push_back(uid);
                     SIGHT_DEBUG(
@@ -648,19 +647,31 @@ service::base::sptr config_manager::create_service(const detail::service_config&
     service::register_service(srv);
     m_created_srv.push_back(srv);
 
-    if(!_srv_config.m_worker.empty())
-    {
-        // Make the worker name unique to prevent conflicts between configurations
-        const auto worker_registry_name   = core::id::join(m_config_uid, _srv_config.m_worker);
-        core::thread::worker::sptr worker = core::thread::get_worker(worker_registry_name);
-        if(!worker)
-        {
-            worker = core::thread::worker::make();
-            // We keep the original non-unique name for the name of the worker, which is only used for debugging
-            worker->set_thread_name(_srv_config.m_worker);
+    const bool has_monitors = std::dynamic_pointer_cast<sight::core::progress::has_monitors>(srv) != nullptr;
 
-            core::thread::add_worker(worker_registry_name, worker);
-            m_created_workers.push_back(worker);
+    if(not _srv_config.m_worker.empty() || has_monitors)
+    {
+        core::thread::worker::sptr worker;
+        if(boost::to_lower_copy(_srv_config.m_worker) == core::thread::worker::DEFAULT)
+        {
+            worker = core::thread::get_default_worker();
+        }
+        else
+        {
+            // Make the worker name unique to present conflicts between configurations and services
+            const std::string worker_registry_name =
+                core::id::join(m_config_uid, _srv_config.m_worker.empty() ? _srv_config.m_uid : _srv_config.m_worker);
+            worker = core::thread::get_worker(worker_registry_name);
+
+            if(!worker)
+            {
+                worker = core::thread::worker::make();
+                // We keep the original non-unique name for the name of the worker, which is only used for debugging
+                // For has_monitors default workers we use a default name, we cannot make it unique with only 16 chars
+                worker->set_thread_name(not _srv_config.m_worker.empty() ? _srv_config.m_worker : "progress_worker");
+                core::thread::add_worker(worker_registry_name, worker);
+                m_created_workers.push_back(worker);
+            }
         }
 
         srv->set_worker(worker);
@@ -1105,7 +1116,7 @@ void config_manager::add_objects(data::object::sptr _obj, const std::string& _id
         // For each service waiting to be started
         for(const auto& srv_cfg : it_deferred_obj->second.m_services_cfg)
         {
-            if(services_map_cfg.find(srv_cfg.m_uid) == services_map_cfg.end())
+            if(!services_map_cfg.contains(srv_cfg.m_uid))
             {
                 services_map_cfg[srv_cfg.m_uid] = &srv_cfg;
                 services_cfg.push_back(&srv_cfg);

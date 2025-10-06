@@ -24,9 +24,9 @@
 
 #include "module/io/itk/image_reader.hpp"
 
-#include <core/base.hpp>
 #include <core/location/multiple_files.hpp>
 #include <core/location/single_folder.hpp>
+#include <core/progress/observer.hpp>
 #include <core/tools/date_and_time.hpp>
 #include <core/tools/uuid.hpp>
 
@@ -124,7 +124,10 @@ void series_set_reader::updating()
             auto img_series = std::make_shared<data::image_series>();
             series_set_reader::init_series(img_series, instance_uid);
 
-            if(!image_reader::load_image(path, img_series))
+            auto read_observer = std::make_shared<sight::core::progress::observer>("Loading images... ");
+            this->async_emit(has_monitors::signals::MONITOR_CREATED, read_observer->get_sptr());
+
+            if(!image_reader::load_image(path, img_series, read_observer))
             {
                 read_failed = true;
             }

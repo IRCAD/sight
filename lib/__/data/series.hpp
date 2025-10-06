@@ -83,8 +83,10 @@ public:
     SIGHT_DATA_API void set_sop_keyword(dicom::sop::Keyword _keyword);
     SIGHT_DATA_API std::string_view get_sop_class_name() const noexcept;
 
-    SIGHT_DATA_API std::string get_sop_instance_uid() const noexcept;
-    SIGHT_DATA_API void set_sop_instance_uid(const std::string& _sop_instance_uid);
+    SIGHT_DATA_API std::string get_sop_instance_uid(
+        std::size_t _instance = 0
+    ) const noexcept;
+    SIGHT_DATA_API void set_sop_instance_uid(const std::string& _sop_instance_uid, std::size_t _instance = 0);
 
     SIGHT_DATA_API std::string get_sop_class_uid() const noexcept;
     SIGHT_DATA_API void set_sop_class_uid(const std::string& _sop_class_uid);
@@ -889,11 +891,11 @@ public:
     SIGHT_DATA_API static std::string dicom_types_to_string(dicom_types _types) noexcept;
     SIGHT_DATA_API static dicom_types string_to_dicom_types(const std::string& _types) noexcept;
 
-    using sop_keywords = std::set<dicom::sop::Keyword>;
-    SIGHT_DATA_API static sop_keywords dicom_types_to_sops(dicom_types _types) noexcept;
-    SIGHT_DATA_API static dicom_types sops_to_dicom_types(const sop_keywords& _keywords) noexcept;
-    SIGHT_DATA_API static sop_keywords string_to_sops(const std::string& _sops) noexcept;
-    SIGHT_DATA_API static std::string sops_to_string(const sop_keywords& _sops) noexcept;
+    using sop_keywords_t = std::set<dicom::sop::Keyword>;
+    SIGHT_DATA_API static sop_keywords_t dicom_types_to_sops(dicom_types _types) noexcept;
+    SIGHT_DATA_API static dicom_types sops_to_dicom_types(const sop_keywords_t& _keywords) noexcept;
+    SIGHT_DATA_API static sop_keywords_t string_to_sops(const std::string& _sops) noexcept;
+    SIGHT_DATA_API static std::string sops_to_string(const sop_keywords_t& _sops) noexcept;
     /// @}
 
     /// Returns the type of the series. For now, only "Image", "Model" and "Fiducials" are supported.

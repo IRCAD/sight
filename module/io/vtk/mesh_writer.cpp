@@ -22,11 +22,7 @@
 
 #include "module/io/vtk/mesh_writer.hpp"
 
-#include <core/base.hpp>
-#include <core/com/has_signals.hpp>
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/jobs/base.hpp>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 
@@ -38,8 +34,6 @@
 #include <io/vtk/stl_mesh_writer.hpp>
 #include <io/vtk/vtp_mesh_writer.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
 #include <ui/__/dialog/message.hpp>
@@ -48,13 +42,10 @@
 namespace sight::module::io::vtk
 {
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
-
 //------------------------------------------------------------------------------
 
 mesh_writer::mesh_writer() noexcept :
-    writer("Choose a vtk file to save Mesh"),
-    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
+    writer("Choose a vtk file to save Mesh")
 {
 }
 
@@ -124,7 +115,7 @@ void mesh_writer::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<typename WRITER>
-typename WRITER::sptr configure_writer(const std::filesystem::path& _file)
+static typename WRITER::sptr configure_writer(const std::filesystem::path& _file)
 {
     typename WRITER::sptr writer = std::make_shared<WRITER>();
     writer->set_file(_file);
@@ -172,7 +163,6 @@ void mesh_writer::updating()
         }
 
         sight::io::writer::object_writer::sptr mesh_writer;
-
         if(extension_to_use == ".vtk")
         {
             mesh_writer = configure_writer<sight::io::vtk::mesh_writer>(file_to_write);
@@ -203,13 +193,14 @@ void mesh_writer::updating()
             );
         }
 
-        m_sig_job_created->emit(mesh_writer->get_job());
+        auto observer = std::make_shared<core::progress::observer>("Write image");
+        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
 
         mesh_writer->set_object(mesh);
 
         try
         {
-            mesh_writer->write();
+            mesh_writer->write(observer);
             m_write_failed = false;
         }
         catch(core::tools::failed& e)

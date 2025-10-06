@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,15 +24,14 @@
 
 #pragma once
 
+#include "core/progress/observer.hpp"
+
 #include <core/base.hpp>
 
 #include <itkCommand.h>
 #include <itkEventObject.h>
 #include <itkLightProcessObject.h>
 #include <itkSmartPointer.h>
-
-#include <limits>
-#include <sstream>
 
 namespace sight::io::itk
 {
@@ -41,25 +40,20 @@ class local_command : public ::itk::Command
 {
 public:
 
-    local_command()
-    = default;
-
     using self_t  = local_command;
-    using Pointer = ::itk::SmartPointer<local_command>;
+    using Pointer = ::itk::SmartPointer<self_t>;
     itkNewMacro(self_t);
 
     //------------------------------------------------------------------------------
 
     void Execute(const ::itk::Object* _caller, const ::itk::EventObject& /*event*/) override
     {
-        const auto* po = dynamic_cast<const ::itk::LightProcessObject*>(_caller);
-        if(po == nullptr)
+        const auto* po = dynamic_cast<const ::itk::ProcessObject*>(_caller);
+        if(po != nullptr)
         {
-            return;
+            auto percent = po->GetProgress();
+            m_observer->done_work(static_cast<std::uint64_t>(percent * 100));
         }
-
-        float percent = po->GetProgress();
-        m_adviser->notify_progress(percent, m_msg);
     }
 
     //------------------------------------------------------------------------------
@@ -70,27 +64,23 @@ public:
         Execute(const_caller, _event);
     }
 
-    std::string m_msg;
-    SPTR(core::tools::progress_adviser) m_adviser;
+    SPTR(core::progress::observer) m_observer;
 };
 
 //------------------------------------------------------------------------------
 
 template<typename OBSERVEE>
 progress_itk_to_fw<OBSERVEE>::progress_itk_to_fw(
-    OBSERVEE observee,
-    SPTR(core::tools::progress_adviser)observer,
-    std::string msg
+    OBSERVEE _observee,
+    SPTR(core::progress::observer)_observer
 ) :
-    m_observee(observee),
+    m_observee(_observee),
     m_obs_tag(std::numeric_limits<std::uint64_t>::max())
 {
     typename local_command::Pointer itk_call_back;
-    itk_call_back            = local_command::New();
-    itk_call_back->m_msg     = msg;
-    itk_call_back->m_adviser = observer;
-    m_obs_tag                = m_observee->AddObserver(::itk::ProgressEvent(), itk_call_back);
-    m_initialized            = true; // NOLINT(cppcoreguidelines-prefer-member-initializer)
+    itk_call_back             = local_command::New();
+    itk_call_back->m_observer = _observer;
+    m_obs_tag                 = m_observee->AddObserver(::itk::ProgressEvent(), itk_call_back);
 }
 
 //------------------------------------------------------------------------------
@@ -98,10 +88,7 @@ progress_itk_to_fw<OBSERVEE>::progress_itk_to_fw(
 template<typename OBSERVEE>
 progress_itk_to_fw<OBSERVEE>::~progress_itk_to_fw()
 {
-    if(m_initialized)
-    {
-        m_observee->RemoveObserver(m_obs_tag);
-    }
+    m_observee->RemoveObserver(m_obs_tag);
 }
 
 } // namespace sight::io::itk

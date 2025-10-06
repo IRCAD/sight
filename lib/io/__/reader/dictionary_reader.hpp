@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,7 +60,7 @@ public:
     SIGHT_IO_API ~dictionary_reader() override = default;
 
     /// Read the file with standard iostream API.
-    SIGHT_IO_API void read() override;
+    SIGHT_IO_API void read(SPTR(sight::core::progress::observer) _progress) override;
 
     SIGHT_IO_API std::string extension() const override;
 

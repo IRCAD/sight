@@ -72,7 +72,7 @@ QByteArray client_qt::get(request::sptr _request)
 
 //-----------------------------------------------------------------------------
 
-std::string client_qt::get_file(request::sptr _request)
+void client_qt::get_file(request::sptr _request, const std::filesystem::path& _output_path)
 {
     QNetworkAccessManager network_manager;
     const QUrl qt_url(QString::fromStdString(_request->get_url()));
@@ -92,8 +92,7 @@ std::string client_qt::get_file(request::sptr _request)
         &client_qt::process_error
     );
 
-    std::filesystem::path file_path = core::os::temp_file::unique_path();
-    QFile file(file_path.string().c_str());
+    QFile file(QString::fromStdString(_output_path.string()));
 
     if(!file.open(QIODevice::WriteOnly))
     {
@@ -105,8 +104,6 @@ std::string client_qt::get_file(request::sptr _request)
     loop.exec();
     file.write(reply->readAll());
     reply->deleteLater();
-
-    return file_path.string();
 }
 
 //-----------------------------------------------------------------------------

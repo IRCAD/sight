@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,16 +30,6 @@
 
 #include <io/__/reader/generic_object_reader.hpp>
 
-#include <filesystem>
-
-namespace sight::core::jobs
-{
-
-class observer;
-class base;
-
-} // namespace sight::core::jobs
-
 namespace sight::io::vtk
 {
 
@@ -57,25 +47,11 @@ public:
 
     SIGHT_DECLARE_CLASS(vtp_mesh_reader, io::reader::generic_object_reader<data::mesh>)
 
-    /// @brief Constructor.
-    SIGHT_IO_VTK_API vtp_mesh_reader();
-
-    /// @brief Destructor.
-    SIGHT_IO_VTK_API ~vtp_mesh_reader() override;
-
     /// @brief Reading operator.
-    SIGHT_IO_VTK_API void read() override;
+    SIGHT_IO_VTK_API void read(SPTR(sight::core::progress::observer) _progress) override;
 
     /// @return ".vtp"
     SIGHT_IO_VTK_API std::string extension() const override;
-
-    /// @return internal job
-    SIGHT_IO_VTK_API SPTR(core::jobs::base) get_job() const override;
-
-private:
-
-    ///Internal job
-    SPTR(core::jobs::observer) m_job;
 };
 
 } // namespace sight::io::vtk

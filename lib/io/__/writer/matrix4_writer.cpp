@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace sight::io::writer
 
 //------------------------------------------------------------------------------
 
-void matrix4_writer::write()
+void matrix4_writer::write(sight::core::progress::observer::sptr _progress)
 {
     std::fstream file;
     file.open(get_file().string().c_str(), std::fstream::out);
@@ -58,6 +58,7 @@ void matrix4_writer::write()
     }
 
     file.close();
+    _progress->done();
 }
 
 //------------------------------------------------------------------------------

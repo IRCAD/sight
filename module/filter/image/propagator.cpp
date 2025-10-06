@@ -23,7 +23,7 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
-#include <core/jobs/job.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/helper/medical_image.hpp>
 
@@ -37,10 +37,9 @@ namespace sight::module::filter::image
 //-----------------------------------------------------------------------------
 
 propagator::propagator() :
-    filter(m_signals)
+    filter(m_signals),
+    has_monitors(m_signals)
 {
-    new_signal<signals::job_created_t>(signals::JOB_CREATED);
-
     new_slot(slots::CLEAR, &propagator::clear, this);
     new_slot(slots::PROPAGATE, &propagator::propagate, this);
 }
@@ -88,137 +87,131 @@ void propagator::updating()
 
 void propagator::propagate()
 {
-    const auto job = std::make_shared<sight::core::jobs::job>(
-        "Propagation",
-        [&](sight::core::jobs::job& _running_job)
+    const auto progress = std::make_shared<sight::core::progress::observer>("Propagation");
+
+    progress->set_cancelable(false);
+    progress->set_total_work_units(10);
+
+    this->async_emit(has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+
+    // Convert point list into seeds
+    sight::filter::image::min_max_propagation::seeds_t seeds;
+
+    {
+        const auto point_list = m_seeds_in.lock();
+
+        // Early return that can help to avoid deadlocks when starting the service
+        if(point_list->get_points().empty())
         {
-            // Convert point list into seeds
-            sight::filter::image::min_max_propagation::seeds_t seeds;
+            progress->done_work(10);
+            return;
+        }
 
+        progress->done_work(1);
+        const auto image_in = m_image_in.lock();
+        SIGHT_ASSERT("No " << std::quoted(IMAGE_IN) << " found.", image_in);
+        SIGHT_ASSERT("Invalid image", data::helper::medical_image::check_image_validity(image_in.get_shared()));
+
+        const auto& sizes = image_in->size();
+
+        std::ranges::for_each(
+            point_list->get_points(),
+            [&](const auto& _x)
             {
-                const auto point_list = m_seeds_in.lock();
+                const auto indices = geometry::data::world_to_image(*image_in, *_x, true);
 
-                // Early return that can help to avoid deadlocks when starting the service
-                if(point_list->get_points().empty())
+                if(indices[0] >= 0 && indices[0] < std::int64_t(sizes[0])
+                   && indices[1] >= 0 && indices[1] < std::int64_t(sizes[1])
+                   && indices[2] >= 0 && indices[2] < std::int64_t(sizes[2]))
                 {
-                    _running_job.done_work(10);
-                    return;
-                }
-
-                _running_job.done_work(1);
-                const auto image_in = m_image_in.lock();
-                SIGHT_ASSERT("No " << std::quoted(IMAGE_IN) << " found.", image_in);
-                SIGHT_ASSERT("Invalid image", data::helper::medical_image::check_image_validity(image_in.get_shared()));
-
-                const auto& sizes = image_in->size();
-
-                std::ranges::for_each(
-                    point_list->get_points(),
-                    [&](const auto& _x)
-                {
-                    const auto indices = geometry::data::world_to_image(*image_in, *_x, true);
-
-                    if(indices[0] >= 0 && indices[0] < std::int64_t(sizes[0])
-                       && indices[1] >= 0 && indices[1] < std::int64_t(sizes[1])
-                       && indices[2] >= 0 && indices[2] < std::int64_t(sizes[2]))
+                    seeds.insert(
                     {
-                        seeds.insert(
-                        {
-                            std::size_t(indices[0]),
-                            std::size_t(indices[1]),
-                            std::size_t(indices[2])
-                        });
-                    }
-                });
-            }
-            _running_job.done_work(1);
+                        std::size_t(indices[0]),
+                        std::size_t(indices[1]),
+                        std::size_t(indices[2])
+                    });
+                }
+            });
+    }
 
+    {
+        const auto mode = [this]()
+                          {
+                              if(*m_mode == "min")
+                              {
+                                  return sight::filter::image::min_max_propagation::min;
+                              }
+
+                              if(*m_mode == "max")
+                              {
+                                  return sight::filter::image::min_max_propagation::max;
+                              }
+
+                              if(*m_mode == "minmax")
+                              {
+                                  return sight::filter::image::min_max_propagation::minmax;
+                              }
+
+                              if(*m_mode == "stddev")
+                              {
+                                  return sight::filter::image::min_max_propagation::stddev;
+                              }
+
+                              SIGHT_FATAL(
+                                  "Unknown mode '" + *m_mode
+                                  + "'. Accepted values are 'min', 'max', 'minmax', or 'stddev'."
+                              );
+                              return sight::filter::image::min_max_propagation::min;
+                          }();
+
+        const auto image_in    = m_image_in.lock();
+        const auto image_out   = m_image_out.lock();
+        const auto propag_diff = sight::filter::image::min_max_propagation::process(
+            image_in.get_shared(),
+            image_out.get_shared(),
+            nullptr,
+            seeds,
+            static_cast<std::uint8_t>(*m_value),
+            *m_radius,
+            *m_overwrite,
+            mode
+        );
+        progress->done_work(6);
+
+        bool filled = false;
+        if(propag_diff.num_elements() > 0)
+        {
+            image_out->async_emit(data::image::BUFFER_MODIFIED_SIG);
+            this->async_emit(filter::signals::COMPUTED);
+
+            const auto samples_out = m_samples_out.lock();
+            if(samples_out)
             {
-                const auto mode = [this]()
-                                  {
-                                      if(*m_mode == "min")
-                                      {
-                                          return sight::filter::image::min_max_propagation::min;
-                                      }
+                sight::data::image::size_t voxels_size {propag_diff.num_elements(), 1, 1};
 
-                                      if(*m_mode == "max")
-                                      {
-                                          return sight::filter::image::min_max_propagation::max;
-                                      }
+                samples_out->resize(voxels_size, image_in->type(), image_in->pixel_format());
 
-                                      if(*m_mode == "minmax")
-                                      {
-                                          return sight::filter::image::min_max_propagation::minmax;
-                                      }
-
-                                      if(*m_mode == "stddev")
-                                      {
-                                          return sight::filter::image::min_max_propagation::stddev;
-                                      }
-
-                                      SIGHT_FATAL(
-                                          "Unknown mode '" + *m_mode
-                                          + "'. Accepted values are 'min', 'max', 'minmax', or 'stddev'."
-                                      );
-                                      return sight::filter::image::min_max_propagation::min;
-                                  }();
-
-                const auto image_in    = m_image_in.lock();
-                const auto image_out   = m_image_out.lock();
-                const auto propag_diff = sight::filter::image::min_max_propagation::process(
-                    image_in.get_shared(),
-                    image_out.get_shared(),
-                    nullptr,
-                    seeds,
-                    static_cast<std::uint8_t>(*m_value),
-                    *m_radius,
-                    *m_overwrite,
-                    mode
-                );
-                _running_job.done_work(6);
-
-                bool filled = false;
-                if(propag_diff.num_elements() > 0)
+                const auto lock = samples_out->dump_lock();
+                for(std::size_t i = 0 ; i < propag_diff.num_elements() ; ++i)
                 {
-                    image_out->async_emit(data::image::BUFFER_MODIFIED_SIG);
-                    this->async_emit(filter::signals::COMPUTED);
-
-                    const auto samples_out = m_samples_out.lock();
-                    if(samples_out)
-                    {
-                        sight::data::image::size_t voxels_size {propag_diff.num_elements(), 1, 1};
-
-                        samples_out->resize(voxels_size, image_in->type(), image_in->pixel_format());
-
-                        const auto lock = samples_out->dump_lock();
-                        for(std::size_t i = 0 ; i < propag_diff.num_elements() ; ++i)
-                        {
-                            samples_out->set_pixel(i, propag_diff.get_element(i).m_old_value);
-                        }
-
-                        samples_out->async_emit(data::image::MODIFIED_SIG);
-                    }
-
-                    filled = true;
+                    samples_out->set_pixel(i, propag_diff.get_element(i).m_old_value);
                 }
 
-                const auto mask_filled = m_mask_filled_out.lock();
-                if(mask_filled)
-                {
-                    *mask_filled = filled;
-                    mask_filled->async_emit(this, data::object::MODIFIED_SIG);
-                }
+                samples_out->async_emit(data::image::MODIFIED_SIG);
             }
 
-            _running_job.done_work(2);
-        });
+            filled = true;
+        }
 
-    job->set_cancelable(false);
-    job->set_total_work_units(10);
+        const auto mask_filled = m_mask_filled_out.lock();
+        if(mask_filled)
+        {
+            *mask_filled = filled;
+            mask_filled->async_emit(this, data::object::MODIFIED_SIG);
+        }
+    }
 
-    this->signal<signals::job_created_t>(signals::JOB_CREATED)->emit(job);
-
-    job->run().get();
+    progress->done();
 }
 
 //------------------------------------------------------------------------------

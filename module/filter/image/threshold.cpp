@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -138,8 +138,6 @@ void threshold::updating()
     {
         param.image_in = image_series_src;
         data::image_series::sptr image_series_dest = data::image_series::copy(image_series_src);
-        // define the input image series as the reference
-        image_series_dest->set_dicom_reference(image_series_src->get_dicom_reference());
 
         // create the output image
         data::image::sptr image_out = std::make_shared<data::image>();

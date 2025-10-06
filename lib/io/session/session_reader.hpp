@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -79,7 +79,7 @@ public:
     SIGHT_IO_SESSION_API ~session_reader() override;
 
     /// Read the session from archive.
-    SIGHT_IO_SESSION_API void read() override;
+    SIGHT_IO_SESSION_API void read(SPTR(sight::core::progress::observer) _progress) override;
 
     /// Defines extension supported by this reader ".zip"
     SIGHT_IO_SESSION_API std::string extension() const override;

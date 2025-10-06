@@ -7,11 +7,12 @@
         <object uid="previewSelections" type="sight::data::vector" />
         <object uid="localSeriesSet" type="sight::data::series_set" />
 
-        <object uid="host_name" type="sight::data::string" preference="true" />
-        <object uid="port_id" type="sight::data::integer" preference="true" />
+        <object uid="host_name" type="sight::data::string" />
+        <object uid="port_id" type="sight::data::integer" />
 
         <param name="WID_QUERY_EDITOR_PARENT" />
         <param name="WID_SLIDER_PREVIEW_PARENT" />
+        <channel name="pull_progress" />
     </parameters>
     <config>
         <!-- ******************************* Actions ****************************************** -->
@@ -78,21 +79,11 @@
             <inout key="series" uid="${previewDicom}" />
             <inout key="image" uid="${previewImage}" />
             <properties host_name="${host_name}" port="${port_id}" />
-            <config dicom_reader="sight::module::io::dicom::series_set_reader">
-                <reader_config>
-                    <config>
-                        <showLogDialog>false</showLogDialog>
-                        <enableBufferRotation>false</enableBufferRotation>
-                        <dicomdirSupport>true</dicomdirSupport>
-                    </config>
-                </reader_config>
-            </config>
         </service>
 
-        <service uid="pull_series_controller" type="sight::module::io::dicomweb::series_puller">
+        <service uid="series_puller_srv" type="sight::module::io::dicomweb::series_puller">
             <in key="selected_series" uid="${previewSelections}" />
             <inout key="series_set" uid="${localSeriesSet}" />
-            <config dicom_reader="sight::module::io::dicom::series_set_reader" reader_config="sight::config::io::dicomweb::reader_config" />
             <properties host_name="${host_name}" port="${port_id}" />
         </service>
 
@@ -100,7 +91,11 @@
 
         <connect>
             <signal>series_puller_act/clicked</signal>
-            <slot>pull_series_controller/update</slot>
+            <slot>series_puller_srv/update</slot>
+        </connect>
+
+        <connect channel="${pull_progress}">
+            <signal>series_puller_srv/monitor_created</signal>
         </connect>
     </config>
 </extension>

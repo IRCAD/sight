@@ -22,6 +22,7 @@
 #include "gz_array_reader_test.hpp"
 
 #include <core/os/temp_path.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/array.hpp>
 
@@ -53,7 +54,8 @@ void gz_array_reader_test::basic_test()
     array_out->resize({16}, core::type::UINT8);
     gz_array_reader->set_object(array_out);
     gz_array_reader->set_file(filepath);
-    CPPUNIT_ASSERT_NO_THROW(gz_array_reader->read());
+    const auto observer = std::make_shared<core::progress::observer>("ARRAY Reader Test");
+    CPPUNIT_ASSERT_NO_THROW(gz_array_reader->read(observer));
     {
         auto array_lock = array_out->dump_lock();
         std::uint8_t i  = 0;

@@ -60,9 +60,10 @@ std::string reader::extension() const
 
 //------------------------------------------------------------------------------
 
-void reader::read()
+void reader::read(sight::core::progress::observer::sptr _progress)
 {
     read(backend::any);
+    _progress->done();
 }
 
 //------------------------------------------------------------------------------

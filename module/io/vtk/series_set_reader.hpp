@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,21 +27,13 @@
 #include <io/__/service/reader.hpp>
 
 #include <filesystem>
-#include <string>
 
 namespace sight::data
 {
 
 class series_set;
 
-}
-
-namespace sight::core::jobs
-{
-
-class base;
-
-}
+} // namespace sight::data
 
 namespace sight::module::io::vtk
 {
@@ -53,8 +45,8 @@ namespace sight::module::io::vtk
  * Accepted extensions: *.vtk *.vtp *.vti *.mhd *.vtu *.obj *.ply *.stl
  *
  * @section Signals Signals
- * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is loading (it should be
- * connected to a job_bar).
+ * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is loading,
+ * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  *
@@ -76,16 +68,11 @@ class series_set_reader : public sight::io::service::reader
 {
 public:
 
-    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
-
     /**
      * @brief Constructor. Do nothing.
      */
     series_set_reader() noexcept;
-
-    ~series_set_reader() noexcept
-    {
-    }
+    ~series_set_reader() noexcept override = default;
 
     SIGHT_DECLARE_SERVICE(series_set_reader, sight::io::service::reader);
 
@@ -152,8 +139,6 @@ private:
         const std::vector<std::filesystem::path>& _vtk_files,
         const SPTR(data::series_set)& _series_set
     );
-
-    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::vtk

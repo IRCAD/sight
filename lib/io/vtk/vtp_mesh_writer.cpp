@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,8 +26,8 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/base.hpp>
-#include <core/jobs/observer.hpp>
+#include <core/progress/monitor.hpp>
+#include <core/progress/observer.hpp>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
@@ -38,19 +38,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-vtp_mesh_writer::vtp_mesh_writer() :
-    m_job(std::make_shared<core::jobs::observer>("VTP Mesh writer"))
-{
-}
-
-//------------------------------------------------------------------------------
-
-vtp_mesh_writer::~vtp_mesh_writer()
-= default;
-
-//------------------------------------------------------------------------------
-
-void vtp_mesh_writer::write()
+void vtp_mesh_writer::write(sight::core::progress::observer::sptr _progress)
 {
     using helper::vtk_lambda_command;
 
@@ -76,15 +64,13 @@ void vtp_mesh_writer::write()
         [&](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* const filter = static_cast<vtkXMLPolyDataWriter*>(_caller);
-            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+            _progress->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     writer->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    m_job->add_simple_cancel_hook([&]{writer->AbortExecuteOn();});
+    _progress->add_cancel_hook([&]{writer->AbortExecuteOn();});
 
     writer->Update();
-
-    m_job->finish();
 }
 
 //------------------------------------------------------------------------------
@@ -92,13 +78,6 @@ void vtp_mesh_writer::write()
 std::string vtp_mesh_writer::extension() const
 {
     return ".vtp";
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr vtp_mesh_writer::get_job() const
-{
-    return m_job;
 }
 
 //------------------------------------------------------------------------------

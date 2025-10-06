@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,9 +22,10 @@
 #pragma once
 
 #include <core/com/signal.hpp>
-#include <core/jobs/base.hpp>
+#include <core/crypto/password_keeper.hpp>
 
 #include <io/__/service/writer.hpp>
+#include <io/zip/archive.hpp>
 
 namespace sight::module::io::session
 {
@@ -44,8 +45,8 @@ namespace sight::module::io::session
  * The compression level is set individually, depending of the type of data to serialize.
  *
  * @section Signals Signals
- * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written (it should be
- * connected to a job_bar).
+ * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written,
+ * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -101,39 +102,56 @@ public:
 
     SIGHT_DECLARE_SERVICE(writer, sight::io::service::writer);
 
-    using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
-
     writer() noexcept;
 
-    ~writer() noexcept override;
+    ~writer() noexcept final = default;
 
     /// Propose to create a medical data file
-    void open_location_dialog() override;
+    void open_location_dialog() final;
 
 protected:
 
     /// Parses the configuration
-    void configuring() override;
+    void configuring() final;
 
     /// Does nothing
-    void starting() override;
+    void starting() final;
 
     /// Does nothing
-    void stopping() override;
+    void stopping() final;
 
     /// Writes session data to filesystem
-    void updating() override;
+    void updating() final;
 
     /// Returns managed path type, here service manages only single file
-    sight::io::service::path_type_t get_path_type() const override
+    sight::io::service::path_type_t get_path_type() const final
     {
         return sight::io::service::file;
     }
 
 private:
 
-    class writer_impl;
-    std::unique_ptr<writer_impl> m_pimpl;
+    /// Extension name to use for session file
+    std::string m_extension_name {".zip"};
+
+    /// Extension description to use for file save dialog
+    std::string m_extension_description {"Sight session"};
+
+    /// Dialog policy to use for the file location
+    dialog_policy m_dialog_policy = {dialog_policy::never};
+
+    /// Password policy to use
+    sight::core::crypto::password_keeper::password_policy m_password_policy {
+        sight::core::crypto::password_keeper::password_policy::never
+    };
+
+    /// Encryption policy to use
+    sight::core::crypto::password_keeper::encryption_policy m_encryption_policy {
+        sight::core::crypto::password_keeper::encryption_policy::password
+    };
+
+    /// Archive format to use
+    sight::io::zip::archive::archive_format m_archive_format {sight::io::zip::archive::archive_format::DEFAULT};
 };
 
 } // namespace sight::module::io::session

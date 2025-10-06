@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,12 +24,17 @@
 
 #include <sight/io/__/config.hpp>
 
+#include "core/progress/observer.hpp"
+
 #include <core/base.hpp>
-#include <core/jobs/base.hpp>
 #include <core/object.hpp>
 
-#include <cstdint>
-#include <filesystem>
+namespace sight::core::progress
+{
+
+class observer;
+
+} // namespace sight::core::progress
 
 namespace sight::io::writer
 {
@@ -50,15 +55,15 @@ public:
 
     SIGHT_DECLARE_CLASS(object_writer, core::base_object);
 
-    using progress_callback = std::function<void (std::uint64_t)>;
-    using cancel_callback   = std::function<void ()>;
+    /// Destructor. Do nothing.
+    SIGHT_IO_API ~object_writer() override = default;
 
     /**
      * @brief Defines a writer interface.
      *
      * This method write the object given in parameter of set_object method.
      */
-    SIGHT_IO_API virtual void write() = 0;
+    SIGHT_IO_API virtual void write(SPTR(sight::core::progress::observer) _progress) = 0;
 
     /**
      * @brief m_object setter.
@@ -84,21 +89,7 @@ public:
      */
     SIGHT_IO_API virtual std::string extension() const = 0;
 
-    /**
-     * @brief Requests writer abortion.
-     */
-    SIGHT_IO_API virtual void cancel();
-
-    /// Returns the internal job, nullptr by default
-    virtual SPTR(core::jobs::base) get_job() const
-    {
-        return nullptr;
-    }
-
 protected:
-
-    /// Destructor. Do nothing.
-    SIGHT_IO_API ~object_writer() override = default;
 
     /**
      * @brief Object to write on filesystem by the process.

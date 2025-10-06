@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2024 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -53,9 +53,6 @@ inline static void write(
     // Since model_series inherits from Series, we could use SeriesSerializer
     series::write(_archive, _tree, model_series, _children, _password);
 
-    // Serialize other attributes
-    _children[DICOM_REFERENCE] = model_series->get_dicom_reference();
-
     std::size_t index = 0;
     for(const auto& reconstruction : model_series->get_reconstruction_db())
     {
@@ -81,9 +78,6 @@ inline static data::model_series::sptr read(
 
     // Since model_series inherits from Series, we could use SeriesDeserializer
     series::read(_archive, _tree, _children, model_series, _password);
-
-    // Deserialize other attributes
-    model_series->set_dicom_reference(std::dynamic_pointer_cast<data::dicom_series>(_children.at(DICOM_REFERENCE)));
 
     // Deserialize ReconstructionDB
     std::vector<data::reconstruction::sptr> reconstruction_db;

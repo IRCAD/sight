@@ -23,7 +23,6 @@
 
 #include <sight/io/dicom/config.hpp>
 
-#include <core/jobs/job.hpp>
 #include <core/location/multiple_files.hpp>
 #include <core/location/single_folder.hpp>
 
@@ -48,7 +47,7 @@ public:
     SIGHT_IO_DICOM_API ~file() noexcept override;
 
     /// Reads DICOM data
-    SIGHT_IO_DICOM_API void read() override;
+    SIGHT_IO_DICOM_API void read(SPTR(sight::core::progress::observer) _progress) override;
 
     inline std::string extension() const override;
 
@@ -71,7 +70,7 @@ public:
 
     /// Set SOP class filters to use when scanning for DICOM files (CTImageStorage, SpatialFiducialsStorage, ...).
     /// @param[in] _filters SOP class filters
-    SIGHT_IO_DICOM_API void set_filters(const data::series::sop_keywords& _filters);
+    SIGHT_IO_DICOM_API void set_filters(const data::series::sop_keywords_t& _filters);
 
     /// Set the scanned Series list, unsorted
     /// @param[in] _scanned The Series with their associated files
@@ -80,11 +79,6 @@ public:
     /// Set the sorted Series list. These are the series that will be read
     /// @param[in] _sorted The Series with their associated files
     SIGHT_IO_DICOM_API void set_sorted(const data::series_set::sptr& _sorted);
-
-    /// Set/get the current job
-    SIGHT_IO_DICOM_API core::jobs::base::sptr get_job() const override;
-    SIGHT_IO_DICOM_API void set_job(core::jobs::job::sptr _job);
-
     /// @}
 
 private:

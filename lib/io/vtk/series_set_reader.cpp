@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,9 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/jobs/aggregator.hpp>
-#include <core/jobs/observer.hpp>
 #include <core/memory/buffer_object.hpp>
 #include <core/memory/stream/in/factory.hpp>
+#include <core/progress/observer.hpp>
 #include <core/tools/date_and_time.hpp>
 #include <core/tools/uuid.hpp>
 
@@ -67,7 +66,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-void init_series(data::series::sptr _series, const std::string& _instance_uid)
+static void init_series(data::series::sptr _series, const std::string& _instance_uid)
 {
     _series->set_modality(data::dicom::modality_t::ot);
     boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
@@ -84,19 +83,18 @@ void init_series(data::series::sptr _series, const std::string& _instance_uid)
 //------------------------------------------------------------------------------
 
 series_set_reader::series_set_reader() :
-    m_job(std::make_shared<core::jobs::aggregator>("series_set reader")),
     m_lazy_mode(true)
 {
 }
 
 //------------------------------------------------------------------------------
 template<typename T, typename FILE>
-vtkSmartPointer<vtkDataObject> get_obj(FILE& _file, const core::jobs::observer::sptr& _job)
+static vtkSmartPointer<vtkDataObject> get_obj(FILE& _file, const core::progress::observer::sptr& _progress)
 {
     vtkSmartPointer<T> reader = vtkSmartPointer<T>::New();
     reader->SetFileName(_file.string().c_str());
 
-    if(_job)
+    if(_progress)
     {
         vtkSmartPointer<helper::vtk_lambda_command> progress_callback;
         progress_callback = vtkSmartPointer<helper::vtk_lambda_command>::New();
@@ -104,17 +102,17 @@ vtkSmartPointer<vtkDataObject> get_obj(FILE& _file, const core::jobs::observer::
             [&](vtkObject* _caller, std::uint64_t, void*)
             {
                 auto* filter = static_cast<T*>(_caller);
-                _job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+                _progress->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
             });
         reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-        _job->add_simple_cancel_hook(
+        _progress->add_cancel_hook(
             [&]()
             {
                 reader->AbortExecuteOn();
             });
         reader->Update();
-        _job->finish();
+        _progress->finish();
     }
     else
     {
@@ -126,7 +124,10 @@ vtkSmartPointer<vtkDataObject> get_obj(FILE& _file, const core::jobs::observer::
 
 //------------------------------------------------------------------------------
 
-data::object::sptr get_data_object(const vtkSmartPointer<vtkDataObject>& _obj, const std::filesystem::path& _file)
+static data::object::sptr get_data_object(
+    const vtkSmartPointer<vtkDataObject>& _obj,
+    const std::filesystem::path& _file
+)
 {
     vtkSmartPointer<vtkPolyData> mesh         = vtkPolyData::SafeDownCast(_obj);
     vtkSmartPointer<vtkImageData> img         = vtkImageData::SafeDownCast(_obj);
@@ -174,28 +175,7 @@ data::object::sptr get_data_object(const vtkSmartPointer<vtkDataObject>& _obj, c
 
 //------------------------------------------------------------------------------
 
-bool check_if_read_data_type_is_image(const vtkSmartPointer<vtkMetaImageReader>& /*unused*/)
-{
-    return true;
-}
-
-//------------------------------------------------------------------------------
-
-bool check_if_read_data_type_is_image(const vtkSmartPointer<vtkGenericDataObjectReader>& _reader)
-{
-    return _reader->IsFileStructuredPoints() != 0;
-}
-
-//------------------------------------------------------------------------------
-
-bool check_if_read_data_type_is_image(const vtkSmartPointer<vtkXMLGenericDataObjectReader>& _reader)
-{
-    return _reader->GetImageDataOutput() != nullptr;
-}
-
-//------------------------------------------------------------------------------
-
-void series_set_reader::read()
+void series_set_reader::read(sight::core::progress::observer::sptr _progress)
 {
     auto series_set = get_concrete_object();
 
@@ -204,10 +184,12 @@ void series_set_reader::read()
 
     data::model_series::reconstruction_vector_t recs;
     std::vector<std::string> error_files;
+    const std::size_t file_count = files.size();
+    _progress->set_total_work_units(static_cast<std::uint64_t>(file_count));
+    std::uint64_t current_file_index = 0;
     for(const auto& file : files)
     {
-        const auto job_observer = std::make_shared<core::jobs::observer>(file.string());
-        m_job->add(job_observer);
+        const auto progress_observer = std::make_shared<core::progress::observer>(file.string());
 
         vtkSmartPointer<vtkDataObject> obj;
         data::image::sptr img;
@@ -217,35 +199,35 @@ void series_set_reader::read()
         {
             if(!img)
             {
-                obj = get_obj<vtkGenericDataObjectReader>(file, job_observer);
+                obj = get_obj<vtkGenericDataObjectReader>(file, progress_observer);
             }
         }
         else if(file.extension().string() == ".vti")
         {
             if(!img)
             {
-                obj = get_obj<vtkXMLGenericDataObjectReader>(file, job_observer);
+                obj = get_obj<vtkXMLGenericDataObjectReader>(file, progress_observer);
             }
         }
         else if(file.extension().string() == ".mhd")
         {
-            obj = get_obj<vtkMetaImageReader>(file, job_observer);
+            obj = get_obj<vtkMetaImageReader>(file, progress_observer);
         }
         else if(file.extension().string() == ".vtu" || file.extension().string() == ".vtp")
         {
-            obj = get_obj<vtkXMLGenericDataObjectReader>(file, job_observer);
+            obj = get_obj<vtkXMLGenericDataObjectReader>(file, progress_observer);
         }
         else if(file.extension().string() == ".obj")
         {
-            obj = get_obj<vtkOBJReader>(file, job_observer);
+            obj = get_obj<vtkOBJReader>(file, progress_observer);
         }
         else if(file.extension().string() == ".stl")
         {
-            obj = get_obj<vtkSTLReader>(file, job_observer);
+            obj = get_obj<vtkSTLReader>(file, progress_observer);
         }
         else if(file.extension().string() == ".ply")
         {
-            obj = get_obj<vtkPLYReader>(file, job_observer);
+            obj = get_obj<vtkPLYReader>(file, progress_observer);
         }
 
         if(!img)
@@ -270,6 +252,9 @@ void series_set_reader::read()
         {
             error_files.push_back(file.string());
         }
+
+        _progress->done_work(current_file_index + 1);
+        ++current_file_index;
     }
 
     if(!error_files.empty())
@@ -292,13 +277,6 @@ void series_set_reader::read()
 std::string series_set_reader::extension() const
 {
     return ".vtk";
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr series_set_reader::get_job() const
-{
-    return m_job;
 }
 
 } // namespace sight::io::vtk

@@ -100,7 +100,8 @@ TEST_SUITE("sight::module::filter::mesh::vtk_mesher")
             auto my_writer = std::make_shared<sight::io::vtk::image_writer>();
             my_writer->set_object(image_series);
             my_writer->set_file(temp_file);
-            CHECK_NOTHROW(my_writer->write());
+            auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+            CHECK_NOTHROW(my_writer->write(write_observer));
 
             model_series = std::make_shared<sight::data::model_series>();
 

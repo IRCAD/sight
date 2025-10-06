@@ -22,21 +22,16 @@
 
 #include "module/io/vtk/mesh_reader.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/com/signals.hpp>
-#include <core/jobs/base.hpp>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
+#include <core/progress/observer.hpp>
 
 #include <io/vtk/mesh_reader.hpp>
 #include <io/vtk/obj_mesh_reader.hpp>
 #include <io/vtk/ply_mesh_reader.hpp>
 #include <io/vtk/stl_mesh_reader.hpp>
 #include <io/vtk/vtp_mesh_reader.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
@@ -46,8 +41,6 @@
 
 namespace sight::module::io::vtk
 {
-
-static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
 
 //------------------------------------------------------------------------------
 
@@ -59,8 +52,7 @@ sight::io::service::path_type_t mesh_reader::get_path_type() const
 //------------------------------------------------------------------------------
 
 mesh_reader::mesh_reader() noexcept :
-    reader("Choose a vtk file to load Mesh"),
-    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
+    reader("Choose a vtk file to load Mesh")
 {
 }
 
@@ -124,7 +116,7 @@ void mesh_reader::info(std::ostream& _sstream)
 //------------------------------------------------------------------------------
 
 template<typename READER>
-typename READER::sptr configure_reader(const std::filesystem::path& _file)
+static typename READER::sptr configure_reader(const std::filesystem::path& _file)
 {
     typename READER::sptr reader = std::make_shared<READER>();
     reader->set_file(_file);
@@ -183,13 +175,14 @@ bool mesh_reader::load_mesh(const std::filesystem::path& _vtk_file)
         );
     }
 
-    m_sig_job_created->emit(mesh_reader->get_job());
+    auto observer = std::make_shared<core::progress::observer>("Reading " + _vtk_file.string() + " file");
+    this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
 
     mesh_reader->set_object(mesh);
 
     try
     {
-        mesh_reader->read();
+        mesh_reader->read(observer);
     }
     catch(core::tools::failed& e)
     {

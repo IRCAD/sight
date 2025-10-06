@@ -30,14 +30,20 @@
 
 #include <boost/algorithm/string.hpp>
 
+#include <algorithm>
+
 namespace sight::io::service
 {
 
 //-----------------------------------------------------------------------------
 
 reader::reader(const std::string& _default_window_title) noexcept :
+    has_monitors(m_signals),
     m_window_title(this, WINDOW_TITLE_KEY, _default_window_title)
 {
+    new_signal<signals::void_signal_t>(signals::FAILED);
+    new_signal<signals::void_signal_t>(signals::SUCCEEDED);
+
     new_slot(slots::OPEN_LOCATION_DIALOG, &reader::open_location_dialog, this);
     new_slot(slots::UPDATE_DEFAULT_LOCATIONS, &reader::update_default_locations, this);
 }
@@ -289,9 +295,8 @@ void reader::update_locations(
     {
         io::service::locations_t files(_files);
 
-        std::transform(
-            _resources.begin(),
-            _resources.end(),
+        std::ranges::transform(
+            _resources,
             std::back_inserter(files),
             [](const std::string& _resource)
             {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +19,6 @@
  *
  ***********************************************************************/
 
-#include "image_reader_writer_test.hpp"
-
 #include "helper.hpp"
 
 #include <core/base.hpp>
@@ -37,322 +35,286 @@
 #include <utest_data/data.hpp>
 #include <utest_data/generator/image.hpp>
 
-#include <filesystem>
-
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::image_reader_writer_test);
-
-namespace sight::io::itk::ut
-{
+#include <doctest/doctest.h>
 
 static const double EPSILON = 0.00001;
 
 //------------------------------------------------------------------------------
 
-void image_reader_writer_test::setUp()
+static void inr_read_write_check(sight::data::image::sptr _image)
 {
+    const sight::data::image::origin_t origin = {0., 0., 0.};
+    _image->set_origin(origin);
+
+    sight::core::os::temp_dir tmp_dir;
+    const std::filesystem::path path = tmp_dir / "image.inr.gz";
+    auto my_writer                   = std::make_shared<sight::io::itk::inr_image_writer>();
+    my_writer->set_object(_image);
+    my_writer->set_file(path);
+    auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+    my_writer->write(write_observer);
+
+    auto image2    = std::make_shared<sight::data::image>();
+    auto my_reader = std::make_shared<sight::io::itk::inr_image_reader>();
+    my_reader->set_object(image2);
+    my_reader->set_file(path);
+    auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+    my_reader->read(read_observer);
+
+    sight::io::itk::ut::helper::round_spacing(image2);
+
+    image2->set_window_center(_image->window_center());
+    image2->set_window_width(_image->window_width());
+
+    CHECK(*_image == *image2);
 }
 
 //------------------------------------------------------------------------------
 
-void image_reader_writer_test::tearDown()
+static void inr_stress_test_with_type(sight::core::type _type, int _nb_test)
 {
+    for(int nb = 0 ; nb < _nb_test ; ++nb)
+    {
+        sight::data::image::sptr image = std::make_shared<sight::data::image>();
+        sight::utest_data::generator::image::generate_random_image(image, _type);
+
+        image->set_orientation({1.F, 0.F, 0.F, 0.F, 1.F, 0.F, 0.F, 0.F, 1.F});
+
+        inr_read_write_check(image);
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void image_reader_writer_test::inr_read_write_test()
-{
-    // create image
-    data::image::sptr image = std::make_shared<data::image>();
-    utest_data::generator::image::generate_random_image(image, core::type::INT16);
-
-    // INR does not support image orientation
-    image->set_orientation({1.F, 0.F, 0.F, 0.F, 1.F, 0.F, 0.F, 0.F, 1.F});
-
-    sight::io::itk::ut::image_reader_writer_test::inr_read_write_check(image);
-}
-
-//------------------------------------------------------------------------------
-
-void image_reader_writer_test::inr_stress_test()
-{
-    core::type type = core::type::UINT8;
-    sight::io::itk::ut::image_reader_writer_test::inr_stress_test_with_type(type, 5);
-
-    type = core::type::INT16;
-    sight::io::itk::ut::image_reader_writer_test::inr_stress_test_with_type(type, 5);
-
-    type = core::type::UINT16;
-    sight::io::itk::ut::image_reader_writer_test::inr_stress_test_with_type(type, 5);
-
-    type = core::type::INT32;
-    sight::io::itk::ut::image_reader_writer_test::inr_stress_test_with_type(type, 5);
-
-    type = core::type::UINT32;
-    sight::io::itk::ut::image_reader_writer_test::inr_stress_test_with_type(type, 5);
-
-    type = core::type::FLOAT;
-    sight::io::itk::ut::image_reader_writer_test::inr_stress_test_with_type(type, 5);
-}
-
-//------------------------------------------------------------------------------
-
-void image_reader_writer_test::nifti_read_test()
-{
-    //cspell: ignore 3Dkidney
-    const std::filesystem::path sight_image_path(utest_data::dir() / "sight/image/nii/3Dkidney.nii");
-
-    CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + sight_image_path.string() + "' does not exist",
-        std::filesystem::exists(sight_image_path)
-    );
-
-    // load image
-    data::image::sptr sight_image                        = std::make_shared<data::image>();
-    io::itk::nifti_image_reader::sptr sight_image_reader = std::make_shared<io::itk::nifti_image_reader>();
-    sight_image_reader->set_object(sight_image);
-    sight_image_reader->set_file(sight_image_path);
-    sight_image_reader->read();
-
-    nifti_read_check(
-        sight_image,
-        core::type::UINT8,
-        3,
-        {0.744924, 0.744924, 0.744924},
-        {0, 0, 0},
-        {481, 362, 478},
-        {
-            1, 0, 0,
-            0, 1, 0,
-            0, 0, 1
-        });
-
-    const std::filesystem::path external_image_path(utest_data::dir() / "sight/image/nii/brain.nii");
-
-    CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + external_image_path.string() + "' does not exist",
-        std::filesystem::exists(external_image_path)
-    );
-
-    // load image
-    data::image::sptr external_image                        = std::make_shared<data::image>();
-    io::itk::nifti_image_reader::sptr external_image_reader = std::make_shared<io::itk::nifti_image_reader>();
-    external_image_reader->set_object(external_image);
-    external_image_reader->set_file(external_image_path);
-    external_image_reader->read();
-
-    nifti_read_check(
-        external_image,
-        core::type::UINT8,
-        3,
-        {0.5, 0.5, 0.5},
-        {75, 107, -69.5},
-        {301, 370, 316
-        },
-        {
-            -1, 0, 0,
-            0, -1, 0,
-            0, 0, 1
-        });
-}
-
-//------------------------------------------------------------------------------
-
-void image_reader_writer_test::nifti_read_check(
-    const data::image::sptr& _image_to_test,
-    const core::type& _expected_type,
+static void nifti_read_check(
+    const sight::data::image::sptr& _image_to_test,
+    const sight::core::type& _expected_type,
     const std::size_t _expected_dim,
-    const data::image::spacing_t& _expected_spacing,
-    const data::image::origin_t& _expected_origin,
-    const data::image::size_t& _expected_size,
-    const data::image::orientation_t& _expected_orientation
+    const sight::data::image::spacing_t& _expected_spacing,
+    const sight::data::image::origin_t& _expected_origin,
+    const sight::data::image::size_t& _expected_size,
+    const sight::data::image::orientation_t& _expected_orientation
 )
 {
-    CPPUNIT_ASSERT_EQUAL_MESSAGE(
-        "test on sight/image/nii/3Dkidney.nii failed ",
-        _image_to_test->type(),
-        _expected_type
-    );
+    CHECK_EQ(_image_to_test->type(), _expected_type);
 
-    CPPUNIT_ASSERT_EQUAL(
+    CHECK_EQ(
         static_cast<std::size_t>(_image_to_test->num_dimensions()),
         _expected_dim
     );
 
     for(std::size_t i = 0 ; i < _expected_dim ; ++i)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(
-            static_cast<data::image::spacing_t::value_type>(_image_to_test->spacing()[i]),
-            static_cast<data::image::spacing_t::value_type>(_expected_spacing[i]),
-            EPSILON
+        CHECK_EQ(
+            static_cast<sight::data::image::spacing_t::value_type>(_image_to_test->spacing()[i]),
+            doctest::Approx(static_cast<sight::data::image::spacing_t::value_type>(_expected_spacing[i])).epsilon(
+                EPSILON
+            )
         );
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(
-            static_cast<data::image::origin_t::value_type>(_image_to_test->origin()[i]),
-            static_cast<data::image::origin_t::value_type>(_expected_origin[i]),
-            EPSILON
+        CHECK_EQ(
+            static_cast<sight::data::image::origin_t::value_type>(_image_to_test->origin()[i]),
+            doctest::Approx(static_cast<sight::data::image::origin_t::value_type>(_expected_origin[i])).epsilon(EPSILON)
         );
-        CPPUNIT_ASSERT_EQUAL(
-            static_cast<data::image::size_t::value_type>(_image_to_test->size()[i]),
-            static_cast<data::image::size_t::value_type>(_expected_size[i])
+        CHECK_EQ(
+            static_cast<sight::data::image::size_t::value_type>(_image_to_test->size()[i]),
+            static_cast<sight::data::image::size_t::value_type>(_expected_size[i])
         );
     }
 
-    // When reading nifti files with itk, the direction is mandatorily set
     const auto& actual_orientation = _image_to_test->orientation();
 
     for(std::size_t i = 0 ; i < _expected_orientation.size() ; ++i)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(_expected_orientation[i], actual_orientation[i], EPSILON);
+        CHECK_EQ(_expected_orientation[i], doctest::Approx(actual_orientation[i]).epsilon(EPSILON));
     }
 }
 
-//------------------------------------------------------------------------------
-
-void image_reader_writer_test::nifti_write_test()
+TEST_SUITE("sight::io::itk::image_reader_writer")
 {
-    // create image
-    data::image::sptr image = std::make_shared<data::image>();
-    utest_data::generator::image::generate_random_image(image, core::type::INT16);
-
-    // WARNING!
-    // There is a conversion subtlety. Nifti stores the data as float, and convert them.
-    // The writing/reading generates a conversion double => float => double.
-    // This leads to several errors.
-    // To prevent this, the spacing and origin used for the test are set as float, converted to double, to be able to
-    // test the direct equality.
-    const data::image::spacing_t spacing_d = {0.5F, 0.001F, 1.25F};
-    const data::image::origin_t origin_d   = {0.5F, 0.25F, 0.25F};
-    image->set_spacing(spacing_d);
-    image->set_origin(origin_d);
-
-    const data::image::orientation_t orientation = {0.36F, 0.48F, -0.8F, -0.8F, 0.6F, 0.0F, 0.48F, 0.64F, 0.6F};
-    image->set_orientation(orientation);
-
-    // The float trick is not enough. We need to "round" the orientation to avoid floating point errors
-    io::itk::ut::helper::round_orientation(image);
-
-    // save image in nifti
-    core::os::temp_dir tmp_dir;
-    const std::filesystem::path filename = tmp_dir / "image.nii";
-    auto my_writer                       = std::make_shared<io::itk::nifti_image_writer>();
-
-    my_writer->set_object(image);
-    my_writer->set_file(filename);
-    my_writer->write();
-
-    CPPUNIT_ASSERT_MESSAGE(
-        "test on '" + filename.string() + "' failed ",
-        std::filesystem::exists(filename)
-    );
-
-    // load image
-    data::image::sptr image2 = std::make_shared<data::image>();
-    image2->set_window_center(image->window_center());
-    image2->set_window_width(image->window_width());
-
-    auto my_reader = std::make_shared<io::itk::nifti_image_reader>();
-    my_reader->set_object(image2);
-    my_reader->set_file(filename);
-    my_reader->read();
-
-    // We need to "round" the orientation to avoid floating point errors
-    io::itk::ut::helper::round_orientation(image2);
-
-    CPPUNIT_ASSERT(*image == *image2);
-}
-
-//------------------------------------------------------------------------------
-
-void image_reader_writer_test::jpeg_write_test()
-{
-    // create image
-    data::image::sptr image = std::make_shared<data::image>();
-    utest_data::generator::image::generate_random_image(image, core::type::INT16);
-
-    // save image in inr
-    core::os::temp_dir tmp_dir;
-    auto my_writer = std::make_shared<io::itk::jpg_image_writer>();
-    my_writer->set_object(image);
-    my_writer->set_folder(tmp_dir);
-    CPPUNIT_ASSERT_NO_THROW(my_writer->write());
-}
-
-//------------------------------------------------------------------------------
-
-void image_reader_writer_test::inr_read_jpeg_write_test()
-{
-    // create image
-    std::filesystem::path path_inr = utest_data::dir() / "sight" / "image" / "inr" / "image.inr.gz";
-
-    CPPUNIT_ASSERT_MESSAGE(
-        "The file '" + path_inr.string() + "' does not exist",
-        std::filesystem::exists(path_inr)
-    );
-
-    data::image::sptr image                   = std::make_shared<data::image>();
-    io::itk::inr_image_reader::sptr my_reader = std::make_shared<io::itk::inr_image_reader>();
-    my_reader->set_object(image);
-    my_reader->set_file(path_inr);
-    my_reader->read();
-
-    // save image in inr
-    core::os::temp_dir tmp_dir;
-    auto my_writer = std::make_shared<io::itk::jpg_image_writer>();
-    my_writer->set_object(image);
-    my_writer->set_folder(tmp_dir);
-    CPPUNIT_ASSERT_NO_THROW(my_writer->write());
-}
-
-//------------------------------------------------------------------------------
-
-void image_reader_writer_test::inr_stress_test_with_type(core::type _type, int _nb_test)
-{
-    for(int nb = 0 ; nb < _nb_test ; ++nb)
+    TEST_CASE("inr_read_write")
     {
-        data::image::sptr image = std::make_shared<data::image>();
-        utest_data::generator::image::generate_random_image(image, _type);
+        auto image = std::make_shared<sight::data::image>();
+        sight::utest_data::generator::image::generate_random_image(image, sight::core::type::INT16);
 
-        // INR does not support image orientation
         image->set_orientation({1.F, 0.F, 0.F, 0.F, 1.F, 0.F, 0.F, 0.F, 1.F});
 
-        sight::io::itk::ut::image_reader_writer_test::inr_read_write_check(image);
+        inr_read_write_check(image);
     }
-}
 
-//------------------------------------------------------------------------------
+    TEST_CASE("inr_stress")
+    {
+        sight::core::type type = sight::core::type::UINT8;
+        inr_stress_test_with_type(type, 5);
 
-void image_reader_writer_test::inr_read_write_check(data::image::sptr _image)
-{
-    // inr only support image origin (0,0,0)
-    const data::image::origin_t origin = {0., 0., 0.};
-    _image->set_origin(origin);
+        type = sight::core::type::INT16;
+        inr_stress_test_with_type(type, 5);
 
-    // save image in inr
-    core::os::temp_dir tmp_dir;
-    const std::filesystem::path path = tmp_dir / "image.inr.gz";
-    auto my_writer                   = std::make_shared<io::itk::inr_image_writer>();
-    my_writer->set_object(_image);
-    my_writer->set_file(path);
-    my_writer->write();
+        type = sight::core::type::UINT16;
+        inr_stress_test_with_type(type, 5);
 
-    // load image
-    auto image2    = std::make_shared<data::image>();
-    auto my_reader = std::make_shared<io::itk::inr_image_reader>();
-    my_reader->set_object(image2);
-    my_reader->set_file(path);
-    my_reader->read();
+        type = sight::core::type::INT32;
+        inr_stress_test_with_type(type, 5);
 
-    io::itk::ut::helper::round_spacing(image2);
+        type = sight::core::type::UINT32;
+        inr_stress_test_with_type(type, 5);
 
-    image2->set_window_center(_image->window_center());
-    image2->set_window_width(_image->window_width());
+        type = sight::core::type::FLOAT;
+        inr_stress_test_with_type(type, 5);
+    }
 
-    // check image
-    // inr only support float spacing and float origin => add tolerance for comparison (+/-0.00001)
-    CPPUNIT_ASSERT(*_image == *image2);
-}
+    TEST_CASE("nifti_read")
+    {
+        // cspell:ignore Dkidney
+        const std::filesystem::path sight_image_path(sight::utest_data::dir() / "sight/image/nii/3Dkidney.nii");
 
-//------------------------------------------------------------------------------
+        CHECK_MESSAGE(
+            std::filesystem::exists(sight_image_path),
+            "The file '",
+            sight_image_path.string(),
+            "' does not exist"
+        );
 
-} // namespace sight::io::itk::ut
+        auto sight_image        = std::make_shared<sight::data::image>();
+        auto sight_image_reader = std::make_shared<sight::io::itk::nifti_image_reader>();
+        sight_image_reader->set_object(sight_image);
+        sight_image_reader->set_file(sight_image_path);
+
+        {
+            auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+            sight_image_reader->read(read_observer);
+        }
+
+        nifti_read_check(
+            sight_image,
+            sight::core::type::UINT8,
+            3,
+            {0.744924, 0.744924, 0.744924},
+            {0, 0, 0},
+            {481, 362, 478},
+        {
+            1, 0, 0,
+            0, 1, 0,
+            0, 0, 1
+        });
+
+        const std::filesystem::path external_image_path(sight::utest_data::dir() / "sight/image/nii/brain.nii");
+
+        CHECK_MESSAGE(
+            std::filesystem::exists(external_image_path),
+            "The file '",
+            external_image_path.string(),
+            "' does not exist"
+        );
+
+        sight::data::image::sptr external_image                        = std::make_shared<sight::data::image>();
+        sight::io::itk::nifti_image_reader::sptr external_image_reader = std::make_shared<sight::io::itk::nifti_image_reader>();
+        external_image_reader->set_object(external_image);
+        external_image_reader->set_file(external_image_path);
+
+        {
+            auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+            external_image_reader->read(read_observer);
+        }
+
+        nifti_read_check(
+            external_image,
+            sight::core::type::UINT8,
+            3,
+            {0.5, 0.5, 0.5},
+            {75, 107, -69.5},
+            {301, 370, 316},
+        {
+            -1, 0, 0,
+            0, -1, 0,
+            0, 0, 1
+        });
+    }
+
+    TEST_CASE("nifti_write")
+    {
+        sight::data::image::sptr image = std::make_shared<sight::data::image>();
+        sight::utest_data::generator::image::generate_random_image(image, sight::core::type::INT16);
+
+        const sight::data::image::spacing_t spacing_d = {0.5F, 0.001F, 1.25F};
+        const sight::data::image::origin_t origin_d   = {0.5F, 0.25F, 0.25F};
+        image->set_spacing(spacing_d);
+        image->set_origin(origin_d);
+
+        const sight::data::image::orientation_t orientation = {0.36F, 0.48F, -0.8F, -0.8F, 0.6F, 0.0F, 0.48F, 0.64F,
+                                                               0.6F
+        };
+        image->set_orientation(orientation);
+
+        sight::io::itk::ut::helper::round_orientation(image);
+
+        sight::core::os::temp_dir tmp_dir;
+        const std::filesystem::path filename = tmp_dir / "image.nii";
+        auto my_writer                       = std::make_shared<sight::io::itk::nifti_image_writer>();
+
+        my_writer->set_object(image);
+        my_writer->set_file(filename);
+        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        my_writer->write(write_observer);
+
+        CHECK_MESSAGE(
+            std::filesystem::exists(filename),
+            "test on '",
+            filename.string(),
+            "' failed "
+        );
+
+        sight::data::image::sptr image2 = std::make_shared<sight::data::image>();
+        image2->set_window_center(image->window_center());
+        image2->set_window_width(image->window_width());
+
+        auto my_reader = std::make_shared<sight::io::itk::nifti_image_reader>();
+        my_reader->set_object(image2);
+        my_reader->set_file(filename);
+
+        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        my_reader->read(read_observer);
+
+        sight::io::itk::ut::helper::round_orientation(image2);
+
+        CHECK(*image == *image2);
+    }
+
+    TEST_CASE("jpeg_write")
+    {
+        sight::data::image::sptr image = std::make_shared<sight::data::image>();
+        sight::utest_data::generator::image::generate_random_image(image, sight::core::type::INT16);
+
+        sight::core::os::temp_dir tmp_dir;
+        auto my_writer = std::make_shared<sight::io::itk::jpg_image_writer>();
+        my_writer->set_object(image);
+        my_writer->set_folder(tmp_dir);
+        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        CHECK_NOTHROW(my_writer->write(write_observer));
+    }
+
+    TEST_CASE("inr_read_jpeg_write")
+    {
+        std::filesystem::path path_inr = sight::utest_data::dir() / "sight" / "image" / "inr" / "image.inr.gz";
+
+        CHECK_MESSAGE(
+            std::filesystem::exists(path_inr),
+            "The file '",
+            path_inr.string(),
+            "' does not exist"
+        );
+
+        sight::data::image::sptr image                   = std::make_shared<sight::data::image>();
+        sight::io::itk::inr_image_reader::sptr my_reader = std::make_shared<sight::io::itk::inr_image_reader>();
+        my_reader->set_object(image);
+        my_reader->set_file(path_inr);
+        auto read_observer = std::make_shared<sight::core::progress::observer>("Test read");
+        my_reader->read(read_observer);
+
+        sight::core::os::temp_dir tmp_dir;
+        auto my_writer = std::make_shared<sight::io::itk::jpg_image_writer>();
+        my_writer->set_object(image);
+        my_writer->set_folder(tmp_dir);
+        auto write_observer = std::make_shared<sight::core::progress::observer>("Test write");
+        my_writer->write(write_observer);
+    }
+} // TEST_SUITE

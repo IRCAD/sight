@@ -22,9 +22,6 @@
 
 #include "module/io/vtk/model_series_obj_writer.hpp"
 
-#include "module/io/vtk/mesh_writer.hpp"
-
-#include <core/base.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/tools/uuid.hpp>
 
@@ -33,8 +30,6 @@
 #include <data/reconstruction.hpp>
 
 #include <io/vtk/model_series_obj_writer.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
@@ -46,13 +41,10 @@
 namespace sight::module::io::vtk
 {
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
-
 //------------------------------------------------------------------------------
 
 model_series_obj_writer::model_series_obj_writer() noexcept :
-    writer("Choose a directory to save meshes"),
-    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
+    writer("Choose a directory to save meshes")
 {
 }
 
@@ -163,11 +155,12 @@ void model_series_obj_writer::updating()
         sight::ui::cursor cursor;
         cursor.set_cursor(ui::cursor_base::busy);
 
+        auto observer = std::make_shared<core::progress::observer>("Writing models in " + this->get_folder().string());
+        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+
         try
         {
-            m_sig_job_created->emit(writer->get_job());
-            writer->write();
-
+            writer->write(observer);
             m_write_failed = false;
         }
         catch(const std::exception& e)

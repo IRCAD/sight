@@ -39,8 +39,8 @@ const core::com::signals::key_t grabber::FRAME_PRESENTED_SIG = "framePresented";
 
 const core::com::signals::key_t grabber::PARAMETER_CHANGED_SIG = "parameter_changed";
 
-const core::com::signals::key_t grabber::JOB_CREATED_SIG = "job_created";
-const core::com::signals::key_t grabber::FPS_CHANGED_SIG = "fps_changed";
+const core::com::signals::key_t grabber::MONITOR_CREATED_SIG = "monitor_created";
+const core::com::signals::key_t grabber::FPS_CHANGED_SIG     = "fps_changed";
 
 const core::com::slots::key_t grabber::START_CAMERA_SLOT       = "start_camera";
 const core::com::slots::key_t grabber::STOP_CAMERA_SLOT        = "stop_camera";
@@ -75,7 +75,7 @@ grabber::grabber() noexcept :
     new_signal<frame_presented_signal_t>(FRAME_PRESENTED_SIG);
 
     new_signal<parameter_changed_t>(PARAMETER_CHANGED_SIG);
-    new_signal<job_created_signal_t>(JOB_CREATED_SIG);
+    new_signal<monitor_created_signal_t>(MONITOR_CREATED_SIG);
     new_signal<fps_changed_signal_t>(FPS_CHANGED_SIG);
 
     new_slot(START_CAMERA_SLOT, &grabber::start_camera, this);

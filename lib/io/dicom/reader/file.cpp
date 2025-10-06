@@ -22,7 +22,7 @@
 #include "file.hpp"
 
 #include <core/compare.hpp>
-#include <core/jobs/job.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/dicom/sop.hpp>
 #include <data/helper/medical_image.hpp>
@@ -598,7 +598,7 @@ inline static data::image::spacing_t compute_spacing(
 
 inline static data::image_series::sptr new_image_series(
     const data::series& _source,
-    const core::jobs::job::sptr& _job,
+    const core::progress::observer::sptr& _progress,
     const gdcm::Image& _gdcm_image,
     const std::unique_ptr<gdcm::Rescaler>& _gdcm_rescaler,
     const std::string& _filename
@@ -623,7 +623,7 @@ inline static data::image_series::sptr new_image_series(
         type == core::type::NONE || format == data::image::pixel_format_t::undefined
     );
 
-    if(_job && _job->cancel_requested())
+    if(_progress && _progress->cancel_requested())
     {
         return nullptr;
     }
@@ -724,7 +724,7 @@ inline static const char* read_gdcm_buffer(
 //------------------------------------------------------------------------------
 
 inline static bool read_buffer(
-    const core::jobs::job::sptr& _job,
+    const core::progress::observer::sptr& _progress,
     const gdcm::Image& _gdcm_image,
     const std::unique_ptr<gdcm::Rescaler>& _gdcm_rescaler,
     std::unique_ptr<std::vector<char> >& _gdcm_instance_buffer,
@@ -734,7 +734,7 @@ inline static bool read_buffer(
     const bool _jpeg2k_bypass
 )
 {
-    if(_job && _job->cancel_requested())
+    if(_progress && _progress->cancel_requested())
     {
         return false;
     }
@@ -751,7 +751,7 @@ inline static bool read_buffer(
     {
         SIGHT_ASSERT("Instance Buffer size must large enough.", _instance_buffer_size == gdcm_buffer_size * 8);
 
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return false;
         }
@@ -759,7 +759,7 @@ inline static bool read_buffer(
         // Read the buffer. Use the buffer from the image series object
         read_gdcm_buffer(_gdcm_image, _instance_buffer, _filename, _jpeg2k_bypass);
 
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return false;
         }
@@ -798,7 +798,7 @@ inline static bool read_buffer(
             )
         );
 
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return false;
         }
@@ -821,7 +821,7 @@ inline static bool read_buffer(
             _jpeg2k_bypass
         );
 
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return false;
         }
@@ -843,7 +843,7 @@ inline static bool read_buffer(
             _instance_buffer_size >= gdcm_buffer_size
         );
 
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return false;
         }
@@ -1040,13 +1040,13 @@ inline static data::matrix4 compute_image_transform(
 
 inline static data::series_set::sptr read_image_instance(
     const data::series& _source,
-    const core::jobs::job::sptr& _job,
+    const core::progress::observer::sptr& _progress,
     std::unique_ptr<std::vector<char> >& _gdcm_instance_buffer,
     std::size_t _instance                   = 0,
     data::series_set::sptr _splitted_series = nullptr
 )
 {
-    if(_job && _job->cancel_requested())
+    if(_progress && _progress->cancel_requested())
     {
         return nullptr;
     }
@@ -1133,13 +1133,19 @@ inline static data::series_set::sptr read_image_instance(
     const bool split = converted_gdcm_image.GetNumberOfDimensions() >= 3 && _source.num_instances() > 1;
     if(!_splitted_series || split)
     {
-        // User may have canceled the job
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return nullptr;
         }
 
-        if(const auto& image_series = new_image_series(_source, _job, converted_gdcm_image, gdcm_rescaler, filename);
+        // User may have canceled the task
+        if(const auto& image_series = new_image_series(
+               _source,
+               _progress,
+               converted_gdcm_image,
+               gdcm_rescaler,
+               filename
+        );
            image_series)
         {
             // Add the dataset to allow access to all DICOM attributes (not only the ones we have converted)
@@ -1168,8 +1174,7 @@ inline static data::series_set::sptr read_image_instance(
         }
     }
 
-    // User may have canceled the job
-    if(_job && _job->cancel_requested())
+    if(_progress && _progress->cancel_requested())
     {
         return nullptr;
     }
@@ -1196,7 +1201,7 @@ inline static data::series_set::sptr read_image_instance(
 
     // Read the image data and fill the image series
     if(!read_buffer(
-           _job,
+           _progress,
            converted_gdcm_image,
            gdcm_rescaler,
            _gdcm_instance_buffer,
@@ -1206,7 +1211,7 @@ inline static data::series_set::sptr read_image_instance(
            jpeg2k_bypass
     ))
     {
-        // Job have been canceled
+        // Task have been canceled
         return nullptr;
     }
 
@@ -1215,9 +1220,12 @@ inline static data::series_set::sptr read_image_instance(
 
 //------------------------------------------------------------------------------
 
-inline static data::series_set::sptr read_image(const data::series& _source, const core::jobs::job::sptr& _job)
+inline static data::series_set::sptr read_image(
+    const data::series& _source,
+    const core::progress::observer::sptr& _progress
+)
 {
-    if(_job && _job->cancel_requested())
+    if(_progress && _progress->cancel_requested())
     {
         return nullptr;
     }
@@ -1226,23 +1234,23 @@ inline static data::series_set::sptr read_image(const data::series& _source, con
     // readImageInstance() returns a series set, because the series can be splitted in rare cases,
     // like US 4D Volume.
     std::unique_ptr<std::vector<char> > gdcm_instance_buffer;
-    auto splitted_series = read_image_instance(_source, _job, gdcm_instance_buffer, 0);
+    auto splitted_series = read_image_instance(_source, _progress, gdcm_instance_buffer, 0);
 
     if(!splitted_series)
     {
-        // Job have been canceled
+        // Task have been canceled
         return nullptr;
     }
 
     // Read the other instances if necessary
     for(std::size_t instance = 1, end = _source.num_instances() ; instance < end ; ++instance)
     {
-        if(_job && _job->cancel_requested())
+        if(_progress && _progress->cancel_requested())
         {
             return nullptr;
         }
 
-        read_image_instance(_source, _job, gdcm_instance_buffer, instance, splitted_series);
+        read_image_instance(_source, _progress, gdcm_instance_buffer, instance, splitted_series);
     }
 
     for(const auto& series : *splitted_series)
@@ -1264,7 +1272,7 @@ inline static data::series_set::sptr read_image(const data::series& _source, con
 
 inline static data::series_set::sptr read_model(
     const data::series& /*unused*/,
-    const core::jobs::job::sptr& /*unused*/
+    const core::progress::observer::sptr& /*unused*/
 )
 {
     data::series_set::sptr splitted_series;
@@ -1597,8 +1605,10 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void read()
+    void read(SPTR(sight::core::progress::observer) _progress)
     {
+        m_progress = _progress;
+
         SIGHT_THROW_IF(
             "There is no DICOM file to read.",
             !m_sorted || m_sorted->empty()
@@ -1634,12 +1644,12 @@ public:
             if(source->get_dicom_type() == data::series::dicom_t::image)
             {
                 // Read an image series
-                splitted_series = read_image(*source, m_job);
+                splitted_series = read_image(*source, m_progress);
             }
             else if(source->get_dicom_type() == data::series::dicom_t::model)
             {
                 // Read a model series
-                splitted_series = read_model(*source, m_job);
+                splitted_series = read_model(*source, m_progress);
             }
             else if(source->get_dicom_type() == data::series::dicom_t::fiducials)
             {
@@ -1737,16 +1747,16 @@ public:
 
     [[nodiscard]] bool cancel_requested() const noexcept
     {
-        return m_job && m_job->cancel_requested();
+        return m_progress && m_progress->cancel_requested();
     }
 
     //------------------------------------------------------------------------------
 
     void progress(std::uint64_t _units) const
     {
-        if(m_job)
+        if(m_progress)
         {
-            m_job->done_work(_units);
+            m_progress->done_work(_units);
         }
     }
 
@@ -1759,7 +1769,7 @@ public:
     }
 
     /// The default filter to select only some type (Image, Model, ...) of DICOM files.
-    data::series::sop_keywords m_filters;
+    data::series::sop_keywords_t m_filters;
 
     /// Contains the list of files to sort and read.
     /// Usually, it is filed by user after showing a selection dialog,
@@ -1774,8 +1784,8 @@ public:
     /// This allows to keep a reference as generic_object_reader / object_reader only keep a weak_ptr to the output.
     data::series_set::sptr m_read;
 
-    /// The default job. Allows to watch for cancellation and report progress.
-    core::jobs::job::sptr m_job;
+    /// Allows to watch for cancellation and report progress.
+    core::progress::observer::sptr m_progress;
 };
 
 file::file() :
@@ -1867,7 +1877,7 @@ data::series_set::sptr file::sort()
 
 //------------------------------------------------------------------------------
 
-void file::read()
+void file::read(sight::core::progress::observer::sptr _progress)
 {
     if(!m_pimpl->m_sorted || m_pimpl->m_sorted->empty())
     {
@@ -1880,14 +1890,14 @@ void file::read()
         return;
     }
 
-    m_pimpl->read();
+    m_pimpl->read(_progress);
 
     m_pimpl->progress(100);
 }
 
 //------------------------------------------------------------------------------
 
-void file::set_filters(const data::series::sop_keywords& _filters)
+void file::set_filters(const data::series::sop_keywords_t& _filters)
 {
     m_pimpl->m_filters = _filters;
 }
@@ -1910,22 +1920,6 @@ void file::set_sorted(const data::series_set::sptr& _sorted)
 
     // No need to keep the scanned files, they are not used anymore
     m_pimpl->m_scanned.reset();
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr file::get_job() const
-{
-    return m_pimpl->m_job;
-}
-
-//------------------------------------------------------------------------------
-
-void file::set_job(core::jobs::job::sptr _job)
-{
-    SIGHT_ASSERT("Some work have already be reported.", _job->get_done_work_units() == 0);
-    m_pimpl->m_job = _job;
-    m_pimpl->m_job->set_total_work_units(100);
 }
 
 } // namespace sight::io::dicom::reader

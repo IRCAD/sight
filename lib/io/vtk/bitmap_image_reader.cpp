@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,8 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 #include "io/vtk/vtk.hpp"
 
-#include <core/jobs/base.hpp>
-#include <core/jobs/observer.hpp>
+#include <core/progress/monitor.hpp>
+#include <core/progress/observer.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -42,8 +42,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-bitmap_image_reader::bitmap_image_reader() :
-    m_job(std::make_shared<core::jobs::observer>("Bitmap image reader"))
+bitmap_image_reader::bitmap_image_reader()
 {
     /* Initialize the available extensions */
     std::vector<std::string> ext;
@@ -61,12 +60,7 @@ bitmap_image_reader::bitmap_image_reader() :
 
 //------------------------------------------------------------------------------
 
-bitmap_image_reader::~bitmap_image_reader()
-= default;
-
-//------------------------------------------------------------------------------
-
-void bitmap_image_reader::read()
+void bitmap_image_reader::read(sight::core::progress::observer::sptr _progress)
 {
     SIGHT_ASSERT("The current object has expired.", !m_object.expired());
     SIGHT_ASSERT("Unable to lock object", m_object.lock());
@@ -76,7 +70,8 @@ void bitmap_image_reader::read()
     // Use a vtkImageReader2Factory to automatically detect the type of the input file
     // And select the right reader for the file
     vtkSmartPointer<vtkImageReader2Factory> factory = vtkSmartPointer<vtkImageReader2Factory>::New();
-    vtkImageReader2* reader                         = factory->CreateImageReader2(this->get_file().string().c_str());
+    vtkImageReader2* reader                         =
+        vtkImageReader2Factory::CreateImageReader2(this->get_file().string().c_str());
 
     SIGHT_THROW_IF("BitmapImageReader cannot read Bitmap image file :" << this->get_file().string(), !reader);
 
@@ -87,20 +82,18 @@ void bitmap_image_reader::read()
 
     progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
     progress_callback->set_callback(
-        [&](vtkObject* _caller, std::uint64_t, void*)
+        [&_progress](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkGenericDataObjectReader*>(_caller);
-            m_job->done_work(static_cast<uint64_t>(filter->GetProgress() * 100.0));
+            _progress->done_work(static_cast<uint64_t>(filter->GetProgress() * 100.0));
         });
     reader->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    m_job->add_simple_cancel_hook([&]{reader->AbortExecuteOn();});
+    _progress->add_cancel_hook([&]{reader->AbortExecuteOn();});
 
     reader->Update();
     vtkSmartPointer<vtkImageData> img = reader->GetOutput();
     reader->Delete();
-
-    m_job->finish();
 
     SIGHT_THROW_IF("BitmapImageReader cannot read Bitmap image file :" << this->get_file().string(), !img);
     try
@@ -118,13 +111,6 @@ void bitmap_image_reader::read()
 std::string bitmap_image_reader::extension() const
 {
     return m_available_extensions;
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr bitmap_image_reader::get_job() const
-{
-    return m_job;
 }
 
 //------------------------------------------------------------------------------

@@ -26,14 +26,11 @@
 #include "backend.hpp"
 
 #include <core/location/single_file.hpp>
-#include <core/tools/progress_adviser.hpp>
 
 #include <data/container.hpp>
 #include <data/image.hpp>
 
 #include <io/__/reader/generic_object_reader.hpp>
-
-#include <ostream>
 
 // cspell:ignore nvjpeg LIBJPEG OPENJPEG
 
@@ -56,8 +53,7 @@ namespace sight::io::bitmap
  * buffer copy.
  */
 class SIGHT_IO_BITMAP_CLASS_API reader final : public io::reader::generic_object_reader<data::image>,
-                                               public core::location::single_file,
-                                               public core::tools::progress_adviser
+                                               public core::location::single_file
 {
 public:
 
@@ -73,10 +69,10 @@ public:
 
     /// Constructor/Destructor
     SIGHT_IO_BITMAP_API reader();
-    SIGHT_IO_BITMAP_API ~reader() override;
+    SIGHT_IO_BITMAP_API ~reader() final;
 
-    /// Main reading method from generic_object_reader
-    SIGHT_IO_BITMAP_API void read() override;
+    /// Main writing method from generic_object_reader
+    SIGHT_IO_BITMAP_API void read(SPTR(sight::core::progress::observer) _progress) final;
 
     /// Specialized reading method that allows to specify the backend
     /// @arg _backend: the backend to use. Can be LIBJPEG, LIBTIFF, LIBPNG, OPENJPEG or, if available, NVJPEG and
@@ -112,7 +108,7 @@ public:
 
     /// Return the extension to use, by default, or the one from file set by single_file::set_file(), if valid
     /// @return an extension as string
-    [[nodiscard]] SIGHT_IO_BITMAP_API std::string extension() const override;
+    [[nodiscard]] SIGHT_IO_BITMAP_API std::string extension() const final;
 
 private:
 

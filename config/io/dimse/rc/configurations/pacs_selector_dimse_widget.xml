@@ -6,11 +6,13 @@
         <object uid="previewImage" type="sight::data::image" />
         <object uid="previewSelections" type="sight::data::vector" />
         <object uid="localSeriesSet" type="sight::data::series_set" />
+
         <object uid="pacsConfiguration" type="sight::io::dimse::data::pacs_configuration" />
 
         <param name="WID_QUERY_EDITOR_PARENT" />
         <param name="WID_SLIDER_PREVIEW_PARENT" />
-        <param name="Notified_slider" default="Notified_slider" />
+        <channel name="notified_slider" optional="true" />
+        <channel name="pull_progress" />
     </parameters>
     <config>
         <!-- ******************************* Actions ****************************************** -->
@@ -35,14 +37,12 @@
                     <orientation value="horizontal" />
                     <view proportion="1" />
                     <view proportion="0" />
-                    <view proportion="0" visible="false" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_SLIDER_PREVIEW_PARENT}" />
                 <view sid="slider_index_dicom_puller_editor_srv" />
                 <view sid="series_puller_act" />
-                <view sid="wait_act" />
             </registry>
         </service>
 
@@ -56,20 +56,9 @@
             </config>
         </service>
 
-        <service uid="wait_act" type="sight::module::ui::qt::com::signal_button">
-            <config>
-                <checkable>false</checkable>
-                <executable>false</executable>
-                <icon>sight::module::ui::icons/wait.svg</icon>
-                <iconWidth>24</iconWidth>
-                <iconHeight>24</iconHeight>
-                <toolTip>Pulling selected series</toolTip>
-            </config>
-        </service>
-
         <service uid="query_editor_srv" type="sight::module::io::dimse::query_editor">
             <in key="pacsConfig" uid="${pacsConfiguration}" />
-            <inout key="seriesSet" uid="${previewSeriesSet}" />
+            <inout key="series_set" uid="${previewSeriesSet}" />
             <config icon="sight::module::ui::icons/find.svg" advanced="false" />
         </service>
 
@@ -86,14 +75,12 @@
             <in key="pacsConfig" uid="${pacsConfiguration}" />
             <inout key="series" uid="${previewDicom}" />
             <inout key="image" uid="${previewImage}" />
-            <config dicomReader="sight::module::io::dicom::series_set_reader" />
         </service>
 
         <service uid="series_puller_srv" type="sight::module::io::dimse::series_puller" auto_connect="true">
             <in key="pacsConfig" uid="${pacsConfiguration}" />
             <in key="selectedSeries" uid="${previewSelections}" />
-            <inout key="seriesSet" uid="${localSeriesSet}" />
-            <config dicomReader="sight::module::io::dicom::series_set_reader" readerConfig="sight::config::io::dimse::reader_config" />
+            <inout key="series_set" uid="${localSeriesSet}" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
@@ -101,16 +88,14 @@
         <connect>
             <signal>series_puller_srv/progress_started</signal>
             <slot>series_puller_act/hide</slot>
-            <slot>wait_act/show</slot>
         </connect>
 
         <connect>
             <signal>series_puller_srv/progress_stopped</signal>
             <slot>series_puller_act/show</slot>
-            <slot>wait_act/hide</slot>
         </connect>
 
-        <connect channel="${Notified_slider}">
+        <connect channel="${notified_slider}">
             <signal>slider_index_dicom_puller_editor_srv/notified</signal>
             <signal>series_puller_srv/notified</signal>
         </connect>
@@ -123,6 +108,10 @@
         <connect>
             <signal>series_puller_act/clicked</signal>
             <slot>series_puller_srv/update</slot>
+        </connect>
+
+        <connect channel="${pull_progress}">
+            <signal>series_puller_srv/monitor_created</signal>
         </connect>
     </config>
 </extension>

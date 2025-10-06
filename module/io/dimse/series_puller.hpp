@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include <data/dicom_series.hpp>
+#include <core/progress/has_monitors.hpp>
+
 #include <data/series_set.hpp>
 #include <data/vector.hpp>
 
@@ -34,8 +35,6 @@
 #include <service/has_services.hpp>
 #include <service/notifier.hpp>
 
-#include <vector>
-
 namespace sight::module::io::dimse
 {
 
@@ -43,7 +42,6 @@ namespace sight::module::io::dimse
  * @brief This service is used to pull series from a PACS.
  *
  * @section Signals Signals
- * - \b progressed(std::string): sent when the process start (bar id).
  * - \b progress_started(std::string, float, std::string): sent when the process is updated (bar id,percentage,message).
  * - \b progress_stopped(std::string): sent when the process ended (bar id).
  *
@@ -53,7 +51,6 @@ namespace sight::module::io::dimse
         <in key="pacsConfig" uid="..." />
         <in key="selectedSeries" uid="..." />
         <inout key="seriesSet" uid="..." />
-        <config dicomReader="sight::module::io::dicom::series_set_reader" readerConfig="config" />
     </service>
    @endcode
  *
@@ -63,14 +60,11 @@ namespace sight::module::io::dimse
  *
  * @subsection In-Out In-Out:
  * - \b seriesSet [sight::data::series_set]: series set where to put the retrieved dicom series.
- *
- * @subsection Configuration Configuration:
- * - \b dicomReader (mandatory, string): reader type to use.
- * - \b readerConfig (optional, string, default=""): configuration for the DICOM Reader.
  */
 class series_puller final : public service::controller,
                             public service::has_services,
-                            private service::notifier
+                            private service::notifier,
+                            public core::progress::has_monitors
 {
 public:
 
@@ -109,9 +103,8 @@ private:
 
     using dicom_series_container_t  = data::series_set::container_t;
     using read_dicom_slot_t         = core::com::slot<void (dicom_series_container_t)>;
-    using progress_started_signal_t = core::com::signal<void (std::string)>;
-    using progressed_signal_t       = core::com::signal<void (std::string, float, std::string)>;
-    using progress_stopped_signal_t = core::com::signal<void (std::string)>;
+    using progress_started_signal_t = core::com::signal<void ()>;
+    using progress_stopped_signal_t = core::com::signal<void ()>;
 
     /// Pulls series from the PACS.
     void pull_series();
@@ -137,29 +130,11 @@ private:
     ///SLOT: removes series from m_localSeries, when deleted in a gui selector for instance.
     void remove_series(data::series_set::container_t _removed_series);
 
-    /// Defines the worker of the series enquire thread.
-    core::thread::worker::sptr m_request_worker;
-
-    /// Defines the DICOM reader implementation.
-    std::string m_dicom_reader_implementation;
-
-    /// Contains the optional configuration to set to reader implementation.
-    std::string m_reader_config;
-
-    /// Contains the DICOM reader.
-    sight::io::service::reader::sptr m_dicom_reader {nullptr};
-
     /// Contains the series_set where the DICOM reader sets its output.
     data::series_set::sptr m_series_set {nullptr};
 
-    /// Contains the slot to call storeInstanceCallback method using C-MOVE requests.
-    sight::io::dimse::series_retriever::progress_callback_slot_t::sptr m_slot_store_instance {nullptr};
-
     /// Contains the signal emitted when the progress bar is started.
     progress_started_signal_t::sptr m_sig_progress_started {nullptr};
-
-    /// Contains the signal emitted when the progress bar is updated.
-    progressed_signal_t::sptr m_sig_progressed {nullptr};
 
     /// Contains the signal emitted when the progress bar is stopped.
     progress_stopped_signal_t::sptr m_sig_progress_stopped {nullptr};
@@ -167,19 +142,16 @@ private:
     /// Stores local series.
     std::set<std::string> m_local_series;
 
-    /// Defines the progress bar ID.
-    std::string m_progressbar_id {"pullDicomProgressBar"};
-
     /// Defines the total number of instances that must be downloaded.
     std::size_t m_instance_count {0};
 
     /// Stores a map of DICOM series being pulled.
-    std::map<std::string, data::dicom_series::wptr> m_pulling_dicom_series_map;
+    std::map<std::string, data::series::wptr> m_pulling_dicom_series_map;
 
     data::ptr<sight::io::dimse::data::pacs_configuration, data::access::in> m_config {this, "pacsConfig"};
     data::ptr<sight::data::vector, data::access::in> m_selected_series {this, "selectedSeries"};
 
-    static constexpr std::string_view SERIES_SET_INOUT = "seriesSet";
+    static constexpr std::string_view SERIES_SET_INOUT = "series_set";
     data::ptr<sight::data::series_set, data::access::inout> m_dest_series_set {this, SERIES_SET_INOUT};
 };
 

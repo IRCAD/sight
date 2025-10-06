@@ -60,9 +60,10 @@ std::string writer::extension() const
 
 //------------------------------------------------------------------------------
 
-void writer::write()
+void writer::write(sight::core::progress::observer::sptr _progress)
 {
     write(backend::any, mode::fast);
+    _progress->done();
 }
 
 //------------------------------------------------------------------------------

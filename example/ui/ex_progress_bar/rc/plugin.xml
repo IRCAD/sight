@@ -180,20 +180,20 @@ This example shows the possibilities of progress bar in SIGHT.:
             <!-- Connect job services to progress_bar -->
 
             <connect>
-                <signal>job_1_srv/job_created</signal>
-                <slot>progress_bar_1/show_job</slot>
+                <signal>job_1_srv/monitor_created</signal>
+                <slot>progress_bar_1/add_monitor</slot>
             </connect>
 
             <connect>
-                <signal>job_2_srv/job_created</signal>
-                <slot>progress_bar_2/show_job</slot>
+                <signal>job_2_srv/monitor_created</signal>
+                <slot>progress_bar_2/add_monitor</slot>
             </connect>
 
             <connect>
-                <signal>job_3_srv/job_created</signal>
-                <slot>progress_bar_3/show_job</slot>
-                <slot>progress_bar_4/show_job</slot>
-                <slot>progress_bar_5/show_job</slot>
+                <signal>job_3_srv/monitor_created</signal>
+                <slot>progress_bar_3/add_monitor</slot>
+                <slot>progress_bar_4/add_monitor</slot>
+                <slot>progress_bar_5/add_monitor</slot>
             </connect>
 
             <!-- ******************************* Update services ***************************************** -->

@@ -1,4 +1,3 @@
-add_subdirectory(dicom_anonymizer)
 add_subdirectory(sightrun)
 add_subdirectory(aruco_marker)
 add_subdirectory(network_proxy)

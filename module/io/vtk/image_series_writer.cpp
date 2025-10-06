@@ -24,26 +24,17 @@
 
 #include "module/io/vtk/image_writer.hpp"
 
-#include <core/base.hpp>
-#include <core/com/has_signals.hpp>
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/jobs/base.hpp>
-#include <core/jobs/job.hpp>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/tools/failed.hpp>
 
-#include <data/image.hpp>
 #include <data/image_series.hpp>
 
-#include <io/__/reader/object_reader.hpp>
 #include <io/__/service/writer.hpp>
 #include <io/vtk/image_writer.hpp>
 #include <io/vtk/meta_image_writer.hpp>
 #include <io/vtk/vti_image_writer.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
@@ -53,13 +44,10 @@
 namespace sight::module::io::vtk
 {
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
-
 //------------------------------------------------------------------------------
 
 image_series_writer::image_series_writer() noexcept :
-    writer("Choose a file to save image"),
-    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
+    writer("Choose a file to save image")
 {
 }
 
@@ -145,7 +133,12 @@ void image_series_writer::updating()
         );
 
         sight::ui::busy_cursor cursor;
-        image_writer::save_image(this->get_file(), image_series, m_sig_job_created);
+
+        const auto& file = this->get_file();
+        auto observer    = std::make_shared<core::progress::observer>("Writing " + file.string() + " file");
+        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+
+        image_writer::save_image(file, image_series, observer);
         m_write_failed = false;
     }
 }

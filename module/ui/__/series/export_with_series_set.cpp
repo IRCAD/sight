@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include <core/com/signal.hxx>
 #include <core/com/slots.hpp>
 #include <core/com/slots.hxx>
-#include <core/jobs/base.hpp>
+#include <core/progress/monitor.hpp>
 
 #include <data/series_set.hpp>
 
@@ -39,16 +39,15 @@
 namespace sight::module::ui::series
 {
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
-static const core::com::slots::key_t FORWARD_JOB_SLOT     = "forwardJob";
+static const core::com::slots::key_t FORWARD_MONITOR_SLOT = "forwardmonitor";
 
 //------------------------------------------------------------------------------
 
 export_with_series_set::export_with_series_set() noexcept :
+    has_monitors(m_signals),
     m_io_selector_srv_config("IOSelectorServiceConfigVRRenderReader")
 {
-    m_sig_job_created  = new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL);
-    m_slot_forward_job = new_slot(FORWARD_JOB_SLOT, &export_with_series_set::forward_job, this);
+    m_slot_forward_monitor = new_slot(FORWARD_MONITOR_SLOT, &export_with_series_set::forward_monitor, this);
 }
 
 //------------------------------------------------------------------------------
@@ -106,10 +105,11 @@ void export_with_series_set::updating()
 
     io_selector_srv->set_worker(this->worker());
 
-    auto job_created_signal_t = io_selector_srv->signal("job_created");
-    if(job_created_signal_t)
+    const auto monitor_signal =
+        this->signal<has_monitors::signals::monitor_created_t>(has_monitors::signals::MONITOR_CREATED);
+    if(monitor_signal)
     {
-        job_created_signal_t->connect(m_slot_forward_job);
+        monitor_signal->connect(m_slot_forward_monitor);
     }
 
     io_selector_srv->set_config(io_cfg);
@@ -139,9 +139,11 @@ void export_with_series_set::stopping()
 
 //------------------------------------------------------------------------------
 
-void export_with_series_set::forward_job(core::jobs::base::sptr _job)
+void export_with_series_set::forward_monitor(core::progress::monitor::sptr _monitor)
 {
-    m_sig_job_created->emit(_job);
+    const auto monitor_signal =
+        this->signal<has_monitors::signals::monitor_created_t>(has_monitors::signals::MONITOR_CREATED);
+    monitor_signal->emit(_monitor);
 }
 
 } // namespace sight::module::ui::series

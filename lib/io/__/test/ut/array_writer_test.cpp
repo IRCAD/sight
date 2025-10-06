@@ -22,6 +22,7 @@
 #include "array_writer_test.hpp"
 
 #include <core/os/temp_path.hpp>
+#include <core/progress/observer.hpp>
 #include <core/type.hpp>
 
 #include <data/array.hpp>
@@ -52,7 +53,8 @@ void array_writer_test::basic_test()
     array_writer->set_object(array_in);
     std::filesystem::remove(filepath);
     array_writer->set_file(filepath);
-    CPPUNIT_ASSERT_NO_THROW(array_writer->write());
+    const auto observer = std::make_shared<core::progress::observer>("ARRAY Writer Test");
+    CPPUNIT_ASSERT_NO_THROW(array_writer->write(observer));
     std::array<std::uint8_t, 16> array {};
     {
         std::ifstream in(filepath);

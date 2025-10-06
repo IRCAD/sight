@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,80 +19,76 @@
  *
  ***********************************************************************/
 
-#include "matrix_test.hpp"
-
-// #include <data/transfer_function.hpp>
-
-// #include <io/vtk/helper/transfer_function.hpp>
-
-// #include <cmath>
-
 #include <data/matrix4.hpp>
-#include <vtkMatrix4x4.h>
+
 #include <io/vtk/vtk.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::vtk::ut::matrix_test);
+#include <doctest/doctest.h>
 
-namespace sight::io::vtk::ut
+#include <vtkMatrix4x4.h>
+
+TEST_SUITE("sight::io::vtk::matrix")
 {
+//------------------------------------------------------------------------------
+
+    TEST_CASE("to_vtk_matrix")
+    {
+        auto matrix = std::make_shared<sight::data::matrix4>();
+        for(std::uint8_t i = 0 ; i < 4 ; i++)
+        {
+            for(std::uint8_t j = 0 ; j < 4 ; j++)
+            {
+                (*matrix)(i, j) = i * 10 + j;
+            }
+        }
+
+        vtkSmartPointer<vtkMatrix4x4> vtk_matrix = sight::io::vtk::to_vtk_matrix(matrix);
+
+        for(std::uint8_t i = 0 ; i < 4 ; i++)
+        {
+            for(std::uint8_t j = 0 ; j < 4 ; j++)
+            {
+                CHECK_MESSAGE(
+                    i * 10. + j == vtk_matrix->GetElement(i, j),
+                    "i=",
+                    std::to_string(i),
+                    " j=",
+                    std::to_string(j)
+                );
+            }
+        }
+    }
 
 //------------------------------------------------------------------------------
 
-void matrix_test::to_vtk_matrix_test()
-{
-    auto matrix = std::make_shared<data::matrix4>();
-    for(std::uint8_t i = 0 ; i < 4 ; i++)
+    TEST_CASE("from_vtk_matrix")
     {
-        for(std::uint8_t j = 0 ; j < 4 ; j++)
+        auto vtk_matrix = vtkSmartPointer<vtkMatrix4x4>::New();
+        for(std::uint8_t i = 0 ; i < 4 ; i++)
         {
-            (*matrix)(i, j) = i * 10 + j;
+            for(std::uint8_t j = 0 ; j < 4 ; j++)
+            {
+                vtk_matrix->SetElement(i, j, 10 * i + j);
+            }
+        }
+
+        auto matrix = std::make_shared<sight::data::matrix4>();
+        sight::io::vtk::from_vtk_matrix(vtk_matrix, matrix);
+
+        for(std::uint8_t i = 0 ; i < 4 ; i++)
+        {
+            for(std::uint8_t j = 0 ; j < 4 ; j++)
+            {
+                CHECK_MESSAGE(
+                    i * 10. + j == (*matrix)(i, j),
+                    "i=",
+                    std::to_string(i),
+                    " j=",
+                    std::to_string(j)
+                );
+            }
         }
     }
-
-    vtkSmartPointer<vtkMatrix4x4> vtk_matrix = to_vtk_matrix(matrix);
-
-    for(std::uint8_t i = 0 ; i < 4 ; i++)
-    {
-        for(std::uint8_t j = 0 ; j < 4 ; j++)
-        {
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "i=" + std::to_string(i) + " j=" + std::to_string(j),
-                i * 10. + j,
-                vtk_matrix->GetElement(i, j)
-            );
-        }
-    }
-}
 
 //------------------------------------------------------------------------------
-
-void matrix_test::from_vtk_matrix_test()
-{
-    auto vtk_matrix = vtkSmartPointer<vtkMatrix4x4>::New();
-    for(std::uint8_t i = 0 ; i < 4 ; i++)
-    {
-        for(std::uint8_t j = 0 ; j < 4 ; j++)
-        {
-            vtk_matrix->SetElement(i, j, 10 * i + j);
-        }
-    }
-
-    auto matrix = std::make_shared<data::matrix4>();
-    from_vtk_matrix(vtk_matrix, matrix);
-
-    for(std::uint8_t i = 0 ; i < 4 ; i++)
-    {
-        for(std::uint8_t j = 0 ; j < 4 ; j++)
-        {
-            CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "i=" + std::to_string(i) + " j=" + std::to_string(j),
-                i * 10. + j,
-                (*matrix)(i, j)
-            );
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::io::vtk::ut
+} // TEST_SUITE

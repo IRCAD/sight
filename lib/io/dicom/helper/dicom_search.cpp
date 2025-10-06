@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #include "io/dicom/helper/dicom_search.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/observer.hpp>
+#include <core/progress/observer.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -39,7 +39,7 @@ namespace sight::io::dicom::helper
 
 //------------------------------------------------------------------------------
 
-bool is_dicom(const std::filesystem::path& _filepath)
+static bool is_dicom(const std::filesystem::path& _filepath)
 {
     std::ifstream ifs(_filepath, std::ios::binary);
     ifs.seekg(128);
@@ -55,7 +55,7 @@ void dicom_search::search_recursively(
     const std::filesystem::path& _dir_path,
     std::vector<std::filesystem::path>& _dicom_files,
     bool _check_is_dicom,
-    const core::jobs::observer::sptr& _reader_observer
+    const core::progress::observer::sptr& _reader_observer
 )
 {
     std::vector<std::filesystem::path> file_vect;
@@ -103,7 +103,7 @@ void dicom_search::search_recursively(
 void dicom_search::check_filename_extension(
     const std::filesystem::path& _dir_path,
     std::vector<std::filesystem::path>& _dicom_files,
-    const core::jobs::observer::sptr& _file_lookup_observer
+    const core::progress::observer::sptr& _file_lookup_observer
 )
 {
     _dicom_files.clear();
@@ -128,7 +128,7 @@ void dicom_search::check_filename_extension(
             auto path       = it->path();
             std::string ext = boost::to_lower_copy(path.extension().string());
 
-            if(extensions.find(ext) == extensions.end())
+            if(!extensions.contains(ext))
             {
                 std::string stem = boost::to_lower_copy(path.stem().string());
 

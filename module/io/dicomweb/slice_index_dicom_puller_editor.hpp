@@ -22,8 +22,7 @@
 
 #pragma once
 
-#include <data/dicom_series.hpp>
-#include <data/image.hpp>
+#include <data/image_series.hpp>
 #include <data/integer.hpp>
 #include <data/string.hpp>
 
@@ -34,34 +33,12 @@
 #include <QLineEdit>
 #include <QSlider>
 
-#include <filesystem>
-
-namespace sight
-{
-
-namespace core::thread
+namespace sight::core::thread
 {
 
 class Timer;
 
-} // namespace core::thread
-
-namespace io::service
-{
-
-class reader;
-
-} // namespace io::service
-
-namespace data
-{
-
-class integer;
-class series_set;
-
-} // namespace data
-
-} // namespace sight
+} // namespace sight::core::thread
 
 namespace sight::module::io::dicomweb
 {
@@ -78,12 +55,12 @@ public:
     /**
      * @brief Constructor
      */
-    slice_index_dicom_puller_editor() noexcept;
+    slice_index_dicom_puller_editor() noexcept = default;
 
     /**
      * @brief Destructor
      */
-    ~slice_index_dicom_puller_editor() noexcept override;
+    ~slice_index_dicom_puller_editor() noexcept override = default;
 
 private Q_SLOTS:
 
@@ -107,6 +84,9 @@ protected:
     /// Does nothing.
     void updating() override;
 
+    /// Automatically connect to the series modified signal.
+    service::connections_t auto_connections() const override;
+
 private:
 
     /// Function called when a new slice must be displayed.
@@ -116,10 +96,10 @@ private:
      * @brief Read the selected image
      * @param[in] _selected_slice_index Selected slice of the image that must be read
      */
-    void read_image(sight::data::dicom_series& _dicom_series, std::size_t _selected_slice_index);
+    void read_image(sight::data::series& _series, std::size_t _selected_slice_index);
 
     /// Pull the selected slice from the Pacs
-    void pull_instance(sight::data::dicom_series& _dicom_series);
+    void pull_instance(sight::data::series& _series);
 
     /**
      * @brief Displays a dialog box with the error message
@@ -132,20 +112,8 @@ private:
     /// Slice index line edit
     QPointer<QLineEdit> m_slice_index_line_edit;
 
-    /// Number of instances
-    std::size_t m_number_of_slices {};
-
-    /// IODICOMWEB Reader
-    std::string m_dicom_reader_type;
-
-    /// Reader
-    WPTR(sight::io::service::reader) m_dicom_reader;
-
     /// image Key
     std::string m_image_key;
-
-    /// Temporary series_set
-    SPTR(data::series_set) m_tmp_series_set;
 
     /// Axial slice index
     SPTR(data::integer) m_axial_index;
@@ -163,9 +131,6 @@ private:
     /// Delay
     unsigned int m_delay {500};
 
-    /// Optional configuration to set to reader implementation
-    service::config_t m_reader_config;
-
     /// Server hostname preference key
     std::string m_server_hostname_key;
 
@@ -173,7 +138,7 @@ private:
     std::string m_server_port_key;
 
     static constexpr std::string_view DICOMSERIES_INOUT = "series";
-    data::ptr<sight::data::dicom_series, data::access::inout> m_series {this, DICOMSERIES_INOUT};
+    data::ptr<sight::data::series, data::access::inout> m_series {this, DICOMSERIES_INOUT};
 
     sight::data::property<sight::data::string> m_server_hostname {this, "host_name", std::string("localhost")};
     sight::data::property<sight::data::integer> m_server_port {this, "port", 4242};

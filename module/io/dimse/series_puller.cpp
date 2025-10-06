@@ -24,40 +24,33 @@
 
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
-#include <core/os/temp_path.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/series_set.hpp>
 
+#include <io/dicom/helper/series.hpp>
+#include <io/dicom/reader/file.hpp>
 #include <io/dimse/exceptions/base.hpp>
 #include <io/dimse/helper/series.hpp>
 #include <io/dimse/series_enquirer.hpp>
 
 #include <service/extension/config.hpp>
 
+#include <cstddef>
 #include <sstream>
 
 namespace sight::module::io::dimse
 {
 
-static const core::com::signals::key_t PROGRESSED_SIG       = "progressed";
 static const core::com::signals::key_t STARTED_PROGRESS_SIG = "progress_started";
 static const core::com::signals::key_t STOPPED_PROGRESS_SIG = "progress_stopped";
 
 static const core::com::slots::key_t REMOVE_SERIES_SLOT = "removeSeries";
 
-static const std::string DICOM_READER_CONFIG = "dicomReader";
-static const std::string READER_CONFIG       = "readerConfig";
-
 series_puller::series_puller() noexcept :
-    service::notifier(m_signals)
+    service::notifier(m_signals),
+    has_monitors(m_signals)
 {
-    m_slot_store_instance = this->new_slot(
-        sight::io::dimse::series_retriever::PROGRESS_CALLBACK_SLOT,
-        &series_puller::store_instance_callback,
-        this
-    );
-
-    m_sig_progressed       = this->new_signal<progressed_signal_t>(PROGRESSED_SIG);
     m_sig_progress_started = this->new_signal<progress_started_signal_t>(STARTED_PROGRESS_SIG);
     m_sig_progress_stopped = this->new_signal<progress_stopped_signal_t>(STOPPED_PROGRESS_SIG);
 
@@ -68,47 +61,14 @@ series_puller::series_puller() noexcept :
 
 void series_puller::configuring()
 {
-    const config_t config = this->get_config().get_child("config.<xmlattr>");
-
-    m_dicom_reader_implementation = config.get(DICOM_READER_CONFIG, m_dicom_reader_implementation);
-    SIGHT_ERROR_IF("'" + DICOM_READER_CONFIG + "' attribute not set", m_dicom_reader_implementation.empty())
-
-    m_reader_config = config.get(READER_CONFIG, m_reader_config);
 }
 
 //------------------------------------------------------------------------------
 
 void series_puller::starting()
 {
-    // Create the worker.
-    m_request_worker = core::thread::worker::make();
-
     // Create the DICOM reader.
     m_series_set = std::make_shared<data::series_set>();
-
-    m_dicom_reader = this->register_service<sight::io::service::reader>(m_dicom_reader_implementation);
-    SIGHT_ASSERT("Unable to create a reader of type '" + m_dicom_reader_implementation + "'", m_dicom_reader);
-    m_dicom_reader->set_worker(m_request_worker);
-    m_dicom_reader->set_inout(m_series_set, sight::io::service::DATA_KEY);
-    if(!m_reader_config.empty())
-    {
-        const auto reader_config =
-            service::extension::config::get_default()->get_service_config(
-                m_reader_config,
-                "sight::io::service::reader"
-            );
-
-        SIGHT_ASSERT(
-            "No service configuration " << m_reader_config << " for sight::io::service::reader",
-            !reader_config.empty()
-        );
-
-        m_dicom_reader->set_config(reader_config);
-    }
-
-    m_dicom_reader->configure();
-    m_dicom_reader->start().wait();
-    SIGHT_ASSERT("'" + m_dicom_reader_implementation + "' is not started", m_dicom_reader->started());
 }
 
 //------------------------------------------------------------------------------
@@ -123,7 +83,7 @@ void series_puller::updating()
     }
     else
     {
-        m_request_worker->post([this](auto&& ...){pull_series();});
+        this->pull_series();
     }
 }
 
@@ -140,10 +100,6 @@ void series_puller::stopping()
     }
     // Unregister the DICOM reader.
     this->unregister_services();
-
-    // Stop the worker.
-    m_request_worker->stop();
-    m_request_worker.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -168,7 +124,7 @@ void series_puller::pull_series()
     for(const auto& object : *selected_series)
     {
         // Check that the series is a DICOM series.
-        const auto& series = std::dynamic_pointer_cast<data::dicom_series>(object);
+        const auto& series = std::dynamic_pointer_cast<data::series>(object);
 
         // Check if the series must be pulled.
         if(series)
@@ -180,7 +136,7 @@ void series_puller::pull_series()
                 m_pulling_dicom_series_map[series_instance_uid] = series;
 
                 pull_series_vector.push_back(series);
-                m_instance_count += series->num_instances();
+                m_instance_count += static_cast<std::size_t>(series->get_instance_number().value());
             }
 
             selected_series_vector.push_back(series);
@@ -193,12 +149,15 @@ void series_puller::pull_series()
         this->notifier::info("Downloading series...");
 
         // Notify Progress Dialog.
-        m_sig_progress_started->async_emit(m_progressbar_id);
+        m_sig_progress_started->async_emit();
 
         // Retrieve informations.
         const auto pacs_config = m_config.lock();
 
         auto series_enquirer = std::make_shared<sight::io::dimse::series_enquirer>();
+
+        auto progress = std::make_shared<core::progress::observer>("Pull DICOM Series", m_instance_count);
+        this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
 
         // Initialize connection.
         try
@@ -208,7 +167,8 @@ void series_puller::pull_series()
                 pacs_config->get_pacs_host_name(),
                 pacs_config->get_pacs_application_port(),
                 pacs_config->get_pacs_application_title(),
-                pacs_config->get_move_application_title()
+                pacs_config->get_move_application_title(),
+                progress
             );
             series_enquirer->connect();
         }
@@ -240,7 +200,7 @@ void series_puller::pull_series()
                     pacs_config->get_move_application_title(),
                     pacs_config->get_move_application_port(),
                     1,
-                    m_slot_store_instance
+                    progress
                 );
 
                 // Start series retriever in a worker.
@@ -298,7 +258,7 @@ void series_puller::pull_series()
     }
 
     // Notify Progress Dialog.
-    m_sig_progress_stopped->async_emit(m_progressbar_id);
+    m_sig_progress_stopped->async_emit();
 }
 
 //------------------------------------------------------------------------------
@@ -337,12 +297,16 @@ void series_puller::read_local_series(dicom_series_container_t _selected_series)
             // Clear temporary series.
             m_series_set->clear();
 
-            const auto& path = core::os::temp_dir::shared_directory() / "dicom/";
-            m_dicom_reader->set_folder(path.string() + selected_series_uid + "/");
-            m_dicom_reader->update();
+            auto path   = sight::io::dicom::helper::series::get_path(*series);
+            auto reader = std::make_shared<sight::io::dicom::reader::file>();
+            reader->set_object(m_series_set);
+            reader->set_folder({path.string()});
+
+            auto observer = std::make_shared<sight::core::progress::observer>("Read image series");
+            reader->read(observer);
 
             // Merge series.
-            if(!m_dicom_reader->has_failed() && !m_series_set->empty())
+            if(!m_series_set->empty())
             {
                 this->notifier::success("Series read");
 
@@ -375,32 +339,6 @@ void series_puller::remove_series(data::series_set::container_t _removed_series)
             }
         }
     }
-}
-
-//------------------------------------------------------------------------------
-
-void series_puller::store_instance_callback(
-    const std::string& _series_instance_uid,
-    unsigned int _instance_number,
-    const std::string& _file_path
-)
-{
-    // Add path in the DICOM series.
-    if(!m_pulling_dicom_series_map[_series_instance_uid].expired())
-    {
-        data::dicom_series::sptr series = m_pulling_dicom_series_map[_series_instance_uid].lock();
-        series->add_dicom_path(_instance_number, _file_path);
-    }
-    else
-    {
-        SIGHT_WARN("The Dicom Series " + _series_instance_uid + " has expired.");
-    }
-
-    // Notify progress dialog.
-    std::stringstream ss;
-    ss << "Downloading file " << _instance_number << "/" << m_instance_count;
-    float percentage = static_cast<float>(_instance_number) / static_cast<float>(m_instance_count);
-    m_sig_progressed->async_emit(m_progressbar_id, percentage, ss.str());
 }
 
 //------------------------------------------------------------------------------

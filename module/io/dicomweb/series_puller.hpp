@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <core/progress/has_monitors.hpp>
+
 #include <data/integer.hpp>
 #include <data/series_set.hpp>
 #include <data/string.hpp>
@@ -65,14 +67,13 @@ namespace sight::module::io::dicomweb
  * - \b selectedSeries [sight::data::vector]: List of DICOM series to pull from the PACS..
  * @subsection In-Out In-Out:
  * - \b seriesSet [sight::data::series_set]: series_set where to put the retrieved dicom series.
- * @subsection Configuration Configuration:
- * - \b reader_config Optional configuration for the DICOM Reader.
  * @subsection Properties Properties
  * - \b host_name : Need hostname string (default value is "127.0.0.1").
  * - \b port : Need the value of port (default value is 8042).
  */
 
-class series_puller : public service::controller
+class series_puller : public service::controller,
+                      public core::progress::has_monitors
 {
 public:
 
@@ -80,18 +81,10 @@ public:
 
     using dicom_series_container_t = data::series_set::container_t;
     using instance_uid_container_t = std::vector<std::string>;
-    using instance_count_map_t     = std::map<std::string, unsigned int>;
-    using dicom_series_map_t       = std::map<std::string, std::weak_ptr<data::dicom_series> >;
+    using dicom_series_map_t       = std::map<std::string, std::weak_ptr<data::series> >;
 
-    /**
-     * @brief Constructor
-     */
     series_puller() noexcept;
-
-    /**
-     * @brief Destructor
-     */
-    ~series_puller() noexcept override;
+    ~series_puller() noexcept override = default;
 
 protected:
 
@@ -127,15 +120,6 @@ private:
     /// Http Qt Client
     sight::io::http::client_qt m_client_qt;
 
-    /// Reader
-    sight::io::service::reader::sptr m_dicom_reader;
-
-    /// Reader config
-    std::string m_dicom_reader_srv_config;
-
-    /// DicomWeb Reader
-    std::string m_dicom_reader_type;
-
     /// Temporary series_set
     data::series_set::sptr m_tmp_series_set;
 
@@ -148,9 +132,6 @@ private:
     /// Index of the series being downloaded
     unsigned int m_series_index {0};
 
-    /// Total number of instances that must be downloaded
-    std::size_t m_instance_count {};
-
     /// Map of Dicom series being pulled
     dicom_series_map_t m_pulling_dicom_series_map;
 
@@ -159,9 +140,6 @@ private:
 
     /// Server port preference key
     std::string m_server_port_key;
-
-    /// DICOM Folder path
-    std::filesystem::path m_path;
 
     sight::data::property<sight::data::string> m_server_hostname {this, "host_name", std::string("localhost")};
     sight::data::property<sight::data::integer> m_server_port {this, "port", 4242};

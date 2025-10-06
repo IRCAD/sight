@@ -22,6 +22,7 @@
 #include "matrix4reader_test.hpp"
 
 #include <core/os/temp_path.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/matrix4.hpp>
 
@@ -54,7 +55,8 @@ void matrix4_reader_test::basic_test()
     auto matrix_out = std::make_shared<data::matrix4>();
     matrix_reader->set_object(matrix_out);
     matrix_reader->set_file(filepath);
-    CPPUNIT_ASSERT_NO_THROW(matrix_reader->read());
+    const auto observer = std::make_shared<core::progress::observer>("Matrix4 Reader Test");
+    CPPUNIT_ASSERT_NO_THROW(matrix_reader->read(observer));
     for(std::uint8_t i = 0 ; i < 4 ; i++)
     {
         for(std::uint8_t j = 0 ; j < 4 ; j++)

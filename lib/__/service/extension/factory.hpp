@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,14 +67,11 @@ public:
 
     SIGHT_SERVICE_API void add_service_factory(
         factory_t _factory,
-        const std::string& _simpl,
-        const std::string& _stype
+        const std::string& _srv_impl,
+        const std::string& _srv_type
     );
 
-    SIGHT_SERVICE_API void add_object_factory(
-        const std::string& _simpl,
-        const std::string& _oimpl
-    );
+    SIGHT_SERVICE_API void add_object_factory(const std::string& _srv_impl, const std::string& _oimpl);
 
     /// Create a service from a factory type
     SIGHT_SERVICE_API SPTR(base) create(const std::string& _srv_impl) const;

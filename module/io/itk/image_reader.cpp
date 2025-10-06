@@ -22,19 +22,16 @@
 
 #include "image_reader.hpp"
 
-#include <core/base.hpp>
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/image.hpp>
 
 #include <io/__/service/reader.hpp>
 #include <io/itk/inr_image_reader.hpp>
 #include <io/itk/nifti_image_reader.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
@@ -124,7 +121,8 @@ void image_reader::updating()
 
         try
         {
-            if(sight::module::io::itk::image_reader::load_image(this->get_file(), image))
+            auto read_observer = std::make_shared<sight::core::progress::observer>("Loading image... ");
+            if(sight::module::io::itk::image_reader::load_image(this->get_file(), image, read_observer))
             {
                 m_read_failed = false;
                 auto sig = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
@@ -151,7 +149,8 @@ void image_reader::updating()
 
 bool image_reader::load_image(
     const std::filesystem::path& _img_file,
-    const data::image::sptr& _img
+    const data::image::sptr& _img,
+    const core::progress::observer::sptr& _read_observer
 )
 {
     bool ok = true;
@@ -189,7 +188,7 @@ bool image_reader::load_image(
 
     try
     {
-        image_reader->read();
+        image_reader->read(_read_observer);
     }
     catch(const std::exception& e)
     {

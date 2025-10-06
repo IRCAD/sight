@@ -50,16 +50,16 @@ progress_bar::progress_bar(
     m_container->setObjectName(object_name);
 
     // Create the layout.
-    auto* const hbox_layout = new QHBoxLayout();
-    hbox_layout->setObjectName(QString::fromLatin1("/QHBoxLayout"));
-    hbox_layout->setContentsMargins(0, 0, 0, 0);
+    auto* const layout = new QHBoxLayout();
+    layout->setObjectName(QString::fromLatin1("/QHBoxLayout"));
+    layout->setContentsMargins(0, 0, 0, 0);
 
     // Create the label which holds the descriptive text shown with the progress bar.
     if(m_show_title.value_or(false))
     {
         m_title = new QLabel(m_container);
         m_title->setObjectName(object_name + QString::fromLatin1("/QLabel"));
-        hbox_layout->addWidget(m_title);
+        layout->addWidget(m_title);
     }
 
     // Create the progress bar.
@@ -76,7 +76,7 @@ progress_bar::progress_bar(
             m_svg_widget->setFixedSize(*m_svg_size, *m_svg_size);
         }
 
-        hbox_layout->addWidget(m_svg_widget);
+        layout->addWidget(m_svg_widget);
     }
     else
     {
@@ -92,10 +92,10 @@ progress_bar::progress_bar(
             m_progress_bar->setRange(0, 100);
         }
 
-        hbox_layout->addWidget(m_progress_bar);
+        layout->addWidget(m_progress_bar);
     }
 
-    // Create button to cancel job.
+    // Create button to cancel monitor.
     if(m_show_cancel.value_or(false))
     {
         m_cancel_button = new QToolButton(m_container);
@@ -107,11 +107,11 @@ progress_bar::progress_bar(
         m_cancel_button->setIcon(QIcon(QString::fromStdString(icon_path.string())));
         m_cancel_button->setIconSize(QSize(24, 24));
         m_cancel_button->setVisible(false);
-        hbox_layout->addWidget(m_cancel_button);
+        layout->addWidget(m_cancel_button);
     }
 
     // Add layout to the qt_container.
-    m_container->setLayout(hbox_layout);
+    m_container->setLayout(layout);
     m_container->setContentsMargins(0, 0, 0, 0);
 
     // Update the minimum height of the container.
@@ -145,7 +145,7 @@ progress_bar::progress_bar(
 progress_bar::~progress_bar()
 {
     std::lock_guard m_lock(m_mutex);
-    m_jobs.clear();
+    m_progress_monitors.clear();
 
     if(!m_title.isNull())
     {
@@ -180,28 +180,28 @@ progress_bar::~progress_bar()
 
 //------------------------------------------------------------------------------
 
-void progress_bar::show_job(core::jobs::base::sptr _job)
+void progress_bar::add_monitor(core::progress::monitor::sptr _monitor)
 {
     {
         std::lock_guard m_lock(m_mutex);
 
-        // Add the job to the list.
+        // Add the monitor to the list.
         if(std::ranges::find_if(
-               m_jobs,
-               [&_job](const auto& _other_job)
+               m_progress_monitors,
+               [&_monitor](const auto& _other_monitor)
             {
-                return _other_job.lock() == _job;
-            }) == m_jobs.cend())
+                return _other_monitor.lock() == _monitor;
+            }) == m_progress_monitors.cend())
         {
-            m_jobs.push_back(_job);
+            m_progress_monitors.push_back(_monitor);
         }
     }
 
     // Use a "weak" this to avoid ownership to be passed to the lambdas which can be executed in different threads.
     const auto weak_this = this->weak_from_this();
 
-    _job->add_done_work_hook(
-        [weak_this](core::jobs::base&, std::uint64_t)
+    _monitor->add_done_work_hook(
+        [weak_this](core::progress::monitor&, std::uint64_t)
         {
             core::thread::get_default_worker()->post_task<void>(
                 [weak_this]
@@ -213,27 +213,26 @@ void progress_bar::show_job(core::jobs::base::sptr _job)
             });
         });
 
-    const core::jobs::base::wptr weak_job = _job;
-
-    _job->add_state_hook(
-        [weak_this, weak_job](core::jobs::base::state _state)
+    const core::progress::monitor::wptr weak_monitor = _monitor;
+    _monitor->add_state_hook(
+        [weak_this, weak_monitor](core::progress::monitor::state _state)
         {
             if(auto shared_this = dynamic_pointer_cast<progress_bar>(weak_this.lock()); shared_this)
             {
-                if(_state == core::jobs::base::canceled || _state == core::jobs::base::finished)
+                if(_state == core::progress::monitor::canceled || _state == core::progress::monitor::finished)
                 {
                     core::thread::get_default_worker()->post_task<void>(
-                        [weak_this, weak_job]
+                        [weak_this, weak_monitor]
                     {
                         if(auto shared_this = dynamic_pointer_cast<progress_bar>(weak_this.lock()); shared_this)
                         {
-                            { // Some cleanup to remove expired jobs.
+                            { // Some cleanup to remove expired monitors.
                                 std::lock_guard m_lock(shared_this->m_mutex);
                                 std::erase_if(
-                                    shared_this->m_jobs,
-                                    [weak_job](const auto& _weak_job)
+                                    shared_this->m_progress_monitors,
+                                    [weak_monitor](const auto& _weak_monitor)
                                 {
-                                    return _weak_job.expired() || (_weak_job.lock() == weak_job.lock());
+                                    return _weak_monitor.expired() || (_weak_monitor.lock() == weak_monitor.lock());
                                 });
                             }
                             shared_this->update_widgets();
@@ -248,15 +247,24 @@ void progress_bar::show_job(core::jobs::base::sptr _job)
         QObject::connect(
             m_cancel_button,
             &QAbstractButton::clicked,
-            [weak_job]
+            [weak_monitor]
             {
-                if(auto canceled_job = weak_job.lock(); canceled_job)
+                if(auto canceled_monitor = weak_monitor.lock(); canceled_monitor)
                 {
                     // Call the cancel hook
-                    canceled_job->cancel();
+                    canceled_monitor->cancel();
                 }
             });
     }
+
+    core::thread::get_default_worker()->post_task<void>(
+        [weak_this]
+        {
+            if(auto shared_this = dynamic_pointer_cast<progress_bar>(weak_this.lock()); shared_this)
+            {
+                shared_this->update_widgets();
+            }
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -266,30 +274,32 @@ void progress_bar::update_widgets()
     std::lock_guard m_lock(m_mutex);
 
     // Update visibility of the widgets.
-    const bool visible = !m_jobs.empty();
+    const bool visible = !m_progress_monitors.empty();
 
     if(!m_container.isNull() && m_container->isVisible() != visible)
     {
         m_container->setVisible(visible);
     }
 
-    // Iterate over a copy of jobs, because they can be removed in show_job state hook while iterating over them,
-    // in the rare case where we release the last reference in "if(const auto& job = weak_job.lock();"
+    // Iterate over a copy of monitors, because they can be removed in add_monitor state hook while iterating over them,
+    // in the rare case where we release the last reference in "if(const auto& monitor = weak_monitor.lock();"
     // We have the weak/shared mechanism to protect each pointer, but we also require the iterator to be safe
-    const auto safe_jobs_list = m_jobs;
+    const auto safe_monitors_list = m_progress_monitors;
 
     // Update the widgets value.
-    for(const auto& weak_job : safe_jobs_list)
+    for(const auto& weak_monitor : safe_monitors_list)
     {
-        // Get the current job as shared pointer.
-        if(const auto& job = weak_job.lock(); job && job->get_state() == core::jobs::base::state::running)
+        // Get the current monitor as shared pointer.
+        if(const auto& monitor =
+               weak_monitor.lock(); monitor && monitor->get_state() == core::progress::monitor::state::running)
         {
-            const auto name       = job->name();
-            const std::string msg = (job->get_logs().empty()) ? "" : job->get_logs().back();
+            const auto name       = monitor->name();
+            const std::string msg = (monitor->get_logs().empty()) ? "" : monitor->get_logs().back();
             const auto title      = name.empty() ? QString() : QString::fromStdString(
                 name + (msg.empty() ? "" : " - ") + msg
             );
-            const int value = int((float(job->get_done_work_units()) / float(job->get_total_work_units()) * 100));
+            const int value = int((float(monitor->get_done_work_units()) / float(monitor->get_total_work_units())
+                                   * 100));
 
             if(!m_title.isNull() && m_title->text() != title)
             {
@@ -303,7 +313,7 @@ void progress_bar::update_widgets()
 
             if(!m_cancel_button.isNull())
             {
-                const bool cancelable = job->is_cancelable();
+                const bool cancelable = monitor->is_cancelable();
 
                 if(m_cancel_button->isVisible() != cancelable)
                 {
@@ -311,12 +321,12 @@ void progress_bar::update_widgets()
                 }
             }
 
-            // Look only for the first job alive.
+            // Look only for the first monitor alive.
             break;
         }
     }
 
-    // Allow others to do something when all jobs are finished
+    // Allow others to do something when all monitors are finished
     if(m_finished_callback && is_finished())
     {
         m_finished_callback();

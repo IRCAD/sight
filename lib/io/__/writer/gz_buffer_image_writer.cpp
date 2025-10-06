@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace sight::io::writer
 
 //------------------------------------------------------------------------------
 
-void gz_buffer_image_writer::write()
+void gz_buffer_image_writer::write(sight::core::progress::observer::sptr _progress)
 {
     SIGHT_ASSERT("File path is empty.", get_file().empty() == false);
 
@@ -47,6 +47,7 @@ void gz_buffer_image_writer::write()
         std::string str = "gz_buffer_image_writer::write unable to open ";
         str += get_file().string();
         gzclose(raw_file);
+        _progress->done();
         throw std::ios_base::failure(str);
     }
 
@@ -80,8 +81,11 @@ void gz_buffer_image_writer::write()
     {
         std::string str = "gz_buffer_image_writer::write unable to write ";
         str += get_file().string();
+        _progress->done();
         throw std::ios_base::failure(str);
     }
+
+    _progress->done();
 }
 
 //------------------------------------------------------------------------------

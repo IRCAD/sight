@@ -33,8 +33,8 @@ namespace sight::module::ui::qt
 
 progress_bar::progress_bar() noexcept
 {
-    new_slot(slots::SHOW_JOB, &progress_bar::show_job, this);
-    new_signal<signals::job_finished_t>(signals::JOB_FINISHED);
+    new_slot(slots::ADD_MONITOR, &progress_bar::add_monitor, this);
+    new_signal<signals::finished_t>(signals::FINISHED);
 }
 
 //-----------------------------------------------------------------------------
@@ -79,7 +79,7 @@ void progress_bar::starting()
         {
             if(auto shared_this = dynamic_pointer_cast<progress_bar>(weak_this.lock()); shared_this)
             {
-                shared_this->async_emit(signals::JOB_FINISHED);
+                shared_this->async_emit(signals::FINISHED);
             }
         });
 
@@ -117,11 +117,11 @@ void progress_bar::configuring()
 
 //-----------------------------------------------------------------------------
 
-void progress_bar::show_job(core::jobs::base::sptr _job)
+void progress_bar::add_monitor(core::progress::monitor::sptr _monitor)
 {
     if(m_progress_bar_widget)
     {
-        m_progress_bar_widget->show_job(_job);
+        m_progress_bar_widget->add_monitor(_monitor);
     }
 }
 

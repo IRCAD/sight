@@ -22,8 +22,6 @@
 #include "writer.hpp"
 
 #include <core/com/signal.hxx>
-#include <core/jobs/aggregator.hpp>
-#include <core/jobs/job.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/tools/system.hpp>
 
@@ -32,6 +30,8 @@
 #include <ui/__/dialog/message.hpp>
 
 #include <boost/algorithm/string.hpp>
+
+#include <algorithm>
 
 // cspell:ignore swriter xmlattr NVJPEG LIBJPEG OPENJPEG
 
@@ -346,41 +346,29 @@ void writer::updating()
 
     SIGHT_THROW_IF("The file '" << file_path << "' is an existing folder.", std::filesystem::is_directory(file_path));
 
-    const auto write_job = std::make_shared<core::jobs::job>(
-        "Writing '" + file_path.string() + "' file",
-        [&](core::jobs::job& _running_job)
-        {
-            _running_job.done_work(10);
-
-            // Create the session writer
-            auto writer = std::make_shared<sight::io::bitmap::writer>();
-            {
-                // The object must be unlocked since it will be locked again when writing
-                auto data = m_data.lock();
-                writer->set_object(data.get_shared());
-                writer->set_file(file_path);
-            }
-
-            // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::busy_cursor busy_cursor;
-
-            // Write the file
-            writer->write(m_selected_backend, m_mode_by_backend.at(m_selected_backend));
-
-            _running_job.done();
-        },
-        this->worker()
-    );
-
-    core::jobs::aggregator::sptr jobs = std::make_shared<core::jobs::aggregator>(file_path.string() + " writer");
-    jobs->add(write_job);
-    jobs->set_cancelable(false);
-
-    m_job_created_signal->emit(jobs);
+    const auto write_progress = std::make_shared<core::progress::observer>("Writing '" + file_path.string() + "' file");
+    this->async_emit(has_monitors::signals::MONITOR_CREATED, write_progress->get_sptr());
 
     try
     {
-        jobs->run().get();
+        write_progress->done_work(10);
+
+        // Create the session writer
+        auto writer = std::make_shared<sight::io::bitmap::writer>();
+        {
+            // The object must be unlocked since it will be locked again when writing
+            auto data = m_data.lock();
+            writer->set_object(data.get_shared());
+            writer->set_file(file_path);
+        }
+
+        // Set cursor to busy state. It will be reset to default even if exception occurs
+        const sight::ui::busy_cursor busy_cursor;
+
+        // Write the file
+        writer->write(m_selected_backend, m_mode_by_backend.at(m_selected_backend));
+
+        write_progress->done();
         m_write_failed = false;
     }
     catch(std::exception& e)

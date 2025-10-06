@@ -41,79 +41,64 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-struct nifti_loader_functor
+//// get pixel type from Header
+static const core::type& get_image_type(const std::string& _image_file_name)
 {
-    struct parameter
-    {
-        data::image::sptr data_image;
-        std::string filename;
-        io::itk::nifti_image_reader::sptr reader;
-    };
-
-    //------------------------------------------------------------------------------
-
-    template<class PIXELTYPE>
-    void operator()(parameter& _param)
-    {
-        SIGHT_INFO(
-            "::io::itk::NiftiImageReader::NiftiLoaderFunctor with PIXELTYPE "
-            << core::type::get<PIXELTYPE>().name()
-        );
-
-        // Reader IO (*1*)
-        typename ::itk::NiftiImageIO::Pointer image_io_read = ::itk::NiftiImageIO::New();
-        image_io_read->SetFileName(_param.filename.c_str());
-        image_io_read->ReadImageInformation();
-
-        // set observation (*2*)
-        progressor progress(image_io_read, _param.reader, _param.filename);
-
-        // the reader
-        using image_t  = ::itk::Image<PIXELTYPE, 3>;
-        using reader_t = ::itk::ImageFileReader<image_t>;
-        typename reader_t::Pointer reader = reader_t::New();
-        reader->SetFileName(_param.filename);
-
-        // attach its IO (*3*)
-        reader->SetImageIO(image_io_read);
-
-        reader->Update();
-        typename image_t::Pointer itkimage = reader->GetOutput();
-
-        io::itk::move_from_itk<image_t>(itkimage, *_param.data_image);
-    }
-
-    //// get pixel type from Header
-    static const core::type& get_image_type(const std::string& _image_file_name)
-    {
-        typename ::itk::NiftiImageIO::Pointer image_io = ::itk::NiftiImageIO::New();
-        image_io->SetFileName(_image_file_name.c_str());
-        image_io->ReadImageInformation();
-        auto itk_type = image_io->GetComponentType();
-        return sight::io::itk::ITK_TYPE_CONVERTER.at(itk_type);
-    }
-};
+    typename ::itk::NiftiImageIO::Pointer image_io = ::itk::NiftiImageIO::New();
+    image_io->SetFileName(_image_file_name.c_str());
+    image_io->ReadImageInformation();
+    auto itk_type = image_io->GetComponentType();
+    return sight::io::itk::ITK_TYPE_CONVERTER.at(itk_type);
+}
 
 //------------------------------------------------------------------------------
 
-void nifti_image_reader::read()
+void nifti_image_reader::read(sight::core::progress::observer::sptr _progress)
 {
-    std::filesystem::path file = get_file();
+    auto do_read =
+        []<class PIXELTYPE>(data::image::sptr _image,
+                            const std::string& _filename,
+                            core::progress::observer::sptr _progress)
+        {
+            SIGHT_INFO(
+                "::io::itk::NiftiImageReader::NiftiLoaderFunctor with PIXELTYPE "
+                << core::type::get<PIXELTYPE>().name()
+            );
+
+            // Reader IO (*1*)
+            typename ::itk::NiftiImageIO::Pointer image_io_read = ::itk::NiftiImageIO::New();
+            image_io_read->SetFileName(_filename.c_str());
+            image_io_read->ReadImageInformation();
+
+            // the reader
+            using image_t  = ::itk::Image<PIXELTYPE, 3>;
+            using reader_t = ::itk::ImageFileReader<image_t>;
+            typename reader_t::Pointer reader = reader_t::New();
+            progressor progress(reader, _progress);
+
+            reader->SetFileName(_filename);
+
+            // attach its IO (*3*)
+            reader->SetImageIO(image_io_read);
+
+            reader->Update();
+            typename image_t::Pointer itkimage = reader->GetOutput();
+
+            io::itk::move_from_itk<image_t>(itkimage, *_image);
+        };
+
+    const std::filesystem::path file = get_file();
     SIGHT_ASSERT("File: " << file << " doesn't exist", std::filesystem::exists(file));
-    assert(!m_object.expired());
-    assert(m_object.lock());
+    SIGHT_ASSERT("Object expired", !m_object.expired());
+    SIGHT_ASSERT("Object null", m_object.lock());
 
-    const core::type type = nifti_loader_functor::get_image_type(file.string());
+    const core::type type = get_image_type(file.string());
 
-    nifti_loader_functor::parameter param;
-    param.filename   = file.string();
-    param.data_image = this->get_concrete_object();
-    param.reader     = this->get_sptr();
+    using sight::core::tools::dispatcher;
+    using sight::core::tools::intrinsic_types;
+    dispatcher<intrinsic_types, decltype(do_read)>::invoke(type, this->get_concrete_object(), file.string(), _progress);
 
-    core::tools::dispatcher<core::tools::intrinsic_types, nifti_loader_functor>::invoke(type, param);
-
-    SIGHT_ASSERT("sight::data::image is not well produced", m_object.lock()); // verify that data::image is well
-    // produced
+    SIGHT_ASSERT("sight::data::image is not well produced", m_object.lock());
     // Post Condition image with a pixel type
     SIGHT_ASSERT(
         "Image has an unspecified type",

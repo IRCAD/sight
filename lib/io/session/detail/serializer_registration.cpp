@@ -26,7 +26,6 @@
 #include "camera.hxx"
 #include "camera_set.hxx"
 #include "color.hxx"
-#include "dicom_series.hxx"
 #include "fiducials_series.hxx"
 #include "image.hxx"
 #include "image_series.hxx"

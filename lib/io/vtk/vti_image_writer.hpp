@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,13 +32,6 @@
 
 #include <filesystem>
 
-namespace sight::core::jobs
-{
-
-class observer;
-
-} // namespace sight::core::jobs
-
 namespace sight::io::vtk
 {
 
@@ -54,25 +47,11 @@ public:
 
     SIGHT_DECLARE_CLASS(vti_image_writer, io::writer::generic_object_writer<data::image>);
 
-    //! @brief Constructor.
-    SIGHT_IO_VTK_API vti_image_writer();
-
-    //! @brief Destructor.
-    SIGHT_IO_VTK_API ~vti_image_writer() override;
-
     //! @brief Writing operator.
-    SIGHT_IO_VTK_API void write() override;
+    SIGHT_IO_VTK_API void write(SPTR(sight::core::progress::observer) _progress) override;
 
     /// @return ".vti"
     SIGHT_IO_VTK_API std::string extension() const override;
-
-    /// @return internal job
-    SIGHT_IO_VTK_API SPTR(core::jobs::base) get_job() const override;
-
-private:
-
-    ///Internal job
-    SPTR(core::jobs::observer) m_job;
 };
 
 } // namespace sight::io::vtk

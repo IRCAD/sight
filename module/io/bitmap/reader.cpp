@@ -22,9 +22,8 @@
 #include "reader.hpp"
 
 #include <core/com/signal.hxx>
-#include <core/jobs/aggregator.hpp>
-#include <core/jobs/job.hpp>
 #include <core/location/single_folder.hpp>
+#include <core/progress/observer.hpp>
 #include <core/tools/system.hpp>
 
 #include <ui/__/cursor.hpp>
@@ -32,6 +31,8 @@
 #include <ui/__/dialog/message.hpp>
 
 #include <boost/algorithm/string.hpp>
+
+#include <algorithm>
 
 // cspell:ignore sreader xmlattr NVJPEG LIBJPEG OPENJPEG
 
@@ -324,41 +325,30 @@ void reader::updating()
 
     SIGHT_THROW_IF("The file '" << file_path << "' is an existing folder.", std::filesystem::is_directory(file_path));
 
-    const auto read_job = std::make_shared<core::jobs::job>(
-        "Writing '" + file_path.string() + "' file",
-        [&](core::jobs::job& _running_job)
-        {
-            _running_job.done_work(10);
-
-            // Create the session reader
-            auto reader = std::make_shared<sight::io::bitmap::reader>();
-            {
-                // The object must be unlocked since it will be locked again when writing
-                auto data = m_data.lock();
-                reader->set_object(data.get_shared());
-                reader->set_file(file_path);
-            }
-
-            // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::busy_cursor busy_cursor;
-
-            // Read the file
-            reader->read(m_selected_backend);
-
-            _running_job.done();
-        },
-        this->worker()
-    );
-
-    core::jobs::aggregator::sptr jobs = std::make_shared<core::jobs::aggregator>(file_path.string() + " reader");
-    jobs->add(read_job);
-    jobs->set_cancelable(false);
-
-    m_job_created_signal->emit(jobs);
+    const auto read_progress = std::make_shared<core::progress::observer>("Reading '" + file_path.string() + "' file");
+    this->async_emit(has_monitors::signals::MONITOR_CREATED, read_progress->get_sptr());
 
     try
     {
-        jobs->run().get();
+        read_progress->done_work(10);
+
+        // Create the session reader
+        auto reader = std::make_shared<sight::io::bitmap::reader>();
+        {
+            // The object must be unlocked since it will be locked again when writing
+            auto data = m_data.lock();
+            reader->set_object(data.get_shared());
+            reader->set_file(file_path);
+        }
+
+        // Set cursor to busy state. It will be reset to default even if exception occurs
+        const sight::ui::busy_cursor busy_cursor;
+
+        // Read the file
+        reader->read(m_selected_backend);
+
+        read_progress->done();
+
         m_read_failed = false;
     }
     catch(std::exception& e)

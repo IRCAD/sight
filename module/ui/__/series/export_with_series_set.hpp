@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,24 +22,13 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-#include <core/com/slot.hpp>
+#include <core/progress/has_monitors.hpp>
 
 #include <data/series.hpp>
 
 #include <ui/__/action.hpp>
 
-namespace sight::core::jobs
-{
-
-class base;
-
-}
-
-namespace sight::module::ui
-{
-
-namespace series
+namespace sight::module::ui::series
 {
 
 /**
@@ -50,12 +39,15 @@ namespace series
  * on the created series_set with the given configuration.
  *
  * @section Signal Signal
- * - \b job_created(SPTR(core::jobs::base)) : This signal is emitted by the slot 'forwardJob' to forward job process
- *   between selector service (jobCreated signal) and other services.
+ * - \b monitor_created(SPTR(core::progress::monitor)) : This signal is emitted by the slot 'forwardmonitor' to forward
+ * monitor
+ * process
+ *   between selector service (monitorCreated signal) and other services.
  *
  * @section Slot Slot
- * - \b forwardJob(SPTR(core::jobs::base)) : This slot allows to forward job process between selector service
- *   and other services. It is connected to selector 'jobCreated' signal.
+ * - \b forwardmonitor(SPTR(core::progress::monitor)) : This slot allows to forward monitor process between selector
+ * service
+ *   and other services. It is connected to selector 'monitorCreated' signal.
  *
  * @section XML XML Configuration
  *
@@ -87,7 +79,8 @@ namespace series
     </extension>
     @endcode
  */
-class export_with_series_set : public sight::ui::action
+class export_with_series_set : public sight::ui::action,
+                               public sight::core::progress::has_monitors
 {
 public:
 
@@ -97,8 +90,7 @@ public:
      * @name Signal/Slot typedefs
      * @{
      */
-    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
-    using forward_job_slot_t   = core::com::slot<void (std::shared_ptr<core::jobs::base>)>;
+    using forward_monitor_slot_t = core::com::slot<void (std::shared_ptr<core::progress::monitor>)>;
     /// @}
 
     export_with_series_set() noexcept;
@@ -125,17 +117,14 @@ protected:
 
 private:
 
-    /// SLOT: Allows to forward job process between io selector service and other services.
-    void forward_job(SPTR(core::jobs::base) _job);
+    /// SLOT: Allows to forward monitor process between io selector service and other services.
+    void forward_monitor(SPTR(core::progress::monitor) _monitor);
 
     std::string m_io_selector_srv_config; ///< Configuration used for launched selector service
 
-    SPTR(job_created_signal_t) m_sig_job_created; ///< signal emitted to forward selector job process
-    SPTR(forward_job_slot_t) m_slot_forward_job;  ///< slot used to forward selector job process
+    SPTR(forward_monitor_slot_t) m_slot_forward_monitor; ///< slot used to forward selector monitor process
 
     data::ptr<data::series, data::access::inout> m_series {this, "series"};
 };
 
-} // namespace series
-
-} // namespace sight::module::ui
+} // namespace sight::module::ui::series

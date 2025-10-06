@@ -1,6 +1,5 @@
 add_subdirectory(debug)
 add_subdirectory(viz)
-add_subdirectory(dicom)
 add_subdirectory(console)
 add_subdirectory(__)
 add_subdirectory(icons)

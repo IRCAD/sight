@@ -26,6 +26,7 @@
 #include "io/dicom/codec/nvjpeg2k.hpp"
 
 #include <core/macros.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/fiducials_series.hpp>
 #include <data/helper/medical_image.hpp>
@@ -595,23 +596,23 @@ public:
 
     [[nodiscard]] bool cancel_requested() const noexcept
     {
-        return m_job && m_job->cancel_requested();
+        return m_progress && m_progress->cancel_requested();
     }
 
     //------------------------------------------------------------------------------
 
     void progress(std::uint64_t _units) const
     {
-        if(m_job)
+        if(m_progress)
         {
-            m_job->done_work(_units);
+            m_progress->done_work(_units);
         }
     }
 
     //------------------------------------------------------------------------------
 
-    /// The default job. Allows to watch for cancellation and report progress.
-    core::jobs::job::sptr m_job;
+    /// Allows to watch for cancellation and report progress.
+    core::progress::observer::sptr m_progress;
 
     /// True to disable GPU codec
     bool m_force_cpu {false};
@@ -631,8 +632,13 @@ file::~file() noexcept = default;
 
 //------------------------------------------------------------------------------
 
-void file::write()
+void file::write(sight::core::progress::observer::sptr _progress)
 {
+    SIGHT_ASSERT("Some work have already be reported.", _progress->get_done_work_units() == 0);
+    m_pimpl->m_progress = _progress;
+    m_pimpl->m_progress->set_total_work_units(100);
+    m_pimpl->m_progress->done_work(10);
+
     // Get the destination folder
     auto folder = get_folder();
 
@@ -762,23 +768,6 @@ void file::write()
         m_pimpl->progress(progress_step);
         ++index;
     }
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr file::get_job() const
-{
-    return m_pimpl->m_job;
-}
-
-//------------------------------------------------------------------------------
-
-void file::set_job(core::jobs::job::sptr _job)
-{
-    SIGHT_ASSERT("Some work have already be reported.", _job->get_done_work_units() == 0);
-    m_pimpl->m_job = _job;
-    m_pimpl->m_job->set_total_work_units(100);
-    m_pimpl->m_job->done_work(10);
 }
 
 //------------------------------------------------------------------------------

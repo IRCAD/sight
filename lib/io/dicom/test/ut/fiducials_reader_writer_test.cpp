@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,10 @@ void fiducials_reader_writer_test::basic_test()
     auto reader   = std::make_shared<io::dicom::reader::file>();
     reader->set_object(original);
     reader->set_folder(utest_data::dir() / "us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
-    CPPUNIT_ASSERT_NO_THROW(reader->read());
+    {
+        const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Reader Test");
+        CPPUNIT_ASSERT_NO_THROW(reader->read(observer));
+    }
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), original->size());
 
     auto original_image_series = std::dynamic_pointer_cast<data::image_series>(original->at(0));
@@ -83,11 +86,11 @@ void fiducials_reader_writer_test::basic_test()
         original_image_series->get_sop_instance_uid();
     graphic_coordinates_data.referenced_image_sequence.referenced_frame_number   = {12};
     graphic_coordinates_data.referenced_image_sequence.referenced_segment_number = {13};
-    graphic_coordinates_data.graphic_data                                        = {{14, 15}};
+    graphic_coordinates_data.graphic_data                                        = {{.x = 14, .y = 15}};
     fiducial.graphic_coordinates_data_sequence                                   = {graphic_coordinates_data};
 
     fiducial.fiducial_uid = "16";
-    fiducial.contour_data = {{17, 18, 19}};
+    fiducial.contour_data = {{.x = 17, .y = 18, .z = 19}};
     fiducial_set.fiducial_sequence.push_back(fiducial);
 
     fiducial_set.group_name = "20";
@@ -107,12 +110,19 @@ void fiducials_reader_writer_test::basic_test()
     auto writer = std::make_shared<io::dicom::writer::file>();
     writer->set_object(original);
     writer->set_folder(folder);
-    CPPUNIT_ASSERT_NO_THROW(writer->write());
+    {
+        const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Writer Test");
+        CPPUNIT_ASSERT_NO_THROW(writer->write(observer));
+    }
 
     auto actual = std::make_shared<data::series_set>();
     reader->set_object(actual);
     reader->set_folder(folder);
-    CPPUNIT_ASSERT_NO_THROW(reader->read());
+
+    {
+        const auto observer = std::make_shared<core::progress::observer>("FIDUCIALS Reader Test");
+        CPPUNIT_ASSERT_NO_THROW(reader->read(observer));
+    }
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), actual->size());
 
     auto actual_image_series = std::dynamic_pointer_cast<data::image_series>(actual->at(0));

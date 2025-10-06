@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,6 +55,7 @@ static std::stringstream spiritDebugStream;
 
 #include <core/exceptionmacros.hpp>
 
+#include <core/progress/observer.hpp>
 #include <data/color.hpp>
 #include <data/structure_traits_dictionary.hpp>
 #include <data/structure_traits.hpp>
@@ -105,7 +106,7 @@ BOOST_FUSION_ADAPT_STRUCT(
 
 //------------------------------------------------------------------------------
 
-inline std::string trim(std::string& _s)
+static inline std::string trim(std::string& _s)
 {
     return boost::algorithm::trim_copy(_s);
 }
@@ -113,7 +114,7 @@ inline std::string trim(std::string& _s)
 //------------------------------------------------------------------------------
 
 /// Reformat string in the following way :first letter is uppercase and the rest is lowercase).
-std::string reformat_string(std::string& _expr)
+static std::string reformat_string(std::string& _expr)
 {
     std::string trim_str = boost::algorithm::trim_copy(_expr);
     std::string result   = boost::algorithm::to_upper_copy(trim_str.substr(0, 1))
@@ -125,7 +126,7 @@ std::string reformat_string(std::string& _expr)
 /// Return the list of availabe value for the key of the map m.
 
 template<typename map_t>
-std::string get_values(const map_t& _m)
+static std::string get_values(const map_t& _m)
 {
     std::stringstream str;
     using const_iterator = typename map_t::const_iterator;
@@ -249,7 +250,7 @@ namespace reader
 
 //------------------------------------------------------------------------------
 
-std::pair<bool, std::string> parse(std::string& _buf, std::vector<io::line>& _lines)
+static std::pair<bool, std::string> parse(std::string& _buf, std::vector<io::line>& _lines)
 {
     using boost::spirit::ascii::space;
     using boost::spirit::ascii::blank;
@@ -273,7 +274,7 @@ std::pair<bool, std::string> parse(std::string& _buf, std::vector<io::line>& _li
 
 //------------------------------------------------------------------------------
 
-void dictionary_reader::read()
+void dictionary_reader::read(sight::core::progress::observer::sptr _progress)
 {
     std::filesystem::path path = this->get_file();
 
@@ -364,6 +365,8 @@ void dictionary_reader::read()
         new_organ->set_property_type(line.property_type);
         struct_dico->add_structure(new_organ);
     }
+
+    _progress->done();
 }
 
 //------------------------------------------------------------------------------

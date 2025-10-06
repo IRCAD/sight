@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -101,7 +101,8 @@ using sequenced_set = boost::multi_index::multi_index_container<
         using C::extract; \
         using C::count; \
         using C::find; \
-        using C::equal_range
+        using C::equal_range; \
+        using C::contains
 
 #define USING_ASSOCIATIVE_ORDERED_CONTAINER(C) \
         using typename C::key_compare; \

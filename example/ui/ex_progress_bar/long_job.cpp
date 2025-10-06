@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,8 @@
 
 #include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/jobs/aggregator.hpp>
-#include <core/jobs/job.hpp>
+#include <core/progress/aggregator.hpp>
+#include <core/progress/observer.hpp>
 
 #include <atomic>
 
@@ -33,9 +33,9 @@ namespace ex_progress_bar
 
 static std::atomic_uint64_t job_id {0};
 
-long_job::long_job() noexcept
+long_job::long_job() noexcept :
+    has_monitors(m_signals)
 {
-    new_signal<signals::job_created_t>(signals::JOB_CREATED);
 }
 
 //------------------------------------------------------------------------------
@@ -63,44 +63,38 @@ void long_job::updating()
 {
     std::atomic_bool cancelled {false};
 
-    const auto real_long_job = std::make_shared<sight::core::jobs::job>(
-        "Long job " + std::to_string(job_id.fetch_add(1)),
-        [&](sight::core::jobs::job& _running_job)
-        {
-            for(std::uint64_t i = 1 ; i <= 100 ; ++i)
-            {
-                if(_running_job.cancel_requested() || cancelled.load())
-                {
-                    return;
-                }
-
-                std::this_thread::sleep_for(std::chrono::milliseconds(50));
-
-                _running_job.done_work(i);
-            }
-
-            _running_job.done();
-        },
-        this->worker()
+    const auto real_long_job = std::make_shared<sight::core::progress::observer>(
+        "Long job "
+        + std::to_string(job_id.fetch_add(1))
     );
-
     real_long_job->set_cancelable(m_cancelable);
 
     // Manage the cancellation.
     if(m_cancelable)
     {
         real_long_job->add_cancel_hook(
-            [&cancelled](sight::core::jobs::base&)
+            [&cancelled]()
             {
                 cancelled.store(true);
             });
     }
 
     // Emit signal to notify the job creation.
-    this->signal<signals::job_created_t>(signals::JOB_CREATED)->emit(real_long_job);
+    this->async_emit(has_monitors::signals::MONITOR_CREATED, real_long_job->get_sptr());
 
-    // Perform the job.
-    real_long_job->run().get();
+    for(std::uint64_t i = 1 ; i <= 100 ; ++i)
+    {
+        if(real_long_job->cancel_requested() || cancelled.load())
+        {
+            return;
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+        real_long_job->done_work(i);
+    }
+
+    real_long_job->done();
 }
 
 } // namespace ex_progress_bar.

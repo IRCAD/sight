@@ -22,13 +22,7 @@
 
 #include "module/io/vtk/image_reader.hpp"
 
-#include <core/base.hpp>
-#include <core/com/has_signals.hpp>
-#include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
-#include <core/jobs/aggregator.hpp>
-#include <core/jobs/base.hpp>
-#include <core/jobs/job.hpp>
 #include <core/location/single_folder.hpp>
 
 #include <data/image.hpp>
@@ -48,21 +42,15 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include <chrono>
-#include <cstdint>
 #include <filesystem>
-#include <thread>
 
 namespace sight::module::io::vtk
 {
 
 //------------------------------------------------------------------------------
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
-
 image_reader::image_reader() noexcept :
-    reader("Choose a file to load an image"),
-    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
+    reader("Choose a file to load an image")
 {
 }
 
@@ -167,18 +155,16 @@ void image_reader::updating()
 
         sight::ui::cursor cursor;
         cursor.set_cursor(ui::cursor_base::busy);
+        auto observer = std::make_shared<core::progress::observer>("Reading image");
+        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+
         try
         {
-            // Notify other image services that a new image has been loaded.
-            if(image_reader::load_image(this->get_file(), image, m_sig_job_created))
+            if(load_image(this->get_file(), image, observer))
             {
                 m_read_failed = false;
 
-                auto sig = image->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-                {
-                    core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                    sig->async_emit();
-                }
+                image->async_emit(this, data::signals::MODIFIED);
             }
         }
         catch(core::tools::failed& e)
@@ -194,7 +180,7 @@ void image_reader::updating()
 //------------------------------------------------------------------------------
 
 template<typename READER>
-typename READER::sptr configure_reader(const std::filesystem::path& _img_file)
+static typename READER::sptr configure_reader(const std::filesystem::path& _img_file)
 {
     typename READER::sptr reader = std::make_shared<READER>();
     reader->set_file(_img_file);
@@ -206,7 +192,7 @@ typename READER::sptr configure_reader(const std::filesystem::path& _img_file)
 bool image_reader::load_image(
     const std::filesystem::path& _vtk_file,
     std::shared_ptr<data::image> _image,
-    const SPTR(job_created_signal_t)& _sig_job_created
+    core::progress::observer::sptr _progress
 )
 {
     bool ok = true;
@@ -266,11 +252,9 @@ bool image_reader::load_image(
     // Set the image (already created, but empty) that will be modified
     image_reader->set_object(_image);
 
-    _sig_job_created->emit(image_reader->get_job());
-
     try
     {
-        image_reader->read();
+        image_reader->read(_progress);
     }
     catch(core::tools::failed& e)
     {

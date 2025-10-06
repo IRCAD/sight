@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,19 +22,18 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-#include <core/com/slot.hpp>
+#include <core/progress/has_monitors.hpp>
 
 #include <data/series_set.hpp>
 
 #include <ui/__/action.hpp>
 
-namespace sight::core::jobs
+namespace sight::core::progress
 {
 
 class base;
 
-} // namespace sight::core::jobs
+} // namespace sight::core::progress
 
 namespace sight::module::ui::series
 {
@@ -43,10 +42,10 @@ namespace sight::module::ui::series
  * @brief This action allows to load a new series_set and merge it with the current series_set
  *
  * @section Slots Slots
- * - \b forwardJob(core::jobs::base::sptr) : Called to forward a job.
+ * - \b forward_monitor(core::progress::monitor::sptr) : Called to forward a monbitor.
  *
  * @section Signals Signals
- * - \b job_created(core::jobs::base::sptr) : This signal is emitted when a job is created
+ * - \b monitor_created(core::progress::monitor::sptr) : This signal is emitted when a monbitor is created
  *
  * The available reader can be configured
  * @section XML XML Configuration
@@ -75,18 +74,17 @@ namespace sight::module::ui::series
  * @subsection In-Out In-Out
  * - \b seriesSet [sight::data::series_set]: the series_set to merge.
  */
-class db_merger : public sight::ui::action
+class db_merger : public sight::ui::action,
+                  public sight::core::progress::has_monitors
 {
 public:
 
     SIGHT_DECLARE_SERVICE(db_merger, sight::ui::action);
 
-    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
-    using forward_job_slot_t   = core::com::slot<void (std::shared_ptr<core::jobs::base>)>;
+    using forward_monitor_slot_t = core::com::slot<void (std::shared_ptr<core::progress::monitor>)>;
 
     db_merger() noexcept;
-
-    ~db_merger() noexcept override;
+    ~db_merger() noexcept override = default;
 
 protected:
 
@@ -114,13 +112,11 @@ protected:
 
 private:
 
-    void forward_job(SPTR(core::jobs::base) _job);
+    void forward_monitor(SPTR(core::progress::monitor) _monitor);
 
     std::string m_io_selector_srv_config;
 
-    SPTR(job_created_signal_t) m_sig_job_created;
-    SPTR(forward_job_slot_t) m_slot_forward_job;
-
+    SPTR(forward_monitor_slot_t) m_slot_forward_monitor;
     static constexpr std::string_view SERIES_SET = "seriesSet";
 
     data::ptr<data::series_set, data::access::inout> m_series_set {this, SERIES_SET};

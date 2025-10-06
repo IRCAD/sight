@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ public:
     SIGHT_IO_API ~array_reader() override = default;
 
     /// Reads the file with zlib API.
-    SIGHT_IO_API void read() override;
+    SIGHT_IO_API void read(SPTR(sight::core::progress::observer) _progress) override;
 
     /// Defines extension supported by this reader ".raw"
     SIGHT_IO_API std::string extension() const override;

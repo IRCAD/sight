@@ -52,7 +52,6 @@ void image_series::shallow_copy(const object::csptr& _source)
         !bool(other)
     );
 
-    m_dicom_reference  = other->m_dicom_reference;
     m_fiducials_series = other->m_fiducials_series;
 
     series::shallow_copy(other);
@@ -74,8 +73,6 @@ void image_series::deep_copy(const object::csptr& _source, const std::unique_ptr
         !bool(other)
     );
 
-    m_dicom_reference = data::object::copy(other->m_dicom_reference);
-
     m_fiducials_series = std::make_shared<fiducials_series>();
     m_fiducials_series->deep_copy(other->m_fiducials_series, _cache);
 
@@ -88,11 +85,6 @@ void image_series::deep_copy(const object::csptr& _source, const std::unique_ptr
 
 bool image_series::operator==(const image_series& _other) const noexcept
 {
-    if(!core::is_equal(m_dicom_reference, _other.m_dicom_reference))
-    {
-        return false;
-    }
-
     // Super class last
     return series::operator==(_other) && base_class_t::operator==(_other);
 }

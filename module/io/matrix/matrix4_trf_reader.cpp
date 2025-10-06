@@ -26,6 +26,7 @@
 #include <core/com/signal.hxx>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/matrix4.hpp>
 
@@ -46,7 +47,8 @@ namespace sight::module::io::matrix
 //-----------------------------------------------------------------------------
 
 matrix4_trf_reader::matrix4_trf_reader() noexcept :
-    reader("Choose a file to load a transformation matrix")
+    reader("Choose a file to load a transformation matrix"),
+    notifier(m_signals)
 {
 }
 
@@ -139,20 +141,27 @@ void matrix4_trf_reader::updating()
             matrix
         );
 
-        const auto reader = std::make_shared<sight::io::reader::matrix4_reader>();
-        reader->set_object(matrix);
-        reader->set_file(this->get_file());
-        reader->read();
-
-        m_read_failed = false;
-
-        // Notify reading
-        const auto sig = matrix->signal<data::object::modified_signal_t>(
-            data::object::MODIFIED_SIG
-        );
+        try
         {
-            core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-            sig->async_emit();
+            auto observer = std::make_shared<core::progress::observer>("Reading matrix4 TRF file");
+            this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+
+            const auto reader = std::make_shared<sight::io::reader::matrix4_reader>();
+            reader->set_object(matrix);
+            reader->set_file(this->get_file());
+            reader->read(observer);
+
+            m_read_failed = false;
+
+            matrix->async_emit(data::signals::MODIFIED);
+            this->async_emit(reader::signals::SUCCEEDED);
+        }
+        catch(const std::exception& e)
+        {
+            // Handle the error.
+            SIGHT_ERROR(e.what());
+            this->notifier::failure(e.what());
+            this->async_emit(reader::signals::FAILED);
         }
     }
 }

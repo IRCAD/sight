@@ -12,8 +12,6 @@ and are, therefore, contained in sub-folders according to their specificity.
 
 * **frame**: defines the default frame for standard application.
 
-* **jobbar**: displays a progress bar.
-
 * **menu**: defines the default menu for standard application.
 
 * **menubar**: defines the default menubar for standard application.

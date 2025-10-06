@@ -138,7 +138,8 @@ void sliced_image_series_writer::updating()
         SIGHT_ASSERT("The input key '" + sight::io::service::DATA_KEY + "' is not correctly set.", image_series);
 
         sight::ui::busy_cursor cursor;
-        image_writer::save_image(this->get_folder(), image_series);
+        auto progress = std::make_shared<sight::core::progress::observer>("Saving image series");
+        image_writer::save_image(this->get_folder(), image_series, progress);
         m_write_failed = false;
     }
 }

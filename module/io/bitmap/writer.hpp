@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,9 +21,6 @@
 
 #pragma once
 
-#include <core/com/signal.hpp>
-#include <core/jobs/base.hpp>
-
 #include <io/__/service/writer.hpp>
 #include <io/bitmap/writer.hpp>
 
@@ -35,14 +32,6 @@ namespace sight::data
 class image;
 
 } // namespace sight::data
-
-namespace sight::core::jobs
-{
-
-class base;
-
-} // namespace sight::core::jobs
-
 namespace sight::module::io::bitmap
 {
 
@@ -54,7 +43,7 @@ namespace sight::module::io::bitmap
  * @copydoc sight::io::bitmap::writer
  *
  * @section Signals Signals
- * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is written
+ * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is written
  *
  * @section XML XML Configuration
  *
@@ -89,32 +78,30 @@ public:
 
     SIGHT_DECLARE_SERVICE(writer, sight::io::service::writer);
 
-    using job_created_signal_t = core::com::signal<void (core::jobs::base::sptr)>;
-
     /// Trivial constructor / destructor
     /// @{
     writer() noexcept = default;
-    ~writer() noexcept override = default;
+    ~writer() noexcept final = default;
     /// @}
 
     /// Show a file selection dialog
-    void open_location_dialog() override;
+    void open_location_dialog() final;
 
 protected:
 
-    sight::io::service::path_type_t get_path_type() const override;
+    sight::io::service::path_type_t get_path_type() const final;
 
     /// Does nothing
-    void starting() override;
+    void starting() final;
 
     /// Does nothing
-    void stopping() override;
+    void stopping() final;
 
     /// Parses the configuration
-    void configuring() override;
+    void configuring() final;
 
     /// Write the image
-    void updating() override;
+    void updating() final;
 
 private:
 
@@ -125,9 +112,6 @@ private:
 
     /// How and When display a dialog
     dialog_policy m_dialog_policy {dialog_policy::never};
-
-    /// Signal emitted when job created.
-    job_created_signal_t::sptr m_job_created_signal {new_signal<job_created_signal_t>("job_created")};
 
     /// Selected backend
     sight::io::bitmap::backend m_selected_backend {sight::io::bitmap::backend::libtiff};

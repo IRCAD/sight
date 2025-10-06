@@ -145,7 +145,7 @@ lint:ubuntu-24.04:
                   echo Testing $(basename $program):
                   timeout 5s xvfb-run -a $program || [ $? -eq 124 ]
               done
-              for program in sight-*/bin/{aruco_marker,dicom_anonymizer,network_proxy}; do
+              for program in sight-*/bin/{aruco_marker,network_proxy}; do
                   echo Testing $(basename $program):
                   $program --help
               done
@@ -373,7 +373,7 @@ deploy:apps-linux-release:
                 Write-Host Testing $programName
                 Start-SightProcess -path $program
               }
-              ForEach($program in Get-ChildItem aruco_marker.exe,dicom_anonymizer.exe){
+              ForEach($program in Get-ChildItem aruco_marker.exe){
                 $programName = Split-Path -Leaf $program
                 Write-Host Testing $programName
                 Start-Process -NoNewWindow -Wait $program --help

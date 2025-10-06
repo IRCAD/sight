@@ -23,7 +23,7 @@
 
 #include <sight/ui/qt/config.hpp>
 
-#include <core/jobs/base.hpp>
+#include <core/progress/monitor.hpp>
 
 #include <QLabel>
 #include <QLayout>
@@ -36,11 +36,11 @@ namespace sight::ui::qt::widget
 {
 
 /**
- * @brief Progress bar widget for displaying the progress of a job.
- * This widget can display multiple jobs at once, showing the title of the current job,
- * a progress bar (or a pulsing SVG animation), and a cancel button if the job supports cancellation.
+ * @brief Progress bar widget for displaying the progress of a task using monitors.
+ * This widget can display multiple tasks at once, showing the title of the current task,
+ * a progress bar (or a pulsing SVG animation), and a cancel button if the task supports cancellation.
  *
- * When all jobs are finished, an optional callback can be invoked.
+ * When all tasks are finished, an optional callback can be invoked.
  */
 class SIGHT_UI_QT_CLASS_API_QT progress_bar final : public std::enable_shared_from_this<progress_bar>
 {
@@ -52,12 +52,12 @@ public:
      * @brief progress_bar widget constructor.
      *
      * @param _parent : the parent widget that will contain tickmarks widget.
-     * @param _show_title : if true, show the title of the current job.
-     * @param _show_cancel : if true, show the cancel button of the current job.
+     * @param _show_title : if true, show the title of the current task.
+     * @param _show_cancel : if true, show the cancel button of the current task.
      * @param _pulse : if true, the progress bar will be in pulse mode.
      * @param _svg_path : if valid, will display an svg for pulse mode.
      * @param _svg_size : the default size of the svg.
-     * @param _finished_callback : callback called when all jobs are finished.
+     * @param _finished_callback : callback called when all tasks are finished.
      */
     SIGHT_UI_QT_API_QT progress_bar(
         QWidget* _parent,
@@ -72,16 +72,16 @@ public:
     /**
      * @brief Destructor for the progress_bar widget.
      *
-     * Everything is cleared and all widgets destroyed. The jobs themselves are not cancelled or stopped.
+     * Everything is cleared and all widgets destroyed. The _monitors themselves are not cancelled or stopped.
      */
     SIGHT_UI_QT_API_QT virtual ~progress_bar();
 
     /**
-     * @brief Add a job to the progress bar.
+     * @brief Add a _monitor to the progress bar.
      *
-     * @param _job : the job to add.
+     * @param __monitor : the _monitor to add.
      */
-    SIGHT_UI_QT_API_QT void show_job(core::jobs::base::sptr _job);
+    SIGHT_UI_QT_API_QT void add_monitor(core::progress::monitor::sptr __monitor);
 
     /**
      * @brief Get the underlying QWidget that contains the progress bar.
@@ -91,16 +91,16 @@ public:
     inline QWidget* widget() const;
 
     /**
-     * @brief Set the callback to be called when all jobs are deleted.
+     * @brief Set the callback to be called when all _monitors are deleted.
      *
      * @param _callback : the callback function.
      */
     inline void set_finished_callback(finished_callback_t _callback);
 
     /**
-     * @brief Check if all jobs are finished.
+     * @brief Check if all _monitors are finished.
      *
-     * @return true if all jobs are finished, false otherwise.
+     * @return true if all _monitors are finished, false otherwise.
      */
     inline bool is_finished() const;
 
@@ -108,10 +108,10 @@ private:
 
     void update_widgets();
 
-    /// Show the title of the current job if true
+    /// Show the title of the current _monitor if true
     std::optional<bool> m_show_title {true};
 
-    /// Show the cancel button of the current job if true
+    /// Show the cancel button of the current _monitor if true
     std::optional<bool> m_show_cancel {true};
 
     /// True for pulse mode
@@ -130,13 +130,13 @@ private:
     QPointer<QSvgWidget> m_svg_widget;
     QPointer<QToolButton> m_cancel_button;
 
-    /// Protect the jobs list
+    /// Protect the _monitors list
     mutable std::recursive_mutex m_mutex;
 
-    /// List of current jobs being displayed
-    std::vector<core::jobs::base::wptr> m_jobs;
+    /// List of current _monitors being displayed
+    std::vector<core::progress::monitor::wptr> m_progress_monitors;
 
-    /// Callback called when all jobs are finished
+    /// Callback called when all _monitors are finished
     finished_callback_t m_finished_callback;
 };
 
@@ -161,11 +161,11 @@ inline bool progress_bar::is_finished() const
 {
     std::lock_guard lock(m_mutex);
 
-    return m_jobs.empty() || std::ranges::all_of(
-        m_jobs,
-        [](const auto& job)
+    return m_progress_monitors.empty() || std::ranges::all_of(
+        m_progress_monitors,
+        [](const auto& _monitor)
         {
-            return job.expired() || job.lock()->get_state() >= core::jobs::base::state::canceled;
+            return _monitor.expired() || _monitor.lock()->get_state() >= core::progress::monitor::state::canceled;
         });
 }
 

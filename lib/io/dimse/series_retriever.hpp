@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <core/com/slot.hpp>
 #include <core/com/slots.hpp>
-#include <core/tools/progress_adviser.hpp>
+#include <core/progress/observer.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/scp.h>
@@ -61,13 +61,13 @@ public:
      * @param[in] _application_title Move application title
      * @param[in] _applicationport Move application port
      * @param[in] _timeout Connection timeout
-     * @param[in] _progress_callback Progress callback
+     * @param[in] _progress Progress monitor
      */
     SIGHT_IO_DIMSE_API void initialize(
         const std::string& _application_title,
         std::uint16_t _applicationport,
-        int _timeout                                      = 3,
-        progress_callback_slot_t::sptr _progress_callback = progress_callback_slot_t::sptr()
+        int _timeout                             = 3,
+        core::progress::observer::sptr _progress = core::progress::observer::sptr()
     );
 
     /// Start the server
@@ -96,7 +96,7 @@ protected:
     std::filesystem::path m_path;
 
     /// Progress callback slot
-    progress_callback_slot_t::sptr m_progress_callback;
+    core::progress::observer::sptr m_progress;
 
     /// Downloaded instance index
     unsigned int m_instance_index {};

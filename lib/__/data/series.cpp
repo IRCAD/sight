@@ -46,6 +46,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/epsilon.hpp>
 
+#include <algorithm>
 #include <iomanip>
 #include <regex>
 #include <sstream>
@@ -1538,16 +1539,16 @@ std::string_view series::get_sop_class_name() const noexcept
 
 //------------------------------------------------------------------------------
 
-std::string series::get_sop_instance_uid() const noexcept
+std::string series::get_sop_instance_uid(std::size_t _instance) const noexcept
 {
-    return m_pimpl->get_string_value<gdcm::Keywords::SOPInstanceUID>();
+    return m_pimpl->get_string_value<gdcm::Keywords::SOPInstanceUID>(_instance);
 }
 
 //------------------------------------------------------------------------------
 
-void series::set_sop_instance_uid(const std::string& _sop_instance_uid)
+void series::set_sop_instance_uid(const std::string& _sop_instance_uid, std::size_t _instance)
 {
-    m_pimpl->set_value<gdcm::Keywords::SOPInstanceUID>(_sop_instance_uid);
+    m_pimpl->set_value<gdcm::Keywords::SOPInstanceUID>(_sop_instance_uid, _instance);
 }
 
 //------------------------------------------------------------------------------
@@ -2682,9 +2683,9 @@ series::dicom_types series::string_to_dicom_types(const std::string& _types) noe
 
 //------------------------------------------------------------------------------
 
-series::sop_keywords series::dicom_types_to_sops(dicom_types _types) noexcept
+series::sop_keywords_t series::dicom_types_to_sops(dicom_types _types) noexcept
 {
-    sop_keywords keywords;
+    sop_keywords_t keywords;
 
     if((_types & std::uint64_t(dicom_t::image)) == std::uint64_t(dicom_t::image))
     {
@@ -2779,7 +2780,7 @@ series::sop_keywords series::dicom_types_to_sops(dicom_types _types) noexcept
 
 //------------------------------------------------------------------------------
 
-series::dicom_types series::sops_to_dicom_types(const sop_keywords& _keywords) noexcept
+series::dicom_types series::sops_to_dicom_types(const sop_keywords_t& _keywords) noexcept
 {
     dicom_types types {static_cast<dicom_types>(dicom_t::unknown)};
 
@@ -2796,9 +2797,9 @@ series::dicom_types series::sops_to_dicom_types(const sop_keywords& _keywords) n
 
 //------------------------------------------------------------------------------
 
-series::sop_keywords series::string_to_sops(const std::string& _sops) noexcept
+series::sop_keywords_t series::string_to_sops(const std::string& _sops) noexcept
 {
-    sop_keywords sop_keywords;
+    sop_keywords_t sop_keywords;
 
     std::vector<std::string> split;
     boost::split(split, _sops, boost::is_any_of(","));
@@ -2821,7 +2822,7 @@ series::sop_keywords series::string_to_sops(const std::string& _sops) noexcept
 
 //------------------------------------------------------------------------------
 
-std::string series::sops_to_string(const sop_keywords& _sops) noexcept
+std::string series::sops_to_string(const sop_keywords_t& _sops) noexcept
 {
     std::string sop_keywords;
 

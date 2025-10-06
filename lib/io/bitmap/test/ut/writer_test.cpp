@@ -22,6 +22,7 @@
 #include "writer_test.hpp"
 #include "helper.hxx"
 
+#include <core/progress/observer.hpp>
 #include <core/profiling.hpp>
 #include <core/os/temp_path.hpp>
 #include <core/tools/uuid.hpp>
@@ -61,7 +62,10 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
 
             // Read a DICOM image "us/Ultrasound Image Storage/GE, lossy JPEG"
             reader->set_folder(utest_data::dir() / "us/Ultrasound Image Storage/GE, lossy JPEG");
-            CPPUNIT_ASSERT_NO_THROW(reader->read());
+            {
+                auto observer = std::make_shared<core::progress::observer>("Reading DICOM images");
+                CPPUNIT_ASSERT_NO_THROW(reader->read(observer));
+            }
 
             // Just to be sure we read the good data
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
@@ -79,7 +83,10 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
 
             // Read next image "us/Ultrasound Image Storage/Siemens Acuson 500"
             reader->set_folder(utest_data::dir() / "us/Ultrasound Image Storage/Siemens Acuson 500");
-            CPPUNIT_ASSERT_NO_THROW(reader->read());
+            {
+                auto observer = std::make_shared<core::progress::observer>("Reading DICOM images");
+                CPPUNIT_ASSERT_NO_THROW(reader->read(observer));
+            }
 
             // Just to be sure we read the good data
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
@@ -97,7 +104,10 @@ inline static std::vector<data::image::sptr> read_dicom_images(std::size_t _coun
 
             // Read next image "us/Ultrasound Multi-frame Image Storage/Siemens Acuson 500"
             reader->set_folder(utest_data::dir() / "us/Ultrasound Multi-frame Image Storage/Siemens Acuson 500");
-            CPPUNIT_ASSERT_NO_THROW(reader->read());
+            {
+                auto observer = std::make_shared<core::progress::observer>("Reading DICOM images");
+                CPPUNIT_ASSERT_NO_THROW(reader->read(observer));
+            }
 
             // Just to be sure we read the good data
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
@@ -650,7 +660,8 @@ void writer_test::empty_image_test()
     {
         const auto& tmp_path = tmp_dir / ("empty" + ext);
         CPPUNIT_ASSERT_NO_THROW(writer->set_file(tmp_path));
-        CPPUNIT_ASSERT_THROW(writer->write(), core::exception);
+        auto observer = std::make_shared<core::progress::observer>("Writing empty image... ");
+        CPPUNIT_ASSERT_THROW(writer->write(observer), core::exception);
         CPPUNIT_ASSERT_MESSAGE(tmp_path.string() + " exists.", !std::filesystem::exists(tmp_path));
     }
 }
@@ -674,7 +685,8 @@ void writer_test::wrong_path_test()
     {
         const auto& tmp_path = tmp_folder / ("wrong_path" + ext);
         CPPUNIT_ASSERT_NO_THROW(writer->set_file(tmp_path));
-        CPPUNIT_ASSERT_NO_THROW(writer->write());
+        auto observer = std::make_shared<core::progress::observer>("Writing wrong path image... ");
+        CPPUNIT_ASSERT_NO_THROW(writer->write(observer));
         CPPUNIT_ASSERT_MESSAGE(tmp_path.string() + " doesn't exist.", std::filesystem::exists(tmp_path));
     }
 }
@@ -707,7 +719,8 @@ void writer_test::from_dicom_test()
         {
             const auto& tmp_path = tmp_dir / (std::to_string(_i) + "_from_dicom" + _ext);
             CPPUNIT_ASSERT_NO_THROW(writer->set_file(tmp_path));
-            CPPUNIT_ASSERT_NO_THROW(writer->write());
+            auto observer = std::make_shared<core::progress::observer>("Writing from DICOM image... ");
+            CPPUNIT_ASSERT_NO_THROW(writer->write(observer));
             CPPUNIT_ASSERT(std::filesystem::exists(tmp_path));
 
             return std::int64_t(std::filesystem::file_size(tmp_path));

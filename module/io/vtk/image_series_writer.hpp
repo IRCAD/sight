@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include <io/__/service/writer.hpp>
 
 #include <filesystem>
-#include <string>
 
 namespace sight::data
 {
@@ -34,13 +33,6 @@ class image;
 
 } // namespace sight::data
 
-namespace sight::core::jobs
-{
-
-class base;
-
-} // namespace sight::core::jobs
-
 namespace sight::module::io::vtk
 {
 
@@ -48,11 +40,7 @@ namespace sight::module::io::vtk
  * @brief   VTK Image Writer.
  *
  * Service writing an image series using the fwVtkIO lib.
- *
- * @section Signals Signals
- * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is loading (it should be
- * connected to a job_bar).
- *
+ * *
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -71,15 +59,11 @@ class image_series_writer : public sight::io::service::writer
 {
 public:
 
-    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
-
     /**
      * @brief Constructor. Do nothing.
      */
     image_series_writer() noexcept;
-
-    ~image_series_writer() noexcept override =
-        default;
+    ~image_series_writer() noexcept override = default;
 
     SIGHT_DECLARE_SERVICE(image_series_writer, sight::io::service::writer);
 
@@ -134,8 +118,6 @@ private:
      * @brief Image path.
      */
     std::filesystem::path m_fs_img_path;
-
-    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::vtk

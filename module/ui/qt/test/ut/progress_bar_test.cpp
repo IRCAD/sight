@@ -21,10 +21,12 @@
 
 #include "progress_bar_test.hpp"
 
+#include "core/progress/observer.hpp"
+
 #include "loader.hpp"
 
 #include <core/com/slot_base.hxx>
-#include <core/jobs/base.hpp>
+#include <core/progress/monitor.hpp>
 
 #include <service/op.hpp>
 
@@ -40,33 +42,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::qt::ut::progress_bar_test);
 
 namespace sight::module::ui::qt::ut
 {
-
-class dummy_job : public core::jobs::base
-{
-public:
-
-    explicit dummy_job(const std::string& _name, std::uint64_t _total_work_unit = 100) :
-        base(_name)
-    {
-        m_total_work_units = _total_work_unit;
-        m_state            = sight::core::jobs::base::state::running;
-    }
-
-    ~dummy_job() override
-    {
-        m_state = sight::core::jobs::base::state::finished;
-    }
-
-    //------------------------------------------------------------------------------
-
-    std::shared_future<void> run_impl() override
-    {
-        return {};
-    }
-
-    using core::jobs::base::done_work;
-    using core::jobs::base::done;
-};
 
 //------------------------------------------------------------------------------
 
@@ -156,7 +131,7 @@ void progress_bar_test::launch_test(
     CPPUNIT_ASSERT_NO_THROW(progress_bar->configure(config));
     CPPUNIT_ASSERT_NO_THROW(progress_bar->start().get());
 
-    // Check that progress_bar is not visible before show_job().
+    // Check that progress_bar is not visible before add_monitor().
     const auto check_visibility = wait_for_widget(
         [_show_title, _show_cancel, _svg, this](QWidget* _widget)
         {
@@ -175,7 +150,7 @@ void progress_bar_test::launch_test(
                        progress_bar_widget != nullptr)
                     {
                         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "The progress_bar widget should not be visible before show_job().",
+                            "The progress_bar widget should not be visible before add_monitor().",
                             false,
                             progress_bar_widget->isVisible()
                         );
@@ -188,7 +163,7 @@ void progress_bar_test::launch_test(
                        svg_widget != nullptr)
                     {
                         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "The progress_bar widget should not be visible before show_job().",
+                            "The progress_bar widget should not be visible before add_monitor().",
                             false,
                             svg_widget->isVisible()
                         );
@@ -201,7 +176,7 @@ void progress_bar_test::launch_test(
                    label != nullptr)
                 {
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                        "The label should not be visible before show_job().",
+                        "The label should not be visible before add_monitor().",
                         false,
                         label->isVisible()
                     );
@@ -213,7 +188,7 @@ void progress_bar_test::launch_test(
                    button != nullptr)
                 {
                     CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                        "The cancel button should not be visible before show_job().",
+                        "The cancel button should not be visible before add_monitor().",
                         false,
                         button->isVisible()
                     );
@@ -235,13 +210,13 @@ void progress_bar_test::launch_test(
     // Should be true.
     CPPUNIT_ASSERT(check_visibility.get());
 
-    // Create job and slot.
-    static const std::string s_JOB_NAME = "Your Dream Job";
-    static int job_count                = 0;
-    const std::string job_name          = s_JOB_NAME + std::to_string(job_count++);
-    auto job                            = std::make_shared<dummy_job>(job_name);
+    // Create monitor and slot.
+    static const std::string s_TASK_NAME = "Your Dream Job";
+    static int task_count                = 0;
+    const std::string task_name          = s_TASK_NAME + std::to_string(task_count++);
+    auto monitor                         = std::make_shared<sight::core::progress::observer>(task_name);
 
-    // Create a slot and connect it to job_finished signal.
+    // Create a slot and connect it to finished signal.
     std::atomic_bool callback_called = false;
 
     const auto finished_callback = core::com::new_slot(
@@ -253,23 +228,23 @@ void progress_bar_test::launch_test(
     const auto slot_worker = core::thread::worker::make();
     finished_callback->set_worker(slot_worker);
 
-    const auto connection = progress_bar->signal("job_finished")->connect(finished_callback);
+    const auto connection = progress_bar->signal("finished")->connect(finished_callback);
 
-    // Show the job in the progress bar.
-    progress_bar->slot("show_job")->run(std::static_pointer_cast<core::jobs::base>(job));
+    // Show the monitor in the progress bar.
+    progress_bar->slot("add_monitor")->run(std::static_pointer_cast<core::progress::monitor>(monitor));
 
     // Check that progress_bar is set with correct information.
     for(int i = 1 ; i <= 100 ; i++)
     {
-        job->done_work(std::uint64_t(i));
+        monitor->done_work(std::uint64_t(i));
 
         if(_show_log)
         {
-            job->log(std::to_string(i));
+            monitor->log(std::to_string(i));
         }
 
         const auto check_progress_info = wait_for_widget(
-            [_show_title, _pulse, _svg, _show_log, i, job, job_name, this](QWidget* _widget)
+            [_show_title, _pulse, _svg, _show_log, i, monitor, task_name, this](QWidget* _widget)
             {
                 const QString root_object_name = QString::fromStdString(m_child_uuid) + "/progress_bar";
 
@@ -279,8 +254,8 @@ void progress_bar_test::launch_test(
                     if(auto* label = _widget->findChild<QLabel*>(root_object_name + "/QLabel"); label != nullptr)
                     {
                         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "The title of progress_bar should be equal to job name.",
-                            job_name,
+                            "The title of progress_bar should be equal to monitor name.",
+                            task_name,
                             label->text().toStdString() + (_show_log ? " - " + std::to_string(i) : "")
                         );
 
@@ -299,7 +274,7 @@ void progress_bar_test::launch_test(
                             if(!_pulse)
                             {
                                 // Do the same operation that the progress_bar does.
-                                int value = (int) (float(i) / float(job->get_total_work_units()) * 100);
+                                int value = (int) (float(i) / float(monitor->get_total_work_units()) * 100);
                                 CPPUNIT_ASSERT_EQUAL_MESSAGE(
                                     "The value of progress_bar should be equal to done work units.",
                                     value,
@@ -337,9 +312,9 @@ void progress_bar_test::launch_test(
         CPPUNIT_ASSERT(check_progress_info.get());
     }
 
-    // Finish the job and destroy it to get the callback called.
-    job->done();
-    job.reset();
+    // Finish the monitor and destroy it to get the callback called.
+    monitor->done();
+    monitor.reset();
 
     // Cleanup
     CPPUNIT_ASSERT_NO_THROW(progress_bar->stop().get());

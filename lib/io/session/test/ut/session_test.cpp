@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include "session_test.hpp"
-
 #include <core/crypto/aes256.hpp>
 #include <core/crypto/base64.hpp>
 #include <core/os/temp_path.hpp>
@@ -35,7 +33,6 @@
 #include <data/camera.hpp>
 #include <data/camera_set.hpp>
 #include <data/color.hpp>
-#include <data/dicom_series.hpp>
 #include <data/dvec2.hpp>
 #include <data/dvec3.hpp>
 #include <data/dvec4.hpp>
@@ -71,7 +68,6 @@
 
 #include <geometry/data/mesh.hpp>
 
-#include <io/dicom/reader/series_set.hpp>
 #include <io/session/detail/core/session_deserializer.hpp>
 #include <io/session/detail/core/session_serializer.hpp>
 #include <io/session/helper.hpp>
@@ -86,16 +82,12 @@
 #include <utest_data/generator/image.hpp>
 #include <utest_data/generator/mesh.hpp>
 
+#include <doctest/doctest.h>
+
 #include <random>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::session::ut::session_test);
-
-namespace sight::io::session::ut
-{
-
 // For uuid::generate();
-using core::tools::uuid;
+using sight::core::tools::uuid;
 
 //------------------------------------------------------------------------------
 
@@ -158,18 +150,6 @@ inline static std::string generate_dt(std::size_t _variant)
 
 //------------------------------------------------------------------------------
 
-void session_test::setUp()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void session_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
 template<typename T>
 static inline typename T::sptr generate(const std::size_t /*unused*/)
 {
@@ -210,8 +190,8 @@ static inline typename T::sptr create(const std::size_t _variant)
 template<typename T>
 static inline void compare(const typename T::csptr& _actual, const std::size_t _variant)
 {
-    CPPUNIT_ASSERT(_actual);
-    CPPUNIT_ASSERT_EQUAL(get_expected<T>(_variant)->get_value(), _actual->get_value());
+    CHECK(_actual);
+    CHECK_EQ(get_expected<T>(_variant)->get_value(), _actual->get_value());
 }
 
 //------------------------------------------------------------------------------
@@ -224,7 +204,7 @@ static inline void test(const bool _encrypt, const bool _raw, const bool _empty_
     const auto& test_id = T::leaf_classname() + "_" + std::to_string(_encrypt) + "_" + std::to_string(_raw);
 
     // Create a temporary directory
-    core::os::temp_dir tmp_dir;
+    sight::core::os::temp_dir tmp_dir;
     const auto test_path = tmp_dir / (test_id + (_raw ? ".json" : ".zip"));
 
     static constexpr auto s_FIELD_NAME = "field";
@@ -238,8 +218,8 @@ static inline void test(const bool _encrypt, const bool _raw, const bool _empty_
         object->set_field(s_FIELD_NAME, create<T>(1));
 
         // Create the session writer
-        auto session_writer = std::make_shared<io::session::session_writer>();
-        CPPUNIT_ASSERT(session_writer);
+        auto session_writer = std::make_shared<sight::io::session::session_writer>();
+        CHECK(session_writer);
 
         // Configure the session writer
         session_writer->set_object(object);
@@ -247,7 +227,7 @@ static inline void test(const bool _encrypt, const bool _raw, const bool _empty_
 
         if(_raw)
         {
-            session_writer->set_archive_format(io::zip::archive::archive_format::filesystem);
+            session_writer->set_archive_format(sight::io::zip::archive::archive_format::filesystem);
         }
         else if(_encrypt)
         {
@@ -255,22 +235,23 @@ static inline void test(const bool _encrypt, const bool _raw, const bool _empty_
         }
 
         // Write the session
-        CPPUNIT_ASSERT_NO_THROW(session_writer->write());
+        auto observer = std::make_shared<sight::core::progress::observer>("Writing session... ");
+        CHECK_NOTHROW(session_writer->write(observer));
 
-        CPPUNIT_ASSERT(std::filesystem::exists(test_path));
+        CHECK(std::filesystem::exists(test_path));
     }
 
     // Test deserialization
     {
-        auto session_reader = std::make_shared<io::session::session_reader>();
-        CPPUNIT_ASSERT(session_reader);
+        auto session_reader = std::make_shared<sight::io::session::session_reader>();
+        CHECK(session_reader);
 
         // Configure the session reader
         session_reader->set_file(test_path);
 
         if(_raw)
         {
-            session_reader->set_archive_format(io::zip::archive::archive_format::filesystem);
+            session_reader->set_archive_format(sight::io::zip::archive::archive_format::filesystem);
         }
         else if(_encrypt)
         {
@@ -278,7 +259,8 @@ static inline void test(const bool _encrypt, const bool _raw, const bool _empty_
         }
 
         // Read the session
-        CPPUNIT_ASSERT_NO_THROW(session_reader->read());
+        auto observer = std::make_shared<sight::core::progress::observer>("Reading session... ");
+        CHECK_NOTHROW(session_reader->read(observer));
 
         // Test value
         auto actual_object = std::dynamic_pointer_cast<T>(session_reader->get_object());
@@ -289,7 +271,7 @@ static inline void test(const bool _encrypt, const bool _raw, const bool _empty_
         // Add a field
         expected_object->set_field(s_FIELD_NAME, create<T>(1));
 
-        CPPUNIT_ASSERT(*expected_object == *actual_object);
+        CHECK(*expected_object == *actual_object);
     }
 }
 
@@ -309,159 +291,112 @@ static inline void test_combine()
 //------------------------------------------------------------------------------
 
 template<>
-inline data::boolean::sptr generate<data::boolean>(const std::size_t _variant)
+inline sight::data::boolean::sptr generate<sight::data::boolean>(const std::size_t _variant)
 {
-    return std::make_shared<data::boolean>(_variant % 2 == 0);
-}
-
-//------------------------------------------------------------------------------
-
-void session_test::boolean_test()
-{
-    test_combine<data::boolean>();
-}
-
-//------------------------------------------------------------------------------
-
-void session_test::integer_test()
-{
-    test_combine<data::integer>();
-}
-
-//------------------------------------------------------------------------------
-
-void session_test::float_test()
-{
-    test_combine<data::real>();
+    return std::make_shared<sight::data::boolean>(_variant % 2 == 0);
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::dvec2::sptr generate<data::dvec2>(const std::size_t _variant)
+inline sight::data::dvec2::sptr generate<sight::data::dvec2>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::dvec2>();
-    (*object)[0] = static_cast<data::dvec2::value_t::value_type>(_variant);
-    (*object)[1] = static_cast<data::dvec2::value_t::value_type>(_variant + 1);
+    auto object = std::make_shared<sight::data::dvec2>();
+    (*object)[0] = static_cast<sight::data::dvec2::value_t::value_type>(_variant);
+    (*object)[1] = static_cast<sight::data::dvec2::value_t::value_type>(_variant + 1);
     return object;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::dvec3::sptr generate<data::dvec3>(const std::size_t _variant)
+inline sight::data::dvec3::sptr generate<sight::data::dvec3>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::dvec3>();
-    (*object)[0] = static_cast<data::dvec3::value_t::value_type>(_variant);
-    (*object)[1] = static_cast<data::dvec3::value_t::value_type>(_variant + 1);
-    (*object)[2] = static_cast<data::dvec3::value_t::value_type>(_variant + 2);
+    auto object = std::make_shared<sight::data::dvec3>();
+    (*object)[0] = static_cast<sight::data::dvec3::value_t::value_type>(_variant);
+    (*object)[1] = static_cast<sight::data::dvec3::value_t::value_type>(_variant + 1);
+    (*object)[2] = static_cast<sight::data::dvec3::value_t::value_type>(_variant + 2);
     return object;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::dvec4::sptr generate<data::dvec4>(const std::size_t _variant)
+inline sight::data::dvec4::sptr generate<sight::data::dvec4>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::dvec4>();
-    (*object)[0] = static_cast<data::dvec4::value_t::value_type>(_variant);
-    (*object)[1] = static_cast<data::dvec4::value_t::value_type>(_variant + 1);
-    (*object)[2] = static_cast<data::dvec4::value_t::value_type>(_variant + 2);
-    (*object)[3] = static_cast<data::dvec4::value_t::value_type>(_variant + 3);
+    auto object = std::make_shared<sight::data::dvec4>();
+    (*object)[0] = static_cast<sight::data::dvec4::value_t::value_type>(_variant);
+    (*object)[1] = static_cast<sight::data::dvec4::value_t::value_type>(_variant + 1);
+    (*object)[2] = static_cast<sight::data::dvec4::value_t::value_type>(_variant + 2);
+    (*object)[3] = static_cast<sight::data::dvec4::value_t::value_type>(_variant + 3);
     return object;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ivec2::sptr generate<data::ivec2>(const std::size_t _variant)
+inline sight::data::ivec2::sptr generate<sight::data::ivec2>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::ivec2>();
-    (*object)[0] = static_cast<data::ivec2::value_t::value_type>(_variant);
-    (*object)[1] = static_cast<data::ivec2::value_t::value_type>(_variant + 1);
+    auto object = std::make_shared<sight::data::ivec2>();
+    (*object)[0] = static_cast<sight::data::ivec2::value_t::value_type>(_variant);
+    (*object)[1] = static_cast<sight::data::ivec2::value_t::value_type>(_variant + 1);
     return object;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ivec3::sptr generate<data::ivec3>(const std::size_t _variant)
+inline sight::data::ivec3::sptr generate<sight::data::ivec3>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::ivec3>();
-    (*object)[0] = static_cast<data::ivec3::value_t::value_type>(_variant);
-    (*object)[1] = static_cast<data::ivec3::value_t::value_type>(_variant + 1);
-    (*object)[2] = static_cast<data::ivec3::value_t::value_type>(_variant + 2);
+    auto object = std::make_shared<sight::data::ivec3>();
+    (*object)[0] = static_cast<sight::data::ivec3::value_t::value_type>(_variant);
+    (*object)[1] = static_cast<sight::data::ivec3::value_t::value_type>(_variant + 1);
+    (*object)[2] = static_cast<sight::data::ivec3::value_t::value_type>(_variant + 2);
     return object;
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::ivec4::sptr generate<data::ivec4>(const std::size_t _variant)
+inline sight::data::ivec4::sptr generate<sight::data::ivec4>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::ivec4>();
-    (*object)[0] = static_cast<data::ivec4::value_t::value_type>(_variant);
-    (*object)[1] = static_cast<data::ivec4::value_t::value_type>(_variant + 1);
-    (*object)[2] = static_cast<data::ivec4::value_t::value_type>(_variant + 2);
-    (*object)[3] = static_cast<data::ivec4::value_t::value_type>(_variant + 3);
+    auto object = std::make_shared<sight::data::ivec4>();
+    (*object)[0] = static_cast<sight::data::ivec4::value_t::value_type>(_variant);
+    (*object)[1] = static_cast<sight::data::ivec4::value_t::value_type>(_variant + 1);
+    (*object)[2] = static_cast<sight::data::ivec4::value_t::value_type>(_variant + 2);
+    (*object)[3] = static_cast<sight::data::ivec4::value_t::value_type>(_variant + 3);
     return object;
 }
 
 //------------------------------------------------------------------------------
 
-void session_test::vec_test()
+template<>
+inline sight::data::string::sptr generate<sight::data::string>(const std::size_t /*unused*/)
 {
-    test_combine<data::dvec2>();
-    test_combine<data::dvec3>();
-    test_combine<data::dvec4>();
-    test_combine<data::ivec2>();
-    test_combine<data::ivec3>();
-    test_combine<data::ivec4>();
+    return std::make_shared<sight::data::string>(uuid::generate());
 }
 
 //------------------------------------------------------------------------------
 
 template<>
-inline data::string::sptr generate<data::string>(const std::size_t /*unused*/)
+inline sight::data::map::sptr generate<sight::data::map>(const std::size_t _variant)
 {
-    return std::make_shared<data::string>(uuid::generate());
-}
-
-//------------------------------------------------------------------------------
-
-void session_test::string_test()
-{
-    test_combine<data::string>();
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline data::map::sptr generate<data::map>(const std::size_t _variant)
-{
-    auto object = std::make_shared<data::map>();
-    (*object)[data::boolean::classname()] = create<data::boolean>(_variant);
-    (*object)[data::integer::classname()] = create<data::integer>(_variant);
-    (*object)[data::real::classname()]    = create<data::real>(_variant);
-    (*object)[data::string::classname()]  = create<data::string>(_variant);
+    auto object = std::make_shared<sight::data::map>();
+    (*object)[sight::data::boolean::classname()] = create<sight::data::boolean>(_variant);
+    (*object)[sight::data::integer::classname()] = create<sight::data::integer>(_variant);
+    (*object)[sight::data::real::classname()]    = create<sight::data::real>(_variant);
+    (*object)[sight::data::string::classname()]  = create<sight::data::string>(_variant);
 
     return object;
 }
 
 //------------------------------------------------------------------------------
 
-void session_test::map_test()
-{
-    test_combine<data::map>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::mesh::sptr create<data::mesh>(const std::size_t _variant)
+inline sight::data::mesh::sptr create<sight::data::mesh>(const std::size_t _variant)
 {
-    const auto& object = std::make_shared<data::mesh>();
-    object->deep_copy(get_expected<data::mesh>(_variant));
+    const auto& object = std::make_shared<sight::data::mesh>();
+    object->deep_copy(get_expected<sight::data::mesh>(_variant));
     object->shrink_to_fit();
     return object;
 }
@@ -469,16 +404,16 @@ inline data::mesh::sptr create<data::mesh>(const std::size_t _variant)
 //------------------------------------------------------------------------------
 
 template<>
-inline data::mesh::sptr generate<data::mesh>(const std::size_t /*unused*/)
+inline sight::data::mesh::sptr generate<sight::data::mesh>(const std::size_t /*unused*/)
 {
-    auto object = std::make_shared<data::mesh>();
+    auto object = std::make_shared<sight::data::mesh>();
 
-    utest_data::generator::mesh::generate_triangle_quad_mesh(object);
-    geometry::data::mesh::shake_point(object);
-    geometry::data::mesh::colorize_mesh_points(object);
-    geometry::data::mesh::colorize_mesh_cells(object);
-    geometry::data::mesh::generate_point_normals(object);
-    geometry::data::mesh::generate_cell_normals(object);
+    sight::utest_data::generator::mesh::generate_triangle_quad_mesh(object);
+    sight::geometry::data::mesh::shake_point(object);
+    sight::geometry::data::mesh::colorize_mesh_points(object);
+    sight::geometry::data::mesh::colorize_mesh_cells(object);
+    sight::geometry::data::mesh::generate_point_normals(object);
+    sight::geometry::data::mesh::generate_cell_normals(object);
     object->shrink_to_fit();
 
     return object;
@@ -486,17 +421,10 @@ inline data::mesh::sptr generate<data::mesh>(const std::size_t /*unused*/)
 
 //------------------------------------------------------------------------------
 
-void session_test::mesh_test()
-{
-    test_combine<data::mesh>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::series::sptr generate<data::series>(const std::size_t _variant)
+inline sight::data::series::sptr generate<sight::data::series>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::series>();
+    auto object = std::make_shared<sight::data::series>();
 
     // Fill trivial attributes
     object->set_sop_keyword(sight::data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
@@ -547,27 +475,27 @@ inline data::series::sptr generate<data::series>(const std::size_t _variant)
     object->set_frame_acquisition_date_time("57", 0);
     object->set_frame_comments("58", 0);
     object->set_frame_label("59", 0);
-    object->set_ultrasound_acquisition_geometry(data::dicom::ultrasound_acquisition_geometry_t::patient);
-    object->set_patient_frame_of_reference_source(data::dicom::patient_frame_of_reference_source_t::table);
-    object->set_dimension_organization_type(data::dicom::dimension_organization_t::volume);
+    object->set_ultrasound_acquisition_geometry(sight::data::dicom::ultrasound_acquisition_geometry_t::patient);
+    object->set_patient_frame_of_reference_source(sight::data::dicom::patient_frame_of_reference_source_t::table);
+    object->set_dimension_organization_type(sight::data::dicom::dimension_organization_t::volume);
 
     // Generate specific instance data
     for(std::size_t i = 0 ; i < _variant + 3 ; ++i)
     {
         object->set_image_position_patient(
-            {
-                double(_variant + i),
-                double(_variant + i + 1),
-                double(_variant + i + 2)
-            },
+        {
+            double(_variant + i),
+            double(_variant + i + 1),
+            double(_variant + i + 2)
+        },
             i
         );
 
         object->set_image_orientation_patient(
-            {
-                double(_variant + i), double(_variant + i + 1), double(_variant + i + 2),
-                double(_variant + i + 3), double(_variant + i + 4), double(_variant + i + 5)
-            },
+        {
+            double(_variant + i), double(_variant + i + 1), double(_variant + i + 2),
+            double(_variant + i + 3), double(_variant + i + 4), double(_variant + i + 5)
+        },
             i
         );
 
@@ -585,39 +513,25 @@ inline data::series::sptr generate<data::series>(const std::size_t _variant)
 
 //------------------------------------------------------------------------------
 
-void session_test::series_test()
-{
-    test_combine<data::series>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::activity::sptr generate<data::activity>(const std::size_t _variant)
+inline sight::data::activity::sptr generate<sight::data::activity>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::activity>();
+    auto object = std::make_shared<sight::data::activity>();
 
-    (*object)[data::boolean::classname() + std::to_string(_variant)] = create<data::boolean>(_variant);
-    (*object)[data::integer::classname() + std::to_string(_variant)] = create<data::integer>(_variant);
-    (*object)[data::real::classname() + std::to_string(_variant)]    = create<data::real>(_variant);
-    (*object)[data::string::classname() + std::to_string(_variant)]  = create<data::string>(_variant);
+    (*object)[sight::data::boolean::classname() + std::to_string(_variant)] = create<sight::data::boolean>(_variant);
+    (*object)[sight::data::integer::classname() + std::to_string(_variant)] = create<sight::data::integer>(_variant);
+    (*object)[sight::data::real::classname() + std::to_string(_variant)]    = create<sight::data::real>(_variant);
+    (*object)[sight::data::string::classname() + std::to_string(_variant)]  = create<sight::data::string>(_variant);
 
     return object;
 }
 
 //------------------------------------------------------------------------------
 
-void session_test::activity_test()
-{
-    test_combine<data::activity>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::array::sptr generate<data::array>(const std::size_t _variant)
+inline sight::data::array::sptr generate<sight::data::array>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::array>();
+    auto object = std::make_shared<sight::data::array>();
 
     const auto lock = object->dump_lock();
 
@@ -629,26 +543,26 @@ inline data::array::sptr generate<data::array>(const std::size_t _variant)
             object->resize(
                 {_variant + 2, _variant + 2},
                 std::is_same_v<type, double>
-                ? core::type::DOUBLE
+                ? sight::core::type::DOUBLE
                 : std::is_same_v<type, float>
-                ? core::type::FLOAT
+                ? sight::core::type::FLOAT
                 : std::is_same_v<type, std::uint8_t>
-                ? core::type::UINT8
+                ? sight::core::type::UINT8
                 : std::is_same_v<type, std::uint16_t>
-                ? core::type::UINT16
+                ? sight::core::type::UINT16
                 : std::is_same_v<type, std::uint32_t>
-                ? core::type::UINT32
+                ? sight::core::type::UINT32
                 : std::is_same_v<type, std::uint64_t>
-                ? core::type::UINT64
+                ? sight::core::type::UINT64
                 : std::is_same_v<type, std::int8_t>
-                ? core::type::INT8
+                ? sight::core::type::INT8
                 : std::is_same_v<type, std::int16_t>
-                ? core::type::INT16
+                ? sight::core::type::INT16
                 : std::is_same_v<type, std::int32_t>
-                ? core::type::INT32
+                ? sight::core::type::INT32
                 : std::is_same_v<type, std::int64_t>
-                ? core::type::INT64
-                : core::type::NONE,
+                ? sight::core::type::INT64
+                : sight::core::type::NONE,
                 true
             );
 
@@ -685,7 +599,7 @@ inline data::array::sptr generate<data::array>(const std::size_t _variant)
             break;
 
         default:
-            CPPUNIT_FAIL("Unknown variant.");
+            CHECK_MESSAGE(false, "Unknown variant.");
             break;
     }
 
@@ -694,17 +608,10 @@ inline data::array::sptr generate<data::array>(const std::size_t _variant)
 
 //------------------------------------------------------------------------------
 
-void session_test::array_test()
-{
-    test_combine<data::array>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::image::sptr generate<data::image>(const std::size_t _variant)
+inline sight::data::image::sptr generate<sight::data::image>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::image>();
+    auto object = std::make_shared<sight::data::image>();
 
     const auto lock = object->dump_lock();
 
@@ -715,69 +622,69 @@ inline data::image::sptr generate<data::image>(const std::size_t _variant)
 
             // Warning: generateImage use reflection that cannot deal with double value (truncated to float precision),
             // thus the 0.1 + static_cast<double>(variant)
-            utest_data::generator::image::generate_image(
+            sight::utest_data::generator::image::generate_image(
                 object,
-            {
-                _variant + 5,
-                _variant + 5,
-                _variant + 5
-            },
-            {
-                0.1 + static_cast<double>(_variant),
-                0.2 + static_cast<double>(_variant),
-                0.3 + static_cast<double>(_variant)
-            },
-            {
-                0.4 + static_cast<double>(_variant),
-                0.5 + static_cast<double>(_variant),
-                0.6 + static_cast<double>(_variant)
-            },
-            {
-                0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6
-            },
+        {
+            _variant + 5,
+            _variant + 5,
+            _variant + 5
+        },
+        {
+            0.1 + static_cast<double>(_variant),
+            0.2 + static_cast<double>(_variant),
+            0.3 + static_cast<double>(_variant)
+        },
+        {
+            0.4 + static_cast<double>(_variant),
+            0.5 + static_cast<double>(_variant),
+            0.6 + static_cast<double>(_variant)
+        },
+        {
+            0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6
+        },
                 std::is_same_v<type, double>
-                ? core::type::DOUBLE
+                ? sight::core::type::DOUBLE
                 : std::is_same_v<type, float>
-                ? core::type::FLOAT
+                ? sight::core::type::FLOAT
                 : std::is_same_v<type, std::uint8_t>
-                ? core::type::UINT8
+                ? sight::core::type::UINT8
                 : std::is_same_v<type, std::uint16_t>
-                ? core::type::UINT16
+                ? sight::core::type::UINT16
                 : std::is_same_v<type, std::uint32_t>
-                ? core::type::UINT32
+                ? sight::core::type::UINT32
                 : std::is_same_v<type, std::uint64_t>
-                ? core::type::UINT64
+                ? sight::core::type::UINT64
                 : std::is_same_v<type, std::int8_t>
-                ? core::type::INT8
+                ? sight::core::type::INT8
                 : std::is_same_v<type, std::int16_t>
-                ? core::type::INT16
+                ? sight::core::type::INT16
                 : std::is_same_v<type, std::int32_t>
-                ? core::type::INT32
+                ? sight::core::type::INT32
                 : std::is_same_v<type, std::int64_t>
-                ? core::type::INT64
-                : core::type::NONE,
+                ? sight::core::type::INT64
+                : sight::core::type::NONE,
 
                 std::is_same_v<type, double>
-                ? data::image::pixel_format_t::gray_scale
+                ? sight::data::image::pixel_format_t::gray_scale
                 : std::is_same_v<type, float>
-                ? data::image::pixel_format_t::gray_scale
+                ? sight::data::image::pixel_format_t::gray_scale
                 : std::is_same_v<type, std::uint8_t>
-                ? data::image::pixel_format_t::bgr
+                ? sight::data::image::pixel_format_t::bgr
                 : std::is_same_v<type, std::uint16_t>
-                ? data::image::pixel_format_t::bgra
+                ? sight::data::image::pixel_format_t::bgra
                 : std::is_same_v<type, std::uint32_t>
-                ? data::image::pixel_format_t::rgb
+                ? sight::data::image::pixel_format_t::rgb
                 : std::is_same_v<type, std::uint64_t>
-                ? data::image::pixel_format_t::rgba
+                ? sight::data::image::pixel_format_t::rgba
                 : std::is_same_v<type, std::int8_t>
-                ? data::image::pixel_format_t::gray_scale
+                ? sight::data::image::pixel_format_t::gray_scale
                 : std::is_same_v<type, std::int16_t>
-                ? data::image::pixel_format_t::bgr
+                ? sight::data::image::pixel_format_t::bgr
                 : std::is_same_v<type, std::int32_t>
-                ? data::image::pixel_format_t::bgra
+                ? sight::data::image::pixel_format_t::bgra
                 : std::is_same_v<type, std::int64_t>
-                ? data::image::pixel_format_t::rgb
-                : data::image::pixel_format_t::undefined,
+                ? sight::data::image::pixel_format_t::rgb
+                : sight::data::image::pixel_format_t::undefined,
                 std::uint32_t(_variant)
             );
         };
@@ -805,7 +712,7 @@ inline data::image::sptr generate<data::image>(const std::size_t _variant)
             break;
 
         default:
-            CPPUNIT_FAIL("Unknown variant.");
+            CHECK_MESSAGE(false, "Unknown variant.");
             break;
     }
 
@@ -814,40 +721,26 @@ inline data::image::sptr generate<data::image>(const std::size_t _variant)
 
 //------------------------------------------------------------------------------
 
-void session_test::image_test()
-{
-    test_combine<data::image>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::vector::sptr generate<data::vector>(const std::size_t _variant)
+inline sight::data::vector::sptr generate<sight::data::vector>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::vector>();
+    auto object = std::make_shared<sight::data::vector>();
 
-    object->push_back(create<data::boolean>(_variant));
-    object->push_back(create<data::integer>(_variant));
-    object->push_back(create<data::real>(_variant));
-    object->push_back(create<data::string>(_variant));
-    object->push_back(create<data::activity>(_variant));
+    object->push_back(create<sight::data::boolean>(_variant));
+    object->push_back(create<sight::data::integer>(_variant));
+    object->push_back(create<sight::data::real>(_variant));
+    object->push_back(create<sight::data::string>(_variant));
+    object->push_back(create<sight::data::activity>(_variant));
 
     return object;
 }
 
 //------------------------------------------------------------------------------
 
-void session_test::vector_test()
-{
-    test_combine<data::vector>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::point::sptr generate<data::point>(const std::size_t /*unused*/)
+inline sight::data::point::sptr generate<sight::data::point>(const std::size_t /*unused*/)
 {
-    auto object = std::make_shared<data::point>();
+    auto object = std::make_shared<sight::data::point>();
 
     *object = {random<double>(), random<double>(), random<double>()};
 
@@ -856,22 +749,15 @@ inline data::point::sptr generate<data::point>(const std::size_t /*unused*/)
 
 //------------------------------------------------------------------------------
 
-void session_test::point_test()
-{
-    test_combine<data::point>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::point_list::sptr generate<data::point_list>(const std::size_t _variant)
+inline sight::data::point_list::sptr generate<sight::data::point_list>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::point_list>();
+    auto object = std::make_shared<sight::data::point_list>();
 
     auto& points = object->get_points();
     for(std::size_t i = 0, end = _variant + 3 ; i < end ; ++i)
     {
-        points.push_back(create<data::point>(i));
+        points.push_back(create<sight::data::point>(i));
     }
 
     return object;
@@ -879,25 +765,18 @@ inline data::point_list::sptr generate<data::point_list>(const std::size_t _vari
 
 //------------------------------------------------------------------------------
 
-void session_test::point_list_test()
-{
-    test_combine<data::point_list>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::calibration_info::sptr generate<data::calibration_info>(const std::size_t _variant)
+inline sight::data::calibration_info::sptr generate<sight::data::calibration_info>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::calibration_info>();
+    auto object = std::make_shared<sight::data::calibration_info>();
 
     for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
     {
         // Create the image
-        auto image = create<data::image>(_variant + i);
+        auto image = create<sight::data::image>(_variant + i);
 
         // Create the PointList
-        auto point_list = create<data::point_list>(_variant + i);
+        auto point_list = create<sight::data::point_list>(_variant + i);
 
         object->add_record(image, point_list);
     }
@@ -907,17 +786,10 @@ inline data::calibration_info::sptr generate<data::calibration_info>(const std::
 
 //------------------------------------------------------------------------------
 
-void session_test::calibration_info_test()
-{
-    test_combine<data::calibration_info>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::camera::sptr generate<data::camera>(const std::size_t _variant)
+inline sight::data::camera::sptr generate<sight::data::camera>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::camera>();
+    auto object = std::make_shared<sight::data::camera>();
 
     object->set_width(random<std::size_t>());
     object->set_height(random<std::size_t>());
@@ -937,54 +809,54 @@ inline data::camera::sptr generate<data::camera>(const std::size_t _variant)
     object->set_camera_id(uuid::generate());
     object->set_maximum_frame_rate(random<float>());
     constexpr std::array pixel_formats {
-        data::camera::pixel_format_t::adobedng,
-        data::camera::pixel_format_t::argb32,
-        data::camera::pixel_format_t::argb32_premultiplied,
-        data::camera::pixel_format_t::rgb32,
-        data::camera::pixel_format_t::rgb24,
-        data::camera::pixel_format_t::rgb565,
-        data::camera::pixel_format_t::rgb555,
-        data::camera::pixel_format_t::argb8565_premultiplied,
-        data::camera::pixel_format_t::bgra32,
-        data::camera::pixel_format_t::bgra32_premultiplied,
-        data::camera::pixel_format_t::bgr32,
-        data::camera::pixel_format_t::bgr24,
-        data::camera::pixel_format_t::bgr565,
-        data::camera::pixel_format_t::bgr555,
-        data::camera::pixel_format_t::bgra5658_premultiplied,
-        data::camera::pixel_format_t::ayuv444,
-        data::camera::pixel_format_t::ayuv444_premultiplied,
-        data::camera::pixel_format_t::yuv444,
-        data::camera::pixel_format_t::yuv420_p,
-        data::camera::pixel_format_t::yv12,
-        data::camera::pixel_format_t::uyvy,
-        data::camera::pixel_format_t::yuyv,
-        data::camera::pixel_format_t::nv12,
-        data::camera::pixel_format_t::nv21,
-        data::camera::pixel_format_t::imc1,
-        data::camera::pixel_format_t::imc2,
-        data::camera::pixel_format_t::imc3,
-        data::camera::pixel_format_t::imc4,
-        data::camera::pixel_format_t::y8,
-        data::camera::pixel_format_t::y16,
-        data::camera::pixel_format_t::jpeg,
-        data::camera::pixel_format_t::cameraraw,
-        data::camera::pixel_format_t::adobedng,
-        data::camera::pixel_format_t::rgba32,
-        data::camera::pixel_format_t::user,
-        data::camera::pixel_format_t::invalid
+        sight::data::camera::pixel_format_t::adobedng,
+        sight::data::camera::pixel_format_t::argb32,
+        sight::data::camera::pixel_format_t::argb32_premultiplied,
+        sight::data::camera::pixel_format_t::rgb32,
+        sight::data::camera::pixel_format_t::rgb24,
+        sight::data::camera::pixel_format_t::rgb565,
+        sight::data::camera::pixel_format_t::rgb555,
+        sight::data::camera::pixel_format_t::argb8565_premultiplied,
+        sight::data::camera::pixel_format_t::bgra32,
+        sight::data::camera::pixel_format_t::bgra32_premultiplied,
+        sight::data::camera::pixel_format_t::bgr32,
+        sight::data::camera::pixel_format_t::bgr24,
+        sight::data::camera::pixel_format_t::bgr565,
+        sight::data::camera::pixel_format_t::bgr555,
+        sight::data::camera::pixel_format_t::bgra5658_premultiplied,
+        sight::data::camera::pixel_format_t::ayuv444,
+        sight::data::camera::pixel_format_t::ayuv444_premultiplied,
+        sight::data::camera::pixel_format_t::yuv444,
+        sight::data::camera::pixel_format_t::yuv420_p,
+        sight::data::camera::pixel_format_t::yv12,
+        sight::data::camera::pixel_format_t::uyvy,
+        sight::data::camera::pixel_format_t::yuyv,
+        sight::data::camera::pixel_format_t::nv12,
+        sight::data::camera::pixel_format_t::nv21,
+        sight::data::camera::pixel_format_t::imc1,
+        sight::data::camera::pixel_format_t::imc2,
+        sight::data::camera::pixel_format_t::imc3,
+        sight::data::camera::pixel_format_t::imc4,
+        sight::data::camera::pixel_format_t::y8,
+        sight::data::camera::pixel_format_t::y16,
+        sight::data::camera::pixel_format_t::jpeg,
+        sight::data::camera::pixel_format_t::cameraraw,
+        sight::data::camera::pixel_format_t::adobedng,
+        sight::data::camera::pixel_format_t::rgba32,
+        sight::data::camera::pixel_format_t::user,
+        sight::data::camera::pixel_format_t::invalid
     };
     object->set_pixel_format(pixel_formats[_variant % 35]);
     object->set_video_file("/" + uuid::generate());
     object->set_stream_url(uuid::generate());
     object->set_camera_source(
         _variant % 3 == 0
-        ? data::camera::source_t::device
+        ? sight::data::camera::source_t::device
         : _variant % 3 == 1
-        ? data::camera::source_t::file
+        ? sight::data::camera::source_t::file
         : _variant % 3 == 2
-        ? data::camera::source_t::stream
-        : data::camera::source_t::unknown
+        ? sight::data::camera::source_t::stream
+        : sight::data::camera::source_t::unknown
     );
     object->set_scale(random<double>());
 
@@ -993,17 +865,10 @@ inline data::camera::sptr generate<data::camera>(const std::size_t _variant)
 
 //------------------------------------------------------------------------------
 
-void session_test::camera_test()
-{
-    test_combine<data::camera>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::color::sptr generate<data::color>(const std::size_t /*unused*/)
+inline sight::data::color::sptr generate<sight::data::color>(const std::size_t /*unused*/)
 {
-    auto object = std::make_shared<data::color>();
+    auto object = std::make_shared<sight::data::color>();
 
     object->set_rgba(random<float>(), random<float>(), random<float>(), random<float>());
 
@@ -1012,65 +877,51 @@ inline data::color::sptr generate<data::color>(const std::size_t /*unused*/)
 
 //------------------------------------------------------------------------------
 
-void session_test::color_test()
-{
-    test_combine<data::color>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::line::sptr generate<data::line>(const std::size_t _variant)
+inline sight::data::line::sptr generate<sight::data::line>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::line>();
+    auto object = std::make_shared<sight::data::line>();
 
-    object->set_position(create<data::point>(_variant));
-    object->set_direction(create<data::point>(_variant + 1));
+    object->set_position(create<sight::data::point>(_variant));
+    object->set_direction(create<sight::data::point>(_variant + 1));
 
     return object;
 }
 
 //------------------------------------------------------------------------------
 
-void session_test::line_test()
-{
-    test_combine<data::line>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::material::sptr generate<data::material>(const std::size_t _variant)
+inline sight::data::material::sptr generate<sight::data::material>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::material>();
+    auto object = std::make_shared<sight::data::material>();
 
     std::array shading {
-        data::material::shading_t::ambient,
-        data::material::shading_t::flat,
-        data::material::shading_t::phong
+        sight::data::material::shading_t::ambient,
+        sight::data::material::shading_t::flat,
+        sight::data::material::shading_t::phong
     };
 
     std::array representation {
-        data::material::representation_t::edge,
-        data::material::representation_t::point,
-        data::material::representation_t::surface,
-        data::material::representation_t::wireframe
+        sight::data::material::representation_t::edge,
+        sight::data::material::representation_t::point,
+        sight::data::material::representation_t::surface,
+        sight::data::material::representation_t::wireframe
     };
 
     std::array options {
-        data::material::options_t::cells_normals,
-        data::material::options_t::normals,
-        data::material::options_t::standard
+        sight::data::material::options_t::cells_normals,
+        sight::data::material::options_t::normals,
+        sight::data::material::options_t::standard
     };
 
     // Set ambient color
-    object->set_ambient(create<data::color>(_variant));
+    object->set_ambient(create<sight::data::color>(_variant));
 
     // Set diffuse color
-    object->set_diffuse(create<data::color>(_variant + 1));
+    object->set_diffuse(create<sight::data::color>(_variant + 1));
 
     // Set diffuse texture
-    object->set_diffuse_texture(create<data::image>(_variant));
+    object->set_diffuse_texture(create<sight::data::image>(_variant));
 
     // Others
     object->set_shading_mode(shading[_variant % std::size(shading)]);
@@ -1078,13 +929,13 @@ inline data::material::sptr generate<data::material>(const std::size_t _variant)
     object->set_options_mode(options[_variant % std::size(options)]);
     object->set_diffuse_texture_filtering(
         _variant % 3 == 0
-        ? data::material::filtering_t::linear
-        : data::material::filtering_t::nearest
+        ? sight::data::material::filtering_t::linear
+        : sight::data::material::filtering_t::nearest
     );
     object->set_diffuse_texture_wrapping(
         _variant % 3 == 0
-        ? data::material::wrapping_t::clamp
-        : data::material::wrapping_t::repeat
+        ? sight::data::material::wrapping_t::clamp
+        : sight::data::material::wrapping_t::repeat
     );
 
     return object;
@@ -1092,17 +943,10 @@ inline data::material::sptr generate<data::material>(const std::size_t _variant)
 
 //------------------------------------------------------------------------------
 
-void session_test::material_test()
-{
-    test_combine<data::material>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::matrix4::sptr generate<data::matrix4>(const std::size_t /*unused*/)
+inline sight::data::matrix4::sptr generate<sight::data::matrix4>(const std::size_t /*unused*/)
 {
-    auto object = std::make_shared<data::matrix4>();
+    auto object = std::make_shared<sight::data::matrix4>();
 
     for(double& coefficient : *object)
     {
@@ -1114,22 +958,15 @@ inline data::matrix4::sptr generate<data::matrix4>(const std::size_t /*unused*/)
 
 //------------------------------------------------------------------------------
 
-void session_test::matrix4_test()
-{
-    test_combine<data::matrix4>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::plane::sptr generate<data::plane>(const std::size_t _variant)
+inline sight::data::plane::sptr generate<sight::data::plane>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::plane>();
+    auto object = std::make_shared<sight::data::plane>();
 
     auto& points = object->get_points();
     for(std::size_t i = 0, end = points.size() ; i < end ; ++i)
     {
-        points[i] = create<data::point>(i + _variant);
+        points[i] = create<sight::data::point>(i + _variant);
     }
 
     return object;
@@ -1137,23 +974,16 @@ inline data::plane::sptr generate<data::plane>(const std::size_t _variant)
 
 //------------------------------------------------------------------------------
 
-void session_test::plane_test()
-{
-    test_combine<data::plane>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::plane_list::sptr generate<data::plane_list>(const std::size_t _variant)
+inline sight::data::plane_list::sptr generate<sight::data::plane_list>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::plane_list>();
+    auto object = std::make_shared<sight::data::plane_list>();
 
     auto& planes = object->get_planes();
 
     for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
     {
-        planes.push_back(create<data::plane>(_variant + i));
+        planes.push_back(create<sight::data::plane>(_variant + i));
     }
 
     return object;
@@ -1161,17 +991,10 @@ inline data::plane_list::sptr generate<data::plane_list>(const std::size_t _vari
 
 //------------------------------------------------------------------------------
 
-void session_test::plane_list_test()
-{
-    test_combine<data::plane_list>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::reconstruction::sptr generate<data::reconstruction>(const std::size_t _variant)
+inline sight::data::reconstruction::sptr generate<sight::data::reconstruction>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::reconstruction>();
+    auto object = std::make_shared<sight::data::reconstruction>();
 
     object->set_is_visible(_variant % 3 == 0);
     object->set_organ_name(uuid::generate());
@@ -1180,52 +1003,45 @@ inline data::reconstruction::sptr generate<data::reconstruction>(const std::size
     object->set_label(random<std::uint32_t>());
 
     // Material
-    object->set_material(create<data::material>(_variant));
+    object->set_material(create<sight::data::material>(_variant));
 
     // image
-    object->set_image(create<data::image>(_variant));
+    object->set_image(create<sight::data::image>(_variant));
 
     // Mesh
-    object->set_mesh(create<data::mesh>(_variant));
+    object->set_mesh(create<sight::data::mesh>(_variant));
 
     return object;
 }
 
 //------------------------------------------------------------------------------
 
-void session_test::reconstruction_test()
-{
-    test_combine<data::reconstruction>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::structure_traits::sptr generate<data::structure_traits>(const std::size_t _variant)
+inline sight::data::structure_traits::sptr generate<sight::data::structure_traits>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::structure_traits>();
+    auto object = std::make_shared<sight::data::structure_traits>();
 
     static constexpr std::array s_CLASSES {
-        data::structure_traits::structure_class::environment,
-        data::structure_traits::structure_class::functional,
-        data::structure_traits::structure_class::lesion,
-        data::structure_traits::structure_class::no_constraint,
-        data::structure_traits::structure_class::organ,
-        data::structure_traits::structure_class::tool,
-        data::structure_traits::structure_class::vessel
+        sight::data::structure_traits::structure_class::environment,
+        sight::data::structure_traits::structure_class::functional,
+        sight::data::structure_traits::structure_class::lesion,
+        sight::data::structure_traits::structure_class::no_constraint,
+        sight::data::structure_traits::structure_class::organ,
+        sight::data::structure_traits::structure_class::tool,
+        sight::data::structure_traits::structure_class::vessel
     };
 
     static constexpr std::array s_CATEGORIES {
-        data::structure_traits::category::abdomen,
-        data::structure_traits::category::arm,
-        data::structure_traits::category::body,
-        data::structure_traits::category::head,
-        data::structure_traits::category::leg,
-        data::structure_traits::category::liver_segments,
-        data::structure_traits::category::neck,
-        data::structure_traits::category::other,
-        data::structure_traits::category::pelvis,
-        data::structure_traits::category::thorax
+        sight::data::structure_traits::category::abdomen,
+        sight::data::structure_traits::category::arm,
+        sight::data::structure_traits::category::body,
+        sight::data::structure_traits::category::head,
+        sight::data::structure_traits::category::leg,
+        sight::data::structure_traits::category::liver_segments,
+        sight::data::structure_traits::category::neck,
+        sight::data::structure_traits::category::other,
+        sight::data::structure_traits::category::pelvis,
+        sight::data::structure_traits::category::thorax
     };
 
     object->set_type(uuid::generate());
@@ -1240,7 +1056,7 @@ inline data::structure_traits::sptr generate<data::structure_traits>(const std::
     // Categories
 
     // Reset categories.
-    data::structure_traits::category_container_t categories;
+    sight::data::structure_traits::category_container_t categories;
 
     for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
     {
@@ -1250,38 +1066,33 @@ inline data::structure_traits::sptr generate<data::structure_traits>(const std::
     object->set_categories(categories);
 
     // Color
-    object->set_color(create<data::color>(_variant));
+    object->set_color(create<sight::data::color>(_variant));
 
     return object;
 }
 
 //------------------------------------------------------------------------------
 
-void session_test::structure_traits_test()
-{
-    test_combine<data::structure_traits>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::structure_traits_dictionary::sptr generate<data::structure_traits_dictionary>(const std::size_t _variant)
+inline sight::data::structure_traits_dictionary::sptr generate<sight::data::structure_traits_dictionary>(
+    const std::size_t _variant
+)
 {
-    auto object = std::make_shared<data::structure_traits_dictionary>();
+    auto object = std::make_shared<sight::data::structure_traits_dictionary>();
 
-    auto organ = create<data::structure_traits>(_variant);
-    organ->set_class(data::structure_traits::organ);
+    auto organ = create<sight::data::structure_traits>(_variant);
+    organ->set_class(sight::data::structure_traits::organ);
     organ->set_attachment_type("");
 
     object->add_structure(organ);
 
     for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
     {
-        auto structure             = create<data::structure_traits>(_variant + i + 1);
+        auto structure             = create<sight::data::structure_traits>(_variant + i + 1);
         const auto structure_class = structure->get_class();
 
-        if(structure_class != data::structure_traits::lesion
-           && structure_class != data::structure_traits::functional)
+        if(structure_class != sight::data::structure_traits::lesion
+           && structure_class != sight::data::structure_traits::functional)
         {
             structure->set_attachment_type("");
         }
@@ -1298,17 +1109,10 @@ inline data::structure_traits_dictionary::sptr generate<data::structure_traits_d
 
 //------------------------------------------------------------------------------
 
-void session_test::structure_traits_dictionary_test()
-{
-    test_combine<data::structure_traits_dictionary>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::resection::sptr generate<data::resection>(const std::size_t _variant)
+inline sight::data::resection::sptr generate<sight::data::resection>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::resection>();
+    auto object = std::make_shared<sight::data::resection>();
 
     object->set_name(uuid::generate());
     object->set_is_safe_part(_variant % 2 == 0);
@@ -1319,8 +1123,8 @@ inline data::resection::sptr generate<data::resection>(const std::size_t _varian
     auto& outputs = object->get_outputs();
     for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
     {
-        inputs.push_back(create<data::reconstruction>(_variant + i));
-        outputs.push_back(create<data::reconstruction>(_variant + i + 1));
+        inputs.push_back(create<sight::data::reconstruction>(_variant + i));
+        outputs.push_back(create<sight::data::reconstruction>(_variant + i + 1));
     }
 
     return object;
@@ -1328,23 +1132,16 @@ inline data::resection::sptr generate<data::resection>(const std::size_t _varian
 
 //------------------------------------------------------------------------------
 
-void session_test::resection_test()
-{
-    test_combine<data::resection>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::resection_db::sptr generate<data::resection_db>(const std::size_t _variant)
+inline sight::data::resection_db::sptr generate<sight::data::resection_db>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::resection_db>();
+    auto object = std::make_shared<sight::data::resection_db>();
 
-    object->set_safe_resection(create<data::resection>(_variant));
+    object->set_safe_resection(create<sight::data::resection>(_variant));
 
     for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
     {
-        object->add_resection(create<data::resection>(_variant + i + 1));
+        object->add_resection(create<sight::data::resection>(_variant + i + 1));
     }
 
     return object;
@@ -1352,23 +1149,16 @@ inline data::resection_db::sptr generate<data::resection_db>(const std::size_t _
 
 //------------------------------------------------------------------------------
 
-void session_test::resection_db_test()
-{
-    test_combine<data::resection_db>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::transfer_function::sptr generate<data::transfer_function>(const std::size_t _variant)
+inline sight::data::transfer_function::sptr generate<sight::data::transfer_function>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::transfer_function>();
+    auto object = std::make_shared<sight::data::transfer_function>();
 
     object->set_level(random<double>());
     object->set_window(random<double>());
     object->set_name(uuid::generate());
     object->set_background_color(
-        data::transfer_function::color_t(
+        sight::data::transfer_function::color_t(
             random<double>(),
             random<double>(),
             random<double>(),
@@ -1376,26 +1166,26 @@ inline data::transfer_function::sptr generate<data::transfer_function>(const std
         )
     );
 
-    auto tf_data = object->pieces().emplace_back(std::make_shared<data::transfer_function_piece>());
+    auto tf_data = object->pieces().emplace_back(std::make_shared<sight::data::transfer_function_piece>());
     tf_data->set_interpolation_mode(
         _variant % 3 == 0
-        ? data::transfer_function::interpolation_mode::linear
-        : data::transfer_function::interpolation_mode::nearest
+        ? sight::data::transfer_function::interpolation_mode::linear
+        : sight::data::transfer_function::interpolation_mode::nearest
     );
     tf_data->set_clamped(_variant % 4 == 0);
 
     for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
     {
         tf_data->insert(
-            {
+        {
+            random<double>(),
+            sight::data::transfer_function::color_t(
                 random<double>(),
-                data::transfer_function::color_t(
-                    random<double>(),
-                    random<double>(),
-                    random<double>(),
-                    random<double>()
-                )
-            });
+                random<double>(),
+                random<double>(),
+                random<double>()
+            )
+        });
     }
 
     return object;
@@ -1403,86 +1193,17 @@ inline data::transfer_function::sptr generate<data::transfer_function>(const std
 
 //------------------------------------------------------------------------------
 
-void session_test::transfer_function_test()
-{
-    test_combine<data::transfer_function>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::dicom_series::sptr generate<data::dicom_series>(const std::size_t _variant)
+inline sight::data::image_series::sptr generate<sight::data::image_series>(const std::size_t _variant)
 {
-    data::dicom_series::sptr dicom_series;
-
-    // Only load the real dicom once
-    if(_variant == 0)
-    {
-        // Setup the series_set to be able to read
-        auto series_set                  = std::make_shared<data::series_set>();
-        const std::filesystem::path path = utest_data::dir()
-                                           / "sight/Patient/Dicom/DicomDB/86-CT-Skull";
-
-        CPPUNIT_ASSERT_MESSAGE(
-            "The dicom directory '" + path.string() + "' does not exist",
-            std::filesystem::exists(path)
-        );
-
-        // Read source Dicom
-        auto reader = std::make_shared<io::dicom::reader::series_set>();
-        reader->set_object(series_set);
-        reader->set_folder(path);
-
-        CPPUNIT_ASSERT_NO_THROW(reader->read_dicom_series());
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(1), series_set->size());
-
-        dicom_series = std::dynamic_pointer_cast<data::dicom_series>(series_set->front());
-    }
-    else
-    {
-        // Take the first variant as basis
-        dicom_series = std::make_shared<data::dicom_series>();
-        dicom_series->shallow_copy(get_expected<data::dicom_series>(0));
-    }
-
-    // Randomize a bit the dicomSeries
-    for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
-    {
-        dicom_series->addsop_class_uid(uuid::generate());
-        dicom_series->add_computed_tag_value(uuid::generate(), uuid::generate());
-    }
+    auto object = std::make_shared<sight::data::image_series>();
 
     // Inherited attributes
-    dicom_series->series::shallow_copy(get_expected<data::series>(_variant));
-
-    return dicom_series;
-}
-
-//------------------------------------------------------------------------------
-
-void session_test::dicom_series_test()
-{
-    if(utest::filter::ignore_slow_tests())
-    {
-        return;
-    }
-
-    test_combine<data::dicom_series>();
-}
-
-//------------------------------------------------------------------------------
-
-template<>
-inline data::image_series::sptr generate<data::image_series>(const std::size_t _variant)
-{
-    auto object = std::make_shared<data::image_series>();
-
-    // Inherited attributes
-    object->image::shallow_copy(get_expected<data::image>(_variant));
-    object->series::shallow_copy(get_expected<data::series>(_variant));
+    object->image::shallow_copy(get_expected<sight::data::image>(_variant));
+    object->series::shallow_copy(get_expected<sight::data::series>(_variant));
 
     // Children
-    object->get_fiducials()->shallow_copy(get_expected<data::fiducials_series>(_variant));
+    object->get_fiducials()->shallow_copy(get_expected<sight::data::fiducials_series>(_variant));
 
     object->set_contrast_bolus_agent(uuid::generate());
     object->set_contrast_bolus_route(uuid::generate());
@@ -1512,62 +1233,34 @@ inline data::image_series::sptr generate<data::image_series>(const std::size_t _
     object->set_acquisition_date(generate_da(_variant));
     object->set_acquisition_time(generate_tm(_variant));
 
-    object->set_dicom_reference(create<data::dicom_series>(_variant));
-
     return object;
 }
 
 //------------------------------------------------------------------------------
 
-void session_test::image_series_test()
-{
-    if(utest::filter::ignore_slow_tests())
-    {
-        return;
-    }
-
-    test_combine<data::image_series>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::model_series::sptr generate<data::model_series>(const std::size_t _variant)
+inline sight::data::model_series::sptr generate<sight::data::model_series>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::model_series>();
+    auto object = std::make_shared<sight::data::model_series>();
 
-    object->set_dicom_reference(create<data::dicom_series>(_variant));
-
-    std::vector<data::reconstruction::sptr> reconstruction_db;
+    std::vector<sight::data::reconstruction::sptr> reconstruction_db;
     for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
     {
-        reconstruction_db.push_back(create<data::reconstruction>(_variant + i));
+        reconstruction_db.push_back(create<sight::data::reconstruction>(_variant + i));
     }
 
     object->set_reconstruction_db(reconstruction_db);
 
     // Inherited attributes
-    object->series::shallow_copy(get_expected<data::series>(_variant));
+    object->series::shallow_copy(get_expected<sight::data::series>(_variant));
 
     return object;
 }
 
 //------------------------------------------------------------------------------
 
-void session_test::model_series_test()
-{
-    if(utest::filter::ignore_slow_tests())
-    {
-        return;
-    }
-
-    test_combine<data::model_series>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::fiducials_series::sptr generate<data::fiducials_series>(const std::size_t _variant)
+inline sight::data::fiducials_series::sptr generate<sight::data::fiducials_series>(const std::size_t _variant)
 {
     auto fs = std::make_shared<sight::data::fiducials_series>();
     fs->set_content_label(std::to_string(_variant));
@@ -1575,9 +1268,9 @@ inline data::fiducials_series::sptr generate<data::fiducials_series>(const std::
     fs->set_content_creator_name("John Doe");
 
     // Adds a dummy fiducial set
-    data::fiducials_series::fiducial_set fiducial_set;
+    sight::data::fiducials_series::fiducial_set fiducial_set;
 
-    data::fiducials_series::referenced_image referenced_image;
+    sight::data::fiducials_series::referenced_image referenced_image;
     referenced_image.referenced_sop_class_uid    = "1";
     referenced_image.referenced_sop_instance_uid = "2";
     referenced_image.referenced_frame_number     = {3};
@@ -1586,12 +1279,12 @@ inline data::fiducials_series::sptr generate<data::fiducials_series>(const std::
 
     fiducial_set.frame_of_reference_uid = "5";
 
-    data::fiducials_series::fiducial fiducial;
-    fiducial.shape_type           = data::fiducials_series::shape::point;
+    sight::data::fiducials_series::fiducial fiducial;
+    fiducial.shape_type           = sight::data::fiducials_series::shape::point;
     fiducial.fiducial_description = "6";
     fiducial.fiducial_identifier  = "7";
 
-    data::fiducials_series::graphic_coordinates_data graphic_coordinates_data;
+    sight::data::fiducials_series::graphic_coordinates_data graphic_coordinates_data;
     graphic_coordinates_data.referenced_image_sequence.referenced_sop_class_uid    = "8";
     graphic_coordinates_data.referenced_image_sequence.referenced_sop_instance_uid = "9";
     graphic_coordinates_data.referenced_image_sequence.referenced_frame_number     = {10};
@@ -1606,7 +1299,7 @@ inline data::fiducials_series::sptr generate<data::fiducials_series>(const std::
     fiducial_set.group_name = "18";
     fiducial_set.color      = {{19, 20, 21, 22}};
     fiducial_set.size       = 23.F;
-    fiducial_set.shape      = data::fiducials_series::private_shape::cube;
+    fiducial_set.shape      = sight::data::fiducials_series::private_shape::cube;
     fiducial_set.visibility = true;
 
     // Test setFiducialSets method
@@ -1617,26 +1310,14 @@ inline data::fiducials_series::sptr generate<data::fiducials_series>(const std::
 
 //------------------------------------------------------------------------------
 
-void session_test::fiducials_series_test()
-{
-    if(utest::filter::ignore_slow_tests())
-    {
-        return;
-    }
-
-    test_combine<data::fiducials_series>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::activity_set::sptr generate<data::activity_set>(const std::size_t _variant)
+inline sight::data::activity_set::sptr generate<sight::data::activity_set>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::activity_set>();
+    auto object = std::make_shared<sight::data::activity_set>();
 
     for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
     {
-        object->push_back(create<data::activity>(_variant + i));
+        object->push_back(create<sight::data::activity>(_variant + i));
     }
 
     return object;
@@ -1644,22 +1325,15 @@ inline data::activity_set::sptr generate<data::activity_set>(const std::size_t _
 
 //------------------------------------------------------------------------------
 
-void session_test::activity_set_test()
-{
-    test_combine<data::activity_set>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::camera_set::sptr generate<data::camera_set>(const std::size_t _variant)
+inline sight::data::camera_set::sptr generate<sight::data::camera_set>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::camera_set>();
+    auto object = std::make_shared<sight::data::camera_set>();
 
     for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
     {
-        auto camera = create<data::camera>(_variant + i);
-        auto matrix = create<data::matrix4>(_variant + i);
+        auto camera = create<sight::data::camera>(_variant + i);
+        auto matrix = create<sight::data::matrix4>(_variant + i);
         object->push_back(std::make_pair(camera, matrix));
     }
 
@@ -1668,21 +1342,14 @@ inline data::camera_set::sptr generate<data::camera_set>(const std::size_t _vari
 
 //------------------------------------------------------------------------------
 
-void session_test::camera_set_test()
-{
-    test_combine<data::camera_set>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::series_set::sptr generate<data::series_set>(const std::size_t _variant)
+inline sight::data::series_set::sptr generate<sight::data::series_set>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::series_set>();
+    auto object = std::make_shared<sight::data::series_set>();
 
     for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
     {
-        object->push_back(create<data::series>(_variant + i));
+        object->push_back(create<sight::data::series>(_variant + i));
     }
 
     return object;
@@ -1690,130 +1357,381 @@ inline data::series_set::sptr generate<data::series_set>(const std::size_t _vari
 
 //------------------------------------------------------------------------------
 
-void session_test::series_set_test()
-{
-    test_combine<data::series_set>();
-}
-
-//------------------------------------------------------------------------------
-
 template<>
-inline data::set::sptr generate<data::set>(const std::size_t _variant)
+inline sight::data::set::sptr generate<sight::data::set>(const std::size_t _variant)
 {
-    auto object = std::make_shared<data::set>();
+    auto object = std::make_shared<sight::data::set>();
 
     for(std::size_t i = 0, end = _variant + 2 ; i < end ; ++i)
     {
-        object->push_back(create<data::series>(_variant + i));
+        object->push_back(create<sight::data::series>(_variant + i));
     }
 
     return object;
 }
 
-//------------------------------------------------------------------------------
-
-void session_test::set_test()
+TEST_SUITE("sight::io::session")
 {
-    test_combine<data::set>();
-}
-
-//------------------------------------------------------------------------------
-
-inline static void custom_serialize(
-    zip::archive_writer& /*unused*/,
-    boost::property_tree::ptree& _tree,
-    data::object::csptr _object,
-    std::map<std::string, data::object::csptr>& /*unused*/,
-    const core::crypto::secure_string& /*unused*/ = ""
-)
-{
-    // Cast to the right type
-    const auto string = helper::safe_cast<data::string>(_object);
-
-    // Add a version number. Not mandatory, but could help for future release
-    helper::write_version<data::string>(_tree, 666);
-
-    helper::write_string(_tree, "custom", string->get_value());
-}
-
-//------------------------------------------------------------------------------
-
-inline static data::string::sptr custom_deserialize(
-    zip::archive_reader& /*unused*/,
-    const boost::property_tree::ptree& _tree,
-    const std::map<std::string, data::object::sptr>& /*unused*/,
-    data::object::sptr _object,
-    const core::crypto::secure_string& /*unused*/ = ""
-)
-{
-    // Create or reuse the object
-    auto string = helper::cast_or_create<data::string>(_object);
-
-    // Check version number. Not mandatory, but could help for future release
-    helper::read_version<data::string>(_tree, 0, 666);
-
-    // Assign the value
-    string->set_value(helper::read_string(_tree, "custom"));
-
-    return string;
-}
-
-//------------------------------------------------------------------------------
-
-void session_test::custom_serializer_test()
-{
-    // Create a temporary directory
-    core::os::temp_dir tmp_dir;
-    const auto test_path = tmp_dir / "customSerializerTest.zip";
-
-    // Test serialization
+    TEST_CASE("boolean")
     {
-        // Create the data object
-        auto object = create<data::string>(0);
-
-        // Create the session writer
-        auto session_writer = std::make_shared<io::session::session_writer>();
-        CPPUNIT_ASSERT(session_writer);
-
-        // Configure the session writer
-        session_writer->set_object(object);
-        session_writer->set_file(test_path);
-
-        // Test serializer getter
-        CPPUNIT_ASSERT(session_writer->serializer(data::string::classname()));
-
-        // Change the session serializer by setting a new one using setCustomSerializer
-        session_writer->set_custom_serializer(data::string::classname(), custom_serialize);
-
-        // Write the new session
-        CPPUNIT_ASSERT_NO_THROW(session_writer->write());
-
-        CPPUNIT_ASSERT(std::filesystem::exists(test_path));
+        test_combine<sight::data::boolean>();
     }
 
-    // Test deserialization
+//------------------------------------------------------------------------------
+
+    TEST_CASE("integer")
     {
-        auto session_reader = std::make_shared<io::session::session_reader>();
-        CPPUNIT_ASSERT(session_reader);
+        test_combine<sight::data::integer>();
+    }
 
-        // Configure the session reader
-        session_reader->set_file(test_path);
+//------------------------------------------------------------------------------
 
-        // Read the session: it should fail since the serializer has been modified by a custom one
-        CPPUNIT_ASSERT_THROW(session_reader->read(), sight::core::exception);
+    TEST_CASE("float")
+    {
+        test_combine<sight::data::real>();
+    }
 
-        // Test deserializer getter
-        CPPUNIT_ASSERT(session_reader->deserializer(data::string::classname()));
+//------------------------------------------------------------------------------
 
-        // Set the new customDeserializer
-        session_reader->set_custom_deserializer(data::string::classname(), custom_deserialize);
+    TEST_CASE("vec")
+    {
+        test_combine<sight::data::dvec2>();
+        test_combine<sight::data::dvec3>();
+        test_combine<sight::data::dvec4>();
+        test_combine<sight::data::ivec2>();
+        test_combine<sight::data::ivec3>();
+        test_combine<sight::data::ivec4>();
+    }
 
-        CPPUNIT_ASSERT_NO_THROW(session_reader->read());
+//------------------------------------------------------------------------------
 
-        // Test value
-        auto object = std::dynamic_pointer_cast<data::string>(session_reader->get_object());
-        compare<data::string>(object, 0);
+    TEST_CASE("string")
+    {
+        test_combine<sight::data::string>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("map")
+    {
+        test_combine<sight::data::map>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("mesh")
+    {
+        test_combine<sight::data::mesh>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("series")
+    {
+        test_combine<sight::data::series>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("activity")
+    {
+        test_combine<sight::data::activity>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("array")
+    {
+        test_combine<sight::data::array>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("image")
+    {
+        test_combine<sight::data::image>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("vector")
+    {
+        test_combine<sight::data::vector>();
+    }
+//------------------------------------------------------------------------------
+
+    TEST_CASE("point")
+    {
+        test_combine<sight::data::point>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("point_list")
+    {
+        test_combine<sight::data::point_list>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("calibration_info")
+    {
+        test_combine<sight::data::calibration_info>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("camera")
+    {
+        test_combine<sight::data::camera>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("color")
+    {
+        test_combine<sight::data::color>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("line")
+    {
+        test_combine<sight::data::line>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("material")
+    {
+        test_combine<sight::data::material>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("matrix4")
+    {
+        test_combine<sight::data::matrix4>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("plane")
+    {
+        test_combine<sight::data::plane>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("plane_list")
+    {
+        test_combine<sight::data::plane_list>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("reconstruction")
+    {
+        test_combine<sight::data::reconstruction>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("structure_traits")
+    {
+        test_combine<sight::data::structure_traits>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("structure_traits_dictionary")
+    {
+        test_combine<sight::data::structure_traits_dictionary>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("resection")
+    {
+        test_combine<sight::data::resection>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("resection_db")
+    {
+        test_combine<sight::data::resection_db>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("transfer_function")
+    {
+        test_combine<sight::data::transfer_function>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("image_series")
+    {
+        if(sight::utest::filter::ignore_slow_tests())
+        {
+            return;
+        }
+
+        test_combine<sight::data::image_series>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("model_series")
+    {
+        if(sight::utest::filter::ignore_slow_tests())
+        {
+            return;
+        }
+
+        test_combine<sight::data::model_series>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("fiducials_series")
+    {
+        if(sight::utest::filter::ignore_slow_tests())
+        {
+            return;
+        }
+
+        test_combine<sight::data::fiducials_series>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("activity_set")
+    {
+        test_combine<sight::data::activity_set>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("camera_set")
+    {
+        test_combine<sight::data::camera_set>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("series_set")
+    {
+        test_combine<sight::data::series_set>();
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("set")
+    {
+        test_combine<sight::data::set>();
+    }
+
+//------------------------------------------------------------------------------
+
+    inline static void custom_serialize(
+        sight::io::zip::archive_writer& /*unused*/,
+        boost::property_tree::ptree& _tree,
+        sight::data::object::csptr _object,
+        std::map<std::string, sight::data::object::csptr>& /*unused*/,
+        const sight::core::crypto::secure_string& /*unused*/ = ""
+)
+    {
+        // Cast to the right type
+        const auto string = sight::io::session::helper::safe_cast<sight::data::string>(_object);
+
+        // Add a version number. Not mandatory, but could help for future release
+        sight::io::session::helper::write_version<sight::data::string>(_tree, 666);
+
+        sight::io::session::helper::write_string(_tree, "custom", string->get_value());
+    }
+
+//------------------------------------------------------------------------------
+
+    inline static sight::data::string::sptr custom_deserialize(
+        sight::io::zip::archive_reader& /*unused*/,
+        const boost::property_tree::ptree& _tree,
+        const std::map<std::string, sight::data::object::sptr>& /*unused*/,
+        sight::data::object::sptr _object,
+        const sight::core::crypto::secure_string& /*unused*/ = ""
+)
+    {
+        // Create or reuse the object
+        auto string = sight::io::session::helper::cast_or_create<sight::data::string>(_object);
+
+        // Check version number. Not mandatory, but could help for future release
+        sight::io::session::helper::read_version<sight::data::string>(_tree, 0, 666);
+
+        // Assign the value
+        string->set_value(sight::io::session::helper::read_string(_tree, "custom"));
+
+        return string;
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("custom_serializer")
+    {
+        // Create a temporary directory
+        sight::core::os::temp_dir tmp_dir;
+        const auto test_path = tmp_dir / "customSerializerTest.zip";
+
+        // Test serialization
+        {
+            // Create the data object
+            auto object = create<sight::data::string>(0);
+
+            // Create the session writer
+            auto session_writer = std::make_shared<sight::io::session::session_writer>();
+            CHECK(session_writer);
+
+            // Configure the session writer
+            session_writer->set_object(object);
+            session_writer->set_file(test_path);
+
+            // Test serializer getter
+            CHECK(session_writer->serializer(sight::data::string::classname()));
+
+            // Change the session serializer by setting a new one using setCustomSerializer
+            session_writer->set_custom_serializer(sight::data::string::classname(), custom_serialize);
+
+            // Write the new session
+            const auto observer = std::make_shared<sight::core::progress::observer>("Session Writer Test");
+            CHECK_NOTHROW(session_writer->write(observer));
+
+            CHECK(std::filesystem::exists(test_path));
+        }
+
+        // Test deserialization
+        {
+            auto session_reader = std::make_shared<sight::io::session::session_reader>();
+            CHECK(session_reader);
+
+            // Configure the session reader
+            session_reader->set_file(test_path);
+
+            // Read the session: it should fail since the serializer has been modified by a custom one
+            const auto observer = std::make_shared<sight::core::progress::observer>("Session Reader Test");
+            CHECK_THROWS_AS(session_reader->read(observer), sight::core::exception);
+
+            // Test deserializer getter
+            CHECK(session_reader->deserializer(sight::data::string::classname()));
+
+            // Set the new customDeserializer
+            session_reader->set_custom_deserializer(sight::data::string::classname(), custom_deserialize);
+
+            CHECK_NOTHROW(session_reader->read(observer));
+
+            // Test value
+            auto object = std::dynamic_pointer_cast<sight::data::string>(session_reader->get_object());
+            compare<sight::data::string>(object, 0);
+        }
     }
 }
-
-} // namespace sight::io::session::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,86 +26,24 @@
 #include "io/vtk/helper/vtk_lambda_command.hpp"
 
 #include <core/base.hpp>
+#include <core/progress/monitor.hpp>
+#include <core/progress/observer.hpp>
 
-#include <core/jobs/base.hpp>
-#include <core/jobs/observer.hpp>
-
-#include <data/mesh.hpp>
 #include <data/material.hpp>
+#include <data/mesh.hpp>
 
+#include <vtkOBJWriter.h>
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
-#include <vtkVersion.h>
-#if VTK_MAJOR_VERSION >= 8 && VTK_MINOR_VERSION >= 2
-#define USE_OBJ_WRITER // Shorter than test major.minor version later.
-#include <vtkOBJWriter.h>
-#else
-#include <vtkActor.h>
-#include <vtkOBJExporter.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkProperty.h>
-#include <vtkRenderWindow.h>
-#include <vtkRenderer.h>
-#endif
+#include <cstdint>
 
 namespace sight::io::vtk
 {
 
 //------------------------------------------------------------------------------
 
-obj_mesh_writer::obj_mesh_writer() :
-    m_job(std::make_shared<core::jobs::observer>("OBJ Mesh writer"))
-{
-}
-
-//------------------------------------------------------------------------------
-
-obj_mesh_writer::~obj_mesh_writer()
-= default;
-
-//------------------------------------------------------------------------------
-
-#ifdef USE_OBJ_WRITER
-void obj_mesh_writer::write()
-{
-    using namespace sight::io::vtk::helper;
-
-    SIGHT_ASSERT("Object pointer expired", !m_object.expired());
-
-    [[maybe_unused]] const auto objectLock = m_object.lock();
-
-    SIGHT_ASSERT("Object Lock null.", objectLock);
-
-    const data::mesh::csptr pMesh = get_concrete_object();
-
-    vtkSmartPointer<vtkOBJWriter> writer = vtkSmartPointer<vtkOBJWriter>::New();
-    vtkSmartPointer<vtkPolyData> vtkMesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::mesh::to_vtk_mesh(pMesh, vtkMesh);
-    writer->SetInputData(vtkMesh);
-    writer->SetFileName(this->get_file().string().c_str());
-
-    vtkSmartPointer<vtk_lambda_command> progress_callback;
-
-    progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
-    progress_callback->set_callback(
-        [&](vtkObject* caller, long unsigned int, void*)
-        {
-            const auto filter = static_cast<vtkOBJWriter*>(caller);
-            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
-        });
-    writer->AddObserver(vtkCommand::ProgressEvent, progress_callback);
-
-    m_job->add_simple_cancel_hook([&]{writer->AbortExecuteOn();});
-
-    writer->Update();
-
-    m_job->finish();
-}
-#else
-//------------------------------------------------------------------------------
-
-void obj_mesh_writer::write()
+void obj_mesh_writer::write(sight::core::progress::observer::sptr _progress)
 {
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
@@ -113,54 +51,35 @@ void obj_mesh_writer::write()
 
     SIGHT_ASSERT("Object Lock null.", object_lock);
 
-    const data::mesh::csptr p_mesh        = get_concrete_object();
+    const data::mesh::csptr mesh = get_concrete_object();
+
+    vtkSmartPointer<vtkOBJWriter> writer  = vtkSmartPointer<vtkOBJWriter>::New();
     vtkSmartPointer<vtkPolyData> vtk_mesh = vtkSmartPointer<vtkPolyData>::New();
-    io::vtk::helper::mesh::to_vtk_mesh(p_mesh, vtk_mesh);
+    sight::io::vtk::helper::mesh::to_vtk_mesh(mesh, vtk_mesh);
+    writer->SetInputData(vtk_mesh);
+    writer->SetFileName(this->get_file().string().c_str());
 
-    vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
-    vtkSmartPointer<vtkActor> actor       = vtkSmartPointer<vtkActor>::New();
+    vtkSmartPointer<helper::vtk_lambda_command> progress_callback;
 
-    vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-    mapper->SetInputData(vtk_mesh);
-    actor->SetMapper(mapper);
+    progress_callback = vtkSmartPointer<helper::vtk_lambda_command>::New();
+    progress_callback->set_callback(
+        [&](vtkObject* _caller, std::uint64_t, void*)
+        {
+            auto* filter = static_cast<vtkOBJWriter*>(_caller);
+            _progress->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+        });
+    writer->AddObserver(vtkCommand::ProgressEvent, progress_callback);
 
-    vtkProperty* property = actor->GetProperty();
+    _progress->add_cancel_hook([&]{writer->AbortExecuteOn();});
 
-    property->SetSpecularColor(1., 1., 1.);
-    property->SetSpecularPower(100.); //Shininess
-
-    property->SetInterpolationToPhong();
-
-    renderer->AddActor(actor);
-
-    vtkSmartPointer<vtkRenderWindow> render_window = vtkSmartPointer<vtkRenderWindow>::New();
-    render_window->AddRenderer(renderer);
-
-    std::filesystem::path file = this->get_file();
-    const std::string filename = file.extension() == ".obj"
-                                 ? file.replace_extension().string()
-                                 : file.string();
-
-    vtkSmartPointer<vtkOBJExporter> exporter = vtkSmartPointer<vtkOBJExporter>::New();
-    exporter->SetRenderWindow(render_window);
-    exporter->SetFilePrefix(filename.c_str());
-    exporter->Write();
-    m_job->finish();
+    writer->Update();
 }
-#endif // ifdef USE_OBJ_WRITER
 
 //------------------------------------------------------------------------------
 
 std::string obj_mesh_writer::extension() const
 {
     return ".obj";
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr obj_mesh_writer::get_job() const
-{
-    return m_job;
 }
 
 //------------------------------------------------------------------------------

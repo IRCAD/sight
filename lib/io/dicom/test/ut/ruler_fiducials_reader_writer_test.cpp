@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2024 IRCAD France
+ * Copyright (C) 2024-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -43,7 +43,10 @@ void ruler_fiducials_reader_writer_test::ruler_basic_test()
     auto reader   = std::make_shared<io::dicom::reader::file>();
     reader->set_object(original);
     reader->set_folder(utest_data::dir() / "us/Enhanced US Volume Storage/GE, 3D+t, lossy JPEG");
-    CPPUNIT_ASSERT_NO_THROW(reader->read());
+    {
+        auto read_observer = std::make_shared<core::progress::observer>("Test read");
+        CPPUNIT_ASSERT_NO_THROW(reader->read(read_observer));
+    }
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), original->size());
 
     auto original_image_series = std::dynamic_pointer_cast<data::image_series>(original->at(0));
@@ -100,12 +103,16 @@ void ruler_fiducials_reader_writer_test::ruler_basic_test()
     auto writer = std::make_shared<io::dicom::writer::file>();
     writer->set_object(original);
     writer->set_folder(folder);
-    CPPUNIT_ASSERT_NO_THROW(writer->write());
+    auto write_observer = std::make_shared<core::progress::observer>("Test write");
+    CPPUNIT_ASSERT_NO_THROW(writer->write(write_observer));
 
     auto actual = std::make_shared<data::series_set>();
     reader->set_object(actual);
     reader->set_folder(folder);
-    CPPUNIT_ASSERT_NO_THROW(reader->read());
+    {
+        auto read_observer = std::make_shared<core::progress::observer>("Test read");
+        CPPUNIT_ASSERT_NO_THROW(reader->read(read_observer));
+    }
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), actual->size());
 
     auto actual_image_series = std::dynamic_pointer_cast<data::image_series>(actual->at(0));

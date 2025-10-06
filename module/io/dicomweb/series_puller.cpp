@@ -22,12 +22,17 @@
 
 #include "series_puller.hpp"
 
+#include "detail/query.hpp"
+
 #include <core/com/signal.hxx>
 #include <core/com/slots.hxx>
+#include <core/progress/observer.hpp>
 #include <core/tools/system.hpp>
 
-#include <data/dicom_series.hpp>
+#include <data/image_series.hpp>
 
+#include <io/dicom/helper/series.hpp>
+#include <io/dicom/reader/file.hpp>
 #include <io/http/exceptions/base.hpp>
 #include <io/http/helper/series.hpp>
 #include <io/http/request.hpp>
@@ -39,6 +44,9 @@
 #include <ui/__/dialog/progress.hpp>
 #include <ui/__/preferences.hpp>
 
+#include <qdebug.h>
+
+#include <algorithm>
 #include <filesystem>
 
 namespace sight::module::io::dicomweb
@@ -46,23 +54,15 @@ namespace sight::module::io::dicomweb
 
 //------------------------------------------------------------------------------
 
-series_puller::series_puller() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-series_puller::~series_puller() noexcept =
-    default;
+series_puller::series_puller() noexcept :
+    has_monitors(m_signals)
+{
+}
 
 //------------------------------------------------------------------------------
 
 void series_puller::configuring()
 {
-    const config_t config_tree = this->get_config();
-    const auto config          = config_tree.get_child("config.<xmlattr>");
-
-    m_dicom_reader_type       = config.get<std::string>("dicom_reader", m_dicom_reader_type);
-    m_dicom_reader_srv_config = config.get<std::string>("reader_config", m_dicom_reader_srv_config);
 }
 
 //------------------------------------------------------------------------------
@@ -71,35 +71,6 @@ void series_puller::starting()
 {
     // Create temporary series_set
     m_tmp_series_set = std::make_shared<data::series_set>();
-
-    // Create reader
-    m_dicom_reader = service::add<sight::io::service::reader>(m_dicom_reader_type);
-    SIGHT_ASSERT(
-        "Unable to create a reader of type: \"" + m_dicom_reader_type + "\" in module::io::dicomweb::series_puller.",
-        m_dicom_reader
-    );
-    m_dicom_reader->set_inout(m_tmp_series_set, sight::io::service::DATA_KEY);
-
-    if(!m_dicom_reader_srv_config.empty())
-    {
-        // Get the config
-        const auto reader_config = service::extension::config::get_default()->get_service_config(
-            m_dicom_reader_srv_config,
-            "sight::io::service::reader"
-        );
-
-        SIGHT_ASSERT(
-            "Sorry, there is no service configuration "
-            << m_dicom_reader_srv_config
-            << " for sight::io::service::reader",
-            !reader_config.empty()
-        );
-
-        m_dicom_reader->set_config(reader_config);
-    }
-
-    m_dicom_reader->configure();
-    m_dicom_reader->start();
 }
 
 //------------------------------------------------------------------------------
@@ -113,9 +84,6 @@ void series_puller::stopping()
         // Delete old series from the series_set.
         series_set->clear();
     }
-    // Stop reader service
-    m_dicom_reader->stop();
-    service::remove(m_dicom_reader);
 }
 
 //------------------------------------------------------------------------------
@@ -169,8 +137,8 @@ void series_puller::pull_series()
         m_is_pulling = true;
 
         // Reset Counters
-        m_series_index   = 0;
-        m_instance_count = 0;
+        m_series_index = 0;
+        std::size_t instance_count = 0;
 
         const auto selected_series = m_selected_series.lock();
 
@@ -181,13 +149,12 @@ void series_puller::pull_series()
         auto it = selected_series->cbegin();
         for( ; it != selected_series->cend() ; ++it)
         {
-            data::dicom_series::sptr series = std::dynamic_pointer_cast<data::dicom_series>(*it);
+            data::series::sptr series = std::dynamic_pointer_cast<data::series>(*it);
 
             // Check if the series must be pulled
             if(series
-               && std::find(
-                   m_local_series.begin(),
-                   m_local_series.end(),
+               && std::ranges::find(
+                   m_local_series,
                    series->get_series_instance_uid()
                ) == m_local_series.end())
             {
@@ -195,7 +162,7 @@ void series_puller::pull_series()
                 m_pulling_dicom_series_map[series->get_series_instance_uid()] = series;
 
                 pull_series_vector.push_back(series);
-                m_instance_count += series->num_instances();
+                instance_count += static_cast<std::size_t>(series->get_instance_number().value());
             }
 
             selected_series_vector.push_back(series);
@@ -204,8 +171,12 @@ void series_puller::pull_series()
         // Pull series
         if(!pull_series_vector.empty())
         {
+            auto progress = std::make_shared<core::progress::observer>("Pull series", instance_count);
+            this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, progress->get_sptr());
+
+            std::size_t done = 0;
             /// GET
-            const instance_uid_container_t& series_instances_ui_ds =
+            const auto& series_instances_ui_ds =
                 sight::io::http::helper::series::to_series_instance_uid_container(pull_series_vector);
             for(const std::string& series_instances_uid : series_instances_ui_ds)
             {
@@ -258,35 +229,40 @@ void series_puller::pull_series()
                     const QJsonObject& json_obj       = json_response.object();
                     const QJsonArray& instances_array = json_obj["Instances"].toArray();
 
+                    qDebug() << json_obj;
                     const auto instances_array_size = instances_array.count();
                     for(auto j = 0 ; j < instances_array_size ; ++j)
                     {
-                        const std::string& instance_uid = instances_array.at(j).toString().toStdString();
+                        // This the instance ID on the server, which may be different from the InstanceUID
+                        const std::string& instance_server_id = instances_array.at(j).toString().toStdString();
 
+                        // Retrieve the SOP Instance UID
+                        const auto instance_uid = detail::query_instance_uid(
+                            pacs_server,
+                            instance_server_id,
+                            m_client_qt
+                        );
                         /// GET DICOM Instance file.
-                        const std::string instance_url(pacs_server + "/instances/" + instance_uid + "/file");
+                        const std::string instance_url(pacs_server + "/instances/" + instance_server_id + "/file");
 
+                        const auto path = sight::io::dicom::helper::series::get_path(
+                            series_instances_uid,
+                            instance_uid
+                        );
                         try
                         {
-                            m_path = m_client_qt.get_file(sight::io::http::request::New(instance_url));
+                            m_client_qt.get_file(sight::io::http::request::New(instance_url), path);
                         }
                         catch(sight::io::http::exceptions::content_not_found& exception)
                         {
                             std::stringstream ss;
                             ss << "Content not found:  \n"
-                            << "Unable download the DICOM instance. \n";
+                            << "Unable to download the DICOM instance. \n";
 
                             sight::module::io::dicomweb::series_puller::display_error_message(ss.str());
                             SIGHT_WARN(exception.what());
                         }
-
-                        // Create dicom folder
-                        std::filesystem::path instance_path = m_path.parent_path() / series_instances_uid;
-                        QDir().mkpath(instance_path.string().c_str());
-                        // Move dicom file to the created dicom folder
-                        instance_path /= m_path.filename();
-                        QFile::rename(m_path.string().c_str(), instance_path.string().c_str());
-                        m_path = m_path.parent_path() / series_instances_uid;
+                        progress->done_work(++done);
                     }
                 }
             }
@@ -325,26 +301,33 @@ void series_puller::read_local_series(dicom_series_container_t _selected_series)
 
     for(const auto& series : _selected_series)
     {
+        SIGHT_ASSERT("DicomSeries should not be null !", series);
         const std::string& selected_series_uid = series->get_series_instance_uid();
 
         // Add the series to the local series vector
-        if(std::find(m_local_series.begin(), m_local_series.end(), selected_series_uid) == m_local_series.end())
+        if(std::ranges::find(m_local_series, selected_series_uid) == m_local_series.end())
         {
             m_local_series.push_back(selected_series_uid);
         }
 
         // Check if the series is loaded
-        if(std::find(
-               already_loaded_series.cbegin(),
-               already_loaded_series.cend(),
+        if(std::ranges::find(
+               already_loaded_series,
                selected_series_uid
            ) == already_loaded_series.cend())
         {
             // Clear temporary series
             m_tmp_series_set->clear();
 
-            m_dicom_reader->set_folder(m_path);
-            m_dicom_reader->update();
+            auto path   = sight::io::dicom::helper::series::get_path(*series);
+            auto reader = std::make_shared<sight::io::dicom::reader::file>();
+
+            reader->set_object(dest_series_set.get_shared());
+            reader->set_folder({path.string()});
+
+            auto observer = std::make_shared<sight::core::progress::observer>("Read image series");
+            this->async_emit(core::progress::has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+            reader->read(observer);
 
             // Merge series
             std::copy(m_tmp_series_set->cbegin(), m_tmp_series_set->cend(), sight::data::inserter(*dest_series_set));

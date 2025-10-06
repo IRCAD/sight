@@ -24,7 +24,7 @@
 
 #include <io/__/service/reader.hpp>
 
-#include <filesystem>
+#include <service/notifier.hpp>
 
 namespace sight::module::io::matrix
 {
@@ -44,7 +44,8 @@ namespace sight::module::io::matrix
  * @subsection In-Out In-Out
  * - \b data [sight::data::matrix4]: matrix to read.
  */
-class matrix4_trf_reader : public sight::io::service::reader
+class matrix4_trf_reader : public sight::io::service::reader,
+                           public sight::service::notifier
 {
 public:
 

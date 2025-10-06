@@ -25,8 +25,6 @@
 #include "module/io/vtk/image_reader.hpp"
 
 #include <core/com/signal.hxx>
-#include <core/jobs/base.hpp>
-#include <core/jobs/job.hpp>
 #include <core/location/single_file.hpp>
 #include <core/location/single_folder.hpp>
 #include <core/tools/date_and_time.hpp>
@@ -37,10 +35,7 @@
 #include <data/image.hpp>
 
 #include <io/__/service/io_types.hpp>
-#include <io/__/service/reader.hpp>
 #include <io/vtk/bitmap_image_reader.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/__/cursor.hpp>
 #include <ui/__/dialog/location.hpp>
@@ -54,13 +49,10 @@
 namespace sight::module::io::vtk
 {
 
-static const core::com::signals::key_t JOB_CREATED_SIGNAL = "job_created";
-
 //------------------------------------------------------------------------------
 
 image_series_reader::image_series_reader() noexcept :
-    reader("Choose a file to load an ImageSeries"),
-    m_sig_job_created(new_signal<job_created_signal_t>(JOB_CREATED_SIGNAL))
+    reader("Choose a file to load an ImageSeries")
 {
 }
 
@@ -142,7 +134,7 @@ void image_series_reader::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-void init_series(data::series::sptr _series)
+static void init_series(data::series::sptr _series)
 {
     const std::string instance_uid     = core::tools::uuid::generate();
     const boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
@@ -188,16 +180,16 @@ void image_series_reader::updating()
 
         sight::ui::busy_cursor cursor;
 
-        if(image_reader::load_image(this->get_file(), image_series, m_sig_job_created))
+        const auto& file = this->get_file();
+
+        auto observer = std::make_shared<core::progress::observer>("Reading " + file.string() + " file");
+        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+
+        if(image_reader::load_image(file, image_series, observer))
         {
             init_series(image_series);
 
-            auto sig = image_series->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            {
-                core::com::connection::blocker block(sig->get_connection(slot(service::slots::UPDATE)));
-                sig->async_emit();
-            }
-
+            image_series->async_emit(this, data::signals::MODIFIED);
             m_read_failed = false;
         }
     }

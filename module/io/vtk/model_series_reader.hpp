@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,14 +27,6 @@
 #include <io/__/service/reader.hpp>
 
 #include <filesystem>
-#include <string>
-
-namespace sight::core::jobs
-{
-
-class base;
-
-} // namespace sight::core::jobs
 
 namespace sight::module::io::vtk
 {
@@ -44,8 +36,8 @@ namespace sight::module::io::vtk
  * Accepted extensions: *.vtk *.vtp *.obj *.ply *.stl
  *
  * @section Signals Signals
- * - \b job_created(SPTR(core::jobs::base)): emitted to display a progress bar while the image is loading (it should be
- * connected to a job_bar).
+ * - \b monitor_created(SPTR(core::progress::monitor)): emitted to display a progress bar while the image is loading,
+ * it should be connected to a progress bar
  *
  * @section XML XML Configuration
  *
@@ -69,15 +61,12 @@ public:
 
     SIGHT_DECLARE_SERVICE(model_series_reader, sight::io::service::reader);
 
-    using job_created_signal_t = core::com::signal<void (std::shared_ptr<core::jobs::base>)>;
-
     /**
      * @brief Constructor. Do nothing.
      */
     model_series_reader() noexcept;
 
-    ~model_series_reader() noexcept override =
-        default;
+    ~model_series_reader() noexcept override = default;
 
     /**
      * @brief Configure the mesh path.
@@ -135,8 +124,6 @@ private:
      * @param[out] _mesh data::mesh::sptr, the loaded mesh.
      */
     void load_mesh(const std::filesystem::path& _file, data::mesh::sptr _mesh);
-
-    SPTR(job_created_signal_t) m_sig_job_created;
 };
 
 } // namespace sight::module::io::vtk

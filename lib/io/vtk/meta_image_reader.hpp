@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,20 +25,13 @@
 #include <sight/io/vtk/config.hpp>
 
 #include <core/location/single_file.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/image.hpp>
 
 #include <io/__/reader/generic_object_reader.hpp>
 
 #include <filesystem>
-
-namespace sight::core::jobs
-{
-
-class observer;
-class base;
-
-} // namespace sight::core::jobs
 
 namespace sight::io::vtk
 {
@@ -55,25 +48,11 @@ public:
 
     SIGHT_DECLARE_CLASS(meta_image_reader, io::reader::generic_object_reader<data::image>);
 
-    //! @brief Constructor.
-    SIGHT_IO_VTK_API meta_image_reader();
-
-    //! @brief Destructor.
-    SIGHT_IO_VTK_API ~meta_image_reader() override;
-
     //! @brief Reading operator.
-    SIGHT_IO_VTK_API void read() override;
+    SIGHT_IO_VTK_API void read(sight::core::progress::observer::sptr _progress) override;
 
     /// @return ".mhd"
     SIGHT_IO_VTK_API std::string extension() const override;
-
-    /// @return internal job
-    SIGHT_IO_VTK_API SPTR(core::jobs::base) get_job() const override;
-
-private:
-
-    ///Internal job
-    SPTR(core::jobs::observer) m_job;
 };
 
 } // namespace sight::io::vtk

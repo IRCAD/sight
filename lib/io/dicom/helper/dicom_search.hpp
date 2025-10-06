@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,12 +30,12 @@
 #include <string>
 #include <vector>
 
-namespace sight::core::jobs
+namespace sight::core::progress
 {
 
 class observer;
 
-} // namespace sight::core::jobs
+} // namespace sight::core::progress
 
 namespace sight::io::dicom::helper
 {
@@ -59,7 +59,7 @@ public:
         const std::filesystem::path& _dir_path,
         std::vector<std::filesystem::path>& _dicom_files,
         bool _check_is_dicom,
-        const SPTR(core::jobs::observer)& _file_lookup_observer = nullptr
+        const SPTR(core::progress::observer)& _file_lookup_observer = nullptr
     );
 
 protected:
@@ -73,7 +73,7 @@ protected:
     static void check_filename_extension(
         const std::filesystem::path& _dir_path,
         std::vector<std::filesystem::path>& _dicom_files,
-        const SPTR(core::jobs::observer)& _file_lookup_observer = nullptr
+        const SPTR(core::progress::observer)& _file_lookup_observer = nullptr
     );
 };
 

@@ -1,6 +1,5 @@
 add_subdirectory(history)
 add_subdirectory(__)
-add_subdirectory(dicom)
 add_subdirectory(qt)
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test)

@@ -129,10 +129,13 @@ void matrix4_trf_writer::updating()
             matrix
         );
 
+        auto observer = std::make_shared<core::progress::observer>("Writing matrix4 TRF file");
+        this->async_emit(has_monitors::signals::MONITOR_CREATED, observer->get_sptr());
+
         const auto writer = std::make_shared<sight::io::writer::matrix4_writer>();
         writer->set_object(matrix);
         writer->set_file(this->get_file());
-        writer->write();
+        writer->write(observer);
         m_write_failed = false;
     }
 }

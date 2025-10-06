@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,7 +101,7 @@ void progress::operator()(float _percent, std::string _msg)
 
 //-----------------------------------------------------------------------------
 
-void progress::set_cancel_callback(cancel_callback_t _callback)
+void progress::set_cancel_callback(core::progress::cancel_callback_t _callback)
 {
     core::thread::get_default_worker()->post_task<void>(
         [&]

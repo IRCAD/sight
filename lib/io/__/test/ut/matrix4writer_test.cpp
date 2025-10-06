@@ -22,6 +22,7 @@
 #include "matrix4writer_test.hpp"
 
 #include <core/os/temp_path.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/matrix4.hpp>
 
@@ -48,7 +49,8 @@ void matrix4_writer_test::basic_test()
     matrix_writer->set_object(matrix_in);
     std::filesystem::remove(filepath);
     matrix_writer->set_file(filepath);
-    CPPUNIT_ASSERT_NO_THROW(matrix_writer->write());
+    auto observer = std::make_shared<core::progress::observer>("Test write");
+    CPPUNIT_ASSERT_NO_THROW(matrix_writer->write(observer));
     constexpr std::string_view expected_content = R"(0 1 2 3
 4 5 6 7
 8 9 10 11

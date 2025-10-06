@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,13 +32,12 @@
 
 #include <vector>
 
-namespace sight::core::jobs
+namespace sight::core::progress
 {
 
 class observer;
-class base;
 
-} // namespace sight::core::jobs
+} // namespace sight::core::progress
 
 namespace sight::io::vtk
 {
@@ -60,25 +59,16 @@ public:
     //! @brief Constructor.
     SIGHT_IO_VTK_API bitmap_image_reader();
 
-    //! @brief Destructor.
-    SIGHT_IO_VTK_API ~bitmap_image_reader() override;
-
     //! @brief Reading operator.
-    SIGHT_IO_VTK_API void read() override;
+    SIGHT_IO_VTK_API void read(SPTR(sight::core::progress::observer) _progress) override;
 
     /// @return The available file extensions for loading bitmap images.
     SIGHT_IO_VTK_API std::string extension() const override;
-
-    /// @return internal job
-    SIGHT_IO_VTK_API SPTR(core::jobs::base) get_job() const override;
 
     /// @return A vector of the available bitmap extensions for the vtkImageReader2 class
     SIGHT_IO_VTK_API static void get_available_extensions(std::vector<std::string>& _ext);
 
 private:
-
-    ///Internal job
-    SPTR(core::jobs::observer) m_job;
 
     /// Available file extensions for bitmap files
     std::string m_available_extensions;

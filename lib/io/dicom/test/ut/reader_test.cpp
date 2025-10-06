@@ -23,12 +23,12 @@
 #include "reader_test.hpp"
 
 #include <core/memory/buffer_manager.hpp>
+#include <core/progress/observer.hpp>
 
 #include <data/image_series.hpp>
 #include <data/model_series.hpp>
 
 #include <io/dicom/reader/file.hpp>
-#include <io/dicom/reader/series_set.hpp>
 
 #include <utest/filter.hpp>
 
@@ -60,7 +60,8 @@ inline static sight::data::series_set::sptr read(const std::filesystem::path _pa
     reader->set_object(series_set);
     reader->set_folder(_path);
 
-    CPPUNIT_ASSERT_NO_THROW(reader->read());
+    auto observer = std::make_shared<core::progress::observer>("Reading DICOM series");
+    CPPUNIT_ASSERT_NO_THROW(reader->read(observer));
 
     return series_set;
 }

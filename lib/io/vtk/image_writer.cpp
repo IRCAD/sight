@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "io/vtk/vtk.hpp"
 
 #include <core/base.hpp>
-#include <core/jobs/observer.hpp>
+#include <core/progress/observer.hpp>
 
 #include <vtkGenericDataObjectWriter.h>
 #include <vtkImageData.h>
@@ -37,19 +37,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-image_writer::image_writer() :
-    m_job(std::make_shared<core::jobs::observer>("VTK image Writer"))
-{
-}
-
-//------------------------------------------------------------------------------
-
-image_writer::~image_writer()
-= default;
-
-//------------------------------------------------------------------------------
-
-void image_writer::write()
+void image_writer::write(sight::core::progress::observer::sptr _progress)
 {
     using helper::vtk_lambda_command;
 
@@ -68,20 +56,19 @@ void image_writer::write()
     vtkSmartPointer<vtk_lambda_command> progress_callback;
     progress_callback = vtkSmartPointer<vtk_lambda_command>::New();
     progress_callback->set_callback(
-        [this](vtkObject* _caller, std::uint64_t, void*)
+        [&_progress](vtkObject* _caller, std::uint64_t, void*)
         {
             auto* filter = static_cast<vtkGenericDataObjectWriter*>(_caller);
-            m_job->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
+            _progress->done_work(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
 
     writer->AddObserver(vtkCommand::ProgressEvent, progress_callback);
-    m_job->add_simple_cancel_hook(
+    _progress->add_cancel_hook(
         [&]()
         {
             writer->AbortExecuteOn();
         });
     writer->Write();
-    m_job->finish();
 }
 
 //------------------------------------------------------------------------------
@@ -89,13 +76,6 @@ void image_writer::write()
 std::string image_writer::extension() const
 {
     return ".vtk";
-}
-
-//------------------------------------------------------------------------------
-
-core::jobs::base::sptr image_writer::get_job() const
-{
-    return m_job;
 }
 
 } // namespace sight::io::vtk
