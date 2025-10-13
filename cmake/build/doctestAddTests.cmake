@@ -37,7 +37,7 @@ endif()
 # Horrible build of environment variables, one for the discovery, one for the execution
 foreach(PATH ${TEST_ENV})
     set(DISCOVERY_ENV --modify PATH=path_list_append:${PATH} ${DISCOVERY_ENV})
-    set(EXECUTION_ENV ${EXECUTION_ENV} ENVIRONMENT_MODIFICATION PATH=path_list_append:${PATH} )
+    set(EXECUTION_ENV ${EXECUTION_ENV} ENVIRONMENT_MODIFICATION PATH=path_list_append:${PATH})
 endforeach()
 
 if(WIN32)
@@ -65,9 +65,8 @@ string(REPLACE "\n" ";" output "${output}")
 
 # Parse output
 foreach(line ${output})
-
     if(NOT "${line}" MATCHES
-       "<TestCase name=\"([A-z0-9:]*)\" (testsuite=\"([A-z0-9:]*)\" )?filename=\"([/\\_A-z\.:]*)\" line=\"([0-9]*)\""
+       "<TestCase name=\"([A-z0-9:]*)\" (testsuite=\"([A-z0-9:]*)\" )?filename=\"([/\\_A-z\\.:]*)\" line=\"([0-9]*)\""
     )
         continue()
     endif()
@@ -81,10 +80,7 @@ foreach(line ${output})
     # use escape commas to handle properly test cases with commas inside the name
     string(REPLACE "," "\\," test_name ${test})
     # ...and add to script
-    add_command(
-        add_test "${prefix}${test}${suffix}" "${TEST_EXECUTABLE}" "--test-case=${test_name}"
-        ${extra_args}
-    )
+    add_command(add_test "${prefix}${test}${suffix}" "${TEST_EXECUTABLE}" "--test-case=${test_name}" ${extra_args})
     if(WIN32)
         add_command(
             set_tests_properties
