@@ -1,7 +1,9 @@
 # sight::filter::image
 
-Library containing functions producing an output by 'filtering' an input. This covers registration, 
+Library containing functions producing an output by 'filtering' an input. This covers registration,
 matrix optimization, image filtering, drawing functions, etc...
+
+Most of the functions uses ITK, **but we do not expose ITK in the public API**.
 
 ## Classes:
 

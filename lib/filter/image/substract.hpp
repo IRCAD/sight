@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
- * Copyright (C) 2021 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,30 +21,19 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <sight/filter/image/config.hpp>
 
-namespace sight::filter::image::ut
+#include <data/image.hpp>
+
+namespace sight::filter::image
 {
 
-class line_drawer_test : public CPPUNIT_NS::TestFixture
-{
-CPPUNIT_TEST_SUITE(line_drawer_test);
-CPPUNIT_TEST(circle_test);
-CPPUNIT_TEST(ellipse_test);
-CPPUNIT_TEST(border_test);
-CPPUNIT_TEST(roi_test);
-CPPUNIT_TEST_SUITE_END();
+/**
+ * @brief Subtracts one image from another.
+ * @param _image1      first input image.
+ * @param _image2      second input image to subtract from the first.
+ * @param _output      output image where the result is stored.
+ */
+SIGHT_FILTER_IMAGE_API void substract(const data::image& _image1, const data::image& _image2, data::image& _output);
 
-public:
-
-    // interface
-    void setUp() override;
-    void tearDown() override;
-
-    static void circle_test();
-    static void ellipse_test();
-    static void border_test();
-    static void roi_test();
-};
-
-} // namespace sight::filter::image::ut
+} // namespace sight::filter::image

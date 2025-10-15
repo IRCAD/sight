@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 // cspell:ignore NOLINTNEXTLINE
 
-#include "filter/image/powell_optimizer.hpp"
+#include "filter/image/detail/powell_optimizer.hpp"
 
 #include <core/spy_log.hpp>
 
-namespace sight::filter::image
+namespace sight::filter::image::detail
 {
 
 // NOLINTNEXTLINE(cppcoreguidelines-virtual-class-destructor): used via pointers
@@ -174,4 +174,4 @@ powell_optimizer::function_parameters_t powell_optimizer::optimize(
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::filter::image.
+} // namespace sight::filter::image::detail

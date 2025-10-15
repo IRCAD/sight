@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,7 @@
 
 #include "filter/image/labeling.hpp"
 
-#include "filter/image/filters.hpp"
-#include "filter/image/filters.hxx"
+#include "filter/image/detail/filters.hxx"
 
 #include <core/com/signal.hpp>
 #include <core/com/signal.hxx>
@@ -62,9 +61,9 @@ struct labeling_filter
         itk_image = io::itk::move_to_itk<image_t>(_params.m_input_image);
 
         binary_image_t::Pointer out;
-        out = filter::image::labeling<PIXELTYPE, 3>(itk_image, _params.m_num_labels);
+        out = filter::image::detail::labeling<PIXELTYPE, 3>(itk_image, _params.m_num_labels);
 
-        io::itk::move_from_itk<binary_image_t>(out, _params.m_output_image);
+        io::itk::move_from_itk<binary_image_t>(out, *_params.m_output_image);
     }
 };
 
@@ -228,6 +227,155 @@ void compute_centroids(
     // Call the ITK operator
     const core::type type = _image->type();
     core::tools::dispatcher<core::tools::supported_dispatcher_types, label_image_filter>::invoke(type, params);
+}
+
+using function_t = std::function<std::uint8_t(const std::uint8_t&)>;
+
+template<class PIXELTYPE>
+class lambda_functor
+{
+public:
+
+    using function_t = std::function<PIXELTYPE(const PIXELTYPE&)>;
+
+    lambda_functor()
+    = default;
+
+    explicit lambda_functor(function_t _f) :
+        m_function(std::move(_f))
+    {
+    }
+
+    //------------------------------------------------------------------------------
+
+    PIXELTYPE operator()(const PIXELTYPE& _in)
+    {
+        return m_function(_in);
+    }
+
+    // Needs to be implemented because it is called by the itkUnaryFunctorImageFilter when setting the functor.
+    // Always return true to force-set the functor.
+    bool operator!=(const lambda_functor& /*unused*/)
+    {
+        return true;
+    }
+
+private:
+
+    function_t m_function;
+};
+
+struct convert_label_image_to_binary_mask_filter
+{
+    struct parameters
+    {
+        const data::image& input_image;
+        data::image& output_image;
+        const std::string& label_field_name;
+    };
+
+    //------------------------------------------------------------------------------
+
+    template<class PIXELTYPE>
+    void operator()(parameters& _params)
+    {
+        using image_t = typename itk::Image<PIXELTYPE, 3>;
+
+        lambda_functor<PIXELTYPE> functor;
+
+        if(not _params.label_field_name.empty())
+        {
+            data::vector::csptr labels = _params.input_image.get_field<data::vector>(_params.label_field_name);
+
+            if(!labels)
+            {
+                SIGHT_INFO(
+                    "No field named '" + _params.label_field_name
+                    + "' in 'labelImage'. No binary mask generated."
+                );
+                return;
+            }
+
+            // Use a more flexible container for different pixel types
+            std::set<PIXELTYPE> label_set;
+
+            std::for_each(
+                labels->begin(),
+                labels->end(),
+                [&label_set](data::object::csptr _o)
+                {
+                    data::integer::csptr int_obj = std::dynamic_pointer_cast<const data::integer>(_o);
+                    SIGHT_ASSERT("The label vector should only contain integers.", int_obj);
+                    const int val = int(int_obj->value());
+
+                    if constexpr(std::is_same_v<PIXELTYPE, char>)
+                    {
+                        SIGHT_ASSERT("Integer value outside char range", val >= CHAR_MIN && val <= CHAR_MAX);
+                    }
+                    else
+                    {
+                        SIGHT_ASSERT("Integer value outside pixel type range", std::in_range<PIXELTYPE>(val));
+                    }
+
+                    label_set.insert(static_cast<PIXELTYPE>(val));
+                });
+
+            functor = lambda_functor<PIXELTYPE>(
+                function_t(
+                    [label_set](const PIXELTYPE& _in) -> PIXELTYPE
+                {
+                    return label_set.find(_in) != label_set.end()
+                           ? std::numeric_limits<PIXELTYPE>::max()
+                           : static_cast<PIXELTYPE>(0);
+                })
+            );
+        }
+        else
+        {
+            functor = lambda_functor<PIXELTYPE>(
+                function_t(
+                    [](const PIXELTYPE& _in) -> PIXELTYPE
+                {
+                    return _in > static_cast<PIXELTYPE>(0)
+                           ? std::numeric_limits<PIXELTYPE>::max()
+                           : static_cast<PIXELTYPE>(0);
+                })
+            );
+        }
+
+        auto itk_label_img        = io::itk::move_to_itk<image_t>(_params.input_image);
+        auto label_to_mask_filter = itk::UnaryFunctorImageFilter<image_t, image_t, lambda_functor<PIXELTYPE> >::New();
+
+        label_to_mask_filter->SetFunctor(functor);
+        label_to_mask_filter->SetInput(itk_label_img);
+        label_to_mask_filter->Update();
+
+        typename image_t::Pointer itk_mask_img = label_to_mask_filter->GetOutput();
+
+        io::itk::move_from_itk<image_t>(itk_mask_img, _params.output_image);
+    }
+};
+
+//------------------------------------------------------------------------------
+
+void convert_label_image_to_binary_mask(
+    const data::image& _label_image,
+    data::image& _mask_image,
+    const std::string& _label_field_name
+)
+{
+    // Preparing the parameters for ITK
+    convert_label_image_to_binary_mask_filter::parameters params
+    {
+        .input_image      = _label_image,
+        .output_image     = _mask_image,
+        .label_field_name = _label_field_name
+    };
+
+    // Call the ITK operator
+    const core::type type = _label_image.type();
+    core::tools::dispatcher<core::tools::integer_types,
+                            convert_label_image_to_binary_mask_filter>::invoke(type, params);
 }
 
 } // namespace sight::filter::image.

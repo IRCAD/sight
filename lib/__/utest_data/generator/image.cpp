@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -144,7 +144,7 @@ void image::generate_image(
         std::memset(_image->buffer(), 0, _image->size_in_bytes());
     }
 
-    sight::data::helper::medical_image::check_image_slice_index(_image);
+    sight::data::helper::medical_image::check_image_slice_index(*_image);
 }
 
 //------------------------------------------------------------------------------
@@ -188,7 +188,7 @@ void image::generate_random_image(data::image::sptr _image, core::type _type, st
     _image->set_window_width({(safe_rand() % s_DOUBLE_SIZE) / double(s_SIZE / 10.) + 1});
     _image->set_window_center({(safe_rand() % s_DOUBLE_SIZE - s_SIZE) / double(s_SIZE / 10.)});
 
-    sight::data::helper::medical_image::check_image_slice_index(_image);
+    sight::data::helper::medical_image::check_image_slice_index(*_image);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ void image_conversion_test::test_conversion()
     image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(image);
 
     data::image::sptr image2 = std::make_shared<data::image>();
-    io::itk::move_from_itk<image_t>(itk_image, image2, false);
+    io::itk::move_from_itk<image_t>(itk_image, *image2, false);
 
     io::itk::ut::helper::round_spacing(image);
     io::itk::ut::helper::round_spacing(image2);
@@ -136,7 +136,7 @@ void image_conversion_test::test_conversion_2d()
 
     data::image::sptr image2       = std::make_shared<data::image>();
     bool image2_manages_his_buffer = false;
-    io::itk::move_from_itk<image_t>(itk_image, image2, image2_manages_his_buffer);
+    io::itk::move_from_itk<image_t>(itk_image, *image2, image2_manages_his_buffer);
 
     io::itk::ut::helper::round_spacing(image);
     io::itk::ut::helper::round_spacing(image2);

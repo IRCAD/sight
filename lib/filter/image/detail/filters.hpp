@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 
 #include <cstdint>
 
-namespace sight::filter::image
+namespace sight::filter::image::detail
 {
 
 /// Threshold filter
@@ -75,4 +75,4 @@ typename itk::Image<IMAGE_TYPE, DIM>::Pointer closing(
     std::size_t _z
 );
 
-} //namespace sight::filter::image.
+} //namespace sight::filter::image::detail

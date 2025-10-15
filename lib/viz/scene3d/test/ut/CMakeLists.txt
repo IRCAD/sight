@@ -1,4 +1,4 @@
-sight_add_target(viz_scene3d_ut TYPE TEST REQUIRE_X ON)
+sight_add_target(viz_scene3d_ut TYPE DOCTEST REQUIRE_X ON)
 
 target_link_libraries(viz_scene3d_ut PUBLIC core utest_data data viz_scene3d)
 

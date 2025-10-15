@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,23 +21,39 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <boost/algorithm/string.hpp>
 
-namespace sight::viz::scene3d::ut
+namespace sight::filter::image
 {
 
-class image_test : public CPPUNIT_NS::TestFixture
+// Type for image interpolation
+enum class interpolation_t : std::uint8_t
 {
-CPPUNIT_TEST_SUITE(image_test);
-CPPUNIT_TEST(compute_bounding_box_from_mask);
-CPPUNIT_TEST_SUITE_END();
-
-public:
-
-    static void compute_bounding_box_from_mask();
-
-    void setUp() override;
-    void tearDown() override;
+    NEAREST,
+    LINEAR,
+    BSPLINE
 };
 
-} // namespace sight::viz::scene3d::ut
+/// Convert a string to an interpolation type
+inline interpolation_t string_to_interpolation(const std::string& _str)
+{
+    const std::string str = boost::algorithm::to_lower_copy(_str);
+    if(str == "nearest")
+    {
+        return interpolation_t::NEAREST;
+    }
+    else if(str == "linear")
+    {
+        return interpolation_t::LINEAR;
+    }
+    else if(str == "bspline")
+    {
+        return interpolation_t::BSPLINE;
+    }
+    else
+    {
+        throw std::runtime_error("Unknown interpolation type: " + str);
+    }
+}
+
+} // namespace sight::filter::image

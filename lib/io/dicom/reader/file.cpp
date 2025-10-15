@@ -49,6 +49,8 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 
+#include <algorithm>
+
 // cspell: ignore orthogonalize
 namespace sight::io::dicom::reader
 {
@@ -1177,7 +1179,7 @@ inline static data::series_set::sptr read_image(const data::series& _source, con
 
         if(data::helper::medical_image::check_image_validity(image_series))
         {
-            data::helper::medical_image::check_image_slice_index(image_series);
+            data::helper::medical_image::check_image_slice_index(*image_series);
         }
 
         ///@todo check if we must rotate the buffer to match ImageOrientationPatient. Not sure it is a good idea...
@@ -1343,9 +1345,9 @@ public:
         std::vector<std::size_t> sorted;
         sorted.reserve(sorter.size());
 
-        std::transform(
-            sorter.cbegin(),
-            sorter.cend(),
+        std::ranges::transform(
+            sorter,
+
             std::back_inserter(sorted),
             [](const auto& _v){return _v.second;});
 
@@ -1448,9 +1450,9 @@ public:
         std::vector<std::size_t> sorted;
         sorted.reserve(sorter.size());
 
-        std::transform(
-            sorter.cbegin(),
-            sorter.cend(),
+        std::ranges::transform(
+            sorter,
+
             std::back_inserter(sorted),
             [](const auto& _v){return _v.second;});
 
@@ -1482,9 +1484,9 @@ public:
         std::vector<std::size_t> sorted;
         sorted.reserve(sorter.size());
 
-        std::transform(
-            sorter.cbegin(),
-            sorter.cend(),
+        std::ranges::transform(
+            sorter,
+
             std::back_inserter(sorted),
             [](const auto& _v){return _v.second;});
 
@@ -1516,9 +1518,9 @@ public:
         std::vector<std::size_t> sorted;
         sorted.reserve(sorter.size());
 
-        std::transform(
-            sorter.cbegin(),
-            sorter.cend(),
+        std::ranges::transform(
+            sorter,
+
             std::back_inserter(sorted),
             [](const auto& _v){return _v.second;});
 
@@ -1749,9 +1751,9 @@ data::series_set::sptr file::scan()
 
         // We need to transform std::vector<std::string> to std::vector<std::filesystem::path>
         const auto& filenames = gdcm_directory.GetFilenames();
-        std::transform(
-            filenames.cbegin(),
-            filenames.cend(),
+        std::ranges::transform(
+            filenames,
+
             std::back_inserter(files),
             [](const auto& _v)
             {

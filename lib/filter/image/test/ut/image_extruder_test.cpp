@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2024 IRCAD France
+ * Copyright (C) 2020-2025 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,228 +20,265 @@
  *
  ***********************************************************************/
 
-#include "image_extruder_test.hpp"
+#include <core/type.hpp>
+
+#include <data/image.hpp>
+#include <data/mesh.hpp>
 
 #include <filter/image/image_extruder.hpp>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::image_extruder_test);
+#include <doctest/doctest.h>
 
-namespace sight::filter::image::ut
+TEST_SUITE("sight::filter::image::image_extruder")
 {
+// Test constants
+    static const sight::core::type TYPE                = sight::core::type::INT8;
+    static const auto FORMAT                           = sight::data::image::pixel_format_t::gray_scale;
+    static const sight::data::image::size_t SIZE       = {8, 16, 24};
+    static const sight::data::image::origin_t ORIGIN   = {0.F, 0.F, 0.F};
+    static const sight::data::image::spacing_t SPACING = {1.F, 1.F, 1.F};
 
 //------------------------------------------------------------------------------
 
-void image_extruder_test::setUp()
-{
-    m_image = std::make_shared<data::image>();
-    const auto dump_lock = m_image->dump_lock();
-    m_image->set_spacing(m_spacing);
-    m_image->set_origin(m_origin);
-    m_image->resize(m_size, m_type, m_format);
-
-    const auto iter_end = m_image->end<std::int8_t>();
-    for(auto iter = m_image->begin<std::int8_t>() ; iter != iter_end ; ++iter)
+    static sight::data::image::sptr create_test_image()
     {
-        *iter = std::numeric_limits<std::int8_t>::max();
-    }
-}
+        sight::data::image::sptr image = std::make_shared<sight::data::image>();
+        const auto dump_lock           = image->dump_lock();
 
-//------------------------------------------------------------------------------
+        image->set_spacing(SPACING);
+        image->set_origin(ORIGIN);
+        image->resize(SIZE, TYPE, FORMAT);
 
-void image_extruder_test::tearDown()
-{
-    m_image.reset();
-}
+        const auto iter_end = image->end<std::int8_t>();
 
-//------------------------------------------------------------------------------
-
-void image_extruder_test::extrude_triangle_mesh()
-{
-    // Create a cube.
-    const data::mesh::sptr mesh = std::make_shared<data::mesh>();
-    const auto lock             = mesh->dump_lock();
-    mesh->resize(8, 12, data::mesh::cell_type_t::triangle);
-
-    {
-        auto it = mesh->begin<data::iterator::point::xyz>();
-
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
-        ++it;
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
-        ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
-        ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
-        ++it;
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_size[2] - 1);
-        ++it;
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_size[2] - 1);
-        ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_size[2] - 1);
-        ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_size[2] - 1);
-        ++it;
-    }
-
-    {
-        std::array<std::size_t, 36> indexes {0, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7, 1, 5, 4, 1, 4, 0,
-                                             2, 3, 6, 3, 6, 7, 1, 2, 6, 1, 6, 5, 0, 3, 7, 0, 7, 4
-        };
-        auto it        = mesh->begin<data::iterator::cell::triangle>();
-        std::size_t pt = 0;
-        for(std::size_t index = 0 ; index < 36 ; index += 3)
+        for(auto iter = image->begin<std::int8_t>() ; iter != iter_end ; ++iter)
         {
-            it->pt[0] = data::iterator::cell_t(indexes[pt++]);
-            it->pt[1] = data::iterator::cell_t(indexes[pt++]);
-            it->pt[2] = data::iterator::cell_t(indexes[pt++]);
+            *iter = std::numeric_limits<std::int8_t>::max();
+        }
 
+        return image;
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("extrude_triangle_mesh")
+    {
+        sight::data::image::sptr m_image = create_test_image();
+
+        // Create a cube.
+        const sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
+        const auto lock                    = mesh->dump_lock();
+
+        mesh->resize(8, 12, sight::data::mesh::cell_type_t::triangle);
+
+        {
+            auto it = mesh->begin<sight::data::iterator::point::xyz>();
+
+            it->x = static_cast<float>(ORIGIN[0] + 1);
+            it->y = static_cast<float>(ORIGIN[1] + 1);
+            it->z = static_cast<float>(ORIGIN[2] + 1);
+            ++it;
+
+            it->x = static_cast<float>(ORIGIN[0] + 1);
+            it->y = static_cast<float>(SIZE[1] - 1);
+            it->z = static_cast<float>(ORIGIN[2] + 1);
+            ++it;
+
+            it->x = static_cast<float>(SIZE[0] - 1);
+            it->y = static_cast<float>(SIZE[1] - 1);
+            it->z = static_cast<float>(ORIGIN[2] + 1);
+            ++it;
+
+            it->x = static_cast<float>(SIZE[0] - 1);
+            it->y = static_cast<float>(ORIGIN[1] + 1);
+            it->z = static_cast<float>(ORIGIN[2] + 1);
+            ++it;
+
+            it->x = static_cast<float>(ORIGIN[0] + 1);
+            it->y = static_cast<float>(ORIGIN[1] + 1);
+            it->z = static_cast<float>(SIZE[2] - 1);
+            ++it;
+
+            it->x = static_cast<float>(ORIGIN[0] + 1);
+            it->y = static_cast<float>(SIZE[1] - 1);
+            it->z = static_cast<float>(SIZE[2] - 1);
+            ++it;
+
+            it->x = static_cast<float>(SIZE[0] - 1);
+            it->y = static_cast<float>(SIZE[1] - 1);
+            it->z = static_cast<float>(SIZE[2] - 1);
+            ++it;
+
+            it->x = static_cast<float>(SIZE[0] - 1);
+            it->y = static_cast<float>(ORIGIN[1] + 1);
+            it->z = static_cast<float>(SIZE[2] - 1);
             ++it;
         }
-    }
 
-    const data::image::sptr image = std::make_shared<data::image>();
-
-    image->resize(m_image->size(), core::type::UINT8, data::image::pixel_format_t::gray_scale);
-    image->set_spacing(m_image->spacing());
-
-    const auto dump_lock = image->dump_lock();
-    std::fill(image->begin(), image->end(), std::uint8_t(255));
-
-    filter::image::image_extruder::extrude(image, mesh, nullptr);
-
-    const auto dump_origin_lock = m_image->dump_lock();
-
-    for(std::size_t z = 0 ; z < m_size[2] ; ++z)
-    {
-        for(std::size_t y = 0 ; y < m_size[1] ; ++y)
         {
-            for(std::size_t x = 0 ; x < m_size[0] ; ++x)
+            std::array<std::size_t, 36> indexes {
+                0, 1, 2, 0, 2, 3,
+                4, 5, 6, 4, 6, 7,
+                1, 5, 4, 1, 4, 0,
+                2, 3, 6, 3, 6, 7,
+                1, 2, 6, 1, 6, 5,
+                0, 3, 7, 0, 7, 4
+            };
+
+            auto it        = mesh->begin<sight::data::iterator::cell::triangle>();
+            std::size_t pt = 0;
+
+            for(std::size_t index = 0 ; index < 36 ; index += 3)
             {
-                if(double(x) >= m_origin[0] + 1 && x < m_size[0] - 1
-                   && double(y) >= m_origin[1] + 1 && y < m_size[1] - 1
-                   && double(z) >= m_origin[2] + 1 && z < m_size[2] - 1)
+                it->pt[0] = sight::data::iterator::cell_t(indexes[pt++]);
+                it->pt[1] = sight::data::iterator::cell_t(indexes[pt++]);
+                it->pt[2] = sight::data::iterator::cell_t(indexes[pt++]);
+                ++it;
+            }
+        }
+
+        const sight::data::image::sptr image = std::make_shared<sight::data::image>();
+        image->resize(m_image->size(), sight::core::type::UINT8, sight::data::image::pixel_format_t::gray_scale);
+        image->set_spacing(m_image->spacing());
+
+        const auto dump_lock = image->dump_lock();
+        std::fill(image->begin(), image->end(), std::uint8_t(255));
+
+        sight::filter::image::image_extruder::extrude(image, mesh, nullptr);
+
+        const auto dump_origin_lock = m_image->dump_lock();
+
+        for(std::size_t z = 0 ; z < SIZE[2] ; ++z)
+        {
+            for(std::size_t y = 0 ; y < SIZE[1] ; ++y)
+            {
+                for(std::size_t x = 0 ; x < SIZE[0] ; ++x)
                 {
-                    CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), image->at<std::uint8_t>(x, y, z));
-                }
-                else
-                {
-                    CPPUNIT_ASSERT_EQUAL(std::uint8_t(255), image->at<std::uint8_t>(x, y, z));
+                    if(double(x) >= ORIGIN[0] + 1 && x < SIZE[0] - 1
+                       && double(y) >= ORIGIN[1] + 1 && y < SIZE[1] - 1
+                       && double(z) >= ORIGIN[2] + 1 && z < SIZE[2] - 1)
+                    {
+                        CHECK_EQ(std::uint8_t(0), image->at<std::uint8_t>(x, y, z));
+                    }
+                    else
+                    {
+                        CHECK_EQ(std::uint8_t(255), image->at<std::uint8_t>(x, y, z));
+                    }
                 }
             }
         }
     }
-}
 
 //------------------------------------------------------------------------------
 
-void image_extruder_test::extrude_quad_mesh()
-{
-    // Create a cube.
-    const data::mesh::sptr mesh = std::make_shared<data::mesh>();
-    const auto lock             = mesh->dump_lock();
-
-    mesh->resize(8, 6, data::mesh::cell_type_t::quad);
-
+    TEST_CASE("extrude_quad_mesh")
     {
-        auto it = mesh->begin<data::iterator::point::xyz>();
+        sight::data::image::sptr m_image = create_test_image();
 
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
-        ++it;
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
-        ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
-        ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_origin[2] + 1);
-        ++it;
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_size[2] - 1);
-        ++it;
-        it->x = static_cast<float>(m_origin[0] + 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_size[2] - 1);
-        ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_size[1] - 1);
-        it->z = static_cast<float>(m_size[2] - 1);
-        ++it;
-        it->x = static_cast<float>(m_size[0] - 1);
-        it->y = static_cast<float>(m_origin[1] + 1);
-        it->z = static_cast<float>(m_size[2] - 1);
-        ++it;
-    }
+        // Create a cube.
+        const sight::data::mesh::sptr mesh = std::make_shared<sight::data::mesh>();
+        const auto lock                    = mesh->dump_lock();
 
-    {
-        std::array<std::size_t, 36> indexes {0, 1, 2, 3, 4, 5, 6, 7, 0, 1, 5, 4, 2, 3, 7, 6, 1, 2, 6, 5, 0, 3, 7, 4};
-        auto it        = mesh->begin<data::iterator::cell::quad>();
-        std::size_t pt = 0;
-        for(std::size_t index = 0 ; index < 24 ; index += 4)
+        mesh->resize(8, 6, sight::data::mesh::cell_type_t::quad);
+
         {
-            it->pt[0] = data::iterator::cell_t(indexes[pt++]);
-            it->pt[1] = data::iterator::cell_t(indexes[pt++]);
-            it->pt[2] = data::iterator::cell_t(indexes[pt++]);
-            it->pt[3] = data::iterator::cell_t(indexes[pt++]);
+            auto it = mesh->begin<sight::data::iterator::point::xyz>();
 
+            it->x = static_cast<float>(ORIGIN[0] + 1);
+            it->y = static_cast<float>(ORIGIN[1] + 1);
+            it->z = static_cast<float>(ORIGIN[2] + 1);
+            ++it;
+
+            it->x = static_cast<float>(ORIGIN[0] + 1);
+            it->y = static_cast<float>(SIZE[1] - 1);
+            it->z = static_cast<float>(ORIGIN[2] + 1);
+            ++it;
+
+            it->x = static_cast<float>(SIZE[0] - 1);
+            it->y = static_cast<float>(SIZE[1] - 1);
+            it->z = static_cast<float>(ORIGIN[2] + 1);
+            ++it;
+
+            it->x = static_cast<float>(SIZE[0] - 1);
+            it->y = static_cast<float>(ORIGIN[1] + 1);
+            it->z = static_cast<float>(ORIGIN[2] + 1);
+            ++it;
+
+            it->x = static_cast<float>(ORIGIN[0] + 1);
+            it->y = static_cast<float>(ORIGIN[1] + 1);
+            it->z = static_cast<float>(SIZE[2] - 1);
+            ++it;
+
+            it->x = static_cast<float>(ORIGIN[0] + 1);
+            it->y = static_cast<float>(SIZE[1] - 1);
+            it->z = static_cast<float>(SIZE[2] - 1);
+            ++it;
+
+            it->x = static_cast<float>(SIZE[0] - 1);
+            it->y = static_cast<float>(SIZE[1] - 1);
+            it->z = static_cast<float>(SIZE[2] - 1);
+            ++it;
+
+            it->x = static_cast<float>(SIZE[0] - 1);
+            it->y = static_cast<float>(ORIGIN[1] + 1);
+            it->z = static_cast<float>(SIZE[2] - 1);
             ++it;
         }
-    }
 
-    const data::image::sptr image = std::make_shared<data::image>();
-    image->resize(m_image->size(), core::type::UINT8, data::image::pixel_format_t::gray_scale);
-    image->set_spacing(m_image->spacing());
-
-    const auto dump_lock = image->dump_lock();
-    std::fill(image->begin(), image->end(), std::uint8_t(255));
-
-    filter::image::image_extruder::extrude(image, mesh, nullptr);
-
-    const auto dump_origin_lock = m_image->dump_lock();
-
-    for(std::size_t z = 0 ; z < m_size[2] ; ++z)
-    {
-        for(std::size_t y = 0 ; y < m_size[1] ; ++y)
         {
-            for(std::size_t x = 0 ; x < m_size[0] ; ++x)
+            std::array<std::size_t, 36> indexes {
+                0, 1, 2, 3,
+                4, 5, 6, 7,
+                0, 1, 5, 4,
+                2, 3, 7, 6,
+                1, 2, 6, 5,
+                0, 3, 7, 4
+            };
+
+            auto it        = mesh->begin<sight::data::iterator::cell::quad>();
+            std::size_t pt = 0;
+
+            for(std::size_t index = 0 ; index < 24 ; index += 4)
             {
-                if(double(x) >= m_origin[0] + 1 && x < m_size[0] - 1
-                   && double(y) >= m_origin[1] + 1 && y < m_size[1] - 1
-                   && double(z) >= m_origin[2] + 1 && z < m_size[2] - 1)
+                it->pt[0] = sight::data::iterator::cell_t(indexes[pt++]);
+                it->pt[1] = sight::data::iterator::cell_t(indexes[pt++]);
+                it->pt[2] = sight::data::iterator::cell_t(indexes[pt++]);
+                it->pt[3] = sight::data::iterator::cell_t(indexes[pt++]);
+                ++it;
+            }
+        }
+
+        const sight::data::image::sptr image = std::make_shared<sight::data::image>();
+        image->resize(m_image->size(), sight::core::type::UINT8, sight::data::image::pixel_format_t::gray_scale);
+        image->set_spacing(m_image->spacing());
+
+        const auto dump_lock = image->dump_lock();
+        std::fill(image->begin(), image->end(), std::uint8_t(255));
+
+        sight::filter::image::image_extruder::extrude(image, mesh, nullptr);
+
+        const auto dump_origin_lock = m_image->dump_lock();
+
+        for(std::size_t z = 0 ; z < SIZE[2] ; ++z)
+        {
+            for(std::size_t y = 0 ; y < SIZE[1] ; ++y)
+            {
+                for(std::size_t x = 0 ; x < SIZE[0] ; ++x)
                 {
-                    CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), image->at<std::uint8_t>(x, y, z));
-                }
-                else
-                {
-                    CPPUNIT_ASSERT_EQUAL(std::uint8_t(255), image->at<std::uint8_t>(x, y, z));
+                    if(double(x) >= ORIGIN[0] + 1 && x < SIZE[0] - 1
+                       && double(y) >= ORIGIN[1] + 1 && y < SIZE[1] - 1
+                       && double(z) >= ORIGIN[2] + 1 && z < SIZE[2] - 1)
+                    {
+                        CHECK_EQ(std::uint8_t(0), image->at<std::uint8_t>(x, y, z));
+                    }
+                    else
+                    {
+                        CHECK_EQ(std::uint8_t(255), image->at<std::uint8_t>(x, y, z));
+                    }
                 }
             }
         }
     }
-}
 
 //------------------------------------------------------------------------------
-
-} // namespace sight::filter::image::ut
+} // TEST_SUITE("sight::filter::image::image_extruder")

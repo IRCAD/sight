@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,12 +37,10 @@ namespace sight::io::itk
 template<class ITKIMAGE>
 void move_from_itk(
     typename ITKIMAGE::Pointer _itk_image,
-    data::image::sptr _data_image,
+    sight::data::image& _image,
     bool _buffer_manager_is_data_image
 )
 {
-    SIGHT_ASSERT("_dataImage not instanced", _data_image);
-
     // Add by arnaud
     std::uint8_t dim                 = ITKIMAGE::ImageDimension;
     data::image::spacing_t v_spacing = {0., 0., 0.};
@@ -56,14 +54,14 @@ void move_from_itk(
         v_spacing[d] = _itk_image->GetSpacing()[d];
     }
 
-    _data_image->set_origin(v_origin);
-    _data_image->set_spacing(v_spacing);
+    _image.set_origin(v_origin);
+    _image.set_spacing(v_spacing);
 
     const auto& direction = _itk_image->GetDirection();
 
     if(ITKIMAGE::ImageDimension > 2)
     {
-        _data_image->set_orientation(
+        _image.set_orientation(
             {
                 direction(0, 0),
                 direction(0, 1),
@@ -78,7 +76,7 @@ void move_from_itk(
     }
     else
     {
-        _data_image->set_orientation(
+        _image.set_orientation(
             {
                 direction(0, 0),
                 direction(0, 1),
@@ -93,14 +91,14 @@ void move_from_itk(
     }
 
     const auto pixel_type = core::type::get<typename ITKIMAGE::PixelType>();
-    const auto dump_lock  = _data_image->dump_lock();
+    const auto dump_lock  = _image.dump_lock();
     if(_buffer_manager_is_data_image)
     {
         SIGHT_ASSERT(
             "Sorry, this method requires that itkImage manages its buffer.",
             _itk_image->GetPixelContainer()->GetContainerManageMemory()
         );
-        _data_image->set_buffer(
+        _image.set_buffer(
             static_cast<void*>(_itk_image->GetBufferPointer()),
             true,
             pixel_type,
@@ -113,7 +111,7 @@ void move_from_itk(
     }
     else
     {
-        _data_image->set_buffer(
+        _image.set_buffer(
             static_cast<void*>(_itk_image->GetBufferPointer()),
             false,
             pixel_type,
@@ -122,13 +120,13 @@ void move_from_itk(
         );
     }
 
-    if(sight::data::helper::medical_image::check_image_validity(_data_image))
+    if(sight::data::helper::medical_image::check_image_validity(_image))
     {
-        sight::data::helper::medical_image::check_image_slice_index(_data_image);
+        sight::data::helper::medical_image::check_image_slice_index(_image);
     }
 
     // Post Condition correct pixel_t
-    SIGHT_ASSERT("Sorry, pixel type is not correct", _data_image->type() != core::type::NONE);
+    SIGHT_ASSERT("Sorry, pixel type is not correct", _image.type() != core::type::NONE);
 }
 
 //------------------------------------------------------------------------------
@@ -136,31 +134,23 @@ void move_from_itk(
 template<class ITKIMAGE>
 data::image::sptr move_from_itk(typename ITKIMAGE::Pointer _itk_image, bool _buffer_manager_is_data_image)
 {
-    data::image::sptr data = std::make_shared<data::image>();
-    io::itk::move_from_itk<ITKIMAGE>(_itk_image, data, _buffer_manager_is_data_image);
+    auto data = std::make_shared<data::image>();
+    io::itk::move_from_itk<ITKIMAGE>(_itk_image, *data, _buffer_manager_is_data_image);
     return data;
 }
 
 //------------------------------------------------------------------------------
 
-template<class ITKIMAGE_PTR>
-void move_from_itk(ITKIMAGE_PTR _itk_image, data::image::sptr _data_image)
-{
-    move_from_itk<typename ITKIMAGE_PTR::ObjectType>(_itk_image, _data_image);
-}
-
-//------------------------------------------------------------------------------
-
 template<class ITKIMAGE>
-typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _image_data)
+typename ITKIMAGE::Pointer move_to_itk(const data::image& _image)
 {
     // Pre Condition
     SIGHT_ASSERT(
         "The itk image dimensions do not correspond to the input image",
-        _image_data->num_dimensions() == ITKIMAGE::ImageDimension
+        _image.num_dimensions() == ITKIMAGE::ImageDimension
     );
 
-    const auto dump_lock = _image_data->dump_lock();
+    const auto dump_lock = _image.dump_lock();
 
     typename ITKIMAGE::Pointer itk_image = ITKIMAGE::New();
 
@@ -168,16 +158,16 @@ typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _image_data)
     typename ITKIMAGE::SpacingType spacing = itk_image->GetSpacing();
     for(std::uint8_t d = 0 ; d < ITKIMAGE::ImageDimension ; ++d)
     {
-        spacing[d] = _image_data->spacing()[d];
+        spacing[d] = _image.spacing()[d];
     }
 
     itk_image->SetSpacing(spacing);
 
     // update origin information
-    itk_image->SetOrigin(_image_data->origin().data());
+    itk_image->SetOrigin(_image.origin().data());
 
     // Update direction information
-    const auto& orientation = _image_data->orientation();
+    const auto& orientation = _image.orientation();
     auto direction          = itk_image->GetDirection();
 
     direction(0, 0) = orientation[0];
@@ -202,7 +192,7 @@ typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _image_data)
     for(std::uint8_t d = 0 ; d < ITKIMAGE::ImageDimension ; ++d)
     {
         // itkRegion.SetIndex( d,  static_cast<int>(imageData->getOrigin()[d]) );
-        itk_region.SetSize(d, static_cast<std::uint64_t>(_image_data->size()[d]));
+        itk_region.SetSize(d, static_cast<std::uint64_t>(_image.size()[d]));
         nb_pixels *= static_cast<std::uint64_t>(itk_region.GetSize()[d]);
     }
 
@@ -210,12 +200,21 @@ typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _image_data)
 
     itk_image->GetPixelContainer()->SetImportPointer(
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-        static_cast<typename ITKIMAGE::PixelType*>(const_cast<void*>(_image_data->buffer())),
+        static_cast<typename ITKIMAGE::PixelType*>(const_cast<void*>(_image.buffer())),
         nb_pixels,
         false
     );
 
     return itk_image;
+}
+
+//------------------------------------------------------------------------------
+
+template<class ITKIMAGE>
+typename ITKIMAGE::Pointer move_to_itk(data::image::csptr _data_image)
+{
+    SIGHT_ASSERT("Image is NULL", _data_image);
+    return move_to_itk<ITKIMAGE>(*_data_image);
 }
 
 //------------------------------------------------------------------------------

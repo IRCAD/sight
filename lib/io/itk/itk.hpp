@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,9 +33,9 @@ namespace sight::io::itk
 /**
  * @brief Allocate a new data Image from an itk one.
  *
- * If bufferManagerIsDataImage = true, itkImage releases buffer management
+ * If _buffer_manager_is_data_image = true, itkImage releases buffer management
  * and so data::image manages it (in this case, itkImage must be the
- * owner of this buffer). if bufferManagerIsDataImage = false, the created
+ * owner of this buffer). if _buffer_manager_is_data_image = false, the created
  * data::image does not manage the image buffer.
  */
 template<class ITKIMAGE>
@@ -44,23 +44,37 @@ data::image::sptr move_from_itk(typename ITKIMAGE::Pointer _itk_image, bool _buf
 /**
  * @brief Update a data Image from an itk one.
  *
- * If bufferManagerIsDataImage = true, itkImage releases buffer management
+ * If _buffer_manager_is_data_image = true, itkImage releases buffer management
  * and so data::image manages it (in this case, itkImage must be the
- * owner of this buffer). if bufferManagerIsDataImage = false, the created
+ * owner of this buffer). if _buffer_manager_is_data_image = false, the created
  * data::image does not manage the image buffer.
  */
 template<class ITKIMAGE>
 void move_from_itk(
     typename ITKIMAGE::Pointer _itk_image,
-    data::image::sptr _data_image,
+    data::image& _data_image,
     bool _buffer_manager_is_data_image = true
 );
 
 /**
  * @brief Create an ITK image from an data::image.
  *
- * If bufferManagerIsDataImage = true, imageData conserve his buffer management
- * and so the created itkImage not manages it. If bufferManagerIsDataImage = false,
+ * If _buffer_manager_is_data_image = true, imageData conserve his buffer management
+ * and so the created itkImage not manages it. If _buffer_manager_is_data_image = false,
+ * the created itkImage manage his image buffer and thus imageData releases his
+ * buffer (in this case, imageData must be the owner of this buffer).
+ *
+ * @pre an assertion check if ITKIMAGE::pixel_t correspond to imageData->get_pixel_type
+ * @pre an assertion check if ITKIMAGE dimension correspond to imageData dimension
+ */
+template<class ITKIMAGE>
+typename ITKIMAGE::Pointer move_to_itk(const data::image& _image_data);
+
+/**
+ * @brief Create an ITK image from an data::image.
+ *
+ * If _buffer_manager_is_data_image = true, imageData conserve his buffer management
+ * and so the created itkImage not manages it. If _buffer_manager_is_data_image = false,
  * the created itkImage manage his image buffer and thus imageData releases his
  * buffer (in this case, imageData must be the owner of this buffer).
  *

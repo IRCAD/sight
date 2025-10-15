@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,8 @@
 #include <data/image.hpp>
 #include <data/matrix4.hpp>
 
+#include <filter/image/types.hpp>
+
 #include <optional>
 
 namespace sight::filter::image
@@ -39,21 +41,24 @@ class SIGHT_FILTER_IMAGE_CLASS_API resampler
 {
 public:
 
+    using parameters_t = std::tuple<data::image::size_t,
+                                    data::image::origin_t,
+                                    data::image::orientation_t,
+                                    data::image::spacing_t,
+                                    filter::image::interpolation_t>;
+
     /**
      * @brief transforms and resamples an image using ITK.
      * @param[in] _in_image     the input data::image.
      * @param[out] _out_image   the resulting transformed image.
      * @param[in] _trf          transform applied to the input.
-     * @param[in] _parameters   set the desired origin, spacing and size.
+     * @param[in] _parameters   set the desired origin, spacing, size and interpolation.
      */
     static SIGHT_FILTER_IMAGE_API void resample(
         const data::image::csptr& _in_image,
         const data::image::sptr& _out_image,
         const data::matrix4::csptr& _trf,
-        std::optional<std::tuple<data::image::size_t,
-                                 data::image::origin_t,
-                                 data::image::orientation_t,
-                                 data::image::spacing_t> > _parameters = std::nullopt
+        std::optional<parameters_t> _parameters = std::nullopt
     );
 
     /**
@@ -66,7 +71,8 @@ public:
     static SIGHT_FILTER_IMAGE_API data::image::sptr resample(
         const data::image::csptr& _img,
         const data::matrix4::csptr& _trf,
-        const data::image::spacing_t& _output_spacing
+        const data::image::spacing_t& _output_spacing,
+        filter::image::interpolation_t _interpolation = filter::image::interpolation_t::LINEAR
     );
 };
 

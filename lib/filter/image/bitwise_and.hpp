@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
- * Copyright (C) 2018-2021 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,24 +21,23 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <sight/filter/image/config.hpp>
 
-namespace sight::filter::image::ut
+#include <data/image.hpp>
+
+namespace sight::filter::image
 {
 
-class spheroid_extraction_test : public CPPUNIT_NS::TestFixture
-{
-CPPUNIT_TEST_SUITE(spheroid_extraction_test);
-CPPUNIT_TEST(extractionTest);
-CPPUNIT_TEST_SUITE_END();
+/**
+ * @brief Perform a bitwise AND operation between two images.
+ * @param _in_image     input image.
+ * @param _mask_image   mask image.
+ * @param _out_image    output image.
+ */
+SIGHT_FILTER_IMAGE_API void bitwise_and(
+    const data::image& _in_image,
+    const data::image& _mask_image,
+    data::image& _out_image
+);
 
-public:
-
-    // interface
-    void setUp() override;
-    void tearDown() override;
-
-    static void extractionTest();
-};
-
-} // namespace sight::filter::image::ut
+} // namespace sight::filter::image

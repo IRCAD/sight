@@ -102,7 +102,7 @@ SIGHT_DATA_API bool check_image_validity(const data::image& _p_img);
  * @param       _p_img   image which must contains the field.
  * @return      true if the fields are added.
  */
-SIGHT_DATA_API bool check_image_slice_index(data::image::sptr _p_img);
+SIGHT_DATA_API bool check_image_slice_index(data::image& _p_img);
 
 /**
  * @brief Checks if image buffer contains zero, from begin to begin + len

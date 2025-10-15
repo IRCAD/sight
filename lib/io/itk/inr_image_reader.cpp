@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,7 +81,7 @@ struct inr_loader_functor
 
         reader->Update();
         typename image_t::Pointer itkimage = reader->GetOutput();
-        io::itk::move_from_itk<image_t>(itkimage, _param.m_data_image);
+        io::itk::move_from_itk<image_t>(itkimage, *_param.m_data_image);
     }
 
     //// get pixel type from Header

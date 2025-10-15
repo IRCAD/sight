@@ -22,7 +22,7 @@
 
 #include "filter/image/matrix_regressor.hpp"
 
-#include <filter/image/powell_optimizer.hpp>
+#include <filter/image/detail/powell_optimizer.hpp>
 
 #include <geometry/data/matrix4.hpp>
 
@@ -70,7 +70,7 @@ data::matrix4::sptr matrix_regressor::minimize(
 
     glm::dvec3 translation = glm::dvec3(glm::column(init_mat, 3));
 
-    powell_optimizer::function_parameters_t init_params(7);
+    detail::powell_optimizer::function_parameters_t init_params(7);
     init_params.put(0, translation[0]);
     init_params.put(1, translation[1]);
     init_params.put(2, translation[2]);
@@ -79,8 +79,8 @@ data::matrix4::sptr matrix_regressor::minimize(
     init_params.put(5, angles[2]);
     init_params.put(6, scale);
 
-    powell_optimizer::optimized_function_t distance_sum =
-        [this](const powell_optimizer::function_parameters_t& _parameters)
+    detail::powell_optimizer::optimized_function_t distance_sum =
+        [this](const detail::powell_optimizer::function_parameters_t& _parameters)
         {
             glm::dmat4 mat = glm::eulerAngleYXZ(_parameters[4], _parameters[3], _parameters[5]);
             mat = glm::translate(mat, glm::dvec3(_parameters[0], _parameters[1], _parameters[2]));
@@ -99,9 +99,9 @@ data::matrix4::sptr matrix_regressor::minimize(
             return distance;
         };
 
-    powell_optimizer optimizer(distance_sum, _step_tolerance, _value_tolerance, _step_length, _max_iter);
+    detail::powell_optimizer optimizer(distance_sum, _step_tolerance, _value_tolerance, _step_length, _max_iter);
 
-    powell_optimizer::function_parameters_t final_position = optimizer.optimize(init_params);
+    detail::powell_optimizer::function_parameters_t final_position = optimizer.optimize(init_params);
 
     glm::dmat4 result = glm::eulerAngleYXZ(final_position[4], final_position[3], final_position[5]);
     result = glm::translate(result, glm::dvec3(final_position[0], final_position[1], final_position[2]));

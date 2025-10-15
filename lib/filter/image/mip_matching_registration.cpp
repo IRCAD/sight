@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2025 IRCAD France
- * Copyright (C) 2017 IHU Strasbourg
+ * Copyright (C) 2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,20 +19,31 @@
  *
  ***********************************************************************/
 
-#include "service/filter.hpp"
+#include "filter/image/mip_matching_registration.hpp"
 
-#include <core/com/signal.hxx>
-
-namespace sight::service
-{
+#include "filter/image/detail/mip_matching_registration.hxx"
 
 //-----------------------------------------------------------------------------
 
-filter::filter(core::com::signals& _signals)
+namespace sight::filter::image
 {
-    _signals(signals::COMPUTED, std::make_shared<signals::computed_t>());
+
+//------------------------------------------------------------------------------
+
+void mip_matching_register(const data::image& _fixed, const data::image& _moving, data::matrix4& _transform)
+{
+    sight::filter::image::registration_dispatch::parameters params
+    {
+        .fixed     = _fixed.get_const_sptr(),
+        .moving    = _moving.get_const_sptr(),
+        .transform = _transform.get_sptr()
+    };
+
+    core::type type = _moving.type();
+    core::tools::dispatcher<core::tools::supported_dispatcher_types, sight::filter::image::registration_dispatch>
+    ::invoke(type, params);
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::service
+} // namespace sight::filter::image

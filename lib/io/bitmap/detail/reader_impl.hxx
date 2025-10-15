@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -129,7 +129,7 @@ public:
             SIGHT_THROW("No suitable backend found.");
         }
 
-        sight::data::helper::medical_image::check_image_slice_index(image);
+        sight::data::helper::medical_image::check_image_slice_index(*image);
     }
 
 private:

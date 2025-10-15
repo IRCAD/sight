@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2024 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,11 +40,6 @@ automatic_registration::automatic_registration() :
     has_parameters(m_slots)
 {
 }
-
-//------------------------------------------------------------------------------
-
-automatic_registration::~automatic_registration()
-= default;
 
 //------------------------------------------------------------------------------
 
@@ -107,8 +102,6 @@ void automatic_registration::starting()
 
 void automatic_registration::updating()
 {
-    using sight::filter::image::automatic_registration;
-
     const auto target    = m_target.lock();
     const auto reference = m_reference.lock();
 
@@ -118,142 +111,19 @@ void automatic_registration::updating()
     SIGHT_ASSERT("No " << REFERENCE_IN << " found !", reference);
     SIGHT_ASSERT("No " << TRANSFORM_INOUT << " found !", transform);
 
-    // Create a copy of m_multiResolutionParameters without empty values
-    automatic_registration::multi_resolution_parameters_t
-        multi_resolution_parameters(m_multi_resolution_parameters.size());
-
-    using param_pair_t = automatic_registration::multi_resolution_parameters_t::value_type;
-
-    auto last_elt = std::remove_copy_if(
-        m_multi_resolution_parameters.begin(),
-        m_multi_resolution_parameters.end(),
-        multi_resolution_parameters.begin(),
-        [](const param_pair_t& _v){return _v.first == 0;});
-
-    multi_resolution_parameters.erase(last_elt, multi_resolution_parameters.end());
-
-    automatic_registration registrator;
-
-    sight::ui::dialog::progress dialog("Automatic Registration", "Registering, please be patient.");
-
-    dialog.set_cancel_callback(
-        [&registrator]()
-        {
-            registrator.stop_registration();
-        });
-
-    std::fstream reg_log;
-
-    if(m_log)
+    sight::filter::image::registration_params_t params =
     {
-        std::stringstream file_name_stream;
-        const std::time_t system_time = std::time(nullptr);
-        file_name_stream << "registration_"
-        << std::put_time(std::localtime(&system_time), "%Y-%m-%d_%H-%M-%S") << ".csv";
-
-        reg_log.open(file_name_stream.str(), std::ios_base::out);
-        reg_log << "'Timestamp',"
-        << "'Current level',"
-        << "'Current iteration',"
-        << "'Shrink',"
-        << "'Sigma',"
-        << "'Current metric value',"
-        << "'Current parameters',"
-        << "'Current transform',"
-        << "'Relaxation factor',"
-        << "'Learning rate',"
-        << "'Gradient magnitude tolerance',"
-        << "'Minimum step size',"
-        << "'Maximum number of iterations',"
-        << "'Sampling rate',"
-        << "'Number of levels'"
-        << std::endl;
-    }
-
-    auto transfo_modified_sig = transform->signal<data::matrix4::modified_signal_t>
-                                    (data::matrix4::MODIFIED_SIG);
-
-    std::chrono::time_point<std::chrono::system_clock> reg_start_time;
-    std::size_t i = 0;
-
-    automatic_registration::iteration_callback_t iteration_callback =
-        [&]()
-        {
-            const itk::SizeValueType current_iteration = registrator.get_current_iteration();
-            const itk::SizeValueType current_level     = registrator.get_current_level();
-
-            const float progress = float(i++) / float(m_max_iterations * multi_resolution_parameters.size());
-
-            std::string msg = "Number of iterations : " + std::to_string(i) + " Current level : "
-                              + std::to_string(current_level);
-            dialog(progress, msg);
-            dialog.set_message(msg);
-
-            registrator.get_current_matrix(transform.get_shared());
-
-            if(m_log)
-            {
-                std::stringstream transform_stream;
-
-                for(std::uint8_t j = 0 ; j < 16 ; ++j)
-                {
-                    transform_stream << (*transform)[j];
-
-                    if(j != 15)
-                    {
-                        transform_stream << ";";
-                    }
-                }
-
-                const std::chrono::time_point<std::chrono::system_clock> now =
-                    std::chrono::system_clock::now();
-
-                const auto duration = now - reg_start_time;
-
-                reg_log << "'" << std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() << "',"
-                << "'" << current_level << "',"
-                << "'" << current_iteration << "',"
-                << "'" << multi_resolution_parameters[current_level].first << "',"
-                << "'" << multi_resolution_parameters[current_level].second << "',"
-                << "'" << registrator.get_current_metric_value() << "',"
-                << "'" << registrator.get_current_parameters() << "',"
-                << "'" << transform_stream.str() << "',"
-                << "'" << registrator.get_relaxation_factor() << "',"
-                << "'" << registrator.get_learning_rate() << "',"
-                << "'" << registrator.get_gradient_magnitude_tolerance() << "',"
-                << "'" << m_min_step << "',"
-                << "'" << m_max_iterations << "',"
-                << "'" << m_sampling_percentage << "',"
-                << "'" << multi_resolution_parameters.size() << "'"
-                << std::endl;
-
-                reg_log.flush(); // Flush, just to be sure.
-            }
-
-            transfo_modified_sig->async_emit();
-        };
-
-    try
-    {
-        registrator.register_image(
-            target.get_shared(),
-            reference.get_shared(),
-            transform.get_shared(),
-            m_metric,
-            multi_resolution_parameters,
-            m_sampling_percentage,
-            m_min_step,
-            m_max_iterations,
-            iteration_callback
-        );
-    }
-    catch(itk::ExceptionObject& e)
-    {
-        SIGHT_ERROR("[ITK EXCEPTION]" << e.GetDescription());
-    }
+        .multi_resolution_parameters = m_multi_resolution_parameters,
+        .max_iterations              = m_max_iterations,
+        .min_step                    = m_min_step,
+        .sampling_percentage         = m_sampling_percentage,
+        .metric                      = m_metric,
+        .enable_logging              = m_log
+    };
+    sight::filter::image::perform_automatic_registration(*target, *reference, *transform, params);
 
     this->signal<signals::computed_t>(signals::COMPUTED)->async_emit();
-    transfo_modified_sig->async_emit();
+    transform->async_emit(sight::data::signals::MODIFIED);
 }
 
 //------------------------------------------------------------------------------
@@ -324,7 +194,7 @@ void automatic_registration::set_int_parameter(int _val, std::string _key)
     else if(_key.find("shrink_") != std::string::npos)
     {
         const std::uint64_t level = this->extract_level_from_parameter_name(_key);
-        m_multi_resolution_parameters[level].first = itk::SizeValueType(_val);
+        m_multi_resolution_parameters[level].first = static_cast<std::size_t>(_val);
     }
     else
     {

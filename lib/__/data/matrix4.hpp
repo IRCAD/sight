@@ -47,6 +47,7 @@ public:
     using container<matrix4::container_t>::operator=;
 
     SIGHT_DECLARE_CLASS(matrix4, container<matrix4::container_t>);
+    SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Constructors
     /// @{

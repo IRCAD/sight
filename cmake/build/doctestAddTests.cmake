@@ -66,7 +66,7 @@ string(REPLACE "\n" ";" output "${output}")
 # Parse output
 foreach(line ${output})
     if(NOT "${line}" MATCHES
-       "<TestCase name=\"([A-z0-9:]*)\" (testsuite=\"([A-z0-9:]*)\" )?filename=\"([/\\_A-z\\.:]*)\" line=\"([0-9]*)\""
+       "<TestCase name=\"([A-Za-z0-9:_]*)\" (testsuite=\"([A-Za-z0-9:_]*)\" )?filename=\"([/\\_A-Za-z0-9\\.:]*)\" line=\"([0-9]*)\""
     )
         continue()
     endif()

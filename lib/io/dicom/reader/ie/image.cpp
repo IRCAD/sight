@@ -73,7 +73,7 @@ image::~image()
 
 //------------------------------------------------------------------------------
 
-double get_instance_z_position(const core::memory::buffer_object::sptr& _buffer_obj)
+static double get_instance_z_position(const core::memory::buffer_object::sptr& _buffer_obj)
 {
     gdcm::ImageReader reader;
     const core::memory::buffer_manager::stream_info stream_info = _buffer_obj->get_stream_info();
@@ -237,7 +237,7 @@ void image::read_voilut_module()
 
 //------------------------------------------------------------------------------
 
-std::vector<double> get_rescale_intercept_slope_value(gdcm::ImageReader* _image_reader)
+static std::vector<double> get_rescale_intercept_slope_value(gdcm::ImageReader* _image_reader)
 {
     // Retrieve dataset
     const gdcm::DataSet& dataset = _image_reader->GetFile().GetDataSet();
@@ -393,7 +393,7 @@ void image::read_image_pixel_module()
 
     if(sight::data::helper::medical_image::check_image_validity(m_object))
     {
-        sight::data::helper::medical_image::check_image_slice_index(m_object);
+        sight::data::helper::medical_image::check_image_slice_index(*m_object);
     }
 }
 

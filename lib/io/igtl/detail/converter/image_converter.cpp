@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,9 +99,9 @@ data::object::sptr image_converter::from_igtl_message(const ::igtl::MessageBase:
     src_img->GetSpacing(igtl_spacing.data());
     src_img->GetOrigin(igtl_origins.data());
     src_img->GetDimensions(igtl_dimensions.data());
-    std::transform(igtl_spacing.begin(), igtl_spacing.end(), spacing.begin(), boost::numeric_cast<double, float>);
-    std::copy(igtl_dimensions.begin(), igtl_dimensions.end(), size.begin());
-    std::transform(igtl_origins.begin(), igtl_origins.end(), origins.begin(), boost::numeric_cast<double, float>);
+    std::ranges::transform(igtl_spacing, spacing.begin(), boost::numeric_cast<double, float>);
+    std::ranges::copy(igtl_dimensions, size.begin());
+    std::ranges::transform(igtl_origins, origins.begin(), boost::numeric_cast<double, float>);
     dest_img->set_origin(origins);
     dest_img->set_spacing(spacing);
 
@@ -130,7 +130,7 @@ data::object::sptr image_converter::from_igtl_message(const ::igtl::MessageBase:
 
     if(sight::data::helper::medical_image::check_image_validity(dest_img))
     {
-        sight::data::helper::medical_image::check_image_slice_index(dest_img);
+        sight::data::helper::medical_image::check_image_slice_index(*dest_img);
     }
 
     return dest_img;

@@ -8,11 +8,11 @@ if(MSVC)
 endif()
 
 find_package(ITK QUIET COMPONENTS ITKCommon ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT ITKStatistics REQUIRED)
-target_link_libraries(filter_image PUBLIC ITKCommon ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT ITKStatistics)
+target_link_libraries(filter_image PRIVATE ITKCommon ITKLabelMap ITKOptimizersv4 ITKTransform ITKFFT ITKStatistics)
 
 if(ITK_VERSION_MAJOR GREATER 4)
     find_package(ITK QUIET COMPONENTS ITKSmoothing ITKRegistrationMethodsv4 REQUIRED)
-    target_link_libraries(filter_image PUBLIC ITKSmoothing ITKRegistrationMethodsv4)
+    target_link_libraries(filter_image PRIVATE ITKSmoothing ITKRegistrationMethodsv4)
 
     # Unfortunately, we cannot simply test the absence of an ITK module with find_package, so we have to hack it...
     find_file(
@@ -34,9 +34,9 @@ if(ITK_VERSION_MAJOR GREATER 5 OR (ITK_VERSION_MAJOR EQUAL 5 AND ITK_VERSION_MIN
     include(${ITK_USE_FILE})
 endif()
 
-target_link_libraries(filter_image PRIVATE "$<$<VERSION_GREATER_EQUAL:glm_VERSION,0.9.9.8>:glm::glm>")
+target_link_libraries(filter_image PRIVATE "$<$<VERSION_GREATER_EQUAL:glm_VERSION,0.9.9.8>:glm::glm>" io_itk)
 
-target_link_libraries(filter_image PUBLIC data geometry_data io_itk)
+target_link_libraries(filter_image PUBLIC data geometry_data)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/ut)

@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-#include "line_drawer_test.hpp"
-
 #include <core/type.hpp>
 
 #include <data/helper/medical_image.hpp>
@@ -32,511 +30,560 @@
 
 #include <utest_data/generator/image.hpp>
 
-// Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::line_drawer_test);
+#include <doctest/doctest.h>
 
-namespace sight::filter::image::ut
+TEST_SUITE("sight::filter::image::line_drawer")
 {
-
 //------------------------------------------------------------------------------
 
-void line_drawer_test::setUp()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void line_drawer_test::tearDown()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void line_drawer_test::circle_test()
-{
+    TEST_CASE("circle")
     {
-        const data::image::size_t size               = {120, 120, 120};
-        const data::image::spacing_t spacing         = {1., 1., 1.};
-        const data::image::origin_t origin           = {0., 0., 0.};
-        const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
-        const core::type type                        = core::type::INT16;
+        {
+            const sight::data::image::size_t size               = {120, 120, 120};
+            const sight::data::image::spacing_t spacing         = {1., 1., 1.};
+            const sight::data::image::origin_t origin           = {0., 0., 0.};
+            const sight::data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+            const sight::core::type type                        = sight::core::type::INT16;
 
-        const filter::image::line_drawer::coordinates_t point = {20, 20, 20};
-        const double thickness                                = 0.0001;
-        const std::int16_t value                              = 152;
+            const sight::filter::image::line_drawer::coordinates_t point = {20, 20, 20};
+            const double thickness                                       = 0.0001;
+            const std::int16_t value                                     = 152;
 
-        data::image::sptr image = std::make_shared<data::image>();
+            sight::data::image::sptr image = std::make_shared<sight::data::image>();
 
-        utest_data::generator::image::generate_image(
-            image,
-            size,
-            spacing,
-            origin,
-            orientation,
-            type,
-            data::image::pixel_format_t::gray_scale
-        );
+            sight::utest_data::generator::image::generate_image(
+                image,
+                size,
+                spacing,
+                origin,
+                orientation,
+                type,
+                sight::data::image::pixel_format_t::gray_scale
+            );
 
-        const auto dump_lock = image->dump_lock();
-        const auto* val      = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
+            const auto dump_lock = image->dump_lock();
 
-        filter::image::line_drawer drawer(image, nullptr);
-        image_diff diff = drawer.draw(
-            filter::image::bresenham_line::Orientation::z_axis,
-            point,
-            point,
-            val,
-            thickness
-        );
+            const auto* val = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
 
-        const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);
+            sight::filter::image::line_drawer drawer(image, nullptr);
 
-        CPPUNIT_ASSERT_EQUAL(value, res_value);
-        CPPUNIT_ASSERT_EQUAL(std::size_t(1), diff.num_elements());
-        data::image::index_t index = (point[0] + point[1] * size[0] + point[2] * size[0] * size[1]);
-        CPPUNIT_ASSERT_EQUAL(index, diff.get_element(0).m_index);
-        CPPUNIT_ASSERT_EQUAL(std::int16_t(0), *reinterpret_cast<const std::int16_t*>(diff.get_element(0).m_old_value));
-        CPPUNIT_ASSERT_EQUAL(value, *reinterpret_cast<const std::int16_t*>(diff.get_element(0).m_new_value));
-    }
+            sight::filter::image::image_diff diff = drawer.draw(
+                sight::filter::image::bresenham_line::Orientation::z_axis,
+                point,
+                point,
+                val,
+                thickness
+            );
 
-    {
-        const data::image::size_t size               = {120, 120, 120};
-        const data::image::spacing_t spacing         = {1., 1., 1.};
-        const data::image::origin_t origin           = {0., 0., 0.};
-        const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
-        const core::type type                        = core::type::INT16;
-
-        const filter::image::line_drawer::coordinates_t point = {20, 20, 20};
-
-        const double thickness   = 5;
-        const std::int16_t value = 152;
-
-        data::image::sptr image = std::make_shared<data::image>();
-
-        utest_data::generator::image::generate_image(
-            image,
-            size,
-            spacing,
-            origin,
-            orientation,
-            type,
-            data::image::pixel_format_t::gray_scale
-        );
-
-        const auto dump_lock = image->dump_lock();
-        const auto* val      = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
-
-        filter::image::line_drawer drawer(image, nullptr);
-        drawer.draw(filter::image::bresenham_line::Orientation::z_axis, point, point, val, thickness);
-
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(29, 36, 54);
-            CPPUNIT_ASSERT_EQUAL(std::int16_t(0), res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] - 2, point[1] - 2, point[2]);
-            CPPUNIT_ASSERT_EQUAL(std::int16_t(0), res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] - 2, point[1] - 1, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] - 2, point[1], point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] - 2, point[1] + 1, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] - 2, point[1] + 2, point[2]);
-            CPPUNIT_ASSERT_EQUAL(std::int16_t(0), res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] - 1, point[1] - 2, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] - 1, point[1] - 1, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] - 1, point[1], point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] - 1, point[1] + 1, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] - 1, point[1] + 2, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1] - 2, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1] - 1, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1] + 1, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1] + 2, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] + 1, point[1] - 2, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] + 1, point[1] - 1, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] + 1, point[1], point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] + 1, point[1] + 1, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] + 1, point[1] + 2, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] + 2, point[1] - 2, point[2]);
-            CPPUNIT_ASSERT_EQUAL(std::int16_t(0), res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] + 2, point[1] - 1, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] + 2, point[1], point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] + 2, point[1] + 1, point[2]);
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0] + 2, point[1] + 2, point[2]);
-            CPPUNIT_ASSERT_EQUAL(std::int16_t(0), res_value);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void line_drawer_test::ellipse_test()
-{
-    {
-        const data::image::size_t size               = {120, 120, 120};
-        const data::image::spacing_t spacing         = {1., 4., 1.};
-        const data::image::origin_t origin           = {0., 0., 0.};
-        const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
-        const core::type type                        = core::type::INT16;
-
-        const filter::image::line_drawer::coordinates_t point = {50, 50, 50};
-
-        const double thickness   = 10;
-        const std::int16_t value = 152;
-
-        data::image::sptr image = std::make_shared<data::image>();
-
-        utest_data::generator::image::generate_image(
-            image,
-            size,
-            spacing,
-            origin,
-            orientation,
-            type,
-            data::image::pixel_format_t::gray_scale
-        );
-
-        const auto dump_lock = image->dump_lock();
-        const auto* val      = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
-
-        filter::image::line_drawer drawer(image, nullptr);
-        image_diff diff = drawer.draw(
-            filter::image::bresenham_line::Orientation::z_axis,
-            point,
-            point,
-            val,
-            thickness
-        );
-
-        {
             const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);
 
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
+            CHECK_EQ(value, res_value);
+            CHECK_EQ(std::size_t(1), diff.num_elements());
+
+            sight::data::image::index_t index = (point[0] + point[1] * size[0] + point[2] * size[0] * size[1]);
+
+            CHECK_EQ(index, diff.get_element(0).m_index);
+            CHECK_EQ(std::int16_t(0), *reinterpret_cast<const std::int16_t*>(diff.get_element(0).m_old_value));
+            CHECK_EQ(value, *reinterpret_cast<const std::int16_t*>(diff.get_element(0).m_new_value));
         }
 
         {
-            const double square_radius = (thickness / 2.) * (thickness / 2.);
-            const std::array p         = {static_cast<double>(point[0]),
-                                          static_cast<double>(point[1]),
-                                          static_cast<double>(point[2])
-            };
+            const sight::data::image::size_t size               = {120, 120, 120};
+            const sight::data::image::spacing_t spacing         = {1., 1., 1.};
+            const sight::data::image::origin_t origin           = {0., 0., 0.};
+            const sight::data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+            const sight::core::type type                        = sight::core::type::INT16;
 
-            std::size_t diff_index = 0;
+            const sight::filter::image::line_drawer::coordinates_t point = {20, 20, 20};
+            const double thickness                                       = 5;
+            const std::int16_t value                                     = 152;
 
-            for(std::size_t j = 0 ; j < size[1] ; ++j)
+            sight::data::image::sptr image = std::make_shared<sight::data::image>();
+
+            sight::utest_data::generator::image::generate_image(
+                image,
+                size,
+                spacing,
+                origin,
+                orientation,
+                type,
+                sight::data::image::pixel_format_t::gray_scale
+            );
+
+            const auto dump_lock = image->dump_lock();
+
+            const auto* val = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
+
+            sight::filter::image::line_drawer drawer(image, nullptr);
+
+            drawer.draw(sight::filter::image::bresenham_line::Orientation::z_axis, point, point, val, thickness);
+
             {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(29, 36, 54);
+                CHECK_EQ(std::int16_t(0), res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] - 2, point[1] - 2, point[2]);
+                CHECK_EQ(std::int16_t(0), res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] - 2, point[1] - 1, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] - 2, point[1], point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] - 2, point[1] + 1, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] - 2, point[1] + 2, point[2]);
+                CHECK_EQ(std::int16_t(0), res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] - 1, point[1] - 2, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] - 1, point[1] - 1, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] - 1, point[1], point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] - 1, point[1] + 1, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] - 1, point[1] + 2, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1] - 2, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1] - 1, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1] + 1, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1] + 2, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] + 1, point[1] - 2, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] + 1, point[1] - 1, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] + 1, point[1], point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] + 1, point[1] + 1, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] + 1, point[1] + 2, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] + 2, point[1] - 2, point[2]);
+                CHECK_EQ(std::int16_t(0), res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] + 2, point[1] - 1, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] + 2, point[1], point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] + 2, point[1] + 1, point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0] + 2, point[1] + 2, point[2]);
+                CHECK_EQ(std::int16_t(0), res_value);
+            }
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("ellipse")
+    {
+        {
+            const sight::data::image::size_t size               = {120, 120, 120};
+            const sight::data::image::spacing_t spacing         = {1., 4., 1.};
+            const sight::data::image::origin_t origin           = {0., 0., 0.};
+            const sight::data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+            const sight::core::type type                        = sight::core::type::INT16;
+
+            const sight::filter::image::line_drawer::coordinates_t point = {50, 50, 50};
+            const double thickness                                       = 10;
+            const std::int16_t value                                     = 152;
+
+            sight::data::image::sptr image = std::make_shared<sight::data::image>();
+
+            sight::utest_data::generator::image::generate_image(
+                image,
+                size,
+                spacing,
+                origin,
+                orientation,
+                type,
+                sight::data::image::pixel_format_t::gray_scale
+            );
+
+            const auto dump_lock = image->dump_lock();
+
+            const auto* val = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
+
+            sight::filter::image::line_drawer drawer(image, nullptr);
+
+            sight::filter::image::image_diff diff = drawer.draw(
+                sight::filter::image::bresenham_line::Orientation::z_axis,
+                point,
+                point,
+                val,
+                thickness
+            );
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const double square_radius = (thickness / 2.) * (thickness / 2.);
+                const std::array p         = {
+                    static_cast<double>(point[0]),
+                    static_cast<double>(point[1]),
+                    static_cast<double>(point[2])
+                };
+
+                std::size_t diff_index = 0;
+
+                for(std::size_t j = 0 ; j < size[1] ; ++j)
+                {
+                    for(std::size_t i = 0 ; i < size[0] ; ++i)
+                    {
+                        const std::int16_t res_value = image->at<std::int16_t>(i, j, point[2]);
+
+                        const double x    = (static_cast<double>(i) - p[0]) * spacing[0];
+                        const double y    = (static_cast<double>(j) - p[1]) * spacing[1];
+                        const double dist = x * x + y * y;
+
+                        if(dist <= square_radius)
+                        {
+                            sight::filter::image::image_diff::element_t elt = diff.get_element(diff_index);
+
+                            CHECK_MESSAGE(
+                                value == res_value,
+                                "p[",
+                                std::to_string(i),
+                                "][",
+                                std::to_string(j),
+                                "]"
+                            );
+
+                            CHECK(diff_index != diff.num_elements());
+
+                            const sight::data::image::index_t index = i + j * size[0] + point[2] * size[0] * size[1];
+
+                            CHECK_MESSAGE(
+                                index == elt.m_index,
+                                "p[",
+                                std::to_string(i),
+                                "][",
+                                std::to_string(j),
+                                "]"
+                            );
+
+                            CHECK_MESSAGE(
+                                value == *reinterpret_cast<const std::int16_t*>(elt.m_new_value),
+                                "p[",
+                                std::to_string(i),
+                                "][",
+                                std::to_string(j),
+                                "]"
+                            );
+
+                            CHECK_MESSAGE(
+                                std::int16_t(0) == *reinterpret_cast<const std::int16_t*>(elt.m_old_value),
+                                "p[",
+                                std::to_string(i),
+                                "][",
+                                std::to_string(j),
+                                "]"
+                            );
+
+                            ++diff_index;
+                        }
+                        else
+                        {
+                            CHECK_MESSAGE(
+                                std::int16_t(0) == res_value,
+                                "p[",
+                                std::to_string(i),
+                                "][",
+                                std::to_string(j),
+                                "]"
+                            );
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+//------------------------------------------------------------------------------
+
+    TEST_CASE("border")
+    {
+        {
+            const sight::data::image::size_t size               = {50, 50, 50};
+            const sight::data::image::spacing_t spacing         = {2., 4., 8.};
+            const sight::data::image::origin_t origin           = {0., 0., 0.};
+            const sight::data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+            const sight::core::type type                        = sight::core::type::INT16;
+
+            const sight::filter::image::line_drawer::coordinates_t point = {45, 3, 20};
+            const double thickness                                       = 15;
+            const std::int16_t value                                     = 1952;
+
+            sight::data::image::sptr image = std::make_shared<sight::data::image>();
+
+            sight::utest_data::generator::image::generate_image(
+                image,
+                size,
+                spacing,
+                origin,
+                orientation,
+                type,
+                sight::data::image::pixel_format_t::gray_scale
+            );
+
+            const auto dump_lock = image->dump_lock();
+
+            const auto* val = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
+
+            sight::filter::image::line_drawer drawer(image, nullptr);
+
+            drawer.draw(sight::filter::image::bresenham_line::Orientation::z_axis, point, point, val, thickness);
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const double square_radius = (thickness / 2.) * (thickness / 2.);
+                const std::array p         = {
+                    static_cast<double>(point[0]),
+                    static_cast<double>(point[1]),
+                    static_cast<double>(point[2])
+                };
+
                 for(std::size_t i = 0 ; i < size[0] ; ++i)
                 {
-                    const std::int16_t res_value = image->at<std::int16_t>(i, j, point[2]);
-
-                    const double x    = (static_cast<double>(i) - p[0]) * spacing[0];
-                    const double y    = (static_cast<double>(j) - p[1]) * spacing[1];
-                    const double dist = x * x + y * y;
-                    if(dist <= square_radius)
+                    for(std::size_t j = 0 ; j < size[1] ; ++j)
                     {
-                        image_diff::element_t elt = diff.get_element(diff_index);
+                        const std::int16_t res_value = image->at<std::int16_t>(i, j, point[2]);
 
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "p[" + std::to_string(i) + "][" + std::to_string(j) + "]",
-                            value,
-                            res_value
-                        );
-                        CPPUNIT_ASSERT(diff_index != diff.num_elements());
-                        const data::image::index_t index = i + j * size[0] + point[2] * size[0] * size[1];
+                        const double x    = (static_cast<double>(i) - p[0]) * spacing[0];
+                        const double y    = (static_cast<double>(j) - p[1]) * spacing[1];
+                        const double dist = x * x + y * y;
 
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "p[" + std::to_string(i) + "][" + std::to_string(j) + "]",
-                            index,
-                            elt.m_index
-                        );
-
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "p[" + std::to_string(i) + "][" + std::to_string(j) + "]",
-                            value,
-                            *reinterpret_cast<const std::int16_t*>(elt.m_new_value)
-                        );
-
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "p[" + std::to_string(i) + "][" + std::to_string(j) + "]",
-                            std::int16_t(0),
-                            *reinterpret_cast<const std::int16_t*>(elt.m_old_value)
-                        );
-                        ++diff_index;
-                    }
-                    else
-                    {
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "p[" + std::to_string(i) + "][" + std::to_string(j) + "]",
-                            std::int16_t(0),
-                            res_value
-                        );
+                        if(dist <= square_radius)
+                        {
+                            CHECK_MESSAGE(
+                                value == res_value,
+                                "p[",
+                                std::to_string(i),
+                                "][",
+                                std::to_string(j),
+                                "]"
+                            );
+                        }
+                        else
+                        {
+                            CHECK_MESSAGE(
+                                std::int16_t(0) == res_value,
+                                "p[",
+                                std::to_string(i),
+                                "][",
+                                std::to_string(j),
+                                "]"
+                            );
+                        }
                     }
                 }
             }
         }
     }
-}
 
 //------------------------------------------------------------------------------
 
-void line_drawer_test::border_test()
-{
+    TEST_CASE("roi")
     {
-        const data::image::size_t size               = {50, 50, 50};
-        const data::image::spacing_t spacing         = {2., 4., 8.};
-        const data::image::origin_t origin           = {0., 0., 0.};
-        const data::image::orientation_t orientation = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
-        const core::type type                        = core::type::INT16;
-
-        const filter::image::line_drawer::coordinates_t point = {45, 3, 20};
-
-        const double thickness   = 15;
-        const std::int16_t value = 1952;
-
-        data::image::sptr image = std::make_shared<data::image>();
-
-        utest_data::generator::image::generate_image(
-            image,
-            size,
-            spacing,
-            origin,
-            orientation,
-            type,
-            data::image::pixel_format_t::gray_scale
-        );
-
-        const auto dump_lock = image->dump_lock();
-        const auto* val      = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
-
-        filter::image::line_drawer drawer(image, nullptr);
-        drawer.draw(filter::image::bresenham_line::Orientation::z_axis, point, point, val, thickness);
-
         {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);
+            const sight::data::image::size_t size             = {150, 150, 150};
+            const sight::data::image::spacing_t spacing       = {2., 4., 8.};
+            const sight::data::image::origin_t origin         = {0., 0., 0.};
+            const sight::data::image::orientation_t direction = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
+            const sight::core::type type                      = sight::core::type::INT16;
 
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
+            const sight::filter::image::line_drawer::coordinates_t point = {45, 45, 40};
+            const sight::data::helper::medical_image::axis_t orientation = sight::data::helper::medical_image::z_axis;
+            const double thickness                                       = 15;
+            const std::int16_t value                                     = 1952;
 
-        {
-            const double square_radius = (thickness / 2.) * (thickness / 2.);
-            const std::array p         = {static_cast<double>(point[0]),
-                                          static_cast<double>(point[1]),
-                                          static_cast<double>(point[2])
-            };
-            for(std::size_t i = 0 ; i < size[0] ; ++i)
+            sight::data::image::sptr image     = std::make_shared<sight::data::image>();
+            sight::data::image::sptr roi_image = std::make_shared<sight::data::image>();
+
+            sight::utest_data::generator::image::generate_image(
+                image,
+                size,
+                spacing,
+                origin,
+                direction,
+                type,
+                sight::data::image::pixel_format_t::gray_scale
+            );
+
+            sight::utest_data::generator::image::generate_image(
+                roi_image,
+                size,
+                spacing,
+                origin,
+                direction,
+                type,
+                sight::data::image::pixel_format_t::gray_scale
+            );
+
+            const auto roi_dump_lock = roi_image->dump_lock();
+
+            // draw a cube in ROI
+            const sight::data::image::size_t roi_begin = {{25, 25, 25}};
+            const sight::data::image::size_t roi_end   = {{50, 50, 50}};
+            const std::int16_t roi_value               = 1;
+
+            const auto* roi_val = reinterpret_cast<const sight::data::image::buffer_t*>(&roi_value);
+
+            for(std::size_t i = roi_begin[0] ; i < roi_end[0] ; ++i)
             {
-                for(std::size_t j = 0 ; j < size[1] ; ++j)
+                for(std::size_t j = roi_begin[1] ; j < roi_end[1] ; ++j)
                 {
-                    const std::int16_t res_value = image->at<std::int16_t>(i, j, point[2]);
-
-                    const double x    = (static_cast<double>(i) - p[0]) * spacing[0];
-                    const double y    = (static_cast<double>(j) - p[1]) * spacing[1];
-                    const double dist = x * x + y * y;
-
-                    if(dist <= square_radius)
+                    for(std::size_t k = roi_begin[2] ; k < roi_end[2] ; ++k)
                     {
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "p[" + std::to_string(i) + "][" + std::to_string(j) + "]",
-                            value,
-                            res_value
-                        );
+                        sight::data::image::index_t index = i + j * size[0] + k * size[0] * size[1];
+                        roi_image->set_pixel(index, roi_val);
                     }
-                    else
+                }
+            }
+
+            const auto dump_lock = image->dump_lock();
+
+            const auto* val = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
+
+            sight::filter::image::line_drawer drawer(image, roi_image);
+
+            drawer.draw(orientation, point, point, val, thickness);
+
+            {
+                const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);
+                CHECK_EQ(value, res_value);
+            }
+
+            {
+                const double square_radius = (thickness / 2.) * (thickness / 2.);
+                const std::array p         = {
+                    static_cast<double>(point[0]),
+                    static_cast<double>(point[1]),
+                    static_cast<double>(point[2])
+                };
+
+                for(std::size_t i = 0 ; i < size[0] ; ++i)
+                {
+                    for(std::size_t j = 0 ; j < size[1] ; ++j)
                     {
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "p[" + std::to_string(i) + "][" + std::to_string(j) + "]",
-                            std::int16_t(0),
-                            res_value
-                        );
+                        const std::int16_t res_value = image->at<std::int16_t>(i, j, point[2]);
+
+                        const double x    = (static_cast<double>(i) - p[0]) * spacing[0];
+                        const double y    = (static_cast<double>(j) - p[1]) * spacing[1];
+                        const double dist = x * x + y * y;
+
+                        if(dist <= square_radius && i >= roi_begin[0] && i <= roi_end[0] && j >= roi_begin[1]
+                           && j <= roi_end[1])
+                        {
+                            CHECK_MESSAGE(
+                                value == res_value,
+                                "p[",
+                                std::to_string(i),
+                                "][",
+                                std::to_string(j),
+                                "]"
+                            );
+                        }
+                        else
+                        {
+                            CHECK_MESSAGE(
+                                std::int16_t(0) == res_value,
+                                "p[",
+                                std::to_string(i),
+                                "][",
+                                std::to_string(j),
+                                "]"
+                            );
+                        }
                     }
                 }
             }
         }
     }
-}
 
 //------------------------------------------------------------------------------
-
-void line_drawer_test::roi_test()
-{
-    {
-        const data::image::size_t size             = {150, 150, 150};
-        const data::image::spacing_t spacing       = {2., 4., 8.};
-        const data::image::origin_t origin         = {0., 0., 0.};
-        const data::image::orientation_t direction = {0.36, 0.48, -0.8, -0.8, 0.6, 0.0, 0.48, 0.64, 0.6};
-        const core::type type                      = core::type::INT16;
-
-        const filter::image::line_drawer::coordinates_t point = {45, 45, 40};
-
-        const data::helper::medical_image::axis_t orientation =
-            data::helper::medical_image::z_axis;
-        const double thickness   = 15;
-        const std::int16_t value = 1952;
-
-        data::image::sptr image     = std::make_shared<data::image>();
-        data::image::sptr roi_image = std::make_shared<data::image>();
-
-        utest_data::generator::image::generate_image(
-            image,
-            size,
-            spacing,
-            origin,
-            direction,
-            type,
-            data::image::pixel_format_t::gray_scale
-        );
-        utest_data::generator::image::generate_image(
-            roi_image,
-            size,
-            spacing,
-            origin,
-            direction,
-            type,
-            data::image::pixel_format_t::gray_scale
-        );
-
-        const auto roi_dump_lock = roi_image->dump_lock();
-
-        // draw a cube in ROI
-        const data::image::size_t roi_begin = {{25, 25, 25}};
-        const data::image::size_t roi_end   = {{50, 50, 50}};
-        const std::int16_t roi_value        = 1;
-
-        const auto* roi_val = reinterpret_cast<const sight::data::image::buffer_t*>(&roi_value);
-
-        for(std::size_t i = roi_begin[0] ; i < roi_end[0] ; ++i)
-        {
-            for(std::size_t j = roi_begin[1] ; j < roi_end[1] ; ++j)
-            {
-                for(std::size_t k = roi_begin[2] ; k < roi_end[2] ; ++k)
-                {
-                    data::image::index_t index = i + j * size[0] + k * size[0] * size[1];
-                    roi_image->set_pixel(index, roi_val);
-                }
-            }
-        }
-
-        const auto dump_lock = image->dump_lock();
-        const auto* val      = reinterpret_cast<const sight::data::image::buffer_t*>(&value);
-
-        filter::image::line_drawer drawer(image, roi_image);
-        drawer.draw(orientation, point, point, val, thickness);
-
-        {
-            const std::int16_t res_value = image->at<std::int16_t>(point[0], point[1], point[2]);
-
-            CPPUNIT_ASSERT_EQUAL(value, res_value);
-        }
-
-        {
-            const double square_radius = (thickness / 2.) * (thickness / 2.);
-            const std::array p         = {static_cast<double>(point[0]),
-                                          static_cast<double>(point[1]),
-                                          static_cast<double>(point[2])
-            };
-            for(std::size_t i = 0 ; i < size[0] ; ++i)
-            {
-                for(std::size_t j = 0 ; j < size[1] ; ++j)
-                {
-                    const std::int16_t res_value = image->at<std::int16_t>(i, j, point[2]);
-
-                    const double x    = (static_cast<double>(i) - p[0]) * spacing[0];
-                    const double y    = (static_cast<double>(j) - p[1]) * spacing[1];
-                    const double dist = x * x + y * y;
-
-                    if(dist <= square_radius
-                       && i >= roi_begin[0] && i <= roi_end[0]
-                       && j >= roi_begin[1] && j <= roi_end[1])
-                    {
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "p[" + std::to_string(i) + "][" + std::to_string(j) + "]",
-                            value,
-                            res_value
-                        );
-                    }
-                    else
-                    {
-                        CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                            "p[" + std::to_string(i) + "][" + std::to_string(j) + "]",
-                            std::int16_t(0),
-                            res_value
-                        );
-                    }
-                }
-            }
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace sight::filter::image::ut
+} // TEST_SUITE("sight::filter::image::line_drawer")

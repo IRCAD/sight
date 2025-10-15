@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ void image_conversion_test::stress_test_for_a_type()
         typename image_t::Pointer itk_image = io::itk::move_to_itk<image_t>(image);
 
         data::image::sptr image2 = std::make_shared<data::image>();
-        io::itk::move_from_itk<image_t>(itk_image, image2, false);
+        io::itk::move_from_itk<image_t>(itk_image, *image2, false);
 
         image2->set_window_center(image->window_center());
         image2->set_window_width(image->window_width());

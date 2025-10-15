@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023-2024 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -165,7 +165,7 @@ inline static data::image::sptr mat_to_image(cv::Mat& _mat, bool _clone = true)
 
     io::opencv::image::copy_from_cv(*image, mat_ref);
 
-    sight::data::helper::medical_image::check_image_slice_index(image);
+    sight::data::helper::medical_image::check_image_slice_index(*image);
 
     return image;
 }

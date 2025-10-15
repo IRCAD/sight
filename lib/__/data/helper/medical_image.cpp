@@ -36,7 +36,7 @@
 
 #include <cmath>
 #include <numeric>
-#include <utility> // std::pair
+#include <utility>
 
 namespace sight::data::helper::medical_image
 {
@@ -71,24 +71,22 @@ bool check_image_validity(const data::image& _image)
 
 //------------------------------------------------------------------------------
 
-bool check_image_slice_index(data::image::sptr _p_img)
+bool check_image_slice_index(data::image& _p_img)
 {
-    SIGHT_ASSERT("_pImg pointer null", _p_img);
-
     bool field_is_modified = false;
 
-    const data::image::size_t& image_size = _p_img->size();
+    const data::image::size_t& image_size = _p_img.size();
 
-    const auto axial_idx    = get_slice_index(*_p_img, axis_t::axial);
-    const auto frontal_idx  = get_slice_index(*_p_img, axis_t::frontal);
-    const auto sagittal_idx = get_slice_index(*_p_img, axis_t::sagittal);
+    const auto axial_idx    = get_slice_index(_p_img, axis_t::axial);
+    const auto frontal_idx  = get_slice_index(_p_img, axis_t::frontal);
+    const auto sagittal_idx = get_slice_index(_p_img, axis_t::sagittal);
 
     std::array<std::int64_t, 3> index_values = {0, 0, 0};
 
     // Check if values are out of bounds
     if(!axial_idx.has_value()
        || (axial_idx.has_value() && image_size[2] > 0
-           && image_size[2] < static_cast<std::size_t>(axial_idx.value())))
+           && std::cmp_less(image_size[2], axial_idx.value())))
     {
         index_values[2]   = static_cast<std::int64_t>(image_size[2] / 2);
         field_is_modified = true;
@@ -96,7 +94,7 @@ bool check_image_slice_index(data::image::sptr _p_img)
 
     if(!frontal_idx.has_value()
        || (axial_idx.has_value() && image_size[1] > 0
-           && image_size[1] < static_cast<std::size_t>(frontal_idx.value())))
+           && std::cmp_less(image_size[1], frontal_idx.value())))
     {
         index_values[1]   = static_cast<std::int64_t>(image_size[1] / 2);
         field_is_modified = true;
@@ -104,7 +102,7 @@ bool check_image_slice_index(data::image::sptr _p_img)
 
     if(!sagittal_idx.has_value()
        || (sagittal_idx.has_value() && image_size[0] > 0
-           && image_size[0] < static_cast<std::size_t>(sagittal_idx.value())))
+           && std::cmp_less(image_size[0], sagittal_idx.value())))
     {
         index_values[0]   = static_cast<std::int64_t>(image_size[0] / 2);
         field_is_modified = true;
@@ -113,9 +111,9 @@ bool check_image_slice_index(data::image::sptr _p_img)
     // Update or create fields.
     if(field_is_modified)
     {
-        set_slice_index(*_p_img, axis_t::axial, index_values[axis_t::axial]);
-        set_slice_index(*_p_img, axis_t::frontal, index_values[axis_t::frontal]);
-        set_slice_index(*_p_img, axis_t::sagittal, index_values[axis_t::sagittal]);
+        set_slice_index(_p_img, axis_t::axial, index_values[axis_t::axial]);
+        set_slice_index(_p_img, axis_t::frontal, index_values[axis_t::frontal]);
+        set_slice_index(_p_img, axis_t::sagittal, index_values[axis_t::sagittal]);
     }
 
     return field_is_modified;
@@ -363,20 +361,6 @@ void set_direction(data::image& _image, data::matrix4::sptr _direction)
         // medical_image::set_direction() will be removed in the future and replaced by image::set_orientation()
         _image.set_orientation(_direction->orientation());
     }
-}
-
-//------------------------------------------------------------------------------
-
-data::transfer_function::sptr get_transfer_function(const data::image& _image)
-{
-    return _image.get_field<data::transfer_function>(std::string(id::TRANSFER_FUNCTION));
-}
-
-//------------------------------------------------------------------------------
-
-void set_transfer_function(data::image& _image, const data::transfer_function::sptr& _cmp)
-{
-    _image.set_field(std::string(id::TRANSFER_FUNCTION), _cmp);
 }
 
 //------------------------------------------------------------------------------

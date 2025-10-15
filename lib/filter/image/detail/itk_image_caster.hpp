@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2023 IRCAD France
+ * Copyright (C) 2017-2025 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,6 +30,9 @@
 
 #include <itkCastImageFilter.h>
 
+namespace sight::filter::image::detail
+{
+
 template<typename OUTPUT_PIXELTYPE>
 struct itk_image_caster
 {
@@ -37,7 +40,7 @@ struct itk_image_caster
 
     struct params
     {
-        sight::data::image::csptr i_img;
+        const sight::data::image& i_img;
         typename output_image_t::Pointer o_img;
     };
 
@@ -49,7 +52,7 @@ struct itk_image_caster
         using input_image_t = itk::Image<INPUT_PIXELTYPE, 3>;
 
         // Convert to ITK.
-        typename input_image_t::Pointer tmp = sight::io::itk::move_to_itk<input_image_t>(_p.i_img);
+        auto tmp = sight::io::itk::move_to_itk<input_image_t>(_p.i_img);
 
         // Cast to the desired pixel type.
         auto cast_filter = itk::CastImageFilter<input_image_t, output_image_t>::New();
@@ -62,16 +65,17 @@ struct itk_image_caster
 //------------------------------------------------------------------------------
 
 template<typename OUTPUT_PIXELTYPE>
-typename itk::Image<OUTPUT_PIXELTYPE, 3>::Pointer cast_to(const sight::data::image::csptr& _img)
+typename itk::Image<OUTPUT_PIXELTYPE, 3>::Pointer cast_to(const sight::data::image& _img)
 {
     using caster_t = itk_image_caster<OUTPUT_PIXELTYPE>;
 
-    typename caster_t::params p;
-    p.i_img = _img;
+    typename caster_t::params p {.i_img = _img, .o_img = {}};
 
-    const auto in_type = _img->type();
+    const auto in_type = _img.type();
 
     sight::core::tools::dispatcher<sight::core::tools::supported_dispatcher_types, caster_t>::invoke(in_type, p);
 
     return p.o_img;
 }
+
+} //namespace sight::filter::image::detail

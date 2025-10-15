@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2024 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <functional>
 
-namespace sight::filter::image
+namespace sight::filter::image::detail
 {
 
 /**
@@ -78,4 +78,4 @@ private:
     const optimized_function_t& m_function;
 };
 
-} // namespace sight::filter::image.
+} // namespace sight::filter::image::detail

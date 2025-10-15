@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2024 IRCAD France
+ * Copyright (C) 2022-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -80,7 +80,7 @@ struct nifti_loader_functor
         reader->Update();
         typename image_t::Pointer itkimage = reader->GetOutput();
 
-        io::itk::move_from_itk<image_t>(itkimage, _param.data_image);
+        io::itk::move_from_itk<image_t>(itkimage, *_param.data_image);
     }
 
     //// get pixel type from Header
