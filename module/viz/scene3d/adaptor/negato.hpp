@@ -193,7 +193,7 @@ protected:
     std::uint32_t m_query_flags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     sight::data::ptr<sight::data::image, sight::data::access::in> m_image {this, "image"};
-    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, "tf"};
+    sight::data::ptr<sight::data::transfer_function, sight::data::access::inout> m_tf {this, "tf", true};
 
 private:
 

@@ -83,6 +83,19 @@ void color::set_rgba(
 
 //------------------------------------------------------------------------------
 
+std::array<std::uint8_t, 4> color::rgba_u8() const
+{
+    const auto& v = this->value();
+    return {
+        static_cast<std::uint8_t>(std::clamp(v[0] * 255.0F, 0.0F, 255.0F)),
+        static_cast<std::uint8_t>(std::clamp(v[1] * 255.0F, 0.0F, 255.0F)),
+        static_cast<std::uint8_t>(std::clamp(v[2] * 255.0F, 0.0F, 255.0F)),
+        static_cast<std::uint8_t>(std::clamp(v[3] * 255.0F, 0.0F, 255.0F))
+    };
+}
+
+//------------------------------------------------------------------------------
+
 std::string color::to_string() const
 {
     std::ostringstream oss;

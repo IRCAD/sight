@@ -74,6 +74,7 @@ public:
         std::uint8_t _blue,
         std::uint8_t _alpha = 255
     );
+    SIGHT_DATA_API std::array<std::uint8_t, 4> rgba_u8() const;
 
     //------------------------------------------------------------------------------
     SIGHT_DATA_API std::string to_string() const               final;

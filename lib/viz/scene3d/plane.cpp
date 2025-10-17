@@ -22,6 +22,8 @@
 
 #include "viz/scene3d/plane.hpp"
 
+#include "data/image.hpp"
+
 #include <geometry/data/image.hpp>
 
 #include <viz/scene3d/helper/manual_object.hpp>
@@ -35,6 +37,10 @@
 #include <OGRE/OgreMovablePlane.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
+
+#include <OgrePixelFormat.h>
+
+#include <algorithm>
 
 namespace sight::viz::scene3d
 {
@@ -220,9 +226,14 @@ void plane::update(
 
     m_plane_material->set_texture("image", m_texture->get(), filter_type);
     m_plane_material->set_vertex_uniform("u_orientation", orientation_index);
-    m_plane_material->set_fragment_uniform("u_window", m_texture->window());
     m_plane_material->set_fragment_uniform("u_orientation", orientation_index);
-    m_plane_material->set_fragment_uniform("u_enableAlpha", static_cast<int>(_enable_transparency));
+    const auto format = utils::get_pixel_format_from_ogre(m_texture.get()->get()->getFormat());
+    if(format.second == data::image::pixel_format_t::gray_scale)
+    {
+        m_plane_material->set_fragment_uniform("u_window", m_texture->window());
+        m_plane_material->set_fragment_uniform("u_enableAlpha", static_cast<int>(_enable_transparency));
+    }
+
     if(m_mask_texture)
     {
         m_plane_material->set_texture("mask", m_mask_texture->get());
@@ -404,7 +415,7 @@ void plane::change_slice(const std::array<float, 3>& _slices_index)
         const auto half_width  = m_size[0] * .5F;
         const auto half_height = m_size[1] * .5F;
 
-        const auto dash_length = std::max(std::max(m_size[0], m_size[1]), m_size[2]) / 100.F;
+        const auto dash_length = std::max({m_size[0], m_size[1], m_size[2]}) / 100.F;
         using sight::viz::scene3d::helper::manual_object;
         if(m_axis == axis_t::x_axis)
         {

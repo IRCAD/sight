@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -172,6 +172,26 @@ void color_test::equality_test()
     TEST(0.F, 0.F, 0.F, 1.F);
 
     #undef TEST
+}
+
+//------------------------------------------------------------------------------
+
+void color_test::rgba_u8_test()
+{
+    const uint8_t r = 0xFF;
+    const uint8_t g = 0x45;
+    const uint8_t b = 0x98;
+    const uint8_t a = 0x12;
+
+    auto color = std::make_shared<data::color>();
+    color->set_rgba(r, g, b, a);
+
+    const auto rgba = color->rgba_u8();
+
+    CPPUNIT_ASSERT_EQUAL(rgba[0], r);
+    CPPUNIT_ASSERT_EQUAL(rgba[1], g);
+    CPPUNIT_ASSERT_EQUAL(rgba[2], b);
+    CPPUNIT_ASSERT_EQUAL(rgba[3], a);
 }
 
 } // namespace sight::data::ut
