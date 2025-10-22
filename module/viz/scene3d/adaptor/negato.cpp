@@ -146,7 +146,7 @@ void negato::starting()
 
         // TF texture initialization
         const auto tf = m_tf.lock();
-        if(tf)
+        if(tf and not m_rgb_negato.lock()->value())
         {
             m_gpu_tf = std::make_unique<sight::viz::scene3d::transfer_function>(tf.get_shared());
         }
@@ -350,6 +350,11 @@ void negato::change_slice_index(int _axial_index, int _frontal_index, int _sagit
 {
     const auto image = m_image.lock();
 
+    if(!data::helper::medical_image::check_image_validity(image.get_shared()))
+    {
+        return;
+    }
+
     this->render_service()->make_current();
 
     auto img_size = image->size();
@@ -430,7 +435,7 @@ void negato::update_windowing(double _dw, double _dl)
 
     {
         const auto tf = m_tf.lock();
-        if(tf)
+        if(tf and not m_rgb_negato.lock()->value())
         {
             const auto image = m_image.const_lock();
             tf->set_window(std::copysign(std::max(1.0, std::abs(new_window)), new_window));

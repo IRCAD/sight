@@ -232,6 +232,7 @@ private:
     sight::data::ptr<sight::data::image, sight::data::access::in> m_mask {this, "mask", true};
     sight::data::property<sight::data::string> m_classification {this, "classification", std::string("post")};
     sight::data::property<sight::data::real> m_depth_bias {this, "depth_bias", 0.};
+    sight::data::property<sight::data::boolean> m_rgb_negato {this, "rgb_negato", false};
 };
 
 //------------------------------------------------------------------------------
