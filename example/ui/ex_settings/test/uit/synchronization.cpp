@@ -34,6 +34,7 @@
 #include <ui/test/helper/line_edit.hpp>
 #include <ui/test/helper/slider.hpp>
 #include <ui/test/helper/spin_box.hpp>
+#include <ui/test/helper/switch_button_test.hpp>
 #include <ui/test/helper/tickmarks_slider_test.hpp>
 #include <ui/test/tester.hpp>
 
@@ -95,6 +96,60 @@ void synchronization::test()
                 helper::check_box::toggle(_tester, selector::from_parent("properties1_srv", "bool_1"));
                 helper::check_box::should_be_checked(_tester, selector::current());
                 helper::check_box::should_be_checked(_tester, selector::from_parent("properties2_srv", "bool_obj"));
+            }
+            {
+                auto bt = _tester.add_in_backtrace("Check synchronization between 'Enable' switch buttons");
+                helper::switch_button_test::toggle(_tester, selector::from_parent("properties1_srv", "enable"));
+                helper::switch_button_test::should_not_be_checked(_tester, selector::current());
+                helper::switch_button_test::should_not_be_checked(
+                    _tester,
+                    selector::from_parent("properties2_srv", "enable_obj")
+                );
+            }
+
+            {
+                auto bt =
+                    _tester.add_in_backtrace(
+                        "Check that 'Boolean_switch' switch_button doesn't do anything because it is disabled"
+                    );
+                helper::switch_button_test::toggle(_tester, selector::from_parent("properties1_srv", "bool_2"));
+                helper::switch_button_test::should_not_be_checked(_tester, selector::current());
+            }
+
+            {
+                auto bt =
+                    _tester.add_in_backtrace("Re-enable the parameters by re-checking the 'Enable' switch buttons");
+                helper::switch_button_test::toggle(_tester, selector::from_parent("properties1_srv", "enable"));
+                helper::switch_button_test::should_be_checked(_tester, selector::current());
+                helper::switch_button_test::should_be_checked(
+                    _tester,
+                    selector::from_parent(
+                        "properties2_srv",
+                        "enable_obj"
+                    )
+                );
+            }
+
+            {
+                auto bt = _tester.add_in_backtrace("Check synchronization between 'Boolean' switch_buttons");
+                helper::switch_button_test::toggle(_tester, selector::from_parent("properties1_srv", "bool_2"));
+                helper::switch_button_test::should_be_checked(_tester, selector::current());
+                helper::switch_button_test::should_be_checked(
+                    _tester,
+                    selector::from_parent(
+                        "properties2_srv",
+                        "bool_obj_2"
+                    )
+                );
+            }
+            {
+                auto bt = _tester.add_in_backtrace("Check reverse synchronization from panel 2 to panel 1");
+                helper::switch_button_test::toggle(_tester, selector::from_parent("properties2_srv", "bool_obj"));
+                helper::switch_button_test::should_not_be_checked(_tester, selector::current());
+                helper::switch_button_test::should_not_be_checked(
+                    _tester,
+                    selector::from_parent("properties1_srv", "bool_1")
+                );
             }
 
             {

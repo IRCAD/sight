@@ -66,6 +66,8 @@
 #include <QStyle>
 #include <QToolButton>
 
+#include <utility>
+
 namespace sight::module::ui::qt
 {
 
@@ -296,7 +298,8 @@ void settings::starting()
 
         if(type == "sight::data::boolean")
         {
-            reset = this->create_bool_widget(param_box_layout, widget, orientation);
+            const std::string widget_type = cfg.get<std::string>("<xmlattr>.widget", "check_box");
+            reset = this->create_bool_widget(param_box_layout, widget, orientation, widget_type);
         }
         else if(type == "sight::data::color")
         {
@@ -437,7 +440,7 @@ void settings::starting()
                     const std::string icon_path =
                         core::runtime::get_module_resource_file_path(icon_path_relative).generic_string();
 
-                    button_list.push_back(enum_button_param({value, label, icon_path}));
+                    button_list.push_back(enum_button_param({.value = value, .label = label, .icon_path = icon_path}));
                 }
 
                 this->create_enum_button_bar_widget(
@@ -532,7 +535,8 @@ void settings::starting()
             if(auto* const widget = qobject_cast<QWidget*>((*widget_container_it)))
             {
                 widget->installEventFilter(this);
-                auto* check_box = qobject_cast<QCheckBox*>(depends_widget);
+                auto* check_box     = qobject_cast<QCheckBox*>(depends_widget);
+                auto* switch_button = qobject_cast<sight::ui::qt::widget::switch_button*>(depends_widget);
                 if(check_box != nullptr)
                 {
                     QObject::connect(
@@ -541,6 +545,15 @@ void settings::starting()
                         this,
                         [ = ]{on_depends_changed(check_box, widget, depends_reverse);});
                     on_depends_changed(check_box, widget, depends_reverse);
+                }
+                else if(switch_button != nullptr)
+                {
+                    QObject::connect(
+                        switch_button,
+                        &sight::ui::qt::widget::switch_button::state_changed,
+                        this,
+                        [ = ]{on_depends_changed(switch_button, widget, depends_reverse);});
+                    on_depends_changed(switch_button, widget, depends_reverse);
                 }
                 else
                 {
@@ -606,6 +619,12 @@ bool settings::eventFilter(QObject* _watched, QEvent* _event)
         {
             check_box->stateChanged(check_box->isChecked() ? Qt::Checked : Qt::Unchecked);
         }
+
+        auto* switch_button = qobject_cast<sight::ui::qt::widget::switch_button*>(_watched);
+        if(switch_button != nullptr)
+        {
+            switch_button->state_changed(switch_button->isChecked() ? Qt::Checked : Qt::Unchecked);
+        }
         else
         {
             auto* combo_box = qobject_cast<QComboBox*>(_watched);
@@ -634,6 +653,23 @@ void settings::on_depends_changed(QCheckBox* _check_box, QWidget* _widget, bool 
     else
     {
         _widget->setEnabled(_check_box->checkState() != 0U);
+    }
+}
+
+//------------------------------------------------------------------------------
+void settings::on_depends_changed(sight::ui::qt::widget::switch_button* _switch_button, QWidget* _widget, bool _reverse)
+{
+    if(!_switch_button->isEnabled())
+    {
+        _widget->setDisabled(true);
+    }
+    else if(_reverse)
+    {
+        _widget->setDisabled(_switch_button->check_state() != 0U);
+    }
+    else
+    {
+        _widget->setEnabled(_switch_button->check_state() != 0U);
     }
 }
 
@@ -837,8 +873,13 @@ void settings::on_reset_boolean(QWidget* _widget)
     {
         const auto value = data<sight::data::boolean>(checkbox)->default_value();
         checkbox->setCheckState(value ? Qt::Checked : Qt::Unchecked);
+    }
 
-        update_data<sight::data::boolean>(_widget, value);
+    auto* switch_button = qobject_cast<sight::ui::qt::widget::switch_button*>(_widget);
+    if(switch_button != nullptr)
+    {
+        const auto value = data<sight::data::boolean>(switch_button)->default_value();
+        switch_button->set_check_state(value ? Qt::Checked : Qt::Unchecked);
     }
 }
 
@@ -876,7 +917,6 @@ void settings::on_reset_integer(QWidget* _widget)
     {
         const auto value = data<sight::data::integer, std::int64_t>(slider)->default_value();
         slider->setValue(static_cast<int>(value));
-        update_data<sight::data::integer, std::int64_t>(_widget, value);
     }
     else if(spinbox != nullptr)
     {
@@ -888,7 +928,6 @@ void settings::on_reset_integer(QWidget* _widget)
         {
             const auto value1 = data<sight::data::integer, std::int64_t>(spin1)->default_value();
             spin1->setValue(static_cast<int>(value1));
-            update_data<sight::data::integer, std::int64_t>(_widget, spin1->value());
         }
         else
         {
@@ -898,7 +937,6 @@ void settings::on_reset_integer(QWidget* _widget)
                 const auto value = data<sight::data::ivec2>(spin2)->default_value();
                 spin1->setValue(static_cast<int>(value[0]));
                 spin2->setValue(static_cast<int>(value[1]));
-                update_data<sight::data::ivec2>(_widget, value);
             }
             else
             {
@@ -907,7 +945,6 @@ void settings::on_reset_integer(QWidget* _widget)
                 spin1->setValue(static_cast<int>(value[0]));
                 spin2->setValue(static_cast<int>(value[1]));
                 spin3->setValue(static_cast<int>(value[2]));
-                update_data<sight::data::ivec3>(_widget, value);
             }
         }
     }
@@ -928,7 +965,6 @@ void settings::on_reset_double(QWidget* _widget)
         const double value_range = max - min;
         const int slider_val     = int(std::round(((value - min) / value_range) * double(slider->maximum())));
         slider->setValue(slider_val);
-        update_data<sight::data::real>(_widget, value);
     }
     else if(spinbox != nullptr)
     {
@@ -941,7 +977,6 @@ void settings::on_reset_double(QWidget* _widget)
         {
             const double value = data<sight::data::real>(spin1)->default_value();
             spin1->setValue(value);
-            update_data<sight::data::real>(_widget, value);
         }
         else
         {
@@ -951,7 +986,6 @@ void settings::on_reset_double(QWidget* _widget)
                 const auto value = data<sight::data::dvec2>(spin2)->default_value();
                 spin1->setValue(value[0]);
                 spin2->setValue(value[1]);
-                update_data<sight::data::dvec2>(_widget, value);
             }
             else
             {
@@ -960,7 +994,6 @@ void settings::on_reset_double(QWidget* _widget)
                 spin1->setValue(value[0]);
                 spin2->setValue(value[1]);
                 spin3->setValue(value[2]);
-                update_data<sight::data::dvec3>(_widget, value);
             }
         }
     }
@@ -975,8 +1008,6 @@ void settings::on_reset_string(QWidget* _widget)
     {
         const auto value = data<sight::data::string>(edit)->default_value();
         edit->setText(QString::fromStdString(value));
-
-        update_data<sight::data::string>(_widget, value);
     }
 }
 
@@ -1001,50 +1032,87 @@ QPushButton* settings::create_reset_button(const std::string& _key, std::functio
 //-----------------------------------------------------------------------------
 
 [[nodiscard]]
-QPushButton* settings::create_bool_widget(QBoxLayout* _layout, const param_widget& _setup, Qt::Orientation _orientation)
+QPushButton* settings::create_bool_widget(
+    QBoxLayout* _layout,
+    const param_widget& _setup,
+    Qt::Orientation _orientation,
+    std::string _widget_type
+)
 {
-    auto* checkbox = new QCheckBox();
-
-    // Base properties
-    const auto key = QString::fromStdString(_setup.key);
-    checkbox->setObjectName(key);
-    checkbox->setProperty(qt_property::key, key);
-    checkbox->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
-
-    // Data
-    const auto obj        = data<sight::data::boolean>(checkbox);
-    const auto init_value = obj->value();
-    checkbox->setCheckState(init_value ? Qt::Checked : Qt::Unchecked);
-    connect_data(obj, _setup.key);
-
-    // Style
-    checkbox->setTristate(false);
-    checkbox->setStyleSheet(qApp->styleSheet());
-
-    if(_orientation == Qt::Vertical)
+    if(_widget_type == "check_box")
     {
-        _layout->addWidget(checkbox, 0, Qt::AlignCenter);
-    }
-    else
-    {
-        _layout->addWidget(checkbox, 0, Qt::AlignLeft | Qt::AlignVCenter);
-    }
+        auto* checkbox = new QCheckBox();
+        // Base properties
+        const auto key = QString::fromStdString(_setup.key);
+        checkbox->setObjectName(key);
+        checkbox->setProperty(qt_property::key, key);
+        checkbox->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
 
-    // Forward to the Sight signal
-    QObject::connect(
-        checkbox,
-        &QCheckBox::stateChanged,
-        [this, key = _setup.key, checkbox](int _value)
+        // Data
+        const auto obj        = data<sight::data::boolean>(checkbox);
+        const auto init_value = obj->value();
+        checkbox->setCheckState(init_value ? Qt::Checked : Qt::Unchecked);
+        connect_data(obj, _setup.key);
+
+        // Style
+        checkbox->setTristate(false);
+        checkbox->setStyleSheet(qApp->styleSheet());
+
+        if(_orientation == Qt::Vertical)
         {
-            const bool checked = _value == Qt::Checked;
+            _layout->addWidget(checkbox, 0, Qt::AlignCenter);
+        }
+        else
+        {
+            _layout->addWidget(checkbox, 0, Qt::AlignLeft | Qt::AlignVCenter);
+        }
 
-            update_data<sight::data::boolean>(checkbox, checked);
-        });
+        // Forward to the Sight signal
+        QObject::connect(
+            checkbox,
+            &QCheckBox::stateChanged,
+            [this, checkbox](int _value)
+            {
+                const bool checked = _value == Qt::Checked;
 
-    // Reset button
-    if(_setup.reset_button)
+                update_data<sight::data::boolean>(checkbox, checked);
+            });
+
+        // Reset button
+        if(_setup.reset_button)
+        {
+            return this->create_reset_button(_setup.key, [this, checkbox](){on_reset_boolean(checkbox);});
+        }
+    }
+    else if(_widget_type == "switch_button")
     {
-        return this->create_reset_button(_setup.key, [this, checkbox](){on_reset_boolean(checkbox);});
+        auto* switch_button = new sight::ui::qt::widget::switch_button();
+        const auto key      = QString::fromStdString(_setup.key);
+        switch_button->setObjectName(key);
+        switch_button->setProperty(qt_property::key, key);
+        switch_button->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+
+        const auto obj        = data<sight::data::boolean>(switch_button);
+        const auto init_value = obj->value();
+
+        switch_button->set_check_state(init_value ? Qt::Checked : Qt::Unchecked);
+        connect_data(obj, _setup.key);
+        switch_button->setStyleSheet(qApp->styleSheet());
+
+        _layout->addWidget(switch_button, 0, Qt::AlignLeft);
+
+        QObject::connect(
+            switch_button,
+            &sight::ui::qt::widget::switch_button::state_changed,
+            [this, switch_button](int _state)
+            {
+                update_data<sight::data::boolean>(switch_button, _state == Qt::Checked);
+            });
+
+        if(_setup.reset_button)
+        {
+            return this->create_reset_button(_setup.key, [this, switch_button](){on_reset_boolean(switch_button);});
+        }
     }
 
     return nullptr;
@@ -1138,7 +1206,7 @@ QPushButton* settings::create_double_spin_widget(
     }
 
     // Spinboxes
-    for(std::size_t i = 0 ; i < std::size_t(_count) ; ++i)
+    for(std::size_t i = 0 ; std::cmp_less(i, _count) ; ++i)
     {
         auto* spinbox = new QDoubleSpinBox();
 
@@ -1160,7 +1228,7 @@ QPushButton* settings::create_double_spin_widget(
                                   return static_cast<int>(t.length());
                               };
 
-        spinbox->setDecimals(std::max(std::max(count_decimals(_setup.min), count_decimals(_setup.max)), 2));
+        spinbox->setDecimals(std::max({count_decimals(_setup.min), count_decimals(_setup.max), 2}));
         spinbox->setRange(_setup.min, _setup.max);
 
         // Beware, set setSingleStep after setRange() and setDecimals() otherwise it may fail
@@ -1188,9 +1256,9 @@ QPushButton* settings::create_double_spin_widget(
     spinbox->setObjectName(QString::fromStdString(_setup.key));
 
     // Set a property with a pointer on each member of the group
-    for(std::size_t i = 0 ; i < std::size_t(_count) ; ++i)
+    for(std::size_t i = 0 ; std::cmp_less(i, _count) ; ++i)
     {
-        for(std::size_t j = 0 ; j < std::size_t(_count) ; ++j)
+        for(std::size_t j = 0 ; std::cmp_less(j, _count) ; ++j)
         {
             const std::string prop_name = std::string("widget#") + std::to_string(j);
             spinboxes[i]->setProperty(prop_name.c_str(), QVariant::fromValue<QDoubleSpinBox*>(spinboxes[j]));
@@ -1497,7 +1565,7 @@ QPushButton* settings::create_integer_spin_widget(
     }
 
     // Spinboxes
-    for(std::size_t i = 0 ; i < std::size_t(_count) ; ++i)
+    for(std::size_t i = 0 ; std::cmp_less(i, _count) ; ++i)
     {
         auto* spinbox = new QSpinBox();
         spinboxes[i] = spinbox;
@@ -1527,9 +1595,9 @@ QPushButton* settings::create_integer_spin_widget(
     first_spinbox->setObjectName(QString::fromStdString(_setup.key));
 
     // Set a property with a pointer on each member of the group
-    for(std::size_t i = 0 ; i < std::size_t(_count) ; ++i)
+    for(std::size_t i = 0 ; std::cmp_less(i, _count) ; ++i)
     {
-        for(std::size_t j = 0 ; j < std::size_t(_count) ; ++j)
+        for(std::size_t j = 0 ; std::cmp_less(j, _count) ; ++j)
         {
             const std::string prop_name = std::string("widget#") + std::to_string(j);
             spinboxes[i]->setProperty(prop_name.c_str(), QVariant::fromValue<QSpinBox*>(spinboxes[j]));
@@ -1884,7 +1952,7 @@ void settings::create_tickmarks_widget(
         [this, tick_widget](int _index)
         {
             const auto& labels = tick_widget->tick_labels();
-            if(_index < 0 || _index >= static_cast<int>(labels.size()))
+            if(_index < 0 || std::cmp_greater_equal(_index, labels.size()))
             {
                 return;
             }
@@ -2312,7 +2380,7 @@ void settings::update_enum_range(std::string _options, std::string _key)
 
                     if(non_linear_slider->property(qt_property::use_index).toBool())
                     {
-                        if(current_value >= 0 && current_value < std::int64_t(old_values.size()))
+                        if(current_value >= 0 && std::cmp_less(current_value, old_values.size()))
                         {
                             return old_values[std::size_t(current_value)];
                         }
@@ -2368,16 +2436,16 @@ void settings::update_tickmarks(sight::ui::qt::widget::tickmarks_slider* const _
         _tickmarks->set_tick_labels(tick_labels);
 
         int current_index = 0;
-        if(auto string_data = settings::data<sight::data::string>(_tickmarks))
+        if(auto string_data = settings::data<sight::data::string>(_tickmarks); string_data)
         {
             const std::string& current_value = string_data->value();
-            auto it                          = std::find(tick_data.begin(), tick_data.end(), current_value);
+            auto it                          = std::ranges::find(tick_data, current_value);
             if(it != tick_data.end())
             {
                 current_index = static_cast<int>(std::distance(tick_data.begin(), it));
             }
         }
-        else if(auto integer_data = settings::data<sight::data::integer>(_tickmarks))
+        else if(auto integer_data = settings::data<sight::data::integer>(_tickmarks); integer_data)
         {
             current_index = static_cast<int>(std::clamp<std::int64_t>(integer_data->value(), 0, max_index));
         }
@@ -2676,12 +2744,17 @@ template<>
 void settings::set_parameter<sight::data::boolean>(const bool& _val, std::string _key)
 {
     this->block_signals(true);
-    QObject* child = this->get_param_widget(_key);
-    auto* checkbox = qobject_cast<QCheckBox*>(child);
-
+    QObject* child      = this->get_param_widget(_key);
+    auto* checkbox      = qobject_cast<QCheckBox*>(child);
+    auto* switch_button = qobject_cast<sight::ui::qt::widget::switch_button*>(child);
     if(checkbox != nullptr)
     {
         checkbox->setCheckState(_val ? Qt::Checked : Qt::Unchecked);
+    }
+
+    if(switch_button != nullptr)
+    {
+        switch_button->set_check_state(_val ? Qt::Checked : Qt::Unchecked);
     }
 
     this->block_signals(false);

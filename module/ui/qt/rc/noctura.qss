@@ -1544,6 +1544,19 @@ QProgressBar::chunk
     border-radius: 3px;
 }
 
+/************************************************************************/
+/****************************** switch_button ************************/
+/************************************************************************/
+
+.switch_button
+{
+    qproperty-track_color_on:#303A65;
+    qproperty-thumb_color: #FFFFFF; 
+    margin: 0px;
+    border-radius: 3px;
+    min-width: 85 px;
+    min-height: 35 px; 
+}
 
 
 
