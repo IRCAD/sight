@@ -30,60 +30,39 @@
 namespace sight::filter::image
 {
 
-struct substract_parameters
-{
-    const data::image& image1;
-    const data::image& image2;
-    data::image& output_image;
-};
-
-//------------------------------------------------------------------------------
-
-struct substract_image_filter
-{
-    //------------------------------------------------------------------------------
-
-    template<typename PIXELTYPE>
-    void operator()(substract_parameters& _params)
-    {
-        [[maybe_unused]] const unsigned int dimension = 3;
-        SIGHT_ASSERT("Only image dimension 3 managed.", _params.image1.num_dimensions() == dimension);
-
-        using image_t = itk::Image<PIXELTYPE, dimension>;
-
-        auto itk_image1 = io::itk::move_to_itk<image_t>(_params.image1);
-        SIGHT_ASSERT("Unable to convert data::image to itkImage", itk_image1);
-
-        auto itk_image2 = io::itk::move_to_itk<image_t>(_params.image2);
-        SIGHT_ASSERT("Unable to convert data::image to itkImage", itk_image2);
-
-        typename image_t::Pointer output;
-
-        //Create filter
-        auto filter = itk::SubtractImageFilter<image_t, image_t, image_t>::New();
-        assert(filter);
-
-        filter->SetInput1(itk_image1);
-        filter->SetInput2(itk_image2);
-        filter->Update();
-        output = filter->GetOutput();
-        assert(output->GetSource());
-        io::itk::move_from_itk<image_t>(output, _params.output_image, true);
-    }
-};
-
 //-----------------------------------------------------------------------------
 
 void substract(const data::image& _image1, const data::image& _image2, data::image& _output)
 {
-    substract_parameters params {
-        .image1       = _image1,
-        .image2       = _image2,
-        .output_image = _output
-    };
+    auto do_substract =
+        []<class PIXEL_TYPE>(const data::image& _image1, const data::image& _image2, data::image& _output)
+        {
+            constexpr unsigned int dimension = 3;
+            SIGHT_ASSERT("Only image dimension 3 managed.", _image1.num_dimensions() == dimension);
+
+            using image_t = itk::Image<PIXEL_TYPE, dimension>;
+
+            auto itk_image1 = io::itk::move_to_itk<image_t>(_image1);
+            SIGHT_ASSERT("Unable to convert data::image to itkImage", itk_image1);
+
+            auto itk_image2 = io::itk::move_to_itk<image_t>(_image2);
+            SIGHT_ASSERT("Unable to convert data::image to itkImage", itk_image2);
+
+            auto filter = itk::SubtractImageFilter<image_t, image_t, image_t>::New();
+            SIGHT_ASSERT("Filter is null", filter);
+
+            filter->SetInput1(itk_image1);
+            filter->SetInput2(itk_image2);
+            filter->Update();
+            auto output = filter->GetOutput();
+            SIGHT_ASSERT("Output is null", output->GetSource());
+            io::itk::move_from_itk<image_t>(output, _output, true);
+        };
 
     const auto type = _image1.type();
-    core::tools::dispatcher<core::tools::integer_types, substract_image_filter>::invoke(type, params);
+    using sight::core::tools::dispatcher;
+    using sight::core::tools::integer_types;
+    dispatcher<integer_types, decltype(do_substract)>::invoke(type, _image1, _image2, _output);
 }
 
 //-----------------------------------------------------------------------------

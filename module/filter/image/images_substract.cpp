@@ -25,6 +25,8 @@
 #include <core/com/signal.hxx>
 #include <core/spy_log.hpp>
 
+#include <filter/image/substract.hpp>
+
 #include <ui/__/dialog/message.hpp>
 
 namespace sight::module::filter::image
@@ -74,8 +76,8 @@ void images_substract::updating()
         const bool is_same_size = (image1->size() == image2->size());
         if(is_same_size)
         {
-            auto sig = image_result->signal<data::object::modified_signal_t>(data::object::MODIFIED_SIG);
-            sig->async_emit();
+            sight::filter::image::substract(*image1, *image2, *image_result);
+            image_result->async_emit(data::object::MODIFIED_SIG);
         }
         else
         {
