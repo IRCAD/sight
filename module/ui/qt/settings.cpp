@@ -1088,9 +1088,15 @@ QPushButton* settings::create_bool_widget(
     {
         auto* switch_button = new sight::ui::qt::widget::switch_button();
         const auto key      = QString::fromStdString(_setup.key);
+        auto path           = core::runtime::get_module_resource_path("sight::module::ui::icons");
         switch_button->setObjectName(key);
         switch_button->setProperty(qt_property::key, key);
+
         switch_button->setProperty(qt_property::data_index, static_cast<uint>(_setup.data_index));
+        switch_button->set_icons(
+            QIcon(QString::fromStdString((path / "check.svg").string())),
+            QIcon(QString::fromStdString((path / "minus.svg").string()))
+        );
 
         const auto obj        = data<sight::data::boolean>(switch_button);
         const auto init_value = obj->value();

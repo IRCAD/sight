@@ -1550,8 +1550,12 @@ QProgressBar::chunk
 
 .switch_button
 {
-    qproperty-track_color_on:#303A65;
-    qproperty-thumb_color: #FFFFFF; 
+    qproperty-track_color_off:#2B2A46;
+    qproperty-track_color_on: #8288A2;
+    qproperty-thumb_color_off: #303A65;  
+    qproperty-thumb_color_on: #FFFFFF;
+    qproperty-icon_color_on: #303A65;
+    qproperty-icon_color_off: #FFFFFF;
     margin: 0px;
     border-radius: 3px;
     min-width: 85 px;

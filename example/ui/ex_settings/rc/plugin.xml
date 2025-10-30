@@ -77,7 +77,7 @@ This example shows the possibilities of properties:
                 <ui scrollable="true">
                     <item name="Enable" key="enable" />
                     <item name="Boolean" key="bool_1" depends="enable" widget="check_box" />
-                    <item name="Boolean_switch" key="bool_2" depends="enable" widget="switch_button" />
+                    <item name="Boolean switch" key="bool_2" depends="enable" widget="switch_button" />
                     <item name="Color" key="color_1" depends="enable" />
                     <item name="Double 1" key="double_1" min="0.01" max="1." depends="enable" />
                     <item name="Double 2" key="double_2" widget="slider" joystick="left" joystick_axis="rx,tx" min="0." max="1000.58" decimal="1" depends="enable" />
@@ -129,7 +129,7 @@ This example shows the possibilities of properties:
                 <ui scrollable="false">
                     <item name="Enable" />
                     <item name="Boolean" depends="enable_obj" widget="check_box" />
-                    <item name="Boolean_switch" depends="enable_obj" widget="switch_button" />
+                    <item name="Boolean switch" depends="enable_obj" widget="switch_button" />
                     <item name="Color" depends="enable_obj" />
                     <item name="Double 1" min="0.01" max="1." depends="enable_obj" />
                     <item name="Double 2" widget="slider" min="0." max="1000.58" depends="enable_obj" />

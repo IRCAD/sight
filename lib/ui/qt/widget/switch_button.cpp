@@ -36,9 +36,8 @@ namespace sight::ui::qt::widget
 
 switch_button::switch_button(QWidget* _parent) :
     QAbstractButton(_parent),
-    m_track_color_off(palette().color(QPalette::Button)),
-    m_thumb_color(palette().color(QPalette::ButtonText)),
-    m_current_track_color(isChecked() ? m_track_color_on : m_track_color_off)
+    m_current_track_color(isChecked() ? m_track_color_on : m_track_color_off),
+    m_current_thumb_color(isChecked() ? m_thumb_color_on : m_thumb_color_off)
 {
     setCheckable(true);
     setObjectName("switch_button");
@@ -71,7 +70,7 @@ void switch_button::paintEvent(QPaintEvent* /*e*/)
     opt.initFrom(this);
 
     const int margin = 2;
-    const int radius = 10;
+    const int radius = 11;
 
     // Track design
     QPainterPath track_path;
@@ -83,10 +82,43 @@ void switch_button::paintEvent(QPaintEvent* /*e*/)
     const int height_rect = 35;
 
     // Thumb design
-    QRect thumb_rect(m_offset, top_rect / margin, width_rect, height_rect);
+    QRect thumb_rect(m_offset, top_rect / margin, width_rect + 2, height_rect);
     QPainterPath thumb_path;
     thumb_path.addRoundedRect(thumb_rect, radius, radius);
-    painter.fillPath(thumb_path, m_thumb_color);
+    painter.fillPath(thumb_path, m_current_thumb_color);
+
+    // Icon design
+    QIcon current_icon = isChecked() ? m_icon_on : m_icon_off;
+    if(!current_icon.isNull())
+    {
+        QColor icon_color         = m_current_icon_color;
+        constexpr int icon_margin = 4;
+        QSize icon_size           = QSize(width_rect - 2 * icon_margin, width_rect - 2 * icon_margin);
+
+        const qreal device_pixel = painter.device()->devicePixelRatioF();
+        QPixmap pm               = current_icon.pixmap(icon_size * device_pixel);
+        pm.setDevicePixelRatio(device_pixel);
+
+        QPainter icon_painter(&pm);
+        icon_painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+        icon_painter.fillRect(pm.rect(), icon_color);
+        icon_painter.end();
+
+        painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+        QRect icon_rect = QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter, icon_size, thumb_rect);
+
+        auto draw_thick = [&](const QPoint& _draw)
+                          {
+                              painter.drawPixmap(icon_rect.topLeft() + _draw, pm);
+                          };
+        if(isChecked())
+        {
+            draw_thick({1, 0});
+            draw_thick({0, 1});
+        }
+
+        painter.drawPixmap(icon_rect.topLeft(), pm);
+    }
 }
 
 //-------------------------------------------------------
@@ -95,11 +127,105 @@ QColor switch_button::current_track_color() const
     return m_current_track_color;
 }
 
+//------------------------------------------------------
+QColor switch_button::current_thumb_color() const
+{
+    return m_current_thumb_color;
+}
+
+//------------------------------------------------------
+QColor switch_button::current_icon_color() const
+{
+    return m_current_icon_color;
+}
+
 //-------------------------------------------------------
 void switch_button::set_current_track_color(const QColor& _color)
 {
     m_current_track_color = _color;
     update();
+}
+
+//-------------------------------------------------------
+void switch_button::set_current_thumb_color(const QColor& _color)
+{
+    m_current_thumb_color = _color;
+    update();
+}
+
+//-------------------------------------------------------
+void switch_button::set_current_icon_color(const QColor& _color)
+{
+    m_current_icon_color = _color;
+    update();
+}
+
+//-------------------------------------------------------
+QColor switch_button::track_color_off() const
+{
+    return m_track_color_off;
+}
+
+//-------------------------------------------------------
+QColor switch_button::icon_color_off() const
+{
+    return m_icon_color_off;
+}
+
+//-------------------------------------------------------
+void switch_button::set_track_color_off(const QColor& _color)
+{
+    m_track_color_off = _color;
+    if(!isChecked())
+    {
+        m_current_track_color = m_track_color_off;
+    }
+
+    update();
+}
+
+//--------------------------------------------------------
+void switch_button::set_thumb_color_off(const QColor& _color)
+{
+    m_thumb_color_off = _color;
+    if(!isChecked())
+    {
+        m_current_thumb_color = m_thumb_color_off;
+    }
+
+    update();
+}
+
+//---------------------------------------------------------
+void switch_button::set_icon_color_off(const QColor& _color)
+{
+    m_icon_color_off = _color;
+    if(!isChecked())
+    {
+        m_current_icon_color = m_icon_color_off;
+    }
+
+    update();
+}
+
+//-------------------------------------------------------
+void switch_button::set_icons(const QIcon& _on, const QIcon& _off)
+{
+    m_icon_on  = _on;
+    m_icon_off = _off;
+    update();
+}
+
+//-------------------------------------------------------
+QColor switch_button::thumb_color_on() const
+{
+    return m_thumb_color_on;
+}
+
+//------------------------------------------------------
+QColor switch_button::thumb_color_off() const
+{
+    return m_thumb_color_off;
 }
 
 //-------------------------------------------------------
@@ -121,10 +247,34 @@ void switch_button::set_track_color_on(const QColor& _color)
     update();
 }
 
-//--------------------------------------------------------
-QColor switch_button::thumb_color() const
+//-------------------------------------------------------
+QColor switch_button::icon_color_on() const
 {
-    return m_thumb_color;
+    return m_icon_color_on;
+}
+
+//-------------------------------------------------------
+void switch_button::set_icon_color_on(const QColor& _color)
+{
+    m_icon_color_on = _color;
+    if(isChecked())
+    {
+        m_current_icon_color = m_icon_color_on;
+    }
+
+    update();
+}
+
+//-------------------------------------------------------
+void switch_button::set_thumb_color_on(const QColor& _color)
+{
+    m_thumb_color_on = _color;
+    if(isChecked())
+    {
+        m_current_thumb_color = m_thumb_color_on;
+    }
+
+    update();
 }
 
 //--------------------------------------------------------
@@ -140,13 +290,9 @@ void switch_button::set_check_state(const Qt::CheckState& _state)
     setChecked(is_checked);
     m_offset              = m_end_offset[is_checked];
     m_current_track_color = is_checked ? m_track_color_on : m_track_color_off;
-    update();
-}
+    m_current_thumb_color = is_checked ? m_thumb_color_on : m_thumb_color_off;
+    m_current_icon_color  = is_checked ? m_icon_color_on : m_icon_color_off;
 
-//--------------------------------------------------------
-void switch_button::set_thumb_color(const QColor& _color)
-{
-    m_thumb_color = _color;
     update();
 }
 
@@ -163,13 +309,25 @@ void switch_button::mousePressEvent(QMouseEvent* _event)
         move_anim->setStartValue(m_offset);
         move_anim->setEndValue(m_end_offset[next_state]);
 
-        auto* color_anim = new QPropertyAnimation(this, "current_track_color");
-        color_anim->setStartValue(next_state ? m_track_color_off : m_track_color_on);
-        color_anim->setEndValue(next_state ? m_track_color_on : m_track_color_off);
-        color_anim->setDuration(220);
+        auto* color_anim_track = new QPropertyAnimation(this, "current_track_color");
+        color_anim_track->setStartValue(next_state ? m_track_color_off : m_track_color_on);
+        color_anim_track->setEndValue(next_state ? m_track_color_on : m_track_color_off);
+        color_anim_track->setDuration(220);
+
+        auto* color_anim_thumb = new QPropertyAnimation(this, "current_thumb_color");
+        color_anim_thumb->setStartValue(next_state ? m_thumb_color_off : m_thumb_color_on);
+        color_anim_thumb->setEndValue(next_state ? m_thumb_color_on : m_thumb_color_off);
+        color_anim_thumb->setDuration(220);
+
+        auto* color_anim_icon = new QPropertyAnimation(this, "current_icon_color");
+        color_anim_icon->setStartValue(next_state ? m_icon_color_off : m_icon_color_on);
+        color_anim_icon->setEndValue(next_state ? m_icon_color_on : m_icon_color_off);
+        color_anim_icon->setDuration(220);
 
         group->addAnimation(move_anim);
-        group->addAnimation(color_anim);
+        group->addAnimation(color_anim_track);
+        group->addAnimation(color_anim_thumb);
+        group->addAnimation(color_anim_icon);
 
         connect(group, &QParallelAnimationGroup::finished, group, &QObject::deleteLater);
         group->start();
