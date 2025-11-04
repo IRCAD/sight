@@ -3,6 +3,7 @@
     <parameters>
         <object uid="image" type="sight::data::image_series" deferred="true" />
         <object uid="transfer_function" type="sight::data::transfer_function" />
+        <object uid="fiducial_size" type="sight::data::real" optional="true" value="1.5" />
 
         <param name="WID_PARENT" />
         <param name="slice_index" default="axial" />
@@ -111,7 +112,7 @@
         <service uid="ruler_fiducial_adp" type="sight::module::viz::scene3d_qt::adaptor::fiducials::ruler" auto_connect="true">
             <inout key="image" uid="${image}" />
             <config font_size="16" query_flags="0x40000000" orientation="${slice_index}" />
-            <properties radius="1.5" />
+            <properties radius="${fiducial_size}" />
         </service>
 
         <service uid="negato_camera_adp" type="sight::module::viz::scene3d::adaptor::negato2d_camera">

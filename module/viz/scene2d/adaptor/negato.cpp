@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2024 IRCAD France
+ * Copyright (C) 2009-2025 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,7 @@ static const core::com::slots::key_t UPDATE_BUFFER_SLOT      = "updateBuffer";
 static const core::com::slots::key_t UPDATE_VISIBILITY_SLOT  = "update_visibility";
 static const core::com::slots::key_t UPDATE_TF_SLOT          = "update_tf";
 
-namespace medHelper = data::helper::medical_image;
+namespace med_helper = data::helper::medical_image;
 
 //-----------------------------------------------------------------------------
 
@@ -294,11 +294,11 @@ void negato::starting()
 
     auto image = m_image.lock();
 
-    m_axial_index   = std::max(0, int(medHelper::get_slice_index(*image, medHelper::axis_t::axial).value_or(0)));
+    m_axial_index   = std::max(0, int(med_helper::get_slice_index(*image, med_helper::axis_t::axial).value_or(0)));
     m_frontal_index =
-        std::max(0, int(medHelper::get_slice_index(*image, medHelper::axis_t::frontal).value_or(0)));
+        std::max(0, int(med_helper::get_slice_index(*image, med_helper::axis_t::frontal).value_or(0)));
     m_sagittal_index =
-        std::max(0, int(medHelper::get_slice_index(*image, medHelper::axis_t::sagittal).value_or(0)));
+        std::max(0, int(med_helper::get_slice_index(*image, med_helper::axis_t::sagittal).value_or(0)));
 
     m_pixmap_item = new QGraphicsPixmapItem();
     m_pixmap_item->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);

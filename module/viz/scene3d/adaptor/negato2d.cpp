@@ -33,9 +33,6 @@
 #include <viz/scene3d/utils.hpp>
 
 #include <OgreSceneNode.h>
-
-#include <algorithm>
-
 namespace sight::module::viz::scene3d::adaptor
 {
 
@@ -102,7 +99,7 @@ void negato2d::change_slice_type(int _from, int _to)
         this->render_service()->make_current();
 
         const auto spacing = sight::viz::scene3d::utils::get_ogre_spacing(*image);
-        m_planes[0].first->update(m_planes[0].second, spacing, m_enable_alpha);
+        m_planes[0].first->update(m_planes[0].second, spacing);
 
         // Update threshold if necessary
         this->update_tf();

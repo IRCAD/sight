@@ -98,12 +98,10 @@ public:
 
     /**
      * @brief Instantiates the plane mesh and entity.
-     * @param _enable_transparency used true to enable the opacity.
      */
     SIGHT_VIZ_SCENE3D_API void update(
         axis_t _axis,
-        const Ogre::Vector3& _spacing,
-        bool _enable_transparency
+        const Ogre::Vector3& _spacing
     );
 
     /**
@@ -131,8 +129,12 @@ public:
     /**
      * @brief Adds or updates the texture containing the transfer function data in the negato passes.
      * @param _tf_texture the TF texture.
+     * @param _enable_transparency used true to enable the opacity.
      */
-    SIGHT_VIZ_SCENE3D_API void set_tf_data(const viz::scene3d::transfer_function& _tf_texture);
+    SIGHT_VIZ_SCENE3D_API void set_tf_data(
+        const viz::scene3d::transfer_function& _tf_texture,
+        bool _enable_transparency
+    );
 
     /// Gets the image axis orthogonal to the plane.
     [[nodiscard]] SIGHT_VIZ_SCENE3D_API axis_t axis() const;
@@ -150,7 +152,7 @@ public:
     SIGHT_VIZ_SCENE3D_API void set_render_queuer_group_and_priority(std::uint8_t _group_id, std::uint16_t _priority);
 
     /// Compute two cross lines that intersect at the given position, according to the plane orientation.
-    SIGHT_VIZ_SCENE3D_API std::array<Ogre::Vector3, 4> compute_cross(
+    [[nodiscard]] SIGHT_VIZ_SCENE3D_API std::array<Ogre::Vector3, 4> compute_cross(
         const Ogre::Vector3& _center,
         const data::image& _image
     ) const;

@@ -141,8 +141,7 @@ plane::~plane()
 
 void plane::update(
     axis_t _axis,
-    const Ogre::Vector3& _spacing,
-    bool _enable_transparency
+    const Ogre::Vector3& _spacing
 )
 {
     m_axis = _axis;
@@ -227,12 +226,6 @@ void plane::update(
     m_plane_material->set_texture("image", m_texture->get(), filter_type);
     m_plane_material->set_vertex_uniform("u_orientation", orientation_index);
     m_plane_material->set_fragment_uniform("u_orientation", orientation_index);
-    const auto format = utils::get_pixel_format_from_ogre(m_texture.get()->get()->getFormat());
-    if(format.second == data::image::pixel_format_t::gray_scale)
-    {
-        m_plane_material->set_fragment_uniform("u_window", m_texture->window());
-        m_plane_material->set_fragment_uniform("u_enableAlpha", static_cast<int>(_enable_transparency));
-    }
 
     if(m_mask_texture)
     {
@@ -346,8 +339,13 @@ void plane::update_position()
 
 //-----------------------------------------------------------------------------
 
-void plane::set_tf_data(const viz::scene3d::transfer_function& _tf_texture)
+void plane::set_tf_data(
+    const viz::scene3d::transfer_function& _tf_texture,
+    bool _enable_transparency
+)
 {
+    m_plane_material->set_fragment_uniform("u_window", m_texture->window());
+    m_plane_material->set_fragment_uniform("u_enableAlpha", static_cast<int>(_enable_transparency));
     m_plane_material->set_texture("tfTexture", _tf_texture.get());
     m_plane_material->set_fragment_uniform("u_f3TFWindow", _tf_texture.m_window);
 }

@@ -234,19 +234,14 @@ void ruler::updating()
 
     const auto& fiducials = m_image.const_lock()->get_fiducials();
 
-    std::size_t slice_index = 0;
     sight::data::image::spacing_t spacing;
     {
         auto image = m_image.const_lock();
-        slice_index = static_cast<std::size_t>(sight::data::helper::medical_image::get_slice_index(
-                                                   *image,
-                                                   m_axis
-        ).value_or(0));
         spacing = image->spacing();
     }
 
     // Get all the ruler fiducials from the image and store them locally
-    auto query_results = fiducials->query_fiducials(
+    auto fiducials_list = fiducials->query_fiducials(
         std::nullopt,
         data::fiducials_series::shape::ruler
     );
@@ -257,42 +252,63 @@ void ruler::updating()
     std::array<float, 4> color = {default_color[0], default_color[1], default_color[2], default_color[3]
     };
 
-    for(auto& q : query_results)
+    for(auto& current_fiducial : fiducials_list)
     {
-        if(q.m_color.has_value())
+        if(current_fiducial.m_color.has_value())
         {
-            color = q.m_color.value();
+            color = current_fiducial.m_color.value();
         }
 
-        const float sphere_radius = q.m_size.value_or(static_cast<float>(*m_sphere_radius))
-                                    * (m_interactive ? 2.0F : 1.0F);
+        const float sphere_radius = this->control_point_radius();
 
         auto* const camera   = this->layer()->get_default_camera();
         auto projection_type = camera->getProjectionType();
 
-        int si   = -1;
-        auto rfn = q.m_referenced_frame_number.value_or(std::vector<std::int32_t>());
-        if(!rfn.empty())
+        int fiducial_slice_index = -1;
+        auto reference_number    = current_fiducial.m_referenced_frame_number.value_or(std::vector<std::int32_t>());
+        if(!reference_number.empty())
         {
-            si = static_cast<int>(rfn.at(0) - 1);
+            fiducial_slice_index = static_cast<int>(reference_number.at(0) - 1);
         }
 
-        bool visible = m_always_display_all ? m_always_display_all : si == static_cast<int>(slice_index);
+        const auto& fiducial_image_data = current_fiducial.m_graphic_data.value();
+        const auto& fiducial_space_data = current_fiducial.m_contour_data.value();
 
         if(projection_type == Ogre::ProjectionType::PT_ORTHOGRAPHIC)
         {
-            if(q.m_graphic_data.has_value())
-            {
-                const auto& gd = q.m_graphic_data.value();
+            const auto begin = {fiducial_image_data[0] * spacing[0], fiducial_image_data[1] * spacing[1],
+                                fiducial_space_data[2]
+            };
+            const auto end = {fiducial_image_data[2] * spacing[0], fiducial_image_data[3] * spacing[1],
+                              fiducial_space_data[5]
+            };
 
+            // Pull the line along the axis a bit to avoid it being hidden by the plane.
+            const std::array<double,
+                             3> line1_pos = {m_axis == axis_t::x_axis ? begin.begin()[0] - 0.1 : begin.begin()[0],
+                                             m_axis
+                                             == axis_t::y_axis ? begin.begin()[1] - 0.1 : begin.begin()[1],
+                                             m_axis
+                                             == axis_t::z_axis ? begin.begin()[2] - 0.1 : begin.begin()[2]
+            };
+            const std::array<double, 3> line2_pos = {m_axis == axis_t::x_axis ? end.begin()[0] - 0.1 : end.begin()[0],
+                                                     m_axis == axis_t::y_axis ? end.begin()[1] - 0.1 : end.begin()[1],
+                                                     m_axis == axis_t::z_axis ? end.begin()[2] - 0.1 : end.begin()[2]
+            };
+
+            if(current_fiducial.m_graphic_data.has_value())
+            {
                 this->create_ruler_ogre_set(
                     color,
                     sphere_radius,
-                    q.m_fiducial_uid,
-                    {gd[0] * spacing[0], gd[1] * spacing[1], 0.},
-                    {gd[2] * spacing[0], gd[3] * spacing[1], 0.},
-                    m_visible && visible,
-                    si
+                    current_fiducial.m_fiducial_uid,
+                    line1_pos,
+                    line2_pos,
+                    m_visible && is_visible_on_current_slice(
+                        line1_pos,
+                        line2_pos
+                    ),
+                    fiducial_slice_index
                 );
             }
         }
@@ -301,11 +317,11 @@ void ruler::updating()
             this->create_ruler_ogre_set(
                 color,
                 sphere_radius,
-                q.m_fiducial_uid,
-                {q.m_contour_data->at(0), q.m_contour_data->at(1), q.m_contour_data->at(2)},
-                {q.m_contour_data->at(3), q.m_contour_data->at(4), q.m_contour_data->at(5)},
-                m_visible && visible,
-                si
+                current_fiducial.m_fiducial_uid,
+                {fiducial_space_data[0], fiducial_space_data[1], fiducial_space_data[2]},
+                {fiducial_space_data[3], fiducial_space_data[4], fiducial_space_data[5]},
+                m_visible,
+                fiducial_slice_index
             );
         }
     }
@@ -451,33 +467,16 @@ void ruler::create_ruler_ogre_set(
     auto* const root_node = this->get_scene_manager()->getRootSceneNode();
     const auto color      = Ogre::ColourValue(_color[0], _color[1], _color[2], _color[3]);
 
-    const Ogre::Vector3 sphere1_pos(
+    const Ogre::Vector3 line1_pos(
         static_cast<Ogre::Real>(_begin[0]),
         static_cast<Ogre::Real>(_begin[1]),
         static_cast<Ogre::Real>(_begin[2])
     );
 
-    const Ogre::Vector3 sphere2_pos(
-        static_cast<Ogre::Real>(_end[0]),
-        static_cast<Ogre::Real>(_end[1]),
-        static_cast<Ogre::Real>(_end[2])
-    );
-
-    // In case the z coord is an integer, we should to set it a tiny bit behind.
-    // Otherwise the ogre line will flicker.
-    const auto begin_z_coord = std::trunc(_begin[2]) == _begin[2] ? _begin[2] - 0.001 : _begin[2];
-    const auto end_z_coord   = std::trunc(_end[2]) == _end[2] ? _end[2] - 0.001 : _end[2];
-
-    const Ogre::Vector3 line1_pos(
-        static_cast<Ogre::Real>(_begin[0]),
-        static_cast<Ogre::Real>(_begin[1]),
-        static_cast<Ogre::Real>(begin_z_coord)
-    );
-
     const Ogre::Vector3 line2_pos(
         static_cast<Ogre::Real>(_end[0]),
         static_cast<Ogre::Real>(_end[1]),
-        static_cast<Ogre::Real>(end_z_coord)
+        static_cast<Ogre::Real>(_end[2])
     );
 
     const auto id =
@@ -502,7 +501,7 @@ void ruler::create_ruler_ogre_set(
     // Render this sphere over all others objects.
     sphere1->setRenderQueueGroup(RULER_RQ_GROUP_ID);
 
-    Ogre::SceneNode* const node1 = root_node->createChildSceneNode(id("node1"), sphere1_pos);
+    Ogre::SceneNode* const node1 = root_node->createChildSceneNode(id("node1"), line1_pos);
     SIGHT_ASSERT("Can't create the first node", node1);
     node1->attachObject(sphere1);
 
@@ -521,7 +520,7 @@ void ruler::create_ruler_ogre_set(
     // Render this sphere over all others objects.
     sphere2->setRenderQueueGroup(RULER_RQ_GROUP_ID);
 
-    Ogre::SceneNode* const node2 = root_node->createChildSceneNode(id("node2"), sphere2_pos);
+    Ogre::SceneNode* const node2 = root_node->createChildSceneNode(id("node2"), line2_pos);
     SIGHT_ASSERT("Can't create the second node", node2);
     node2->attachObject(sphere2);
 
@@ -567,11 +566,11 @@ void ruler::create_ruler_ogre_set(
     sight::viz::scene3d::text::sptr label = sight::viz::scene3d::text::make(this->layer());
 
     // NOLINTNEXTLINE(readability-suspicious-call-argument)
-    const std::string length = sight::viz::scene3d::helper::scene::get_length(sphere1_pos, sphere2_pos);
+    const std::string length = sight::viz::scene3d::helper::scene::get_length(line1_pos, line2_pos);
     label->set_text(length);
     label->set_text_color(color);
     label->set_font_size(m_font_size);
-    Ogre::SceneNode* const label_node = root_node->createChildSceneNode(id("label_node"), sphere2_pos);
+    Ogre::SceneNode* const label_node = root_node->createChildSceneNode(id("label_node"), line2_pos);
     SIGHT_ASSERT("Can't create the label node", label_node);
     label->attach_to_node(label_node, this->layer()->get_default_camera());
 
@@ -581,8 +580,10 @@ void ruler::create_ruler_ogre_set(
     line->setVisible(_visible);
     dashed_line->setVisible(_visible);
     label->set_visible(_visible);
-    ruler::ruler_ogre_set created_ruler {_id, _slice_index, node1, sphere1, node2, sphere2, line, dashed_line,
-                                         label_node, label
+    ruler::ruler_ogre_set created_ruler {.id = _id, .slice_index = _slice_index, .node1 = node1, .sphere1 = sphere1,
+                                         .node2       = node2, .sphere2 = sphere2, .line = line,
+                                         .dashed_line = dashed_line,
+                                         .label_node  = label_node, .label = label
     };
 
     m_ruler_ogre_sets.emplace_back(created_ruler);
@@ -595,7 +596,7 @@ void ruler::activate_tool(const bool _activate)
     if(_activate)
     {
         m_tool_activated = true;
-        m_picked_ruler   = {nullptr, true};
+        m_picked_ruler   = {.m_data = nullptr, .m_first = true};
         m_interactive    = true;
 
         set_cursor(Qt::CrossCursor);
@@ -608,7 +609,7 @@ void ruler::activate_tool(const bool _activate)
     {
         m_tool_activated = false;
         m_creation_mode  = false;
-        m_picked_ruler   = {nullptr, true};
+        m_picked_ruler   = {.m_data = nullptr, .m_first = true};
         m_interactive    = false;
 
         auto interactor     = layer()->render_service()->get_interactor_manager();
@@ -757,12 +758,6 @@ void ruler::display_on_current_slice()
 {
     const auto image = m_image.const_lock();
 
-    // Get the current slice position
-    const auto slice_index = sight::data::helper::medical_image::get_slice_index(
-        *image,
-        m_axis
-    ).value_or(0);
-
     if(m_bin_button != nullptr)
     {
         m_bin_button->hide();
@@ -776,7 +771,10 @@ void ruler::display_on_current_slice()
 
         for(auto& ruler : m_ruler_ogre_sets)
         {
-            bool visible_on_current_slice = slice_index == ruler.slice_index;
+            bool visible_on_current_slice = is_visible_on_current_slice(
+                {ruler.node1->getPosition().x, ruler.node1->getPosition().y, ruler.node1->getPosition().z},
+                {ruler.node2->getPosition().x, ruler.node2->getPosition().y, ruler.node2->getPosition().z
+                });
 
             ruler.sphere1->setVisible(m_visible && visible_on_current_slice);
             ruler.sphere2->setVisible(m_visible && visible_on_current_slice);
@@ -835,7 +833,7 @@ void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
                         if(ruler.sphere1 == object)
                         {
                             ruler.node1->setScale(scale, scale, scale);
-                            m_picked_ruler = {&ruler, true};
+                            m_picked_ruler = {.m_data = &ruler, .m_first = true};
                             found          = true;
 
                             this->set_cursor(Qt::ClosedHandCursor);
@@ -844,7 +842,7 @@ void ruler::button_press_event(mouse_button _button, modifier /*_mods*/, int _x,
                         if(ruler.sphere2 == object)
                         {
                             ruler.node2->setScale(scale, scale, scale);
-                            m_picked_ruler = {&ruler, false};
+                            m_picked_ruler = {.m_data = &ruler, .m_first = false};
                             found          = true;
 
                             this->set_cursor(Qt::ClosedHandCursor);
@@ -1119,7 +1117,7 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
             m_creation_mode = false;
             this->set_cursor(Qt::OpenHandCursor);
 
-            m_picked_ruler = {nullptr, true};
+            m_picked_ruler = {.m_data = nullptr, .m_first = true};
         }
         // If it is not a creation mode, a distance null means that the ruler should be removed.
         else if(!m_creation_mode)
@@ -1128,7 +1126,7 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
             {
                 this->set_cursor(Qt::CrossCursor);
                 this->remove_ruler_fiducial(m_picked_ruler.m_data->id);
-                m_picked_ruler = {nullptr, true};
+                m_picked_ruler = {.m_data = nullptr, .m_first = true};
             }
             else
             {
@@ -1190,7 +1188,7 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                             m_bin_button->hide();
                             this->remove_ruler_fiducial(id);
                             this->set_cursor(Qt::CrossCursor);
-                            m_picked_ruler = {nullptr, true};
+                            m_picked_ruler = {.m_data = nullptr, .m_first = true};
 
                             delete m_bin_button;
                             m_bin_button = nullptr;
@@ -1198,7 +1196,7 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
                 }
 
                 this->set_cursor(Qt::OpenHandCursor);
-                m_picked_ruler = {nullptr, true};
+                m_picked_ruler = {.m_data = nullptr, .m_first = true};
             }
         }
 
@@ -1213,7 +1211,7 @@ void ruler::button_release_event(mouse_button _button, modifier /*_mods*/, int /
             this->set_cursor(Qt::CrossCursor);
             const auto id = m_picked_ruler.m_data->id;
             this->remove_ruler_fiducial(id);
-            m_picked_ruler = {nullptr, true};
+            m_picked_ruler = {.m_data = nullptr, .m_first = true};
         }
         // Right button other than in creation mode goes out of the add ruler mode.
         else
@@ -1233,10 +1231,20 @@ void ruler::update_picked_ruler(ruler_ogre_set* _ruler_to_update, Ogre::Vector3 
     _ruler_to_update->node1->setPosition(_begin);
     _ruler_to_update->node2->setPosition(_end);
 
+    // Pull the line along the axis a bit to avoid it being hidden by the plane.
+    const Ogre::Vector3 line1_pos = {static_cast<float>(m_axis == axis_t::x_axis ? _begin.x - 0.1 : _begin.x),
+                                     static_cast<float>(m_axis == axis_t::y_axis ? _begin.y - 0.1 : _begin.y),
+                                     static_cast<float>(m_axis == axis_t::z_axis ? _begin.z - 0.1 : _begin.z)
+    };
+    const Ogre::Vector3 line2_pos = {static_cast<float>(m_axis == axis_t::x_axis ? _end.x - 0.1 : _end.x),
+                                     static_cast<float>(m_axis == axis_t::y_axis ? _end.y - 0.1 : _end.y),
+                                     static_cast<float>(m_axis == axis_t::z_axis ? _end.z - 0.1 : _end.z)
+    };
+
     Ogre::ManualObject* const line = _ruler_to_update->line;
     line->beginUpdate(0);
-    line->position(_begin);
-    line->position(_end);
+    line->position(line1_pos);
+    line->position(line2_pos);
     line->end();
 
     Ogre::ManualObject* const dashed_line = _ruler_to_update->dashed_line;

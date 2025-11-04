@@ -28,6 +28,8 @@
 
 #include <core/base.hpp>
 
+#include <algorithm>
+
 SIGHT_REGISTER_DATA(sight::data::point);
 
 namespace sight::data
@@ -40,7 +42,7 @@ static constexpr std::string_view FIELD_LABEL_ID = "m_labelId";
 
 point::point(const point_coord_array_t& _coord)
 {
-    std::copy(_coord.cbegin(), _coord.cend(), inserter(*this));
+    std::ranges::copy(_coord, inserter(*this));
 }
 
 //------------------------------------------------------------------------------

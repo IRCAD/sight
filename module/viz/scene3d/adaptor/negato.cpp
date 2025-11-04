@@ -146,7 +146,7 @@ void negato::starting()
 
         // TF texture initialization
         const auto tf = m_tf.lock();
-        if(tf and not m_rgb_negato.lock()->value())
+        if(tf)
         {
             m_gpu_tf = std::make_unique<sight::viz::scene3d::transfer_function>(tf.get_shared());
         }
@@ -285,7 +285,8 @@ void negato::update_image(bool _new)
         {
             const auto mask = m_mask.lock();
             std::string material_name;
-            if(image->num_components() == 3)
+            const auto tf = m_tf.lock();
+            if(tf == nullptr)
             {
                 material_name = mask != nullptr ? "Negato_rgb_mask" : "Negato_rgb";
             }
@@ -321,7 +322,7 @@ void negato::update_image(bool _new)
             // Fits the planes to the new texture
             for(const auto& plane : m_planes)
             {
-                plane.first->update(plane.second, spacing, m_enable_alpha);
+                plane.first->update(plane.second, spacing);
                 plane.first->set_query_flags(m_query_flags);
                 plane.first->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::NEGATO_WIDGET_ID, 0);
             }
@@ -420,7 +421,7 @@ void negato::update_tf()
             {
                 if(_p.first)
                 {
-                    _p.first->set_tf_data(*m_gpu_tf.get());
+                    _p.first->set_tf_data(*m_gpu_tf.get(), m_enable_alpha);
                 }
             });
     }
@@ -435,7 +436,7 @@ void negato::update_windowing(double _dw, double _dl)
 
     {
         const auto tf = m_tf.lock();
-        if(tf and not m_rgb_negato.lock()->value())
+        if(tf)
         {
             const auto image = m_image.const_lock();
             tf->set_window(std::copysign(std::max(1.0, std::abs(new_window)), new_window));

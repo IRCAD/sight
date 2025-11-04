@@ -459,7 +459,29 @@ void modify_fiducial(
         _pimpl.set_values<kw::ContourData>(*_query.m_contour_data, _fiducial_dataset);
     }
 
-    ///@todo store also the GraphicCoordinatesDataSequence when we have an use for it...
+    if(_query.m_graphic_data && _query.m_referenced_frame_number)
+    {
+        SIGHT_ASSERT("The graphic data is not a multiple of 2.", _query.m_graphic_data->size() % 2 == 0);
+
+        _pimpl.set_values<kw::ReferencedFrameNumber>(
+            *_query.m_referenced_frame_number,
+            0,
+            {{kw::FiducialSetSequence::GetTag(), _query.m_fiducial_set_index},
+                {kw::FiducialSequence::GetTag(), _query.m_fiducial_index},
+                {kw::GraphicCoordinatesDataSequence::GetTag(), _query.m_shape_index},
+                {kw::ReferencedImageSequence::GetTag(), 0
+                }
+            });
+
+        _pimpl.set_values<kw::GraphicData>(
+            *_query.m_graphic_data,
+            0,
+            {{kw::FiducialSetSequence::GetTag(), _query.m_fiducial_set_index},
+                {kw::FiducialSequence::GetTag(), _query.m_fiducial_index},
+                {kw::GraphicCoordinatesDataSequence::GetTag(), _query.m_shape_index
+                }
+            });
+    }
 }
 
 //------------------------------------------------------------------------------
