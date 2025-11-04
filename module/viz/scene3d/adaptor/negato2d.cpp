@@ -93,7 +93,7 @@ void negato2d::change_slice_type(int _from, int _to)
                                                           : plane_axis
                             == from_axis ? to_axis : plane_axis;
 
-    if(plane_axis != new_axis)
+    if(plane_axis != new_axis && m_planes[0].first != nullptr)
     {
         m_planes[0].second = new_axis;
         this->render_service()->make_current();
@@ -194,7 +194,7 @@ void negato2d::pick_intensity(int _x, int _y)
 
     if(result.has_value())
     {
-        if(m_planes[0].first->get_movable_object() == result->first)
+        if(m_planes[0].first->get_movable_object() == result->first && m_planes[0].first != nullptr)
         {
             m_picked = true;
             const auto image = m_image.lock();

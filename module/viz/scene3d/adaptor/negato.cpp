@@ -375,7 +375,10 @@ void negato::change_slice_index(int _axial_index, int _frontal_index, int _sagit
 
     for(auto& plane : m_planes)
     {
-        plane.first->change_slice(m_current_slice_index);
+        if(plane.first)
+        {
+            plane.first->change_slice(m_current_slice_index);
+        }
     }
 
     this->signal<signals::slice_index_changed_t>(signals::SLICE_INDEX_CHANGED)->emit();
