@@ -31,6 +31,7 @@
 #include <QPropertyAnimation>
 #include <QRect>
 #include <QStyleOption>
+
 namespace sight::ui::qt::widget
 {
 
@@ -95,9 +96,7 @@ void switch_button::paintEvent(QPaintEvent* /*e*/)
         constexpr int icon_margin = 4;
         QSize icon_size           = QSize(width_rect - 2 * icon_margin, width_rect - 2 * icon_margin);
 
-        const qreal device_pixel = painter.device()->devicePixelRatioF();
-        QPixmap pm               = current_icon.pixmap(icon_size * device_pixel);
-        pm.setDevicePixelRatio(device_pixel);
+        QPixmap pm = current_icon.pixmap(icon_size);
 
         QPainter icon_painter(&pm);
         icon_painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
