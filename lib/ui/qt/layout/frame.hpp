@@ -74,6 +74,14 @@ private:
 
     void set_full_screen(bool _full_screen = true);
 
+#ifdef _WIN32
+    /// This is used as a workaround to remember if the window was maximized before going to full screen so that we can
+    /// restore the maximized state when exiting full screen.
+    /// Qt do it almost, but it also reset the windows border "hack" to force child windows to be visible in full screen
+    /// on Windows.
+    bool m_full_screen_and_maximized {false};
+#endif
+
     QPointer<QMainWindow> m_qt_window;
     QPointer<QShortcut> m_shortcut;
 };
