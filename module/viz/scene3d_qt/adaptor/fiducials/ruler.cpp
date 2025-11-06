@@ -232,12 +232,20 @@ void ruler::updating()
         this->remove_ruler_ogre_set(m_ruler_ogre_sets[0].id);
     }
 
-    const auto& fiducials = m_image.const_lock()->get_fiducials();
+    const auto& fiducials   = m_image.const_lock()->get_fiducials();
+    std::size_t slice_index = 0;
+    bool is_tiled_sparse    = false;
 
     sight::data::image::spacing_t spacing;
     {
         auto image = m_image.const_lock();
-        spacing = image->spacing();
+        spacing     = image->spacing();
+        slice_index = static_cast<std::size_t>(sight::data::helper::medical_image::get_slice_index(
+                                                   *image,
+                                                   m_axis
+        ).value_or(0));
+        is_tiled_sparse = image->get_dimension_organization_type()
+                          == sight::data::dicom::dimension_organization_t::tiled_sparse;
     }
 
     // Get all the ruler fiducials from the image and store them locally
@@ -271,30 +279,57 @@ void ruler::updating()
             fiducial_slice_index = static_cast<int>(reference_number.at(0) - 1);
         }
 
-        const auto& fiducial_image_data = current_fiducial.m_graphic_data.value();
-        const auto& fiducial_space_data = current_fiducial.m_contour_data.value();
+        const auto& fiducial_graphic_data = current_fiducial.m_graphic_data.value();
+        const auto& fiducial_contour_data = current_fiducial.m_contour_data.value();
 
         if(projection_type == Ogre::ProjectionType::PT_ORTHOGRAPHIC)
         {
-            const auto begin = {fiducial_image_data[0] * spacing[0], fiducial_image_data[1] * spacing[1],
-                                fiducial_space_data[2]
-            };
-            const auto end = {fiducial_image_data[2] * spacing[0], fiducial_image_data[3] * spacing[1],
-                              fiducial_space_data[5]
+            const Ogre::Vector3 begin = is_tiled_sparse ? Ogre::Vector3 {
+                float(fiducial_graphic_data[0] * spacing[0]),
+                float(fiducial_graphic_data[1] * spacing[1]),
+                float(fiducial_slice_index)
+            } : Ogre::Vector3 {
+                float(fiducial_contour_data[0]),
+                float(fiducial_contour_data[1]),
+                float(fiducial_contour_data[2])
             };
 
+            const Ogre::Vector3 end = is_tiled_sparse ? Ogre::Vector3 {
+                float(fiducial_graphic_data[2] * spacing[0]),
+                float(fiducial_graphic_data[3] * spacing[1]),
+                float(fiducial_slice_index)
+            } : Ogre::Vector3 {
+                float(fiducial_contour_data[3]),
+                float(fiducial_contour_data[4]),
+                float(fiducial_contour_data[5])
+            };
+
+            const float axis_offset = -0.1F;
+
             // Pull the line along the axis a bit to avoid it being hidden by the plane.
-            const std::array<double,
-                             3> line1_pos = {m_axis == axis_t::x_axis ? begin.begin()[0] - 0.1 : begin.begin()[0],
-                                             m_axis
-                                             == axis_t::y_axis ? begin.begin()[1] - 0.1 : begin.begin()[1],
-                                             m_axis
-                                             == axis_t::z_axis ? begin.begin()[2] - 0.1 : begin.begin()[2]
+            const std::array<double, 3> line1_pos = {
+                m_axis == axis_t::x_axis ? begin.x + axis_offset : begin.x,
+                m_axis == axis_t::y_axis ? begin.y + axis_offset : begin.y,
+                m_axis == axis_t::z_axis ? begin.z + axis_offset : begin.z
             };
-            const std::array<double, 3> line2_pos = {m_axis == axis_t::x_axis ? end.begin()[0] - 0.1 : end.begin()[0],
-                                                     m_axis == axis_t::y_axis ? end.begin()[1] - 0.1 : end.begin()[1],
-                                                     m_axis == axis_t::z_axis ? end.begin()[2] - 0.1 : end.begin()[2]
+            const std::array<double, 3> line2_pos = {
+                m_axis == axis_t::x_axis ? end.x + axis_offset : end.x,
+                m_axis == axis_t::y_axis ? end.y + axis_offset : end.y,
+                m_axis == axis_t::z_axis ? end.z + axis_offset : end.z
             };
+
+            bool visible_on_current_slice = false;
+            if(is_tiled_sparse)
+            {
+                visible_on_current_slice = std::cmp_equal(fiducial_slice_index, slice_index);
+            }
+            else
+            {
+                visible_on_current_slice = is_visible_on_current_slice(
+                    line1_pos,
+                    line2_pos
+                                           ) || fiducial_slice_index == 0;
+            }
 
             if(current_fiducial.m_graphic_data.has_value())
             {
@@ -304,10 +339,7 @@ void ruler::updating()
                     current_fiducial.m_fiducial_uid,
                     line1_pos,
                     line2_pos,
-                    m_visible && is_visible_on_current_slice(
-                        line1_pos,
-                        line2_pos
-                    ),
+                    m_visible && visible_on_current_slice,
                     fiducial_slice_index
                 );
             }
@@ -318,8 +350,8 @@ void ruler::updating()
                 color,
                 sphere_radius,
                 current_fiducial.m_fiducial_uid,
-                {fiducial_space_data[0], fiducial_space_data[1], fiducial_space_data[2]},
-                {fiducial_space_data[3], fiducial_space_data[4], fiducial_space_data[5]},
+                {fiducial_contour_data[0], fiducial_contour_data[1], fiducial_contour_data[2]},
+                {fiducial_contour_data[3], fiducial_contour_data[4], fiducial_contour_data[5]},
                 m_visible,
                 fiducial_slice_index
             );
@@ -758,6 +790,12 @@ void ruler::display_on_current_slice()
 {
     const auto image = m_image.const_lock();
 
+    // Get the current slice position
+    const auto slice_index = sight::data::helper::medical_image::get_slice_index(
+        *image,
+        m_axis
+    ).value_or(0);
+
     if(m_bin_button != nullptr)
     {
         m_bin_button->hide();
@@ -771,10 +809,18 @@ void ruler::display_on_current_slice()
 
         for(auto& ruler : m_ruler_ogre_sets)
         {
-            bool visible_on_current_slice = is_visible_on_current_slice(
-                {ruler.node1->getPosition().x, ruler.node1->getPosition().y, ruler.node1->getPosition().z},
-                {ruler.node2->getPosition().x, ruler.node2->getPosition().y, ruler.node2->getPosition().z
-                });
+            bool visible_on_current_slice = false;
+            if(image->get_dimension_organization_type() == sight::data::dicom::dimension_organization_t::tiled_sparse)
+            {
+                visible_on_current_slice = slice_index == ruler.slice_index;
+            }
+            else
+            {
+                visible_on_current_slice = is_visible_on_current_slice(
+                    {ruler.node1->getPosition().x, ruler.node1->getPosition().y, ruler.node1->getPosition().z},
+                    {ruler.node2->getPosition().x, ruler.node2->getPosition().y, ruler.node2->getPosition().z
+                    });
+            }
 
             ruler.sphere1->setVisible(m_visible && visible_on_current_slice);
             ruler.sphere2->setVisible(m_visible && visible_on_current_slice);
@@ -1231,14 +1277,16 @@ void ruler::update_picked_ruler(ruler_ogre_set* _ruler_to_update, Ogre::Vector3 
     _ruler_to_update->node1->setPosition(_begin);
     _ruler_to_update->node2->setPosition(_end);
 
+    const float axis_offset = -0.1F;
+
     // Pull the line along the axis a bit to avoid it being hidden by the plane.
-    const Ogre::Vector3 line1_pos = {static_cast<float>(m_axis == axis_t::x_axis ? _begin.x - 0.1 : _begin.x),
-                                     static_cast<float>(m_axis == axis_t::y_axis ? _begin.y - 0.1 : _begin.y),
-                                     static_cast<float>(m_axis == axis_t::z_axis ? _begin.z - 0.1 : _begin.z)
+    const Ogre::Vector3 line1_pos = {m_axis == axis_t::x_axis ? _begin.x + axis_offset : _begin.x,
+                                     m_axis == axis_t::y_axis ? _begin.y + axis_offset : _begin.y,
+                                     m_axis == axis_t::z_axis ? _begin.z + axis_offset : _begin.z
     };
-    const Ogre::Vector3 line2_pos = {static_cast<float>(m_axis == axis_t::x_axis ? _end.x - 0.1 : _end.x),
-                                     static_cast<float>(m_axis == axis_t::y_axis ? _end.y - 0.1 : _end.y),
-                                     static_cast<float>(m_axis == axis_t::z_axis ? _end.z - 0.1 : _end.z)
+    const Ogre::Vector3 line2_pos = {m_axis == axis_t::x_axis ? _end.x + axis_offset : _end.x,
+                                     m_axis == axis_t::y_axis ? _end.y + axis_offset : _end.y,
+                                     m_axis == axis_t::z_axis ? _end.z + axis_offset : _end.z
     };
 
     Ogre::ManualObject* const line = _ruler_to_update->line;
