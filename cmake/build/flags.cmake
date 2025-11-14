@@ -260,7 +260,7 @@ if(NOT TARGET coverage)
 
         string(
             CONCAT coverage_script
-                   "gcovr -j$RUNNER_THREADS -r .. --filter ../lib --filter ../module --exclude '.*test.*' "
+                   "gcovr -j $LINUX_PARALLEL_BUILDS -r .. --filter ../lib --filter ../module --exclude '.*test.*' "
                    "--exclude-noncode-lines --html --html-details coverage/index.html --html-theme github.dark-blue "
                    "--xml coverage/cobertura-coverage.xml --print-summary ."
                    "| grep lines"

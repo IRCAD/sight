@@ -7,10 +7,10 @@ stages:
 
 include:
     - project: "sight/sight-gitlab"
-      ref: e9f12f8818c64ca82dc00d4b8054430e650a999f
+      ref: 7667f88d1173f697b473ab186cb43a1b5e68fcd7
       file: "/.templates/deploy.yml"
     - project: "sight/sight-gitlab"
-      ref: e9f12f8818c64ca82dc00d4b8054430e650a999f
+      ref: 7667f88d1173f697b473ab186cb43a1b5e68fcd7
       file: "/.templates/build.yml"
 
 lint:ubuntu-24.04:
@@ -60,7 +60,7 @@ lint:ubuntu-24.04:
         # Touch all generated files to improve CCache performance
         - find . -type f -name '*.?pp' -o -name '*.?xx' -exec touch -t 197001010000 {} \;
         # Build
-        - ninja -j${RUNNER_THREADS} | tee output.log
+        - ninja -j ${LINUX_PARALLEL_BUILDS} | tee output.log
         # Generate metrics information
         # Note: beware when there is no warning, grep returns false...
         - nb_warnings=$(grep -c "warning:" output.log || true)
@@ -80,30 +80,30 @@ lint:ubuntu-24.04:
             else
               TIMEOUT="600"
             fi
-        - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j10 --output-junit junit1.xml --repeat until-pass:2
-        - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j10 --output-junit junit2.xml --repeat until-pass:2
-        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j10 --output-junit junit3.xml --repeat until-pass:2
+        - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j ${LINUX_PARALLEL_TESTS} --output-junit junit1.xml --repeat until-pass:2
+        - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j ${LINUX_PARALLEL_TESTS} --output-junit junit2.xml --repeat until-pass:2
+        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j ${LINUX_PARALLEL_GUI_TESTS} --output-junit junit3.xml --repeat until-pass:2
         # Build documentation if needed
         - >
             if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
-              ninja -j${RUNNER_THREADS} doc
+              ninja -j ${LINUX_PARALLEL_BUILDS} doc
             fi
         - >
             if [ "${SIGHT_BUILD_PACKAGES}" == "ON" ]; then
-              ninja -j${RUNNER_THREADS} sight_viewer_package
+              ninja -j ${LINUX_PARALLEL_BUILDS} sight_viewer_package
               rm -rf ${CI_PROJECT_DIR}/.install
 
-              ninja -j${RUNNER_THREADS} sight_calibrator_package
+              ninja -j ${LINUX_PARALLEL_BUILDS} sight_calibrator_package
               rm -rf ${CI_PROJECT_DIR}/.install
             fi
         - >
             if [ "${SIGHT_BUILD_SDK}" == "ON" ]; then
-              ninja -j${RUNNER_THREADS} install
-              ninja -j${RUNNER_THREADS} package
+              ninja -j ${LINUX_PARALLEL_BUILDS} install
+              ninja -j ${LINUX_PARALLEL_BUILDS} package
             fi
         - >
             if [ "${SIGHT_ENABLE_COVERAGE}" == "ON" ]; then
-              ninja coverage
+              ninja -j ${LINUX_PARALLEL_BUILDS} coverage
             fi
 
     artifacts: &linux_build_artifacts
@@ -285,7 +285,7 @@ deploy:apps-linux-release:
         - cd "${env:CI_PROJECT_DIR}/build"
         - cmake "$env:CI_PROJECT_DIR" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$CACHE\$PACKAGE_NAME\$TOOLCHAIN" -DCMAKE_INSTALL_PREFIX="$env:CI_PROJECT_DIR/install" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DSIGHT_BUILD_TESTS=ON -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache" -DCMAKE_C_COMPILER_LAUNCHER="ccache" -DCMAKE_CXX_COMPILER_LAUNCHER="ccache"
         # Build the project
-        - ninja
+        - ninja -j ${WINDOWS_PARALLEL_BUILDS}
         # Print CCache statistics (Cache hit rate should have raised)
         - ccache -svv
         # Clone sight-data.
@@ -301,20 +301,20 @@ deploy:apps-linux-release:
               $TIMEOUT="600"
             }
         # Launch tests
-        - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j6 --output-junit junit1.xml --repeat until-pass:2
-        - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j6 --output-junit junit2.xml --repeat until-pass:2
-        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j6 --output-junit junit3.xml --repeat until-pass:2
+        - ctest -E "(uit)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j ${WINDOWS_PARALLEL_TESTS} --output-junit junit1.xml --repeat until-pass:2
+        - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j ${WINDOWS_PARALLEL_TESTS} --output-junit junit2.xml --repeat until-pass:2
+        - ctest -R "(uit)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j ${WINDOWS_PARALLEL_GUI_TESTS} --output-junit junit3.xml --repeat until-pass:2
         - |
             if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
-              ninja sight_viewer_package
+              ninja -j ${WINDOWS_PARALLEL_BUILDS} sight_viewer_package
               (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
 
-              ninja sight_calibrator_package
+              ninja -j ${WINDOWS_PARALLEL_BUILDS} sight_calibrator_package
               (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
             }
         - |
             if ("${SIGHT_BUILD_SDK}" -eq "ON") {
-              ninja install
+              ninja -j ${WINDOWS_PARALLEL_BUILDS} install
               # Check if the package is relocatable
               Try {
                 if (Select-String -Pattern "[A-Z]:[\/\\]\w+" -Path "${env:CI_PROJECT_DIR}/install/lib/cmake/sight/*.cmake") {
@@ -331,7 +331,7 @@ deploy:apps-linux-release:
                 echo $Error[0]
                 exit 1
               }
-              ninja package
+              ninja -j ${WINDOWS_PARALLEL_BUILDS} package
             }
     artifacts:
         when: always
