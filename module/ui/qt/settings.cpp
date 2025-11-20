@@ -66,10 +66,15 @@
 #include <QStyle>
 #include <QToolButton>
 
+#include <string_view>
 #include <utility>
 
 namespace sight::module::ui::qt
 {
+
+// Use border around buttons, when selection is made using joysticks.
+static constexpr std::string_view S_BUTTON_WITHOUT_BORDER = "border : 1px solid transparent;";
+static constexpr std::string_view S_BUTTON_WITH_BORDER    = "border : 1px solid white;";
 
 //------------------------------------------------------------------------------
 
@@ -2014,8 +2019,9 @@ void settings::create_enum_button_bar_widget(
     button_bar_group->setObjectName(QString::fromStdString(_setup.key));
 
     // create the buttons from the provided list
-    int button_index         = 0;
-    const auto is_button_bar = _width != 0 || _height != 0;
+    int button_index                = 0;
+    const auto is_button_bar        = _width != 0 || _height != 0;
+    const auto widget_uses_joystick = m_widget_joysticks.contains(_setup.key);
     for(const auto& button_param : _button_list)
     {
         auto* enum_button = new QToolButton();
@@ -2035,7 +2041,12 @@ void settings::create_enum_button_bar_widget(
 
         enum_button->setText(QString::fromStdString(button_param.label));
 
-        enum_button->setStyleSheet("border : 1px solid transparent;");
+        enum_button->setStyleSheet(
+            QString::fromLatin1(
+                S_BUTTON_WITHOUT_BORDER.data(),
+                S_BUTTON_WITHOUT_BORDER.size()
+            )
+        );
 
         if(_orientation == Qt::Vertical)
         {
@@ -2129,6 +2140,15 @@ void settings::create_enum_button_bar_widget(
             if(button_param.value == init_value)
             {
                 enum_button->toggle();
+                if(widget_uses_joystick)
+                {
+                    enum_button->setStyleSheet(
+                        QString::fromLatin1(
+                            S_BUTTON_WITH_BORDER.data(),
+                            S_BUTTON_WITH_BORDER.size()
+                        )
+                    );
+                }
             }
         }
         else
@@ -2139,6 +2159,15 @@ void settings::create_enum_button_bar_widget(
             if(button_index == init_value)
             {
                 enum_button->toggle();
+                if(widget_uses_joystick)
+                {
+                    enum_button->setStyleSheet(
+                        QString::fromLatin1(
+                            S_BUTTON_WITH_BORDER.data(),
+                            S_BUTTON_WITH_BORDER.size()
+                        )
+                    );
+                }
             }
         }
 
@@ -2149,16 +2178,26 @@ void settings::create_enum_button_bar_widget(
     connect(
         button_bar_group,
         &QButtonGroup::buttonClicked,
-        [button_bar_group, is_button_bar](QAbstractButton* _selected_button)
+        [button_bar_group, widget_uses_joystick](QAbstractButton* _selected_button)
         {
-            if(is_button_bar)
+            if(widget_uses_joystick)
             {
                 for(const auto& button : button_bar_group->buttons())
                 {
-                    button->setStyleSheet("border: 1px solid transparent;");
+                    button->setStyleSheet(
+                        QString::fromLatin1(
+                            S_BUTTON_WITHOUT_BORDER.data(),
+                            S_BUTTON_WITHOUT_BORDER.size()
+                        )
+                    );
                 }
 
-                _selected_button->setStyleSheet("border: 1px solid white;");
+                _selected_button->setStyleSheet(
+                    QString::fromLatin1(
+                        S_BUTTON_WITH_BORDER.data(),
+                        S_BUTTON_WITH_BORDER.size()
+                    )
+                );
             }
         });
 }
@@ -2797,7 +2836,8 @@ void settings::set_parameter<sight::data::string>(const std::string& _val, std::
 {
     this->block_signals(true);
 
-    QObject* widget = this->get_param_widget(_key);
+    QObject* widget                = this->get_param_widget(_key);
+    const auto widget_use_joystick = m_widget_joysticks.contains(_key);
 
     auto* combobox = qobject_cast<QComboBox*>(widget);
 
@@ -2849,6 +2889,25 @@ void settings::set_parameter<sight::data::string>(const std::string& _val, std::
         );
 
         (*button_it)->toggle();
+        if(widget_use_joystick)
+        {
+            for(const auto& b : buttons)
+            {
+                b->setStyleSheet(
+                    QString::fromLatin1(
+                        S_BUTTON_WITHOUT_BORDER.data(),
+                        S_BUTTON_WITHOUT_BORDER.size()
+                    )
+                );
+            }
+
+            (*button_it)->setStyleSheet(
+                QString::fromLatin1(
+                    S_BUTTON_WITH_BORDER.data(),
+                    S_BUTTON_WITH_BORDER.size()
+                )
+            );
+        }
     }
     else if(auto* line_edit = qobject_cast<QLineEdit*>(widget);
             line_edit != nullptr)
@@ -2877,7 +2936,8 @@ template<>
 void settings::set_parameter<sight::data::integer>(const std::int64_t& _val, std::string _key)
 {
     this->block_signals(true);
-    QObject* widget = this->get_param_widget(_key);
+    QObject* widget                = this->get_param_widget(_key);
+    const auto widget_use_joystick = m_widget_joysticks.contains(_key);
 
     auto* spinbox  = qobject_cast<QSpinBox*>(widget);
     auto* slider   = qobject_cast<QSlider*>(widget);
@@ -2941,6 +3001,25 @@ void settings::set_parameter<sight::data::integer>(const std::int64_t& _val, std
         );
 
         (*button_it)->toggle();
+        if(widget_use_joystick)
+        {
+            for(const auto& b : buttons)
+            {
+                b->setStyleSheet(
+                    QString::fromLatin1(
+                        S_BUTTON_WITHOUT_BORDER.data(),
+                        S_BUTTON_WITHOUT_BORDER.size()
+                    )
+                );
+            }
+
+            (*button_it)->setStyleSheet(
+                QString::fromLatin1(
+                    S_BUTTON_WITH_BORDER.data(),
+                    S_BUTTON_WITH_BORDER.size()
+                )
+            );
+        }
     }
 
     this->block_signals(false);
@@ -3191,6 +3270,7 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
                                next_button->isEnabled() && next_button->isVisible())
                             {
                                 next_button->toggle();
+
                                 return _next_index;
                             }
                         }
@@ -3216,6 +3296,7 @@ void settings::joystick_axis_direction_event(const sight::io::joystick::axis_dir
                                next_button->isEnabled() && next_button->isVisible())
                             {
                                 next_button->toggle();
+
                                 return _next_index;
                             }
                         }
