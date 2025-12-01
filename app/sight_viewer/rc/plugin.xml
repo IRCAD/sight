@@ -74,7 +74,7 @@
                     <frame>
                         <name>Sight Viewer</name>
                         <version>@sight_viewer_VERSION@</version>
-                        <icon>sight_viewer/Ogre_logo.svg</icon>
+                        <icon>sight::module::ui::icons/liver.svg</icon>
                         <min_size width="1280" height="720" />
                         <style QSSClass="Background" />
                     </frame>
@@ -503,7 +503,7 @@
                     <key name="output_series_set" uid="pacs_series_set" />
                 </inout>
                 <param name="WINDOW_TITLE" value="PACS" />
-                <param name="WINDOW_ICON" value="sight_viewer/Ogre_logo.svg" />
+                <param name="WINDOW_ICON" value="sight::module::ui::icons/liver.svg" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
