@@ -22,6 +22,8 @@ if(${CMAKE_VERSION} VERSION_GREATER "3.31.0")
     cmake_policy(SET CMP0174 NEW)
     # Use new policy for normalized install() DESTINATION paths
     cmake_policy(SET CMP0177 NEW)
+    # Stricter arguments check of add_custom_command
+    cmake_policy(SET CMP0175 NEW)
 else()
     # Use old policy for Documentation to add cache variables and find VTK documentation dependent packages.
     # (Needed for doxygen..)

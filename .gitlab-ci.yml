@@ -7,10 +7,10 @@ stages:
 
 include:
     - project: "sight/sight-gitlab"
-      ref: 7667f88d1173f697b473ab186cb43a1b5e68fcd7
+      ref: 202e3ad100c8a37dc87c55698156b0e68b7255a2
       file: "/.templates/deploy.yml"
     - project: "sight/sight-gitlab"
-      ref: 7667f88d1173f697b473ab186cb43a1b5e68fcd7
+      ref: 202e3ad100c8a37dc87c55698156b0e68b7255a2
       file: "/.templates/build.yml"
 
 lint:ubuntu-24.04:
@@ -49,7 +49,6 @@ lint:ubuntu-24.04:
             -DCMAKE_CUDA_COMPILER_LAUNCHER=ccache
             -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/.install
             -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
-            -DSIGHT_ARCH=sandybridge
             -DSIGHT_BUILD_TESTS=ON
             -DSIGHT_BUILD_DOC=${SIGHT_BUILD_DOC}
             -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps

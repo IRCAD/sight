@@ -34,7 +34,7 @@ TEST_SUITE("sight::filter::image::detail::powell_optimizer")
 
     TEST_CASE("parabola")
     {
-        auto x_squared =
+        sight::filter::image::detail::powell_optimizer::optimized_function_t x_squared =
             [](const sight::filter::image::detail::powell_optimizer::function_parameters_t& _p)
             {
                 return _p[0] * _p[0];
