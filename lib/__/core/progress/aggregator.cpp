@@ -41,6 +41,13 @@ aggregator::aggregator(const std::string& _name) :
 
 //------------------------------------------------------------------------------
 
+aggregator::~aggregator()
+{
+    this->finish();
+}
+
+//------------------------------------------------------------------------------
+
 void aggregator::add(const core::progress::monitor::sptr& _progress, double _weight)
 {
     SIGHT_ASSERT("progress shall not be null", _progress);

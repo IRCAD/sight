@@ -62,6 +62,7 @@ public:
 
     /// Default constructor. The name is initialized with an empty string
     SIGHT_CORE_API aggregator() = default;
+    SIGHT_CORE_API ~aggregator() override;
 
     /**
      * @brief Constructor
