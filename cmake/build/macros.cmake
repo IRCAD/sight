@@ -315,21 +315,11 @@ macro(fw_exec SIGHT_TARGET)
         string(TOLOWER ${SIGHT_TARGET} ${SIGHT_TARGET}_SCRIPT)
         set(PROJECT_EXECUTABLE "${SIGHT_TARGET}.bin")
 
-        # Use the right path separator on unix
-        if(SIGHT_EXTERNAL_LIBRARIES)
-            string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${SIGHT_EXTERNAL_LIBRARIES}/lib")
-        else()
-            string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
-        endif()
-
         # Build the shell script from template_exe.sh.in
         configure_file(
             ${FWCMAKE_RESOURCE_PATH}/build/linux/template_exe.sh.in
             ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT} @ONLY
         )
-
-        # Cleanup
-        unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIR)
 
         file(
             COPY ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT}
@@ -359,7 +349,6 @@ macro(fw_exec SIGHT_TARGET)
             ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT} @ONLY
         )
         unset(ADMIN_REQUEST)
-        unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIR)
         file(
             COPY ${CMAKE_CURRENT_BINARY_DIR}/${${SIGHT_TARGET}_SCRIPT}
             DESTINATION ${CMAKE_BINARY_DIR}/bin
@@ -477,13 +466,6 @@ macro(sight_generic_test SIGHT_TARGET)
 
     # Configure launcher script
     if(UNIX)
-        # Use the right path separator on unix
-        if(SIGHT_EXTERNAL_LIBRARIES)
-            string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${SIGHT_EXTERNAL_LIBRARIES}/lib")
-        else()
-            string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
-        endif()
-
         #fill the external modules
         set(SIGHT_EXTRA_MODULES_OPT "")
         foreach(MODULE ${SIGHT_EXTRA_MODULES})
@@ -495,9 +477,6 @@ macro(sight_generic_test SIGHT_TARGET)
             ${FWCMAKE_RESOURCE_PATH}/build/linux/template_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${SIGHT_TEST_SCRIPT}
             @ONLY
         )
-
-        # Cleanup
-        unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIR)
 
         # Copy launcher script
         file(
@@ -904,20 +883,12 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
             endif()
 
             # Configure launcher script
-            # Replace all ';' path separator to unix style path separator ':'
-            if(SIGHT_EXTERNAL_LIBRARIES)
-                string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${SIGHT_EXTERNAL_LIBRARIES}/lib")
-            else()
-                string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
-            endif()
-
             foreach(MODULE ${SIGHT_EXTRA_MODULES})
                 list(APPEND SIGHT_EXTRA_MODULES_OPT "-B \"${MODULE}\"")
             endforeach()
             configure_file(
                 ${FWCMAKE_RESOURCE_PATH}/build/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY
             )
-            unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIR)
 
             file(
                 COPY ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME}
