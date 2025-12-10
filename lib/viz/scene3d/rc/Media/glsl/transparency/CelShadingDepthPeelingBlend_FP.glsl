@@ -46,7 +46,7 @@ vec3 computeFilterInterpolateWithDistance(sampler2D map, float[9] filters)
     float lowPass = u_near + depthRange * lowPercent;
     float highCut = u_near + depthRange * highPercent;
 
-    float depth = unpackFloatFromVec4(texture(u_bufferDepth, uv));
+    float depth = texture(u_bufferDepth, uv).r;
     float centerDepth = linearizeDepth(depth);
 
     vec3 centerPixel = unpackNormal(texture(map, uv).xyz);
@@ -172,7 +172,7 @@ float computeSobel() {
 void main()
 {
     float sobel = 1.;
-    float frontDepthBuffer = unpackFloatFromVec4(texture(u_bufferDepth, uv));
+    float frontDepthBuffer = texture(u_bufferDepth, uv).r;
     if( frontDepthBuffer != 1. )
     {
         sobel = computeSobel();

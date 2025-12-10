@@ -110,12 +110,6 @@ protected:
 private:
 
     /**
-     * @brief Attaches a node in the scene graph.
-     * @param _object node to attach.
-     */
-    void attach_node(Ogre::MovableObject* _object);
-
-    /**
      * @brief Draws a line.
      * @param _existing_line use true if the line already exist.
      */
@@ -132,6 +126,9 @@ private:
 
     /// Contains the manual object of the line.
     Ogre::ManualObject* m_line {nullptr};
+
+    /// Contains the scene node where all of manual objects are attached.
+    Ogre::SceneNode* m_scene_node {nullptr};
 
     sight::data::property<sight::data::real> m_length {this, "length", 50.0};
     sight::data::property<sight::data::color> m_color {this, "color", {1.0, 1.0, 1.0, 1.0}};

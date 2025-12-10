@@ -551,7 +551,7 @@
             <!-- Transparency for the 3D negato -->
             <service uid="transparency_parameter_srv" type="sight::module::ui::qt::parameters">
                 <parameters>
-                    <param type="double" name="Negatoscope transparency" key="transparency" defaultValue="0.0" min="0.0" max="1.0" reset="false" widget="slider" />
+                    <param type="double" name="Negatoscope opacity" key="transparency" defaultValue="0.0" min="0.0" max="1.0" reset="false" widget="slider" />
                 </parameters>
             </service>
 

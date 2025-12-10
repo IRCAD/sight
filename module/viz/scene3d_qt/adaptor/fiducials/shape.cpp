@@ -42,7 +42,7 @@
 namespace sight::module::viz::scene3d_qt::adaptor::fiducials
 {
 
-static constexpr std::uint8_t SHAPE_RQ_GROUP_ID = sight::viz::scene3d::rq::SURFACE_ID;
+static constexpr std::uint8_t SHAPE_RQ_GROUP_ID = sight::viz::scene3d::rq::SURFACE;
 
 //------------------------------------------------------------------------------
 

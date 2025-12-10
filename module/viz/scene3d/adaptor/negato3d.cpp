@@ -198,7 +198,7 @@ void negato3d::button_release_event(mouse_button /*_button*/, modifier /*_mods*/
 {
     if(m_picked_plane)
     {
-        m_picked_plane->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::SURFACE_ID, 0);
+        m_picked_plane->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::SURFACE, 0);
         m_picked_plane.reset();
     }
 
@@ -271,7 +271,7 @@ void negato3d::pick_intensity(int _x, int _y)
             this->request_render();
 
             // Render the picked plane before the widget.
-            m_picked_plane->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::NEGATO_WIDGET_ID, 0);
+            m_picked_plane->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::NEGATO_WIDGET, 0);
         }
     }
 }

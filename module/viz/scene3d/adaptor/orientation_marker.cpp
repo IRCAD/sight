@@ -71,6 +71,7 @@ void orientation_marker::starting()
 
     // Loads and attaches the marker
     m_patient_entity = scene_mgr->createEntity(m_patient_mesh_rc);
+    m_patient_entity->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
     m_patient_entity->setMaterialName(m_material->name(), sight::viz::scene3d::RESOURCE_GROUP);
     m_scene_node->attachObject(m_patient_entity);
 

@@ -36,10 +36,6 @@ out vec4 f_f4FragCol;
 
 //-----------------------------------------------------------------------------
 
-vec4 packFloatToVec4(float value);
-
-//-----------------------------------------------------------------------------
-
 float modelSpaceToNDC(in vec3 _f3Pos_Ms)
 {
 #ifdef AUTOSTEREO
@@ -131,5 +127,5 @@ void main(void)
         discard;
     }
 
-    f_f4FragCol = packFloatToVec4(fRayDepth_Ss);
+    f_f4FragCol = vec4(fRayDepth_Ss, 0.0, 0.0, 1.0);
 }

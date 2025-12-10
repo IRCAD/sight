@@ -8,6 +8,14 @@
     </extension>
 
     <extension implements="sight::service::extension::factory">
+        <type>sight::service::filter</type>
+        <service>sight::module::filter::mesh::center</service>
+        <object key="mesh">sight::data::mesh</object>
+        <object key="transform">sight::data::matrix4</object>
+        <desc>Compute the axis-aligned bounding box center of a mesh and output it as a transform.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::factory">
         <type>sight::service::generator</type>
         <service>sight::module::filter::mesh::generator::ultrasound_mesh</service>
         <desc>Generate the mesh used to display the ultrasound image.</desc>

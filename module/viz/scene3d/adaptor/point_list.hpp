@@ -234,6 +234,9 @@ private:
     data::material::sptr m_material {nullptr};
 
     /// Defines the attached material's name.
+    std::string m_init_material_template_name {"Billboard_Default"};
+
+    /// Actual material template name (may be modified depending on mesh attributes).
     std::string m_material_template_name {"Billboard_Default"};
 
     /// Defines the attached texture adaptor UID.

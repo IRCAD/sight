@@ -324,7 +324,7 @@ void negato::update_image(bool _new)
             {
                 plane.first->update(plane.second, spacing);
                 plane.first->set_query_flags(m_query_flags);
-                plane.first->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::NEGATO_WIDGET_ID, 0);
+                plane.first->set_render_queuer_group_and_priority(sight::viz::scene3d::rq::NEGATO_WIDGET, 0);
             }
 
             // Update Slice

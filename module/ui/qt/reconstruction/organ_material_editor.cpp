@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2024 IRCAD France
+ * Copyright (C) 2019-2025 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ void organ_material_editor::starting()
     m_ambient_colour_button->setToolTip(tr("Selected organ's ambient color"));
     m_ambient_colour_button->setMinimumSize(m_ambient_colour_button->sizeHint());
 
-    const char* transparency       = "Transparency";
+    const char* transparency       = "Opacity";
     auto* const transparency_label = new QLabel(tr((std::string(transparency) + " : ").c_str()));
     m_opacity_slider = new QSlider(Qt::Horizontal);
     m_opacity_slider->setObjectName(service_id + "/" + transparency);
@@ -175,9 +175,9 @@ void organ_material_editor::on_diffuse_color_button()
         const QColor color = QColorDialog::getColor(old_color, container);
         if(color.isValid())
         {
-            material->diffuse()->red()   = static_cast<float>(color.redF());
-            material->diffuse()->green() = static_cast<float>(color.greenF());
-            material->diffuse()->blue()  = static_cast<float>(color.blueF());
+            material->diffuse()->red()   = color.redF();
+            material->diffuse()->green() = color.greenF();
+            material->diffuse()->blue()  = color.blueF();
             this->material_notification();
             needrefresh = true;
         }
@@ -219,9 +219,9 @@ void organ_material_editor::on_ambient_color_button()
         const QColor color = QColorDialog::getColor(old_color, container);
         if(color.isValid())
         {
-            material->ambient()->red()   = static_cast<float>(color.redF());
-            material->ambient()->green() = static_cast<float>(color.greenF());
-            material->ambient()->blue()  = static_cast<float>(color.blueF());
+            material->ambient()->red()   = color.redF();
+            material->ambient()->green() = color.greenF();
+            material->ambient()->blue()  = color.blueF();
             this->material_notification();
             needrefresh = true;
         }

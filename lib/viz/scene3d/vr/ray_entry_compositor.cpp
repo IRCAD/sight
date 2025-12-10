@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
+ * Copyright (C) 2018-2025 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -146,7 +146,7 @@ ray_entry_compositor::ray_entry_compositor(
                     std::string(scheme_prefix) + "_FrontFacesMin" + scheme_suffix
                 );
                 front_faces_min_pass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                front_faces_min_pass->setLastRenderQueue(viz::scene3d::rq::SURFACE_ID);
+                front_faces_min_pass->setLastRenderQueue(viz::scene3d::rq::SURFACE);
             }
         }
 

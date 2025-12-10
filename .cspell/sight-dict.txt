@@ -122,6 +122,7 @@ ifdef
 ifndef
 igtl
 ihu
+illum
 imagehlp
 imax
 imin

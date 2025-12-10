@@ -242,6 +242,7 @@ void plane::update(
 
         // Create the border.
         m_border.shape = m_scene_manager->createManualObject(m_slice_plane_name + "_Border");
+        m_border.shape->setRenderQueueGroup(rq::SURFACE);
         m_border.shape->estimateVertexCount(5);
         m_border.shape->begin(m_border.material, Ogre::RenderOperation::OT_LINE_STRIP);
 
@@ -407,6 +408,7 @@ void plane::change_slice(const std::array<float, 3>& _slices_index)
 
         // Create the border.
         m_slices_cross.shape = m_scene_manager->createManualObject(m_slice_plane_name + "_Others");
+        m_slices_cross.shape->setRenderQueueGroup(rq::SURFACE);
         m_slices_cross.shape->estimateVertexCount(4);
         m_slices_cross.shape->begin(m_slices_cross.material, Ogre::RenderOperation::OT_LINE_LIST);
 

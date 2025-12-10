@@ -560,6 +560,7 @@ std::pair<bool, std::vector<r2vb_renderable*> > mesh::update_r2vb(
         if(m_r2vb_entity == nullptr)
         {
             m_r2vb_entity = _scene_mgr.createEntity(m_r2vb_mesh);
+            m_r2vb_entity->setRenderQueueGroup(rq::SURFACE);
         }
 
         const std::size_t num_sub_entities = m_r2vb_entity->getNumSubEntities();
@@ -674,12 +675,12 @@ void mesh::update_vertices(const data::mesh::csptr& _mesh)
         // Unlock vertex data
         vertex_buffer->unlock();
 
-        if(bbox.min[0] < std::numeric_limits<position_t>::max()
-           && bbox.min[1] < std::numeric_limits<position_t>::max()
-           && bbox.min[2] < std::numeric_limits<position_t>::max()
-           && bbox.max[0] > std::numeric_limits<position_t>::lowest()
-           && bbox.max[1] > std::numeric_limits<position_t>::lowest()
-           && bbox.max[2] > std::numeric_limits<position_t>::lowest())
+        if(bbox.min[0]<std::numeric_limits<position_t>::max()
+                       && bbox.min[1]<std::numeric_limits<position_t>::max()
+                                      && bbox.min[2]<std::numeric_limits<position_t>::max()
+                                                     && bbox.max[0]> std::numeric_limits<position_t>::lowest()
+                                      && bbox.max[1]> std::numeric_limits<position_t>::lowest()
+                       && bbox.max[2]> std::numeric_limits<position_t>::lowest())
         {
             m_ogre_mesh->_setBounds(
                 Ogre::AxisAlignedBox(
@@ -1055,7 +1056,9 @@ bool mesh::has_color_layer_changed(const data::mesh::csptr& _mesh) const
 
 Ogre::Entity* mesh::create_entity(Ogre::SceneManager& _scene_mgr)
 {
-    return _scene_mgr.createEntity(m_ogre_mesh);
+    auto* entity = _scene_mgr.createEntity(m_ogre_mesh);
+    entity->setRenderQueueGroup(rq::SURFACE);
+    return entity;
 }
 
 //------------------------------------------------------------------------------

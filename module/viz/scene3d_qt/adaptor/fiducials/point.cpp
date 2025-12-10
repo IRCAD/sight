@@ -37,6 +37,7 @@
 
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
+#include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/utils.hpp>
 
 #include <module/viz/scene3d_qt/window_interactor.hpp>
@@ -905,6 +906,7 @@ std::shared_ptr<point::ogre_fiducial> point::create_ogre_fiducial(
     const auto id                = get_id();
 
     auto* const manual_object = get_scene_manager()->createManualObject(core::id::join(id, point_name, "object"));
+    manual_object->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
 
     const Ogre::ColourValue ogre_color(_color[0], _color[1], _color[2], _color[3]);
 

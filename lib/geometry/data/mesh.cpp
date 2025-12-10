@@ -826,4 +826,21 @@ bool mesh::is_inside_bounding_box(const sight::vec3d_t& _point, const sight::dat
            && _point[2] <= _box.max[2];
 }
 
+//------------------------------------------------------------------------------
+
+sight::data::mesh::axis_aligned_box_t mesh::merge_bounding_box(
+    const sight::vec3f_t& _point,
+    const sight::data::mesh::axis_aligned_box_t& _box
+)
+{
+    sight::data::mesh::axis_aligned_box_t result_box = _box;
+    for(std::size_t i = 0 ; i < 3 ; ++i)
+    {
+        result_box.min[i] = std::min(_point[i], result_box.min[i]);
+        result_box.max[i] = std::max(_point[i], result_box.max[i]);
+    }
+
+    return result_box;
+}
+
 } // namespace sight::geometry::data

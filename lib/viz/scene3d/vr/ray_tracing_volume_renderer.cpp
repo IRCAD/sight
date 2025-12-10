@@ -887,7 +887,6 @@ void ray_tracing_volume_renderer::update_ray_tracing_material()
             Ogre::GPT_FRAGMENT_PROGRAM
         );
         fsp->setSourceFile("RayTracedVolumeDepth_FP.glsl");
-        fsp->setParameter("attach", "DepthPeelingCommon_FP");
 
         if(!m_options.fragment.empty())
         {
@@ -1092,7 +1091,7 @@ void ray_tracing_volume_renderer::init_entry_points()
         }
 
         // Render volumes after surfaces.
-        m_entry_point_geometry->setRenderQueueGroup(rq::VOLUME_ID);
+        m_entry_point_geometry->setRenderQueueGroup(rq::VOLUME);
 
         m_volume_scene_node->attachObject(m_entry_point_geometry);
     }
@@ -1132,10 +1131,10 @@ void ray_tracing_volume_renderer::compute_real_focal_length()
                                         {return camera_plane.getDistance(_v1) < camera_plane.getDistance(_v2);};
 
     const auto closest_furthest_img_points =
-        std::minmax_element(m_clipped_image_positions.begin(), m_clipped_image_positions.end(), camera_dist_comparator);
+        std::ranges::minmax_element(m_clipped_image_positions, camera_dist_comparator);
 
-    const auto focus_point = *closest_furthest_img_points.first + m_focal_length
-                             * (*closest_furthest_img_points.second - *closest_furthest_img_points.first);
+    const auto focus_point = *(closest_furthest_img_points.min) + m_focal_length
+                             * (*(closest_furthest_img_points.max) - *(closest_furthest_img_points.min));
 
     const float real_focal_length = m_camera->getRealPosition().distance(focus_point);
 

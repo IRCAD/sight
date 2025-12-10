@@ -30,9 +30,12 @@
 
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
+#include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/render.hpp>
 
 #include <OgreNode.h>
+
+#include <algorithm>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -104,20 +107,26 @@ void axis::starting()
 
     Ogre::SceneManager* const scene_mgr = this->get_scene_manager();
 
+    auto create_obj = [&](const std::string& _name)
+                      {
+                          auto* obj = scene_mgr->createManualObject(gen_id(_name));
+                          obj->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
+                          return obj;
+                      };
     if(m_origin_visibility)
     {
-        m_origin = scene_mgr->createManualObject(gen_id("origin"));
+        m_origin = create_obj("origin");
     }
 
     if(m_axis_visibility)
     {
-        m_x_line = scene_mgr->createManualObject(gen_id("x_line"));
-        m_y_line = scene_mgr->createManualObject(gen_id("y_line"));
-        m_z_line = scene_mgr->createManualObject(gen_id("z_line"));
+        m_line[0] = create_obj("x_line");
+        m_line[1] = create_obj("y_line");
+        m_line[2] = create_obj("z_line");
 
-        m_x_cone = scene_mgr->createManualObject(gen_id("x_cone"));
-        m_y_cone = scene_mgr->createManualObject(gen_id("y_cone"));
-        m_z_cone = scene_mgr->createManualObject(gen_id("z_cone"));
+        m_cone[0] = create_obj("x_cone");
+        m_cone[1] = create_obj("y_cone");
+        m_cone[2] = create_obj("z_cone");
     }
 
     const auto material_name = gen_id("material");
@@ -159,7 +168,7 @@ void axis::starting()
     {
         // X axis
         sight::viz::scene3d::helper::manual_object::create_cylinder(
-            m_x_line,
+            m_line[0],
             m_material->name(),
             Ogre::ColourValue(Ogre::ColourValue::Red),
             cylinder_radius,
@@ -167,12 +176,12 @@ void axis::starting()
             sample
         );
         Ogre::SceneNode* const x_line_node = m_scene_node->createChildSceneNode();
-        x_line_node->attachObject(m_x_line);
+        x_line_node->attachObject(m_line[0]);
         x_line_node->pitch(Ogre::Degree(90));
 
         // Y axis
         sight::viz::scene3d::helper::manual_object::create_cylinder(
-            m_y_line,
+            m_line[1],
             m_material->name(),
             Ogre::ColourValue(Ogre::ColourValue::Green),
             cylinder_radius,
@@ -180,12 +189,12 @@ void axis::starting()
             sample
         );
         Ogre::SceneNode* const y_line_node = m_scene_node->createChildSceneNode();
-        y_line_node->attachObject(m_y_line);
+        y_line_node->attachObject(m_line[1]);
         y_line_node->roll(Ogre::Degree(90));
 
         // Z axis
         sight::viz::scene3d::helper::manual_object::create_cylinder(
-            m_z_line,
+            m_line[2],
             m_material->name(),
             Ogre::ColourValue(Ogre::ColourValue::Blue),
             cylinder_radius,
@@ -193,12 +202,12 @@ void axis::starting()
             sample
         );
         Ogre::SceneNode* const z_line_node = m_scene_node->createChildSceneNode();
-        z_line_node->attachObject(m_z_line);
+        z_line_node->attachObject(m_line[2]);
         z_line_node->yaw(Ogre::Degree(-90));
 
         // X cone
         sight::viz::scene3d::helper::manual_object::create_cone(
-            m_x_cone,
+            m_cone[0],
             m_material->name(),
             Ogre::ColourValue(Ogre::ColourValue::Red),
             cone_radius,
@@ -215,12 +224,12 @@ void axis::starting()
             m_axis_labels[0]->attach_to_node(x_cone_node, this->layer()->get_default_camera());
         }
 
-        x_cone_node->attachObject(m_x_cone);
+        x_cone_node->attachObject(m_cone[0]);
         x_cone_node->translate(cylinder_length, 0.F, 0.F);
 
         // Y cone
         sight::viz::scene3d::helper::manual_object::create_cone(
-            m_y_cone,
+            m_cone[1],
             m_material->name(),
             Ogre::ColourValue(Ogre::ColourValue::Green),
             cone_radius,
@@ -228,7 +237,7 @@ void axis::starting()
             sample
         );
         Ogre::SceneNode* const y_cone_node = m_scene_node->createChildSceneNode();
-        y_cone_node->attachObject(m_y_cone);
+        y_cone_node->attachObject(m_cone[1]);
 
         if(m_enable_label)
         {
@@ -243,7 +252,7 @@ void axis::starting()
 
         // Z cone
         sight::viz::scene3d::helper::manual_object::create_cone(
-            m_z_cone,
+            m_cone[2],
             m_material->name(),
             Ogre::ColourValue(Ogre::ColourValue::Blue),
             cone_radius,
@@ -251,7 +260,7 @@ void axis::starting()
             sample
         );
         Ogre::SceneNode* const z_cone_node = m_scene_node->createChildSceneNode();
-        z_cone_node->attachObject(m_z_cone);
+        z_cone_node->attachObject(m_cone[2]);
 
         if(m_enable_label)
         {
@@ -278,8 +287,6 @@ void axis::starting()
     }
 
     this->apply_visibility();
-
-    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
@@ -291,29 +298,13 @@ void axis::updating()
     Ogre::SceneNode* const transform_node = this->get_transform_node();
     if(transform_node != nullptr)
     {
-        bool render_requested = false;
-
-        bool has_image = false;
-        data::image::origin_t position {0.0, 0.0, 0.0};
-        data::image::orientation_t orientation {
-            1.0, 0.0, 0.0,
-            0.0, 1.0, 0.0,
-            0.0, 0.0, 1.0
-        };
-
+        const auto image = m_image.lock();
+        if(image)
         {
-            const auto image = m_image.lock();
-            if(image)
-            {
-                has_image   = true;
-                position    = image->origin();
-                orientation = image->orientation();
-            }
-        }
-        if(has_image)
-        {
+            auto position    = image->origin();
+            auto orientation = image->orientation();
+
             // Decompose the matrix
-
             transform_node->setOrientation(
                 Ogre::Matrix3 {
                     static_cast<Ogre::Real>(orientation[0]),
@@ -331,15 +322,11 @@ void axis::updating()
                                static_cast<Ogre::Real>(position[2])
                 });
             transform_node->setScale(Ogre::Vector3 {1.0, 1.0, 1.0});
-
-            render_requested = true;
-        }
-
-        if(render_requested)
-        {
-            this->request_render();
         }
     }
+
+    this->update_done();
+    this->request_render();
 }
 
 //-----------------------------------------------------------------------------
@@ -381,13 +368,8 @@ void axis::stopping()
 
     if(m_axis_visibility)
     {
-        scene_mgr->destroyManualObject(m_x_line);
-        scene_mgr->destroyManualObject(m_y_line);
-        scene_mgr->destroyManualObject(m_z_line);
-
-        scene_mgr->destroyManualObject(m_x_cone);
-        scene_mgr->destroyManualObject(m_y_cone);
-        scene_mgr->destroyManualObject(m_z_cone);
+        std::ranges::for_each(m_line, [&](auto* _obj){scene_mgr->destroyManualObject(_obj);});
+        std::ranges::for_each(m_cone, [&](auto* _obj){scene_mgr->destroyManualObject(_obj);});
     }
 
     Ogre::SceneNode* const transform_node = this->get_transform_node();
@@ -422,9 +404,9 @@ void axis::set_visible(bool _visible)
         {
             m_axis_name_txt->set_visible(_visible);
         }
-    }
 
-    this->updating();
+        this->updating();
+    }
 }
 
 //------------------------------------------------------------------------------

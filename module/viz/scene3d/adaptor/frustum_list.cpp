@@ -27,6 +27,7 @@
 #include <viz/scene3d/helper/camera.hpp>
 #include <viz/scene3d/helper/manual_object.hpp>
 #include <viz/scene3d/helper/scene.hpp>
+#include <viz/scene3d/ogre.hpp>
 
 #include <OgreCamera.h>
 #include <OgreSceneNode.h>
@@ -167,7 +168,8 @@ void frustum_list::add_frustum()
             scene_manager->destroyManualObject(f.first);
         }
 
-        auto* const frustum      = scene_manager->createManualObject(gen_id("frustum" + current_index_str));
+        auto* const frustum = scene_manager->createManualObject(gen_id("frustum" + current_index_str));
+        frustum->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
         auto* const frustum_node = root_scene_node->createChildSceneNode("Node_" + current_index_str);
 
         sight::viz::scene3d::helper::manual_object::create_frustum(frustum, m_material->name(), *ogre_camera);

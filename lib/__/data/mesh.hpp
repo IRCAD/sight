@@ -25,7 +25,6 @@
 #include <sight/data/config.hpp>
 
 #include "data/array.hpp"
-#include "data/exception.hpp"
 #include "data/factory/new.hpp"
 #include "data/iterator.hpp"
 
@@ -37,9 +36,6 @@
 #include <boost/range/iterator_range_core.hpp>
 
 #include <glm/vec3.hpp>
-
-#include <OGRE/OgreManualObject.h>
-#include <OGRE/OgreMesh.h>
 
 #include <array>
 
@@ -297,6 +293,20 @@ public:
         sight::vec3f_t max {std::numeric_limits<position_t>::lowest(), std::numeric_limits<position_t>::lowest(),
                             std::numeric_limits<position_t>::lowest()
         };
+
+        //------------------------------------------------------------------------------
+
+        bool operator==(const axis_aligned_box_t& _other) const
+        {
+            return (min == _other.min) && (max == _other.max);
+        }
+
+        //------------------------------------------------------------------------------
+
+        bool operator<(const axis_aligned_box_t& _other) const
+        {
+            return (min < _other.min) && (max < _other.max);
+        }
     };
 
     // Lazy-compute the bounding-box using the object timestamp

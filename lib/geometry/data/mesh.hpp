@@ -171,8 +171,19 @@ public:
      * @return true if the point is inside the Axis-aligned bounding box false otherwise.
      */
     SIGHT_GEOMETRY_DATA_API static bool is_inside_bounding_box(
-        const  sight::vec3d_t& _point,
-        const  sight::data::mesh::axis_aligned_box_t& _box
+        const sight::vec3d_t& _point,
+        const sight::data::mesh::axis_aligned_box_t& _box
+    );
+
+    /**
+     * @brief Merge a point into an Axis-aligned bounding box.
+     * @param _point : The coordinates of the point to be merged.
+     * @param  _box : The coordinates of the bounding box.
+     * @return The merged Axis-aligned bounding box.
+     */
+    SIGHT_GEOMETRY_DATA_API static sight::data::mesh::axis_aligned_box_t merge_bounding_box(
+        const sight::vec3f_t& _point,
+        const sight::data::mesh::axis_aligned_box_t& _box
     );
 };
 

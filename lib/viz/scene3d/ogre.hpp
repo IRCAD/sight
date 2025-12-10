@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2023 IRCAD France
+ * Copyright (C) 2021-2025 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,14 +36,16 @@ namespace rq
 {
 
 /// Render queue group for surface rendering.
-static constexpr std::uint8_t SURFACE_ID = Ogre::RenderQueueGroupID::RENDER_QUEUE_MAIN;
+static constexpr std::uint8_t SURFACE = Ogre::RenderQueueGroupID::RENDER_QUEUE_2;
 
 /// Render queue group for volume rendering. Leave an extra render queue between
 /// surfaces and volumes for some effects.
-static constexpr std::uint8_t VOLUME_ID = SURFACE_ID + 2;
+static constexpr std::uint8_t VOLUME = Ogre::RenderQueueGroupID::RENDER_QUEUE_3;
 
-static constexpr std::uint8_t NEGATO_WIDGET_ID = SURFACE_ID - 1;
+static constexpr std::uint8_t NEGATO_WIDGET = Ogre::RenderQueueGroupID::RENDER_QUEUE_1;
 
-}
+static constexpr std::uint8_t OVERLAY = Ogre::RenderQueueGroupID::RENDER_QUEUE_OVERLAY;
+
+} // namespace rq
 
 } // namespace sight::viz::scene3d

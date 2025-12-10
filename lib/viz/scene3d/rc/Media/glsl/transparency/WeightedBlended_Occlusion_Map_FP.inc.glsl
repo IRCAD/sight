@@ -2,7 +2,7 @@ out vec4 FragColor;
 
 void process()
 {
-    if(getFragmentAlpha() != 1.)
+    if(getFragmentAlpha() < .999)
     {
         discard;
     }

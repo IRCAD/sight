@@ -79,6 +79,7 @@ void line::starting()
     Ogre::SceneManager* scene_mgr = this->get_scene_manager();
 
     m_line = scene_mgr->createManualObject(gen_id("line"));
+    m_line->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
     // Set the line as dynamic, so we can update it later on, when the length changes
     m_line->setDynamic(true);
 
@@ -96,7 +97,13 @@ void line::starting()
     Ogre::AxisAlignedBox box(bb_min, bb_max);
     m_line->setBoundingBox(box);
 
-    this->attach_node(m_line);
+    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
+    Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
+    SIGHT_ASSERT("Transform node shouldn't be null", trans_node);
+    m_scene_node = trans_node->createChildSceneNode(gen_id("main_node"));
+
+    m_scene_node->setVisible(visible());
+    m_scene_node->attachObject(m_line);
 
     this->set_visible(visible());
 }
@@ -129,26 +136,15 @@ void line::stopping()
     this->render_service()->make_current();
 
     m_material.reset();
-    if(m_line != nullptr)
+    if(m_scene_node != nullptr)
     {
-        m_line->detachFromParent();
-        this->get_scene_manager()->destroyManualObject(m_line);
-        m_line = nullptr;
+        m_scene_node->removeAndDestroyAllChildren();
+        this->get_scene_manager()->destroySceneNode(m_scene_node);
+        m_scene_node = nullptr;
+        m_line       = nullptr;
     }
 
     adaptor::deinit();
-}
-
-//-----------------------------------------------------------------------------
-
-void line::attach_node(Ogre::MovableObject* _object)
-{
-    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
-    Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
-    SIGHT_ASSERT("Transform node shouldn't be null", trans_node);
-
-    trans_node->setVisible(visible());
-    trans_node->attachObject(_object);
 }
 
 //-----------------------------------------------------------------------------
@@ -198,10 +194,11 @@ void line::draw_line(bool _existing_line)
 
 void line::set_visible(bool /*_visible*/)
 {
-    Ogre::SceneNode* root_scene_node = this->get_scene_manager()->getRootSceneNode();
-    Ogre::SceneNode* trans_node      = this->get_or_create_transform_node(root_scene_node);
-    trans_node->setVisible(visible());
-    this->updating();
+    if(m_scene_node != nullptr)
+    {
+        m_scene_node->setVisible(visible());
+        this->updating();
+    }
 }
 
 } // namespace sight::module::viz::scene3d::adaptor.
