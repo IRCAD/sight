@@ -61,7 +61,7 @@ void main_frame::showEvent(QShowEvent* _event)
     /// @see https://doc.qt.io/qt-6/qopenglwidget.html#limitations-and-other-considerations
     /// @note With Qt 6.8.2, we can call window->setSurfaceType(QSurface::OpenGLSurface)
     /// @note With Qt 6.4.x (Ubuntu 22.04), we must use an uglier hack, add/remove a dummy QOpenGLWidget to the layout
-    if(static bool once = false; !once)
+    if(!m_first_show)
     {
         if(auto* const window = this->windowHandle();
            window != nullptr
@@ -77,7 +77,7 @@ void main_frame::showEvent(QShowEvent* _event)
                 #endif
         }
 
-        once = true;
+        m_first_show = true;
     }
 
     QMainWindow::showEvent(_event);

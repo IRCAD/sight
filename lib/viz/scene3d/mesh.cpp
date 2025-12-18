@@ -584,6 +584,7 @@ std::pair<bool, std::vector<r2vb_renderable*> > mesh::update_r2vb(
                     cell_type,
                     _material_name
                 );
+                m_r2vb_object[cell_type]->setRenderQueueGroup(sight::viz::scene3d::rq::SURFACE);
             }
 
             m_r2vb_object[cell_type]->set_output_settings(

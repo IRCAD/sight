@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2023-2025 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -51,9 +51,22 @@ void click_collapse_section::test()
         "click_collapse_section",
         [](sight::ui::test::tester& _tester)
         {
+            int pos_y_before_unfold = 0;
+
             // Get the pos y of under_section_label before to unfold collapsible section.
-            auto* under_label       = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
-            int pos_y_before_unfold = under_label->y();
+            _tester.take(
+                "QToolButton for unfold collapsible section",
+                [&_tester, &pos_y_before_unfold]() -> QObject*
+            {
+                auto* label = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
+
+                if(label != nullptr)
+                {
+                    pos_y_before_unfold = label->y();
+                }
+
+                return label;
+            });
 
             _tester.take(
                 "QToolButton for unfold collapsible section",
@@ -76,8 +89,21 @@ void click_collapse_section::test()
                 return _obj->isChecked();
             });
 
-            under_label            = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
-            int pos_y_after_unfold = under_label->y();
+            int pos_y_after_unfold = 0;
+
+            _tester.take(
+                "QToolButton for unfold collapsible section",
+                [&_tester, &pos_y_after_unfold]() -> QObject*
+            {
+                auto* label = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
+
+                if(label != nullptr)
+                {
+                    pos_y_after_unfold = label->y();
+                }
+
+                return label;
+            });
 
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "The position y of under_label should be bigger after unfolded the collapsible section",
@@ -99,8 +125,21 @@ void click_collapse_section::test()
             _tester.interact(std::make_unique<sight::ui::test::mouse_click>());
             QTest::qWait(1000);
 
-            under_label         = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
-            int pos_y_after_add = under_label->y();
+            int pos_y_after_add = 0;
+
+            _tester.take(
+                "QToolButton for unfold collapsible section",
+                [&_tester, &pos_y_after_add]() -> QObject*
+            {
+                auto* label = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
+
+                if(label != nullptr)
+                {
+                    pos_y_after_add = label->y();
+                }
+
+                return label;
+            });
 
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "The position y of under_label should be bigger after add a new QLabel in the collapsible section",
@@ -121,8 +160,21 @@ void click_collapse_section::test()
             _tester.interact(std::make_unique<sight::ui::test::mouse_click>());
             QTest::qWait(1000);
 
-            under_label            = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
-            int pos_y_after_remove = under_label->y();
+            int pos_y_after_remove = 0;
+
+            _tester.take(
+                "QToolButton for unfold collapsible section",
+                [&_tester, &pos_y_after_remove]() -> QObject*
+            {
+                auto* label = _tester.get_main_window()->findChild<QLabel*>("under_section_label");
+
+                if(label != nullptr)
+                {
+                    pos_y_after_remove = label->y();
+                }
+
+                return label;
+            });
 
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "The position y of under_label should be smaller after remove from collapsible section",

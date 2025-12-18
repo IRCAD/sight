@@ -403,11 +403,16 @@ void frame::set_full_screen(bool _full_screen)
         /// restore the maximized state when exiting full screen.
         /// This is needed since Qt reset the windows border "hack" below
         m_full_screen_and_maximized = (m_qt_window->windowState() & Qt::WindowMaximized) == Qt::WindowMaximized;
-        const auto clean_state = m_qt_window->windowState() ^ Qt::WindowMaximized;
-        m_qt_window->setWindowState(clean_state | Qt::WindowFullScreen);
-#else
-        m_qt_window->setWindowState(m_qt_window->windowState() | Qt::WindowFullScreen);
+
+        if(m_full_screen_and_maximized)
+        {
+            m_qt_window->setWindowState((m_qt_window->windowState() ^ Qt::WindowMaximized) | Qt::WindowFullScreen);
+        }
+        else
 #endif
+        {
+            m_qt_window->setWindowState(m_qt_window->windowState() | Qt::WindowFullScreen);
+        }
 
 #ifdef _WIN32
         // This is a workaround for OpenGLWidget and fullscreen mode on Windows
