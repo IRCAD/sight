@@ -1,3 +1,274 @@
+# sight 25.2.0
+
+## Enhancement:
+
+### build
+
+*Update VCPKG.*
+
+*Add support for long file paths in NSIS installation program.*
+
+Enhanced the NSIS installer to reliably handle Windows long paths (>260 character).
+The changes add the \\?\ prefix to file paths, which is a Windows convention that enables support for paths longer than the traditional 260-character limit and normalize path separators to backslashes.
+
+*Update vcpkg.*
+
+### ci
+
+*Use variables to limit the number of parallel build and test jobs.*
+
+*Update ubuntu image, now uses clang 20.*
+
+This also includes a fix to make test debugging possible in VSCode in  multi-projects workspaces
+
+### filter
+
+*Add lambda and variadic arguments support in dispatcher.*
+
+Using a lambda and variadic arguments instead of a functor allows reducing significantly the bloat code around the dispatcher.
+
+### io
+
+*Faster decoding of jpeg2000 DICOMS.*
+
+This will speed up by a factor of 10 the load of a DICOM file that contains encapsulated JPEG2000 pixel data.
+⚠️ This is a bit "hackish" as it bypass the GDCM image decoding, and it will only work as expected when no "slope" or "intercept" re-scaler are used. This is usually the case for Enhanced US Volume.
+
+Additionally:
+- there were some fixes and performance improvements for io::bitmap, mainly to allow using direct buffer access to avoid unneeded copies.
+- also allow data config overriding
+- filled validator now supports strings
+
+*Update minizip + multithreaded  fast compression.*
+
+### ui
+
+*Add switch button widget.*
+
+The classic checkbox looked dated, so we introduced a modern toggle switch: it displays the on/off state much more clearly yet behaves exactly like the checkbox behind the scenes.
+
+To use this new widget, in the configuration of a `sight`::module::ui::qt::settings``service, specify `widget="switch_button"` for a switch button or `widget="check_box"` for a checkbox when wrapping a `sight::data::boolean`.
+
+*Add the bounding box in mesh data.*
+
+The axis-aligned bounding box of a mesh is now stored directly in `sight::data::mesh`. It is lazily computed when `get_bounding_box()` is called.
+
+It can be used for intersection tests. For instance, a new function `sight`::geometry::data::is_inside_bounding_box``was implemented to determine if a 3D point lies inside a bounding box.
+
+*Add a non-linear mode to the sequencer.*
+
+This adds the possibility for the activity sequencer to not follow a linear workflow by setting the property `linear` to `false`. In this mode:
+- when calling `check_next`, all activities are checked to be enabled instead of only the next;
+- the sequencer buttons do not display a number, but the activity icon instead.
+
+Additionally, the `go_to` slot now accepts the activity identifier as a parameter, allowing for the programmatically switching to a specific activity.
+
+### viz
+
+*Splatting support and transparency orderingfixes.*
+
+- Add basic support for point splatting
+- Fixes Weighted Blended Order Independent transparency on Ogre >= 14
+  - Objects in the default render queue are now automatically assigned to a transparent queue
+  - Since we use to manage this ourselves, all objects were assigned to specific queues to avoid the automatic assignment
+  - This approach is compatible with Ogre < 14 and Ogre >= 14
+- Use floating point value to store the depth in OIT techniques, avoids quantization artifacts (Closes #384)
+- New service to center camera on meshes:
+
+```xml
+   <service type="sight::module::filter::mesh::center">
+       <in key="mesh" uid="..." />
+       <inout key="transform" uid="..." />
+   </service>
+```
+
+*Add support for RGBA images in negatoscopes.*
+
+*Add option to show shape fiducials for all slices.*
+
+*Allow to pick meshes while pressing the mouse.*
+
+It is now possible to receive picking information when moving the mouse while a button is pressed.
+
+## Bug fixes:
+
+### build
+
+*Ignore suspicious hits coming from multi-threaded tests.*
+
+*Doctest discovery path for all targets.*
+
+*New version of libnvjpeg2k are installed under a /12/ folder.*
+
+Update the find_library, and add dedicated include_directories in io_bitmap CMakelists.txt
+
+IMPORTANT NOTE: On linux we link with the static library of libnvjpeg2k
+
+*Update vcpkg.*
+
+*Reset IMPORTED_DEPENDS list when generating install scripts.*
+
+otherwise the list may contains dependencies of previous applications
+
+### ci
+
+*Launch unit tests made with doctests on Windows.*
+
+### core
+
+*Automatically finish the aggregator upon destruction.*
+
+*All sight is fixed.*
+
+* the negato adaptor needed to handle having a tf while still treating the input image as a RGB pixel type.
+* also add an input validity check in the change_slice_index to avoid crashes.
+
+*Make SIGHT_TEST_FAIL_WAIT macro compatible with doctest.*
+
+*Cumulative time in timer is not computed correctly.*
+
+This fixes a bug in a timer class where the cumulative time calculation was incorrect. Previously, after multiple start/stop cycles, the cumulative time was being overwritten instead of accumulated, meaning it would only show the duration of the most recent timing session rather than the total time across all sessions.
+
+*Handle sub-objects with deferred services.*
+
+The object accessed with a point operator were not handled when a service is deferred.
+
+*Error parsing properties sub-objects in config manager.*
+
+### ui
+
+*Fullscreen mode with no preferences and minimum size.*
+
+Store the first_show per main_frame to ensure window are not recreated when OpenGL context is created.
+Also includes a fix to display quads objects in transparency.
+
+*White border on buttonbar is only displayed when joystick is configured.*
+
+This avoid style mismatch between toggled and clicked button, if event is coming from outside `ui::qt::settings`.
+
+*Restore border hack, even for previously maximized windows.*
+
+The fake border to allow popup windows to appear on top of the main window was removed by Qt when the window contains the maximized flag. We now manage the state flag ourselves.
+
+*Ruler visibility.*
+
+Test the image dimension organisation type in the ruler construction to ensure we handle the position of the ruler correctly.
+
+*Switch button icon when a scale factor is set on the display.*
+
+*Ruler adaptor was broken.*
+
+* ruler were disappearing randomly when moving slices or when stopping editing mode
+* Visibility according to the current slice wasn't properly calculated.
+* rework a bit the way update works, the visibility needs to be determined at the lowest level, naming was awful
+* fiducial slice range selector was broken
+* add graphic data to the point (fiducial) interactor
+* increase fiducial size in split_screen_views
+* session reader loaded session slot type
+
+*Change switch button color.*
+
+*Progress sound handling and sound playing in linux.*
+
+### viz
+
+*Avoid crashes when negato image is not yet present.*
+
+*Use nearest interpolation for segmentation.*
+
+The library `sight`::filter::image``was also cleaned a bit. ITK was removed from the public API, which made necessary to port some code from the services to the library.
+The tests of the affected code were ported to Doctest.
+
+*Use lazy_update behavior when mask is required in negato adaptors.*
+
+## Refactor:
+
+### ci
+
+*Move cspell dictionnary inside the repo.*
+
+The dictionnary was previously stored in sight-git, it is more coherent to be always repo-dependent and thus follows CSpell configuration philosophy. This makes it easier to be synced with the different IDEs.
+
+### core
+
+*New progress API, removed old DICOM code.*
+
+The former ``sight`::core::jobs```was heavily refactored as ``sight::core::progress``. It is mainly a clarification and simplification of its purpose inside the library _Sight_.
+
+It was previously designed to report the progress **and** to manage the execution of threaded tasks. This second goal was redundant in modern C++ (``std::thread``, ``std::launch``, OpenMP, etc...), made the API cumbersome and often confused the developers, leading to inappropriate usage, especially in services.
+
+The new API no longer comprises task execution. It remains thread-safe but only allows to report progress and check cancellation. Thus, the former sight`::core::jobs::job`has no equivalent in the new API. We only kept the observer and the aggregator. Here is an example:
+
+```cpp
+void progress_service::updating()
+{
+    auto monitor = std::make_shared<sight::core::progress::monitor>( "Example of Monitor");
+
+    // Emit the signal to inform the progress bar about the new monitor
+    this->async_emit(has_monitors::signals::JOB_CREATED, monitor->get_sptr());
+
+    ...
+    /// This will be caught by the progress bar to update the widget
+    monitor->done_work(i);
+    ...
+
+    /// This is a convenient way to set the amount of done work units to total work units (100%)
+    monitor->done();
+}
+```
+
+Also, the API also automatically affects a service using monitors, i.e. which inherits from `sight::core::progress::has_monitors`, to a dedicated worker. This way, by design, the service is asynchronous and does not let a chance to the developer to block the user interface and thus progress report. If a worker is specified, it is used however.
+
+The signals/slots were renamed as well:
+
+```xml
+<service uid="progress_srv" type="sight::module::sample::progress_service" />
+
+<service uid="progress_bar_srv" type="sight::module::ui::qt::progress_bar" />
+
+<connect>
+    <signal>progress_srv/monitor_created</signal>
+    <slot>progress_bar_srv/add_monitor</slot>
+</connect>
+```
+
+All services reporting progress were ported to the new API, and thus inherits from `sight::core::progress::has_monitors`. The `sight`::io::service::reader``and `sight`::io::service::writer``also inherit from this interface to encourage developers to report progress. The readers/writers no longer instantiate the "job" but their `read/write` method now take an observer by default. This might be a little too constraining, but I wanted to enforce developers to report progress.
+
+A lot of the old job API was present in the legacy DICOM code. Instead of porting to the new API, the legacy DICOM code was removed. This only part where it was still used was the DIMSE/DicomWeb features, this code was ported to use the modern DICOM code.
+
+*Remove obsolete landmark data and related services.*
+
+### ui
+
+*Split progress_bar code to a library.*
+
+## New features:
+
+### core
+
+*Introduce doctest for unit tests.*
+
+We will migrate over time from the old CppUnit library to the more modern Doctest.
+
+A new target type DOCTEST was added. It supports the same arguments as CppUnit tests, like REQUIRE_X, ADMIN, etc...
+
+```cmake
+sight_add_target(lib_ut TYPE DOCTEST)
+```
+The tests discovery has been partially rewritten from the original doctest cmake scripts to adapt to our structure, to get the tests available in VSCode testing panel, and to handle child repositories.
+For debugging in VSCode, it was impossible to use the previous approach using a launcher script, that already did not work with CppUnit. To overcome this, we no longer use a script and instead pass a modified environment directly to CTest.
+
+*Add tools configuration keyword to tracker.*
+
+*New extension point for object.*
+
+### ui
+
+*Load .qss files from application directory.*
+
+When you need to override the default stylesheet (like the one from "noctura" theme...), for a specific application, you can now add one or more `.qss` files directly near the application plugin.xml. They will be loaded when starting the `sight`::module::ui::qt``module, improving the main stylesheet. As stylesheets are concatenated, not replaced, the non overridden classes will be kept.
+
+
 # sight 25.1.0
 
 ## Bug fixes:
